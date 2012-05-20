@@ -1,0 +1,18 @@
+Dependencies:
+    gtk+-3.0
+    libwnck-3.0
+    gstreamer-interfaces-0.10
+    gstreamer-0.10
+    gstreamer-pbutils-0.10
+    granite
+    xtst
+    gdk-x11-3.0
+
+Installation:
+    bzr branch lp:eidete
+    cd eidete
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX
+    make
+    sudo make install
