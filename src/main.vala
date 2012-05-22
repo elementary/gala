@@ -139,7 +139,7 @@ public class GalaPlugin : Meta.Plugin {
         }
     }
     public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-        /*unowned List<Clutter.Actor> windows = Meta.get_window_actors (this.get_screen ());
+        unowned List<Clutter.Actor> windows = Meta.get_window_actors (this.get_screen ());
         //FIXME js/ui/windowManager.js line 430
         int w, h;
         this.get_screen ().get_size (out w, out h);
@@ -207,9 +207,9 @@ public class GalaPlugin : Meta.Plugin {
             
             in_group.destroy ();
             out_group.destroy ();
-            */
+            
             this.switch_workspace_completed ();
-        //});
+        });
     }
     public override void kill_window_effects (Meta.WindowActor actor){
         
