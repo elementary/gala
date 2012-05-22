@@ -128,7 +128,7 @@ namespace Meta {
 		public static void set_current (string name, bool force_reload);
 		public bool validate () throws GLib.Error;
 	}
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_window_get_type ()")]
+	[CCode (cheader_filename = "meta/window.h", type_id = "meta_window_get_type ()")]
 	public class Window : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Window ();
@@ -259,6 +259,13 @@ namespace Meta {
 	[Compact]
 	public class WindowMenu {
 	}
+	[CCode (cheader_filename = "meta/main.h")]
+	[Compact]
+	public class KeyBinding {
+		public string get_name ();
+		public VirtualModifier get_modifiers ();
+		public uint get_mask ();
+	}
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_workspace_get_type ()")]
 	public class Workspace : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -300,6 +307,9 @@ namespace Meta {
 	    public void destroy_completed (WindowActor actor);
 	    
 	    public Screen get_screen ();
+	    public void begin_modal (X.Window grab_window, Cursor cursor, ModalOptions options,
+	        uint32 timestamp);
+	    public void end_modal (uint32 timestamp);
 	    
 	    public static void type_register (GLib.Type plugin_type);
 	}
@@ -935,6 +945,10 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned Clutter.Actor get_stage_for_screen (Meta.Screen screen);
 	[CCode (cheader_filename = "meta/main.h")]
+	public static void empty_stage_input_region (Meta.Screen screen);
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void set_stage_input_region (Meta.Screen screen, X.ID region);
+	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.List<Clutter.Actor> get_window_actors (Meta.Screen screen);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned Clutter.Actor get_window_group_for_screen (Meta.Screen screen);
@@ -1082,4 +1096,10 @@ namespace Meta {
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
+	[CCode (cheader_filename = "meta/main.h")]
+	public static bool keybindings_set_custom_handler (string name, 
+		KeyHandlerFunc handler);
+	[CCode (cheader_filename = "meta/prefs.h")]
+	public delegate void KeyHandlerFunc (Display display, Screen screen, Window window, 
+		X.Event event, KeyBinding binding);
 }
