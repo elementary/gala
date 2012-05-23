@@ -1,0 +1,16 @@
+Source: gala
+Section: x11
+Priority: optional
+Maintainer: Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), cmake (>= 2.8), valac-0.16 | valac (>= 0.16),
+               libmutter-dev, libgranite-dev, libclutter-gtk-1.0-dev
+Standards-Version: 3.9.2
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Git: git://git.debian.org/collab-maint/gala.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/gala.git;a=summary
+
+Package: gala
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Window manager based on libmutter
+ Gala is a window manager... that's all that's certain so far.
