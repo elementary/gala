@@ -12,5 +12,6 @@ Homepage: <insert the upstream URL, if relevant>
 Package: gala
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: x-window-manager
 Description: Window manager based on libmutter
  Gala is a window manager... that's all that's certain so far.
