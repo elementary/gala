@@ -1092,6 +1092,8 @@ namespace Meta {
 	public static int unsigned_long_equal (void* v1, void* v2);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static uint unsigned_long_hash (void* v);
+    [CCode (cheader_filename = "meta/main.h")]
+	public static GLib.OptionContext get_option_context();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
