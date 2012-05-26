@@ -24,7 +24,7 @@ int main (string [] args) {
         Meta.exit(Meta.ExitCode.ERROR);
     }
 
-    Meta.Plugin.type_register (new GalaPlugin ().get_type ());
+    Meta.Plugin.type_register (new Gala.Plugin ().get_type ());
 
     /**
      * Prevent Meta.init () from causing gtk to load gail and at-bridge
