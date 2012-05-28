@@ -1104,4 +1104,6 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/prefs.h")]
 	public delegate void KeyHandlerFunc (Display display, Screen screen, Window window, 
 		X.Event event, KeyBinding binding);
+    [CCode (cheader_filename = "meta/prefs.h")]
+    public static void prefs_override_preference_schema (char *key, char *schema);
 }

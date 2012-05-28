@@ -5,7 +5,11 @@ namespace Gala {
         public WorkspaceSwitcher wswitcher;
         public WindowSwitcher winswitcher;
         public Clutter.Actor     elements;
-    
+
+        public Plugin () {
+
+        }
+
         public override void start () {
         
             this.elements = Meta.get_stage_for_screen (this.get_screen ());
@@ -228,7 +232,7 @@ namespace Gala {
         }
         
         public override Meta.PluginInfo plugin_info () {
-            return {"Gala", "0.1", "Tom Beckmann", "GPLv3", "A nice window manager"};
+            return {"Gala", Gala.VERSION, "Tom Beckmann", "GPLv3", "A nice window manager"};
         }
 
     }

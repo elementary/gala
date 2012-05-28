@@ -42,6 +42,7 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/main.vala
+    src/gala.vala
     src/gala-plugin.vala
     src/Widgets/WorkspaceSwitcher.vala
     src/Widgets/WindowSwitcher.vala
