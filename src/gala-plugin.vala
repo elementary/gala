@@ -5,30 +5,31 @@ namespace Gala {
         public WorkspaceSwitcher wswitcher;
         public WindowSwitcher winswitcher;
         public Clutter.Actor     elements;
-
-        public Plugin () {
-
-        }
-
-        public override void start () {
         
+        public Plugin () {
+            
+        }
+        
+        public override void start () {
+            this.get_screen ();
+            
             this.elements = Meta.get_stage_for_screen (this.get_screen ());
             Meta.get_window_group_for_screen (this.get_screen ()).reparent (elements);
             Meta.get_overlay_group_for_screen (this.get_screen ()).reparent (elements);
             Meta.get_stage_for_screen (this.get_screen ()).add_child (elements);
-        
+            
             this.get_screen ().override_workspace_layout (Meta.ScreenCorner.TOPLEFT, false, -1, 4);
-        
+            
             int w, h;
             this.get_screen ().get_size (out w, out h);
-        
+            
             this.wswitcher = new WorkspaceSwitcher (w, h);
             this.wswitcher.workspaces = 4;
             this.elements.add_child (this.wswitcher);
-        
+            
             this.winswitcher = new WindowSwitcher ();
             this.elements.add_child (this.winswitcher);
-        
+            
             Meta.keybindings_set_custom_handler ("switch-windows", 
                 (display, screen) => {
                 window_switcher (screen, false);
@@ -40,20 +41,20 @@ namespace Gala {
             Meta.keybindings_set_custom_handler ("switch-to-workspace-down",  (d,s) =>
                 workspace_switcher (s, false) );
         }
-    
+        
         public void window_switcher (Meta.Screen screen, bool backwards) {
             int w, h;
             this.get_screen ().get_size (out w, out h);
-        
+            
             this.winswitcher.list_windows (screen.get_active_workspace ().list_windows (), 
                 this.get_screen ().get_display (), backwards);
             this.winswitcher.x = w/2-winswitcher.width/2;
             this.winswitcher.y = h/2-winswitcher.height/2;
             this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:255);
-        
+            
             (Meta.get_stage_for_screen (this.get_screen ()) as Clutter.Stage).set_key_focus (null);
         }
-    
+        
         public void workspace_switcher (Meta.Screen screen, bool up) {
             var i = screen.get_active_workspace_index ();
             if (up && i-1 >= 0) //move up
@@ -63,25 +64,25 @@ namespace Gala {
             if (i != screen.get_active_workspace_index ()) {
                 screen.get_workspace_by_index (i).
                     activate (screen.get_display ().get_current_time ());
-            
+                
                 int w, h;
                 this.get_screen ().get_size (out w, out h);
-            
+                
                 wswitcher.x = w/2-wswitcher.width/2;
                 wswitcher.y = h/2-wswitcher.height/2;
                 wswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
                 wswitcher.workspace = i;
             }
         }
-
+        
         public override void minimize (Meta.WindowActor actor) {
             this.minimize_completed (actor);
         }
-
+        
         public override void maximize (Meta.WindowActor actor, int x, int y, int w, int h) {
             this.maximize_completed (actor);
         }
-
+        
         public override void map (Meta.WindowActor actor) {
             actor.show ();
             switch (actor.meta_window.window_type) {
@@ -101,6 +102,8 @@ namespace Gala {
                 case Meta.WindowType.MENU:
                 case Meta.WindowType.DROPDOWN_MENU:
                 case Meta.WindowType.POPUP_MENU:
+                case Meta.WindowType.MODAL_DIALOG:
+                case Meta.WindowType.DIALOG:
                     actor.scale_gravity = Clutter.Gravity.NORTH;
                     actor.scale_x = 1.0f;
                     actor.scale_y = 0.0f;
@@ -130,6 +133,8 @@ namespace Gala {
                 case Meta.WindowType.MENU:
                 case Meta.WindowType.DROPDOWN_MENU:
                 case Meta.WindowType.POPUP_MENU:
+                case Meta.WindowType.MODAL_DIALOG:
+                case Meta.WindowType.DIALOG:
                     actor.scale_gravity = Clutter.Gravity.NORTH;
                     actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
                         scale_y:0.0f, opacity:0).completed.connect ( () => {
@@ -141,6 +146,12 @@ namespace Gala {
                     break;
             }
         }
+        
+        private GLib.List<Clutter.Actor> win;
+        private GLib.List<Clutter.Actor> par; //class space for kill func
+        private Clutter.Group in_group;
+        private Clutter.Group out_group;
+        
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
             unowned List<Clutter.Actor> windows = Meta.get_window_actors (this.get_screen ());
             //FIXME js/ui/windowManager.js line 430
@@ -172,8 +183,8 @@ namespace Gala {
             group.add_actor (in_group);
             group.add_actor (out_group);
             
-            var win = new List<Clutter.Actor> ();
-            var par = new List<Clutter.Actor> ();
+            win = new List<Clutter.Actor> ();
+            par = new List<Clutter.Actor> ();
             
             for (var i=0;i<windows.length ();i++) {
                 var window = windows.nth_data (i);
@@ -192,49 +203,63 @@ namespace Gala {
             in_group.set_position (-x2, -y2);
             in_group.raise_top ();
             
-            out_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200,
+            out_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250,
                 x:x2, y:y2);
-            in_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200,
+            in_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250,
                 x:0.0f, y:0.0f).completed.connect ( () => {
-                
-                for (var i=0;i<win.length ();i++) {
-                    var window = win.nth_data (i);
-                    if ((window as Meta.WindowActor).is_destroyed ())
-                        continue;
-                    if (window.get_parent () == out_group) {
-                        window.reparent (par.nth_data (i));
-                        window.hide ();
-                    } else
-                        window.reparent (par.nth_data (i));
-                }
-                
-                in_group.destroy ();
-                out_group.destroy ();
-            
-                this.switch_workspace_completed ();
+                end_switch_workspace ();
             });
         }
         public override void kill_window_effects (Meta.WindowActor actor){
-        
+            
         }
-        public override void kill_switch_workspace () {
+        private void end_switch_workspace () {
+            if (win == null || par == null)
+                return;
+            
+            for (var i=0;i<win.length ();i++) {
+                var window = win.nth_data (i);
+                if ((window as Meta.WindowActor).is_destroyed ())
+                    continue;
+                if (window.get_parent () == out_group) {
+                    window.reparent (par.nth_data (i));
+                    window.hide ();
+                } else
+                    window.reparent (par.nth_data (i));
+            }
+            win = null;
+            par = null;
+            
+            if (in_group != null) {
+                in_group.detach_animation ();
+                in_group.destroy ();
+            }
+            if (out_group != null) {
+                out_group.detach_animation ();
+                out_group.destroy ();
+            }
+            
+            this.switch_workspace_completed ();
+        }
         
+        public override void kill_switch_workspace () {
+            end_switch_workspace ();
         }
         public override bool xevent_filter (X.Event event) {
-            /*if (event.xkey.keycode == Clutter.Key.Alt_L || 
+            if (event.xkey.keycode == Clutter.Key.Alt_L || 
                 event.xkey.keycode == Clutter.Key.Alt_R) {
                 if (winswitcher.visible)
                     winswitcher.visible = false;
                 if (wswitcher.visible)
                     wswitcher.visible = false;
-            }*/
+            }
             return x_handle_event (event) != 0;
         }
         
         public override Meta.PluginInfo plugin_info () {
             return {"Gala", Gala.VERSION, "Tom Beckmann", "GPLv3", "A nice window manager"};
         }
-
+        
     }
-
+    
 }

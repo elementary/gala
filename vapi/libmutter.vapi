@@ -306,7 +306,7 @@ namespace Meta {
 	    public void map_completed (WindowActor actor);
 	    public void destroy_completed (WindowActor actor);
 	    
-	    public Screen get_screen ();
+	    public unowned Screen get_screen ();
 	    public void begin_modal (X.Window grab_window, Cursor cursor, ModalOptions options,
 	        uint32 timestamp);
 	    public void end_modal (uint32 timestamp);

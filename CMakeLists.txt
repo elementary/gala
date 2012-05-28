@@ -41,9 +41,9 @@ ensure_vala_version("0.16.0" MINIMUM)
 
 include(ValaPrecompile)
 vala_precompile(VALA_C
-    src/main.vala
     src/gala.vala
     src/gala-plugin.vala
+    src/main.vala
     src/Widgets/WorkspaceSwitcher.vala
     src/Widgets/WindowSwitcher.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
@@ -51,6 +51,7 @@ PACKAGES
     granite
     libmutter
     clutter-gtk-1.0
+    gdk-x11-3.0
 OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     )
