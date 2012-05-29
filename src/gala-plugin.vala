@@ -30,7 +30,10 @@ namespace Gala {
             
             this.winswitcher = new WindowSwitcher (this);
             this.elements.add_child (this.winswitcher);
-            
+            Meta.KeyBinding.set_custom_handler ("panel-main-menu",
+                () => {
+                Process.spawn_command_line_async ("slingshot");
+            });
             Meta.KeyBinding.set_custom_handler ("switch-windows", 
                 (display, screen, window, ev, binding) => {
                 window_switcher (display, screen, binding, false);
