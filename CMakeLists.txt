@@ -28,7 +28,7 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0)
+pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3)
 
 add_definitions(${DEPS_CFLAGS})
 
@@ -54,6 +54,7 @@ PACKAGES
     gdk-x11-3.0
     gdesktopenums-3.0
     xfixes-4.0
+    bamf
 OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     )

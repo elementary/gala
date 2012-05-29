@@ -1,3 +1,4 @@
+
 namespace Gala {
 
     public class Plugin : Meta.Plugin {
@@ -45,7 +46,7 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down",  (d,s) =>
                 workspace_switcher (s, false) );
             
-            Meta.ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 30, 255});
+            Meta.ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 35, 120});
         }
         
         public new void begin_modal () {

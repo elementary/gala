@@ -2,7 +2,7 @@
 
 public class WindowSwitcher : Clutter.Group {
     
-    int ICON_SIZE = 96;
+    int ICON_SIZE = 128;
     int spacing   = 12;
     
     public float len;
@@ -29,7 +29,7 @@ public class WindowSwitcher : Clutter.Group {
             _current_window = value;
             
             this.title.text = this.current_window.title;
-            this.title.x = this.width/2-this.title.width/2;
+            this.title.x = (int)(this.width/2-this.title.width/2);
         }
     }
     
@@ -147,21 +147,46 @@ public class WindowSwitcher : Clutter.Group {
             return;
         }
         
+        var matcher = Bamf.Matcher.get_default ();
+        
         var i = 0;
         this.window_list = screen.get_display ().get_tab_list (Meta.TabList.NORMAL, screen, 
             screen.get_active_workspace ()).copy ();
         this.window_list.foreach ( (w) => {
             if (w == null)
                 return;
-            Gdk.Pixbuf image;
-            if (((Meta.Window)w).icon == null)
-                image = Gtk.IconTheme.get_default ().load_icon ("window-new", ICON_SIZE-10, 0);
-            else
-                image = ((Meta.Window)w).icon;
+            
+            Bamf.Window bamfwin = null;
+            matcher.get_windows ().foreach ( (bamfw) => {
+                if ((bamfw as Bamf.Window).get_pid () == (uint32)w.get_pid ()) {
+                    bamfwin = bamfw as Bamf.Window;
+                }
+            });
+            
+            Gdk.Pixbuf image = null;
+            if (bamfwin != null) {
+                var app = matcher.get_application_for_window (bamfwin);
+                if (app != null) {
+                    var desktop = new GLib.DesktopAppInfo.from_filename (app.get_desktop_file ());
+                    try {
+                        image = Gtk.IconTheme.get_default ().lookup_by_gicon (desktop.get_icon (), 
+                            ICON_SIZE, 0).load_icon ();
+                    } catch (Error e) { warning (e.message); }
+                }
+            }
+            
+            if (image == null) {
+                try {
+                    image = Gtk.IconTheme.get_default ().load_icon ("application-default-icon", 
+                        ICON_SIZE, 0);
+                } catch (Error e) { warning (e.message); }
+            }
+            
             var icon = new GtkClutter.Texture ();
             try {
                 icon.set_from_pixbuf (image);
             } catch (Error e) { warning (e.message); }
+            
             icon.width = ICON_SIZE-10;
             icon.height = ICON_SIZE-10;
             icon.x = spacing+i*(spacing+ICON_SIZE)+5;
@@ -171,8 +196,6 @@ public class WindowSwitcher : Clutter.Group {
             i ++;
         });
         this.windows = i;
-        
-        this.title.text = this.current_window.title;
         
         var idx = this.window_list.index (this.current_window);
         cur.x = spacing+idx*(spacing+ICON_SIZE);
