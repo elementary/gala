@@ -9,15 +9,29 @@ public class WindowSwitcher : Clutter.Group {
     
     Clutter.CairoTexture bg;
     Clutter.CairoTexture cur;
+    Clutter.Text         title;
     
     int _windows = 1;
     public int windows {
         get { return _windows; }
-        set { _windows = value; this.width = spacing+_windows*(ICON_SIZE+spacing); }
+        set {
+            _windows = value;
+            this.width = spacing+_windows*(ICON_SIZE+spacing);
+        }
     }
     
     GLib.List<weak Meta.Window> window_list;
-    Meta.Window? current_window;
+    
+    Meta.Window? _current_window;
+    Meta.Window? current_window {
+        get { return _current_window; }
+        set {
+            _current_window = value;
+            
+            this.title.text = this.current_window.title;
+            this.title.x = this.width/2-this.title.width/2;
+        }
+    }
     
     Gala.Plugin plugin;
     
@@ -26,7 +40,6 @@ public class WindowSwitcher : Clutter.Group {
         
         this.height = ICON_SIZE+spacing*2;
         this.opacity = 0;
-        this.scale_x = 0;
         this.scale_gravity = Clutter.Gravity.CENTER;
         
         this.bg = new Clutter.CairoTexture (100, 100);
@@ -63,8 +76,14 @@ public class WindowSwitcher : Clutter.Group {
         });
         this.windows = 1;
         
+        this.title = new Clutter.Text.with_text ("bold 16px", "");
+        this.title.y = ICON_SIZE + spacing*2 + 6;
+        this.title.color = {255, 255, 255, 255};
+        this.title.add_effect (new TextShadowEffect (1, 1, 220));
+        
         this.add_child (bg);
         this.add_child (cur);
+        this.add_child (title);
         bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
         bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
         
@@ -74,8 +93,7 @@ public class WindowSwitcher : Clutter.Group {
                 plugin.end_modal ();
                 current_window.activate (e.time);
                 
-                this.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity:0).
-                    completed.connect ( () => { this.scale_x = 0.0f; });
+                this.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity:0);
             }
             return true;
         });
@@ -112,7 +130,7 @@ public class WindowSwitcher : Clutter.Group {
     public void list_windows (Meta.Display display, Meta.Screen screen, 
         Meta.KeyBinding binding, bool backward) {
         this.get_children ().foreach ( (c) => { //clear
-            if (c != cur && c != bg)
+            if (c != cur && c != bg && c != title)
                 this.remove_child (c);
         });
         
@@ -153,6 +171,8 @@ public class WindowSwitcher : Clutter.Group {
             i ++;
         });
         this.windows = i;
+        
+        this.title.text = this.current_window.title;
         
         var idx = this.window_list.index (this.current_window);
         cur.x = spacing+idx*(spacing+ICON_SIZE);

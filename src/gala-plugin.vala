@@ -68,8 +68,7 @@ namespace Gala {
             this.winswitcher.x = w/2-winswitcher.width/2;
             this.winswitcher.y = h/2-winswitcher.height/2;
             this.winswitcher.grab_key_focus ();
-            this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255, 
-                scale_x:1.0F);
+            this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255);
         }
         
         public void workspace_switcher (Meta.Screen screen, bool up) {
