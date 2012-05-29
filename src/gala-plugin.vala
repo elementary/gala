@@ -59,6 +59,9 @@ namespace Gala {
         
         public void window_switcher (Meta.Display display, Meta.Screen screen, 
             Meta.KeyBinding binding, bool backward) {
+            if (screen.get_display ().get_tab_list (Meta.TabList.NORMAL, screen, 
+                screen.get_active_workspace ()).length () == 0)
+                return;
             
             this.begin_modal ();
             
