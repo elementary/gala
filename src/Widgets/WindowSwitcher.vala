@@ -16,8 +16,8 @@ public class WindowSwitcher : Clutter.Group {
         set { _windows = value; this.width = spacing+_windows*(ICON_SIZE+spacing); }
     }
     
-    GLib.List<Meta.Window> window_list;
-    Meta.Window current_window;
+    GLib.List<weak Meta.Window> window_list;
+    Meta.Window? current_window;
     
     Gala.Plugin plugin;
     
@@ -128,7 +128,7 @@ public class WindowSwitcher : Clutter.Group {
         
         var i = 0;
         this.window_list = screen.get_display ().get_tab_list (Meta.TabList.NORMAL, screen, 
-            screen.get_active_workspace ());
+            screen.get_active_workspace ()).copy ();
         this.window_list.foreach ( (w) => {
             if (w == null)
                 return;

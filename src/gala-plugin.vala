@@ -266,13 +266,6 @@ namespace Gala {
             end_switch_workspace ();
         }
         public override bool xevent_filter (X.Event event) {
-            if (event.xkey.keycode == Clutter.Key.Alt_L || 
-                event.xkey.keycode == Clutter.Key.Alt_R) {
-                if (winswitcher.visible)
-                    winswitcher.visible = false;
-                if (wswitcher.visible)
-                    wswitcher.visible = false;
-            }
             return x_handle_event (event) != 0;
         }
         
