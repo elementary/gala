@@ -6,7 +6,7 @@ public extern X.Window x_get_stage_window (Clutter.Actor stage);
 
 int main (string [] args) {
     
-    OptionContext ctx = Meta.get_option_context ();
+    unowned OptionContext ctx = Meta.get_option_context ();
     ctx.add_main_entries (Gala.OPTIONS, null);
     try {
         ctx.parse (ref args);

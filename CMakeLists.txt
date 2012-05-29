@@ -52,6 +52,8 @@ PACKAGES
     libmutter
     clutter-gtk-1.0
     gdk-x11-3.0
+    gdesktopenums-3.0
+    xfixes-4.0
 OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     )

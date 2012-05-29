@@ -13,10 +13,10 @@ namespace Gala {
         public override void start () {
             this.get_screen ();
             
-            this.elements = Meta.get_stage_for_screen (this.get_screen ());
-            Meta.get_window_group_for_screen (this.get_screen ()).reparent (elements);
-            Meta.get_overlay_group_for_screen (this.get_screen ()).reparent (elements);
-            Meta.get_stage_for_screen (this.get_screen ()).add_child (elements);
+            this.elements = Meta.Compositor.get_stage_for_screen (this.get_screen ());
+            Meta.Compositor.get_window_group_for_screen (this.get_screen ()).reparent (elements);
+            Meta.Compositor.get_overlay_group_for_screen (this.get_screen ()).reparent (elements);
+            Meta.Compositor.get_stage_for_screen (this.get_screen ()).add_child (elements);
             
             this.get_screen ().override_workspace_layout (Meta.ScreenCorner.TOPLEFT, false, -1, 4);
             
@@ -27,32 +27,51 @@ namespace Gala {
             this.wswitcher.workspaces = 4;
             this.elements.add_child (this.wswitcher);
             
-            this.winswitcher = new WindowSwitcher ();
+            this.winswitcher = new WindowSwitcher (this);
             this.elements.add_child (this.winswitcher);
             
-            Meta.keybindings_set_custom_handler ("switch-windows", 
-                (display, screen) => {
-                window_switcher (screen, false);
+            Meta.KeyBinding.set_custom_handler ("switch-windows", 
+                (display, screen, window, ev, binding) => {
+                window_switcher (display, screen, binding, false);
             });
-            Meta.keybindings_set_custom_handler ("switch-to-workspace-left",  ()=>{});
-            Meta.keybindings_set_custom_handler ("switch-to-workspace-right", ()=>{});
-            Meta.keybindings_set_custom_handler ("switch-to-workspace-up",    (d,s) => 
+            Meta.KeyBinding.set_custom_handler ("switch-windows-backward", 
+                (display, screen, window, ev, binding) => {
+                window_switcher (display, screen, binding, true);
+            });
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-left",  ()=>{});
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-right", ()=>{});
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up",    (d,s) => 
                 workspace_switcher (s, true) );
-            Meta.keybindings_set_custom_handler ("switch-to-workspace-down",  (d,s) =>
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down",  (d,s) =>
                 workspace_switcher (s, false) );
+            
+            Meta.ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 30, 255});
         }
         
-        public void window_switcher (Meta.Screen screen, bool backwards) {
+        public new void begin_modal () {
+            base.begin_modal (x_get_stage_window (Meta.Compositor.get_stage_for_screen (
+                this.get_screen ())), {}, 0, this.get_screen ().get_display ().get_current_time ());
+        }
+        public new void end_modal () {
+            base.end_modal (this.get_screen ().get_display ().get_current_time ());
+        }
+        
+        public void window_switcher (Meta.Display display, Meta.Screen screen, 
+            Meta.KeyBinding binding, bool backward) {
+            
+            this.begin_modal ();
+            
             int w, h;
             this.get_screen ().get_size (out w, out h);
+            /*TODO -> bindig.get_modifiers
+            if ((e.xkey.state & X.KeyMask.ShiftMask) == 1)
+                backward = !backward;*/
+            this.winswitcher.list_windows (display, screen, binding, backward);
             
-            this.winswitcher.list_windows (screen.get_active_workspace ().list_windows (), 
-                this.get_screen ().get_display (), backwards);
             this.winswitcher.x = w/2-winswitcher.width/2;
             this.winswitcher.y = h/2-winswitcher.height/2;
+            this.winswitcher.grab_key_focus ();
             this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:255);
-            
-            (Meta.get_stage_for_screen (this.get_screen ()) as Clutter.Stage).set_key_focus (null);
         }
         
         public void workspace_switcher (Meta.Screen screen, bool up) {
@@ -79,7 +98,8 @@ namespace Gala {
             this.minimize_completed (actor);
         }
         
-        public override void maximize (Meta.WindowActor actor, int x, int y, int w, int h) {
+        //stolen from original mutter plugin
+        public override void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             this.maximize_completed (actor);
         }
         
@@ -153,7 +173,7 @@ namespace Gala {
         private Clutter.Group out_group;
         
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            unowned List<Clutter.Actor> windows = Meta.get_window_actors (this.get_screen ());
+            unowned List<Clutter.Actor> windows = Meta.Compositor.get_window_actors (this.get_screen ());
             //FIXME js/ui/windowManager.js line 430
             int w, h;
             this.get_screen ().get_size (out w, out h);
@@ -179,7 +199,7 @@ namespace Gala {
             
             var in_group  = new Clutter.Group ();
             var out_group = new Clutter.Group ();
-            var group     = Meta.get_window_group_for_screen (this.get_screen ());
+            var group     = Meta.Compositor.get_window_group_for_screen (this.get_screen ());
             group.add_actor (in_group);
             group.add_actor (out_group);
             
