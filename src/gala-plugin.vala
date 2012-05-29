@@ -23,7 +23,7 @@ namespace Gala {
             int w, h;
             this.get_screen ().get_size (out w, out h);
             
-            this.wswitcher = new WorkspaceSwitcher (w, h);
+            this.wswitcher = new WorkspaceSwitcher (this, w, h);
             this.wswitcher.workspaces = 4;
             this.elements.add_child (this.wswitcher);
             
@@ -63,18 +63,29 @@ namespace Gala {
             
             int w, h;
             this.get_screen ().get_size (out w, out h);
-            /*TODO -> bindig.get_modifiers
-            if ((e.xkey.state & X.KeyMask.ShiftMask) == 1)
-                backward = !backward;*/
             this.winswitcher.list_windows (display, screen, binding, backward);
             
             this.winswitcher.x = w/2-winswitcher.width/2;
             this.winswitcher.y = h/2-winswitcher.height/2;
             this.winswitcher.grab_key_focus ();
-            this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:255);
+            this.winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255, 
+                scale_x:1.0F);
         }
         
         public void workspace_switcher (Meta.Screen screen, bool up) {
+            int w, h;
+            this.get_screen ().get_size (out w, out h);
+            
+            wswitcher.x = w/2-wswitcher.width/2;
+            wswitcher.y = h/2-wswitcher.height/2;
+            wswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
+            wswitcher.workspace = move_workspaces (up);;
+            
+            this.begin_modal ();
+            wswitcher.grab_key_focus ();
+        }
+        
+        public int move_workspaces (bool up) {
             var i = screen.get_active_workspace_index ();
             if (up && i-1 >= 0) //move up
                 i --;
@@ -83,15 +94,8 @@ namespace Gala {
             if (i != screen.get_active_workspace_index ()) {
                 screen.get_workspace_by_index (i).
                     activate (screen.get_display ().get_current_time ());
-                
-                int w, h;
-                this.get_screen ().get_size (out w, out h);
-                
-                wswitcher.x = w/2-wswitcher.width/2;
-                wswitcher.y = h/2-wswitcher.height/2;
-                wswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
-                wswitcher.workspace = i;
             }
+            return i;
         }
         
         public override void minimize (Meta.WindowActor actor) {
@@ -173,7 +177,8 @@ namespace Gala {
         private Clutter.Group out_group;
         
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            unowned List<Clutter.Actor> windows = Meta.Compositor.get_window_actors (this.get_screen ());
+            unowned List<Clutter.Actor> windows = 
+                Meta.Compositor.get_window_actors (this.get_screen ());
             //FIXME js/ui/windowManager.js line 430
             int w, h;
             this.get_screen ().get_size (out w, out h);

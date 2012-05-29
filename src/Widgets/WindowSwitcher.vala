@@ -26,6 +26,8 @@ public class WindowSwitcher : Clutter.Group {
         
         this.height = ICON_SIZE+spacing*2;
         this.opacity = 0;
+        this.scale_x = 0;
+        this.scale_gravity = Clutter.Gravity.CENTER;
         
         this.bg = new Clutter.CairoTexture (100, 100);
         this.bg.auto_resize = true;
@@ -72,7 +74,8 @@ public class WindowSwitcher : Clutter.Group {
                 plugin.end_modal ();
                 current_window.activate (e.time);
                 
-                this.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity:0);
+                this.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity:0).
+                    completed.connect ( () => { this.scale_x = 0.0f; });
             }
             return true;
         });

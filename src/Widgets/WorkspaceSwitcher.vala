@@ -16,17 +16,19 @@ public class WorkspaceSwitcher : Clutter.Group {
         get {return _workspace;}
         set {
             _workspace = value;
-            cur.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, y:_workspace*len+1+spacing)
-                .completed.connect ( () => {
-                this.animate (Clutter.AnimationMode.EASE_IN_QUAD, 800, opacity:0);
-            });
+            cur.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, y:_workspace*len+1+spacing);
         }
     }
     
     int spacing = 10;
     float WIDTH = 200;
     
-    public WorkspaceSwitcher (int w, int h) {
+    Gala.Plugin plugin;
+    
+    public WorkspaceSwitcher (Gala.Plugin plugin, int w, int h) {
+        
+        this.plugin = plugin;
+        
         this.height = 100+spacing*2;
         this.width  = WIDTH+spacing*2;
         this.opacity = 0;
@@ -78,5 +80,29 @@ public class WorkspaceSwitcher : Clutter.Group {
         this.add_child (cur);
         bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
         bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
+        
+        this.key_release_event.connect ( (e) => {
+            if (((e.modifier_state & Clutter.ModifierType.MOD1_MASK) == 0) || 
+                e.keyval == Clutter.Key.Alt_L) {
+                
+                plugin.end_modal ();
+                this.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity:0);
+                
+                return true;
+            }
+            return false;
+        });
+        this.key_press_event.connect ( (e) => {
+            switch (e.keyval) {
+                case Clutter.Key.Up:
+                    this.workspace = plugin.move_workspaces (true);
+                    return false;
+                case Clutter.Key.Down:
+                    this.workspace = plugin.move_workspaces (false);
+                    return false;
+                default:
+                    return true;
+            }
+        });
     }
 }
