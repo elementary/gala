@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "X", gir_namespace = "xfixes", gir_version = "4.0", lower_case_cprefix = "X_")]
 namespace X {
-	[CCode (cheader_filename = "xfixes-4.0.h", cname = "XserverRegion", has_type_id = false)]
+	[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XserverRegion", has_type_id = false)]
 	public struct XserverRegion {
 	}
 }

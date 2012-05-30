@@ -285,9 +285,9 @@ namespace Meta {
 		public uint get_mask ();
 		public Meta.VirtualModifier get_modifiers ();
 		public unowned string get_name ();
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_keybindings_set_custom_handler")]
+		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_set_custom_handler")]
 		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc handler);
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_keybindings_switch_window")]
+		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_switch_window")]
 		public static void switch_window (Meta.Display display, Meta.Screen screen, Meta.Window event_window, X.Event event, Meta.KeyBinding binding);
 	}
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1091,13 +1091,13 @@ namespace Meta {
 		DND,
 		OVERRIDE_OTHER
 	}
-	[CCode (cheader_filename = "meta/main.h", instance_pos = 5.9)]
+	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, void* event, Meta.KeyBinding binding);
-	[CCode (cheader_filename = "meta/main.h", has_target = false)]
+	[CCode (cheader_filename = "meta/prefs.h", has_target = false)]
 	public delegate void PrefsChangedFunc (Meta.Preference pref, void* data);
-	[CCode (cheader_filename = "meta/main.h", has_target = false)]
+	[CCode (cheader_filename = "meta/window.h", has_target = false)]
 	public delegate bool WindowForeachFunc (Meta.Window window, void* data);
-	[CCode (cheader_filename = "meta/main.h", has_target = false)]
+	[CCode (cheader_filename = "meta/common.h", has_target = false)]
 	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace, void* data);
 	[CCode (cheader_filename = "meta/main.h", cname = "META_DEFAULT_ICON_NAME")]
 	public const string DEFAULT_ICON_NAME;
