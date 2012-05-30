@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), cmake (>= 2.8), valac-0.16 | valac (>= 0.16),
-               gsettings-desktop-schemas-dev,
+               gsettings-desktop-schemas-dev, libbamf3-dev,
                libmutter-dev, libgranite-dev, libclutter-gtk-1.0-dev
 Standards-Version: 3.9.2
 Homepage: <insert the upstream URL, if relevant>
