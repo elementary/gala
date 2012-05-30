@@ -236,6 +236,8 @@ namespace Meta {
 		public bool begin_grab_op (Meta.Screen screen, Meta.Window window, Meta.GrabOp op, bool pointer_already_grabbed, bool frame_action, int button, ulong modmask, uint32 timestamp, int root_x, int root_y);
 		public void end_grab_op (uint32 timestamp);
 		public void focus_the_no_focus_window (Meta.Screen screen, uint32 timestamp);
+		public X.Atom get_atom (Meta.Atom meta_atom);
+		public unowned Meta.Compositor get_compositor ();
 		public void get_compositor_version (int major, int minor);
 		public uint32 get_current_time ();
 		public uint32 get_current_time_roundtrip ();
@@ -251,7 +253,9 @@ namespace Meta {
 		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
 		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace, Meta.Window? window, bool backward);
+		public unowned X.Display get_xdisplay ();
 		public bool has_shape ();
+		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
 		public unowned Meta.Screen screen_for_root (X.Window xroot);
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
@@ -277,6 +281,7 @@ namespace Meta {
 		public int get_size ();
 		public unowned string get_startup_id ();
 		public GLib.SList<weak Meta.Window> list_windows ();
+		public bool property_notify (X.Event event);
 		public void update_layers ();
 	}
 	[CCode (cheader_filename = "meta/keybindings.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_key_binding_get_type ()")]
@@ -372,6 +377,7 @@ namespace Meta {
 		public static unowned Meta.Screen for_x_screen (X.Screen xscreen);
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
+		public void* get_compositor_data ();
 		public unowned Meta.Display get_display ();
 		public void get_monitor_geometry (int monitor, out unowned Meta.Rectangle geometry);
 		public int get_n_monitors ();
@@ -379,7 +385,10 @@ namespace Meta {
 		public int get_primary_monitor ();
 		public int get_screen_number ();
 		public void get_size (out int width, out int height);
+		public unowned GLib.SList<void*> get_startup_sequences ();
 		public unowned Meta.Workspace get_workspace_by_index (int index);
+		public unowned GLib.List<Meta.Workspace> get_workspaces ();
+		public X.Window get_xroot ();
 		public bool grab_all_keys (uint32 timestamp);
 		public void override_workspace_layout (Meta.ScreenCorner starting_corner, bool vertical_layout, int n_rows, int n_columns);
 		public void remove_workspace (Meta.Workspace workspace, uint32 timestamp);
@@ -443,6 +452,7 @@ namespace Meta {
 		public void activate_with_workspace (uint32 current_time, Meta.Workspace workspace);
 		public void change_workspace_by_index (int space_index, bool append, uint32 timestamp);
 		public void compute_group ();
+		public void configure_notify (X.ConfigureEvent event);
 		public void @delete (uint32 timestamp);
 		public unowned Meta.Window find_root_ancestor ();
 		public void foreach_ancestor (Meta.WindowForeachFunc func);
@@ -451,8 +461,10 @@ namespace Meta {
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
+		public unowned Meta.Frame get_frame ();
 		public unowned Cairo.Region get_frame_bounds ();
 		public Meta.FrameType get_frame_type ();
+		public unowned Meta.Group get_group ();
 		public unowned string get_gtk_app_menu_object_path ();
 		public unowned string get_gtk_application_id ();
 		public unowned string get_gtk_application_object_path ();
@@ -478,9 +490,11 @@ namespace Meta {
 		public X.Window get_transient_for_as_xid ();
 		public uint32 get_user_time ();
 		public Meta.WindowType get_window_type ();
+		public X.Atom get_window_type_atom ();
 		public unowned string get_wm_class ();
 		public unowned string get_wm_class_instance ();
 		public unowned Meta.Workspace get_workspace ();
+		public X.Window get_xwindow ();
 		public void group_leader_changed ();
 		public bool has_focus ();
 		public bool is_ancestor_of_transient (Meta.Window transient);
@@ -560,6 +574,7 @@ namespace Meta {
 		public unowned Meta.Window get_meta_window ();
 		public unowned Clutter.Actor get_texture ();
 		public int get_workspace ();
+		public X.Window get_x_window ();
 		public bool is_destroyed ();
 		public bool is_override_redirect ();
 		public bool showing_on_its_workspace ();
