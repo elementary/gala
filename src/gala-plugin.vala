@@ -347,9 +347,9 @@ namespace Gala {
             in_group.set_position (-x2, -y2);
             in_group.raise_top ();
             
-            out_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250,
+            out_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
                 x:x2, y:y2);
-            in_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250,
+            in_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
                 x:0.0f, y:0.0f).completed.connect ( () => {
                 end_switch_workspace ();
             });

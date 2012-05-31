@@ -16,7 +16,7 @@ public class WorkspaceSwitcher : Clutter.Group {
         get {return _workspace;}
         set {
             _workspace = value;
-            cur.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, y:_workspace*len+1+spacing);
+            cur.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, y:_workspace*len+1+spacing);
         }
     }
     
