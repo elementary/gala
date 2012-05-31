@@ -28,7 +28,7 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3)
+pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes)
 
 add_definitions(${DEPS_CFLAGS})
 
@@ -47,6 +47,7 @@ vala_precompile(VALA_C
     src/main.vala
     src/Widgets/WorkspaceSwitcher.vala
     src/Widgets/WindowSwitcher.vala
+    src/Widgets/CornerMenu.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite

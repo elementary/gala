@@ -9,7 +9,8 @@ namespace Gala
         public string panel_main_menu_action { get; set; }
         public string theme { get; set; }
         public bool use_gnome_defaults { get; set; }
-
+        public bool enable_manager_corner { get; set; }
+        
         static Settings? instance = null;
         
         private Settings ()

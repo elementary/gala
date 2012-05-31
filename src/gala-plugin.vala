@@ -1,10 +1,17 @@
 
 namespace Gala {
-
+    
+    public enum InputArea {
+        FULLSCREEN,
+        HOT_CORNER,
+        NONE
+    }
+    
     public class Plugin : Meta.Plugin {
     
         public WorkspaceSwitcher wswitcher;
-        public WindowSwitcher winswitcher;
+        public WindowSwitcher    winswitcher;
+        public CornerMenu        corner_menu;
         public Clutter.Actor     elements;
         
         public Plugin () {
@@ -18,17 +25,20 @@ namespace Gala {
         }
         
         public override void start () {
-            this.get_screen ();
             
-            this.elements = Meta.Compositor.get_stage_for_screen (this.get_screen ());
-            Meta.Compositor.get_window_group_for_screen (this.get_screen ()).reparent (elements);
-            Meta.Compositor.get_overlay_group_for_screen (this.get_screen ()).reparent (elements);
-            Meta.Compositor.get_stage_for_screen (this.get_screen ()).add_child (elements);
+            this.elements = Meta.Compositor.get_stage_for_screen (screen);
+            Meta.Compositor.get_window_group_for_screen (screen).reparent (elements);
+            Meta.Compositor.get_overlay_group_for_screen (screen).reparent (elements);
+            Meta.Compositor.get_stage_for_screen (screen).add_child (elements);
             
-            this.get_screen ().override_workspace_layout (Meta.ScreenCorner.TOPLEFT, false, -1, 4);
+            screen.override_workspace_layout (Meta.ScreenCorner.TOPLEFT, false, -1, 4);
             
             int w, h;
-            this.get_screen ().get_size (out w, out h);
+            screen.get_size (out w, out h);
+            
+            this.corner_menu = new CornerMenu (this);
+            this.elements.add_child (this.corner_menu);
+            this.corner_menu.visible = false;
             
             this.wswitcher = new WorkspaceSwitcher (this, w, h);
             this.wswitcher.workspaces = 4;
@@ -36,9 +46,12 @@ namespace Gala {
             
             this.winswitcher = new WindowSwitcher (this);
             this.elements.add_child (this.winswitcher);
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu",
-                () => {
-                Process.spawn_command_line_async (Settings.get_default().panel_main_menu_action);
+            
+            Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
+                try {
+                    Process.spawn_command_line_async (
+                        Settings.get_default().panel_main_menu_action);
+                } catch (Error e) { warning (e.message); }
             });
             Meta.KeyBinding.set_custom_handler ("switch-windows", 
                 (display, screen, window, ev, binding) => {
@@ -55,7 +68,80 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down",  (d,s) =>
                 workspace_switcher (s, false) );
             
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-left",  ()=>{});
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", ()=>{});
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-up",    (d,s,w) => 
+                move_window (w, true) );
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-down",  (d,s,w) =>
+                move_window (w, false) );
+            
+            /*shadows*/
             Meta.ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 35, 120});
+            
+            /*hot corner*/
+            var hot_corner = new Clutter.Rectangle ();
+            hot_corner.x        = w - 2;
+            hot_corner.y        = h - 2;
+            hot_corner.width    = 2;
+            hot_corner.height   = 2;
+            hot_corner.reactive = true;
+            
+            hot_corner.enter_event.connect ( () => {
+                corner_menu.show ();
+                return false;
+            });
+            
+            Meta.Compositor.get_overlay_group_for_screen (screen).add_child (hot_corner);
+            
+            if (Settings.get_default ().enable_manager_corner)
+                set_input_area (InputArea.HOT_CORNER);
+            else
+                set_input_area (InputArea.NONE);
+            
+            Settings.get_default ().notify["enable-manager-corner"].connect ( () => {
+                if (Settings.get_default ().enable_manager_corner)
+                    set_input_area (InputArea.HOT_CORNER);
+                else
+                    set_input_area (InputArea.NONE);
+            });
+        }
+        
+        /**
+         * set the area where clutter can receive events
+         **/
+        public void set_input_area (InputArea area) {
+            X.Rectangle rect;
+            int width, height;
+            
+            screen.get_size (out width, out height);
+            
+            switch (area) {
+                case InputArea.FULLSCREEN:
+                    rect = {0, 0, (short)width, (short)height};
+                    break;
+                case InputArea.HOT_CORNER: //leave one pix in the bottom left
+                    rect = {(short)(width - 1), (short)(height - 1), 1, 1};
+                    break;
+                default:
+                    Meta.Util.empty_stage_input_region (screen);
+                    return;
+            }
+            var xregion = X.Fixes.create_region (screen.get_display ().get_xdisplay (), {rect});
+            Meta.Util.set_stage_input_region (screen, xregion);
+        }
+        
+        public void move_window (Meta.Window? window, bool up) {
+            if (window == null)
+                return;
+            
+            if (window.is_on_all_workspaces ())
+                return;
+            var idx = screen.get_active_workspace ().index () + ((up)?-1:1);
+            window.change_workspace_by_index (idx, false, 
+                screen.get_display ().get_current_time ());
+            
+            screen.get_workspace_by_index (idx).activate_with_focus (window, 
+                screen.get_display ().get_current_time ());
         }
         
         public new void begin_modal () {
@@ -116,6 +202,27 @@ namespace Gala {
         
         //stolen from original mutter plugin
         public override void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
+            if (actor.meta_window.window_type == Meta.WindowType.NORMAL) {
+                float x, y, width, height;
+                actor.get_size (out width, out height);
+                actor.get_position (out x, out y);
+                
+                float scale_x  = (float)ew  / width;
+                float scale_y  = (float)eh / height;
+                float anchor_x = (float)(x - ex) * width  / (ew - width);
+                float anchor_y = (float)(y - ey) * height / (eh - height);
+                
+                actor.move_anchor_point (anchor_x, anchor_y);
+                actor.animate (Clutter.AnimationMode.EASE_IN_SINE, 150, scale_x:scale_x, 
+                    scale_y:scale_y).completed.connect ( () => {
+                    actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+                    actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
+                        scale_y:1.0f);//just scaling didnt want to work..
+                    this.maximize_completed (actor);
+                });
+                
+                return;
+            }
             this.maximize_completed (actor);
         }
         

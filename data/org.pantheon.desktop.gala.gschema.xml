@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
     <schema path="/org/pantheon/desktop/gala/" id="org.pantheon.desktop.gala" gettext-domain="gala">
+    <key type="b" name="enable-manager-corner">
+        <default>false</default>
+        <summary>Make the lower right a hot corner to reveal the manager</summary>
+        <description>This turns the lower right corner to a hot corner, showing some icons allowing you to do tasks like window tiling</description>
+    </key>
     <key type="b" name="attach-modal-dialogs">
       <default>true</default>
       <summary>Attach modal dialogs</summary>
