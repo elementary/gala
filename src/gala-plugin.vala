@@ -355,7 +355,11 @@ namespace Gala {
             });
         }
         public override void kill_window_effects (Meta.WindowActor actor){
-            
+            /*this.minimize_completed (actor);FIXME should call the things in anim.completed
+            this.maximize_completed (actor);
+            this.unmaximize_completed (actor);
+            this.map_completed (actor);
+            this.destroy_completed (actor);*/
         }
         private void end_switch_workspace () {
             if (win == null || par == null)
@@ -384,6 +388,9 @@ namespace Gala {
             }
             
             this.switch_workspace_completed ();
+        }
+        public override void unmaximize (Meta.WindowActor actor, int x, int y, int w, int h) {
+            this.unmaximize_completed (actor);
         }
         
         public override void kill_switch_workspace () {
