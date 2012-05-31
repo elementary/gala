@@ -347,8 +347,7 @@ namespace Meta {
 		public Meta.Screen screen { owned get; set; }
 	}
 	[CCode (cheader_filename = "meta/boxes.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_rectangle_get_type ()")]
-	[Compact]
-	public class Rectangle {
+	public struct Rectangle {
 		public int height;
 		public int width;
 		public int x;
@@ -602,7 +601,7 @@ namespace Meta {
 		public void activate (uint32 timestamp);
 		public void activate_with_focus (Meta.Window focus_this, uint32 timestamp);
 		public unowned Meta.Screen get_screen ();
-		public void get_work_area_all_monitors (Meta.Rectangle area);
+		public void get_work_area_all_monitors (out unowned Meta.Rectangle area);
 		public int index ();
 		public GLib.List<weak Meta.Window> list_windows ();
 		public void set_builtin_struts (GLib.SList<Meta.Strut> struts);
