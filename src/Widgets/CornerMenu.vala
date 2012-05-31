@@ -147,8 +147,8 @@ namespace Gala
 			
 			int width, height;
 			plugin.get_screen ().get_size (out width, out height);
-			x = width - width;
-			y = height - height;
+			x = width - this.width;
+			y = height - this.height;
 			
 			visible = true;
 			grab_key_focus ();
