@@ -39,6 +39,8 @@ namespace Gala {
 
     const string VERSION = "0.1";
 
+    const string SCHEMA = "org.pantheon.desktop.gala";
+
     const OptionEntry[] OPTIONS = {
         { "version", 0, OptionFlags.NO_ARG, OptionArg.CALLBACK, (void*) print_version, "Print version", null },
         { null }

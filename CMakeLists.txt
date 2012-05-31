@@ -42,6 +42,7 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/gala.vala
+    src/gala-settings.vala
     src/gala-plugin.vala
     src/main.vala
     src/Widgets/WorkspaceSwitcher.vala
@@ -61,8 +62,8 @@ OPTIONS
 
 #add_subdirectory (po)
 
-#include(GSettings)
-#add_schema ("data/org.pantheon.audience.gschema.xml")
+include(GSettings)
+add_schema ("data/org.pantheon.desktop.gala.gschema.xml")
 
 add_executable(gala ${VALA_C})#src/main.c)
 

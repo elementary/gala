@@ -8,7 +8,13 @@ namespace Gala {
         public Clutter.Actor     elements;
         
         public Plugin () {
-            
+            if (Settings.get_default().use_gnome_defaults)
+                return;
+            Meta.Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA);
+            Meta.Prefs.override_preference_schema ("button-layout", SCHEMA);
+            Meta.Prefs.override_preference_schema ("edge-tiling", SCHEMA);
+            Meta.Prefs.override_preference_schema ("enable-animations", SCHEMA);
+            Meta.Prefs.override_preference_schema ("theme", SCHEMA);
         }
         
         public override void start () {
@@ -32,7 +38,7 @@ namespace Gala {
             this.elements.add_child (this.winswitcher);
             Meta.KeyBinding.set_custom_handler ("panel-main-menu",
                 () => {
-                Process.spawn_command_line_async ("slingshot");
+                Process.spawn_command_line_async (Settings.get_default().panel_main_menu_action);
             });
             Meta.KeyBinding.set_custom_handler ("switch-windows", 
                 (display, screen, window, ev, binding) => {
