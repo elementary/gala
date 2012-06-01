@@ -60,7 +60,7 @@ namespace Gala
 			elements.add_child (corner_menu);
 			corner_menu.visible = false;
 			
-			wswitcher = new WorkspaceSwitcher (this, width, height);
+			wswitcher = new WorkspaceSwitcher (this);
 			wswitcher.workspaces = 4;
 			elements.add_child (wswitcher);
 			
@@ -111,17 +111,16 @@ namespace Gala
 			
 			Compositor.get_overlay_group_for_screen (screen).add_child (hot_corner);
 			
+			update_input_area ();
+			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
+		}
+
+		void update_input_area ()
+		{
 			if (Settings.get_default ().enable_manager_corner)
 				set_input_area (InputArea.HOT_CORNER);
 			else
 				set_input_area (InputArea.NONE);
-			
-			Settings.get_default ().notify["enable-manager-corner"].connect (() => {
-				if (Settings.get_default ().enable_manager_corner)
-					set_input_area (InputArea.HOT_CORNER);
-				else
-					set_input_area (InputArea.NONE);
-			});
 		}
 		
 		/**
@@ -149,7 +148,7 @@ namespace Gala
 			Util.set_stage_input_region (screen, xregion);
 		}
 		
-		public void move_window (Window? window, bool up)
+		void move_window (Window? window, bool up)
 		{
 			if (window == null || window.is_on_all_workspaces ())
 				return;
@@ -171,7 +170,7 @@ namespace Gala
 			base.end_modal (get_screen ().get_display ().get_current_time ());
 		}
 		
-		public void window_switcher (Display display, Screen screen, KeyBinding binding, bool backward)
+		void window_switcher (Display display, Screen screen, KeyBinding binding, bool backward)
 		{
 			if (screen.get_display ().get_tab_list (TabList.NORMAL, screen, screen.get_active_workspace ()).length () == 0)
 				return;
@@ -189,7 +188,7 @@ namespace Gala
 			winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
 		}
 		
-		public void workspace_switcher (Screen screen, bool up)
+		void workspace_switcher (Screen screen, bool up)
 		{
 			int width, height;
 			screen.get_size (out width, out height);
@@ -397,7 +396,7 @@ namespace Gala
 			*/
 		}
 		
-		private void end_switch_workspace ()
+		void end_switch_workspace ()
 		{
 			if (win == null || par == null)
 				return;

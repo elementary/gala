@@ -50,20 +50,23 @@ namespace Gala
 			}
 		}
 		
-		public WorkspaceSwitcher (Gala.Plugin _plugin, int w, int h)
+		public WorkspaceSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
-		
+			
+			int w, h;
+			plugin.screen.get_size (out w, out h);
+			
 			len = (float)h / w * WIDTH;
 			
 			height = 100 + spacing * 2;
 			width = WIDTH + spacing * 2;
 			opacity = 0;
-		
+			
 			background = new CairoTexture (100, (int)WIDTH);
 			background.auto_resize = true;
 			background.draw.connect (draw_background);
-		
+			
 			current = new CairoTexture (100, 100);
 			current.x = spacing + 1;
 			current.width = width - 1 - spacing * 2;
@@ -86,7 +89,7 @@ namespace Gala
 					event.keyval == Key.Alt_L) {
 				plugin.end_modal ();
 				animate (AnimationMode.EASE_OUT_QUAD, 200, opacity : 0);
-			
+				
 				return true;
 			}
 			
@@ -118,7 +121,7 @@ namespace Gala
 			cr.stroke_preserve ();
 			cr.set_source_rgba (1, 1, 1, 0.4);
 			cr.fill ();
-		
+			
 			for (var i = 0; i < workspaces; i++) {
 				Utilities.cairo_rounded_rectangle (cr, 0.5 + spacing, i * len + 0.5 + spacing,
 					width - 1 - spacing * 2, len - 1 - spacing, 10);
@@ -140,7 +143,7 @@ namespace Gala
 			cr.stroke_preserve ();
 			cr.set_source_rgba (1, 1, 1, 0.9);
 			cr.fill ();
-		
+			
 			return true;
 		}
 	}

@@ -55,15 +55,15 @@ namespace Gala
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
-		
+			
 			height = ICON_SIZE + spacing * 2;
 			opacity = 0;
 			scale_gravity = Gravity.CENTER;
-		
+			
 			background = new CairoTexture (100, 100);
 			background.auto_resize = true;
 			background.draw.connect (draw_background);
-		
+			
 			current = new CairoTexture (ICON_SIZE, ICON_SIZE);
 			current.y = spacing + 1;
 			current.x = spacing + 1;
@@ -73,12 +73,12 @@ namespace Gala
 			current.draw.connect (draw_current);
 			
 			windows = 1;
-		
+			
 			title = new Text.with_text ("bold 16px", "");
 			title.y = ICON_SIZE + spacing * 2 + 6;
 			title.color = {255, 255, 255, 255};
 			title.add_effect (new TextShadowEffect (1, 1, 220));
-		
+			
 			add_child (background);
 			add_child (current);
 			add_child (title);
@@ -140,7 +140,7 @@ namespace Gala
 			cr.stroke_preserve ();
 			cr.set_source_rgba (1, 1, 1, 0.4);
 			cr.fill ();
-		
+			
 			return true;
 		}
 
@@ -152,7 +152,7 @@ namespace Gala
 			cr.stroke_preserve ();
 			cr.set_source_rgba (1, 1, 1, 0.9);
 			cr.fill ();
-		
+			
 			return true;
 		}
 		
@@ -162,7 +162,7 @@ namespace Gala
 				if (c != current && c != background && c != title)
 					remove_child (c);
 			});
-		
+			
 			current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 				screen.get_active_workspace (), null, backward);
 			
@@ -171,14 +171,14 @@ namespace Gala
 			
 			if (current_window == null)
 				return;
-		
+			
 			if (binding.get_mask () == 0) {
 				current_window.activate (display.get_current_time ());
 				return;
 			}
-		
+			
 			var matcher = Bamf.Matcher.get_default ();
-		
+			
 			var i = 0;
 			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).copy ();
 			
@@ -229,7 +229,7 @@ namespace Gala
 			});
 			
 			windows = i;
-		
+			
 			var idx = window_list.index (current_window);
 			current.x = spacing + idx * (spacing + ICON_SIZE);
 		}
