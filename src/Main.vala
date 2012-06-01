@@ -99,7 +99,7 @@ namespace Gala
 			KeyBinding.set_custom_handler ("move-to-workspace-right",  (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
-			ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 35, 120});
+			ShadowFactory.get_default ().set_params ("normal", true, {20, -1, 0, 15, 153});
 			
 			/*hot corner*/
 			var hot_corner = new Clutter.Rectangle ();
