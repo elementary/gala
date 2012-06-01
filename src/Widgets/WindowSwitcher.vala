@@ -24,15 +24,15 @@ namespace Gala
 	{
 		const int ICON_SIZE = 128;
 		const int spacing = 12;
-	
+			
 		Gala.Plugin plugin;
-	
+		
 		GLib.List<unowned Meta.Window> window_list;
-	
+		
 		CairoTexture background;
 		CairoTexture current;
 		Text title;
-	
+		
 		int _windows = 1;
 		int windows {
 			get { return _windows; }
@@ -41,7 +41,7 @@ namespace Gala
 				width = spacing + _windows * (ICON_SIZE + spacing);
 			}
 		}
-	
+		
 		Meta.Window? _current_window;
 		Meta.Window? current_window {
 			get { return _current_window; }
@@ -51,7 +51,7 @@ namespace Gala
 				title.x = (int)(width / 2 - title.width / 2);
 			}
 		}
-	
+		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -86,7 +86,7 @@ namespace Gala
 			background.add_constraint (new BindConstraint (this, BindCoordinate.WIDTH, 0));
 			background.add_constraint (new BindConstraint (this, BindCoordinate.HEIGHT, 0));
 		}
-
+		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
@@ -177,40 +177,14 @@ namespace Gala
 				return;
 			}
 			
-			var matcher = Bamf.Matcher.get_default ();
-			
 			var i = 0;
 			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).copy ();
 			
 			window_list.foreach ((w) => {
 				if (w == null)
 					return;
-			
-				Bamf.Window bamfwin = null;
-				matcher.get_windows ().foreach ( (bamfw) => {
-					if ((bamfw as Bamf.Window).get_pid () == (uint32)w.get_pid ()) {
-						bamfwin = bamfw as Bamf.Window;
-					}
-				});
-			
-				Gdk.Pixbuf image = null;
-				if (bamfwin != null) {
-					var app = matcher.get_application_for_window (bamfwin);
-					if (app != null) {
-						var desktop = new GLib.DesktopAppInfo.from_filename (app.get_desktop_file ());
-						try {
-							image = Gtk.IconTheme.get_default ().lookup_by_gicon (desktop.get_icon (), ICON_SIZE, 0).load_icon ();
-						} catch (Error e) { warning (e.message); }
-					}
-				}
-			
-				if (image == null) {
-					try {
-						image = Gtk.IconTheme.get_default ().load_icon ("application-default-icon", ICON_SIZE, 0);
-					} catch (Error e) {
-						warning (e.message);
-					}
-				}
+				
+				var image = plugin.get_icon_for_window (w, ICON_SIZE);
 			
 				var icon = new GtkClutter.Texture ();
 				try {

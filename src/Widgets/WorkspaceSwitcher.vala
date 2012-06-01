@@ -22,7 +22,7 @@ namespace Gala
 {
 	public class WorkspaceSwitcher : Group
 	{
-		const float WIDTH = 200;
+		const float HEIGHT = 150;
 		const int spacing = 10;
 		
 		float len;
@@ -37,7 +37,7 @@ namespace Gala
 			get { return _workspaces; }
 			set {
 				_workspaces = value;
-				height = len * _workspaces + spacing;
+				width = len * _workspaces + spacing;
 			}
 		}
 		
@@ -46,7 +46,7 @@ namespace Gala
 			get { return _workspace; }
 			set {
 				_workspace = value;
-				current.animate (AnimationMode.EASE_OUT_QUAD, 300, y : _workspace * len + 1 + spacing);
+				current.animate (AnimationMode.EASE_OUT_QUAD, 300, x : _workspace * len + 1 + spacing);
 			}
 		}
 		
@@ -57,20 +57,21 @@ namespace Gala
 			int w, h;
 			plugin.screen.get_size (out w, out h);
 			
-			len = (float)h / w * WIDTH;
+			len = (float)w / h * HEIGHT;
 			
-			height = 100 + spacing * 2;
-			width = WIDTH + spacing * 2;
+			width = 100 + spacing * 2;
+			height = HEIGHT + spacing * 2;
 			opacity = 0;
 			
-			background = new CairoTexture (100, (int)WIDTH);
+			background = new CairoTexture (100, (int)HEIGHT);
 			background.auto_resize = true;
 			background.draw.connect (draw_background);
 			
 			current = new CairoTexture (100, 100);
 			current.x = spacing + 1;
-			current.width = width - 1 - spacing * 2;
-			current.height = len - 1 - spacing;
+			current.y = spacing + 1;
+			current.width = len - 1 - spacing;
+			current.height = height - 1 - spacing * 2;
 			current.auto_resize = true;
 			current.draw.connect (draw_current);
 			
@@ -82,7 +83,7 @@ namespace Gala
 			background.add_constraint (new BindConstraint (this, BindCoordinate.WIDTH, 0));
 			background.add_constraint (new BindConstraint (this, BindCoordinate.HEIGHT, 0));
 		}
-
+		
 		public override bool key_release_event (KeyEvent event)
 		{
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
@@ -99,10 +100,10 @@ namespace Gala
 		public override bool key_press_event (KeyEvent event)
 		{
 			switch (event.keyval) {
-				case Key.Up:
+				case Key.Left:
 					workspace = plugin.move_workspaces (true);
 					return false;
-				case Key.Down:
+				case Key.Right:
 					workspace = plugin.move_workspaces (false);
 					return false;
 				default:
@@ -123,8 +124,8 @@ namespace Gala
 			cr.fill ();
 			
 			for (var i = 0; i < workspaces; i++) {
-				Utilities.cairo_rounded_rectangle (cr, 0.5 + spacing, i * len + 0.5 + spacing,
-					width - 1 - spacing * 2, len - 1 - spacing, 10);
+				Utilities.cairo_rounded_rectangle (cr, i * len + 0.5 + spacing, 0.5 + spacing,
+					len - 1 - spacing, height - 1 - spacing * 2, 10);
 				cr.set_line_width (1);
 				cr.set_source_rgba (0, 0, 0, 0.8);
 				cr.stroke_preserve ();
@@ -134,10 +135,10 @@ namespace Gala
 			
 			return true;
 		}
-
+		
 		bool draw_current (Cairo.Context cr)
 		{
-			Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, current.width - 2, current.height - 1, 10);
+			Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, current.width - 2, current.height - 2, 10);
 			cr.set_line_width (1);
 			cr.set_source_rgba (0, 0, 0, 0.9);
 			cr.stroke_preserve ();
@@ -156,9 +157,9 @@ namespace Gala
 			x = width / 2 - this.width / 2;
 			y = height / 2 - this.height / 2;
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
-
-			bool up = (binding.get_name () == "switch-to-workspace-up");
-			workspace = plugin.move_workspaces (up);;
+			
+			bool left = (binding.get_name () == "switch-to-workspace-left");
+			workspace = plugin.move_workspaces (left);
 			
 			plugin.begin_modal ();
 			grab_key_focus ();

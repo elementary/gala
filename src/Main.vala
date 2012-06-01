@@ -29,7 +29,7 @@ namespace Gala
 	{
 		WorkspaceSwitcher wswitcher;
 		WindowSwitcher winswitcher;
-		CornerMenu corner_menu;
+		WorkspaceView workspace_view;
 		Clutter.Actor elements;
 		
 		public Plugin ()
@@ -51,14 +51,14 @@ namespace Gala
 			Compositor.get_overlay_group_for_screen (screen).reparent (elements);
 			Compositor.get_stage_for_screen (screen).add_child (elements);
 			
-			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, -1, 4);
+			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 4, -1);
 			
 			int width, height;
 			screen.get_size (out width, out height);
 			
-			corner_menu = new CornerMenu (this);
-			elements.add_child (corner_menu);
-			corner_menu.visible = false;
+			workspace_view = new WorkspaceView (this);
+			elements.add_child (workspace_view);
+			workspace_view.visible = false;
 			
 			wswitcher = new WorkspaceSwitcher (this);
 			wswitcher.workspaces = 4;
@@ -73,7 +73,7 @@ namespace Gala
 						Settings.get_default().panel_main_menu_action);
 				} catch (Error e) { warning (e.message); }
 			});
-
+			
 			KeyBinding.set_custom_handler ("toggle-recording", () => {
 				try {
 					Process.spawn_command_line_async (
@@ -84,10 +84,10 @@ namespace Gala
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
 			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
 			
-			KeyBinding.set_custom_handler ("switch-to-workspace-left", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-right", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-up", wswitcher.handle_switch_to_workspace);
-			KeyBinding.set_custom_handler ("switch-to-workspace-down", wswitcher.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
+			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
+			KeyBinding.set_custom_handler ("switch-to-workspace-left", wswitcher.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-right", wswitcher.handle_switch_to_workspace);
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-left", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-right", () => {});
@@ -99,14 +99,14 @@ namespace Gala
 			
 			/*hot corner*/
 			var hot_corner = new Clutter.Rectangle ();
-			hot_corner.x = width - 2;
-			hot_corner.y = height - 2;
-			hot_corner.width = 2;
-			hot_corner.height = 2;
+			hot_corner.x = width - 1;
+			hot_corner.y = height - 1;
+			hot_corner.width = 1;
+			hot_corner.height = 1;
 			hot_corner.reactive = true;
 			
 			hot_corner.enter_event.connect (() => {
-				corner_menu.show ();
+				workspace_view.show ();
 				return false;
 			});
 			
@@ -115,13 +115,38 @@ namespace Gala
 			update_input_area ();
 			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 		}
-
+		
 		void update_input_area ()
 		{
 			if (Settings.get_default ().enable_manager_corner)
 				set_input_area (InputArea.HOT_CORNER);
 			else
 				set_input_area (InputArea.NONE);
+		}
+		
+		/**
+		 * returns a pixbuf for the application of this window or a default icon
+		 **/
+		public Gdk.Pixbuf get_icon_for_window (Window window, int size) {
+			Gdk.Pixbuf image = null;
+			
+			var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
+			if (app != null) {
+				var desktop = new GLib.DesktopAppInfo.from_filename (app.get_desktop_file ());
+				try {
+					image = Gtk.IconTheme.get_default ().lookup_by_gicon (desktop.get_icon (), size, 0).load_icon ();
+				} catch (Error e) { warning (e.message); }
+			}
+			
+			if (image == null) {
+				try {
+					image = Gtk.IconTheme.get_default ().load_icon ("application-default-icon", size, 0);
+				} catch (Error e) {
+					warning (e.message);
+				}
+			}
+			
+			return image;
 		}
 		
 		/**
@@ -171,13 +196,13 @@ namespace Gala
 			base.end_modal (get_screen ().get_display ().get_current_time ());
 		}
 		
-		public int move_workspaces (bool up)
+		public int move_workspaces (bool left)
 		{
 			var i = screen.get_active_workspace_index ();
 			
-			if (up && i - 1 >= 0) //move up
+			if (left && i - 1 >= 0) //move left
 				i --;
-			else if (!up && i + 1 < screen.n_workspaces) //move down
+			else if (!left && i + 1 < screen.n_workspaces) //move down
 				i ++;
 			
 			if (i != screen.get_active_workspace_index ()) {
@@ -305,20 +330,20 @@ namespace Gala
 			if (direction == MotionDirection.UP ||
 				direction == MotionDirection.UP_LEFT ||
 				direction == MotionDirection.UP_RIGHT)
-				y2 = h;
+				x2 = w;
 			else if (direction == MotionDirection.DOWN ||
 				direction == MotionDirection.DOWN_LEFT ||
 				direction == MotionDirection.DOWN_RIGHT)
-				y2 = -h;
+				x2 = -w;
 			
 			if (direction == MotionDirection.LEFT ||
 				direction == MotionDirection.UP_LEFT ||
 				direction == MotionDirection.DOWN_LEFT)
-				y2 = h;
+				x2 = w;
 			else if (direction == MotionDirection.RIGHT ||
 				direction == MotionDirection.UP_RIGHT ||
 				direction == MotionDirection.DOWN_RIGHT)
-				y2 = -h;
+				x2 = -w;
 			
 			var in_group  = new Clutter.Group ();
 			var out_group = new Clutter.Group ();
@@ -401,8 +426,8 @@ namespace Gala
 		{
 			unmaximize_completed (actor);
 		}
-        
-        public override void kill_switch_workspace ()
+		
+		public override void kill_switch_workspace ()
 		{
 			end_switch_workspace ();
 		}
@@ -459,7 +484,7 @@ namespace Gala
 		Meta.init ();
 		GLib.Environment.unset_variable ("NO_GAIL");
 		GLib.Environment.unset_variable ("NO_AT_BRIDGE");
-
+		
 		return Meta.run ();
-	}	
+	}
 }

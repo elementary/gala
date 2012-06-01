@@ -46,7 +46,7 @@ vala_precompile(VALA_C
     src/TextShadowEffect.vala
     src/Widgets/WorkspaceSwitcher.vala
     src/Widgets/WindowSwitcher.vala
-    src/Widgets/CornerMenu.vala
+    src/Widgets/WorkspaceView.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite
