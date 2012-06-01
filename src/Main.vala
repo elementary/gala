@@ -74,14 +74,8 @@ namespace Gala
 				} catch (Error e) { warning (e.message); }
 			});
 			
-			KeyBinding.set_custom_handler ("switch-windows",
-				(display, screen, window, ev, binding) => {
-				window_switcher (display, screen, binding, false);
-			});
-			KeyBinding.set_custom_handler ("switch-windows-backward",
-				(display, screen, window, ev, binding) => {
-				window_switcher (display, screen, binding, true);
-			});
+			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
+			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
 			
 			KeyBinding.set_custom_handler ("switch-to-workspace-left", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-right", () => {});
@@ -168,24 +162,6 @@ namespace Gala
 		public new void end_modal ()
 		{
 			base.end_modal (get_screen ().get_display ().get_current_time ());
-		}
-		
-		void window_switcher (Display display, Screen screen, KeyBinding binding, bool backward)
-		{
-			if (screen.get_display ().get_tab_list (TabList.NORMAL, screen, screen.get_active_workspace ()).length () == 0)
-				return;
-			
-			begin_modal ();
-			
-			int width, height;
-			screen.get_size (out width, out height);
-			
-			winswitcher.list_windows (display, screen, binding, backward);
-			
-			winswitcher.x = width / 2 - winswitcher.width / 2;
-			winswitcher.y = height / 2 - winswitcher.height / 2;
-			winswitcher.grab_key_focus ();
-			winswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
 		}
 		
 		void workspace_switcher (Screen screen, bool up)

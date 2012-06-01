@@ -156,7 +156,7 @@ namespace Gala
 			return true;
 		}
 		
-		public void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)
+		void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)
 		{
 			get_children ().foreach ((c) => { //clear
 				if (c != current && c != background && c != title)
@@ -232,6 +232,26 @@ namespace Gala
 			
 			var idx = window_list.index (current_window);
 			current.x = spacing + idx * (spacing + ICON_SIZE);
+		}
+
+		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+			X.Event event, Meta.KeyBinding binding)
+		{
+			if (display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).length () == 0)
+				return;
+			
+			plugin.begin_modal ();
+			
+			int width, height;
+			screen.get_size (out width, out height);
+			
+			bool backward = (binding.get_name () == "switch-windows-backward");
+			list_windows (display, screen, binding, backward);
+			
+			x = width / 2 - this.width / 2;
+			y = height / 2 - this.height / 2;
+			grab_key_focus ();
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
 		}
 	}
 }

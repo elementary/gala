@@ -1106,7 +1106,7 @@ namespace Meta {
 		OVERRIDE_OTHER
 	}
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
-	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, void* event, Meta.KeyBinding binding);
+	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, X.Event event, Meta.KeyBinding binding);
 	[CCode (cheader_filename = "meta/prefs.h", has_target = false)]
 	public delegate void PrefsChangedFunc (Meta.Preference pref, void* data);
 	[CCode (cheader_filename = "meta/window.h", has_target = false)]
