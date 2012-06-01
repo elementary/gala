@@ -20,7 +20,7 @@ namespace Gala
 	public class Settings : Granite.Services.Settings
 	{
 		public bool attach_modal_dialogs { get; set; }
-		public string[] button_layout { get; set; }
+		public string button_layout { get; set; }
 		public bool edge_tiling { get; set; }
 		public bool enable_animations { get; set; }
 		public string panel_main_menu_action { get; set; }

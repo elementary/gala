@@ -81,6 +81,10 @@ namespace Gala
 				} catch (Error e) { warning (e.message); }
 			});
 			
+			KeyBinding.set_custom_handler ("show-desktop", () => {
+				workspace_view.show ();
+			});
+			
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
 			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
 			
@@ -89,10 +93,10 @@ namespace Gala
 			KeyBinding.set_custom_handler ("switch-to-workspace-left", wswitcher.handle_switch_to_workspace);
 			KeyBinding.set_custom_handler ("switch-to-workspace-right", wswitcher.handle_switch_to_workspace);
 			
-			KeyBinding.set_custom_handler ("move-to-workspace-left", () => {});
-			KeyBinding.set_custom_handler ("move-to-workspace-right", () => {});
-			KeyBinding.set_custom_handler ("move-to-workspace-up",	(d, s, w) => move_window (w, true) );
-			KeyBinding.set_custom_handler ("move-to-workspace-down",  (d, s, w) => move_window (w, false) );
+			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
+			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
+			KeyBinding.set_custom_handler ("move-to-workspace-left",	(d, s, w) => move_window (w, true) );
+			KeyBinding.set_custom_handler ("move-to-workspace-right",  (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
 			ShadowFactory.get_default ().set_params ("normal", true, {30, -1, 0, 35, 120});
