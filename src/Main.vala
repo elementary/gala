@@ -79,8 +79,8 @@ namespace Gala
 			
 			KeyBinding.set_custom_handler ("switch-to-workspace-left", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-right", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-up", (d, s) => workspace_switcher (s, true));
-			KeyBinding.set_custom_handler ("switch-to-workspace-down", (d, s) => workspace_switcher (s, false));
+			KeyBinding.set_custom_handler ("switch-to-workspace-up", wswitcher.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-down", wswitcher.handle_switch_to_workspace);
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-left", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-right", () => {});
@@ -162,20 +162,6 @@ namespace Gala
 		public new void end_modal ()
 		{
 			base.end_modal (get_screen ().get_display ().get_current_time ());
-		}
-		
-		void workspace_switcher (Screen screen, bool up)
-		{
-			int width, height;
-			screen.get_size (out width, out height);
-			
-			wswitcher.x = width / 2 - wswitcher.width / 2;
-			wswitcher.y = height / 2 - wswitcher.height / 2;
-			wswitcher.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
-			wswitcher.workspace = move_workspaces (up);;
-			
-			begin_modal ();
-			wswitcher.grab_key_focus ();
 		}
 		
 		public int move_workspaces (bool up)

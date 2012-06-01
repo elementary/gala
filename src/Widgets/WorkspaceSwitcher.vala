@@ -146,5 +146,22 @@ namespace Gala
 			
 			return true;
 		}
+		
+		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+			X.Event event, Meta.KeyBinding binding)
+		{
+			int width, height;
+			screen.get_size (out width, out height);
+			
+			x = width / 2 - this.width / 2;
+			y = height / 2 - this.height / 2;
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 100, opacity:255);
+
+			bool up = (binding.get_name () == "switch-to-workspace-up");
+			workspace = plugin.move_workspaces (up);;
+			
+			plugin.begin_modal ();
+			grab_key_focus ();
+		}
 	}
 }
