@@ -73,6 +73,13 @@ namespace Gala
 						Settings.get_default().panel_main_menu_action);
 				} catch (Error e) { warning (e.message); }
 			});
+
+			KeyBinding.set_custom_handler ("toggle-recording", () => {
+				try {
+					Process.spawn_command_line_async (
+						Settings.get_default().toggle_recording_action);
+				} catch (Error e) { warning (e.message); }
+			});
 			
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
 			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);

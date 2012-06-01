@@ -25,6 +25,7 @@ namespace Gala
 		public bool enable_animations { get; set; }
 		public string panel_main_menu_action { get; set; }
 		public string theme { get; set; }
+		public string toggle_recording_action { get; set; }
 		public bool use_gnome_defaults { get; set; }
 		public bool enable_manager_corner { get; set; }
 		
