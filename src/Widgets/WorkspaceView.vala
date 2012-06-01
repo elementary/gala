@@ -277,7 +277,7 @@ namespace Gala
 			this.width = width;
 			
 			/*get the workspaces together*/
-			workspaces.foreach ( (c) => workspaces.remove_child (c) );
+			workspaces.remove_all_children ();
 			
 			for (var i=0;i<plugin.get_screen ().n_workspaces;i++) {
 				var space = plugin.get_screen ().get_workspace_by_index (i);
@@ -297,8 +297,7 @@ namespace Gala
 					
 					icon.reactive = true;
 					icon.button_release_event.connect ( () => {
-						w.activate_with_workspace (plugin.screen.get_display ().get_current_time (), 
-							space);
+						space.activate_with_focus (w,plugin.screen.get_display ().get_current_time ());
 						return false;
 					});
 					
