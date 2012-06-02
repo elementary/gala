@@ -235,14 +235,14 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			cr.rectangle (0, 0, width, height);
+			cr.rectangle (0, 1, width, height);
 			cr.set_source_rgb (0.15, 0.15, 0.15);
 			cr.fill ();
 			
 			cr.move_to (0, 0);
 			cr.line_to (width, 0);
 			cr.set_line_width (1);
-			cr.set_source_rgb (1, 1, 1);
+			cr.set_source_rgba (1, 1, 1, 0.5);
 			cr.stroke ();
 			
 			var grad = new Cairo.Pattern.linear (0, 0, 0, 20);

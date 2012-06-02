@@ -300,7 +300,9 @@ namespace Gala
 					int y;
 					get_current_cursor_position (null, out y);
 					
-					if (rect.y >= y-3)
+					if (rect.y >= y - 10 || 
+						actor.meta_window.window_type == WindowType.MODAL_DIALOG ||
+						actor.meta_window.window_type == WindowType.DIALOG)
 						actor.scale_gravity = Clutter.Gravity.NORTH;
 					else
 						actor.scale_gravity = Clutter.Gravity.SOUTH;
