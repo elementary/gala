@@ -217,6 +217,15 @@ namespace Gala
 			return i;
 		}
 		
+		public void get_current_cursor_position (out int x, out int y)
+		{
+			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, 
+				out x, out y);
+		}
+		
+		/*
+		 * effects
+		 */
 		public override void minimize (WindowActor actor)
 		{
 			minimize_completed (actor);
@@ -252,14 +261,14 @@ namespace Gala
 		
 		public override void map (WindowActor actor)
 		{
+			unowned Rectangle rect; //some useful infos
+			actor.meta_window.get_outer_rect (out rect);
+			int width, height;
+			screen.get_size (out width, out height);
+			
 			if (actor.meta_window.window_type == WindowType.NORMAL) {
-				unowned Rectangle rect;
-				actor.meta_window.get_outer_rect (out rect);
 				
 				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
-					int width, height;
-					screen.get_size (out width, out height);
-				
 					actor.meta_window.move_frame (false, (int)(width/2.0f - rect.width/2.0f), 
 						(int)(height/2.0f - rect.height/2.0f));
 					actor.x = width/2.0f - rect.width/2.0f;
@@ -288,7 +297,14 @@ namespace Gala
 				case WindowType.POPUP_MENU:
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
-					actor.scale_gravity = Clutter.Gravity.NORTH;
+					int y;
+					get_current_cursor_position (null, out y);
+					
+					if (rect.y >= y-3)
+						actor.scale_gravity = Clutter.Gravity.NORTH;
+					else
+						actor.scale_gravity = Clutter.Gravity.SOUTH;
+					
 					actor.scale_x = 1.0f;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
