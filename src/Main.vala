@@ -252,14 +252,29 @@ namespace Gala
 		
 		public override void map (WindowActor actor)
 		{
+			if (actor.meta_window.window_type == WindowType.NORMAL) {
+				unowned Rectangle rect;
+				actor.meta_window.get_outer_rect (out rect);
+				
+				if (rect.x < 50 && rect.y < 50) { //guess the window is placed at a bad spot
+					int width, height;
+					screen.get_size (out width, out height);
+				
+					actor.meta_window.move_frame (false, (int)(width/2.0f - rect.width/2.0f), 
+						(int)(height/2.0f - rect.height/2.0f));
+					actor.x = width/2.0f - rect.width/2.0f;
+					actor.y = height/2.0f - rect.height/2.0f;
+				}
+			}
+			
 			actor.show ();
 			
 			switch (actor.meta_window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
-					actor.rotation_center_x = {0, actor.height, 10};
-					actor.scale_x = 0.55f;
-					actor.scale_y = 0.55f;
+					actor.rotation_center_x = {0, 0, 10};
+					actor.scale_x = 0.2f;
+					actor.scale_y = 0.2f;
 					actor.opacity = 0;
 					actor.rotation_angle_x = 40.0f;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 350, 
