@@ -212,8 +212,8 @@ namespace Gala
 			plugin.begin_modal ();
 			
 			int width, height;
-			//screen.get_size (out width, out height);
 			unowned Meta.Rectangle area;
+
 			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;	

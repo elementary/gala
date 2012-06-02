@@ -126,8 +126,8 @@ namespace Gala
 				}
 				
 				unowned Rectangle area;
+
 				plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
-				//plugin.screen.get_active_workspace ().get_work_area_all_monitors (out area);
 				
 				var n_wins = windows.length ();
 				var index  = 0;
@@ -185,8 +185,8 @@ namespace Gala
 			});
 			
 			int width, height;
-			//plugin.get_screen ().get_size (out width, out height);
 			unowned Rectangle area;
+
 			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;			
@@ -314,8 +314,8 @@ namespace Gala
 			animating = true;
 			
 			int width, height;
-			//plugin.get_screen ().get_size (out width, out height);
 			unowned Rectangle area;
+
 			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;
