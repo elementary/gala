@@ -120,7 +120,7 @@ namespace Gala
 			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 		}
 		
-		void update_input_area ()
+		public void update_input_area ()
 		{
 			if (Settings.get_default ().enable_manager_corner)
 				set_input_area (InputArea.HOT_CORNER);

@@ -350,7 +350,7 @@ namespace Gala
 			plugin.get_screen ().get_size (out width, out height);
 			
 			plugin.end_modal ();
-			plugin.set_input_area (Gala.InputArea.HOT_CORNER);
+			plugin.update_input_area ();
 			
 			animate (Clutter.AnimationMode.EASE_IN_SINE, 400, y : height)
 				.completed.connect ( () => {
