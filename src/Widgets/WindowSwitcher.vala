@@ -163,12 +163,7 @@ namespace Gala
 					remove_child (c);
 			});
 			
-			current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-				screen.get_active_workspace (), null, backward);
-			
-			if (current_window == null)
-				current_window = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-			
+			current_window = plugin.get_next_window (plugin.screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
 			
@@ -185,20 +180,20 @@ namespace Gala
 					return;
 				
 				var image = plugin.get_icon_for_window (w, ICON_SIZE);
-			
+				
 				var icon = new GtkClutter.Texture ();
 				try {
 					icon.set_from_pixbuf (image);
 				} catch (Error e) {
 					warning (e.message);
 				}
-			
+				
 				icon.x = spacing + 5 + i * (spacing + ICON_SIZE);
 				icon.y = spacing + 5;
 				icon.width = ICON_SIZE - 10;
 				icon.height = ICON_SIZE - 10;
 				add_child (icon);
-			
+				
 				i++;
 			});
 			

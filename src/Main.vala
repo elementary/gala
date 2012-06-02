@@ -148,6 +148,17 @@ namespace Gala
 			return image;
 		}
 		
+		public Window get_next_window (Meta.Workspace workspace, bool backward=false)
+		{
+			var window = screen.get_display ().get_tab_next (Meta.TabList.NORMAL, screen, 
+				screen.get_active_workspace (), null, backward);
+			
+			if (window == null)
+				window = screen.get_display ().get_tab_current (Meta.TabList.NORMAL, screen, workspace);
+			
+			return window;
+		}
+		
 		/**
 		 * set the area where clutter can receive events
 		 **/
@@ -285,6 +296,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
+						actor.meta_window.activate (screen.get_display ().get_current_time ());
 					});
 					break;
 				case WindowType.MENU:
@@ -452,6 +464,10 @@ namespace Gala
 			}
 			
 			switch_workspace_completed ();
+			
+			var focus = get_next_window (screen.get_active_workspace ());
+			if (focus != null)
+				focus.activate (screen.get_display ().get_current_time ());
 		}
 		
 		public override void unmaximize (Meta.WindowActor actor, int x, int y, int w, int h)
