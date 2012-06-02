@@ -395,7 +395,7 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, y : height)
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height)
 				.completed.connect ( () => {
 				visible = false;
 			});

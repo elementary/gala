@@ -275,7 +275,7 @@ namespace Gala
 			if (actor.meta_window.window_type == WindowType.NORMAL) {
 				
 				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
-					actor.meta_window.move_frame (false, (int)(width/2.0f - rect.width/2.0f), 
+					actor.meta_window.move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
 						(int)(height/2.0f - rect.height/2.0f));
 					actor.x = width/2.0f - rect.width/2.0f;
 					actor.y = height/2.0f - rect.height/2.0f;
