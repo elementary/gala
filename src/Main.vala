@@ -256,7 +256,7 @@ namespace Gala
 				unowned Rectangle rect;
 				actor.meta_window.get_outer_rect (out rect);
 				
-				if (rect.x < 50 && rect.y < 50) { //guess the window is placed at a bad spot
+				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
 					int width, height;
 					screen.get_size (out width, out height);
 				
