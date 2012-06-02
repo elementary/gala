@@ -340,6 +340,7 @@ namespace Gala
 					icon.reactive = true;
 					icon.button_release_event.connect ( () => {
 						space.activate_with_focus (w,plugin.screen.get_display ().get_current_time ());
+						hide ();
 						return false;
 					});
 					
@@ -362,6 +363,7 @@ namespace Gala
 						x : workspaces.x - 5 + 
 						plugin.screen.get_active_workspace ().index () *
 						(workspaces.get_children ().nth_data (0).width + 10));
+					hide ();
 					return true;
 				});
 				
@@ -394,7 +396,7 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_IN_QUAD, 250, y : height)
+			animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, y : height)
 				.completed.connect ( () => {
 				visible = false;
 			});
