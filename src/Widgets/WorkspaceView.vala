@@ -34,6 +34,20 @@ namespace Gala
 		Clutter.CairoTexture workspace_thumb;
 		Clutter.CairoTexture current_workspace;
 		
+		int _workspace;
+		int workspace {
+			get {
+				return _workspace;
+			}
+			set {
+				_workspace = value;
+				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
+					x : workspaces.x - 5 + 
+					_workspace *
+					(workspaces.get_children ().nth_data (0).width + 10));
+			}
+		}
+		
 		const string CURRENT_WORKSPACE_STYLE = """
 		* {
 			border-style: solid;
@@ -256,6 +270,34 @@ namespace Gala
 			return false;
 		}
 		
+		public override bool key_press_event (Clutter.KeyEvent event)
+		{
+			switch (event.keyval) {
+				case Clutter.Key.Left:
+					workspace = plugin.move_workspaces (true);
+					return false;
+				case Clutter.Key.Right:
+					workspace = plugin.move_workspaces (false);
+					return false;
+				default:
+					break;
+			}
+			
+			return true;
+		}
+		
+		public override bool key_release_event (Clutter.KeyEvent event)
+		{
+			if (((event.modifier_state & Clutter.ModifierType.MOD1_MASK) == 0) || 
+					event.keyval == Clutter.Key.Alt_L) {
+				this.hide ();
+				
+				return true;
+			}
+			
+			return false;
+		}
+		
 		//FIXME move all this positioning stuff to a separate function which is only called by screen size changes
 		public new void show ()
 		{
@@ -335,9 +377,9 @@ namespace Gala
 			
 			visible = true;
 			grab_key_focus ();
-			animate (Clutter.AnimationMode.EASE_OUT_SINE, 400, y : height-this.height, opacity : 255)
+			Timeout.add (50, () => animating = false ); //catch hot corner hiding problem
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : height-this.height, opacity : 255)
 				.completed.connect (() => {
-				animating = false;
 			});
 		}
 		
@@ -352,10 +394,20 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_IN_SINE, 400, y : height)
+			animate (Clutter.AnimationMode.EASE_IN_QUAD, 250, y : height)
 				.completed.connect ( () => {
 				visible = false;
 			});
+		}
+		
+		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+			X.Event event, Meta.KeyBinding binding)
+		{
+			this.show ();
+			
+			bool left = (binding.get_name () == "switch-to-workspace-left");
+			workspace = plugin.move_workspaces (left);
+			
 		}
 	}
 }

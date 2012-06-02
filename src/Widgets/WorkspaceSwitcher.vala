@@ -15,6 +15,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+/*
+ * note: not actually used anymore
+ */
+
 using Clutter;
 using Granite.Drawing;
 

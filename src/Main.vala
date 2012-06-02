@@ -27,7 +27,6 @@ namespace Gala
 	
 	public class Plugin : Meta.Plugin
 	{
-		WorkspaceSwitcher wswitcher;
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		Clutter.Actor elements;
@@ -60,10 +59,6 @@ namespace Gala
 			elements.add_child (workspace_view);
 			workspace_view.visible = false;
 			
-			wswitcher = new WorkspaceSwitcher (this);
-			wswitcher.workspaces = 4;
-			elements.add_child (wswitcher);
-			
 			winswitcher = new WindowSwitcher (this);
 			elements.add_child (winswitcher);
 			
@@ -90,8 +85,8 @@ namespace Gala
 			
 			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-left", wswitcher.handle_switch_to_workspace);
-			KeyBinding.set_custom_handler ("switch-to-workspace-right", wswitcher.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-left", workspace_view.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-right", workspace_view.handle_switch_to_workspace);
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
