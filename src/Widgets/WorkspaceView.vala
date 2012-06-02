@@ -288,8 +288,7 @@ namespace Gala
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
-			if (((event.modifier_state & Clutter.ModifierType.MOD1_MASK) == 0) || 
-					event.keyval == Clutter.Key.Alt_L) {
+			if (event.keyval == Clutter.Key.Alt_L) {
 				this.hide ();
 				
 				return true;
