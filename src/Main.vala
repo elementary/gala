@@ -506,14 +506,13 @@ namespace Gala
 
 	void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
 	{
-		Clutter.Actor actor_tmp, old_parent;
-
-		if (actor == new_parent) return;
-		actor_tmp = actor;
-
-		old_parent = actor.get_parent ();
-		old_parent.remove_child (actor);
-		new_parent.add_child (actor_tmp);
+		if (actor == new_parent)
+			return;
+		
+		actor.ref ();
+		actor.get_parent ().remove_child (actor);
+		new_parent.add_child (actor);
+		actor.unref ();
 	}
 	
 	[CCode (cname="clutter_x11_handle_event")]
