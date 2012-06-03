@@ -46,10 +46,9 @@ namespace Gala
 		public override void start ()
 		{
 			elements = Compositor.get_stage_for_screen (screen);
-			Compositor.get_window_group_for_screen (screen).reparent (elements);
-			Compositor.get_overlay_group_for_screen (screen).reparent (elements);
+			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);
+			clutter_actor_reparent (Compositor.get_overlay_group_for_screen (screen), elements);
 			Compositor.get_stage_for_screen (screen).add_child (elements);
-			
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 4, -1);
 			
 			int width, height;
@@ -406,9 +405,9 @@ namespace Gala
 				win.append (window);
 				par.append (window.get_parent ());
 				if ((window as WindowActor).get_workspace () == from) {
-					window.reparent (out_group);
+					clutter_actor_reparent (window, out_group);
 				} else if ((window as WindowActor).get_workspace () == to) {
-					window.reparent (in_group);
+					clutter_actor_reparent (window, in_group);
 					window.show_all ();
 				}
 			}
@@ -444,10 +443,10 @@ namespace Gala
 				if ((window as WindowActor).is_destroyed ())
 					continue;
 				if (window.get_parent () == out_group) {
-					window.reparent (par.nth_data (i));
+					clutter_actor_reparent (window, par.nth_data (i));
 					window.hide ();
 				} else
-					window.reparent (par.nth_data (i));
+					clutter_actor_reparent (window, par.nth_data (i));
 			}
 			
 			win = null;
@@ -503,6 +502,18 @@ namespace Gala
 	void print_version () {
 		stdout.printf ("Gala %s\n", Gala.VERSION);
 		Meta.exit (Meta.ExitCode.SUCCESS);
+	}
+
+	void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
+	{
+		Clutter.Actor actor_tmp, old_parent;
+
+		if (actor == new_parent) return;
+		actor_tmp = actor;
+
+		old_parent = actor.get_parent ();
+		old_parent.remove_child (actor);
+		new_parent.add_child (actor_tmp);
 	}
 	
 	[CCode (cname="clutter_x11_handle_event")]
