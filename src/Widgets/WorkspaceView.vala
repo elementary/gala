@@ -19,11 +19,11 @@ using Meta;
 
 namespace Gala
 {
-	public class WorkspaceView : Clutter.Group
+	public class WorkspaceView : Clutter.Actor
 	{
 		Gala.Plugin plugin;
 		
-		Clutter.Box workspaces;
+		Clutter.Actor workspaces;
 		Clutter.CairoTexture bg;
 		
 		GtkClutter.Texture tile;
@@ -83,8 +83,10 @@ namespace Gala
 			scale_gravity = Clutter.Gravity.SOUTH_EAST;
 			reactive = true;
 			
-			workspaces = new Clutter.Box (new Clutter.BoxLayout ());
-			(workspaces.layout_manager as Clutter.BoxLayout).spacing = 12;
+			workspaces = new Clutter.Actor ();
+			var box_layout = new Clutter.BoxLayout ();
+			box_layout.spacing = 12;
+			workspaces.set_layout_manager (box_layout);
 			
 			bg = new Clutter.CairoTexture (500, (uint)height);
 			bg.auto_resize = true;
@@ -325,8 +327,9 @@ namespace Gala
 			for (var i=0;i<plugin.get_screen ().n_workspaces;i++) {
 				var space = plugin.get_screen ().get_workspace_by_index (i);
 				
-				var group = new Clutter.Group ();
-				var icons = new Clutter.Box (new Clutter.BoxLayout ());
+				var group = new Clutter.Actor ();
+				var icons = new Clutter.Actor ();
+				icons.set_layout_manager (new Clutter.BoxLayout ());				
 				var backg = new Clutter.Clone (workspace_thumb);
 				
 				space.list_windows ().foreach ((w) => {

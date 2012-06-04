@@ -377,8 +377,8 @@ namespace Gala
 		
 		GLib.List<Clutter.Actor>? win;
 		GLib.List<Clutter.Actor>? par; //class space for kill func
-		Clutter.Group in_group;
-		Clutter.Group out_group;
+		Clutter.Actor in_group;
+		Clutter.Actor out_group;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -406,8 +406,8 @@ namespace Gala
 				direction == MotionDirection.DOWN_RIGHT)
 				x2 = -w;
 			
-			var in_group  = new Clutter.Group ();
-			var out_group = new Clutter.Group ();
+			var in_group  = new Clutter.Actor ();
+			var out_group = new Clutter.Actor ();
 			var group = Compositor.get_window_group_for_screen (get_screen ());
 			group.add_actor (in_group);
 			group.add_actor (out_group);
@@ -426,11 +426,10 @@ namespace Gala
 					clutter_actor_reparent (window, out_group);
 				} else if ((window as WindowActor).get_workspace () == to) {
 					clutter_actor_reparent (window, in_group);
-					window.show_all ();
 				}
 			}
 			in_group.set_position (-x2, -y2);
-			in_group.raise_top ();
+			group.set_child_above_sibling (in_group, null);
 			
 			out_group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
 				x:x2, y:y2);
