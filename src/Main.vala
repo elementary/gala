@@ -255,7 +255,7 @@ namespace Gala
 				float anchor_y = (float)(y - ey) * height / (eh - height);
 				
 				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_SINE, 150, scale_x:scale_x, 
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 150, scale_x:scale_x, 
 					scale_y:scale_y).completed.connect ( () => {
 					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
@@ -491,8 +491,30 @@ namespace Gala
 				focus.activate (screen.get_display ().get_current_time ());
 		}
 		
-		public override void unmaximize (Meta.WindowActor actor, int x, int y, int w, int h)
+		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
+			if (actor.meta_window.window_type == WindowType.NORMAL) {
+				float x, y, width, height;
+				actor.get_size (out width, out height);
+				actor.get_position (out x, out y);
+				
+				float scale_x  = (float)ew  / width;
+				float scale_y  = (float)eh / height;
+				float anchor_x = (float)(x - ex) * width  / (ew - width);
+				float anchor_y = (float)(y - ey) * height / (eh - height);
+				
+				actor.move_anchor_point (anchor_x, anchor_y);
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 150, scale_x:scale_x, 
+					scale_y:scale_y).completed.connect ( () => {
+					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
+						scale_y:1.0f);//just scaling didnt want to work..
+					unmaximize_completed (actor);
+				});
+				
+				return;
+			}
+			
 			unmaximize_completed (actor);
 		}
 		
