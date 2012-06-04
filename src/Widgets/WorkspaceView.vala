@@ -41,7 +41,7 @@ namespace Gala
 			}
 			set {
 				_workspace = value;
-				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
+				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
 					x : workspaces.x + ((workspaces.get_children ().nth_data (_workspace).width + 10) * _workspace) - 5);
 			}
 		}
