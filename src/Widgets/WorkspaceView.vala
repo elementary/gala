@@ -43,8 +43,7 @@ namespace Gala
 				_workspace = value;
 				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
 					x : workspaces.x - 5 + 
-					_workspace *
-					(workspaces.get_children ().nth_data (0).width + 12));
+					_workspace * (workspaces.get_children ().nth_data (0).width + 10));
 			}
 		}
 		
@@ -80,7 +79,6 @@ namespace Gala
 			
 			height = 128;
 			opacity = 0;
-			scale_gravity = Clutter.Gravity.SOUTH_EAST;
 			reactive = true;
 			
 			workspaces = new Clutter.Actor ();
@@ -108,8 +106,6 @@ namespace Gala
 				warning (e.message);
 			}
 			
-			tile.x = 5;
-			tile.y = 5;
 			tile.reactive = true;
 			tile.button_release_event.connect (() => {
 				var windows = new GLib.List<Window> ();
@@ -188,11 +184,11 @@ namespace Gala
 			
 			int width, height;
 			unowned Rectangle area;
-
+			
 			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
 			width = area.width;
-			height = area.height;			
-
+			height = area.height;
+			
 			workspace_thumb = new Clutter.CairoTexture (120, 120);
 			workspace_thumb.height = 80;
 			workspace_thumb.width  = (workspace_thumb.height / height) * width;
@@ -219,7 +215,7 @@ namespace Gala
 			} catch (Error e) { warning (e.message); }
 			add_child (workspace_thumb);
 			add_child (bg);
-			/*add_child (tile);*/
+			/*add_child (tile); removed for now until Luna+1 */
 			add_child (current_workspace);
 			add_child (workspaces);
 			
@@ -329,7 +325,7 @@ namespace Gala
 				
 				var group = new Clutter.Actor ();
 				var icons = new Clutter.Actor ();
-				icons.set_layout_manager (new Clutter.BoxLayout ());				
+				icons.set_layout_manager (new Clutter.BoxLayout ());
 				var backg = new Clutter.Clone (workspace_thumb);
 				
 				space.list_windows ().foreach ((w) => {
@@ -363,10 +359,7 @@ namespace Gala
 				group.reactive = true;
 				group.button_release_event.connect (() => {
 					space.activate (plugin.screen.get_display ().get_current_time ());
-					current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
-						x : workspaces.x - 5 + 
-						plugin.screen.get_active_workspace ().index () *
-						(workspaces.get_children ().nth_data (0).width + 10));
+					workspace = plugin.screen.get_active_workspace ().index ();
 					hide ();
 					return true;
 				});
@@ -376,9 +369,7 @@ namespace Gala
 			workspaces.x = this.width / 2 - workspaces.width / 2;
 			workspaces.y = 25;
 			
-			current_workspace.x = workspaces.x - 5 + 
-				plugin.screen.get_active_workspace ().index () *
-				(workspaces.get_children ().nth_data (0).width + 10);
+			workspace = plugin.screen.get_active_workspace ().index ();
 			current_workspace.y = workspaces.y - 5;
 			
 			visible = true;
