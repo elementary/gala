@@ -185,13 +185,18 @@ namespace Gala
 		
 		void move_window (Window? window, bool up)
 		{
-			if (window == null || window.is_on_all_workspaces ())
+			if (window == null)
 				return;
 			
 			var idx = screen.get_active_workspace ().index () + ((up)?-1:1);
-			window.change_workspace_by_index (idx, false, 
-				screen.get_display ().get_current_time ());
-			
+
+			if (idx < 0 || idx >= screen.n_workspaces)
+				return;
+
+			if (!window.is_on_all_workspaces ())
+				window.change_workspace_by_index (idx, false, 
+					screen.get_display ().get_current_time ());
+
 			screen.get_workspace_by_index (idx).activate_with_focus (window, 
 				screen.get_display ().get_current_time ());
 		}
