@@ -301,6 +301,18 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
+					actor.scale_gravity = Clutter.Gravity.CENTER;
+					actor.rotation_center_x = {0, 0, 10};
+					actor.scale_x = 0.9f;
+					actor.scale_y = 0.9f;
+					actor.opacity = 0;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
+						scale_x:1.0f, scale_y:1.0f, opacity:255)
+						.completed.connect ( () => {
+						map_completed (actor);
+						actor.meta_window.activate (screen.get_display ().get_current_time ());
+					});
+					break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
 					int y;
@@ -334,7 +346,7 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, actor.height, 10};
 					actor.show ();
-					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, 250, 
+					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, 200, 
 						scale_x:0.95f, scale_y:0.95f, opacity:0, rotation_angle_x:15.0f)
 						.completed.connect ( () => {
 						destroy_completed (actor);
@@ -343,6 +355,12 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
+					actor.scale_gravity = Clutter.Gravity.CENTER;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
+						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
+						destroy_completed (actor);
+					});
+    				break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
 					actor.scale_gravity = Clutter.Gravity.NORTH;
@@ -350,7 +368,7 @@ namespace Gala
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
 						destroy_completed (actor);
 					});
-				break;
+	    			break;
 				default:
 					destroy_completed (actor);
 					break;

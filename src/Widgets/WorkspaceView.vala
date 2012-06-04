@@ -44,7 +44,7 @@ namespace Gala
 				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
 					x : workspaces.x - 5 + 
 					_workspace *
-					(workspaces.get_children ().nth_data (0).width + 10));
+					(workspaces.get_children ().nth_data (0).width + 12));
 			}
 		}
 		
@@ -217,7 +217,7 @@ namespace Gala
 			} catch (Error e) { warning (e.message); }
 			add_child (workspace_thumb);
 			add_child (bg);
-			add_child (tile);
+			/*add_child (tile);*/
 			add_child (current_workspace);
 			add_child (workspaces);
 			
