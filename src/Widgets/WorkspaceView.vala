@@ -44,7 +44,7 @@ namespace Gala
 				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
 					x : workspaces.x - 5 + 
 					_workspace *
-					(workspaces.get_children ().nth_data (0).width + 10));
+					(workspaces.get_children ().nth_data (0).width + 12));
 			}
 		}
 		
@@ -53,7 +53,7 @@ namespace Gala
 			border-style: solid;
 			border-width: 1px 1px 1px 1px;
 			-unico-inner-stroke-width: 1px 0 1px 0;
-			border-radius: 5px;
+			border-radius: 8px;
 			
 			background-image: -gtk-gradient (linear,
 							left top,
@@ -63,8 +63,8 @@ namespace Gala
 			
 			-unico-border-gradient: -gtk-gradient (linear,
 							left top, left bottom,
-							from (shade (@selected_bg_color, 1.05)),
-							to (shade (@selected_bg_color, 0.88)));
+							from (alpha (#000, 0.5)),
+							to (alpha (#000, 0.6)));
 			
 			-unico-inner-stroke-gradient: -gtk-gradient (linear,
 							left top, left bottom,
@@ -78,7 +78,7 @@ namespace Gala
 		{
 			plugin = _plugin;
 			
-			height = 200;
+			height = 128;
 			opacity = 0;
 			scale_gravity = Clutter.Gravity.SOUTH_EAST;
 			reactive = true;
@@ -194,7 +194,7 @@ namespace Gala
 			height = area.height;			
 
 			workspace_thumb = new Clutter.CairoTexture (120, 120);
-			workspace_thumb.height = 120;
+			workspace_thumb.height = 80;
 			workspace_thumb.width  = (workspace_thumb.height / height) * width;
 			workspace_thumb.auto_resize = true;
 			workspace_thumb.draw.connect (draw_workspace_thumb);
@@ -219,7 +219,7 @@ namespace Gala
 			} catch (Error e) { warning (e.message); }
 			add_child (workspace_thumb);
 			add_child (bg);
-			add_child (tile);
+			/*add_child (tile);*/
 			add_child (current_workspace);
 			add_child (workspaces);
 			
@@ -228,28 +228,21 @@ namespace Gala
 		
 		bool draw_current_workspace (Cairo.Context cr)
 		{
-			current_workspace_style.get_style_context ().render_activity (cr, 0.5, 0.5, 
-				current_workspace.width-1, current_workspace.height-1);
+			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
+				current_workspace.width, current_workspace.height);
 			return false;
 		}
 		
 		bool draw_workspace_thumb (Cairo.Context cr)
 		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, 
-				workspace_thumb.width-1, workspace_thumb.height-1, 5);
-			Gdk.cairo_set_source_pixbuf (cr, background_pix, 0.5, 0.5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, 
+				workspace_thumb.width, workspace_thumb.height, 5);
+			Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
 			cr.fill_preserve ();
 			
 			cr.set_line_width (1);
-			cr.set_source_rgba (0, 0, 0, 0.6);
+			cr.set_source_rgba (0, 0, 0, 1);
 			cr.stroke_preserve ();
-			
-			var grad = new Cairo.Pattern.linear (0, 0, 30, workspace_thumb.height-50);
-			grad.add_color_stop_rgba (0.99, 1, 1, 1, 0.2);
-			grad.add_color_stop_rgba (1, 1, 1, 1, 0);
-			
-			cr.set_source (grad);
-			cr.fill ();
 			
 			return false;
 		}
@@ -266,11 +259,11 @@ namespace Gala
 			cr.set_source_rgba (1, 1, 1, 0.5);
 			cr.stroke ();
 			
-			var grad = new Cairo.Pattern.linear (0, 0, 0, 20);
+			var grad = new Cairo.Pattern.linear (0, 0, 0, 15);
 			grad.add_color_stop_rgba (0, 0, 0, 0, 0.4);
 			grad.add_color_stop_rgba (1, 0, 0, 0, 0);
 			
-			cr.rectangle (0, 1, width, 20);
+			cr.rectangle (0, 1, width, 15);
 			cr.set_source (grad);
 			cr.fill ();
 			
@@ -358,10 +351,10 @@ namespace Gala
 					icons.add_child (icon);
 				});
 				
-				group.add_child (icons);
 				group.add_child (backg);
+				group.add_child (icons);
 				
-				icons.y = backg.height + 12;
+				icons.y = backg.height - 16;
 				icons.x = group.width / 2 - icons.width / 2;
 				(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
 				
