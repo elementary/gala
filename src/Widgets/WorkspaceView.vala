@@ -34,6 +34,7 @@ namespace Gala
 		Clutter.CairoTexture workspace_thumb;
 		Clutter.CairoTexture current_workspace;
 		
+		float last_workspace_x = 0;
 		int _workspace;
 		int workspace {
 			get {
@@ -41,8 +42,10 @@ namespace Gala
 			}
 			set {
 				_workspace = value;
+				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0)
+					last_workspace_x = workspaces.get_children ().nth_data (_workspace).x;
 				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-					x : workspaces.x + ((workspaces.get_children ().nth_data (_workspace).width + 10) * _workspace) - 5);
+					x : workspaces.x + last_workspace_x - 5);
 			}
 		}
 		
