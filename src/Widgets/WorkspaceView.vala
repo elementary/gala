@@ -330,9 +330,19 @@ namespace Gala
 				icons.set_layout_manager (new Clutter.BoxLayout ());
 				var backg = new Clutter.Clone (workspace_thumb);
 				
+				var shown_applications = new List<Bamf.Application> ();
+				
 				space.list_windows ().foreach ((w) => {
-					if (w.window_type != Meta.WindowType.NORMAL)
+					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
 						return;
+					
+					var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
+					if (shown_applications.index (app) != -1)
+						return;
+					
+					if (app != null)
+						shown_applications.append (app);
+					
 					var pix = plugin.get_icon_for_window (w, 32);
 					var icon = new GtkClutter.Texture ();
 					try {
