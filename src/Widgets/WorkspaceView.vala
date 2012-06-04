@@ -42,7 +42,7 @@ namespace Gala
 			}
 			set {
 				_workspace = value;
-				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0)
+				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0 || _workspace == 0)
 					last_workspace_x = workspaces.get_children ().nth_data (_workspace).x;
 				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
 					x : workspaces.x + last_workspace_x - 5);
@@ -382,7 +382,7 @@ namespace Gala
 			workspaces.y = 25;
 			
 			workspace = plugin.screen.get_active_workspace ().index ();
-			print ("WORKSPACE: %i\n", workspace);
+
 			current_workspace.y = workspaces.y - 5;
 			
 			visible = true;
