@@ -486,9 +486,13 @@ namespace Gala
 			
 			switch_workspace_completed ();
 			
-			var focus = get_next_window (screen.get_active_workspace ());
-			if (focus != null)
-				focus.activate (screen.get_display ().get_current_time ());
+			var focus = screen.get_display ().get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			if (focus == null) {
+				focus = get_next_window (screen.get_active_workspace ());
+				if (focus != null)
+					focus.activate (screen.get_display ().get_current_time ());
+			}
+
 		}
 		
 		public override void unmaximize (Meta.WindowActor actor, int x, int y, int w, int h)
