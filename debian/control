@@ -14,5 +14,6 @@ Package: gala
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Provides: x-window-manager
-Description: Window manager based on libmutter
- Gala is a window manager... that's all that's certain so far.
+Description: elementary's Window Manager
+ Gala is a window & compositing manager based on libmutter and designed
+ by elementary for use with Pantheon Shell.
