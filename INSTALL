@@ -1,4 +1,5 @@
 Dependencies:
+    cmake
     libgranite-dev
     libmutter-dev
     libclutter-gtk-1.0-dev
