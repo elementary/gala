@@ -1,18 +1,17 @@
 Dependencies:
-    gtk+-3.0
-    libwnck-3.0
-    gstreamer-interfaces-0.10
-    gstreamer-0.10
-    gstreamer-pbutils-0.10
-    granite
-    xtst
-    gdk-x11-3.0
+    libgranite-dev
+    libmutter-dev
+    libclutter-gtk-1.0-dev
+    libgtk-3-dev
+    gsettings-desktop-schemas-dev
+    libxfixes-dev
+    libbamf3-dev
+    valac-0.16
 
 Installation:
-    bzr branch lp:eidete
-    cd eidete
+    bzr branch lp:gala
+    cd gala
     mkdir build
     cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX
-    make
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr
     sudo make install
