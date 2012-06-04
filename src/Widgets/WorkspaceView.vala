@@ -308,7 +308,7 @@ namespace Gala
 			
 			int width, height;
 			unowned Rectangle area;
-
+			
 			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;
@@ -372,6 +372,7 @@ namespace Gala
 			workspaces.y = 25;
 			
 			workspace = plugin.screen.get_active_workspace ().index ();
+			print ("WORKSPACE: %i\n", workspace);
 			current_workspace.y = workspaces.y - 5;
 			
 			visible = true;
@@ -402,11 +403,11 @@ namespace Gala
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			this.show ();
 			
 			bool left = (binding.get_name () == "switch-to-workspace-left");
 			workspace = plugin.move_workspaces (left);
 			
+			this.show ();
 		}
 	}
 }
