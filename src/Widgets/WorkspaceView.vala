@@ -42,8 +42,7 @@ namespace Gala
 			set {
 				_workspace = value;
 				current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300,
-					x : workspaces.x - 5 + 
-					_workspace * (workspaces.get_children ().nth_data (0).width + 10));
+					x : workspaces.x + ((workspaces.get_children ().nth_data (_workspace).width + 10) * _workspace) - 5);
 			}
 		}
 		
