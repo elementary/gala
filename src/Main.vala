@@ -487,6 +487,7 @@ namespace Gala
 			switch_workspace_completed ();
 			
 			var focus = screen.get_display ().get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			// Only switch focus to the next window if none has grabbed it already
 			if (focus == null) {
 				focus = get_next_window (screen.get_active_workspace ());
 				if (focus != null)
