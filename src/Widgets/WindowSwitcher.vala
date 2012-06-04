@@ -20,7 +20,7 @@ using Granite.Drawing;
 
 namespace Gala
 {
-	public class WindowSwitcher : Clutter.Group
+	public class WindowSwitcher : Clutter.Actor
 	{
 		const int ICON_SIZE = 128;
 		const int spacing = 12;
