@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+action="$1"
+
+if [ "$action" = configure ]; then
+    update-alternatives --install /usr/bin/x-window-manager \
+        x-window-manager /usr/bin/gala 50
+fi
+
+#DEBHELPER#
