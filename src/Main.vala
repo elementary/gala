@@ -103,6 +103,7 @@ namespace Gala
 			hot_corner.y = height - 1;
 			hot_corner.width = 1;
 			hot_corner.height = 1;
+			hot_corner.opacity = 0;
 			hot_corner.reactive = true;
 			
 			hot_corner.enter_event.connect (() => {
