@@ -5,12 +5,20 @@
 namespace X {
 	namespace Fixes {
 		[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XFixesCreateRegion")]
-		public static X.XserverRegion create_region (X.Display display, [CCode (array_length = true)] X.Rectangle[] rectangles);
+		public static X.XserverRegion create_region (X.Display display, [CCode (array_length = true)] X.Xrectangle[] rectangles);
 		[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XFixesDestroyRegion")]
 		public static void destroy_region (X.Display display, X.XserverRegion region);
 	}
 	[SimpleType]
 	[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XserverRegion", has_type_id = false)]
 	public struct XserverRegion {
+	}
+	[SimpleType]
+	[CCode (cheader_filename = "X11/Xlib.h", cname = "XRectangle", has_type_id = false)]
+	public struct Xrectangle {
+		public short x;
+		public short y;
+		public ushort width;
+		public ushort height;
 	}
 }

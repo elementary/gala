@@ -176,13 +176,13 @@ namespace Gala
 		 **/
 		public void set_input_area (InputArea area)
 		{
-			X.Rectangle rect;
+			X.Xrectangle rect;
 			int width, height;
 			screen.get_size (out width, out height);
 			
 			switch (area) {
 				case InputArea.FULLSCREEN:
-					rect = {0, 0, (short)width, (short)height};
+					rect = {0, 0, (ushort)width, (ushort)height};
 					break;
 				case InputArea.HOT_CORNER: //leave one pix in the bottom left
 					rect = {(short)(width - 1), (short)(height - 1), 1, 1};
