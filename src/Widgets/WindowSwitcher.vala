@@ -211,18 +211,13 @@ namespace Gala
 			
 			plugin.begin_modal ();
 			
-			int width, height;
-			unowned Meta.Rectangle area;
-
-			screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
-			width = area.width;
-			height = area.height;	
+			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			list_windows (display, screen, binding, backward);
 			
-			x = width / 2 - this.width / 2;
-			y = height / 2 - this.height / 2;
+			x = area.width / 2 - width / 2;
+			y = area.height / 2 - height / 2;
 			grab_key_focus ();
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
 		}

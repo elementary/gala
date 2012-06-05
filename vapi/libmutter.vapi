@@ -219,7 +219,7 @@ namespace Meta {
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
-		public void sync_stack (Meta.Screen screen, GLib.List<void*> stack);
+		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
 		public void sync_window_geometry (Meta.Window window);
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -343,24 +343,6 @@ namespace Meta {
 		[NoAccessorMethod]
 		public ulong features { get; }
 	}
-	[CCode (cheader_filename = "meta/boxes.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_rectangle_get_type ()")]
-	public struct Rectangle {
-		public int height;
-		public int width;
-		public int x;
-		public int y;
-		public int area ();
-		public bool contains_rect (Meta.Rectangle inner_rect);
-		public Meta.Rectangle copy ();
-		public bool could_fit_rect (Meta.Rectangle inner_rect);
-		public bool equal (Meta.Rectangle src2);
-		public void free ();
-		public bool horiz_overlap (Meta.Rectangle rect2);
-		public bool intersect (Meta.Rectangle src2, out unowned Meta.Rectangle dest);
-		public bool overlap (Meta.Rectangle rect2);
-		public void union (Meta.Rectangle rect2, out unowned Meta.Rectangle dest);
-		public bool vert_overlap (Meta.Rectangle rect2);
-	}
 	[CCode (cheader_filename = "meta/main.h")]
 	[Compact]
 	public class ResizePopup {
@@ -374,7 +356,7 @@ namespace Meta {
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
 		public unowned Meta.Display get_display ();
-		public void get_monitor_geometry (int monitor, out unowned Meta.Rectangle geometry);
+		public Meta.Rectangle get_monitor_geometry (int monitor);
 		public int get_n_monitors ();
 		public int get_n_workspaces ();
 		public int get_primary_monitor ();
@@ -466,14 +448,14 @@ namespace Meta {
 		public unowned string get_gtk_unique_bus_name ();
 		public unowned string get_gtk_window_object_path ();
 		public bool get_icon_geometry (Meta.Rectangle rect);
-		public void get_input_rect (out unowned Meta.Rectangle rect);
+		public Meta.Rectangle get_input_rect ();
 		public Meta.StackLayer get_layer ();
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
 		public unowned string get_mutter_hints ();
-		public void get_outer_rect (out unowned Meta.Rectangle rect);
+		public Meta.Rectangle get_outer_rect ();
 		public int get_pid ();
-		public unowned Meta.Rectangle get_rect ();
+		public Meta.Rectangle get_rect ();
 		public unowned string get_role ();
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
@@ -590,7 +572,7 @@ namespace Meta {
 		public void activate (uint32 timestamp);
 		public void activate_with_focus (Meta.Window focus_this, uint32 timestamp);
 		public unowned Meta.Screen get_screen ();
-		public void get_work_area_all_monitors (out unowned Meta.Rectangle area);
+		public Meta.Rectangle get_work_area_all_monitors ();
 		public int index ();
 		public GLib.List<weak Meta.Window> list_windows ();
 		public void set_builtin_struts (GLib.SList<Meta.Strut> struts);
@@ -613,7 +595,7 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/boxes.h", has_type_id = false)]
 	public struct Edge {
-		public weak Meta.Rectangle rect;
+		public Meta.Rectangle rect;
 		public Meta.Side side_type;
 		public Meta.EdgeType edge_type;
 	}
@@ -635,7 +617,7 @@ namespace Meta {
 		public weak string name;
 		public weak GLib.Settings settings;
 		public Meta.KeyBindingAction action;
-		public weak GLib.SList<void*> bindings;
+		public weak GLib.SList<Meta.KeyCombo> bindings;
 		public bool add_shift;
 		public bool per_window;
 		public bool builtin;
@@ -655,6 +637,24 @@ namespace Meta {
 		public uint version_micro;
 		public uint version_api;
 	}
+	[CCode (cheader_filename = "meta/boxes.h", type_id = "meta_rectangle_get_type ()")]
+	public struct Rectangle {
+		public int x;
+		public int y;
+		public int width;
+		public int height;
+		public int area ();
+		public bool contains_rect (Meta.Rectangle inner_rect);
+		public Meta.Rectangle copy ();
+		public bool could_fit_rect (Meta.Rectangle inner_rect);
+		public bool equal (Meta.Rectangle src2);
+		public void free ();
+		public bool horiz_overlap (Meta.Rectangle rect2);
+		public bool intersect (Meta.Rectangle src2, out Meta.Rectangle dest);
+		public bool overlap (Meta.Rectangle rect2);
+		public Meta.Rectangle union (Meta.Rectangle rect2);
+		public bool vert_overlap (Meta.Rectangle rect2);
+	}
 	[CCode (cheader_filename = "meta/meta-shadow-factory.h", has_type_id = false)]
 	public struct ShadowParams {
 		public int radius;
@@ -665,7 +665,7 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/boxes.h", has_type_id = false)]
 	public struct Strut {
-		public weak Meta.Rectangle rect;
+		public Meta.Rectangle rect;
 		public Meta.Side side;
 	}
 	[CCode (cheader_filename = "meta/display.h", cprefix = "META_ATOM_")]

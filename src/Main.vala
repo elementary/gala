@@ -281,8 +281,7 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			
-			unowned Rectangle rect; //some useful infos
-			actor.get_meta_window ().get_outer_rect (out rect);
+			var rect = actor.get_meta_window ().get_outer_rect ();
 			int width, height;
 			screen.get_size (out width, out height);
 			

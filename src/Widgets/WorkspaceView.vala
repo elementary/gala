@@ -131,10 +131,7 @@ namespace Gala
 					windows.prepend (screen.get_display ().get_focus_window ());
 				}
 				
-				unowned Rectangle area;
-
-				screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
-				
+				var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 				var n_wins = windows.length ();
 				var index  = 0;
 				
@@ -191,9 +188,7 @@ namespace Gala
 			});
 			
 			int width, height;
-			unowned Rectangle area;
-			
-			plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor (), out area);
+			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());
 			width = area.width;
 			height = area.height;
 			
@@ -329,18 +324,13 @@ namespace Gala
 			
 			animating = true;
 			
-			int width, height;
-			unowned Rectangle area;
+			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
-			width = area.width;
-			height = area.height;
-			
-			tile.x = width  - 80;
+			tile.x = area.width  - 80;
 			tile.y = 120;
 			
-			y = height;
-			this.width = width;
+			y = area.height;
+			width = area.width;
 			
 			/*get the workspaces together*/
 			workspaces.remove_all_children ();
@@ -401,7 +391,7 @@ namespace Gala
 				
 				workspaces.add_child (group);
 			}
-			workspaces.x = this.width / 2 - workspaces.width / 2;
+			workspaces.x = width / 2 - workspaces.width / 2;
 			workspaces.y = 25;
 			
 			workspace = screen.get_active_workspace ().index ();
@@ -411,7 +401,7 @@ namespace Gala
 			visible = true;
 			grab_key_focus ();
 			Timeout.add (50, () => animating = false ); //catch hot corner hiding problem
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : height-this.height, opacity : 255)
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255)
 				.completed.connect (() => {
 			});
 		}
