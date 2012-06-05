@@ -110,8 +110,10 @@ namespace Gala
 			
 			tile.reactive = true;
 			tile.button_release_event.connect (() => {
+				var screen = plugin.get_screen ();
+
 				var windows = new GLib.List<Window> ();
-				plugin.screen.get_active_workspace ().list_windows ().foreach ( (w) => {
+				screen.get_active_workspace ().list_windows ().foreach ( (w) => {
 					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
 						return;
 					
@@ -119,15 +121,15 @@ namespace Gala
 				});
 				
 				//make sure active window is biggest
-				var active_idx = windows.index (plugin.screen.get_display ().get_focus_window ());
+				var active_idx = windows.index (screen.get_display ().get_focus_window ());
 				if (active_idx != -1 && active_idx != 0) {
 					windows.delete_link (windows.nth (active_idx));
-					windows.prepend (plugin.screen.get_display ().get_focus_window ());
+					windows.prepend (screen.get_display ().get_focus_window ());
 				}
 				
 				unowned Rectangle area;
 
-				plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
+				screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
 				
 				var n_wins = windows.length ();
 				var index  = 0;
@@ -187,7 +189,7 @@ namespace Gala
 			int width, height;
 			unowned Rectangle area;
 			
-			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
+			plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;
 			
@@ -304,12 +306,14 @@ namespace Gala
 			plugin.set_input_area (Gala.InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
+			var screen = plugin.get_screen ();
+			
 			animating = true;
 			
 			int width, height;
 			unowned Rectangle area;
 			
-			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
+			screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;
 			
@@ -322,8 +326,8 @@ namespace Gala
 			/*get the workspaces together*/
 			workspaces.remove_all_children ();
 			
-			for (var i=0;i<plugin.get_screen ().n_workspaces;i++) {
-				var space = plugin.get_screen ().get_workspace_by_index (i);
+			for (var i = 0; i < screen.n_workspaces; i++) {
+				var space = screen.get_workspace_by_index (i);
 				
 				var group = new Clutter.Actor ();
 				var icons = new Clutter.Actor ();
@@ -351,7 +355,7 @@ namespace Gala
 					
 					icon.reactive = true;
 					icon.button_release_event.connect ( () => {
-						space.activate_with_focus (w,plugin.screen.get_display ().get_current_time ());
+						space.activate_with_focus (w, screen.get_display ().get_current_time ());
 						hide ();
 						return false;
 					});
@@ -370,8 +374,8 @@ namespace Gala
 				
 				group.reactive = true;
 				group.button_release_event.connect (() => {
-					space.activate (plugin.screen.get_display ().get_current_time ());
-					workspace = plugin.screen.get_active_workspace ().index ();
+					space.activate (plugin.get_screen ().get_display ().get_current_time ());
+					workspace = plugin.get_screen ().get_active_workspace ().index ();
 					hide ();
 					return true;
 				});
@@ -381,7 +385,7 @@ namespace Gala
 			workspaces.x = this.width / 2 - workspaces.width / 2;
 			workspaces.y = 25;
 			
-			workspace = plugin.screen.get_active_workspace ().index ();
+			workspace = screen.get_active_workspace ().index ();
 
 			current_workspace.y = workspaces.y - 5;
 			

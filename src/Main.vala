@@ -45,6 +45,8 @@ namespace Gala
 		
 		public override void start ()
 		{
+			var screen = get_screen ();
+			
 			elements = Compositor.get_stage_for_screen (screen);
 			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);
 			clutter_actor_reparent (Compositor.get_overlay_group_for_screen (screen), elements);
@@ -162,6 +164,8 @@ namespace Gala
 		
 		public Window get_next_window (Meta.Workspace workspace, bool backward=false)
 		{
+			var screen = get_screen ();
+			
 			var window = screen.get_display ().get_tab_next (Meta.TabList.NORMAL, screen, 
 				screen.get_active_workspace (), null, backward);
 			
@@ -176,6 +180,9 @@ namespace Gala
 		 **/
 		public void set_input_area (InputArea area)
 		{
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			
 			X.Xrectangle rect;
 			int width, height;
 			screen.get_size (out width, out height);
@@ -192,7 +199,7 @@ namespace Gala
 					return;
 			}
 			
-			var xregion = X.Fixes.create_region (screen.get_display ().get_xdisplay (), {rect});
+			var xregion = X.Fixes.create_region (display.get_xdisplay (), {rect});
 			Util.set_stage_input_region (screen, xregion);
 		}
 		
@@ -201,21 +208,24 @@ namespace Gala
 			if (window == null)
 				return;
 			
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			
 			var idx = screen.get_active_workspace ().index () + ((up)?-1:1);
 
 			if (idx < 0 || idx >= screen.n_workspaces)
 				return;
 
 			if (!window.is_on_all_workspaces ())
-				window.change_workspace_by_index (idx, false, 
-					screen.get_display ().get_current_time ());
+				window.change_workspace_by_index (idx, false, display.get_current_time ());
 
-			screen.get_workspace_by_index (idx).activate_with_focus (window, 
-				screen.get_display ().get_current_time ());
+			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
 		}
 		
 		public new void begin_modal ()
 		{
+			var screen = get_screen ();
+			
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, screen.get_display ().get_current_time ());
 		}
 		
@@ -226,6 +236,9 @@ namespace Gala
 		
 		public int move_workspaces (bool left)
 		{
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			
 			var i = screen.get_active_workspace_index ();
 			
 			if (left && i - 1 >= 0) //move left
@@ -235,7 +248,7 @@ namespace Gala
 			
 			if (i != screen.get_active_workspace_index ()) {
 				screen.get_workspace_by_index (i).
-					activate (screen.get_display ().get_current_time ());
+					activate (display.get_current_time ());
 			}
 			
 			return i;
@@ -285,6 +298,8 @@ namespace Gala
 		
 		public override void map (WindowActor actor)
 		{
+			var screen = get_screen ();
+			
 			unowned Rectangle rect; //some useful infos
 			actor.meta_window.get_outer_rect (out rect);
 			int width, height;
@@ -474,6 +489,9 @@ namespace Gala
 			if (win == null || par == null)
 				return;
 			
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			
 			for (var i=0;i<win.length ();i++) {
 				var window = win.nth_data (i);
 				if ((window as WindowActor).is_destroyed ())
@@ -500,12 +518,12 @@ namespace Gala
 			
 			switch_workspace_completed ();
 			
-			var focus = screen.get_display ().get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			// Only switch focus to the next window if none has grabbed it already
 			if (focus == null) {
 				focus = get_next_window (screen.get_active_workspace ());
 				if (focus != null)
-					focus.activate (screen.get_display ().get_current_time ());
+					focus.activate (display.get_current_time ());
 			}
 
 		}

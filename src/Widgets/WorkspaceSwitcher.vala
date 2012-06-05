@@ -59,7 +59,7 @@ namespace Gala
 			plugin = _plugin;
 			
 			int w, h;
-			plugin.screen.get_size (out w, out h);
+			plugin.get_screen ().get_size (out w, out h);
 			
 			len = (float)w / h * HEIGHT;
 			

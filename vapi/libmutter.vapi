@@ -263,7 +263,6 @@ namespace Meta {
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
-		public Meta.Window focus_window { get; }
 		public signal void grab_op_begin (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void grab_op_end (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void overlay_key ();
@@ -343,8 +342,6 @@ namespace Meta {
 		public bool disabled { get; set; }
 		[NoAccessorMethod]
 		public ulong features { get; }
-		[NoAccessorMethod]
-		public Meta.Screen screen { owned get; set; }
 	}
 	[CCode (cheader_filename = "meta/boxes.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_rectangle_get_type ()")]
 	public struct Rectangle {

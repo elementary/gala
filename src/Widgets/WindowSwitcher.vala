@@ -163,7 +163,7 @@ namespace Gala
 					remove_child (c);
 			});
 			
-			current_window = plugin.get_next_window (plugin.screen.get_active_workspace (), backward);
+			current_window = plugin.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
 			
@@ -214,7 +214,7 @@ namespace Gala
 			int width, height;
 			unowned Meta.Rectangle area;
 
-			plugin.screen.get_monitor_geometry (plugin.screen.get_primary_monitor (), out area);
+			screen.get_monitor_geometry (screen.get_primary_monitor (), out area);
 			width = area.width;
 			height = area.height;	
 			
