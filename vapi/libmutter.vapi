@@ -369,8 +369,8 @@ namespace Meta {
 	public class Screen : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Screen ();
-		public unowned Meta.Workspace append_new_workspace (bool activate, uint32 timestamp);
-		public static unowned Meta.Screen for_x_screen (X.Screen xscreen);
+		public unowned Meta.Workspace? append_new_workspace (bool activate, uint32 timestamp);
+		public static unowned Meta.Screen? for_x_screen (X.Screen xscreen);
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
 		public void* get_compositor_data ();
@@ -382,7 +382,7 @@ namespace Meta {
 		public int get_screen_number ();
 		public void get_size (out int width, out int height);
 		public unowned GLib.SList<void*> get_startup_sequences ();
-		public unowned Meta.Workspace get_workspace_by_index (int index);
+		public unowned Meta.Workspace? get_workspace_by_index (int index);
 		public unowned GLib.List<Meta.Workspace> get_workspaces ();
 		public X.Window get_xroot ();
 		public bool grab_all_keys (uint32 timestamp);
@@ -458,7 +458,7 @@ namespace Meta {
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
 		public unowned Meta.Frame get_frame ();
-		public unowned Cairo.Region get_frame_bounds ();
+		public unowned Cairo.Region? get_frame_bounds ();
 		public Meta.FrameType get_frame_type ();
 		public unowned Meta.Group get_group ();
 		public unowned string get_gtk_app_menu_object_path ();
@@ -480,7 +480,7 @@ namespace Meta {
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
 		public unowned string get_startup_id ();
-		public unowned Meta.Window get_tile_match ();
+		public unowned Meta.Window? get_tile_match ();
 		public unowned string get_title ();
 		public unowned Meta.Window get_transient_for ();
 		public X.Window get_transient_for_as_xid ();
