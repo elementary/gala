@@ -165,12 +165,13 @@ namespace Gala
 		public Window get_next_window (Meta.Workspace workspace, bool backward=false)
 		{
 			var screen = get_screen ();
+			var display = screen.get_display ();
 			
-			var window = screen.get_display ().get_tab_next (Meta.TabList.NORMAL, screen, 
+			var window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 				screen.get_active_workspace (), null, backward);
 			
 			if (window == null)
-				window = screen.get_display ().get_tab_current (Meta.TabList.NORMAL, screen, workspace);
+				window = display.get_tab_current (Meta.TabList.NORMAL, screen, workspace);
 			
 			return window;
 		}
@@ -251,7 +252,7 @@ namespace Gala
 		//stolen from original mutter plugin
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			if (actor.meta_window.window_type == WindowType.NORMAL) {
+			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				float x, y, width, height;
 				actor.get_size (out width, out height);
 				actor.get_position (out x, out y);
@@ -281,14 +282,14 @@ namespace Gala
 			var screen = get_screen ();
 			
 			unowned Rectangle rect; //some useful infos
-			actor.meta_window.get_outer_rect (out rect);
+			actor.get_meta_window ().get_outer_rect (out rect);
 			int width, height;
 			screen.get_size (out width, out height);
 			
-			if (actor.meta_window.window_type == WindowType.NORMAL) {
+			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				
 				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
-					actor.meta_window.move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
+					actor.get_meta_window ().move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
 						(int)(height/2.0f - rect.height/2.0f));
 					actor.x = width/2.0f - rect.width/2.0f - 10;
 					actor.y = height/2.0f - rect.height/2.0f - 10;
@@ -297,7 +298,7 @@ namespace Gala
 			
 			actor.show ();
 			
-			switch (actor.meta_window.window_type) {
+			switch (actor.get_meta_window ().window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, 0, 10};
@@ -309,7 +310,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
-						actor.meta_window.activate (screen.get_display ().get_current_time ());
+						actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
 					});
 					break;
 				case WindowType.MENU:
@@ -324,7 +325,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
-						actor.meta_window.activate (screen.get_display ().get_current_time ());
+						actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
@@ -333,8 +334,8 @@ namespace Gala
 					get_current_cursor_position (null, out y);
 					
 					if (rect.y >= y - 10 || 
-						actor.meta_window.window_type == WindowType.MODAL_DIALOG ||
-						actor.meta_window.window_type == WindowType.DIALOG)
+						actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG ||
+						actor.get_meta_window ().window_type == WindowType.DIALOG)
 						actor.scale_gravity = Clutter.Gravity.NORTH;
 					else
 						actor.scale_gravity = Clutter.Gravity.SOUTH;
@@ -355,7 +356,7 @@ namespace Gala
 		
 		public override void destroy (WindowActor actor)
 		{
-			switch (actor.meta_window.window_type) {
+			switch (actor.get_meta_window ().window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, actor.height, 10};
@@ -389,14 +390,14 @@ namespace Gala
 			}
 		}
 		
-		GLib.List<Clutter.Actor>? win;
+		GLib.List<Meta.WindowActor>? win;
 		GLib.List<Clutter.Actor>? par; //class space for kill func
 		Clutter.Actor in_group;
 		Clutter.Actor out_group;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			unowned List<Clutter.Actor> windows = Compositor.get_window_actors (get_screen ());
+			unowned List<Meta.WindowActor> windows = Compositor.get_window_actors (get_screen ());
 			//FIXME js/ui/windowManager.js line 430
 			int w, h;
 			get_screen ().get_size (out w, out h);
@@ -426,19 +427,19 @@ namespace Gala
 			group.add_actor (in_group);
 			group.add_actor (out_group);
 			
-			win = new List<Clutter.Actor> ();
+			win = new List<Meta.WindowActor> ();
 			par = new List<Clutter.Actor> ();
 			
 			for (var i=0;i<windows.length ();i++) {
 				var window = windows.nth_data (i);
-				if (!(window as WindowActor).meta_window.showing_on_its_workspace ())
+				if (!window.get_meta_window ().showing_on_its_workspace ())
 					continue;
 				
 				win.append (window);
 				par.append (window.get_parent ());
-				if ((window as WindowActor).get_workspace () == from) {
+				if (window.get_workspace () == from) {
 					clutter_actor_reparent (window, out_group);
-				} else if ((window as WindowActor).get_workspace () == to) {
+				} else if (window.get_workspace () == to) {
 					clutter_actor_reparent (window, in_group);
 				}
 			}
@@ -474,7 +475,7 @@ namespace Gala
 			
 			for (var i=0;i<win.length ();i++) {
 				var window = win.nth_data (i);
-				if ((window as WindowActor).is_destroyed ())
+				if (window.is_destroyed ())
 					continue;
 				if (window.get_parent () == out_group) {
 					clutter_actor_reparent (window, par.nth_data (i));
@@ -510,7 +511,7 @@ namespace Gala
 		
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			if (actor.meta_window.window_type == WindowType.NORMAL) {
+			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				float x, y, width, height;
 				actor.get_size (out width, out height);
 				actor.get_position (out x, out y);
@@ -565,7 +566,7 @@ namespace Gala
 		Meta.exit (Meta.ExitCode.SUCCESS);
 	}
 
-	void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
+	static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
 	{
 		if (actor == new_parent)
 			return;

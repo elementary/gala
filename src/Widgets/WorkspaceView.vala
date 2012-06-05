@@ -234,6 +234,7 @@ namespace Gala
 		{
 			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
 				current_workspace.width, current_workspace.height);
+			
 			return false;
 		}
 		
@@ -307,7 +308,7 @@ namespace Gala
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
 			if (event.keyval == Clutter.Key.Alt_L) {
-				this.hide ();
+				hide ();
 				
 				return true;
 			}

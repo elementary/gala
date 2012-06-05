@@ -206,7 +206,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
 		public static unowned Clutter.Actor get_stage_for_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_actors")]
-		public static unowned GLib.List<Clutter.Actor> get_window_actors (Meta.Screen screen);
+		public static unowned GLib.List<Meta.WindowActor> get_window_actors (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_group_for_screen")]
 		public static unowned Clutter.Actor get_window_group_for_screen (Meta.Screen screen);
 		public void hide_window (Meta.Window window, Meta.CompEffect effect);
@@ -373,7 +373,6 @@ namespace Meta {
 		public static unowned Meta.Screen? for_x_screen (X.Screen xscreen);
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
-		public void* get_compositor_data ();
 		public unowned Meta.Display get_display ();
 		public void get_monitor_geometry (int monitor, out unowned Meta.Rectangle geometry);
 		public int get_n_monitors ();
@@ -381,7 +380,6 @@ namespace Meta {
 		public int get_primary_monitor ();
 		public int get_screen_number ();
 		public void get_size (out int width, out int height);
-		public unowned GLib.SList<void*> get_startup_sequences ();
 		public unowned Meta.Workspace? get_workspace_by_index (int index);
 		public unowned GLib.List<Meta.Workspace> get_workspaces ();
 		public X.Window get_xroot ();
@@ -575,15 +573,9 @@ namespace Meta {
 		public bool is_override_redirect ();
 		public bool showing_on_its_workspace ();
 		[NoAccessorMethod]
-		public void* meta_screen { get; set construct; }
-		[NoAccessorMethod]
-		public Meta.Window meta_window { owned get; set construct; }
-		[NoAccessorMethod]
 		public bool no_shadow { get; set; }
 		[NoAccessorMethod]
 		public string shadow_class { owned get; set; }
-		[NoAccessorMethod]
-		public ulong x_window { get; set construct; }
 		public signal void position_changed ();
 		public signal void size_changed ();
 	}
