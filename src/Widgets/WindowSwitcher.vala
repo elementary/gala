@@ -79,10 +79,6 @@ namespace Gala
 			title.color = {255, 255, 255, 255};
 			title.add_effect (new TextShadowEffect (1, 1, 220));
 			
-			add_child (background);
-			add_child (current);
-			add_child (title);
-			
 			background.add_constraint (new BindConstraint (this, BindCoordinate.WIDTH, 0));
 			background.add_constraint (new BindConstraint (this, BindCoordinate.HEIGHT, 0));
 		}
@@ -105,22 +101,22 @@ namespace Gala
 			if (!(event.get_type () == EventType.KEY_PRESS))
 				return false;
 			
+			var screen = plugin.get_screen ();
+			var display = screen.get_display ();
+			
 			bool backward = (event.get_state () & X.KeyMask.ShiftMask) != 0;
-			var action = plugin.get_screen ().get_display ().get_keybinding_action (
-				event.get_key_code (), event.get_state ());
+			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
 			switch (action) {
 				case Meta.KeyBindingAction.SWITCH_GROUP:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
-					current_window = plugin.get_screen ().get_display ().
-						get_tab_next (Meta.TabList.NORMAL, plugin.get_screen (), 
-							plugin.get_screen ().get_active_workspace (), current_window, backward);
+					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+							screen.get_active_workspace (), current_window, backward);
 					break;
 				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-					current_window = plugin.get_screen ().get_display ().
-						get_tab_next (Meta.TabList.NORMAL, plugin.get_screen (), 
-							plugin.get_screen ().get_active_workspace (), current_window, true);
+					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+							screen.get_active_workspace (), current_window, true);
 					break;
 				default:
 					break;
@@ -158,10 +154,11 @@ namespace Gala
 		
 		void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)
 		{
-			get_children ().foreach ((c) => { //clear
-				if (c != current && c != background && c != title)
-					remove_child (c);
-			});
+			remove_all_children ();
+
+			add_child (background);
+			add_child (current);
+			add_child (title);
 			
 			current_window = plugin.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
@@ -173,13 +170,10 @@ namespace Gala
 			}
 			
 			var i = 0;
-			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).copy ();
+			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			
-			window_list.foreach ((w) => {
-				if (w == null)
-					return;
-				
-				var image = Gala.Plugin.get_icon_for_window (w, ICON_SIZE);
+			foreach (var window in window_list) {
+				var image = Gala.Plugin.get_icon_for_window (window, ICON_SIZE);
 				
 				var icon = new GtkClutter.Texture ();
 				try {
@@ -192,10 +186,11 @@ namespace Gala
 				icon.y = spacing + 5;
 				icon.width = ICON_SIZE - 10;
 				icon.height = ICON_SIZE - 10;
+				
 				add_child (icon);
 				
 				i++;
-			});
+			}
 			
 			windows = i;
 			
