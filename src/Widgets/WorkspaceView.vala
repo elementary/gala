@@ -343,7 +343,7 @@ namespace Gala
 					if (app != null)
 						shown_applications.append (app);
 					
-					var pix = plugin.get_icon_for_window (w, 32);
+					var pix = Gala.Plugin.get_icon_for_window (w, 32);
 					var icon = new GtkClutter.Texture ();
 					try {
 						icon.set_from_pixbuf (pix);

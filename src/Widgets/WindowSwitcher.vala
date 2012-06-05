@@ -179,7 +179,7 @@ namespace Gala
 				if (w == null)
 					return;
 				
-				var image = plugin.get_icon_for_window (w, ICON_SIZE);
+				var image = Gala.Plugin.get_icon_for_window (w, ICON_SIZE);
 				
 				var icon = new GtkClutter.Texture ();
 				try {

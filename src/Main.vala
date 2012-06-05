@@ -125,23 +125,36 @@ namespace Gala
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
-		public Gdk.Pixbuf get_icon_for_window (Window window, int size) {
-			Gdk.Pixbuf image = null;
+		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
+		{
+			unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+			Gdk.Pixbuf? image = null;
 			
 			var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
-			if (app != null) {
-				var desktop = new GLib.DesktopAppInfo.from_filename (app.get_desktop_file ());
+			if (app != null && app.get_desktop_file () != null) {
 				try {
-					image = Gtk.IconTheme.get_default ().lookup_by_gicon (desktop.get_icon (), size, 0).load_icon ();
-				} catch (Error e) { warning (e.message); }
+					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
+					if (appinfo != null) {
+						var iconinfo = icon_theme.lookup_by_gicon (appinfo.get_icon (), size, 0);
+						if (iconinfo != null)
+							image = iconinfo.load_icon ();
+					}
+				} catch (Error e) {
+					warning (e.message);
+				}
 			}
 			
 			if (image == null) {
 				try {
-					image = Gtk.IconTheme.get_default ().load_icon ("application-default-icon", size, 0);
+					image = icon_theme.load_icon ("application-default-icon", size, 0);
 				} catch (Error e) {
 					warning (e.message);
 				}
+			}
+			
+			if (image == null) {
+				image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, 1, 1);
+				image.fill (0x00000000);
 			}
 			
 			return image;
@@ -205,6 +218,7 @@ namespace Gala
 		{
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, screen.get_display ().get_current_time ());
 		}
+		
 		public new void end_modal ()
 		{
 			base.end_modal (get_screen ().get_display ().get_current_time ());
