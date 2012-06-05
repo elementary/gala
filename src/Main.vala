@@ -203,7 +203,7 @@ namespace Gala
 			Util.set_stage_input_region (screen, xregion);
 		}
 		
-		void move_window (Window? window, bool up)
+		void move_window (Window? window, bool reverse)
 		{
 			if (window == null)
 				return;
@@ -211,14 +211,14 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
-			var idx = screen.get_active_workspace ().index () + ((up)?-1:1);
-
+			var idx = screen.get_active_workspace ().index () + (reverse ? -1 : 1);
+			
 			if (idx < 0 || idx >= screen.n_workspaces)
 				return;
-
+			
 			if (!window.is_on_all_workspaces ())
 				window.change_workspace_by_index (idx, false, display.get_current_time ());
-
+			
 			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
 		}
 		
@@ -232,26 +232,6 @@ namespace Gala
 		public new void end_modal ()
 		{
 			base.end_modal (get_screen ().get_display ().get_current_time ());
-		}
-		
-		public int move_workspaces (bool left)
-		{
-			var screen = get_screen ();
-			var display = screen.get_display ();
-			
-			var i = screen.get_active_workspace_index ();
-			
-			if (left && i - 1 >= 0) //move left
-				i --;
-			else if (!left && i + 1 < screen.n_workspaces) //move down
-				i ++;
-			
-			if (i != screen.get_active_workspace_index ()) {
-				screen.get_workspace_by_index (i).
-					activate (display.get_current_time ());
-			}
-			
-			return i;
 		}
 		
 		public void get_current_cursor_position (out int x, out int y)

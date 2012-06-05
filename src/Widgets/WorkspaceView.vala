@@ -41,7 +41,11 @@ namespace Gala
 				return _workspace;
 			}
 			set {
+				if (_workspace == value)
+					return;
+				
 				_workspace = value;
+				
 				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0 || _workspace == 0)
 					last_workspace_x = workspaces.get_children ().nth_data (_workspace).x;
 				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
@@ -270,14 +274,28 @@ namespace Gala
 			return false;
 		}
 		
+		void switch_to_next_workspace (bool reverse)
+		{
+			var screen = plugin.get_screen ();
+			var display = screen.get_display ();
+			
+			var idx = screen.get_active_workspace_index () + (reverse ? -1 : 1);
+			
+			if (idx < 0 || idx >= screen.n_workspaces)
+				return;
+			
+			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
+			workspace = idx;
+		}
+		
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			switch (event.keyval) {
 				case Clutter.Key.Left:
-					workspace = plugin.move_workspaces (true);
+					switch_to_next_workspace (true);
 					return false;
 				case Clutter.Key.Right:
-					workspace = plugin.move_workspaces (false);
+					switch_to_next_workspace (false);
 					return false;
 				default:
 					break;
@@ -417,11 +435,10 @@ namespace Gala
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			
 			bool left = (binding.get_name () == "switch-to-workspace-left");
-			workspace = plugin.move_workspaces (left);
+			switch_to_next_workspace (left);
 			
-			this.show ();
+			show ();
 		}
 	}
 }
