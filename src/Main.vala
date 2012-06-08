@@ -246,10 +246,8 @@ namespace Gala
 		{
 			var win = window.get_compositor_private () as Clutter.Actor;
 			if (dim || !win.has_effects ()) {
-				win.add_effect_with_name ("desat", new Clutter.DesaturateEffect (1));
 				win.add_effect_with_name ("darken", new Clutter.ColorizeEffect ({180, 180, 180, 255}));
 			} else {
-				win.remove_effect_by_name ("desat");
 				win.remove_effect_by_name ("darken");
 			}
 		}
