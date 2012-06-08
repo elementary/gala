@@ -115,7 +115,7 @@ namespace Gala
 			tile.reactive = true;
 			tile.button_release_event.connect (() => {
 				var screen = plugin.get_screen ();
-
+				
 				var windows = new GLib.List<Window> ();
 				screen.get_active_workspace ().list_windows ().foreach ( (w) => {
 					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
@@ -211,11 +211,24 @@ namespace Gala
 			current_workspace.auto_resize = true;
 			current_workspace.draw.connect (draw_current_workspace);
 			
-			var path = File.new_for_uri (new GLib.Settings ("org.gnome.desktop.background").get_string ("picture-uri")).get_path ();
+			var settings = new GLib.Settings ("org.gnome.desktop.background");
+			
+			settings.changed.connect ((key) => {
+				if (key == "picture-uri") {
+					var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
+					try {
+						background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
+						((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
+					} catch (Error e) { warning (e.message); }
+				}
+			});
+			
+			var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
 			try {
 				background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
 				((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
 			} catch (Error e) { warning (e.message); }
+			
 			add_child (workspace_thumb);
 			add_child (bg);
 			/*add_child (tile); removed for now until Luna+1 */
