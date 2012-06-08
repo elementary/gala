@@ -325,7 +325,8 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
-						actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
+						if (!actor.get_meta_window ().is_override_redirect ())
+							actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
@@ -356,6 +357,9 @@ namespace Gala
 		
 		public override void destroy (WindowActor actor)
 		{
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			
 			switch (actor.get_meta_window ().window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
@@ -364,6 +368,14 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, 200, 
 						scale_x:0.95f, scale_y:0.95f, opacity:0, rotation_angle_x:15.0f)
 						.completed.connect ( () => {
+						var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+						// Only switch focus to the next window if none has grabbed it already
+						if (focus == null) {
+							focus = get_next_window (screen.get_active_workspace ());
+							if (focus != null)
+								focus.activate (display.get_current_time ());
+						}
+						
 						destroy_completed (actor);
 					});
 					break;
@@ -506,7 +518,7 @@ namespace Gala
 				if (focus != null)
 					focus.activate (display.get_current_time ());
 			}
-
+			
 		}
 		
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
