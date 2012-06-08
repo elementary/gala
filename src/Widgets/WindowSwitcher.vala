@@ -232,7 +232,7 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			if (display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).length () == 0)
+			if (display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).length () <= 1)
 				return;
 			
 			plugin.begin_modal ();

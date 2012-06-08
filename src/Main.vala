@@ -451,6 +451,7 @@ namespace Gala
 				direction == MotionDirection.DOWN_RIGHT)
 				x2 = -w;
 			
+			
 			var in_group  = new Clutter.Actor ();
 			var out_group = new Clutter.Actor ();
 			var group = Compositor.get_window_group_for_screen (get_screen ());
