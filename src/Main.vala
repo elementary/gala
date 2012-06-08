@@ -242,6 +242,18 @@ namespace Gala
 				out x, out y);
 		}
 		
+		public void dim_window (Window window, bool dim)
+		{
+			var win = window.get_compositor_private () as Clutter.Actor;
+			if (dim || !win.has_effects ()) {
+				win.add_effect_with_name ("desat", new Clutter.DesaturateEffect (1));
+				win.add_effect_with_name ("darken", new Clutter.ColorizeEffect ({180, 180, 180, 255}));
+			} else {
+				win.remove_effect_by_name ("desat");
+				win.remove_effect_by_name ("darken");
+			}
+		}
+		
 		/*
 		 * effects
 		 */
@@ -348,6 +360,10 @@ namespace Gala
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
 						map_completed (actor);
 					});
+					
+					if (actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG)
+						dim_window (actor.get_meta_window ().find_root_ancestor (), true);
+					
 					break;
 				default:
 					map_completed (actor);
@@ -387,7 +403,7 @@ namespace Gala
 						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
 						destroy_completed (actor);
 					});
-    				break;
+					break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
 					actor.scale_gravity = Clutter.Gravity.NORTH;
@@ -395,7 +411,10 @@ namespace Gala
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
 						destroy_completed (actor);
 					});
-	    			break;
+					
+					dim_window (actor.get_meta_window ().find_root_ancestor (), false);
+					
+					break;
 				default:
 					destroy_completed (actor);
 					break;
