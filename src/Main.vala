@@ -593,7 +593,11 @@ namespace Gala
 		    Meta.exit (Meta.ExitCode.ERROR);
 		}
 		
+#if HAS_MUTTER36
+		Meta.Plugin.manager_set_plugin_type (new Gala.Plugin ().get_type ());
+#else		
 		Meta.Plugin.type_register (new Gala.Plugin ().get_type ());
+#endif
 		
 		/**
 		 * Prevent Meta.init () from causing gtk to load gail and at-bridge

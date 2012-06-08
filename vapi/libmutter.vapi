@@ -153,8 +153,6 @@ namespace Meta {
 		public static void later_remove (uint later_id);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_pop_no_msg_prefix")]
 		public static void pop_no_msg_prefix ();
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_print_backtrace")]
-		public static void print_backtrace ();
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_push_no_msg_prefix")]
 		public static void push_no_msg_prefix ();
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_rect")]
@@ -219,7 +217,7 @@ namespace Meta {
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
-		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
+		public void sync_stack (Meta.Screen screen, [CCode (type = "GList*")] GLib.List<Meta.WindowActor> stack);
 		public void sync_window_geometry (Meta.Window window);
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -313,6 +311,7 @@ namespace Meta {
 		public virtual void kill_switch_workspace ();
 		[NoWrapper]
 		public virtual void kill_window_effects (Meta.WindowActor actor);
+		public static void manager_set_plugin_type (GLib.Type gtype);
 		[NoWrapper]
 		public virtual void map (Meta.WindowActor actor);
 		public void map_completed (Meta.WindowActor actor);
@@ -338,10 +337,6 @@ namespace Meta {
 		public virtual bool xevent_filter (X.Event event);
 		[NoAccessorMethod]
 		public bool debug_mode { get; }
-		[NoAccessorMethod]
-		public bool disabled { get; set; }
-		[NoAccessorMethod]
-		public ulong features { get; }
 	}
 	[CCode (cheader_filename = "meta/main.h")]
 	[Compact]

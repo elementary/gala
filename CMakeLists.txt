@@ -21,6 +21,7 @@ set (VERSION_INFO "Release")
 set (CMAKE_C_FLAGS "-ggdb")
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
 set (DOLLAR "$")
+set (GALAVALAFLAGS "")
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -29,6 +30,11 @@ add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 find_package(PkgConfig)
 pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes)
+
+pkg_check_modules(MUTTER36 libmutter>=3.5.2)
+if (MUTTER36_FOUND)
+	set (GALAVALAFLAGS "--define=HAS_MUTTER36")
+endif (MUTTER36_FOUND)
 
 add_definitions(${DEPS_CFLAGS})
 
@@ -57,6 +63,7 @@ PACKAGES
     bamf
 OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
+    ${GALAVALAFLAGS}
     )
 
 #add_subdirectory (po)
