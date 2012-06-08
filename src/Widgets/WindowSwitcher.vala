@@ -95,6 +95,7 @@ namespace Gala
 				
 				window_list.foreach ((w) => {
 					plugin.dim_window (w, false);
+					(w.get_compositor_private () as Clutter.Actor).detach_animation ();
 					(w.get_compositor_private () as Clutter.Actor).depth = 0.0f;
 				});
 				
@@ -171,7 +172,7 @@ namespace Gala
 		void dim_windows ()
 		{
 			window_list.foreach ((window) => {
-				(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:-80.0f);
+				//	(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:-80.0f);
 				plugin.dim_window (window, window != current_window);
 			});
 			
