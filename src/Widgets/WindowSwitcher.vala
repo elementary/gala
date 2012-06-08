@@ -15,6 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+/*
+NOTE:
+The actual switcher is not shown anymore
+*/
+
 using Clutter;
 using Granite.Drawing;
 
@@ -87,10 +92,16 @@ namespace Gala
 		{
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
+				
+				window_list.foreach ((w) => {
+					plugin.dim_window (w, false);
+					(w.get_compositor_private () as Clutter.Actor).depth = 0.0f;
+				});
+				
 				plugin.end_modal ();
 				current_window.activate (event.time);
 				
-				animate (AnimationMode.EASE_OUT_QUAD, 200, opacity:0);
+				animate (AnimationMode.EASE_OUT_QUAD, 200, opacity : 0);
 			}
 			
 			return true;
@@ -107,6 +118,7 @@ namespace Gala
 			bool backward = (event.get_state () & X.KeyMask.ShiftMask) != 0;
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
+			var prev_win = current_window;
 			switch (action) {
 				case Meta.KeyBindingAction.SWITCH_GROUP:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
@@ -125,6 +137,10 @@ namespace Gala
 			current.animate (AnimationMode.EASE_OUT_QUAD, 200,
 				x : 0.0f + spacing + window_list.index (current_window) * (spacing + ICON_SIZE));
 			
+			if (prev_win != current_window) {
+				dim_windows ();
+			}
+			
 			return true;
 		}
 		
@@ -139,7 +155,7 @@ namespace Gala
 			
 			return true;
 		}
-
+		
 		bool draw_current (Cairo.Context cr)
 		{
 			Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, current.width - 2, current.height - 1, 10);
@@ -152,10 +168,22 @@ namespace Gala
 			return true;
 		}
 		
+		void dim_windows ()
+		{
+			window_list.foreach ((window) => {
+				(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:-80.0f);
+				plugin.dim_window (window, window != current_window);
+			});
+			
+			(current_window.get_compositor_private () as Clutter.Actor).raise_top ();
+			(current_window.get_compositor_private () as Clutter.Actor).depth = -80.0f;
+			(current_window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:0.0f);
+		}
+		
 		void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)
 		{
 			remove_all_children ();
-
+			
 			add_child (background);
 			add_child (current);
 			add_child (title);
@@ -196,8 +224,10 @@ namespace Gala
 			
 			var idx = window_list.index (current_window);
 			current.x = spacing + idx * (spacing + ICON_SIZE);
+			
+			dim_windows ();
 		}
-
+		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
@@ -214,7 +244,7 @@ namespace Gala
 			x = area.width / 2 - width / 2;
 			y = area.height / 2 - height / 2;
 			grab_key_focus ();
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
+			//animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity : 255);
 		}
 	}
 }

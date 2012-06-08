@@ -245,11 +245,12 @@ namespace Gala
 		public void dim_window (Window window, bool dim)
 		{
 			var win = window.get_compositor_private () as Clutter.Actor;
-			if (dim || !win.has_effects ()) {
+			if (dim) {
+				if (win.has_effects ())
+					return;
 				win.add_effect_with_name ("darken", new Clutter.ColorizeEffect ({180, 180, 180, 255}));
-			} else {
-				win.remove_effect_by_name ("darken");
-			}
+			} else
+				win.clear_effects ();
 		}
 		
 		/*
