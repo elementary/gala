@@ -363,7 +363,8 @@ namespace Gala
 						map_completed (actor);
 					});
 					
-					if (actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG)
+					if (actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG && 
+						actor.get_meta_window ().is_attached_dialog ())
 						dim_window (actor.get_meta_window ().find_root_ancestor (), true);
 					
 					break;
@@ -429,6 +430,7 @@ namespace Gala
 		Clutter.Actor out_group;
 		Clutter.Rectangle black; //black border between workspaces
 		Clutter.Clone wallpaper;
+		Clutter.Clone panel;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
