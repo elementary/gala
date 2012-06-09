@@ -31,6 +31,8 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Clutter.Actor elements;
 		
+		Window? moving; //place for the window that is being moved over
+		
 		public Plugin ()
 		{
 			if (Settings.get_default().use_gnome_defaults)
@@ -91,8 +93,8 @@ namespace Gala
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("move-to-workspace-left",	(d, s, w) => move_window (w, true) );
-			KeyBinding.set_custom_handler ("move-to-workspace-right",  (d, s, w) => move_window (w, false) );
+			KeyBinding.set_custom_handler ("move-to-workspace-left",  (d, s, w) => move_window (w, true) );
+			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
 			ShadowFactory.get_default ().set_params ("normal", true, {20, -1, 0, 15, 153});
@@ -221,6 +223,7 @@ namespace Gala
 			if (!window.is_on_all_workspaces ())
 				window.change_workspace_by_index (idx, false, display.get_current_time ());
 			
+			moving = window;
 			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
 		}
 		
@@ -450,9 +453,20 @@ namespace Gala
 			win = new List<Meta.WindowActor> ();
 			par = new List<Clutter.Actor> ();
 			
+			WindowActor moving_actor = null;
+			if (moving != null) {
+				moving_actor = moving.get_compositor_private () as WindowActor;
+				
+				win.append (moving_actor);
+				par.append (moving_actor.get_parent ());
+				
+				clutter_actor_reparent (moving_actor, Compositor.get_overlay_group_for_screen (get_screen ()));
+			}
+			
 			for (var i=0;i<windows.length ();i++) {
 				var window = windows.nth_data (i);
-				if (!window.get_meta_window ().showing_on_its_workspace ())
+				if (!window.get_meta_window ().showing_on_its_workspace () || 
+					moving != null && window == moving_actor)
 					continue;
 				
 				if (window.get_workspace () == from) {
@@ -520,6 +534,8 @@ namespace Gala
 			}
 			
 			switch_workspace_completed ();
+			
+			moving = null;
 			
 			var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			// Only switch focus to the next window if none has grabbed it already
