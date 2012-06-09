@@ -120,16 +120,23 @@ namespace Gala
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
 			var prev_win = current_window;
+			var i = 0;
 			switch (action) {
 				case Meta.KeyBindingAction.SWITCH_GROUP:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+					do {
+						current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, backward);
+						i ++;
+					} while (current_window.minimized && i < window_list.length ());
 					break;
 				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+					do {
+						current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, true);
+						i ++;
+					} while (current_window.minimized && i < window_list.length ());
 					break;
 				default:
 					break;
@@ -201,6 +208,13 @@ namespace Gala
 			var i = 0;
 			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			
+			do {
+				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+					screen.get_active_workspace (), current_window, backward);
+				i ++;
+			} while (current_window.minimized && i < window_list.length ());
+			
+			i = 0;
 			foreach (var window in window_list) {
 				var image = Gala.Plugin.get_icon_for_window (window, ICON_SIZE);
 				
