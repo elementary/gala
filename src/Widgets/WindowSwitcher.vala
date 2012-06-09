@@ -93,13 +93,17 @@ namespace Gala
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
 				
-				window_list.foreach ((w) => {
-					if (w.minimized)
-						(w.get_compositor_private () as Clutter.Actor).hide ();
+				window_list.foreach ((window) => {
+					var actor = window.get_compositor_private () as Clutter.Actor;
+					if (actor == null)
+						return;
 					
-					(w.get_compositor_private () as Clutter.Actor).detach_animation ();
-					(w.get_compositor_private () as Clutter.Actor).depth = 0.0f;
-					(w.get_compositor_private () as Clutter.Actor).opacity = 255;
+					if (window.minimized)
+						actor.hide ();
+					
+					actor.detach_animation ();
+					actor.depth = 0.0f;
+					actor.opacity = 255;
 				});
 				
 				window_list = null;
@@ -177,19 +181,22 @@ namespace Gala
 		void dim_windows ()
 		{
 			window_list.foreach ((window) => {
-				if (window.minimized)
-					(window.get_compositor_private () as Clutter.Actor).show ();
+				var actor = window.get_compositor_private () as Clutter.Actor;
+				if (actor == null)
+					return;
 				
-				if (window != current_window)
-					(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 
-						250, depth:-200.0f, opacity:0);
+				if (window.minimized)
+					actor.show ();
+				
+				if (window == current_window) {
+					actor.get_parent ().set_child_above_sibling (actor, null);
+					actor.depth = -200.0f;
+					actor.opacity = 0;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+				} else {
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+				}
 			});
-			
-			(current_window.get_compositor_private () as Clutter.Actor).raise_top ();
-			(current_window.get_compositor_private () as Clutter.Actor).depth = -200.0f;
-			(current_window.get_compositor_private () as Clutter.Actor).opacity = 0;
-			(current_window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 
-				250, depth:0.0f, opacity : 255);
 		}
 		
 		void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)
