@@ -428,6 +428,7 @@ namespace Gala
 		Clutter.Actor in_group;
 		Clutter.Actor out_group;
 		Clutter.Rectangle black; //black border between workspaces
+		Clutter.Clone wallpaper;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -447,7 +448,19 @@ namespace Gala
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
+			
 			var group = Compositor.get_window_group_for_screen (get_screen ());
+			
+			var bg = Compositor.get_background_actor_for_screen (get_screen ());
+			wallpaper = new Clutter.Clone (bg);
+			
+			wallpaper.x = (x2<0)?-w:w;
+			
+			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?w:-w);
+			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:0.0f);
+			
+			group.add_child (wallpaper);
+			
 			group.add_actor (in_group);
 			group.add_actor (out_group);
 			
@@ -478,6 +491,10 @@ namespace Gala
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, in_group);
+				} else if (window.get_meta_window ().window_type == WindowType.DOCK) {
+					win.append (window);
+					par.append (window.get_parent ());
+					clutter_actor_reparent (window, Compositor.get_overlay_group_for_screen (get_screen ()));
 				}
 			}
 			in_group.set_position (-x2, -y2);
@@ -545,6 +562,12 @@ namespace Gala
 				out_group.detach_animation ();
 				out_group.destroy ();
 			}
+			
+			var bg = Compositor.get_background_actor_for_screen (get_screen ());
+			bg.detach_animation ();
+			bg.x = 0.0f;
+			wallpaper.destroy ();
+			wallpaper = null;
 			
 			switch_workspace_completed ();
 			
