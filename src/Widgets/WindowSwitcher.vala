@@ -94,9 +94,9 @@ namespace Gala
 					event.keyval == Key.Alt_L) {
 				
 				window_list.foreach ((w) => {
-					plugin.dim_window (w, false);
 					(w.get_compositor_private () as Clutter.Actor).detach_animation ();
 					(w.get_compositor_private () as Clutter.Actor).depth = 0.0f;
+					(w.get_compositor_private () as Clutter.Actor).opacity = 255;
 				});
 				
 				plugin.end_modal ();
@@ -179,13 +179,16 @@ namespace Gala
 		void dim_windows ()
 		{
 			window_list.foreach ((window) => {
-				(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:-80.0f);
-				plugin.dim_window (window, window != current_window);
+				if (window != current_window)
+					(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 
+						250, depth:-200.0f, opacity:0);
 			});
 			
 			(current_window.get_compositor_private () as Clutter.Actor).raise_top ();
-			(current_window.get_compositor_private () as Clutter.Actor).depth = -80.0f;
-			(current_window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, depth:0.0f);
+			(current_window.get_compositor_private () as Clutter.Actor).depth = -200.0f;
+			(current_window.get_compositor_private () as Clutter.Actor).opacity = 0;
+			(current_window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 
+				250, depth:0.0f, opacity : 255);
 		}
 		
 		void list_windows (Meta.Display display, Meta.Screen screen, Meta.KeyBinding binding, bool backward)

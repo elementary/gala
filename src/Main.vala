@@ -432,7 +432,7 @@ namespace Gala
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
 			unowned List<WindowActor> windows = Compositor.get_window_actors (get_screen ());
-			int w, h;
+			float w, h;
 			get_screen ().get_size (out w, out h);
 			
 			var x2 = 0.0f; var y2 = 0.0f;
