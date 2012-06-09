@@ -32,7 +32,7 @@ namespace Gala
 			
 		Gala.Plugin plugin;
 		
-		GLib.List<unowned Meta.Window> window_list;
+		GLib.List<unowned Meta.Window>? window_list = null;
 		
 		CairoTexture background;
 		CairoTexture current;
@@ -94,10 +94,15 @@ namespace Gala
 					event.keyval == Key.Alt_L) {
 				
 				window_list.foreach ((w) => {
+					if (w.minimized)
+						(w.get_compositor_private () as Clutter.Actor).hide ();
+					
 					(w.get_compositor_private () as Clutter.Actor).detach_animation ();
 					(w.get_compositor_private () as Clutter.Actor).depth = 0.0f;
 					(w.get_compositor_private () as Clutter.Actor).opacity = 255;
 				});
+				
+				window_list = null;
 				
 				plugin.end_modal ();
 				current_window.activate (event.time);
@@ -120,23 +125,16 @@ namespace Gala
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
 			var prev_win = current_window;
-			var i = 0;
 			switch (action) {
 				case Meta.KeyBindingAction.SWITCH_GROUP:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
-					do {
-						current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, backward);
-						i ++;
-					} while (current_window.minimized && i < window_list.length ());
 					break;
 				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-					do {
-						current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, true);
-						i ++;
-					} while (current_window.minimized && i < window_list.length ());
 					break;
 				default:
 					break;
@@ -179,6 +177,9 @@ namespace Gala
 		void dim_windows ()
 		{
 			window_list.foreach ((window) => {
+				if (window.minimized)
+					(window.get_compositor_private () as Clutter.Actor).show ();
+				
 				if (window != current_window)
 					(window.get_compositor_private () as Clutter.Actor).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 
 						250, depth:-200.0f, opacity:0);
@@ -209,15 +210,7 @@ namespace Gala
 			}
 			
 			var i = 0;
-			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			
-			while (current_window.minimized && i < window_list.length ()) {
-				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-					screen.get_active_workspace (), current_window, backward);
-				i ++;
-			}
-			
-			i = 0;
 			foreach (var window in window_list) {
 				var image = Gala.Plugin.get_icon_for_window (window, ICON_SIZE);
 				
@@ -249,8 +242,11 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			if (display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ()).length () <= 1)
+			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			if (window_list.length () <= 1) {
+				window_list = null;
 				return;
+			}
 			
 			plugin.begin_modal ();
 			
