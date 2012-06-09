@@ -211,11 +211,11 @@ namespace Gala
 			var i = 0;
 			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			
-			do {
+			while (current_window.minimized && i < window_list.length ()) {
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 					screen.get_active_workspace (), current_window, backward);
 				i ++;
-			} while (current_window.minimized && i < window_list.length ());
+			}
 			
 			i = 0;
 			foreach (var window in window_list) {
