@@ -427,8 +427,7 @@ namespace Gala
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			unowned List<Meta.WindowActor> windows = Compositor.get_window_actors (get_screen ());
-			//FIXME js/ui/windowManager.js line 430
+			unowned List<WindowActor> windows = Compositor.get_window_actors (get_screen ());
 			int w, h;
 			get_screen ().get_size (out w, out h);
 			
@@ -442,18 +441,8 @@ namespace Gala
 				direction == MotionDirection.DOWN_RIGHT)
 				x2 = -w;
 			
-			if (direction == MotionDirection.LEFT ||
-				direction == MotionDirection.UP_LEFT ||
-				direction == MotionDirection.DOWN_LEFT)
-				x2 = w;
-			else if (direction == MotionDirection.RIGHT ||
-				direction == MotionDirection.UP_RIGHT ||
-				direction == MotionDirection.DOWN_RIGHT)
-				x2 = -w;
-			
-			
-			var in_group  = new Clutter.Actor ();
-			var out_group = new Clutter.Actor ();
+			in_group  = new Clutter.Actor ();
+			out_group = new Clutter.Actor ();
 			var group = Compositor.get_window_group_for_screen (get_screen ());
 			group.add_actor (in_group);
 			group.add_actor (out_group);
@@ -466,11 +455,13 @@ namespace Gala
 				if (!window.get_meta_window ().showing_on_its_workspace ())
 					continue;
 				
-				win.append (window);
-				par.append (window.get_parent ());
 				if (window.get_workspace () == from) {
+					win.append (window);
+					par.append (window.get_parent ());
 					clutter_actor_reparent (window, out_group);
 				} else if (window.get_workspace () == to) {
+					win.append (window);
+					par.append (window.get_parent ());
 					clutter_actor_reparent (window, in_group);
 				}
 			}
