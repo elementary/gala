@@ -230,8 +230,9 @@ namespace Gala
 		public new void begin_modal ()
 		{
 			var screen = get_screen ();
+			var display = screen.get_display ();
 			
-			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, screen.get_display ().get_current_time ());
+			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 		}
 		
 		public new void end_modal ()
@@ -295,15 +296,17 @@ namespace Gala
 		public override void map (WindowActor actor)
 		{
 			var screen = get_screen ();
+			var display = screen.get_display ();
+			var window = actor.get_meta_window ();
 			
-			var rect = actor.get_meta_window ().get_outer_rect ();
+			var rect = window.get_outer_rect ();
 			int width, height;
 			screen.get_size (out width, out height);
 			
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+			if (window.window_type == WindowType.NORMAL) {
 				
 				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
-					actor.get_meta_window ().move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
+					window.move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
 						(int)(height/2.0f - rect.height/2.0f));
 					actor.x = width/2.0f - rect.width/2.0f - 10;
 					actor.y = height/2.0f - rect.height/2.0f - 10;
@@ -312,7 +315,7 @@ namespace Gala
 			
 			actor.show ();
 			
-			switch (actor.get_meta_window ().window_type) {
+			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, 0, 10};
@@ -324,7 +327,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
-						actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
+						window.activate (display.get_current_time ());
 					});
 					break;
 				case WindowType.MENU:
@@ -339,22 +342,13 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
-						if (!actor.get_meta_window ().is_override_redirect ())
-							actor.get_meta_window ().activate (screen.get_display ().get_current_time ());
+						if (!window.is_override_redirect ())
+							window.activate (display.get_current_time ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
-					int y;
-					get_current_cursor_position (null, out y);
-					
-					if (rect.y >= y - 10 || 
-						actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG ||
-						actor.get_meta_window ().window_type == WindowType.DIALOG)
-						actor.scale_gravity = Clutter.Gravity.NORTH;
-					else
-						actor.scale_gravity = Clutter.Gravity.SOUTH;
-					
+					actor.scale_gravity = Clutter.Gravity.NORTH;
 					actor.scale_x = 1.0f;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
@@ -363,9 +357,9 @@ namespace Gala
 						map_completed (actor);
 					});
 					
-					if (actor.get_meta_window ().window_type == WindowType.MODAL_DIALOG && 
-						actor.get_meta_window ().is_attached_dialog ())
-						dim_window (actor.get_meta_window ().find_root_ancestor (), true);
+					if (window.window_type == WindowType.MODAL_DIALOG && 
+						window.is_attached_dialog ())
+						dim_window (window.find_root_ancestor (), true);
 					
 					break;
 				default:
@@ -378,8 +372,9 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			var display = screen.get_display ();
-			
-			switch (actor.get_meta_window ().window_type) {
+			var window = actor.get_meta_window ();
+						
+			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, actor.height, 10};
@@ -415,7 +410,7 @@ namespace Gala
 						destroy_completed (actor);
 					});
 					
-					dim_window (actor.get_meta_window ().find_root_ancestor (), false);
+					dim_window (window.find_root_ancestor (), false);
 					
 					break;
 				default:
