@@ -97,7 +97,7 @@ namespace Gala
 			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
-			ShadowFactory.get_default ().set_params ("normal", true, {20, -1, 0, 15, 153});
+			ShadowFactory.get_default ().set_params ("normal", true, {20, -1, 0, 15, 200});
 			
 			/*hot corner*/
 			var hot_corner = new Clutter.Rectangle ();
@@ -454,9 +454,9 @@ namespace Gala
 			var bg = Compositor.get_background_actor_for_screen (get_screen ());
 			wallpaper = new Clutter.Clone (bg);
 			
-			wallpaper.x = (x2<0)?-w:w;
+			wallpaper.x = (x2<0)?w:-w;
 			
-			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?w:-w);
+			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?-w:w);
 			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:0.0f);
 			
 			group.add_child (wallpaper);
