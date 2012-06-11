@@ -294,7 +294,8 @@ namespace Gala
 				return;
 			
 			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
-			workspace = idx;
+			if (workspaces.x != 0)
+				workspace = idx;
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -404,11 +405,13 @@ namespace Gala
 				
 				workspaces.add_child (group);
 			}
+			
+			var new_idx = screen.get_active_workspace ().index ();
+			
+			bool recalc = current_workspace.x == 0;
 			workspaces.x = width / 2 - workspaces.width / 2;
 			workspaces.y = 25;
 			
-			workspace = screen.get_active_workspace ().index ();
-
 			current_workspace.y = workspaces.y - 5;
 			
 			visible = true;
@@ -417,6 +420,11 @@ namespace Gala
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255)
 				.completed.connect (() => {
 			});
+			
+			if (recalc)
+				current_workspace.x = width / 2 - workspaces.width / 2 + (workspaces.get_children ().nth_data (0).width+12)*new_idx - 5;
+			else
+				workspace = new_idx;
 		}
 		
 		public new void hide ()

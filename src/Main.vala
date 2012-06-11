@@ -425,7 +425,6 @@ namespace Gala
 		Clutter.Actor out_group;
 		Clutter.Rectangle black; //black border between workspaces
 		Clutter.Clone wallpaper;
-		Clutter.Clone panel;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{

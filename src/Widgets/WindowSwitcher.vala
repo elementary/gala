@@ -181,6 +181,9 @@ namespace Gala
 		void dim_windows ()
 		{
 			window_list.foreach ((window) => {
+				if (window.window_type != Meta.WindowType.NORMAL)
+					return;
+				
 				var actor = window.get_compositor_private () as Clutter.Actor;
 				if (actor == null)
 					return;
