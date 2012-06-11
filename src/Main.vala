@@ -53,7 +53,7 @@ namespace Gala
 			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);
 			clutter_actor_reparent (Compositor.get_overlay_group_for_screen (screen), elements);
 			Compositor.get_stage_for_screen (screen).add_child (elements);
-			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 4, -1);
+			screen.override_workspace_layout (ScreenCorner.TOPLEFT, true, 1, -1);
 			
 			int width, height;
 			screen.get_size (out width, out height);
@@ -117,6 +117,8 @@ namespace Gala
 			
 			update_input_area ();
 			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
+			
+			check_workspaces ();
 		}
 		
 		public void update_input_area ()
@@ -225,6 +227,24 @@ namespace Gala
 			
 			moving = window;
 			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
+		}
+		
+		/**
+		 * go through the workspaces and see what needs to be done
+		 **/
+		public void check_workspaces ()
+		{
+			var screen = get_screen ();
+			unowned List<Workspace> workspaces = screen.get_workspaces ();
+			
+			workspaces.foreach ((w) => {
+				if (w.n_windows == 0)
+					screen.remove_workspace (w, screen.get_display ().get_current_time ());
+			});
+			
+			var new_w = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+			new_w.window_removed.connect (() => check_workspaces ());
+			new_w.window_added.connect (() => check_workspaces ());
 		}
 		
 		public new void begin_modal ()
@@ -373,7 +393,7 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
-						
+			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
@@ -433,14 +453,12 @@ namespace Gala
 			get_screen ().get_size (out w, out h);
 			
 			var x2 = 0.0f; var y2 = 0.0f;
-			if (direction == MotionDirection.UP ||
-				direction == MotionDirection.UP_LEFT ||
-				direction == MotionDirection.UP_RIGHT)
+			if (direction == MotionDirection.LEFT)
 				x2 = w;
-			else if (direction == MotionDirection.DOWN ||
-				direction == MotionDirection.DOWN_LEFT ||
-				direction == MotionDirection.DOWN_RIGHT)
+			else if (direction == MotionDirection.RIGHT)
 				x2 = -w;
+			else
+				return;
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
