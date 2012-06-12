@@ -34,7 +34,8 @@ namespace Gala
 		Clutter.CairoTexture workspace_thumb;
 		Clutter.CairoTexture current_workspace;
 		
-		float last_workspace_x = 0;
+		const int current_border = 5;
+		
 		int _workspace;
 		int workspace {
 			get {
@@ -46,10 +47,8 @@ namespace Gala
 				
 				_workspace = value;
 				
-				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0 || _workspace == 0)
-					last_workspace_x = workspaces.get_children ().nth_data (_workspace).x;
 				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-					x : workspaces.x + last_workspace_x - 5);
+					x : workspaces.x + workspaces.get_children ().nth_data (_workspace).x - current_border);
 			}
 		}
 		
@@ -206,8 +205,8 @@ namespace Gala
 			current_workspace_style.get_style_context ().add_provider (provider, 20000);
 			
 			current_workspace = new Clutter.CairoTexture (120, 120);
-			current_workspace.height = workspace_thumb.height + 10;
-			current_workspace.width  = workspace_thumb.width  + 10;
+			current_workspace.height = workspace_thumb.height + current_border*2;
+			current_workspace.width  = workspace_thumb.width  + current_border*2;
 			current_workspace.auto_resize = true;
 			current_workspace.draw.connect (draw_current_workspace);
 			
@@ -408,23 +407,20 @@ namespace Gala
 			
 			var new_idx = screen.get_active_workspace ().index ();
 			
-			bool recalc = current_workspace.x == 0;
 			workspaces.x = width / 2 - workspaces.width / 2;
 			workspaces.y = 25;
 			
-			current_workspace.y = workspaces.y - 5;
+			current_workspace.y = workspaces.y - current_border;
 			
 			visible = true;
 			grab_key_focus ();
-			Timeout.add (50, () => animating = false ); //catch hot corner hiding problem
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255)
-				.completed.connect (() => {
-			});
-			
-			if (recalc)
-				current_workspace.x = width / 2 - workspaces.width / 2 + (workspaces.get_children ().nth_data (0).width+12)*new_idx - 5;
-			else
+			Timeout.add (50, () => {
+				current_workspace.x = workspaces.x + workspaces.get_children ().nth_data (new_idx).x - current_border;
 				workspace = new_idx;
+				animating = false;
+				return false;
+			}); //catch hot corner hiding problem and indicator placement
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
 		}
 		
 		public new void hide ()

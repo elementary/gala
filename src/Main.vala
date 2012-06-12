@@ -118,7 +118,10 @@ namespace Gala
 			update_input_area ();
 			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 			
-			check_workspaces ();
+			screen.get_workspaces ().foreach ((w) => {
+				w.window_removed.connect (() => check_workspaces (w));
+				w.window_added.connect (() => check_workspaces (w));
+			});
 		}
 		
 		public void update_input_area ()
@@ -217,34 +220,37 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
-			var idx = screen.get_active_workspace ().index () + (reverse ? -1 : 1);
+			var active = screen.get_active_workspace ();
+			var idx = active.index () + (reverse ? -1 : 1);
 			
-			if (idx < 0 || idx >= screen.n_workspaces)
+			if (idx < 0 || idx >= screen.n_workspaces || 
+				(active.n_windows == 1 && idx == screen.n_workspaces-1)) //dont allow empty workspaces to be created by moving
 				return;
 			
 			if (!window.is_on_all_workspaces ())
-				window.change_workspace_by_index (idx, false, display.get_current_time ());
+				window.change_workspace_by_index (idx, true, display.get_current_time ());
 			
 			moving = window;
 			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
 		}
 		
 		/**
-		 * go through the workspaces and see what needs to be done
+		 * check workspace and see what needs to be done
 		 **/
-		public void check_workspaces ()
+		public void check_workspaces (Workspace workspace)
 		{
+			/*FIXME using the MetaWindow to get the workspace directly did not work since they 
+			  have already been destroyed when arriving here*/
+			
 			var screen = get_screen ();
-			unowned List<Workspace> workspaces = screen.get_workspaces ();
 			
-			workspaces.foreach ((w) => {
-				if (w.n_windows == 0)
-					screen.remove_workspace (w, screen.get_display ().get_current_time ());
-			});
-			
-			var new_w = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
-			new_w.window_removed.connect (() => check_workspaces ());
-			new_w.window_added.connect (() => check_workspaces ());
+			if (workspace.n_windows == 0 && moving == null)
+				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
+			if (screen.get_workspace_by_index (screen.n_workspaces-1).n_windows != 0) {
+				var new_w = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+				new_w.window_removed.connect (() => check_workspaces (new_w));
+				new_w.window_added.connect (() => check_workspaces (new_w));
+			}
 		}
 		
 		public new void begin_modal ()
@@ -268,13 +274,14 @@ namespace Gala
 		
 		public void dim_window (Window window, bool dim)
 		{
-			var win = window.get_compositor_private () as Clutter.Actor;
+			/*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
+			var win = window.get_compositor_private () as WindowActor;
 			if (dim) {
 				if (win.has_effects ())
 					return;
-				win.add_effect_with_name ("darken", new Clutter.ColorizeEffect ({180, 180, 180, 255}));
+				win.add_effect_with_name ("darken", new Clutter.BlurEffect ());
 			} else
-				win.clear_effects ();
+				win.clear_effects ();*/
 		}
 		
 		/*
