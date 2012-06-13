@@ -33,6 +33,7 @@ namespace Gala
 		Gdk.Pixbuf background_pix;
 		Clutter.CairoTexture workspace_thumb;
 		Clutter.CairoTexture current_workspace;
+		Clutter.CairoTexture scroll;
 		
 		const int current_border = 5;
 		
@@ -88,14 +89,20 @@ namespace Gala
 			
 			workspaces = new Clutter.Actor ();
 			var box_layout = new Clutter.BoxLayout ();
-			box_layout.spacing = 12;
 			workspaces.set_layout_manager (box_layout);
+			
+			box_layout.spacing = 12;
 			
 			bg = new Clutter.CairoTexture (500, (uint)height);
 			bg.auto_resize = true;
 			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
 			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
 			bg.draw.connect (draw_background);
+			
+			scroll = new Clutter.CairoTexture (100, 12);
+			scroll.height = 12;
+			scroll.auto_resize = true;
+			scroll.draw.connect (draw_scroll);
 			
 			leave_event.connect ((e) => {
 				if (!contains (e.related))
@@ -233,6 +240,7 @@ namespace Gala
 			/*add_child (tile); removed for now until Luna+1 */
 			add_child (current_workspace);
 			add_child (workspaces);
+			add_child (scroll);
 			
 			workspace_thumb.visible = false; //will only be used for cloning
 		}
@@ -255,6 +263,15 @@ namespace Gala
 			cr.set_line_width (1);
 			cr.set_source_rgba (0, 0, 0, 1);
 			cr.stroke_preserve ();
+			
+			return false;
+		}
+		
+		bool draw_scroll (Cairo.Context cr)
+		{
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-12, 4, 2);
+			cr.set_source_rgba (1, 1, 1, 0.8);
+			cr.fill ();
 			
 			return false;
 		}
@@ -327,17 +344,20 @@ namespace Gala
 		const float scroll_speed = 30.0f;
 		public override bool scroll_event (Clutter.ScrollEvent event)
 		{
-			if (event.direction == Clutter.ScrollDirection.UP && workspaces.width + workspaces.x > width) { //left
+			if ((event.direction == Clutter.ScrollDirection.DOWN || event.direction == Clutter.ScrollDirection.RIGHT)
+				&& workspaces.width + workspaces.x > width) { //left
 				workspaces.x -= scroll_speed;
 				current_workspace.x -= scroll_speed;
-			} else if (event.direction == Clutter.ScrollDirection.DOWN && workspaces.x < 0) { //right
+			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
+				&& workspaces.x < 0) { //right
 				workspaces.x += scroll_speed;
 				current_workspace.x += scroll_speed;
 			}
+			scroll.x = Math.fabsf (width/workspaces.width*workspaces.x);
+			
 			return false;
 		}
 		
-		//FIXME move all this positioning stuff to a separate function which is only called by screen size changes
 		public new void show ()
 		{
 			if (visible)
@@ -368,6 +388,11 @@ namespace Gala
 				var icons = new Clutter.Actor ();
 				icons.set_layout_manager (new Clutter.BoxLayout ());
 				var backg = new Clutter.Clone (workspace_thumb);
+				
+				var close = new GtkClutter.Texture ();
+				try {
+					close.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
+				} catch (Error e) { warning (e.message); }
 				
 				var shown_applications = new List<Bamf.Application> ();
 				
@@ -407,12 +432,46 @@ namespace Gala
 				
 				group.height = 160;
 				
+				if (space.index () != screen.n_workspaces - 1) //dont allow closing the last one
+					group.add_child (close);
+				close.x = -12.0f;
+				close.y = -10.0f;
+				close.reactive = true;
+				close.scale_gravity = Clutter.Gravity.CENTER;
+				close.scale_x = 0;
+				close.scale_y = 0;
+				
+				close.button_release_event.connect (() => {
+					space.list_windows ().foreach ((w) => {
+						if (w.window_type != WindowType.DOCK) {
+							var gw = Gdk.X11Window.foreign_new_for_display (Gdk.Display.get_default (), 
+								w.get_xwindow ());
+							if (gw != null)
+								gw.destroy ();
+						}
+					});
+					Timeout.add (250, () => { //give the windows time to close
+						screen.remove_workspace (space, screen.get_display ().get_current_time ());
+						return false;
+					});
+					hide ();
+					return true;
+				});
+				
 				group.reactive = true;
 				group.button_release_event.connect (() => {
 					space.activate (plugin.get_screen ().get_display ().get_current_time ());
 					workspace = plugin.get_screen ().get_active_workspace ().index ();
 					hide ();
 					return true;
+				});
+				group.enter_event.connect (() => {
+					close.animate (Clutter.AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
+					return true;
+				});
+				group.leave_event.connect (() => {
+					close.animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f);
+					return false;
 				});
 				
 				workspaces.add_child (group);
@@ -421,9 +480,11 @@ namespace Gala
 			var new_idx = screen.get_active_workspace ().index ();
 			
 			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 25;
+			workspaces.y = 20;
 			
 			current_workspace.y = workspaces.y - current_border;
+			
+			scroll.y = height - 12;
 			
 			visible = true;
 			grab_key_focus ();
@@ -434,7 +495,14 @@ namespace Gala
 				animating = false;
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
+			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
+			
+			scroll.visible = workspaces.width > width;
+			if (scroll.visible) {
+				scroll.width = width/workspaces.width*width;
+				workspaces.x = 0.0f;
+			}
 		}
 		
 		public new void hide ()
