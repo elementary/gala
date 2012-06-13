@@ -119,7 +119,7 @@ namespace Gala
 			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 			
 			screen.get_workspaces ().foreach ((w) => {
-				w.window_removed.connect (() => check_workspaces (w));
+				w.window_removed.connect ((win) => {if (win.window_type != WindowType.MENU) check_workspaces (w);});
 				w.window_added.connect (() => check_workspaces (w));
 			});
 		}
@@ -242,15 +242,18 @@ namespace Gala
 			/*FIXME using the MetaWindow to get the workspace directly did not work since they 
 			  have already been destroyed when arriving here*/
 			
+			Timeout.add (500, () => {
 			var screen = get_screen ();
 			
 			if (workspace.n_windows == 0 && moving == null)
 				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
 			if (screen.get_workspace_by_index (screen.n_workspaces-1).n_windows != 0) {
 				var new_w = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
-				new_w.window_removed.connect (() => check_workspaces (new_w));
+				new_w.window_removed.connect ((w) => {if (w.window_type != WindowType.MENU) check_workspaces (new_w);});
 				new_w.window_added.connect (() => check_workspaces (new_w));
 			}
+			return false;
+			});
 		}
 		
 		public new void begin_modal ()
