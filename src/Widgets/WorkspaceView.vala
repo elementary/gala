@@ -282,7 +282,7 @@ namespace Gala
 			return false;
 		}
 		
-		void switch_to_next_workspace (bool reverse)
+		void switch_to_next_workspace (bool reverse, bool reposition = true)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
@@ -293,7 +293,7 @@ namespace Gala
 				return;
 			
 			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
-			if (workspaces.x != 0)
+			if (reposition)
 				workspace = idx;
 		}
 		
@@ -321,6 +321,19 @@ namespace Gala
 				return true;
 			}
 			
+			return false;
+		}
+		
+		const float scroll_speed = 30.0f;
+		public override bool scroll_event (Clutter.ScrollEvent event)
+		{
+			if (event.direction == Clutter.ScrollDirection.UP && workspaces.width + workspaces.x > width) { //left
+				workspaces.x -= scroll_speed;
+				current_workspace.x -= scroll_speed;
+			} else if (event.direction == Clutter.ScrollDirection.DOWN && workspaces.x < 0) { //right
+				workspaces.x += scroll_speed;
+				current_workspace.x += scroll_speed;
+			}
 			return false;
 		}
 		
@@ -415,6 +428,7 @@ namespace Gala
 			visible = true;
 			grab_key_focus ();
 			Timeout.add (50, () => {
+				
 				current_workspace.x = workspaces.x + workspaces.get_children ().nth_data (new_idx).x - current_border;
 				workspace = new_idx;
 				animating = false;
@@ -444,7 +458,7 @@ namespace Gala
 			X.Event event, Meta.KeyBinding binding)
 		{
 			bool left = (binding.get_name () == "switch-to-workspace-left");
-			switch_to_next_workspace (left);
+			switch_to_next_workspace (left, false);
 			
 			show ();
 		}
