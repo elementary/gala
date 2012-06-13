@@ -432,8 +432,10 @@ namespace Gala
 				
 				group.height = 160;
 				
-				if (space.index () != screen.n_workspaces - 1) //dont allow closing the last one
+				if (space.index () != screen.n_workspaces - 1) {//dont allow closing the last one
 					group.add_child (close);
+				}
+				
 				close.x = -12.0f;
 				close.y = -10.0f;
 				close.reactive = true;
@@ -454,9 +456,29 @@ namespace Gala
 						screen.remove_workspace (space, screen.get_display ().get_current_time ());
 						return false;
 					});
-					hide ();
+					
+					group.animate (Clutter.AnimationMode.EASE_IN_QUAD, 250, width:0.0f, opacity:0).completed.connect (() => {
+						workspaces.remove_child (group);
+					});
+					
 					return true;
 				});
+				
+				if (space.index () == screen.n_workspaces - 1) { //give the last one a different style
+					group.opacity = 127;
+					
+					var plus = new GtkClutter.Texture ();
+					try {
+						var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 32, 0).
+							load_symbolic ({1, 1, 1, 1});
+						plus.set_from_pixbuf (pix);
+					} catch (Error e) { warning (e.message); }
+					
+					plus.x = group.width / 2 - plus.width / 2;
+					plus.y = (backg.x + backg.height) / 2 - plus.height / 2;
+					
+					group.add_child (plus);
+				}
 				
 				group.reactive = true;
 				group.button_release_event.connect (() => {
@@ -467,10 +489,16 @@ namespace Gala
 				});
 				group.enter_event.connect (() => {
 					close.animate (Clutter.AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
+					
+					if (space.index () == screen.n_workspaces - 1)
+						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
 					return true;
 				});
 				group.leave_event.connect (() => {
 					close.animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f);
+					
+					if (space.index () == screen.n_workspaces - 1)
+						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
 					return false;
 				});
 				
@@ -500,6 +528,7 @@ namespace Gala
 			
 			scroll.visible = workspaces.width > width;
 			if (scroll.visible) {
+				scroll.x = 0.0f;
 				scroll.width = width/workspaces.width*width;
 				workspaces.x = 0.0f;
 			}
