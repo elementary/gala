@@ -599,6 +599,16 @@ namespace Gala
 			
 			switch_workspace_completed ();
 			
+			//when a window has moved, check through the workspaces if this action created empty ones
+			if (moving != null) {
+				Timeout.add (250, () => {
+					screen.get_workspaces ().foreach ((work) => {
+						if (work.n_windows == 0 && work.index () != screen.n_workspaces - 1)
+							screen.remove_workspace (work, screen.get_display ().get_current_time ());
+					});
+					return false;
+				});
+			}
 			moving = null;
 			
 			var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());

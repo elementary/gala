@@ -269,7 +269,7 @@ namespace Gala
 		
 		bool draw_scroll (Cairo.Context cr)
 		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-12, 4, 2);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32-current_border, 4, 2);
 			cr.set_source_rgba (1, 1, 1, 0.8);
 			cr.fill ();
 			
@@ -454,6 +454,7 @@ namespace Gala
 					});
 					Timeout.add (250, () => { //give the windows time to close
 						screen.remove_workspace (space, screen.get_display ().get_current_time ());
+						workspace = screen.get_active_workspace ().index ();
 						return false;
 					});
 					
@@ -480,6 +481,7 @@ namespace Gala
 					group.add_child (plus);
 				}
 				
+				bool hovering = false;
 				group.reactive = true;
 				group.button_release_event.connect (() => {
 					space.activate (plugin.get_screen ().get_display ().get_current_time ());
@@ -488,14 +490,28 @@ namespace Gala
 					return true;
 				});
 				group.enter_event.connect (() => {
-					close.animate (Clutter.AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
+					Timeout.add (500, () => {
+						close.visible = true;
+						if (hovering)
+							close.animate (Clutter.AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
+						return false;
+					});
 					
 					if (space.index () == screen.n_workspaces - 1)
 						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
+					
+					hovering = true;
+					
 					return true;
 				});
-				group.leave_event.connect (() => {
-					close.animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f);
+				group.leave_event.connect ((e) => {
+					if (group.contains (e.related) || screen.get_workspaces ().index (space) < 0)
+						return false;
+					
+					close.animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f)
+						.completed.connect (() => close.visible = false );
+					
+					hovering = false;
 					
 					if (space.index () == screen.n_workspaces - 1)
 						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
@@ -530,7 +546,7 @@ namespace Gala
 			if (scroll.visible) {
 				scroll.x = 0.0f;
 				scroll.width = width/workspaces.width*width;
-				workspaces.x = 0.0f;
+				workspaces.x = 4.0f + current_border;
 			}
 		}
 		
