@@ -348,6 +348,10 @@ namespace Gala
 				&& workspaces.width + workspaces.x > width) { //left
 				workspaces.x -= scroll_speed;
 				current_workspace.x -= scroll_speed;
+				if (!(workspaces.width + workspaces.x > width)) {
+					current_workspace.x = workspaces.width - width;
+					print ("got it..\n");
+				}
 			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
 				&& workspaces.x < 0) { //right
 				workspaces.x += scroll_speed;
@@ -452,13 +456,31 @@ namespace Gala
 								gw.destroy ();
 						}
 					});
+					
+					current_workspace.animate (Clutter.AnimationMode.EASE_IN_SINE, 100, opacity:0);
+					
 					Timeout.add (250, () => { //give the windows time to close
 						screen.remove_workspace (space, screen.get_display ().get_current_time ());
-						workspace = screen.get_active_workspace ().index ();
+						
+						scroll.visible = workspaces.width > width;
+						if (scroll.visible) {
+							if (workspaces.x + workspaces.width < width)
+								workspaces.x = width - workspaces.width;
+							scroll.width = width/workspaces.width*width;
+						} else {
+							workspaces.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x:width / 2 - workspaces.width / 2).
+								completed.connect (() => {
+								Timeout.add (250, () => {
+									workspace = screen.get_active_workspace ().index ();
+									current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255);
+									return false;
+								});
+							});
+						}
 						return false;
 					});
 					
-					group.animate (Clutter.AnimationMode.EASE_IN_QUAD, 250, width:0.0f, opacity:0).completed.connect (() => {
+					group.animate (Clutter.AnimationMode.LINEAR, 150, width:0.0f, opacity:0).completed.connect (() => {
 						workspaces.remove_child (group);
 					});
 					
@@ -466,12 +488,19 @@ namespace Gala
 				});
 				
 				if (space.index () == screen.n_workspaces - 1) { //give the last one a different style
-					group.opacity = 127;
+					backg.opacity = 127;
+					
+					var css = new Gtk.CssProvider ();
+					var img = new Gtk.Image ();
+					try {
+						css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
+					} catch (Error e) { warning(e.message); }
+					img.get_style_context ().add_provider (css, 20000);
 					
 					var plus = new GtkClutter.Texture ();
 					try {
-						var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 32, 0).
-							load_symbolic ({1, 1, 1, 1});
+						var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 48, 0).
+							load_symbolic_for_context (img.get_style_context ());
 						plus.set_from_pixbuf (pix);
 					} catch (Error e) { warning (e.message); }
 					
@@ -498,7 +527,7 @@ namespace Gala
 					});
 					
 					if (space.index () == screen.n_workspaces - 1)
-						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
+						backg.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
 					
 					hovering = true;
 					
@@ -514,7 +543,7 @@ namespace Gala
 					hovering = false;
 					
 					if (space.index () == screen.n_workspaces - 1)
-						group.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
+						backg.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
 					return false;
 				});
 				
