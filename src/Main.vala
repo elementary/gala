@@ -37,14 +37,11 @@ namespace Gala
 		
 		public Plugin ()
 		{
-			if (Settings.get_default().use_gnome_defaults)
-				return;
-			
-			Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA);
-			Prefs.override_preference_schema ("button-layout", SCHEMA);
-			Prefs.override_preference_schema ("edge-tiling", SCHEMA);
-			Prefs.override_preference_schema ("enable-animations", SCHEMA);
-			Prefs.override_preference_schema ("theme", SCHEMA);
+			Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA+".appearance");
+			Prefs.override_preference_schema ("button-layout", SCHEMA+".appearance");
+			Prefs.override_preference_schema ("edge-tiling", SCHEMA+".behavior");
+			Prefs.override_preference_schema ("enable-animations", SCHEMA+".animations");
+			Prefs.override_preference_schema ("theme", SCHEMA+".appearance");
 		}
 		
 		public override void start ()
@@ -72,14 +69,14 @@ namespace Gala
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
 				try {
 					Process.spawn_command_line_async (
-						Settings.get_default().panel_main_menu_action);
+						BehaviorSettings.get_default ().panel_main_menu_action);
 				} catch (Error e) { warning (e.message); }
 			});
 			
 			KeyBinding.set_custom_handler ("toggle-recording", () => {
 				try {
 					Process.spawn_command_line_async (
-						Settings.get_default().toggle_recording_action);
+						BehaviorSettings.get_default ().toggle_recording_action);
 				} catch (Error e) { warning (e.message); }
 			});
 			
@@ -101,7 +98,7 @@ namespace Gala
 			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
-			ShadowFactory.get_default ().set_params ("normal", true, {20, -1, 0, 15, 200});
+			reload_shadow ();
 			
 			/*hot corner*/
 			var hot_corner = new Clutter.Rectangle ();
@@ -120,7 +117,9 @@ namespace Gala
 			Compositor.get_overlay_group_for_screen (screen).add_child (hot_corner);
 			
 			update_input_area ();
-			Settings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
+			
+			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
+			ShadowSettings.get_default ().notify.connect (reload_shadow);
 			
 			screen.get_workspaces ().foreach ((w) => {
 				w.window_removed.connect ((win) => {if (win.window_type != WindowType.MENU) check_workspaces (w);});
@@ -130,10 +129,43 @@ namespace Gala
 		
 		public void update_input_area ()
 		{
-			if (Settings.get_default ().enable_manager_corner)
+			if (BehaviorSettings.get_default ().enable_manager_corner)
 				set_input_area (InputArea.HOT_CORNER);
 			else
 				set_input_area (InputArea.NONE);
+		}
+		
+		/*to be called when the shadow settings have been changed*/
+		public void reload_shadow ()
+		{
+			//normal focused
+			var shadow = ShadowSettings.get_default ().normal_focused;
+			ShadowFactory.get_default ().set_params ("normal", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			//normal unfocused
+			shadow = ShadowSettings.get_default ().normal_unfocused;
+			ShadowFactory.get_default ().set_params ("normal", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			//menus
+			shadow = ShadowSettings.get_default ().menu;
+			ShadowFactory.get_default ().set_params ("menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			ShadowFactory.get_default ().set_params ("dropdown-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			ShadowFactory.get_default ().set_params ("popup-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			//dialog focused
+			shadow = ShadowSettings.get_default ().dialog_focused;
+			ShadowFactory.get_default ().set_params ("dialog", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			//dialog unfocused
+			shadow = ShadowSettings.get_default ().normal_unfocused;
+			ShadowFactory.get_default ().set_params ("dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
+				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
 		}
 		
 		/**
@@ -302,6 +334,11 @@ namespace Gala
 		//stolen from original mutter plugin
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				maximize_completed (actor);
+				return;
+			}
+			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -313,8 +350,8 @@ namespace Gala
 				float anchor_y = (float)(y - ey) * height / (eh - height);
 				
 				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 150, scale_x:scale_x, 
-					scale_y:scale_y).completed.connect ( () => {
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
+					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
 					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
@@ -329,6 +366,11 @@ namespace Gala
 		
 		public override void map (WindowActor actor)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				map_completed (actor);
+				return;
+			}
+			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
@@ -357,7 +399,7 @@ namespace Gala
 					actor.scale_y = 0.2f;
 					actor.opacity = 0;
 					actor.rotation_angle_x = 40.0f;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 350, 
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().open_duration, 
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						map_completed (actor);
@@ -391,7 +433,8 @@ namespace Gala
 						map_completed (actor);
 					});
 					
-					if (window.window_type == WindowType.MODAL_DIALOG && 
+					if (AppearanceSettings.get_default ().dim_parents &&
+						window.window_type == WindowType.MODAL_DIALOG && 
 						window.is_attached_dialog ())
 						dim_window (window.find_root_ancestor (), true);
 					
@@ -404,6 +447,11 @@ namespace Gala
 		
 		public override void destroy (WindowActor actor)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				destroy_completed (actor);
+				return;
+			}
+			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
@@ -413,7 +461,7 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, actor.height, 10};
 					actor.show ();
-					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, 200, 
+					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, AnimationSettings.get_default ().close_duration, 
 						scale_x:0.95f, scale_y:0.95f, opacity:0, rotation_angle_x:15.0f)
 						.completed.connect ( () => {
 						var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
@@ -457,11 +505,15 @@ namespace Gala
 		GLib.List<Clutter.Actor>? par; //class space for kill func
 		Clutter.Actor in_group;
 		Clutter.Actor out_group;
-		Clutter.Rectangle black; //black border between workspaces
 		Clutter.Clone wallpaper;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				switch_workspace_completed ();
+				return;
+			}
+			
 			unowned List<WindowActor> windows = Compositor.get_window_actors (get_screen ());
 			float w, h;
 			get_screen ().get_size (out w, out h);
@@ -484,8 +536,10 @@ namespace Gala
 			
 			wallpaper.x = (x2<0)?w:-w;
 			
-			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?-w:w);
-			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:0.0f);
+			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
+				AnimationSettings.get_default ().workspace_switch_duration, x:(x2<0)?-w:w);
+			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
+				AnimationSettings.get_default ().workspace_switch_duration, x:0.0f);
 			
 			group.add_child (wallpaper);
 			
@@ -528,18 +582,9 @@ namespace Gala
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
 			
-			black = new Clutter.Rectangle.with_color ({0, 0, 0, 255});
-			black.width = 120;
-			black.height = h;
-			
-			Compositor.get_overlay_group_for_screen (get_screen ()).add_child (black);
-			black.x = (x2<0)?w-black.width:-black.width;
-			black.y = 0.0f;
-			
-			black.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?-black.width:w+black.width);
-			out_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-				x:x2-black.width, y:y2);
-			in_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
+			out_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
+				x:x2, y:y2);
+			in_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
 				x:0.0f, y:0.0f).completed.connect ( () => {
 				end_switch_workspace ();
 			});
@@ -574,9 +619,6 @@ namespace Gala
 				} else
 					clutter_actor_reparent (window, par.nth_data (i));
 			}
-			
-			black.destroy ();
-			black = null;
 			
 			win = null;
 			par = null;
@@ -623,6 +665,11 @@ namespace Gala
 		
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				unmaximize_completed (actor);
+				return;
+			}
+			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -634,8 +681,8 @@ namespace Gala
 				float anchor_y = (float)(y - ey) * height / (eh - height);
 				
 				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 150, scale_x:scale_x, 
-					scale_y:scale_y).completed.connect ( () => {
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
+					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
 					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..

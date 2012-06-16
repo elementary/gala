@@ -93,7 +93,7 @@ namespace Gala
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
 				
-				window_list.foreach ((window) => {
+				plugin.get_screen ().get_active_workspace ().list_windows ().foreach ((window) => {
 					var actor = window.get_compositor_private () as Clutter.Actor;
 					if (actor == null)
 						return;
@@ -180,6 +180,7 @@ namespace Gala
 		
 		void dim_windows ()
 		{
+			
 			window_list.foreach ((window) => {
 				if (window.window_type != Meta.WindowType.NORMAL)
 					return;
@@ -210,7 +211,9 @@ namespace Gala
 			add_child (current);
 			add_child (title);
 			
-			current_window = plugin.get_next_window (screen.get_active_workspace (), backward);
+			var workspace = screen.get_active_workspace ();
+			
+			current_window = plugin.get_next_window (workspace, backward);
 			if (current_window == null)
 				return;
 			
@@ -245,6 +248,13 @@ namespace Gala
 			
 			var idx = window_list.index (current_window);
 			current.x = spacing + idx * (spacing + ICON_SIZE);
+			
+			//hide dialogs
+			workspace.list_windows ().foreach ((w) => {
+				if (w.window_type == Meta.WindowType.DIALOG ||
+					w.window_type == Meta.WindowType.MODAL_DIALOG)
+						(w.get_compositor_private () as Clutter.Actor).opacity = 0;
+			});
 			
 			dim_windows ();
 		}

@@ -83,7 +83,7 @@ namespace Gala
 		{
 			plugin = _plugin;
 			
-			height = 128;
+			height = 140;
 			opacity = 0;
 			reactive = true;
 			
@@ -332,7 +332,9 @@ namespace Gala
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
-			if (event.keyval == Clutter.Key.Alt_L) {
+			if (event.keyval == Clutter.Key.Alt_L || 
+				event.keyval == Clutter.Key.Super_L || 
+				event.keyval == Clutter.Key.Control_L) {
 				hide ();
 				
 				return true;
@@ -387,165 +389,9 @@ namespace Gala
 			
 			for (var i = 0; i < screen.n_workspaces; i++) {
 				var space = screen.get_workspace_by_index (i);
+				var group = new WorkspaceThumb (space, plugin, workspace_thumb);
 				
-				var group = new Clutter.Actor ();
-				var icons = new Clutter.Actor ();
-				icons.set_layout_manager (new Clutter.BoxLayout ());
-				var backg = new Clutter.Clone (workspace_thumb);
-				
-				var close = new GtkClutter.Texture ();
-				try {
-					close.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
-				} catch (Error e) { warning (e.message); }
-				
-				var shown_applications = new List<Bamf.Application> ();
-				
-				space.list_windows ().foreach ((w) => {
-					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-						return;
-					
-					var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
-					if (shown_applications.index (app) != -1)
-						return;
-					
-					if (app != null)
-						shown_applications.append (app);
-					
-					var pix = Gala.Plugin.get_icon_for_window (w, 32);
-					var icon = new GtkClutter.Texture ();
-					try {
-						icon.set_from_pixbuf (pix);
-					} catch (Error e) { warning (e.message); }
-					
-					icon.reactive = true;
-					icon.button_release_event.connect ( () => {
-						space.activate_with_focus (w, screen.get_display ().get_current_time ());
-						hide ();
-						return false;
-					});
-					
-					icons.add_child (icon);
-				});
-				
-				group.add_child (backg);
-				group.add_child (icons);
-				
-				icons.y = backg.height - 16;
-				icons.x = group.width / 2 - icons.width / 2;
-				(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
-				
-				group.height = 160;
-				
-				if (space.index () != screen.n_workspaces - 1) {//dont allow closing the last one
-					group.add_child (close);
-				}
-				
-				close.x = -12.0f;
-				close.y = -10.0f;
-				close.reactive = true;
-				close.scale_gravity = Clutter.Gravity.CENTER;
-				close.scale_x = 0;
-				close.scale_y = 0;
-				
-				close.button_release_event.connect (() => {
-					space.list_windows ().foreach ((w) => {
-						if (w.window_type != WindowType.DOCK) {
-							var gw = Gdk.X11Window.foreign_new_for_display (Gdk.Display.get_default (), 
-								w.get_xwindow ());
-							if (gw != null)
-								gw.destroy ();
-						}
-					});
-					
-					current_workspace.animate (Clutter.AnimationMode.EASE_IN_SINE, 100, opacity:0);
-					
-					Timeout.add (250, () => { //give the windows time to close
-						screen.remove_workspace (space, screen.get_display ().get_current_time ());
-						
-						scroll.visible = workspaces.width > width;
-						if (scroll.visible) {
-							if (workspaces.x + workspaces.width < width)
-								workspaces.x = width - workspaces.width;
-							scroll.width = width/workspaces.width*width;
-						} else {
-							workspaces.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x:width / 2 - workspaces.width / 2).
-								completed.connect (() => {
-								Timeout.add (250, () => {
-									workspace = screen.get_active_workspace ().index ();
-									current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255);
-									return false;
-								});
-							});
-						}
-						return false;
-					});
-					
-					group.animate (Clutter.AnimationMode.LINEAR, 150, width:0.0f, opacity:0).completed.connect (() => {
-						workspaces.remove_child (group);
-					});
-					
-					return true;
-				});
-				
-				if (space.index () == screen.n_workspaces - 1) { //give the last one a different style
-					backg.opacity = 127;
-					
-					var css = new Gtk.CssProvider ();
-					var img = new Gtk.Image ();
-					try {
-						css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
-					} catch (Error e) { warning(e.message); }
-					img.get_style_context ().add_provider (css, 20000);
-					
-					var plus = new GtkClutter.Texture ();
-					try {
-						var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 48, 0).
-							load_symbolic_for_context (img.get_style_context ());
-						plus.set_from_pixbuf (pix);
-					} catch (Error e) { warning (e.message); }
-					
-					plus.x = group.width / 2 - plus.width / 2;
-					plus.y = (backg.x + backg.height) / 2 - plus.height / 2;
-					
-					group.add_child (plus);
-				}
-				
-				bool hovering = false;
-				group.reactive = true;
-				group.button_release_event.connect (() => {
-					space.activate (plugin.get_screen ().get_display ().get_current_time ());
-					workspace = plugin.get_screen ().get_active_workspace ().index ();
-					hide ();
-					return true;
-				});
-				group.enter_event.connect (() => {
-					Timeout.add (500, () => {
-						close.visible = true;
-						if (hovering)
-							close.animate (Clutter.AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
-						return false;
-					});
-					
-					if (space.index () == screen.n_workspaces - 1)
-						backg.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
-					
-					hovering = true;
-					
-					return true;
-				});
-				group.leave_event.connect ((e) => {
-					if (group.contains (e.related) || screen.get_workspaces ().index (space) < 0)
-						return false;
-					
-					close.animate (Clutter.AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f)
-						.completed.connect (() => close.visible = false );
-					
-					hovering = false;
-					
-					if (space.index () == screen.n_workspaces - 1)
-						backg.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
-					return false;
-				});
+				group.opened.connect (hide);
 				
 				workspaces.add_child (group);
 			}

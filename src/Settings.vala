@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 GardenGnome, Rico Tzschichholz
+//  Copyright (C) 2012 GardenGnome, Rico Tzschichholz, Tom Beckmann
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,29 +17,95 @@
 
 namespace Gala
 {
-	public class Settings : Granite.Services.Settings
+	public class BehaviorSettings : Granite.Services.Settings
 	{
-		public bool attach_modal_dialogs { get; set; }
-		public string button_layout { get; set; }
 		public bool edge_tiling { get; set; }
-		public bool enable_animations { get; set; }
 		public string panel_main_menu_action { get; set; }
-		public string theme { get; set; }
 		public string toggle_recording_action { get; set; }
-		public bool use_gnome_defaults { get; set; }
 		public bool enable_manager_corner { get; set; }
 		
-		static Settings? instance = null;
+		static BehaviorSettings? instance = null;
 		
-		private Settings ()
+		private BehaviorSettings ()
 		{
-			base (SCHEMA);
+			base (SCHEMA+".behavior");
 		}
 		
-		public static Settings get_default ()
+		public static BehaviorSettings get_default ()
 		{
 			if (instance == null)
-				instance = new Settings ();
+				instance = new BehaviorSettings ();
+			
+			return instance;
+		}
+	}
+	
+	public class AppearanceSettings : Granite.Services.Settings
+	{
+		public string button_layout { get; set; }
+		public string theme { get; set; }
+		public bool attach_modal_dialogs { get; set; }
+		public bool dim_parents { get; set; }
+		
+		static AppearanceSettings? instance = null;
+		
+		private AppearanceSettings ()
+		{
+			base (SCHEMA+".appearance");
+		}
+		
+		public static AppearanceSettings get_default ()
+		{
+			if (instance == null)
+				instance = new AppearanceSettings ();
+			
+			return instance;
+		}
+	}
+	
+	public class ShadowSettings : Granite.Services.Settings
+	{
+		public string [] menu { get; set; }
+		public string [] normal_focused { get; set; }
+		public string [] normal_unfocused { get; set; }
+		public string [] dialog_focused { get; set; }
+		public string [] dialog_unfocused { get; set; }
+		
+		static ShadowSettings? instance = null;
+		
+		private ShadowSettings ()
+		{
+			base (SCHEMA+".shadows");
+		}
+		
+		public static ShadowSettings get_default ()
+		{
+			if (instance == null)
+				instance = new ShadowSettings ();
+			
+			return instance;
+		}
+	}
+	
+	public class AnimationSettings : Granite.Services.Settings
+	{
+		public bool enable_animations { get; set; }
+		public int open_duration { get; set; }
+		public int snap_duration { get; set; }
+		public int close_duration { get; set; }
+		public int workspace_switch_duration { get; set; }
+		
+		static AnimationSettings? instance = null;
+		
+		private AnimationSettings ()
+		{
+			base (SCHEMA+".animations");
+		}
+		
+		public static AnimationSettings get_default ()
+		{
+			if (instance == null)
+				instance = new AnimationSettings ();
 			
 			return instance;
 		}
