@@ -423,7 +423,6 @@ namespace Gala
 		GLib.List<Clutter.Actor>? par; //class space for kill func
 		Clutter.Actor in_group;
 		Clutter.Actor out_group;
-		Clutter.Rectangle black; //black border between workspaces
 		Clutter.Clone wallpaper;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
@@ -496,17 +495,8 @@ namespace Gala
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
 			
-			black = new Clutter.Rectangle.with_color ({0, 0, 0, 255});
-			black.width = 120;
-			black.height = h;
-			
-			Compositor.get_overlay_group_for_screen (get_screen ()).add_child (black);
-			black.x = (x2<0)?w-black.width:-black.width;
-			black.y = 0.0f;
-			
-			black.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400, x:(x2<0)?-black.width:w+black.width);
 			out_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-				x:x2-black.width, y:y2);
+				x:x2, y:y2);
 			in_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
 				x:0.0f, y:0.0f).completed.connect ( () => {
 				end_switch_workspace ();
@@ -542,9 +532,6 @@ namespace Gala
 				} else
 					clutter_actor_reparent (window, par.nth_data (i));
 			}
-			
-			black.destroy ();
-			black = null;
 			
 			win = null;
 			par = null;
