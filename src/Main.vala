@@ -356,11 +356,11 @@ namespace Gala
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
 						map_completed (actor);
 					});
-					
+					/* TODO replace the window function with a blur
 					if (window.window_type == WindowType.MODAL_DIALOG && 
 						window.is_attached_dialog ())
 						dim_window (window.find_root_ancestor (), true);
-					
+					*/
 					break;
 				default:
 					map_completed (actor);
@@ -373,7 +373,7 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
-						
+			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
@@ -409,9 +409,9 @@ namespace Gala
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
 						destroy_completed (actor);
 					});
-					
+					/*
 					dim_window (window.find_root_ancestor (), false);
-					
+					*/
 					break;
 				default:
 					destroy_completed (actor);
