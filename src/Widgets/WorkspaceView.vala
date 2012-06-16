@@ -316,7 +316,9 @@ namespace Gala
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
-			if (event.keyval == Clutter.Key.Alt_L) {
+			if (event.keyval == Clutter.Key.Alt_L || 
+				event.keyval == Clutter.Key.Super_L || 
+				event.keyval == Clutter.Key.Control_L) {
 				hide ();
 				
 				return true;
