@@ -84,7 +84,7 @@ namespace Gala
 			add_child (backg);
 			add_child (icons);
 			
-			icons.y = Math.floorf (backg.height + 7);
+			icons.y = Math.floorf (backg.height + indicator_border + 5);
 			icons.x = Math.floorf (width / 2 - icons.width / 2);
 			(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
 			

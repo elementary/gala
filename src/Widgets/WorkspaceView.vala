@@ -32,8 +32,6 @@ namespace Gala
 		Clutter.CairoTexture workspace_thumb;
 		internal Clutter.CairoTexture scroll;
 		
-		const int current_border = 5;
-		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -113,7 +111,7 @@ namespace Gala
 		
 		bool draw_scroll (Cairo.Context cr)
 		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32-current_border, 4, 2);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
 			cr.set_source_rgba (1, 1, 1, 0.8);
 			cr.fill ();
 			
@@ -148,10 +146,10 @@ namespace Gala
 		internal void set_active (int workspace)
 		{
 			if (current_active != null)
-				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_SINE, 750, opacity : 0);
+				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 0);
 			current_active = (workspaces.get_child_at_index (workspace) as WorkspaceThumb);
 			if (current_active != null)
-				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_SINE, 750, opacity : 255);
+				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 255);
 		}
 		
 		void switch_to_next_workspace (bool reverse)
@@ -265,14 +263,14 @@ namespace Gala
 			}
 			
 			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 15;
+			workspaces.y = 8;
 			
 			scroll.visible = workspaces.width > width;
 			if (scroll.visible) {
 				scroll.y = height - 12;
 				scroll.x = 0.0f;
 				scroll.width = width/workspaces.width*width;
-				workspaces.x = 4.0f + current_border;
+				workspaces.x = 4.0f;
 			}
 			
 			animating = true;
