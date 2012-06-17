@@ -25,28 +25,46 @@ namespace Gala
 	{
 		
 		Workspace workspace;
+		WorkspaceView workspace_view;
 		Plugin plugin;
 		
 		GtkClutter.Texture close;
 		Clone backg;
+		internal CairoTexture indicator;
+		Clutter.Actor icons;
 		
 		bool hovering = false;
 		
-		public signal void opened ();//workspace was opened, close view
+		static const int indicator_border = 5;
 		
-		public WorkspaceThumb (Workspace _workspace, Plugin _plugin, Clutter.Texture workspace_thumb)
+		public signal void opened ();//workspace was opened, close view
+		public signal void closed ();//workspace has been destroied!
+		
+		public WorkspaceThumb (Workspace _workspace, Plugin _plugin, Clutter.Texture workspace_thumb, 
+			WorkspaceView _workspace_view)
 		{
 			workspace = _workspace;
 			plugin = _plugin;
+			workspace_view = _workspace_view;
 			
 			var screen = plugin.get_screen ();
+			
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
 			
 			height = 160;
 			reactive = true;
 			
-			var backg = new Clone (workspace_thumb);
+			indicator = new Clutter.CairoTexture (100, 100);
+			indicator.draw.connect (draw_indicator);
+			indicator.width = workspace_thumb.width + indicator_border*2;
+			indicator.height = workspace_thumb.height + indicator_border*2;
+			indicator.auto_resize = true;
+			indicator.opacity = 0;
+			
+			backg = new Clone (workspace_thumb);
+			backg.x = indicator_border;
+			backg.y = indicator_border;
 			
 			//close button
 			close = new GtkClutter.Texture ();
@@ -60,38 +78,9 @@ namespace Gala
 			close.scale_x = 0;
 			close.scale_y = 0;
 			
-			//list applications
-			var shown_applications = new List<Bamf.Application> (); //show each icon only once, so log the ones added
+			list_windows ();
 			
-			var icons = new Actor ();
-			icons.layout_manager = new BoxLayout ();
-			
-			workspace.list_windows ().foreach ((w) => {
-				if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-					return;
-				
-				var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
-				if (shown_applications.index (app) != -1)
-					return;
-				
-				if (app != null)
-					shown_applications.append (app);
-				
-				var icon = new GtkClutter.Texture ();
-				try {
-					icon.set_from_pixbuf (Gala.Plugin.get_icon_for_window (w, 32));
-				} catch (Error e) { warning (e.message); }
-				
-				icon.reactive = true;
-				icon.button_release_event.connect ( () => {
-					workspace.activate_with_focus (w, screen.get_display ().get_current_time ());
-					hide ();
-					return false;
-				});
-				
-				icons.add_child (icon);
-			});
-			
+			add_child (indicator);
 			add_child (backg);
 			add_child (icons);
 			
@@ -102,20 +91,33 @@ namespace Gala
 			//get window thumbs
 			var aspect = backg.width/swidth;
 			Compositor.get_window_actors (screen).foreach ((w) => {
-				if (!(w.get_workspace () == workspace.index ()) && 
-					!w.get_meta_window ().is_on_all_workspaces ())
+				var meta_window = w.get_meta_window ();
+				var type = meta_window.window_type;
+				
+				if ((!(w.get_workspace () == workspace.index ()) && 
+					!meta_window.is_on_all_workspaces ()) ||
+					meta_window.minimized ||
+					type == WindowType.DESKTOP ||
+					type == WindowType.MENU ||
+					type == WindowType.DROPDOWN_MENU ||
+					type == WindowType.POPUP_MENU ||
+					type == WindowType.TOOLTIP ||
+					type == WindowType.NOTIFICATION ||
+					type == WindowType.COMBO ||
+					type == WindowType.DND ||
+					type == WindowType.OVERRIDE_OTHER)
 					return;
 				
 				var clone = new Clone (w.get_texture ());
 				clone.width = aspect * clone.width;
 				clone.height = aspect * clone.height;
-				clone.x = aspect * w.x;
-				clone.y = aspect * w.y;
+				clone.x = aspect * w.x + indicator_border;
+				clone.y = aspect * w.y + indicator_border;
 				
 				add_child (clone);
 			});
 			
-			if (workspace.index () != screen.n_workspaces - 1)//dont allow closing the last one
+			if (workspace.index () != screen.n_workspaces - 1) //dont allow closing the last one
 				add_child (close);
 			
 			//kill the workspace
@@ -133,28 +135,7 @@ namespace Gala
 					}
 				});
 				
-				//current_workspace.animate (Clutter.AnimationMode.EASE_IN_SINE, 100, opacity:0);
-				
-				Timeout.add (250, () => { //give the windows time to close
-					screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
-					
-					/*scroll.visible = workspaces.width > width;
-					if (scroll.visible) {
-						if (workspaces.x + workspaces.width < width)
-							workspaces.x = width - workspaces.width;
-						scroll.width = width/workspaces.width*width;
-					} else {
-						workspaces.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x:width / 2 - workspaces.width / 2).
-							completed.connect (() => {
-							Timeout.add (250, () => {
-								//workspace = screen.get_active_workspace ().index ();
-								//current_workspace.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, opacity:255);
-								return false;
-							});
-						});
-					}*/
-					return false;
-				});
+				closed ();
 				
 				return true;
 			});
@@ -184,6 +165,41 @@ namespace Gala
 			}
 		}
 		
+		/*get a list of all running applications and put them as icons below the workspace thumb*/
+		void list_windows ()
+		{
+			var shown_applications = new List<Bamf.Application> (); //show each icon only once, so log the ones added
+			
+			icons = new Actor ();
+			icons.layout_manager = new BoxLayout ();
+			
+			workspace.list_windows ().foreach ((w) => {
+				if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
+					return;
+				
+				var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
+				if (shown_applications.index (app) != -1)
+					return;
+				
+				if (app != null)
+					shown_applications.append (app);
+				
+				var icon = new GtkClutter.Texture ();
+				try {
+					icon.set_from_pixbuf (Gala.Plugin.get_icon_for_window (w, 32));
+				} catch (Error e) { warning (e.message); }
+				
+				icon.reactive = true;
+				icon.button_release_event.connect ( () => {
+					workspace.activate_with_focus (w, plugin.get_screen ().get_display ().get_current_time ());
+					hide ();
+					return false;
+				});
+				
+				icons.add_child (icon);
+			});
+		}
+		
 		public override bool button_release_event (ButtonEvent event)
 		{
 			var screen = plugin.get_screen ();
@@ -191,7 +207,8 @@ namespace Gala
 			workspace.activate (screen.get_display ().get_current_time ());
 			
 			opened ();
-			//workspace = screen.get_active_workspace ().index ();
+			workspace_view.set_active (workspace.index ());
+			
 			return true;
 		}
 		
@@ -232,6 +249,51 @@ namespace Gala
 			
 			return false;
 		}
+		
+		/*drawing the indicator*/
+		static const string CURRENT_WORKSPACE_STYLE = """
+		* {
+			border-style: solid;
+			border-width: 1px 1px 1px 1px;
+			-unico-inner-stroke-width: 1px 0 1px 0;
+			border-radius: 8px;
+			
+			background-image: -gtk-gradient (linear,
+							left top,
+							left bottom,
+							from (shade (@selected_bg_color, 1.4)),
+							to (shade (@selected_bg_color, 0.98)));
+			
+			-unico-border-gradient: -gtk-gradient (linear,
+							left top, left bottom,
+							from (alpha (#000, 0.5)),
+							to (alpha (#000, 0.6)));
+			
+			-unico-inner-stroke-gradient: -gtk-gradient (linear,
+							left top, left bottom,
+							from (alpha (#fff, 0.90)),
+							to (alpha (#fff, 0.06)));
+		}
+		""";
+		static Gtk.Menu current_workspace_style; //dummy item for drawing
+		
+		bool draw_indicator (Cairo.Context cr)
+		{
+			if (current_workspace_style == null) {
+				current_workspace_style = new Gtk.Menu ();
+				var provider = new Gtk.CssProvider ();
+				try {
+					provider.load_from_data (CURRENT_WORKSPACE_STYLE, -1);
+				} catch (Error e) { warning (e.message); }
+				current_workspace_style.get_style_context ().add_provider (provider, 20000);
+			}
+			
+			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
+				indicator.width, indicator.height);
+			
+			return false;
+		}
+		
 	}
 	
 }

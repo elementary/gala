@@ -23,61 +23,16 @@ namespace Gala
 	{
 		Gala.Plugin plugin;
 		
-		Clutter.Actor workspaces;
+		internal Clutter.Actor workspaces;
 		Clutter.CairoTexture bg;
-		
-		GtkClutter.Texture tile;
 		
 		bool animating; // delay closing the popup
 		
 		Gdk.Pixbuf background_pix;
 		Clutter.CairoTexture workspace_thumb;
-		Clutter.CairoTexture current_workspace;
-		Clutter.CairoTexture scroll;
+		internal Clutter.CairoTexture scroll;
 		
 		const int current_border = 5;
-		
-		int _workspace;
-		int workspace {
-			get {
-				return _workspace;
-			}
-			set {
-				if (_workspace == value)
-					return;
-				
-				_workspace = value;
-				
-				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-					x : workspaces.x + workspaces.get_children ().nth_data (_workspace).x - current_border);
-			}
-		}
-		
-		const string CURRENT_WORKSPACE_STYLE = """
-		* {
-			border-style: solid;
-			border-width: 1px 1px 1px 1px;
-			-unico-inner-stroke-width: 1px 0 1px 0;
-			border-radius: 8px;
-			
-			background-image: -gtk-gradient (linear,
-							left top,
-							left bottom,
-							from (shade (@selected_bg_color, 1.4)),
-							to (shade (@selected_bg_color, 0.98)));
-			
-			-unico-border-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#000, 0.5)),
-							to (alpha (#000, 0.6)));
-			
-			-unico-inner-stroke-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#fff, 0.90)),
-							to (alpha (#fff, 0.06)));
-		}
-		""";
-		Gtk.Menu current_workspace_style; //dummy item for drawing
 		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
@@ -88,10 +43,8 @@ namespace Gala
 			reactive = true;
 			
 			workspaces = new Clutter.Actor ();
-			var box_layout = new Clutter.BoxLayout ();
-			workspaces.set_layout_manager (box_layout);
-			
-			box_layout.spacing = 12;
+			workspaces.layout_manager = new Clutter.BoxLayout ();
+			(workspaces.layout_manager as Clutter.BoxLayout).spacing = 12;
 			
 			bg = new Clutter.CairoTexture (500, (uint)height);
 			bg.auto_resize = true;
@@ -104,95 +57,7 @@ namespace Gala
 			scroll.auto_resize = true;
 			scroll.draw.connect (draw_scroll);
 			
-			leave_event.connect ((e) => {
-				if (!contains (e.related))
-					hide ();
-				
-				return false;
-			});
-			
-			tile = new GtkClutter.Texture ();
-			try {
-				tile.set_from_pixbuf (Gtk.IconTheme.get_default ().load_icon ("preferences-desktop-display", 64, 0));
-			} catch (Error e) {
-				warning (e.message);
-			}
-			
-			tile.reactive = true;
-			tile.button_release_event.connect (() => {
-				var screen = plugin.get_screen ();
-				
-				var windows = new GLib.List<Window> ();
-				screen.get_active_workspace ().list_windows ().foreach ( (w) => {
-					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-						return;
-					
-					windows.append (w);
-				});
-				
-				//make sure active window is biggest
-				var active_idx = windows.index (screen.get_display ().get_focus_window ());
-				if (active_idx != -1 && active_idx != 0) {
-					windows.delete_link (windows.nth (active_idx));
-					windows.prepend (screen.get_display ().get_focus_window ());
-				}
-				
-				var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-				var n_wins = windows.length ();
-				var index  = 0;
-				
-				windows.foreach ( (w) => {
-					if (w.maximized_horizontally || w.maximized_vertically)
-						w.unmaximize (Meta.MaximizeFlags.VERTICAL | Meta.MaximizeFlags.HORIZONTAL);
-					
-					switch (n_wins) {
-						case 1:
-							w.move_resize_frame (true, area.x, area.y, area.width, area.height);
-							break;
-						case 2:
-							w.move_resize_frame (true, area.x+area.width/2*index, area.y, area.width/2, 
-								area.height);
-							break;
-						case 3:
-							if (index == 0)
-								w.move_resize_frame (true, area.x, area.y, area.width/2, area.height);
-							else {
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/2*(index-1)), area.width/2, area.height/2);
-							}
-							break;
-						case 4:
-							if (index < 2)
-								w.move_resize_frame (true, area.x+area.width/2*index, area.y, 
-									area.width/2, area.height/2);
-							else
-								w.move_resize_frame (true, (index==3)?area.x+area.width/2:area.x, 
-									area.y+area.height/2, area.width/2, area.height/2);
-							break;
-						case 5:
-							if (index < 2)
-								w.move_resize_frame (true, area.x, area.y+(area.height/2*index), 
-									area.width/2, area.height/2);
-							else
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/3*(index-2)), area.width/2, area.height/3);
-							break;
-						case 6:
-							if (index < 3)
-								w.move_resize_frame (true, area.x, area.y+(area.height/3*index),
-									area.width/2, area.height/3);
-							else
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/3*(index-3)), area.width/2, area.height/3);
-							break;
-						default:
-							return;
-					}
-					index ++;
-				});
-				return true;
-			});
-			
+			//setup the the wallpaper thumb
 			int width, height;
 			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());
 			width = area.width;
@@ -203,19 +68,6 @@ namespace Gala
 			workspace_thumb.width  = (workspace_thumb.height / height) * width;
 			workspace_thumb.auto_resize = true;
 			workspace_thumb.draw.connect (draw_workspace_thumb);
-			
-			current_workspace_style = new Gtk.Menu ();
-			var provider = new Gtk.CssProvider ();
-			try {
-				provider.load_from_data (CURRENT_WORKSPACE_STYLE, -1);
-			} catch (Error e) { warning (e.message); }
-			current_workspace_style.get_style_context ().add_provider (provider, 20000);
-			
-			current_workspace = new Clutter.CairoTexture (120, 120);
-			current_workspace.height = workspace_thumb.height + current_border*2;
-			current_workspace.width  = workspace_thumb.width  + current_border*2;
-			current_workspace.auto_resize = true;
-			current_workspace.draw.connect (draw_current_workspace);
 			
 			var settings = new GLib.Settings ("org.gnome.desktop.background");
 			
@@ -235,22 +87,14 @@ namespace Gala
 				((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
 			} catch (Error e) { warning (e.message); }
 			
+			
+			
 			add_child (workspace_thumb);
 			add_child (bg);
-			/*add_child (tile); removed for now until Luna+1 */
-			add_child (current_workspace);
 			add_child (workspaces);
 			add_child (scroll);
 			
 			workspace_thumb.visible = false; //will only be used for cloning
-		}
-		
-		bool draw_current_workspace (Cairo.Context cr)
-		{
-			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
-				current_workspace.width, current_workspace.height);
-			
-			return false;
 		}
 		
 		bool draw_workspace_thumb (Cairo.Context cr)
@@ -299,7 +143,18 @@ namespace Gala
 			return false;
 		}
 		
-		void switch_to_next_workspace (bool reverse, bool reposition = true)
+		/*fade current current workspace out, fade new current workspace in*/
+		WorkspaceThumb? current_active = null;
+		internal void set_active (int workspace)
+		{
+			if (current_active != null)
+				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_SINE, 750, opacity : 0);
+			current_active = (workspaces.get_child_at_index (workspace) as WorkspaceThumb);
+			if (current_active != null)
+				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_SINE, 750, opacity : 255);
+		}
+		
+		void switch_to_next_workspace (bool reverse)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
@@ -310,8 +165,15 @@ namespace Gala
 				return;
 			
 			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
-			if (reposition)
-				workspace = idx;
+			if (workspaces.get_n_children () > 0)
+				set_active (idx);
+		}
+		
+		public override bool leave_event (Clutter.CrossingEvent event) {
+			if (!contains (event.related))
+				hide ();
+			
+			return false;
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -349,15 +211,9 @@ namespace Gala
 			if ((event.direction == Clutter.ScrollDirection.DOWN || event.direction == Clutter.ScrollDirection.RIGHT)
 				&& workspaces.width + workspaces.x > width) { //left
 				workspaces.x -= scroll_speed;
-				current_workspace.x -= scroll_speed;
-				if (!(workspaces.width + workspaces.x > width)) {
-					current_workspace.x = workspaces.width - width;
-					print ("got it..\n");
-				}
 			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
 				&& workspaces.x < 0) { //right
 				workspaces.x += scroll_speed;
-				current_workspace.x += scroll_speed;
 			}
 			scroll.x = Math.fabsf (width/workspaces.width*workspaces.x);
 			
@@ -374,61 +230,69 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			animating = true;
-			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			
-			tile.x = area.width  - 80;
-			tile.y = 120;
-			
 			y = area.height;
 			width = area.width;
 			
 			/*get the workspaces together*/
+			workspaces.get_children ().foreach ((c) => c.destroy () );
 			workspaces.remove_all_children ();
 			
 			for (var i = 0; i < screen.n_workspaces; i++) {
 				var space = screen.get_workspace_by_index (i);
-				var group = new WorkspaceThumb (space, plugin, workspace_thumb);
 				
+				var group = new WorkspaceThumb (space, plugin, workspace_thumb, this);
 				group.opened.connect (hide);
+				group.closed.connect (() => {
+					Timeout.add (250, () => { //give the windows time to close
+						screen.remove_workspace (space, screen.get_display ().get_current_time ());
+						
+						scroll.visible = workspaces.width > width;
+						if (scroll.visible) {
+							if (workspaces.x + workspaces.width < width)
+								workspaces.x = width - workspaces.width;
+							scroll.width = width/workspaces.width*width;
+						} else {
+							workspaces.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x:width / 2 - workspaces.width / 2);
+						}
+						set_active (screen.get_active_workspace ().index ());
+						
+						return false;
+					});
+				});
 				
 				workspaces.add_child (group);
 			}
 			
-			var new_idx = screen.get_active_workspace ().index ();
-			
 			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 20;
-			
-			current_workspace.y = workspaces.y - current_border;
-			
-			scroll.y = height - 12;
-			
-			visible = true;
-			grab_key_focus ();
-			Timeout.add (50, () => {
-				
-				current_workspace.x = workspaces.x + workspaces.get_children ().nth_data (new_idx).x - current_border;
-				workspace = new_idx;
-				animating = false;
-				return false;
-			}); //catch hot corner hiding problem and indicator placement
-			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
+			workspaces.y = 15;
 			
 			scroll.visible = workspaces.width > width;
 			if (scroll.visible) {
+				scroll.y = height - 12;
 				scroll.x = 0.0f;
 				scroll.width = width/workspaces.width*width;
 				workspaces.x = 4.0f + current_border;
 			}
+			
+			animating = true;
+			Timeout.add (50, () => {
+				animating = false;
+				return false;
+			}); //catch hot corner hiding problem and indicator placement
+			
+			visible = true;
+			grab_key_focus ();
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
+			set_active (screen.get_active_workspace ().index ());
 		}
 		
 		public new void hide ()
 		{
 			if (!visible || animating)
 				return;
+			
+			current_active = null;
 			
 			float width, height;
 			plugin.get_screen ().get_size (out width, out height);
@@ -446,7 +310,7 @@ namespace Gala
 			X.Event event, Meta.KeyBinding binding)
 		{
 			bool left = (binding.get_name () == "switch-to-workspace-left");
-			switch_to_next_workspace (left, false);
+			switch_to_next_workspace (left);
 			
 			show ();
 		}
