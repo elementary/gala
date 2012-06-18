@@ -26,8 +26,6 @@ namespace Gala
 		Clutter.Actor workspaces;
 		Clutter.CairoTexture bg;
 		
-		GtkClutter.Texture tile;
-		
 		bool animating; // delay closing the popup
 		
 		Gdk.Pixbuf background_pix;
@@ -105,88 +103,6 @@ namespace Gala
 				return false;
 			});
 			
-			tile = new GtkClutter.Texture ();
-			try {
-				tile.set_from_pixbuf (Gtk.IconTheme.get_default ().load_icon ("preferences-desktop-display", 64, 0));
-			} catch (Error e) {
-				warning (e.message);
-			}
-			
-			tile.reactive = true;
-			tile.button_release_event.connect (() => {
-				var screen = plugin.get_screen ();
-				
-				var windows = new GLib.List<Window> ();
-				screen.get_active_workspace ().list_windows ().foreach ( (w) => {
-					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-						return;
-					
-					windows.append (w);
-				});
-				
-				//make sure active window is biggest
-				var active_idx = windows.index (screen.get_display ().get_focus_window ());
-				if (active_idx != -1 && active_idx != 0) {
-					windows.delete_link (windows.nth (active_idx));
-					windows.prepend (screen.get_display ().get_focus_window ());
-				}
-				
-				var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-				var n_wins = windows.length ();
-				var index  = 0;
-				
-				windows.foreach ( (w) => {
-					if (w.maximized_horizontally || w.maximized_vertically)
-						w.unmaximize (Meta.MaximizeFlags.VERTICAL | Meta.MaximizeFlags.HORIZONTAL);
-					
-					switch (n_wins) {
-						case 1:
-							w.move_resize_frame (true, area.x, area.y, area.width, area.height);
-							break;
-						case 2:
-							w.move_resize_frame (true, area.x+area.width/2*index, area.y, area.width/2, 
-								area.height);
-							break;
-						case 3:
-							if (index == 0)
-								w.move_resize_frame (true, area.x, area.y, area.width/2, area.height);
-							else {
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/2*(index-1)), area.width/2, area.height/2);
-							}
-							break;
-						case 4:
-							if (index < 2)
-								w.move_resize_frame (true, area.x+area.width/2*index, area.y, 
-									area.width/2, area.height/2);
-							else
-								w.move_resize_frame (true, (index==3)?area.x+area.width/2:area.x, 
-									area.y+area.height/2, area.width/2, area.height/2);
-							break;
-						case 5:
-							if (index < 2)
-								w.move_resize_frame (true, area.x, area.y+(area.height/2*index), 
-									area.width/2, area.height/2);
-							else
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/3*(index-2)), area.width/2, area.height/3);
-							break;
-						case 6:
-							if (index < 3)
-								w.move_resize_frame (true, area.x, area.y+(area.height/3*index),
-									area.width/2, area.height/3);
-							else
-								w.move_resize_frame (true, area.x+area.width/2, 
-									area.y+(area.height/3*(index-3)), area.width/2, area.height/3);
-							break;
-						default:
-							return;
-					}
-					index ++;
-				});
-				return true;
-			});
-			
 			int width, height;
 			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());
 			width = area.width;
@@ -231,7 +147,6 @@ namespace Gala
 			
 			add_child (workspace_thumb);
 			add_child (bg);
-			/*add_child (tile); removed for now until Luna+1 */
 			add_child (current_workspace);
 			add_child (workspaces);
 			
@@ -341,9 +256,6 @@ namespace Gala
 			animating = true;
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			
-			tile.x = area.width  - 80;
-			tile.y = 120;
 			
 			y = area.height;
 			width = area.width;
