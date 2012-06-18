@@ -97,8 +97,7 @@ namespace Gala
 		
 		bool draw_workspace_thumb (Cairo.Context cr)
 		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, 
-				workspace_thumb.width, workspace_thumb.height, 5);
+			cr.rectangle (0, 0, workspace_thumb.width, workspace_thumb.height);
 			Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
 			cr.fill_preserve ();
 			

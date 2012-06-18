@@ -31,8 +31,6 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Clutter.Actor elements;
 		
-		public unowned Compositor compositor;
-		
 		Window? moving; //place for the window that is being moved over
 		
 		public Plugin ()
@@ -47,8 +45,6 @@ namespace Gala
 		public override void start ()
 		{
 			var screen = get_screen ();
-			
-			compositor = Compositor.new (screen.get_display ());
 			
 			elements = Compositor.get_stage_for_screen (screen);
 			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);

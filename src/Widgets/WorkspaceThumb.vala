@@ -97,15 +97,9 @@ namespace Gala
 				if ((!(w.get_workspace () == workspace.index ()) && 
 					!meta_window.is_on_all_workspaces ()) ||
 					meta_window.minimized ||
-					type == WindowType.DESKTOP ||
-					type == WindowType.MENU ||
-					type == WindowType.DROPDOWN_MENU ||
-					type == WindowType.POPUP_MENU ||
-					type == WindowType.TOOLTIP ||
-					type == WindowType.NOTIFICATION ||
-					type == WindowType.COMBO ||
-					type == WindowType.DND ||
-					type == WindowType.OVERRIDE_OTHER)
+					(type != WindowType.NORMAL && 
+					type != WindowType.DIALOG &&
+					type != WindowType.MODAL_DIALOG))
 					return;
 				
 				var clone = new Clone (w.get_texture ());
