@@ -25,8 +25,6 @@ namespace Gala
 	{
 		
 		Workspace workspace;
-		WorkspaceView workspace_view;
-		Plugin plugin;
 		
 		GtkClutter.Texture close;
 		Clone backg;
@@ -40,14 +38,11 @@ namespace Gala
 		public signal void opened ();//workspace was opened, close view
 		public signal void closed ();//workspace has been destroied!
 		
-		public WorkspaceThumb (Workspace _workspace, Plugin _plugin, Clutter.Texture workspace_thumb, 
-			WorkspaceView _workspace_view)
+		public WorkspaceThumb (Workspace _workspace, Clutter.Texture workspace_thumb)
 		{
 			workspace = _workspace;
-			plugin = _plugin;
-			workspace_view = _workspace_view;
 			
-			var screen = plugin.get_screen ();
+			var screen = workspace.get_screen ();
 			
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
@@ -84,7 +79,7 @@ namespace Gala
 			add_child (backg);
 			add_child (icons);
 			
-			icons.y = Math.floorf (backg.height + indicator_border + 5);
+			icons.y = Math.floorf (backg.height + indicator_border) - 5;
 			icons.x = Math.floorf (width / 2 - icons.width / 2);
 			(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
 			
@@ -135,7 +130,7 @@ namespace Gala
 			});
 			
 			//last workspace, show plus button and so on
-			if (workspace.index () == plugin.get_screen ().n_workspaces - 1) { //give the last one a different style
+			if (workspace.index () == workspace.get_screen ().n_workspaces - 1) { //give the last one a different style
 				backg.opacity = 127;
 				
 				var css = new Gtk.CssProvider ();
@@ -147,7 +142,7 @@ namespace Gala
 				
 				var plus = new GtkClutter.Texture ();
 				try {
-					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 48, 0).
+					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 32, 0).
 						load_symbolic_for_context (img.get_style_context ());
 					plus.set_from_pixbuf (pix);
 				} catch (Error e) { warning (e.message); }
@@ -185,7 +180,7 @@ namespace Gala
 				
 				icon.reactive = true;
 				icon.button_release_event.connect ( () => {
-					workspace.activate_with_focus (w, plugin.get_screen ().get_display ().get_current_time ());
+					workspace.activate_with_focus (w, workspace.get_screen ().get_display ().get_current_time ());
 					hide ();
 					return false;
 				});
@@ -196,19 +191,18 @@ namespace Gala
 		
 		public override bool button_release_event (ButtonEvent event)
 		{
-			var screen = plugin.get_screen ();
+			var screen = workspace.get_screen ();
 			
 			workspace.activate (screen.get_display ().get_current_time ());
 			
 			opened ();
-			workspace_view.set_active (workspace.index ());
 			
 			return true;
 		}
 		
 		public override bool enter_event (CrossingEvent event)
 		{
-			var screen = plugin.get_screen ();
+			var screen = workspace.get_screen ();
 			
 			if (workspace.index () == screen.n_workspaces - 1)
 				backg.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
@@ -228,7 +222,7 @@ namespace Gala
 		
 		public override bool leave_event (CrossingEvent event)
 		{
-			var screen = plugin.get_screen ();
+			var screen = workspace.get_screen ();
 			
 			if (contains (event.related) || screen.get_workspaces ().index (workspace) < 0)
 				return false;

@@ -238,7 +238,7 @@ namespace Gala
 			for (var i = 0; i < screen.n_workspaces; i++) {
 				var space = screen.get_workspace_by_index (i);
 				
-				var group = new WorkspaceThumb (space, plugin, workspace_thumb, this);
+				var group = new WorkspaceThumb (space, workspace_thumb);
 				group.opened.connect (hide);
 				group.closed.connect (() => {
 					Timeout.add (250, () => { //give the windows time to close
@@ -262,7 +262,7 @@ namespace Gala
 			}
 			
 			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 8;
+			workspaces.y = 15;
 			
 			scroll.visible = workspaces.width > width;
 			if (scroll.visible) {
