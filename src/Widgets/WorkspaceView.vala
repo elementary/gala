@@ -55,6 +55,13 @@ namespace Gala
 			scroll.auto_resize = true;
 			scroll.draw.connect (draw_scroll);
 			
+			leave_event.connect ((e) => {
+				if (!contains (e.related))
+					hide ();
+				
+				return false;
+			});
+			
 			//setup the the wallpaper thumb
 			int width, height;
 			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());

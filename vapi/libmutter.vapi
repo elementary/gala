@@ -78,10 +78,6 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_raise_on_click ();
 		[CCode (cheader_filename = "meta/prefs.h")]
-		public static unowned string get_screenshot_command ();
-		[CCode (cheader_filename = "meta/prefs.h")]
-		public static unowned string get_terminal_command ();
-		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned string get_theme ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned Pango.FontDescription get_titlebar_font ();
@@ -91,8 +87,6 @@ namespace Meta {
 		public static GDesktop.VisualBellType get_visual_bell_type ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void get_window_binding (string name, uint keysym, Meta.VirtualModifier modifiers);
-		[CCode (cheader_filename = "meta/prefs.h")]
-		public static unowned string get_window_screenshot_command ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned string get_workspace_name (int i);
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -350,6 +344,7 @@ namespace Meta {
 		public static unowned Meta.Screen? for_x_screen (X.Screen xscreen);
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
+		public int get_current_monitor ();
 		public unowned Meta.Display get_display ();
 		public Meta.Rectangle get_monitor_geometry (int monitor);
 		public int get_n_monitors ();
