@@ -92,6 +92,7 @@ namespace Gala
 				if ((!(w.get_workspace () == workspace.index ()) && 
 					!meta_window.is_on_all_workspaces ()) ||
 					meta_window.minimized ||
+					!meta_window.is_on_primary_monitor () ||
 					(type != WindowType.NORMAL && 
 					type != WindowType.DIALOG &&
 					type != WindowType.MODAL_DIALOG))
