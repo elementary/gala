@@ -65,11 +65,11 @@ namespace Gala
 	
 	public class ShadowSettings : Granite.Services.Settings
 	{
-		public string [] menu { get; set; }
-		public string [] normal_focused { get; set; }
-		public string [] normal_unfocused { get; set; }
-		public string [] dialog_focused { get; set; }
-		public string [] dialog_unfocused { get; set; }
+		public string[] menu { get; set; }
+		public string[] normal_focused { get; set; }
+		public string[] normal_unfocused { get; set; }
+		public string[] dialog_focused { get; set; }
+		public string[] dialog_unfocused { get; set; }
 		
 		static ShadowSettings? instance = null;
 		
@@ -84,6 +84,18 @@ namespace Gala
 				instance = new ShadowSettings ();
 			
 			return instance;
+		}
+		
+		public Meta.ShadowParams get_shadowparams (string class_name)
+		{
+			string[] val;
+			get (class_name, out val);
+			
+			if (val == null)
+				return Meta.ShadowParams () {radius = 1, top_fade = 0, x_offset = 0, y_offset = 0, opacity = 0};
+			
+			return Meta.ShadowParams () {radius = int.parse (val[0]), top_fade = int.parse (val[1]), 
+				x_offset = int.parse (val[2]), y_offset = int.parse (val[3]), opacity = (uint8)int.parse (val[4])};
 		}
 	}
 	

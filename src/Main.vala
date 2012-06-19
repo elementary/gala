@@ -129,34 +129,33 @@ namespace Gala
 		/*to be called when the shadow settings have been changed*/
 		public void reload_shadow ()
 		{
+			var factory = ShadowFactory.get_default ();
+			var settings = ShadowSettings.get_default ();
+			Meta.ShadowParams shadow;
+			
 			//normal focused
-			var shadow = ShadowSettings.get_default ().normal_focused;
-			ShadowFactory.get_default ().set_params ("normal", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_focused");
+			factory.set_params ("normal", true, shadow);
+			
 			//normal unfocused
-			shadow = ShadowSettings.get_default ().normal_unfocused;
-			ShadowFactory.get_default ().set_params ("normal", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_unfocused");
+			factory.set_params ("normal", false, shadow);
+			
 			//menus
-			shadow = ShadowSettings.get_default ().menu;
-			ShadowFactory.get_default ().set_params ("menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("dropdown-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("popup-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("menu");
+			factory.set_params ("menu", false, shadow);
+			factory.set_params ("dropdown-menu", false, shadow);
+			factory.set_params ("popup-menu", false, shadow);
+			
 			//dialog focused
-			shadow = ShadowSettings.get_default ().dialog_focused;
-			ShadowFactory.get_default ().set_params ("dialog", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("dialog_focused");
+			factory.set_params ("dialog", true, shadow);
+			factory.set_params ("modal_dialog", false, shadow);
+			
 			//dialog unfocused
-			shadow = ShadowSettings.get_default ().normal_unfocused;
-			ShadowFactory.get_default ().set_params ("dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_unfocused");
+			factory.set_params ("dialog", false, shadow);
+			factory.set_params ("modal_dialog", false, shadow);
 		}
 		
 		/**
