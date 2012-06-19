@@ -29,7 +29,6 @@ namespace Gala
 	{
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
-		Clutter.Actor elements;
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -46,22 +45,17 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			
-			elements = Compositor.get_stage_for_screen (screen);
-			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);
-			clutter_actor_reparent (Compositor.get_overlay_group_for_screen (screen), elements);
-			Compositor.get_stage_for_screen (screen).add_child (elements);
+			var stage = Compositor.get_stage_for_screen (screen);
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 4, -1);
 			
-			int width, height;
-			screen.get_size (out width, out height);
-			
 			workspace_view = new WorkspaceView (this);
-			elements.add_child (workspace_view);
 			workspace_view.visible = false;
-			
 			winswitcher = new WindowSwitcher (this);
-			elements.add_child (winswitcher);
 			
+			stage.add_child (workspace_view);
+			stage.add_child (winswitcher);
+			
+			/*keybindings*/
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
 				try {
 					Process.spawn_command_line_async (
@@ -96,7 +90,12 @@ namespace Gala
 			/*shadows*/
 			reload_shadow ();
 			
+			ShadowSettings.get_default ().notify.connect (reload_shadow);
+			
 			/*hot corner*/
+			int width, height;
+			screen.get_size (out width, out height);
+			
 			var hot_corner = new Clutter.Rectangle ();
 			hot_corner.x = width - 1;
 			hot_corner.y = height - 1;
@@ -110,12 +109,10 @@ namespace Gala
 				return false;
 			});
 			
-			Compositor.get_overlay_group_for_screen (screen).add_child (hot_corner);
+			stage.add_child (hot_corner);
 			
 			update_input_area ();
 			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
-			
-			ShadowSettings.get_default ().notify.connect (reload_shadow);
 		}
 		
 		public void update_input_area ()
