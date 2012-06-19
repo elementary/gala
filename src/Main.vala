@@ -588,12 +588,10 @@ namespace Gala
 			par = null;
 			
 			if (in_group != null) {
-				in_group.detach_animation ();
 				in_group.destroy ();
 			}
 			
 			if (out_group != null) {
-				out_group.detach_animation ();
 				out_group.destroy ();
 			}
 			
