@@ -21,107 +21,53 @@ namespace Gala
 {
 	public class WorkspaceView : Clutter.Actor
 	{
+		static const float VIEW_HEIGHT = 140.0f;
+		
 		Gala.Plugin plugin;
 		
-		internal Clutter.Actor workspaces;
-		Clutter.CairoTexture bg;
+		Clutter.Actor thumbnails;
+		Clutter.CairoTexture background;
 		
 		bool animating; // delay closing the popup
 		
-		Gdk.Pixbuf background_pix;
-		Clutter.CairoTexture workspace_thumb;
-		internal Clutter.CairoTexture scroll;
+		Clutter.CairoTexture scroll;
 		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
 			
-			height = 140;
+			height = VIEW_HEIGHT;
 			opacity = 0;
 			reactive = true;
 			
-			workspaces = new Clutter.Actor ();
-			workspaces.layout_manager = new Clutter.BoxLayout ();
-			(workspaces.layout_manager as Clutter.BoxLayout).spacing = 12;
+			thumbnails = new Clutter.Actor ();
+			thumbnails.layout_manager = new Clutter.BoxLayout ();
+			(thumbnails.layout_manager as Clutter.BoxLayout).spacing = 12;
+			(thumbnails.layout_manager as Clutter.BoxLayout).homogeneous = true;
 			
-			bg = new Clutter.CairoTexture (500, (uint)height);
-			bg.auto_resize = true;
-			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
-			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
-			bg.draw.connect (draw_background);
+			background = new Clutter.CairoTexture (500, (uint)height);
+			background.auto_resize = true;
+			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
+			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
+			background.draw.connect (draw_background);
 			
 			scroll = new Clutter.CairoTexture (100, 12);
 			scroll.height = 12;
 			scroll.auto_resize = true;
 			scroll.draw.connect (draw_scroll);
 			
-			leave_event.connect ((e) => {
-				if (!contains (e.related))
-					hide ();
-				
-				return false;
-			});
-			
-			//setup the the wallpaper thumb
-			int width, height;
-			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());
-			width = area.width;
-			height = area.height;
-			
-			workspace_thumb = new Clutter.CairoTexture (120, 120);
-			workspace_thumb.height = 80;
-			workspace_thumb.width  = (workspace_thumb.height / height) * width;
-			workspace_thumb.auto_resize = true;
-			workspace_thumb.draw.connect (draw_workspace_thumb);
-			
-			var settings = new GLib.Settings ("org.gnome.desktop.background");
-			
-			settings.changed.connect ((key) => {
-				if (key == "picture-uri") {
-					var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
-					try {
-						background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
-						((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
-					} catch (Error e) { warning (e.message); }
-				}
-			});
-			
-			var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
-			try {
-				background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
-				((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
-			} catch (Error e) { warning (e.message); }
-			
-			
-			
-			add_child (workspace_thumb);
-			add_child (bg);
-			add_child (workspaces);
+			add_child (background);
+			add_child (thumbnails);
 			add_child (scroll);
 			
-			workspace_thumb.visible = false; //will only be used for cloning
-		}
-		
-		bool draw_workspace_thumb (Cairo.Context cr)
-		{
-			cr.rectangle (0, 0, workspace_thumb.width, workspace_thumb.height);
-			Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
-			cr.fill_preserve ();
-			
-			cr.set_line_width (1);
-			cr.set_source_rgba (0, 0, 0, 1);
-			cr.stroke_preserve ();
-			
-			return false;
-		}
-		
-		bool draw_scroll (Cairo.Context cr)
-		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
-			cr.set_source_rgba (1, 1, 1, 0.8);
-			cr.fill ();
-			
-			return false;
+			foreach (var wp in plugin.get_screen ().get_workspaces ()) {
+				var thumb = new WorkspaceThumb (wp);
+				thumb.clicked.connect (hide);
+				thumb.closed.connect (remove_workspace);
+				thumb.window_on_last.connect (add_workspace);
+								
+				thumbnails.add_child (thumb);
+			}
 		}
 		
 		bool draw_background (Cairo.Context cr)
@@ -147,15 +93,60 @@ namespace Gala
 			return false;
 		}
 		
-		/*fade current current workspace out, fade new current workspace in*/
-		WorkspaceThumb? current_active = null;
-		internal void set_active (int workspace)
+		bool draw_scroll (Cairo.Context cr)
 		{
-			if (current_active != null)
-				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 0);
-			current_active = (workspaces.get_child_at_index (workspace) as WorkspaceThumb);
-			if (current_active != null)
-				current_active.indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 255);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
+			cr.set_source_rgba (1, 1, 1, 0.8);
+			cr.fill ();
+			
+			return false;
+		}
+		
+		void add_workspace ()
+		{
+			var screen = plugin.get_screen ();
+			var wp = screen.append_new_workspace (false, screen.get_display ().get_current_time ());		
+			if (wp == null)
+				return;
+			
+			var thumb = new WorkspaceThumb (wp);
+			thumb.clicked.connect (hide);
+			thumb.closed.connect (remove_workspace);
+			thumb.window_on_last.connect (add_workspace);
+						
+			thumbnails.add_child (thumb);
+
+			check_scrollbar ();
+		}
+		
+		void remove_workspace (WorkspaceThumb thumb)
+		{
+			thumb.clicked.disconnect (hide);
+			thumb.closed.disconnect (remove_workspace);
+			thumb.window_on_last.disconnect (add_workspace);
+			
+			var workspace = thumb.workspace;
+			thumb.workspace = null;
+			
+			var screen = workspace.get_screen ();
+			screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
+			
+			thumbnails.remove_child (thumb);
+			
+			check_scrollbar ();
+		}
+
+		void check_scrollbar ()
+		{
+			scroll.visible = thumbnails.width > width;
+			
+			if (scroll.visible) {
+				if (thumbnails.x + thumbnails.width < width)
+					thumbnails.x = width - thumbnails.width;
+				scroll.width = width / thumbnails.width * width;
+			} else {
+				thumbnails.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x : width / 2 - thumbnails.width / 2);
+			}
 		}
 		
 		void switch_to_next_workspace (bool reverse)
@@ -169,8 +160,6 @@ namespace Gala
 				return;
 			
 			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
-			if (workspaces.get_n_children () > 0)
-				set_active (idx);
 		}
 		
 		public override bool leave_event (Clutter.CrossingEvent event) {
@@ -213,13 +202,13 @@ namespace Gala
 		public override bool scroll_event (Clutter.ScrollEvent event)
 		{
 			if ((event.direction == Clutter.ScrollDirection.DOWN || event.direction == Clutter.ScrollDirection.RIGHT)
-				&& workspaces.width + workspaces.x > width) { //left
-				workspaces.x -= scroll_speed;
+				&& thumbnails.width + thumbnails.x > width) { //left
+				thumbnails.x -= scroll_speed;
 			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
-				&& workspaces.x < 0) { //right
-				workspaces.x += scroll_speed;
+				&& thumbnails.x < 0) { //right
+				thumbnails.x += scroll_speed;
 			}
-			scroll.x = Math.fabsf (width/workspaces.width*workspaces.x);
+			scroll.x = Math.floorf (width / thumbnails.width * thumbnails.x);
 			
 			return false;
 		}
@@ -238,45 +227,19 @@ namespace Gala
 			y = area.height;
 			width = area.width;
 			
-			/*get the workspaces together*/
-			workspaces.get_children ().foreach ((c) => c.destroy () );
-			workspaces.remove_all_children ();
+			thumbnails.get_children ().foreach ((thumb) => {
+				thumb.show ();
+			});
 			
-			for (var i = 0; i < screen.n_workspaces; i++) {
-				var space = screen.get_workspace_by_index (i);
-				
-				var group = new WorkspaceThumb (space, workspace_thumb);
-				group.opened.connect (hide);
-				group.closed.connect (() => {
-					Timeout.add (250, () => { //give the windows time to close
-						screen.remove_workspace (space, screen.get_display ().get_current_time ());
-						
-						scroll.visible = workspaces.width > width;
-						if (scroll.visible) {
-							if (workspaces.x + workspaces.width < width)
-								workspaces.x = width - workspaces.width;
-							scroll.width = width/workspaces.width*width;
-						} else {
-							workspaces.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x:width / 2 - workspaces.width / 2);
-						}
-						set_active (screen.get_active_workspace ().index ());
-						
-						return false;
-					});
-				});
-				
-				workspaces.add_child (group);
-			}
+			thumbnails.x = width / 2 - thumbnails.width / 2;
+			thumbnails.y = 15;
 			
-			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 15;
-			
-			scroll.visible = workspaces.width > width;
+			scroll.visible = thumbnails.width > width;
 			if (scroll.visible) {
 				scroll.y = height - 12;
 				scroll.x = 0.0f;
-				scroll.width = width/workspaces.width*width;
-				workspaces.x = 4.0f;
+				scroll.width = width / thumbnails.width * width;
+				thumbnails.x = 4.0f;
 			}
 			
 			animating = true;
@@ -288,7 +251,6 @@ namespace Gala
 			visible = true;
 			grab_key_focus ();
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
-			set_active (screen.get_active_workspace ().index ());
 		}
 		
 		public new void hide ()
@@ -296,16 +258,16 @@ namespace Gala
 			if (!visible || animating)
 				return;
 			
-			current_active = null;
-			
 			float width, height;
 			plugin.get_screen ().get_size (out width, out height);
 			
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height)
-				.completed.connect ( () => {
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height).completed.connect (() => {
+				thumbnails.get_children ().foreach ((thumb) => {
+					thumb.hide ();
+				});
 				visible = false;
 			});
 		}

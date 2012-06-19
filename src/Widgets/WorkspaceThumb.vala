@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann
+//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,226 +20,9 @@ using Clutter;
 
 namespace Gala
 {
-	
 	public class WorkspaceThumb : Clutter.Actor
 	{
-		
-		Workspace workspace;
-		
-		GtkClutter.Texture close;
-		Clone backg;
-		internal CairoTexture indicator;
-		Clutter.Actor icons;
-		
-		bool hovering = false;
-		
-		static const int indicator_border = 5;
-		
-		public signal void opened ();//workspace was opened, close view
-		public signal void closed ();//workspace has been destroied!
-		
-		public WorkspaceThumb (Workspace _workspace, Clutter.Texture workspace_thumb)
-		{
-			workspace = _workspace;
-			
-			var screen = workspace.get_screen ();
-			
-			int swidth, sheight;
-			screen.get_size (out swidth, out sheight);
-			
-			height = 160;
-			reactive = true;
-			
-			indicator = new Clutter.CairoTexture (100, 100);
-			indicator.draw.connect (draw_indicator);
-			indicator.width = workspace_thumb.width + indicator_border*2;
-			indicator.height = workspace_thumb.height + indicator_border*2;
-			indicator.auto_resize = true;
-			indicator.opacity = 0;
-			
-			backg = new Clone (workspace_thumb);
-			backg.x = indicator_border;
-			backg.y = indicator_border;
-			
-			//close button
-			close = new GtkClutter.Texture ();
-			try {
-				close.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
-			} catch (Error e) { warning (e.message); }
-			close.x = -12.0f;
-			close.y = -10.0f;
-			close.reactive = true;
-			close.scale_gravity = Clutter.Gravity.CENTER;
-			close.scale_x = 0;
-			close.scale_y = 0;
-			
-			list_windows ();
-			
-			add_child (indicator);
-			add_child (backg);
-			add_child (icons);
-			
-			icons.y = Math.floorf (backg.height + indicator_border) - 5;
-			icons.x = Math.floorf (width / 2 - icons.width / 2);
-			(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
-			
-			//get window thumbs
-			var aspect = backg.width/swidth;
-			Compositor.get_window_actors (screen).foreach ((w) => {
-				var meta_window = w.get_meta_window ();
-				var type = meta_window.window_type;
-				
-				if ((!(w.get_workspace () == workspace.index ()) && 
-					!meta_window.is_on_all_workspaces ()) ||
-					meta_window.minimized ||
-					!meta_window.is_on_primary_monitor () ||
-					(type != WindowType.NORMAL && 
-					type != WindowType.DIALOG &&
-					type != WindowType.MODAL_DIALOG))
-					return;
-				
-				var clone = new Clone (w.get_texture ());
-				clone.width = aspect * clone.width;
-				clone.height = aspect * clone.height;
-				clone.x = aspect * w.x + indicator_border;
-				clone.y = aspect * w.y + indicator_border;
-				
-				add_child (clone);
-			});
-			
-			if (workspace.index () != screen.n_workspaces - 1) //dont allow closing the last one
-				add_child (close);
-			
-			//kill the workspace
-			close.button_release_event.connect (() => {
-				animate (Clutter.AnimationMode.LINEAR, 150, width:0.0f, opacity:0).completed.connect (() => {
-					destroy ();
-				});
-				
-				workspace.list_windows ().foreach ((w) => {
-					if (w.window_type != WindowType.DOCK) {
-						var gw = Gdk.X11Window.foreign_new_for_display (Gdk.Display.get_default (), 
-							w.get_xwindow ());
-						if (gw != null)
-							gw.destroy ();
-					}
-				});
-				
-				closed ();
-				
-				return true;
-			});
-			
-			//last workspace, show plus button and so on
-			if (workspace.index () == workspace.get_screen ().n_workspaces - 1) { //give the last one a different style
-				backg.opacity = 127;
-				
-				var css = new Gtk.CssProvider ();
-				var img = new Gtk.Image ();
-				try {
-					css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
-				} catch (Error e) { warning(e.message); }
-				img.get_style_context ().add_provider (css, 20000);
-				
-				var plus = new GtkClutter.Texture ();
-				try {
-					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, 32, 0).
-						load_symbolic_for_context (img.get_style_context ());
-					plus.set_from_pixbuf (pix);
-				} catch (Error e) { warning (e.message); }
-				
-				plus.x = width / 2 - plus.width / 2;
-				plus.y = (backg.x + backg.height) / 2 - plus.height / 2;
-				
-				add_child (plus);
-			}
-		}
-		
-		/*get a list of all running applications and put them as icons below the workspace thumb*/
-		void list_windows ()
-		{
-			var shown_applications = new List<Bamf.Application> (); //show each icon only once, so log the ones added
-			
-			icons = new Actor ();
-			icons.layout_manager = new BoxLayout ();
-			
-			workspace.list_windows ().foreach ((w) => {
-				if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-					return;
-				
-				var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
-				if (shown_applications.index (app) != -1)
-					return;
-				
-				if (app != null)
-					shown_applications.append (app);
-				
-				var icon = new GtkClutter.Texture ();
-				try {
-					icon.set_from_pixbuf (Gala.Plugin.get_icon_for_window (w, 32));
-				} catch (Error e) { warning (e.message); }
-				
-				icon.reactive = true;
-				icon.button_release_event.connect ( () => {
-					workspace.activate_with_focus (w, workspace.get_screen ().get_display ().get_current_time ());
-					hide ();
-					return false;
-				});
-				
-				icons.add_child (icon);
-			});
-		}
-		
-		public override bool button_release_event (ButtonEvent event)
-		{
-			var screen = workspace.get_screen ();
-			
-			workspace.activate (screen.get_display ().get_current_time ());
-			
-			opened ();
-			
-			return true;
-		}
-		
-		public override bool enter_event (CrossingEvent event)
-		{
-			var screen = workspace.get_screen ();
-			
-			if (workspace.index () == screen.n_workspaces - 1)
-				backg.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity:210);
-			else {
-				Timeout.add (500, () => {
-					close.visible = true;
-					if (hovering)
-						close.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x:1.0f, scale_y:1.0f);
-					return false;
-				});
-			}
-			
-			hovering = true;
-			
-			return true;
-		}
-		
-		public override bool leave_event (CrossingEvent event)
-		{
-			var screen = workspace.get_screen ();
-			
-			if (contains (event.related) || screen.get_workspaces ().index (workspace) < 0)
-				return false;
-			
-			if (workspace.index () == screen.n_workspaces - 1)
-				backg.animate (AnimationMode.EASE_OUT_QUAD, 400, opacity:127);
-			else
-				close.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x:0.0f, scale_y:0.0f)
-					.completed.connect (() => close.visible = false );
-			
-			hovering = false;
-			
-			return false;
-		}
-		
-		/*drawing the indicator*/
+		// indicator style
 		static const string CURRENT_WORKSPACE_STYLE = """
 		* {
 			border-style: solid;
@@ -264,12 +47,150 @@ namespace Gala
 							to (alpha (#fff, 0.06)));
 		}
 		""";
-		static Gtk.Menu current_workspace_style; //dummy item for drawing
+
+		//dummy item for indicator drawing
+		static Gtk.Image current_workspace_style;
+		
+		static const int INDICATOR_BORDER = 5;
+		static const int APP_ICON_SIZE = 32;
+		static const float THUMBNAIL_HEIGHT = 80.0f;
+		static const uint CLOSE_BUTTON_DELAY = 500;
+		
+		public signal void clicked ();
+		public signal void closed ();
+		public signal void window_on_last ();
+		
+		public unowned Workspace? workspace { get; set; }
+		
+		unowned Screen screen;
+		
+		static GtkClutter.Texture? plus = null;
+		
+		Clone wallpaper;
+		Clutter.Actor windows;
+		Clutter.Actor icons;
+		CairoTexture indicator;
+		GtkClutter.Texture close_button;
+		
+		uint hover_timer = 0;
+		
+		public WorkspaceThumb (Workspace _workspace)
+		{
+			workspace = _workspace;
+			screen = workspace.get_screen ();
+			
+			screen.workspace_switched.connect (handle_workspace_switched);
+			screen.workspace_added.connect (workspace_added);
+
+			workspace.window_added.connect (handle_window_added);
+			workspace.window_removed.connect (handle_window_removed);
+			
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			
+			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
+			
+			reactive = true;
+						
+			indicator = new Clutter.CairoTexture ((uint)width + 2 * INDICATOR_BORDER, (uint)THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER);
+			indicator.draw.connect (draw_indicator);
+			indicator.auto_resize = true;
+			indicator.opacity = 0;
+			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
+			
+			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
+			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
+			wallpaper.x = INDICATOR_BORDER;
+			wallpaper.y = INDICATOR_BORDER;
+			wallpaper.height = THUMBNAIL_HEIGHT;
+			wallpaper.width = width;
+			
+			close_button = new GtkClutter.Texture ();
+			try {
+				close_button.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
+			} catch (Error e) { warning (e.message); }
+			close_button.x = -12.0f;
+			close_button.y = -10.0f;
+			close_button.reactive = true;
+			close_button.scale_gravity = Clutter.Gravity.CENTER;
+			close_button.scale_x = 0;
+			close_button.scale_y = 0;
+			
+			icons = new Actor ();
+			icons.layout_manager = new BoxLayout ();
+			(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
+			icons.height = APP_ICON_SIZE;
+			
+			windows = new Actor ();
+			windows.x = INDICATOR_BORDER;
+			windows.y = INDICATOR_BORDER;
+			windows.height = THUMBNAIL_HEIGHT;
+			windows.width = width;
+
+			add_child (indicator);
+			add_child (wallpaper);
+			add_child (windows);
+			add_child (icons);
+			add_child (close_button);
+			
+			//kill the workspace
+			close_button.button_release_event.connect (() => {
+				animate (Clutter.AnimationMode.LINEAR, 250, width : 0.0f, opacity : 0);
+				
+				workspace.list_windows ().foreach ((w) => {
+					if (w.window_type != WindowType.DOCK) {
+						var gw = Gdk.X11Window.foreign_new_for_display (Gdk.Display.get_default (), 
+							w.get_xwindow ());
+						if (gw != null)
+							gw.destroy ();
+					}
+				});
+				
+				GLib.Timeout.add (250, () => {
+					workspace.window_added.disconnect (handle_window_added);
+					workspace.window_removed.disconnect (handle_window_removed);
+					
+					closed ();
+					return false;
+				});
+				
+				return true;
+			});
+			
+			if (plus == null) {
+				var css = new Gtk.CssProvider ();
+				var img = new Gtk.Image ();
+				try {
+					css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
+				} catch (Error e) { warning(e.message); }
+				img.get_style_context ().add_provider (css, 20000);
+				
+				plus = new GtkClutter.Texture ();
+				try {
+					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, (int)THUMBNAIL_HEIGHT / 2, 0).
+						load_symbolic_for_context (img.get_style_context ());
+					plus.set_from_pixbuf (pix);
+				} catch (Error e) { warning (e.message); }
+				
+				plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
+				plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
+			}
+			
+			check_last_workspace ();
+			
+			visible = false;			
+		}
+		
+		~WorkspaceThumb ()
+		{
+			screen.workspace_switched.disconnect (handle_workspace_switched);
+			screen.workspace_added.disconnect (workspace_added);
+		}
 		
 		bool draw_indicator (Cairo.Context cr)
 		{
 			if (current_workspace_style == null) {
-				current_workspace_style = new Gtk.Menu ();
+				current_workspace_style = new Gtk.Image ();
 				var provider = new Gtk.CssProvider ();
 				try {
 					provider.load_from_data (CURRENT_WORKSPACE_STYLE, -1);
@@ -283,6 +204,206 @@ namespace Gala
 			return false;
 		}
 		
+		void workspace_added (int index)
+		{
+			check_last_workspace ();
+		}
+
+		void update_windows ()
+		{
+			windows.remove_all_children ();
+			
+			if (workspace == null)
+				return;
+			
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			
+			// add window thumbnails
+			var aspect = windows.width / swidth;
+			Compositor.get_window_actors (screen).foreach ((w) => {
+				var meta_window = w.get_meta_window ();
+				var type = meta_window.window_type;
+				
+				if ((!(w.get_workspace () == workspace.index ()) && 
+					!meta_window.is_on_all_workspaces ()) ||
+					meta_window.minimized ||
+					!meta_window.is_on_primary_monitor () ||
+					(type != WindowType.NORMAL && 
+					type != WindowType.DIALOG &&
+					type != WindowType.MODAL_DIALOG))
+					return;
+				
+				var clone = new Clone (w.get_texture ());
+				clone.width = aspect * clone.width;
+				clone.height = aspect * clone.height;
+				clone.x = aspect * w.x;
+				clone.y = aspect * w.y;
+				
+				windows.add_child (clone);
+			});
+		}
+
+		void update_icons ()
+		{
+			icons.remove_all_children ();
+			
+			if (workspace == null)
+				return;
+			
+			//show each icon only once, so log the ones added
+			var shown_applications = new List<Bamf.Application> ();
+			
+			workspace.list_windows ().foreach ((w) => {
+				if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
+					return;
+				
+				var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
+				if (shown_applications.index (app) != -1)
+					return;
+				
+				if (app != null)
+					shown_applications.append (app);
+				
+				var icon = new GtkClutter.Texture ();
+				try {
+					icon.set_from_pixbuf (Gala.Plugin.get_icon_for_window (w, APP_ICON_SIZE));
+				} catch (Error e) { warning (e.message); }
+				
+				icon.reactive = true;
+				icon.button_release_event.connect ( () => {
+					workspace.activate_with_focus (w, workspace.get_screen ().get_display ().get_current_time ());
+					return false;
+				});
+				
+				icons.add_child (icon);
+			});
+			
+			icons.x = Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2);
+			icons.y = Math.floorf (wallpaper.y + wallpaper.height - 5);
+		}
+
+		void check_last_workspace ()
+		{
+			//last workspace, show plus button and so on
+			//give the last one a different style
+			
+			if (workspace == null)
+				return;
+			
+			if (workspace.index () == screen.n_workspaces - 1) {
+				wallpaper.opacity = 127;
+				if (!contains (plus))
+					add_child (plus);
+			} else {
+				wallpaper.opacity = 255;
+				if (contains (plus))
+					remove_child (plus);
+			}
+		}
+		
+		void handle_workspace_switched (int index_old, int index_new, Meta.MotionDirection direction)
+		{
+			if (index_old == index_new)
+				return;
+			
+			if (workspace == null)
+				return;
+			
+			if (workspace.index () == index_old)
+				indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 0);
+			else if (workspace.index () == index_new)
+				indicator.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, opacity : 255);
+		}
+		
+		void handle_window_added (Meta.Window window)
+		{
+			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && workspace.n_windows > 0)
+				window_on_last ();
+		}
+		
+		void handle_window_removed (Meta.Window window)
+		{
+			if (workspace != null && workspace.n_windows == 0) {
+				workspace.window_added.disconnect (handle_window_added);
+				workspace.window_removed.disconnect (handle_window_removed);
+				
+				closed ();
+			}
+		}
+		
+		public override void hide ()
+		{
+			base.hide ();
+			
+			icons.remove_all_children ();
+			windows.remove_all_children ();
+		}
+		
+		public override void show ()
+		{
+			check_last_workspace ();
+			
+			update_icons ();
+			update_windows ();
+			
+			base.show ();
+		}
+		
+		public override bool button_release_event (ButtonEvent event)
+		{
+			if (workspace == null)
+				return true;
+			
+			workspace.activate (screen.get_display ().get_current_time ());
+			
+			clicked ();
+			
+			return true;
+		}
+		
+		public override bool enter_event (CrossingEvent event)
+		{
+			if (workspace == null)
+				return true;
+			
+			if (workspace.index () == screen.n_workspaces - 1) {
+				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
+				return true;
+			}
+			
+			if (hover_timer > 0)
+				GLib.Source.remove (hover_timer);
+			
+			hover_timer = Timeout.add (CLOSE_BUTTON_DELAY, () => {
+				close_button.visible = true;
+				close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
+				return false;
+			});
+			
+			return true;
+		}
+		
+		public override bool leave_event (CrossingEvent event)
+		{
+			if (contains (event.related))
+				return false;
+			
+			if (hover_timer > 0) {
+				GLib.Source.remove (hover_timer);
+				hover_timer = 0;
+			}
+			
+			if (workspace == null)
+				return false;
+			
+			if (workspace.index () == screen.n_workspaces - 1)
+				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 400, opacity : 127);
+			else
+				close_button.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x : 0.0f, scale_y : 0.0f)
+					.completed.connect (() => close_button.visible = false );
+			
+			return false;
+		}
 	}
-	
 }
