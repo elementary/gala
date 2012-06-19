@@ -32,6 +32,12 @@ namespace Gala
 		
 		Window? moving; //place for the window that is being moved over
 		
+		List<Clutter.Actor> minimizing;
+		List<Clutter.Actor> maximizing;
+		List<Clutter.Actor> unmaximizing;
+		List<Clutter.Actor> mapping;
+		List<Clutter.Actor> destroying;
+		
 		public Plugin ()
 		{
 			Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA+".appearance");
@@ -54,6 +60,12 @@ namespace Gala
 			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
+			
+			minimizing = new GLib.List<Clutter.Actor> ();
+			maximizing = new GLib.List<Clutter.Actor> ();
+			unmaximizing = new GLib.List<Clutter.Actor> ();
+			mapping = new GLib.List<Clutter.Actor> ();
+			destroying = new GLib.List<Clutter.Actor> ();
 			
 			/*keybindings*/
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
@@ -288,6 +300,7 @@ namespace Gala
 		/*
 		 * effects
 		 */
+		
 		public override void minimize (WindowActor actor)
 		{
 			minimize_completed (actor);
@@ -302,6 +315,8 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+				maximizing.append (actor);
+				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
 				actor.get_position (out x, out y);
@@ -314,10 +329,12 @@ namespace Gala
 				actor.move_anchor_point (anchor_x, anchor_y);
 				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
 					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+					
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
-					maximize_completed (actor);
+					
+					if (end_animation (maximizing, actor))
+						maximize_completed (actor);
 				});
 				
 				return;
@@ -332,6 +349,8 @@ namespace Gala
 				map_completed (actor);
 				return;
 			}
+			
+			mapping.append (actor);
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
@@ -364,7 +383,9 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().open_duration, 
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
-						map_completed (actor);
+						
+						if (end_animation (mapping, actor))
+							map_completed (actor);
 						window.activate (display.get_current_time ());
 					});
 					break;
@@ -379,7 +400,10 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
-						map_completed (actor);
+						
+						if (end_animation (mapping, actor))
+							map_completed (actor);
+						
 						if (!window.is_override_redirect ())
 							window.activate (display.get_current_time ());
 					});
@@ -390,9 +414,12 @@ namespace Gala
 					actor.scale_x = 1.0f;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
+					
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
-						map_completed (actor);
+						
+						if (end_animation (mapping, actor))
+							map_completed (actor);
 					});
 					
 					if (AppearanceSettings.get_default ().dim_parents &&
@@ -402,7 +429,8 @@ namespace Gala
 					
 					break;
 				default:
-					map_completed (actor);
+					if (end_animation (mapping, actor))
+						map_completed (actor);
 					break;
 			}
 		}
@@ -417,6 +445,8 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
+			
+			destroying.append (actor);
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
@@ -434,7 +464,8 @@ namespace Gala
 								focus.activate (display.get_current_time ());
 						}
 						
-						destroy_completed (actor);
+						if (end_animation (destroying, actor))
+							destroy_completed (actor);
 					});
 					break;
 				case WindowType.MENU:
@@ -443,7 +474,9 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
-						destroy_completed (actor);
+						
+						if (end_animation (destroying, actor))
+							destroy_completed (actor);
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
@@ -451,18 +484,93 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.NORTH;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
-						destroy_completed (actor);
+						
+						if (end_animation (destroying, actor))
+							destroy_completed (actor);
 					});
 					
 					dim_window (window.find_root_ancestor (), false);
 					
 					break;
 				default:
-					destroy_completed (actor);
+					if (end_animation (destroying, actor))
+						destroy_completed (actor);
 					break;
 			}
 		}
 		
+		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
+		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				unmaximize_completed (actor);
+				return;
+			}
+			
+			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+				unmaximizing.append (actor);
+				
+				float x, y, width, height;
+				actor.get_size (out width, out height);
+				actor.get_position (out x, out y);
+				
+				float scale_x  = (float)ew  / width;
+				float scale_y  = (float)eh / height;
+				float anchor_x = (float)(x - ex) * width  / (ew - width);
+				float anchor_y = (float)(y - ey) * height / (eh - height);
+				
+				actor.move_anchor_point (anchor_x, anchor_y);
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
+					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
+					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
+						scale_y:1.0f);//just scaling didnt want to work..
+					
+					if (end_animation (unmaximizing, actor))
+						unmaximize_completed (actor);
+				});
+				
+				return;
+			}
+			
+			unmaximize_completed (actor);
+		}
+		
+		//kill everything on actor if it's doing something, true if we did
+		bool end_animation (List<Clutter.Actor> list, WindowActor actor)
+		{
+			var index = list.index (actor);
+			if (index != -1) {
+				actor.detach_animation ();
+				actor.opacity = 255;
+				actor.scale_x = 1.0f;
+				actor.scale_y = 1.0f;
+				actor.rotation_angle_x = 0.0f;
+				actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				
+				list.remove_link (list.nth (index));
+				
+				return true;
+			}
+			return false;
+		}
+		
+		public override void kill_window_effects (WindowActor actor)
+		{
+			if (end_animation (mapping, actor))
+				map_completed (actor);
+			if (end_animation (minimizing, actor))
+				minimize_completed (actor);
+			if (end_animation (maximizing, actor))
+				maximize_completed (actor);
+			if (end_animation (unmaximizing, actor))
+				unmaximize_completed (actor);
+			if (end_animation (destroying, actor))
+				destroy_completed (actor);
+		}
+		
+		
+		/*workspace switcher*/
 		GLib.List<Meta.WindowActor>? win;
 		GLib.List<Clutter.Actor>? par; //class space for kill func
 		Clutter.Actor in_group;
@@ -554,17 +662,6 @@ namespace Gala
 			});
 		}
 		
-		public override void kill_window_effects (WindowActor actor)
-		{
-			/*FIXME should call the things in anim.completed
-			minimize_completed (actor);
-			maximize_completed (actor);
-			unmaximize_completed (actor);
-			map_completed (actor);
-			destroy_completed (actor);
-			*/
-		}
-		
 		void end_switch_workspace ()
 		{
 			if (win == null || par == null)
@@ -613,38 +710,6 @@ namespace Gala
 					focus.activate (display.get_current_time ());
 			}
 			
-		}
-		
-		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
-		{
-			if (!AnimationSettings.get_default ().enable_animations) {
-				unmaximize_completed (actor);
-				return;
-			}
-			
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				float x, y, width, height;
-				actor.get_size (out width, out height);
-				actor.get_position (out x, out y);
-				
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
-				
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
-						scale_y:1.0f);//just scaling didnt want to work..
-					unmaximize_completed (actor);
-				});
-				
-				return;
-			}
-			
-			unmaximize_completed (actor);
 		}
 		
 		public override void kill_switch_workspace ()
