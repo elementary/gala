@@ -445,7 +445,7 @@ namespace Meta {
 		public unowned string get_mutter_hints ();
 		public Meta.Rectangle get_outer_rect ();
 		public int get_pid ();
-		public Meta.Rectangle get_rect ();
+		public unowned Meta.Rectangle? get_rect ();
 		public unowned string get_role ();
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
