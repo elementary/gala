@@ -126,7 +126,8 @@ namespace Gala
 			windows.y = INDICATOR_BORDER;
 			windows.height = THUMBNAIL_HEIGHT;
 			windows.width = width;
-
+			windows.clip_to_allocation = true;
+			
 			add_child (indicator);
 			add_child (wallpaper);
 			add_child (windows);
