@@ -22,34 +22,6 @@ namespace Gala
 {
 	public class WorkspaceThumb : Clutter.Actor
 	{
-		// indicator style
-		static const string CURRENT_WORKSPACE_STYLE = """
-		* {
-			border-style: solid;
-			border-width: 1px 1px 1px 1px;
-			-unico-inner-stroke-width: 1px 0 1px 0;
-			border-radius: 8px;
-			
-			background-image: -gtk-gradient (linear,
-							left top,
-							left bottom,
-							from (shade (@selected_bg_color, 1.4)),
-							to (shade (@selected_bg_color, 0.98)));
-			
-			-unico-border-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#000, 0.5)),
-							to (alpha (#000, 0.6)));
-			
-			-unico-inner-stroke-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#fff, 0.90)),
-							to (alpha (#fff, 0.06)));
-		}
-		""";
-
-		//dummy item for indicator drawing
-		static Gtk.Image current_workspace_style;
 		
 		static const int INDICATOR_BORDER = 5;
 		static const int APP_ICON_SIZE = 32;
@@ -81,7 +53,7 @@ namespace Gala
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);
-
+			
 			workspace.window_added.connect (handle_window_added);
 			workspace.window_removed.connect (handle_window_removed);
 			
@@ -91,7 +63,7 @@ namespace Gala
 			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
 			
 			reactive = true;
-						
+			
 			indicator = new Clutter.CairoTexture ((uint)width + 2 * INDICATOR_BORDER, (uint)THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER);
 			indicator.draw.connect (draw_indicator);
 			indicator.auto_resize = true;
@@ -179,7 +151,7 @@ namespace Gala
 			
 			check_last_workspace ();
 			
-			visible = false;			
+			visible = false;
 		}
 		
 		~WorkspaceThumb ()
@@ -190,17 +162,12 @@ namespace Gala
 		
 		bool draw_indicator (Cairo.Context cr)
 		{
-			if (current_workspace_style == null) {
-				current_workspace_style = new Gtk.Image ();
-				var provider = new Gtk.CssProvider ();
-				try {
-					provider.load_from_data (CURRENT_WORKSPACE_STYLE, -1);
-				} catch (Error e) { warning (e.message); }
-				current_workspace_style.get_style_context ().add_provider (provider, 20000);
-			}
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, indicator.width, indicator.height, 8);
 			
-			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
-				indicator.width, indicator.height);
+			cr.set_source_rgb (0.35, 0.75, 1.0);
+			cr.fill_preserve ();
+			cr.set_source_rgba (0.0, 0.0, 0.0, 0.8);
+			cr.stroke ();
 			
 			return false;
 		}
@@ -209,7 +176,7 @@ namespace Gala
 		{
 			check_last_workspace ();
 		}
-
+		
 		void update_windows ()
 		{
 			windows.remove_all_children ();
@@ -244,7 +211,7 @@ namespace Gala
 				windows.add_child (clone);
 			});
 		}
-
+		
 		void update_icons ()
 		{
 			icons.remove_all_children ();
@@ -283,7 +250,7 @@ namespace Gala
 			icons.x = Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2);
 			icons.y = Math.floorf (wallpaper.y + wallpaper.height - 5);
 		}
-
+		
 		void check_last_workspace ()
 		{
 			//last workspace, show plus button and so on
