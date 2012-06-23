@@ -29,7 +29,7 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes)
+pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes gee-1.0)
 
 pkg_check_modules(MUTTER36 libmutter>=3.5.2)
 if (MUTTER36_FOUND)

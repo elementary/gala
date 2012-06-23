@@ -32,11 +32,11 @@ namespace Gala
 		
 		Window? moving; //place for the window that is being moved over
 		
-		List<Clutter.Actor> minimizing;
-		List<Clutter.Actor> maximizing;
-		List<Clutter.Actor> unmaximizing;
-		List<Clutter.Actor> mapping;
-		List<Clutter.Actor> destroying;
+		internal Gee.LinkedList<Clutter.Actor> minimizing;
+		internal Gee.LinkedList<Clutter.Actor> maximizing;
+		internal Gee.LinkedList<Clutter.Actor> unmaximizing;
+		internal Gee.LinkedList<Clutter.Actor> mapping;
+		internal Gee.LinkedList<Clutter.Actor> destroying;
 		
 		public Plugin ()
 		{
@@ -61,11 +61,11 @@ namespace Gala
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
 			
-			minimizing = new GLib.List<Clutter.Actor> ();
-			maximizing = new GLib.List<Clutter.Actor> ();
-			unmaximizing = new GLib.List<Clutter.Actor> ();
-			mapping = new GLib.List<Clutter.Actor> ();
-			destroying = new GLib.List<Clutter.Actor> ();
+			minimizing = new Gee.LinkedList<Clutter.Actor> ();
+			maximizing = new Gee.LinkedList<Clutter.Actor> ();
+			unmaximizing = new Gee.LinkedList<Clutter.Actor> ();
+			mapping = new Gee.LinkedList<Clutter.Actor> ();
+			destroying = new Gee.LinkedList<Clutter.Actor> ();
 			
 			/*keybindings*/
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
@@ -315,7 +315,7 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				maximizing.append (actor);
+				add_animator (ref maximizing, actor);
 				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -333,7 +333,7 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
 					
-					if (end_animation (maximizing, actor))
+					if (end_animation (ref maximizing, actor))
 						maximize_completed (actor);
 				});
 				
@@ -350,7 +350,7 @@ namespace Gala
 				return;
 			}
 			
-			mapping.append (actor);
+			add_animator (ref mapping, actor);
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
@@ -384,7 +384,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						
-						if (end_animation (mapping, actor))
+						if (end_animation (ref mapping, actor))
 							map_completed (actor);
 						window.activate (display.get_current_time ());
 					});
@@ -401,7 +401,7 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						
-						if (end_animation (mapping, actor))
+						if (end_animation (ref mapping, actor))
 							map_completed (actor);
 						
 						if (!window.is_override_redirect ())
@@ -418,7 +418,7 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
 						
-						if (end_animation (mapping, actor))
+						if (end_animation (ref mapping, actor))
 							map_completed (actor);
 					});
 					
@@ -429,7 +429,7 @@ namespace Gala
 					
 					break;
 				default:
-					if (end_animation (mapping, actor))
+					if (end_animation (ref mapping, actor))
 						map_completed (actor);
 					break;
 			}
@@ -446,7 +446,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
-			destroying.append (actor);
+			add_animator (ref destroying, actor);
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
@@ -464,7 +464,7 @@ namespace Gala
 								focus.activate (display.get_current_time ());
 						}
 						
-						if (end_animation (destroying, actor))
+						if (end_animation (ref destroying, actor))
 							destroy_completed (actor);
 					});
 					break;
@@ -475,7 +475,7 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
 						
-						if (end_animation (destroying, actor))
+						if (end_animation (ref destroying, actor))
 							destroy_completed (actor);
 					});
 					break;
@@ -485,7 +485,7 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
 						
-						if (end_animation (destroying, actor))
+						if (end_animation (ref destroying, actor))
 							destroy_completed (actor);
 					});
 					
@@ -493,7 +493,7 @@ namespace Gala
 					
 					break;
 				default:
-					if (end_animation (destroying, actor))
+					if (end_animation (ref destroying, actor))
 						destroy_completed (actor);
 					break;
 			}
@@ -507,7 +507,7 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				unmaximizing.append (actor);
+				add_animator (ref unmaximizing, actor);
 				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -525,7 +525,7 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
 					
-					if (end_animation (unmaximizing, actor))
+					if (end_animation (ref unmaximizing, actor))
 						unmaximize_completed (actor);
 				});
 				
@@ -535,11 +535,18 @@ namespace Gala
 			unmaximize_completed (actor);
 		}
 		
-		//kill everything on actor if it's doing something, true if we did
-		bool end_animation (List<Clutter.Actor> list, WindowActor actor)
+		//add actor to list and check if he's already in there..
+		void add_animator (ref Gee.LinkedList<Clutter.Actor> list, WindowActor actor)
 		{
-			var index = list.index (actor);
-			if (index != -1) {
+			if (list.index_of (actor) < 0)
+				list.add (actor);
+		}
+		
+		//kill everything on actor if it's doing something, true if we did
+		bool end_animation (ref Gee.LinkedList<Clutter.Actor> list, WindowActor actor)
+		{
+			var index = list.index_of (actor);
+			if (index >= 0) {
 				actor.detach_animation ();
 				actor.opacity = 255;
 				actor.scale_x = 1.0f;
@@ -548,24 +555,37 @@ namespace Gala
 				actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
 				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
 				
-				list.remove_link (list.nth (index));
+				print ("BEF LEN: %u\n", list.size);
+				list.remove_at (index);
+				print ("AFT LEN: %u\n", list.size);
 				
 				return true;
+			} else { //there might have gone something lost, check
+				foreach (var w in list) {
+					bool found = false;
+					foreach (var a in Compositor.get_window_actors (get_screen ())) {
+						if (w == a)
+							found = false;
+					}
+					if (!found)
+						list.remove (w);
+				}
 			}
+			
 			return false;
 		}
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (mapping, actor))
+			if (end_animation (ref mapping, actor))
 				map_completed (actor);
-			if (end_animation (minimizing, actor))
+			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
-			if (end_animation (maximizing, actor))
+			if (end_animation (ref maximizing, actor))
 				maximize_completed (actor);
-			if (end_animation (unmaximizing, actor))
+			if (end_animation (ref unmaximizing, actor))
 				unmaximize_completed (actor);
-			if (end_animation (destroying, actor))
+			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 		}
 		

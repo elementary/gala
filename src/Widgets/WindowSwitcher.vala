@@ -268,6 +268,10 @@ namespace Gala
 				return;
 			}
 			
+			window_list.foreach ((w) => {
+				plugin.kill_window_effects (w.get_compositor_private () as Meta.WindowActor);
+			});
+			
 			plugin.begin_modal ();
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
