@@ -228,7 +228,7 @@ namespace Gala
 							w.window_type == WindowType.MODAL_DIALOG)
 							n_windows ++;
 					});
-					if (n_windows == 0 && !(wp.index () == plugin.get_screen ().n_workspaces - 1)) {
+					if (n_windows == 0) {
 						plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
 						continue;
 					}
@@ -240,6 +240,9 @@ namespace Gala
 					
 					thumbnails.add_child (thumb);
 				}
+				
+				//add the empty one
+				add_workspace ();
 			}
 			
 			
