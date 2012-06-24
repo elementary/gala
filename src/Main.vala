@@ -538,8 +538,7 @@ namespace Gala
 		//add actor to list and check if he's already in there..
 		void add_animator (ref Gee.LinkedList<Clutter.Actor> list, WindowActor actor)
 		{
-			if (list.index_of (actor) < 0)
-				list.add (actor);
+			list.add (actor);
 		}
 		
 		//kill everything on actor if it's doing something, true if we did
@@ -577,8 +576,10 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor))
+			if (end_animation (ref mapping, actor)) {
 				map_completed (actor);
+				print ("KILLED MAPPING ONE\n");
+			}
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
@@ -589,6 +590,20 @@ namespace Gala
 				destroy_completed (actor);
 		}
 		
+		
+		public void kill_all_running_effects ()
+		{
+			foreach (var it in mapping)
+				kill_window_effects (it as WindowActor);
+			foreach (var it in minimizing)
+				kill_window_effects (it as WindowActor);
+			foreach (var it in maximizing)
+				kill_window_effects (it as WindowActor);
+			foreach (var it in unmaximizing)
+				kill_window_effects (it as WindowActor);
+			foreach (var it in destroying)
+				kill_window_effects (it as WindowActor);
+		}
 		
 		/*workspace switcher*/
 		GLib.List<Meta.WindowActor>? win;
