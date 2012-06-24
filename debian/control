@@ -20,3 +20,15 @@ Provides: x-window-manager
 Description: elementary's Window Manager
  Gala is a window & compositing manager based on libmutter and designed
  by elementary for use with Pantheon Shell.
+
+Package: gala-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: gala (= ${binary:Version}), ${misc:Depends}
+Enhances: gala
+Description: elementary's Window Manager (debugging symbols)
+ Gala is a window & compositing manager based on libmutter and designed
+ by elementary for use with Pantheon Shell.
+ .
+ This package contains debugging symbols for gala.
