@@ -59,15 +59,6 @@ namespace Gala
 			add_child (background);
 			add_child (thumbnails);
 			add_child (scroll);
-			
-			foreach (var wp in plugin.get_screen ().get_workspaces ()) {
-				var thumb = new WorkspaceThumb (wp);
-				thumb.clicked.connect (hide);
-				thumb.closed.connect (remove_workspace);
-				thumb.window_on_last.connect (add_workspace);
-								
-				thumbnails.add_child (thumb);
-			}
 		}
 		
 		bool draw_background (Cairo.Context cr)
@@ -105,7 +96,7 @@ namespace Gala
 		void add_workspace ()
 		{
 			var screen = plugin.get_screen ();
-			var wp = screen.append_new_workspace (false, screen.get_display ().get_current_time ());		
+			var wp = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
 			if (wp == null)
 				return;
 			
@@ -113,9 +104,9 @@ namespace Gala
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
-						
+			
 			thumbnails.add_child (thumb);
-
+			
 			check_scrollbar ();
 		}
 		
@@ -126,16 +117,19 @@ namespace Gala
 			thumb.window_on_last.disconnect (add_workspace);
 			
 			var workspace = thumb.workspace;
+			
+			if (workspace != null && workspace.index () > -1) { //dont remove non existing workspaces
+				var screen = workspace.get_screen ();
+				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
+			}
+			
 			thumb.workspace = null;
 			
-			var screen = workspace.get_screen ();
-			screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
-			
 			thumbnails.remove_child (thumb);
-			
+			thumb.destroy ();
 			check_scrollbar ();
 		}
-
+		
 		void check_scrollbar ()
 		{
 			scroll.visible = thumbnails.width > width;
@@ -217,6 +211,37 @@ namespace Gala
 		{
 			if (visible)
 				return;
+			
+			//initial run
+			if (thumbnails.get_n_children () == 0) {
+				foreach (var wp in plugin.get_screen ().get_workspaces ()) {
+					
+					//does this workspace actually exist?
+					if (plugin.get_screen ().get_workspaces ().index (wp) < 0)
+						continue;
+					
+					//prevent adding of empty workspaces
+					var n_windows = 0;
+					wp.list_windows ().foreach ((w) => {
+						if (w.window_type == WindowType.NORMAL ||
+							w.window_type == WindowType.DIALOG ||
+							w.window_type == WindowType.MODAL_DIALOG)
+							n_windows ++;
+					});
+					if (n_windows == 0 && !(wp.index () == plugin.get_screen ().n_workspaces - 1)) {
+						plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
+						continue;
+					}
+					
+					var thumb = new WorkspaceThumb (wp);
+					thumb.clicked.connect (hide);
+					thumb.closed.connect (remove_workspace);
+					thumb.window_on_last.connect (add_workspace);
+					
+					thumbnails.add_child (thumb);
+				}
+			}
+			
 			
 			plugin.set_input_area (Gala.InputArea.FULLSCREEN);
 			plugin.begin_modal ();

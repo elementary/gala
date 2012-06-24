@@ -166,6 +166,7 @@ namespace Gala
 			
 			cr.set_source_rgb (0.35, 0.75, 1.0);
 			cr.fill_preserve ();
+			cr.set_line_width (1);
 			cr.set_source_rgba (0.0, 0.0, 0.0, 0.8);
 			cr.stroke ();
 			
@@ -256,12 +257,15 @@ namespace Gala
 			//last workspace, show plus button and so on
 			//give the last one a different style
 			
-			if (workspace == null)
+			var index = screen.get_workspaces ().index (workspace);
+			if (index < 0) {
+				closed ();
 				return;
+			}
 			
-			if (workspace.index () == screen.n_workspaces - 1) {
+			if (index == screen.n_workspaces - 1) {
 				wallpaper.opacity = 127;
-				if (!contains (plus))
+				if (plus.get_parent () == null)
 					add_child (plus);
 			} else {
 				wallpaper.opacity = 255;
@@ -292,6 +296,13 @@ namespace Gala
 		
 		void handle_window_removed (Meta.Window window)
 		{
+			
+			//dont remove workspaces when for example slingshot was closed
+			if (window.window_type != WindowType.NORMAL &&
+			    window.window_type != WindowType.DIALOG &&
+			    window.window_type != WindowType.MODAL_DIALOG)
+				return;
+			
 			if (workspace != null && workspace.n_windows == 0) {
 				workspace.window_added.disconnect (handle_window_added);
 				workspace.window_removed.disconnect (handle_window_removed);
