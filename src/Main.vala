@@ -32,11 +32,11 @@ namespace Gala
 		
 		Window? moving; //place for the window that is being moved over
 		
-		internal Gee.LinkedList<Clutter.Actor> minimizing;
-		internal Gee.LinkedList<Clutter.Actor> maximizing;
-		internal Gee.LinkedList<Clutter.Actor> unmaximizing;
-		internal Gee.LinkedList<Clutter.Actor> mapping;
-		internal Gee.LinkedList<Clutter.Actor> destroying;
+		Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		
 		public Plugin ()
 		{
@@ -60,12 +60,6 @@ namespace Gala
 			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
-			
-			minimizing = new Gee.LinkedList<Clutter.Actor> ();
-			maximizing = new Gee.LinkedList<Clutter.Actor> ();
-			unmaximizing = new Gee.LinkedList<Clutter.Actor> ();
-			mapping = new Gee.LinkedList<Clutter.Actor> ();
-			destroying = new Gee.LinkedList<Clutter.Actor> ();
 			
 			/*keybindings*/
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
@@ -101,7 +95,6 @@ namespace Gala
 			
 			/*shadows*/
 			reload_shadow ();
-			
 			ShadowSettings.get_default ().notify.connect (reload_shadow);
 			
 			/*hot corner*/
@@ -135,7 +128,9 @@ namespace Gala
 				set_input_area (InputArea.NONE);
 		}
 		
-		/*to be called when the shadow settings have been changed*/
+		/*
+		 * Reload shadow settings
+		 */
 		public void reload_shadow ()
 		{
 			var factory = ShadowFactory.get_default ();
@@ -315,7 +310,7 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				add_animator (ref maximizing, actor);
+				maximizing.add (actor);
 				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -333,8 +328,8 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
 					
-					if (end_animation (ref maximizing, actor))
-						maximize_completed (actor);
+					maximizing.remove (actor);
+					maximize_completed (actor);
 				});
 				
 				return;
@@ -350,7 +345,7 @@ namespace Gala
 				return;
 			}
 			
-			add_animator (ref mapping, actor);
+			mapping.add (actor);
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
@@ -384,8 +379,8 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						
-						if (end_animation (ref mapping, actor))
-							map_completed (actor);
+						mapping.remove (actor);
+						map_completed (actor);
 						window.activate (display.get_current_time ());
 					});
 					break;
@@ -401,8 +396,8 @@ namespace Gala
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						
-						if (end_animation (ref mapping, actor))
-							map_completed (actor);
+						mapping.remove (actor);
+						map_completed (actor);
 						
 						if (!window.is_override_redirect ())
 							window.activate (display.get_current_time ());
@@ -418,8 +413,8 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
 						
-						if (end_animation (ref mapping, actor))
-							map_completed (actor);
+						mapping.remove (actor);
+						map_completed (actor);
 					});
 					
 					if (AppearanceSettings.get_default ().dim_parents &&
@@ -429,8 +424,8 @@ namespace Gala
 					
 					break;
 				default:
-					if (end_animation (ref mapping, actor))
-						map_completed (actor);
+					mapping.remove (actor);
+					map_completed (actor);
 					break;
 			}
 		}
@@ -446,7 +441,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
-			add_animator (ref destroying, actor);
+			destroying.add (actor);
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
@@ -464,8 +459,8 @@ namespace Gala
 								focus.activate (display.get_current_time ());
 						}
 						
-						if (end_animation (ref destroying, actor))
-							destroy_completed (actor);
+						destroying.remove (actor);
+						destroy_completed (actor);
 					});
 					break;
 				case WindowType.MENU:
@@ -475,8 +470,8 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
 						
-						if (end_animation (ref destroying, actor))
-							destroy_completed (actor);
+						destroying.remove (actor);
+						destroy_completed (actor);
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
@@ -485,16 +480,16 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
 						
-						if (end_animation (ref destroying, actor))
-							destroy_completed (actor);
+						destroying.remove (actor);
+						destroy_completed (actor);
 					});
 					
 					dim_window (window.find_root_ancestor (), false);
 					
 					break;
 				default:
-					if (end_animation (ref destroying, actor))
-						destroy_completed (actor);
+					destroying.remove (actor);
+					destroy_completed (actor);
 					break;
 			}
 		}
@@ -507,7 +502,7 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				add_animator (ref unmaximizing, actor);
+				unmaximizing.add (actor);
 				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
@@ -525,8 +520,8 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
 					
-					if (end_animation (ref unmaximizing, actor))
-						unmaximize_completed (actor);
+					unmaximizing.remove (actor);
+					unmaximize_completed (actor);
 				});
 				
 				return;
@@ -535,43 +530,22 @@ namespace Gala
 			unmaximize_completed (actor);
 		}
 		
-		//add actor to list and check if he's already in there..
-		void add_animator (ref Gee.LinkedList<Clutter.Actor> list, WindowActor actor)
+		// Cancel attached animation of an actor and reset it
+		bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
 		{
-			list.add (actor);
-		}
-		
-		//kill everything on actor if it's doing something, true if we did
-		bool end_animation (ref Gee.LinkedList<Clutter.Actor> list, WindowActor actor)
-		{
-			var index = list.index_of (actor);
-			if (index >= 0) {
-				actor.detach_animation ();
-				actor.opacity = 255;
-				actor.scale_x = 1.0f;
-				actor.scale_y = 1.0f;
-				actor.rotation_angle_x = 0.0f;
-				actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
-				
-				print ("BEF LEN: %u\n", list.size);
-				list.remove_at (index);
-				print ("AFT LEN: %u\n", list.size);
-				
-				return true;
-			} else { //there might have gone something lost, check
-				foreach (var w in list) {
-					bool found = false;
-					foreach (var a in Compositor.get_window_actors (get_screen ())) {
-						if (w == a)
-							found = false;
-					}
-					if (!found)
-						list.remove (w);
-				}
-			}
+			if (!list.contains (actor))
+				return false;
 			
-			return false;
+			actor.detach_animation ();
+			actor.opacity = 255;
+			actor.scale_x = 1.0f;
+			actor.scale_y = 1.0f;
+			actor.rotation_angle_x = 0.0f;
+			actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+			actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+			
+			list.remove (actor);
+			return true;
 		}
 		
 		public override void kill_window_effects (WindowActor actor)
@@ -590,19 +564,18 @@ namespace Gala
 				destroy_completed (actor);
 		}
 		
-		
 		public void kill_all_running_effects ()
 		{
-			foreach (var it in mapping)
-				kill_window_effects (it as WindowActor);
-			foreach (var it in minimizing)
-				kill_window_effects (it as WindowActor);
-			foreach (var it in maximizing)
-				kill_window_effects (it as WindowActor);
-			foreach (var it in unmaximizing)
-				kill_window_effects (it as WindowActor);
-			foreach (var it in destroying)
-				kill_window_effects (it as WindowActor);
+			foreach (var actor in mapping)
+				kill_window_effects (actor);
+			foreach (var actor in minimizing)
+				kill_window_effects (actor);
+			foreach (var actor in maximizing)
+				kill_window_effects (actor);
+			foreach (var actor in unmaximizing)
+				kill_window_effects (actor);
+			foreach (var actor in destroying)
+				kill_window_effects (actor);
 		}
 		
 		/*workspace switcher*/
