@@ -91,7 +91,7 @@ namespace Gala
 			string[] val;
 			get (class_name, out val);
 			
-			if (val == null)
+			if (val == null || int.parse (val[0]) < 1)
 				return Meta.ShadowParams () {radius = 1, top_fade = 0, x_offset = 0, y_offset = 0, opacity = 0};
 			
 			return Meta.ShadowParams () {radius = int.parse (val[0]), top_fade = int.parse (val[1]), 
