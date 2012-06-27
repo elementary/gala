@@ -28,7 +28,7 @@ namespace Gala
 		
 		bool animating; // delay closing the popup
 		
-		Gdk.Pixbuf background_pix;
+		Gdk.Pixbuf? background_pix;
 		Clutter.CairoTexture workspace_thumb;
 		Clutter.CairoTexture current_workspace;
 		
@@ -165,7 +165,10 @@ namespace Gala
 		{
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, 
 				workspace_thumb.width, workspace_thumb.height, 5);
-			Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
+			if (background_pix != null)
+				Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
+			else
+				cr.set_source_rgb (0, 0, 0);
 			cr.fill_preserve ();
 			
 			cr.set_line_width (1);
