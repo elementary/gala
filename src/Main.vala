@@ -352,23 +352,18 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
-			var rect = window.get_outer_rect ();
-			int width, height;
-			screen.get_size (out width, out height);
-			
-			// Check if there is a primary monitor, and use it's dimensions instead
-			// this avoids ugly center screen positioning in twinview setups.
+			// Use primary-monitor dimensions to avoid ugly center screen positioning in twinview setups.
 			var monitor_rect = screen.get_monitor_geometry (screen.get_primary_monitor());
-			if (monitor_rect.width != width)	width = monitor_rect.width;
-			if (monitor_rect.height != height) height = monitor_rect.height;
-
+			var rect = window.get_outer_rect ();
+			
 			if (window.window_type == WindowType.NORMAL) {
-				
-				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
-					window.move_frame (true, (int)(width/2.0f - rect.width/2.0f), 
-						(int)(height/2.0f - rect.height/2.0f));
-					actor.x = width/2.0f - rect.width/2.0f - 10;
-					actor.y = height/2.0f - rect.height/2.0f - 10;
+				// Guess the window is placed at a bad spot
+				if (rect.x < 100 && rect.y < 100) {
+					var x = (monitor_rect.width - rect.width) / 2.0f;
+					var y = (monitor_rect.height - rect.height) / 2.0f;
+					window.move_frame (true, (int) x, (int) y);
+					actor.x = x - 10;
+					actor.y = y - 10;
 				}
 			}
 			
