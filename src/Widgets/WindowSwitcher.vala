@@ -20,17 +20,11 @@ using Granite.Drawing;
 
 namespace Gala
 {
-	struct WindowPair
-	{
-		unowned Meta.Window window;
-		Clone clone;
-	}
-	
 	public class WindowSwitcher : Clutter.Group
 	{
 		Gala.Plugin plugin;
 		
-		List<WindowPair?>? window_list = null;
+		Gee.ArrayList<Clutter.Clone> window_clones = new Gee.ArrayList<Clutter.Clone> ();
 		
 		Meta.Window? current_window;
 		
@@ -44,9 +38,9 @@ namespace Gala
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
 				
-				foreach (var win in window_list) {
-					remove_child (win.clone);
-					win.clone.destroy ();
+				foreach (var clone in window_clones) {
+					remove_child (clone);
+					clone.destroy ();
 				}
 				
 				Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
@@ -57,7 +51,7 @@ namespace Gala
 						w.show ();
 				});
 				
-				window_list = null;
+				window_clones.clear ();
 				
 				plugin.end_modal ();
 				current_window.activate (event.time);
@@ -103,14 +97,15 @@ namespace Gala
 		
 		void dim_windows ()
 		{
-			foreach (var win in window_list) {
-				if (win.window == current_window) {
-					win.clone.get_parent ().set_child_above_sibling (win.clone, null);
-					win.clone.depth = -200.0f;
-					win.clone.opacity = 0;
-					win.clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+			var current_actor = current_window.get_compositor_private () as Actor;
+			foreach (var clone in window_clones) {
+				if (current_actor == clone.source) {
+					clone.get_parent ().set_child_above_sibling (clone, null);
+					clone.depth = -200.0f;
+					clone.opacity = 0;
+					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 				} else {
-					win.clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
 				}
 			}
 		}
@@ -118,23 +113,20 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			var windows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-			if (windows.length () <= 1)
+			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			if (metawindows.length () <= 1)
 				return;
 			
-			window_list = new List<WindowPair?> ();
-			foreach (var win in windows) {
-				
+			window_clones.clear ();
+			
+			foreach (var win in metawindows) {
 				var actor = win.get_compositor_private () as Actor;
-				
 				var clone = new Clone (actor);
-				WindowPair pair = {win, clone};
-				
 				clone.x = actor.x;
 				clone.y = actor.y;
 				
 				add_child (clone);
-				window_list.append (pair);
+				window_clones.add (clone);
 			}
 			
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
