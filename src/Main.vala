@@ -570,20 +570,6 @@ namespace Gala
 				destroy_completed (actor);
 		}
 		
-		public void kill_all_running_effects ()
-		{
-			foreach (var actor in mapping)
-				kill_window_effects (actor);
-			foreach (var actor in minimizing)
-				kill_window_effects (actor);
-			foreach (var actor in maximizing)
-				kill_window_effects (actor);
-			foreach (var actor in unmaximizing)
-				kill_window_effects (actor);
-			foreach (var actor in destroying)
-				kill_window_effects (actor);
-		}
-		
 		/*workspace switcher*/
 		GLib.List<Meta.WindowActor>? win;
 		GLib.List<Clutter.Actor>? par; //class space for kill func
