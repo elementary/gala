@@ -724,7 +724,8 @@ namespace Gala
 		
 		public override PluginInfo plugin_info ()
 		{
-			return {"Gala", Gala.VERSION, "Tom Beckmann", "GPLv3", "A nice window manager"};
+			return PluginInfo () {name = "Gala", version = Gala.VERSION, author = "Gala Developers",
+				license = "GPLv3", description = "A nice elementary window manager"};
 		}
 		
 	}
