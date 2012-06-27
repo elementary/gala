@@ -325,6 +325,7 @@ namespace Gala
 				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
 					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
 					
+					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
 					
