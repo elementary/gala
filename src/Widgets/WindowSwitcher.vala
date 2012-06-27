@@ -20,11 +20,17 @@ using Granite.Drawing;
 
 namespace Gala
 {
-	public class WindowSwitcher : Clutter.Actor
+	struct WindowPair
+	{
+		unowned Meta.Window window;
+		Clone clone;
+	}
+	
+	public class WindowSwitcher : Clutter.Group
 	{
 		Gala.Plugin plugin;
 		
-		GLib.List<unowned Meta.Window>? window_list = null;
+		List<WindowPair?>? window_list = null;
 		
 		Meta.Window? current_window;
 		
@@ -38,23 +44,24 @@ namespace Gala
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
 				
-				plugin.get_screen ().get_active_workspace ().list_windows ().foreach ((window) => {
-					var actor = window.get_compositor_private () as Clutter.Actor;
-					if (actor == null)
-						return;
-					
-					if (window.minimized)
-						actor.hide ();
-					
-					actor.detach_animation ();
-					actor.depth = 0.0f;
-					actor.opacity = 255;
+				foreach (var win in window_list) {
+					remove_child (win.clone);
+					win.clone.destroy ();
+				}
+				
+				Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
+					var meta_win = w.get_meta_window ();
+					if (!meta_win.minimized && 
+						(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
+						meta_win.is_on_all_workspaces ())
+						w.show ();
 				});
 				
 				window_list = null;
 				
 				plugin.end_modal ();
 				current_window.activate (event.time);
+				current_window = null;
 			}
 			
 			return true;
@@ -96,45 +103,52 @@ namespace Gala
 		
 		void dim_windows ()
 		{
-			window_list.foreach ((window) => {
-				if (window.window_type != Meta.WindowType.NORMAL)
-					return;
-				
-				var actor = window.get_compositor_private () as Clutter.Actor;
-				if (actor == null)
-					return;
-				
-				if (window.minimized)
-					actor.show ();
-				
-				if (window == current_window) {
-					actor.get_parent ().set_child_above_sibling (actor, null);
-					actor.depth = -200.0f;
-					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+			foreach (var win in window_list) {
+				if (win.window == current_window) {
+					win.clone.get_parent ().set_child_above_sibling (win.clone, null);
+					win.clone.depth = -200.0f;
+					win.clone.opacity = 0;
+					win.clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 				} else {
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					win.clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
 				}
-			});
+			}
 		}
 		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			window_list = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-			if (window_list.length () <= 1) {
-				window_list = null;
+			var windows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			if (windows.length () <= 1)
 				return;
+			
+			window_list = new List<WindowPair?> ();
+			foreach (var win in windows) {
+				
+				var actor = win.get_compositor_private () as Actor;
+				
+				var clone = new Clone (actor);
+				WindowPair pair = {win, clone};
+				
+				clone.x = actor.x;
+				clone.y = actor.y;
+				
+				add_child (clone);
+				window_list.append (pair);
 			}
+			
+			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
+				var type = w.get_meta_window ().window_type;
+				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
+					w.hide ();
+			});
 			
 			plugin.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			
 			/*list windows*/
-			var workspace = screen.get_active_workspace ();
-			
-			current_window = plugin.get_next_window (workspace, backward);
+			current_window = plugin.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
 			
@@ -143,15 +157,7 @@ namespace Gala
 				return;
 			}
 			
-			//hide dialogs
-			workspace.list_windows ().foreach ((w) => {
-				if (w.window_type == Meta.WindowType.DIALOG ||
-					w.window_type == Meta.WindowType.MODAL_DIALOG)
-						(w.get_compositor_private () as Clutter.Actor).opacity = 0;
-			});
-			
 			dim_windows ();
-			
 			grab_key_focus ();
 		}
 	}
