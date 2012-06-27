@@ -62,6 +62,7 @@ PACKAGES
     xfixes-4.0
     bamf
 OPTIONS
+    -g
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     ${GALAVALAFLAGS}
     )
