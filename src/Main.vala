@@ -571,11 +571,11 @@ namespace Gala
 		}
 		
 		/*workspace switcher*/
-		GLib.List<Meta.WindowActor>? win;
-		GLib.List<Clutter.Actor>? par; //class space for kill func
+		List<Meta.WindowActor>? win;
+		List<Clutter.Actor>? par; //class space for kill func
+		List<Clutter.Clone>? clones;
 		Clutter.Actor in_group;
 		Clutter.Actor out_group;
-		Clutter.Clone wallpaper;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -598,28 +598,22 @@ namespace Gala
 				direction == MotionDirection.DOWN_RIGHT)
 				x2 = -w;
 			
+			var group = Compositor.get_window_group_for_screen (get_screen ());
+			var wallpaper = Compositor.get_background_actor_for_screen (get_screen ());
+			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
-			
-			var group = Compositor.get_window_group_for_screen (get_screen ());
-			
-			var bg = Compositor.get_background_actor_for_screen (get_screen ());
-			wallpaper = new Clutter.Clone (bg);
-			
-			wallpaper.x = (x2<0)?w:-w;
-			
-			bg.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
-				AnimationSettings.get_default ().workspace_switch_duration, x:(x2<0)?-w:w);
-			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
-				AnimationSettings.get_default ().workspace_switch_duration, x:0.0f);
-			
-			group.add_child (wallpaper);
-			
-			group.add_actor (in_group);
-			group.add_actor (out_group);
-			
 			win = new List<Meta.WindowActor> ();
 			par = new List<Clutter.Actor> ();
+			clones = new List<Clutter.Clone> ();
+			var wallpaper_clone = new Clutter.Clone (wallpaper);
+			
+			wallpaper_clone.x = (x2<0)?w:-w;
+			clones.append (wallpaper_clone);
+			
+			group.add_child (wallpaper_clone);
+			group.add_child (in_group);
+			group.add_child (out_group);
 			
 			WindowActor moving_actor = null;
 			if (moving != null) {
@@ -648,7 +642,14 @@ namespace Gala
 				} else if (window.get_meta_window ().window_type == WindowType.DOCK) {
 					win.append (window);
 					par.append (window.get_parent ());
-					clutter_actor_reparent (window, Compositor.get_overlay_group_for_screen (get_screen ()));
+					
+					var clone = new Clutter.Clone (window);
+					clone.x = window.x;
+					clone.y = window.y;
+					
+					clones.append (clone);
+					in_group.add_child (clone);
+					clutter_actor_reparent (window, out_group);
 				}
 			}
 			in_group.set_position (-x2, -y2);
@@ -660,6 +661,10 @@ namespace Gala
 				x:0.0f, y:0.0f).completed.connect ( () => {
 				end_switch_workspace ();
 			});
+			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
+				AnimationSettings.get_default ().workspace_switch_duration, x:(x2<0)?-w:w);
+			wallpaper_clone.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
+				AnimationSettings.get_default ().workspace_switch_duration, x:0.0f);
 		}
 		
 		void end_switch_workspace ()
@@ -681,22 +686,22 @@ namespace Gala
 					clutter_actor_reparent (window, par.nth_data (i));
 			}
 			
+			clones.foreach ((clone) => {
+				clone.destroy ();
+			});
+			clones = null;
+			
 			win = null;
 			par = null;
 			
-			if (in_group != null) {
+			if (in_group != null)
 				in_group.destroy ();
-			}
-			
-			if (out_group != null) {
+			if (out_group != null)
 				out_group.destroy ();
-			}
 			
-			var bg = Compositor.get_background_actor_for_screen (get_screen ());
-			bg.detach_animation ();
-			bg.x = 0.0f;
-			wallpaper.destroy ();
-			wallpaper = null;
+			var wallpaper = Compositor.get_background_actor_for_screen (get_screen ());
+			wallpaper.detach_animation ();
+			wallpaper.x = 0.0f;
 			
 			switch_workspace_completed ();
 			
