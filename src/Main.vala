@@ -356,6 +356,12 @@ namespace Gala
 			int width, height;
 			screen.get_size (out width, out height);
 			
+			// Check if there is a primary monitor, and use it's dimensions instead
+			// this avoids ugly center screen positioning in twinview setups.
+			var monitor_rect = screen.get_monitor_geometry (screen.get_primary_monitor());
+			if (monitor_rect.width != width)	width = monitor_rect.width;
+			if (monitor_rect.height != height) height = monitor_rect.height;
+
 			if (window.window_type == WindowType.NORMAL) {
 				
 				if (rect.x < 100 && rect.y < 100) { //guess the window is placed at a bad spot
@@ -370,12 +376,12 @@ namespace Gala
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					actor.scale_gravity = Clutter.Gravity.CENTER;
+					actor.scale_gravity = Clutter.Gravity.SOUTH;
 					actor.rotation_center_x = {0, 0, 10};
 					actor.scale_x = 0.2f;
 					actor.scale_y = 0.2f;
 					actor.opacity = 0;
-					actor.rotation_angle_x = 40.0f;
+					actor.rotation_angle_x = 0.0f;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().open_duration, 
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
