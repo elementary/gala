@@ -536,6 +536,11 @@ namespace Gala
 			if (!list.contains (actor))
 				return false;
 			
+			if (actor.is_destroyed ()) {
+				list.remove (actor);
+				return false;
+			}
+			
 			actor.detach_animation ();
 			actor.opacity = 255;
 			actor.scale_x = 1.0f;
