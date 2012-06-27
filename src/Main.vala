@@ -29,9 +29,14 @@ namespace Gala
 	{
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
-		Clutter.Actor elements;
 		
 		Window? moving; //place for the window that is being moved over
+		
+		Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
+		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		
 		public Plugin ()
 		{
@@ -46,22 +51,17 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			
-			elements = Compositor.get_stage_for_screen (screen);
-			clutter_actor_reparent (Compositor.get_window_group_for_screen (screen), elements);
-			clutter_actor_reparent (Compositor.get_overlay_group_for_screen (screen), elements);
-			Compositor.get_stage_for_screen (screen).add_child (elements);
+			var stage = Compositor.get_stage_for_screen (screen);
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, true, 1, -1);
 			
-			int width, height;
-			screen.get_size (out width, out height);
-			
 			workspace_view = new WorkspaceView (this);
-			elements.add_child (workspace_view);
 			workspace_view.visible = false;
-			
 			winswitcher = new WindowSwitcher (this);
-			elements.add_child (winswitcher);
 			
+			stage.add_child (workspace_view);
+			stage.add_child (winswitcher);
+			
+			/*keybindings*/
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
 				try {
 					Process.spawn_command_line_async (
@@ -95,8 +95,12 @@ namespace Gala
 			
 			/*shadows*/
 			reload_shadow ();
+			ShadowSettings.get_default ().notify.connect (reload_shadow);
 			
 			/*hot corner*/
+			int width, height;
+			screen.get_size (out width, out height);
+			
 			var hot_corner = new Clutter.Rectangle ();
 			hot_corner.x = width - 1;
 			hot_corner.y = height - 1;
@@ -110,12 +114,11 @@ namespace Gala
 				return false;
 			});
 			
-			Compositor.get_overlay_group_for_screen (screen).add_child (hot_corner);
+			stage.add_child (hot_corner);
 			
 			update_input_area ();
 			
 			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
-			ShadowSettings.get_default ().notify.connect (reload_shadow);
 		}
 		
 		public void update_input_area ()
@@ -126,37 +129,38 @@ namespace Gala
 				set_input_area (InputArea.NONE);
 		}
 		
-		/*to be called when the shadow settings have been changed*/
+		/*
+		 * Reload shadow settings
+		 */
 		public void reload_shadow ()
 		{
+			var factory = ShadowFactory.get_default ();
+			var settings = ShadowSettings.get_default ();
+			Meta.ShadowParams shadow;
+			
 			//normal focused
-			var shadow = ShadowSettings.get_default ().normal_focused;
-			ShadowFactory.get_default ().set_params ("normal", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_focused");
+			factory.set_params ("normal", true, shadow);
+			
 			//normal unfocused
-			shadow = ShadowSettings.get_default ().normal_unfocused;
-			ShadowFactory.get_default ().set_params ("normal", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_unfocused");
+			factory.set_params ("normal", false, shadow);
+			
 			//menus
-			shadow = ShadowSettings.get_default ().menu;
-			ShadowFactory.get_default ().set_params ("menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("dropdown-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("popup-menu", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("menu");
+			factory.set_params ("menu", false, shadow);
+			factory.set_params ("dropdown-menu", false, shadow);
+			factory.set_params ("popup-menu", false, shadow);
+			
 			//dialog focused
-			shadow = ShadowSettings.get_default ().dialog_focused;
-			ShadowFactory.get_default ().set_params ("dialog", true, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("dialog_focused");
+			factory.set_params ("dialog", true, shadow);
+			factory.set_params ("modal_dialog", false, shadow);
+			
 			//dialog unfocused
-			shadow = ShadowSettings.get_default ().normal_unfocused;
-			ShadowFactory.get_default ().set_params ("dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
-			ShadowFactory.get_default ().set_params ("modal_dialog", false, {int.parse (shadow[0]), int.parse (shadow[1]), 
-				int.parse (shadow[2]), int.parse (shadow[3]), (uint8)int.parse (shadow[4])});
+			shadow = settings.get_shadowparams ("normal_unfocused");
+			factory.set_params ("dialog", false, shadow);
+			factory.set_params ("modal_dialog", false, shadow);
 		}
 		
 		/**
@@ -295,6 +299,7 @@ namespace Gala
 		/*
 		 * effects
 		 */
+		
 		public override void minimize (WindowActor actor)
 		{
 			minimize_completed (actor);
@@ -309,6 +314,8 @@ namespace Gala
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+				maximizing.add (actor);
+				
 				float x, y, width, height;
 				actor.get_size (out width, out height);
 				actor.get_position (out x, out y);
@@ -321,9 +328,11 @@ namespace Gala
 				actor.move_anchor_point (anchor_x, anchor_y);
 				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
 					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+					
 					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
 						scale_y:1.0f);//just scaling didnt want to work..
+					
+					maximizing.remove (actor);
 					maximize_completed (actor);
 				});
 				
@@ -339,6 +348,8 @@ namespace Gala
 				map_completed (actor);
 				return;
 			}
+			
+			mapping.add (actor);
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
@@ -371,6 +382,8 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().open_duration, 
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
+						
+						mapping.remove (actor);
 						map_completed (actor);
 						window.activate (display.get_current_time ());
 					});
@@ -386,7 +399,10 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
+						
+						mapping.remove (actor);
 						map_completed (actor);
+						
 						if (!window.is_override_redirect ())
 							window.activate (display.get_current_time ());
 					});
@@ -397,8 +413,11 @@ namespace Gala
 					actor.scale_x = 1.0f;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
+					
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
+						
+						mapping.remove (actor);
 						map_completed (actor);
 					});
 					
@@ -409,6 +428,7 @@ namespace Gala
 					
 					break;
 				default:
+					mapping.remove (actor);
 					map_completed (actor);
 					break;
 			}
@@ -424,6 +444,8 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
+			
+			destroying.add (actor);
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
@@ -441,6 +463,7 @@ namespace Gala
 								focus.activate (display.get_current_time ());
 						}
 						
+						destroying.remove (actor);
 						destroy_completed (actor);
 					});
 					break;
@@ -450,6 +473,8 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
+						
+						destroying.remove (actor);
 						destroy_completed (actor);
 					});
 					break;
@@ -458,6 +483,8 @@ namespace Gala
 					actor.scale_gravity = Clutter.Gravity.NORTH;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
+						
+						destroying.remove (actor);
 						destroy_completed (actor);
 					});
 					
@@ -465,11 +492,102 @@ namespace Gala
 					
 					break;
 				default:
+					destroying.remove (actor);
 					destroy_completed (actor);
 					break;
 			}
 		}
 		
+		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
+		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				unmaximize_completed (actor);
+				return;
+			}
+			
+			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+				unmaximizing.add (actor);
+				
+				float x, y, width, height;
+				actor.get_size (out width, out height);
+				actor.get_position (out x, out y);
+				
+				float scale_x  = (float)ew  / width;
+				float scale_y  = (float)eh / height;
+				float anchor_x = (float)(x - ex) * width  / (ew - width);
+				float anchor_y = (float)(y - ey) * height / (eh - height);
+				
+				actor.move_anchor_point (anchor_x, anchor_y);
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
+					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
+					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
+					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
+						scale_y:1.0f);//just scaling didnt want to work..
+					
+					unmaximizing.remove (actor);
+					unmaximize_completed (actor);
+				});
+				
+				return;
+			}
+			
+			unmaximize_completed (actor);
+		}
+		
+		// Cancel attached animation of an actor and reset it
+		bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
+		{
+			if (!list.contains (actor))
+				return false;
+			
+			if (actor.is_destroyed ()) {
+				list.remove (actor);
+				return false;
+			}
+			
+			actor.detach_animation ();
+			actor.opacity = 255;
+			actor.scale_x = 1.0f;
+			actor.scale_y = 1.0f;
+			actor.rotation_angle_x = 0.0f;
+			actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+			actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+			
+			list.remove (actor);
+			return true;
+		}
+		
+		public override void kill_window_effects (WindowActor actor)
+		{
+			if (end_animation (ref mapping, actor)) {
+				map_completed (actor);
+				print ("KILLED MAPPING ONE\n");
+			}
+			if (end_animation (ref minimizing, actor))
+				minimize_completed (actor);
+			if (end_animation (ref maximizing, actor))
+				maximize_completed (actor);
+			if (end_animation (ref unmaximizing, actor))
+				unmaximize_completed (actor);
+			if (end_animation (ref destroying, actor))
+				destroy_completed (actor);
+		}
+		
+		public void kill_all_running_effects ()
+		{
+			foreach (var actor in mapping)
+				kill_window_effects (actor);
+			foreach (var actor in minimizing)
+				kill_window_effects (actor);
+			foreach (var actor in maximizing)
+				kill_window_effects (actor);
+			foreach (var actor in unmaximizing)
+				kill_window_effects (actor);
+			foreach (var actor in destroying)
+				kill_window_effects (actor);
+		}
+		
+		/*workspace switcher*/
 		GLib.List<Meta.WindowActor>? win;
 		GLib.List<Clutter.Actor>? par; //class space for kill func
 		Clutter.Actor in_group;
@@ -559,17 +677,6 @@ namespace Gala
 			});
 		}
 		
-		public override void kill_window_effects (WindowActor actor)
-		{
-			/*FIXME should call the things in anim.completed
-			minimize_completed (actor);
-			maximize_completed (actor);
-			unmaximize_completed (actor);
-			map_completed (actor);
-			destroy_completed (actor);
-			*/
-		}
-		
 		void end_switch_workspace ()
 		{
 			if (win == null || par == null)
@@ -593,12 +700,10 @@ namespace Gala
 			par = null;
 			
 			if (in_group != null) {
-				in_group.detach_animation ();
 				in_group.destroy ();
 			}
 			
 			if (out_group != null) {
-				out_group.detach_animation ();
 				out_group.destroy ();
 			}
 			
@@ -620,38 +725,6 @@ namespace Gala
 					focus.activate (display.get_current_time ());
 			}
 			
-		}
-		
-		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
-		{
-			if (!AnimationSettings.get_default ().enable_animations) {
-				unmaximize_completed (actor);
-				return;
-			}
-			
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				float x, y, width, height;
-				actor.get_size (out width, out height);
-				actor.get_position (out x, out y);
-				
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
-				
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
-						scale_y:1.0f);//just scaling didnt want to work..
-					unmaximize_completed (actor);
-				});
-				
-				return;
-			}
-			
-			unmaximize_completed (actor);
 		}
 		
 		public override void kill_switch_workspace ()

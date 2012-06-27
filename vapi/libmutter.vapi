@@ -416,11 +416,13 @@ namespace Meta {
 		protected Window ();
 		public void activate (uint32 current_time);
 		public void activate_with_workspace (uint32 current_time, Meta.Workspace workspace);
+		public void begin_grab_op (Meta.GrabOp op, bool frame_action, uint32 timestamp);
 		public void change_workspace_by_index (int space_index, bool append, uint32 timestamp);
 		public void compute_group ();
 		public void configure_notify (X.ConfigureEvent event);
 		public void @delete (uint32 timestamp);
 		public unowned Meta.Window find_root_ancestor ();
+		public void focus (uint32 timestamp);
 		public void foreach_ancestor (Meta.WindowForeachFunc func);
 		public void foreach_transient (Meta.WindowForeachFunc func);
 		public unowned string get_client_machine ();
@@ -445,7 +447,7 @@ namespace Meta {
 		public unowned string get_mutter_hints ();
 		public Meta.Rectangle get_outer_rect ();
 		public int get_pid ();
-		public Meta.Rectangle get_rect ();
+		public unowned Meta.Rectangle? get_rect ();
 		public unowned string get_role ();
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
@@ -475,7 +477,10 @@ namespace Meta {
 		public bool is_remote ();
 		public bool is_shaded ();
 		public bool is_skip_taskbar ();
+		public void kill ();
 		public void lower ();
+		public void make_above ();
+		public void make_fullscreen ();
 		public void maximize (Meta.MaximizeFlags directions);
 		public void minimize ();
 		public void move (bool user_op, int root_x_nw, int root_y_nw);
@@ -486,12 +491,18 @@ namespace Meta {
 		public void resize (bool user_op, int w, int h);
 		public void set_compositor_private (GLib.Object priv);
 		public void set_demands_attention ();
+		public void shade (uint32 timestamp);
 		public bool showing_on_its_workspace ();
 		public void shutdown_group ();
+		public void stick ();
 		public bool toplevel_is_mapped ();
+		public void unmake_above ();
+		public void unmake_fullscreen ();
 		public void unmaximize (Meta.MaximizeFlags directions);
 		public void unminimize ();
 		public void unset_demands_attention ();
+		public void unshade (uint32 timestamp);
+		public void unstick ();
 		[NoAccessorMethod]
 		public bool above { get; }
 		[NoAccessorMethod]
@@ -527,7 +538,8 @@ namespace Meta {
 		public uint user_time { get; }
 		public Meta.WindowType window_type { get; }
 		public string wm_class { get; }
-		public signal void focus ();
+		[CCode (cname = "focus")]
+		public signal void focused ();
 		public signal void raised ();
 		public signal void unmanaged ();
 		public signal void workspace_changed (int object);
@@ -561,6 +573,7 @@ namespace Meta {
 		protected Workspace ();
 		public void activate (uint32 timestamp);
 		public void activate_with_focus (Meta.Window focus_this, uint32 timestamp);
+		public unowned Meta.Workspace get_neighbor (Meta.MotionDirection direction);
 		public unowned Meta.Screen get_screen ();
 		public Meta.Rectangle get_work_area_all_monitors ();
 		public int index ();
