@@ -27,10 +27,9 @@ namespace Gala
 		
 		Clutter.Actor thumbnails;
 		Clutter.CairoTexture background;
+		Clutter.CairoTexture scroll;
 		
 		bool animating; // delay closing the popup
-		
-		Clutter.CairoTexture scroll;
 		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
