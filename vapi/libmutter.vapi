@@ -226,6 +226,7 @@ namespace Meta {
 		public void add_ignored_crossing_serial (ulong serial);
 		public bool add_keybinding (string name, GLib.Settings settings, Meta.KeyBindingFlags flags, owned Meta.KeyHandlerFunc handler);
 		public bool begin_grab_op (Meta.Screen screen, Meta.Window window, Meta.GrabOp op, bool pointer_already_grabbed, bool frame_action, int button, ulong modmask, uint32 timestamp, int root_x, int root_y);
+		public void clear_mouse_mode ();
 		public void end_grab_op (uint32 timestamp);
 		public void focus_the_no_focus_window (Meta.Screen screen, uint32 timestamp);
 		public X.Atom get_atom (Meta.Atom meta_atom);
@@ -417,6 +418,7 @@ namespace Meta {
 		public void activate (uint32 current_time);
 		public void activate_with_workspace (uint32 current_time, Meta.Workspace workspace);
 		public void begin_grab_op (Meta.GrabOp op, bool frame_action, uint32 timestamp);
+		public void change_workspace (Meta.Workspace workspace);
 		public void change_workspace_by_index (int space_index, bool append, uint32 timestamp);
 		public void compute_group ();
 		public void configure_notify (X.ConfigureEvent event);
