@@ -251,10 +251,10 @@ namespace Gala
 			if (visible)
 				return;
 			
-			plugin.set_input_area (Gala.InputArea.FULLSCREEN);
-			plugin.begin_modal ();
-			
 			var screen = plugin.get_screen ();
+			
+			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
+			plugin.begin_modal ();
 			
 			animating = true;
 			
@@ -287,7 +287,7 @@ namespace Gala
 					if (app != null)
 						shown_applications.append (app);
 					
-					var pix = Gala.Plugin.get_icon_for_window (w, 32);
+					var pix = Utils.get_icon_for_window (w, 32);
 					var icon = new GtkClutter.Texture ();
 					try {
 						icon.set_from_pixbuf (pix);

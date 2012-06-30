@@ -140,7 +140,7 @@ namespace Gala
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			
 			/*list windows*/
-			current_window = plugin.get_next_window (screen.get_active_workspace (), backward);
+			current_window = Utils.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
 			

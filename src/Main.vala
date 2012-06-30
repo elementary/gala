@@ -19,11 +19,6 @@ using Meta;
 
 namespace Gala
 {
-	public enum InputArea {
-		NONE,
-		FULLSCREEN,
-		HOT_CORNER
-	}
 	
 	public class Plugin : Meta.Plugin
 	{
@@ -94,8 +89,8 @@ namespace Gala
 			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
 			
 			/*shadows*/
-			reload_shadow ();
-			ShadowSettings.get_default ().notify.connect (reload_shadow);
+			Utils.reload_shadow ();
+			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
 			
 			/*hot corner*/
 			int width, height;
@@ -123,124 +118,11 @@ namespace Gala
 		public void update_input_area ()
 		{
 			if (BehaviorSettings.get_default ().enable_manager_corner)
-				set_input_area (InputArea.HOT_CORNER);
+				Utils.set_input_area (get_screen (), Utils.InputArea.HOT_CORNER);
 			else
-				set_input_area (InputArea.NONE);
+				Utils.set_input_area (get_screen (), Utils.InputArea.NONE);
 		}
 		
-		/*
-		 * Reload shadow settings
-		 */
-		public void reload_shadow ()
-		{
-			var factory = ShadowFactory.get_default ();
-			var settings = ShadowSettings.get_default ();
-			Meta.ShadowParams shadow;
-			
-			//normal focused
-			shadow = settings.get_shadowparams ("normal_focused");
-			factory.set_params ("normal", true, shadow);
-			
-			//normal unfocused
-			shadow = settings.get_shadowparams ("normal_unfocused");
-			factory.set_params ("normal", false, shadow);
-			
-			//menus
-			shadow = settings.get_shadowparams ("menu");
-			factory.set_params ("menu", false, shadow);
-			factory.set_params ("dropdown-menu", false, shadow);
-			factory.set_params ("popup-menu", false, shadow);
-			
-			//dialog focused
-			shadow = settings.get_shadowparams ("dialog_focused");
-			factory.set_params ("dialog", true, shadow);
-			factory.set_params ("modal_dialog", false, shadow);
-			
-			//dialog unfocused
-			shadow = settings.get_shadowparams ("normal_unfocused");
-			factory.set_params ("dialog", false, shadow);
-			factory.set_params ("modal_dialog", false, shadow);
-		}
-		
-		/**
-		 * returns a pixbuf for the application of this window or a default icon
-		 **/
-		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
-		{
-			unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
-			Gdk.Pixbuf? image = null;
-			
-			var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
-			if (app != null && app.get_desktop_file () != null) {
-				try {
-					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
-					if (appinfo != null) {
-						var iconinfo = icon_theme.lookup_by_gicon (appinfo.get_icon (), size, 0);
-						if (iconinfo != null)
-							image = iconinfo.load_icon ();
-					}
-				} catch (Error e) {
-					warning (e.message);
-				}
-			}
-			
-			if (image == null) {
-				try {
-					image = icon_theme.load_icon ("application-default-icon", size, 0);
-				} catch (Error e) {
-					warning (e.message);
-				}
-			}
-			
-			if (image == null) {
-				image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, 1, 1);
-				image.fill (0x00000000);
-			}
-			
-			return image;
-		}
-		
-		public Window get_next_window (Meta.Workspace workspace, bool backward=false)
-		{
-			var screen = get_screen ();
-			var display = screen.get_display ();
-			
-			var window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-				screen.get_active_workspace (), null, backward);
-			
-			if (window == null)
-				window = display.get_tab_current (Meta.TabList.NORMAL, screen, workspace);
-			
-			return window;
-		}
-		
-		/**
-		 * set the area where clutter can receive events
-		 **/
-		public void set_input_area (InputArea area)
-		{
-			var screen = get_screen ();
-			var display = screen.get_display ();
-			
-			X.Xrectangle rect;
-			int width, height;
-			screen.get_size (out width, out height);
-			
-			switch (area) {
-				case InputArea.FULLSCREEN:
-					rect = {0, 0, (ushort)width, (ushort)height};
-					break;
-				case InputArea.HOT_CORNER: //leave one pix in the bottom left
-					rect = {(short)(width - 1), (short)(height - 1), 1, 1};
-					break;
-				default:
-					Util.empty_stage_input_region (screen);
-					return;
-			}
-			
-			var xregion = X.Fixes.create_region (display.get_xdisplay (), {rect});
-			Util.set_stage_input_region (screen, xregion);
-		}
 		
 		void move_window (Window? window, bool reverse)
 		{
@@ -456,7 +338,7 @@ namespace Gala
 						var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 						// Only switch focus to the next window if none has grabbed it already
 						if (focus == null) {
-							focus = get_next_window (screen.get_active_workspace ());
+							focus = Utils.get_next_window (screen.get_active_workspace ());
 							if (focus != null)
 								focus.activate (display.get_current_time ());
 						}
@@ -711,7 +593,7 @@ namespace Gala
 			var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			// Only switch focus to the next window if none has grabbed it already
 			if (focus == null) {
-				focus = get_next_window (screen.get_active_workspace ());
+				focus = Utils.get_next_window (screen.get_active_workspace ());
 				if (focus != null)
 					focus.activate (display.get_current_time ());
 			}

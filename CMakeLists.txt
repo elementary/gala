@@ -48,6 +48,7 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/Main.vala
+    src/Utils.vala
     src/Settings.vala
     src/TextShadowEffect.vala
     src/Widgets/WindowSwitcher.vala
