@@ -60,6 +60,8 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_gnome_animations ();
 		[CCode (cheader_filename = "meta/prefs.h")]
+		public static bool get_ignore_request_hide_titlebar ();
+		[CCode (cheader_filename = "meta/prefs.h")]
 		public static Meta.KeyBindingAction get_keybinding_action (string name);
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GLib.List<weak Meta.KeyPref> get_keybindings ();
@@ -99,6 +101,8 @@ namespace Meta {
 		public static void remove_listener (Meta.PrefsChangedFunc func);
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void set_force_fullscreen (bool whether);
+		[CCode (cheader_filename = "meta/prefs.h")]
+		public static void set_ignore_request_hide_titlebar (bool whether);
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void set_no_tab_popup (bool whether);
 		[CCode (cheader_filename = "meta/prefs.h")]
