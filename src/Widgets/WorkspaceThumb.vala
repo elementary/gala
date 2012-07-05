@@ -107,28 +107,7 @@ namespace Gala
 			add_child (close_button);
 			
 			//kill the workspace
-			close_button.button_release_event.connect (() => {
-				animate (Clutter.AnimationMode.LINEAR, 250, width : 0.0f, opacity : 0);
-				
-				workspace.list_windows ().foreach ((w) => {
-					if (w.window_type != WindowType.DOCK) {
-						var gw = Gdk.X11Window.foreign_new_for_display (Gdk.Display.get_default (), 
-							w.get_xwindow ());
-						if (gw != null)
-							gw.destroy ();
-					}
-				});
-				
-				GLib.Timeout.add (250, () => {
-					workspace.window_added.disconnect (handle_window_added);
-					workspace.window_removed.disconnect (handle_window_removed);
-					
-					closed ();
-					return false;
-				});
-				
-				return true;
-			});
+			close_button.button_release_event.connect (close_workspace);
 			
 			if (plus == null) {
 				var css = new Gtk.CssProvider ();
@@ -158,6 +137,32 @@ namespace Gala
 		{
 			screen.workspace_switched.disconnect (handle_workspace_switched);
 			screen.workspace_added.disconnect (workspace_added);
+		}
+		
+		bool close_workspace (Clutter.ButtonEvent event)
+		{
+			workspace.list_windows ().foreach ((w) => {
+				if (w.window_type != WindowType.DOCK) {
+					w.delete (event.time);
+				}
+			});
+			
+			GLib.Timeout.add (250, () => {
+				//wait for confirmation dialogs to popup
+				if (Utils.get_n_windows (workspace) == 0) {
+					workspace.window_added.disconnect (handle_window_added);
+					workspace.window_removed.disconnect (handle_window_removed);
+					
+					animate (Clutter.AnimationMode.LINEAR, 250, width : 0.0f, opacity : 0);
+					
+					closed ();
+				} else
+					workspace.activate (workspace.get_screen ().get_display ().get_current_time ());
+				
+				return false;
+			});
+			
+			return true;
 		}
 		
 		bool draw_indicator (Cairo.Context cr)
