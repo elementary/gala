@@ -197,7 +197,6 @@ namespace Gala
 				if ((!(w.get_workspace () == workspace.index ()) && 
 					!meta_window.is_on_all_workspaces ()) ||
 					meta_window.minimized ||
-					!meta_window.is_on_primary_monitor () ||
 					(type != WindowType.NORMAL && 
 					type != WindowType.DIALOG &&
 					type != WindowType.MODAL_DIALOG))
@@ -290,7 +289,7 @@ namespace Gala
 		
 		void handle_window_added (Meta.Window window)
 		{
-			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && workspace.n_windows > 0)
+			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && Utils.get_n_windows (workspace) > 0)
 				window_on_last ();
 		}
 		
@@ -303,7 +302,7 @@ namespace Gala
 			    window.window_type != WindowType.MODAL_DIALOG)
 				return;
 			
-			if (workspace != null && workspace.n_windows == 0) {
+			if (workspace != null && Utils.get_n_windows (workspace) == 0) {
 				workspace.window_added.disconnect (handle_window_added);
 				workspace.window_removed.disconnect (handle_window_removed);
 				

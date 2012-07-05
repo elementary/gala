@@ -220,14 +220,7 @@ namespace Gala
 						continue;
 					
 					//prevent adding of empty workspaces
-					var n_windows = 0;
-					wp.list_windows ().foreach ((w) => {
-						if (w.window_type == WindowType.NORMAL ||
-							w.window_type == WindowType.DIALOG ||
-							w.window_type == WindowType.MODAL_DIALOG)
-							n_windows ++;
-					});
-					if (n_windows == 0) {
+					if (Utils.get_n_windows (wp) == 0) {
 						plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
 						continue;
 					}
@@ -244,13 +237,10 @@ namespace Gala
 				add_workspace ();
 			}
 			
-			
 			var screen = plugin.get_screen ();
 			
 			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
 			plugin.begin_modal ();
-			
-			animating = true;
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height;
