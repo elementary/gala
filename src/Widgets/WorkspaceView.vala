@@ -245,10 +245,12 @@ namespace Gala
 			}
 			
 			
-			plugin.set_input_area (Gala.InputArea.FULLSCREEN);
+			var screen = plugin.get_screen ();
+			
+			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
-			var screen = plugin.get_screen ();
+			animating = true;
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height;

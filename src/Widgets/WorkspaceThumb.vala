@@ -236,7 +236,7 @@ namespace Gala
 				
 				var icon = new GtkClutter.Texture ();
 				try {
-					icon.set_from_pixbuf (Gala.Plugin.get_icon_for_window (w, APP_ICON_SIZE));
+					icon.set_from_pixbuf (Utils.get_icon_for_window (w, APP_ICON_SIZE));
 				} catch (Error e) { warning (e.message); }
 				
 				icon.reactive = true;
