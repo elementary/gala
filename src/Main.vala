@@ -47,7 +47,7 @@ namespace Gala
 			var screen = get_screen ();
 			
 			var stage = Compositor.get_stage_for_screen (screen);
-			screen.override_workspace_layout (ScreenCorner.TOPLEFT, true, 1, -1);
+			screen.override_workspace_layout (ScreenCorner.TOPLEFT, true, 0, -1);
 			
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
