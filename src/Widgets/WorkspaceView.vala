@@ -60,6 +60,43 @@ namespace Gala
 			add_child (scroll);
 		}
 		
+		bool first_run = true;
+		//method that waits for the workspaces to be configured on first run
+		internal void initial_configuration ()
+		{
+			//FIXME disconnecting seems not to work properly
+			if (!first_run)
+				return;
+			
+			first_run = false;
+			
+			//disconnect, only need it the very first time
+			plugin.get_screen ().workareas_changed.disconnect (initial_configuration);
+			
+			foreach (var wp in plugin.get_screen ().get_workspaces ()) {
+				
+				//does this workspace actually exist?
+				if (plugin.get_screen ().get_workspaces ().index (wp) < 0)
+					continue;
+				
+				//prevent adding of empty workspaces
+				if (Utils.get_n_windows (wp) == 0) {
+					plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
+					continue;
+				}
+				
+				var thumb = new WorkspaceThumb (wp);
+				thumb.clicked.connect (hide);
+				thumb.closed.connect (remove_workspace);
+				thumb.window_on_last.connect (add_workspace);
+				
+				thumbnails.add_child (thumb);
+			}
+			
+			//add the empty one
+			add_workspace ();
+		}
+		
 		bool draw_background (Cairo.Context cr)
 		{
 			cr.rectangle (0, 1, width, height);
@@ -210,32 +247,6 @@ namespace Gala
 		{
 			if (visible)
 				return;
-			
-			//initial run
-			if (thumbnails.get_n_children () == 0) {
-				foreach (var wp in plugin.get_screen ().get_workspaces ()) {
-					
-					//does this workspace actually exist?
-					if (plugin.get_screen ().get_workspaces ().index (wp) < 0)
-						continue;
-					
-					//prevent adding of empty workspaces
-					if (Utils.get_n_windows (wp) == 0) {
-						plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
-						continue;
-					}
-					
-					var thumb = new WorkspaceThumb (wp);
-					thumb.clicked.connect (hide);
-					thumb.closed.connect (remove_workspace);
-					thumb.window_on_last.connect (add_workspace);
-					
-					thumbnails.add_child (thumb);
-				}
-				
-				//add the empty one
-				add_workspace ();
-			}
 			
 			var screen = plugin.get_screen ();
 			
