@@ -51,7 +51,6 @@ namespace Gala
 			
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
-			screen.workareas_changed.connect (workspace_view.initial_configuration);
 			
 			winswitcher = new WindowSwitcher (this);
 			

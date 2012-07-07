@@ -24,6 +24,7 @@ namespace Gala
 		static const float VIEW_HEIGHT = 140.0f;
 		
 		Gala.Plugin plugin;
+		Screen screen;
 		
 		Clutter.Actor thumbnails;
 		Clutter.CairoTexture background;
@@ -34,6 +35,7 @@ namespace Gala
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
+			screen = plugin.get_screen ();
 			
 			height = VIEW_HEIGHT;
 			opacity = 0;
@@ -58,30 +60,19 @@ namespace Gala
 			add_child (background);
 			add_child (thumbnails);
 			add_child (scroll);
+			
+			screen.workareas_changed.connect (initial_configuration);
 		}
 		
-		bool first_run = true;
 		//method that waits for the workspaces to be configured on first run
-		internal void initial_configuration ()
+		void initial_configuration ()
 		{
-			//FIXME disconnecting seems not to work properly
-			if (!first_run)
-				return;
+			screen.workareas_changed.disconnect (initial_configuration);
 			
-			first_run = false;
-			
-			//disconnect, only need it the very first time
-			plugin.get_screen ().workareas_changed.disconnect (initial_configuration);
-			
-			foreach (var wp in plugin.get_screen ().get_workspaces ()) {
-				
-				//does this workspace actually exist?
-				if (plugin.get_screen ().get_workspaces ().index (wp) < 0)
-					continue;
-				
+			foreach (var wp in screen.get_workspaces ()) {
 				//prevent adding of empty workspaces
 				if (Utils.get_n_windows (wp) == 0) {
-					plugin.get_screen ().remove_workspace (wp, plugin.get_screen ().get_display ().get_current_time ());
+					screen.remove_workspace (wp, screen.get_display ().get_current_time ());
 					continue;
 				}
 				
