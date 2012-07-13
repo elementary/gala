@@ -70,8 +70,8 @@ namespace Gala
 			screen.workareas_changed.disconnect (initial_configuration);
 			
 			foreach (var wp in screen.get_workspaces ()) {
-				//prevent adding of empty workspaces
-				if (Utils.get_n_windows (wp) == 0) {
+				//prevent adding of empty workspaces, unless it's the first with the panels and so on
+				if (Utils.get_n_windows (wp) == 0 && !(wp.index () == 0)) {
 					screen.remove_workspace (wp, screen.get_display ().get_current_time ());
 					continue;
 				}
