@@ -59,6 +59,14 @@ namespace Gala
 			stage.add_child (winswitcher);
 			
 			/*keybindings*/
+			
+			screen.get_display ().add_keybinding ("move-to-workspace-first", BehaviorSettings.get_default ().schema, 0, () => {
+				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
+			});
+			screen.get_display ().add_keybinding ("move-to-workspace-last", BehaviorSettings.get_default ().schema, 0, () => {
+				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
+			});
+			
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
 				try {
 					Process.spawn_command_line_async (

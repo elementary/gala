@@ -21,6 +21,16 @@
 			<summary></summary>
 			<description></description>
 		</key>
+		<key type="as" name="move-to-workspace-first">
+			<default><![CDATA[['<Super>Home']]]></default>
+			<summary>Shortcut to move to first workspace</summary>
+			<description></description>
+		</key>
+		<key type="as" name="move-to-workspace-last">
+			<default><![CDATA[['<Super>End']]]></default>
+			<summary>Shortcut to move to last workspace</summary>
+			<description></description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="gala">
