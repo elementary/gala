@@ -540,6 +540,10 @@ namespace Gala
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
 			
+			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
+			in_group.width = out_group.width = w;
+			in_group.height = out_group.height = h;
+			
 			out_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
 				x:x2, y:y2);
 			in_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
