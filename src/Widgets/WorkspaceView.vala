@@ -69,23 +69,24 @@ namespace Gala
 		{
 			screen.workareas_changed.disconnect (initial_configuration);
 			
-			foreach (var wp in screen.get_workspaces ()) {
-				//prevent adding of empty workspaces, unless it's the first with the panels and so on
-				if (Utils.get_n_windows (wp) == 0 && !(wp.index () == 0)) {
-					screen.remove_workspace (wp, screen.get_display ().get_current_time ());
-					continue;
-				}
-				
-				var thumb = new WorkspaceThumb (wp);
-				thumb.clicked.connect (hide);
-				thumb.closed.connect (remove_workspace);
-				thumb.window_on_last.connect (add_workspace);
-				
-				thumbnails.add_child (thumb);
+			//remove everything except for the first
+			for (var i=1;i<screen.get_workspaces ().length ();i++) {
+				screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
 			}
 			
-			//add the empty one
-			add_workspace ();
+			var thumb = new WorkspaceThumb (screen.get_workspaces ().nth_data (0));
+			thumb.clicked.connect (hide);
+			thumb.closed.connect (remove_workspace);
+			thumb.window_on_last.connect (add_workspace);
+			
+			thumbnails.add_child (thumb);
+			
+			//do a second run if necessary
+			if (screen.n_workspaces != 1) {
+				for (var i=1;i<screen.get_workspaces ().length ();i++) {
+					screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
+				}
+			}
 		}
 		
 		bool draw_background (Cairo.Context cr)
