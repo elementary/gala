@@ -32,6 +32,10 @@ namespace Gala
 		
 		bool animating; // delay closing the popup
 		
+		uint timeout = 0;
+		
+		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
+		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -212,7 +216,15 @@ namespace Gala
 			if (event.keyval == Clutter.Key.Alt_L || 
 				event.keyval == Clutter.Key.Super_L || 
 				event.keyval == Clutter.Key.Control_L) {
+				
+				if (wait_one_key_release)
+					return false;
+				
 				hide ();
+				if (timeout != 0) {
+					Source.remove (timeout);
+					timeout = 0;
+				}
 				
 				return true;
 			}
@@ -235,16 +247,37 @@ namespace Gala
 			return false;
 		}
 		
-		public new void show ()
+		/*
+		 * if wait, wait one second and look if super is still pressed, if so show
+		 * if shortcut, wait one key release before closing
+		 */
+		public new void show (bool wait=false, bool shortcut=false)
 		{
 			if (visible)
 				return;
+			
+			wait_one_key_release = shortcut;
 			
 			var screen = plugin.get_screen ();
 			
 			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
+			visible = true;
+			grab_key_focus ();
+			
+			if (wait) {
+				timeout = Timeout.add (1000, () => {
+					show_elements ();
+					timeout = 0;
+					return false;
+				});
+			} else
+				show_elements ();
+		}
+		
+		void show_elements ()
+		{
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height;
 			width = area.width;
@@ -270,8 +303,6 @@ namespace Gala
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
 			
-			visible = true;
-			grab_key_focus ();
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
 		}
 		
@@ -300,7 +331,7 @@ namespace Gala
 			bool left = (binding.get_name () == "switch-to-workspace-left");
 			switch_to_next_workspace (left);
 			
-			show ();
+			show (true);
 		}
 	}
 }
