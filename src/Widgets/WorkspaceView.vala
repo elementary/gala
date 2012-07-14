@@ -29,6 +29,7 @@ namespace Gala
 		Clutter.Actor thumbnails;
 		Clutter.CairoTexture background;
 		Clutter.CairoTexture scroll;
+		Clutter.Actor click_catcher; //invisible plane that catches clicks outside the view
 		
 		bool animating; // delay closing the popup
 		
@@ -60,6 +61,14 @@ namespace Gala
 			scroll.height = 12;
 			scroll.auto_resize = true;
 			scroll.draw.connect (draw_scroll);
+			
+			click_catcher = new Clutter.Actor ();
+			click_catcher.reactive = true;
+			click_catcher.button_release_event.connect ((e) => {
+				hide ();
+				return true;
+			});
+			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
 			
 			add_child (background);
 			add_child (thumbnails);
@@ -296,6 +305,11 @@ namespace Gala
 				scroll.width = width / thumbnails.width * width;
 				thumbnails.x = 4.0f;
 			}
+			
+			click_catcher.width = width;
+			click_catcher.height = area.height - height;
+			click_catcher.x = 0;
+			click_catcher.y = 0;
 			
 			animating = true;
 			Timeout.add (50, () => {
