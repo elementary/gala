@@ -230,7 +230,10 @@ namespace Gala
 		{
 			if (event.keyval == Clutter.Key.Alt_L || 
 				event.keyval == Clutter.Key.Super_L || 
-				event.keyval == Clutter.Key.Control_L) {
+				event.keyval == Clutter.Key.Control_L || 
+				event.keyval == Clutter.Key.Alt_R || 
+				event.keyval == Clutter.Key.Super_R || 
+				event.keyval == Clutter.Key.Control_R) {
 				
 				if (wait_one_key_release)
 					return false;
