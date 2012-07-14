@@ -21,161 +21,72 @@ namespace Gala
 {
 	public class WorkspaceView : Clutter.Actor
 	{
-		Gala.Plugin plugin;
+		static const float VIEW_HEIGHT = 140.0f;
 		
-		Clutter.Actor workspaces;
-		Clutter.CairoTexture bg;
+		Gala.Plugin plugin;
+		Screen screen;
+		
+		Clutter.Actor thumbnails;
+		Clutter.CairoTexture background;
+		Clutter.CairoTexture scroll;
 		
 		bool animating; // delay closing the popup
-		
-		Gdk.Pixbuf? background_pix;
-		Clutter.CairoTexture workspace_thumb;
-		Clutter.CairoTexture current_workspace;
-		
-		float last_workspace_x = 0;
-		int _workspace;
-		int workspace {
-			get {
-				return _workspace;
-			}
-			set {
-				if (_workspace == value)
-					return;
-				
-				_workspace = value;
-				
-				if ((int) workspaces.get_children ().nth_data (_workspace).x != 0 || _workspace == 0)
-					last_workspace_x = workspaces.get_children ().nth_data (_workspace).x;
-				current_workspace.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 400,
-					x : workspaces.x + last_workspace_x - 5);
-			}
-		}
-		
-		const string CURRENT_WORKSPACE_STYLE = """
-		* {
-			border-style: solid;
-			border-width: 1px 1px 1px 1px;
-			-unico-inner-stroke-width: 1px 0 1px 0;
-			border-radius: 8px;
-			
-			background-image: -gtk-gradient (linear,
-							left top,
-							left bottom,
-							from (shade (@selected_bg_color, 1.4)),
-							to (shade (@selected_bg_color, 0.98)));
-			
-			-unico-border-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#000, 0.5)),
-							to (alpha (#000, 0.6)));
-			
-			-unico-inner-stroke-gradient: -gtk-gradient (linear,
-							left top, left bottom,
-							from (alpha (#fff, 0.90)),
-							to (alpha (#fff, 0.06)));
-		}
-		""";
-		Gtk.Menu current_workspace_style; //dummy item for drawing
 		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
+			screen = plugin.get_screen ();
 			
-			height = 128;
+			height = VIEW_HEIGHT;
 			opacity = 0;
 			reactive = true;
 			
-			workspaces = new Clutter.Actor ();
-			var box_layout = new Clutter.BoxLayout ();
-			box_layout.spacing = 12;
-			workspaces.set_layout_manager (box_layout);
+			thumbnails = new Clutter.Actor ();
+			thumbnails.layout_manager = new Clutter.BoxLayout ();
+			(thumbnails.layout_manager as Clutter.BoxLayout).spacing = 12;
+			(thumbnails.layout_manager as Clutter.BoxLayout).homogeneous = true;
 			
-			bg = new Clutter.CairoTexture (500, (uint)height);
-			bg.auto_resize = true;
-			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
-			bg.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
-			bg.draw.connect (draw_background);
+			background = new Clutter.CairoTexture (500, (uint)height);
+			background.auto_resize = true;
+			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
+			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
+			background.draw.connect (draw_background);
 			
-			leave_event.connect ((e) => {
-				if (!contains (e.related))
-					hide ();
-				
-				return false;
-			});
+			scroll = new Clutter.CairoTexture (100, 12);
+			scroll.height = 12;
+			scroll.auto_resize = true;
+			scroll.draw.connect (draw_scroll);
 			
-			int width, height;
-			var area = plugin.get_screen ().get_monitor_geometry (plugin.get_screen ().get_primary_monitor ());
-			width = area.width;
-			height = area.height;
+			add_child (background);
+			add_child (thumbnails);
+			add_child (scroll);
 			
-			workspace_thumb = new Clutter.CairoTexture (120, 120);
-			workspace_thumb.height = 80;
-			workspace_thumb.width  = (workspace_thumb.height / height) * width;
-			workspace_thumb.auto_resize = true;
-			workspace_thumb.draw.connect (draw_workspace_thumb);
+			screen.workareas_changed.connect (initial_configuration);
+		}
+		
+		//method that waits for the workspaces to be configured on first run
+		void initial_configuration ()
+		{
+			screen.workareas_changed.disconnect (initial_configuration);
 			
-			current_workspace_style = new Gtk.Menu ();
-			var provider = new Gtk.CssProvider ();
-			try {
-				provider.load_from_data (CURRENT_WORKSPACE_STYLE, -1);
-			} catch (Error e) { warning (e.message); }
-			current_workspace_style.get_style_context ().add_provider (provider, 20000);
+			//remove everything except for the first
+			for (var i=1;i<screen.get_workspaces ().length ();i++) {
+				screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
+			}
 			
-			current_workspace = new Clutter.CairoTexture (120, 120);
-			current_workspace.height = workspace_thumb.height + 10;
-			current_workspace.width  = workspace_thumb.width  + 10;
-			current_workspace.auto_resize = true;
-			current_workspace.draw.connect (draw_current_workspace);
+			var thumb = new WorkspaceThumb (screen.get_workspaces ().nth_data (0));
+			thumb.clicked.connect (hide);
+			thumb.closed.connect (remove_workspace);
+			thumb.window_on_last.connect (add_workspace);
 			
-			var settings = new GLib.Settings ("org.gnome.desktop.background");
+			thumbnails.add_child (thumb);
 			
-			settings.changed.connect ((key) => {
-				if (key == "picture-uri") {
-					var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
-					try {
-						background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
-						((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
-					} catch (Error e) { warning (e.message); }
+			//do a second run if necessary
+			if (screen.n_workspaces != 1) {
+				for (var i=1;i<screen.get_workspaces ().length ();i++) {
+					screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
 				}
-			});
-			
-			var path = File.new_for_uri (settings.get_string ("picture-uri")).get_path ();
-			try {
-				background_pix = new Gdk.Pixbuf.from_file (path).scale_simple 
-				((int)workspace_thumb.width, (int)workspace_thumb.height, Gdk.InterpType.HYPER);
-			} catch (Error e) { warning (e.message); }
-			
-			add_child (workspace_thumb);
-			add_child (bg);
-			add_child (current_workspace);
-			add_child (workspaces);
-			
-			workspace_thumb.visible = false; //will only be used for cloning
-		}
-		
-		bool draw_current_workspace (Cairo.Context cr)
-		{
-			current_workspace_style.get_style_context ().render_activity (cr, 0, 0, 
-				current_workspace.width, current_workspace.height);
-			
-			return false;
-		}
-		
-		bool draw_workspace_thumb (Cairo.Context cr)
-		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, 
-				workspace_thumb.width, workspace_thumb.height, 5);
-			if (background_pix != null)
-				Gdk.cairo_set_source_pixbuf (cr, background_pix, 0, 0);
-			else
-				cr.set_source_rgb (0, 0, 0);
-			cr.fill_preserve ();
-			
-			cr.set_line_width (1);
-			cr.set_source_rgba (0, 0, 0, 1);
-			cr.stroke_preserve ();
-			
-			return false;
+			}
 		}
 		
 		bool draw_background (Cairo.Context cr)
@@ -201,19 +112,83 @@ namespace Gala
 			return false;
 		}
 		
+		bool draw_scroll (Cairo.Context cr)
+		{
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
+			cr.set_source_rgba (1, 1, 1, 0.8);
+			cr.fill ();
+			
+			return false;
+		}
+		
+		void add_workspace ()
+		{
+			var screen = plugin.get_screen ();
+			var wp = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+			if (wp == null)
+				return;
+			
+			var thumb = new WorkspaceThumb (wp);
+			thumb.clicked.connect (hide);
+			thumb.closed.connect (remove_workspace);
+			thumb.window_on_last.connect (add_workspace);
+			
+			thumbnails.add_child (thumb);
+			
+			check_scrollbar ();
+		}
+		
+		void remove_workspace (WorkspaceThumb thumb)
+		{
+			thumb.clicked.disconnect (hide);
+			thumb.closed.disconnect (remove_workspace);
+			thumb.window_on_last.disconnect (add_workspace);
+			
+			var workspace = thumb.workspace;
+			
+			if (workspace != null && workspace.index () > -1) { //dont remove non existing workspaces
+				var screen = workspace.get_screen ();
+				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
+			}
+			
+			thumb.workspace = null;
+			
+			thumbnails.remove_child (thumb);
+			thumb.destroy ();
+			check_scrollbar ();
+		}
+		
+		void check_scrollbar ()
+		{
+			scroll.visible = thumbnails.width > width;
+			
+			if (scroll.visible) {
+				if (thumbnails.x + thumbnails.width < width)
+					thumbnails.x = width - thumbnails.width;
+				scroll.width = width / thumbnails.width * width;
+			} else {
+				thumbnails.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x : width / 2 - thumbnails.width / 2);
+			}
+		}
+		
 		void switch_to_next_workspace (bool reverse)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
 			
-			var idx = screen.get_active_workspace_index () + (reverse ? -1 : 1);
+			var neighbor = screen.get_active_workspace ().get_neighbor (reverse ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			
-			if (idx < 0 || idx >= screen.n_workspaces)
+			if (neighbor == null)
 				return;
 			
-			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
-			if (workspaces.x != 0)
-				workspace = idx;
+			neighbor.activate (display.get_current_time ());
+		}
+		
+		public override bool leave_event (Clutter.CrossingEvent event) {
+			if (!contains (event.related))
+				hide ();
+			
+			return false;
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -245,7 +220,21 @@ namespace Gala
 			return false;
 		}
 		
-		//FIXME move all this positioning stuff to a separate function which is only called by screen size changes
+		const float scroll_speed = 30.0f;
+		public override bool scroll_event (Clutter.ScrollEvent event)
+		{
+			if ((event.direction == Clutter.ScrollDirection.DOWN || event.direction == Clutter.ScrollDirection.RIGHT)
+				&& thumbnails.width + thumbnails.x > width) { //left
+				thumbnails.x -= scroll_speed;
+			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
+				&& thumbnails.x < 0) { //right
+				thumbnails.x += scroll_speed;
+			}
+			scroll.x = Math.floorf (width / thumbnails.width * thumbnails.x);
+			
+			return false;
+		}
+		
 		public new void show ()
 		{
 			if (visible)
@@ -256,92 +245,34 @@ namespace Gala
 			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
-			animating = true;
-			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			
 			y = area.height;
 			width = area.width;
 			
-			/*get the workspaces together*/
-			workspaces.remove_all_children ();
+			thumbnails.get_children ().foreach ((thumb) => {
+				thumb.show ();
+			});
 			
-			for (var i = 0; i < screen.n_workspaces; i++) {
-				var space = screen.get_workspace_by_index (i);
-				
-				var group = new Clutter.Actor ();
-				var icons = new Clutter.Actor ();
-				icons.set_layout_manager (new Clutter.BoxLayout ());
-				var backg = new Clutter.Clone (workspace_thumb);
-				
-				var shown_applications = new List<Bamf.Application> ();
-				
-				space.list_windows ().foreach ((w) => {
-					if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-						return;
-					
-					var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)w.get_xwindow ());
-					if (shown_applications.index (app) != -1)
-						return;
-					
-					if (app != null)
-						shown_applications.append (app);
-					
-					var pix = Utils.get_icon_for_window (w, 32);
-					var icon = new GtkClutter.Texture ();
-					try {
-						icon.set_from_pixbuf (pix);
-					} catch (Error e) { warning (e.message); }
-					
-					icon.reactive = true;
-					icon.button_release_event.connect ( () => {
-						space.activate_with_focus (w, screen.get_display ().get_current_time ());
-						hide ();
-						return false;
-					});
-					
-					icons.add_child (icon);
-				});
-				
-				group.add_child (backg);
-				group.add_child (icons);
-				
-				icons.y = Math.floorf (backg.height - 16);
-				icons.x = Math.floorf (group.width / 2 - icons.width / 2);
-				(icons.layout_manager as Clutter.BoxLayout).spacing = 6;
-				
-				group.height = 160;
-				
-				group.reactive = true;
-				group.button_release_event.connect (() => {
-					space.activate (plugin.get_screen ().get_display ().get_current_time ());
-					workspace = plugin.get_screen ().get_active_workspace ().index ();
-					hide ();
-					return true;
-				});
-				
-				workspaces.add_child (group);
+			thumbnails.x = width / 2 - thumbnails.width / 2;
+			thumbnails.y = 15;
+			
+			scroll.visible = thumbnails.width > width;
+			if (scroll.visible) {
+				scroll.y = height - 12;
+				scroll.x = 0.0f;
+				scroll.width = width / thumbnails.width * width;
+				thumbnails.x = 4.0f;
 			}
 			
-			var new_idx = screen.get_active_workspace ().index ();
-			
-			bool recalc = current_workspace.x == 0;
-			workspaces.x = width / 2 - workspaces.width / 2;
-			workspaces.y = 25;
-			
-			current_workspace.y = workspaces.y - 5;
+			animating = true;
+			Timeout.add (50, () => {
+				animating = false;
+				return false;
+			}); //catch hot corner hiding problem and indicator placement
 			
 			visible = true;
 			grab_key_focus ();
-			Timeout.add (50, () => animating = false ); //catch hot corner hiding problem
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255)
-				.completed.connect (() => {
-			});
-			
-			if (recalc)
-				current_workspace.x = width / 2 - workspaces.width / 2 + (workspaces.get_children ().nth_data (0).width+12)*new_idx - 5;
-			else
-				workspace = new_idx;
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
 		}
 		
 		public new void hide ()
@@ -355,8 +286,10 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height)
-				.completed.connect ( () => {
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height).completed.connect (() => {
+				thumbnails.get_children ().foreach ((thumb) => {
+					thumb.hide ();
+				});
 				visible = false;
 			});
 		}

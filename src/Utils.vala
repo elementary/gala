@@ -124,4 +124,20 @@ namespace Gala.Utils
 		var xregion = X.Fixes.create_region (display.get_xdisplay (), {rect});
 		Util.set_stage_input_region (screen, xregion);
 	}
+	
+	/**
+	 * get the number of toplevel windows on a workspace
+	 **/
+	public uint get_n_windows (Workspace workspace)
+	{
+		var n = 0;
+		foreach (var window in workspace.list_windows ()) {
+			if (window.window_type == WindowType.NORMAL ||
+				window.window_type == WindowType.DIALOG ||
+				window.window_type == WindowType.MODAL_DIALOG)
+				n ++;
+		}
+		
+		return n;
+	}
 }

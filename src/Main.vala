@@ -48,10 +48,11 @@ namespace Gala
 			var screen = get_screen ();
 			
 			var stage = Compositor.get_stage_for_screen (screen);
-			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 4, -1);
+			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
 			
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
+			
 			winswitcher = new WindowSwitcher (this);
 			
 			stage.add_child (workspace_view);
@@ -113,6 +114,7 @@ namespace Gala
 			stage.add_child (hot_corner);
 			
 			update_input_area ();
+			
 			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 		}
 		
@@ -133,13 +135,15 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
-			var idx = screen.get_active_workspace ().index () + (reverse ? -1 : 1);
+			var active = screen.get_active_workspace ();
+			var idx = active.index () + (reverse ? -1 : 1);
 			
-			if (idx < 0 || idx >= screen.n_workspaces)
+			if (idx < 0 || idx >= screen.n_workspaces || 
+				(active.n_windows == 1 && idx == screen.n_workspaces-1)) //dont allow empty workspaces to be created by moving
 				return;
 			
 			if (!window.is_on_all_workspaces ())
-				window.change_workspace_by_index (idx, false, display.get_current_time ());
+				window.change_workspace_by_index (idx, true, display.get_current_time ());
 			
 			moving = window;
 			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
@@ -166,13 +170,14 @@ namespace Gala
 		
 		public void dim_window (Window window, bool dim)
 		{
-			var win = window.get_compositor_private () as Clutter.Actor;
+			/*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
+			var win = window.get_compositor_private () as WindowActor;
 			if (dim) {
 				if (win.has_effects ())
 					return;
-				win.add_effect_with_name ("darken", new Clutter.ColorizeEffect ({180, 180, 180, 255}));
+				win.add_effect_with_name ("darken", new Clutter.BlurEffect ());
 			} else
-				win.clear_effects ();
+				win.clear_effects ();*/
 		}
 		
 		/*
@@ -440,10 +445,8 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor)) {
+			if (end_animation (ref mapping, actor))
 				map_completed (actor);
-				print ("KILLED MAPPING ONE\n");
-			}
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
@@ -473,14 +476,12 @@ namespace Gala
 			get_screen ().get_size (out w, out h);
 			
 			var x2 = 0.0f; var y2 = 0.0f;
-			if (direction == MotionDirection.UP ||
-				direction == MotionDirection.UP_LEFT ||
-				direction == MotionDirection.UP_RIGHT)
+			if (direction == MotionDirection.LEFT)
 				x2 = w;
-			else if (direction == MotionDirection.DOWN ||
-				direction == MotionDirection.DOWN_LEFT ||
-				direction == MotionDirection.DOWN_RIGHT)
+			else if (direction == MotionDirection.RIGHT)
 				x2 = -w;
+			else
+				return;
 			
 			var group = Compositor.get_window_group_for_screen (get_screen ());
 			var wallpaper = Compositor.get_background_actor_for_screen (get_screen ());
