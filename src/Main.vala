@@ -98,6 +98,9 @@ namespace Gala
 			KeyBinding.set_custom_handler ("move-to-workspace-left",  (d, s, w) => move_window (w, true) );
 			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
 			
+			KeyBinding.set_custom_handler ("switch-group", () => {});
+			KeyBinding.set_custom_handler ("switch-group-backward", () => {});
+			
 			/*shadows*/
 			Utils.reload_shadow ();
 			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
