@@ -444,10 +444,8 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor)) {
+			if (end_animation (ref mapping, actor))
 				map_completed (actor);
-				print ("KILLED MAPPING ONE\n");
-			}
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))

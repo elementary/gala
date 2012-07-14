@@ -176,12 +176,12 @@ namespace Gala
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
 			
-			var idx = screen.get_active_workspace_index () + (reverse ? -1 : 1);
+			var neighbor = screen.get_active_workspace ().get_neighbor (reverse ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			
-			if (idx < 0 || idx >= screen.n_workspaces)
+			if (neighbor == null)
 				return;
 			
-			screen.get_workspace_by_index (idx).activate (display.get_current_time ());
+			neighbor.activate (display.get_current_time ());
 		}
 		
 		public override bool leave_event (Clutter.CrossingEvent event) {
