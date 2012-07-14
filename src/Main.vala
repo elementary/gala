@@ -345,7 +345,7 @@ namespace Gala
 						// Only switch focus to the next window if none has grabbed it already
 						if (focus == null) {
 							focus = Utils.get_next_window (screen.get_active_workspace ());
-							if (focus != null)
+							if (focus != null && !focus.minimized)
 								focus.activate (display.get_current_time ());
 						}
 						
