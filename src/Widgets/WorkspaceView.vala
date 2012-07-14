@@ -208,10 +208,16 @@ namespace Gala
 		{
 			switch (event.keyval) {
 				case Clutter.Key.Left:
-					switch_to_next_workspace (true);
+					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
+						plugin.move_window (screen.get_display ().get_focus_window (), true);
+					else
+						switch_to_next_workspace (true);
 					return false;
 				case Clutter.Key.Right:
-					switch_to_next_workspace (false);
+					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
+						plugin.move_window (screen.get_display ().get_focus_window (), false);
+					else
+						switch_to_next_workspace (false);
 					return false;
 				default:
 					break;

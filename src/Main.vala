@@ -127,7 +127,7 @@ namespace Gala
 		}
 		
 		
-		void move_window (Window? window, bool reverse)
+		public void move_window (Window? window, bool reverse)
 		{
 			if (window == null)
 				return;
