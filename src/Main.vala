@@ -35,6 +35,7 @@ namespace Gala
 		
 		public Plugin ()
 		{
+			Prefs.set_ignore_request_hide_titlebar (true);
 			Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA+".appearance");
 			Prefs.override_preference_schema ("button-layout", SCHEMA+".appearance");
 			Prefs.override_preference_schema ("edge-tiling", SCHEMA+".behavior");
