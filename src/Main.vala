@@ -197,7 +197,35 @@ namespace Gala
 		
 		public override void minimize (WindowActor actor)
 		{
-			minimize_completed (actor);
+			int width, height;
+			get_screen ().get_size (out width, out height);
+			
+			Rectangle icon = {};
+			if (actor.get_meta_window ().get_icon_geometry (icon)) {
+				
+				float scale_x  = (float)icon.width  / actor.width;
+				float scale_y  = (float)icon.height / actor.height;
+				float anchor_x = (float)(actor.x - icon.x) * actor.width  / (icon.width  - actor.width);
+				float anchor_y = (float)(actor.y - icon.y) * actor.height / (icon.height - actor.height);
+				
+				actor.move_anchor_point (anchor_x, anchor_y);
+				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration, 
+					scale_x:scale_x, scale_y:scale_y,opacity:0)
+					.completed.connect (() => {
+					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+					minimize_completed (actor);
+				});
+				
+			} else {
+				actor.scale_center_x = width / 2.0f - actor.x;
+				actor.scale_center_y = height - actor.y;
+				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration, 
+					scale_x:0.0f, scale_y:0.0f, opacity:0.0f)
+					.completed.connect (() => {
+					actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+					minimize_completed (actor);
+				});
+			}
 		}
 		
 		//stolen from original mutter plugin
@@ -271,12 +299,12 @@ namespace Gala
 			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.SOUTH;
-					actor.rotation_center_x = {0, 0, 10};
-					actor.scale_x = 0.2f;
-					actor.scale_y = 0.2f;
+					actor.rotation_center_x = {rect.width/2.0f, 0, -100};
+					actor.scale_x = 0.1f;
+					actor.scale_y = 0.1f;
 					actor.opacity = 0;
-					actor.rotation_angle_x = 0.0f;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().open_duration, 
+					actor.rotation_angle_x = -90.0f;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().open_duration, 
 						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
 						.completed.connect ( () => {
 						
@@ -307,11 +335,10 @@ namespace Gala
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
 					actor.scale_gravity = Clutter.Gravity.NORTH;
-					actor.scale_x = 1.0f;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
 					
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, 
 						scale_y:1.0f, opacity:255).completed.connect ( () => {
 						
 						mapping.remove (actor);
@@ -347,11 +374,11 @@ namespace Gala
 			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.CENTER;
-					actor.rotation_center_x = {0, actor.height, 10};
 					actor.show ();
-					actor.animate (Clutter.AnimationMode.EASE_IN_QUAD, AnimationSettings.get_default ().close_duration, 
-						scale_x:0.95f, scale_y:0.95f, opacity:0, rotation_angle_x:15.0f)
+					actor.animate (Clutter.AnimationMode.LINEAR, AnimationSettings.get_default ().close_duration, 
+						scale_x:0.8f, scale_y:0.8f, opacity:0)
 						.completed.connect ( () => {
+						
 						var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 						// Only switch focus to the next window if none has grabbed it already
 						if (focus == null) {

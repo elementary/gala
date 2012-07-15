@@ -105,6 +105,7 @@ namespace Gala
 		public int open_duration { get; set; }
 		public int snap_duration { get; set; }
 		public int close_duration { get; set; }
+		public int minimize_duration { get; set; }
 		public int workspace_switch_duration { get; set; }
 		
 		static AnimationSettings? instance = null;
