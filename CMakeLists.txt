@@ -54,6 +54,7 @@ vala_precompile(VALA_C
     src/Widgets/WindowSwitcher.vala
     src/Widgets/WorkspaceView.vala
     src/Widgets/WorkspaceThumb.vala
+    src/Widgets/AppIcon.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite

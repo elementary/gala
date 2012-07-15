@@ -23,8 +23,11 @@ namespace Gala
 	public class WorkspaceThumb : Clutter.Actor
 	{
 		
+		//target for DnD
+		internal static Actor? destination = null;
+		
 		static const int INDICATOR_BORDER = 5;
-		static const int APP_ICON_SIZE = 32;
+		internal static const int APP_ICON_SIZE = 32;
 		static const float THUMBNAIL_HEIGHT = 80.0f;
 		static const uint CLOSE_BUTTON_DELAY = 500;
 		
@@ -38,9 +41,9 @@ namespace Gala
 		
 		static GtkClutter.Texture? plus = null;
 		
-		Clone wallpaper;
+		internal Clone wallpaper;
 		Clutter.Actor windows;
-		Clutter.Actor icons;
+		internal Clutter.Actor icons;
 		CairoTexture indicator;
 		GtkClutter.Texture close_button;
 		
@@ -128,9 +131,35 @@ namespace Gala
 				plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
 			}
 			
+			add_action_with_name ("drop", new DropAction ());
+			(get_action ("drop") as DropAction).over_in.connect (over_in);
+			(get_action ("drop") as DropAction).over_out.connect (over_out);
+			(get_action ("drop") as DropAction).drop.connect (drop);
+			
 			check_last_workspace ();
 			
 			visible = false;
+		}
+		
+		void over_in (Actor actor)
+		{
+			if (indicator.opacity != 255)
+				indicator.animate (AnimationMode.LINEAR, 100, opacity:200);
+		}
+		void over_out (Actor actor)
+		{
+			if (indicator.opacity != 255)
+				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
+		}
+		void drop (Actor actor, float x, float y)
+		{
+			float ax, ay;
+			actor.transform_stage_point (x, y, out ax, out ay);
+			
+			destination = actor;
+			
+			if (indicator.opacity != 255)
+				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
 		}
 		
 		~WorkspaceThumb ()
@@ -238,16 +267,7 @@ namespace Gala
 				if (app != null)
 					shown_applications.append (app);
 				
-				var icon = new GtkClutter.Texture ();
-				try {
-					icon.set_from_pixbuf (Utils.get_icon_for_window (w, APP_ICON_SIZE));
-				} catch (Error e) { warning (e.message); }
-				
-				icon.reactive = true;
-				icon.button_release_event.connect ( () => {
-					workspace.activate_with_focus (w, workspace.get_screen ().get_display ().get_current_time ());
-					return false;
-				});
+				var icon = new AppIcon (w);
 				
 				icons.add_child (icon);
 			});
@@ -294,17 +314,22 @@ namespace Gala
 		
 		void handle_window_added (Meta.Window window)
 		{
+			if (visible)
+				update_windows ();
+			
 			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && Utils.get_n_windows (workspace) > 0)
 				window_on_last ();
 		}
 		
 		void handle_window_removed (Meta.Window window)
 		{
+			if (visible)
+				update_windows ();
 			
 			//dont remove workspaces when for example slingshot was closed
 			if (window.window_type != WindowType.NORMAL &&
-			    window.window_type != WindowType.DIALOG &&
-			    window.window_type != WindowType.MODAL_DIALOG)
+				window.window_type != WindowType.DIALOG &&
+				window.window_type != WindowType.MODAL_DIALOG)
 				return;
 			
 			if (workspace != null && Utils.get_n_windows (workspace) == 0) {
@@ -335,6 +360,12 @@ namespace Gala
 		
 		public override bool button_release_event (ButtonEvent event)
 		{
+			//if we drop something, don't instantly activate
+			if (destination != null) {
+				destination = null;
+				return false;
+			}
+			
 			if (workspace == null)
 				return true;
 			

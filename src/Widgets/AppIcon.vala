@@ -1,0 +1,101 @@
+//  
+//  Copyright (C) 2012 Tom Beckmann
+// 
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+// 
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+using Clutter;
+using Meta;
+
+namespace Gala
+{
+	public class AppIcon : GtkClutter.Texture
+	{
+		
+		Window window;
+		
+		public AppIcon (Window _window)
+		{
+			window = _window;
+			
+			try {
+				set_from_pixbuf (Utils.get_icon_for_window (window, WorkspaceThumb.APP_ICON_SIZE));
+			} catch (Error e) { warning (e.message); }
+			
+			var action = new DragAction ();
+			action.drag_begin.connect (drag_begin);
+			action.drag_end.connect (drag_end);
+			
+			add_action_with_name ("drag", action);
+			reactive = true;
+		}
+		
+		public override bool button_release_event (ButtonEvent event)
+		{
+			window.get_workspace ().activate_with_focus (window, window.get_screen ().get_display ().get_current_time ());
+			return false;
+		}
+		
+		void drag_end (Actor actor, float x, float y, ModifierType modifier)
+		{
+			var action = actor.get_action ("drag") as DragAction;
+			Actor handle = null;
+			if (action != null)
+				handle = action.drag_handle;
+			if (WorkspaceThumb.destination == null) {
+				float ax, ay;
+				actor.get_parent ().animate (AnimationMode.LINEAR, 150, opacity:255);
+				actor.get_transformed_position (out ax, out ay);
+				handle.animate (AnimationMode.EASE_OUT_BOUNCE, 250, x:ax, y:ay)
+					.completed.connect (() => {
+					if (handle != null)
+						handle.destroy ();
+					actor.opacity = 255;
+				});
+			} else {
+				WorkspaceThumb old = actor.get_parent ().get_parent () as WorkspaceThumb;
+				actor.get_parent ().remove_child (actor);
+				if (old != null)
+					old.icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (old.wallpaper.x + old.wallpaper.width / 2 - old.icons.width / 2));
+				actor.opacity = 255;
+				
+				var icons = (WorkspaceThumb.destination as WorkspaceThumb).icons;
+				var wallpaper = (WorkspaceThumb.destination as WorkspaceThumb).wallpaper;
+				
+				icons.add_child (actor);
+				icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
+				window.change_workspace ((WorkspaceThumb.destination as WorkspaceThumb).workspace);
+				
+				if (handle != null)
+					handle.destroy ();
+			}
+		}
+		
+		void drag_begin (Actor actor, float x, float y, ModifierType modifier)
+		{
+			actor.opacity = 0;
+			
+			float ax, ay;
+			actor.get_transformed_position (out ax, out ay);
+			
+			var handle = new Clone (actor);
+			handle.set_position (ax, ay);
+			
+			Compositor.get_stage_for_screen (window.get_screen ()).add_child (handle);
+			WorkspaceThumb.destination = null;
+			(actor.get_action ("drag") as DragAction).drag_handle = handle;
+		}
+		
+	}
+}

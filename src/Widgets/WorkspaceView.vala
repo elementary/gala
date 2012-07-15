@@ -148,6 +148,8 @@ namespace Gala
 			
 			thumbnails.add_child (thumb);
 			
+			thumb.show ();
+			
 			check_scrollbar ();
 		}
 		
