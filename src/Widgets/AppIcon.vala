@@ -24,10 +24,12 @@ namespace Gala
 	{
 		
 		Window window;
+		Bamf.Application app;
 		
-		public AppIcon (Window _window)
+		public AppIcon (Window _window, Bamf.Application _app)
 		{
 			window = _window;
+			app = _app;
 			
 			try {
 				set_from_pixbuf (Utils.get_icon_for_window (window, WorkspaceThumb.APP_ICON_SIZE));
@@ -75,7 +77,18 @@ namespace Gala
 				
 				icons.add_child (actor);
 				icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
-				window.change_workspace ((WorkspaceThumb.destination as WorkspaceThumb).workspace);
+				
+				var xids = app.get_xids ();
+				if (xids.length > 1) { //get all the windows that belong to this app
+					var wins = window.get_workspace ().list_windows ();
+					for (var i=0;i<xids.length;i++) {
+						foreach (var win in wins) {
+							if (xids.index (i) == (uint32)win.get_xwindow ())
+								win.change_workspace ((WorkspaceThumb.destination as WorkspaceThumb).workspace);
+						}
+					}
+				} else
+					window.change_workspace ((WorkspaceThumb.destination as WorkspaceThumb).workspace);
 				
 				if (handle != null)
 					handle.destroy ();

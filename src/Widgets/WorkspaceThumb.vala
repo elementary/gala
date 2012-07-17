@@ -267,7 +267,7 @@ namespace Gala
 				if (app != null)
 					shown_applications.append (app);
 				
-				var icon = new AppIcon (w);
+				var icon = new AppIcon (w, app);
 				
 				icons.add_child (icon);
 			});
