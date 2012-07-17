@@ -37,6 +37,18 @@ namespace Gala
 		
 		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
 		
+		Gtk.StyleContext background_style;
+		static const string FALLBACK_STYLE = """
+		.workspaces-background {
+			border-top: 1px solid alpha(#fff, 0.5);
+			background-image: -gtk-gradient (linear,
+				left top, left bottom,
+				from (#161616),
+				color-stop (0.15, #262626),
+				to (#262626));
+		}
+		""";
+		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -45,6 +57,18 @@ namespace Gala
 			height = VIEW_HEIGHT;
 			opacity = 0;
 			reactive = true;
+			
+			//setup styles
+			var fallback = new Gtk.CssProvider ();
+			try {
+				fallback.load_from_data (FALLBACK_STYLE, -1);
+			} catch (Error e) { warning (e.message); }
+			
+			var e = new Gtk.EventBox ();
+			e.show ();
+			background_style = e.get_style_context ();
+			background_style.add_class ("workspaces-background");
+			background_style.add_provider (fallback, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
 			thumbnails = new Clutter.Actor ();
 			thumbnails.layout_manager = new Clutter.BoxLayout ();
@@ -113,7 +137,7 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			cr.rectangle (0, 1, width, height);
+			/*cr.rectangle (0, 1, width, height);
 			cr.set_source_rgb (0.15, 0.15, 0.15);
 			cr.fill ();
 			
@@ -129,7 +153,9 @@ namespace Gala
 			
 			cr.rectangle (0, 1, width, 15);
 			cr.set_source (grad);
-			cr.fill ();
+			cr.fill ();*/
+			
+			background_style.render_activity (cr, 0, 0, width, height);
 			
 			return false;
 		}
