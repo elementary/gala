@@ -100,6 +100,8 @@ namespace Gala
 					screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
 				}
 			}
+			
+			add_workspace ();
 		}
 		
 		bool draw_background (Cairo.Context cr)

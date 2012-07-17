@@ -28,6 +28,8 @@ namespace Gala
 		
 		Meta.Window? current_window;
 		
+		bool active; //switcher is currently running
+		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -37,28 +39,36 @@ namespace Gala
 		{
 			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) || 
 					event.keyval == Key.Alt_L) {
-				
-				foreach (var clone in window_clones) {
-					remove_child (clone);
-					clone.destroy ();
-				}
-				
-				Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
-					var meta_win = w.get_meta_window ();
-					if (!meta_win.minimized && 
-						(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
-						meta_win.is_on_all_workspaces ())
-						w.show ();
-				});
-				
-				window_clones.clear ();
-				
-				plugin.end_modal ();
-				current_window.activate (event.time);
-				current_window = null;
+				close (event.time);
 			}
 			
 			return true;
+		}
+		
+		void close (uint time)
+		{
+			foreach (var clone in window_clones) {
+				remove_child (clone);
+				clone.destroy ();
+			}
+			
+			Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
+				var meta_win = w.get_meta_window ();
+				if (!meta_win.minimized && 
+					(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
+					meta_win.is_on_all_workspaces ())
+					w.show ();
+			});
+			
+			window_clones.clear ();
+			
+			plugin.end_modal ();
+			if (current_window != null) {
+				current_window.activate (time);
+				current_window = null;
+			}
+			
+			active = false;
 		}
 		
 		public override bool captured_event (Clutter.Event event)
@@ -113,6 +123,14 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
+			if (active) {
+				if (window_clones.size != 0)
+					close (screen.get_display ().get_current_time ());
+				return;
+			}
+			
+			active = true;
+			
 			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			if (metawindows.length () <= 1)
 				return;

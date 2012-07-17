@@ -27,6 +27,8 @@ namespace Gala
 		
 		Window? moving; //place for the window that is being moved over
 		
+		int modal_count; //count of modal modes overlaying each other
+		
 		Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -162,6 +164,11 @@ namespace Gala
 		
 		public new void begin_modal ()
 		{
+			if (modal_count != 0) {
+				return;
+			}
+			modal_count ++;
+			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
@@ -170,7 +177,10 @@ namespace Gala
 		
 		public new void end_modal ()
 		{
-			base.end_modal (get_screen ().get_display ().get_current_time ());
+			if (modal_count > 0)
+				modal_count --;
+			if (modal_count == 0)
+				base.end_modal (get_screen ().get_display ().get_current_time ());
 		}
 		
 		public void get_current_cursor_position (out int x, out int y)
