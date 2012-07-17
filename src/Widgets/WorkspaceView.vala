@@ -94,14 +94,21 @@ namespace Gala
 			
 			thumbnails.add_child (thumb);
 			
-			//do a second run if necessary
+			//if mutter missed something, just add it..
 			if (screen.n_workspaces != 1) {
 				for (var i=1;i<screen.get_workspaces ().length ();i++) {
-					screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
+					thumb = new WorkspaceThumb (screen.get_workspaces ().nth_data (i));
+					thumb.clicked.connect (hide);
+					thumb.closed.connect (remove_workspace);
+					thumb.window_on_last.connect (add_workspace);
+					
+					thumbnails.add_child (thumb);
 				}
 			}
 			
-			add_workspace ();
+			//if there went something wrong, we need to get the system back rolling
+			if (screen.n_workspaces == 1 && Utils.get_n_windows (screen.get_workspaces ().nth_data (0)) != 0)
+				add_workspace ();
 		}
 		
 		bool draw_background (Cairo.Context cr)
