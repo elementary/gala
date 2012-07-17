@@ -150,6 +150,10 @@ namespace Gala
 		{
 			if (indicator.opacity != 255)
 				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
+			
+			//when draggin, the leave event isn't emitted
+			if (close_button.visible)
+				hide_close_button ();
 		}
 		void drop (Actor actor, float x, float y)
 		{
@@ -398,6 +402,12 @@ namespace Gala
 			return true;
 		}
 		
+		internal void hide_close_button ()
+		{
+			close_button.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x : 0.0f, scale_y : 0.0f)
+				.completed.connect (() => close_button.visible = false );
+		}
+		
 		public override bool leave_event (CrossingEvent event)
 		{
 			if (contains (event.related))
@@ -414,8 +424,7 @@ namespace Gala
 			if (workspace.index () == screen.n_workspaces - 1)
 				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 400, opacity : 127);
 			else
-				close_button.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x : 0.0f, scale_y : 0.0f)
-					.completed.connect (() => close_button.visible = false );
+				hide_close_button ();
 			
 			return false;
 		}
