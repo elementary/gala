@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-.workspaces-background {
+.gala-workspaces-background {
 	border-top: 1px solid alpha (#fff, 0.5);
 	background-image: -gtk-gradient (linear,
 		left top, left bottom,
@@ -24,11 +24,11 @@
 		to (#262626));
 }
 
-.workspace-selector {
+.gala-workspace-selected {
 	background-image: -gtk-gradient (linear, 
-						left top, left bottom,
-						from (#eee),
-						to (#555));
+		left top, left bottom,
+		from (#eee),
+		to (#555));
 	border: 1px solid black;
 	border-radius: 5px;
 }
