@@ -207,6 +207,10 @@ namespace Gala
 		
 		public override void minimize (WindowActor actor)
 		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				minimize_completed (actor);
+				return;
+			}
 			int width, height;
 			get_screen ().get_size (out width, out height);
 			
@@ -279,6 +283,7 @@ namespace Gala
 		public override void map (WindowActor actor)
 		{
 			if (!AnimationSettings.get_default ().enable_animations) {
+				actor.show ();
 				map_completed (actor);
 				return;
 			}
