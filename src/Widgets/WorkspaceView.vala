@@ -37,6 +37,8 @@ namespace Gala
 		
 		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
 		
+		Gtk.StyleContext background_style;
+		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -45,6 +47,12 @@ namespace Gala
 			height = VIEW_HEIGHT;
 			opacity = 0;
 			reactive = true;
+			
+			var e = new Gtk.EventBox ();
+			e.show ();
+			background_style = e.get_style_context ();
+			background_style.add_class ("gala-workspaces-background");
+			background_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
 			thumbnails = new Clutter.Actor ();
 			thumbnails.layout_manager = new Clutter.BoxLayout ();
@@ -113,23 +121,7 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			cr.rectangle (0, 1, width, height);
-			cr.set_source_rgb (0.15, 0.15, 0.15);
-			cr.fill ();
-			
-			cr.move_to (0, 0);
-			cr.line_to (width, 0);
-			cr.set_line_width (1);
-			cr.set_source_rgba (1, 1, 1, 0.5);
-			cr.stroke ();
-			
-			var grad = new Cairo.Pattern.linear (0, 0, 0, 15);
-			grad.add_color_stop_rgba (0, 0, 0, 0, 0.4);
-			grad.add_color_stop_rgba (1, 0, 0, 0, 0);
-			
-			cr.rectangle (0, 1, width, 15);
-			cr.set_source (grad);
-			cr.fill ();
+			background_style.render_activity (cr, 0, 0, width, height);
 			
 			return false;
 		}

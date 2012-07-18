@@ -41,6 +41,8 @@ namespace Gala
 		
 		static GtkClutter.Texture? plus = null;
 		
+		Gtk.StyleContext selector_style;
+		
 		internal Clone wallpaper;
 		Clutter.Actor windows;
 		internal Clutter.Actor icons;
@@ -53,6 +55,12 @@ namespace Gala
 		{
 			workspace = _workspace;
 			screen = workspace.get_screen ();
+			
+			var e = new Gtk.EventBox ();
+			e.show ();
+			selector_style = e.get_style_context ();
+			selector_style.add_class ("gala-workspace-selected");
+			selector_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);
@@ -200,13 +208,7 @@ namespace Gala
 		
 		bool draw_indicator (Cairo.Context cr)
 		{
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, indicator.width, indicator.height, 8);
-			
-			cr.set_source_rgb (0.35, 0.75, 1.0);
-			cr.fill_preserve ();
-			cr.set_line_width (1);
-			cr.set_source_rgba (0.0, 0.0, 0.0, 0.8);
-			cr.stroke ();
+			selector_style.render_activity (cr, 0, 0, indicator.width, indicator.height);
 			
 			return false;
 		}
