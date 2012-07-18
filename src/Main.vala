@@ -177,7 +177,7 @@ namespace Gala
 		public new void end_modal ()
 		{
 			modal_count --;
-			if (modal_count > 1)
+			if (modal_count > 0)
 				return;
 			
 			base.end_modal (get_screen ().get_display ().get_current_time ());
