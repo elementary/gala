@@ -212,13 +212,13 @@ namespace Gala
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), true);
+						plugin.move_window ((plugin.moving == null)?screen.get_display ().get_focus_window ():plugin.moving, true);
 					else
 						switch_to_next_workspace (true);
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), false);
+						plugin.move_window ((plugin.moving == null)?screen.get_display ().get_focus_window ():plugin.moving, false);
 					else
 						switch_to_next_workspace (false);
 					return false;

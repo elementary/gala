@@ -25,7 +25,7 @@ namespace Gala
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		
-		Window? moving; //place for the window that is being moved over
+		internal Window? moving; //place for the window that is being moved over
 		
 		int modal_count = 0; //count of modal modes overlaying each other
 		
@@ -149,17 +149,17 @@ namespace Gala
 			var display = screen.get_display ();
 			
 			var active = screen.get_active_workspace ();
-			var idx = active.index () + (reverse ? -1 : 1);
+			var next = active.get_neighbor (reverse ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			
-			if (idx < 0 || idx >= screen.n_workspaces || 
-				(active.n_windows == 1 && idx == screen.n_workspaces-1)) //dont allow empty workspaces to be created by moving
+			//dont allow empty workspaces to be created by moving
+			if (active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1)
 				return;
 			
 			if (!window.is_on_all_workspaces ())
-				window.change_workspace_by_index (idx, true, display.get_current_time ());
+				window.change_workspace (next);
 			
 			moving = window;
-			screen.get_workspace_by_index (idx).activate_with_focus (window, display.get_current_time ());
+			next.activate_with_focus (window, display.get_current_time ());
 		}
 		
 		public new void begin_modal ()
@@ -647,16 +647,19 @@ namespace Gala
 			
 			switch_workspace_completed ();
 			
+			var focus = display.get_focus_window ();
+			if (focus != null && focus.window_type == WindowType.DOCK) {
+				if (moving != null)
+					moving.activate (display.get_current_time ());
+				else {
+					focus = Utils.get_next_window (screen.get_active_workspace ());
+					if (focus != null)
+						focus.activate (display.get_current_time ());
+				}
+			} else if (moving != null)
+				moving.activate (display.get_current_time ());
+			
 			moving = null;
-			
-			var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-			// Only switch focus to the next window if none has grabbed it already
-			if (focus == null) {
-				focus = Utils.get_next_window (screen.get_active_workspace ());
-				if (focus != null)
-					focus.activate (display.get_current_time ());
-			}
-			
 		}
 		
 		public override void kill_switch_workspace ()
