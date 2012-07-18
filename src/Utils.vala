@@ -140,4 +140,19 @@ namespace Gala.Utils
 		
 		return n;
 	}
+	
+	
+	static Gtk.CssProvider fallback_style = null;
+	
+	public Gtk.CssProvider get_default_style ()
+	{
+		if (fallback_style == null) {
+			fallback_style = new Gtk.CssProvider ();
+			try {
+				fallback_style.load_from_path (Constants.PKGDATADIR+"/gala.css");
+			} catch (Error e) { warning (e.message); }
+		}
+		
+		return fallback_style;
+	}
 }

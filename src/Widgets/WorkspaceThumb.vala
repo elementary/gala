@@ -56,18 +56,11 @@ namespace Gala
 			workspace = _workspace;
 			screen = workspace.get_screen ();
 			
-			//setup styles
-			var fallback = new Gtk.CssProvider ();
-			try {
-				fallback.load_from_path (Constants.PKGDATADIR+"/gala.css");
-			} catch (Error e) { warning (e.message); }
-			
 			var e = new Gtk.EventBox ();
 			e.show ();
 			selector_style = e.get_style_context ();
-			selector_style.add_class ("workspace-selector");
-			selector_style.add_provider (fallback, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
-			
+			selector_style.add_class ("gala-workspace-selected");
+			selector_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);

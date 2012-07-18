@@ -48,17 +48,11 @@ namespace Gala
 			opacity = 0;
 			reactive = true;
 			
-			//setup styles
-			var fallback = new Gtk.CssProvider ();
-			try {
-				fallback.load_from_path (Constants.PKGDATADIR+"/gala.css");
-			} catch (Error e) { warning (e.message); }
-			
 			var e = new Gtk.EventBox ();
 			e.show ();
 			background_style = e.get_style_context ();
-			background_style.add_class ("workspaces-background");
-			background_style.add_provider (fallback, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			background_style.add_class ("gala-workspaces-background");
+			background_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
 			thumbnails = new Clutter.Actor ();
 			thumbnails.layout_manager = new Clutter.BoxLayout ();
