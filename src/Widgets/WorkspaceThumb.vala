@@ -42,16 +42,6 @@ namespace Gala
 		static GtkClutter.Texture? plus = null;
 		
 		Gtk.StyleContext selector_style;
-		static const string FALLBACK_STYLE = """
-		.workspace-selector {
-			background-image: -gtk-gradient (linear, 
-								left top, left bottom,
-								from(#eee),
-								to(#555));
-			border: 1px solid black;
-			border-radius: 5px;
-		}
-		""";
 		
 		internal Clone wallpaper;
 		Clutter.Actor windows;
@@ -69,7 +59,7 @@ namespace Gala
 			//setup styles
 			var fallback = new Gtk.CssProvider ();
 			try {
-				fallback.load_from_data (FALLBACK_STYLE, -1);
+				fallback.load_from_path (Constants.PKGDATADIR+"/gala.css");
 			} catch (Error e) { warning (e.message); }
 			
 			var e = new Gtk.EventBox ();

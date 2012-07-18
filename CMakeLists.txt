@@ -79,3 +79,4 @@ add_executable(gala ${VALA_C})#src/main.c)
 
 install(TARGETS gala RUNTIME DESTINATION bin)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.desktop DESTINATION share/applications)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.css DESTINATION ${PKGDATADIR})
