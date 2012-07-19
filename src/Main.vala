@@ -100,8 +100,8 @@ namespace Gala
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("move-to-workspace-left",  (d, s, w) => move_window (w, true) );
-			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, false) );
+			KeyBinding.set_custom_handler ("move-to-workspace-left",  (d, s, w) => move_window (w, MotionDirection.LEFT) );
+			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, MotionDirection.RIGHT) );
 			
 			KeyBinding.set_custom_handler ("switch-group", () => {});
 			KeyBinding.set_custom_handler ("switch-group-backward", () => {});
@@ -143,20 +143,20 @@ namespace Gala
 		}
 		
 		
-		public void move_window (Window? window, bool reverse)
+		public void move_window (Window? window, MotionDirection direction)
 		{
 			if (window == null)
 				return;
 			
 			// if there is still an unfinished window-move don't be silly and use it
 			if (moving != null)
-				window = moving
+				window = moving;
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
 			var active = screen.get_active_workspace ();
-			var next = active.get_neighbor (reverse ? MotionDirection.LEFT : MotionDirection.RIGHT);
+			var next = active.get_neighbor (direction);
 			
 			//dont allow empty workspaces to be created by moving
 			if (active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1)

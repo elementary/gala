@@ -186,12 +186,12 @@ namespace Gala
 			}
 		}
 		
-		void switch_to_next_workspace (bool reverse)
+		void switch_to_next_workspace (MotionDirection direction)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
 			
-			var neighbor = screen.get_active_workspace ().get_neighbor (reverse ? MotionDirection.LEFT : MotionDirection.RIGHT);
+			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
 			
 			if (neighbor == null)
 				return;
@@ -211,15 +211,15 @@ namespace Gala
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), true);
+						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.LEFT);
 					else
-						switch_to_next_workspace (true);
+						switch_to_next_workspace (MotionDirection.LEFT);
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), false);
+						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.RIGHT);
 					else
-						switch_to_next_workspace (false);
+						switch_to_next_workspace (MotionDirection.RIGHT);
 					return false;
 				default:
 					break;
@@ -358,8 +358,8 @@ namespace Gala
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			bool left = (binding.get_name () == "switch-to-workspace-left");
-			switch_to_next_workspace (left);
+			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
+			switch_to_next_workspace (direction);
 			
 			show (true);
 		}
