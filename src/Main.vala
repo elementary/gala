@@ -25,7 +25,7 @@ namespace Gala
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		
-		internal Window? moving; //place for the window that is being moved over
+		Window? moving; //place for the window that is being moved over
 		
 		int modal_count = 0; //count of modal modes overlaying each other
 		
@@ -147,6 +147,10 @@ namespace Gala
 		{
 			if (window == null)
 				return;
+			
+			// if there is still an unfinished window-move don't be silly and use it
+			if (moving != null)
+				window = moving
 			
 			var screen = get_screen ();
 			var display = screen.get_display ();
