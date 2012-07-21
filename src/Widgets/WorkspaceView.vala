@@ -303,7 +303,8 @@ namespace Gala
 		void show_elements ()
 		{
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			y = area.height;
+			y = area.height + area.y;
+			x = area.x;
 			width = area.width;
 			
 			thumbnails.get_children ().foreach ((thumb) => {
@@ -321,10 +322,14 @@ namespace Gala
 				thumbnails.x = 4.0f;
 			}
 			
-			click_catcher.width = width;
-			click_catcher.height = area.height - height;
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			
+			click_catcher.width = swidth;
+			click_catcher.height = sheight;
 			click_catcher.x = 0;
 			click_catcher.y = 0;
+			click_catcher.visible = true;
 			
 			animating = true;
 			Timeout.add (50, () => {
@@ -332,7 +337,7 @@ namespace Gala
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
 			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height);
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : (area.height + area.y) - height);
 			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
 		}
 		
@@ -353,6 +358,9 @@ namespace Gala
 				});
 				visible = false;
 			});
+			
+			click_catcher.visible = false;
+			
 			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
 		}
 		
