@@ -45,7 +45,6 @@ namespace Gala
 			screen = plugin.get_screen ();
 			
 			height = VIEW_HEIGHT;
-			opacity = 0;
 			reactive = true;
 			
 			var e = new Gtk.EventBox ();
@@ -236,10 +235,13 @@ namespace Gala
 				event.keyval == Clutter.Key.Control_L || 
 				event.keyval == Clutter.Key.Alt_R || 
 				event.keyval == Clutter.Key.Super_R || 
+				event.keyval == Clutter.Key.Escape || 
 				event.keyval == Clutter.Key.Control_R) {
 				
-				if (wait_one_key_release)
+				if (wait_one_key_release) {
+					wait_one_key_release = false;
 					return false;
+				}
 				
 				hide ();
 				if (timeout != 0) {
@@ -329,7 +331,8 @@ namespace Gala
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
 			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height, opacity : 255);
+			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height);
+			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height);
 		}
 		
 		public new void hide ()
@@ -343,12 +346,13 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
-			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 500, y : height).completed.connect (() => {
+			animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : height).completed.connect (() => {
 				thumbnails.get_children ().foreach ((thumb) => {
 					thumb.hide ();
 				});
 				visible = false;
 			});
+			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
 		}
 		
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
