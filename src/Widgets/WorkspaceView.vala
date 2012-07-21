@@ -120,7 +120,8 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			background_style.render_activity (cr, 0, 0, width, height);
+			background_style.render_background (cr, 0, 0, width, height);
+			background_style.render_frame (cr, 0, 0, width, height);
 			
 			return false;
 		}
@@ -332,7 +333,7 @@ namespace Gala
 			}); //catch hot corner hiding problem and indicator placement
 			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : area.height - height);
-			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height);
+			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
 		}
 		
 		public new void hide ()
