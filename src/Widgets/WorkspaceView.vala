@@ -82,6 +82,11 @@ namespace Gala
 			add_child (scroll);
 			
 			screen.workareas_changed.connect (initial_configuration);
+			
+			//place it somewhere low, so it won't slide down on first open
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			y = sheight;
 		}
 		
 		//method that waits for the workspaces to be configured on first run
