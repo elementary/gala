@@ -43,12 +43,6 @@ namespace Gala
 			reactive = true;
 		}
 		
-		public override bool button_release_event (ButtonEvent event)
-		{
-			window.get_workspace ().activate_with_focus (window, window.get_screen ().get_display ().get_current_time ());
-			return false;
-		}
-		
 		void drag_end (Actor actor, float x, float y, ModifierType modifier)
 		{
 			var action = actor.get_action ("drag") as DragAction;
