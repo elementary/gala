@@ -322,12 +322,11 @@ namespace Gala
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.SOUTH;
 					actor.rotation_center_x = {rect.width/2.0f, 0, -100};
-					actor.scale_x = 0.1f;
+					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
 					actor.opacity = 0;
-					actor.rotation_angle_x = -90.0f;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().open_duration, 
-						scale_x:1.0f, scale_y:1.0f, rotation_angle_x:0.0f, opacity:255)
+						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						
 						mapping.remove (actor);
