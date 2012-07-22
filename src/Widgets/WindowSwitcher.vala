@@ -129,11 +129,11 @@ namespace Gala
 				return;
 			}
 			
-			active = true;
-			
 			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
 			if (metawindows.length () <= 1)
 				return;
+			
+			active = true;
 			
 			window_clones.clear ();
 			
