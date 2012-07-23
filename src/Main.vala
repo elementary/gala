@@ -301,27 +301,11 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
-			// Use primary-monitor dimensions to avoid ugly center screen positioning in twinview setups.
-			var monitor_rect = screen.get_monitor_geometry (screen.get_primary_monitor());
-			var rect = window.get_outer_rect ();
-			
-			if (window.window_type == WindowType.NORMAL) {
-				// Guess the window is placed at a bad spot
-				if (rect.x < 100 && rect.y < 100) {
-					var x = (monitor_rect.width - rect.width) / 2.0f;
-					var y = (monitor_rect.height - rect.height) / 2.0f;
-					window.move_frame (true, (int) x, (int) y);
-					actor.x = x - 10;
-					actor.y = y - 10;
-				}
-			}
-			
 			actor.show ();
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
 					actor.scale_gravity = Clutter.Gravity.SOUTH;
-					actor.rotation_center_x = {rect.width/2.0f, 0, -100};
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
 					actor.opacity = 0;
