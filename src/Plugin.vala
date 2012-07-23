@@ -19,7 +19,6 @@ using Meta;
 
 namespace Gala
 {
-	
 	public class Plugin : Meta.Plugin
 	{
 		WindowSwitcher winswitcher;
@@ -38,11 +37,11 @@ namespace Gala
 		public Plugin ()
 		{
 			Prefs.set_ignore_request_hide_titlebar (true);
-			Prefs.override_preference_schema ("attach-modal-dialogs", SCHEMA+".appearance");
-			Prefs.override_preference_schema ("button-layout", SCHEMA+".appearance");
-			Prefs.override_preference_schema ("edge-tiling", SCHEMA+".behavior");
-			Prefs.override_preference_schema ("enable-animations", SCHEMA+".animations");
-			Prefs.override_preference_schema ("theme", SCHEMA+".appearance");
+			Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
+			Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
+			Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
+			Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
+			Prefs.override_preference_schema ("theme", Config.SCHEMA + ".appearance");
 		}
 		
 		public override void start ()
@@ -501,11 +500,11 @@ namespace Gala
 		}
 		
 		/*workspace switcher*/
-		List<Meta.WindowActor>? win;
+		List<WindowActor>? win;
 		List<Clutter.Actor>? par; //class space for kill func
 		List<Clutter.Clone>? clones;
-		Clutter.Actor in_group;
-		Clutter.Actor out_group;
+		Clutter.Actor? in_group;
+		Clutter.Actor? out_group;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -514,9 +513,11 @@ namespace Gala
 				return;
 			}
 			
-			unowned List<WindowActor> windows = Compositor.get_window_actors (get_screen ());
+			var screen = get_screen ();
+			
+			unowned List<WindowActor> windows = Compositor.get_window_actors (screen);
 			float w, h;
-			get_screen ().get_size (out w, out h);
+			screen.get_size (out w, out h);
 			
 			var x2 = 0.0f; var y2 = 0.0f;
 			if (direction == MotionDirection.LEFT)
@@ -526,17 +527,18 @@ namespace Gala
 			else
 				return;
 			
-			var group = Compositor.get_window_group_for_screen (get_screen ());
-			var wallpaper = Compositor.get_background_actor_for_screen (get_screen ());
+			var group = Compositor.get_window_group_for_screen (screen);
+			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
-			win = new List<Meta.WindowActor> ();
+			win = new List<WindowActor> ();
 			par = new List<Clutter.Actor> ();
 			clones = new List<Clutter.Clone> ();
-			var wallpaper_clone = new Clutter.Clone (wallpaper);
 			
-			wallpaper_clone.x = (x2<0)?w:-w;
+			var wallpaper_clone = new Clutter.Clone (wallpaper);
+			wallpaper_clone.x = (x2 < 0 ? w : -w);
+			
 			clones.append (wallpaper_clone);
 			
 			group.add_child (wallpaper_clone);
@@ -550,11 +552,10 @@ namespace Gala
 				win.append (moving_actor);
 				par.append (moving_actor.get_parent ());
 				
-				clutter_actor_reparent (moving_actor, Compositor.get_overlay_group_for_screen (get_screen ()));
+				clutter_actor_reparent (moving_actor, Compositor.get_overlay_group_for_screen (screen));
 			}
 			
-			for (var i=0;i<windows.length ();i++) {
-				var window = windows.nth_data (i);
+			foreach (var window in windows) {
 				if (!window.get_meta_window ().showing_on_its_workspace () || 
 					moving != null && window == moving_actor)
 					continue;
@@ -580,6 +581,7 @@ namespace Gala
 					clutter_actor_reparent (window, out_group);
 				}
 			}
+			
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
 			
@@ -587,16 +589,15 @@ namespace Gala
 			in_group.width = out_group.width = w;
 			in_group.height = out_group.height = h;
 			
-			out_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
-				x:x2, y:y2);
-			in_group.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().workspace_switch_duration,
-				x:0.0f, y:0.0f).completed.connect ( () => {
+			var animation_duration = AnimationSettings.get_default ().workspace_switch_duration;
+			var animation_mode = Clutter.AnimationMode.EASE_IN_OUT_SINE;
+			
+			out_group.animate (animation_mode, animation_duration, x : x2, y : y2);
+			in_group.animate (animation_mode, animation_duration, x : 0.0f, y : 0.0f).completed.connect (() => {
 				end_switch_workspace ();
 			});
-			wallpaper.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
-				AnimationSettings.get_default ().workspace_switch_duration, x:(x2<0)?-w:w);
-			wallpaper_clone.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, 
-				AnimationSettings.get_default ().workspace_switch_duration, x:0.0f);
+			wallpaper.animate (animation_mode, animation_duration, x : (x2 < 0 ? -w : w));
+			wallpaper_clone.animate (animation_mode, animation_duration, x : 0.0f);
 		}
 		
 		void end_switch_workspace ()
@@ -611,6 +612,7 @@ namespace Gala
 				var window = win.nth_data (i);
 				if (window.is_destroyed ())
 					continue;
+				
 				if (window.get_parent () == out_group) {
 					clutter_actor_reparent (window, par.nth_data (i));
 					window.hide ();
@@ -628,10 +630,12 @@ namespace Gala
 			
 			if (in_group != null)
 				in_group.destroy ();
+			in_group = null;
 			if (out_group != null)
 				out_group.destroy ();
+			out_group = null;
 			
-			var wallpaper = Compositor.get_background_actor_for_screen (get_screen ());
+			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
 			
@@ -646,8 +650,9 @@ namespace Gala
 					if (focus != null)
 						focus.activate (display.get_current_time ());
 				}
-			} else if (moving != null)
+			} else if (moving != null) {
 				moving.activate (display.get_current_time ());
+			}
 			
 			moving = null;
 		}
@@ -664,68 +669,24 @@ namespace Gala
 		
 		public override PluginInfo plugin_info ()
 		{
-			return PluginInfo () {name = "Gala", version = Gala.VERSION, author = "Gala Developers",
+			return PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
 				license = "GPLv3", description = "A nice elementary window manager"};
 		}
 		
-	}
-	
-	const string VERSION = "0.1";
-	const string SCHEMA = "org.pantheon.desktop.gala";
-	
-	const OptionEntry[] OPTIONS = {
-		{ "version", 0, OptionFlags.NO_ARG, OptionArg.CALLBACK, (void*) print_version, "Print version", null },
-		{ null }
-	};
-	
-	void print_version () {
-		stdout.printf ("Gala %s\n", Gala.VERSION);
-		Meta.exit (Meta.ExitCode.SUCCESS);
-	}
-
-	static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
-	{
-		if (actor == new_parent)
-			return;
-		
-		actor.ref ();
-		actor.get_parent ().remove_child (actor);
-		new_parent.add_child (actor);
-		actor.unref ();
+		static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
+		{
+			if (actor == new_parent)
+				return;
+			
+			actor.ref ();
+			actor.get_parent ().remove_child (actor);
+			new_parent.add_child (actor);
+			actor.unref ();
+		}
 	}
 	
 	[CCode (cname="clutter_x11_handle_event")]
 	public extern int x_handle_event (X.Event xevent);
 	[CCode (cname="clutter_x11_get_stage_window")]
 	public extern X.Window x_get_stage_window (Clutter.Actor stage);
-	
-	int main (string [] args) {
-		
-		unowned OptionContext ctx = Meta.get_option_context ();
-		ctx.add_main_entries (Gala.OPTIONS, null);
-		try {
-		    ctx.parse (ref args);
-		} catch (Error e) {
-		    stderr.printf ("Error initializing: %s\n", e.message);
-		    Meta.exit (Meta.ExitCode.ERROR);
-		}
-		
-#if HAS_MUTTER36
-		Meta.Plugin.manager_set_plugin_type (new Gala.Plugin ().get_type ());
-#else		
-		Meta.Plugin.type_register (new Gala.Plugin ().get_type ());
-#endif
-		
-		/**
-		 * Prevent Meta.init () from causing gtk to load gail and at-bridge
-		 * Taken from Gnome-Shell main.c
-		 */
-		GLib.Environment.set_variable ("NO_GAIL", "1", true);
-		GLib.Environment.set_variable ("NO_AT_BRIDGE", "1", true);
-		Meta.init ();
-		GLib.Environment.unset_variable ("NO_GAIL");
-		GLib.Environment.unset_variable ("NO_AT_BRIDGE");
-		
-		return Meta.run ();
-	}
 }

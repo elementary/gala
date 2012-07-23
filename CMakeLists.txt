@@ -48,13 +48,14 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/Main.vala
-    src/Utils.vala
+    src/Plugin.vala
     src/Settings.vala
     src/TextShadowEffect.vala
-    src/Widgets/WindowSwitcher.vala
-    src/Widgets/WorkspaceView.vala
-    src/Widgets/WorkspaceThumb.vala
+    src/Utils.vala
     src/Widgets/AppIcon.vala
+    src/Widgets/WindowSwitcher.vala
+    src/Widgets/WorkspaceThumb.vala
+    src/Widgets/WorkspaceView.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite
