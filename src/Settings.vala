@@ -28,7 +28,7 @@ namespace Gala
 		
 		private BehaviorSettings ()
 		{
-			base (SCHEMA+".behavior");
+			base (Config.SCHEMA + ".behavior");
 		}
 		
 		public static BehaviorSettings get_default ()
@@ -51,7 +51,7 @@ namespace Gala
 		
 		private AppearanceSettings ()
 		{
-			base (SCHEMA+".appearance");
+			base (Config.SCHEMA + ".appearance");
 		}
 		
 		public static AppearanceSettings get_default ()
@@ -75,7 +75,7 @@ namespace Gala
 		
 		private ShadowSettings ()
 		{
-			base (SCHEMA+".shadows");
+			base (Config.SCHEMA + ".shadows");
 		}
 		
 		public static ShadowSettings get_default ()
@@ -112,7 +112,7 @@ namespace Gala
 		
 		private AnimationSettings ()
 		{
-			base (SCHEMA+".animations");
+			base (Config.SCHEMA + ".animations");
 		}
 		
 		public static AnimationSettings get_default ()
