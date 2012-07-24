@@ -161,6 +161,11 @@ namespace Gala
 		
 		void remove_workspace (WorkspaceThumb thumb)
 		{
+			//if there's only one used left, remove the second one to avoid rather confusing workspace movement
+			if (thumb.workspace.index () == 0 && screen.n_workspaces == 2) {
+				return;
+			}
+			
 			thumb.clicked.disconnect (hide);
 			thumb.closed.disconnect (remove_workspace);
 			thumb.window_on_last.disconnect (add_workspace);

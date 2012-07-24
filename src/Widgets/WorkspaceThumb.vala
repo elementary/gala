@@ -392,6 +392,10 @@ namespace Gala
 				return true;
 			}
 			
+			//dont allow closing the tab if it's the last one used
+			if (workspace.index () == 0 && screen.n_workspaces == 2)
+				return false;
+			
 			if (hover_timer > 0)
 				GLib.Source.remove (hover_timer);
 			
