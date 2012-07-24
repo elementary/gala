@@ -111,8 +111,6 @@ namespace Gala
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
 					clone.get_parent ().set_child_above_sibling (clone, null);
-					clone.depth = -200.0f;
-					clone.opacity = 0;
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 				} else {
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
