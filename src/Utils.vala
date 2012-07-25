@@ -108,13 +108,14 @@ namespace Gala.Utils
 		X.Xrectangle rect;
 		int width, height;
 		screen.get_size (out width, out height);
+		var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 		
 		switch (area) {
 			case InputArea.FULLSCREEN:
 				rect = {0, 0, (ushort)width, (ushort)height};
 				break;
 			case InputArea.HOT_CORNER: //leave one pix in the bottom left
-				rect = {(short)(width - 1), (short)(height - 1), 1, 1};
+				rect = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), 1, 1};
 				break;
 			default:
 				Util.empty_stage_input_region (screen);

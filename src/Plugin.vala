@@ -117,12 +117,11 @@ namespace Gala
 			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
 			
 			/*hot corner*/
-			int width, height;
-			screen.get_size (out width, out height);
+			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
 			var hot_corner = new Clutter.Rectangle ();
-			hot_corner.x = width - 1;
-			hot_corner.y = height - 1;
+			hot_corner.x = geometry.x + geometry.width - 1;
+			hot_corner.y = geometry.y + geometry.height - 1;
 			hot_corner.width = 1;
 			hot_corner.height = 1;
 			hot_corner.opacity = 0;
