@@ -2,15 +2,16 @@
 <schemalist>
 	
 	<enum id="gala-action-type">
-		<value nick="ShowWorkspaceView" value="0" />
-		<value nick="SwitchLeft" value="1" />
-		<value nick="SwitchRight" value="2" />
-		<value nick="MoveLeft" value="3" />
-		<value nick="MoveRight" value="4" />
-		<value nick="MaximizeCurrent" value="5" />
-		<value nick="MinimizeCurrent" value="6" />
-		<value nick="CloseCurrent" value="7" />
-		<value nick="OpenLauncher" value="8" />
+		<value nick="None" value="0" />
+		<value nick="ShowWorkspaceView" value="1" />
+		<value nick="SwitchLeft" value="2" />
+		<value nick="SwitchRight" value="3" />
+		<value nick="MoveLeft" value="4" />
+		<value nick="MoveRight" value="5" />
+		<value nick="MaximizeCurrent" value="6" />
+		<value nick="MinimizeCurrent" value="7" />
+		<value nick="CloseCurrent" value="8" />
+		<value nick="OpenLauncher" value="9" />
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">

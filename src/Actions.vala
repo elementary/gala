@@ -4,6 +4,7 @@ namespace Gala
 {
 	public enum ActionType
 	{
+		NONE,
 		SHOW_WORKSPACE_VIEW,
 		WORKSPACE_LEFT,
 		WORKSPACE_RIGHT,
