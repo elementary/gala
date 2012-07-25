@@ -650,6 +650,9 @@ namespace Gala
 			
 			var focus = display.get_focus_window ();
 			if (focus != null && focus.window_type == WindowType.DOCK) {
+				if (focus.get_workspace () != screen.get_active_workspace ())
+					return;
+				
 				if (moving != null)
 					moving.activate (display.get_current_time ());
 				else {
@@ -657,7 +660,7 @@ namespace Gala
 					if (focus != null)
 						focus.activate (display.get_current_time ());
 				}
-			} else if (moving != null) {
+			} else if (moving != null && moving.get_workspace () == screen.get_active_workspace ()) {
 				moving.activate (display.get_current_time ());
 			}
 			
