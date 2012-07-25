@@ -258,20 +258,18 @@ namespace Gala
 		//stolen from original mutter plugin
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			var meta_win = actor.get_meta_window ();
+			float x, y, width, height;
+			actor.get_size (out width, out height);
+			actor.get_position (out x, out y);
 			
 			if (!AnimationSettings.get_default ().enable_animations || 
-				meta_win.maximized_horizontally || meta_win.maximized_vertically) {
+				(x == ex && y == ey && ew == width && eh == height)) {
 				maximize_completed (actor);
 				return;
 			}
 			
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
 				maximizing.add (actor);
-				
-				float x, y, width, height;
-				actor.get_size (out width, out height);
-				actor.get_position (out x, out y);
 				
 				float scale_x  = (float)ew  / width;
 				float scale_y  = (float)eh / height;
