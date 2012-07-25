@@ -22,7 +22,7 @@ namespace Gala
 	public class Plugin : Meta.Plugin
 	{
 		WindowSwitcher winswitcher;
-		WorkspaceView workspace_view;
+		internal WorkspaceView workspace_view;
 		
 		Window? moving; //place for the window that is being moved over
 		

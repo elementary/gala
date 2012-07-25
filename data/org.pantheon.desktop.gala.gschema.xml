@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+	
+	<enum id="gala-action-type">
+		<value nick="ShowWorkspaceView" value="0" />
+		<value nick="SwitchLeft" value="1" />
+		<value nick="SwitchRight" value="2" />
+		<value nick="MoveLeft" value="3" />
+		<value nick="MoveRight" value="4" />
+		<value nick="MaximizeCurrent" value="5" />
+		<value nick="MinimizeCurrent" value="6" />
+		<value nick="CloseCurrent" value="7" />
+		<value nick="OpenLauncher" value="8" />
+	</enum>
+	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
 		<key type="b" name="enable-manager-corner">
 			<default>false</default>

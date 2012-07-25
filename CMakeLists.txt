@@ -50,6 +50,7 @@ vala_precompile(VALA_C
     src/Main.vala
     src/Plugin.vala
     src/Settings.vala
+    src/Actions.vala
     src/TextShadowEffect.vala
     src/Utils.vala
     src/Widgets/AppIcon.vala
