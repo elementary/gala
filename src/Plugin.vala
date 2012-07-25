@@ -71,6 +71,13 @@ namespace Gala
 				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
 			});
 			
+			screen.get_display ().overlay_key.connect (() => {
+				try {
+					Process.spawn_command_line_async (
+						BehaviorSettings.get_default ().overlay_action);
+				} catch (Error e) { warning (e.message); }
+			});
+			
 			KeyBinding.set_custom_handler ("panel-main-menu", () => {
 				try {
 					Process.spawn_command_line_async (

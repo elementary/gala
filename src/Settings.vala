@@ -22,6 +22,7 @@ namespace Gala
 		public bool edge_tiling { get; set; }
 		public string panel_main_menu_action { get; set; }
 		public string toggle_recording_action { get; set; }
+		public string overlay_action { get; set; }
 		public bool enable_manager_corner { get; set; }
 		
 		static BehaviorSettings? instance = null;
