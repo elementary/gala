@@ -15,11 +15,28 @@
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
-		<key type="b" name="enable-manager-corner">
-			<default>false</default>
-			<summary>Make the lower right a hot corner to reveal the manager</summary>
-			<description>This turns the lower right corner to a hot corner, showing some icons allowing you to do tasks like window tiling</description>
+		
+		<key enum="gala-action-type" name="hotcorner-topleft">
+			<default>"None"</default>
+			<summary>Action for the top left corner</summary>
+			<description></description>
 		</key>
+		<key enum="gala-action-type" name="hotcorner-topright">
+			<default>"None"</default>
+			<summary>Action for the top right corner</summary>
+			<description></description>
+		</key>
+		<key enum="gala-action-type" name="hotcorner-bottomleft">
+			<default>"None"</default>
+			<summary>Action for the bottom left corner</summary>
+			<description></description>
+		</key>
+		<key enum="gala-action-type" name="hotcorner-bottomright">
+			<default>"None"</default>
+			<summary>Action for the bottom right corner</summary>
+			<description></description>
+		</key>
+		
 		<key type="b" name="edge-tiling">
 			<default>true</default>
 			<summary>Enable edge tiling when dropping windows on screen edges</summary>

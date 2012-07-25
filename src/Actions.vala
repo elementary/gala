@@ -4,16 +4,16 @@ namespace Gala
 {
 	public enum ActionType
 	{
-		NONE,
-		SHOW_WORKSPACE_VIEW,
-		WORKSPACE_LEFT,
-		WORKSPACE_RIGHT,
-		MOVE_TO_WORKSPACE_LEFT,
-		MOVE_TO_WORKSPACE_RIGHT,
-		MAXIMIZE_CURRENT,
-		MINIMIZE_CURRENT,
-		CLOSE_CURRENT,
-		OPEN_LAUNCHER
+		NONE = 0,
+		SHOW_WORKSPACE_VIEW = 1,
+		WORKSPACE_LEFT = 2,
+		WORKSPACE_RIGHT = 3,
+		MOVE_TO_WORKSPACE_LEFT = 4,
+		MOVE_TO_WORKSPACE_RIGHT = 5,
+		MAXIMIZE_CURRENT = 6,
+		MINIMIZE_CURRENT = 7,
+		CLOSE_CURRENT = 8,
+		OPEN_LAUNCHER = 9
 	}
 	
 	public class Action
@@ -22,6 +22,7 @@ namespace Gala
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
+			var current = display.get_focus_window ();
 			
 			switch (type) {
 				case ActionType.SHOW_WORKSPACE_VIEW:
@@ -34,19 +35,26 @@ namespace Gala
 					plugin.workspace_view.switch_to_next_workspace (MotionDirection.RIGHT);
 					break;
 				case ActionType.MOVE_TO_WORKSPACE_LEFT:
-					plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
+					plugin.move_window (current, MotionDirection.LEFT);
 					break;
 				case ActionType.MOVE_TO_WORKSPACE_RIGHT:
-					plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
+					plugin.move_window (current, MotionDirection.RIGHT);
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
-					display.get_focus_window ().maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
+					if (current == null)
+						break;
+					if (current.get_maximized () == (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL))
+						current.unmaximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
+					else
+						current.maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					break;
 				case ActionType.MINIMIZE_CURRENT:
-					display.get_focus_window ().minimize ();
+					if (current != null)
+						current.minimize ();
 					break;
 				case ActionType.CLOSE_CURRENT:
-					display.get_focus_window ().delete (display.get_current_time ());
+					if (current != null)
+						current.delete (display.get_current_time ());
 					break;
 				case ActionType.OPEN_LAUNCHER:
 					try {

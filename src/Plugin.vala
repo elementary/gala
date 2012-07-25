@@ -116,32 +116,60 @@ namespace Gala
 			Utils.reload_shadow ();
 			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
 			
-			/*hot corner*/
+			/*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			var hot_corner = new Clutter.Rectangle ();
-			hot_corner.x = geometry.x + geometry.width - 1;
-			hot_corner.y = geometry.y + geometry.height - 1;
+			var top_left = create_hotcorner (geometry.x, geometry.y);
+			top_left.enter_event.connect (() => {
+				Action.run (this, (ActionType)BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topleft"));
+				return false;
+			});
+			var top_right = create_hotcorner (geometry.x + geometry.width - 1, geometry.y);
+			top_right.enter_event.connect (() => {
+				Action.run (this, (ActionType)BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topright"));
+				return false;
+			});
+			var bottom_left = create_hotcorner (geometry.x, geometry.y + geometry.height - 1);
+			bottom_left.enter_event.connect (() => {
+				Action.run (this, (ActionType)BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomleft"));
+				return false;
+			});
+			var bottom_right = create_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1);
+			bottom_right.enter_event.connect (() => {
+				Action.run (this, (ActionType)BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomright"));
+				return false;
+			});
+			
+			update_input_area ();
+			
+			BehaviorSettings.get_default ().notify["hotcorner-topleft"].connect (update_input_area);
+			BehaviorSettings.get_default ().notify["hotcorner-topright"].connect (update_input_area);
+			BehaviorSettings.get_default ().notify["hotcorner-bottomleft"].connect (update_input_area);
+			BehaviorSettings.get_default ().notify["hotcorner-bottomright"].connect (update_input_area);
+			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+		}
+		
+		Clutter.Actor create_hotcorner (float x, float y)
+		{
+			var hot_corner = new Clutter.Actor ();
+			hot_corner.x = x;
+			hot_corner.y = y;
 			hot_corner.width = 1;
 			hot_corner.height = 1;
 			hot_corner.opacity = 0;
 			hot_corner.reactive = true;
 			
-			hot_corner.enter_event.connect (() => {
-				workspace_view.show ();
-				return false;
-			});
+			Compositor.get_stage_for_screen (get_screen ()).add_child (hot_corner);
 			
-			stage.add_child (hot_corner);
-			
-			update_input_area ();
-			
-			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
+			return hot_corner;
 		}
 		
 		public void update_input_area ()
 		{
-			if (BehaviorSettings.get_default ().enable_manager_corner)
+			if (BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topleft") != ActionType.NONE || 
+				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topright") != ActionType.NONE || 
+				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE || 
+				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
 				Utils.set_input_area (get_screen (), Utils.InputArea.HOT_CORNER);
 			else
 				Utils.set_input_area (get_screen (), Utils.InputArea.NONE);
