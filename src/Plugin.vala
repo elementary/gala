@@ -590,7 +590,7 @@ namespace Gala
 			in_group.height = out_group.height = h;
 			
 			var animation_duration = AnimationSettings.get_default ().workspace_switch_duration;
-			var animation_mode = Clutter.AnimationMode.EASE_IN_OUT_SINE;
+			var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 			
 			out_group.animate (animation_mode, animation_duration, x : x2, y : y2);
 			in_group.animate (animation_mode, animation_duration, x : 0.0f, y : 0.0f).completed.connect (() => {
