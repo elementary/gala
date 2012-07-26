@@ -275,13 +275,15 @@ namespace Gala
 				float anchor_x = (float)(x - ex) * width  / (ew - width);
 				float anchor_y = (float)(y - ey) * height / (eh - height);
 				
+				//reset the actor's anchors
+				actor.scale_gravity = actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+				
 				actor.move_anchor_point (anchor_x, anchor_y);
 				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
+					scale_x:scale_x, scale_y:scale_y).get_timeline ().completed.connect ( () => {
 					
 					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
-						scale_y:1.0f);//just scaling didnt want to work..
+					actor.set_scale (1.0, 1.0);
 					
 					maximizing.remove (actor);
 					maximize_completed (actor);
