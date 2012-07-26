@@ -197,7 +197,7 @@ namespace Gala
 			}
 		}
 		
-		internal void switch_to_next_workspace (MotionDirection direction)
+		void switch_to_next_workspace (MotionDirection direction)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
