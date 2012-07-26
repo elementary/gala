@@ -30,9 +30,54 @@ namespace Gala
 		
 		bool active; //switcher is currently running
 		
+		CairoTexture plank_background;
+		Box plank_box;
+		int plank_size;
+		Meta.WindowActor? plank_window;
+		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
+			
+			//have a look at plank configs if they're available for the icon-size, otherwise we'll use 48
+			plank_size = 48;
+			try {
+				var configs = new KeyFile ();
+				configs.load_from_file (Environment.get_user_config_dir () + "/plank/dock1/settings", 0);
+				plank_size = configs.get_integer ("PlankDockPreferences", "IconSize");
+			} catch (Error e) { error (e.message); }
+			
+			var layout = new BoxLayout ();
+			
+			plank_box = new Box (layout);
+			plank_box.height = plank_size;
+			plank_box.anchor_gravity = Clutter.Gravity.CENTER;
+			
+			layout.spacing = 6;
+			
+			plank_background = new CairoTexture (100, plank_size);
+			plank_background.anchor_gravity = Clutter.Gravity.CENTER;
+			plank_background.auto_resize = true;
+			plank_background.draw.connect (draw_plank_background);
+			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.X, 0));
+			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.Y, 2));
+			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.WIDTH, 0));
+			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.HEIGHT, 0));
+			
+			add_child (plank_background);
+			add_child (plank_box);
+		}
+		
+		bool draw_plank_background (Cairo.Context cr)
+		{
+			Utilities.cairo_rounded_rectangle (cr, 0, plank_size * 0.6, plank_background.width, plank_size, 5);
+			
+			cr.set_source_rgba (1, 1, 1, 0.8);
+			cr.fill_preserve ();
+			cr.set_source_rgba (0, 0, 0, 0.5);
+			cr.stroke ();
+			
+			return false;
 		}
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
@@ -59,6 +104,8 @@ namespace Gala
 					meta_win.is_on_all_workspaces ())
 					w.show ();
 			});
+			if (plank_window != null)
+				plank_window.opacity = 0;
 			
 			window_clones.clear ();
 			
@@ -67,6 +114,23 @@ namespace Gala
 				current_window.activate (time);
 				current_window = null;
 			}
+			
+			var dest_width = (plank_window!=null)?plank_window.width:500.0f;
+			
+			plank_box.raise_top ();
+			plank_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity:0);
+			plank_window.animate (AnimationMode.LINEAR, 250, opacity:255);
+			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity:0).
+				completed.connect (() => {
+				plank_box.remove_all_children ();
+				
+				if (plank_window != null) {
+					plank_window.show ();
+					plank_window = null;
+				}
+				
+				visible = false;
+			});
 			
 			active = false;
 		}
@@ -108,13 +172,19 @@ namespace Gala
 		void dim_windows ()
 		{
 			var current_actor = current_window.get_compositor_private () as Actor;
+			var i = 0;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
 					clone.get_parent ().set_child_below_sibling (clone, null);
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+					
+					plank_box.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity:255);
 				} else {
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					plank_box.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity:100);
 				}
+				
+				i ++;
 			}
 		}
 		
@@ -132,6 +202,7 @@ namespace Gala
 				return;
 			
 			active = true;
+			visible = true;
 			
 			window_clones.clear ();
 			
@@ -141,14 +212,26 @@ namespace Gala
 				clone.x = actor.x;
 				clone.y = actor.y;
 				
+				var icon = new GtkClutter.Texture ();
+				try {
+					icon.set_from_pixbuf (Utils.get_icon_for_window (win, plank_size));
+				} catch (Error e) { warning (e.message); }
+				
+				icon.opacity = 100;
+				plank_box.add_child (icon);
+				(plank_box.layout_manager as BoxLayout).set_expand (icon, true);
+				
 				add_child (clone);
 				window_clones.add (clone);
 			}
 			
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
 				var type = w.get_meta_window ().window_type;
-				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
+				if ((type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION) ||
+					w.get_meta_window ().title == "plank")
 					w.hide ();
+				if (w.get_meta_window ().title == "plank")
+					plank_window = w;
 			});
 			
 			plugin.begin_modal ();
@@ -164,6 +247,24 @@ namespace Gala
 				current_window.activate (display.get_current_time ());
 				return;
 			}
+			
+			/*plank type switcher thing*/
+			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			
+			if (plank_window != null)
+				plank_box.width = plank_window.width;
+			
+			plank_box.opacity = 255;
+			plank_box.x = geometry.x + Math.ceilf (geometry.width/2);
+			plank_box.y = geometry.y + geometry.height - plank_box.height/2 - 2;
+			
+			float dest_width;
+			plank_box.layout_manager.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
+			
+			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width);
+			plank_background.raise_top ();
+			plank_background.opacity = 255;
+			plank_box.raise_top ();
 			
 			dim_windows ();
 			grab_key_focus ();
