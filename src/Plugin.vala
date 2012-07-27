@@ -24,10 +24,6 @@ namespace Gala
 	{
 		NONE = 0,
 		SHOW_WORKSPACE_VIEW,
-		WORKSPACE_LEFT,
-		WORKSPACE_RIGHT,
-		MOVE_TO_WORKSPACE_LEFT,
-		MOVE_TO_WORKSPACE_RIGHT,
 		MAXIMIZE_CURRENT,
 		MINIMIZE_CURRENT,
 		OPEN_LAUNCHER,
@@ -250,18 +246,6 @@ namespace Gala
 			switch (type) {
 				case ActionType.SHOW_WORKSPACE_VIEW:
 					plugin.workspace_view.show ();
-					break;
-				case ActionType.WORKSPACE_LEFT:
-					plugin.workspace_view.switch_to_next_workspace (MotionDirection.LEFT);
-					break;
-				case ActionType.WORKSPACE_RIGHT:
-					plugin.workspace_view.switch_to_next_workspace (MotionDirection.RIGHT);
-					break;
-				case ActionType.MOVE_TO_WORKSPACE_LEFT:
-					plugin.move_window (current, MotionDirection.LEFT);
-					break;
-				case ActionType.MOVE_TO_WORKSPACE_RIGHT:
-					plugin.move_window (current, MotionDirection.RIGHT);
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
 					if (current == null)
