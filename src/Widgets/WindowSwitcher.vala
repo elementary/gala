@@ -31,7 +31,7 @@ namespace Gala
 		bool active; //switcher is currently running
 		
 		CairoTexture plank_background;
-		Box plank_box;
+		Actor plank_box;
 		int plank_size;
 		Meta.WindowActor? plank_window;
 		
@@ -49,7 +49,8 @@ namespace Gala
 			
 			var layout = new BoxLayout ();
 			
-			plank_box = new Box (layout);
+			plank_box = new Actor ();
+			plank_box.layout_manager = layout;
 			plank_box.height = plank_size;
 			plank_box.anchor_gravity = Clutter.Gravity.CENTER;
 			
@@ -117,7 +118,7 @@ namespace Gala
 			
 			var dest_width = (plank_window!=null)?plank_window.width:500.0f;
 			
-			plank_box.raise_top ();
+			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
 			plank_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity:0);
 			plank_window.animate (AnimationMode.LINEAR, 250, opacity:255);
 			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity:0).
@@ -262,9 +263,8 @@ namespace Gala
 			plank_box.layout_manager.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
 			
 			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width);
-			plank_background.raise_top ();
+			plank_background.get_parent ().set_child_above_sibling (plank_background, null);
 			plank_background.opacity = 255;
-			plank_box.raise_top ();
 			
 			dim_windows ();
 			grab_key_focus ();
