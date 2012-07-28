@@ -20,7 +20,7 @@ using Granite.Drawing;
 
 namespace Gala
 {
-	public class WindowSwitcher : Clutter.Group
+	public class WindowSwitcher : Clutter.Actor
 	{
 		Gala.Plugin plugin;
 		
@@ -67,6 +67,8 @@ namespace Gala
 			
 			add_child (plank_background);
 			add_child (plank_box);
+			
+			visible = false;
 		}
 		
 		bool draw_plank_background (Cairo.Context cr)
@@ -262,9 +264,10 @@ namespace Gala
 			float dest_width;
 			plank_box.layout_manager.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
 			
-			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width);
 			plank_background.get_parent ().set_child_above_sibling (plank_background, null);
 			plank_background.opacity = 255;
+			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width);
+			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
 			
 			dim_windows ();
 			grab_key_focus ();
