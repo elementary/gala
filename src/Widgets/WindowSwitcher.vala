@@ -110,7 +110,7 @@ namespace Gala
 			var current_actor = current_window.get_compositor_private () as Actor;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
-					clone.raise_top ();
+					clone.get_parent ().set_child_above_sibling (clone, null);
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 				} else {
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);

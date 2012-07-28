@@ -49,7 +49,7 @@ namespace Gala
 			var screen = get_screen ();
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
-			stage.color = {0, 0, 0, 255};
+			stage.background_color = {0, 0, 0, 255};
 			stage.no_clear_hint = true;
 			
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
