@@ -28,12 +28,16 @@ namespace Gala
 		
 		Meta.Window? current_window;
 		
-		bool active; //switcher is currently running
+		//switcher is currently running
+		bool active;
 		
 		CairoTexture plank_background;
 		Actor plank_box;
 		int plank_size;
-		Meta.WindowActor? plank_window;
+		Meta.WindowActor? dock_window;
+		
+		//FIXME window titles of supported docks, to be extended
+		const string [] DOCK_NAMES = {"plank", "Docky"};
 		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
@@ -107,8 +111,8 @@ namespace Gala
 					meta_win.is_on_all_workspaces ())
 					w.show ();
 			});
-			if (plank_window != null)
-				plank_window.opacity = 0;
+			if (dock_window != null)
+				dock_window.opacity = 0;
 			
 			window_clones.clear ();
 			
@@ -118,19 +122,20 @@ namespace Gala
 				current_window = null;
 			}
 			
-			var dest_width = (plank_window!=null)?plank_window.width:500.0f;
+			var dest_width = (dock_window!=null)?dock_window.width:800.0f;
 			
 			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
 			plank_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity:0);
-			plank_window.animate (AnimationMode.LINEAR, 250, opacity:255);
+			
+			if (dock_window != null)
+				dock_window.animate (AnimationMode.LINEAR, 250, opacity:255);
+			
 			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity:0).
 				completed.connect (() => {
 				plank_box.remove_all_children ();
 				
-				if (plank_window != null) {
-					plank_window.show ();
-					plank_window = null;
-				}
+				if (dock_window != null)
+					dock_window = null;
 				
 				visible = false;
 			});
@@ -231,10 +236,10 @@ namespace Gala
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
 				var type = w.get_meta_window ().window_type;
 				if ((type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION) ||
-					w.get_meta_window ().title == "plank")
+					w.get_meta_window ().title in DOCK_NAMES)
 					w.hide ();
-				if (w.get_meta_window ().title == "plank")
-					plank_window = w;
+				if (w.get_meta_window ().title in DOCK_NAMES)
+					dock_window = w;
 			});
 			
 			plugin.begin_modal ();
@@ -254,8 +259,8 @@ namespace Gala
 			/*plank type switcher thing*/
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			if (plank_window != null)
-				plank_box.width = plank_window.width;
+			if (dock_window != null)
+				plank_box.width = dock_window.width;
 			
 			plank_box.opacity = 255;
 			plank_box.x = geometry.x + Math.ceilf (geometry.width/2);
