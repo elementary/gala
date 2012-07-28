@@ -197,7 +197,7 @@ namespace Gala
 			}
 		}
 		
-		internal void switch_to_next_workspace (MotionDirection direction)
+		void switch_to_next_workspace (MotionDirection direction)
 		{
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
@@ -294,7 +294,7 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
+			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
 			visible = true;

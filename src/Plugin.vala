@@ -19,7 +19,6 @@ using Meta;
 
 namespace Gala
 {
-	
 	public enum ActionType
 	{
 		NONE = 0,
@@ -28,6 +27,12 @@ namespace Gala
 		MINIMIZE_CURRENT,
 		OPEN_LAUNCHER,
 		CUSTOM_COMMAND
+	}
+	
+	public enum InputArea {
+		NONE,
+		FULLSCREEN,
+		HOT_CORNER
 	}
 	
 	public class Plugin : Meta.Plugin
@@ -130,17 +135,17 @@ namespace Gala
 			/*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			var top_left = create_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
-			var top_right = create_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
-			var bottom_left = create_hotcorner (geometry.x, geometry.y + geometry.height - 1, "hotcorner-bottomleft");
-			var bottom_right = create_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
+			add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
+			add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
+			add_hotcorner (geometry.x, geometry.y + geometry.height - 1, "hotcorner-bottomleft");
+			add_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
 			
 			update_input_area ();
 			
 			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
 		}
 		
-		Clutter.Actor create_hotcorner (float x, float y, string key)
+		void add_hotcorner (float x, float y, string key)
 		{
 			var hot_corner = new Clutter.Actor ();
 			hot_corner.x = x;
@@ -153,24 +158,23 @@ namespace Gala
 			Compositor.get_stage_for_screen (get_screen ()).add_child (hot_corner);
 			
 			hot_corner.enter_event.connect (() => {
-				run (this, (ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
+				perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
 				return false;
 			});
-			
-			return hot_corner;
 		}
 		
 		public void update_input_area ()
 		{
-			if (BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topleft") != ActionType.NONE || 
-				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-topright") != ActionType.NONE || 
-				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE || 
-				BehaviorSettings.get_default ().schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
-				Utils.set_input_area (get_screen (), Utils.InputArea.HOT_CORNER);
+			var schema = BehaviorSettings.get_default ().schema;
+			
+			if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
+				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
 			else
-				Utils.set_input_area (get_screen (), Utils.InputArea.NONE);
+				Utils.set_input_area (get_screen (), InputArea.NONE);
 		}
-		
 		
 		public void move_window (Window? window, MotionDirection direction)
 		{
@@ -237,15 +241,15 @@ namespace Gala
 				win.clear_effects ();*/
 		}
 		
-		public static void run (Plugin plugin, ActionType type)
+		public void perform_action (ActionType type)
 		{
-			var screen = plugin.get_screen ();
+			var screen = get_screen ();
 			var display = screen.get_display ();
 			var current = display.get_focus_window ();
 			
 			switch (type) {
 				case ActionType.SHOW_WORKSPACE_VIEW:
-					plugin.workspace_view.show ();
+					workspace_view.show ();
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
 					if (current == null)

@@ -1,41 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-	
-	<enum id="gala-action-type">
-		<value nick="None" value="0" />
-		<value nick="ShowWorkspaceView" value="1" />
-		<value nick="MaximizeCurrent" value="2" />
-		<value nick="MinimizeCurrent" value="3" />
-		<value nick="OpenLauncher" value="4" />
-		<value nick="CustomCommand" value="5" />
+	<enum id="GalaActionType">
+		<value nick='none' value="0" />
+		<value nick="show-workspace-view" value="1" />
+		<value nick="maximize-current" value="2" />
+		<value nick="minimize-current" value="3" />
+		<value nick="open-launcher" value="4" />
+		<value nick="custom-command" value="5" />
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
-		
-		<key enum="gala-action-type" name="hotcorner-topleft">
-			<default>"None"</default>
+		<key enum="GalaActionType" name="hotcorner-topleft">
+			<default>'none'</default>
 			<summary>Action for the top left corner</summary>
 			<description></description>
 		</key>
-		<key enum="gala-action-type" name="hotcorner-topright">
-			<default>"None"</default>
+		<key enum="GalaActionType" name="hotcorner-topright">
+			<default>'none'</default>
 			<summary>Action for the top right corner</summary>
 			<description></description>
 		</key>
-		<key enum="gala-action-type" name="hotcorner-bottomleft">
-			<default>"None"</default>
+		<key enum="GalaActionType" name="hotcorner-bottomleft">
+			<default>'none'</default>
 			<summary>Action for the bottom left corner</summary>
 			<description></description>
 		</key>
-		<key enum="gala-action-type" name="hotcorner-bottomright">
-			<default>"None"</default>
+		<key enum="GalaActionType" name="hotcorner-bottomright">
+			<default>'none'</default>
 			<summary>Action for the bottom right corner</summary>
 			<description></description>
 		</key>
-		
 		<key type="s" name="hotcorner-custom-command">
 			<default>''</default>
-			<summary>The command that will be executed for the hotcorner action CUSTOM_COMMAND</summary>
+			<summary>The command that will be executed for the hotcorner action 'custom-command'</summary>
 			<description></description>
 		</key>
 		<key type="b" name="edge-tiling">
