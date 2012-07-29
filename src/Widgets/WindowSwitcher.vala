@@ -35,6 +35,8 @@ namespace Gala
 		Actor plank_box;
 		int plank_size;
 		Meta.WindowActor? dock_window;
+		Plank.Drawing.DockSurface? dock_surface;
+		Plank.Drawing.DockThemeRenderer dock_renderer;
 		
 		//FIXME window titles of supported docks, to be extended
 		const string [] DOCK_NAMES = {"plank", "Docky"};
@@ -51,6 +53,9 @@ namespace Gala
 				plank_size = configs.get_integer ("PlankDockPreferences", "IconSize");
 			} catch (Error e) { error (e.message); }
 			
+			dock_renderer = new Plank.Drawing.DockThemeRenderer ();
+			dock_renderer.load ("dock");
+			
 			var layout = new BoxLayout ();
 			
 			plank_box = new Actor ();
@@ -58,14 +63,14 @@ namespace Gala
 			plank_box.height = plank_size;
 			plank_box.anchor_gravity = Clutter.Gravity.CENTER;
 			
-			layout.spacing = 6;
+			layout.spacing = (uint)(dock_renderer.ItemPadding/10 * plank_size);
 			
 			plank_background = new CairoTexture (100, plank_size);
 			plank_background.anchor_gravity = Clutter.Gravity.CENTER;
 			plank_background.auto_resize = true;
 			plank_background.draw.connect (draw_plank_background);
 			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.X, 0));
-			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.Y, 2));
+			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.Y, 0));
 			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.WIDTH, 0));
 			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.HEIGHT, 0));
 			
@@ -77,12 +82,17 @@ namespace Gala
 		
 		bool draw_plank_background (Cairo.Context cr)
 		{
-			Utilities.cairo_rounded_rectangle (cr, 0, plank_size * 0.6, plank_background.width, plank_size, 5);
+			var top_offset = (int)(dock_renderer.TopPadding/10 * plank_size);
+			var bottom_offset = (int)(dock_renderer.BottomPadding/10 * plank_size);
 			
-			cr.set_source_rgba (1, 1, 1, 0.8);
-			cr.fill_preserve ();
-			cr.set_source_rgba (0, 0, 0, 0.5);
-			cr.stroke ();
+			if (dock_surface == null || dock_surface.Width != plank_background.width) {
+				
+				dock_surface = dock_renderer.create_background ((int)plank_background.width, plank_size+top_offset+bottom_offset, Gtk.PositionType.BOTTOM, 
+					new Plank.Drawing.DockSurface ((int)plank_background.width, plank_size));
+			}
+			
+			cr.set_source_surface (dock_surface.Internal, 0, -top_offset-bottom_offset);
+			cr.paint ();
 			
 			return false;
 		}
@@ -214,6 +224,8 @@ namespace Gala
 			
 			window_clones.clear ();
 			
+			var layout = plank_box.layout_manager as BoxLayout;
+			
 			foreach (var win in metawindows) {
 				var actor = win.get_compositor_private () as Actor;
 				var clone = new Clone (actor);
@@ -227,7 +239,7 @@ namespace Gala
 				
 				icon.opacity = 100;
 				plank_box.add_child (icon);
-				(plank_box.layout_manager as BoxLayout).set_expand (icon, true);
+				layout.set_expand (icon, true);
 				
 				add_child (clone);
 				window_clones.add (clone);
@@ -264,7 +276,12 @@ namespace Gala
 			
 			plank_box.opacity = 255;
 			plank_box.x = geometry.x + Math.ceilf (geometry.width/2);
-			plank_box.y = geometry.y + geometry.height - plank_box.height/2 - 2;
+			plank_box.y = geometry.y + geometry.height - plank_box.height/2;
+			
+			//add spacing on outer most items
+			var horiz = (float)(dock_renderer.HorizPadding/10 * plank_size + layout.spacing);
+			plank_box.get_child_at_index (0).margin_left = horiz;
+			plank_box.get_child_at_index (plank_box.get_n_children () - 1).margin_right = horiz;
 			
 			float dest_width;
 			plank_box.layout_manager.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
