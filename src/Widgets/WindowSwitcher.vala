@@ -254,7 +254,7 @@ namespace Gala
 				if ((type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION) ||
 					w.get_meta_window ().title in DOCK_NAMES)
 					w.hide ();
-				if (w.get_meta_window ().title in DOCK_NAMES)
+				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK)
 					dock_window = w;
 			});
 			
