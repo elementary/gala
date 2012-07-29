@@ -28,9 +28,6 @@ namespace Gala
 		
 		Meta.Window? current_window;
 		
-		//switcher is currently running
-		bool active;
-		
 		CairoTexture plank_background;
 		Actor plank_box;
 		Meta.WindowActor? dock_window;
@@ -48,8 +45,6 @@ namespace Gala
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
 			dock_settings.changed.connect (setup_plank_renderer);
-			
-			print ("ICON: %i\n", dock_settings.IconSize);
 			
 			dock_renderer = new Plank.Drawing.DockThemeRenderer ();
 			dock_renderer.load ("dock");
@@ -80,14 +75,14 @@ namespace Gala
 		//set the values which don't get set every time and need to be updated when the theme changes
 		void setup_plank_renderer ()
 		{
-			(plank_box.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding/10 * dock_settings.IconSize);
+			(plank_box.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding / 10 * dock_settings.IconSize);
 			plank_box.height = dock_settings.IconSize;
 		}
 		
 		bool draw_plank_background (Cairo.Context cr)
 		{
-			var top_offset = (int)(dock_renderer.TopPadding/10 * dock_settings.IconSize);
-			var bottom_offset = (int)(dock_renderer.BottomPadding/10 * dock_settings.IconSize);
+			var top_offset = (int)(dock_renderer.TopPadding / 10 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_renderer.BottomPadding / 10 * dock_settings.IconSize);
 			
 			if (dock_surface == null || dock_surface.Width != plank_background.width) {
 				
@@ -95,7 +90,7 @@ namespace Gala
 					Gtk.PositionType.BOTTOM, new Plank.Drawing.DockSurface ((int)plank_background.width, dock_settings.IconSize));
 			}
 			
-			cr.set_source_surface (dock_surface.Internal, 0, -top_offset-bottom_offset);
+			cr.set_source_surface (dock_surface.Internal, 0, -top_offset - bottom_offset);
 			cr.paint ();
 			
 			return false;
@@ -153,10 +148,9 @@ namespace Gala
 				
 				visible = false;
 			});
-			
-			active = false;
 		}
 		
+		//used to figure out delays between switching when holding the tab key
 		uint last_time = -1;
 		bool released = false;
 		public override bool captured_event (Clutter.Event event)
@@ -170,7 +164,7 @@ namespace Gala
 			}
 			
 			if (!(event.get_type () == EventType.KEY_PRESS) || 
-				((!released && display.get_current_time_roundtrip () < (last_time + 300))))
+				(!released && display.get_current_time_roundtrip () < (last_time + 300)))
 				return false;
 			
 			released = false;
@@ -225,7 +219,7 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			if (active) {
+			if (visible) {
 				if (window_clones.size != 0)
 					close (screen.get_display ().get_current_time ());
 				return;
@@ -235,18 +229,19 @@ namespace Gala
 			if (metawindows.length () <= 1)
 				return;
 			
-			active = true;
 			visible = true;
 			
-			window_clones.clear ();
-			
+			//grab the windows to be switched
 			var layout = plank_box.layout_manager as BoxLayout;
-			
+			window_clones.clear ();
 			foreach (var win in metawindows) {
 				var actor = win.get_compositor_private () as Actor;
 				var clone = new Clone (actor);
 				clone.x = actor.x;
 				clone.y = actor.y;
+				
+				add_child (clone);
+				window_clones.add (clone);
 				
 				var icon = new GtkClutter.Texture ();
 				try {
@@ -256,25 +251,24 @@ namespace Gala
 				icon.opacity = 100;
 				plank_box.add_child (icon);
 				layout.set_expand (icon, true);
-				
-				add_child (clone);
-				window_clones.add (clone);
 			}
 			
+			//hide the others
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
 				var type = w.get_meta_window ().window_type;
-				if ((type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION) ||
-					w.get_meta_window ().title in DOCK_NAMES)
+				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
 					w.hide ();
-				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK)
+				
+				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK) {
 					dock_window = w;
+					dock_window.hide ();
+				}
 			});
 			
 			plugin.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			
-			/*list windows*/
 			current_window = Utils.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
@@ -284,7 +278,7 @@ namespace Gala
 				return;
 			}
 			
-			/*plank type switcher thing*/
+			//plank type switcher thing
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
 			if (dock_window != null)
@@ -299,8 +293,9 @@ namespace Gala
 			plank_box.get_child_at_index (0).margin_left = horiz;
 			plank_box.get_child_at_index (plank_box.get_n_children () - 1).margin_right = horiz;
 			
+			
 			float dest_width;
-			plank_box.layout_manager.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
+			layout.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
 			
 			plank_background.get_parent ().set_child_above_sibling (plank_background, null);
 			plank_background.opacity = 255;
