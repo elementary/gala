@@ -34,6 +34,8 @@ namespace Gala
 		Plank.Drawing.DockSurface? dock_surface;
 		Plank.Drawing.DockThemeRenderer dock_renderer;
 		Plank.DockPreferences dock_settings;
+		BindConstraint y_constraint;
+		BindConstraint h_constraint;
 		
 		//FIXME window titles of supported docks, to be extended
 		const string [] DOCK_NAMES = {"plank", "Docky"};
@@ -58,10 +60,14 @@ namespace Gala
 			dock_background.anchor_gravity = Clutter.Gravity.CENTER;
 			dock_background.auto_resize = true;
 			dock_background.draw.connect (draw_dock_background);
+			
+			y_constraint = new BindConstraint (dock, BindCoordinate.Y, 0);
+			h_constraint = new BindConstraint (dock, BindCoordinate.HEIGHT, 0);
+			
 			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.X, 0));
-			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.Y, 0));
+			dock_background.add_constraint (y_constraint);
 			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.WIDTH, 0));
-			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.HEIGHT, 0));
+			dock_background.add_constraint (h_constraint);
 			
 			add_child (dock_background);
 			add_child (dock);
@@ -76,20 +82,23 @@ namespace Gala
 		{
 			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding / 10.0 * dock_settings.IconSize);
 			dock.height = dock_settings.IconSize;
+			
+			var top_offset = (int)(dock_renderer.TopPadding / 10.0 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
+			
+			y_constraint.offset = -top_offset / 2 + bottom_offset / 2;
+			h_constraint.offset = top_offset + bottom_offset;
 		}
 		
 		bool draw_dock_background (Cairo.Context cr)
 		{
-			var top_offset = (int)(dock_renderer.TopPadding / 10.0 * dock_settings.IconSize);
-			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
-			
 			if (dock_surface == null || dock_surface.Width != dock_background.width) {
 				dock_surface = dock_renderer.create_background ((int)dock_background.width,
-					dock_settings.IconSize + top_offset + bottom_offset, Gtk.PositionType.BOTTOM,
+					(int)dock_background.height, Gtk.PositionType.BOTTOM,
 					new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ()));
 			}
 			
-			cr.set_source_surface (dock_surface.Internal, 0, -top_offset - bottom_offset);
+			cr.set_source_surface (dock_surface.Internal, 0, 0);
 			cr.paint ();
 			
 			return false;
@@ -283,9 +292,10 @@ namespace Gala
 			if (dock_window != null)
 				dock.width = dock_window.width;
 			
+			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
 			dock.opacity = 255;
 			dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
-			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f);
+			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f) - bottom_offset;
 			
 			//add spacing on outer most items
 			var horiz_padding = (float) Math.ceil (dock_renderer.HorizPadding / 10.0 * dock_settings.IconSize + layout.spacing / 2.0);
