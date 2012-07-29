@@ -202,7 +202,7 @@ namespace Gala
 			var i = 0;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
-					clone.get_parent ().set_child_above_sibling (clone, null);
+					set_child_below_sibling (clone, dock_background);
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 					
 					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
