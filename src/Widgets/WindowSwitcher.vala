@@ -28,9 +28,9 @@ namespace Gala
 		
 		Meta.Window? current_window;
 		
-		CairoTexture plank_background;
-		Actor plank_box;
 		Meta.WindowActor? dock_window;
+		Actor dock;
+		CairoTexture dock_background;
 		Plank.Drawing.DockSurface? dock_surface;
 		Plank.Drawing.DockThemeRenderer dock_renderer;
 		Plank.DockPreferences dock_settings;
@@ -50,22 +50,21 @@ namespace Gala
 			dock_renderer.load ("dock");
 			dock_renderer.changed.connect (setup_plank_renderer);
 			
+			dock = new Actor ();
+			dock.layout_manager = new BoxLayout ();
+			dock.anchor_gravity = Clutter.Gravity.CENTER;
 			
-			plank_box = new Actor ();
-			plank_box.layout_manager = new BoxLayout ();
-			plank_box.anchor_gravity = Clutter.Gravity.CENTER;
+			dock_background = new CairoTexture (100, dock_settings.IconSize);
+			dock_background.anchor_gravity = Clutter.Gravity.CENTER;
+			dock_background.auto_resize = true;
+			dock_background.draw.connect (draw_dock_background);
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.X, 0));
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.Y, 0));
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.WIDTH, 0));
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.HEIGHT, 0));
 			
-			plank_background = new CairoTexture (100, dock_settings.IconSize);
-			plank_background.anchor_gravity = Clutter.Gravity.CENTER;
-			plank_background.auto_resize = true;
-			plank_background.draw.connect (draw_plank_background);
-			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.X, 0));
-			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.Y, 0));
-			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.WIDTH, 0));
-			plank_background.add_constraint (new BindConstraint (plank_box, BindCoordinate.HEIGHT, 0));
-			
-			add_child (plank_background);
-			add_child (plank_box);
+			add_child (dock_background);
+			add_child (dock);
 			
 			setup_plank_renderer ();
 			
@@ -75,19 +74,19 @@ namespace Gala
 		//set the values which don't get set every time and need to be updated when the theme changes
 		void setup_plank_renderer ()
 		{
-			(plank_box.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding / 10 * dock_settings.IconSize);
-			plank_box.height = dock_settings.IconSize;
+			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding / 10.0 * dock_settings.IconSize);
+			dock.height = dock_settings.IconSize;
 		}
 		
-		bool draw_plank_background (Cairo.Context cr)
+		bool draw_dock_background (Cairo.Context cr)
 		{
-			var top_offset = (int)(dock_renderer.TopPadding / 10 * dock_settings.IconSize);
-			var bottom_offset = (int)(dock_renderer.BottomPadding / 10 * dock_settings.IconSize);
+			var top_offset = (int)(dock_renderer.TopPadding / 10.0 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
 			
-			if (dock_surface == null || dock_surface.Width != plank_background.width) {
-				
-				dock_surface = dock_renderer.create_background ((int)plank_background.width, dock_settings.IconSize + top_offset + bottom_offset, 
-					Gtk.PositionType.BOTTOM, new Plank.Drawing.DockSurface ((int)plank_background.width, dock_settings.IconSize));
+			if (dock_surface == null || dock_surface.Width != dock_background.width) {
+				dock_surface = dock_renderer.create_background ((int)dock_background.width,
+					dock_settings.IconSize + top_offset + bottom_offset, Gtk.PositionType.BOTTOM,
+					new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ()));
 			}
 			
 			cr.set_source_surface (dock_surface.Internal, 0, -top_offset - bottom_offset);
@@ -131,17 +130,17 @@ namespace Gala
 				current_window = null;
 			}
 			
-			var dest_width = (dock_window!=null)?dock_window.width:800.0f;
+			var dest_width = (dock_window != null ? dock_window.width : 800.0f);
 			
-			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
-			plank_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity:0);
+			set_child_above_sibling (dock, null);
+			dock_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity : 0);
 			
 			if (dock_window != null)
-				dock_window.animate (AnimationMode.LINEAR, 250, opacity:255);
+				dock_window.animate (AnimationMode.LINEAR, 250, opacity : 255);
 			
-			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity:0).
+			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
 				completed.connect (() => {
-				plank_box.remove_all_children ();
+				dock.remove_all_children ();
 				
 				if (dock_window != null)
 					dock_window = null;
@@ -206,13 +205,13 @@ namespace Gala
 					clone.get_parent ().set_child_above_sibling (clone, null);
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
 					
-					plank_box.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity:255);
+					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
 				} else {
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
-					plank_box.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity:100);
+					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 100);
 				}
 				
-				i ++;
+				i++;
 			}
 		}
 		
@@ -232,7 +231,7 @@ namespace Gala
 			visible = true;
 			
 			//grab the windows to be switched
-			var layout = plank_box.layout_manager as BoxLayout;
+			var layout = dock.layout_manager as BoxLayout;
 			window_clones.clear ();
 			foreach (var win in metawindows) {
 				var actor = win.get_compositor_private () as Actor;
@@ -249,7 +248,7 @@ namespace Gala
 				} catch (Error e) { warning (e.message); }
 				
 				icon.opacity = 100;
-				plank_box.add_child (icon);
+				dock.add_child (icon);
 				layout.set_expand (icon, true);
 			}
 			
@@ -282,28 +281,27 @@ namespace Gala
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
 			if (dock_window != null)
-				plank_box.width = dock_window.width;
+				dock.width = dock_window.width;
 			
-			plank_box.opacity = 255;
-			plank_box.x = geometry.x + Math.ceilf (geometry.width/2);
-			plank_box.y = geometry.y + geometry.height - plank_box.height/2;
+			dock.opacity = 255;
+			dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
+			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f);
 			
 			//add spacing on outer most items
-			var horiz = (float)(dock_renderer.HorizPadding/10 * dock_settings.IconSize + layout.spacing);
-			plank_box.get_child_at_index (0).margin_left = horiz;
-			plank_box.get_child_at_index (plank_box.get_n_children () - 1).margin_right = horiz;
-			
+			var horiz_padding = (float) Math.ceil (dock_renderer.HorizPadding / 10.0 * dock_settings.IconSize);
+			dock.get_first_child ().margin_left = horiz_padding;
+			dock.get_last_child ().margin_right = horiz_padding;
 			
 			float dest_width;
-			layout.get_preferred_width (plank_box, plank_box.height, null, out dest_width);
+			layout.get_preferred_width (dock, dock.height, null, out dest_width);
 			
-			plank_background.get_parent ().set_child_above_sibling (plank_background, null);
-			plank_background.opacity = 255;
-			plank_box.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width);
-			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
+			set_child_above_sibling (dock_background, null);
+			dock_background.opacity = 255;
+			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width : dest_width);
+			set_child_above_sibling (dock, null);
 			
 			dim_windows ();
-			grab_key_focus ();		
+			grab_key_focus ();
 		}
 	}
 }
