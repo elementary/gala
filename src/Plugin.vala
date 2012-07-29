@@ -64,6 +64,8 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			
+			DBus.init (this);
+			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			stage.background_color = {0, 0, 0, 255};
 			stage.no_clear_hint = true;
