@@ -78,7 +78,7 @@ namespace Gala.Utils
 			image.fill (0x00000000);
 		}
 		
-		return image;
+		return Plank.Drawing.DrawingService.ar_scale (image, size, size);
 	}
 	
 	/**

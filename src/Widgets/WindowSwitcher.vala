@@ -288,7 +288,7 @@ namespace Gala
 			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f);
 			
 			//add spacing on outer most items
-			var horiz_padding = (float) Math.ceil (dock_renderer.HorizPadding / 10.0 * dock_settings.IconSize);
+			var horiz_padding = (float) Math.ceil (dock_renderer.HorizPadding / 10.0 * dock_settings.IconSize) + layout.spacing;
 			dock.get_first_child ().margin_left = horiz_padding;
 			dock.get_last_child ().margin_right = horiz_padding;
 			
