@@ -1,14 +1,9 @@
 using Meta;
 
+using Gala;
+
 namespace Gala.Utils
 {
-	
-	public enum InputArea {
-		NONE,
-		FULLSCREEN,
-		HOT_CORNER
-	}
-	
 	/*
 	 * Reload shadow settings
 	 */
@@ -105,24 +100,39 @@ namespace Gala.Utils
 	{
 		var display = screen.get_display ();
 		
-		X.Xrectangle rect;
+		X.Xrectangle[] rects = {};
 		int width, height;
 		screen.get_size (out width, out height);
 		var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 		
 		switch (area) {
 			case InputArea.FULLSCREEN:
-				rect = {0, 0, (ushort)width, (ushort)height};
+				X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
+				rects = {rect};
 				break;
-			case InputArea.HOT_CORNER: //leave one pix in the bottom left
-				rect = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), 1, 1};
+			case InputArea.HOT_CORNER:
+				var schema = BehaviorSettings.get_default ().schema;
+				
+				// if ActionType is NONE make it 0 sized
+				ushort tl_size = (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
+				ushort tr_size = (schema.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
+				ushort bl_size = (schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
+				ushort br_size = (schema.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
+				
+				X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
+				X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
+				X.Xrectangle bottomleft = {(short)geometry.x, (short)(geometry.y + geometry.height - 1), bl_size, bl_size};
+				X.Xrectangle bottomright = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), br_size, br_size};
+				
+				rects = {topleft, topright, bottomleft, bottomright};
 				break;
+			case InputArea.NONE:
 			default:
 				Util.empty_stage_input_region (screen);
 				return;
 		}
 		
-		var xregion = X.Fixes.create_region (display.get_xdisplay (), {rect});
+		var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
 		Util.set_stage_input_region (screen, xregion);
 	}
 	

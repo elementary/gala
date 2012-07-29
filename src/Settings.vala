@@ -23,7 +23,12 @@ namespace Gala
 		public string panel_main_menu_action { get; set; }
 		public string toggle_recording_action { get; set; }
 		public string overlay_action { get; set; }
-		public bool enable_manager_corner { get; set; }
+		public string hotcorner_custom_command { get; set; }
+		
+		public ActionType hotcorner_topleft { get; set; }
+		public ActionType hotcorner_topright { get; set; }
+		public ActionType hotcorner_bottomleft { get; set; }
+		public ActionType hotcorner_bottomright { get; set; }
 		
 		static BehaviorSettings? instance = null;
 		

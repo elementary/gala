@@ -294,7 +294,7 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			Utils.set_input_area (screen, Utils.InputArea.FULLSCREEN);
+			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
 			visible = true;
