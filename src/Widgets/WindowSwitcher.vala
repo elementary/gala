@@ -33,10 +33,10 @@ namespace Gala
 		
 		CairoTexture plank_background;
 		Actor plank_box;
-		int plank_size;
 		Meta.WindowActor? dock_window;
 		Plank.Drawing.DockSurface? dock_surface;
 		Plank.Drawing.DockThemeRenderer dock_renderer;
+		Plank.DockPreferences dock_settings;
 		
 		//FIXME window titles of supported docks, to be extended
 		const string [] DOCK_NAMES = {"plank", "Docky"};
@@ -45,27 +45,22 @@ namespace Gala
 		{
 			plugin = _plugin;
 			
-			//have a look at plank configs if they're available for the icon-size, otherwise we'll use 48
-			plank_size = 48;
-			try {
-				var configs = new KeyFile ();
-				configs.load_from_file (Environment.get_user_config_dir () + "/plank/dock1/settings", 0);
-				plank_size = configs.get_integer ("PlankDockPreferences", "IconSize");
-			} catch (Error e) { error (e.message); }
+			//pull drawing methods from libplank
+			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
+			dock_settings.changed.connect (setup_plank_renderer);
+			
+			print ("ICON: %i\n", dock_settings.IconSize);
 			
 			dock_renderer = new Plank.Drawing.DockThemeRenderer ();
 			dock_renderer.load ("dock");
+			dock_renderer.changed.connect (setup_plank_renderer);
 			
-			var layout = new BoxLayout ();
 			
 			plank_box = new Actor ();
-			plank_box.layout_manager = layout;
-			plank_box.height = plank_size;
+			plank_box.layout_manager = new BoxLayout ();
 			plank_box.anchor_gravity = Clutter.Gravity.CENTER;
 			
-			layout.spacing = (uint)(dock_renderer.ItemPadding/10 * plank_size);
-			
-			plank_background = new CairoTexture (100, plank_size);
+			plank_background = new CairoTexture (100, dock_settings.IconSize);
 			plank_background.anchor_gravity = Clutter.Gravity.CENTER;
 			plank_background.auto_resize = true;
 			plank_background.draw.connect (draw_plank_background);
@@ -77,18 +72,27 @@ namespace Gala
 			add_child (plank_background);
 			add_child (plank_box);
 			
+			setup_plank_renderer ();
+			
 			visible = false;
+		}
+		
+		//set the values which don't get set every time and need to be updated when the theme changes
+		void setup_plank_renderer ()
+		{
+			(plank_box.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding/10 * dock_settings.IconSize);
+			plank_box.height = dock_settings.IconSize;
 		}
 		
 		bool draw_plank_background (Cairo.Context cr)
 		{
-			var top_offset = (int)(dock_renderer.TopPadding/10 * plank_size);
-			var bottom_offset = (int)(dock_renderer.BottomPadding/10 * plank_size);
+			var top_offset = (int)(dock_renderer.TopPadding/10 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_renderer.BottomPadding/10 * dock_settings.IconSize);
 			
 			if (dock_surface == null || dock_surface.Width != plank_background.width) {
 				
-				dock_surface = dock_renderer.create_background ((int)plank_background.width, plank_size+top_offset+bottom_offset, Gtk.PositionType.BOTTOM, 
-					new Plank.Drawing.DockSurface ((int)plank_background.width, plank_size));
+				dock_surface = dock_renderer.create_background ((int)plank_background.width, dock_settings.IconSize + top_offset + bottom_offset, 
+					Gtk.PositionType.BOTTOM, new Plank.Drawing.DockSurface ((int)plank_background.width, dock_settings.IconSize));
 			}
 			
 			cr.set_source_surface (dock_surface.Internal, 0, -top_offset-bottom_offset);
@@ -234,7 +238,7 @@ namespace Gala
 				
 				var icon = new GtkClutter.Texture ();
 				try {
-					icon.set_from_pixbuf (Utils.get_icon_for_window (win, plank_size));
+					icon.set_from_pixbuf (Utils.get_icon_for_window (win, dock_settings.IconSize));
 				} catch (Error e) { warning (e.message); }
 				
 				icon.opacity = 100;
@@ -279,7 +283,7 @@ namespace Gala
 			plank_box.y = geometry.y + geometry.height - plank_box.height/2;
 			
 			//add spacing on outer most items
-			var horiz = (float)(dock_renderer.HorizPadding/10 * plank_size + layout.spacing);
+			var horiz = (float)(dock_renderer.HorizPadding/10 * dock_settings.IconSize + layout.spacing);
 			plank_box.get_child_at_index (0).margin_left = horiz;
 			plank_box.get_child_at_index (plank_box.get_n_children () - 1).margin_right = horiz;
 			
