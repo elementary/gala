@@ -157,13 +157,23 @@ namespace Gala
 			active = false;
 		}
 		
+		uint last_time = -1;
+		bool released = false;
 		public override bool captured_event (Clutter.Event event)
 		{
-			if (!(event.get_type () == EventType.KEY_PRESS))
-				return false;
-			
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
+			
+			if (event.get_type () == EventType.KEY_RELEASE) {
+				released = true;
+				return false;
+			}
+			
+			if (!(event.get_type () == EventType.KEY_PRESS) || 
+				((!released && display.get_current_time_roundtrip () < (last_time + 300))))
+				return false;
+			
+			released = false;
 			
 			bool backward = (event.get_state () & X.KeyMask.ShiftMask) != 0;
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
@@ -174,11 +184,13 @@ namespace Gala
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
 					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, backward);
+					last_time = display.get_current_time_roundtrip ();
 					break;
 				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
 					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, true);
+					last_time = display.get_current_time_roundtrip ();
 					break;
 				default:
 					break;
@@ -296,7 +308,7 @@ namespace Gala
 			plank_box.get_parent ().set_child_above_sibling (plank_box, null);
 			
 			dim_windows ();
-			grab_key_focus ();
+			grab_key_focus ();		
 		}
 	}
 }
