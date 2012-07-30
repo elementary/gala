@@ -19,6 +19,22 @@ using Meta;
 
 namespace Gala
 {
+	public enum ActionType
+	{
+		NONE = 0,
+		SHOW_WORKSPACE_VIEW,
+		MAXIMIZE_CURRENT,
+		MINIMIZE_CURRENT,
+		OPEN_LAUNCHER,
+		CUSTOM_COMMAND
+	}
+	
+	public enum InputArea {
+		NONE,
+		FULLSCREEN,
+		HOT_CORNER
+	}
+	
 	public class Plugin : Meta.Plugin
 	{
 		WindowSwitcher winswitcher;
@@ -48,8 +64,10 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			
+			DBus.init (this);
+			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
-			stage.color = {0, 0, 0, 255};
+			stage.background_color = {0, 0, 0, 255};
 			stage.no_clear_hint = true;
 			
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
@@ -116,37 +134,49 @@ namespace Gala
 			Utils.reload_shadow ();
 			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
 			
-			/*hot corner*/
+			/*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			var hot_corner = new Clutter.Rectangle ();
-			hot_corner.x = geometry.x + geometry.width - 1;
-			hot_corner.y = geometry.y + geometry.height - 1;
+			add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
+			add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
+			add_hotcorner (geometry.x, geometry.y + geometry.height - 1, "hotcorner-bottomleft");
+			add_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
+			
+			update_input_area ();
+			
+			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+		}
+		
+		void add_hotcorner (float x, float y, string key)
+		{
+			var hot_corner = new Clutter.Actor ();
+			hot_corner.x = x;
+			hot_corner.y = y;
 			hot_corner.width = 1;
 			hot_corner.height = 1;
 			hot_corner.opacity = 0;
 			hot_corner.reactive = true;
 			
+			Compositor.get_stage_for_screen (get_screen ()).add_child (hot_corner);
+			
 			hot_corner.enter_event.connect (() => {
-				workspace_view.show ();
+				perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
 				return false;
 			});
-			
-			stage.add_child (hot_corner);
-			
-			update_input_area ();
-			
-			BehaviorSettings.get_default ().notify["enable-manager-corner"].connect (update_input_area);
 		}
 		
 		public void update_input_area ()
 		{
-			if (BehaviorSettings.get_default ().enable_manager_corner)
-				Utils.set_input_area (get_screen (), Utils.InputArea.HOT_CORNER);
+			var schema = BehaviorSettings.get_default ().schema;
+			
+			if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
+				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
+				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
 			else
-				Utils.set_input_area (get_screen (), Utils.InputArea.NONE);
+				Utils.set_input_area (get_screen (), InputArea.NONE);
 		}
-		
 		
 		public void move_window (Window? window, MotionDirection direction)
 		{
@@ -213,6 +243,48 @@ namespace Gala
 				win.clear_effects ();*/
 		}
 		
+		public void perform_action (ActionType type)
+		{
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			var current = display.get_focus_window ();
+			
+			switch (type) {
+				case ActionType.SHOW_WORKSPACE_VIEW:
+					workspace_view.show ();
+					break;
+				case ActionType.MAXIMIZE_CURRENT:
+					if (current == null)
+						break;
+					if (current.get_maximized () == (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL))
+						current.unmaximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
+					else
+						current.maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
+					break;
+				case ActionType.MINIMIZE_CURRENT:
+					if (current != null)
+						current.minimize ();
+					break;
+				case ActionType.OPEN_LAUNCHER:
+					try {
+						Process.spawn_command_line_async (BehaviorSettings.get_default ().panel_main_menu_action);
+					} catch (Error e) {
+						warning (e.message);
+					}
+					break;
+				case ActionType.CUSTOM_COMMAND:
+					try {
+						Process.spawn_command_line_async (BehaviorSettings.get_default ().hotcorner_custom_command);
+					} catch (Error e) {
+						warning (e.message);
+					}
+					break;
+				default:
+					warning ("Trying to run unknown action");
+					break;
+			}
+		}
+		
 		/*
 		 * effects
 		 */
@@ -275,13 +347,15 @@ namespace Gala
 				float anchor_x = (float)(x - ex) * width  / (ew - width);
 				float anchor_y = (float)(y - ey) * height / (eh - height);
 				
+				//reset the actor's anchors
+				actor.scale_gravity = actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+				
 				actor.move_anchor_point (anchor_x, anchor_y);
 				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration, 
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
+					scale_x:scale_x, scale_y:scale_y).get_timeline ().completed.connect ( () => {
 					
 					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f, 
-						scale_y:1.0f);//just scaling didnt want to work..
+					actor.set_scale (1.0, 1.0);
 					
 					maximizing.remove (actor);
 					maximize_completed (actor);

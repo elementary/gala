@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
+	<enum id="GalaActionType">
+		<value nick='none' value="0" />
+		<value nick="show-workspace-view" value="1" />
+		<value nick="maximize-current" value="2" />
+		<value nick="minimize-current" value="3" />
+		<value nick="open-launcher" value="4" />
+		<value nick="custom-command" value="5" />
+	</enum>
+	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
-		<key type="b" name="enable-manager-corner">
-			<default>false</default>
-			<summary>Make the lower right a hot corner to reveal the manager</summary>
-			<description>This turns the lower right corner to a hot corner, showing some icons allowing you to do tasks like window tiling</description>
+		<key enum="GalaActionType" name="hotcorner-topleft">
+			<default>'none'</default>
+			<summary>Action for the top left corner</summary>
+			<description></description>
+		</key>
+		<key enum="GalaActionType" name="hotcorner-topright">
+			<default>'none'</default>
+			<summary>Action for the top right corner</summary>
+			<description></description>
+		</key>
+		<key enum="GalaActionType" name="hotcorner-bottomleft">
+			<default>'none'</default>
+			<summary>Action for the bottom left corner</summary>
+			<description></description>
+		</key>
+		<key enum="GalaActionType" name="hotcorner-bottomright">
+			<default>'none'</default>
+			<summary>Action for the bottom right corner</summary>
+			<description></description>
+		</key>
+		<key type="s" name="hotcorner-custom-command">
+			<default>''</default>
+			<summary>The command that will be executed for the hotcorner action 'custom-command'</summary>
+			<description></description>
 		</key>
 		<key type="b" name="edge-tiling">
 			<default>true</default>
