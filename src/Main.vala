@@ -54,7 +54,7 @@ namespace Gala
 		GLib.Environment.unset_variable ("NO_GAIL");
 		GLib.Environment.unset_variable ("NO_AT_BRIDGE");
 		
-		Plank.Services.Paths.initialize ("plank", "/usr/share/plank");
+		Plank.Services.Paths.initialize ("plank", Config.DATADIR);
 		
 		return Meta.run ();
 	}
