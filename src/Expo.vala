@@ -31,8 +31,10 @@ namespace Gala
 		
 		public void open (bool animate=true)
 		{
-			if (visible)
+			if (visible) {
+				close ();
 				return;
+			}
 			
 			var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			Meta.Rectangle workarea = {monitor.x + 50, monitor.y + 50, monitor.width - 100, monitor.height - 150};
