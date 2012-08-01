@@ -26,7 +26,8 @@ namespace Gala
 		MAXIMIZE_CURRENT,
 		MINIMIZE_CURRENT,
 		OPEN_LAUNCHER,
-		CUSTOM_COMMAND
+		CUSTOM_COMMAND,
+		EXPOSE
 	}
 	
 	public enum InputArea {
@@ -39,6 +40,7 @@ namespace Gala
 	{
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
+		Expo expo;
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -77,11 +79,17 @@ namespace Gala
 			
 			winswitcher = new WindowSwitcher (this);
 			
+			expo = new Expo (this);
+			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
+			stage.add_child (expo);
 			
 			/*keybindings*/
 			
+			screen.get_display ().add_keybinding ("expose-windows", BehaviorSettings.get_default ().schema, 0, () => {
+				expo.open (true);
+			});
 			screen.get_display ().add_keybinding ("move-to-workspace-first", BehaviorSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
 			});
@@ -278,6 +286,9 @@ namespace Gala
 					} catch (Error e) {
 						warning (e.message);
 					}
+					break;
+				case ActionType.EXPOSE:
+					expo.open (true);
 					break;
 				default:
 					warning ("Trying to run unknown action");

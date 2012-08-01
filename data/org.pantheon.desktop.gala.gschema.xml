@@ -7,6 +7,7 @@
 		<value nick="minimize-current" value="3" />
 		<value nick="open-launcher" value="4" />
 		<value nick="custom-command" value="5" />
+		<value nick="expose" value="6" />
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
@@ -62,6 +63,11 @@
 		</key>
 		<key type="as" name="move-to-workspace-last">
 			<default><![CDATA[['<Super>End']]]></default>
+			<summary>Shortcut to move to last workspace</summary>
+			<description></description>
+		</key>
+		<key type="as" name="expose-windows">
+			<default><![CDATA[['<Super>e']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
