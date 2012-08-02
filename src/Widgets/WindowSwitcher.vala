@@ -32,7 +32,7 @@ namespace Gala
 		Actor dock;
 		CairoTexture dock_background;
 		Plank.Drawing.DockSurface? dock_surface;
-		Plank.Drawing.DockThemeRenderer dock_renderer;
+		Plank.Drawing.DockTheme dock_theme;
 		Plank.DockPreferences dock_settings;
 		BindConstraint y_constraint;
 		BindConstraint h_constraint;
@@ -46,11 +46,11 @@ namespace Gala
 			
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
-			dock_settings.changed.connect (setup_plank_renderer);
+			dock_settings.changed.connect (update_dock);
 			
-			dock_renderer = new Plank.Drawing.DockThemeRenderer ();
-			dock_renderer.load ("dock");
-			dock_renderer.changed.connect (setup_plank_renderer);
+			dock_theme = new Plank.Drawing.DockTheme ();
+			dock_theme.load ("dock");
+			dock_theme.changed.connect (update_dock);
 			
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
@@ -72,19 +72,19 @@ namespace Gala
 			add_child (dock_background);
 			add_child (dock);
 			
-			setup_plank_renderer ();
+			update_dock ();
 			
 			visible = false;
 		}
 		
 		//set the values which don't get set every time and need to be updated when the theme changes
-		void setup_plank_renderer ()
+		void update_dock ()
 		{
-			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_renderer.ItemPadding / 10.0 * dock_settings.IconSize);
+			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_theme.ItemPadding / 10.0 * dock_settings.IconSize);
 			dock.height = dock_settings.IconSize;
 			
-			var top_offset = (int)(dock_renderer.TopPadding / 10.0 * dock_settings.IconSize);
-			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
+			var top_offset = (int)(dock_theme.TopPadding / 10.0 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
 			
 			y_constraint.offset = -top_offset / 2 + bottom_offset / 2;
 			h_constraint.offset = top_offset + bottom_offset;
@@ -93,7 +93,7 @@ namespace Gala
 		bool draw_dock_background (Cairo.Context cr)
 		{
 			if (dock_surface == null || dock_surface.Width != dock_background.width) {
-				dock_surface = dock_renderer.create_background ((int)dock_background.width,
+				dock_surface = dock_theme.create_background ((int)dock_background.width,
 					(int)dock_background.height, Gtk.PositionType.BOTTOM,
 					new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ()));
 			}
@@ -292,13 +292,13 @@ namespace Gala
 			if (dock_window != null)
 				dock.width = dock_window.width;
 			
-			var bottom_offset = (int)(dock_renderer.BottomPadding / 10.0 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
 			dock.opacity = 255;
 			dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
 			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f) - bottom_offset;
 			
 			//add spacing on outer most items
-			var horiz_padding = (float) Math.ceil (dock_renderer.HorizPadding / 10.0 * dock_settings.IconSize + layout.spacing / 2.0);
+			var horiz_padding = (float) Math.ceil (dock_theme.HorizPadding / 10.0 * dock_settings.IconSize + layout.spacing / 2.0);
 			dock.get_first_child ().margin_left = horiz_padding;
 			dock.get_last_child ().margin_right = horiz_padding;
 			
