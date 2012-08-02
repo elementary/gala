@@ -294,11 +294,11 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			Utils.set_input_area (screen, InputArea.FULLSCREEN);
-			plugin.begin_modal ();
-			
 			visible = true;
 			grab_key_focus ();
+			
+			Utils.set_input_area (screen, InputArea.FULLSCREEN);
+			plugin.begin_modal ();
 			
 			if (wait) {
 				timeout = Timeout.add (1000, () => {

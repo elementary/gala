@@ -61,11 +61,15 @@ namespace Gala
 		{
 			unowned Rectangle rect = window.get_outer_rect ();
 			
-			//FIXME need to subtract 10 here to remove jump for most windows, but adds jump for maximized windows
+			//FIXME need to subtract 10 here to remove jump for most windows, but adds jump for maximized ones
 			float delta = (window.maximized_horizontally || window.maximized_vertically)?0:10;
 			
 			float dest_x = rect.x - delta;
 			float dest_y = rect.y - delta;
+			
+			//stop all running animations
+			detach_animation ();
+			icon.detach_animation ();
 			
 			icon.animate (Clutter.AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f)
 				.completed.connect ( () => {
