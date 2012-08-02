@@ -8,6 +8,7 @@ Build-Depends: cmake (>= 2.8),
                libbamf3-dev,
                libclutter-gtk-1.0-dev,
                libgranite-dev,
+               libplank-dev,
                libmutter-dev,
                valac-0.16 | valac (>= 0.16)
 Standards-Version: 3.9.2
