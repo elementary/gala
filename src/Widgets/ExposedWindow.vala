@@ -19,7 +19,7 @@ using Meta;
 
 namespace Gala
 {
-	public class ExposedWindow : Clutter.Group
+	public class ExposedWindow : Clutter.Actor
 	{
 		public weak Window window;
 		Clutter.Clone clone;
@@ -51,7 +51,7 @@ namespace Gala
 		
 		public override bool button_press_event (Clutter.ButtonEvent event)
 		{
-			raise_top ();
+			get_parent ().set_child_above_sibling (this, null);
 			selected (window);
 			
 			return true;
