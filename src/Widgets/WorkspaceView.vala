@@ -199,13 +199,21 @@ namespace Gala
 		
 		void switch_to_next_workspace (MotionDirection direction)
 		{
-			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
-			
 			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
 			
-			if (neighbor == null)
+			//mutter always returns a valid workspace, so we have to figure out ourselves if it was the last/first one
+			//and then do our animation
+			var idx = screen.get_active_workspace ().index () + (direction == MotionDirection.LEFT ? -1 : 1);
+			if (idx < 0 || idx > screen.n_workspaces - 1) {
+				var dest = direction == MotionDirection.LEFT ? 32.0f : -32.0f;
+				Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
+				Clutter.Threads.Timeout.add (210, () => {
+					Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
+					return false;
+				});
 				return;
+			}
 			
 			neighbor.activate (display.get_current_time ());
 		}
