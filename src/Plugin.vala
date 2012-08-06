@@ -39,6 +39,7 @@ namespace Gala
 	{
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
+		Zooming zooming;
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -77,8 +78,11 @@ namespace Gala
 			
 			winswitcher = new WindowSwitcher (this);
 			
+			zooming = new Zooming (this);
+			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
+			stage.add_child (zooming);
 			
 			/*keybindings*/
 			
@@ -87,6 +91,12 @@ namespace Gala
 			});
 			screen.get_display ().add_keybinding ("move-to-workspace-last", BehaviorSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
+			});
+			screen.get_display ().add_keybinding ("zoom-in", BehaviorSettings.get_default ().schema, 0, () => {
+				zooming.zoom (true);
+			});
+			screen.get_display ().add_keybinding ("zoom-out", BehaviorSettings.get_default ().schema, 0, () => {
+				zooming.zoom (false);
 			});
 			
 			screen.get_display ().overlay_key.connect (() => {

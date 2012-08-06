@@ -65,6 +65,16 @@
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
+		<key type="as" name="zoom-in">
+			<default><![CDATA[['<Super>plus', '<Super>KP_Add']]]></default>
+			<summary>Zoom in</summary>
+			<description></description>
+		</key>
+		<key type="as" name="zoom-out">
+			<default><![CDATA[['<Super>minus', 'KP_Subtract']]]></default>
+			<summary>Zoom out</summary>
+			<description></description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="gala">
