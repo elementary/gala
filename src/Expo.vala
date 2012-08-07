@@ -22,11 +22,12 @@ namespace Gala
 {
 	public class Expo : Actor
 	{
-		
 		Plugin plugin;
 		Screen screen;
 		
 		bool ready;
+		
+		static const int PADDING = 50;
 		
 		public Expo (Plugin _plugin)
 		{
@@ -89,6 +90,7 @@ namespace Gala
 				used_windows.append (w);
 			});
 			
+			//sort our windows
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
 			
 			var n_windows = used_windows.length ();
@@ -97,13 +99,13 @@ namespace Gala
 			
 			grab_key_focus ();
 			
-			var rows = (int)Math.ceilf (Math.sqrtf (n_windows));
-			var cols = (int)Math.ceilf (n_windows / (float)rows);
-			
 			plugin.begin_modal ();
 			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			
 			visible = true;
+			
+			var rows = (int)Math.ceilf (Math.sqrtf (n_windows));
+			var cols = (int)Math.ceilf (n_windows / (float)rows);
 			
 			var i = 0;
 			windows.foreach ((w) => {
@@ -127,32 +129,37 @@ namespace Gala
 				float dest_x, dest_y, max_width, max_height;
 				
 				if (n_windows > POSITIONS.length[0]) {
-					max_width  = workarea.width  / cols - 50;
-					max_height = workarea.height / rows - 50;
+					max_width  = workarea.width  / cols - PADDING;
+					max_height = workarea.height / rows - PADDING;
 					
-					dest_x = workarea.x + workarea.width  * ((i % rows) / (float)rows);
-					dest_y = workarea.y + workarea.height * Math.floorf ((i / (float)rows)) / (float)cols;
+					dest_x = workarea.x + workarea.width  * (i % rows / (float)rows);
+					dest_y = workarea.y + workarea.height * Math.floorf (i / (float)rows) / cols;
 				} else {
-					max_width  = workarea.width  * POSITIONS[n_windows-1,i,2] - 50;
-					max_height = workarea.height * POSITIONS[n_windows-1,i,3] - 50;
+					max_width  = workarea.width  * POSITIONS[n_windows-1,i,2] - PADDING;
+					max_height = workarea.height * POSITIONS[n_windows-1,i,3] - PADDING;
 					
 					dest_x = workarea.x + workarea.width  * POSITIONS[n_windows-1,i,0];
 					dest_y = workarea.y + workarea.height * POSITIONS[n_windows-1,i,1];
 				}
 				
+				//if the window doesnt fit at full size, scale it down
 				if (dest_w > max_width || dest_h > max_height) {
 					var aspect = (max_width / dest_w < max_height / dest_h) ? max_width / dest_w : max_height / dest_h;
+					
 					dest_w = dest_w * aspect;
 					dest_h = dest_h * aspect;
 					scale_x = (dest_w) / actor.width;
 					scale_y = (dest_h) / actor.height;
 				}
 				
-				dest_x += max_width  / 2 - dest_w / 2; //center them
+				//center the windows in their rects
+				dest_x += max_width  / 2 - dest_w / 2;
 				dest_y += max_height / 2 - dest_h / 2;
 				
-				clone.icon.x = dest_x + (clone.width * scale_x) / 2 - clone.icon.width/2;
-				clone.icon.y = dest_y + clone.height*scale_y - 30;
+				// place the windows icon, it is outside the window's actor since the whole actor is scaled and if 
+				// we'd 'counter'-scale the icon it will look blurry
+				clone.icon.x = dest_x + (clone.width * scale_x) / 2 - clone.icon.width / 2;
+				clone.icon.y = dest_y + clone.height * scale_y - 30;
 				clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 				
 				if (animate) {
@@ -169,6 +176,8 @@ namespace Gala
 					
 					clone.icon.scale_x = 1.0f;
 					clone.icon.scale_y = 1.0f;
+					
+					ready = true;
 				}
 				
 				add_child (clone);
