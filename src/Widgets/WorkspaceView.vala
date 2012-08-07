@@ -222,20 +222,35 @@ namespace Gala
 			return false;
 		}
 		
+		uint last_time = -1;
+		bool released = false;
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
+			var display = screen.get_display ();
+			
+			if (!released && display.get_current_time_roundtrip () < (last_time + AnimationSettings.get_default ().workspace_switch_duration))
+				return false;
+			
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.LEFT);
+						plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
 						switch_to_next_workspace (MotionDirection.LEFT);
+					
+					released = false;
+					last_time = display.get_current_time_roundtrip ();
+					
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.RIGHT);
+						plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
 						switch_to_next_workspace (MotionDirection.RIGHT);
+					
+					released = false;
+					last_time = display.get_current_time_roundtrip ();
+					
 					return false;
 				default:
 					break;
@@ -246,6 +261,8 @@ namespace Gala
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
+			released = true;
+			
 			if (event.keyval == Clutter.Key.Alt_L || 
 				event.keyval == Clutter.Key.Super_L || 
 				event.keyval == Clutter.Key.Control_L || 
@@ -352,8 +369,11 @@ namespace Gala
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
 			
+			var wins = Compositor.get_window_group_for_screen (screen);
+			wins.detach_animation ();
+			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : (area.height + area.y) - height);
-			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
+			wins.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
 		}
 		
 		public new void hide ()
@@ -376,7 +396,9 @@ namespace Gala
 			
 			click_catcher.visible = false;
 			
-			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
+			var wins = Compositor.get_window_group_for_screen (screen);
+			wins.detach_animation ();
+			wins.animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
 		}
 		
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
