@@ -82,7 +82,6 @@ namespace Gala
 			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
-			stage.add_child (zooming);
 			
 			/*keybindings*/
 			

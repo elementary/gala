@@ -71,7 +71,7 @@
 			<description></description>
 		</key>
 		<key type="as" name="zoom-out">
-			<default><![CDATA[['<Super>minus', 'KP_Subtract']]]></default>
+			<default><![CDATA[['<Super>minus', '<Super>KP_Subtract']]]></default>
 			<summary>Zoom out</summary>
 			<description></description>
 		</key>

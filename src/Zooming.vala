@@ -20,83 +20,36 @@ using Meta;
 
 namespace Gala
 {
-	
-	public class Zooming : Clutter.Actor
+
+	public class Zooming : Object
 	{
 		
 		Plugin plugin;
 		
+		bool active;
+		uint mouse_poll;
+		
 		public Zooming (Plugin _plugin)
 		{
 			plugin = _plugin;
-			var stage = Compositor.get_stage_for_screen (plugin.get_screen ());
 			
-			visible = false;
-			reactive = true;
-			
-			add_constraint (new BindConstraint (stage, BindCoordinate.WIDTH, 0));
-			add_constraint (new BindConstraint (stage, BindCoordinate.HEIGHT, 0));
-			
-		}
-		
-		public override bool key_press_event (Clutter.KeyEvent event)
-		{
-			switch (event.keyval) {
-				case Key.Escape:
-					end ();
-					
-					return true;
-				case Key.plus:
-				case Key.KP_Add:
-					zoom (true);
-					
-					return true;
-				case Key.KP_Subtract:
-				case Key.minus:
-					zoom (false);
-					
-					return true;
-			}
-			
-			return false;
-		}
-		
-		public override bool button_release_event (ButtonEvent event)
-		{
-			end ();
-			
-			return true;
-		}
-		
-		public override void key_focus_out ()
-		{
-			end ();
-		}
-		
-		public override bool motion_event (Clutter.MotionEvent event)
-		{
-			var wins = Compositor.get_window_group_for_screen (plugin.get_screen ());
-			wins.scale_center_x = event.x * (1 / (float)scale_x);
-			wins.scale_center_y = event.y * (1 / (float)scale_x);
-			
-			return true;
+			active = false;
 		}
 		
 		void end ()
 		{
-			if (!visible)
+			if (!active)
 				return;
 			
-			visible = false;
+			active = false;
 			
 			var wins = Compositor.get_window_group_for_screen (plugin.get_screen ());
 			wins.animate (AnimationMode.EASE_OUT_CUBIC, 300, scale_x:1.0, scale_y:1.0).completed.connect (() => {
 				wins.scale_center_x = 0.0f;
 				wins.scale_center_y = 0.0f;
 			});
-			plugin.end_modal ();
 			
-			plugin.update_input_area ();
+			Source.remove (mouse_poll);
 		}
 		
 		public void zoom (bool in)
@@ -104,21 +57,26 @@ namespace Gala
 			var wins = Compositor.get_window_group_for_screen (plugin.get_screen ());
 			
 			//setup things
-			if (in && !visible) {
-				plugin.begin_modal ();
-				grab_key_focus ();
-				
+			if (in && !active) {
 				int mx, my;
 				Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, out mx, out my);
 				wins.scale_center_x = mx;
 				wins.scale_center_y = my;
 				
-				visible = true;
-				get_parent ().set_child_above_sibling (this, null);
-				Utils.set_input_area (plugin.get_screen (), InputArea.FULLSCREEN);
+				active = true;
+				
+				mouse_poll = Timeout.add (50, () => {
+					float x, y;
+					Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, out x, out y);
+					
+					wins.animate (Clutter.AnimationMode.LINEAR, 50, scale_center_x : x);
+					wins.animate (Clutter.AnimationMode.LINEAR, 50, scale_center_y : y);
+					
+					return true;
+				});
 			}
 			
-			if (!visible)
+			if (!active)
 				return;
 			
 			var new_val = wins.scale_x - ( in ? -0.5 : 0.5);
