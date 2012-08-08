@@ -381,6 +381,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			actor.show ();
 			
 			switch (window.window_type) {
@@ -454,6 +455,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			destroying.add (actor);
 			
 			switch (window.window_type) {
