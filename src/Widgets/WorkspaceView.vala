@@ -27,8 +27,7 @@ namespace Gala
 		Screen screen;
 		
 		Clutter.Actor thumbnails;
-		Clutter.CairoTexture background;
-		Clutter.CairoTexture scroll;
+		Clutter.Actor scroll;
 		Clutter.Actor click_catcher; //invisible plane that catches clicks outside the view
 		
 		bool animating; // delay closing the popup
@@ -58,16 +57,13 @@ namespace Gala
 			(thumbnails.layout_manager as Clutter.BoxLayout).spacing = 12;
 			(thumbnails.layout_manager as Clutter.BoxLayout).homogeneous = true;
 			
-			background = new Clutter.CairoTexture (500, (uint)height);
-			background.auto_resize = true;
-			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
-			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
-			background.draw.connect (draw_background);
+			content = new Clutter.Canvas ();
+			(content as Clutter.Canvas).draw.connect (draw_background);
 			
-			scroll = new Clutter.CairoTexture (100, 12);
+			scroll = new Clutter.Actor ();
 			scroll.height = 12;
-			scroll.auto_resize = true;
-			scroll.draw.connect (draw_scroll);
+			scroll.content = new Clutter.Canvas ();
+			(scroll.content as Clutter.Canvas).draw.connect (draw_scroll);
 			
 			click_catcher = new Clutter.Actor ();
 			click_catcher.reactive = true;
@@ -77,7 +73,6 @@ namespace Gala
 			});
 			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
 			
-			add_child (background);
 			add_child (thumbnails);
 			add_child (scroll);
 			
@@ -125,6 +120,10 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
 			background_style.render_background (cr, 0, 0, width, height);
 			background_style.render_frame (cr, 0, 0, width, height);
 			
@@ -133,6 +132,10 @@ namespace Gala
 		
 		bool draw_scroll (Cairo.Context cr)
 		{
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
 			cr.set_source_rgba (1, 1, 1, 0.8);
 			cr.fill ();
@@ -192,6 +195,7 @@ namespace Gala
 				if (thumbnails.x + thumbnails.width < width)
 					thumbnails.x = width - thumbnails.width;
 				scroll.width = width / thumbnails.width * width;
+				(scroll.content as Clutter.Canvas).set_size ((int)scroll.width, 12);
 			} else {
 				thumbnails.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x : width / 2 - thumbnails.width / 2);
 			}
@@ -338,6 +342,7 @@ namespace Gala
 			y = area.height + area.y;
 			x = area.x;
 			width = area.width;
+			(content as Clutter.Canvas).set_size ((int)width, (int)height);
 			
 			thumbnails.get_children ().foreach ((thumb) => {
 				thumb.show ();
