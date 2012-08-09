@@ -8,8 +8,8 @@ Build-Depends: cmake (>= 2.8),
                libbamf3-dev,
                libclutter-gtk-1.0-dev,
                libgranite-dev,
-               libplank-dev,
                libmutter-dev,
+               libplank-dev,
                valac-0.16 | valac (>= 0.16)
 Standards-Version: 3.9.2
 Homepage: <insert the upstream URL, if relevant>
@@ -17,6 +17,7 @@ Homepage: <insert the upstream URL, if relevant>
 Package: gala
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
+Pre-Depends: dpkg (>= 1.15.6)
 Provides: x-window-manager
 Description: elementary's Window Manager
  Gala is a window & compositing manager based on libmutter and designed
