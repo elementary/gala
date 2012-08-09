@@ -12,7 +12,7 @@ Build-Depends: cmake (>= 2.8),
                libplank-dev,
                valac-0.16 | valac (>= 0.16)
 Standards-Version: 3.9.2
-Homepage: <insert the upstream URL, if relevant>
+Homepage: https://launchpad.net/gala
 
 Package: gala
 Architecture: any
