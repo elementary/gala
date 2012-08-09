@@ -376,6 +376,7 @@ namespace Gala
 			
 			var wins = Compositor.get_window_group_for_screen (screen);
 			wins.detach_animation ();
+			wins.x = 0.0f;
 			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : (area.height + area.y) - height);
 			wins.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
@@ -403,6 +404,7 @@ namespace Gala
 			
 			var wins = Compositor.get_window_group_for_screen (screen);
 			wins.detach_animation ();
+			wins.x = 0.0f;
 			wins.animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
 		}
 		
