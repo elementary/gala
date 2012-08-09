@@ -28,6 +28,7 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends: gala (= ${binary:Version}), ${misc:Depends}
+Pre-Depends: dpkg (>= 1.15.6)
 Enhances: gala
 Description: elementary's Window Manager (debugging symbols)
  Gala is a window & compositing manager based on libmutter and designed
