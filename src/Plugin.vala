@@ -254,8 +254,9 @@ namespace Gala
 					workspace_view.show ();
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
-					if (current == null)
+					if (current == null || current.window_type != WindowType.NORMAL)
 						break;
+					
 					if (current.get_maximized () == (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL))
 						current.unmaximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					else
