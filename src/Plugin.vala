@@ -262,7 +262,7 @@ namespace Gala
 						current.maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					break;
 				case ActionType.MINIMIZE_CURRENT:
-					if (current != null)
+					if (current != null && current.window_type == WindowType.NORMAL)
 						current.minimize ();
 					break;
 				case ActionType.OPEN_LAUNCHER:
