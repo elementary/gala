@@ -216,7 +216,8 @@ namespace Gala
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 			
-			selector_style.render_activity (cr, 0, 0, indicator.width, indicator.height);
+			selector_style.render_background (cr, 0, 0, indicator.width, indicator.height);
+			selector_style.render_frame (cr, 0, 0, indicator.width, indicator.height);
 			
 			return false;
 		}
