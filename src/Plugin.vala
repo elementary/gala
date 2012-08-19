@@ -300,7 +300,7 @@ namespace Gala
 			get_screen ().get_size (out width, out height);
 			
 			Rectangle icon = {};
-			if (false && actor.get_meta_window ().get_icon_geometry (icon)) {
+			if (false && actor.get_meta_window ().get_icon_geometry (out icon)) {
 				
 				float scale_x  = (float)icon.width  / actor.width;
 				float scale_y  = (float)icon.height / actor.height;
