@@ -932,6 +932,7 @@ namespace Meta {
 		MOVE_TO_SIDE_E,
 		MOVE_TO_SIDE_W,
 		MOVE_TO_CENTER,
+		OVERLAY_KEY,
 		LAST
 	}
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_", type_id = "meta_key_binding_flags_get_type ()")]
