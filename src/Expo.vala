@@ -65,12 +65,12 @@ namespace Gala
 		const int MAX_TRANSLATIONS = 5000;
 		const int ACCURACY = 20;
 		const int BORDER = 10;
-		const int TOP = 20;
+		const int TOP_GAP = 20;
 		const bool use_more_screen = true;
 		
 		int[] rect_center (Meta.Rectangle rect)
 		{
-			return {rect.width / 2, rect.height / 2};
+			return {rect.x + rect.width / 2, rect.y + rect.height / 2};
 		}
 		Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
 		{
@@ -84,78 +84,93 @@ namespace Gala
 				return (int)(a as ExposedWindow).window.get_stable_sequence () - (int)(b as ExposedWindow).window.get_stable_sequence ();
 			});
 			
-			//get a working area
-			var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			var ratio = monitor.width / (float)monitor.height;
-			var x_gap = Math.fmaxf (BORDER, TOP * ratio);
-			var y_gap = Math.fmaxf (BORDER / ratio, TOP);
-			Meta.Rectangle area = {(int)Math.floorf (monitor.x + x_gap / 2), 
-			                       (int)Math.floorf (monitor.y + y_gap / 2), 
-			                       (int)Math.floorf (monitor.width - x_gap), 
-			                       (int)Math.floorf (monitor.height - y_gap)};
+			// Put a gap on the right edge of the workspace to separe it from the workspace selector
+			var geom = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			var ratio = geom.width / (float)geom.height;
+			var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
+			var y_gap = Math.fmaxf (BORDER / ratio, TOP_GAP);
+			Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
+			                       (int)Math.floorf (geom.y + 20 + y_gap), 
+			                       (int)Math.floorf (geom.width - x_gap), 
+			                       (int)Math.floorf (geom.height - 80 - y_gap)};
 			
-			//get a copy
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 			
 			var direction = 0;
 			var directions = new List<int> ();
 			var rects = new List<Meta.Rectangle?> ();
-			foreach (var clone in clones) {
-				var rect = (clone as ExposedWindow).window.get_outer_rect ();
-				rects.append (rect);
-				bounds = bounds.union (rect);
+			for (var i = 0; i < clones.length (); i++) {
+				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
+				var rect = (clones.nth_data (i) as ExposedWindow).window.get_outer_rect ();
+				rects.append ({rect.x, rect.y, rect.width, rect.height});
+				bounds = bounds.union (rects.nth_data (i));
 				
+				// This is used when the window is on the edge of the screen to try to use as much screen real estate as possible.
 				directions.append (direction);
 				direction ++;
-				if (direction  == 4)
+				if (direction == 4) {
 					direction = 0;
+				}
 			}
 			
-			int loop_counter = 0;
-			bool overlap = false;
+			var loop_counter = 0;
+			var overlap = false;
 			do {
 				overlap = false;
-				for (var i=0;i<rects.length ();i++) {
-					for (var j=0;j<rects.length ();j++) {
-						if (i != j &&
-							rect_adjusted (rects.nth_data (i), -GAPS, -GAPS, GAPS, GAPS).overlap (
+				for (var i = 0; i < rects.length (); i++) {
+					for (var j = 0; j < rects.length (); j++) {
+						if (i != j && rect_adjusted(rects.nth_data (i), -GAPS, -GAPS, GAPS, GAPS).overlap (
 							rect_adjusted (rects.nth_data (j), -GAPS, -GAPS, GAPS, GAPS))) {
 							loop_counter ++;
 							overlap = true;
 							
-							var i_center = rect_center (rects.nth_data (i));
-							var j_center = rect_center (rects.nth_data (j));
+							// Determine pushing direction
+							int[] i_center = rect_center (rects.nth_data (i));
+							int[] j_center = rect_center (rects.nth_data (j));
 							int[] diff = {j_center[0] - i_center[0], j_center[1] - i_center[1]};
 							
+							// Prevent dividing by zero and non-movement
 							if (diff[0] == 0 && diff[1] == 0)
 								diff[0] = 1;
-							
-							if (bounds.height / (float)bounds.width > area.height / (float)area.width)
+							// Try to keep screen/workspace aspect ratio
+							if (bounds.height / bounds.width > area.height / area.width)
 								diff[0] *= 2;
 							else
 								diff[1] *= 2;
 							
+							// Approximate a vector of between 10px and 20px in magnitude in the same direction
 							var length = Math.sqrtf (diff[0] * diff[0] + diff[1] * diff[1]);
 							diff[0] = (int)Math.floorf (diff[0] * ACCURACY / length);
 							diff[1] = (int)Math.floorf (diff[1] * ACCURACY / length);
 							
+							// Move both windows apart
 							rects.nth_data (i).x += -diff[0];
 							rects.nth_data (i).y += -diff[1];
 							rects.nth_data (j).x += diff[0];
 							rects.nth_data (j).y += diff[1];
 							
 							if (use_more_screen) {
-								var x_section = Math.round ((rects.nth_data (i).x - bounds.x) / (bounds.width  / 3.0f));
-								var y_section = Math.round ((rects.nth_data (i).y - bounds.y) / (bounds.height / 3.0f));
-								
+								// Try to keep the bounding rect the same aspect as the screen so that more
+								// screen real estate is utilised. We do this by splitting the screen into nine
+								// equal sections, if the window center is in any of the corner sections pull the
+								// window towards the outer corner. If it is in any of the other edge sections
+								// alternate between each corner on that edge. We don't want to determine it
+								// randomly as it will not produce consistant locations when using the filter.
+								// Only move one window so we don't cause large amounts of unnecessary zooming
+								// in some situations. We need to do this even when expanding later just in case
+								// all windows are the same size.
+								// (We are using an old bounding rect for this, hopefully it doesn't matter)
+								var x_section = Math.roundf ((rects.nth_data (i).x - bounds.x) / (bounds.width / 3.0f));
+								var y_section = Math.roundf ((rects.nth_data (j).y - bounds.y) / (bounds.height / 3.0f));
+
 								i_center = rect_center (rects.nth_data (i));
 								diff[0] = 0;
 								diff[1] = 0;
-								if (x_section != 1 || y_section != 1) {
+								if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
 									if (x_section == 1)
-										x_section = directions.nth_data (i) / 2 == 1 ? 2 : 0;
+										x_section = (directions.nth_data (i) / 2 == 1 ? 2 : 0);
 									if (y_section == 1)
-										y_section = directions.nth_data (i) % 2 == 1 ? 2 : 0;
+										y_section = (directions.nth_data (i) % 2 == 1 ? 2 : 0);
 								}
 								if (x_section == 0 && y_section == 0) {
 									diff[0] = bounds.x - i_center[0];
@@ -174,45 +189,50 @@ namespace Gala
 									diff[1] = bounds.y + bounds.height - i_center[1];
 								}
 								if (diff[0] != 0 || diff[1] != 0) {
-									length = Math.sqrtf (diff[0] * diff[0] + diff[1] * diff[1]);
-									diff[0] *= (int)Math.floorf (ACCURACY / length / 2.0f);
+									length = Math.sqrtf (diff[0]*diff[0] + diff[1]*diff[1]);
+									diff[0] *= (int)Math.floorf (ACCURACY / length / 2.0f);   // /2 to make it less influencing than the normal center-move above
 									diff[1] *= (int)Math.floorf (ACCURACY / length / 2.0f);
 									rects.nth_data (i).x += diff[0];
 									rects.nth_data (i).y += diff[1];
 								}
 							}
 							
-							bounds = bounds.union (rects.nth_data (i));
-							bounds = bounds.union (rects.nth_data (j));
+							// Update bounding rect
+							bounds = bounds.union(rects.nth_data (i));
+							bounds = bounds.union(rects.nth_data (j));
 						}
 					}
 				}
 			} while (overlap && loop_counter < MAX_TRANSLATIONS);
 			
-			var scale = Math.fminf (Math.fminf (area.width / (float)bounds.width, area.height / (float)bounds.height), 1.0f);
-			bounds.x = (int)Math.floorf (bounds.x - (area.width - bounds.width * scale) / 2.0f);
-			bounds.y = (int)Math.floorf (bounds.y - (area.height - bounds.height * scale) / 2.0f);
+			// Work out scaling by getting the most top-left and most bottom-right window coords.
+			float scale = Math.fminf (Math.fminf (area.width / (float)bounds.width, area.height / (float)bounds.height), 1.0f);
+			
+			// Make bounding rect fill the screen size for later steps
+			bounds.x = (int)Math.floorf (bounds.x - (area.width - bounds.width * scale) / 2);
+			bounds.y = (int)Math.floorf (bounds.y - (area.height - bounds.height * scale) / 2);
 			bounds.width = (int)Math.floorf (area.width / scale);
 			bounds.height = (int)Math.floorf (area.height / scale);
 			
-			foreach (var rect in rects) {
-				rect.x += -bounds.x;
-				rect.y += -bounds.y;
+			// Move all windows back onto the screen and set their scale
+			for (var i = 0; i < rects.length (); i++) {
+				rects.nth_data (i).x += -bounds.x;
+				rects.nth_data (i).y += -bounds.y;
 			}
 			
-			for (var i=0;i<rects.length ();i++) {
-				var rect = rects.nth_data (i);
+			
+			for (var i = 0; i < rects.length (); i++) {
+				rects.nth_data (i).x = (int)Math.floorf (rects.nth_data (i).x * scale + area.x);
+				rects.nth_data (i).y = (int)Math.floorf (rects.nth_data (i).y * scale + area.y);
+				
 				var clone = clones.nth_data (i) as ExposedWindow;
 				
-				rect.x = (int)Math.floorf (rect.x * scale + area.x);
-				rect.y = (int)Math.floorf (rect.y * scale + area.y);
-				
 				//animate the windows and icons to the calculated positions
-				clone.icon.x = rect.x + Math.floorf (clone.width * scale / 2.0f - clone.icon.width / 2.0f);
-				clone.icon.y = rect.x + Math.floorf (clone.height * scale - 30.0f);
+				clone.icon.x = rects.nth_data (i).x + Math.floorf (clone.width * scale / 2.0f - clone.icon.width / 2.0f);
+				clone.icon.y = rects.nth_data (i).y + Math.floorf (clone.height * scale - 30.0f);
 				clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 				
-				clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:scale, scale_y:scale, x:rect.x+1.0f, y:rect.y+1.0f)
+				clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:scale, scale_y:scale, x:rects.nth_data (i).x+0.0f, y:rects.nth_data (i).y+0.0f)
 					.completed.connect (() => ready = true );
 				clone.icon.opacity = 0;
 				clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
