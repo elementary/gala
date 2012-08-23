@@ -232,8 +232,8 @@ namespace Gala
 				clone.icon.y = rects.nth_data (i).y + Math.floorf (clone.height * scale - 50.0f);
 				clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 				
-				clone.close_button.x = rects.nth_data (i).x - 12;
-				clone.close_button.y = rects.nth_data (i).y - 12;
+				clone.close_button.x = rects.nth_data (i).x - 10;
+				clone.close_button.y = rects.nth_data (i).y - 10;
 				
 				clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:scale, scale_y:scale, x:rects.nth_data (i).x+0.0f, y:rects.nth_data (i).y+0.0f)
 					.completed.connect (() => ready = true );
