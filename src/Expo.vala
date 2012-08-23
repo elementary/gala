@@ -61,7 +61,7 @@ namespace Gala
 		 * Code borrowed from native window placement GS extension
 		 * http://git.gnome.org/browse/gnome-shell-extensions/tree/extensions/native-window-placement/extension.js
 		 **/
-		const int GAPS = 5;
+		const int GAPS = 15;
 		const int MAX_TRANSLATIONS = 5000;
 		const int ACCURACY = 20;
 		const int BORDER = 10;
@@ -92,7 +92,7 @@ namespace Gala
 			Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
 			                       (int)Math.floorf (geom.y + 20 + y_gap), 
 			                       (int)Math.floorf (geom.width - x_gap), 
-			                       (int)Math.floorf (geom.height - 80 - y_gap)};
+			                       (int)Math.floorf (geom.height - 100 - y_gap)};
 			
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 			
@@ -229,8 +229,11 @@ namespace Gala
 				
 				//animate the windows and icons to the calculated positions
 				clone.icon.x = rects.nth_data (i).x + Math.floorf (clone.width * scale / 2.0f - clone.icon.width / 2.0f);
-				clone.icon.y = rects.nth_data (i).y + Math.floorf (clone.height * scale - 30.0f);
+				clone.icon.y = rects.nth_data (i).y + Math.floorf (clone.height * scale - 50.0f);
 				clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
+				
+				clone.close_button.x = rects.nth_data (i).x - 12;
+				clone.close_button.y = rects.nth_data (i).y - 12;
 				
 				clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:scale, scale_y:scale, x:rects.nth_data (i).x+0.0f, y:rects.nth_data (i).y+0.0f)
 					.completed.connect (() => ready = true );
@@ -284,11 +287,19 @@ namespace Gala
 				clone.y = actor.y;
 				
 				clone.selected.connect (selected);
+				clone.reposition.connect (reposition);
 				
 				add_child (clone);
 			}
 			
 			calculate_places (get_children ());
+		}
+		
+		void reposition (ExposedWindow removed)
+		{
+				var children = get_children ().copy ();
+				children.remove (removed);
+				calculate_places (children);
 		}
 		
 		void selected (Window window)

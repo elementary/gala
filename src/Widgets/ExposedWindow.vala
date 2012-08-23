@@ -16,16 +16,19 @@
 // 
 
 using Meta;
+using Clutter;
 
 namespace Gala
 {
-	public class ExposedWindow : Clutter.Actor
+	public class ExposedWindow : Actor
 	{
 		public weak Window window;
-		Clutter.Clone clone;
+		Clone clone;
 		public GtkClutter.Texture icon;
+		public GtkClutter.Texture close_button;
 		
 		public signal void selected (Window window);
+		public signal void reposition ();
 		
 		public ExposedWindow (Window _window)
 		{
@@ -34,23 +37,77 @@ namespace Gala
 			reactive = true;
 			
 			var actor = window.get_compositor_private () as WindowActor;
-			clone = new Clutter.Clone (actor.get_texture ());
+			clone = new Clone (actor.get_texture ());
 			
 			icon = new GtkClutter.Texture ();
 			icon.scale_x = 0.0f;
 			icon.scale_y = 0.0f;
-			icon.scale_gravity = Clutter.Gravity.CENTER;
+			icon.scale_gravity = Gravity.CENTER;
 			
 			try {
 				icon.set_from_pixbuf (Utils.get_icon_for_window (window, 64));
 			} catch (Error e) { warning (e.message); }
 			
+			close_button = new GtkClutter.Texture ();
+			close_button.reactive = true;
+			close_button.visible = false;
+			close_button.scale_x = 0.0f;
+			close_button.scale_y = 0.0f;
+			close_button.scale_gravity = Gravity.CENTER;
+			close_button.button_press_event.connect (close_clicked);
+			
+			try {
+				close_button.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
+			} catch (Error e) { warning (e.message); }
+			
 			add_child (clone);
 			
-			Compositor.get_stage_for_screen (window.get_screen ()).add_child (icon);
+			var stage = Compositor.get_stage_for_screen (window.get_screen ());
+			stage.add_child (icon);
+			stage.add_child (close_button);
 		}
 		
-		public override bool button_press_event (Clutter.ButtonEvent event)
+		bool close_clicked (ButtonEvent event)
+		{
+			if (event.button != 1)
+				return false;
+			
+			//make sure we dont see a window closing animation in the background
+			(window.get_compositor_private () as Actor).opacity = 0;
+			get_parent ().set_child_below_sibling (this, null);
+			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
+				destroy ();
+				window.delete (window.get_screen ().get_display ().get_current_time ());
+			});
+			
+			close_button.destroy ();
+			icon.destroy ();
+			
+			reposition ();
+			
+			return true;
+		}
+		
+		public override bool enter_event (CrossingEvent event)
+		{
+			close_button.visible = true;
+			close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
+			
+			return true;
+		}
+		
+		public override bool leave_event (CrossingEvent event)
+		{
+			if (event.related == close_button)
+				return false;
+			
+			close_button.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x : 0.0f, scale_y : 0.0f)
+				.completed.connect (() => close_button.visible = false );
+			
+			return true;
+		}
+		
+		public override bool button_press_event (ButtonEvent event)
 		{
 			get_parent ().set_child_above_sibling (this, null);
 			selected (window);
@@ -60,7 +117,7 @@ namespace Gala
 		
 		public void close (bool do_animate=true)
 		{
-			unowned Rectangle rect = window.get_outer_rect ();
+			unowned Meta.Rectangle rect = window.get_outer_rect ();
 			
 			//FIXME need to subtract 10 here to remove jump for most windows, but adds jump for maximized ones
 			float delta = window.maximized_horizontally || window.maximized_vertically ? 0 : 10;
@@ -73,20 +130,22 @@ namespace Gala
 			icon.detach_animation ();
 			
 			if (do_animate) {
-				icon.animate (Clutter.AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f).completed.connect ( () => {
+				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f).completed.connect ( () => {
 					icon.destroy ();
 				});
 				
-				animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
-					(window.get_compositor_private () as Clutter.Actor).show ();
+				animate (AnimationMode.EASE_OUT_CUBIC, 250, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
+					(window.get_compositor_private () as Actor).show ();
 					destroy ();
 				});
 			} else {
-				(window.get_compositor_private () as Clutter.Actor).show ();
+				(window.get_compositor_private () as Actor).show ();
 				
 				destroy ();
 				icon.destroy ();
 			}
+			
+			close_button.destroy ();
 		}
 	}
 }
