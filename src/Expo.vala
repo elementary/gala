@@ -43,7 +43,7 @@ namespace Gala
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			//FIXME need to figure out the actual keycombo, for now leave it by default and others will close it by selecting a window!
-			if (event.keyval == Clutter.Key.e) {
+			if (event.keyval == Clutter.Key.e || event.keyval == Clutter.Key.Escape) {
 				close (true);
 				
 				return true;
@@ -256,11 +256,16 @@ namespace Gala
 			
 			var used_windows = new SList<Window> ();
 			
-			screen.get_active_workspace ().list_windows ().foreach ((w) => {
-				if (w.window_type != Meta.WindowType.NORMAL || w.minimized)
-					return;
-				used_windows.append (w);
-			});
+			foreach (var window in screen.get_active_workspace ().list_windows ()) {
+				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
+					(window.get_compositor_private () as Actor).hide ();
+					continue;
+				}
+				if (window.window_type == WindowType.DOCK)
+					continue;
+				
+				used_windows.append (window);
+			}
 			
 			var n_windows = used_windows.length ();
 			if (n_windows == 0)
@@ -330,11 +335,17 @@ namespace Gala
 					visible = false;
 					ready = true;
 					
+					foreach (var window in screen.get_active_workspace ().list_windows ())
+						(window.get_compositor_private () as Actor).show ();
+					
 					return false;
 				});
 			} else {
 				ready = true;
 				visible = false;
+				
+				foreach (var window in screen.get_active_workspace ().list_windows ())
+					(window.get_compositor_private () as Actor).show ();
 			}
 		}
 	}

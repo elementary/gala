@@ -29,9 +29,9 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes gee-1.0)
+pkg_check_modules(DEPS REQUIRED libmutter granite clutter-1.0 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 libplank)
 
-pkg_check_modules(MUTTER36 libmutter>=3.5.3)
+pkg_check_modules(MUTTER36 QUIET libmutter>=3.5.3)
 if (MUTTER36_FOUND)
 	set (GALAVALAFLAGS "--define=HAS_MUTTER36")
 endif (MUTTER36_FOUND)
@@ -62,12 +62,13 @@ vala_precompile(VALA_C
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite
+    libbamf3
     libmutter
+    plank
     clutter-gtk-1.0
     gdk-x11-3.0
     gdesktopenums-3.0
     xfixes-4.0
-    bamf
 OPTIONS
     -g
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/

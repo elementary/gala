@@ -445,7 +445,7 @@ namespace Meta {
 		public unowned string get_gtk_menubar_object_path ();
 		public unowned string get_gtk_unique_bus_name ();
 		public unowned string get_gtk_window_object_path ();
-		public bool get_icon_geometry (Meta.Rectangle rect);
+		public bool get_icon_geometry (out Meta.Rectangle rect);
 		public Meta.Rectangle get_input_rect ();
 		public Meta.StackLayer get_layer ();
 		public Meta.MaximizeFlags get_maximized ();
@@ -677,11 +677,11 @@ namespace Meta {
 		public Meta.Rectangle rect;
 		public Meta.Side side;
 	}
-	[CCode (cheader_filename = "meta/display.h", cprefix = "META_ATOM_")]
+	[CCode (cheader_filename = "meta/display.h", cprefix = "META_ATOM_", type_id = "meta_atom_get_type ()")]
 	public enum Atom {
 		FIRST
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_BUTTON_FUNCTION_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_BUTTON_FUNCTION_", type_id = "meta_button_function_get_type ()")]
 	public enum ButtonFunction {
 		MENU,
 		MINIMIZE,
@@ -695,7 +695,7 @@ namespace Meta {
 		UNSTICK,
 		LAST
 	}
-	[CCode (cheader_filename = "meta/compositor.h", cprefix = "META_COMP_EFFECT_")]
+	[CCode (cheader_filename = "meta/compositor.h", cprefix = "META_COMP_EFFECT_", type_id = "meta_comp_effect_get_type ()")]
 	public enum CompEffect {
 		CREATE,
 		UNMINIMIZE,
@@ -703,7 +703,7 @@ namespace Meta {
 		MINIMIZE,
 		NONE
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_CURSOR_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_CURSOR_", type_id = "meta_cursor_get_type ()")]
 	public enum Cursor {
 		DEFAULT,
 		NORTH_RESIZE,
@@ -717,7 +717,7 @@ namespace Meta {
 		MOVE_OR_RESIZE_WINDOW,
 		BUSY
 	}
-	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_")]
+	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_", type_id = "meta_debug_topic_get_type ()")]
 	[Flags]
 	public enum DebugTopic {
 		VERBOSE,
@@ -744,7 +744,7 @@ namespace Meta {
 		COMPOSITOR,
 		EDGE_RESISTANCE
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_", type_id = "meta_direction_get_type ()")]
 	[Flags]
 	public enum Direction {
 		LEFT,
@@ -756,18 +756,18 @@ namespace Meta {
 		HORIZONTAL,
 		VERTICAL
 	}
-	[CCode (cheader_filename = "meta/boxes.h", cprefix = "META_EDGE_")]
+	[CCode (cheader_filename = "meta/boxes.h", cprefix = "META_EDGE_", type_id = "meta_edge_type_get_type ()")]
 	public enum EdgeType {
 		WINDOW,
 		MONITOR,
 		SCREEN
 	}
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_EXIT_")]
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_EXIT_", type_id = "meta_exit_code_get_type ()")]
 	public enum ExitCode {
 		SUCCESS,
 		ERROR
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_FRAME_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_FRAME_", type_id = "meta_frame_flags_get_type ()")]
 	[Flags]
 	public enum FrameFlags {
 		ALLOWS_DELETE,
@@ -788,7 +788,7 @@ namespace Meta {
 		TILED_LEFT,
 		TILED_RIGHT
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_FRAME_TYPE_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_FRAME_TYPE_", type_id = "meta_frame_type_get_type ()")]
 	public enum FrameType {
 		NORMAL,
 		DIALOG,
@@ -801,7 +801,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h")]
 		public static unowned string to_string (Meta.FrameType type);
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_GRAB_OP_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_GRAB_OP_", type_id = "meta_grab_op_get_type ()")]
 	public enum GrabOp {
 		NONE,
 		MOVING,
@@ -843,14 +843,14 @@ namespace Meta {
 		CLICKING_UNSTICK,
 		COMPOSITOR
 	}
-	[CCode (cheader_filename = "meta/gradient.h", cprefix = "META_GRADIENT_")]
+	[CCode (cheader_filename = "meta/gradient.h", cprefix = "META_GRADIENT_", type_id = "meta_gradient_type_get_type ()")]
 	public enum GradientType {
 		VERTICAL,
 		HORIZONTAL,
 		DIAGONAL,
 		LAST
 	}
-	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEYBINDING_ACTION_")]
+	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEYBINDING_ACTION_", type_id = "meta_key_binding_action_get_type ()")]
 	public enum KeyBindingAction {
 		NONE,
 		WORKSPACE_1,
@@ -932,9 +932,10 @@ namespace Meta {
 		MOVE_TO_SIDE_E,
 		MOVE_TO_SIDE_W,
 		MOVE_TO_CENTER,
+		OVERLAY_KEY,
 		LAST
 	}
-	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_")]
+	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_", type_id = "meta_key_binding_flags_get_type ()")]
 	[Flags]
 	public enum KeyBindingFlags {
 		NONE,
@@ -943,19 +944,19 @@ namespace Meta {
 		REVERSES,
 		IS_REVERSED
 	}
-	[CCode (cheader_filename = "meta/util.h", cprefix = "META_LATER_")]
+	[CCode (cheader_filename = "meta/util.h", cprefix = "META_LATER_", type_id = "meta_later_type_get_type ()")]
 	public enum LaterType {
 		RESIZE,
 		BEFORE_REDRAW,
 		IDLE
 	}
-	[CCode (cheader_filename = "meta/window.h", cprefix = "META_MAXIMIZE_")]
+	[CCode (cheader_filename = "meta/window.h", cprefix = "META_MAXIMIZE_", type_id = "meta_maximize_flags_get_type ()")]
 	[Flags]
 	public enum MaximizeFlags {
 		HORIZONTAL,
 		VERTICAL
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MENU_OP_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MENU_OP_", type_id = "meta_menu_op_get_type ()")]
 	[Flags]
 	public enum MenuOp {
 		NONE,
@@ -978,13 +979,13 @@ namespace Meta {
 		MOVE_DOWN,
 		RECOVER
 	}
-	[CCode (cheader_filename = "meta/meta-plugin.h", cprefix = "META_MODAL_")]
+	[CCode (cheader_filename = "meta/meta-plugin.h", cprefix = "META_MODAL_", type_id = "meta_modal_options_get_type ()")]
 	[Flags]
 	public enum ModalOptions {
 		POINTER_ALREADY_GRABBED,
 		KEYBOARD_ALREADY_GRABBED
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MOTION_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MOTION_", type_id = "meta_motion_direction_get_type ()")]
 	public enum MotionDirection {
 		UP,
 		DOWN,
@@ -995,7 +996,7 @@ namespace Meta {
 		DOWN_LEFT,
 		DOWN_RIGHT
 	}
-	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_PREF_")]
+	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_PREF_", type_id = "meta_preference_get_type ()")]
 	public enum Preference {
 		MOUSE_BUTTON_MODS,
 		FOCUS_MODE,
@@ -1032,21 +1033,21 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h")]
 		public static unowned string to_string (Meta.Preference pref);
 	}
-	[CCode (cheader_filename = "meta/screen.h", cprefix = "META_SCREEN_")]
+	[CCode (cheader_filename = "meta/screen.h", cprefix = "META_SCREEN_", type_id = "meta_screen_corner_get_type ()")]
 	public enum ScreenCorner {
 		TOPLEFT,
 		TOPRIGHT,
 		BOTTOMLEFT,
 		BOTTOMRIGHT
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_SIDE_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_SIDE_", type_id = "meta_side_get_type ()")]
 	public enum Side {
 		LEFT,
 		RIGHT,
 		TOP,
 		BOTTOM
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_", type_id = "meta_stack_layer_get_type ()")]
 	public enum StackLayer {
 		DESKTOP,
 		BOTTOM,
@@ -1058,19 +1059,19 @@ namespace Meta {
 		OVERRIDE_REDIRECT,
 		LAST
 	}
-	[CCode (cheader_filename = "meta/display.h", cprefix = "META_TAB_LIST_")]
+	[CCode (cheader_filename = "meta/display.h", cprefix = "META_TAB_LIST_", type_id = "meta_tab_list_get_type ()")]
 	public enum TabList {
 		NORMAL,
 		DOCKS,
 		GROUP,
 		NORMAL_ALL
 	}
-	[CCode (cheader_filename = "meta/display.h", cprefix = "META_TAB_SHOW_")]
+	[CCode (cheader_filename = "meta/display.h", cprefix = "META_TAB_SHOW_", type_id = "meta_tab_show_type_get_type ()")]
 	public enum TabShowType {
 		ICON,
 		INSTANTLY
 	}
-	[CCode (cheader_filename = "meta/common.h", cprefix = "META_VIRTUAL_")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_VIRTUAL_", type_id = "meta_virtual_modifier_get_type ()")]
 	[Flags]
 	public enum VirtualModifier {
 		SHIFT_MASK,
@@ -1084,7 +1085,7 @@ namespace Meta {
 		MOD4_MASK,
 		MOD5_MASK
 	}
-	[CCode (cheader_filename = "meta/window.h", cprefix = "META_WINDOW_")]
+	[CCode (cheader_filename = "meta/window.h", cprefix = "META_WINDOW_", type_id = "meta_window_type_get_type ()")]
 	public enum WindowType {
 		NORMAL,
 		DESKTOP,

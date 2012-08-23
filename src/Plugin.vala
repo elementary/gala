@@ -262,15 +262,16 @@ namespace Gala
 					workspace_view.show ();
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
-					if (current == null)
+					if (current == null || current.window_type != WindowType.NORMAL)
 						break;
+					
 					if (current.get_maximized () == (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL))
 						current.unmaximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					else
 						current.maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					break;
 				case ActionType.MINIMIZE_CURRENT:
-					if (current != null)
+					if (current != null && current.window_type == WindowType.NORMAL)
 						current.minimize ();
 					break;
 				case ActionType.OPEN_LAUNCHER:
@@ -310,7 +311,7 @@ namespace Gala
 			get_screen ().get_size (out width, out height);
 			
 			Rectangle icon = {};
-			if (false && actor.get_meta_window ().get_icon_geometry (icon)) {
+			if (false && actor.get_meta_window ().get_icon_geometry (out icon)) {
 				
 				float scale_x  = (float)icon.width  / actor.width;
 				float scale_y  = (float)icon.height / actor.height;
@@ -392,6 +393,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			actor.show ();
 			
 			switch (window.window_type) {
@@ -465,6 +467,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			destroying.add (actor);
 			
 			switch (window.window_type) {

@@ -20,7 +20,7 @@ using Granite.Drawing;
 
 namespace Gala
 {
-	public class WindowSwitcher : Clutter.Group
+	public class WindowSwitcher : Clutter.Actor
 	{
 		Gala.Plugin plugin;
 		
@@ -28,11 +28,80 @@ namespace Gala
 		
 		Meta.Window? current_window;
 		
-		bool active; //switcher is currently running
+		Meta.WindowActor? dock_window;
+		Actor dock;
+		CairoTexture dock_background;
+		Plank.Drawing.DockSurface? dock_surface;
+		Plank.Drawing.DockTheme dock_theme;
+		Plank.DockPreferences dock_settings;
+		BindConstraint y_constraint;
+		BindConstraint h_constraint;
+		
+		//FIXME window titles of supported docks, to be extended
+		const string [] DOCK_NAMES = {"plank", "Docky"};
 		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
+			
+			//pull drawing methods from libplank
+			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
+			dock_settings.changed.connect (update_dock);
+			
+			dock_theme = new Plank.Drawing.DockTheme ();
+			dock_theme.load ("dock");
+			dock_theme.changed.connect (update_dock);
+			
+			dock = new Actor ();
+			dock.layout_manager = new BoxLayout ();
+			dock.anchor_gravity = Clutter.Gravity.CENTER;
+			
+			dock_background = new CairoTexture (100, dock_settings.IconSize);
+			dock_background.anchor_gravity = Clutter.Gravity.CENTER;
+			dock_background.auto_resize = true;
+			dock_background.draw.connect (draw_dock_background);
+			
+			y_constraint = new BindConstraint (dock, BindCoordinate.Y, 0);
+			h_constraint = new BindConstraint (dock, BindCoordinate.HEIGHT, 0);
+			
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.X, 0));
+			dock_background.add_constraint (y_constraint);
+			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.WIDTH, 0));
+			dock_background.add_constraint (h_constraint);
+			
+			add_child (dock_background);
+			add_child (dock);
+			
+			update_dock ();
+			
+			visible = false;
+		}
+		
+		//set the values which don't get set every time and need to be updated when the theme changes
+		void update_dock ()
+		{
+			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_theme.ItemPadding / 10.0 * dock_settings.IconSize);
+			dock.height = dock_settings.IconSize;
+			
+			var top_offset = (int)(dock_theme.TopPadding / 10.0 * dock_settings.IconSize);
+			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
+			
+			y_constraint.offset = -top_offset / 2 + bottom_offset / 2;
+			h_constraint.offset = top_offset + bottom_offset;
+		}
+		
+		bool draw_dock_background (Cairo.Context cr)
+		{
+			if (dock_surface == null || dock_surface.Width != dock_background.width) {
+				dock_surface = dock_theme.create_background ((int)dock_background.width,
+					(int)dock_background.height, Gtk.PositionType.BOTTOM,
+					new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ()));
+			}
+			
+			cr.set_source_surface (dock_surface.Internal, 0, 0);
+			cr.paint ();
+			
+			return false;
 		}
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
@@ -59,6 +128,8 @@ namespace Gala
 					meta_win.is_on_all_workspaces ())
 					w.show ();
 			});
+			if (dock_window != null)
+				dock_window.opacity = 0;
 			
 			window_clones.clear ();
 			
@@ -68,16 +139,43 @@ namespace Gala
 				current_window = null;
 			}
 			
-			active = false;
+			var dest_width = (dock_window != null ? dock_window.width : 800.0f);
+			
+			set_child_above_sibling (dock, null);
+			dock_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity : 0);
+			
+			if (dock_window != null)
+				dock_window.animate (AnimationMode.LINEAR, 250, opacity : 255);
+			
+			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
+				completed.connect (() => {
+				dock.remove_all_children ();
+				
+				if (dock_window != null)
+					dock_window = null;
+				
+				visible = false;
+			});
 		}
 		
+		//used to figure out delays between switching when holding the tab key
+		uint last_time = -1;
+		bool released = false;
 		public override bool captured_event (Clutter.Event event)
 		{
-			if (!(event.get_type () == EventType.KEY_PRESS))
-				return false;
-			
 			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
+			
+			if (event.get_type () == EventType.KEY_RELEASE) {
+				released = true;
+				return false;
+			}
+			
+			if (!(event.get_type () == EventType.KEY_PRESS) || 
+				(!released && display.get_current_time_roundtrip () < (last_time + 300)))
+				return false;
+			
+			released = false;
 			
 			bool backward = (event.get_state () & X.KeyMask.ShiftMask) != 0;
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
@@ -88,11 +186,13 @@ namespace Gala
 				case Meta.KeyBindingAction.SWITCH_WINDOWS:
 					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, backward);
+					last_time = display.get_current_time_roundtrip ();
 					break;
 				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
 				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
 					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
 							screen.get_active_workspace (), current_window, true);
+					last_time = display.get_current_time_roundtrip ();
 					break;
 				default:
 					break;
@@ -108,20 +208,26 @@ namespace Gala
 		void dim_windows ()
 		{
 			var current_actor = current_window.get_compositor_private () as Actor;
+			var i = 0;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
-					clone.get_parent ().set_child_above_sibling (clone, null);
+					set_child_below_sibling (clone, dock_background);
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+					
+					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
 				} else {
 					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 100);
 				}
+				
+				i++;
 			}
 		}
 		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			if (active) {
+			if (visible) {
 				if (window_clones.size != 0)
 					close (screen.get_display ().get_current_time ());
 				return;
@@ -131,10 +237,11 @@ namespace Gala
 			if (metawindows.length () <= 1)
 				return;
 			
-			active = true;
+			visible = true;
 			
+			//grab the windows to be switched
+			var layout = dock.layout_manager as BoxLayout;
 			window_clones.clear ();
-			
 			foreach (var win in metawindows) {
 				var actor = win.get_compositor_private () as Actor;
 				var clone = new Clone (actor);
@@ -143,19 +250,33 @@ namespace Gala
 				
 				add_child (clone);
 				window_clones.add (clone);
+				
+				var icon = new GtkClutter.Texture ();
+				try {
+					icon.set_from_pixbuf (Utils.get_icon_for_window (win, dock_settings.IconSize));
+				} catch (Error e) { warning (e.message); }
+				
+				icon.opacity = 100;
+				dock.add_child (icon);
+				layout.set_expand (icon, true);
 			}
 			
+			//hide the others
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
 				var type = w.get_meta_window ().window_type;
 				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
 					w.hide ();
+				
+				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK) {
+					dock_window = w;
+					dock_window.hide ();
+				}
 			});
 			
 			plugin.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			
-			/*list windows*/
 			current_window = Utils.get_next_window (screen.get_active_workspace (), backward);
 			if (current_window == null)
 				return;
@@ -164,6 +285,30 @@ namespace Gala
 				current_window.activate (display.get_current_time ());
 				return;
 			}
+			
+			//plank type switcher thing
+			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			
+			if (dock_window != null)
+				dock.width = dock_window.width;
+			
+			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
+			dock.opacity = 255;
+			dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
+			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f) - bottom_offset;
+			
+			//add spacing on outer most items
+			var horiz_padding = (float) Math.ceil (dock_theme.HorizPadding / 10.0 * dock_settings.IconSize + layout.spacing / 2.0);
+			dock.get_first_child ().margin_left = horiz_padding;
+			dock.get_last_child ().margin_right = horiz_padding;
+			
+			float dest_width;
+			layout.get_preferred_width (dock, dock.height, null, out dest_width);
+			
+			set_child_above_sibling (dock_background, null);
+			dock_background.opacity = 255;
+			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width : dest_width);
+			set_child_above_sibling (dock, null);
 			
 			dim_windows ();
 			grab_key_focus ();
