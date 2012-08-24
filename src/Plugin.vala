@@ -576,8 +576,10 @@ namespace Gala
 		{
 			if (end_animation (ref mapping, actor)) {
 				map_completed (actor);
+				//FIXME adding a print here seems to solve bug #1029609
 				print ("Killed map animation\n");
-			} if (end_animation (ref minimizing, actor))
+			}
+			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
 				maximize_completed (actor);
