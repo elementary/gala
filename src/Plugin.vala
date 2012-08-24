@@ -296,6 +296,9 @@ namespace Gala
 				minimize_completed (actor);
 				return;
 			}
+			
+			kill_window_effects (actor);
+			
 			int width, height;
 			get_screen ().get_size (out width, out height);
 			
@@ -571,9 +574,10 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor))
+			if (end_animation (ref mapping, actor)) {
 				map_completed (actor);
-			if (end_animation (ref minimizing, actor))
+				print ("Killed map animation\n");
+			} if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
 				maximize_completed (actor);
