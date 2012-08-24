@@ -27,7 +27,7 @@ namespace Gala
 		NATURAL
 	}
 	
-	public class Expo : Actor
+	public class WindowOverview : Actor
 	{
 		Plugin plugin;
 		Screen screen;
@@ -36,7 +36,7 @@ namespace Gala
 		
 		static const int PADDING = 50;
 		
-		public Expo (Plugin _plugin)
+		public WindowOverview (Plugin _plugin)
 		{
 			plugin = _plugin;
 			screen = plugin.get_screen ();

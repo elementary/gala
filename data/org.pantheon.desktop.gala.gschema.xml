@@ -7,7 +7,7 @@
 		<value nick="minimize-current" value="3" />
 		<value nick="open-launcher" value="4" />
 		<value nick="custom-command" value="5" />
-		<value nick="expose" value="6" />
+		<value nick="window-overview" value="6" />
 	</enum>
 	<enum id="GalaWindowOverviewType">
 		<value nick='grid' value='0'/>

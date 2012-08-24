@@ -48,7 +48,7 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/DBus.vala
-    src/Expo.vala
+    src/WindowOverview.vala
     src/Main.vala
     src/Plugin.vala
     src/Settings.vala
