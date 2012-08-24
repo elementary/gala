@@ -74,7 +74,6 @@ namespace Gala
 		const int ACCURACY = 1;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
-		const bool use_more_screen = false;
 		
 		struct Point
 		{
@@ -98,17 +97,19 @@ namespace Gala
 		{
 			var k1 = b.x - a.x;
 			var k2 = b.y - a.y;
-			return Math.sqrtf (k1*k1 + k2*k2);
+			
+			return k1*k1 + k2*k2;
 		}
 		
 		void calculate_places (List<Actor> windows)
 		{
 			var clones = windows.copy ();
 			clones.sort ((a, b) => {
-				return (int)(a as ExposedWindow).window.get_stable_sequence () - (int)(b as ExposedWindow).window.get_stable_sequence ();
+				return (int)(a as ExposedWindow).window.get_stable_sequence () - 
+				        (int)(b as ExposedWindow).window.get_stable_sequence ();
 			});
 			
-			// Put a gap on the right edge of the workspace to separe it from the workspace selector
+			// get the area used by the expo algorithms together
 			var geom = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			var ratio = geom.width / (float)geom.height;
 			var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
@@ -156,11 +157,12 @@ namespace Gala
 			// precalculate all slot centers
 			Point[] slot_centers = {};
 			slot_centers.resize (rows * columns);
-			for (int x = 0; x < columns; x++)
+			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
 					slot_centers[x + y*columns] = {area.x + slot_width  * x + slot_width  / 2,
-								                   area.y + slot_height * y + slot_height / 2};
+					                               area.y + slot_height * y + slot_height / 2};
 				}
+			}
 			
 			// Assign each window to the closest available slot
 			var tmplist = clones.copy (); // use a QLinkedList copy instead?
@@ -236,15 +238,17 @@ namespace Gala
 			var direction = 0;
 			var directions = new List<int> ();
 			var rects = new List<Meta.Rectangle?> ();
+			
 			for (var i = 0; i < clones.length (); i++) {
 				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
 				var rect = (clones.nth_data (i) as ExposedWindow).window.get_outer_rect ();
 				rects.append ({rect.x, rect.y, rect.width, rect.height});
+				
 				bounds = bounds.union (rects.nth_data (i));
 				
 				// This is used when the window is on the edge of the screen to try to use as much screen real estate as possible.
 				directions.append (direction);
-				direction ++;
+				direction++;
 				if (direction == 4) {
 					direction = 0;
 				}
@@ -256,88 +260,88 @@ namespace Gala
 				overlap = false;
 				for (var i = 0; i < rects.length (); i++) {
 					for (var j = 0; j < rects.length (); j++) {
-						if (i != j && rect_adjusted(rects.nth_data (i), -GAPS, -GAPS, GAPS, GAPS).overlap (
-							rect_adjusted (rects.nth_data (j), -GAPS, -GAPS, GAPS, GAPS))) {
-							loop_counter ++;
-							overlap = true;
-							
-							// Determine pushing direction
-							Point i_center = rect_center (rects.nth_data (i));
-							Point j_center = rect_center (rects.nth_data (j));
-							Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
-							
-							// Prevent dividing by zero and non-movement
-							if (diff.x == 0 && diff.y == 0)
-								diff.x = 1;
-							// Try to keep screen/workspace aspect ratio
-							if (bounds.height / bounds.width > area.height / area.width)
-								diff.x *= 2;
-							else
-								diff.y *= 2;
-							
-							// Approximate a vector of between 10px and 20px in magnitude in the same direction
-							var length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
-							diff.x = (int)Math.floorf (diff.x * ACCURACY / length);
-							diff.y = (int)Math.floorf (diff.y * ACCURACY / length);
-							
-							// Move both windows apart
-							rects.nth_data (i).x += -diff.x;
-							rects.nth_data (i).y += -diff.y;
-							rects.nth_data (j).x += diff.x;
-							rects.nth_data (j).y += diff.y;
-							
-							if (use_more_screen) {
-								// Try to keep the bounding rect the same aspect as the screen so that more
-								// screen real estate is utilised. We do this by splitting the screen into nine
-								// equal sections, if the window center is in any of the corner sections pull the
-								// window towards the outer corner. If it is in any of the other edge sections
-								// alternate between each corner on that edge. We don't want to determine it
-								// randomly as it will not produce consistant locations when using the filter.
-								// Only move one window so we don't cause large amounts of unnecessary zooming
-								// in some situations. We need to do this even when expanding later just in case
-								// all windows are the same size.
-								// (We are using an old bounding rect for this, hopefully it doesn't matter)
-								var x_section = Math.roundf ((rects.nth_data (i).x - bounds.x) / (bounds.width / 3.0f));
-								var y_section = Math.roundf ((rects.nth_data (j).y - bounds.y) / (bounds.height / 3.0f));
-								
-								i_center = rect_center (rects.nth_data (i));
-								diff.x = 0;
-								diff.y = 0;
-								if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
-									if (x_section == 1)
-										x_section = (directions.nth_data (i) / 2 == 1 ? 2 : 0);
-									if (y_section == 1)
-										y_section = (directions.nth_data (i) % 2 == 1 ? 2 : 0);
-								}
-								if (x_section == 0 && y_section == 0) {
-									diff.x = bounds.x - i_center.x;
-									diff.y = bounds.y - i_center.y;
-								}
-								if (x_section == 2 && y_section == 0) {
-									diff.x = bounds.x + bounds.width - i_center.x;
-									diff.y = bounds.y - i_center.y;
-								}
-								if (x_section == 2 && y_section == 2) {
-									diff.x = bounds.x + bounds.width - i_center.x;
-									diff.y = bounds.y + bounds.height - i_center.y;
-								}
-								if (x_section == 0 && y_section == 2) {
-									diff.x = bounds.x - i_center.x;
-									diff.y = bounds.y + bounds.height - i_center.y;
-								}
-								if (diff.x != 0 || diff.y != 0) {
-									length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
-									diff.x *= (int)Math.floorf (ACCURACY / length / 2.0f);
-									diff.y *= (int)Math.floorf (ACCURACY / length / 2.0f);
-									rects.nth_data (i).x += diff.x;
-									rects.nth_data (i).y += diff.y;
-								}
-							}
-							
-							// Update bounding rect
-							bounds = bounds.union(rects.nth_data (i));
-							bounds = bounds.union(rects.nth_data (j));
+						
+						var rect = rects.nth_data (i);
+						var comp = rects.nth_data (j);
+						
+						if (i == j || rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
+							rect_adjusted (comp, -GAPS, -GAPS, GAPS, GAPS)))
+							continue;
+						
+						loop_counter ++;
+						overlap = true;
+						
+						// Determine pushing direction
+						Point i_center = rect_center (rect);
+						Point j_center = rect_center (comp);
+						Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
+						
+						// Prevent dividing by zero and non-movement
+						if (diff.x == 0 && diff.y == 0)
+							diff.x = 1;
+						// Try to keep screen/workspace aspect ratio
+						if (bounds.height / bounds.width > area.height / area.width)
+							diff.x *= 2;
+						else
+							diff.y *= 2;
+						
+						// Approximate a vector of between 10px and 20px in magnitude in the same direction
+						var length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
+						diff.x = (int)Math.floorf (diff.x * ACCURACY / length);
+						diff.y = (int)Math.floorf (diff.y * ACCURACY / length);
+						// Move both windows apart
+						rect = rect_translate (rect, -diff.x, -diff.y);
+						comp = rect_translate (comp, diff.x, diff.y);
+						
+						// Try to keep the bounding rect the same aspect as the screen so that more
+						// screen real estate is utilised. We do this by splitting the screen into nine
+						// equal sections, if the window center is in any of the corner sections pull the
+						// window towards the outer corner. If it is in any of the other edge sections
+						// alternate between each corner on that edge. We don't want to determine it
+						// randomly as it will not produce consistant locations when using the filter.
+						// Only move one window so we don't cause large amounts of unnecessary zooming
+						// in some situations. We need to do this even when expanding later just in case
+						// all windows are the same size.
+						// (We are using an old bounding rect for this, hopefully it doesn't matter)
+						var x_section = (int)Math.roundf ((rects.nth_data (i).x - bounds.x) / (bounds.width / 3.0f));
+						var y_section = (int)Math.roundf ((rects.nth_data (j).y - bounds.y) / (bounds.height / 3.0f));
+						
+						i_center = rect_center (rect);
+						diff.x = 0;
+						diff.y = 0;
+						if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
+							if (x_section == 1)
+								x_section = (directions.nth_data (i) / 2 == 1 ? 2 : 0);
+							if (y_section == 1)
+								y_section = (directions.nth_data (i) % 2 == 1 ? 2 : 0);
 						}
+						if (x_section == 0 && y_section == 0) {
+							diff.x = bounds.x - i_center.x;
+							diff.y = bounds.y - i_center.y;
+						}
+						if (x_section == 2 && y_section == 0) {
+							diff.x = bounds.x + bounds.width - i_center.x;
+							diff.y = bounds.y - i_center.y;
+						}
+						if (x_section == 2 && y_section == 2) {
+							diff.x = bounds.x + bounds.width - i_center.x;
+							diff.y = bounds.y + bounds.height - i_center.y;
+						}
+						if (x_section == 0 && y_section == 2) {
+							diff.x = bounds.x - i_center.x;
+							diff.y = bounds.y + bounds.height - i_center.y;
+						}
+						if (diff.x != 0 || diff.y != 0) {
+							length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
+							diff.x *= (int)Math.floorf (ACCURACY / length / 2.0f);
+							diff.y *= (int)Math.floorf (ACCURACY / length / 2.0f);
+							rect.x += diff.x;
+							rect.y += diff.y;
+						}
+						
+						// Update bounding rect
+						bounds = bounds.union(rect);
+						bounds = bounds.union(comp);
 					}
 				}
 			} while (overlap && loop_counter < MAX_TRANSLATIONS);
@@ -352,16 +356,17 @@ namespace Gala
 			bounds.height = (int)Math.floorf (area.height / scale);
 			
 			// Move all windows back onto the screen and set their scale
-			for (var i = 0; i < rects.length (); i++) {
-				rects.nth_data (i).x += -bounds.x;
-				rects.nth_data (i).y += -bounds.y;
+			var index = 0;
+			foreach (var rect in rects) {
+				rect = rect_translate (rect, -bounds.x, -bounds.y);
 				
-				rects.nth_data (i).x = (int)Math.floorf (rects.nth_data (i).x * scale + area.x);
-				rects.nth_data (i).y = (int)Math.floorf (rects.nth_data (i).y * scale + area.y);
-				rects.nth_data (i).width = (int)Math.floorf (rects.nth_data (i).width * scale);
-				rects.nth_data (i).height = (int)Math.floorf (rects.nth_data (i).height * scale);
+				rect = {(int)Math.floorf (rect.x * scale + area.x),
+				        (int)Math.floorf (rect.y * scale + area.y),
+				        (int)Math.floorf (rect.width * scale),
+				        (int)Math.floorf (rect.height * scale)};
 				
-				place_window (clones.nth_data (i) as ExposedWindow, rects.nth_data (i));
+				place_window (clones.nth_data (index) as ExposedWindow, rect);
+				index++;
 			}
 		}
 		
@@ -379,9 +384,6 @@ namespace Gala
 			
 			var used_windows = new SList<Window> ();
 			
-			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 1000, dim_factor : 0.4);
-			
 			foreach (var window in screen.get_active_workspace ().list_windows ()) {
 				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
 					(window.get_compositor_private () as Actor).hide ();
@@ -396,6 +398,9 @@ namespace Gala
 			var n_windows = used_windows.length ();
 			if (n_windows == 0)
 				return;
+			
+			Compositor.get_background_actor_for_screen (screen).
+				animate (AnimationMode.EASE_OUT_QUAD, 1000, dim_factor : 0.4);
 			
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
@@ -426,6 +431,7 @@ namespace Gala
 			calculate_places (get_children ());
 		}
 		
+		//called when a window has been closed
 		void reposition (ExposedWindow removed)
 		{
 				var children = get_children ().copy ();
