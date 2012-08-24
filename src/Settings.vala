@@ -25,6 +25,8 @@ namespace Gala
 		public string overlay_action { get; set; }
 		public string hotcorner_custom_command { get; set; }
 		
+		public WindowOverviewType window_overview_type { get; set; }
+		
 		public ActionType hotcorner_topleft { get; set; }
 		public ActionType hotcorner_topright { get; set; }
 		public ActionType hotcorner_bottomleft { get; set; }

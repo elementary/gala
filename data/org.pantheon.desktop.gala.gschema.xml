@@ -9,12 +9,21 @@
 		<value nick="custom-command" value="5" />
 		<value nick="expose" value="6" />
 	</enum>
+	<enum id="GalaWindowOverviewType">
+		<value nick='grid' value='0'/>
+		<value nick='natural' value='1'/>
+	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
 		<key enum="GalaActionType" name="hotcorner-topleft">
 			<default>'none'</default>
 			<summary>Action for the top left corner</summary>
 			<description></description>
+		</key>
+		<key enum="GalaWindowOverviewType" name="window-overview-type">
+			<default>'grid'</default>
+			<summary>Algorithm for window overview layout</summary>
+			<description>Choose the algorithm used for exposing the windows</description>
 		</key>
 		<key enum="GalaActionType" name="hotcorner-topright">
 			<default>'none'</default>

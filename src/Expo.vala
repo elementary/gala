@@ -20,6 +20,13 @@ using Clutter;
 
 namespace Gala
 {
+	
+	public enum WindowOverviewType
+	{
+		GRID = 0,
+		NATURAL
+	}
+	
 	public class Expo : Actor
 	{
 		Plugin plugin;
@@ -58,23 +65,40 @@ namespace Gala
 		}
 		
 		/**
-		 * Code borrowed from native window placement GS extension
-		 * http://git.gnome.org/browse/gnome-shell-extensions/tree/extensions/native-window-placement/extension.js
+		 * Code taken from KWin present windows effect
+		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
+		 *
 		 **/
-		const int GAPS = 15;
-		const int MAX_TRANSLATIONS = 5000;
-		const int ACCURACY = 20;
+		const int GAPS = 20;
+		const int MAX_TRANSLATIONS = 100000;
+		const int ACCURACY = 1;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
-		const bool use_more_screen = true;
+		const bool use_more_screen = false;
 		
-		int[] rect_center (Meta.Rectangle rect)
+		struct Point
+		{
+			int x;
+			int y;
+		}
+		
+		Point rect_center (Meta.Rectangle rect)
 		{
 			return {rect.x + rect.width / 2, rect.y + rect.height / 2};
 		}
 		Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
 		{
 			return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
+		}
+		Meta.Rectangle rect_translate (Meta.Rectangle rect, int x, int y)
+		{
+			return {rect.x + x, rect.y + y, rect.width, rect.height};
+		}
+		float point_distance (Point a, Point b)
+		{
+			var k1 = b.x - a.x;
+			var k2 = b.y - a.y;
+			return Math.sqrtf (k1*k1 + k2*k2);
 		}
 		
 		void calculate_places (List<Actor> windows)
@@ -90,10 +114,123 @@ namespace Gala
 			var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
 			var y_gap = Math.fmaxf (BORDER / ratio, TOP_GAP);
 			Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
-			                       (int)Math.floorf (geom.y + 20 + y_gap), 
+			                       (int)Math.floorf (geom.y + TOP_GAP + y_gap), 
 			                       (int)Math.floorf (geom.width - x_gap), 
 			                       (int)Math.floorf (geom.height - 100 - y_gap)};
 			
+			if (BehaviorSettings.get_default ().schema.get_enum ("window-overview-type") == WindowOverviewType.GRID)
+				grid_placement (area, clones);
+			else
+				natural_placement (area, clones);
+		}
+		
+		public void place_window (ExposedWindow clone, Meta.Rectangle rect)
+		{
+			var fscale = rect.width / clone.width;
+			
+			//animate the windows and icons to the calculated positions
+			clone.icon.x = rect.x + Math.floorf (clone.width * fscale / 2.0f - clone.icon.width / 2.0f);
+			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
+			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
+			
+			clone.close_button.x = rect.x - 10;
+			clone.close_button.y = rect.y - 10;
+			
+			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
+				.completed.connect (() => ready = true );
+			clone.icon.opacity = 0;
+			clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
+		}
+		
+		void grid_placement (Meta.Rectangle area, List<Actor> clones)
+		{
+			int columns = (int)Math.ceil (Math.sqrt (clones.length ()));
+			int rows = (int)Math.ceil (clones.length () / (double)columns);
+			
+			// Assign slots
+			int slot_width = area.width / columns;
+			int slot_height = area.height / rows;
+			ExposedWindow[] taken_slots = {};
+			taken_slots.resize (rows * columns);
+			
+			// precalculate all slot centers
+			Point[] slot_centers = {};
+			slot_centers.resize (rows * columns);
+			for (int x = 0; x < columns; x++)
+				for (int y = 0; y < rows; y++) {
+					slot_centers[x + y*columns] = {area.x + slot_width  * x + slot_width  / 2,
+								                   area.y + slot_height * y + slot_height / 2};
+				}
+			
+			// Assign each window to the closest available slot
+			var tmplist = clones.copy (); // use a QLinkedList copy instead?
+			while (tmplist.length () > 0) {
+				var w = tmplist.nth_data (0) as ExposedWindow;
+				var r = w.window.get_outer_rect ();
+				int slot_candidate = -1;
+				int slot_candidate_distance = int.MAX;
+				var pos = rect_center (r);
+				for (int i = 0; i < columns * rows; i++) { // all slots
+					int dist = (int)point_distance (pos, slot_centers[i]);
+					if (dist < slot_candidate_distance) { // window is interested in this slot
+						ExposedWindow occupier = taken_slots[i];
+						if (occupier == w)
+							continue;
+						if (occupier == null || dist < point_distance(rect_center (occupier.window.get_outer_rect ()), slot_centers[i])) {
+							// either nobody lives here, or we're better - takeover the slot if it's our best
+							slot_candidate = i;
+							slot_candidate_distance = dist;
+						}
+					}
+				}
+				if (slot_candidate == -1)
+					continue;
+				
+				if (taken_slots[slot_candidate] != null)
+					tmplist.prepend (taken_slots[slot_candidate]); // occupier needs a new home now :p
+				tmplist.remove_all(w);
+				taken_slots[slot_candidate] = w; // ...and we rumble in =)
+			}
+			
+			for (int slot = 0; slot < columns * rows; slot++) {
+				ExposedWindow w = taken_slots[slot];
+				if (w == null) // some slots might be empty
+					continue;
+				var r = w.window.get_outer_rect ();
+				
+				// Work out where the slot is
+				Meta.Rectangle target = {area.x + (slot % columns) * slot_width,
+				              area.y + (slot / columns) * slot_height,
+				              slot_width, slot_height};
+				target = rect_adjusted (target, 10, 10, -10, -10);   // Borders
+				float scale;
+				if (target.width / (double)r.width < target.height / (double)r.height) {
+					// Center vertically
+					scale = target.width / (float)r.width;
+					target = rect_translate (target, 0, (target.y + (target.height - (int)(r.height * scale)) / 2) - target.y);
+					target.height = (int)Math.floorf (r.height * scale);
+				} else {
+					// Center horizontally
+					scale = target.height / (float)w.height;
+					target = rect_translate (target, (target.x + (target.width - (int)(r.width * scale)) / 2) - target.x, 0);
+					target.width = (int)Math.floorf (r.width * scale);
+				}
+				
+				// Don't scale the windows too much
+				if (scale > 2.0 || (scale > 1.0 && (r.width > 300 || r.height > 300))) {
+					scale = (r.width > 300 || r.height > 300) ? 1.0f : 2.0f;
+					target = {rect_center (target).x - (int)Math.floorf (r.width * scale) / 2,
+					          rect_center (target).y - (int)Math.floorf (r.height * scale) / 2,
+					          (int)Math.floorf (scale * r.width), 
+					          (int)Math.floorf (scale * r.height)};
+				}
+				
+				place_window (w, target);
+			}
+		}
+		
+		void natural_placement (Meta.Rectangle area, List<Actor> clones)
+		{
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 			
 			var direction = 0;
@@ -125,29 +262,29 @@ namespace Gala
 							overlap = true;
 							
 							// Determine pushing direction
-							int[] i_center = rect_center (rects.nth_data (i));
-							int[] j_center = rect_center (rects.nth_data (j));
-							int[] diff = {j_center[0] - i_center[0], j_center[1] - i_center[1]};
+							Point i_center = rect_center (rects.nth_data (i));
+							Point j_center = rect_center (rects.nth_data (j));
+							Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
 							
 							// Prevent dividing by zero and non-movement
-							if (diff[0] == 0 && diff[1] == 0)
-								diff[0] = 1;
+							if (diff.x == 0 && diff.y == 0)
+								diff.x = 1;
 							// Try to keep screen/workspace aspect ratio
 							if (bounds.height / bounds.width > area.height / area.width)
-								diff[0] *= 2;
+								diff.x *= 2;
 							else
-								diff[1] *= 2;
+								diff.y *= 2;
 							
 							// Approximate a vector of between 10px and 20px in magnitude in the same direction
-							var length = Math.sqrtf (diff[0] * diff[0] + diff[1] * diff[1]);
-							diff[0] = (int)Math.floorf (diff[0] * ACCURACY / length);
-							diff[1] = (int)Math.floorf (diff[1] * ACCURACY / length);
+							var length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
+							diff.x = (int)Math.floorf (diff.x * ACCURACY / length);
+							diff.y = (int)Math.floorf (diff.y * ACCURACY / length);
 							
 							// Move both windows apart
-							rects.nth_data (i).x += -diff[0];
-							rects.nth_data (i).y += -diff[1];
-							rects.nth_data (j).x += diff[0];
-							rects.nth_data (j).y += diff[1];
+							rects.nth_data (i).x += -diff.x;
+							rects.nth_data (i).y += -diff.y;
+							rects.nth_data (j).x += diff.x;
+							rects.nth_data (j).y += diff.y;
 							
 							if (use_more_screen) {
 								// Try to keep the bounding rect the same aspect as the screen so that more
@@ -162,10 +299,10 @@ namespace Gala
 								// (We are using an old bounding rect for this, hopefully it doesn't matter)
 								var x_section = Math.roundf ((rects.nth_data (i).x - bounds.x) / (bounds.width / 3.0f));
 								var y_section = Math.roundf ((rects.nth_data (j).y - bounds.y) / (bounds.height / 3.0f));
-
+								
 								i_center = rect_center (rects.nth_data (i));
-								diff[0] = 0;
-								diff[1] = 0;
+								diff.x = 0;
+								diff.y = 0;
 								if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
 									if (x_section == 1)
 										x_section = (directions.nth_data (i) / 2 == 1 ? 2 : 0);
@@ -173,27 +310,27 @@ namespace Gala
 										y_section = (directions.nth_data (i) % 2 == 1 ? 2 : 0);
 								}
 								if (x_section == 0 && y_section == 0) {
-									diff[0] = bounds.x - i_center[0];
-									diff[1] = bounds.y - i_center[1];
+									diff.x = bounds.x - i_center.x;
+									diff.y = bounds.y - i_center.y;
 								}
 								if (x_section == 2 && y_section == 0) {
-									diff[0] = bounds.x + bounds.width - i_center[0];
-									diff[1] = bounds.y - i_center[1];
+									diff.x = bounds.x + bounds.width - i_center.x;
+									diff.y = bounds.y - i_center.y;
 								}
 								if (x_section == 2 && y_section == 2) {
-									diff[0] = bounds.x + bounds.width - i_center[0];
-									diff[1] = bounds.y + bounds.height - i_center[1];
+									diff.x = bounds.x + bounds.width - i_center.x;
+									diff.y = bounds.y + bounds.height - i_center.y;
 								}
 								if (x_section == 0 && y_section == 2) {
-									diff[0] = bounds.x - i_center[0];
-									diff[1] = bounds.y + bounds.height - i_center[1];
+									diff.x = bounds.x - i_center.x;
+									diff.y = bounds.y + bounds.height - i_center.y;
 								}
-								if (diff[0] != 0 || diff[1] != 0) {
-									length = Math.sqrtf (diff[0]*diff[0] + diff[1]*diff[1]);
-									diff[0] *= (int)Math.floorf (ACCURACY / length / 2.0f);   // /2 to make it less influencing than the normal center-move above
-									diff[1] *= (int)Math.floorf (ACCURACY / length / 2.0f);
-									rects.nth_data (i).x += diff[0];
-									rects.nth_data (i).y += diff[1];
+								if (diff.x != 0 || diff.y != 0) {
+									length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
+									diff.x *= (int)Math.floorf (ACCURACY / length / 2.0f);
+									diff.y *= (int)Math.floorf (ACCURACY / length / 2.0f);
+									rects.nth_data (i).x += diff.x;
+									rects.nth_data (i).y += diff.y;
 								}
 							}
 							
@@ -218,27 +355,13 @@ namespace Gala
 			for (var i = 0; i < rects.length (); i++) {
 				rects.nth_data (i).x += -bounds.x;
 				rects.nth_data (i).y += -bounds.y;
-			}
-			
-			
-			for (var i = 0; i < rects.length (); i++) {
+				
 				rects.nth_data (i).x = (int)Math.floorf (rects.nth_data (i).x * scale + area.x);
 				rects.nth_data (i).y = (int)Math.floorf (rects.nth_data (i).y * scale + area.y);
+				rects.nth_data (i).width = (int)Math.floorf (rects.nth_data (i).width * scale);
+				rects.nth_data (i).height = (int)Math.floorf (rects.nth_data (i).height * scale);
 				
-				var clone = clones.nth_data (i) as ExposedWindow;
-				
-				//animate the windows and icons to the calculated positions
-				clone.icon.x = rects.nth_data (i).x + Math.floorf (clone.width * scale / 2.0f - clone.icon.width / 2.0f);
-				clone.icon.y = rects.nth_data (i).y + Math.floorf (clone.height * scale - 50.0f);
-				clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
-				
-				clone.close_button.x = rects.nth_data (i).x - 10;
-				clone.close_button.y = rects.nth_data (i).y - 10;
-				
-				clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:scale, scale_y:scale, x:rects.nth_data (i).x+0.0f, y:rects.nth_data (i).y+0.0f)
-					.completed.connect (() => ready = true );
-				clone.icon.opacity = 0;
-				clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
+				place_window (clones.nth_data (i) as ExposedWindow, rects.nth_data (i));
 			}
 		}
 		
