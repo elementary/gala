@@ -55,6 +55,7 @@ namespace Gala
 			close_button.scale_y = 0.0f;
 			close_button.scale_gravity = Gravity.CENTER;
 			close_button.button_press_event.connect (close_clicked);
+			close_button.leave_event.connect ((e) => leave_event (e));
 			
 			try {
 				close_button.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
@@ -90,6 +91,21 @@ namespace Gala
 		
 		public override bool enter_event (CrossingEvent event)
 		{
+			//if we're still animating don't show the close button
+			if (get_animation () != null)
+				return false;
+			
+			close_button.visible = true;
+			close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
+			
+			return true;
+		}
+		
+		public override bool motion_event (MotionEvent event)
+		{
+			if (get_animation () != null)
+				return false;
+			
 			close_button.visible = true;
 			close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
 			
@@ -134,7 +150,7 @@ namespace Gala
 					icon.destroy ();
 				});
 				
-				animate (AnimationMode.EASE_OUT_CUBIC, 250, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
+				animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
 					(window.get_compositor_private () as Actor).show ();
 					destroy ();
 				});

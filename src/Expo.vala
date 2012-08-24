@@ -331,7 +331,7 @@ namespace Gala
 			}
 			
 			if (animate) {
-				Timeout.add (250, () => {
+				Timeout.add (300, () => {
 					visible = false;
 					ready = true;
 					
