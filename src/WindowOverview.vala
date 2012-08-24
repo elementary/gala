@@ -264,7 +264,7 @@ namespace Gala
 						var rect = rects.nth_data (i);
 						var comp = rects.nth_data (j);
 						
-						if (i == j || rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
+						if (i == j || !rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
 							rect_adjusted (comp, -GAPS, -GAPS, GAPS, GAPS)))
 							continue;
 						
@@ -342,6 +342,10 @@ namespace Gala
 						// Update bounding rect
 						bounds = bounds.union(rect);
 						bounds = bounds.union(comp);
+						
+						//we took copies from the rects from our list so we need to reassign them
+						rects.nth (i).data = rect;
+						rects.nth (j).data = comp;
 					}
 				}
 			} while (overlap && loop_counter < MAX_TRANSLATIONS);
