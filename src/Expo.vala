@@ -256,6 +256,9 @@ namespace Gala
 			
 			var used_windows = new SList<Window> ();
 			
+			Compositor.get_background_actor_for_screen (screen).
+				animate (AnimationMode.EASE_OUT_QUAD, 1000, dim_factor : 0.4);
+			
 			foreach (var window in screen.get_active_workspace ().list_windows ()) {
 				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
 					(window.get_compositor_private () as Actor).hide ();
@@ -329,6 +332,9 @@ namespace Gala
 				exposed.close (animate);
 				exposed.selected.disconnect (selected);
 			}
+			
+			Compositor.get_background_actor_for_screen (screen).
+				animate (AnimationMode.EASE_OUT_QUAD, 500, dim_factor : 1.0);
 			
 			if (animate) {
 				Timeout.add (300, () => {
