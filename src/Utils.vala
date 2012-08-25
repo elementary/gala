@@ -169,4 +169,35 @@ namespace Gala.Utils
 		
 		return fallback_style;
 	}
+	
+	/* some math stuff */
+	
+	public struct Point
+	{
+		int x;
+		int y;
+	}
+	
+	public Point rect_center (Meta.Rectangle rect)
+	{
+		return {rect.x + rect.width / 2, rect.y + rect.height / 2};
+	}
+	
+	public Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
+	{
+		return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
+	}
+	
+	public Meta.Rectangle rect_translate (Meta.Rectangle rect, int x, int y)
+	{
+		return {rect.x + x, rect.y + y, rect.width, rect.height};
+	}
+	
+	public float point_distance (Point a, Point b)
+	{
+		var k1 = b.x - a.x;
+		var k2 = b.y - a.y;
+		
+		return k1*k1 + k2*k2;
+	}
 }

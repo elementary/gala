@@ -17,6 +17,7 @@
 
 using Meta;
 using Clutter;
+using Gala.Utils;
 
 namespace Gala
 {
@@ -49,7 +50,8 @@ namespace Gala
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
-			//FIXME need to figure out the actual keycombo, for now leave it by default and others will close it by selecting a window!
+			//FIXME need to figure out the actual keycombo, for now leave it by 
+			// default and others will close it by selecting a window!
 			if (event.keyval == Clutter.Key.e || event.keyval == Clutter.Key.Escape) {
 				close (true);
 				
@@ -69,37 +71,13 @@ namespace Gala
 		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 		 *
 		 **/
+		
+		//constants, mainly for natural expo
 		const int GAPS = 20;
 		const int MAX_TRANSLATIONS = 100000;
 		const int ACCURACY = 1;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
-		
-		struct Point
-		{
-			int x;
-			int y;
-		}
-		
-		Point rect_center (Meta.Rectangle rect)
-		{
-			return {rect.x + rect.width / 2, rect.y + rect.height / 2};
-		}
-		Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
-		{
-			return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
-		}
-		Meta.Rectangle rect_translate (Meta.Rectangle rect, int x, int y)
-		{
-			return {rect.x + x, rect.y + y, rect.width, rect.height};
-		}
-		float point_distance (Point a, Point b)
-		{
-			var k1 = b.x - a.x;
-			var k2 = b.y - a.y;
-			
-			return k1*k1 + k2*k2;
-		}
 		
 		void calculate_places (List<Actor> windows)
 		{
@@ -123,24 +101,6 @@ namespace Gala
 				grid_placement (area, clones);
 			else
 				natural_placement (area, clones);
-		}
-		
-		public void place_window (ExposedWindow clone, Meta.Rectangle rect)
-		{
-			var fscale = rect.width / clone.width;
-			
-			//animate the windows and icons to the calculated positions
-			clone.icon.x = rect.x + Math.floorf (clone.width * fscale / 2.0f - clone.icon.width / 2.0f);
-			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
-			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
-			
-			clone.close_button.x = rect.x - 10;
-			clone.close_button.y = rect.y - 10;
-			
-			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
-				.completed.connect (() => ready = true );
-			clone.icon.opacity = 0;
-			clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
 		}
 		
 		void grid_placement (Meta.Rectangle area, List<Actor> clones)
@@ -385,6 +345,25 @@ namespace Gala
 				place_window (clones.nth_data (index) as ExposedWindow, rect);
 				index++;
 			}
+		}
+		
+		// animate a window to the given position
+		void place_window (ExposedWindow clone, Meta.Rectangle rect)
+		{
+			var fscale = rect.width / clone.width;
+			
+			//animate the windows and icons to the calculated positions
+			clone.icon.x = rect.x + Math.floorf (clone.width * fscale / 2.0f - clone.icon.width / 2.0f);
+			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
+			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
+			
+			clone.close_button.x = rect.x - 10;
+			clone.close_button.y = rect.y - 10;
+			
+			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
+				.completed.connect (() => ready = true );
+			clone.icon.opacity = 0;
+			clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
 		}
 		
 		public void open (bool animate = true)

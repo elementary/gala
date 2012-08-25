@@ -117,7 +117,7 @@ namespace Gala
 			if (event.related == close_button)
 				return false;
 			
-			close_button.animate (AnimationMode.EASE_IN_QUAD, 400, scale_x : 0.0f, scale_y : 0.0f)
+			close_button.animate (AnimationMode.EASE_IN_QUAD, 200, scale_x : 0.0f, scale_y : 0.0f)
 				.completed.connect (() => close_button.visible = false );
 			
 			return true;
