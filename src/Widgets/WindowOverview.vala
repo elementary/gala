@@ -17,7 +17,6 @@
 
 using Meta;
 using Clutter;
-using Gala.Utils;
 
 namespace Gala
 {
@@ -77,6 +76,41 @@ namespace Gala
 		const int ACCURACY = 20;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
+		
+		//some math utilities
+		int squared_distance (Gdk.Point a, Gdk.Point b)
+		{
+			var k1 = b.x - a.x;
+			var k2 = b.y - a.y;
+			
+			return k1*k1 + k2*k2;
+		}
+		
+		bool rect_is_overlapping_any (Meta.Rectangle rect, Meta.Rectangle[] rects, Meta.Rectangle border)
+		{
+			if (!border.contains_rect (rect))
+				return true;
+			foreach (var comp in rects) {
+				if (comp == rect)
+					continue;
+				
+				if (rect_adjusted (rect, -5, -5, 5, 5).overlap (rect_adjusted (comp, -5, -5, 5, 5)))
+					return true;
+			}
+			
+			return false;
+		}
+		
+		Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
+		{
+			return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
+		}
+		
+		Gdk.Point rect_center (Meta.Rectangle rect)
+		{
+			return {rect.x + rect.width / 2, rect.y + rect.height / 2};
+		}
+		
 		
 		void calculate_places (List<Actor> windows)
 		{
@@ -263,11 +297,6 @@ namespace Gala
 						// Prevent dividing by zero and non-movement
 						if (diff.x == 0 && diff.y == 0)
 							diff.x = 1;
-						// Try to keep screen/workspace aspect ratio
-						if (bounds.height / bounds.width > area.height / area.width)
-							diff.x *= 2;
-						else
-							diff.y *= 2;
 						
 						// Approximate a vector of between 10px and 20px in magnitude in the same direction
 						var length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
@@ -367,12 +396,13 @@ namespace Gala
 				foreach (var rect in rects) {
 					
 					int width_diff = ACCURACY;
-					int height_diff = height_for_width (rect, (rect.width + width_diff) - rect.height);
+					int height_diff = (int)Math.floorf ((((rect.width + width_diff) - rect.height) / 
+					    (float)rect.width) * rect.height);
 					int x_diff = width_diff / 2;
 					int y_diff = height_diff / 2;
 					
 					//top right
-					Meta.Rectangle old = {rect.x, rect.y, rect.width, rect.height};
+					Meta.Rectangle old = rect;
 					rect = {rect.x + x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
 					if (rect_is_overlapping_any (rect, rects, border))
 						rect = old;
@@ -380,7 +410,7 @@ namespace Gala
 						moved = true;
 					
 					//bottom right
-					old = {rect.x, rect.y, rect.width, rect.height};
+					old = rect;
 					rect = {rect.x + x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
 					if (rect_is_overlapping_any (rect, rects, border))
 						rect = old;
@@ -388,7 +418,7 @@ namespace Gala
 						moved = true;
 					
 					//bottom left
-					old = {rect.x, rect.y, rect.width, rect.height};
+					old = rect;
 					rect = {rect.x - x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
 					if (rect_is_overlapping_any (rect, rects, border))
 						rect = old;
@@ -396,7 +426,7 @@ namespace Gala
 						moved = true;
 					
 					//top left
-					old = {rect.x, rect.y, rect.width, rect.height};
+					old = rect;
 					rect = {rect.x - x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
 					if (rect_is_overlapping_any (rect, rects, border))
 						rect = old;
