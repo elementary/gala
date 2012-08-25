@@ -71,7 +71,7 @@ namespace Gala
 		 **/
 		
 		//constants, mainly for natural expo
-		const int GAPS = 20;
+		const int GAPS = 10;
 		const int MAX_TRANSLATIONS = 100000;
 		const int ACCURACY = 20;
 		const int BORDER = 10;
@@ -94,7 +94,7 @@ namespace Gala
 				if (comp == rect)
 					continue;
 				
-				if (rect_adjusted (rect, -5, -5, 5, 5).overlap (rect_adjusted (comp, -5, -5, 5, 5)))
+				if (rect.overlap (comp))
 					return true;
 			}
 			
@@ -260,6 +260,7 @@ namespace Gala
 			for (int i = 0; i < clones.length (); i++) {
 				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
 				var rect = (clones.nth_data (i) as ExposedWindow).window.get_outer_rect ();
+				rect = rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS);
 				rects[i] = rect;
 				bounds = bounds.union (rect);
 				
@@ -282,8 +283,7 @@ namespace Gala
 						var rect = rects[i];
 						var comp = rects[j];
 						
-						if (!rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
-								rect_adjusted (comp, -GAPS, -GAPS, GAPS, GAPS)))
+						if (!rect.overlap (comp))
 							continue;
 						
 						loop_counter ++;
@@ -443,6 +443,7 @@ namespace Gala
 				var window = clones.nth_data (index) as ExposedWindow;
 				var window_rect = window.window.get_outer_rect ();
 				
+				rect = rect_adjusted(rect, GAPS, GAPS, -GAPS, -GAPS);
 				scale = rect.width / (float)window_rect.width;
 				
 				if (scale > 2.0 || (scale > 1.0 && (window_rect.width > 300 || window_rect.height > 300))) {
