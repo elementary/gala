@@ -87,20 +87,32 @@ namespace Gala
 				        (int)(b as ExposedWindow).window.get_stable_sequence ();
 			});
 			
-			// get the area used by the expo algorithms together
-			var geom = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			var ratio = geom.width / (float)geom.height;
-			var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
-			var y_gap = Math.fmaxf (BORDER / ratio, TOP_GAP);
-			Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
-			                       (int)Math.floorf (geom.y + TOP_GAP + y_gap), 
-			                       (int)Math.floorf (geom.width - x_gap), 
-			                       (int)Math.floorf (geom.height - 100 - y_gap)};
+			//sort windows by monitor
+			List<Actor>[] monitors = {};
+			monitors.resize (screen.get_n_monitors ());
 			
-			if (BehaviorSettings.get_default ().schema.get_enum ("window-overview-type") == WindowOverviewType.GRID)
-				grid_placement (area, clones);
-			else
-				natural_placement (area, clones);
+			foreach (var clone in clones)
+				monitors[(clone as ExposedWindow).window.get_monitor ()].append (clone);
+			
+			for (var i = 0; i < screen.get_n_monitors (); i++) {
+				if (monitors[i].length () == 0)
+					continue;
+				
+				// get the area used by the expo algorithms together
+				var geom = screen.get_monitor_geometry (i);
+				var ratio = geom.width / (float)geom.height;
+				var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
+				var y_gap = Math.fmaxf (BORDER / ratio, TOP_GAP);
+				Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
+					                   (int)Math.floorf (geom.y + TOP_GAP + y_gap), 
+					                   (int)Math.floorf (geom.width - x_gap), 
+					                   (int)Math.floorf (geom.height - 100 - y_gap)};
+				
+				if (BehaviorSettings.get_default ().schema.get_enum ("window-overview-type") == WindowOverviewType.GRID)
+					grid_placement (area, monitors[i]);
+				else
+					natural_placement (area, monitors[i]);
+			}
 		}
 		
 		void grid_placement (Meta.Rectangle area, List<Actor> clones)
