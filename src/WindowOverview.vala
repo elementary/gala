@@ -151,6 +151,7 @@ namespace Gala
 			// Assign slots
 			int slot_width = area.width / columns;
 			int slot_height = area.height / rows;
+			
 			ExposedWindow[] taken_slots = {};
 			taken_slots.resize (rows * columns);
 			
@@ -159,25 +160,31 @@ namespace Gala
 			slot_centers.resize (rows * columns);
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
-					slot_centers[x + y*columns] = {area.x + slot_width  * x + slot_width  / 2,
-					                               area.y + slot_height * y + slot_height / 2};
+					slot_centers[x + y * columns] = {area.x + slot_width  * x + slot_width  / 2,
+					                                 area.y + slot_height * y + slot_height / 2};
 				}
 			}
 			
 			// Assign each window to the closest available slot
-			var tmplist = clones.copy (); // use a QLinkedList copy instead?
+			var tmplist = clones.copy ();
 			while (tmplist.length () > 0) {
-				var w = tmplist.nth_data (0) as ExposedWindow;
-				var r = w.window.get_outer_rect ();
-				int slot_candidate = -1;
-				int slot_candidate_distance = int.MAX;
-				var pos = rect_center (r);
-				for (int i = 0; i < columns * rows; i++) { // all slots
-					int dist = (int)point_distance (pos, slot_centers[i]);
-					if (dist < slot_candidate_distance) { // window is interested in this slot
+				var window = tmplist.nth_data (0) as ExposedWindow;
+				var rect = window.window.get_outer_rect ();
+				
+				var slot_candidate = -1;
+				var slot_candidate_distance = int.MAX;
+				var pos = rect_center (rect);
+				
+				// all slots
+				for (int i = 0; i < columns * rows; i++) {
+					var dist = (int)point_distance (pos, slot_centers[i]);
+					
+					if (dist < slot_candidate_distance) {
+						// window is interested in this slot
 						ExposedWindow occupier = taken_slots[i];
-						if (occupier == w)
+						if (occupier == window)
 							continue;
+						
 						if (occupier == null || dist < point_distance(rect_center (occupier.window.get_outer_rect ()), slot_centers[i])) {
 							// either nobody lives here, or we're better - takeover the slot if it's our best
 							slot_candidate = i;
@@ -185,49 +192,55 @@ namespace Gala
 						}
 					}
 				}
+				
 				if (slot_candidate == -1)
 					continue;
 				
 				if (taken_slots[slot_candidate] != null)
-					tmplist.prepend (taken_slots[slot_candidate]); // occupier needs a new home now :p
-				tmplist.remove_all(w);
-				taken_slots[slot_candidate] = w; // ...and we rumble in =)
+					tmplist.prepend (taken_slots[slot_candidate]);
+				
+				tmplist.remove_all (window);
+				taken_slots[slot_candidate] = window;
 			}
 			
 			for (int slot = 0; slot < columns * rows; slot++) {
-				ExposedWindow w = taken_slots[slot];
-				if (w == null) // some slots might be empty
+				var window = taken_slots[slot];
+				// some slots might be empty
+				if (window == null)
 					continue;
-				var r = w.window.get_outer_rect ();
+				
+				var rect = window.window.get_outer_rect ();
 				
 				// Work out where the slot is
 				Meta.Rectangle target = {area.x + (slot % columns) * slot_width,
-				              area.y + (slot / columns) * slot_height,
-				              slot_width, slot_height};
-				target = rect_adjusted (target, 10, 10, -10, -10);   // Borders
+				                         area.y + (slot / columns) * slot_height,
+				                         slot_width, 
+				                         slot_height};
+				target = rect_adjusted (target, 10, 10, -10, -10);
+				
 				float scale;
-				if (target.width / (double)r.width < target.height / (double)r.height) {
+				if (target.width / (double)rect.width < target.height / (double)rect.height) {
 					// Center vertically
-					scale = target.width / (float)r.width;
-					target = rect_translate (target, 0, (target.y + (target.height - (int)(r.height * scale)) / 2) - target.y);
-					target.height = (int)Math.floorf (r.height * scale);
+					scale = target.width / (float)rect.width;
+					target = rect_translate (target, 0, (target.y + (target.height - (int)(rect.height * scale)) / 2) - target.y);
+					target.height = (int)Math.floorf (rect.height * scale);
 				} else {
 					// Center horizontally
-					scale = target.height / (float)w.height;
-					target = rect_translate (target, (target.x + (target.width - (int)(r.width * scale)) / 2) - target.x, 0);
-					target.width = (int)Math.floorf (r.width * scale);
+					scale = target.height / (float)window.height;
+					target = rect_translate (target, (target.x + (target.width - (int)(rect.width * scale)) / 2) - target.x, 0);
+					target.width = (int)Math.floorf (rect.width * scale);
 				}
 				
 				// Don't scale the windows too much
-				if (scale > 2.0 || (scale > 1.0 && (r.width > 300 || r.height > 300))) {
-					scale = (r.width > 300 || r.height > 300) ? 1.0f : 2.0f;
-					target = {rect_center (target).x - (int)Math.floorf (r.width * scale) / 2,
-					          rect_center (target).y - (int)Math.floorf (r.height * scale) / 2,
-					          (int)Math.floorf (scale * r.width), 
-					          (int)Math.floorf (scale * r.height)};
+				if (scale > 2.0 || (scale > 1.0 && (rect.width > 300 || rect.height > 300))) {
+					scale = (rect.width > 300 || rect.height > 300) ? 1.0f : 2.0f;
+					target = {rect_center (target).x - (int)Math.floorf (rect.width * scale) / 2,
+					          rect_center (target).y - (int)Math.floorf (rect.height * scale) / 2,
+					          (int)Math.floorf (scale * rect.width), 
+					          (int)Math.floorf (scale * rect.height)};
 				}
 				
-				place_window (w, target);
+				place_window (window, target);
 			}
 		}
 		
