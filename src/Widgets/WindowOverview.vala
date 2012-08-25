@@ -67,9 +67,8 @@ namespace Gala
 		}
 		
 		/**
-		 * Code taken from KWin present windows effect
+		 * Code ported from KWin present windows effect
 		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
-		 *
 		 **/
 		
 		//constants, mainly for natural expo
@@ -221,36 +220,36 @@ namespace Gala
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 			
 			var direction = 0;
-			var directions = new List<int> ();
-			var rects = new List<Meta.Rectangle?> ();
+			int[] directions = new int[clones.length ()];
+			Meta.Rectangle[] rects = new Meta.Rectangle[clones.length ()];
 			
-			for (var i = 0; i < clones.length (); i++) {
+			for (int i = 0; i < clones.length (); i++) {
 				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
 				var rect = (clones.nth_data (i) as ExposedWindow).window.get_outer_rect ();
-				rects.append ({rect.x, rect.y, rect.width, rect.height});
-				
-				bounds = bounds.union (rects.nth_data (i));
+				rects[i] = rect;
+				bounds = bounds.union (rect);
 				
 				// This is used when the window is on the edge of the screen to try to use as much screen real estate as possible.
-				directions.append (direction);
+				directions[i] = direction;
 				direction++;
-				if (direction == 4) {
+				if (direction == 4)
 					direction = 0;
-				}
 			}
 			
 			var loop_counter = 0;
 			var overlap = false;
 			do {
 				overlap = false;
-				for (var i = 0; i < rects.length (); i++) {
-					for (var j = 0; j < rects.length (); j++) {
+				for (var i = 0; i < rects.length; i++) {
+					for (var j = 0; j < rects.length; j++) {
+						if (i == j)
+							continue;
 						
-						var rect = rects.nth_data (i);
-						var comp = rects.nth_data (j);
+						var rect = rects[i];
+						var comp = rects[j];
 						
-						if (i == j || !rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
-							rect_adjusted (comp, -GAPS, -GAPS, GAPS, GAPS)))
+						if (!rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS).overlap (
+								rect_adjusted (comp, -GAPS, -GAPS, GAPS, GAPS)))
 							continue;
 						
 						loop_counter ++;
@@ -298,9 +297,9 @@ namespace Gala
 						diff.y = 0;
 						if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
 							if (x_section == 1)
-								x_section = (directions.nth_data (i) / 2 == 1 ? 2 : 0);
+								x_section = (directions[i] / 2 == 1 ? 2 : 0);
 							if (y_section == 1)
-								y_section = (directions.nth_data (i) % 2 == 1 ? 2 : 0);
+								y_section = (directions[i] % 2 == 1 ? 2 : 0);
 						}
 						if (x_section == 0 && y_section == 0) {
 							diff.x = bounds.x - i_center.x;
@@ -331,8 +330,8 @@ namespace Gala
 						bounds = bounds.union(comp);
 						
 						//we took copies from the rects from our list so we need to reassign them
-						rects.nth (i).data = rect;
-						rects.nth (j).data = comp;
+						rects[i] = rect;
+						rects[j] = comp;
 					}
 				}
 			} while (overlap && loop_counter < MAX_TRANSLATIONS);
