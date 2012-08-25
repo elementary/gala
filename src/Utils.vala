@@ -182,11 +182,31 @@ namespace Gala.Utils
 		return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
 	}
 	
+	public bool rect_is_overlapping_any (Meta.Rectangle rect, Meta.Rectangle[] rects, Meta.Rectangle border)
+	{
+		if (!border.contains_rect (rect))
+			return true;
+		foreach (var comp in rects) {
+			if (comp == rect)
+				continue;
+		
+			if (rect_adjusted (rect, -5, -5, 5, 5).overlap (rect_adjusted (comp, -5, -5, 5, 5)))
+				return true;
+		}
+	
+		return false;
+	}
+	
 	public int squared_distance (Gdk.Point a, Gdk.Point b)
 	{
 		var k1 = b.x - a.x;
 		var k2 = b.y - a.y;
 		
 		return k1*k1 + k2*k2;
+	}
+	
+	public int height_for_width (Meta.Rectangle rect, int width)
+	{
+		return (int)Math.floorf ((width / (float)rect.width) * rect.height);
 	}
 }

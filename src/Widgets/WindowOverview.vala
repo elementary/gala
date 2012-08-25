@@ -74,7 +74,7 @@ namespace Gala
 		//constants, mainly for natural expo
 		const int GAPS = 20;
 		const int MAX_TRANSLATIONS = 100000;
-		const int ACCURACY = 1;
+		const int ACCURACY = 20;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
 		
@@ -353,7 +353,77 @@ namespace Gala
 				        (int)Math.floorf (rect.width * scale),
 				        (int)Math.floorf (rect.height * scale)};
 				
-				place_window (clones.nth_data (index) as ExposedWindow, rect);
+				rects[index] = rect;
+				index++;
+			}
+			
+			// fill gaps by enlarging windows
+			bool moved = false;
+			Meta.Rectangle border = area;
+			do {
+				moved = false;
+				
+				index = 0;
+				foreach (var rect in rects) {
+					
+					int width_diff = ACCURACY;
+					int height_diff = height_for_width (rect, (rect.width + width_diff) - rect.height);
+					int x_diff = width_diff / 2;
+					int y_diff = height_diff / 2;
+					
+					//top right
+					Meta.Rectangle old = {rect.x, rect.y, rect.width, rect.height};
+					rect = {rect.x + x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
+					if (rect_is_overlapping_any (rect, rects, border))
+						rect = old;
+					else
+						moved = true;
+					
+					//bottom right
+					old = {rect.x, rect.y, rect.width, rect.height};
+					rect = {rect.x + x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
+					if (rect_is_overlapping_any (rect, rects, border))
+						rect = old;
+					else
+						moved = true;
+					
+					//bottom left
+					old = {rect.x, rect.y, rect.width, rect.height};
+					rect = {rect.x - x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
+					if (rect_is_overlapping_any (rect, rects, border))
+						rect = old;
+					else
+						moved = true;
+					
+					//top left
+					old = {rect.x, rect.y, rect.width, rect.height};
+					rect = {rect.x - x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
+					if (rect_is_overlapping_any (rect, rects, border))
+						rect = old;
+					else
+						moved = true;
+					
+					rects[index] = rect;
+					index++;
+				}
+			} while (moved);
+			
+			index = 0;
+			foreach (var rect in rects) {
+				var window = clones.nth_data (index) as ExposedWindow;
+				var window_rect = window.window.get_outer_rect ();
+				
+				scale = rect.width / (float)window_rect.width;
+				
+				if (scale > 2.0 || (scale > 1.0 && (window_rect.width > 300 || window_rect.height > 300))) {
+					scale = (window_rect.width > 300 || window_rect.height > 300) ? 1.0f : 2.0f;
+					rect = {rect_center (rect).x - (int)Math.floorf (window_rect.width * scale) / 2,
+					        rect_center (rect).y - (int)Math.floorf (window_rect.height * scale) / 2,
+					        (int)Math.floorf (window_rect.width * scale),
+					        (int)Math.floorf (window_rect.height * scale)};
+				}
+				
+				place_window (window, rect);
 				index++;
 			}
 		}
