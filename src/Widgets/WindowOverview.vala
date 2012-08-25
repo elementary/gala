@@ -128,7 +128,7 @@ namespace Gala
 			taken_slots.resize (rows * columns);
 			
 			// precalculate all slot centers
-			Utils.Point[] slot_centers = {};
+			Gdk.Point[] slot_centers = {};
 			slot_centers.resize (rows * columns);
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
@@ -194,12 +194,12 @@ namespace Gala
 				if (target.width / (double)rect.width < target.height / (double)rect.height) {
 					// Center vertically
 					scale = target.width / (float)rect.width;
-					target = rect_translate (target, 0, (target.y + (target.height - (int)(rect.height * scale)) / 2) - target.y);
+					target.y += (target.height - (int)(rect.height * scale)) / 2;
 					target.height = (int)Math.floorf (rect.height * scale);
 				} else {
 					// Center horizontally
 					scale = target.height / (float)window.height;
-					target = rect_translate (target, (target.x + (target.width - (int)(rect.width * scale)) / 2) - target.x, 0);
+					target.x += (target.width - (int)(rect.width * scale)) / 2;
 					target.width = (int)Math.floorf (rect.width * scale);
 				}
 				
@@ -257,9 +257,9 @@ namespace Gala
 						overlap = true;
 						
 						// Determine pushing direction
-						Utils.Point i_center = rect_center (rect);
-						Utils.Point j_center = rect_center (comp);
-						Utils.Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
+						Gdk.Point i_center = rect_center (rect);
+						Gdk.Point j_center = rect_center (comp);
+						Gdk.Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
 						
 						// Prevent dividing by zero and non-movement
 						if (diff.x == 0 && diff.y == 0)
@@ -275,8 +275,10 @@ namespace Gala
 						diff.x = (int)Math.floorf (diff.x * ACCURACY / length);
 						diff.y = (int)Math.floorf (diff.y * ACCURACY / length);
 						// Move both windows apart
-						rect = rect_translate (rect, -diff.x, -diff.y);
-						comp = rect_translate (comp, diff.x, diff.y);
+						rect.x += -diff.x;
+						rect.y += -diff.y;
+						comp.x += diff.x;
+						comp.y += diff.y;
 						
 						// Try to keep the bounding rect the same aspect as the screen so that more
 						// screen real estate is utilised. We do this by splitting the screen into nine
@@ -347,10 +349,8 @@ namespace Gala
 			// Move all windows back onto the screen and set their scale
 			var index = 0;
 			foreach (var rect in rects) {
-				rect = rect_translate (rect, -bounds.x, -bounds.y);
-				
-				rect = {(int)Math.floorf (rect.x * scale + area.x),
-				        (int)Math.floorf (rect.y * scale + area.y),
+				rect = {(int)Math.floorf ((rect.x - bounds.x) * scale + area.x),
+				        (int)Math.floorf ((rect.y - bounds.y) * scale + area.y),
 				        (int)Math.floorf (rect.width * scale),
 				        (int)Math.floorf (rect.height * scale)};
 				

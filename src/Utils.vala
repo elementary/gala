@@ -172,13 +172,7 @@ namespace Gala.Utils
 	
 	/* some math stuff */
 	
-	public struct Point
-	{
-		int x;
-		int y;
-	}
-	
-	public Point rect_center (Meta.Rectangle rect)
+	public Gdk.Point rect_center (Meta.Rectangle rect)
 	{
 		return {rect.x + rect.width / 2, rect.y + rect.height / 2};
 	}
@@ -188,12 +182,7 @@ namespace Gala.Utils
 		return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
 	}
 	
-	public Meta.Rectangle rect_translate (Meta.Rectangle rect, int x, int y)
-	{
-		return {rect.x + x, rect.y + y, rect.width, rect.height};
-	}
-	
-	public int squared_distance (Point a, Point b)
+	public int squared_distance (Gdk.Point a, Gdk.Point b)
 	{
 		var k1 = b.x - a.x;
 		var k2 = b.y - a.y;
