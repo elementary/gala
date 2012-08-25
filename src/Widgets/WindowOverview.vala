@@ -128,7 +128,7 @@ namespace Gala
 			taken_slots.resize (rows * columns);
 			
 			// precalculate all slot centers
-			Point[] slot_centers = {};
+			Utils.Point[] slot_centers = {};
 			slot_centers.resize (rows * columns);
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
@@ -149,7 +149,7 @@ namespace Gala
 				
 				// all slots
 				for (int i = 0; i < columns * rows; i++) {
-					var dist = (int)point_distance (pos, slot_centers[i]);
+					var dist = squared_distance (pos, slot_centers[i]);
 					
 					if (dist < slot_candidate_distance) {
 						// window is interested in this slot
@@ -157,7 +157,7 @@ namespace Gala
 						if (occupier == window)
 							continue;
 						
-						if (occupier == null || dist < point_distance(rect_center (occupier.window.get_outer_rect ()), slot_centers[i])) {
+						if (occupier == null || dist < squared_distance (rect_center (occupier.window.get_outer_rect ()), slot_centers[i])) {
 							// either nobody lives here, or we're better - takeover the slot if it's our best
 							slot_candidate = i;
 							slot_candidate_distance = dist;
@@ -257,9 +257,9 @@ namespace Gala
 						overlap = true;
 						
 						// Determine pushing direction
-						Point i_center = rect_center (rect);
-						Point j_center = rect_center (comp);
-						Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
+						Utils.Point i_center = rect_center (rect);
+						Utils.Point j_center = rect_center (comp);
+						Utils.Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
 						
 						// Prevent dividing by zero and non-movement
 						if (diff.x == 0 && diff.y == 0)
@@ -288,8 +288,8 @@ namespace Gala
 						// in some situations. We need to do this even when expanding later just in case
 						// all windows are the same size.
 						// (We are using an old bounding rect for this, hopefully it doesn't matter)
-						var x_section = (int)Math.roundf ((rects.nth_data (i).x - bounds.x) / (bounds.width / 3.0f));
-						var y_section = (int)Math.roundf ((rects.nth_data (j).y - bounds.y) / (bounds.height / 3.0f));
+						var x_section = (int)Math.roundf ((rect.x - bounds.x) / (bounds.width / 3.0f));
+						var y_section = (int)Math.roundf ((comp.y - bounds.y) / (bounds.height / 3.0f));
 						
 						i_center = rect_center (rect);
 						diff.x = 0;

@@ -48,7 +48,6 @@ ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/DBus.vala
-    src/WindowOverview.vala
     src/Main.vala
     src/Plugin.vala
     src/Settings.vala
@@ -56,6 +55,7 @@ vala_precompile(VALA_C
     src/Utils.vala
     src/Widgets/AppIcon.vala
     src/Widgets/ExposedWindow.vala
+    src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala
     src/Widgets/WorkspaceThumb.vala
     src/Widgets/WorkspaceView.vala

@@ -193,7 +193,7 @@ namespace Gala.Utils
 		return {rect.x + x, rect.y + y, rect.width, rect.height};
 	}
 	
-	public float point_distance (Point a, Point b)
+	public int squared_distance (Point a, Point b)
 	{
 		var k1 = b.x - a.x;
 		var k2 = b.y - a.y;
