@@ -116,36 +116,38 @@ namespace Gala
 		
 		void close (uint time)
 		{
-			foreach (var clone in window_clones) {
-				remove_child (clone);
-				clone.destroy ();
-			}
+			var screen = plugin.get_screen ();
+			var display = screen.get_display ();
 			
-			Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
-				var meta_win = w.get_meta_window ();
-				if (!meta_win.minimized && 
-					(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
-					meta_win.is_on_all_workspaces ())
-					w.show ();
-			});
 			if (dock_window != null)
 				dock_window.opacity = 0;
-			
-			window_clones.clear ();
-			
-			plugin.end_modal ();
-			if (current_window != null) {
-				current_window.activate (time);
-				current_window = null;
-			}
 			
 			var dest_width = (dock_window != null ? dock_window.width : 800.0f);
 			
 			set_child_above_sibling (dock, null);
 			dock_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity : 0);
 			
-			if (dock_window != null)
+			if (dock_window != null) {
+				dock_window.show ();
 				dock_window.animate (AnimationMode.LINEAR, 250, opacity : 255);
+			}
+				
+			foreach (var clone in window_clones) {
+				//current window stays on top
+				if ((clone.source as Meta.WindowActor).get_meta_window () == current_window)
+					continue;
+				
+				//reset order
+				clone.get_parent ().set_child_below_sibling (clone, null);
+				clone.animate (AnimationMode.EASE_OUT_CUBIC, 150, depth : 0.0f, opacity : 255);
+			}
+			
+			if (current_window != null) {
+				current_window.activate (time);
+				current_window = null;
+			}
+			
+			plugin.end_modal ();
 			
 			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
 				completed.connect (() => {
@@ -155,6 +157,18 @@ namespace Gala
 					dock_window = null;
 				
 				visible = false;
+				
+				foreach (var clone in window_clones)
+					clone.destroy ();
+				window_clones.clear ();
+				
+				Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
+					var meta_win = w.get_meta_window ();
+					if (!meta_win.minimized && 
+						(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
+						meta_win.is_on_all_workspaces ())
+						w.show ();
+				});
 			});
 		}
 		
