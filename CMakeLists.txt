@@ -54,9 +54,9 @@ vala_precompile(VALA_C
     src/TextShadowEffect.vala
     src/Utils.vala
     src/Widgets/AppIcon.vala
-    src/Widgets/ExposedWindow.vala
     src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala
+    src/Widgets/WindowThumb.vala
     src/Widgets/WorkspaceThumb.vala
     src/Widgets/WorkspaceView.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala

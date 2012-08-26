@@ -20,7 +20,7 @@ using Clutter;
 
 namespace Gala
 {
-	public class ExposedWindow : Actor
+	public class WindowThumb : Actor
 	{
 		public weak Window window;
 		Clone clone;
@@ -30,7 +30,7 @@ namespace Gala
 		public signal void selected (Window window);
 		public signal void reposition ();
 		
-		public ExposedWindow (Window _window)
+		public WindowThumb (Window _window)
 		{
 			window = _window;
 			

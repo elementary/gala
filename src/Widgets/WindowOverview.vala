@@ -117,8 +117,8 @@ namespace Gala
 		{
 			var clones = windows.copy ();
 			clones.sort ((a, b) => {
-				return (int)(a as ExposedWindow).window.get_stable_sequence () - 
-				        (int)(b as ExposedWindow).window.get_stable_sequence ();
+				return (int)(a as WindowThumb).window.get_stable_sequence () - 
+				        (int)(b as WindowThumb).window.get_stable_sequence ();
 			});
 			
 			//sort windows by monitor
@@ -126,7 +126,7 @@ namespace Gala
 			monitors.resize (screen.get_n_monitors ());
 			
 			foreach (var clone in clones)
-				monitors[(clone as ExposedWindow).window.get_monitor ()].append (clone);
+				monitors[(clone as WindowThumb).window.get_monitor ()].append (clone);
 			
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				if (monitors[i].length () == 0)
@@ -155,7 +155,7 @@ namespace Gala
 			int slot_width = area.width / columns;
 			int slot_height = area.height / rows;
 			
-			ExposedWindow[] taken_slots = {};
+			WindowThumb[] taken_slots = {};
 			taken_slots.resize (rows * columns);
 			
 			// precalculate all slot centers
@@ -171,7 +171,7 @@ namespace Gala
 			// Assign each window to the closest available slot
 			var tmplist = clones.copy ();
 			while (tmplist.length () > 0) {
-				var window = tmplist.nth_data (0) as ExposedWindow;
+				var window = tmplist.nth_data (0) as WindowThumb;
 				var rect = window.window.get_outer_rect ();
 				
 				var slot_candidate = -1;
@@ -184,7 +184,7 @@ namespace Gala
 					
 					if (dist < slot_candidate_distance) {
 						// window is interested in this slot
-						ExposedWindow occupier = taken_slots[i];
+						WindowThumb occupier = taken_slots[i];
 						if (occupier == window)
 							continue;
 						
@@ -257,7 +257,7 @@ namespace Gala
 			
 			for (int i = 0; i < clones.length (); i++) {
 				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
-				var rect = (clones.nth_data (i) as ExposedWindow).window.get_outer_rect ();
+				var rect = (clones.nth_data (i) as WindowThumb).window.get_outer_rect ();
 				rect = rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS);
 				rects[i] = rect;
 				bounds = bounds.union (rect);
@@ -438,7 +438,7 @@ namespace Gala
 			
 			index = 0;
 			foreach (var rect in rects) {
-				var window = clones.nth_data (index) as ExposedWindow;
+				var window = clones.nth_data (index) as WindowThumb;
 				var window_rect = window.window.get_outer_rect ();
 				
 				rect = rect_adjusted(rect, GAPS, GAPS, -GAPS, -GAPS);
@@ -458,7 +458,7 @@ namespace Gala
 		}
 		
 		// animate a window to the given position
-		void place_window (ExposedWindow clone, Meta.Rectangle rect)
+		void place_window (WindowThumb clone, Meta.Rectangle rect)
 		{
 			var fscale = rect.width / clone.width;
 			
@@ -524,7 +524,7 @@ namespace Gala
 					return;
 				actor.hide ();
 				
-				var clone = new ExposedWindow (window);
+				var clone = new WindowThumb (window);
 				clone.x = actor.x;
 				clone.y = actor.y;
 				
@@ -538,7 +538,7 @@ namespace Gala
 		}
 		
 		//called when a window has been closed
-		void reposition (ExposedWindow removed)
+		void reposition (WindowThumb removed)
 		{
 				var children = get_children ().copy ();
 				children.remove (removed);
@@ -563,7 +563,7 @@ namespace Gala
 			plugin.update_input_area ();
 			
 			foreach (var child in get_children ()) {
-				var exposed = child as ExposedWindow;
+				var exposed = child as WindowThumb;
 				exposed.close (animate);
 				exposed.selected.disconnect (selected);
 			}
