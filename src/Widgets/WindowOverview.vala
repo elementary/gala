@@ -76,6 +76,7 @@ namespace Gala
 		const int ACCURACY = 20;
 		const int BORDER = 10;
 		const int TOP_GAP = 20;
+		const int BOTTOM_GAP = 100;
 		
 		//some math utilities
 		int squared_distance (Gdk.Point a, Gdk.Point b)
@@ -133,13 +134,10 @@ namespace Gala
 				
 				// get the area used by the expo algorithms together
 				var geom = screen.get_monitor_geometry (i);
-				var ratio = geom.width / (float)geom.height;
-				var x_gap = Math.fmaxf (BORDER, TOP_GAP * ratio);
-				var y_gap = Math.fmaxf (BORDER / ratio, TOP_GAP);
-				Meta.Rectangle area = {(int)Math.floorf (geom.x + x_gap / 2), 
-					                   (int)Math.floorf (geom.y + TOP_GAP + y_gap), 
-					                   (int)Math.floorf (geom.width - x_gap), 
-					                   (int)Math.floorf (geom.height - 100 - y_gap)};
+				Meta.Rectangle area = {(int)Math.floorf (geom.x + BORDER), 
+				                       (int)Math.floorf (geom.y + TOP_GAP), 
+				                       (int)Math.floorf (geom.width - BORDER * 2), 
+				                       (int)Math.floorf (geom.height - BOTTOM_GAP)};
 				
 				if (BehaviorSettings.get_default ().schema.get_enum ("window-overview-type") == WindowOverviewType.GRID)
 					grid_placement (area, monitors[i]);

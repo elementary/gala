@@ -58,7 +58,7 @@ namespace Gala
 			close_button.leave_event.connect ((e) => leave_event (e));
 			
 			try {
-				close_button.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
+				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
 			} catch (Error e) { warning (e.message); }
 			
 			add_child (clone);
