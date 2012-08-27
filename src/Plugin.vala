@@ -69,7 +69,9 @@ namespace Gala
 			DBus.init (this);
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
-			stage.background_color = {0, 0, 0, 255};
+			
+			string color = new Settings ("org.gnome.desktop.background").get_string ("primary-color");
+			stage.background_color = Clutter.Color.from_string (color);
 			stage.no_clear_hint = true;
 			
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
