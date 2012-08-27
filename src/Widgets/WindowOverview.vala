@@ -170,6 +170,7 @@ namespace Gala
 			
 			// Assign each window to the closest available slot
 			var tmplist = clones.copy ();
+			var window_count = tmplist.length ();
 			while (tmplist.length () > 0) {
 				var window = tmplist.nth_data (0) as WindowThumb;
 				var rect = window.window.get_outer_rect ();
@@ -180,6 +181,9 @@ namespace Gala
 				
 				// all slots
 				for (int i = 0; i < columns * rows; i++) {
+					if (i > window_count - 1)
+						break;
+					
 					var dist = squared_distance (pos, slot_centers[i]);
 					
 					if (dist < slot_candidate_distance) {
