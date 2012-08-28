@@ -69,7 +69,10 @@ namespace Gala
 				
 				mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
 					client_pointer.get_position (null, out mx, out my);
-					wins.animate (AnimationMode.LINEAR, 50, scale_center_x : mx, scale_center_y : my);
+					if (wins.scale_center_x == mx && wins.scale_center_y == my)
+						return true;
+					
+					wins.animate (AnimationMode.LINEAR, MOUSE_POLL_TIME, scale_center_x : mx, scale_center_y : my);
 					
 					return true;
 				});
