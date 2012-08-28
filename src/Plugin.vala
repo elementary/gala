@@ -319,11 +319,13 @@ namespace Gala
 			}
 			
 			kill_window_effects (actor);
+			minimizing.add (actor);
 			
 			int width, height;
 			get_screen ().get_size (out width, out height);
 			
 			Rectangle icon = {};
+			//FIXME don't use the icon geometry, since it seems broken right now
 			if (false && actor.get_meta_window ().get_icon_geometry (out icon)) {
 				
 				float scale_x  = (float)icon.width  / actor.width;
@@ -337,16 +339,18 @@ namespace Gala
 					.completed.connect (() => {
 					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
 					minimize_completed (actor);
+					minimizing.remove (actor);
 				});
 				
 			} else {
 				actor.scale_center_x = width / 2.0f - actor.x;
 				actor.scale_center_y = height - actor.y;
 				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration, 
-					scale_x:0.0f, scale_y:0.0f, opacity:0.0f)
+					scale_x : 0.0f, scale_y : 0.0f, opacity : 0)
 					.completed.connect (() => {
 					actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
 					minimize_completed (actor);
+					minimizing.remove (actor);
 				});
 			}
 		}
@@ -595,11 +599,8 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor)) {
+			if (end_animation (ref mapping, actor))
 				map_completed (actor);
-				//FIXME adding a print here seems to solve bug #1029609
-				print ("Killed map animation\n");
-			}
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
