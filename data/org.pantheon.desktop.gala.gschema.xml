@@ -7,6 +7,11 @@
 		<value nick="minimize-current" value="3" />
 		<value nick="open-launcher" value="4" />
 		<value nick="custom-command" value="5" />
+		<value nick="window-overview" value="6" />
+	</enum>
+	<enum id="GalaWindowOverviewType">
+		<value nick='grid' value='0'/>
+		<value nick='natural' value='1'/>
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
@@ -14,6 +19,11 @@
 			<default>'none'</default>
 			<summary>Action for the top left corner</summary>
 			<description></description>
+		</key>
+		<key enum="GalaWindowOverviewType" name="window-overview-type">
+			<default>'grid'</default>
+			<summary>Algorithm for window overview layout</summary>
+			<description>Choose the algorithm used for exposing the windows</description>
 		</key>
 		<key enum="GalaActionType" name="hotcorner-topright">
 			<default>'none'</default>
@@ -73,6 +83,10 @@
 		<key type="as" name="zoom-out">
 			<default><![CDATA[['<Super>minus', '<Super>KP_Subtract']]]></default>
 			<summary>Zoom out</summary>
+		</key>
+		<key type="as" name="expose-windows">
+			<default><![CDATA[['<Super>e']]]></default>
+			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
 	</schema>

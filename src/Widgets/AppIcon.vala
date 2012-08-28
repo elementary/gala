@@ -62,15 +62,12 @@ namespace Gala
 			} else {
 				WorkspaceThumb old = actor.get_parent ().get_parent () as WorkspaceThumb;
 				actor.get_parent ().remove_child (actor);
-				if (old != null)
-					old.icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (old.wallpaper.x + old.wallpaper.width / 2 - old.icons.width / 2));
 				actor.opacity = 255;
 				
 				var icons = (WorkspaceThumb.destination as WorkspaceThumb).icons;
 				var wallpaper = (WorkspaceThumb.destination as WorkspaceThumb).wallpaper;
 				
 				icons.add_child (actor);
-				icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
 				
 				var xids = app.get_xids ();
 				if (xids.length > 1) { //get all the windows that belong to this app
@@ -86,6 +83,10 @@ namespace Gala
 				
 				if (handle != null)
 					handle.destroy ();
+				
+				if (old != null)
+					old.icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (old.wallpaper.x + old.wallpaper.width / 2 - old.icons.width / 2));
+				icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
 			}
 		}
 		

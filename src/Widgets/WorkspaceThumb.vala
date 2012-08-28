@@ -46,7 +46,7 @@ namespace Gala
 		internal Clone wallpaper;
 		Clutter.Actor windows;
 		internal Clutter.Actor icons;
-		CairoTexture indicator;
+		Actor indicator;
 		GtkClutter.Texture close_button;
 		
 		uint hover_timer = 0;
@@ -75,10 +75,14 @@ namespace Gala
 			
 			reactive = true;
 			
-			indicator = new Clutter.CairoTexture ((uint)width + 2 * INDICATOR_BORDER, (uint)THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER);
-			indicator.draw.connect (draw_indicator);
-			indicator.auto_resize = true;
+			indicator = new Actor ();
+			indicator.width = width + 2 * INDICATOR_BORDER;
+			indicator.height = THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER;
 			indicator.opacity = 0;
+			indicator.content = new Canvas ();
+			(indicator.content as Canvas).draw.connect (draw_indicator);
+			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
+			
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
@@ -90,7 +94,7 @@ namespace Gala
 			
 			close_button = new GtkClutter.Texture ();
 			try {
-				close_button.set_from_pixbuf (Granite.Widgets.get_close_pixbuf ());
+				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
 			} catch (Error e) { warning (e.message); }
 			close_button.x = -12.0f;
 			close_button.y = -10.0f;
@@ -208,7 +212,12 @@ namespace Gala
 		
 		bool draw_indicator (Cairo.Context cr)
 		{
-			selector_style.render_activity (cr, 0, 0, indicator.width, indicator.height);
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
+			selector_style.render_background (cr, 0, 0, indicator.width, indicator.height);
+			selector_style.render_frame (cr, 0, 0, indicator.width, indicator.height);
 			
 			return false;
 		}

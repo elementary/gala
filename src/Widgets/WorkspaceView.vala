@@ -27,8 +27,7 @@ namespace Gala
 		Screen screen;
 		
 		Clutter.Actor thumbnails;
-		Clutter.CairoTexture background;
-		Clutter.CairoTexture scroll;
+		Clutter.Actor scroll;
 		Clutter.Actor click_catcher; //invisible plane that catches clicks outside the view
 		
 		bool animating; // delay closing the popup
@@ -58,16 +57,13 @@ namespace Gala
 			(thumbnails.layout_manager as Clutter.BoxLayout).spacing = 12;
 			(thumbnails.layout_manager as Clutter.BoxLayout).homogeneous = true;
 			
-			background = new Clutter.CairoTexture (500, (uint)height);
-			background.auto_resize = true;
-			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.WIDTH, 0));
-			background.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.HEIGHT, 0));
-			background.draw.connect (draw_background);
+			content = new Clutter.Canvas ();
+			(content as Clutter.Canvas).draw.connect (draw_background);
 			
-			scroll = new Clutter.CairoTexture (100, 12);
+			scroll = new Clutter.Actor ();
 			scroll.height = 12;
-			scroll.auto_resize = true;
-			scroll.draw.connect (draw_scroll);
+			scroll.content = new Clutter.Canvas ();
+			(scroll.content as Clutter.Canvas).draw.connect (draw_scroll);
 			
 			click_catcher = new Clutter.Actor ();
 			click_catcher.reactive = true;
@@ -77,7 +73,6 @@ namespace Gala
 			});
 			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
 			
-			add_child (background);
 			add_child (thumbnails);
 			add_child (scroll);
 			
@@ -125,6 +120,10 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
 			background_style.render_background (cr, 0, 0, width, height);
 			background_style.render_frame (cr, 0, 0, width, height);
 			
@@ -133,6 +132,10 @@ namespace Gala
 		
 		bool draw_scroll (Cairo.Context cr)
 		{
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 4, 4, scroll.width-32, 4, 2);
 			cr.set_source_rgba (1, 1, 1, 0.8);
 			cr.fill ();
@@ -192,6 +195,7 @@ namespace Gala
 				if (thumbnails.x + thumbnails.width < width)
 					thumbnails.x = width - thumbnails.width;
 				scroll.width = width / thumbnails.width * width;
+				(scroll.content as Clutter.Canvas).set_size ((int)scroll.width, 12);
 			} else {
 				thumbnails.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x : width / 2 - thumbnails.width / 2);
 			}
@@ -199,15 +203,20 @@ namespace Gala
 		
 		void switch_to_next_workspace (MotionDirection direction)
 		{
-			var screen = plugin.get_screen ();
 			var display = screen.get_display ();
-			
 			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
 			
-			if (neighbor == null)
-				return;
-			
 			neighbor.activate (display.get_current_time ());
+			
+			//if we didnt switch, show a nudge-over animation
+			if (screen.get_active_workspace () == neighbor) {
+				var dest = direction == MotionDirection.LEFT ? 32.0f : -32.0f;
+				Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
+				Clutter.Threads.Timeout.add (210, () => {
+					Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
+					return false;
+				});
+			}
 		}
 		
 		public override bool leave_event (Clutter.CrossingEvent event) {
@@ -217,20 +226,35 @@ namespace Gala
 			return false;
 		}
 		
+		uint last_time = -1;
+		bool released = false;
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
+			var display = screen.get_display ();
+			
+			if (!released && display.get_current_time_roundtrip () < (last_time + AnimationSettings.get_default ().workspace_switch_duration))
+				return false;
+			
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.LEFT);
+						plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
 						switch_to_next_workspace (MotionDirection.LEFT);
+					
+					released = false;
+					last_time = display.get_current_time_roundtrip ();
+					
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
-						plugin.move_window (screen.get_display ().get_focus_window (), MotionDirection.RIGHT);
+						plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
 						switch_to_next_workspace (MotionDirection.RIGHT);
+					
+					released = false;
+					last_time = display.get_current_time_roundtrip ();
+					
 					return false;
 				default:
 					break;
@@ -241,6 +265,8 @@ namespace Gala
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
+			released = true;
+			
 			if (event.keyval == Clutter.Key.Alt_L || 
 				event.keyval == Clutter.Key.Super_L || 
 				event.keyval == Clutter.Key.Control_L || 
@@ -294,11 +320,11 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			Utils.set_input_area (screen, InputArea.FULLSCREEN);
-			plugin.begin_modal ();
-			
 			visible = true;
 			grab_key_focus ();
+			
+			Utils.set_input_area (screen, InputArea.FULLSCREEN);
+			plugin.begin_modal ();
 			
 			if (wait) {
 				timeout = Timeout.add (1000, () => {
@@ -316,6 +342,7 @@ namespace Gala
 			y = area.height + area.y;
 			x = area.x;
 			width = area.width;
+			(content as Clutter.Canvas).set_size ((int)width, (int)height);
 			
 			thumbnails.get_children ().foreach ((thumb) => {
 				thumb.show ();
@@ -347,8 +374,12 @@ namespace Gala
 				return false;
 			}); //catch hot corner hiding problem and indicator placement
 			
+			var wins = Compositor.get_window_group_for_screen (screen);
+			wins.detach_animation ();
+			wins.x = 0.0f;
+			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : (area.height + area.y) - height);
-			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
+			wins.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
 		}
 		
 		public new void hide ()
@@ -371,7 +402,10 @@ namespace Gala
 			
 			click_catcher.visible = false;
 			
-			Compositor.get_window_group_for_screen (plugin.get_screen ()).animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
+			var wins = Compositor.get_window_group_for_screen (screen);
+			wins.detach_animation ();
+			wins.x = 0.0f;
+			wins.animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
 		}
 		
 		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,

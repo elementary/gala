@@ -26,7 +26,8 @@ namespace Gala
 		MAXIMIZE_CURRENT,
 		MINIMIZE_CURRENT,
 		OPEN_LAUNCHER,
-		CUSTOM_COMMAND
+		CUSTOM_COMMAND,
+		WINDOW_OVERVIEW
 	}
 	
 	public enum InputArea {
@@ -40,6 +41,7 @@ namespace Gala
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		Zooming zooming;
+		WindowOverview window_overview;
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -68,7 +70,9 @@ namespace Gala
 			DBus.init (this);
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
-			stage.background_color = {0, 0, 0, 255};
+			
+			string color = new Settings ("org.gnome.desktop.background").get_string ("primary-color");
+			stage.background_color = Clutter.Color.from_string (color);
 			stage.no_clear_hint = true;
 			
 			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
@@ -79,12 +83,17 @@ namespace Gala
 			winswitcher = new WindowSwitcher (this);
 			
 			zooming = new Zooming (this);
+			window_overview = new WindowOverview (this);
 			
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
+			stage.add_child (window_overview);
 			
 			/*keybindings*/
 			
+			screen.get_display ().add_keybinding ("expose-windows", BehaviorSettings.get_default ().schema, 0, () => {
+				window_overview.open (true);
+			});
 			screen.get_display ().add_keybinding ("move-to-workspace-first", BehaviorSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
 			});
@@ -263,15 +272,16 @@ namespace Gala
 					workspace_view.show ();
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
-					if (current == null)
+					if (current == null || current.window_type != WindowType.NORMAL)
 						break;
+					
 					if (current.get_maximized () == (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL))
 						current.unmaximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					else
 						current.maximize (MaximizeFlags.HORIZONTAL | MaximizeFlags.VERTICAL);
 					break;
 				case ActionType.MINIMIZE_CURRENT:
-					if (current != null)
+					if (current != null && current.window_type == WindowType.NORMAL)
 						current.minimize ();
 					break;
 				case ActionType.OPEN_LAUNCHER:
@@ -287,6 +297,9 @@ namespace Gala
 					} catch (Error e) {
 						warning (e.message);
 					}
+					break;
+				case ActionType.WINDOW_OVERVIEW:
+					window_overview.open (true);
 					break;
 				default:
 					warning ("Trying to run unknown action");
@@ -304,11 +317,14 @@ namespace Gala
 				minimize_completed (actor);
 				return;
 			}
+			
+			kill_window_effects (actor);
+			
 			int width, height;
 			get_screen ().get_size (out width, out height);
 			
 			Rectangle icon = {};
-			if (false && actor.get_meta_window ().get_icon_geometry (icon)) {
+			if (false && actor.get_meta_window ().get_icon_geometry (out icon)) {
 				
 				float scale_x  = (float)icon.width  / actor.width;
 				float scale_y  = (float)icon.height / actor.height;
@@ -390,6 +406,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			actor.show ();
 			
 			switch (window.window_type) {
@@ -463,6 +480,7 @@ namespace Gala
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
+			actor.detach_animation ();
 			destroying.add (actor);
 			
 			switch (window.window_type) {
@@ -577,8 +595,11 @@ namespace Gala
 		
 		public override void kill_window_effects (WindowActor actor)
 		{
-			if (end_animation (ref mapping, actor))
+			if (end_animation (ref mapping, actor)) {
 				map_completed (actor);
+				//FIXME adding a print here seems to solve bug #1029609
+				print ("Killed map animation\n");
+			}
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
