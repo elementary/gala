@@ -101,10 +101,10 @@ namespace Gala
 				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
 			});
 			screen.get_display ().add_keybinding ("zoom-in", BehaviorSettings.get_default ().schema, 0, () => {
-				zooming.zoom (true);
+				zooming.zoom_in ();
 			});
 			screen.get_display ().add_keybinding ("zoom-out", BehaviorSettings.get_default ().schema, 0, () => {
-				zooming.zoom (false);
+				zooming.zoom_out ();
 			});
 			
 			screen.get_display ().overlay_key.connect (() => {
