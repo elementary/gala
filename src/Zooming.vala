@@ -20,10 +20,8 @@ using Meta;
 
 namespace Gala
 {
-
 	public class Zooming : Object
 	{
-		
 		Plugin plugin;
 		
 		bool active;
@@ -69,8 +67,7 @@ namespace Gala
 					float x, y;
 					Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, out x, out y);
 					
-					wins.animate (Clutter.AnimationMode.LINEAR, 50, scale_center_x : x);
-					wins.animate (Clutter.AnimationMode.LINEAR, 50, scale_center_y : y);
+					wins.animate (Clutter.AnimationMode.LINEAR, 50, scale_center_x : x, scale_center_y : y);
 					
 					return true;
 				});
@@ -91,7 +88,5 @@ namespace Gala
 			
 			wins.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 300, scale_x:new_val, scale_y:new_val);
 		}
-		
 	}
-	
 }
