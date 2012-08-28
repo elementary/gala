@@ -235,6 +235,7 @@ namespace Gala
 			if (!released && display.get_current_time_roundtrip () < (last_time + AnimationSettings.get_default ().workspace_switch_duration))
 				return false;
 			
+			int switch_index = -1;
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
@@ -256,9 +257,42 @@ namespace Gala
 					last_time = display.get_current_time_roundtrip ();
 					
 					return false;
+				case Clutter.Key.@1:
+					switch_index = 1;
+					break;
+				case Clutter.Key.@2:
+					switch_index = 2;
+					break;
+				case Clutter.Key.@3:
+					switch_index = 3;
+					break;
+				case Clutter.Key.@4:
+					switch_index = 4;
+					break;
+				case Clutter.Key.@5:
+					switch_index = 5;
+					break;
+				case Clutter.Key.@6:
+					switch_index = 6;
+					break;
+				case Clutter.Key.@7:
+					switch_index = 7;
+					break;
+				case Clutter.Key.@8:
+					switch_index = 8;
+					break;
+				case Clutter.Key.@9:
+					switch_index = 8;
+					break;
+				case Clutter.Key.@0:
+					switch_index = 10;
+					break;
 				default:
 					break;
 			}
+			
+			if (switch_index != -1 && switch_index <= screen.n_workspaces)
+				screen.get_workspace_by_index (switch_index - 1).activate (screen.get_display ().get_current_time ());
 			
 			return true;
 		}
