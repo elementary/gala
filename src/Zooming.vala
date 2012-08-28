@@ -80,9 +80,8 @@ namespace Gala
 			if (current_zoom <= 1.0f) {
 				current_zoom = 1.0f;
 				
-				if (mouse_poll_timer == 0)
-					return;
-				Source.remove (mouse_poll_timer);
+				if (mouse_poll_timer > 0)
+					Source.remove (mouse_poll_timer);
 				mouse_poll_timer = 0;
 				
 				wins.animate (AnimationMode.EASE_OUT_CUBIC, 300, scale_x : 1.0f, scale_y : 1.0f).completed.connect (() => {
