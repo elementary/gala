@@ -53,6 +53,7 @@ vala_precompile(VALA_C
     src/Settings.vala
     src/TextShadowEffect.vala
     src/Utils.vala
+    src/Zooming.vala
     src/Widgets/AppIcon.vala
     src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala

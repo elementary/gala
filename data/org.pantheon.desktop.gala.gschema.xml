@@ -75,6 +75,15 @@
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
+		<key type="as" name="zoom-in">
+			<default><![CDATA[['<Super>plus', '<Super>KP_Add']]]></default>
+			<summary>Zoom in</summary>
+			<description></description>
+		</key>
+		<key type="as" name="zoom-out">
+			<default><![CDATA[['<Super>minus', '<Super>KP_Subtract']]]></default>
+			<summary>Zoom out</summary>
+		</key>
 		<key type="as" name="expose-windows">
 			<default><![CDATA[['<Super>e']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
