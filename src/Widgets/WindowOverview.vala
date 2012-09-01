@@ -471,8 +471,8 @@ namespace Gala
 			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
 			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 			
-			clone.close_button.x = rect.x - 10;
-			clone.close_button.y = rect.y - 10;
+			clone.close_button.x = rect.x + 1;
+			clone.close_button.y = rect.y + 1;
 			
 			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
 				.completed.connect (() => ready = true );
@@ -552,6 +552,7 @@ namespace Gala
 			
 			var actor = window.get_compositor_private () as WindowActor;
 			if (actor == null) {
+				//the window possibly hasn't reached the compositor yet
 				Idle.add (() => {
 					if (window.get_compositor_private () != null && 
 						window.get_workspace () == screen.get_active_workspace ())

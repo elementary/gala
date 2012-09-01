@@ -85,7 +85,6 @@ namespace Gala
 			get_parent ().set_child_below_sibling (this, null);
 			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
 				destroy ();
-				if (!window.
 				window.delete (window.get_screen ().get_display ().get_current_time ());
 			});
 			
