@@ -722,7 +722,7 @@ namespace Gala
 			
 			for (var i=0;i<win.length ();i++) {
 				var window = win.nth_data (i);
-				if (window.is_destroyed ())
+				if (window == null || window.is_destroyed ())
 					continue;
 				
 				if (window.get_parent () == out_group) {
