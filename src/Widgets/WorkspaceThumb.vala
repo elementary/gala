@@ -239,11 +239,15 @@ namespace Gala
 			
 			// add window thumbnails
 			var aspect = windows.width / swidth;
-			Compositor.get_window_actors (screen).foreach ((w) => {
-				var meta_window = w.get_meta_window ();
+			foreach (var window in Compositor.get_window_actors (screen)) {
+				if (window == null)
+					continue;
+				var meta_window = window.get_meta_window ();
+				if (meta_window == null)
+					continue;
 				var type = meta_window.window_type;
 				
-				if ((!(w.get_workspace () == workspace.index ()) && 
+				if ((!(window.get_workspace () == workspace.index ()) && 
 					!meta_window.is_on_all_workspaces ()) ||
 					meta_window.minimized ||
 					(type != WindowType.NORMAL && 
@@ -251,14 +255,14 @@ namespace Gala
 					type != WindowType.MODAL_DIALOG))
 					return;
 				
-				var clone = new Clone (w.get_texture ());
+				var clone = new Clone (window.get_texture ());
 				clone.width = aspect * clone.width;
 				clone.height = aspect * clone.height;
-				clone.x = aspect * w.x;
-				clone.y = aspect * w.y;
+				clone.x = aspect * window.x;
+				clone.y = aspect * window.y;
 				
 				windows.add_child (clone);
-			});
+			}
 		}
 		
 		void update_icons ()
