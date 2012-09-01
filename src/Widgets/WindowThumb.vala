@@ -73,11 +73,19 @@ namespace Gala
 			if (event.button != 1)
 				return false;
 			
+			close_window ();
+			
+			return true;
+		}
+		
+		public void close_window ()
+		{
 			//make sure we dont see a window closing animation in the background
 			(window.get_compositor_private () as Actor).opacity = 0;
 			get_parent ().set_child_below_sibling (this, null);
 			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
 				destroy ();
+				if (!window.
 				window.delete (window.get_screen ().get_display ().get_current_time ());
 			});
 			
@@ -85,8 +93,6 @@ namespace Gala
 			icon.destroy ();
 			
 			reposition ();
-			
-			return true;
 		}
 		
 		public override bool enter_event (CrossingEvent event)

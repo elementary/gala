@@ -493,8 +493,9 @@ namespace Gala
 			ready = false;
 			
 			var used_windows = new SList<Window> ();
+			var workspace = screen.get_active_workspace ();
 			
-			foreach (var window in screen.get_active_workspace ().list_windows ()) {
+			foreach (var window in workspace.list_windows ()) {
 				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
 					(window.get_compositor_private () as Actor).hide ();
 					continue;
@@ -508,6 +509,9 @@ namespace Gala
 			var n_windows = used_windows.length ();
 			if (n_windows == 0)
 				return;
+			
+			workspace.window_added.connect (add_window);
+			workspace.window_removed.connect (remove_window);
 			
 			Compositor.get_background_actor_for_screen (screen).
 				animate (AnimationMode.EASE_OUT_QUAD, 1000, dim_factor : 0.4);
@@ -541,12 +545,56 @@ namespace Gala
 			calculate_places (get_children ());
 		}
 		
+		void add_window (Window window)
+		{
+			if (!visible || window.get_workspace () != screen.get_active_workspace ())
+				return;
+			
+			var actor = window.get_compositor_private () as WindowActor;
+			if (actor == null) {
+				Idle.add (() => {
+					if (window.get_compositor_private () != null && 
+						window.get_workspace () == screen.get_active_workspace ())
+						add_window (window);
+					return false;
+				});
+				return;
+			}
+			
+			actor.hide ();
+			
+			var clone = new WindowThumb (window);
+			clone.x = actor.x;
+			clone.y = actor.y;
+			
+			clone.selected.connect (selected);
+			clone.reposition.connect (reposition);
+			
+			add_child (clone);
+			
+			calculate_places (get_children ());
+		}
+		
+		void remove_window (Window window)
+		{
+			WindowThumb thumb = null;
+			foreach (var child in get_children ()) {
+				if ((child as WindowThumb).window == window)
+					thumb = child as WindowThumb;
+			}
+			
+			if (thumb != null) {
+				thumb.close_window ();
+				reposition (thumb);
+			}
+		}
+		
 		//called when a window has been closed
 		void reposition (WindowThumb removed)
 		{
-				var children = get_children ().copy ();
-				children.remove (removed);
-				calculate_places (children);
+			var children = get_children ().copy ();
+			children.remove (removed);
+			calculate_places (children);
 		}
 		
 		void selected (Window window)
@@ -560,6 +608,10 @@ namespace Gala
 		{
 			if (!visible || !ready)
 				return;
+			
+			var workspace = screen.get_active_workspace ();
+			workspace.window_added.disconnect (add_window);
+			workspace.window_removed.disconnect (remove_window);
 			
 			ready = false;
 			
