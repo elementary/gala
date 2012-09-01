@@ -367,7 +367,7 @@ namespace Gala
 			plugin.begin_modal ();
 			
 			if (wait) {
-				timeout = Timeout.add (1000, () => {
+				timeout = Timeout.add (2000, () => {
 					show_elements ();
 					timeout = 0;
 					return false;
