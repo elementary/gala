@@ -45,6 +45,7 @@ namespace Gala
 			
 			height = VIEW_HEIGHT;
 			reactive = true;
+			clip_to_allocation = true;
 			
 			var e = new Gtk.EventBox ();
 			e.show ();
@@ -195,6 +196,7 @@ namespace Gala
 				if (thumbnails.x + thumbnails.width < width)
 					thumbnails.x = width - thumbnails.width;
 				scroll.width = width / thumbnails.width * width;
+				scroll.y = height - 12;
 				(scroll.content as Clutter.Canvas).set_size ((int)scroll.width, 12);
 			} else {
 				thumbnails.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, x : width / 2 - thumbnails.width / 2);
@@ -340,7 +342,7 @@ namespace Gala
 				&& thumbnails.x < 0) { //right
 				thumbnails.x += scroll_speed;
 			}
-			scroll.x = Math.floorf (width / thumbnails.width * thumbnails.x);
+			scroll.x = Math.floorf (width / thumbnails.width * -thumbnails.x);
 			
 			return false;
 		}
