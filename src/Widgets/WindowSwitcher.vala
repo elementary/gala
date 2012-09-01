@@ -248,8 +248,16 @@ namespace Gala
 			}
 			
 			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-			if (metawindows.length () <= 1)
+			if (metawindows.length () == 0)
 				return;
+			if (metawindows.length () == 1) {
+				var actor = metawindows.nth_data (0).get_compositor_private () as Actor;
+				actor.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
+					actor.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
+				});
+				
+				return;
+			}
 			
 			visible = true;
 			
