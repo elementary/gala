@@ -202,7 +202,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
 		public static unowned Clutter.Actor get_stage_for_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_actors")]
-		public static unowned GLib.List<Meta.WindowActor> get_window_actors (Meta.Screen screen);
+		public static unowned GLib.List<weak Meta.WindowActor> get_window_actors (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_group_for_screen")]
 		public static unowned Clutter.Actor get_window_group_for_screen (Meta.Screen screen);
 		public void hide_window (Meta.Window window, Meta.CompEffect effect);
