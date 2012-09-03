@@ -646,7 +646,7 @@ namespace Meta {
 		public uint version_micro;
 		public uint version_api;
 	}
-	[CCode (cheader_filename = "meta/boxes.h", type_id = "meta_rectangle_get_type ()")]
+	[CCode (cheader_filename = "meta/boxes.h", has_type_id = false)]
 	public struct Rectangle {
 		public int x;
 		public int y;
@@ -654,10 +654,8 @@ namespace Meta {
 		public int height;
 		public int area ();
 		public bool contains_rect (Meta.Rectangle inner_rect);
-		public Meta.Rectangle copy ();
 		public bool could_fit_rect (Meta.Rectangle inner_rect);
 		public bool equal (Meta.Rectangle src2);
-		public void free ();
 		public bool horiz_overlap (Meta.Rectangle rect2);
 		public bool intersect (Meta.Rectangle src2, out Meta.Rectangle dest);
 		public bool overlap (Meta.Rectangle rect2);
