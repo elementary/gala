@@ -253,7 +253,7 @@ namespace Gala
 					(type != WindowType.NORMAL && 
 					type != WindowType.DIALOG &&
 					type != WindowType.MODAL_DIALOG))
-					return;
+					continue;
 				
 				var clone = new Clone (window.get_texture ());
 				clone.width = aspect * clone.width;
