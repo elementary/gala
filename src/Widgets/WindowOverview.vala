@@ -490,8 +490,6 @@ namespace Gala
 				return;
 			}
 			
-			ready = false;
-			
 			var used_windows = new SList<Window> ();
 			var workspace = screen.get_active_workspace ();
 			
@@ -509,6 +507,8 @@ namespace Gala
 			var n_windows = used_windows.length ();
 			if (n_windows == 0)
 				return;
+			
+			ready = false;
 			
 			workspace.window_added.connect (add_window);
 			workspace.window_removed.connect (remove_window);
