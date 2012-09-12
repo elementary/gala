@@ -593,13 +593,12 @@ namespace Gala
 		//called when a window has been closed
 		void reposition (WindowThumb removed)
 		{
-			if (get_children ().length () == 0) {
-				close (false);
-				return;
-			}
 			var children = get_children ().copy ();
 			children.remove (removed);
 			calculate_places (children);
+			
+			if (get_children ().length () == 0)
+				close (false);
 		}
 		
 		void selected (Window window)
