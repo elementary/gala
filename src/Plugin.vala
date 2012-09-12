@@ -153,7 +153,15 @@ namespace Gala
 			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
 			
 			/*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
-			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			configure_hotcorners ();
+			screen.monitors_changed.connect (configure_hotcorners);
+			
+			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+		}
+		
+		void configure_hotcorners ()
+		{
+			var geometry = get_screen ().get_monitor_geometry (get_screen ().get_primary_monitor ());
 			
 			add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
 			add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
@@ -161,26 +169,32 @@ namespace Gala
 			add_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
 			
 			update_input_area ();
-			
-			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
 		}
 		
 		void add_hotcorner (float x, float y, string key)
 		{
-			var hot_corner = new Clutter.Actor ();
+			Clutter.Actor hot_corner;
+			var stage = Compositor.get_stage_for_screen (get_screen ());
+			
+			// if the hot corner already exists, just reposition it, create it otherwise
+			if ((hot_corner = stage.find_child_by_name (key)) == null) {
+				hot_corner = new Clutter.Actor ();
+				hot_corner.width = 1;
+				hot_corner.height = 1;
+				hot_corner.opacity = 0;
+				hot_corner.reactive = true;
+				hot_corner.name = key;
+				
+				stage.add_child (hot_corner);
+				
+				hot_corner.enter_event.connect (() => {
+					perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
+					return false;
+				});
+			}
+			
 			hot_corner.x = x;
 			hot_corner.y = y;
-			hot_corner.width = 1;
-			hot_corner.height = 1;
-			hot_corner.opacity = 0;
-			hot_corner.reactive = true;
-			
-			Compositor.get_stage_for_screen (get_screen ()).add_child (hot_corner);
-			
-			hot_corner.enter_event.connect (() => {
-				perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
-				return false;
-			});
 		}
 		
 		public void update_input_area ()
