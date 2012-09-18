@@ -514,7 +514,7 @@ namespace Gala
 			workspace.window_removed.connect (remove_window);
 			
 			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 1000, dim_factor : 0.4);
+				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
 			
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
@@ -629,7 +629,7 @@ namespace Gala
 			}
 			
 			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 500, dim_factor : 1.0);
+				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
 			
 			if (animate) {
 				Timeout.add (300, () => {
