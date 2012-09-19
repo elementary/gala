@@ -287,7 +287,7 @@ namespace Meta {
 		public Meta.VirtualModifier get_modifiers ();
 		public unowned string get_name ();
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_set_custom_handler")]
-		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc handler);
+		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc? handler);
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_switch_window")]
 		public static void switch_window (Meta.Display display, Meta.Screen screen, Meta.Window event_window, X.Event event, Meta.KeyBinding binding);
 	}
@@ -1140,4 +1140,8 @@ namespace Meta {
 	public static void quit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void set_gnome_wm_keybindings (string wm_keybindings);
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void set_wm_name (string wm_name);
 }
