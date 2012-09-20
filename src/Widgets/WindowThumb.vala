@@ -37,7 +37,7 @@ namespace Gala
 			reactive = true;
 			
 			var actor = window.get_compositor_private () as WindowActor;
-			clone = new Clone (actor.get_texture ());
+			clone = new Clone (actor);
 			
 			icon = new GtkClutter.Texture ();
 			icon.scale_x = 0.0f;
