@@ -71,7 +71,7 @@
 			<description></description>
 		</key>
 		<key type="as" name="move-to-workspace-last">
-			<default><![CDATA[['<Super>End']]]></default>
+			<default><![CDATA[['<Super>End', '<Super>0']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
