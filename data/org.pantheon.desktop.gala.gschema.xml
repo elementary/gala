@@ -85,7 +85,7 @@
 			<summary>Zoom out</summary>
 		</key>
 		<key type="as" name="expose-windows">
-			<default><![CDATA[['<Super>e']]]></default>
+			<default><![CDATA[['<Super>w']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
