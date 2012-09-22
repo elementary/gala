@@ -293,6 +293,10 @@ namespace Gala
 				case Clutter.Key.@0:
 					switch_index = 10;
 					break;
+				//we have super+s as default combination, so we allow closing by pressing s
+				case Clutter.Key.s:
+					hide ();
+					break;
 				default:
 					break;
 			}
