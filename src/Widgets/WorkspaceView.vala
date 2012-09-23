@@ -22,6 +22,7 @@ namespace Gala
 	public class WorkspaceView : Clutter.Actor
 	{
 		static const float VIEW_HEIGHT = 140.0f;
+		static const float SCROLL_SPEED = 30.0f;
 		
 		Gala.Plugin plugin;
 		Screen screen;
@@ -337,16 +338,23 @@ namespace Gala
 			return false;
 		}
 		
-		const float scroll_speed = 30.0f;
 		public override bool scroll_event (Clutter.ScrollEvent event)
 		{
-			if ((event.direction == Clutter.ScrollDirection.DOWN || event.direction == Clutter.ScrollDirection.RIGHT)
-				&& thumbnails.width + thumbnails.x > width) { //left
-				thumbnails.x -= scroll_speed;
-			} else if ((event.direction == Clutter.ScrollDirection.UP || event.direction == Clutter.ScrollDirection.LEFT)
-				&& thumbnails.x < 0) { //right
-				thumbnails.x += scroll_speed;
+			switch (event.direction) {
+			case Clutter.ScrollDirection.DOWN:
+			case Clutter.ScrollDirection.RIGHT:
+				if (thumbnails.width + thumbnails.x > width)
+					thumbnails.x -= SCROLL_SPEED;
+				break;
+			case Clutter.ScrollDirection.UP:
+			case Clutter.ScrollDirection.LEFT:
+				if (thumbnails.x < 0)
+					thumbnails.x += SCROLL_SPEED;
+				break;
+			default:
+				return false;
 			}
+			
 			scroll.x = Math.floorf (width / thumbnails.width * -thumbnails.x);
 			
 			return false;
