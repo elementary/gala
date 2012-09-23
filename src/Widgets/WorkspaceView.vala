@@ -92,12 +92,13 @@ namespace Gala
 		{
 			screen.workareas_changed.disconnect (initial_configuration);
 			
-			//remove everything except for the first
-			for (var i=1;i<screen.get_workspaces ().length ();i++) {
-				screen.remove_workspace (screen.get_workspaces ().nth_data (i), screen.get_display ().get_current_time ());
-			}
+			var workspaces = screen.get_workspaces ().copy ();
 			
-			var thumb = new WorkspaceThumb (screen.get_workspaces ().nth_data (0));
+			//remove everything except for the first
+			for (var i = 1; i < workspaces.length (); i++)
+				screen.remove_workspace (workspaces.nth_data (i), screen.get_display ().get_current_time ());
+			
+			var thumb = new WorkspaceThumb (workspaces.nth_data (0));
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
@@ -106,8 +107,8 @@ namespace Gala
 			
 			//if mutter missed something, just add it..
 			if (screen.n_workspaces != 1) {
-				for (var i=1;i<screen.get_workspaces ().length ();i++) {
-					thumb = new WorkspaceThumb (screen.get_workspaces ().nth_data (i));
+				for (var i = 1; i < workspaces.length (); i++) {
+					thumb = new WorkspaceThumb (workspaces.nth_data (i));
 					thumb.clicked.connect (hide);
 					thumb.closed.connect (remove_workspace);
 					thumb.window_on_last.connect (add_workspace);
@@ -117,7 +118,7 @@ namespace Gala
 			}
 			
 			//if there went something wrong, we need to get the system back rolling
-			if (screen.n_workspaces == 1 && Utils.get_n_windows (screen.get_workspaces ().nth_data (0)) != 0)
+			if (screen.n_workspaces == 1 && Utils.get_n_windows (workspaces.nth_data (0)) != 0)
 				add_workspace ();
 		}
 		
