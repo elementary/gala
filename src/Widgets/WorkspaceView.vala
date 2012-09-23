@@ -33,9 +33,10 @@ namespace Gala
 		
 		bool animating; // delay closing the popup
 		
-		uint timeout = 0;
+		uint show_timer = 0;
 		
 		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
+		uint last_switch_time = 0;
 		
 		Gtk.StyleContext background_style;
 		Gtk.EventBox background_style_widget;
@@ -219,7 +220,7 @@ namespace Gala
 			if (old_index == 0 && direction == MotionDirection.LEFT || 
 				old_index == screen.n_workspaces - 1 && direction == MotionDirection.RIGHT) {
 				
-				var dest = direction == MotionDirection.LEFT ? 32.0f : -32.0f;
+				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
 				Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
 				Clutter.Threads.Timeout.add (210, () => {
 					Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
@@ -228,42 +229,42 @@ namespace Gala
 			}
 		}
 		
-		public override bool leave_event (Clutter.CrossingEvent event) {
+		public override bool leave_event (Clutter.CrossingEvent event)
+		{
 			if (!contains (event.related))
 				hide ();
 			
 			return false;
 		}
 		
-		uint last_time = -1;
-		bool released = false;
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			var display = screen.get_display ();
+			var current_time = display.get_current_time_roundtrip ();
 			
-			if (!released && display.get_current_time_roundtrip () < (last_time + AnimationSettings.get_default ().workspace_switch_duration))
+			// Don't allow switching while another animation is still in progress to avoid visual disruptions
+			if (current_time < (last_switch_time + AnimationSettings.get_default ().workspace_switch_duration))
 				return false;
 			
 			int switch_index = -1;
+			
 			switch (event.keyval) {
 				case Clutter.Key.Left:
-					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
+					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
 						plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
 						switch_to_next_workspace (MotionDirection.LEFT);
 					
-					released = false;
-					last_time = display.get_current_time_roundtrip ();
+					last_switch_time = current_time;
 					
 					return false;
 				case Clutter.Key.Right:
-					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) == 1)
+					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
 						plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
 						switch_to_next_workspace (MotionDirection.RIGHT);
 					
-					released = false;
-					last_time = display.get_current_time_roundtrip ();
+					last_switch_time = current_time;
 					
 					return false;
 				case Clutter.Key.@1:
@@ -291,7 +292,7 @@ namespace Gala
 					switch_index = 8;
 					break;
 				case Clutter.Key.@9:
-					switch_index = 8;
+					switch_index = 9;
 					break;
 				case Clutter.Key.@0:
 					switch_index = 10;
@@ -304,34 +305,35 @@ namespace Gala
 					break;
 			}
 			
-			if (switch_index != -1 && switch_index <= screen.n_workspaces)
-				screen.get_workspace_by_index (switch_index - 1).activate (screen.get_display ().get_current_time ());
+			if (switch_index > 0 && switch_index <= screen.n_workspaces) {
+				screen.get_workspace_by_index (switch_index - 1).activate (current_time);
+				
+				last_switch_time = current_time;
+			}
 			
 			return true;
 		}
 		
 		public override bool key_release_event (Clutter.KeyEvent event)
 		{
-			released = true;
-			
-			if (event.keyval == Clutter.Key.Alt_L || 
-				event.keyval == Clutter.Key.Super_L || 
-				event.keyval == Clutter.Key.Control_L || 
-				event.keyval == Clutter.Key.Alt_R || 
-				event.keyval == Clutter.Key.Super_R || 
-				event.keyval == Clutter.Key.Escape || 
-				event.keyval == Clutter.Key.Control_R) {
-				
+			switch (event.keyval) {
+			case Clutter.Key.Alt_L:
+			case Clutter.Key.Alt_R:
+			case Clutter.Key.Control_L:
+			case Clutter.Key.Control_R:
+			case Clutter.Key.Super_L:
+			case Clutter.Key.Super_R:
+			case Clutter.Key.Escape:
 				if (wait_one_key_release) {
 					wait_one_key_release = false;
 					return false;
 				}
 				
+				if (show_timer > 0)
+					Source.remove (show_timer);
+				show_timer = 0;
+				
 				hide ();
-				if (timeout != 0) {
-					Source.remove (timeout);
-					timeout = 0;
-				}
 				
 				return true;
 			}
@@ -365,7 +367,7 @@ namespace Gala
 		 * if wait, wait one second and look if super is still pressed, if so show
 		 * if shortcut, wait one key release before closing
 		 */
-		public new void show (bool wait=false, bool shortcut=false)
+		public new void show (bool wait = false, bool shortcut = false)
 		{
 			if (visible)
 				return;
@@ -380,14 +382,19 @@ namespace Gala
 			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
-			if (wait) {
-				timeout = Timeout.add (2000, () => {
-					show_elements ();
-					timeout = 0;
-					return false;
-				});
-			} else
+			if (!wait) {
 				show_elements ();
+				return;
+			}
+			
+			if (show_timer > 0)
+				return;
+			
+			show_timer = Timeout.add (2000, () => {
+				show_elements ();
+				show_timer = 0;
+				return false;
+			});
 		}
 		
 		void show_elements ()
