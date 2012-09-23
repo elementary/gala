@@ -42,6 +42,7 @@ namespace Gala
 		static GtkClutter.Texture? plus = null;
 		
 		Gtk.StyleContext selector_style;
+		Gtk.EventBox selector_style_widget;
 		
 		internal Clone wallpaper;
 		Clutter.Actor windows;
@@ -56,9 +57,9 @@ namespace Gala
 			workspace = _workspace;
 			screen = workspace.get_screen ();
 			
-			var e = new Gtk.EventBox ();
-			e.show ();
-			selector_style = e.get_style_context ();
+			selector_style_widget = new Gtk.EventBox ();
+			selector_style_widget.show ();
+			selector_style = selector_style_widget.get_style_context ();
 			selector_style.add_class ("gala-workspace-selected");
 			selector_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			

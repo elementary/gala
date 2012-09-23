@@ -37,6 +37,7 @@ namespace Gala
 		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
 		
 		Gtk.StyleContext background_style;
+		Gtk.EventBox background_style_widget;
 		
 		public WorkspaceView (Gala.Plugin _plugin)
 		{
@@ -47,9 +48,9 @@ namespace Gala
 			reactive = true;
 			clip_to_allocation = true;
 			
-			var e = new Gtk.EventBox ();
-			e.show ();
-			background_style = e.get_style_context ();
+			background_style_widget = new Gtk.EventBox ();
+			background_style_widget.show ();
+			background_style = background_style_widget.get_style_context ();
 			background_style.add_class ("gala-workspaces-background");
 			background_style.add_provider (Utils.get_default_style (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			
