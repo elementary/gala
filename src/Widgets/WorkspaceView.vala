@@ -231,7 +231,7 @@ namespace Gala
 		
 		public override bool leave_event (Clutter.CrossingEvent event)
 		{
-			if (!contains (event.related))
+			if (event.x < x || event.y < y || event.x > x + width || event.y > y + height)
 				hide ();
 			
 			return false;
