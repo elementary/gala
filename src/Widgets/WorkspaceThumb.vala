@@ -152,6 +152,28 @@ namespace Gala
 			check_last_workspace ();
 			
 			visible = false;
+			
+			content = new Canvas ();
+			(content as Canvas).draw.connect (draw_background);
+			(content as Canvas).set_size ((int)width, (int)height);
+		}
+		
+		bool draw_background (Cairo.Context cr)
+		{
+			var buffer = new Granite.Drawing.BufferSurface ((int)width, (int)height);
+			buffer.context.rectangle (wallpaper.x, wallpaper.y, 133, 65);
+			buffer.context.set_source_rgba (0, 0, 0, 1);
+			buffer.context.fill ();
+			buffer.exponential_blur (5);
+			
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+			
+			cr.set_source_surface (buffer.surface, 0, 0);
+			cr.paint ();
+			
+			return false;
 		}
 		
 		void over_in (Actor actor)
