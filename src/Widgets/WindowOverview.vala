@@ -51,7 +51,7 @@ namespace Gala
 		{
 			//FIXME need to figure out the actual keycombo, for now leave it by 
 			// default and others will close it by selecting a window!
-			if (event.keyval == Clutter.Key.e || event.keyval == Clutter.Key.Escape) {
+			if (event.keyval == Clutter.Key.w || event.keyval == Clutter.Key.Escape) {
 				close (true);
 				
 				return true;
