@@ -99,7 +99,15 @@ namespace Gala
 			for (var i = 1; i < workspaces.length (); i++)
 				screen.remove_workspace (workspaces.nth_data (i), screen.get_display ().get_current_time ());
 			
-			var thumb = new WorkspaceThumb (workspaces.nth_data (0));
+			//FIXME we have a crash here at workspaces.nth_data(0), so we check if really have a 
+			//workspace left and add one if not
+			Workspace workspace;
+			if (screen.get_workspaces ().length () == 0)
+				workspace = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+			else
+				workspace = workspaces.nth_data (0);
+			
+			var thumb = new WorkspaceThumb (workspace);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
