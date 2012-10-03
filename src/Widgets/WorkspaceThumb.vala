@@ -161,7 +161,12 @@ namespace Gala
 		bool draw_background (Cairo.Context cr)
 		{
 			var buffer = new Granite.Drawing.BufferSurface ((int)width, (int)height);
-			buffer.context.rectangle (wallpaper.x, wallpaper.y, 133, 65);
+			//FIXME some weird calculations necessary here, we have to 
+			// subtract the delta of the wallpaper and container size to make it fit
+			buffer.context.rectangle (wallpaper.x, wallpaper.y, 
+				wallpaper.width - (width - wallpaper.width),
+				wallpaper.height - (height - wallpaper.height) - INDICATOR_BORDER);
+			
 			buffer.context.set_source_rgba (0, 0, 0, 1);
 			buffer.context.fill ();
 			buffer.exponential_blur (5);
