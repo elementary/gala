@@ -327,7 +327,7 @@ namespace Gala
 		
 		public override void minimize (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations) {
+			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().minimize_duration == 0) {
 				minimize_completed (actor);
 				return;
 			}
@@ -377,6 +377,7 @@ namespace Gala
 			actor.get_position (out x, out y);
 			
 			if (!AnimationSettings.get_default ().enable_animations || 
+				AnimationSettings.get_default ().snap_duration == 0 || 
 				(x == ex && y == ey && ew == width && eh == height)) {
 				maximize_completed (actor);
 				return;
@@ -418,8 +419,6 @@ namespace Gala
 				return;
 			}
 			
-			mapping.add (actor);
-			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
@@ -429,6 +428,15 @@ namespace Gala
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
+					if (AnimationSettings.get_default ().open_duration == 0) {
+						map_completed (actor);
+						if (!window.is_override_redirect ())
+							window.activate (display.get_current_time ());
+						return;
+					}
+					
+					mapping.add (actor);
+					
 					actor.scale_gravity = Clutter.Gravity.SOUTH;
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
@@ -445,6 +453,15 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
+					if (AnimationSettings.get_default ().menu_duration == 0) {
+						if (!window.is_override_redirect ())
+							window.activate (display.get_current_time ());
+						map_completed (actor);
+						return;
+					}
+					
+					mapping.add (actor);
+					
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.rotation_center_x = {0, 0, 10};
 					actor.scale_x = 0.9f;
@@ -463,6 +480,9 @@ namespace Gala
 					break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
+					
+					mapping.add (actor);
+					
 					actor.scale_gravity = Clutter.Gravity.NORTH;
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
@@ -481,7 +501,6 @@ namespace Gala
 					
 					break;
 				default:
-					mapping.remove (actor);
 					map_completed (actor);
 					break;
 			}
@@ -499,10 +518,16 @@ namespace Gala
 			var window = actor.get_meta_window ();
 			
 			actor.detach_animation ();
-			destroying.add (actor);
 			
 			switch (window.window_type) {
 				case WindowType.NORMAL:
+					if (AnimationSettings.get_default ().close_duration == 0) {
+						destroy_completed (actor);
+						return;
+					}
+					
+					destroying.add (actor);
+					
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.show ();
 					actor.animate (Clutter.AnimationMode.LINEAR, AnimationSettings.get_default ().close_duration, 
@@ -521,19 +546,10 @@ namespace Gala
 						destroy_completed (actor);
 					});
 					break;
-				case WindowType.MENU:
-				case WindowType.DROPDOWN_MENU:
-				case WindowType.POPUP_MENU:
-					actor.scale_gravity = Clutter.Gravity.CENTER;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
-						scale_x:0.9f, scale_y:0.9f, opacity:0).completed.connect ( () => {
-						
-						destroying.remove (actor);
-						destroy_completed (actor);
-					});
-					break;
 				case WindowType.MODAL_DIALOG:
 				case WindowType.DIALOG:
+					destroying.add (actor);
+					
 					actor.scale_gravity = Clutter.Gravity.NORTH;
 					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200, 
 						scale_y:0.0f, opacity:0).completed.connect ( () => {
@@ -546,7 +562,6 @@ namespace Gala
 					
 					break;
 				default:
-					destroying.remove (actor);
 					destroy_completed (actor);
 					break;
 			}
@@ -554,7 +569,7 @@ namespace Gala
 		
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			if (!AnimationSettings.get_default ().enable_animations) {
+			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().snap_duration == 0) {
 				unmaximize_completed (actor);
 				return;
 			}
@@ -634,7 +649,7 @@ namespace Gala
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			if (!AnimationSettings.get_default ().enable_animations) {
+			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().workspace_switch_duration == 0) {
 				switch_workspace_completed ();
 				return;
 			}
