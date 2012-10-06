@@ -450,7 +450,7 @@ namespace Gala
 					actor.scale_x = 0.9f;
 					actor.scale_y = 0.9f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 150, 
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().menu_duration, 
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 						
