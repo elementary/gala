@@ -130,8 +130,15 @@ namespace Gala
 		
 		public override bool button_press_event (ButtonEvent event)
 		{
-			get_parent ().set_child_above_sibling (this, null);
-			selected (window);
+			switch (event.button) {
+				case 1:
+					get_parent ().set_child_above_sibling (this, null);
+					selected (window);
+					break;
+				case 2:
+					close_window ();
+					break;
+			}
 			
 			return true;
 		}
