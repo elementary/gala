@@ -88,10 +88,16 @@ namespace Gala
 				window.delete (window.get_screen ().get_display ().get_current_time ());
 			});
 			
+			reposition ();
+		}
+		
+		public override void destroy ()
+		{
+			clone.destroy ();
 			close_button.destroy ();
 			icon.destroy ();
 			
-			reposition ();
+			base.destroy ();
 		}
 		
 		public override bool enter_event (CrossingEvent event)
