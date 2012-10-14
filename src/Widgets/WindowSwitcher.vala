@@ -240,17 +240,20 @@ namespace Gala
 			if (window.get_workspace () != screen.get_active_workspace ())
 				return;
 			
-			var actor = window.get_compositor_private () as Meta.WindowActor; 
+			var actor = window.get_compositor_private () as Meta.WindowActor;
 			if (actor == null) {
 				//the window possibly hasn't reached the compositor yet
 				Idle.add (() => {
-					if (window.get_compositor_private () != null && 
+					if (window.get_compositor_private () != null &&
 						window.get_workspace () == screen.get_active_workspace ())
 						add_window (window);
 					return false;
 				});
 				return;
 			}
+			
+			if (actor.is_destroyed ())
+				return;
 			
 			actor.hide ();
 			
@@ -286,8 +289,8 @@ namespace Gala
 			var meta_win = window.get_meta_window ();
 			if (meta_win != null &&
 				!window.is_destroyed () &&
-				!meta_win.minimized && 
-				(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
+				!meta_win.minimized &&
+				(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) ||
 				meta_win.is_on_all_workspaces ())
 				window.show ();
 			
@@ -309,11 +312,13 @@ namespace Gala
 			}
 			
 			if (found != null) {
-				dock.get_child_at_index (window_clones.index_of (found)).destroy ();
-				window_clones.remove (found);
-				remove_clone (found);
-			} else
 				warning ("No clone found for removed window");
+				return;
+			}
+			
+			dock.get_child_at_index (window_clones.index_of (found)).destroy ();
+			window_clones.remove (found);
+			remove_clone (found);
 		}
 		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
