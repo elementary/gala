@@ -117,7 +117,10 @@ namespace Gala
 		void close (uint time)
 		{
 			var screen = plugin.get_screen ();
-			var display = screen.get_display ();
+			
+			var workspace = screen.get_active_workspace ();
+			workspace.window_added.disconnect (add_window);
+			workspace.window_removed.disconnect (remove_window);
 			
 			if (dock_window != null)
 				dock_window.opacity = 0;
@@ -159,16 +162,8 @@ namespace Gala
 				visible = false;
 				
 				foreach (var clone in window_clones)
-					clone.destroy ();
+					remove_clone (clone);
 				window_clones.clear ();
-				
-				Meta.Compositor.get_window_actors (plugin.get_screen ()).foreach ((w) => {
-					var meta_win = w.get_meta_window ();
-					if (!meta_win.minimized && 
-						(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) || 
-						meta_win.is_on_all_workspaces ())
-						w.show ();
-				});
 			});
 		}
 		
@@ -238,6 +233,94 @@ namespace Gala
 			}
 		}
 		
+		void add_window (Meta.Window window)
+		{
+			var screen = plugin.get_screen ();
+			
+			if (window.get_workspace () != screen.get_active_workspace ())
+				return;
+			
+			var actor = window.get_compositor_private () as Meta.WindowActor;
+			if (actor == null) {
+				//the window possibly hasn't reached the compositor yet
+				Idle.add (() => {
+					if (window.get_compositor_private () != null &&
+						window.get_workspace () == screen.get_active_workspace ())
+						add_window (window);
+					return false;
+				});
+				return;
+			}
+			
+			if (actor.is_destroyed ())
+				return;
+			
+			actor.hide ();
+			
+			var clone = new Clone (actor);
+			clone.x = actor.x;
+			clone.y = actor.y;
+			
+			add_child (clone);
+			window_clones.add (clone);
+			
+			var icon = new GtkClutter.Texture ();
+			try {
+				icon.set_from_pixbuf (Utils.get_icon_for_window (window, dock_settings.IconSize));
+			} catch (Error e) { warning (e.message); }
+			
+			icon.opacity = 100;
+			dock.add_child (icon);
+			(dock.layout_manager as BoxLayout).set_expand (icon, true);
+			
+			//if the window has been added while being in alt-tab, redim
+			if (visible) {
+				float dest_width;
+				dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
+				dock.animate (AnimationMode.EASE_OUT_CUBIC, 400, width : dest_width);
+				dim_windows ();
+			}
+		}
+		
+		void remove_clone (Clone clone)
+		{
+			var window = clone.source as Meta.WindowActor;
+			
+			var meta_win = window.get_meta_window ();
+			if (meta_win != null &&
+				!window.is_destroyed () &&
+				!meta_win.minimized &&
+				(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) ||
+				meta_win.is_on_all_workspaces ())
+				window.show ();
+			
+			clone.destroy ();
+			
+			float dest_width;
+			dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
+			dock.animate (AnimationMode.EASE_OUT_CUBIC, 400, width : dest_width);
+		}
+		
+		void remove_window (Meta.Window window)
+		{
+			Clone found = null;
+			foreach (var clone in window_clones) {
+				if ((clone.source as Meta.WindowActor).get_meta_window () == window) {
+					found = clone;
+					break;
+				}
+			}
+			
+			if (found != null) {
+				warning ("No clone found for removed window");
+				return;
+			}
+			
+			dock.get_child_at_index (window_clones.index_of (found)).destroy ();
+			window_clones.remove (found);
+			remove_clone (found);
+		}
+		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
@@ -247,7 +330,9 @@ namespace Gala
 				return;
 			}
 			
-			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
+			var workspace = screen.get_active_workspace ();
+			
+			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, workspace);
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
@@ -259,29 +344,16 @@ namespace Gala
 				return;
 			}
 			
-			visible = true;
+			workspace.window_added.connect (add_window);
+			workspace.window_removed.connect (remove_window);
 			
 			//grab the windows to be switched
 			var layout = dock.layout_manager as BoxLayout;
 			window_clones.clear ();
-			foreach (var win in metawindows) {
-				var actor = win.get_compositor_private () as Actor;
-				var clone = new Clone (actor);
-				clone.x = actor.x;
-				clone.y = actor.y;
-				
-				add_child (clone);
-				window_clones.add (clone);
-				
-				var icon = new GtkClutter.Texture ();
-				try {
-					icon.set_from_pixbuf (Utils.get_icon_for_window (win, dock_settings.IconSize));
-				} catch (Error e) { warning (e.message); }
-				
-				icon.opacity = 100;
-				dock.add_child (icon);
-				layout.set_expand (icon, true);
-			}
+			foreach (var win in metawindows)
+				add_window (win);
+			
+			visible = true;
 			
 			//hide the others
 			Meta.Compositor.get_window_actors (screen).foreach ((w) => {

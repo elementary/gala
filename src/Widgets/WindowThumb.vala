@@ -54,7 +54,7 @@ namespace Gala
 			close_button.scale_x = 0.0f;
 			close_button.scale_y = 0.0f;
 			close_button.scale_gravity = Gravity.CENTER;
-			close_button.button_press_event.connect (close_clicked);
+			close_button.button_press_event.connect (close_button_clicked);
 			close_button.leave_event.connect ((e) => leave_event (e));
 			
 			try {
@@ -68,7 +68,7 @@ namespace Gala
 			stage.add_child (close_button);
 		}
 		
-		bool close_clicked (ButtonEvent event)
+		bool close_button_clicked (ButtonEvent event)
 		{
 			if (event.button != 1)
 				return false;
@@ -81,17 +81,23 @@ namespace Gala
 		public void close_window ()
 		{
 			//make sure we dont see a window closing animation in the background
-			(window.get_compositor_private () as Actor).opacity = 0;
+			clone.source.opacity = 0;
 			get_parent ().set_child_below_sibling (this, null);
 			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
 				destroy ();
 				window.delete (window.get_screen ().get_display ().get_current_time ());
 			});
 			
+			reposition ();
+		}
+		
+		public override void destroy ()
+		{
+			clone.destroy ();
 			close_button.destroy ();
 			icon.destroy ();
 			
-			reposition ();
+			base.destroy ();
 		}
 		
 		public override bool enter_event (CrossingEvent event)
@@ -143,7 +149,7 @@ namespace Gala
 			return true;
 		}
 		
-		public void close (bool do_animate=true)
+		public void close (bool do_animate = true)
 		{
 			unowned Meta.Rectangle rect = window.get_outer_rect ();
 			
@@ -156,24 +162,19 @@ namespace Gala
 			//stop all running animations
 			detach_animation ();
 			icon.detach_animation ();
+			close_button.detach_animation ();
 			
 			if (do_animate) {
-				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f).completed.connect ( () => {
-					icon.destroy ();
-				});
+				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f);
 				
 				animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
-					(window.get_compositor_private () as Actor).show ();
+					clone.source.show ();
 					destroy ();
 				});
 			} else {
-				(window.get_compositor_private () as Actor).show ();
-				
+				clone.source.show ();
 				destroy ();
-				icon.destroy ();
 			}
-			
-			close_button.destroy ();
 		}
 	}
 }
