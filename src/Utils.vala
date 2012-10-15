@@ -60,10 +60,18 @@ namespace Gala.Utils
 	 **/
 	public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 	{
+		var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
+		return get_icon_for_application (app, size);
+	}
+		
+	/**
+	 * returns a pixbuf for this application or a default icon
+	 **/
+	public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
+	{
 		unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 		Gdk.Pixbuf? image = null;
 		
-		var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
 		if (app != null && app.get_desktop_file () != null) {
 			try {
 				var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
