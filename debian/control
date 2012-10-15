@@ -6,9 +6,10 @@ Build-Depends: cmake (>= 2.8),
                debhelper (>= 8.0.0),
                gsettings-desktop-schemas-dev,
                libbamf3-dev,
+               libclutter-1.0-dev (>= 1.9.16),
                libclutter-gtk-1.0-dev,
                libgranite-dev,
-               libmutter-dev,
+               libmutter-dev (>= 3.4),
                libplank-dev,
                valac-0.16 (>= 0.16.1)
 Standards-Version: 3.9.2
