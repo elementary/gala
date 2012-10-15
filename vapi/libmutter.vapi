@@ -168,7 +168,11 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_verbose")]
 		public static void set_verbose (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_show_dialog")]
+#if MUTTER_36
+		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+#else
 		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+#endif
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_unsigned_long_equal")]
@@ -310,7 +314,9 @@ namespace Meta {
 		public virtual void kill_switch_workspace ();
 		[NoWrapper]
 		public virtual void kill_window_effects (Meta.WindowActor actor);
+#if MUTTER_36
 		public static void manager_set_plugin_type (GLib.Type gtype);
+#endif
 		[NoWrapper]
 		public virtual void map (Meta.WindowActor actor);
 		public void map_completed (Meta.WindowActor actor);
@@ -328,7 +334,9 @@ namespace Meta {
 		[NoWrapper]
 		public virtual void switch_workspace (int from, int to, Meta.MotionDirection direction);
 		public void switch_workspace_completed ();
+#if !MUTTER_36
 		public static void type_register (GLib.Type plugin_type);
+#endif
 		[NoWrapper]
 		public virtual void unmaximize (Meta.WindowActor actor, int x, int y, int width, int height);
 		public void unmaximize_completed (Meta.WindowActor actor);
