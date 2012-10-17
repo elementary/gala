@@ -561,6 +561,24 @@ namespace Gala
 					dim_window (window.find_root_ancestor (), false);
 					
 					break;
+				case WindowType.MENU:
+				case WindowType.DROPDOWN_MENU:
+				case WindowType.POPUP_MENU:
+					if (AnimationSettings.get_default ().menu_duration == 0) {
+						destroy_completed (actor);
+						return;
+					}
+					
+					destroying.add (actor);
+					
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().menu_duration, 
+						scale_x:0.8f, scale_y:0.8f, opacity:0)
+						.completed.connect ( () => {
+						
+						destroying.remove (actor);
+						destroy_completed (actor);
+					});
+					break;
 				default:
 					destroy_completed (actor);
 					break;
