@@ -229,10 +229,11 @@ namespace Gala
 			if (active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1)
 				return;
 			
+			moving = window;
+			
 			if (!window.is_on_all_workspaces ())
 				window.change_workspace (next);
 			
-			moving = window;
 			next.activate_with_focus (window, display.get_current_time ());
 		}
 		
