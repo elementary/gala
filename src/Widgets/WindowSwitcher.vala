@@ -134,7 +134,7 @@ namespace Gala
 				dock_window.show ();
 				dock_window.animate (AnimationMode.LINEAR, 250, opacity : 255);
 			}
-				
+			
 			foreach (var clone in window_clones) {
 				//current window stays on top
 				if ((clone.source as Meta.WindowActor).get_meta_window () == current_window)
@@ -164,6 +164,11 @@ namespace Gala
 				foreach (var clone in window_clones)
 					remove_clone (clone);
 				window_clones.clear ();
+				
+				//need to go through all the windows because of hidden dialogs
+				foreach (var window in Meta.Compositor.get_window_actors (screen)) {
+					window.show ();
+				}
 			});
 		}
 		
