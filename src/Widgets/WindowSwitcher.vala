@@ -167,7 +167,8 @@ namespace Gala
 				
 				//need to go through all the windows because of hidden dialogs
 				foreach (var window in Meta.Compositor.get_window_actors (screen)) {
-					window.show ();
+					if (window.get_workspace () == workspace.index ())
+						window.show ();
 				}
 			});
 		}
