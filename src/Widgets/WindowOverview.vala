@@ -252,7 +252,7 @@ namespace Gala
 				
 				//put the last row in the center, if necessary
 				if (left_over != columns && slot >= columns * (rows - 1))
-					target.x += slot_width / left_over;
+					target.x += (columns - left_over) * slot_width / 2;
 				
 				place_window (window, target);
 			}
