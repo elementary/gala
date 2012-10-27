@@ -210,6 +210,9 @@ namespace Gala
 				taken_slots[slot_candidate] = window;
 			}
 			
+			//see how many windows we have on the last row
+			int left_over = (int)clones.length () - columns * (rows - 1);
+			
 			for (int slot = 0; slot < columns * rows; slot++) {
 				var window = taken_slots[slot];
 				// some slots might be empty
@@ -246,6 +249,10 @@ namespace Gala
 					          (int)Math.floorf (scale * rect.width), 
 					          (int)Math.floorf (scale * rect.height)};
 				}
+				
+				//put the last row in the center, if necessary
+				if (left_over != columns && slot >= columns * (rows - 1))
+					target.x += slot_width / left_over;
 				
 				place_window (window, target);
 			}
