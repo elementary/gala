@@ -237,14 +237,6 @@ namespace Gala
 			}
 		}
 		
-		public override bool leave_event (Clutter.CrossingEvent event)
-		{
-			if (event.x < x || event.y < y || event.x > x + width || event.y > y + height)
-				hide ();
-			
-			return false;
-		}
-		
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			var display = screen.get_display ();
