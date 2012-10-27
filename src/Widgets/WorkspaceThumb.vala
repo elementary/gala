@@ -327,6 +327,9 @@ namespace Gala
 		
 		void check_last_workspace ()
 		{
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+			
 			//last workspace, show plus button and so on
 			//give the last one a different style
 			
@@ -366,7 +369,9 @@ namespace Gala
 			if (visible)
 				update_windows ();
 			
-			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && Utils.get_n_windows (workspace) > 0)
+			if (Prefs.get_dynamic_workspaces () && 
+				workspace != null && workspace.index () == screen.n_workspaces - 1 && 
+				Utils.get_n_windows (workspace) > 0)
 				window_on_last ();
 		}
 		
@@ -376,7 +381,9 @@ namespace Gala
 				update_windows ();
 			
 			//dont remove workspaces when for example slingshot was closed
-			if (window.window_type != WindowType.NORMAL &&
+			//or we dont want to remove workspaces
+			if (!Prefs.get_dynamic_workspaces () ||
+				window.window_type != WindowType.NORMAL &&
 				window.window_type != WindowType.DIALOG &&
 				window.window_type != WindowType.MODAL_DIALOG)
 				return;
@@ -435,8 +442,8 @@ namespace Gala
 				return true;
 			}
 			
-			//dont allow closing the tab if it's the last one used
-			if (workspace.index () == 0 && screen.n_workspaces == 2)
+			//dont allow closing the tab if it's the last one used or we dont want closing anyway
+			if (!Prefs.get_dynamic_workspaces () || workspace.index () == 0 && screen.n_workspaces == 2)
 				return false;
 			
 			if (hover_timer > 0)

@@ -56,6 +56,7 @@ namespace Gala
 		public Plugin ()
 		{
 			Prefs.set_ignore_request_hide_titlebar (true);
+			Prefs.override_preference_schema ("dynamic-workspaces", Config.SCHEMA + ".behavior");
 			Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
 			Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
 			Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
@@ -75,7 +76,8 @@ namespace Gala
 			stage.background_color = Clutter.Color.from_string (color);
 			stage.no_clear_hint = true;
 			
-			screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
+			if (Prefs.get_dynamic_workspaces ())
+				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
 			
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;

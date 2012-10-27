@@ -89,6 +89,11 @@
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
+		<key type="b" name="dynamic-workspaces">
+			<default>true</default>
+			<summary>Enable dynamic workspace instead of static ones</summary>
+			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="gala">

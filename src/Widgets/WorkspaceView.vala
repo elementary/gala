@@ -95,6 +95,20 @@ namespace Gala
 			
 			var workspaces = screen.get_workspaces ().copy ();
 			
+			if (!Prefs.get_dynamic_workspaces ()) {
+				foreach (var workspace in workspaces) {
+					var thumb = new WorkspaceThumb (workspace);
+					thumb.clicked.connect (hide);
+					thumb.closed.connect (remove_workspace);
+					thumb.window_on_last.connect (add_workspace);
+					
+					thumbnails.add_child (thumb);
+				}
+				
+				//and we're done
+				return;
+			}
+			
 			//remove everything except for the first
 			for (var i = 1; i < workspaces.length (); i++)
 				screen.remove_workspace (workspaces.nth_data (i), screen.get_display ().get_current_time ());

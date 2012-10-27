@@ -19,6 +19,7 @@ namespace Gala
 {
 	public class BehaviorSettings : Granite.Services.Settings
 	{
+		public bool dynamic_workspaces { get; set; }
 		public bool edge_tiling { get; set; }
 		public string panel_main_menu_action { get; set; }
 		public string toggle_recording_action { get; set; }
