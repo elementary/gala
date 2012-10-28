@@ -164,6 +164,9 @@ namespace Gala
 			icon.detach_animation ();
 			close_button.detach_animation ();
 			
+			bool dont_show = window.minimized || window.get_workspace () != window.get_screen ().get_active_workspace ();
+			do_animate = do_animate && !dont_show;
+			
 			if (do_animate) {
 				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f);
 				
@@ -172,7 +175,8 @@ namespace Gala
 					destroy ();
 				});
 			} else {
-				clone.source.show ();
+				if (!dont_show)
+					clone.source.show ();
 				destroy ();
 			}
 		}

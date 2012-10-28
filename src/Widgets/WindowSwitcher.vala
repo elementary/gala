@@ -343,8 +343,24 @@ namespace Gala
 				return;
 			if (metawindows.length () == 1) {
 				var actor = metawindows.nth_data (0).get_compositor_private () as Actor;
-				actor.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
-					actor.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
+				if (actor.is_in_clone_paint ())
+					return;
+				
+				actor.hide ();
+				
+				var clone = new Clone (actor);
+				clone.x = actor.x;
+				clone.y = actor.y;
+				Meta.Compositor.get_overlay_group_for_screen (screen).add_child (clone);
+				clone.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
+					clone.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
+				});
+				
+				Timeout.add (410, () => {
+					actor.show ();
+					clone.destroy ();
+					
+					return false;
 				});
 				
 				return;

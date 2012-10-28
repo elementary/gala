@@ -34,6 +34,9 @@ namespace Gala
 		
 		bool ready;
 		
+		//the workspaces which we expose right now
+		List<Workspace> workspaces;
+		
 		static const int PADDING = 50;
 		
 		public WindowOverview (Plugin _plugin)
@@ -51,7 +54,9 @@ namespace Gala
 		{
 			//FIXME need to figure out the actual keycombo, for now leave it by 
 			// default and others will close it by selecting a window!
-			if (event.keyval == Clutter.Key.w || event.keyval == Clutter.Key.Escape) {
+			if (event.keyval == Clutter.Key.w || 
+				event.keyval == Clutter.Key.a || 
+				event.keyval == Clutter.Key.Escape) {
 				close (true);
 				
 				return true;
@@ -487,7 +492,7 @@ namespace Gala
 			clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
 		}
 		
-		public void open (bool animate = true)
+		public void open (bool animate = true, bool all_windows = false)
 		{
 			if (!ready)
 				return;
@@ -498,17 +503,27 @@ namespace Gala
 			}
 			
 			var used_windows = new SList<Window> ();
-			var workspace = screen.get_active_workspace ();
 			
-			foreach (var window in workspace.list_windows ()) {
-				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
-					(window.get_compositor_private () as Actor).hide ();
-					continue;
-				}
-				if (window.window_type == WindowType.DOCK)
-					continue;
+			workspaces = new List<Workspace> ();
+			
+			if (all_windows) {
+				foreach (var workspace in screen.get_workspaces ())
+					workspaces.append (workspace);
+			} else {
+				workspaces.append (screen.get_active_workspace ());
+			}
+			
+			foreach (var workspace in workspaces) {
+				foreach (var window in workspace.list_windows ()) {
+					if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
+						(window.get_compositor_private () as Actor).hide ();
+						continue;
+					}
+					if (window.window_type == WindowType.DOCK)
+						continue;
 				
-				used_windows.append (window);
+					used_windows.append (window);
+				}
 			}
 			
 			var n_windows = used_windows.length ();
@@ -517,8 +532,10 @@ namespace Gala
 			
 			ready = false;
 			
-			workspace.window_added.connect (add_window);
-			workspace.window_removed.connect (remove_window);
+			foreach (var workspace in workspaces) {
+				workspace.window_added.connect (add_window);
+				workspace.window_removed.connect (remove_window);
+			}
 			
 			Compositor.get_background_actor_for_screen (screen).
 				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
@@ -620,9 +637,10 @@ namespace Gala
 			if (!visible || !ready)
 				return;
 			
-			var workspace = screen.get_active_workspace ();
-			workspace.window_added.disconnect (add_window);
-			workspace.window_removed.disconnect (remove_window);
+			foreach (var workspace in workspaces) {
+				workspace.window_added.disconnect (add_window);
+				workspace.window_removed.disconnect (remove_window);
+			}
 			
 			ready = false;
 			
