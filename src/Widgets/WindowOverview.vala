@@ -627,9 +627,18 @@ namespace Gala
 		
 		void selected (Window window)
 		{
-			window.activate (screen.get_display ().get_current_time ());
-			
-			close (true);
+			if (window.get_workspace () == screen.get_active_workspace ()) {
+				window.activate (screen.get_display ().get_current_time ());
+				close (true);
+			} else {
+				close (true);
+				//wait for the animation to finish before switching
+				Timeout.add (400, () => {
+					window.get_workspace ().activate (screen.get_display ().get_current_time ());
+					window.activate (screen.get_display ().get_current_time ());
+					return false;
+				});
+			}
 		}
 		
 		void close (bool animate)
