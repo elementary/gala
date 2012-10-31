@@ -324,6 +324,7 @@ namespace Gala
 			case Clutter.Key.Super_L:
 			case Clutter.Key.Super_R:
 			case Clutter.Key.Escape:
+			case Clutter.Key.Return:
 				if (wait_one_key_release) {
 					wait_one_key_release = false;
 					return false;
