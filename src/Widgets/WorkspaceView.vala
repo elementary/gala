@@ -237,6 +237,11 @@ namespace Gala
 			}
 		}
 		
+		public override void key_focus_out ()
+		{
+			hide ();
+		}
+		
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			var display = screen.get_display ();
