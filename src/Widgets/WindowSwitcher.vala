@@ -128,7 +128,7 @@ namespace Gala
 			if (dock_window != null)
 				dock_window.opacity = 0;
 			
-			var dest_width = dock_width > 0 ? dock_width : 600.0f;
+			var dest_width = (dock_width > 0 ? dock_width : 600.0f);
 			dock_width = 0;
 			
 			set_child_above_sibling (dock, null);
@@ -409,10 +409,10 @@ namespace Gala
 			//plank type switcher thing
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			dock.width = dock_window != null ? dock_window.width : 300.0f;
+			dock.width = (dock_window != null ? dock_window.width : 300.0f);
 			//FIXME do this better
 			//count the launcher items to get an estimate of the window size
-			var launcher_folder = File.new_for_path (Environment.get_home_dir () + "/.config/plank/dock1/launchers");
+			var launcher_folder = Plank.Services.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
 			if (launcher_folder.query_exists ()) {
 				try {
 					int count = 0;
