@@ -11,28 +11,31 @@ Build-Depends: cmake (>= 2.8),
                libgranite-dev,
                libmutter-dev (>= 3.4),
                libplank-dev,
-               valac-0.16 (>= 0.16.1)
+               valac (>= 0.16.1)
 Standards-Version: 3.9.2
 Homepage: https://launchpad.net/gala
 
 Package: gala
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Pre-Depends: dpkg (>= 1.15.6)
 Provides: x-window-manager
-Description: elementary's Window Manager
- Gala is a window & compositing manager based on libmutter and designed
- by elementary for use with Pantheon Shell.
+Description: Pantheon Window Manager
+ gala is a window & compositing manager based on libmutter. It manages the
+ various windows a user has open.
+ It takes care of behaviors such as moving windows around, window switching,
+ window overview, animating windows, maximization, multiple workspaces,
+ providing accessibility features like zoom, and more.
 
 Package: gala-dbg
 Architecture: any
 Section: debug
 Priority: extra
 Depends: gala (= ${binary:Version}), ${misc:Depends}
-Pre-Depends: dpkg (>= 1.15.6)
-Enhances: gala
-Description: elementary's Window Manager (debugging symbols)
- Gala is a window & compositing manager based on libmutter and designed
- by elementary for use with Pantheon Shell.
+Description: Pantheon Window Manager (debugging symbols)
+ gala is a window & compositing manager based on libmutter. It manages the
+ various windows a user has open.
+ It takes care of behaviors such as moving windows around, window switching,
+ window overview, animating windows, maximization, multiple workspaces,
+ providing accessibility features like zoom, and more.
  .
  This package contains debugging symbols for gala.

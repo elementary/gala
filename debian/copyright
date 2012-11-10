@@ -1,15 +1,43 @@
-Format: http://dep.debian.net/deps/dep5
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: gala
-Source: <url://example.com>
+Source: https://launchpad.net/gala
+
 
 Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Copyright: 2012 Tom Beckmann
+           2012 Rico Tzschichholz
 License: GPL-3.0+
+
+
+Files: src/Widgets/AppIcon.vala src/Widgets/WindowThumb.vala src/DBus.vala
+Copyright: 2012 Tom Beckmann
+License: GPL-3.0+
+
+
+Files: src/Settings.vala
+Copyright: 2012 GardenGnome
+           2012 Tom Beckmann
+           2012 Rico Tzschichholz
+License: GPL-3.0+
+
+
+Files: cmake/ParseArguments.cmake
+Copyright: 2000-2009 Kitware, Inc., Insight Software Consortium
+License: 2-clause BSD
+
+
+Files: cmake/FindVala.cmake
+       cmake/ValaPrecompile.cmake
+       cmake/ValaVersion.cmake
+       cmake/README.Vala.rst
+Copyright: 2009-2010 Jakob Westhoff
+License: 2-clause BSD
+
 
 Files: debian/*
 Copyright: 2012 Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
 License: GPL-3.0+
+
 
 License: GPL-3.0+
  This program is free software: you can redistribute it and/or modify
@@ -28,5 +56,24 @@ License: GPL-3.0+
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
 
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
+
+License: 2-clause BSD
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met: 
+ .
+ 1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer. 
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution. 
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
