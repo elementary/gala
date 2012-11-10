@@ -40,6 +40,9 @@ namespace Gala
 		//FIXME window titles of supported docks, to be extended
 		const string [] DOCK_NAMES = {"plank", "Docky"};
 		
+		//estimated value, if possible
+		float dock_width = 0.0f;
+		
 		public WindowSwitcher (Gala.Plugin _plugin)
 		{
 			plugin = _plugin;
@@ -125,7 +128,8 @@ namespace Gala
 			if (dock_window != null)
 				dock_window.opacity = 0;
 			
-			var dest_width = (dock_window != null ? dock_window.width : 800.0f);
+			var dest_width = (dock_width > 0 ? dock_width : 600.0f);
+			dock_width = 0;
 			
 			set_child_above_sibling (dock, null);
 			dock_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity : 0);
@@ -405,8 +409,25 @@ namespace Gala
 			//plank type switcher thing
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			
-			if (dock_window != null)
-				dock.width = dock_window.width;
+			dock.width = (dock_window != null ? dock_window.width : 300.0f);
+			//FIXME do this better
+			//count the launcher items to get an estimate of the window size
+			var launcher_folder = Plank.Services.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
+			if (launcher_folder.query_exists ()) {
+				try {
+					int count = 0;
+					var children = launcher_folder.enumerate_children ("", 0);
+					while (children.next_file () != null)
+						count ++;
+					
+					if (count > 0)
+						dock.width = count * (float)(dock_settings.IconSize + dock_theme.ItemPadding);
+					
+					dock_width = dock.width;
+					
+				} catch (Error e) { warning (e.message); }
+			}
+			
 			
 			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
 			dock.opacity = 255;
