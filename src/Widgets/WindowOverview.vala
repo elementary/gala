@@ -48,6 +48,7 @@ namespace Gala
 			
 			visible = false;
 			ready = true;
+			reactive = true;
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -68,6 +69,14 @@ namespace Gala
 		public override void key_focus_out ()
 		{
 			close (false);
+		}
+		
+		public override bool button_release_event (Clutter.ButtonEvent event)
+		{
+			if (event.button == 1)
+				close (true);
+			
+			return true;
 		}
 		
 		/**
