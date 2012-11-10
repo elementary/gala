@@ -256,8 +256,8 @@ namespace Gala
 				}
 				
 				// Don't scale the windows too much
-				if (scale > 2.0 || (scale > 1.0 && (rect.width > 300 || rect.height > 300))) {
-					scale = (rect.width > 300 || rect.height > 300) ? 1.0f : 2.0f;
+				if (scale > 1.0) {
+					scale = 1.0f;
 					target = {rect_center (target).x - (int)Math.floorf (rect.width * scale) / 2,
 					          rect_center (target).y - (int)Math.floorf (rect.height * scale) / 2,
 					          (int)Math.floorf (scale * rect.width), 
