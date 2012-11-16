@@ -1129,7 +1129,7 @@ namespace Meta {
 	public delegate void PrefsChangedFunc (Meta.Preference pref);
 	[CCode (cheader_filename = "meta/window.h", instance_pos = 1.9)]
 	public delegate bool WindowForeachFunc (Meta.Window window);
-	[CCode (cheader_filename = "meta/common.h", instance_pos = 5.9)]
+	[CCode (cheader_filename = "meta/common.h", instance_pos = 6.9)]
 	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace);
 	[CCode (cheader_filename = "meta/main.h", cname = "META_DEFAULT_ICON_NAME")]
 	public const string DEFAULT_ICON_NAME;
