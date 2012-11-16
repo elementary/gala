@@ -50,6 +50,8 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_edge_tiling ();
 		[CCode (cheader_filename = "meta/prefs.h")]
+		public static bool get_focus_change_on_pointer_rest ();
+		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.FocusMode get_focus_mode ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.FocusNewWindows get_focus_new_windows ();
@@ -188,6 +190,7 @@ namespace Meta {
 	public class BackgroundActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false)]
 		protected BackgroundActor ();
+		public void add_glsl_snippet (Meta.SnippetHook hook, string declarations, string code, bool is_replace);
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundActor.for_screen (Meta.Screen screen);
 		[NoAccessorMethod]
@@ -1014,6 +1017,7 @@ namespace Meta {
 		ACTION_RIGHT_CLICK_TITLEBAR,
 		AUTO_RAISE,
 		AUTO_RAISE_DELAY,
+		FOCUS_CHANGE_ON_POINTER_REST,
 		THEME,
 		TITLEBAR_FONT,
 		NUM_WORKSPACES,
@@ -1052,6 +1056,15 @@ namespace Meta {
 		RIGHT,
 		TOP,
 		BOTTOM
+	}
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_SNIPPET_HOOK_", type_id = "meta_snippet_hook_get_type ()")]
+	public enum SnippetHook {
+		VERTEX,
+		VERTEX_TRANSFORM,
+		FRAGMENT,
+		TEXTURE_COORD_TRANSFORM,
+		LAYER_FRAGMENT,
+		TEXTURE_LOOKUP
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_", type_id = "meta_stack_layer_get_type ()")]
 	public enum StackLayer {
@@ -1112,12 +1125,12 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, X.Event event, Meta.KeyBinding binding);
-	[CCode (cheader_filename = "meta/prefs.h", has_target = false)]
-	public delegate void PrefsChangedFunc (Meta.Preference pref, void* data);
-	[CCode (cheader_filename = "meta/window.h", has_target = false)]
-	public delegate bool WindowForeachFunc (Meta.Window window, void* data);
-	[CCode (cheader_filename = "meta/common.h", has_target = false)]
-	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace, void* data);
+	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 1.9)]
+	public delegate void PrefsChangedFunc (Meta.Preference pref);
+	[CCode (cheader_filename = "meta/window.h", instance_pos = 1.9)]
+	public delegate bool WindowForeachFunc (Meta.Window window);
+	[CCode (cheader_filename = "meta/common.h", instance_pos = 5.9)]
+	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace);
 	[CCode (cheader_filename = "meta/main.h", cname = "META_DEFAULT_ICON_NAME")]
 	public const string DEFAULT_ICON_NAME;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_ICON_HEIGHT")]
