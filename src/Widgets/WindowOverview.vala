@@ -524,13 +524,16 @@ namespace Gala
 			
 			foreach (var workspace in workspaces) {
 				foreach (var window in workspace.list_windows ()) {
-					if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
+					if (window.window_type != WindowType.NORMAL && 
+						window.window_type != WindowType.DOCK && 
+						window.window_type != WindowType.DIALOG || 
+						window.is_attached_dialog ()) {
 						(window.get_compositor_private () as Actor).hide ();
 						continue;
 					}
 					if (window.window_type == WindowType.DOCK)
 						continue;
-				
+					
 					used_windows.append (window);
 				}
 			}
