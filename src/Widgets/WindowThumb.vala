@@ -28,7 +28,7 @@ namespace Gala
 		public GtkClutter.Texture close_button;
 		
 		public signal void selected (Window window);
-		public signal void reposition ();
+		public signal void closed ();
 		
 		public WindowThumb (Window _window)
 		{
@@ -84,11 +84,10 @@ namespace Gala
 			clone.source.opacity = 0;
 			get_parent ().set_child_below_sibling (this, null);
 			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
+				closed ();
 				destroy ();
 				window.delete (window.get_screen ().get_display ().get_current_time ());
 			});
-			
-			reposition ();
 		}
 		
 		public override void destroy ()

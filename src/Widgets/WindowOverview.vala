@@ -572,8 +572,8 @@ namespace Gala
 				clone.x = actor.x;
 				clone.y = actor.y;
 				
-				clone.selected.connect (selected);
-				clone.reposition.connect (reposition);
+				clone.selected.connect (thumb_selected);
+				clone.closed.connect (thumb_closed);
 				
 				add_child (clone);
 			}
@@ -604,8 +604,8 @@ namespace Gala
 			clone.x = actor.x;
 			clone.y = actor.y;
 			
-			clone.selected.connect (selected);
-			clone.reposition.connect (reposition);
+			clone.selected.connect (thumb_selected);
+			clone.closed.connect (thumb_closed);
 			
 			add_child (clone);
 			
@@ -620,24 +620,22 @@ namespace Gala
 					thumb = child as WindowThumb;
 			}
 			
-			if (thumb != null) {
+			if (thumb != null)
 				thumb.close_window ();
-				reposition (thumb);
-			}
 		}
 		
-		//called when a window has been closed
-		void reposition (WindowThumb removed)
+		void thumb_closed (WindowThumb thumb)
 		{
-			var children = get_children ().copy ();
-			children.remove (removed);
-			calculate_places (children);
+			remove_child (thumb);
 			
-			if (get_children ().length () == 0)
+			var children = get_children ();
+			if (children.length () > 0)
+				calculate_places (children);
+			else
 				close (false);
 		}
 		
-		void selected (Window window)
+		void thumb_selected (Window window)
 		{
 			if (window.get_workspace () == screen.get_active_workspace ()) {
 				window.activate (screen.get_display ().get_current_time ());
@@ -671,7 +669,7 @@ namespace Gala
 			foreach (var child in get_children ()) {
 				var exposed = child as WindowThumb;
 				exposed.close (animate);
-				exposed.selected.disconnect (selected);
+				exposed.selected.disconnect (thumb_selected);
 			}
 			
 			Compositor.get_background_actor_for_screen (screen).
