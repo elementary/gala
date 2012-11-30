@@ -171,9 +171,9 @@ namespace Meta {
 		public static void set_verbose (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_show_dialog")]
 #if HAS_MUTTER36
-		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
 #else
-		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
 #endif
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
@@ -201,6 +201,7 @@ namespace Meta {
 	public class Compositor {
 		public void add_window (Meta.Window window);
 		public void destroy ();
+		public bool filter_keybinding (Meta.Screen screen, Meta.KeyBinding binding);
 		public void flash_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_background_actor_for_screen")]
 		public static unowned Clutter.Actor get_background_actor_for_screen (Meta.Screen screen);
@@ -222,7 +223,7 @@ namespace Meta {
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
-		public void sync_stack (Meta.Screen screen, [CCode (type = "GList*")] GLib.List<Meta.WindowActor> stack);
+		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
 		public void sync_window_geometry (Meta.Window window);
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -293,6 +294,7 @@ namespace Meta {
 		public uint get_mask ();
 		public Meta.VirtualModifier get_modifiers ();
 		public unowned string get_name ();
+		public bool is_builtin ();
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_set_custom_handler")]
 		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc? handler);
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_switch_window")]
@@ -313,6 +315,8 @@ namespace Meta {
 		public void end_modal (uint32 timestamp);
 		public Meta.PluginInfo get_info ();
 		public unowned Meta.Screen get_screen ();
+		[NoWrapper]
+		public virtual bool keybinding_filter (Meta.KeyBinding binding);
 		[NoWrapper]
 		public virtual void kill_switch_workspace ();
 		[NoWrapper]
