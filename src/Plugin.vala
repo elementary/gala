@@ -43,6 +43,8 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Zooming zooming;
 		WindowOverview window_overview;
+
+		Gala.Services.ScreenSaver screensaver;
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -192,6 +194,9 @@ namespace Gala
 				stage.add_child (hot_corner);
 				
 				hot_corner.enter_event.connect (() => {
+					if (screensaver_active ())
+						return false;
+
 					perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
 					return false;
 				});
@@ -199,6 +204,21 @@ namespace Gala
 			
 			hot_corner.x = x;
 			hot_corner.y = y;
+		}
+
+		bool screensaver_active ()
+		{
+			if (screensaver == null) {
+				try {
+					screensaver = Bus.get_proxy_sync (BusType.SESSION,
+													  "org.gnome.ScreenSaver",
+													  "/org/gnome/ScreenSaver");
+				} catch (GLib.IOError error) {
+					return false;
+				}
+			}
+
+			return screensaver.GetActive ();
 		}
 		
 		public void update_input_area ()
