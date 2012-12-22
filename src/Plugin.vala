@@ -438,8 +438,6 @@ namespace Gala
 				case WindowType.NORMAL:
 					if (AnimationSettings.get_default ().open_duration == 0) {
 						map_completed (actor);
-						if (!window.is_override_redirect ())
-							window.activate (display.get_current_time ());
 						return;
 					}
 					
@@ -455,15 +453,12 @@ namespace Gala
 						
 						mapping.remove (actor);
 						map_completed (actor);
-						window.activate (display.get_current_time ());
 					});
 					break;
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
 					if (AnimationSettings.get_default ().menu_duration == 0) {
-						if (!window.is_override_redirect ())
-							window.activate (display.get_current_time ());
 						map_completed (actor);
 						return;
 					}
@@ -481,9 +476,6 @@ namespace Gala
 						
 						mapping.remove (actor);
 						map_completed (actor);
-						
-						if (!window.is_override_redirect ())
-							window.activate (display.get_current_time ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
@@ -541,14 +533,6 @@ namespace Gala
 					actor.animate (Clutter.AnimationMode.LINEAR, AnimationSettings.get_default ().close_duration, 
 						scale_x:0.8f, scale_y:0.8f, opacity:0)
 						.completed.connect ( () => {
-						
-						var focus = display.get_tab_current (Meta.TabList.NORMAL, screen, screen.get_active_workspace ());
-						// Only switch focus to the next window if none has grabbed it already
-						if (focus == null) {
-							focus = Utils.get_next_window (screen.get_active_workspace ());
-							if (focus != null && !focus.minimized)
-								focus.activate (display.get_current_time ());
-						}
 						
 						destroying.remove (actor);
 						destroy_completed (actor);
