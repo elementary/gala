@@ -380,10 +380,11 @@ namespace Gala
 				update_windows ();
 				update_icons ();
 			}
-			
-			if (Prefs.get_dynamic_workspaces () && 
-				workspace != null && workspace.index () == screen.n_workspaces - 1 && 
-				Utils.get_n_windows (workspace) > 0)
+
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+
+			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && Utils.get_n_windows (workspace) > 0)
 				window_on_last ();
 		}
 		
@@ -392,10 +393,11 @@ namespace Gala
 			if (visible)
 				update_windows ();
 			
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+
 			//dont remove workspaces when for example slingshot was closed
-			//or we dont want to remove workspaces
-			if (!Prefs.get_dynamic_workspaces () ||
-				window.window_type != WindowType.NORMAL &&
+			if (window.window_type != WindowType.NORMAL &&
 				window.window_type != WindowType.DIALOG &&
 				window.window_type != WindowType.MODAL_DIALOG)
 				return;
@@ -453,9 +455,12 @@ namespace Gala
 				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
 				return true;
 			}
-			
-			//dont allow closing the tab if it's the last one used or we dont want closing anyway
-			if (!Prefs.get_dynamic_workspaces () || workspace.index () == 0 && screen.n_workspaces == 2)
+
+			if (!Prefs.get_dynamic_workspaces ())
+				return false;
+
+			//dont allow closing the tab if it's the last one used
+			if (workspace.index () == 0 && screen.n_workspaces == 2)
 				return false;
 			
 			if (hover_timer > 0)
