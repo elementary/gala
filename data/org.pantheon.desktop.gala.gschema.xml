@@ -8,6 +8,7 @@
 		<value nick="open-launcher" value="4" />
 		<value nick="custom-command" value="5" />
 		<value nick="window-overview" value="6" />
+		<value nick="window-overview-all" value="7" />
 	</enum>
 	<enum id="GalaWindowOverviewType">
 		<value nick='grid' value='0'/>
@@ -86,7 +87,12 @@
 		</key>
 		<key type="as" name="expose-windows">
 			<default><![CDATA[['<Super>w']]]></default>
-			<summary>Shortcut to move to last workspace</summary>
+			<summary>Shortcut to open the window overview</summary>
+			<description></description>
+		</key>
+		<key type="as" name="expose-all-windows">
+			<default><![CDATA[['<Super>a']]]></default>
+			<summary>Shortcut to open the window overview for all windows</summary>
 			<description></description>
 		</key>
 		<key type="b" name="dynamic-workspaces">

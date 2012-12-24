@@ -34,6 +34,9 @@ namespace Gala
 		
 		bool ready;
 		
+		//the workspaces which we expose right now
+		List<Workspace> workspaces;
+		
 		static const int PADDING = 50;
 		
 		public WindowOverview (Plugin _plugin)
@@ -45,13 +48,16 @@ namespace Gala
 			
 			visible = false;
 			ready = true;
+			reactive = true;
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			//FIXME need to figure out the actual keycombo, for now leave it by 
 			// default and others will close it by selecting a window!
-			if (event.keyval == Clutter.Key.w || event.keyval == Clutter.Key.Escape) {
+			if (event.keyval == Clutter.Key.w || 
+				event.keyval == Clutter.Key.a || 
+				event.keyval == Clutter.Key.Escape) {
 				close (true);
 				
 				return true;
@@ -63,6 +69,14 @@ namespace Gala
 		public override void key_focus_out ()
 		{
 			close (false);
+		}
+		
+		public override bool button_release_event (Clutter.ButtonEvent event)
+		{
+			if (event.button == 1)
+				close (true);
+			
+			return true;
 		}
 		
 		/**
@@ -210,6 +224,9 @@ namespace Gala
 				taken_slots[slot_candidate] = window;
 			}
 			
+			//see how many windows we have on the last row
+			int left_over = (int)clones.length () - columns * (rows - 1);
+			
 			for (int slot = 0; slot < columns * rows; slot++) {
 				var window = taken_slots[slot];
 				// some slots might be empty
@@ -239,13 +256,17 @@ namespace Gala
 				}
 				
 				// Don't scale the windows too much
-				if (scale > 2.0 || (scale > 1.0 && (rect.width > 300 || rect.height > 300))) {
-					scale = (rect.width > 300 || rect.height > 300) ? 1.0f : 2.0f;
+				if (scale > 1.0) {
+					scale = 1.0f;
 					target = {rect_center (target).x - (int)Math.floorf (rect.width * scale) / 2,
 					          rect_center (target).y - (int)Math.floorf (rect.height * scale) / 2,
 					          (int)Math.floorf (scale * rect.width), 
 					          (int)Math.floorf (scale * rect.height)};
 				}
+				
+				//put the last row in the center, if necessary
+				if (left_over != columns && slot >= columns * (rows - 1))
+					target.x += (columns - left_over) * slot_width / 2;
 				
 				place_window (window, target);
 			}
@@ -480,7 +501,7 @@ namespace Gala
 			clone.icon.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 350, scale_x:1.0f, scale_y:1.0f, opacity:255);
 		}
 		
-		public void open (bool animate = true)
+		public void open (bool animate = true, bool all_windows = false)
 		{
 			if (!ready)
 				return;
@@ -491,17 +512,30 @@ namespace Gala
 			}
 			
 			var used_windows = new SList<Window> ();
-			var workspace = screen.get_active_workspace ();
 			
-			foreach (var window in workspace.list_windows ()) {
-				if (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DOCK) {
-					(window.get_compositor_private () as Actor).hide ();
-					continue;
+			workspaces = new List<Workspace> ();
+			
+			if (all_windows) {
+				foreach (var workspace in screen.get_workspaces ())
+					workspaces.append (workspace);
+			} else {
+				workspaces.append (screen.get_active_workspace ());
+			}
+			
+			foreach (var workspace in workspaces) {
+				foreach (var window in workspace.list_windows ()) {
+					if (window.window_type != WindowType.NORMAL && 
+						window.window_type != WindowType.DOCK && 
+						window.window_type != WindowType.DIALOG || 
+						window.is_attached_dialog ()) {
+						(window.get_compositor_private () as Actor).hide ();
+						continue;
+					}
+					if (window.window_type == WindowType.DOCK)
+						continue;
+					
+					used_windows.append (window);
 				}
-				if (window.window_type == WindowType.DOCK)
-					continue;
-				
-				used_windows.append (window);
 			}
 			
 			var n_windows = used_windows.length ();
@@ -510,8 +544,10 @@ namespace Gala
 			
 			ready = false;
 			
-			workspace.window_added.connect (add_window);
-			workspace.window_removed.connect (remove_window);
+			foreach (var workspace in workspaces) {
+				workspace.window_added.connect (add_window);
+				workspace.window_removed.connect (remove_window);
+			}
 			
 			Compositor.get_background_actor_for_screen (screen).
 				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
@@ -536,8 +572,8 @@ namespace Gala
 				clone.x = actor.x;
 				clone.y = actor.y;
 				
-				clone.selected.connect (selected);
-				clone.reposition.connect (reposition);
+				clone.selected.connect (thumb_selected);
+				clone.closed.connect (thumb_closed);
 				
 				add_child (clone);
 			}
@@ -568,8 +604,8 @@ namespace Gala
 			clone.x = actor.x;
 			clone.y = actor.y;
 			
-			clone.selected.connect (selected);
-			clone.reposition.connect (reposition);
+			clone.selected.connect (thumb_selected);
+			clone.closed.connect (thumb_closed);
 			
 			add_child (clone);
 			
@@ -584,28 +620,35 @@ namespace Gala
 					thumb = child as WindowThumb;
 			}
 			
-			if (thumb != null) {
+			if (thumb != null)
 				thumb.close_window ();
-				reposition (thumb);
-			}
 		}
 		
-		//called when a window has been closed
-		void reposition (WindowThumb removed)
+		void thumb_closed (WindowThumb thumb)
 		{
-			var children = get_children ().copy ();
-			children.remove (removed);
-			calculate_places (children);
+			remove_child (thumb);
 			
-			if (get_children ().length () == 0)
+			var children = get_children ();
+			if (children.length () > 0)
+				calculate_places (children);
+			else
 				close (false);
 		}
 		
-		void selected (Window window)
+		void thumb_selected (Window window)
 		{
-			window.activate (screen.get_display ().get_current_time ());
-			
-			close (true);
+			if (window.get_workspace () == screen.get_active_workspace ()) {
+				window.activate (screen.get_display ().get_current_time ());
+				close (true);
+			} else {
+				close (true);
+				//wait for the animation to finish before switching
+				Timeout.add (400, () => {
+					window.get_workspace ().activate (screen.get_display ().get_current_time ());
+					window.activate (screen.get_display ().get_current_time ());
+					return false;
+				});
+			}
 		}
 		
 		void close (bool animate)
@@ -613,9 +656,10 @@ namespace Gala
 			if (!visible || !ready)
 				return;
 			
-			var workspace = screen.get_active_workspace ();
-			workspace.window_added.disconnect (add_window);
-			workspace.window_removed.disconnect (remove_window);
+			foreach (var workspace in workspaces) {
+				workspace.window_added.disconnect (add_window);
+				workspace.window_removed.disconnect (remove_window);
+			}
 			
 			ready = false;
 			
@@ -625,7 +669,7 @@ namespace Gala
 			foreach (var child in get_children ()) {
 				var exposed = child as WindowThumb;
 				exposed.close (animate);
-				exposed.selected.disconnect (selected);
+				exposed.selected.disconnect (thumb_selected);
 			}
 			
 			Compositor.get_background_actor_for_screen (screen).

@@ -251,12 +251,9 @@ namespace Gala
 			}
 		}
 		
-		public override bool leave_event (Clutter.CrossingEvent event)
+		public override void key_focus_out ()
 		{
-			if (event.x < x || event.y < y || event.x > x + width || event.y > y + height)
-				hide ();
-			
-			return false;
+			hide ();
 		}
 		
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -346,6 +343,7 @@ namespace Gala
 			case Clutter.Key.Super_L:
 			case Clutter.Key.Super_R:
 			case Clutter.Key.Escape:
+			case Clutter.Key.Return:
 				if (wait_one_key_release) {
 					wait_one_key_release = false;
 					return false;

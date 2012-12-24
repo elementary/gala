@@ -27,7 +27,8 @@ namespace Gala
 		MINIMIZE_CURRENT,
 		OPEN_LAUNCHER,
 		CUSTOM_COMMAND,
-		WINDOW_OVERVIEW
+		WINDOW_OVERVIEW,
+		WINDOW_OVERVIEW_ALL
 	}
 	
 	public enum InputArea {
@@ -95,6 +96,9 @@ namespace Gala
 			
 			screen.get_display ().add_keybinding ("expose-windows", BehaviorSettings.get_default ().schema, 0, () => {
 				window_overview.open (true);
+			});
+			screen.get_display ().add_keybinding ("expose-all-windows", BehaviorSettings.get_default ().schema, 0, () => {
+				window_overview.open (true, true);
 			});
 			screen.get_display ().add_keybinding ("move-to-workspace-first", BehaviorSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
@@ -317,6 +321,9 @@ namespace Gala
 					break;
 				case ActionType.WINDOW_OVERVIEW:
 					window_overview.open (true);
+					break;
+				case ActionType.WINDOW_OVERVIEW_ALL:
+					window_overview.open (true, true);
 					break;
 				default:
 					warning ("Trying to run unknown action");

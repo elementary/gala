@@ -50,6 +50,8 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_edge_tiling ();
 		[CCode (cheader_filename = "meta/prefs.h")]
+		public static bool get_focus_change_on_pointer_rest ();
+		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.FocusMode get_focus_mode ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.FocusNewWindows get_focus_new_windows ();
@@ -169,9 +171,9 @@ namespace Meta {
 		public static void set_verbose (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_show_dialog")]
 #if HAS_MUTTER36
-		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
 #else
-		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, int transient_for, GLib.SList<void*> columns, GLib.SList<void*> entries);
+		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
 #endif
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
@@ -188,6 +190,7 @@ namespace Meta {
 	public class BackgroundActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false)]
 		protected BackgroundActor ();
+		public void add_glsl_snippet (Meta.SnippetHook hook, string declarations, string code, bool is_replace);
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundActor.for_screen (Meta.Screen screen);
 		[NoAccessorMethod]
@@ -198,6 +201,7 @@ namespace Meta {
 	public class Compositor {
 		public void add_window (Meta.Window window);
 		public void destroy ();
+		public bool filter_keybinding (Meta.Screen screen, Meta.KeyBinding binding);
 		public void flash_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_background_actor_for_screen")]
 		public static unowned Clutter.Actor get_background_actor_for_screen (Meta.Screen screen);
@@ -219,7 +223,7 @@ namespace Meta {
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
-		public void sync_stack (Meta.Screen screen, [CCode (type = "GList*")] GLib.List<Meta.WindowActor> stack);
+		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
 		public void sync_window_geometry (Meta.Window window);
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -290,6 +294,7 @@ namespace Meta {
 		public uint get_mask ();
 		public Meta.VirtualModifier get_modifiers ();
 		public unowned string get_name ();
+		public bool is_builtin ();
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_set_custom_handler")]
 		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc? handler);
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_switch_window")]
@@ -310,6 +315,8 @@ namespace Meta {
 		public void end_modal (uint32 timestamp);
 		public Meta.PluginInfo get_info ();
 		public unowned Meta.Screen get_screen ();
+		[NoWrapper]
+		public virtual bool keybinding_filter (Meta.KeyBinding binding);
 		[NoWrapper]
 		public virtual void kill_switch_workspace ();
 		[NoWrapper]
@@ -1014,6 +1021,7 @@ namespace Meta {
 		ACTION_RIGHT_CLICK_TITLEBAR,
 		AUTO_RAISE,
 		AUTO_RAISE_DELAY,
+		FOCUS_CHANGE_ON_POINTER_REST,
 		THEME,
 		TITLEBAR_FONT,
 		NUM_WORKSPACES,
@@ -1052,6 +1060,15 @@ namespace Meta {
 		RIGHT,
 		TOP,
 		BOTTOM
+	}
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_SNIPPET_HOOK_", type_id = "meta_snippet_hook_get_type ()")]
+	public enum SnippetHook {
+		VERTEX,
+		VERTEX_TRANSFORM,
+		FRAGMENT,
+		TEXTURE_COORD_TRANSFORM,
+		LAYER_FRAGMENT,
+		TEXTURE_LOOKUP
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_", type_id = "meta_stack_layer_get_type ()")]
 	public enum StackLayer {
@@ -1112,12 +1129,12 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, X.Event event, Meta.KeyBinding binding);
-	[CCode (cheader_filename = "meta/prefs.h", has_target = false)]
-	public delegate void PrefsChangedFunc (Meta.Preference pref, void* data);
-	[CCode (cheader_filename = "meta/window.h", has_target = false)]
-	public delegate bool WindowForeachFunc (Meta.Window window, void* data);
-	[CCode (cheader_filename = "meta/common.h", has_target = false)]
-	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace, void* data);
+	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 1.9)]
+	public delegate void PrefsChangedFunc (Meta.Preference pref);
+	[CCode (cheader_filename = "meta/window.h", instance_pos = 1.9)]
+	public delegate bool WindowForeachFunc (Meta.Window window);
+	[CCode (cheader_filename = "meta/common.h", instance_pos = 6.9)]
+	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace);
 	[CCode (cheader_filename = "meta/main.h", cname = "META_DEFAULT_ICON_NAME")]
 	public const string DEFAULT_ICON_NAME;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_ICON_HEIGHT")]

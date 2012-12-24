@@ -366,8 +366,20 @@ namespace Gala
 		
 		void handle_window_added (Meta.Window window)
 		{
-			if (visible)
+			// wait till the window is ready
+			if (window.get_compositor_private () == null) {
+				Idle.add (() => {
+					if (window.get_compositor_private () != null)
+						handle_window_added (window);
+					return false;
+				});
+				return;
+			}
+
+			if (visible) {
 				update_windows ();
+				update_icons ();
+			}
 			
 			if (Prefs.get_dynamic_workspaces () && 
 				workspace != null && workspace.index () == screen.n_workspaces - 1 && 
