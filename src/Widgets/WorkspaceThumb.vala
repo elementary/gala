@@ -256,7 +256,7 @@ namespace Gala
 		{
 			check_last_workspace ();
 		}
-		
+
 		void update_windows ()
 		{
 			windows.remove_all_children ();
@@ -451,13 +451,13 @@ namespace Gala
 			if (workspace == null)
 				return true;
 			
+			if (!Prefs.get_dynamic_workspaces ())
+				return false;
+
 			if (workspace.index () == screen.n_workspaces - 1) {
 				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
 				return true;
 			}
-
-			if (!Prefs.get_dynamic_workspaces ())
-				return false;
 
 			//dont allow closing the tab if it's the last one used
 			if (workspace.index () == 0 && screen.n_workspaces == 2)
