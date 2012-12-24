@@ -79,28 +79,29 @@ namespace Gala
 			
 			add_child (thumbnails);
 			add_child (scroll);
-
+			
 			screen.workareas_changed.connect (initial_configuration);
 			
 			//place it somewhere low, so it won't slide down on first open
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
 			y = sheight;
-
-			screen.workspace_added.connect ((obj) => {
-				create_workspace_thumb (screen.get_workspace_by_index (obj));
+			
+			screen.workspace_added.connect ((index) => {
+				create_workspace_thumb (screen.get_workspace_by_index (index));
 			});
-
+			
 			Prefs.add_listener ((pref) => {
-				if (!Prefs.get_dynamic_workspaces () && pref == Preference.NUM_WORKSPACES) {
-					// only need to listen for the case when workspaces were removed. 
-					// Any other case will be caught by the workspace_added signal.
-					// For some reason workspace_removed is not emitted, when changing the workspace number
-					if (Prefs.get_num_workspaces () < thumbnails.get_n_children ()) {
-						for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
-							(thumbnails.get_child_at_index (i) as WorkspaceThumb).closed ();
-						}
-					}
+				// only need to listen for the case when workspaces were removed. 
+				// Any other case will be caught by the workspace_added signal.
+				// For some reason workspace_removed is not emitted, when changing the workspace number
+				if (Prefs.get_dynamic_workspaces () || 
+					pref != Preference.NUM_WORKSPACES ||
+					Prefs.get_num_workspaces () > thumbnails.get_n_children ()) {
+					return;
+				
+				for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
+					(thumbnails.get_child_at_index (i) as WorkspaceThumb).closed ();
 				}
 			});
 		}
@@ -193,7 +194,7 @@ namespace Gala
 			if (wp == null)
 				return;
 		}
-
+		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
 			var screen = plugin.get_screen ();
