@@ -42,6 +42,11 @@ if (MUTTER36_FOUND)
 	set (GALAVALAFLAGS "--define=HAS_MUTTER36")
 endif (MUTTER36_FOUND)
 
+pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.3)
+if (MUTTER38_FOUND)
+	set (GALAVALAFLAGS "--define=HAS_MUTTER38")
+endif (MUTTER38_FOUND)
+
 add_definitions(${DEPS_CFLAGS})
 
 link_libraries(${DEPS_LIBRARIES})

@@ -68,11 +68,11 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GLib.List<weak Meta.KeyPref> get_keybindings ();
 		[CCode (cheader_filename = "meta/prefs.h")]
-		public static uint get_mouse_button_menu ();
+		public static int get_mouse_button_menu ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static Meta.VirtualModifier get_mouse_button_mods ();
 		[CCode (cheader_filename = "meta/prefs.h")]
-		public static uint get_mouse_button_resize ();
+		public static int get_mouse_button_resize ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_no_tab_popup ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -193,6 +193,7 @@ namespace Meta {
 		public void add_glsl_snippet (Meta.SnippetHook hook, string declarations, string code, bool is_replace);
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundActor.for_screen (Meta.Screen screen);
+		public void set_uniform_float (string uniform_name, int n_components, int count, [CCode (array_length_cname = "uniform_length", array_length_pos = 4.1)] float[] uniform);
 		[NoAccessorMethod]
 		public float dim_factor { get; set; }
 	}
@@ -236,7 +237,11 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected Display ();
 		public void add_ignored_crossing_serial (ulong serial);
+#if HAS_MUTTER38
+		public uint add_keybinding (string name, GLib.Settings settings, Meta.KeyBindingFlags flags, owned Meta.KeyHandlerFunc handler);
+#else
 		public bool add_keybinding (string name, GLib.Settings settings, Meta.KeyBindingFlags flags, owned Meta.KeyHandlerFunc handler);
+#endif
 		public bool begin_grab_op (Meta.Screen screen, Meta.Window window, Meta.GrabOp op, bool pointer_already_grabbed, bool frame_action, int button, ulong modmask, uint32 timestamp, int root_x, int root_y);
 		public void clear_mouse_mode ();
 		public void end_grab_op (uint32 timestamp);
@@ -250,13 +255,17 @@ namespace Meta {
 		public unowned Meta.Window get_focus_window ();
 		public Meta.GrabOp get_grab_op ();
 		public uint get_ignored_modifier_mask ();
+#if HAS_MUTTER38
+		public uint get_keybinding_action (uint keycode, ulong mask);
+#else
 		public Meta.KeyBindingAction get_keybinding_action (uint keycode, ulong mask);
+#endif
 		public uint32 get_last_user_time ();
 		public X.Window get_leader_window ();
 		public unowned GLib.SList<Meta.Screen> get_screens ();
 		public int get_shape_event_base ();
 		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
-		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
+		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace? workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace, Meta.Window? window, bool backward);
 		public unowned X.Display get_xdisplay ();
 		public bool has_shape ();
@@ -361,6 +370,7 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected Screen ();
 		public unowned Meta.Workspace? append_new_workspace (bool activate, uint32 timestamp);
+		public void focus_default_window (uint32 timestamp);
 		public static unowned Meta.Screen? for_x_screen (X.Screen xscreen);
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
@@ -509,6 +519,8 @@ namespace Meta {
 		public void move_resize_frame (bool user_op, int root_x_nw, int root_y_nw, int w, int h);
 		public void move_to_monitor (int monitor);
 		public void raise ();
+		public bool requested_bypass_compositor ();
+		public bool requested_dont_bypass_compositor ();
 		public void resize (bool user_op, int w, int h);
 		public void set_compositor_private (GLib.Object priv);
 		public void set_demands_attention ();
@@ -882,6 +894,8 @@ namespace Meta {
 		WORKSPACE_RIGHT,
 		WORKSPACE_UP,
 		WORKSPACE_DOWN,
+		SWITCH_APPLICATIONS,
+		SWITCH_APPLICATIONS_BACKWARD,
 		SWITCH_GROUP,
 		SWITCH_GROUP_BACKWARD,
 		SWITCH_WINDOWS,
@@ -1153,6 +1167,10 @@ namespace Meta {
 	public const int PRIORITY_REDRAW;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_PRIORITY_RESIZE")]
 	public const int PRIORITY_RESIZE;
+	[CCode (cheader_filename = "meta/main.h", cname = "META_VIRTUAL_CORE_KEYBOARD_ID")]
+	public const int VIRTUAL_CORE_KEYBOARD_ID;
+	[CCode (cheader_filename = "meta/main.h", cname = "META_VIRTUAL_CORE_POINTER_ID")]
+	public const int VIRTUAL_CORE_POINTER_ID;
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
