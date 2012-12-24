@@ -68,11 +68,12 @@ namespace Gala
 				var wallpaper = (WorkspaceThumb.destination as WorkspaceThumb).wallpaper;
 				
 				icons.add_child (actor);
-				
-				var xids = app.get_xids ();
-				if (xids.length > 1) { //get all the windows that belong to this app
+
+				// get all the windows that belong to this app, if possible
+				if (app != null && app.get_xids ().length > 1) {
 					var wins = window.get_workspace ().list_windows ();
-					for (var i=0;i<xids.length;i++) {
+					var xids = app.get_xids ();
+					for (var i = 0; i < xids.length; i++) {
 						foreach (var win in wins) {
 							if (xids.index (i) == (uint32)win.get_xwindow ())
 								win.change_workspace ((WorkspaceThumb.destination as WorkspaceThumb).workspace);
@@ -88,6 +89,8 @@ namespace Gala
 					old.icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (old.wallpaper.x + old.wallpaper.width / 2 - old.icons.width / 2));
 				icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
 			}
+
+			WorkspaceThumb.destination = null;
 		}
 		
 		void drag_begin (Actor actor, float x, float y, ModifierType modifier)
