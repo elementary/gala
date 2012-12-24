@@ -171,6 +171,8 @@ namespace Gala.Utils
 	{
 		var n = 0;
 		foreach (var window in workspace.list_windows ()) {
+			if (window.is_on_all_workspaces ())
+				continue;
 			if (window.window_type == WindowType.NORMAL ||
 				window.window_type == WindowType.DIALOG ||
 				window.window_type == WindowType.MODAL_DIALOG)
