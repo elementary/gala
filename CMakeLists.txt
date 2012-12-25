@@ -21,7 +21,6 @@ set (VERSION_INFO "Release")
 set (CMAKE_C_FLAGS "-ggdb")
 set (PREFIX ${CMAKE_INSTALL_PREFIX})
 set (DOLLAR "$")
-set (GALAVALAFLAGS "")
 
 set(CPACK_SOURCE_GENERATOR "TBZ2")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${VERSION}")
@@ -37,14 +36,16 @@ add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 find_package(PkgConfig)
 pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 plank)
 
+set (MUTTER36_FLAGS "")
 pkg_check_modules(MUTTER36 QUIET libmutter>=3.5.3)
 if (MUTTER36_FOUND)
-	set (GALAVALAFLAGS "--define=HAS_MUTTER36")
+	set (MUTTER36_FLAGS "--define=HAS_MUTTER36")
 endif (MUTTER36_FOUND)
 
+set (MUTTER38_FLAGS "")
 pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.3)
 if (MUTTER38_FOUND)
-	set (GALAVALAFLAGS "--define=HAS_MUTTER38")
+	set (MUTTER38_FLAGS "--define=HAS_MUTTER38")
 endif (MUTTER38_FOUND)
 
 add_definitions(${DEPS_CFLAGS})
@@ -84,7 +85,8 @@ PACKAGES
 OPTIONS
     -g
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
-    ${GALAVALAFLAGS}
+    ${MUTTER36_FLAGS}
+    ${MUTTER38_FLAGS}
     )
 
 #add_subdirectory (po)
