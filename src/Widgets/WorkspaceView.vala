@@ -97,7 +97,7 @@ namespace Gala
 				// For some reason workspace_removed is not emitted, when changing the workspace number
 				if (Prefs.get_dynamic_workspaces () || 
 					pref != Preference.NUM_WORKSPACES ||
-					Prefs.get_num_workspaces () > thumbnails.get_n_children ()) {
+					Prefs.get_num_workspaces () > thumbnails.get_n_children ())
 					return;
 				
 				for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
