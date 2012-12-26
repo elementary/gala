@@ -86,6 +86,24 @@ namespace Gala
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
 			y = sheight;
+			
+			screen.workspace_added.connect ((index) => {
+				create_workspace_thumb (screen.get_workspace_by_index (index));
+			});
+			
+			Prefs.add_listener ((pref) => {
+				// only need to listen for the case when workspaces were removed. 
+				// Any other case will be caught by the workspace_added signal.
+				// For some reason workspace_removed is not emitted, when changing the workspace number
+				if (Prefs.get_dynamic_workspaces () || 
+					pref != Preference.NUM_WORKSPACES ||
+					Prefs.get_num_workspaces () > thumbnails.get_n_children ())
+					return;
+				
+				for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
+					(thumbnails.get_child_at_index (i) as WorkspaceThumb).closed ();
+				}
+			});
 		}
 		
 		//method that waits for the workspaces to be configured on first run
@@ -94,6 +112,20 @@ namespace Gala
 			screen.workareas_changed.disconnect (initial_configuration);
 			
 			var workspaces = screen.get_workspaces ().copy ();
+			
+			if (!Prefs.get_dynamic_workspaces ()) {
+				foreach (var workspace in workspaces) {
+					var thumb = new WorkspaceThumb (workspace);
+					thumb.clicked.connect (hide);
+					thumb.closed.connect (remove_workspace);
+					thumb.window_on_last.connect (add_workspace);
+					
+					thumbnails.add_child (thumb);
+				}
+				
+				//and we're done
+				return;
+			}
 			
 			//remove everything except for the first
 			for (var i = 1; i < workspaces.length (); i++)
@@ -158,17 +190,21 @@ namespace Gala
 		
 		void add_workspace ()
 		{
-			var screen = plugin.get_screen ();
 			var wp = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
 			if (wp == null)
 				return;
+		}
+		
+		void create_workspace_thumb (Meta.Workspace workspace)
+		{
+			var screen = plugin.get_screen ();
 			
-			var thumb = new WorkspaceThumb (wp);
+			var thumb = new WorkspaceThumb (workspace);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
 			
-			thumbnails.add_child (thumb);
+			thumbnails.insert_child_at_index (thumb, workspace.index ());
 			
 			thumb.show ();
 			
@@ -188,7 +224,8 @@ namespace Gala
 			
 			var workspace = thumb.workspace;
 			
-			if (workspace != null && workspace.index () > -1) { //dont remove non existing workspaces
+			//dont remove non existing workspaces
+			if (workspace != null && workspace.index () > -1) {
 				var screen = workspace.get_screen ();
 				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
 			}

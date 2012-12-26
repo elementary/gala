@@ -327,6 +327,9 @@ namespace Gala
 		
 		void check_last_workspace ()
 		{
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+			
 			//last workspace, show plus button and so on
 			//give the last one a different style
 			
@@ -372,11 +375,14 @@ namespace Gala
 				});
 				return;
 			}
-
+			
 			if (visible) {
 				update_windows ();
 				update_icons ();
 			}
+			
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
 			
 			if (workspace != null && workspace.index () == screen.n_workspaces - 1 && Utils.get_n_windows (workspace) > 0)
 				window_on_last ();
@@ -386,6 +392,9 @@ namespace Gala
 		{
 			if (visible)
 				update_windows ();
+			
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
 			
 			//dont remove workspaces when for example slingshot was closed
 			if (window.window_type != WindowType.NORMAL &&
@@ -441,6 +450,9 @@ namespace Gala
 		{
 			if (workspace == null)
 				return true;
+			
+			if (!Prefs.get_dynamic_workspaces ())
+				return false;
 			
 			if (workspace.index () == screen.n_workspaces - 1) {
 				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
