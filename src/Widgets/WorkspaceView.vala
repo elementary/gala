@@ -197,8 +197,6 @@ namespace Gala
 		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
-			var screen = plugin.get_screen ();
-			
 			var thumb = new WorkspaceThumb (workspace);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);

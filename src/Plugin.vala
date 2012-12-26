@@ -429,8 +429,6 @@ namespace Gala
 				return;
 			}
 			
-			var screen = get_screen ();
-			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
 			actor.detach_animation ();
@@ -515,8 +513,6 @@ namespace Gala
 				return;
 			}
 			
-			var screen = get_screen ();
-			var display = screen.get_display ();
 			var window = actor.get_meta_window ();
 			
 			actor.detach_animation ();
