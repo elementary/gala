@@ -419,11 +419,11 @@ namespace Gala
 			
 			var screen = plugin.get_screen ();
 			
-			visible = true;
-			grab_key_focus ();
-			
 			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
+			
+			visible = true;
+			grab_key_focus ();
 			
 			if (!wait) {
 				show_elements ();
@@ -497,10 +497,12 @@ namespace Gala
 			plugin.end_modal ();
 			plugin.update_input_area ();
 			
+			animating = true;
 			animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : height).completed.connect (() => {
 				thumbnails.get_children ().foreach ((thumb) => {
 					thumb.hide ();
 				});
+				animating = false;
 				visible = false;
 			});
 			
