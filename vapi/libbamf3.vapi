@@ -6,11 +6,15 @@ namespace Bamf {
 	public class Application : Bamf.View {
 		[CCode (has_construct_function = false)]
 		protected Application ();
+		public bool get_application_menu (string name, string object_path);
 		public unowned string get_application_type ();
 		public unowned string get_desktop_file ();
+		public unowned Bamf.View get_focusable_child ();
 		public bool get_show_menu_stubs ();
+		[CCode (array_length = false, array_null_terminated = true)]
+		public string[] get_supported_mime_types ();
 		public GLib.List<weak Bamf.Window> get_windows ();
-		public GLib.Array<uint> get_xids ();
+		public GLib.Array<uint32> get_xids ();
 		public signal void window_added (Bamf.View object);
 		public signal void window_removed (Bamf.View object);
 	}
@@ -18,23 +22,10 @@ namespace Bamf {
 	public class Control : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Control ();
+		public static unowned Bamf.Control get_default ();
 		public void insert_desktop_file (string desktop_file);
 		public void register_application_for_pid (string application, int32 pid);
 		public void register_tab_provider (string path);
-		public void set_approver_behavior (int32 behavior);
-	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", type_id = "bamf_factory_get_type ()")]
-	public class Factory : GLib.Object {
-		[CCode (has_construct_function = false)]
-		protected Factory ();
-	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", type_id = "bamf_indicator_get_type ()")]
-	public class Indicator : Bamf.View {
-		[CCode (has_construct_function = false)]
-		protected Indicator ();
-		public unowned string get_dbus_menu_path ();
-		public unowned string get_remote_address ();
-		public unowned string get_remote_path ();
 	}
 	[CCode (cheader_filename = "libbamf/libbamf.h", type_id = "bamf_matcher_get_type ()")]
 	public class Matcher : GLib.Object {
@@ -54,33 +45,37 @@ namespace Bamf {
 		public GLib.List<weak Bamf.View> get_windows ();
 		public GLib.Array<uint32> get_xids_for_application (string application);
 		public void register_favorites ([CCode (array_length = false)] string[] favorites);
-		public signal void active_application_changed (Bamf.View p0, Bamf.View p1);
-		public signal void active_window_changed (Bamf.View p0, Bamf.View p1);
+		public signal void active_application_changed (Bamf.View object, Bamf.View p0);
+		public signal void active_window_changed (Bamf.View object, Bamf.View p0);
 		public signal void stacking_order_changed ();
-		public signal void view_closed (Bamf.View p0);
-		public signal void view_opened (Bamf.View p0);
+		public signal void view_closed (Bamf.View object);
+		public signal void view_opened (Bamf.View object);
 	}
 	[CCode (cheader_filename = "libbamf/libbamf.h", type_id = "bamf_tab_get_type ()")]
 	public class Tab : Bamf.View {
 		[CCode (has_construct_function = false)]
-		public Tab (string id, string uri);
-		public string get_id ();
-		public string get_preview ();
-		public string get_uri ();
-		public void set_preview (string uri);
-		public void set_uri (string uri);
-		public virtual void show ();
+		public Tab (string path);
+		public bool close ();
+		public virtual unowned string get_desktop_name ();
+		public virtual bool get_is_foreground_tab ();
+		public virtual unowned string get_location ();
+		public virtual uint64 get_xid ();
+		public bool raise ();
 		[NoAccessorMethod]
-		public string id { owned get; set construct; }
-		public string preview { owned get; set; }
-		public string uri { owned get; set construct; }
-		public virtual signal void preview_updated ();
-		public virtual signal void uri_changed (string new_uri, string p0);
+		public string desktop_id { owned get; set; }
+		[NoAccessorMethod]
+		public bool is_foreground_tab { get; set; }
+		[NoAccessorMethod]
+		public string location { owned get; set; }
+		[NoAccessorMethod]
+		public uint64 xid { get; set; }
 	}
 	[CCode (cheader_filename = "libbamf/libbamf.h", type_id = "bamf_tab_source_get_type ()")]
 	public class TabSource : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected TabSource ();
+		[CCode (array_length = false, array_null_terminated = true)]
+		public unowned string[] get_tab_ids ();
 		public string get_tab_uri (string tab_id);
 		public uint32 get_tab_xid (string tab_id);
 		[NoWrapper]
@@ -110,7 +105,9 @@ namespace Bamf {
 		public virtual bool is_running ();
 		public bool is_sticky ();
 		public virtual bool is_urgent ();
+#if !HAVE_BAMF_0_4
 		[CCode (cname = "bamf_view_user_visible")]
+#endif
 		public bool is_user_visible ();
 		[NoWrapper]
 		public virtual void set_path (string path);
@@ -127,6 +124,7 @@ namespace Bamf {
 		public bool user_visible { get; }
 		public virtual signal void active_changed (bool active);
 		public virtual signal void child_added (Bamf.View child);
+		public virtual signal void child_moved (Bamf.View child);
 		public virtual signal void child_removed (Bamf.View child);
 		public virtual signal void closed ();
 		public virtual signal void name_changed (string old_name, string new_name);
@@ -138,18 +136,18 @@ namespace Bamf {
 	public class Window : Bamf.View {
 		[CCode (has_construct_function = false)]
 		protected Window ();
-		public int get_monitor ();
-		public uint32 get_pid ();
-		public unowned Bamf.Window get_transient ();
-		public string get_utf8_prop (string prop);
-		public Bamf.WindowType get_window_type ();
-		public uint32 get_xid ();
-		public long last_active ();
-		public Bamf.WindowMaximizationType maximized ();
+		public virtual int get_monitor ();
+		public virtual uint32 get_pid ();
+		public virtual unowned Bamf.Window get_transient ();
+		public virtual string get_utf8_prop (string prop);
+		public virtual Bamf.WindowType get_window_type ();
+		public virtual uint32 get_xid ();
+		public virtual long last_active ();
+		public virtual Bamf.WindowMaximizationType maximized ();
 		public virtual signal void maximized_changed (int old_value, int new_value);
 		public virtual signal void monitor_changed (int old_value, int new_value);
 	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_CLICK_BEHAVIOR_")]
+	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_CLICK_BEHAVIOR_", has_type_id = false)]
 	public enum ClickBehavior {
 		NONE,
 		OPEN,
@@ -160,22 +158,14 @@ namespace Bamf {
 		RESTORE_ALL,
 		PICKER
 	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_FACTORY_")]
-	public enum FactoryViewType {
-		VIEW,
-		WINDOW,
-		APPLICATION,
-		INDICATOR,
-		NONE
-	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_WINDOW_")]
+	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_WINDOW_", has_type_id = false)]
 	public enum WindowMaximizationType {
 		FLOATING,
 		HORIZONTAL_MAXIMIZED,
 		VERTICAL_MAXIMIZED,
 		MAXIMIZED
 	}
-	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_WINDOW_")]
+	[CCode (cheader_filename = "libbamf/libbamf.h", cprefix = "BAMF_WINDOW_", has_type_id = false)]
 	public enum WindowType {
 		NORMAL,
 		DESKTOP,
@@ -186,4 +176,6 @@ namespace Bamf {
 		UTILITY,
 		SPLASHSCREEN
 	}
+	[CCode (cheader_filename = "libbamf/libbamf.h", instance_pos = 2.9)]
+	public delegate void TabPreviewReadyCallback (Bamf.Tab self, string preview_data);
 }

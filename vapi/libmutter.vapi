@@ -30,11 +30,13 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_attach_modal_dialogs ();
 		[CCode (cheader_filename = "meta/prefs.h")]
+		public static bool get_auto_maximize ();
+		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_auto_raise ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static int get_auto_raise_delay ();
 		[CCode (cheader_filename = "meta/prefs.h")]
-		public static void get_button_layout (Meta.ButtonLayout button_layout);
+		public static Meta.ButtonLayout get_button_layout ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_compositing_manager ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -268,6 +270,7 @@ namespace Meta {
 		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace? workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace, Meta.Window? window, bool backward);
 		public unowned X.Display get_xdisplay ();
+		public int get_xinput_opcode ();
 		public bool has_shape ();
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
@@ -449,6 +452,7 @@ namespace Meta {
 		public void begin_grab_op (Meta.GrabOp op, bool frame_action, uint32 timestamp);
 		public void change_workspace (Meta.Workspace workspace);
 		public void change_workspace_by_index (int space_index, bool append, uint32 timestamp);
+		public void check_alive (uint32 timestamp);
 		public void compute_group ();
 		public void configure_notify (X.ConfigureEvent event);
 		public void @delete (uint32 timestamp);
@@ -1057,7 +1061,8 @@ namespace Meta {
 		FORCE_FULLSCREEN,
 		WORKSPACES_ONLY_ON_PRIMARY,
 		NO_TAB_POPUP,
-		DRAGGABLE_BORDER_WIDTH;
+		DRAGGABLE_BORDER_WIDTH,
+		AUTO_MAXIMIZE;
 		[CCode (cheader_filename = "meta/main.h")]
 		public static unowned string to_string (Meta.Preference pref);
 	}
