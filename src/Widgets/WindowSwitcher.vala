@@ -321,7 +321,7 @@ namespace Gala
 				}
 			}
 			
-			if (found != null) {
+			if (found == null) {
 				warning ("No clone found for removed window");
 				return;
 			}
