@@ -54,7 +54,7 @@ namespace Gala
 			close_button.scale_x = 0.0f;
 			close_button.scale_y = 0.0f;
 			close_button.scale_gravity = Gravity.CENTER;
-			close_button.button_press_event.connect (close_button_clicked);
+			close_button.button_release_event.connect (close_button_clicked);
 			close_button.leave_event.connect ((e) => leave_event (e));
 			
 			try {
