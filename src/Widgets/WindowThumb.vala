@@ -83,11 +83,9 @@ namespace Gala
 			//make sure we dont see a window closing animation in the background
 			clone.source.opacity = 0;
 			get_parent ().set_child_below_sibling (this, null);
-			animate (AnimationMode.EASE_IN_CUBIC, 200, depth : -50.0f, opacity : 0).completed.connect (() => {
-				closed ();
-				destroy ();
-				window.delete (window.get_screen ().get_display ().get_current_time ());
-			});
+			closed ();
+			destroy ();
+			window.delete (window.get_screen ().get_display ().get_current_time ());
 		}
 		
 		public override void destroy ()
