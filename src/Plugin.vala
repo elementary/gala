@@ -697,7 +697,10 @@ namespace Gala
 				win.append (moving_actor);
 				par.append (moving_actor.get_parent ());
 				
-				clutter_actor_reparent (moving_actor, Compositor.get_overlay_group_for_screen (screen));
+				// for some reason the actor alone won't stay where it should, only in a container
+				var bin = new Clutter.Actor ();
+				clutter_actor_reparent (moving_actor, bin);
+				group.add_child (bin);
 			}
 			
 			foreach (var window in windows) {
@@ -729,6 +732,8 @@ namespace Gala
 			
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
+			if (moving_actor != null)
+				moving_actor.raise_top ();
 			
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
 			in_group.width = out_group.width = w;
