@@ -221,10 +221,6 @@ namespace Gala
 			if (window == null)
 				return;
 			
-			// if there is still an unfinished window-move don't be silly and use it
-			if (moving != null)
-				window = moving;
-			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
@@ -789,22 +785,6 @@ namespace Gala
 			wallpaper.x = 0.0f;
 			
 			switch_workspace_completed ();
-			
-			var focus = display.get_focus_window ();
-			if (focus != null && focus.window_type == WindowType.DOCK) {
-				if (focus.get_workspace () != screen.get_active_workspace ())
-					return;
-				
-				if (moving != null)
-					moving.activate (display.get_current_time ());
-				else {
-					focus = Utils.get_next_window (screen.get_active_workspace ());
-					if (focus != null)
-						focus.activate (display.get_current_time ());
-				}
-			} else if (moving != null && moving.get_workspace () == screen.get_active_workspace ()) {
-				moving.activate (display.get_current_time ());
-			}
 			
 			moving = null;
 		}
