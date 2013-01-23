@@ -416,12 +416,12 @@ namespace Gala
 			wait_one_key_release = shortcut;
 			
 			var screen = plugin.get_screen ();
+
+			visible = true;
+			grab_key_focus ();
 			
 			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
-			
-			visible = true;
-			grab_key_focus ();
 			
 			if (!wait) {
 				show_elements ();
