@@ -62,7 +62,6 @@ namespace Gala
 			Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
 			Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
 			Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
-			Prefs.override_preference_schema ("theme", Config.SCHEMA + ".appearance");
 		}
 		
 		public override void start ()

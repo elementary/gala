@@ -52,7 +52,6 @@ namespace Gala
 	public class AppearanceSettings : Granite.Services.Settings
 	{
 		public string button_layout { get; set; }
-		public string theme { get; set; }
 		public bool attach_modal_dialogs { get; set; }
 		public bool dim_parents { get; set; }
 		
