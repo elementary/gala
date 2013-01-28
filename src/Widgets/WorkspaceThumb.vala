@@ -402,20 +402,21 @@ namespace Gala
 				window.window_type != WindowType.MODAL_DIALOG)
 				return;
 			
-			if (workspace != null && Utils.get_n_windows (workspace) == 0) {
-				// we need to wait untill the animation ended, otherwise we get trouble with focus handling
-				Timeout.add (AnimationSettings.get_default ().workspace_switch_duration + 10, () => {
-					// check again, maybe something opened
-					if (workspace == null || Utils.get_n_windows (workspace) > 0)
-						return false;
-
-					workspace.window_added.disconnect (handle_window_added);
-					workspace.window_removed.disconnect (handle_window_removed);
-					
-					closed ();
+			if (workspace == null || Utils.get_n_windows (workspace) > 0)
+				return;
+			
+			// we need to wait untill the animation ended, otherwise we get trouble with focus handling
+			Timeout.add (AnimationSettings.get_default ().workspace_switch_duration + 10, () => {
+				// check again, maybe something opened
+				if (workspace == null || Utils.get_n_windows (workspace) > 0)
 					return false;
-				});
-			}
+				
+				workspace.window_added.disconnect (handle_window_added);
+				workspace.window_removed.disconnect (handle_window_removed);
+				
+				closed ();
+				return false;
+			});
 		}
 		
 		public override void hide ()
