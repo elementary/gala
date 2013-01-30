@@ -733,8 +733,8 @@ namespace Gala
 			
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
-			if (moving_actor != null)
-				moving_actor.raise_top ();
+			if (moving_window_container != null)
+				group.set_child_above_sibling (moving_window_container, null);
 			
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
 			in_group.width = out_group.width = w;
