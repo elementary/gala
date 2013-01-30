@@ -650,6 +650,7 @@ namespace Gala
 		List<Clutter.Clone>? clones;
 		Clutter.Actor? in_group;
 		Clutter.Actor? out_group;
+		Clutter.Actor? moving_window_container;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -698,9 +699,9 @@ namespace Gala
 				par.append (moving_actor.get_parent ());
 				
 				// for some reason the actor alone won't stay where it should, only in a container
-				var bin = new Clutter.Actor ();
-				clutter_actor_reparent (moving_actor, bin);
-				group.add_child (bin);
+				moving_window_container = new Clutter.Actor ();
+				clutter_actor_reparent (moving_actor, moving_window_container);
+				group.add_child (moving_window_container);
 			}
 			
 			foreach (var window in windows) {
@@ -784,6 +785,9 @@ namespace Gala
 			if (out_group != null)
 				out_group.destroy ();
 			out_group = null;
+			if (moving_window_container != null)
+				moving_window_container.destroy ();
+			moving_window_container = null;
 			
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 			wallpaper.detach_animation ();
