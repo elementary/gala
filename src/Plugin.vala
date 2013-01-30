@@ -220,10 +220,6 @@ namespace Gala
 			if (window == null)
 				return;
 			
-			// if there is still an unfinished window-move don't be silly and use it
-			if (moving != null)
-				window = moving;
-			
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
@@ -653,6 +649,7 @@ namespace Gala
 		List<Clutter.Clone>? clones;
 		Clutter.Actor? in_group;
 		Clutter.Actor? out_group;
+		Clutter.Actor? moving_window_container;
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
@@ -700,7 +697,10 @@ namespace Gala
 				win.append (moving_actor);
 				par.append (moving_actor.get_parent ());
 				
-				clutter_actor_reparent (moving_actor, Compositor.get_overlay_group_for_screen (screen));
+				// for some reason the actor alone won't stay where it should, only in a container
+				moving_window_container = new Clutter.Actor ();
+				clutter_actor_reparent (moving_actor, moving_window_container);
+				group.add_child (moving_window_container);
 			}
 			
 			foreach (var window in windows) {
@@ -732,6 +732,8 @@ namespace Gala
 			
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
+			if (moving_window_container != null)
+				group.set_child_above_sibling (moving_window_container, null);
 			
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
 			in_group.width = out_group.width = w;
@@ -782,28 +784,15 @@ namespace Gala
 			if (out_group != null)
 				out_group.destroy ();
 			out_group = null;
+			if (moving_window_container != null)
+				moving_window_container.destroy ();
+			moving_window_container = null;
 			
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
 			
 			switch_workspace_completed ();
-			
-			var focus = display.get_focus_window ();
-			if (focus != null && focus.window_type == WindowType.DOCK) {
-				if (focus.get_workspace () != screen.get_active_workspace ())
-					return;
-				
-				if (moving != null)
-					moving.activate (display.get_current_time ());
-				else {
-					focus = Utils.get_next_window (screen.get_active_workspace ());
-					if (focus != null)
-						focus.activate (display.get_current_time ());
-				}
-			} else if (moving != null && moving.get_workspace () == screen.get_active_workspace ()) {
-				moving.activate (display.get_current_time ());
-			}
 			
 			moving = null;
 		}
