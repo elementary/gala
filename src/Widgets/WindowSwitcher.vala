@@ -38,7 +38,7 @@ namespace Gala
 		BindConstraint h_constraint;
 		
 		//FIXME window titles of supported docks, to be extended
-		const string [] DOCK_NAMES = {"plank", "Docky"};
+		const string [] DOCK_NAMES = {"plank", "docky"};
 		
 		//estimated value, if possible
 		float dock_width = 0.0f;
