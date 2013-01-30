@@ -66,12 +66,12 @@
 			<summary></summary>
 			<description></description>
 		</key>
-		<key type="as" name="move-to-workspace-first">
+		<key type="as" name="switch-to-workspace-first">
 			<default><![CDATA[['<Super>Home']]]></default>
 			<summary>Shortcut to move to first workspace</summary>
 			<description></description>
 		</key>
-		<key type="as" name="move-to-workspace-last">
+		<key type="as" name="switch-to-workspace-last">
 			<default><![CDATA[['<Super>End', '<Super>0']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
