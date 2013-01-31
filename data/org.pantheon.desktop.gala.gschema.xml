@@ -66,6 +66,14 @@
 			<summary></summary>
 			<description></description>
 		</key>
+		<key type="b" name="dynamic-workspaces">
+			<default>true</default>
+			<summary>Enable dynamic workspace instead of static ones</summary>
+			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
+		</key>
+	</schema>
+	
+	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="gala">
 		<key type="as" name="switch-to-workspace-first">
 			<default><![CDATA[['<Super>Home']]]></default>
 			<summary>Shortcut to move to first workspace</summary>
@@ -94,11 +102,6 @@
 			<default><![CDATA[['<Super>a']]]></default>
 			<summary>Shortcut to open the window overview for all windows</summary>
 			<description></description>
-		</key>
-		<key type="b" name="dynamic-workspaces">
-			<default>true</default>
-			<summary>Enable dynamic workspace instead of static ones</summary>
-			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
 		</key>
 	</schema>
 	
