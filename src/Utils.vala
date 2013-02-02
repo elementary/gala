@@ -57,12 +57,37 @@ namespace Gala
 			factory.set_params ("modal_dialog", false, shadow);
 		}
 		
+		// cache xid:app and app:pixbuf pairs for better performance
+		public static Gee.HashMap<uint32, Bamf.Application> apps_cache = new Gee.HashMap<uint32, Bamf.Application> ();
+		public static Gee.HashMap<Bamf.Application, Gdk.Pixbuf> icons_cache = new Gee.HashMap<Bamf.Application, Gdk.Pixbuf> ();
+		
+		// go through all the windows and pick only those which still exists for our new map
+		public static void clean_app_cache (Meta.Screen screen)
+		{
+			var new_apps = new Gee.HashMap<uint32,Bamf.Application> ();
+			foreach (var workspace in screen.get_workspaces ()) {
+				foreach (var window in workspace.list_windows ()) {
+					var xid = (uint32)window.get_xwindow ();
+					if (apps_cache.has_key (xid))
+						new_apps.set (xid, apps_cache.get (xid));
+				}
+			}
+
+			apps_cache = new_apps;
+		}
+		
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
 		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 		{
-			var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
+			var xid = (uint32)window.get_xwindow ();
+			if (apps_cache.has_key (xid))
+				return get_icon_for_application (apps_cache.get (xid), size);
+			
+			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
+			apps_cache.set (xid, app);
+			
 			return get_icon_for_application (app, size);
 		}
 		
@@ -71,6 +96,9 @@ namespace Gala
 		 **/
 		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
 		{
+			if (icons_cache.has_key (app))
+				return icons_cache.get (app);
+			
 			unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 			Gdk.Pixbuf? image = null;
 			
@@ -101,7 +129,9 @@ namespace Gala
 			}
 			
 			if (size != image.width || size != image.height)
-				return Plank.Drawing.DrawingService.ar_scale (image, size, size);
+				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
+			
+			icons_cache.set (app, image);
 			
 			return image;
 		}
