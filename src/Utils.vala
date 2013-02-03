@@ -57,23 +57,23 @@ namespace Gala
 			factory.set_params ("modal_dialog", false, shadow);
 		}
 		
-		// cache xid:app and app:pixbuf pairs for better performance
-		public static Gee.HashMap<uint32, Bamf.Application> apps_cache = new Gee.HashMap<uint32, Bamf.Application> ();
-		public static Gee.HashMap<Bamf.Application, Gdk.Pixbuf> icons_cache = new Gee.HashMap<Bamf.Application, Gdk.Pixbuf> ();
+		// Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
+		static Gee.HashMap<uint32, Gdk.Pixbuf> xid_pixbuf_cache;
+		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		
-		// go through all the windows and pick only those which still exists for our new map
-		public static void clean_app_cache (Meta.Screen screen)
+		static construct
 		{
-			var new_apps = new Gee.HashMap<uint32,Bamf.Application> ();
-			foreach (var workspace in screen.get_workspaces ()) {
-				foreach (var window in workspace.list_windows ()) {
-					var xid = (uint32)window.get_xwindow ();
-					if (apps_cache.has_key (xid))
-						new_apps.set (xid, apps_cache.get (xid));
-				}
-			}
-
-			apps_cache = new_apps;
+			xid_pixbuf_cache = new Gee.HashMap<uint32, Gdk.Pixbuf> ();
+			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
+		}
+		
+		/**
+		 * Clean icon caches
+		 */
+		public static void clear_pixbuf_caches ()
+		{
+			xid_pixbuf_cache = new Gee.HashMap<uint32, Gdk.Pixbuf> ();
+			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 		}
 		
 		/**
@@ -82,13 +82,16 @@ namespace Gala
 		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 		{
 			var xid = (uint32)window.get_xwindow ();
-			if (apps_cache.has_key (xid))
-				return get_icon_for_application (apps_cache.get (xid), size);
+			
+			if (xid_pixbuf_cache.has_key (xid))
+				return xid_pixbuf_cache.get (xid);
 			
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-			apps_cache.set (xid, app);
+			var pixbuf = get_icon_for_application (app, size);
 			
-			return get_icon_for_application (app, size);
+			xid_pixbuf_cache.set (xid, pixbuf);
+			
+			return pixbuf;
 		}
 		
 		/**
@@ -96,19 +99,18 @@ namespace Gala
 		 **/
 		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
 		{
-			if (icons_cache.has_key (app))
-				return icons_cache.get (app);
-			
-			unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 			Gdk.Pixbuf? image = null;
+			string? icon = null;
 			
 			if (app != null && app.get_desktop_file () != null) {
 				try {
 					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 					if (appinfo != null) {
-						var iconinfo = icon_theme.lookup_by_gicon (appinfo.get_icon (), size, 0);
-						if (iconinfo != null)
-							image = iconinfo.load_icon ();
+						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
+						if (icon_pixbuf_cache.has_key (icon))
+							image = icon_pixbuf_cache.get (icon);
+						else
+							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
 					}
 				} catch (Error e) {
 					warning (e.message);
@@ -117,21 +119,31 @@ namespace Gala
 			
 			if (image == null) {
 				try {
-					image = icon_theme.load_icon ("application-default-icon", size, 0);
+					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+					icon = "application-default-icon";
+					if (icon_pixbuf_cache.has_key (icon))
+						image = icon_pixbuf_cache.get (icon);
+					else
+						image = icon_theme.load_icon (icon, size, 0);
 				} catch (Error e) {
 					warning (e.message);
 				}
 			}
 			
 			if (image == null) {
-				image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, 1, 1);
-				image.fill (0x00000000);
+				icon = "";
+				if (icon_pixbuf_cache.has_key (icon)) {
+					image = icon_pixbuf_cache.get (icon);
+				} else {
+					image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, size, size);
+					image.fill (0x00000000);
+				}
 			}
 			
 			if (size != image.width || size != image.height)
 				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
 			
-			icons_cache.set (app, image);
+			icon_pixbuf_cache.set (icon, image);
 			
 			return image;
 		}
