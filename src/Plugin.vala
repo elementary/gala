@@ -332,7 +332,9 @@ namespace Gala
 		
 		public override void minimize (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().minimize_duration == 0) {
+			if (!AnimationSettings.get_default ().enable_animations || 
+				AnimationSettings.get_default ().minimize_duration == 0 || 
+				actor.get_meta_window ().window_type != WindowType.NORMAL) {
 				minimize_completed (actor);
 				return;
 			}
