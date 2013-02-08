@@ -492,8 +492,11 @@ namespace Gala
 			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
 			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 			
-			clone.close_button.x = rect.x + 1;
-			clone.close_button.y = rect.y + 1;
+			float offset_x, offset_y;
+			Utils.get_window_frame_offset (clone.window, out offset_x, out offset_y, null, null);
+
+			clone.close_button.x = rect.x - offset_x * fscale - 8;
+			clone.close_button.y = rect.y - offset_y * fscale - 8;
 			
 			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
 				.completed.connect (() => ready = true );

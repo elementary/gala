@@ -197,5 +197,15 @@ namespace Gala
 			
 			return fallback_style;
 		}
+
+		public static void get_window_frame_offset (Window window, out float x, out float y, out float width, out float height)
+		{
+			var actor = window.get_compositor_private () as Clutter.Actor;
+			var frame = window.get_outer_rect ();
+			x = actor.x - frame.x;
+			y = actor.y - frame.y;
+			width = actor.width - frame.width;
+			height = actor.height - frame.height;
+		}
 	}
 }
