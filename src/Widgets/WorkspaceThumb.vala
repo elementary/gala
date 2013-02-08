@@ -448,7 +448,11 @@ namespace Gala
 			
 			workspace.activate (screen.get_display ().get_current_time ());
 			
-			clicked ();
+			// wait for the animation to be finished before closing, for aesthetic reasons
+			Timeout.add (AnimationSettings.get_default ().workspace_switch_duration, () => {
+				clicked ();
+				return false;
+			});
 		}
 		
 		public override bool enter_event (CrossingEvent event)
