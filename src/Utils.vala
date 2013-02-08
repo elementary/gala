@@ -58,12 +58,12 @@ namespace Gala
 		}
 		
 		// Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
-		static Gee.HashMap<uint32, Gdk.Pixbuf> xid_pixbuf_cache;
+		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
 		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		
 		static construct
 		{
-			xid_pixbuf_cache = new Gee.HashMap<uint32, Gdk.Pixbuf> ();
+			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 		}
 		
@@ -72,7 +72,7 @@ namespace Gala
 		 */
 		public static void clear_pixbuf_caches ()
 		{
-			xid_pixbuf_cache = new Gee.HashMap<uint32, Gdk.Pixbuf> ();
+			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 		}
 		
@@ -82,14 +82,15 @@ namespace Gala
 		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 		{
 			var xid = (uint32)window.get_xwindow ();
+			var xid_size = xid.to_string () + "::" + size.to_string ();
 			
-			if (xid_pixbuf_cache.has_key (xid))
-				return xid_pixbuf_cache.get (xid);
+			if (xid_pixbuf_cache.has_key (xid_size))
+				return xid_pixbuf_cache.get (xid_size);
 			
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
 			var pixbuf = get_icon_for_application (app, size);
 			
-			xid_pixbuf_cache.set (xid, pixbuf);
+			xid_pixbuf_cache.set (xid_size, pixbuf);
 			
 			return pixbuf;
 		}
@@ -101,14 +102,15 @@ namespace Gala
 		{
 			Gdk.Pixbuf? image = null;
 			string? icon = null;
+			string size_suf = "::" + size.to_string ();
 			
 			if (app != null && app.get_desktop_file () != null) {
 				try {
 					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 					if (appinfo != null) {
 						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-						if (icon_pixbuf_cache.has_key (icon))
-							image = icon_pixbuf_cache.get (icon);
+						if (icon_pixbuf_cache.has_key (icon + size_suf))
+							image = icon_pixbuf_cache.get (icon + size_suf);
 						else
 							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
 					}
@@ -121,8 +123,8 @@ namespace Gala
 				try {
 					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 					icon = "application-default-icon";
-					if (icon_pixbuf_cache.has_key (icon))
-						image = icon_pixbuf_cache.get (icon);
+					if (icon_pixbuf_cache.has_key (icon + size_suf))
+						image = icon_pixbuf_cache.get (icon + size_suf);
 					else
 						image = icon_theme.load_icon (icon, size, 0);
 				} catch (Error e) {
@@ -132,8 +134,8 @@ namespace Gala
 			
 			if (image == null) {
 				icon = "";
-				if (icon_pixbuf_cache.has_key (icon)) {
-					image = icon_pixbuf_cache.get (icon);
+				if (icon_pixbuf_cache.has_key (icon + size_suf)) {
+					image = icon_pixbuf_cache.get (icon + size_suf);
 				} else {
 					image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, size, size);
 					image.fill (0x00000000);
@@ -143,7 +145,7 @@ namespace Gala
 			if (size != image.width || size != image.height)
 				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
 			
-			icon_pixbuf_cache.set (icon, image);
+			icon_pixbuf_cache.set (icon + size_suf, image);
 			
 			return image;
 		}
