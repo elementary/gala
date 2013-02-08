@@ -121,6 +121,10 @@ namespace Gala
 			add_child (windows);
 			add_child (icons);
 			add_child (close_button);
+
+			var click = new ClickAction ();
+			add_action (click);
+			click.clicked.connect (pressed);
 			
 			//kill the workspace
 			close_button.button_release_event.connect (close_workspace);
@@ -437,22 +441,14 @@ namespace Gala
 			base.show ();
 		}
 		
-		public override bool button_release_event (ButtonEvent event)
+		public void pressed (Actor actor)
 		{
-			//if we drop something, don't instantly activate
-			if (destination != null) {
-				destination = null;
-				return false;
-			}
-			
 			if (workspace == null)
-				return true;
+				return;
 			
 			workspace.activate (screen.get_display ().get_current_time ());
 			
 			clicked ();
-			
-			return true;
 		}
 		
 		public override bool enter_event (CrossingEvent event)
