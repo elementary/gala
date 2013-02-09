@@ -346,10 +346,14 @@ namespace Gala
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
-				var actor = metawindows.nth_data (0).get_compositor_private () as Actor;
+				var win = metawindows.nth_data (0);
+				var actor = win.get_compositor_private () as Actor;
 				if (actor.is_in_clone_paint ())
 					return;
 				
+				if (win.minimized)
+					win.unminimize ();
+
 				actor.hide ();
 				
 				var clone = new Clone (actor);
