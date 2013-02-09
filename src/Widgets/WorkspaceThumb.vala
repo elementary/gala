@@ -127,7 +127,9 @@ namespace Gala
 			click.clicked.connect (pressed);
 			
 			//kill the workspace
-			close_button.button_release_event.connect (close_workspace);
+			var close_click = new ClickAction ();
+			close_button.add_action (close_click);
+			close_click.clicked.connect (close_workspace);
 			
 			if (plus == null) {
 				var css = new Gtk.CssProvider ();
@@ -195,13 +197,15 @@ namespace Gala
 			screen.workspace_added.disconnect (workspace_added);
 		}
 		
-		bool close_workspace (Clutter.ButtonEvent event)
+		void close_workspace (Clutter.Actor actor)
 		{
-			workspace.list_windows ().foreach ((w) => {
-				if (w.window_type != WindowType.DOCK) {
-					w.delete (event.time);
-				}
-			});
+			if (workspace == null)
+				return;
+
+			foreach (var window in workspace.list_windows ()) {
+				if (window.window_type != WindowType.DOCK)
+					window.delete (screen.get_display ().get_current_time ());
+			}
 			
 			GLib.Timeout.add (250, () => {
 				//wait for confirmation dialogs to popup
@@ -217,8 +221,6 @@ namespace Gala
 				
 				return false;
 			});
-			
-			return true;
 		}
 		
 		bool draw_indicator (Cairo.Context cr)
