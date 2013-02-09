@@ -410,8 +410,10 @@ namespace Gala
 		 */
 		public new void show (bool wait = false, bool shortcut = false)
 		{
-			if (visible)
+			if (visible) {
+				hide ();
 				return;
+			}
 			
 			wait_one_key_release = shortcut;
 			
