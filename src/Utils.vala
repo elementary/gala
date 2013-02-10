@@ -61,7 +61,6 @@ namespace Gala
 		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
 		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		static uint cache_clear_timeout = 0;
-		static Gee.ArrayList <uint32> tmp_xids;
 		
 		static construct
 		{
@@ -72,44 +71,41 @@ namespace Gala
 		/**
 		 * Clean icon caches
 		 */
-		public static void clean_icon_cache (Gee.ArrayList<uint32> xids)
+		static void clean_icon_cache (uint32[] xids)
 		{
 			var list = xid_pixbuf_cache.keys.to_array ();
 			var pixbuf_list = icon_pixbuf_cache.values.to_array ();
 			var icon_list = icon_pixbuf_cache.keys.to_array ();
 
-			for (var i = 0; i < list.length; i++) {
-				var xid_size = list[i];
-				var xid = (uint32)int64.parse (xid_size.split ("::")[0]);
+			foreach (var xid_key in list) {
+				var xid = (uint32)uint64.parse (xid_key.split ("::")[0]);
 				if (!(xid in xids)) {
-					var pixbuf = xid_pixbuf_cache.get (xid_size);
+					var pixbuf = xid_pixbuf_cache.get (xid_key);
 					for (var j = 0; j < pixbuf_list.length; j++) {
 						if (pixbuf_list[j] == pixbuf) {
 							xid_pixbuf_cache.unset (icon_list[j]);
 						}
 					}
 
-					xid_pixbuf_cache.unset (xid_size);
+					xid_pixbuf_cache.unset (xid_key);
 				}
 			}
 		}
 		
-		public static void request_icon_cache_clean (Gee.ArrayList<uint32> xids)
+		public static void request_clean_icon_cache (uint32[] xids)
 		{
-			// even if we already have a request queued we always want the newest xid list
-			tmp_xids = xids;
+			if (cache_clear_timeout > 0)
+				GLib.Source.remove (cache_clear_timeout);
 			
-			if (cache_clear_timeout == 0) {
-				cache_clear_timeout = Timeout.add (3000, () => {
-					Idle.add (() => {
-						print ("Clear cache\n");
-						clean_icon_cache (tmp_xids);
-						cache_clear_timeout = 0;
-						return false;
-					});
+			cache_clear_timeout = Timeout.add_seconds (30, () => {
+				cache_clear_timeout = 0;
+				Idle.add (() => {
+					print ("Clear cache\n");
+					clean_icon_cache (xids);
 					return false;
 				});
-			}
+				return false;
+			});
 		}
 		
 		/**
@@ -117,18 +113,20 @@ namespace Gala
 		 **/
 		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 		{
-			var xid = (uint32)window.get_xwindow ();
-			var xid_size = xid.to_string () + "::" + size.to_string ();
+			Gdk.Pixbuf? result = null;
 			
-			if (xid_pixbuf_cache.has_key (xid_size))
-				return xid_pixbuf_cache.get (xid_size);
+			var xid = (uint32)window.get_xwindow ();
+			var xid_key = "%u::%i".printf (xid, size);
+			
+			if ((result = xid_pixbuf_cache.get (xid_key)) != null)
+				return result;
 			
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-			var pixbuf = get_icon_for_application (app, size);
+			result = get_icon_for_application (app, size);
 			
-			xid_pixbuf_cache.set (xid_size, pixbuf);
+			xid_pixbuf_cache.set (xid_key, result);
 			
-			return pixbuf;
+			return result;
 		}
 		
 		/**
@@ -137,18 +135,21 @@ namespace Gala
 		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
 		{
 			Gdk.Pixbuf? image = null;
+			bool not_cached = false;
+			
 			string? icon = null;
-			string size_suf = "::" + size.to_string ();
+			string? icon_key = null;
 			
 			if (app != null && app.get_desktop_file () != null) {
 				try {
 					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 					if (appinfo != null) {
 						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-						if (icon_pixbuf_cache.has_key (icon + size_suf))
-							image = icon_pixbuf_cache.get (icon + size_suf);
-						else
+						icon_key = "%s::%i".printf (icon, size);
+						if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
 							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
+							not_cached = true;
+						}
 					}
 				} catch (Error e) {
 					warning (e.message);
@@ -159,10 +160,11 @@ namespace Gala
 				try {
 					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 					icon = "application-default-icon";
-					if (icon_pixbuf_cache.has_key (icon + size_suf))
-						image = icon_pixbuf_cache.get (icon + size_suf);
-					else
+					icon_key = "%s::%i".printf (icon, size);
+					if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
 						image = icon_theme.load_icon (icon, size, 0);
+						not_cached = true;
+					}
 				} catch (Error e) {
 					warning (e.message);
 				}
@@ -170,18 +172,19 @@ namespace Gala
 			
 			if (image == null) {
 				icon = "";
-				if (icon_pixbuf_cache.has_key (icon + size_suf)) {
-					image = icon_pixbuf_cache.get (icon + size_suf);
-				} else {
+				icon_key = "::%i".printf (size);
+				if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
 					image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, size, size);
 					image.fill (0x00000000);
+					not_cached = true;
 				}
 			}
 			
 			if (size != image.width || size != image.height)
 				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
 			
-			icon_pixbuf_cache.set (icon + size_suf, image);
+			if (not_cached)
+				icon_pixbuf_cache.set (icon_key, image);
 			
 			return image;
 		}

@@ -215,15 +215,16 @@ namespace Gala
 				Utils.set_input_area (get_screen (), InputArea.NONE);
 		}
 		
-		public Gee.ArrayList<uint32> get_all_xids ()
+		public uint32[] get_all_xids ()
 		{
 			var list = new Gee.ArrayList<uint32> ();
+			
 			foreach (var workspace in get_screen ().get_workspaces ()) {
 				foreach (var window in workspace.list_windows ())
 					list.add ((uint32)window.get_xwindow ());
 			}
-
-			return list;
+			
+			return list.to_array ();
 		}
 		
 		public void move_window (Window? window, MotionDirection direction)
@@ -521,7 +522,7 @@ namespace Gala
 
 				// only NORMAL windows have icons
 				if (window.window_type == WindowType.NORMAL)
-					Utils.request_icon_cache_clean (get_all_xids ());
+					Utils.request_clean_icon_cache (get_all_xids ());
 
 				return;
 			}
@@ -545,7 +546,7 @@ namespace Gala
 						
 						destroying.remove (actor);
 						destroy_completed (actor);
-						Utils.request_icon_cache_clean (get_all_xids ());
+						Utils.request_clean_icon_cache (get_all_xids ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:
