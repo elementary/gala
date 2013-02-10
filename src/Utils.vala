@@ -60,6 +60,8 @@ namespace Gala
 		// Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
 		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
 		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
+		static uint cache_clear_timeout = 0;
+		static Gee.ArrayList <uint32> tmp_xids;
 		
 		static construct
 		{
@@ -70,10 +72,44 @@ namespace Gala
 		/**
 		 * Clean icon caches
 		 */
-		public static void clear_pixbuf_caches ()
+		public static void clean_icon_cache (Gee.ArrayList<uint32> xids)
 		{
-			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
-			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
+			var list = xid_pixbuf_cache.keys.to_array ();
+			var pixbuf_list = icon_pixbuf_cache.values.to_array ();
+			var icon_list = icon_pixbuf_cache.keys.to_array ();
+
+			for (var i = 0; i < list.length; i++) {
+				var xid_size = list[i];
+				var xid = (uint32)int64.parse (xid_size.split ("::")[0]);
+				if (!(xid in xids)) {
+					var pixbuf = xid_pixbuf_cache.get (xid_size);
+					for (var j = 0; j < pixbuf_list.length; j++) {
+						if (pixbuf_list[j] == pixbuf) {
+							xid_pixbuf_cache.unset (icon_list[j]);
+						}
+					}
+
+					xid_pixbuf_cache.unset (xid_size);
+				}
+			}
+		}
+		
+		public static void request_icon_cache_clean (Gee.ArrayList<uint32> xids)
+		{
+			// even if we already have a request queued we always want the newest xid list
+			tmp_xids = xids;
+			
+			if (cache_clear_timeout == 0) {
+				cache_clear_timeout = Timeout.add (3000, () => {
+					Idle.add (() => {
+						print ("Clear cache\n");
+						clean_icon_cache (tmp_xids);
+						cache_clear_timeout = 0;
+						return false;
+					});
+					return false;
+				});
+			}
 		}
 		
 		/**
