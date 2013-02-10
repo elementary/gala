@@ -37,9 +37,6 @@ namespace Gala
 		BindConstraint y_constraint;
 		BindConstraint h_constraint;
 		
-		//FIXME window titles of supported docks, to be extended
-		const string [] DOCK_NAMES = {"plank", "Docky", "docky"};
-		
 		//estimated value, if possible
 		float dock_width = 0.0f;
 		
@@ -391,7 +388,7 @@ namespace Gala
 				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
 					w.hide ();
 				
-				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK) {
+				if (w.get_meta_window ().title in BehaviorSettings.get_default ().dock_names && type == Meta.WindowType.DOCK) {
 					dock_window = w;
 					dock_window.hide ();
 				}

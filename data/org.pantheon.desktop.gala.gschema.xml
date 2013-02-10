@@ -71,6 +71,11 @@
 			<summary>Enable dynamic workspace instead of static ones</summary>
 			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
 		</key>
+		<key type="as" name="dock-names">
+			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
+			<summary>Names that are recognized as dock windows for the window switcher</summary>
+			<description>When launching the window-switcher, gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="gala">
