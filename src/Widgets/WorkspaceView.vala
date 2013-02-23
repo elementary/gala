@@ -171,6 +171,11 @@ namespace Gala
 			
 			background_style.render_background (cr, 0, 0, width, height);
 			background_style.render_frame (cr, 0, 0, width, height);
+
+			var pat = new Cairo.Pattern.for_surface (new Cairo.ImageSurface.from_png (Config.PKGDATADIR + "/texture.png"));
+			pat.set_extend (Cairo.Extend.REPEAT);
+			cr.set_source (pat);
+			cr.paint_with_alpha (0.6);
 			
 			return false;
 		}

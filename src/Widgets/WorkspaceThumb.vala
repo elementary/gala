@@ -30,6 +30,10 @@ namespace Gala
 		internal static const int APP_ICON_SIZE = 32;
 		static const float THUMBNAIL_HEIGHT = 80.0f;
 		static const uint CLOSE_BUTTON_DELAY = 500;
+
+		static const int PLUS_SIZE = 8;
+		static const int PLUS_WIDTH = 24;
+		static const int PLUS_OFFSET = 8;
 		
 		public signal void clicked ();
 		public signal void closed ();
@@ -39,7 +43,7 @@ namespace Gala
 		
 		unowned Screen screen;
 		
-		static GtkClutter.Texture? plus = null;
+		static Actor? plus = null;
 		
 		Gtk.StyleContext selector_style;
 		Gtk.EventBox selector_style_widget;
@@ -132,22 +136,43 @@ namespace Gala
 			close_click.clicked.connect (close_workspace);
 			
 			if (plus == null) {
-				var css = new Gtk.CssProvider ();
-				var img = new Gtk.Image ();
-				try {
-					css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
-				} catch (Error e) { warning(e.message); }
-				img.get_style_context ().add_provider (css, 20000);
-				
-				plus = new GtkClutter.Texture ();
-				try {
-					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, (int)THUMBNAIL_HEIGHT / 2, 0).
-						load_symbolic_for_context (img.get_style_context ());
-					plus.set_from_pixbuf (pix);
-				} catch (Error e) { warning (e.message); }
-				
+				plus = new Actor ();
+				var canvas = new Canvas ();
+				plus.content = canvas;
+				canvas.draw.connect ((cr) => {
+					// putting the buffer inside here is not a problem performance-wise, 
+					// as the method will only be called once anyway
+					var buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
+
+					buffer.context.rectangle (PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + PLUS_OFFSET, 0.5 + PLUS_OFFSET, PLUS_SIZE - 1, PLUS_WIDTH - 1);
+					buffer.context.rectangle (0.5 + PLUS_OFFSET, PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + PLUS_OFFSET, PLUS_WIDTH - 1, PLUS_SIZE - 1);
+
+					buffer.context.set_source_rgb (0, 0, 0);
+					buffer.context.fill_preserve ();
+					buffer.exponential_blur (5);
+
+					buffer.context.set_source_rgb (1, 1, 1);
+					buffer.context.set_line_width (1);
+					buffer.context.stroke_preserve ();
+
+					buffer.context.set_source_rgb (0.8, 0.8, 0.8);
+					buffer.context.fill ();
+
+					cr.set_operator (Cairo.Operator.CLEAR);
+					cr.paint ();
+					cr.set_operator (Cairo.Operator.SOURCE);
+
+					cr.set_source_surface (buffer.surface, 0, 0);
+					cr.paint ();
+
+					return false;
+				});
+
+				plus.width = PLUS_WIDTH + 2 * PLUS_OFFSET;
+				plus.height = PLUS_WIDTH + 2 * PLUS_OFFSET;
 				plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
 				plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
+				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
 			add_action_with_name ("drop", new DropAction ());
@@ -164,6 +189,22 @@ namespace Gala
 			canvas.set_size ((int)width, (int)height);
 			
 			content = canvas;
+		}
+
+		public override void paint ()
+		{
+			// black border
+			Cogl.Path.rectangle (INDICATOR_BORDER, INDICATOR_BORDER, wallpaper.width + INDICATOR_BORDER + 1, wallpaper.height + INDICATOR_BORDER + 1);
+			Cogl.set_source_color4f (0, 0, 0, 1);
+			Cogl.Path.stroke ();
+
+			base.paint ();
+
+			// top stroke
+			Cogl.Path.move_to (INDICATOR_BORDER + 1, INDICATOR_BORDER + 1);
+			Cogl.Path.line_to (wallpaper.width + INDICATOR_BORDER, INDICATOR_BORDER + 1);
+			Cogl.set_source_color4f (1, 1, 1, 0.3f);
+			Cogl.Path.stroke ();
 		}
 		
 		void over_in (Actor actor)
