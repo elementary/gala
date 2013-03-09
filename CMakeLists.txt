@@ -43,7 +43,7 @@ if (MUTTER36_FOUND)
 endif (MUTTER36_FOUND)
 
 set (MUTTER38_FLAGS "")
-pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.3)
+pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.91)
 if (MUTTER38_FOUND)
 	set (MUTTER38_FLAGS "--define=HAS_MUTTER38")
 endif (MUTTER38_FOUND)

@@ -188,8 +188,39 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_warning")]
 		public static void warning (string format, ...);
 	}
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_background_get_type ()")]
+	public class Background : GLib.Object, Clutter.Content {
+		[CCode (has_construct_function = false)]
+		public Background (Meta.Screen screen, int monitor, Meta.BackgroundEffects effects);
+		public Meta.Background copy (int monitor, Meta.BackgroundEffects effects);
+		public Clutter.Color get_color ();
+		public unowned string get_filename ();
+		public Clutter.Color get_second_color ();
+		public GDesktop.BackgroundShading get_shading ();
+		public GDesktop.BackgroundStyle get_style ();
+		public void load_color (Clutter.Color color);
+		public async bool load_file_async (string filename, GDesktop.BackgroundStyle style, GLib.Cancellable? cancellable) throws GLib.Error;
+		public void load_gradient (GDesktop.BackgroundShading shading_direction, Clutter.Color color, Clutter.Color second_color);
+		public void load_still_frame ();
+		[NoAccessorMethod]
+		public float brightness { get; set construct; }
+		[NoAccessorMethod]
+		public Meta.BackgroundEffects effects { get; construct; }
+		[NoAccessorMethod]
+		public Meta.Screen meta_screen { owned get; set construct; }
+		[NoAccessorMethod]
+		public int monitor { get; set construct; }
+		[NoAccessorMethod]
+		public float saturation { get; set construct; }
+		[NoAccessorMethod]
+		public float vignette_sharpness { get; set construct; }
+	}
 	[CCode (cheader_filename = "meta/meta-background-actor.h", type_id = "meta_background_actor_get_type ()")]
 	public class BackgroundActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+#if HAS_MUTTER38
+		[CCode (has_construct_function = false, type = "ClutterActor*")]
+		public BackgroundActor ();
+#else
 		[CCode (has_construct_function = false)]
 		protected BackgroundActor ();
 		public void add_glsl_snippet (Meta.SnippetHook hook, string declarations, string code, bool is_replace);
@@ -198,6 +229,47 @@ namespace Meta {
 		public void set_uniform_float (string uniform_name, int n_components, int count, [CCode (array_length_cname = "uniform_length", array_length_pos = 4.1)] float[] uniform);
 		[NoAccessorMethod]
 		public float dim_factor { get; set; }
+#endif
+	}
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_background_group_get_type ()")]
+	public class BackgroundGroup : Clutter.Group, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+		[CCode (has_construct_function = false, type = "ClutterActor*")]
+		public BackgroundGroup ();
+	}
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_barrier_get_type ()")]
+	public class Barrier : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected Barrier ();
+		public void destroy ();
+		public bool is_active ();
+		public void release (Meta.BarrierEvent event);
+		[NoAccessorMethod]
+		public Meta.BarrierDirection directions { get; construct; }
+		[NoAccessorMethod]
+		public Meta.Display display { owned get; construct; }
+		[NoAccessorMethod]
+		public int x1 { get; construct; }
+		[NoAccessorMethod]
+		public int x2 { get; construct; }
+		[NoAccessorMethod]
+		public int y1 { get; construct; }
+		[NoAccessorMethod]
+		public int y2 { get; construct; }
+		public signal void hit (Meta.BarrierEvent event);
+		public signal void left (Meta.BarrierEvent event);
+	}
+	[CCode (cheader_filename = "meta/main.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_barrier_event_get_type ()")]
+	[Compact]
+	public class BarrierEvent {
+		public int dt;
+		public double dx;
+		public double dy;
+		public int event_id;
+		public bool grabbed;
+		public bool released;
+		public uint32 time;
+		public double x;
+		public double y;
 	}
 	[CCode (cheader_filename = "meta/compositor.h")]
 	[Compact]
@@ -206,8 +278,10 @@ namespace Meta {
 		public void destroy ();
 		public bool filter_keybinding (Meta.Screen screen, Meta.KeyBinding binding);
 		public void flash_screen (Meta.Screen screen);
+#if !HAS_MUTTER38
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_background_actor_for_screen")]
 		public static unowned Clutter.Actor get_background_actor_for_screen (Meta.Screen screen);
+#endif
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_overlay_group_for_screen")]
 		public static unowned Clutter.Actor get_overlay_group_for_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
@@ -221,13 +295,22 @@ namespace Meta {
 		public void maximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
 		[CCode (cheader_filename = "meta/main.h")]
 		public static unowned Meta.Compositor @new (Meta.Display display);
+		public void queue_frame_drawn (Meta.Window window, bool no_delay_frame);
 		public void remove_window (Meta.Window window);
+#if HAS_MUTTER38
+		public void set_updates_frozen (Meta.Window window, bool updates_frozen);
+#else
 		public void set_updates (Meta.Window window, bool updates);
+#endif
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
 		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
+#if HAS_MUTTER38
+		public void sync_window_geometry (Meta.Window window, bool did_placement);
+#else
 		public void sync_window_geometry (Meta.Window window);
+#endif
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
 		public void window_mapped (Meta.Window window);
@@ -271,15 +354,19 @@ namespace Meta {
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace, Meta.Window? window, bool backward);
 		public unowned X.Display get_xdisplay ();
 		public int get_xinput_opcode ();
+		public uint grab_accelerator (string accelerator);
 		public bool has_shape ();
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
 		public unowned Meta.Screen screen_for_root (X.Window xroot);
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
 		public GLib.SList<weak Meta.Window> sort_windows_by_stacking (GLib.SList<Meta.Window> windows);
+		public bool supports_extended_barriers ();
+		public bool ungrab_accelerator (uint action_id);
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
+		public signal void accelerator_activated (uint object, uint p0);
 		public signal void grab_op_begin (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void grab_op_end (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void overlay_key ();
@@ -380,6 +467,7 @@ namespace Meta {
 		public int get_current_monitor ();
 		public unowned Meta.Display get_display ();
 		public Meta.Rectangle get_monitor_geometry (int monitor);
+		public int get_monitor_index_for_rect (Meta.Rectangle rect);
 		public int get_n_monitors ();
 		public int get_n_workspaces ();
 		public int get_primary_monitor ();
@@ -422,10 +510,18 @@ namespace Meta {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public ShapedTexture ();
 		public Cairo.Surface get_image (Cairo.RectangleInt clip);
+#if HAS_MUTTER38
+		public unowned Cogl.Texture get_texture ();
+#else
 		public unowned Cogl.Handle get_texture ();
+#endif
 		public void set_clip_region (owned Cairo.Region clip_region);
 		public void set_create_mipmaps (bool create_mipmaps);
+#if HAS_MUTTER38
+		public void set_mask_texture (Cogl.Texture mask_texture);
+#else
 		public void set_mask_texture (Cogl.Handle mask_texture);
+#endif
 		public void set_pixmap (X.Pixmap pixmap);
 		public void update_area (int x, int y, int width, int height);
 	}
@@ -460,6 +556,8 @@ namespace Meta {
 		public void focus (uint32 timestamp);
 		public void foreach_ancestor (Meta.WindowForeachFunc func);
 		public void foreach_transient (Meta.WindowForeachFunc func);
+		[CCode (array_length_pos = 0.1, array_length_type = "gsize")]
+		public int[] get_all_monitors ();
 		public unowned string get_client_machine ();
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
@@ -496,6 +594,9 @@ namespace Meta {
 		public X.Atom get_window_type_atom ();
 		public unowned string get_wm_class ();
 		public unowned string get_wm_class_instance ();
+		public Meta.Rectangle get_work_area_all_monitors ();
+		public Meta.Rectangle get_work_area_current_monitor ();
+		public Meta.Rectangle get_work_area_for_monitor (int which_monitor);
 		public unowned Meta.Workspace get_workspace ();
 		public X.Window get_xwindow ();
 		public void group_leader_changed ();
@@ -506,13 +607,16 @@ namespace Meta {
 		public bool is_hidden ();
 		public bool is_mapped ();
 		public bool is_modal ();
+		public bool is_monitor_sized ();
 		public bool is_on_all_workspaces ();
 		public bool is_on_primary_monitor ();
 		public bool is_override_redirect ();
 		public bool is_remote ();
+		public bool is_screen_sized ();
 		public bool is_shaded ();
 		public bool is_skip_taskbar ();
 		public void kill ();
+		public bool located_on_workspace (Meta.Workspace workspace);
 		public void lower ();
 		public void make_above ();
 		public void make_fullscreen ();
@@ -528,6 +632,7 @@ namespace Meta {
 		public void resize (bool user_op, int w, int h);
 		public void set_compositor_private (GLib.Object priv);
 		public void set_demands_attention ();
+		public void set_icon_geometry (Meta.Rectangle? rect);
 		public void shade (uint32 timestamp);
 		public bool showing_on_its_workspace ();
 		public void shutdown_group ();
@@ -582,7 +687,11 @@ namespace Meta {
 		public signal void workspace_changed (int object);
 	}
 	[CCode (cheader_filename = "meta/meta-window-actor.h", type_id = "meta_window_actor_get_type ()")]
+#if HAS_MUTTER38
+	public class WindowActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+#else
 	public class WindowActor : Clutter.Group, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+#endif
 		[CCode (has_construct_function = false)]
 		protected WindowActor ();
 		public unowned string get_description ();
@@ -613,6 +722,7 @@ namespace Meta {
 		public unowned Meta.Workspace get_neighbor (Meta.MotionDirection direction);
 		public unowned Meta.Screen get_screen ();
 		public Meta.Rectangle get_work_area_all_monitors ();
+		public Meta.Rectangle get_work_area_for_monitor (int which_monitor);
 		public int index ();
 		public GLib.List<weak Meta.Window> list_windows ();
 		public void set_builtin_struts (GLib.SList<Meta.Strut> struts);
@@ -709,6 +819,22 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/display.h", cprefix = "META_ATOM_", type_id = "meta_atom_get_type ()")]
 	public enum Atom {
 		FIRST
+	}
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_BACKGROUND_EFFECTS_", type_id = "meta_background_effects_get_type ()")]
+	[Flags]
+	public enum BackgroundEffects {
+		NONE,
+		DESATURATE,
+		BLUR,
+		VIGNETTE
+	}
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_BARRIER_DIRECTION_", type_id = "meta_barrier_direction_get_type ()")]
+	[Flags]
+	public enum BarrierDirection {
+		POSITIVE_X,
+		POSITIVE_Y,
+		NEGATIVE_X,
+		NEGATIVE_Y
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_BUTTON_FUNCTION_", type_id = "meta_button_function_get_type ()")]
 	public enum ButtonFunction {
@@ -1179,13 +1305,19 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
+	public static string external_binding_name_for_action (uint keybinding_action);
+	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.OptionContext get_option_context ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool get_replace_current_wm ();
 	[CCode (cheader_filename = "meta/main.h")]
+	public static unowned Clutter.Actor get_top_window_group_for_screen (Meta.Screen screen);
+	[CCode (cheader_filename = "meta/main.h")]
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void quit (Meta.ExitCode code);
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void register_with_session ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
 	[CCode (cheader_filename = "meta/main.h")]
