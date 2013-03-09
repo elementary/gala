@@ -95,6 +95,7 @@ include(GSettings)
 add_schema ("data/org.pantheon.desktop.gala.gschema.xml")
 
 add_executable(gala ${VALA_C})#src/main.c)
+target_link_libraries(gala m)
 
 install(TARGETS gala RUNTIME DESTINATION bin)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.desktop DESTINATION share/applications)
