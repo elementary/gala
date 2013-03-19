@@ -328,6 +328,11 @@ namespace Gala
 			remove_clone (found);
 		}
 		
+		public override void key_focus_out ()
+		{
+			close (plugin.get_screen ().get_display ().get_current_time ());
+		}
+		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
