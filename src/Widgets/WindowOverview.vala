@@ -537,6 +537,11 @@ namespace Gala
 					if (window.window_type == WindowType.DOCK)
 						continue;
 					
+					// skip windows that are on all workspace except we're currently
+					// processing the workspace it actually belongs to
+					if (window.is_on_all_workspaces () && window.get_workspace () != workspace)
+						continue;
+
 					used_windows.append (window);
 				}
 			}
