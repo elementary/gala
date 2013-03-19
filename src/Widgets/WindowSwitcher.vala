@@ -348,6 +348,8 @@ namespace Gala
 				if (actor.is_in_clone_paint ())
 					return;
 				
+				win.activate (display.get_current_time ());
+
 				if (win.minimized)
 					win.unminimize ();
 
