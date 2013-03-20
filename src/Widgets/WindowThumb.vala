@@ -166,6 +166,7 @@ namespace Gala
 			
 			if (do_animate) {
 				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f);
+				close_button.animate (AnimationMode.EASE_IN_QUAD, 200, scale_x : 0.0f, scale_y : 0.0f);
 				
 				animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
 					clone.source.show ();
