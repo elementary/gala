@@ -204,27 +204,51 @@ namespace Gala
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
 			var prev_win = current_window;
-			switch (action) {
-				case Meta.KeyBindingAction.SWITCH_GROUP:
-				case Meta.KeyBindingAction.SWITCH_WINDOWS:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-							screen.get_active_workspace (), current_window, backward);
-					last_time = display.get_current_time_roundtrip ();
-					break;
-				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
-				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-							screen.get_active_workspace (), current_window, true);
-					last_time = display.get_current_time_roundtrip ();
-					break;
-				default:
-					break;
+			if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
+				action == Meta.KeyBindingAction.SWITCH_WINDOWS || 
+				event.get_key_symbol () == Clutter.Key.Right) {
+				
+				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+						screen.get_active_workspace (), current_window, backward);
+				last_time = display.get_current_time_roundtrip ();
+				
+			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
+				action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD ||
+				event.get_key_symbol () == Clutter.Key.Left) {
+				
+				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+						screen.get_active_workspace (), current_window, true);
+				last_time = display.get_current_time_roundtrip ();
 			}
 			
 			if (prev_win != current_window) {
 				dim_windows ();
 			}
 			
+			return true;
+		}
+
+		bool clicked_icon (Clutter.ButtonEvent event) {
+			var index = 0;
+			for (; index < dock.get_n_children (); index++) {
+				if (dock.get_child_at_index (index) == event.source)
+					break;
+			}
+			
+			var prev_window = current_window;
+			current_window = (window_clones.get (index).source as Meta.WindowActor).get_meta_window ();
+			
+			if (prev_window != current_window) {
+				dim_windows ();
+				// wait for the dimming to finish
+				Timeout.add (250, () => {
+					close (event.time);
+					return false;
+				});
+			} else {
+				close (event.time);
+			}
+
 			return true;
 		}
 		
@@ -279,6 +303,8 @@ namespace Gala
 			window_clones.add (clone);
 			
 			var icon = new GtkClutter.Texture ();
+			icon.reactive = true;
+			icon.button_release_event.connect (clicked_icon);
 			try {
 				icon.set_from_pixbuf (Utils.get_icon_for_window (window, dock_settings.IconSize));
 			} catch (Error e) { warning (e.message); }
@@ -330,7 +356,9 @@ namespace Gala
 				return;
 			}
 			
-			dock.get_child_at_index (window_clones.index_of (found)).destroy ();
+			var icon = dock.get_child_at_index (window_clones.index_of (found));
+			icon.button_release_event.disconnect (clicked_icon);
+			icon.destroy ();
 			window_clones.remove (found);
 			remove_clone (found);
 		}
