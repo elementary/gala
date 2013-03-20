@@ -33,8 +33,6 @@ namespace Gala
 		
 		bool animating; // delay closing the popup
 		
-		uint show_timer = 0;
-		
 		bool wait_one_key_release; //called by shortcut, don't close it on first keyrelease
 		uint last_switch_time = 0;
 		
@@ -375,10 +373,6 @@ namespace Gala
 					return false;
 				}
 				
-				if (show_timer > 0)
-					Source.remove (show_timer);
-				show_timer = 0;
-				
 				hide ();
 				
 				return true;
@@ -410,10 +404,9 @@ namespace Gala
 		}
 		
 		/*
-		 * if wait, wait one second and look if super is still pressed, if so show
 		 * if shortcut, wait one key release before closing
 		 */
-		public new void show (bool wait = false, bool shortcut = false)
+		public new void show (bool shortcut = false)
 		{
 			if (visible) {
 				hide ();
@@ -430,23 +423,6 @@ namespace Gala
 			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
-			if (!wait) {
-				show_elements ();
-				return;
-			}
-			
-			if (show_timer > 0)
-				return;
-			
-			show_timer = Timeout.add (2000, () => {
-				show_elements ();
-				show_timer = 0;
-				return false;
-			});
-		}
-		
-		void show_elements ()
-		{
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height + area.y;
 			x = area.x;
@@ -481,7 +457,7 @@ namespace Gala
 			Timeout.add (50, () => {
 				animating = false;
 				return false;
-			}); //catch hot corner hiding problem and indicator placement
+			}); //catch hot corner hiding problem
 			
 			var wins = Compositor.get_window_group_for_screen (screen);
 			wins.detach_animation ();
@@ -524,8 +500,6 @@ namespace Gala
 		{
 			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			switch_to_next_workspace (direction);
-			
-			show (true);
 		}
 	}
 }

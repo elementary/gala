@@ -134,7 +134,7 @@ namespace Gala
 			});
 			
 			KeyBinding.set_custom_handler ("show-desktop", () => {
-				workspace_view.show (false, true);
+				workspace_view.show (true);
 			});
 			
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
