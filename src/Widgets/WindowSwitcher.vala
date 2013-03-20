@@ -36,6 +36,8 @@ namespace Gala
 		Plank.DockPreferences dock_settings;
 		BindConstraint y_constraint;
 		BindConstraint h_constraint;
+
+		bool closing = false;
 		
 		//estimated value, if possible
 		float dock_width = 0.0f;
@@ -116,6 +118,11 @@ namespace Gala
 		
 		void close (uint time)
 		{
+			if (closing)
+				return;
+
+			closing = true;
+
 			var screen = plugin.get_screen ();
 			
 			var workspace = screen.get_active_workspace ();
@@ -401,6 +408,7 @@ namespace Gala
 				}
 			});
 			
+			closing = false;
 			plugin.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
