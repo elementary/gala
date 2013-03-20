@@ -105,6 +105,18 @@ namespace Gala
 			screen.get_display ().add_keybinding ("switch-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
 			});
+			screen.get_display ().add_keybinding ("move-to-workspace-first", KeybindingSettings.get_default ().schema, 0, () => {
+				var workspace = screen.get_workspace_by_index (0);
+				var window = screen.get_display ().get_focus_window ();
+				window.change_workspace (workspace);
+				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
+			});
+			screen.get_display ().add_keybinding ("move-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
+				var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
+				var window = screen.get_display ().get_focus_window ();
+				window.change_workspace (workspace);
+				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
+			});
 			screen.get_display ().add_keybinding ("zoom-in", KeybindingSettings.get_default ().schema, 0, () => {
 				zooming.zoom_in ();
 			});

@@ -89,6 +89,16 @@
 			<summary>Shortcut to move to last workspace</summary>
 			<description></description>
 		</key>
+		<key type="as" name="move-to-workspace-first">
+			<default><![CDATA[['<Super><Shift>Home']]]></default>
+			<summary>Shortcut to move the current window to first workspace</summary>
+			<description></description>
+		</key>
+		<key type="as" name="move-to-workspace-last">
+			<default><![CDATA[['<Super><Shift>End', '<Super>0']]]></default>
+			<summary>Shortcut to move the current window to last workspace</summary>
+			<description></description>
+		</key>
 		<key type="as" name="zoom-in">
 			<default><![CDATA[['<Super>plus', '<Super>KP_Add']]]></default>
 			<summary>Zoom in</summary>
