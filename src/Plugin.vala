@@ -665,6 +665,20 @@ namespace Gala
 		Clutter.Actor? out_group;
 		Clutter.Actor? moving_window_container;
 		
+		void watch_window (Meta.Workspace workspace, Meta.Window window)
+		{
+			if (clones == null)
+				return;
+			
+			// finding the correct window here is not so easy
+			// and for those default 400ms we can live with
+			// some windows disappearing which in fact should never
+			// happen unless a dock crashes
+			foreach (var clone in clones) {
+				clone.destroy ();
+			}
+		}
+		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
 			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().workspace_switch_duration == 0) {
@@ -744,6 +758,14 @@ namespace Gala
 				}
 			}
 			
+			// monitor the workspaces to see whether a window was removed
+			// in which case we need to stop the clones from drawing
+			// we monitor every workspace here because finding the ones a
+			// particular dock belongs to did not seem reliable enough
+			foreach (var workspace in screen.get_workspaces ()) {
+				workspace.window_removed.connect (watch_window);
+			}
+			
 			in_group.set_position (-x2, -y2);
 			group.set_child_above_sibling (in_group, null);
 			if (moving_window_container != null)
@@ -782,6 +804,10 @@ namespace Gala
 					window.hide ();
 				} else
 					clutter_actor_reparent (window, par.nth_data (i));
+			}
+			
+			foreach (var workspace in screen.get_workspaces ()) {
+				workspace.window_removed.disconnect (watch_window);
 			}
 			
 			clones.foreach ((clone) => {
