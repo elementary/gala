@@ -278,22 +278,22 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			var buffer = new Granite.Drawing.BufferSurface ((int)width, (int)height);
+			var buffer = new Plank.Drawing.DockSurface ((int)width, (int)height);
 			// some weird calculations are necessary here, we have to 
 			// subtract the delta of the wallpaper and container size to make it fit
-			buffer.context.rectangle (wallpaper.x, wallpaper.y, 
+			buffer.Context.rectangle (wallpaper.x, wallpaper.y, 
 				wallpaper.width - (width - wallpaper.width),
 				wallpaper.height - (height - wallpaper.height) - INDICATOR_BORDER);
 			
-			buffer.context.set_source_rgba (0, 0, 0, 1);
-			buffer.context.fill ();
+			buffer.Context.set_source_rgba (0, 0, 0, 1);
+			buffer.Context.fill ();
 			buffer.exponential_blur (5);
 			
 			cr.set_operator (Cairo.Operator.CLEAR);
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 			
-			cr.set_source_surface (buffer.surface, 0, 0);
+			cr.set_source_surface (buffer.Internal, 0, 0);
 			cr.paint ();
 			
 			return false;
