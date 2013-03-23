@@ -139,8 +139,17 @@ namespace Gala
 			List<Actor>[] monitors = {};
 			monitors.resize (screen.get_n_monitors ());
 			
-			foreach (var clone in clones)
-				monitors[(clone as WindowThumb).window.get_monitor ()].append (clone);
+			foreach (var clone in clones) {
+				// we had some crashes here so there's a reasonable suspicion
+				// that get_monitor() could be larger than get_n_monitors()
+				var index = (clone as WindowThumb).window.get_monitor ();
+				if (index >= screen.get_n_monitors ()) {
+					critical ("Window '%s' has a monitor assigned that does not actually exists", 
+						(clone as WindowThumb).window.get_title ());
+					index = screen.get_n_monitors () - 1;
+				}
+				monitors[index].append (clone);
+			}
 			
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				if (monitors[i].length () == 0)
