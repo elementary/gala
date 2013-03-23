@@ -667,8 +667,10 @@ namespace Gala
 		
 		void watch_window (Meta.Workspace workspace, Meta.Window window)
 		{
-			if (clones == null)
+			if (clones == null) {
+				critical ("watch_window called while not switching workspaces");
 				return;
+			}
 			
 			// finding the correct window here is not so easy
 			// and for those default 400ms we can live with
@@ -677,6 +679,7 @@ namespace Gala
 			foreach (var clone in clones) {
 				clone.destroy ();
 			}
+			clones = null;
 		}
 		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
@@ -810,10 +813,12 @@ namespace Gala
 				workspace.window_removed.disconnect (watch_window);
 			}
 			
-			clones.foreach ((clone) => {
-				clone.destroy ();
-			});
-			clones = null;
+			if (clones != null) {
+				foreach (var clone in clones) {
+					clone.destroy ();
+				}
+				clones = null;
+			}
 			
 			win = null;
 			par = null;
