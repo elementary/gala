@@ -668,7 +668,7 @@ namespace Gala
 		void watch_window (Meta.Workspace workspace, Meta.Window window)
 		{
 			if (clones == null) {
-				critical ("watch_window called while not switching workspaces");
+				critical ("watch_window called on %s while not switching workspaces", window.get_title ());
 				return;
 			}
 			
