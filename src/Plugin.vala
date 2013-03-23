@@ -668,9 +668,11 @@ namespace Gala
 		void watch_window (Meta.Workspace workspace, Meta.Window window)
 		{
 			if (clones == null) {
-				critical ("watch_window called on %s while not switching workspaces", window.get_title ());
+				critical ("watch_window called on '%s' while not switching workspaces", window.get_title ());
 				return;
 			}
+
+			warning ("Dock window '%s' closed while switching workspaces", window.get_title ());
 			
 			// finding the correct window here is not so easy
 			// and for those default 400ms we can live with
