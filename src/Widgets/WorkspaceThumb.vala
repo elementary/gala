@@ -388,8 +388,9 @@ namespace Gala
 			
 			if (index == screen.n_workspaces - 1) {
 				wallpaper.opacity = 127;
-				if (plus.get_parent () == null)
-					add_child (plus);
+				if (plus.get_parent () != null)
+					plus.get_parent ().remove_child (plus);
+				add_child (plus);
 			} else {
 				wallpaper.opacity = 255;
 				if (contains (plus))
