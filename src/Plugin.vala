@@ -736,8 +736,14 @@ namespace Gala
 				group.add_child (moving_window_container);
 			}
 			
+			var to_has_fullscreened = false;
+			var from_has_fullscreened = false;
+			var docks = new List<WindowActor> ();
+			
 			foreach (var window in windows) {
-				if (!window.get_meta_window ().showing_on_its_workspace () || 
+				var meta_window = window.get_meta_window ();
+				
+				if (!meta_window.showing_on_its_workspace () || 
 					moving != null && window == moving_actor)
 					continue;
 				
@@ -745,22 +751,36 @@ namespace Gala
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, out_group);
+					if (meta_window.fullscreen)
+						from_has_fullscreened = true;
 				} else if (window.get_workspace () == to) {
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, in_group);
-				} else if (window.get_meta_window ().window_type == WindowType.DOCK) {
-					win.append (window);
-					par.append (window.get_parent ());
-					
-					var clone = new Clutter.Clone (window);
-					clone.x = window.x;
-					clone.y = window.y;
-					
-					clones.append (clone);
-					in_group.add_child (clone);
-					clutter_actor_reparent (window, out_group);
+					if (meta_window.fullscreen)
+						to_has_fullscreened = true;
+				} else if (meta_window.window_type == WindowType.DOCK) {
+					docks.append (window);
 				}
+			}
+			
+			// make sure we don't add docks when there are fullscreened
+			// windows on one of the groups. Simply raising seems not to 
+			// work, mutter probably reverts the order internally to match
+			// the display stack
+			foreach (var window in docks) {
+				win.append (window);
+				par.append (window.get_parent ());
+				
+				var clone = new Clutter.Clone (window);
+				clone.x = window.x;
+				clone.y = window.y;
+				
+				clones.append (clone);
+				if (!to_has_fullscreened)
+					in_group.add_child (clone);
+				if (!from_has_fullscreened)
+					clutter_actor_reparent (window, out_group);
 			}
 			
 			// monitor the workspaces to see whether a window was removed
