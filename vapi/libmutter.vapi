@@ -133,6 +133,8 @@ namespace Meta {
 		public static void error_trap_push (Meta.Display display);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_error_trap_push_with_return")]
 		public static void error_trap_push_with_return (Meta.Display display);
+		[CCode (cheader_filename = "meta/main.h", cname = "meta_external_binding_name_for_action")]
+		public static string external_binding_name_for_action (uint keybinding_action);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_fatal")]
 		public static void fatal (string format, ...);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_free_gslist_and_elements")]
@@ -158,7 +160,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_push_no_msg_prefix")]
 		public static void push_no_msg_prefix ();
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_rect")]
-		public static Meta.Rectangle rect (int x, int y, int width, int height);
+		public static Meta.Rectangle? rect (int x, int y, int width, int height);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_remove_verbose_topic")]
 		public static void remove_verbose_topic (Meta.DebugTopic topic);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_debugging")]
@@ -193,9 +195,9 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		public Background (Meta.Screen screen, int monitor, Meta.BackgroundEffects effects);
 		public Meta.Background copy (int monitor, Meta.BackgroundEffects effects);
-		public Clutter.Color get_color ();
+		public unowned Clutter.Color? get_color ();
 		public unowned string get_filename ();
-		public Clutter.Color get_second_color ();
+		public unowned Clutter.Color? get_second_color ();
 		public GDesktop.BackgroundShading get_shading ();
 		public GDesktop.BackgroundStyle get_style ();
 		public void load_color (Clutter.Color color);
@@ -283,13 +285,15 @@ namespace Meta {
 		public static unowned Clutter.Actor get_background_actor_for_screen (Meta.Screen screen);
 #endif
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_overlay_group_for_screen")]
-		public static unowned Clutter.Actor get_overlay_group_for_screen (Meta.Screen screen);
+		public static unowned Clutter.Actor? get_overlay_group_for_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
-		public static unowned Clutter.Actor get_stage_for_screen (Meta.Screen screen);
+		public static unowned Clutter.Actor? get_stage_for_screen (Meta.Screen screen);
+		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_top_window_group_for_screen")]
+		public static unowned Clutter.Actor? get_top_window_group_for_screen (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_actors")]
-		public static unowned GLib.List<weak Meta.WindowActor> get_window_actors (Meta.Screen screen);
+		public static unowned GLib.List<weak Meta.WindowActor>? get_window_actors (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_group_for_screen")]
-		public static unowned Clutter.Actor get_window_group_for_screen (Meta.Screen screen);
+		public static unowned Clutter.Actor? get_window_group_for_screen (Meta.Screen screen);
 		public void hide_window (Meta.Window window, Meta.CompEffect effect);
 		public void manage_screen (Meta.Screen screen);
 		public void maximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -331,7 +335,6 @@ namespace Meta {
 		public void clear_mouse_mode ();
 		public void end_grab_op (uint32 timestamp);
 		public void focus_the_no_focus_window (Meta.Screen screen, uint32 timestamp);
-		public X.Atom get_atom (Meta.Atom meta_atom);
 		public unowned Meta.Compositor get_compositor ();
 		public void get_compositor_version (int major, int minor);
 		public uint32 get_current_time ();
@@ -412,7 +415,7 @@ namespace Meta {
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
 		public void end_modal (uint32 timestamp);
-		public Meta.PluginInfo get_info ();
+		public unowned Meta.PluginInfo? get_info ();
 		public unowned Meta.Screen get_screen ();
 		[NoWrapper]
 		public virtual bool keybinding_filter (Meta.KeyBinding binding);
@@ -433,7 +436,7 @@ namespace Meta {
 		public virtual void minimize (Meta.WindowActor actor);
 		public void minimize_completed (Meta.WindowActor actor);
 		[NoWrapper]
-		public virtual Meta.PluginInfo plugin_info ();
+		public virtual unowned Meta.PluginInfo? plugin_info ();
 		public bool running ();
 		[NoWrapper]
 		public virtual void start ();
@@ -467,6 +470,7 @@ namespace Meta {
 		public int get_current_monitor ();
 		public unowned Meta.Display get_display ();
 		public Meta.Rectangle get_monitor_geometry (int monitor);
+		public bool get_monitor_in_fullscreen (int monitor);
 		public int get_monitor_index_for_rect (Meta.Rectangle rect);
 		public int get_n_monitors ();
 		public int get_n_workspaces ();
@@ -486,6 +490,7 @@ namespace Meta {
 		[NoAccessorMethod]
 		public bool keyboard_grabbed { get; }
 		public int n_workspaces { get; }
+		public signal void in_fullscreen_changed ();
 		public signal void monitors_changed ();
 		public signal void restacked ();
 		public signal void startup_sequence_changed (void* object);
@@ -816,10 +821,6 @@ namespace Meta {
 		public Meta.Rectangle rect;
 		public Meta.Side side;
 	}
-	[CCode (cheader_filename = "meta/display.h", cprefix = "META_ATOM_", type_id = "meta_atom_get_type ()")]
-	public enum Atom {
-		FIRST
-	}
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_BACKGROUND_EFFECTS_", type_id = "meta_background_effects_get_type ()")]
 	[Flags]
 	public enum BackgroundEffects {
@@ -1104,6 +1105,9 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_LATER_", type_id = "meta_later_type_get_type ()")]
 	public enum LaterType {
 		RESIZE,
+		CALC_SHOWING,
+		CHECK_FULLSCREEN,
+		SYNC_STACK,
 		BEFORE_REDRAW,
 		IDLE
 	}
@@ -1206,6 +1210,7 @@ namespace Meta {
 		TOP,
 		BOTTOM
 	}
+#if !HAS_MUTTER38
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_SNIPPET_HOOK_", type_id = "meta_snippet_hook_get_type ()")]
 	public enum SnippetHook {
 		VERTEX,
@@ -1215,6 +1220,7 @@ namespace Meta {
 		LAYER_FRAGMENT,
 		TEXTURE_LOOKUP
 	}
+#endif
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_", type_id = "meta_stack_layer_get_type ()")]
 	public enum StackLayer {
 		DESKTOP,
@@ -1305,13 +1311,9 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
-	public static string external_binding_name_for_action (uint keybinding_action);
-	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.OptionContext get_option_context ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool get_replace_current_wm ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static unowned Clutter.Actor get_top_window_group_for_screen (Meta.Screen screen);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
