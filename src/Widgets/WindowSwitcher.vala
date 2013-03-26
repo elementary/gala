@@ -174,7 +174,11 @@ namespace Gala
 				window_clones.clear ();
 				
 				//need to go through all the windows because of hidden dialogs
-				foreach (var window in Meta.Compositor.get_window_actors (screen)) {
+				unowned List<WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+				warn_if_fail (window_actors != null);
+				if (window_actors == null)
+					return;
+				foreach (var window in window_actors) {
 					if (window.get_workspace () == workspace.index ())
 						window.show ();
 				}

@@ -307,8 +307,10 @@ namespace Gala
 		void update_windows ()
 		{
 			windows.remove_all_children ();
+			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen)
+			warn_if_fail (window_actors != null);
 			
-			if (workspace == null)
+			if (workspace == null || window_actors == null)
 				return;
 			
 			int swidth, sheight;
@@ -316,7 +318,7 @@ namespace Gala
 			
 			// add window thumbnails
 			var aspect = windows.width / swidth;
-			foreach (var window in Compositor.get_window_actors (screen)) {
+			foreach (var window in window_actors) {
 				if (window == null)
 					continue;
 				var meta_window = window.get_meta_window ();
