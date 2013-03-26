@@ -39,6 +39,8 @@ namespace Gala
 	
 	public class Plugin : Meta.Plugin
 	{
+		PluginInfo info;
+		
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		Zooming zooming;
@@ -56,6 +58,9 @@ namespace Gala
 		
 		public Plugin ()
 		{
+			info = PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
+				license = "GPLv3", description = "A nice elementary window manager"};
+			
 			Prefs.set_ignore_request_hide_titlebar (true);
 			Prefs.override_preference_schema ("dynamic-workspaces", Config.SCHEMA + ".behavior");
 			Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
@@ -874,10 +879,9 @@ namespace Gala
 			return x_handle_event (event) != 0;
 		}
 		
-		public override PluginInfo plugin_info ()
+		public override unowned PluginInfo? plugin_info ()
 		{
-			return PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
-				license = "GPLv3", description = "A nice elementary window manager"};
+			return info;
 		}
 		
 		static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
