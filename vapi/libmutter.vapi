@@ -190,7 +190,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_warning")]
 		public static void warning (string format, ...);
 	}
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_background_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public class Background : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false)]
 		public Background (Meta.Screen screen, int monitor, Meta.BackgroundEffects effects);
@@ -233,12 +233,12 @@ namespace Meta {
 		public float dim_factor { get; set; }
 #endif
 	}
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_background_group_get_type ()")]
+	[CCode (cheader_filename = "meta-background-group.h", type_id = "meta_background_group_get_type ()")]
 	public class BackgroundGroup : Clutter.Group, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundGroup ();
 	}
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_barrier_get_type ()")]
+	[CCode (cheader_filename = "meta/barrier.h", type_id = "meta_barrier_get_type ()")]
 	public class Barrier : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Barrier ();
@@ -821,7 +821,7 @@ namespace Meta {
 		public Meta.Rectangle rect;
 		public Meta.Side side;
 	}
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_BACKGROUND_EFFECTS_", type_id = "meta_background_effects_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-background.h", cprefix = "META_BACKGROUND_EFFECTS_", type_id = "meta_background_effects_get_type ()")]
 	[Flags]
 	public enum BackgroundEffects {
 		NONE,
@@ -829,7 +829,7 @@ namespace Meta {
 		BLUR,
 		VIGNETTE
 	}
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_BARRIER_DIRECTION_", type_id = "meta_barrier_direction_get_type ()")]
+	[CCode (cheader_filename = "meta/barrier.h", cprefix = "META_BARRIER_DIRECTION_", type_id = "meta_barrier_direction_get_type ()")]
 	[Flags]
 	public enum BarrierDirection {
 		POSITIVE_X,
