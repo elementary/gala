@@ -307,7 +307,7 @@ namespace Gala
 		void update_windows ()
 		{
 			windows.remove_all_children ();
-			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen)
+			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
 			warn_if_fail (window_actors != null);
 			
 			if (workspace == null || window_actors == null)

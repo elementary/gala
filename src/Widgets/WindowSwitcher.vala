@@ -174,7 +174,7 @@ namespace Gala
 				window_clones.clear ();
 				
 				//need to go through all the windows because of hidden dialogs
-				unowned List<WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+				unowned List<Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
 				warn_if_fail (window_actors != null);
 				if (window_actors == null)
 					return;
