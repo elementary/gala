@@ -566,7 +566,11 @@ namespace Gala
 				workspace.window_removed.connect (remove_window);
 			}
 			
+#if HAS_MUTTER38
+			plugin.wallpaper.
+#else
 			Compositor.get_background_actor_for_screen (screen).
+#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
 			
 			// sort windows by stacking order
@@ -689,7 +693,11 @@ namespace Gala
 				exposed.selected.disconnect (thumb_selected);
 			}
 			
+#if HAS_MUTTER38
+			plugin.wallpaper.
+#else
 			Compositor.get_background_actor_for_screen (screen).
+#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
 			
 			if (animate) {

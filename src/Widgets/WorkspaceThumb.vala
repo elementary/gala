@@ -48,7 +48,11 @@ namespace Gala
 		Gtk.StyleContext selector_style;
 		Gtk.EventBox selector_style_widget;
 		
+#if HAS_MUTTER38
+		internal Actor wallpaper;
+#else
 		internal Clone wallpaper;
+#endif
 		Clutter.Actor windows;
 		internal Clutter.Actor icons;
 		Actor indicator;
@@ -91,7 +95,11 @@ namespace Gala
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
+#if HAS_MUTTER38
+			wallpaper = new Clutter.Actor ();
+#else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
+#endif
 			wallpaper.x = INDICATOR_BORDER;
 			wallpaper.y = INDICATOR_BORDER;
 			wallpaper.height = THUMBNAIL_HEIGHT;

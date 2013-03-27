@@ -46,6 +46,11 @@ namespace Gala
 		Zooming zooming;
 		WindowOverview window_overview;
 		
+#if HAS_MUTTER38
+		// FIXME we need a proper-sized background for every monitor
+		public BackgroundActor wallpaper { get; private set; }
+#endif
+		
 		Window? moving; //place for the window that is being moved over
 		
 		int modal_count = 0; //count of modal modes overlaying each other
@@ -71,6 +76,13 @@ namespace Gala
 		
 		public override void start ()
 		{
+#if HAS_MUTTER38
+			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
+		}
+		
+		bool show_stage ()
+		{
+#endif
 			var screen = get_screen ();
 			
 			DBus.init (this);
@@ -95,6 +107,11 @@ namespace Gala
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
 			stage.add_child (window_overview);
+			
+#if HAS_MUTTER38
+			// FIXME create a background for every monitor and keep them updated and properly sized
+			wallpaper = new BackgroundActor ();
+#endif
 			
 			/*keybindings*/
 			
@@ -179,6 +196,12 @@ namespace Gala
 			screen.monitors_changed.connect (configure_hotcorners);
 			
 			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+
+#if HAS_MUTTER38
+			stage.show ();
+			
+			return false;
+#endif
 		}
 		
 		void configure_hotcorners ()
@@ -711,7 +734,9 @@ namespace Gala
 				return;
 			
 			var group = Compositor.get_window_group_for_screen (screen);
+#if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#endif
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
@@ -860,7 +885,9 @@ namespace Gala
 				moving_window_container.destroy ();
 			moving_window_container = null;
 			
+#if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#endif
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
 			
