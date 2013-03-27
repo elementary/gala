@@ -213,8 +213,6 @@ namespace Meta {
 		[NoAccessorMethod]
 		public int monitor { get; set construct; }
 		[NoAccessorMethod]
-		public float saturation { get; set construct; }
-		[NoAccessorMethod]
 		public float vignette_sharpness { get; set construct; }
 	}
 	[CCode (cheader_filename = "meta/meta-background-actor.h", type_id = "meta_background_actor_get_type ()")]
@@ -233,7 +231,7 @@ namespace Meta {
 		public float dim_factor { get; set; }
 #endif
 	}
-	[CCode (cheader_filename = "meta-background-group.h", type_id = "meta_background_group_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-background-group.h", type_id = "meta_background_group_get_type ()")]
 	public class BackgroundGroup : Clutter.Group, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundGroup ();
@@ -825,8 +823,6 @@ namespace Meta {
 	[Flags]
 	public enum BackgroundEffects {
 		NONE,
-		DESATURATE,
-		BLUR,
 		VIGNETTE
 	}
 	[CCode (cheader_filename = "meta/barrier.h", cprefix = "META_BARRIER_DIRECTION_", type_id = "meta_barrier_direction_get_type ()")]
