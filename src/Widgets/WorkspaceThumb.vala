@@ -192,7 +192,7 @@ namespace Gala
 		}
 
 		// everything that depends on the screen size is set here
-		internal void resize (Meta.Screen screen)
+		void resize (Meta.Screen screen)
 		{
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);

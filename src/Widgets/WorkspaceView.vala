@@ -88,7 +88,7 @@ namespace Gala
 			screen.workspace_added.connect ((index) => {
 				create_workspace_thumb (screen.get_workspace_by_index (index));
 			});
-
+			
 			Prefs.add_listener ((pref) => {
 				// only need to listen for the case when workspaces were removed. 
 				// Any other case will be caught by the workspace_added signal.
