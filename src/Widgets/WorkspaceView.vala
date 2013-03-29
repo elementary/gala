@@ -89,11 +89,6 @@ namespace Gala
 				create_workspace_thumb (screen.get_workspace_by_index (index));
 			});
 
-			screen.monitors_changed.connect (() => {
-				foreach (var child in thumbnails.get_children ())
-					(child as WorkspaceThumb).resize ();
-			});
-			
 			Prefs.add_listener ((pref) => {
 				// only need to listen for the case when workspaces were removed. 
 				// Any other case will be caught by the workspace_added signal.

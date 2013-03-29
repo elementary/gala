@@ -74,6 +74,7 @@ namespace Gala
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);
+			screen.monitors_changed.connect (resize);
 			
 			workspace.window_added.connect (handle_window_added);
 			workspace.window_removed.connect (handle_window_removed);
@@ -187,11 +188,11 @@ namespace Gala
 			
 			content = canvas;
 
-			resize ();
+			resize (screen);
 		}
 
 		// everything that depends on the screen size is set here
-		internal void resize ()
+		internal void resize (Meta.Screen screen)
 		{
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
@@ -257,6 +258,7 @@ namespace Gala
 		{
 			screen.workspace_switched.disconnect (handle_workspace_switched);
 			screen.workspace_added.disconnect (workspace_added);
+			screen.monitors_changed.disconnect (resize);
 		}
 		
 		void close_workspace (Clutter.Actor actor)
