@@ -74,24 +74,18 @@ namespace Gala
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);
+			screen.monitors_changed.connect (resize);
 			
 			workspace.window_added.connect (handle_window_added);
 			workspace.window_removed.connect (handle_window_removed);
 			
-			int swidth, sheight;
-			screen.get_size (out swidth, out sheight);
-			
-			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
-			
 			reactive = true;
 			
 			indicator = new Actor ();
-			indicator.width = width + 2 * INDICATOR_BORDER;
 			indicator.height = THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER;
 			indicator.opacity = 0;
 			indicator.content = new Canvas ();
 			(indicator.content as Canvas).draw.connect (draw_indicator);
-			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
 			
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
@@ -104,7 +98,6 @@ namespace Gala
 			wallpaper.x = INDICATOR_BORDER;
 			wallpaper.y = INDICATOR_BORDER;
 			wallpaper.height = THUMBNAIL_HEIGHT;
-			wallpaper.width = width;
 			
 			close_button = new GtkClutter.Texture ();
 			try {
@@ -126,7 +119,6 @@ namespace Gala
 			windows.x = INDICATOR_BORDER;
 			windows.y = INDICATOR_BORDER;
 			windows.height = THUMBNAIL_HEIGHT;
-			windows.width = width;
 			windows.clip_to_allocation = true;
 			
 			add_child (indicator);
@@ -179,8 +171,6 @@ namespace Gala
 
 				plus.width = PLUS_WIDTH + 2 * PLUS_OFFSET;
 				plus.height = PLUS_WIDTH + 2 * PLUS_OFFSET;
-				plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
-				plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
 				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
@@ -195,9 +185,32 @@ namespace Gala
 			
 			var canvas = new Canvas ();
 			canvas.draw.connect (draw_background);
-			canvas.set_size ((int)width, (int)height);
 			
 			content = canvas;
+
+			resize (screen);
+		}
+
+		// everything that depends on the screen size is set here
+		void resize (Meta.Screen screen)
+		{
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			
+			// make sure we redraw the buffer
+			buffer = null;
+
+			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
+			indicator.width = width + 2 * INDICATOR_BORDER;
+			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
+
+			wallpaper.width = width;
+			windows.width = width;
+
+			plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
+			plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
+
+			(content as Canvas).set_size ((int)width, (int)height);
 		}
 
 		public override void paint ()
@@ -245,6 +258,7 @@ namespace Gala
 		{
 			screen.workspace_switched.disconnect (handle_workspace_switched);
 			screen.workspace_added.disconnect (workspace_added);
+			screen.monitors_changed.disconnect (resize);
 		}
 		
 		void close_workspace (Clutter.Actor actor)
