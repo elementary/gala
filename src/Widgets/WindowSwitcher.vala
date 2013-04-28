@@ -48,11 +48,7 @@ namespace Gala
 			
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
-			dock_settings.changed.connect (update_dock);
-			
-			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
-			dock_theme.load ("dock");
-			dock_theme.changed.connect (update_dock);
+			dock_settings.notify["Theme"].connect (load_dock_theme);
 			
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
@@ -74,9 +70,21 @@ namespace Gala
 			add_child (dock_background);
 			add_child (dock);
 			
-			update_dock ();
+			load_dock_theme ();
 			
 			visible = false;
+		}
+		
+		void load_dock_theme ()
+		{
+			if (dock_theme != null)
+				dock_theme.changed.disconnect (update_dock);
+			
+			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
+			dock_theme.load ("dock");
+			dock_theme.changed.connect (update_dock);
+			
+			update_dock ();
 		}
 		
 		//set the values which don't get set every time and need to be updated when the theme changes
