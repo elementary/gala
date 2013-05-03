@@ -132,10 +132,7 @@ namespace Gala
 			closing = true;
 
 			var screen = plugin.get_screen ();
-			
 			var workspace = screen.get_active_workspace ();
-			workspace.window_added.disconnect (add_window);
-			workspace.window_removed.disconnect (remove_window);
 			
 			if (dock_window != null)
 				dock_window.opacity = 0;
@@ -186,6 +183,10 @@ namespace Gala
 					if (window.get_workspace () == workspace.index ())
 						window.show ();
 				}
+
+				workspace.window_added.disconnect (add_window);
+				workspace.window_removed.disconnect (remove_window);
+				screen.window_left_monitor.disconnect (window_left_monitor);
 			});
 		}
 		
@@ -276,6 +277,15 @@ namespace Gala
 				}
 				
 				i++;
+			}
+		}
+
+		void window_left_monitor (int num, Meta.Window window)
+		{
+			// see if that's happened on our workspace
+			var workspace = plugin.get_screen ().get_active_workspace ();
+			if (window.located_on_workspace (workspace)) {
+				remove_window (window);
 			}
 		}
 		
@@ -423,6 +433,7 @@ namespace Gala
 			
 			workspace.window_added.connect (add_window);
 			workspace.window_removed.connect (remove_window);
+			screen.window_left_monitor.connect (window_left_monitor);
 			
 			//grab the windows to be switched
 			var layout = dock.layout_manager as BoxLayout;

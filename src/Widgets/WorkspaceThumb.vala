@@ -78,6 +78,7 @@ namespace Gala
 			
 			workspace.window_added.connect (handle_window_added);
 			workspace.window_removed.connect (handle_window_removed);
+			screen.window_left_monitor.connect (window_left_monitor);
 			
 			reactive = true;
 			
@@ -259,6 +260,7 @@ namespace Gala
 			screen.workspace_switched.disconnect (handle_workspace_switched);
 			screen.workspace_added.disconnect (workspace_added);
 			screen.monitors_changed.disconnect (resize);
+			screen.window_left_monitor.disconnect (window_left_monitor);
 		}
 		
 		void close_workspace (Clutter.Actor actor)
@@ -329,6 +331,12 @@ namespace Gala
 			check_last_workspace ();
 		}
 		
+		void window_left_monitor (int num, Meta.Window window)
+		{
+			if (window.located_on_workspace (workspace))
+				handle_window_removed (window);
+		}
+
 		void update_windows ()
 		{
 			windows.remove_all_children ();

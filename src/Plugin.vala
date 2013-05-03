@@ -60,7 +60,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
-		
+
 		public Plugin ()
 		{
 			info = PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
