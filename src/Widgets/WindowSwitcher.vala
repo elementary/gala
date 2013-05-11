@@ -292,7 +292,7 @@ namespace Gala
 			if (window.located_on_workspace (workspace)) {
 #else
 			if (window.get_workspace () == workspace || 
-				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ()) {
+				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
 #endif
 				remove_window (window);
 			}
