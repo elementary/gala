@@ -608,7 +608,12 @@ namespace Gala
 		{
 			// see if that's happened on one of our workspaces
 			foreach (var workspace in workspaces) {
+#if HAS_MUTTER38
 				if (window.located_on_workspace (workspace)) {
+#else
+				if (window.get_workspace () == workspace || 
+					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ()) {
+#endif
 					remove_window (window);
 					return;
 				}
