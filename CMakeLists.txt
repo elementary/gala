@@ -48,6 +48,12 @@ if (MUTTER38_FOUND)
 	set (MUTTER38_FLAGS "--define=HAS_MUTTER38")
 endif (MUTTER38_FOUND)
 
+set (MUTTER310_FLAGS "")
+pkg_check_modules(MUTTER310 QUIET libmutter>=3.9.1)
+if (MUTTER310_FOUND)
+	set (MUTTER310_FLAGS "--define=HAS_MUTTER310")
+endif (MUTTER310_FOUND)
+
 add_definitions(${DEPS_CFLAGS})
 
 link_libraries(${DEPS_LIBRARIES})
@@ -87,6 +93,7 @@ OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     ${MUTTER36_FLAGS}
     ${MUTTER38_FLAGS}
+    ${MUTTER310_FLAGS}
     )
 
 #add_subdirectory (po)
