@@ -1392,12 +1392,12 @@ namespace Meta {
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void quit (Meta.ExitCode code);
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void register_with_session ();
 #if HAS_MUTTER38
 	[CCode (cheader_filename = "meta/main.h")]
-	public static int run ();
+	public static void register_with_session ();
 #endif
+	[CCode (cheader_filename = "meta/main.h")]
+	public static int run ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void set_gnome_wm_keybindings (string wm_keybindings);
 	[CCode (cheader_filename = "meta/main.h")]
