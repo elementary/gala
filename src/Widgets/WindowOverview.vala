@@ -565,6 +565,8 @@ namespace Gala
 				workspace.window_added.connect (add_window);
 				workspace.window_removed.connect (remove_window);
 			}
+
+			screen.window_left_monitor.connect (window_left_monitor);
 			
 #if HAS_MUTTER38
 			plugin.wallpaper.
@@ -600,6 +602,22 @@ namespace Gala
 			}
 			
 			calculate_places (get_children ());
+		}
+
+		void window_left_monitor (int num, Window window)
+		{
+			// see if that's happened on one of our workspaces
+			foreach (var workspace in workspaces) {
+#if HAS_MUTTER38
+				if (window.located_on_workspace (workspace)) {
+#else
+				if (window.get_workspace () == workspace || 
+					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ()) {
+#endif
+					remove_window (window);
+					return;
+				}
+			}
 		}
 		
 		void add_window (Window window)
@@ -681,6 +699,7 @@ namespace Gala
 				workspace.window_added.disconnect (add_window);
 				workspace.window_removed.disconnect (remove_window);
 			}
+			screen.window_left_monitor.disconnect (window_left_monitor);
 			
 			ready = false;
 			
