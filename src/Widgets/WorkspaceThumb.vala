@@ -345,10 +345,7 @@ namespace Gala
 		void update_windows ()
 		{
 			windows.remove_all_children ();
-			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
-			warn_if_fail (window_actors != null);
-			
-			if (workspace == null || window_actors == null)
+			if (workspace == null)
 				return;
 			
 			int swidth, sheight;
@@ -356,27 +353,26 @@ namespace Gala
 			
 			// add window thumbnails
 			var aspect = windows.width / swidth;
-			foreach (var window in window_actors) {
-				if (window == null)
-					continue;
-				var meta_window = window.get_meta_window ();
-				if (meta_window == null)
-					continue;
-				var type = meta_window.window_type;
-				
-				if ((!(window.get_workspace () == workspace.index ()) && 
-					!meta_window.is_on_all_workspaces ()) ||
-					meta_window.minimized ||
-					(type != WindowType.NORMAL && 
-					type != WindowType.DIALOG &&
-					type != WindowType.MODAL_DIALOG))
-					continue;
-				
-				var clone = new Clone (window.get_texture ());
+
+			var unordered = workspace.list_windows ();
+			var list = new SList<Window> ();
+			foreach (var window in unordered) {
+				if (!window.minimized &&
+					(window.window_type == WindowType.NORMAL || 
+					window.window_type == WindowType.DIALOG ||
+					window.window_type == WindowType.MODAL_DIALOG))
+					list.prepend (window);
+			}
+			var ordered = screen.get_display ().sort_windows_by_stacking (list);
+
+			foreach (var window in ordered) {
+				var actor = window.get_compositor_private () as WindowActor;
+				var clone = new Clone (actor.get_texture ());
 				clone.width = aspect * clone.width;
 				clone.height = aspect * clone.height;
-				clone.x = aspect * window.x;
-				clone.y = aspect * window.y;
+				clone.x = aspect * actor.x;
+				clone.y = aspect * actor.y;
+				print ("Adding %s\n", window.get_title ());
 				
 				windows.add_child (clone);
 			}
