@@ -363,8 +363,8 @@ namespace Gala
 					window.window_type == WindowType.MODAL_DIALOG))
 					list.prepend (window);
 			}
-			var ordered = screen.get_display ().sort_windows_by_stacking (list);
 
+			var ordered = screen.get_display ().sort_windows_by_stacking (list);
 			foreach (var window in ordered) {
 				var actor = window.get_compositor_private () as WindowActor;
 				var clone = new Clone (actor.get_texture ());
@@ -372,7 +372,6 @@ namespace Gala
 				clone.height = aspect * clone.height;
 				clone.x = aspect * actor.x;
 				clone.y = aspect * actor.y;
-				print ("Adding %s\n", window.get_title ());
 				
 				windows.add_child (clone);
 			}
