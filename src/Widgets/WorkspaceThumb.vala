@@ -367,6 +367,9 @@ namespace Gala
 			var ordered = screen.get_display ().sort_windows_by_stacking (list);
 			foreach (var window in ordered) {
 				var actor = window.get_compositor_private () as WindowActor;
+				if (actor == null)
+					continue;
+
 				var clone = new Clone (actor.get_texture ());
 				clone.width = aspect * clone.width;
 				clone.height = aspect * clone.height;
