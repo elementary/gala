@@ -78,11 +78,11 @@ namespace Gala
 		void load_dock_theme ()
 		{
 			if (dock_theme != null)
-				dock_theme.changed.disconnect (update_dock);
+				dock_theme.notify.disconnect (update_dock);
 			
 			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
 			dock_theme.load ("dock");
-			dock_theme.changed.connect (update_dock);
+			dock_theme.notify.connect (update_dock);
 			
 			update_dock ();
 		}
