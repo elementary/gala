@@ -301,8 +301,10 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_background_actor_for_screen")]
 		public static unowned Clutter.Actor? get_background_actor_for_screen (Meta.Screen screen);
 #endif
+#if !HAS_MUTTER310
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_overlay_group_for_screen")]
 		public static unowned Clutter.Actor? get_overlay_group_for_screen (Meta.Screen screen);
+#endif
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
 		public static unowned Clutter.Actor? get_stage_for_screen (Meta.Screen screen);
 #if HAS_MUTTER38
@@ -387,6 +389,9 @@ namespace Meta {
 		public bool has_shape ();
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
+#if HAS_MUTTER310
+		public void request_take_focus (Meta.Window window, uint32 timestamp);
+#endif
 		public unowned Meta.Screen screen_for_root (X.Window xroot);
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
 		public GLib.SList<weak Meta.Window> sort_windows_by_stacking (GLib.SList<Meta.Window> windows);

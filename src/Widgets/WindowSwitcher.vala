@@ -425,7 +425,12 @@ namespace Gala
 				var clone = new Clone (actor);
 				clone.x = actor.x;
 				clone.y = actor.y;
+#if HAS_MUTTER310
+				//FIXME Maybe create our own new group?
+				Meta.Compositor.get_stage_for_screen (screen).add_child (clone);
+#else
 				Meta.Compositor.get_overlay_group_for_screen (screen).add_child (clone);
+#endif
 				clone.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
 					clone.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
 				});
