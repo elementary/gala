@@ -66,6 +66,7 @@ ensure_vala_version("0.16.1" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/DBus.vala
+    src/DragDropAction.vala
     src/Main.vala
     src/Plugin.vala
     src/Settings.vala

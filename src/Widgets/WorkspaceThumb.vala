@@ -22,10 +22,6 @@ namespace Gala
 {
 	public class WorkspaceThumb : Clutter.Actor
 	{
-		
-		//target for DnD
-		internal static Actor? destination = null;
-		
 		static const int INDICATOR_BORDER = 5;
 		internal static const int APP_ICON_SIZE = 32;
 		static const float THUMBNAIL_HEIGHT = 80.0f;
@@ -175,10 +171,8 @@ namespace Gala
 				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
-			add_action_with_name ("drop", new DropAction ());
-			(get_action ("drop") as DropAction).over_in.connect (over_in);
-			(get_action ("drop") as DropAction).over_out.connect (over_out);
-			(get_action ("drop") as DropAction).drop.connect (drop);
+			add_action_with_name ("drop", new DragDropAction (DragDropActionType.DESTINATION, "app-icon"));
+			(get_action ("drop") as DragDropAction).crossed.connect (crossed);
 			
 			check_last_workspace ();
 			
@@ -230,29 +224,17 @@ namespace Gala
 			Cogl.Path.stroke ();
 		}
 		
-		void over_in (Actor actor)
+		void crossed (bool over)
 		{
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:200);
-		}
-		void over_out (Actor actor)
-		{
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
-			
-			//when draggin, the leave event isn't emitted
+			// when draggin, the leave event isn't emitted
 			if (close_button.visible)
 				hide_close_button ();
-		}
-		void drop (Actor actor, float x, float y)
-		{
-			float ax, ay;
-			actor.transform_stage_point (x, y, out ax, out ay);
-			
-			destination = actor;
-			
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
+
+			// if we're the active workspace, don't show any changes
+			if (indicator.opacity == 255)
+				return;
+
+			indicator.animate (AnimationMode.LINEAR, 100, opacity: over ? 200 : 0);
 		}
 		
 		~WorkspaceThumb ()
