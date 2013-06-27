@@ -116,9 +116,9 @@ namespace Gala
 			}
 			
 			//if there went something wrong, we need to get the system back rolling
-			if (Prefs.get_dynamic_workspaces () && 
-				screen.n_workspaces == 1 &&
-				Utils.get_n_windows (screen.get_workspaces ().nth_data (0)) != 0)
+			if (Prefs.get_dynamic_workspaces ()
+				&& screen.n_workspaces == 1
+				&& Utils.get_n_windows (screen.get_workspaces ().nth_data (0)) != 0)
 				add_workspace ();
 		}
 		
