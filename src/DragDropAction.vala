@@ -36,34 +36,37 @@ namespace Gala
 		/**
 		 * A drag has been started. You have to connect to this signal
 		 * @return A ClutterActor that serves as handle
-		 **/
+		 */
 		public signal Clutter.Actor drag_begin ();
 
 		/**
 		 * A drag has been canceled. You may want to consider cleaning up
 		 * your handle.
-		 **/
+		 */
 		public signal void drag_canceled ();
 
 		/**
 		 * A drag action has successfully been finished.
+		 * 
 		 * @param actor The actor on which the drag finished
-		 **/
+		 */
 		public signal void drag_end (Clutter.Actor actor);
 
 		/**
 		 * The destination has been crossed
+		 *
 		 * @param hovered indicates whether the actor is now hovered or not
-		 **/
+		 */
 		public signal void crossed (bool hovered);
 
 		/**
 		 * Create a new DragDropAction
+		 *
 		 * @param type The type of this actor
 		 * @param id An ID that marks which sources can be dragged on 
 		 *     which destinations. It has to be the same for all actors that
 		 *     should be compatible with each other.
-		 **/
+		 */
 		public DragDropAction (DragDropActionType type, string id)
 		{
 			Object (drag_type : type, drag_id : id);
@@ -177,8 +180,12 @@ namespace Gala
 			return false;
 		}
 
-		// returns a DragDropAction instance if this actor has one or null.
-		// It also checks if it is a DESTINATION and if the id matches
+		/**
+		 * Looks for a DragDropAction instance if this actor has one or NULL.
+		 * It also checks if it is a DESTINATION and if the id matches
+		 *
+		 * @return the DragDropAction instance on this actor or NULL
+		 */
 		DragDropAction? get_drag_drop_action (Clutter.Actor actor)
 		{
 			DragDropAction? drop_action = null;
@@ -198,7 +205,7 @@ namespace Gala
 
 		/**
 		 * Abort the drag
-		 **/
+		 */
 		public void cancel ()
 		{
 			if (dragging) {

@@ -37,15 +37,15 @@ namespace Gala
 			} catch (Error e) { warning (e.message); }
 			
 			var action = new DragDropAction (DragDropActionType.SOURCE, WorkspaceThumb.DRAG_ID);
-			action.drag_begin.connect (drag_started);
-			action.drag_end.connect (drag_finished);
-			action.drag_canceled.connect (drag_failed);
+			action.drag_begin.connect (drag_begin);
+			action.drag_end.connect (drag_end);
+			action.drag_canceled.connect (drag_canceled);
 			
 			add_action_with_name (DRAG_ACTION, action);
 			reactive = true;
 		}
 		
-		void drag_failed ()
+		void drag_canceled ()
 		{
 			var action = get_action (DRAG_ACTION) as DragDropAction;
 
@@ -58,7 +58,7 @@ namespace Gala
 			});
 		}
 
-		void drag_finished (Actor destination)
+		void drag_end (Actor destination)
 		{
 			var action = get_action (DRAG_ACTION) as DragDropAction;
 			action.handle.destroy ();
@@ -91,7 +91,7 @@ namespace Gala
 			icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (wallpaper.x + wallpaper.width / 2 - icons.width / 2));
 		}
 		
-		Clutter.Actor drag_started ()
+		Clutter.Actor drag_begin ()
 		{
 			opacity = 0;
 			
