@@ -78,8 +78,6 @@ namespace Gala
 			add_child (thumbnails);
 			add_child (scroll);
 			
-			screen.workareas_changed.connect (initial_configuration);
-			
 			//place it somewhere low, so it won't slide down on first open
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
@@ -109,62 +107,25 @@ namespace Gala
 					}
 				}
 			});
+			
+			init_thumbnails ();
 		}
 		
-		//method that waits for the workspaces to be configured on first run
-		void initial_configuration ()
+		void init_thumbnails ()
 		{
-			screen.workareas_changed.disconnect (initial_configuration);
-			
-			var workspaces = screen.get_workspaces ().copy ();
-			
-			if (!Prefs.get_dynamic_workspaces ()) {
-				foreach (var workspace in workspaces) {
-					var thumb = new WorkspaceThumb (workspace);
-					thumb.clicked.connect (hide);
-					thumb.closed.connect (remove_workspace);
-					thumb.window_on_last.connect (add_workspace);
-					
-					thumbnails.add_child (thumb);
-				}
+			foreach (var workspace in screen.get_workspaces ()) {
+				var thumb = new WorkspaceThumb (workspace);
+				thumb.clicked.connect (hide);
+				thumb.closed.connect (remove_workspace);
+				thumb.window_on_last.connect (add_workspace);
 				
-				//and we're done
-				return;
-			}
-			
-			//remove everything except for the first
-			for (var i = 1; i < workspaces.length (); i++)
-				screen.remove_workspace (workspaces.nth_data (i), screen.get_display ().get_current_time ());
-			
-			//FIXME we have a crash here at workspaces.nth_data(0), so we check if really have a 
-			//workspace left and add one if not
-			Workspace workspace;
-			if (screen.get_workspaces ().length () == 0)
-				workspace = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
-			else
-				workspace = workspaces.nth_data (0);
-			
-			var thumb = new WorkspaceThumb (workspace);
-			thumb.clicked.connect (hide);
-			thumb.closed.connect (remove_workspace);
-			thumb.window_on_last.connect (add_workspace);
-			
-			thumbnails.add_child (thumb);
-			
-			//if mutter missed something, just add it..
-			if (screen.n_workspaces != 1) {
-				for (var i = 1; i < workspaces.length (); i++) {
-					thumb = new WorkspaceThumb (workspaces.nth_data (i));
-					thumb.clicked.connect (hide);
-					thumb.closed.connect (remove_workspace);
-					thumb.window_on_last.connect (add_workspace);
-					
-					thumbnails.add_child (thumb);
-				}
+				thumbnails.add_child (thumb);
 			}
 			
 			//if there went something wrong, we need to get the system back rolling
-			if (screen.n_workspaces == 1 && Utils.get_n_windows (workspaces.nth_data (0)) != 0)
+			if (Prefs.get_dynamic_workspaces ()
+				&& screen.n_workspaces == 1
+				&& Utils.get_n_windows (screen.get_workspaces ().first ().data) > 0)
 				add_workspace ();
 		}
 		
