@@ -26,10 +26,13 @@ namespace Gala
 		internal static const int APP_ICON_SIZE = 32;
 		static const float THUMBNAIL_HEIGHT = 80.0f;
 		static const uint CLOSE_BUTTON_DELAY = 500;
-
+		
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
 		static const int PLUS_OFFSET = 8;
+		
+		public static const string DRAG_ID = "app-icon";
+		const string DROP_ACTION = "drop";
 		
 		public signal void clicked ();
 		public signal void closed ();
@@ -171,8 +174,8 @@ namespace Gala
 				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
-			var drop_action = new DragDropAction (DragDropActionType.DESTINATION, "app-icon");
-			add_action_with_name ("drop", drop_action);
+			var drop_action = new DragDropAction (DragDropActionType.DESTINATION, DRAG_ID);
+			add_action_with_name (DROP_ACTION, drop_action);
 			drop_action.crossed.connect (crossed);
 			
 			check_last_workspace ();

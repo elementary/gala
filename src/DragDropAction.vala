@@ -37,19 +37,19 @@ namespace Gala
 		 * A drag has been started. You have to connect to this signal
 		 * @return A ClutterActor that serves as handle
 		 **/
-		public signal Clutter.Actor started ();
+		public signal Clutter.Actor drag_begin ();
 
 		/**
 		 * A drag has been canceled. You may want to consider cleaning up
 		 * your handle.
 		 **/
-		public signal void canceled ();
+		public signal void drag_canceled ();
 
 		/**
 		 * A drag action has successfully been finished.
 		 * @param actor The actor on which the drag finished
 		 **/
-		public signal void finished (Clutter.Actor actor);
+		public signal void drag_end (Clutter.Actor actor);
 
 		/**
 		 * The destination has been crossed
@@ -118,7 +118,7 @@ namespace Gala
 			if (!clicked)
 				return false;
 
-			handle = started ();
+			handle = drag_begin ();
 			if (handle == null) {
 				critical ("No handle has been returned by the started signal, aborting drag.");
 				return false;
@@ -205,7 +205,7 @@ namespace Gala
 				actor.get_stage ().captured_event.disconnect (follow_move);
 			}
 
-			canceled ();
+			drag_canceled ();
 			dragging = false;
 		}
 
@@ -215,7 +215,7 @@ namespace Gala
 			get_drag_drop_action (hovered).crossed (false);
 
 			actor.get_stage ().captured_event.disconnect (follow_move);
-			finished (hovered);
+			drag_end (hovered);
 		}
 	}
 }

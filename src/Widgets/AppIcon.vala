@@ -22,6 +22,7 @@ namespace Gala
 {
 	public class AppIcon : GtkClutter.Texture
 	{
+		const string DRAG_ACTION = "drag";
 		
 		Window window;
 		Bamf.Application app;
@@ -35,18 +36,18 @@ namespace Gala
 				set_from_pixbuf (Utils.get_icon_for_window (window, WorkspaceThumb.APP_ICON_SIZE));
 			} catch (Error e) { warning (e.message); }
 			
-			var action = new DragDropAction (DragDropActionType.SOURCE, "app-icon");
-			action.started.connect (drag_started);
-			action.finished.connect (drag_finished);
-			action.canceled.connect (drag_failed);
+			var action = new DragDropAction (DragDropActionType.SOURCE, WorkspaceThumb.DRAG_ID);
+			action.drag_begin.connect (drag_started);
+			action.drag_end.connect (drag_finished);
+			action.drag_canceled.connect (drag_failed);
 			
-			add_action_with_name ("drag", action);
+			add_action_with_name (DRAG_ACTION, action);
 			reactive = true;
 		}
 		
 		void drag_failed ()
 		{
-			var action = get_action ("drag") as DragDropAction;
+			var action = get_action (DRAG_ACTION) as DragDropAction;
 
 			float ax, ay;
 			get_transformed_position (out ax, out ay);
@@ -59,7 +60,7 @@ namespace Gala
 
 		void drag_finished (Actor destination)
 		{
-			var action = get_action ("drag") as DragDropAction;
+			var action = get_action (DRAG_ACTION) as DragDropAction;
 			action.handle.destroy ();
 
 			WorkspaceThumb old = get_parent ().get_parent () as WorkspaceThumb;
