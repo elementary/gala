@@ -25,8 +25,8 @@ namespace Gala
 
 	public class DragDropAction : Clutter.Action
 	{
-		public DragDropActionType drag_type { get; private set; }
-		public string drag_id { get; set; }
+		public DragDropActionType drag_type { get; construct; }
+		public string drag_id { get; construct; }
 		public Clutter.Actor handle { get; private set; }
 
 		Clutter.Actor? hovered = null;
@@ -66,8 +66,7 @@ namespace Gala
 		 **/
 		public DragDropAction (DragDropActionType type, string id)
 		{
-			drag_type = type;
-			drag_id = id;
+			Object (drag_type : type, drag_id : id);
 		}
 
 		~DragDropAction ()
@@ -179,21 +178,21 @@ namespace Gala
 		}
 
 		// returns a DragDropAction instance if this actor has one or null.
-		// It also checks if checks if it is a DESTINATION and if the id matches
+		// It also checks if it is a DESTINATION and if the id matches
 		DragDropAction? get_drag_drop_action (Clutter.Actor actor)
 		{
-			DragDropAction drop_action = null;
+			DragDropAction? drop_action = null;
 
 			foreach (var action in actor.get_actions ()) {
-				if (action is DragDropAction) {
-					drop_action = action as DragDropAction;
-					if (drop_action.drag_type != DragDropActionType.DESTINATION || drop_action.drag_id != drag_id) {
-						drop_action = null;
-						continue;
-					}
-					return drop_action;
-				}
+				drop_action = action as DragDropAction;
+				if (drop_action == null
+					|| drop_action.drag_type != DragDropActionType.DESTINATION
+					|| drop_action.drag_id != drag_id)
+					continue;
+
+				return drop_action;
 			}
+
 			return null;
 		}
 
