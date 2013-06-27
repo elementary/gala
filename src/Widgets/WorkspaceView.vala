@@ -90,16 +90,23 @@ namespace Gala
 			});
 			
 			Prefs.add_listener ((pref) => {
-				// only need to listen for the case when workspaces were removed. 
-				// Any other case will be caught by the workspace_added signal.
-				// For some reason workspace_removed is not emitted, when changing the workspace number
-				if (Prefs.get_dynamic_workspaces () || 
-					pref != Preference.NUM_WORKSPACES ||
-					Prefs.get_num_workspaces () > thumbnails.get_n_children ())
-					return;
+				if (pref == Preference.DYNAMIC_WORKSPACES && Prefs.get_dynamic_workspaces ()) {
+					// if the last workspace has a window, we need to append a new workspace
+					if (Utils.get_n_windows (screen.get_workspaces ().nth_data (screen.get_n_workspaces () - 1)) > 0)
+						add_workspace ();
 				
-				for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
-					(thumbnails.get_child_at_index (i) as WorkspaceThumb).closed ();
+				} else if ((pref == Preference.DYNAMIC_WORKSPACES ||
+					pref == Preference.NUM_WORKSPACES) &&
+					!Prefs.get_dynamic_workspaces ()) {
+					
+					// only need to listen for the case when workspaces were removed. 
+					// Any other case will be caught by the workspace_added signal.
+					// For some reason workspace_removed is not emitted, when changing the workspace number
+					if (Prefs.get_num_workspaces () < thumbnails.get_n_children ()) {
+						for (int i = Prefs.get_num_workspaces () - 1; i < thumbnails.get_n_children (); i++) {
+							(thumbnails.get_child_at_index (i) as WorkspaceThumb).closed ();
+						}
+					}
 				}
 			});
 		}
