@@ -101,11 +101,10 @@ namespace Gala
 				}
 			});
 			
-			initial_configuration ();
+			init_thumbnails ();
 		}
 		
-		//method that waits for the workspaces to be configured on first run
-		void initial_configuration ()
+		void init_thumbnails ()
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
 				var thumb = new WorkspaceThumb (workspace);
