@@ -171,8 +171,9 @@ namespace Gala
 				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
-			add_action_with_name ("drop", new DragDropAction (DragDropActionType.DESTINATION, "app-icon"));
-			(get_action ("drop") as DragDropAction).crossed.connect (crossed);
+			var drop_action = new DragDropAction (DragDropActionType.DESTINATION, "app-icon");
+			add_action_with_name ("drop", drop_action);
+			drop_action.crossed.connect (crossed);
 			
 			check_last_workspace ();
 			

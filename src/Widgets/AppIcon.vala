@@ -66,8 +66,9 @@ namespace Gala
 			get_parent ().remove_child (this);
 			opacity = 255;
 			
-			var icons = (destination as WorkspaceThumb).icons;
-			var wallpaper = (destination as WorkspaceThumb).wallpaper;
+			var dest_thumb = destination as WorkspaceThumb;
+			var icons = dest_thumb.icons;
+			var wallpaper = dest_thumb.wallpaper;
 			
 			icons.add_child (this);
 
@@ -78,11 +79,11 @@ namespace Gala
 				for (var i = 0; i < xids.length; i++) {
 					foreach (var win in wins) {
 						if (xids.index (i) == (uint32)win.get_xwindow ())
-							win.change_workspace ((destination as WorkspaceThumb).workspace);
+							win.change_workspace (dest_thumb.workspace);
 					}
 				}
 			} else
-				window.change_workspace ((destination as WorkspaceThumb).workspace);
+				window.change_workspace (dest_thumb.workspace);
 			
 			if (old != null)
 				old.icons.animate (AnimationMode.LINEAR, 100, x:Math.floorf (old.wallpaper.x + old.wallpaper.width / 2 - old.icons.width / 2));
