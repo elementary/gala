@@ -410,38 +410,10 @@ namespace Gala
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
-				var win = metawindows.nth_data (0);
-				var actor = win.get_compositor_private () as Actor;
-				if (actor.is_in_clone_paint ())
-					return;
-				
-				win.activate (display.get_current_time ());
-
-				if (win.minimized)
-					win.unminimize ();
-
-				actor.hide ();
-				
-				var clone = new Clone (actor);
-				clone.x = actor.x;
-				clone.y = actor.y;
-#if HAS_MUTTER310
-				//FIXME Maybe create our own new group?
-				Meta.Compositor.get_stage_for_screen (screen).add_child (clone);
-#else
-				Meta.Compositor.get_overlay_group_for_screen (screen).add_child (clone);
-#endif
-				clone.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
-					clone.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
-				});
-				
-				Timeout.add (410, () => {
-					actor.show ();
-					clone.destroy ();
-					
-					return false;
-				});
-				
+				if (Meta.Prefs.bell_is_audible ())
+					Gdk.beep ();
+				else
+					display.get_compositor ().flash_screen (screen);
 				return;
 			}
 			
