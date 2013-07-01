@@ -410,7 +410,10 @@ namespace Gala
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
-				if (Meta.Prefs.bell_is_audible ())
+				var win = metawindows.nth_data (0);
+				if (win.minimized)
+					win.unminimize ();
+				else if (Meta.Prefs.bell_is_audible ())
 					Gdk.beep ();
 				else
 					display.get_compositor ().flash_screen (screen);
