@@ -145,6 +145,12 @@ namespace Gala
 			screen.get_display ().add_keybinding ("zoom-out", KeybindingSettings.get_default ().schema, 0, () => {
 				zooming.zoom_out ();
 			});
+			screen.get_display ().add_keybinding ("cycle-workspaces-next", KeybindingSettings.get_default ().schema, 0, () => {
+				cycle_workspaces (1);
+			});
+			screen.get_display ().add_keybinding ("cycle-workspaces-previous", KeybindingSettings.get_default ().schema, 0, () => {
+				cycle_workspaces (-1);
+			});
 			
 			screen.get_display ().overlay_key.connect (() => {
 				try {
@@ -253,6 +259,18 @@ namespace Gala
 				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
 			else
 				Utils.set_input_area (get_screen (), InputArea.NONE);
+		}
+		
+		void cycle_workspaces (int direction)
+		{
+			var screen = get_screen ();
+			var index = screen.get_active_workspace_index () + direction;
+			if (index < 0)
+				index = screen.get_n_workspaces () - 1;
+			else if (index > screen.get_n_workspaces () - 1)
+				index = 0;
+
+			screen.get_workspace_by_index (index).activate (screen.get_display ().get_current_time ());
 		}
 		
 		public void move_window (Window? window, MotionDirection direction)

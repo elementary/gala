@@ -118,6 +118,14 @@
 			<summary>Shortcut to open the window overview for all windows</summary>
 			<description></description>
 		</key>
+		<key type="as" name="cycle-workspaces-next">
+			<default><![CDATA[['<Super>Tab']]]></default>
+			<summary>Cycle to the next workspace to the right or to back to the first</summary>
+		</key>
+		<key type="as" name="cycle-workspaces-previous">
+			<default><![CDATA[['<Super><Shift>Tab']]]></default>
+			<summary>Cycle to the next workspace to the right or to back to the first</summary>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="gala">
