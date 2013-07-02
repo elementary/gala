@@ -44,7 +44,7 @@ namespace Gala
 		Meta.Plugin.type_register (new Plugin ().get_type ());
 #endif
 		
-		Meta.set_wm_name ("Gala");
+		Meta.set_wm_name ("Mutter(Gala)");
 		
 		/**
 		 * Prevent Meta.init () from causing gtk to load gail and at-bridge
