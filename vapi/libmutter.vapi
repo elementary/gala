@@ -67,6 +67,10 @@ namespace Meta {
 		public static bool get_gnome_animations ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_ignore_request_hide_titlebar ();
+#if HAS_MUTTER310
+		[CCode (cheader_filename = "meta/prefs.h")]
+		public static unowned string get_iso_next_group_option ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static Meta.KeyBindingAction get_keybinding_action (string name);
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -131,7 +135,7 @@ namespace Meta {
 		public static void debug_spew_real (string format, ...);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_disable_unredirect_for_screen")]
 		public static void disable_unredirect_for_screen (Meta.Screen screen);
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_empty_stage_input_region")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_empty_stage_input_region")]
 		public static void empty_stage_input_region (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_enable_unredirect_for_screen")]
 		public static void enable_unredirect_for_screen (Meta.Screen screen);
@@ -179,7 +183,7 @@ namespace Meta {
 		public static void set_debugging (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_replace_current_wm")]
 		public static void set_replace_current_wm (bool setting);
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_stage_input_region")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_set_stage_input_region")]
 		public static void set_stage_input_region (Meta.Screen screen, X.XserverRegion region);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_syncing")]
 		public static void set_syncing (bool setting);
@@ -304,16 +308,19 @@ namespace Meta {
 #if !HAS_MUTTER310
 		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_overlay_group_for_screen")]
 		public static unowned Clutter.Actor? get_overlay_group_for_screen (Meta.Screen screen);
+#else
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_focus_stage_window")]
+		public static void focus_stage_window (Meta.Screen screen, uint32 timestamp);
 #endif
-		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_stage_for_screen")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_stage_for_screen")]
 		public static unowned Clutter.Actor? get_stage_for_screen (Meta.Screen screen);
 #if HAS_MUTTER38
-		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_top_window_group_for_screen")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_top_window_group_for_screen")]
 		public static unowned Clutter.Actor? get_top_window_group_for_screen (Meta.Screen screen);
 #endif
-		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_actors")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_window_actors")]
 		public static unowned GLib.List<weak Meta.WindowActor>? get_window_actors (Meta.Screen screen);
-		[CCode (cheader_filename = "meta/compositor.h", cname = "meta_get_window_group_for_screen")]
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_window_group_for_screen")]
 		public static unowned Clutter.Actor? get_window_group_for_screen (Meta.Screen screen);
 		public void hide_window (Meta.Window window, Meta.CompEffect effect);
 		public void manage_screen (Meta.Screen screen);
@@ -330,6 +337,10 @@ namespace Meta {
 		public void set_updates (Meta.Window window, bool updates);
 #endif
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
+#if HAS_MUTTER310
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_stage_is_focused")]
+		public static bool stage_is_focused (Meta.Screen screen);
+#endif
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
 		public void sync_stack (Meta.Screen screen, GLib.List<Meta.WindowActor> stack);
@@ -360,6 +371,9 @@ namespace Meta {
 		public void focus_the_no_focus_window (Meta.Screen screen, uint32 timestamp);
 #if !HAS_MUTTER38
 		public X.Atom get_atom (Meta.Atom meta_atom);
+#endif
+#if HAS_MUTTER310
+		public void freeze_keyboard (X.Window window, uint32 timestamp);
 #endif
 		public unowned Meta.Compositor get_compositor ();
 		public void get_compositor_version (int major, int minor);
@@ -396,7 +410,13 @@ namespace Meta {
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
 		public GLib.SList<weak Meta.Window> sort_windows_by_stacking (GLib.SList<Meta.Window> windows);
 		public bool supports_extended_barriers ();
+#if HAS_MUTTER310
+		public void unfreeze_keyboard (uint32 timestamp);
+#endif
 		public bool ungrab_accelerator (uint action_id);
+#if HAS_MUTTER310
+		public void ungrab_keyboard (uint32 timestamp);
+#endif
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
@@ -405,6 +425,9 @@ namespace Meta {
 #endif
 		public signal void grab_op_begin (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void grab_op_end (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
+#if HAS_MUTTER310
+		public signal bool modifiers_accelerator_activated ();
+#endif
 		public signal void overlay_key ();
 		public signal void window_created (Meta.Window object);
 		public signal void window_demands_attention (Meta.Window object);
@@ -507,6 +530,9 @@ namespace Meta {
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
 		public int get_current_monitor ();
+#if HAS_MUTTER310
+		public int get_current_monitor_for_pos (int x, int y);
+#endif
 		public unowned Meta.Display get_display ();
 		public Meta.Rectangle get_monitor_geometry (int monitor);
 #if HAS_MUTTER38
@@ -1162,6 +1188,9 @@ namespace Meta {
 		MOVE_TO_SIDE_W,
 		MOVE_TO_CENTER,
 		OVERLAY_KEY,
+#if HAS_MUTTER310
+		ISO_NEXT_GROUP,
+#endif
 		LAST
 	}
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_", type_id = "meta_key_binding_flags_get_type ()")]
