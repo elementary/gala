@@ -60,7 +60,11 @@ namespace Gala
 		
 		uint hover_timer = 0;
 		
+#if HAS_MUTTER38
+		public WorkspaceThumb (Workspace _workspace, BackgroundManager _wallpaper)
+#else
 		public WorkspaceThumb (Workspace _workspace)
+#endif
 		{
 			workspace = _workspace;
 			screen = workspace.get_screen ();
@@ -91,7 +95,7 @@ namespace Gala
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
 #if HAS_MUTTER38
-			wallpaper = new Clutter.Actor ();
+			wallpaper = new Clone (_wallpaper);
 #else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
 #endif

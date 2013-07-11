@@ -77,6 +77,7 @@ vala_precompile(VALA_C
     src/Utils.vala
     src/Zooming.vala
     src/Widgets/AppIcon.vala
+	src/Widgets/BackgroundManager.vala
     src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala
     src/Widgets/WindowThumb.vala

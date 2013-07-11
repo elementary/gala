@@ -114,7 +114,7 @@ namespace Gala
 		void init_thumbnails ()
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
-				var thumb = new WorkspaceThumb (workspace);
+				var thumb = new WorkspaceThumb (workspace, plugin.background_manager);
 				thumb.clicked.connect (hide);
 				thumb.closed.connect (remove_workspace);
 				thumb.window_on_last.connect (add_workspace);
@@ -168,7 +168,7 @@ namespace Gala
 		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
-			var thumb = new WorkspaceThumb (workspace);
+			var thumb = new WorkspaceThumb (workspace, plugin.background_manager);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
