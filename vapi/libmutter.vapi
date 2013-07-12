@@ -372,7 +372,7 @@ namespace Meta {
 #if !HAS_MUTTER38
 		public X.Atom get_atom (Meta.Atom meta_atom);
 #endif
-#if HAS_MUTTER310
+#if HAS_MUTTER38
 		public void freeze_keyboard (X.Window window, uint32 timestamp);
 #endif
 		public unowned Meta.Compositor get_compositor ();
@@ -410,11 +410,11 @@ namespace Meta {
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
 		public GLib.SList<weak Meta.Window> sort_windows_by_stacking (GLib.SList<Meta.Window> windows);
 		public bool supports_extended_barriers ();
-#if HAS_MUTTER310
+#if HAS_MUTTER38
 		public void unfreeze_keyboard (uint32 timestamp);
 #endif
 		public bool ungrab_accelerator (uint action_id);
-#if HAS_MUTTER310
+#if HAS_MUTTER38
 		public void ungrab_keyboard (uint32 timestamp);
 #endif
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
