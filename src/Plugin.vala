@@ -116,6 +116,7 @@ namespace Gala
 			stage.set_child_below_sibling (system_background, null);
 
 			ui_group = new Clutter.Actor ();
+			ui_group.reactive = true;
 			stage.add_child (ui_group);
 
 			var window_group = Compositor.get_window_group_for_screen (screen);

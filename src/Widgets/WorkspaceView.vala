@@ -29,7 +29,9 @@ namespace Gala
 		
 		Clutter.Actor thumbnails;
 		Clutter.Actor scroll;
+#if !HAS_MUTTER38
 		Clutter.Actor click_catcher; //invisible plane that catches clicks outside the view
+#endif
 		
 		bool animating; // delay closing the popup
 		
@@ -67,13 +69,17 @@ namespace Gala
 			scroll.content = new Clutter.Canvas ();
 			(scroll.content as Clutter.Canvas).draw.connect (draw_scroll);
 			
+#if HAS_MUTTER38
+			plugin.ui_group.button_release_event.connect (outside_clicked);
+#else
 			click_catcher = new Clutter.Actor ();
 			click_catcher.reactive = true;
 			click_catcher.button_release_event.connect ((e) => {
 				hide ();
 				return true;
 			});
-			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
+			Compositor.get_stage_for_screen (screen).insert_child_below (click_catcher);
+#endif
 			
 			add_child (thumbnails);
 			add_child (scroll);
@@ -128,6 +134,14 @@ namespace Gala
 				&& Utils.get_n_windows (screen.get_workspaces ().first ().data) > 0)
 				add_workspace ();
 		}
+
+#if HAS_MUTTER38
+		bool outside_clicked (Clutter.ButtonEvent event)
+		{
+			hide ();
+			return true;
+		}
+#endif
 		
 		bool draw_background (Cairo.Context cr)
 		{
@@ -415,11 +429,13 @@ namespace Gala
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
 			
+#if !HAS_MUTTER38
 			click_catcher.width = swidth;
 			click_catcher.height = sheight;
 			click_catcher.x = 0;
 			click_catcher.y = 0;
 			click_catcher.visible = true;
+#endif
 			
 			animating = true;
 			Timeout.add (50, () => {
@@ -439,6 +455,8 @@ namespace Gala
 		{
 			if (!visible || animating)
 				return;
+
+			plugin.ui_group.button_release_event.disconnect (outside_clicked);
 			
 			float width, height;
 			plugin.get_screen ().get_size (out width, out height);
@@ -455,7 +473,9 @@ namespace Gala
 				visible = false;
 			});
 			
+#if !HAS_MUTTER38
 			click_catcher.visible = false;
+#endif
 			
 			var wins = Compositor.get_window_group_for_screen (screen);
 			wins.detach_animation ();
