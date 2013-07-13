@@ -413,11 +413,10 @@ namespace Gala
 				var win = metawindows.nth_data (0);
 				if (win.minimized)
 					win.unminimize ();
-				else if (Meta.Prefs.bell_is_audible ())
-					Gdk.beep ();
-				else
-					display.get_compositor ().flash_screen (screen);
-				return;
+				else {
+					Utils.bell (screen);
+					return;
+				}
 			}
 			
 			workspace.window_added.connect (add_window);

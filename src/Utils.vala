@@ -207,5 +207,13 @@ namespace Gala
 			width = actor.width - frame.width;
 			height = actor.height - frame.height;
 		}
+
+		public static void bell (Meta.Screen screen)
+		{
+			if (Meta.Prefs.bell_is_audible ())
+				Gdk.beep ();
+			else
+				screen.get_display ().get_compositor ().flash_screen (screen);
+		}
 	}
 }
