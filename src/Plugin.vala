@@ -91,7 +91,6 @@ namespace Gala
 			
 			string color = new Settings ("org.gnome.desktop.background").get_string ("primary-color");
 			stage.background_color = Clutter.Color.from_string (color);
-			stage.no_clear_hint = true;
 			
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
