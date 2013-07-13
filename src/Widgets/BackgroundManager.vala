@@ -19,7 +19,7 @@ using Meta;
 
 namespace Gala
 {
-	public class BackgroundManager : Meta.BackgroundGroup
+	public class BackgroundManager : BackgroundGroup
 	{
 		public BackgroundManager (Meta.Screen screen)
 		{
@@ -33,7 +33,7 @@ namespace Gala
 
 			// create backgrounds we're missing
 			for (var i = get_n_children (); i < n_monitors; i++) {
-				var background = create_background (screen, i);
+				var background = new Wallpaper (screen, i);
 				add_child (background);
 			}
 
@@ -46,32 +46,36 @@ namespace Gala
 			for(var i = 0; i < get_n_children (); i++) {
 				var monitor_geom = screen.get_monitor_geometry (i);
 
-				var background = get_child_at_index (i);
-				background.set_position (monitor_geom.x, monitor_geom.y);
-				background.set_size (monitor_geom.width, monitor_geom.height);
+				var background = get_child_at_index (i) as Background;
+				background.actor.set_position (monitor_geom.x, monitor_geom.y);
+				background.actor.set_size (monitor_geom.width, monitor_geom.height);
 			}
 		}
+	}
 
-		BackgroundActor create_background (Screen screen, int monitor)
+	public abstract class Background : BackgroundGroup
+	{
+		public int monitor { get; construct set; }
+		public BackgroundActor actor { get; construct set; }
+		public abstract signal void ready ();
+
+		public Background (int monitor)
 		{
-			var actor = new BackgroundActor ();
-			Background content;
-			if (get_n_children () == 0) {
-				content = new Background (screen, 0, BackgroundEffects.NONE);
+			Object (monitor: monitor, actor: new BackgroundActor ());
+			add_child (actor);
+		}
+	}
 
-				var settings = BackgroundSettings.get_default ();
+	public class Wallpaper : Background
+	{
+		public Wallpaper (Screen screen, int monitor)
+		{
+			base (monitor);
 
-				content.load_file_async.begin (File.new_for_uri (settings.picture_uri).get_path (), 
-					translate_style (settings.picture_options), null, (obj, res) => {
-					content.load_file_async.end (res);
-				});
-			} else {
-				content = (get_child_at_index (0).content as Background).copy (monitor,
-					BackgroundEffects.NONE);
-			}
-
-			actor.content = content;
-			return actor;
+			var settings = BackgroundSettings.get_default ();
+			BackgroundCache.get_default ().set_background (this, screen,
+				File.new_for_uri (settings.picture_uri).get_path (),
+				translate_style (settings.picture_options));
 		}
 
 		GDesktop.BackgroundStyle translate_style (string style)
@@ -93,18 +97,15 @@ namespace Gala
 			return GDesktop.BackgroundStyle.NONE;
 		}
 	}
-}
 
-public class SystemBackground : BackgroundActor
-{
-	public SystemBackground (Screen screen)
+	public class SystemBackground : Background
 	{
-		var background = new Background (screen, 0, BackgroundEffects.NONE);
-		content = background;
-		background.load_file_async.begin (Config.PKGDATADIR + "/texture.png",
-			GDesktop.BackgroundStyle.WALLPAPER, null, (obj, res) => {
-			background.load_file_async.end (res);
-		});
+		public SystemBackground (Screen screen)
+		{
+			base (0);
+
+			BackgroundCache.get_default ().set_background (this, screen,
+				Config.PKGDATADIR + "/texture.png", GDesktop.BackgroundStyle.WALLPAPER);
+		}
 	}
 }
-

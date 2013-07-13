@@ -110,7 +110,7 @@ namespace Gala
 		     */
 
 			var system_background = new SystemBackground (screen);
-			system_background.add_constraint (new Clutter.BindConstraint (stage,
+			system_background.actor.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.add_child (system_background);
 			stage.set_child_below_sibling (system_background, null);
@@ -807,7 +807,7 @@ namespace Gala
 		/*workspace switcher*/
 		List<WindowActor>? win;
 		List<Clutter.Actor>? par; //class space for kill func
-		List<Clutter.Clone>? clones;
+		List<Clutter.Actor>? clones;
 		Clutter.Actor? in_group;
 		Clutter.Actor? out_group;
 		Clutter.Actor? moving_window_container;
@@ -865,7 +865,11 @@ namespace Gala
 			par = new List<Clutter.Actor> ();
 			clones = new List<Clutter.Clone> ();
 			
+#if HAS_MUTTER38
+			var wallpaper_clone = new BackgroundManager (screen);
+#else
 			var wallpaper_clone = new Clutter.Clone (wallpaper);
+#endif
 			wallpaper_clone.x = (x2 < 0 ? w : -w);
 			
 			clones.append (wallpaper_clone);

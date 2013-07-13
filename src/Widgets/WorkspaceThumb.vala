@@ -95,7 +95,7 @@ namespace Gala
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
 #if HAS_MUTTER38
-			wallpaper = new Clone (_wallpaper);
+			wallpaper = new BackgroundManager (screen);
 #else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
 #endif
@@ -206,6 +206,10 @@ namespace Gala
 			indicator.width = width + 2 * INDICATOR_BORDER;
 			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
 
+#if HAS_MUTTER38
+			wallpaper.scale_x = width / swidth;
+			wallpaper.scale_y = THUMBNAIL_HEIGHT / sheight;
+#endif
 			wallpaper.width = width;
 			windows.width = width;
 
