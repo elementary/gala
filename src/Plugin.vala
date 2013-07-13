@@ -368,6 +368,10 @@ namespace Gala
 #else
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 #endif
+
+#if HAS_MUTTER38
+			Meta.Util.disable_unredirect_for_screen (screen);
+#endif
 		}
 		
 		public new void end_modal ()
@@ -376,7 +380,11 @@ namespace Gala
 			if (modal_count > 0)
 				return;
 			
-			base.end_modal (get_screen ().get_display ().get_current_time ());
+			var screen = get_screen ();
+			base.end_modal (screen.get_display ().get_current_time ());
+#if HAS_MUTTER38
+			Meta.Util.enable_unredirect_for_screen (screen);
+#endif
 		}
 		
 		public void get_current_cursor_position (out int x, out int y)
@@ -1032,6 +1040,15 @@ namespace Gala
 		{
 			return x_handle_event (event) != 0;
 		}
+
+#if HAS_MUTTER38
+		public override bool keybinding_filter (Meta.KeyBinding binding)
+		{
+			// for now we'll just block all keybindings if we're in modal mode, 
+			// do something useful with this later
+			return modal_count > 0;
+		}
+#endif
 		
 		public override unowned PluginInfo? plugin_info ()
 		{
