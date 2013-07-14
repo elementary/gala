@@ -139,8 +139,17 @@ namespace Gala
 			List<Actor>[] monitors = {};
 			monitors.resize (screen.get_n_monitors ());
 			
-			foreach (var clone in clones)
-				monitors[(clone as WindowThumb).window.get_monitor ()].append (clone);
+			foreach (var clone in clones) {
+				// we had some crashes here so there's a reasonable suspicion
+				// that get_monitor() could be larger than get_n_monitors()
+				var index = (clone as WindowThumb).window.get_monitor ();
+				if (index >= screen.get_n_monitors ()) {
+					critical ("Window '%s' has a monitor assigned that does not actually exists", 
+						(clone as WindowThumb).window.get_title ());
+					index = screen.get_n_monitors () - 1;
+				}
+				monitors[index].append (clone);
+			}
 			
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				if (monitors[i].length () == 0)
@@ -492,8 +501,11 @@ namespace Gala
 			clone.icon.y = rect.y + Math.floorf (clone.height * fscale - 50.0f);
 			clone.icon.get_parent ().set_child_above_sibling (clone.icon, null);
 			
-			clone.close_button.x = rect.x + 1;
-			clone.close_button.y = rect.y + 1;
+			float offset_x, offset_y;
+			Utils.get_window_frame_offset (clone.window, out offset_x, out offset_y, null, null);
+
+			clone.close_button.x = rect.x - offset_x * fscale - 8;
+			clone.close_button.y = rect.y - offset_y * fscale - 8;
 			
 			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
 				.completed.connect (() => ready = true );
@@ -534,6 +546,11 @@ namespace Gala
 					if (window.window_type == WindowType.DOCK)
 						continue;
 					
+					// skip windows that are on all workspace except we're currently
+					// processing the workspace it actually belongs to
+					if (window.is_on_all_workspaces () && window.get_workspace () != workspace)
+						continue;
+
 					used_windows.append (window);
 				}
 			}
@@ -548,8 +565,14 @@ namespace Gala
 				workspace.window_added.connect (add_window);
 				workspace.window_removed.connect (remove_window);
 			}
+
+			screen.window_left_monitor.connect (window_left_monitor);
 			
+#if HAS_MUTTER38
+			plugin.wallpaper.
+#else
 			Compositor.get_background_actor_for_screen (screen).
+#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
 			
 			// sort windows by stacking order
@@ -580,10 +603,27 @@ namespace Gala
 			
 			calculate_places (get_children ());
 		}
+
+		void window_left_monitor (int num, Window window)
+		{
+			// see if that's happened on one of our workspaces
+			foreach (var workspace in workspaces) {
+#if HAS_MUTTER38
+				if (window.located_on_workspace (workspace)) {
+#else
+				if (window.get_workspace () == workspace || 
+					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
+#endif
+					remove_window (window);
+					return;
+				}
+			}
+		}
 		
 		void add_window (Window window)
 		{
-			if (!visible || window.get_workspace () != screen.get_active_workspace ())
+			if (!visible || window.get_workspace () != screen.get_active_workspace ()
+				|| (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DIALOG))
 				return;
 			
 			var actor = window.get_compositor_private () as WindowActor;
@@ -660,6 +700,7 @@ namespace Gala
 				workspace.window_added.disconnect (add_window);
 				workspace.window_removed.disconnect (remove_window);
 			}
+			screen.window_left_monitor.disconnect (window_left_monitor);
 			
 			ready = false;
 			
@@ -672,7 +713,11 @@ namespace Gala
 				exposed.selected.disconnect (thumb_selected);
 			}
 			
+#if HAS_MUTTER38
+			plugin.wallpaper.
+#else
 			Compositor.get_background_actor_for_screen (screen).
+#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
 			
 			if (animate) {

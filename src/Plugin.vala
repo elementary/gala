@@ -39,10 +39,17 @@ namespace Gala
 	
 	public class Plugin : Meta.Plugin
 	{
+		PluginInfo info;
+		
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
 		Zooming zooming;
 		WindowOverview window_overview;
+		
+#if HAS_MUTTER38
+		// FIXME we need a proper-sized background for every monitor
+		public BackgroundActor wallpaper { get; private set; }
+#endif
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -56,6 +63,9 @@ namespace Gala
 		
 		public Plugin ()
 		{
+			info = PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
+				license = "GPLv3", description = "A nice elementary window manager"};
+			
 			Prefs.set_ignore_request_hide_titlebar (true);
 			Prefs.override_preference_schema ("dynamic-workspaces", Config.SCHEMA + ".behavior");
 			Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
@@ -66,6 +76,13 @@ namespace Gala
 		
 		public override void start ()
 		{
+#if HAS_MUTTER38
+			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
+		}
+		
+		bool show_stage ()
+		{
+#endif
 			var screen = get_screen ();
 			
 			DBus.init (this);
@@ -74,7 +91,6 @@ namespace Gala
 			
 			string color = new Settings ("org.gnome.desktop.background").get_string ("primary-color");
 			stage.background_color = Clutter.Color.from_string (color);
-			stage.no_clear_hint = true;
 			
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
@@ -91,6 +107,11 @@ namespace Gala
 			stage.add_child (winswitcher);
 			stage.add_child (window_overview);
 			
+#if HAS_MUTTER38
+			// FIXME create a background for every monitor and keep them updated and properly sized
+			wallpaper = new BackgroundActor ();
+#endif
+			
 			/*keybindings*/
 			
 			screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
@@ -105,11 +126,29 @@ namespace Gala
 			screen.get_display ().add_keybinding ("switch-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
 			});
+			screen.get_display ().add_keybinding ("move-to-workspace-first", KeybindingSettings.get_default ().schema, 0, () => {
+				var workspace = screen.get_workspace_by_index (0);
+				var window = screen.get_display ().get_focus_window ();
+				window.change_workspace (workspace);
+				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
+			});
+			screen.get_display ().add_keybinding ("move-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
+				var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
+				var window = screen.get_display ().get_focus_window ();
+				window.change_workspace (workspace);
+				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
+			});
 			screen.get_display ().add_keybinding ("zoom-in", KeybindingSettings.get_default ().schema, 0, () => {
 				zooming.zoom_in ();
 			});
 			screen.get_display ().add_keybinding ("zoom-out", KeybindingSettings.get_default ().schema, 0, () => {
 				zooming.zoom_out ();
+			});
+			screen.get_display ().add_keybinding ("cycle-workspaces-next", KeybindingSettings.get_default ().schema, 0, () => {
+				cycle_workspaces (1);
+			});
+			screen.get_display ().add_keybinding ("cycle-workspaces-previous", KeybindingSettings.get_default ().schema, 0, () => {
+				cycle_workspaces (-1);
 			});
 			
 			screen.get_display ().overlay_key.connect (() => {
@@ -134,7 +173,7 @@ namespace Gala
 			});
 			
 			KeyBinding.set_custom_handler ("show-desktop", () => {
-				workspace_view.show (false, true);
+				workspace_view.show (true);
 			});
 			
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
@@ -162,6 +201,12 @@ namespace Gala
 			screen.monitors_changed.connect (configure_hotcorners);
 			
 			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+
+#if HAS_MUTTER38
+			stage.show ();
+			
+			return false;
+#endif
 		}
 		
 		void configure_hotcorners ()
@@ -227,6 +272,18 @@ namespace Gala
 			return list.to_array ();
 		}
 		
+		void cycle_workspaces (int direction)
+		{
+			var screen = get_screen ();
+			var index = screen.get_active_workspace_index () + direction;
+			if (index < 0)
+				index = screen.get_n_workspaces () - 1;
+			else if (index > screen.get_n_workspaces () - 1)
+				index = 0;
+
+			screen.get_workspace_by_index (index).activate (screen.get_display ().get_current_time ());
+		}
+		
 		public void move_window (Window? window, MotionDirection direction)
 		{
 			if (window == null)
@@ -238,9 +295,11 @@ namespace Gala
 			var active = screen.get_active_workspace ();
 			var next = active.get_neighbor (direction);
 			
-			//dont allow empty workspaces to be created by moving
-			if (active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1)
+			//dont allow empty workspaces to be created by moving, if we have dynamic workspaces
+			if (Prefs.get_dynamic_workspaces () && active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1) {
+				Utils.bell (screen);
 				return;
+			}
 			
 			moving = window;
 			
@@ -344,7 +403,9 @@ namespace Gala
 		
 		public override void minimize (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().minimize_duration == 0) {
+			if (!AnimationSettings.get_default ().enable_animations || 
+				AnimationSettings.get_default ().minimize_duration == 0 || 
+				actor.get_meta_window ().window_type != WindowType.NORMAL) {
 				minimize_completed (actor);
 				return;
 			}
@@ -669,6 +730,25 @@ namespace Gala
 		Clutter.Actor? out_group;
 		Clutter.Actor? moving_window_container;
 		
+		void watch_window (Meta.Workspace workspace, Meta.Window window)
+		{
+			if (clones == null) {
+				critical ("watch_window called on '%s' while not switching workspaces", window.get_title ());
+				return;
+			}
+
+			warning ("Dock window '%s' closed while switching workspaces", window.get_title ());
+			
+			// finding the correct window here is not so easy
+			// and for those default 400ms we can live with
+			// some windows disappearing which in fact should never
+			// happen unless a dock crashes
+			foreach (var clone in clones) {
+				clone.destroy ();
+			}
+			clones = null;
+		}
+		
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
 			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().workspace_switch_duration == 0) {
@@ -691,7 +771,9 @@ namespace Gala
 				return;
 			
 			var group = Compositor.get_window_group_for_screen (screen);
+#if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#endif
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
@@ -721,8 +803,14 @@ namespace Gala
 				group.add_child (moving_window_container);
 			}
 			
+			var to_has_fullscreened = false;
+			var from_has_fullscreened = false;
+			var docks = new List<WindowActor> ();
+			
 			foreach (var window in windows) {
-				if (!window.get_meta_window ().showing_on_its_workspace () || 
+				var meta_window = window.get_meta_window ();
+				
+				if (!meta_window.showing_on_its_workspace () || 
 					moving != null && window == moving_actor)
 					continue;
 				
@@ -730,22 +818,44 @@ namespace Gala
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, out_group);
+					if (meta_window.fullscreen)
+						from_has_fullscreened = true;
 				} else if (window.get_workspace () == to) {
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, in_group);
-				} else if (window.get_meta_window ().window_type == WindowType.DOCK) {
-					win.append (window);
-					par.append (window.get_parent ());
-					
-					var clone = new Clutter.Clone (window);
-					clone.x = window.x;
-					clone.y = window.y;
-					
-					clones.append (clone);
-					in_group.add_child (clone);
-					clutter_actor_reparent (window, out_group);
+					if (meta_window.fullscreen)
+						to_has_fullscreened = true;
+				} else if (meta_window.window_type == WindowType.DOCK) {
+					docks.append (window);
 				}
+			}
+			
+			// make sure we don't add docks when there are fullscreened
+			// windows on one of the groups. Simply raising seems not to 
+			// work, mutter probably reverts the order internally to match
+			// the display stack
+			foreach (var window in docks) {
+				win.append (window);
+				par.append (window.get_parent ());
+				
+				var clone = new Clutter.Clone (window);
+				clone.x = window.x;
+				clone.y = window.y;
+				
+				clones.append (clone);
+				if (!to_has_fullscreened)
+					in_group.add_child (clone);
+				if (!from_has_fullscreened)
+					clutter_actor_reparent (window, out_group);
+			}
+			
+			// monitor the workspaces to see whether a window was removed
+			// in which case we need to stop the clones from drawing
+			// we monitor every workspace here because finding the ones a
+			// particular dock belongs to did not seem reliable enough
+			foreach (var workspace in screen.get_workspaces ()) {
+				workspace.window_removed.connect (watch_window);
 			}
 			
 			in_group.set_position (-x2, -y2);
@@ -788,10 +898,16 @@ namespace Gala
 					clutter_actor_reparent (window, par.nth_data (i));
 			}
 			
-			clones.foreach ((clone) => {
-				clone.destroy ();
-			});
-			clones = null;
+			foreach (var workspace in screen.get_workspaces ()) {
+				workspace.window_removed.disconnect (watch_window);
+			}
+			
+			if (clones != null) {
+				foreach (var clone in clones) {
+					clone.destroy ();
+				}
+				clones = null;
+			}
 			
 			win = null;
 			par = null;
@@ -806,7 +922,9 @@ namespace Gala
 				moving_window_container.destroy ();
 			moving_window_container = null;
 			
+#if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#endif
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
 			
@@ -825,10 +943,9 @@ namespace Gala
 			return x_handle_event (event) != 0;
 		}
 		
-		public override PluginInfo plugin_info ()
+		public override unowned PluginInfo? plugin_info ()
 		{
-			return PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
-				license = "GPLv3", description = "A nice elementary window manager"};
+			return info;
 		}
 		
 		static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)

@@ -22,14 +22,17 @@ namespace Gala
 {
 	public class WorkspaceThumb : Clutter.Actor
 	{
-		
-		//target for DnD
-		internal static Actor? destination = null;
-		
 		static const int INDICATOR_BORDER = 5;
 		internal static const int APP_ICON_SIZE = 32;
 		static const float THUMBNAIL_HEIGHT = 80.0f;
 		static const uint CLOSE_BUTTON_DELAY = 500;
+		
+		static const int PLUS_SIZE = 8;
+		static const int PLUS_WIDTH = 24;
+		static const int PLUS_OFFSET = 8;
+		
+		public static const string DRAG_ID = "app-icon";
+		const string DROP_ACTION = "drop";
 		
 		public signal void clicked ();
 		public signal void closed ();
@@ -39,12 +42,17 @@ namespace Gala
 		
 		unowned Screen screen;
 		
-		static GtkClutter.Texture? plus = null;
+		static Actor? plus = null;
+		static Plank.Drawing.DockSurface? buffer = null;
 		
 		Gtk.StyleContext selector_style;
 		Gtk.EventBox selector_style_widget;
 		
+#if HAS_MUTTER38
+		internal Actor wallpaper;
+#else
 		internal Clone wallpaper;
+#endif
 		Clutter.Actor windows;
 		internal Clutter.Actor icons;
 		Actor indicator;
@@ -65,33 +73,31 @@ namespace Gala
 			
 			screen.workspace_switched.connect (handle_workspace_switched);
 			screen.workspace_added.connect (workspace_added);
+			screen.monitors_changed.connect (resize);
 			
 			workspace.window_added.connect (handle_window_added);
 			workspace.window_removed.connect (handle_window_removed);
-			
-			int swidth, sheight;
-			screen.get_size (out swidth, out sheight);
-			
-			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
+			screen.window_left_monitor.connect (window_left_monitor);
 			
 			reactive = true;
 			
 			indicator = new Actor ();
-			indicator.width = width + 2 * INDICATOR_BORDER;
 			indicator.height = THUMBNAIL_HEIGHT + 2 * INDICATOR_BORDER;
 			indicator.opacity = 0;
 			indicator.content = new Canvas ();
 			(indicator.content as Canvas).draw.connect (draw_indicator);
-			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
 			
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
+#if HAS_MUTTER38
+			wallpaper = new Clutter.Actor ();
+#else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
+#endif
 			wallpaper.x = INDICATOR_BORDER;
 			wallpaper.y = INDICATOR_BORDER;
 			wallpaper.height = THUMBNAIL_HEIGHT;
-			wallpaper.width = width;
 			
 			close_button = new GtkClutter.Texture ();
 			try {
@@ -113,7 +119,6 @@ namespace Gala
 			windows.x = INDICATOR_BORDER;
 			windows.y = INDICATOR_BORDER;
 			windows.height = THUMBNAIL_HEIGHT;
-			windows.width = width;
 			windows.clip_to_allocation = true;
 			
 			add_child (indicator);
@@ -121,33 +126,57 @@ namespace Gala
 			add_child (windows);
 			add_child (icons);
 			add_child (close_button);
+
+			var click = new ClickAction ();
+			add_action (click);
+			click.clicked.connect (pressed);
 			
 			//kill the workspace
-			close_button.button_release_event.connect (close_workspace);
+			var close_click = new ClickAction ();
+			close_button.add_action (close_click);
+			close_click.clicked.connect (close_workspace);
 			
 			if (plus == null) {
-				var css = new Gtk.CssProvider ();
-				var img = new Gtk.Image ();
-				try {
-					css.load_from_data ("*{text-shadow:0 1 #f00;color:alpha(#fff, 0.8);}", -1);
-				} catch (Error e) { warning(e.message); }
-				img.get_style_context ().add_provider (css, 20000);
-				
-				plus = new GtkClutter.Texture ();
-				try {
-					var pix = Gtk.IconTheme.get_default ().choose_icon ({"list-add-symbolic", "list-add"}, (int)THUMBNAIL_HEIGHT / 2, 0).
-						load_symbolic_for_context (img.get_style_context ());
-					plus.set_from_pixbuf (pix);
-				} catch (Error e) { warning (e.message); }
-				
-				plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
-				plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
+				plus = new Actor ();
+				var canvas = new Canvas ();
+				plus.content = canvas;
+				canvas.draw.connect ((cr) => {
+					// putting the buffer inside here is not a problem performance-wise, 
+					// as the method will only be called once anyway
+					var buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
+
+					buffer.context.rectangle (PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + PLUS_OFFSET, 0.5 + PLUS_OFFSET, PLUS_SIZE - 1, PLUS_WIDTH - 1);
+					buffer.context.rectangle (0.5 + PLUS_OFFSET, PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + PLUS_OFFSET, PLUS_WIDTH - 1, PLUS_SIZE - 1);
+
+					buffer.context.set_source_rgb (0, 0, 0);
+					buffer.context.fill_preserve ();
+					buffer.exponential_blur (5);
+
+					buffer.context.set_source_rgb (1, 1, 1);
+					buffer.context.set_line_width (1);
+					buffer.context.stroke_preserve ();
+
+					buffer.context.set_source_rgb (0.8, 0.8, 0.8);
+					buffer.context.fill ();
+
+					cr.set_operator (Cairo.Operator.CLEAR);
+					cr.paint ();
+					cr.set_operator (Cairo.Operator.SOURCE);
+
+					cr.set_source_surface (buffer.surface, 0, 0);
+					cr.paint ();
+
+					return false;
+				});
+
+				plus.width = PLUS_WIDTH + 2 * PLUS_OFFSET;
+				plus.height = PLUS_WIDTH + 2 * PLUS_OFFSET;
+				canvas.set_size ((int)plus.width, (int)plus.height);
 			}
 			
-			add_action_with_name ("drop", new DropAction ());
-			(get_action ("drop") as DropAction).over_in.connect (over_in);
-			(get_action ("drop") as DropAction).over_out.connect (over_out);
-			(get_action ("drop") as DropAction).drop.connect (drop);
+			var drop_action = new DragDropAction (DragDropActionType.DESTINATION, DRAG_ID);
+			add_action_with_name (DROP_ACTION, drop_action);
+			drop_action.crossed.connect (crossed);
 			
 			check_last_workspace ();
 			
@@ -155,49 +184,80 @@ namespace Gala
 			
 			var canvas = new Canvas ();
 			canvas.draw.connect (draw_background);
-			canvas.set_size ((int)width, (int)height);
 			
 			content = canvas;
+
+			resize (screen);
+		}
+
+		// everything that depends on the screen size is set here
+		void resize (Meta.Screen screen)
+		{
+			int swidth, sheight;
+			screen.get_size (out swidth, out sheight);
+			
+			// make sure we redraw the buffer
+			buffer = null;
+
+			var width = Math.floorf ((THUMBNAIL_HEIGHT / sheight) * swidth);
+			indicator.width = width + 2 * INDICATOR_BORDER;
+			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
+
+			wallpaper.width = width;
+			windows.width = width;
+
+			plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
+			plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
+
+			(content as Canvas).set_size ((int)width, (int)height);
+		}
+
+		public override void paint ()
+		{
+			// black border
+			Cogl.Path.rectangle (INDICATOR_BORDER, INDICATOR_BORDER, wallpaper.width + INDICATOR_BORDER + 1, wallpaper.height + INDICATOR_BORDER + 1);
+			Cogl.set_source_color4f (0, 0, 0, 1);
+			Cogl.Path.stroke ();
+
+			base.paint ();
+
+			// top stroke
+			Cogl.Path.move_to (INDICATOR_BORDER + 1, INDICATOR_BORDER + 1);
+			Cogl.Path.line_to (wallpaper.width + INDICATOR_BORDER, INDICATOR_BORDER + 1);
+			Cogl.set_source_color4f (1, 1, 1, 0.3f);
+			Cogl.Path.stroke ();
 		}
 		
-		void over_in (Actor actor)
+		void crossed (bool over)
 		{
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:200);
-		}
-		void over_out (Actor actor)
-		{
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
-			
-			//when draggin, the leave event isn't emitted
+			// when draggin, the leave event isn't emitted
 			if (close_button.visible)
 				hide_close_button ();
-		}
-		void drop (Actor actor, float x, float y)
-		{
-			float ax, ay;
-			actor.transform_stage_point (x, y, out ax, out ay);
-			
-			destination = actor;
-			
-			if (indicator.opacity != 255)
-				indicator.animate (AnimationMode.LINEAR, 100, opacity:0);
+
+			// if we're the active workspace, don't show any changes
+			if (indicator.opacity == 255)
+				return;
+
+			indicator.animate (AnimationMode.LINEAR, 100, opacity: over ? 200 : 0);
 		}
 		
 		~WorkspaceThumb ()
 		{
 			screen.workspace_switched.disconnect (handle_workspace_switched);
 			screen.workspace_added.disconnect (workspace_added);
+			screen.monitors_changed.disconnect (resize);
+			screen.window_left_monitor.disconnect (window_left_monitor);
 		}
 		
-		bool close_workspace (Clutter.ButtonEvent event)
+		void close_workspace (Clutter.Actor actor)
 		{
-			workspace.list_windows ().foreach ((w) => {
-				if (w.window_type != WindowType.DOCK) {
-					w.delete (event.time);
-				}
-			});
+			if (workspace == null)
+				return;
+
+			foreach (var window in workspace.list_windows ()) {
+				if (window.window_type != WindowType.DOCK)
+					window.delete (screen.get_display ().get_current_time ());
+			}
 			
 			GLib.Timeout.add (250, () => {
 				//wait for confirmation dialogs to popup
@@ -213,8 +273,6 @@ namespace Gala
 				
 				return false;
 			});
-			
-			return true;
 		}
 		
 		bool draw_indicator (Cairo.Context cr)
@@ -231,22 +289,24 @@ namespace Gala
 		
 		bool draw_background (Cairo.Context cr)
 		{
-			var buffer = new Granite.Drawing.BufferSurface ((int)width, (int)height);
-			// some weird calculations are necessary here, we have to 
-			// subtract the delta of the wallpaper and container size to make it fit
-			buffer.context.rectangle (wallpaper.x, wallpaper.y, 
-				wallpaper.width - (width - wallpaper.width),
-				wallpaper.height - (height - wallpaper.height) - INDICATOR_BORDER);
-			
-			buffer.context.set_source_rgba (0, 0, 0, 1);
-			buffer.context.fill ();
-			buffer.exponential_blur (5);
+			if (buffer == null) {
+				buffer = new Plank.Drawing.DockSurface ((int)width, (int)height);
+				// some weird calculations are necessary here, we have to 
+				// subtract the delta of the wallpaper and container size to make it fit
+				buffer.Context.rectangle (wallpaper.x, wallpaper.y, 
+					wallpaper.width - (width - wallpaper.width),
+					wallpaper.height - (height - wallpaper.height) - INDICATOR_BORDER);
+				
+				buffer.Context.set_source_rgba (0, 0, 0, 1);
+				buffer.Context.fill ();
+				buffer.exponential_blur (5);
+			}
 			
 			cr.set_operator (Cairo.Operator.CLEAR);
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 			
-			cr.set_source_surface (buffer.surface, 0, 0);
+			cr.set_source_surface (buffer.Internal, 0, 0);
 			cr.paint ();
 			
 			return false;
@@ -257,10 +317,20 @@ namespace Gala
 			check_last_workspace ();
 		}
 		
+		void window_left_monitor (int num, Meta.Window window)
+		{
+#if HAS_MUTTER38
+			if (window.located_on_workspace (workspace))
+#else
+			if (window.get_workspace () == workspace || 
+				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ()))
+#endif
+				handle_window_removed (window);
+		}
+
 		void update_windows ()
 		{
 			windows.remove_all_children ();
-			
 			if (workspace == null)
 				return;
 			
@@ -269,27 +339,28 @@ namespace Gala
 			
 			// add window thumbnails
 			var aspect = windows.width / swidth;
-			foreach (var window in Compositor.get_window_actors (screen)) {
-				if (window == null)
+
+			var unordered = workspace.list_windows ();
+			var list = new SList<Window> ();
+			foreach (var window in unordered) {
+				if (!window.minimized &&
+					(window.window_type == WindowType.NORMAL || 
+					window.window_type == WindowType.DIALOG ||
+					window.window_type == WindowType.MODAL_DIALOG))
+					list.prepend (window);
+			}
+
+			var ordered = screen.get_display ().sort_windows_by_stacking (list);
+			foreach (var window in ordered) {
+				var actor = window.get_compositor_private () as WindowActor;
+				if (actor == null)
 					continue;
-				var meta_window = window.get_meta_window ();
-				if (meta_window == null)
-					continue;
-				var type = meta_window.window_type;
-				
-				if ((!(window.get_workspace () == workspace.index ()) && 
-					!meta_window.is_on_all_workspaces ()) ||
-					meta_window.minimized ||
-					(type != WindowType.NORMAL && 
-					type != WindowType.DIALOG &&
-					type != WindowType.MODAL_DIALOG))
-					continue;
-				
-				var clone = new Clone (window.get_texture ());
+
+				var clone = new Clone (actor.get_texture ());
 				clone.width = aspect * clone.width;
 				clone.height = aspect * clone.height;
-				clone.x = aspect * window.x;
-				clone.y = aspect * window.y;
+				clone.x = aspect * actor.x;
+				clone.y = aspect * actor.y;
 				
 				windows.add_child (clone);
 			}
@@ -341,8 +412,9 @@ namespace Gala
 			
 			if (index == screen.n_workspaces - 1) {
 				wallpaper.opacity = 127;
-				if (plus.get_parent () == null)
-					add_child (plus);
+				if (plus.get_parent () != null)
+					plus.get_parent ().remove_child (plus);
+				add_child (plus);
 			} else {
 				wallpaper.opacity = 255;
 				if (contains (plus))
@@ -393,16 +465,13 @@ namespace Gala
 			if (visible)
 				update_windows ();
 			
-			if (!Prefs.get_dynamic_workspaces ())
-				return;
-			
-			//dont remove workspaces when for example slingshot was closed
-			if (window.window_type != WindowType.NORMAL &&
-				window.window_type != WindowType.DIALOG &&
-				window.window_type != WindowType.MODAL_DIALOG)
-				return;
-			
-			if (workspace == null || Utils.get_n_windows (workspace) > 0)
+			if (!Prefs.get_dynamic_workspaces ()
+				|| (window.window_type != WindowType.NORMAL
+				&& window.window_type != WindowType.DIALOG
+				&& window.window_type != WindowType.MODAL_DIALOG)
+				|| workspace == null
+				|| Utils.get_n_windows (workspace) > 0
+				|| workspace.index () == workspace.get_screen ().get_n_workspaces () - 1)
 				return;
 			
 			// we need to wait untill the animation ended, otherwise we get trouble with focus handling
@@ -437,22 +506,18 @@ namespace Gala
 			base.show ();
 		}
 		
-		public override bool button_release_event (ButtonEvent event)
+		public void pressed (Actor actor)
 		{
-			//if we drop something, don't instantly activate
-			if (destination != null) {
-				destination = null;
-				return false;
-			}
-			
 			if (workspace == null)
-				return true;
+				return;
 			
 			workspace.activate (screen.get_display ().get_current_time ());
 			
-			clicked ();
-			
-			return true;
+			// wait for the animation to be finished before closing, for aesthetic reasons
+			Timeout.add (AnimationSettings.get_default ().workspace_switch_duration, () => {
+				clicked ();
+				return false;
+			});
 		}
 		
 		public override bool enter_event (CrossingEvent event)

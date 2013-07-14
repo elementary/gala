@@ -71,6 +71,11 @@
 			<summary>Enable dynamic workspace instead of static ones</summary>
 			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
 		</key>
+		<key type="as" name="dock-names">
+			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
+			<summary>Names that are recognized as dock windows for the window switcher</summary>
+			<description>When launching the window-switcher, gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="gala">
@@ -82,6 +87,16 @@
 		<key type="as" name="switch-to-workspace-last">
 			<default><![CDATA[['<Super>End', '<Super>0']]]></default>
 			<summary>Shortcut to move to last workspace</summary>
+			<description></description>
+		</key>
+		<key type="as" name="move-to-workspace-first">
+			<default><![CDATA[['<Super><Shift>Home']]]></default>
+			<summary>Shortcut to move the current window to first workspace</summary>
+			<description></description>
+		</key>
+		<key type="as" name="move-to-workspace-last">
+			<default><![CDATA[['<Super><Shift>End', '<Super>0']]]></default>
+			<summary>Shortcut to move the current window to last workspace</summary>
 			<description></description>
 		</key>
 		<key type="as" name="zoom-in">
@@ -102,6 +117,14 @@
 			<default><![CDATA[['<Super>a']]]></default>
 			<summary>Shortcut to open the window overview for all windows</summary>
 			<description></description>
+		</key>
+		<key type="as" name="cycle-workspaces-next">
+			<default><![CDATA[['<Super>Tab']]]></default>
+			<summary>Cycle to the next workspace to the right or to back to the first</summary>
+		</key>
+		<key type="as" name="cycle-workspaces-previous">
+			<default><![CDATA[['<Super><Shift>Tab']]]></default>
+			<summary>Cycle to the next workspace to the right or to back to the first</summary>
 		</key>
 	</schema>
 	

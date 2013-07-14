@@ -36,9 +36,8 @@ namespace Gala
 		Plank.DockPreferences dock_settings;
 		BindConstraint y_constraint;
 		BindConstraint h_constraint;
-		
-		//FIXME window titles of supported docks, to be extended
-		const string [] DOCK_NAMES = {"plank", "Docky", "docky"};
+
+		bool closing = false;
 		
 		//estimated value, if possible
 		float dock_width = 0.0f;
@@ -49,11 +48,7 @@ namespace Gala
 			
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
-			dock_settings.changed.connect (update_dock);
-			
-			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
-			dock_theme.load ("dock");
-			dock_theme.changed.connect (update_dock);
+			dock_settings.notify["Theme"].connect (load_dock_theme);
 			
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
@@ -75,9 +70,21 @@ namespace Gala
 			add_child (dock_background);
 			add_child (dock);
 			
-			update_dock ();
+			load_dock_theme ();
 			
 			visible = false;
+		}
+		
+		void load_dock_theme ()
+		{
+			if (dock_theme != null)
+				dock_theme.notify.disconnect (update_dock);
+			
+			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
+			dock_theme.load ("dock");
+			dock_theme.notify.connect (update_dock);
+			
+			update_dock ();
 		}
 		
 		//set the values which don't get set every time and need to be updated when the theme changes
@@ -119,11 +126,13 @@ namespace Gala
 		
 		void close (uint time)
 		{
+			if (closing)
+				return;
+
+			closing = true;
+
 			var screen = plugin.get_screen ();
-			
 			var workspace = screen.get_active_workspace ();
-			workspace.window_added.disconnect (add_window);
-			workspace.window_removed.disconnect (remove_window);
 			
 			if (dock_window != null)
 				dock_window.opacity = 0;
@@ -170,10 +179,18 @@ namespace Gala
 				window_clones.clear ();
 				
 				//need to go through all the windows because of hidden dialogs
-				foreach (var window in Meta.Compositor.get_window_actors (screen)) {
+				unowned List<Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+				warn_if_fail (window_actors != null);
+				if (window_actors == null)
+					return;
+				foreach (var window in window_actors) {
 					if (window.get_workspace () == workspace.index ())
 						window.show ();
 				}
+
+				workspace.window_added.disconnect (add_window);
+				workspace.window_removed.disconnect (remove_window);
+				screen.window_left_monitor.disconnect (window_left_monitor);
 			});
 		}
 		
@@ -200,27 +217,51 @@ namespace Gala
 			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
 			
 			var prev_win = current_window;
-			switch (action) {
-				case Meta.KeyBindingAction.SWITCH_GROUP:
-				case Meta.KeyBindingAction.SWITCH_WINDOWS:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-							screen.get_active_workspace (), current_window, backward);
-					last_time = display.get_current_time_roundtrip ();
-					break;
-				case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
-				case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-					current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
-							screen.get_active_workspace (), current_window, true);
-					last_time = display.get_current_time_roundtrip ();
-					break;
-				default:
-					break;
+			if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
+				action == Meta.KeyBindingAction.SWITCH_WINDOWS || 
+				event.get_key_symbol () == Clutter.Key.Right) {
+				
+				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+						screen.get_active_workspace (), current_window, backward);
+				last_time = display.get_current_time_roundtrip ();
+				
+			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
+				action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD ||
+				event.get_key_symbol () == Clutter.Key.Left) {
+				
+				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+						screen.get_active_workspace (), current_window, true);
+				last_time = display.get_current_time_roundtrip ();
 			}
 			
 			if (prev_win != current_window) {
 				dim_windows ();
 			}
 			
+			return true;
+		}
+
+		bool clicked_icon (Clutter.ButtonEvent event) {
+			var index = 0;
+			for (; index < dock.get_n_children (); index++) {
+				if (dock.get_child_at_index (index) == event.source)
+					break;
+			}
+			
+			var prev_window = current_window;
+			current_window = (window_clones.get (index).source as Meta.WindowActor).get_meta_window ();
+			
+			if (prev_window != current_window) {
+				dim_windows ();
+				// wait for the dimming to finish
+				Timeout.add (250, () => {
+					close (event.time);
+					return false;
+				});
+			} else {
+				close (event.time);
+			}
+
 			return true;
 		}
 		
@@ -240,6 +281,20 @@ namespace Gala
 				}
 				
 				i++;
+			}
+		}
+
+		void window_left_monitor (int num, Meta.Window window)
+		{
+			// see if that's happened on our workspace
+			var workspace = plugin.get_screen ().get_active_workspace ();
+#if HAS_MUTTER38
+			if (window.located_on_workspace (workspace)) {
+#else
+			if (window.get_workspace () == workspace || 
+				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
+#endif
+				remove_window (window);
 			}
 		}
 		
@@ -275,6 +330,8 @@ namespace Gala
 			window_clones.add (clone);
 			
 			var icon = new GtkClutter.Texture ();
+			icon.reactive = true;
+			icon.button_release_event.connect (clicked_icon);
 			try {
 				var pix = Utils.get_icon_for_window (window, dock_settings.IconSize);
 				icon.set_from_pixbuf (pix);
@@ -327,9 +384,16 @@ namespace Gala
 				return;
 			}
 			
-			dock.get_child_at_index (window_clones.index_of (found)).destroy ();
+			var icon = dock.get_child_at_index (window_clones.index_of (found));
+			icon.button_release_event.disconnect (clicked_icon);
+			icon.destroy ();
 			window_clones.remove (found);
 			remove_clone (found);
+		}
+		
+		public override void key_focus_out ()
+		{
+			close (plugin.get_screen ().get_display ().get_current_time ());
 		}
 		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
@@ -347,32 +411,18 @@ namespace Gala
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
-				var actor = metawindows.nth_data (0).get_compositor_private () as Actor;
-				if (actor.is_in_clone_paint ())
+				var win = metawindows.nth_data (0);
+				if (win.minimized)
+					win.unminimize ();
+				else {
+					Utils.bell (screen);
 					return;
-				
-				actor.hide ();
-				
-				var clone = new Clone (actor);
-				clone.x = actor.x;
-				clone.y = actor.y;
-				Meta.Compositor.get_overlay_group_for_screen (screen).add_child (clone);
-				clone.animate (Clutter.AnimationMode.LINEAR, 100, depth : -50.0f).completed.connect (() => {
-					clone.animate (Clutter.AnimationMode.LINEAR, 300, depth : 0.0f);
-				});
-				
-				Timeout.add (410, () => {
-					actor.show ();
-					clone.destroy ();
-					
-					return false;
-				});
-				
-				return;
+				}
 			}
 			
 			workspace.window_added.connect (add_window);
 			workspace.window_removed.connect (remove_window);
+			screen.window_left_monitor.connect (window_left_monitor);
 			
 			//grab the windows to be switched
 			var layout = dock.layout_manager as BoxLayout;
@@ -388,12 +438,13 @@ namespace Gala
 				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
 					w.hide ();
 				
-				if (w.get_meta_window ().title in DOCK_NAMES && type == Meta.WindowType.DOCK) {
+				if (w.get_meta_window ().title in BehaviorSettings.get_default ().dock_names && type == Meta.WindowType.DOCK) {
 					dock_window = w;
 					dock_window.hide ();
 				}
 			});
 			
+			closing = false;
 			plugin.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");

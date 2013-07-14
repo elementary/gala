@@ -43,10 +43,16 @@ if (MUTTER36_FOUND)
 endif (MUTTER36_FOUND)
 
 set (MUTTER38_FLAGS "")
-pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.3)
+pkg_check_modules(MUTTER38 QUIET libmutter>=3.7.91)
 if (MUTTER38_FOUND)
 	set (MUTTER38_FLAGS "--define=HAS_MUTTER38")
 endif (MUTTER38_FOUND)
+
+set (MUTTER310_FLAGS "")
+pkg_check_modules(MUTTER310 QUIET libmutter>=3.9.1)
+if (MUTTER310_FOUND)
+	set (MUTTER310_FLAGS "--define=HAS_MUTTER310")
+endif (MUTTER310_FOUND)
 
 add_definitions(${DEPS_CFLAGS})
 
@@ -60,6 +66,7 @@ ensure_vala_version("0.16.1" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(VALA_C
     src/DBus.vala
+    src/DragDropAction.vala
     src/Main.vala
     src/Plugin.vala
     src/Settings.vala
@@ -87,6 +94,7 @@ OPTIONS
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     ${MUTTER36_FLAGS}
     ${MUTTER38_FLAGS}
+    ${MUTTER310_FLAGS}
     )
 
 #add_subdirectory (po)
@@ -95,7 +103,9 @@ include(GSettings)
 add_schema ("data/org.pantheon.desktop.gala.gschema.xml")
 
 add_executable(gala ${VALA_C})#src/main.c)
+target_link_libraries(gala m)
 
 install(TARGETS gala RUNTIME DESTINATION bin)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.desktop DESTINATION share/applications)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.css DESTINATION ${PKGDATADIR})
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/texture.png DESTINATION ${PKGDATADIR})
