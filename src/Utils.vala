@@ -100,7 +100,6 @@ namespace Gala
 			cache_clear_timeout = Timeout.add_seconds (30, () => {
 				cache_clear_timeout = 0;
 				Idle.add (() => {
-					print ("Clear cache\n");
 					clean_icon_cache (xids);
 					return false;
 				});

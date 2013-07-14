@@ -274,15 +274,11 @@ namespace Gala
 			add_child (clone);
 			window_clones.add (clone);
 			
-			var start2 = new DateTime.now_local ();
 			var icon = new GtkClutter.Texture ();
 			try {
 				var pix = Utils.get_icon_for_window (window, dock_settings.IconSize);
 				icon.set_from_pixbuf (pix);
 			} catch (Error e) { warning (e.message); }
-			var end2 = new DateTime.now_local ();
-			var diff2 = end2.difference (start2) / 1000.0;
-			print ("%f ms to grab the icon\n", diff2);
 			
 			icon.opacity = 100;
 			dock.add_child (icon);
@@ -339,7 +335,6 @@ namespace Gala
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			X.Event event, Meta.KeyBinding binding)
 		{
-			var start = new DateTime.now_local ();
 			if (visible) {
 				if (window_clones.size != 0)
 					close (screen.get_display ().get_current_time ());
@@ -382,12 +377,8 @@ namespace Gala
 			//grab the windows to be switched
 			var layout = dock.layout_manager as BoxLayout;
 			window_clones.clear ();
-			var start1 = new DateTime.now_local ();
 			foreach (var win in metawindows)
 				add_window (win);
-			var end1 = new DateTime.now_local ();
-			var diff1 = end1.difference (start1) / 1000.0;
-			print ("%f for adding window clones\n", diff1);
 			
 			visible = true;
 			
@@ -459,10 +450,6 @@ namespace Gala
 			
 			dim_windows ();
 			grab_key_focus ();
-
-			var end = new DateTime.now_local ();
-			var diff = end.difference (start) / 1000.0;
-			print ("%f ms for starting with %u windows\n", diff, get_n_children () - 2);
 		}
 	}
 }
