@@ -465,16 +465,13 @@ namespace Gala
 			if (visible)
 				update_windows ();
 			
-			if (!Prefs.get_dynamic_workspaces ())
-				return;
-			
-			//dont remove workspaces when for example slingshot was closed
-			if (window.window_type != WindowType.NORMAL &&
-				window.window_type != WindowType.DIALOG &&
-				window.window_type != WindowType.MODAL_DIALOG)
-				return;
-			
-			if (workspace == null || Utils.get_n_windows (workspace) > 0)
+			if (!Prefs.get_dynamic_workspaces ()
+				|| (window.window_type != WindowType.NORMAL
+				&& window.window_type != WindowType.DIALOG
+				&& window.window_type != WindowType.MODAL_DIALOG)
+				|| workspace == null
+				|| Utils.get_n_windows (workspace) > 0
+				|| workspace.index () == workspace.get_screen ().get_n_workspaces () - 1)
 				return;
 			
 			// we need to wait untill the animation ended, otherwise we get trouble with focus handling
