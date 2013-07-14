@@ -622,7 +622,8 @@ namespace Gala
 		
 		void add_window (Window window)
 		{
-			if (!visible || window.get_workspace () != screen.get_active_workspace ())
+			if (!visible || window.get_workspace () != screen.get_active_workspace ()
+				|| (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DIALOG))
 				return;
 			
 			var actor = window.get_compositor_private () as WindowActor;
