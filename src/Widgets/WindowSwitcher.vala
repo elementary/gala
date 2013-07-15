@@ -333,7 +333,8 @@ namespace Gala
 			icon.reactive = true;
 			icon.button_release_event.connect (clicked_icon);
 			try {
-				icon.set_from_pixbuf (Utils.get_icon_for_window (window, dock_settings.IconSize));
+				var pix = Utils.get_icon_for_window (window, dock_settings.IconSize);
+				icon.set_from_pixbuf (pix);
 			} catch (Error e) { warning (e.message); }
 			
 			icon.opacity = 100;

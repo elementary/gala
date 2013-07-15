@@ -260,6 +260,18 @@ namespace Gala
 				Utils.set_input_area (get_screen (), InputArea.NONE);
 		}
 		
+		public uint32[] get_all_xids ()
+		{
+			var list = new Gee.ArrayList<uint32> ();
+			
+			foreach (var workspace in get_screen ().get_workspaces ()) {
+				foreach (var window in workspace.list_windows ())
+					list.add ((uint32)window.get_xwindow ());
+			}
+			
+			return list.to_array ();
+		}
+		
 		void cycle_workspaces (int direction)
 		{
 			var screen = get_screen ();
@@ -564,12 +576,17 @@ namespace Gala
 		
 		public override void destroy (WindowActor actor)
 		{
+			var window = actor.get_meta_window ();
+			
 			if (!AnimationSettings.get_default ().enable_animations) {
 				destroy_completed (actor);
+
+				// only NORMAL windows have icons
+				if (window.window_type == WindowType.NORMAL)
+					Utils.request_clean_icon_cache (get_all_xids ());
+
 				return;
 			}
-			
-			var window = actor.get_meta_window ();
 			
 			actor.detach_animation ();
 			
@@ -590,6 +607,7 @@ namespace Gala
 						
 						destroying.remove (actor);
 						destroy_completed (actor);
+						Utils.request_clean_icon_cache (get_all_xids ());
 					});
 					break;
 				case WindowType.MODAL_DIALOG:

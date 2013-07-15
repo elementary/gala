@@ -57,13 +57,75 @@ namespace Gala
 			factory.set_params ("modal_dialog", false, shadow);
 		}
 		
+		// Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
+		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
+		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
+		static uint cache_clear_timeout = 0;
+		
+		static construct
+		{
+			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
+			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
+		}
+		
+		/**
+		 * Clean icon caches
+		 */
+		static void clean_icon_cache (uint32[] xids)
+		{
+			var list = xid_pixbuf_cache.keys.to_array ();
+			var pixbuf_list = icon_pixbuf_cache.values.to_array ();
+			var icon_list = icon_pixbuf_cache.keys.to_array ();
+
+			foreach (var xid_key in list) {
+				var xid = (uint32)uint64.parse (xid_key.split ("::")[0]);
+				if (!(xid in xids)) {
+					var pixbuf = xid_pixbuf_cache.get (xid_key);
+					for (var j = 0; j < pixbuf_list.length; j++) {
+						if (pixbuf_list[j] == pixbuf) {
+							xid_pixbuf_cache.unset (icon_list[j]);
+						}
+					}
+
+					xid_pixbuf_cache.unset (xid_key);
+				}
+			}
+		}
+		
+		public static void request_clean_icon_cache (uint32[] xids)
+		{
+			if (cache_clear_timeout > 0)
+				GLib.Source.remove (cache_clear_timeout);
+			
+			cache_clear_timeout = Timeout.add_seconds (30, () => {
+				cache_clear_timeout = 0;
+				Idle.add (() => {
+					clean_icon_cache (xids);
+					return false;
+				});
+				return false;
+			});
+		}
+		
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
 		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
 		{
-			var app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
-			return get_icon_for_application (app, size);
+			Gdk.Pixbuf? result = null;
+			
+			var xid = (uint32)window.get_xwindow ();
+			var xid_key = "%u::%i".printf (xid, size);
+			
+			if ((result = xid_pixbuf_cache.get (xid_key)) != null)
+				return result;
+			
+			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
+			result = get_icon_for_application (app, size);
+			
+			xid_pixbuf_cache.set (xid_key, result);
+			
+			return result;
 		}
 		
 		/**
@@ -71,16 +133,22 @@ namespace Gala
 		 **/
 		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
 		{
-			unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 			Gdk.Pixbuf? image = null;
+			bool not_cached = false;
+			
+			string? icon = null;
+			string? icon_key = null;
 			
 			if (app != null && app.get_desktop_file () != null) {
 				try {
 					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 					if (appinfo != null) {
-						var iconinfo = icon_theme.lookup_by_gicon (appinfo.get_icon (), size, 0);
-						if (iconinfo != null)
-							image = iconinfo.load_icon ();
+						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
+						icon_key = "%s::%i".printf (icon, size);
+						if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
+							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
+							not_cached = true;
+						}
 					}
 				} catch (Error e) {
 					warning (e.message);
@@ -89,19 +157,33 @@ namespace Gala
 			
 			if (image == null) {
 				try {
-					image = icon_theme.load_icon ("application-default-icon", size, 0);
+					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+					icon = "application-default-icon";
+					icon_key = "%s::%i".printf (icon, size);
+					if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
+						image = icon_theme.load_icon (icon, size, 0);
+						not_cached = true;
+					}
 				} catch (Error e) {
 					warning (e.message);
 				}
 			}
 			
 			if (image == null) {
-				image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, 1, 1);
-				image.fill (0x00000000);
+				icon = "";
+				icon_key = "::%i".printf (size);
+				if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
+					image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, size, size);
+					image.fill (0x00000000);
+					not_cached = true;
+				}
 			}
 			
 			if (size != image.width || size != image.height)
-				return Plank.Drawing.DrawingService.ar_scale (image, size, size);
+				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
+			
+			if (not_cached)
+				icon_pixbuf_cache.set (icon_key, image);
 			
 			return image;
 		}
