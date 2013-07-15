@@ -103,7 +103,6 @@ namespace Gala
 			try {
 				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
 			} catch (Error e) { warning (e.message); }
-			close_button.x = -12.0f;
 			close_button.y = -10.0f;
 			close_button.reactive = true;
 			close_button.scale_gravity = Clutter.Gravity.CENTER;
@@ -205,6 +204,9 @@ namespace Gala
 
 			wallpaper.width = width;
 			windows.width = width;
+
+			var right = Granite.Widgets.Utils.get_default_close_button_position () == Granite.CloseButtonPosition.RIGHT;
+			close_button.x = right ? width - 12.0f : -12.0f;
 
 			plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
 			plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;
