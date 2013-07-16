@@ -205,8 +205,9 @@ namespace Gala
 			wallpaper.width = width;
 			windows.width = width;
 
-			var right = Granite.Widgets.Utils.get_default_close_button_position () == Granite.CloseButtonPosition.RIGHT;
-			close_button.x = right ? width - 12.0f : -12.0f;
+			Granite.CloseButtonPosition pos;
+			Granite.Widgets.Utils.get_default_close_button_position (out pos);
+			close_button.x = pos == Granite.CloseButtonPosition.RIGHT ? width - 12.0f : -12.0f;
 
 			plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
 			plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;

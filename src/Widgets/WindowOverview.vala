@@ -504,8 +504,10 @@ namespace Gala
 			float offset_x, offset_y, offset_width;
 			Utils.get_window_frame_offset (clone.window, out offset_x, out offset_y, out offset_width, null);
 
-			var right = Granite.Widgets.Utils.get_default_close_button_position () == Granite.CloseButtonPosition.RIGHT;
-			clone.close_button.x = right ? rect.x + rect.width - offset_width * fscale - clone.close_button.width / 2 :
+			Granite.CloseButtonPosition pos;
+			Granite.Widgets.Utils.get_default_close_button_position (out pos);
+			clone.close_button.x = pos == Granite.CloseButtonPosition.RIGHT ?
+				rect.x + rect.width - offset_width * fscale - clone.close_button.width / 2 :
 				rect.x - offset_x * fscale - 8;
 			clone.close_button.y = rect.y - offset_y * fscale - 8;
 			
