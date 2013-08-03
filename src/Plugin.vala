@@ -45,6 +45,8 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Zooming zooming;
 		WindowOverview window_overview;
+
+		ScreenSaver? screensaver;
 		
 #if HAS_MUTTER38
 		// FIXME we need a proper-sized background for every monitor
@@ -86,6 +88,17 @@ namespace Gala
 			var screen = get_screen ();
 			
 			DBus.init (this);
+			
+			// Due to a bug which enables access to the stage when using multiple monitors
+			// in the screensaver, we have to listen for changes and make sure the input area
+			// is set to NONE when we are in locked mode
+			try {
+				screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
+					"/org/gnome/ScreenSaver");
+				screensaver.active_changed.connect (() => {
+					update_input_area ();
+				});
+			} catch (Error e) { warning (e.message); }
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			
@@ -250,14 +263,22 @@ namespace Gala
 		public void update_input_area ()
 		{
 			var schema = BehaviorSettings.get_default ().schema;
+			var screen = get_screen ();
 			
-			if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
+			if (screensaver != null && screensaver.get_active ()) {
+				Utils.set_input_area (screen, InputArea.NONE);
+				return;
+			}
+			
+			if (modal_count > 0)
+				Utils.set_input_area (screen, InputArea.FULLSCREEN);
+			else if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
-				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
+				Utils.set_input_area (screen, InputArea.HOT_CORNER);
 			else
-				Utils.set_input_area (get_screen (), InputArea.NONE);
+				Utils.set_input_area (screen, InputArea.NONE);
 		}
 		
 		public uint32[] get_all_xids ()
@@ -318,6 +339,7 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
+			update_input_area ();
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 		}
 		
@@ -327,6 +349,7 @@ namespace Gala
 			if (modal_count > 0)
 				return;
 			
+			update_input_area ();
 			base.end_modal (get_screen ().get_display ().get_current_time ());
 		}
 		

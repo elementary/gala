@@ -69,6 +69,7 @@ vala_precompile(VALA_C
     src/DragDropAction.vala
     src/Main.vala
     src/Plugin.vala
+    src/ScreenSaver.vala
     src/Settings.vala
     src/TextShadowEffect.vala
     src/Utils.vala

@@ -388,7 +388,6 @@ namespace Gala
 			visible = true;
 			grab_key_focus ();
 			
-			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			plugin.begin_modal ();
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
