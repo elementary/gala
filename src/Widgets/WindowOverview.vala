@@ -684,8 +684,7 @@ namespace Gala
 				close (true);
 				//wait for the animation to finish before switching
 				Timeout.add (400, () => {
-					window.get_workspace ().activate (screen.get_display ().get_current_time ());
-					window.activate (screen.get_display ().get_current_time ());
+					window.get_workspace ().activate_with_focus (window, screen.get_display ().get_current_time ());
 					return false;
 				});
 			}
