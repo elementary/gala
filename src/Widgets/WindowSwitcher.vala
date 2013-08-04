@@ -501,6 +501,12 @@ namespace Gala
 			
 			dim_windows ();
 			grab_key_focus ();
+
+			Gdk.ModifierType modifiers;
+			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_state (Gdk.get_default_root_window (),
+				null, out modifiers);
+			if ((modifiers & Gdk.ModifierType.MOD1_MASK) == 0)
+				close (plugin.get_screen ().get_display ().get_current_time ());
 		}
 	}
 }
