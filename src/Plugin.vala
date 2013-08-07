@@ -429,7 +429,11 @@ namespace Gala
 				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration, 
 					scale_x:scale_x, scale_y:scale_y,opacity:0)
 					.completed.connect (() => {
+					//FIXME once we enable this part and we still haven't found a fix for below issue, add the idle here too
 					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+					actor.opacity = 255;
+					actor.scale_x = 1.0;
+					actor.scale_y = 1.0;
 					minimize_completed (actor);
 					minimizing.remove (actor);
 				});
@@ -440,9 +444,17 @@ namespace Gala
 				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration, 
 					scale_x : 0.0f, scale_y : 0.0f, opacity : 0)
 					.completed.connect (() => {
-					actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
-					minimize_completed (actor);
-					minimizing.remove (actor);
+					//FIXME for unknown reasons clutter won't apply properties that are changed here,
+					//      so we got to use an idle
+					Idle.add (() => {
+						actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+						actor.opacity = 255;
+						actor.scale_x = 1.0;
+						actor.scale_y = 1.0;
+						minimize_completed (actor);
+						minimizing.remove (actor);
+						return false;
+					});
 				});
 			}
 		}
