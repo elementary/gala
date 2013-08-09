@@ -103,7 +103,7 @@ namespace Gala
 			try {
 				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
 			} catch (Error e) { warning (e.message); }
-			close_button.y = -10.0f;
+			close_button.y = -close_button.height * 0.25f;
 			close_button.reactive = true;
 			close_button.scale_gravity = Clutter.Gravity.CENTER;
 			close_button.scale_x = 0;
