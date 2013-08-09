@@ -207,7 +207,15 @@ namespace Gala
 
 			Granite.CloseButtonPosition pos;
 			Granite.Widgets.Utils.get_default_close_button_position (out pos);
-			close_button.x = pos == Granite.CloseButtonPosition.RIGHT ? width - 12.0f : -12.0f;
+			float close_button_offset = close_button.width * 0.25f;
+			switch (pos) {
+				case Granite.CloseButtonPosition.LEFT:
+					close_button.x = -close_button_offset;
+					break;
+				case Granite.CloseButtonPosition.RIGHT:
+					close_button.x = width - close_button_offset;
+					break;
+			}
 
 			plus.x = wallpaper.x + wallpaper.width / 2 - plus.width / 2;
 			plus.y = wallpaper.y + wallpaper.height / 2 - plus.height / 2;

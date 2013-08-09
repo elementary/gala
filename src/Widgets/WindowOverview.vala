@@ -503,13 +503,19 @@ namespace Gala
 			
 			float offset_x, offset_y, offset_width;
 			Utils.get_window_frame_offset (clone.window, out offset_x, out offset_y, out offset_width, null);
+			float button_offset = clone.close_button.width * 0.25f;
 
 			Granite.CloseButtonPosition pos;
 			Granite.Widgets.Utils.get_default_close_button_position (out pos);
-			clone.close_button.x = pos == Granite.CloseButtonPosition.RIGHT ?
-				rect.x + rect.width - offset_width * fscale - clone.close_button.width / 2 :
-				rect.x - offset_x * fscale - 8;
-			clone.close_button.y = rect.y - offset_y * fscale - 8;
+			switch (pos) {
+				case Granite.CloseButtonPosition.LEFT:
+					clone.close_button.x = rect.x - offset_x * fscale - button_offset;
+					break;
+				case Granite.CloseButtonPosition.RIGHT:
+					clone.close_button.x = rect.x + rect.width - offset_width * fscale - clone.close_button.width / 2;
+					break;
+			}
+			clone.close_button.y = rect.y - offset_y * fscale - button_offset;
 			
 			clone.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 250, scale_x:fscale, scale_y:fscale, x:rect.x+0.0f, y:rect.y+0.0f)
 				.completed.connect (() => ready = true );
