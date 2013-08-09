@@ -95,9 +95,7 @@ namespace Gala
 			try {
 				screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
 					"/org/gnome/ScreenSaver");
-				screensaver.active_changed.connect (() => {
-					update_input_area ();
-				});
+				screensaver.active_changed.connect (update_input_area);
 			} catch (Error e) { warning (e.message); }
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
