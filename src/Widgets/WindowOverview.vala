@@ -734,8 +734,10 @@ namespace Gala
 					visible = false;
 					ready = true;
 					
-					foreach (var window in screen.get_active_workspace ().list_windows ())
-						(window.get_compositor_private () as Actor).show ();
+					foreach (var window in screen.get_active_workspace ().list_windows ()) {
+						if (window.showing_on_its_workspace ())
+							(window.get_compositor_private () as Actor).show ();
+					}
 					
 					return false;
 				});
@@ -744,7 +746,8 @@ namespace Gala
 				visible = false;
 				
 				foreach (var window in screen.get_active_workspace ().list_windows ())
-					(window.get_compositor_private () as Actor).show ();
+					if (window.showing_on_its_workspace ())
+						(window.get_compositor_private () as Actor).show ();
 			}
 		}
 	}
