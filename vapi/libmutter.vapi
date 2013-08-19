@@ -25,8 +25,10 @@ namespace Meta {
 		public static GDesktop.TitlebarAction get_action_middle_click_titlebar ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.TitlebarAction get_action_right_click_titlebar ();
+#if !HAS_MUTTER310
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_application_based ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_attach_modal_dialogs ();
 #if HAS_MUTTER38
@@ -355,6 +357,17 @@ namespace Meta {
 		public void window_shape_changed (Meta.Window window);
 		public void window_unmapped (Meta.Window window);
 	}
+#if HAS_MUTTER310
+	[CCode (cheader_filename = "meta/meta-cursor-tracker.h", type_id = "meta_cursor_tracker_get_type ()")]
+	public class CursorTracker : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected CursorTracker ();
+		public static unowned Meta.CursorTracker get_for_screen (Meta.Screen screen);
+		public void get_hot (out int x, out int y);
+		public unowned Cogl.Texture get_sprite ();
+		public signal void cursor_changed ();
+	}
+#endif
 	[CCode (cheader_filename = "meta/display.h", type_id = "meta_display_get_type ()")]
 	public class Display : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -420,7 +433,9 @@ namespace Meta {
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
-#if HAS_MUTTER38
+#if HAS_MUTTER310
+		public signal void accelerator_activated (uint object, uint p0, uint p1);
+#elif HAS_MUTTER38
 		public signal void accelerator_activated (uint object, uint p0);
 #endif
 		public signal void grab_op_begin (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
@@ -469,6 +484,11 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected Plugin ();
 		public bool begin_modal (X.Window grab_window, X.Cursor cursor, Meta.ModalOptions options, uint32 timestamp);
+#if HAS_MUTTER310
+		public void complete_display_change (bool ok);
+		[NoWrapper]
+		public virtual void confirm_display_change ();
+#endif
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
@@ -610,7 +630,11 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h")]
 		public static unowned Meta.Theme @new ();
 		[CCode (cheader_filename = "meta/main.h")]
+#if HAS_MUTTER310
+		public static void set_current (string name);
+#else
 		public static void set_current (string name, bool force_reload);
+#endif
 		public bool validate () throws GLib.Error;
 	}
 	[CCode (cheader_filename = "meta/window.h", type_id = "meta_window_get_type ()")]
@@ -787,7 +811,9 @@ namespace Meta {
 #endif
 		[CCode (has_construct_function = false)]
 		protected WindowActor ();
+#if !HAS_MUTTER310
 		public unowned string get_description ();
+#endif
 		public unowned Meta.Window get_meta_window ();
 		public unowned Clutter.Actor get_texture ();
 		public int get_workspace ();
@@ -993,7 +1019,12 @@ namespace Meta {
 		RESIZING,
 		SHAPES,
 		COMPOSITOR,
+#if HAS_MUTTER310
+		EDGE_RESISTANCE,
+		DBUS
+#else
 		EDGE_RESISTANCE
+#endif
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_", type_id = "meta_direction_get_type ()")]
 	[Flags]
@@ -1276,7 +1307,9 @@ namespace Meta {
 		TITLEBAR_FONT,
 		NUM_WORKSPACES,
 		DYNAMIC_WORKSPACES,
+#if !HAS_MUTTER310
 		APPLICATION_BASED,
+#endif
 		KEYBINDINGS,
 		DISABLE_WORKAROUNDS,
 		BUTTON_LAYOUT,
