@@ -155,7 +155,8 @@ namespace Gala
 				
 				//reset order
 				clone.get_parent ().set_child_below_sibling (clone, null);
-				clone.animate (AnimationMode.EASE_OUT_CUBIC, 150, depth : 0.0f, opacity : 255);
+				if (!(clone.source as Meta.WindowActor).get_meta_window ().minimized)
+					clone.animate (AnimationMode.EASE_OUT_CUBIC, 150, depth : 0.0f, opacity : 255);
 			}
 			
 			if (current_window != null) {
@@ -184,7 +185,7 @@ namespace Gala
 				if (window_actors == null)
 					return;
 				foreach (var window in window_actors) {
-					if (window.get_workspace () == workspace.index ())
+					if (window.get_workspace () == workspace.index () && !window.get_meta_window ().minimized)
 						window.show ();
 				}
 
