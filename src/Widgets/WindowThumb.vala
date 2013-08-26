@@ -131,7 +131,7 @@ namespace Gala
 			return true;
 		}
 		
-		public override bool button_press_event (ButtonEvent event)
+		public override bool button_release_event (ButtonEvent event)
 		{
 			switch (event.button) {
 				case 1:
