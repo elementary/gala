@@ -45,6 +45,9 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Zooming zooming;
 		WindowOverview window_overview;
+
+		// used to detect which corner was used to trigger an action
+		Clutter.Actor? last_hotcorner;
 		
 #if HAS_MUTTER38
 		// FIXME we need a proper-sized background for every monitor
@@ -238,6 +241,7 @@ namespace Gala
 				stage.add_child (hot_corner);
 				
 				hot_corner.enter_event.connect (() => {
+					last_hotcorner = hot_corner;
 					perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
 					return false;
 				});
@@ -379,8 +383,29 @@ namespace Gala
 					}
 					break;
 				case ActionType.CUSTOM_COMMAND:
+					string command = "";
+					var line = BehaviorSettings.get_default ().hotcorner_custom_command;
+					if (line == "")
+						return;
+
+					var parts = line.split (";;");
+					// keep compatibility to old version where only one command was possible
+					if (parts.length == 1) {
+						command = line;
+					} else {
+						// find specific actions
+						var search = last_hotcorner.name;
+
+						foreach (var part in parts) {
+							var details = part.split (":");
+							if (details[0] == search) {
+								command = details[1];
+							}
+						}
+					}
+
 					try {
-						Process.spawn_command_line_async (BehaviorSettings.get_default ().hotcorner_custom_command);
+						Process.spawn_command_line_async (command);
 					} catch (Error e) {
 						warning (e.message);
 					}
