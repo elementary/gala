@@ -26,6 +26,8 @@ namespace Gala
 		Clone clone;
 		public GtkClutter.Texture icon;
 		public GtkClutter.Texture close_button;
+
+		const int WAIT_FOR_CONFIRMATION_DIALOG = 100;
 		
 		public signal void selected (Window window);
 		public signal void closed ();
@@ -80,14 +82,21 @@ namespace Gala
 		
 		public void close_window ()
 		{
-			//make sure we dont see a window closing animation in the background
-			clone.source.opacity = 0;
 			get_parent ().set_child_below_sibling (this, null);
-			closed ();
-			destroy ();
+			// make sure we dont see a window closing animation in the background
+			clone.source.opacity = 0;
 			window.delete (window.get_screen ().get_display ().get_current_time ());
+			// see if the window is still alive after the animation ended. If it is, it's pretty certain that it
+			// popped up some kind of confirmation dialog, so we focus it
+			Timeout.add (AnimationSettings.get_default ().close_duration + WAIT_FOR_CONFIRMATION_DIALOG, () => {
+				if (clone != null && clone.source != null && !(clone.source as Meta.WindowActor).is_destroyed ()) {
+					clone.source.opacity = 255;
+					selected (window);
+				}
+				return false;
+			});
 		}
-		
+
 		public override void destroy ()
 		{
 			clone.destroy ();

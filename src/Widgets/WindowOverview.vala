@@ -670,13 +670,14 @@ namespace Gala
 					thumb = child as WindowThumb;
 			}
 			
-			if (thumb != null)
-				thumb.close_window ();
+			if (thumb != null) {
+				thumb_closed (thumb);
+			}
 		}
 		
 		void thumb_closed (WindowThumb thumb)
 		{
-			remove_child (thumb);
+			thumb.destroy ();
 			
 			var children = get_children ();
 			if (children.length () > 0)
