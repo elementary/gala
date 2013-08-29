@@ -322,7 +322,11 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
+#if HAS_MUTTER310
+			base.begin_modal (0, display.get_current_time ());
+#else
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
+#endif
 		}
 		
 		public new void end_modal ()

@@ -483,11 +483,13 @@ namespace Meta {
 	public abstract class Plugin : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Plugin ();
-		public bool begin_modal (X.Window grab_window, X.Cursor cursor, Meta.ModalOptions options, uint32 timestamp);
 #if HAS_MUTTER310
+		public bool begin_modal (Meta.ModalOptions options, uint32 timestamp);
 		public void complete_display_change (bool ok);
 		[NoWrapper]
 		public virtual void confirm_display_change ();
+#else
+		public bool begin_modal (X.Window grab_window, X.Cursor cursor, Meta.ModalOptions options, uint32 timestamp);
 #endif
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
