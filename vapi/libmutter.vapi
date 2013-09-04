@@ -461,6 +461,21 @@ namespace Meta {
 		public bool property_notify (X.Event event);
 		public void update_layers ();
 	}
+#if HAS_MUTTER310
+	[CCode (cheader_filename = "meta/meta-idle-monitor.h", type_id = "meta_idle_monitor_get_type ()")]
+	public class IdleMonitor : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected IdleMonitor ();
+		public uint add_idle_watch (uint64 interval_msec, owned Meta.IdleMonitorWatchFunc? callback);
+		public uint add_user_active_watch (owned Meta.IdleMonitorWatchFunc? callback);
+		public static unowned Meta.IdleMonitor get_core ();
+		public static unowned Meta.IdleMonitor get_for_device (int device_id);
+		public int64 get_idletime ();
+		public void remove_watch (uint id);
+		[NoAccessorMethod]
+		public int device_id { get; construct; }
+	}
+#endif
 	[CCode (cheader_filename = "meta/keybindings.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_key_binding_get_type ()")]
 	[Compact]
 	public class KeyBinding {
@@ -611,12 +626,19 @@ namespace Meta {
 #else
 		public unowned Cogl.Handle get_texture ();
 #endif
+#if HAS_MUTTER310
+		public void set_clip_region (Cairo.Region clip_region);
+#else
 		public void set_clip_region (owned Cairo.Region clip_region);
+#endif
 		public void set_create_mipmaps (bool create_mipmaps);
 #if HAS_MUTTER38
 		public void set_mask_texture (Cogl.Texture mask_texture);
 #else
 		public void set_mask_texture (Cogl.Handle mask_texture);
+#endif
+#if HAS_MUTTER310
+		public void set_opaque_region (owned Cairo.Region opaque_region);
 #endif
 		public void set_pixmap (X.Pixmap pixmap);
 		public void update_area (int x, int y, int width, int height);
@@ -1419,6 +1441,10 @@ namespace Meta {
 		DND,
 		OVERRIDE_OTHER
 	}
+#if HAS_MUTTER310
+	[CCode (cheader_filename = "meta/meta-idle-monitor.h", instance_pos = 2.9)]
+	public delegate void IdleMonitorWatchFunc (Meta.IdleMonitor monitor, uint watch_id);
+#endif
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, X.Event event, Meta.KeyBinding binding);
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 1.9)]

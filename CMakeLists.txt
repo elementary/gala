@@ -53,7 +53,7 @@ endif (MUTTER38_FOUND)
 set (MUTTER310_FLAGS "")
 pkg_check_modules(MUTTER310 QUIET libmutter>=3.9)
 if (MUTTER310_FOUND)
-	pkg_check_modules(MUTTER310 REQUIRED libmutter>=3.9.90)
+	pkg_check_modules(MUTTER310 REQUIRED libmutter>=3.9.91)
 	set (MUTTER310_FLAGS "--define=HAS_MUTTER310")
 endif (MUTTER310_FOUND)
 
