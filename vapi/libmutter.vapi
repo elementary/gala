@@ -364,7 +364,9 @@ namespace Meta {
 		protected CursorTracker ();
 		public static unowned Meta.CursorTracker get_for_screen (Meta.Screen screen);
 		public void get_hot (out int x, out int y);
+		public void get_pointer (int x, int y, Clutter.ModifierType mods);
 		public unowned Cogl.Texture get_sprite ();
+		public void set_pointer_visible (bool visible);
 		public signal void cursor_changed ();
 	}
 #endif
@@ -589,6 +591,9 @@ namespace Meta {
 		public void remove_workspace (Meta.Workspace workspace, uint32 timestamp);
 		public void set_cm_selection ();
 		public void set_compositor_data (void* info);
+#if HAS_MUTTER310
+		public void set_cursor (Meta.Cursor cursor);
+#endif
 		public void ungrab_all_keys (uint32 timestamp);
 		public void unset_cm_selection ();
 		[NoAccessorMethod]
@@ -1016,7 +1021,19 @@ namespace Meta {
 		NE_RESIZE,
 		NW_RESIZE,
 		MOVE_OR_RESIZE_WINDOW,
+#if HAS_MUTTER310
+		BUSY,
+		DND_IN_DRAG,
+		DND_MOVE,
+		DND_COPY,
+		DND_UNSUPPORTED_TARGET,
+		POINTING_HAND,
+		CROSSHAIR,
+		IBEAM,
+		LAST
+#else
 		BUSY
+#endif
 	}
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_", type_id = "meta_debug_topic_get_type ()")]
 	[Flags]
