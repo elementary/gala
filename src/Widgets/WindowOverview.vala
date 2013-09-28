@@ -591,7 +591,6 @@ namespace Gala
 			grab_key_focus ();
 			
 			plugin.begin_modal ();
-			Utils.set_input_area (screen, InputArea.FULLSCREEN);
 			
 			visible = true;
 			
