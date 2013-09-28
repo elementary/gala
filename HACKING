@@ -17,7 +17,7 @@ information and mark any duplicates you spot.
 
     http://bugs.launchpad.net/gala
 
-Help getting Pantheon Terminal translated in your language!
+Help getting Gala translated in your language!
 
     https://translations.launchpad.net/gala
 
@@ -42,7 +42,7 @@ Prepare the source and compile:
     cmake .. -DCMAKE_INSTALL_PREFIX=/usr
     make
 
-Run Pantheon Terminal:
+Run Gala:
     ./gala --replace # from build/
 
 ===== Debugging Code ======
