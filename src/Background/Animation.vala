@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -31,26 +31,26 @@ public class Animation : Object
 	{
 		Object (filename: filename, screen: screen);
 		key_frame_files = new Gee.LinkedList<string> ();
-    }
+	}
 
-    public async void load ()
+	public async void load ()
 	{
-        show = new Gnome.BGSlideShow (filename);
+		show = new Gnome.BGSlideShow (filename);
 
-        //FIXME yield show.load_async (null);
+		//FIXME yield show.load_async (null);
 		show.load ();
 		loaded = true;
-    }
+	}
 
-    public void update (int monitor_index)
+	public void update (int monitor_index)
 	{
-        key_frame_files = new Gee.LinkedList<string> ();
+		key_frame_files = new Gee.LinkedList<string> ();
 
-        if (show == null)
-            return;
+		if (show == null)
+			return;
 
-        if (show.get_num_slides () < 1)
-            return;
+		if (show.get_num_slides () < 1)
+			return;
 
 		var monitor = screen.get_monitor_geometry (monitor_index);
 
@@ -63,11 +63,11 @@ public class Animation : Object
 		transition_progress = progress;
 		transition_duration = duration;
 
-        if (file1 != null)
-            key_frame_files.add (file1);
+		if (file1 != null)
+			key_frame_files.add (file1);
 
-        if (file2 != null)
-            key_frame_files.add (file2);
-    }
+		if (file2 != null)
+			key_frame_files.add (file2);
+	}
 }
 

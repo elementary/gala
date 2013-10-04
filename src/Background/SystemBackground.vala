@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ public class SystemBackground : Object
 
 	public SystemBackground ()
 	{
-        actor = new Meta.BackgroundActor ();
+		actor = new Meta.BackgroundActor ();
 
 		BackgroundCache.get_default ().get_image_content (0, GDesktop.BackgroundStyle.WALLPAPER,
 			Config.PKGDATADIR + "/texture.png", Meta.BackgroundEffects.NONE, this, (userdata, content) => {
@@ -31,5 +31,5 @@ public class SystemBackground : Object
 			self.actor.content = content;
 			self.loaded ();
 		});
-    }
+	}
 }

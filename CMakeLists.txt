@@ -76,11 +76,11 @@ vala_precompile(VALA_C
     src/TextShadowEffect.vala
     src/Utils.vala
     src/Zooming.vala
-	src/Background/Animation.vala
-	src/Background/Background.vala
-	src/Background/BackgroundCache.vala
-	src/Background/BackgroundManager.vala
-	src/Background/SystemBackground.vala
+    src/Background/Animation.vala
+    src/Background/Background.vala
+    src/Background/BackgroundCache.vala
+    src/Background/BackgroundManager.vala
+    src/Background/SystemBackground.vala
     src/Widgets/AppIcon.vala
     src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala

@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -100,172 +100,172 @@ public class Background : Object
 	public signal void changed ();
 	public signal void loaded ();
 
-    public Background (int monitor_index, Meta.BackgroundEffects effects, Settings settings)
+	public Background (int monitor_index, Meta.BackgroundEffects effects, Settings settings)
 	{
 		Object (monitor_index: monitor_index, effects: effects, settings: settings);
-        actor = new Meta.BackgroundGroup ();
+		actor = new Meta.BackgroundGroup ();
 
-        file_watches = new Gee.HashMap<string,ulong> ();
-        pattern = null;
-        // contains a single image for static backgrounds and
-        // two images (from and to) for slide shows
+		file_watches = new Gee.HashMap<string,ulong> ();
+		pattern = null;
+		// contains a single image for static backgrounds and
+		// two images (from and to) for slide shows
 		images = { null, null };
 
-        brightness = 1.0f;
-        vignette_sharpness = 0.2f;
-        cancellable = new Cancellable ();
-        is_loaded = false;
+		brightness = 1.0f;
+		vignette_sharpness = 0.2f;
+		cancellable = new Cancellable ();
+		is_loaded = false;
 
-        settings.changed.connect (() => {
+		settings.changed.connect (() => {
 			changed ();
 		});
 
-        load ();
+		load ();
 
 		actor.destroy.connect (destroy);
-    }
+	}
 
-    public void destroy ()
+	public void destroy ()
 	{
 		if (cancellable != null)
 			cancellable.cancel ();
 
-        if (update_animation_timeout_id != 0) {
-            Source.remove (update_animation_timeout_id);
-            update_animation_timeout_id = 0;
-        }
+		if (update_animation_timeout_id != 0) {
+			Source.remove (update_animation_timeout_id);
+			update_animation_timeout_id = 0;
+		}
 
-        foreach (var key in file_watches.keys) {
-            cache.disconnect (file_watches.get (key));
-        }
-        file_watches = null;
+		foreach (var key in file_watches.keys) {
+			cache.disconnect (file_watches.get (key));
+		}
+		file_watches = null;
 
-        if (pattern != null) {
-            if (pattern.content != null)
-                cache.remove_pattern_content (pattern.content as Meta.Background);
+		if (pattern != null) {
+			if (pattern.content != null)
+				cache.remove_pattern_content (pattern.content as Meta.Background);
 
-            pattern.destroy ();
-            pattern = null;
-        }
+			pattern.destroy ();
+			pattern = null;
+		}
 
 		foreach (var image in images) {
 			if (image == null)
 				continue;
 
-            if (image.content != null)
-                cache.remove_image_content (image.content as Meta.Background);
+			if (image.content != null)
+				cache.remove_image_content (image.content as Meta.Background);
 
-            image.destroy ();
-        }
-    }
+			image.destroy ();
+		}
+	}
 
-    public void set_loaded ()
+	public void set_loaded ()
 	{
-        if (is_loaded)
-            return;
+		if (is_loaded)
+			return;
 
-        is_loaded = true;
+		is_loaded = true;
 
-        Idle.add (() => {
+		Idle.add (() => {
 			loaded ();
-            return false;
-        });
-    }
+			return false;
+		});
+	}
 
-    public void load_pattern ()
+	public void load_pattern ()
 	{
-        var color = Clutter.Color.from_string (settings.get_string (PRIMARY_COLOR_KEY));
-        var second_color = Clutter.Color.from_string (settings.get_string (SECONDARY_COLOR_KEY));
+		var color = Clutter.Color.from_string (settings.get_string (PRIMARY_COLOR_KEY));
+		var second_color = Clutter.Color.from_string (settings.get_string (SECONDARY_COLOR_KEY));
 
-        var shading_type = (GDesktop.BackgroundShading)settings.get_enum (COLOR_SHADING_TYPE_KEY);
+		var shading_type = (GDesktop.BackgroundShading)settings.get_enum (COLOR_SHADING_TYPE_KEY);
 
-        var content = cache.get_pattern_content (monitor_index, color, second_color, shading_type, effects);
+		var content = cache.get_pattern_content (monitor_index, color, second_color, shading_type, effects);
 
-        pattern = new Meta.BackgroundActor ();
-        actor.add_child (pattern);
+		pattern = new Meta.BackgroundActor ();
+		actor.add_child (pattern);
 
-        pattern.content = content;
-    }
+		pattern.content = content;
+	}
 
-    public void watch_cache_file (string filename)
+	public void watch_cache_file (string filename)
 	{
-        if (file_watches.has_key (filename))
-            return;
+		if (file_watches.has_key (filename))
+			return;
 
-        var signal_id = cache.file_changed.connect ((changed_file) => {
+		var signal_id = cache.file_changed.connect ((changed_file) => {
 			if (changed_file == filename) {
 				changed ();
 			}
 		});
 
-        file_watches.set (filename, signal_id);
-    }
+		file_watches.set (filename, signal_id);
+	}
 
-    public void add_image (Meta.Background content, int index, string filename) {
-        content.brightness = brightness;
-        content.vignette_sharpness = vignette_sharpness;
+	public void add_image (Meta.Background content, int index, string filename) {
+		content.brightness = brightness;
+		content.vignette_sharpness = vignette_sharpness;
 
-        var actor = new Meta.BackgroundActor ();
-        actor.content = content;
+		var actor = new Meta.BackgroundActor ();
+		actor.content = content;
 
-        // The background pattern is the first actor in
-        // the group, and all images should be above that.
-        this.actor.insert_child_at_index (actor, index + 1);
+		// The background pattern is the first actor in
+		// the group, and all images should be above that.
+		this.actor.insert_child_at_index (actor, index + 1);
 
-        images[index] = actor;
-        watch_cache_file (filename);
-    }
+		images[index] = actor;
+		watch_cache_file (filename);
+	}
 
-    public void update_image (Meta.Background content, int index, string filename) {
-        content.brightness = brightness;
-        content.vignette_sharpness = vignette_sharpness;
+	public void update_image (Meta.Background content, int index, string filename) {
+		content.brightness = brightness;
+		content.vignette_sharpness = vignette_sharpness;
 
-        cache.remove_image_content (images[index].content as Meta.Background);
-        images[index].content = content;
-        watch_cache_file (filename);
-    }
+		cache.remove_image_content (images[index].content as Meta.Background);
+		images[index].content = content;
+		watch_cache_file (filename);
+	}
 
-    public void update_animation_progress ()
+	public void update_animation_progress ()
 	{
-        if (images[1] != null)
-            images[1].opacity = (uint)(animation.transition_progress * 255);
+		if (images[1] != null)
+			images[1].opacity = (uint)(animation.transition_progress * 255);
 
-        queue_update_animation();
-    }
+		queue_update_animation();
+	}
 
-    public void update_animation ()
+	public void update_animation ()
 	{
-        update_animation_timeout_id = 0;
+		update_animation_timeout_id = 0;
 
-        animation.update (monitor_index);
-        var files = animation.key_frame_files;
+		animation.update (monitor_index);
+		var files = animation.key_frame_files;
 
-        if (files.size == 0) {
-            set_loaded ();
-            queue_update_animation ();
-            return;
-        }
+		if (files.size == 0) {
+			set_loaded ();
+			queue_update_animation ();
+			return;
+		}
 
-        num_pending_images = files.size;
-        for (var i = 0; i < files.size; i++) {
+		num_pending_images = files.size;
+		for (var i = 0; i < files.size; i++) {
 			var image = images[i];
-            if (image != null && image.content != null &&
-                (image.content as Meta.Background).get_filename () == files.get (i)) {
+			if (image != null && image.content != null &&
+				(image.content as Meta.Background).get_filename () == files.get (i)) {
 
-                num_pending_images--;
-                if (num_pending_images == 0)
-                    update_animation_progress ();
+				num_pending_images--;
+				if (num_pending_images == 0)
+					update_animation_progress ();
 
-                continue;
-            }
+				continue;
+			}
 
-            cache.get_image_content (monitor_index, style, files[i], effects,
+			cache.get_image_content (monitor_index, style, files[i], effects,
 				this, get_update_animation_callback (i), cancellable);
-        }
-    }
+		}
+	}
 
 	// FIXME wrap callback method to keep the i at the correct value, I suppose
-	//       we should find a nicer way to do this
+	//	   we should find a nicer way to do this
 	PendingFileLoadFinished get_update_animation_callback (int i) {
 		return (userdata, content) => {
 			var self = userdata as Background;
@@ -291,35 +291,35 @@ public class Background : Object
 		};
 	}
 
-    public void queue_update_animation ()
+	public void queue_update_animation ()
 	{
-        if (update_animation_timeout_id != 0)
-            return;
+		if (update_animation_timeout_id != 0)
+			return;
 
-        if (cancellable == null || cancellable.is_cancelled ())
-            return;
+		if (cancellable == null || cancellable.is_cancelled ())
+			return;
 
-        if (animation.transition_duration == 0.0)
-            return;
+		if (animation.transition_duration == 0.0)
+			return;
 
-        var n_steps = 255 / ANIMATION_OPACITY_STEP_INCREMENT;
-        var time_per_step = (uint)((animation.transition_duration * 1000) / n_steps);
+		var n_steps = 255 / ANIMATION_OPACITY_STEP_INCREMENT;
+		var time_per_step = (uint)((animation.transition_duration * 1000) / n_steps);
 
-        var interval = uint.max ((uint)(ANIMATION_MIN_WAKEUP_INTERVAL * 1000), time_per_step);
+		var interval = uint.max ((uint)(ANIMATION_MIN_WAKEUP_INTERVAL * 1000), time_per_step);
 
-        if (interval > uint.MAX)
-            return;
+		if (interval > uint.MAX)
+			return;
 
 		update_animation_timeout_id = Timeout.add (interval, () => {
 			update_animation_timeout_id = 0;
 			update_animation ();
 			return false;
 		});
-    }
+	}
 
-    public void load_animation (string filename)
+	public void load_animation (string filename)
 	{
-        cache.get_animation.begin (filename, (obj, res) => {
+		cache.get_animation.begin (filename, (obj, res) => {
 			animation = cache.get_animation.end (res);
 
 			if (animation == null || cancellable.is_cancelled ()) {
@@ -330,12 +330,12 @@ public class Background : Object
 			update_animation ();
 			watch_cache_file (filename);
 		});
-    }
+	}
 
-    public void load_file (string filename)
+	public void load_file (string filename)
 	{
 		this.filename = filename;
-        cache.get_image_content (monitor_index, style, filename, effects, this, (userdata, content) => {
+		cache.get_image_content (monitor_index, style, filename, effects, this, (userdata, content) => {
 			var self = userdata as Background;
 			if (content == null) {
 				if (!self.cancellable.is_cancelled ())
@@ -346,32 +346,32 @@ public class Background : Object
 			self.add_image (content, 0, self.filename);
 			self.set_loaded ();
 		}, cancellable);
-    }
+	}
 
-    public void load ()
+	public void load ()
 	{
-        cache = BackgroundCache.get_default ();
+		cache = BackgroundCache.get_default ();
 
-        load_pattern ();
+		load_pattern ();
 
-        style = (GDesktop.BackgroundStyle)settings.get_enum (BACKGROUND_STYLE_KEY);
-        if (style == GDesktop.BackgroundStyle.NONE) {
-            set_loaded ();
-            return;
-        }
+		style = (GDesktop.BackgroundStyle)settings.get_enum (BACKGROUND_STYLE_KEY);
+		if (style == GDesktop.BackgroundStyle.NONE) {
+			set_loaded ();
+			return;
+		}
 
-        var uri = settings.get_string (PICTURE_URI_KEY);
-        string filename;
-        if (Uri.parse_scheme (uri) != null)
-            filename = File.new_for_uri (uri).get_path ();
-        else
-            filename = uri;
+		var uri = settings.get_string (PICTURE_URI_KEY);
+		string filename;
+		if (Uri.parse_scheme (uri) != null)
+			filename = File.new_for_uri (uri).get_path ();
+		else
+			filename = uri;
 
-        if (filename == null) {
-            set_loaded ();
-            return;
-        }
+		if (filename == null) {
+			set_loaded ();
+			return;
+		}
 
-        load_file (filename);
-    }
+		load_file (filename);
+	}
 }

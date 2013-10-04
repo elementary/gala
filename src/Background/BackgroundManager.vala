@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,39 +30,39 @@ public class BackgroundManager : Object
 
 	public signal void changed ();
 
-    public BackgroundManager (Meta.Screen screen, Clutter.Actor container, int monitor_index,
+	public BackgroundManager (Meta.Screen screen, Clutter.Actor container, int monitor_index,
 		Meta.BackgroundEffects effects, bool control_position, string settings_schema = BACKGROUND_SCHEMA)
 	{
-        Object (settings: new Settings (settings_schema), 
+		Object (settings: new Settings (settings_schema), 
 			container: container,
 			effects: effects,
 			monitor_index: monitor_index,
 			screen: screen,
 			control_position: control_position);
 
-        background = create_background ();
-    }
+		background = create_background ();
+	}
 
 	public void destroy ()
 	{
-        if (new_background != null) {
-            new_background.actor.destroy();
-            new_background = null;
-        }
+		if (new_background != null) {
+			new_background.actor.destroy();
+			new_background = null;
+		}
 
-        if (background != null) {
-            background.actor.destroy();
-            background = null;
-        }
-    }
+		if (background != null) {
+			background.actor.destroy();
+			background = null;
+		}
+	}
 
-    public void update_background (Background background, int monitor_index) {
-        var new_background = create_background ();
-        new_background.vignette_sharpness = background.vignette_sharpness;
-        new_background.brightness = background.brightness;
-        new_background.actor.visible = background.actor.visible;
+	public void update_background (Background background, int monitor_index) {
+		var new_background = create_background ();
+		new_background.vignette_sharpness = background.vignette_sharpness;
+		new_background.brightness = background.brightness;
+		new_background.actor.visible = background.actor.visible;
 
-        new_background.loaded_signal_id = new_background.loaded.connect (() => {
+		new_background.loaded_signal_id = new_background.loaded.connect (() => {
 			new_background.disconnect (new_background.loaded_signal_id);
 			new_background.loaded_signal_id = 0;
 			background.actor.animate(Clutter.AnimationMode.EASE_OUT_QUAD, FADE_ANIMATION_TIME,
@@ -80,36 +80,36 @@ public class BackgroundManager : Object
 			});
 		});
 
-        this.new_background = new_background;
-    }
+		this.new_background = new_background;
+	}
 
-    public Background create_background ()
+	public Background create_background ()
 	{
-        var background = new Background (monitor_index, effects, settings);
-        container.add_child (background.actor);
+		var background = new Background (monitor_index, effects, settings);
+		container.add_child (background.actor);
 
 		var monitor = screen.get_monitor_geometry (monitor_index);
-        background.actor.set_size(monitor.width, monitor.height);
-        if (control_position) {
-            background.actor.set_position (monitor.x, monitor.y);
-            background.actor.lower_bottom ();
-        }
+		background.actor.set_size(monitor.width, monitor.height);
+		if (control_position) {
+			background.actor.set_position (monitor.x, monitor.y);
+			background.actor.lower_bottom ();
+		}
 
-        background.change_signal_id = background.changed.connect (() => {
-            background.disconnect (background.change_signal_id);
-            update_background (background, monitor_index);
+		background.change_signal_id = background.changed.connect (() => {
+			background.disconnect (background.change_signal_id);
+			update_background (background, monitor_index);
 			background.change_signal_id = 0;
-        });
+		});
 
-        background.actor.destroy.connect (() => {
-            if (background.change_signal_id != 0)
-                background.disconnect (background.change_signal_id);
+		background.actor.destroy.connect (() => {
+			if (background.change_signal_id != 0)
+				background.disconnect (background.change_signal_id);
 
-            if (background.loaded_signal_id != 0)
-                background.disconnect (background.loaded_signal_id);
-        });
+			if (background.loaded_signal_id != 0)
+				background.disconnect (background.loaded_signal_id);
+		});
 
-        return background;
-    }
+		return background;
+	}
 }
 
