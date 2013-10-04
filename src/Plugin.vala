@@ -50,7 +50,7 @@ namespace Gala
 		Clutter.Actor? last_hotcorner;
 		
 #if HAS_MUTTER38
-		public BackgroundManager background_manager { get; private set; }
+		public Meta.BackgroundGroup background_group { get; private set; }
 		public Clutter.Actor ui_group { get; private set; }
 #endif
 		
@@ -89,6 +89,7 @@ namespace Gala
 			var screen = get_screen ();
 			
 			DBus.init (this);
+			BackgroundCache.init (screen);
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			
@@ -109,11 +110,10 @@ namespace Gala
 			 * +-- top window group
 		     */
 
-			var system_background = new SystemBackground (screen);
+			var system_background = new SystemBackground ();
 			system_background.actor.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
-			stage.add_child (system_background);
-			stage.set_child_below_sibling (system_background, null);
+			stage.insert_child_below (system_background.actor, null);
 
 			ui_group = new Clutter.Actor ();
 			ui_group.reactive = true;
@@ -123,9 +123,12 @@ namespace Gala
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
-			background_manager = new BackgroundManager (screen);
-			window_group.add_child (background_manager);
-			window_group.set_child_below_sibling (background_manager, null);
+			background_group = new Meta.BackgroundGroup ();
+			window_group.add_child (background_group);
+			window_group.set_child_below_sibling (background_group, null);
+
+			setup_background_managers ();
+			screen.monitors_changed.connect (setup_background_managers);
 #endif
 
 			workspace_view = new WorkspaceView (this);
@@ -304,6 +307,17 @@ namespace Gala
 				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
 			else
 				Utils.set_input_area (get_screen (), InputArea.NONE);
+		}
+
+		void setup_background_managers ()
+		{
+			background_group.destroy_all_children ();
+
+			var screen = get_screen ();
+			for (var i = 0; i < screen.get_n_monitors (); i++) {
+				new BackgroundManager (screen, background_group, i,
+					Meta.BackgroundEffects.NONE, true);
+			}
 		}
 		
 		public uint32[] get_all_xids ()
@@ -865,7 +879,7 @@ namespace Gala
 #if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 #else
-			var wallpaper = background_manager;
+			var wallpaper = background_group;
 #endif
 			
 			in_group  = new Clutter.Actor ();
@@ -874,11 +888,7 @@ namespace Gala
 			par = new List<Clutter.Actor> ();
 			clones = new List<Clutter.Clone> ();
 			
-#if HAS_MUTTER38
-			var wallpaper_clone = new BackgroundManager (screen);
-#else
 			var wallpaper_clone = new Clutter.Clone (wallpaper);
-#endif
 			wallpaper_clone.x = (x2 < 0 ? w : -w);
 			
 			clones.append (wallpaper_clone);
@@ -1022,7 +1032,7 @@ namespace Gala
 #if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
 #else
-			var wallpaper = background_manager;
+			var wallpaper = background_group;
 #endif
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;

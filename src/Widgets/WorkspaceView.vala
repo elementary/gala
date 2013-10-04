@@ -120,7 +120,7 @@ namespace Gala
 		void init_thumbnails ()
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
-				var thumb = new WorkspaceThumb (workspace, plugin.background_manager);
+				var thumb = new WorkspaceThumb (workspace, plugin.background_group);
 				thumb.clicked.connect (hide);
 				thumb.closed.connect (remove_workspace);
 				thumb.window_on_last.connect (add_workspace);
@@ -182,7 +182,7 @@ namespace Gala
 		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
-			var thumb = new WorkspaceThumb (workspace, plugin.background_manager);
+			var thumb = new WorkspaceThumb (workspace, plugin.background_group);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
@@ -448,7 +448,7 @@ namespace Gala
 			wins.x = 0.0f;
 			
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : (area.height + area.y) - height);
-			wins.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1);
+			wins.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, y : -height + 1.01f);
 		}
 		
 		public new void hide ()
