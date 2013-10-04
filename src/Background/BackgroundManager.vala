@@ -15,101 +15,107 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-public class BackgroundManager : Object
+namespace Gala
 {
-	public Meta.BackgroundEffects effects { get; construct set; }
-	public int monitor_index { get; construct set; }
-	public bool control_position { get; construct set; }
-
-	public Settings settings { get; construct set; }
-	public Meta.Screen screen { get; construct set; }
-
-	public Clutter.Actor container { get; construct set; }
-	public Background background { get; private set; }
-	Background? new_background = null;
-
-	public signal void changed ();
-
-	public BackgroundManager (Meta.Screen screen, Clutter.Actor container, int monitor_index,
-		Meta.BackgroundEffects effects, bool control_position, string settings_schema = BACKGROUND_SCHEMA)
+	public class BackgroundManager : Object
 	{
-		Object (settings: new Settings (settings_schema), 
-			container: container,
-			effects: effects,
-			monitor_index: monitor_index,
-			screen: screen,
-			control_position: control_position);
+		const string BACKGROUND_SCHEMA = "org.gnome.desktop.background";
+		const uint FADE_ANIMATION_TIME = 1000;
 
-		background = create_background ();
-	}
+		public Meta.BackgroundEffects effects { get; construct set; }
+		public int monitor_index { get; construct set; }
+		public bool control_position { get; construct set; }
 
-	public void destroy ()
-	{
-		if (new_background != null) {
-			new_background.actor.destroy();
-			new_background = null;
+		public Settings settings { get; construct set; }
+		public Meta.Screen screen { get; construct set; }
+
+		public Clutter.Actor container { get; construct set; }
+		public Background background { get; private set; }
+		Background? new_background = null;
+
+		public signal void changed ();
+
+		public BackgroundManager (Meta.Screen screen, Clutter.Actor container, int monitor_index,
+			Meta.BackgroundEffects effects, bool control_position, string settings_schema = BACKGROUND_SCHEMA)
+		{
+			Object (settings: new Settings (settings_schema), 
+				container: container,
+				effects: effects,
+				monitor_index: monitor_index,
+				screen: screen,
+				control_position: control_position);
+
+			background = create_background ();
 		}
 
-		if (background != null) {
-			background.actor.destroy();
-			background = null;
+		public void destroy ()
+		{
+			if (new_background != null) {
+				new_background.actor.destroy();
+				new_background = null;
+			}
+
+			if (background != null) {
+				background.actor.destroy();
+				background = null;
+			}
 		}
-	}
 
-	public void update_background (Background background, int monitor_index) {
-		var new_background = create_background ();
-		new_background.vignette_sharpness = background.vignette_sharpness;
-		new_background.brightness = background.brightness;
-		new_background.actor.visible = background.actor.visible;
+		public void update_background (Background background, int monitor_index) {
+			var new_background = create_background ();
+			new_background.vignette_sharpness = background.vignette_sharpness;
+			new_background.brightness = background.brightness;
+			new_background.actor.visible = background.actor.visible;
 
-		new_background.loaded_signal_id = new_background.loaded.connect (() => {
-			new_background.disconnect (new_background.loaded_signal_id);
-			new_background.loaded_signal_id = 0;
-			background.actor.animate(Clutter.AnimationMode.EASE_OUT_QUAD, FADE_ANIMATION_TIME,
-				opacity : 0).completed.connect (() => {
-					if (this.new_background == new_background) {
-						this.background = new_background;
-						this.new_background = null;
-					} else {
-						new_background.actor.destroy ();
-					}
+			new_background.loaded_signal_id = new_background.loaded.connect (() => {
+				new_background.disconnect (new_background.loaded_signal_id);
+				new_background.loaded_signal_id = 0;
+				background.actor.animate(Clutter.AnimationMode.EASE_OUT_QUAD, FADE_ANIMATION_TIME,
+					opacity : 0).completed.connect (() => {
+						if (this.new_background == new_background) {
+							this.background = new_background;
+							this.new_background = null;
+						} else {
+							new_background.actor.destroy ();
+						}
 
-					background.actor.destroy ();
+						background.actor.destroy ();
 
-					changed ();
+						changed ();
+				});
 			});
-		});
 
-		this.new_background = new_background;
-	}
-
-	public Background create_background ()
-	{
-		var background = new Background (monitor_index, effects, settings);
-		container.add_child (background.actor);
-
-		var monitor = screen.get_monitor_geometry (monitor_index);
-		background.actor.set_size(monitor.width, monitor.height);
-		if (control_position) {
-			background.actor.set_position (monitor.x, monitor.y);
-			background.actor.lower_bottom ();
+			this.new_background = new_background;
 		}
 
-		background.change_signal_id = background.changed.connect (() => {
-			background.disconnect (background.change_signal_id);
-			update_background (background, monitor_index);
-			background.change_signal_id = 0;
-		});
+		public Background create_background ()
+		{
+			var background = new Background (monitor_index, effects, settings);
+			container.add_child (background.actor);
 
-		background.actor.destroy.connect (() => {
-			if (background.change_signal_id != 0)
+			var monitor = screen.get_monitor_geometry (monitor_index);
+			background.actor.set_size(monitor.width, monitor.height);
+			if (control_position) {
+				background.actor.set_position (monitor.x, monitor.y);
+				background.actor.lower_bottom ();
+			}
+
+			background.change_signal_id = background.changed.connect (() => {
 				background.disconnect (background.change_signal_id);
+				update_background (background, monitor_index);
+				background.change_signal_id = 0;
+			});
 
-			if (background.loaded_signal_id != 0)
-				background.disconnect (background.loaded_signal_id);
-		});
+			background.actor.destroy.connect (() => {
+				if (background.change_signal_id != 0)
+					background.disconnect (background.change_signal_id);
 
-		return background;
+				if (background.loaded_signal_id != 0)
+					background.disconnect (background.loaded_signal_id);
+			});
+
+			return background;
+		}
 	}
 }
 

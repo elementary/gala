@@ -15,21 +15,25 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-public class SystemBackground : Object
+namespace Gala
 {
-	public Meta.BackgroundActor actor { get; private set; }
-
-	public signal void loaded ();
-
-	public SystemBackground ()
+	public class SystemBackground : Object
 	{
-		actor = new Meta.BackgroundActor ();
+		public Meta.BackgroundActor actor { get; private set; }
 
-		BackgroundCache.get_default ().get_image_content (0, GDesktop.BackgroundStyle.WALLPAPER,
-			Config.PKGDATADIR + "/texture.png", Meta.BackgroundEffects.NONE, this, (userdata, content) => {
-			var self = userdata as SystemBackground;
-			self.actor.content = content;
-			self.loaded ();
-		});
+		public signal void loaded ();
+
+		public SystemBackground ()
+		{
+			actor = new Meta.BackgroundActor ();
+
+			BackgroundCache.get_default ().get_image_content (0, GDesktop.BackgroundStyle.WALLPAPER,
+				Config.PKGDATADIR + "/texture.png", Meta.BackgroundEffects.NONE, this, (userdata, content) => {
+				var self = userdata as SystemBackground;
+				self.actor.content = content;
+				self.loaded ();
+			});
+		}
 	}
 }
+

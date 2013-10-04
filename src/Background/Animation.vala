@@ -15,59 +15,62 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-public class Animation : Object
+namespace Gala
 {
-	public string filename { get; construct set; }
-	public Meta.Screen screen { get; construct set; }
-
-	public Gee.LinkedList<string> key_frame_files { get; private set; }
-	public double transition_progress { get; private set; default = 0.0; }
-	public double transition_duration { get; private set; default = 0.0; }
-	public bool loaded { get; private set; default = false; }
-
-	Gnome.BGSlideShow? show = null;
-
-	public Animation (Meta.Screen screen, string filename)
+	public class Animation : Object
 	{
-		Object (filename: filename, screen: screen);
-		key_frame_files = new Gee.LinkedList<string> ();
-	}
+		public string filename { get; construct set; }
+		public Meta.Screen screen { get; construct set; }
 
-	public async void load ()
-	{
-		show = new Gnome.BGSlideShow (filename);
+		public Gee.LinkedList<string> key_frame_files { get; private set; }
+		public double transition_progress { get; private set; default = 0.0; }
+		public double transition_duration { get; private set; default = 0.0; }
+		public bool loaded { get; private set; default = false; }
 
-		//FIXME yield show.load_async (null);
-		show.load ();
-		loaded = true;
-	}
+		Gnome.BGSlideShow? show = null;
 
-	public void update (int monitor_index)
-	{
-		key_frame_files = new Gee.LinkedList<string> ();
+		public Animation (Meta.Screen screen, string filename)
+		{
+			Object (filename: filename, screen: screen);
+			key_frame_files = new Gee.LinkedList<string> ();
+		}
 
-		if (show == null)
-			return;
+		public async void load ()
+		{
+			show = new Gnome.BGSlideShow (filename);
 
-		if (show.get_num_slides () < 1)
-			return;
+			//FIXME yield show.load_async (null);
+			show.load ();
+			loaded = true;
+		}
 
-		var monitor = screen.get_monitor_geometry (monitor_index);
+		public void update (int monitor_index)
+		{
+			key_frame_files = new Gee.LinkedList<string> ();
 
-		bool is_fixed;
-		string file1, file2;
-		double progress, duration;
-		show.get_current_slide (monitor.width, monitor.height, out progress, 
-			out duration, out is_fixed, out file1, out file2);
+			if (show == null)
+				return;
 
-		transition_progress = progress;
-		transition_duration = duration;
+			if (show.get_num_slides () < 1)
+				return;
 
-		if (file1 != null)
-			key_frame_files.add (file1);
+			var monitor = screen.get_monitor_geometry (monitor_index);
 
-		if (file2 != null)
-			key_frame_files.add (file2);
+			bool is_fixed;
+			string file1, file2;
+			double progress, duration;
+			show.get_current_slide (monitor.width, monitor.height, out progress, 
+				out duration, out is_fixed, out file1, out file2);
+
+			transition_progress = progress;
+			transition_duration = duration;
+
+			if (file1 != null)
+				key_frame_files.add (file1);
+
+			if (file2 != null)
+				key_frame_files.add (file2);
+		}
 	}
 }
 
