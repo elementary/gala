@@ -172,7 +172,7 @@
 			<summary>Duration of the minimize animation</summary>
 		</key>
 		<key type="i" name="workspace-switch-duration">
-			<default>400</default>
+			<default>300</default>
 			<summary>Duration of the workspace switch animation</summary>
 		</key>
 		<key type="i" name="menu-duration">

@@ -48,6 +48,7 @@ namespace Gala
 
 		// used to detect which corner was used to trigger an action
 		Clutter.Actor? last_hotcorner;
+		ScreenSaver? screensaver;
 		
 #if HAS_MUTTER38
 		public Meta.BackgroundGroup background_group { get; private set; }
@@ -90,6 +91,15 @@ namespace Gala
 			
 			DBus.init (this);
 			BackgroundCache.init (screen);
+			
+			// Due to a bug which enables access to the stage when using multiple monitors
+			// in the screensaver, we have to listen for changes and make sure the input area
+			// is set to NONE when we are in locked mode
+			try {
+				screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
+					"/org/gnome/ScreenSaver");
+				screensaver.active_changed.connect (update_input_area);
+			} catch (Error e) { warning (e.message); }
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			
@@ -299,14 +309,22 @@ namespace Gala
 		public void update_input_area ()
 		{
 			var schema = BehaviorSettings.get_default ().schema;
+			var screen = get_screen ();
 			
-			if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
+			if (screensaver != null && screensaver.get_active ()) {
+				Utils.set_input_area (screen, InputArea.NONE);
+				return;
+			}
+			
+			if (modal_count > 0)
+				Utils.set_input_area (screen, InputArea.FULLSCREEN);
+			else if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
-				Utils.set_input_area (get_screen (), InputArea.HOT_CORNER);
+				Utils.set_input_area (screen, InputArea.HOT_CORNER);
 			else
-				Utils.set_input_area (get_screen (), InputArea.NONE);
+				Utils.set_input_area (screen, InputArea.NONE);
 		}
 
 		void setup_background_managers ()
@@ -378,6 +396,7 @@ namespace Gala
 			var screen = get_screen ();
 			var display = screen.get_display ();
 			
+			update_input_area ();
 #if HAS_MUTTER310
 			base.begin_modal (0, display.get_current_time ());
 #else
@@ -394,6 +413,8 @@ namespace Gala
 			modal_count --;
 			if (modal_count > 0)
 				return;
+			
+			update_input_area ();
 			
 			var screen = get_screen ();
 			base.end_modal (screen.get_display ().get_current_time ());

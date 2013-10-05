@@ -72,6 +72,7 @@ vala_precompile(VALA_C
     src/DragDropAction.vala
     src/Main.vala
     src/Plugin.vala
+    src/ScreenSaver.vala
     src/Settings.vala
     src/TextShadowEffect.vala
     src/Utils.vala
@@ -96,7 +97,7 @@ PACKAGES
     clutter-gtk-1.0
     gdk-x11-3.0
     gdesktopenums-3.0
-	gnome-desktop-3.0
+    gnome-desktop-3.0
     xfixes-4.0
 OPTIONS
     -g
