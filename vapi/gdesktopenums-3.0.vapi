@@ -34,6 +34,20 @@ namespace GDesktop {
 		SMART,
 		STRICT
 	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_MAGNIFIER_CARET_TRACKING_MODE_", has_type_id = false)]
+	public enum MagnifierCaretTrackingMode {
+		NONE,
+		CENTERED,
+		PROPORTIONAL,
+		PUSH
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_MAGNIFIER_FOCUS_TRACKING_MODE_", has_type_id = false)]
+	public enum MagnifierFocusTrackingMode {
+		NONE,
+		CENTERED,
+		PROPORTIONAL,
+		PUSH
+	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_MAGNIFIER_MOUSE_TRACKING_MODE_", has_type_id = false)]
 	public enum MagnifierMouseTrackingMode {
 		NONE,
