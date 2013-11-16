@@ -57,6 +57,13 @@ if (MUTTER310_FOUND)
 	set (MUTTER310_FLAGS "--define=HAS_MUTTER310")
 endif (MUTTER310_FOUND)
 
+set (MUTTER312_FLAGS "")
+pkg_check_modules(MUTTER312 QUIET libmutter>=3.11)
+if (MUTTER312_FOUND)
+	pkg_check_modules(MUTTER310 REQUIRED libmutter>=3.11.2)
+	set (MUTTER312_FLAGS "--define=HAS_MUTTER312")
+endif (MUTTER312_FOUND)
+
 add_definitions(${DEPS_CFLAGS})
 
 link_libraries(${DEPS_LIBRARIES})
@@ -99,6 +106,7 @@ OPTIONS
     ${MUTTER36_FLAGS}
     ${MUTTER38_FLAGS}
     ${MUTTER310_FLAGS}
+    ${MUTTER312_FLAGS}
     )
 
 #add_subdirectory (po)

@@ -489,8 +489,10 @@ namespace Meta {
 #endif
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_set_custom_handler")]
 		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc? handler);
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/keybindings.h", cname = "meta_keybindings_switch_window")]
 		public static void switch_window (Meta.Display display, Meta.Screen screen, Meta.Window event_window, X.Event event, Meta.KeyBinding binding);
+#endif
 	}
 	[CCode (cheader_filename = "meta/main.h")]
 	[Compact]
@@ -646,7 +648,11 @@ namespace Meta {
 		public void set_opaque_region (owned Cairo.Region opaque_region);
 #endif
 		public void set_pixmap (X.Pixmap pixmap);
+#if HAS_MUTTER312
+		public void update_area (int x, int y, int width, int height, Cairo.Region unobscured_region);
+#else
 		public void update_area (int x, int y, int width, int height);
+#endif
 	}
 	[CCode (cheader_filename = "meta/theme.h")]
 	[Compact]
@@ -677,7 +683,11 @@ namespace Meta {
 		public bool can_close ();
 #endif
 		public void change_workspace (Meta.Workspace workspace);
+#if HAS_MUTTER312
+		public void change_workspace_by_index (int space_index, bool append);
+#else
 		public void change_workspace_by_index (int space_index, bool append, uint32 timestamp);
+#endif
 #if HAS_MUTTER38
 		public void check_alive (uint32 timestamp);
 #endif
