@@ -121,9 +121,9 @@ namespace Gala
 		     */
 
 			var system_background = new SystemBackground ();
-			system_background.actor.add_constraint (new Clutter.BindConstraint (stage,
+			system_background.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
-			stage.insert_child_below (system_background.actor, null);
+			stage.insert_child_below (system_background, null);
 
 			ui_group = new Clutter.Actor ();
 			ui_group.reactive = true;
@@ -133,12 +133,9 @@ namespace Gala
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
-			background_group = new Meta.BackgroundGroup ();
+			background_group = new BackgroundManager (screen);
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
-
-			setup_background_managers ();
-			screen.monitors_changed.connect (setup_background_managers);
 #endif
 
 			workspace_view = new WorkspaceView (this);
@@ -327,17 +324,6 @@ namespace Gala
 				Utils.set_input_area (screen, InputArea.NONE);
 		}
 
-		void setup_background_managers ()
-		{
-			background_group.destroy_all_children ();
-
-			var screen = get_screen ();
-			for (var i = 0; i < screen.get_n_monitors (); i++) {
-				new BackgroundManager (screen, background_group, i,
-					Meta.BackgroundEffects.NONE, true);
-			}
-		}
-		
 		public uint32[] get_all_xids ()
 		{
 			var list = new Gee.ArrayList<uint32> ();

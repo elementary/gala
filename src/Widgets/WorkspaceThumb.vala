@@ -95,8 +95,8 @@ namespace Gala
 			
 			// FIXME find a nice way to draw a border around it, maybe combinable with the indicator using a ShaderEffect
 #if HAS_MUTTER38
-			//FIXME we probably want to keep the BackgroundManager and not just save its actor
-			wallpaper = new BackgroundManager (screen, this, 0, Meta.BackgroundEffects.NONE, false).background.actor;
+			wallpaper = new BackgroundManager (screen);
+			wallpaper.background_color = { 255, 0, 0, 255 };
 #else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
 #endif
@@ -126,9 +126,7 @@ namespace Gala
 			windows.clip_to_allocation = true;
 			
 			add_child (indicator);
-#if !HAS_MUTTER38
 			add_child (wallpaper);
-#endif
 			add_child (windows);
 			add_child (icons);
 			add_child (close_button);

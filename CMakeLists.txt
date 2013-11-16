@@ -77,7 +77,6 @@ vala_precompile(VALA_C
     src/TextShadowEffect.vala
     src/Utils.vala
     src/Zooming.vala
-    src/Background/Animation.vala
     src/Background/Background.vala
     src/Background/BackgroundCache.vala
     src/Background/BackgroundManager.vala

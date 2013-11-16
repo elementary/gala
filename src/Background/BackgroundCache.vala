@@ -1,281 +1,101 @@
-//  
-//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
-// 
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-// 
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+/* TODO
+	- GNOME monitors the images and removes them from cache when they change
+	  so they reload. Do we need that?
+*/
 
 namespace Gala
 {
-	public delegate void PendingFileLoadFinished (Object userdata, Meta.Background? content);
-
-	struct PendingFileLoad
-	{
-		string filename;
-		GDesktop.BackgroundStyle style;
-		Gee.LinkedList<PendingFileLoadCaller?> callers;
-	}
-
-	struct PendingFileLoadCaller
-	{
-		bool should_copy;
-		int monitor_index;
-		Meta.BackgroundEffects effects;
-		PendingFileLoadFinished on_finished;
-		Object userdata;
-	}
-
 	public class BackgroundCache : Object
 	{
-		static BackgroundCache? instance = null;
+		public Meta.Screen screen { get; construct set; }
 
-		Meta.Screen screen;
-
-		Gee.LinkedList<Meta.Background> patterns;
-		Gee.LinkedList<Meta.Background> images;
-		Gee.LinkedList<PendingFileLoad?> pending_file_loads;
-		Gee.HashMap<string,FileMonitor> file_monitors;
-
-		string animation_filename;
-		Animation animation;
-
-		public signal void file_changed (string filename);
-
-		public BackgroundCache (Meta.Screen _screen)
+		struct WaitingCallback
 		{
-			screen = _screen;
-
-			patterns = new Gee.LinkedList<Meta.Background> ();
-			images = new Gee.LinkedList<Meta.Background> ();
-			pending_file_loads = new Gee.LinkedList<PendingFileLoad?> ();
-			file_monitors = new Gee.HashMap<string,FileMonitor> ();
+			SourceFunc func;
+			string hash;
 		}
 
-		public Meta.Background get_pattern_content (int monitor_index, Clutter.Color color,
-			Clutter.Color second_color, GDesktop.BackgroundShading shading_type, Meta.BackgroundEffects effects)
+		Gee.HashMap<string,Meta.Background> image_cache;
+		Gee.HashMap<string,Meta.Background> pattern_cache;
+		Gee.LinkedList<WaitingCallback?> waiting_callbacks;
+
+		BackgroundCache (Meta.Screen screen)
 		{
-			Meta.Background? content = null, candidate_content = null;
+			Object (screen: screen);
 
-			foreach (var pattern in patterns) {
-				if (pattern == null)
-					continue;
+			image_cache = new Gee.HashMap<string,Meta.Background> ();
+			pattern_cache = new Gee.HashMap<string,Meta.Background> ();
+			waiting_callbacks = new Gee.LinkedList<WaitingCallback?> ();
+		}
 
-				if (pattern.get_shading() != shading_type)
-					continue;
+		public async Meta.Background? load_image (string file, int monitor,
+			GDesktop.BackgroundStyle style)
+		{
+			string hash = file + "#" + ((int)style).to_string ();
+			Meta.Background? content = image_cache.get (hash);
 
-				if (color.equal(pattern.get_color ()))
-					continue;
+			if (content != null) {
+				/*FIXME apparently we can just copy the content at any point
+				print ("FILENAME: %s\n", content.get_filename ());
+				// the content has been created, but the file is still loading, so we wait
+				if (content.get_filename () == null) {
+					waiting_callbacks.add ({ load_image.callback, hash });
+					yield;
+				}*/
 
-				if (shading_type != GDesktop.BackgroundShading.SOLID &&
-					!second_color.equal(pattern.get_second_color ()))
-					continue;
-
-				candidate_content = pattern;
-
-				if (effects != pattern.effects)
-					continue;
-
-				break;
+				return content.copy (monitor, Meta.BackgroundEffects.NONE);
 			}
 
-			if (candidate_content != null) {
-				content = candidate_content.copy (monitor_index, effects);
-			} else {
-				content = new Meta.Background (screen, monitor_index, effects);
+			content = new Meta.Background (screen, monitor, Meta.BackgroundEffects.NONE);
 
-				if (shading_type == GDesktop.BackgroundShading.SOLID) {
-					content.load_color (color);
-				} else {
-					content.load_gradient (shading_type, color, second_color);
+			try {
+				yield content.load_file_async (file, style, null);
+			} catch (Error e) {
+				warning (e.message);
+				return null;
+			}
+
+			image_cache.set (hash, content);
+			foreach (var callback in waiting_callbacks) {
+				if (callback.hash == hash) {
+					callback.func ();
+					waiting_callbacks.remove (callback);
 				}
 			}
-
-			patterns.add (content);
 
 			return content;
 		}
 
-		public void monitor_file (string filename)
+		public Meta.Background load_pattern (int monitor, Clutter.Color primary, Clutter.Color secondary,
+			GDesktop.BackgroundShading shading_type)
 		{
-			if (file_monitors.has_key (filename))
-				return;
+			string hash = primary.to_string () + secondary.to_string () +
+				((int)shading_type).to_string ();
+			Meta.Background? content = pattern_cache.get (hash);
 
-			var file = File.new_for_path (filename);
-			try {
-				var monitor = file.monitor (FileMonitorFlags.NONE);
+			if (content != null)
+				return content.copy (monitor, Meta.BackgroundEffects.NONE);
 
-				//TODO maybe do this in a cleaner way
-				ulong signal_id = 0;
-				signal_id = monitor.changed.connect (() => {
-					foreach (var image in images) {
-						if (image.get_filename () == filename)
-							images.remove (image);
-					}
+			content = new Meta.Background (screen, monitor, Meta.BackgroundEffects.NONE);
+			if (shading_type == GDesktop.BackgroundShading.SOLID)
+				content.load_color (primary);
+			else
+				content.load_gradient (shading_type, primary, secondary);
 
-					monitor.disconnect (signal_id);
+			pattern_cache.set (hash, content);
 
-					file_changed (filename);
-				});
-
-				file_monitors.set (filename, monitor);
-			} catch (Error e) { warning (e.message); }
+			return content;
 		}
 
-		public void remove_content (Gee.LinkedList<Meta.Background> content_list, Meta.Background content) {
-			content_list.remove (content);
-		}
+		static BackgroundCache? instance = null;
 
-		public void remove_pattern_content (Meta.Background content) {
-			remove_content (patterns, content);
-		}
-
-		public void remove_image_content (Meta.Background content) {
-			var filename = content.get_filename();
-
-			if (filename != null && file_monitors.has_key (filename))
-				//TODO disconnect filemonitor and delete it properly
-				file_monitors.unset (filename);
-
-			remove_content(images, content);
-		}
-
-		//FIXME as we may have to get a number of callbacks fired when this finishes,
-		//	  we can't use vala's async system, but use a callback based system instead
-		public void load_image_content (int monitor_index,
-			GDesktop.BackgroundStyle style, string filename, Meta.BackgroundEffects effects,
-			Object userdata, PendingFileLoadFinished on_finished, Cancellable? cancellable = null)
-		{
-			foreach (var pending_file_load in pending_file_loads) {
-				if (pending_file_load.filename == filename &&
-					pending_file_load.style == style) {
-					pending_file_load.callers.add ({true, monitor_index, effects, on_finished, userdata});
-					return;
-				}
-			}
-
-			PendingFileLoad load = {filename, style, new Gee.LinkedList<PendingFileLoadCaller?> ()};
-			load.callers.add ({false, monitor_index, effects, on_finished, userdata});
-			pending_file_loads.add (load);
-
-			var content = new Meta.Background (screen, monitor_index, effects);
-			content.load_file_async.begin (filename, style, cancellable, (obj, res) => {
-				try {
-				  content.load_file_async.end (res);
-
-				  monitor_file (filename);
-				  images.add (content);
-				} catch (Error e) {
-				  content = null;
-				}
-
-				foreach (var pending_load in pending_file_loads) {
-					if (pending_load.filename != filename ||
-						pending_load.style != style)
-						continue;
-
-					foreach (var caller in pending_load.callers) {
-						if (caller.on_finished != null) {
-							if (content != null && caller.should_copy) {
-								content = (obj as Meta.Background).copy (caller.monitor_index, caller.effects);
-							}
-
-							caller.on_finished (caller.userdata, content);
-						}
-					}
-
-					pending_file_loads.remove (pending_load);
-				}
-			});
-		}
-
-		public void get_image_content (int monitor_index, GDesktop.BackgroundStyle style, 
-			string filename, Meta.BackgroundEffects effects, Object userdata, 
-			PendingFileLoadFinished on_finished, Cancellable? cancellable = null)
-		{
-			Meta.Background content = null, candidate_content = null;
-			foreach (var image in images) {
-				if (image == null)
-					continue;
-
-				if (image.get_style () != style)
-					continue;
-
-				if (image.get_filename () != filename)
-					continue;
-
-				if (style == GDesktop.BackgroundStyle.SPANNED &&
-					image.monitor != monitor_index)
-					continue;
-
-				candidate_content = image;
-
-				if (effects != image.effects)
-					continue;
-
-				break;
-			}
-
-			if (candidate_content != null) {
-				content = candidate_content.copy (monitor_index, effects);
-
-				if (cancellable != null && cancellable.is_cancelled ())
-					content = null;
-				else
-					images.add (content);
-
-				on_finished (userdata, content);
-			} else {
-				load_image_content (monitor_index, style, filename, effects, userdata, on_finished, cancellable);
-			}
-		}
-
-		public async Animation get_animation (string filename)
-		{
-			Animation animation;
-
-			if (animation_filename == filename) {
-				animation = this.animation;
-
-				//FIXME do we need those Idles?
-				Idle.add (() => {
-					get_animation.callback ();
-					return false;
-				});
-			} else {
-				animation = new Animation (screen, filename);
-
-				yield animation.load ();
-
-				monitor_file (filename);
-				animation_filename = filename;
-				this.animation = animation;
-
-				Idle.add (() => {
-					get_animation.callback ();
-					return false;
-				});
-			}
-
-			yield;
-			return animation;
-		}
-		
 		public static void init (Meta.Screen screen)
 		{
 			instance = new BackgroundCache (screen);
 		}
 
 		public static BackgroundCache get_default ()
+			requires (instance != null)
 		{
 			return instance;
 		}
