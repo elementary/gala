@@ -226,7 +226,7 @@ namespace Gala
 		/**
 		 * Returns the passed orig_image with the correct content or a new one if orig_image was null
 		 */
-		Meta.BackgroundActor? update_image (Meta.BackgroundActor? orig_image, string? file, bool topmost)
+		Meta.BackgroundActor? update_image (owned Meta.BackgroundActor? orig_image, string? file, bool topmost)
 		{
 			Meta.BackgroundActor image = null;
 
