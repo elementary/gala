@@ -34,7 +34,9 @@ namespace Gala
 		public Settings settings { get; construct set; }
 
 		Gnome.BGSlideShow? animation = null;
+		Meta.BackgroundActor? first_image = null;
 		Meta.BackgroundActor? second_image = null;
+		int animation_load_pending_images = 0;
 		double animation_duration = 0.0;
 		double animation_progress = 0.0;
 		uint update_animation_timeout_id;
@@ -91,10 +93,6 @@ namespace Gala
 				// normal wallpaper
 				} else {
 					animation = null;
-					if (second_image != null) {
-						second_image.destroy ();
-						second_image = null;
-					}
 					cache.load_image.begin (file, monitor, style, (obj, res) => {
 						var content = cache.load_image.end (res);
 						if (content != null) {
@@ -103,6 +101,16 @@ namespace Gala
 						} else if (image != null) {
 							image.destroy ();
 							image = null;
+						}
+
+						// cleanup previous slideshow, if any
+						if (second_image != null) {
+							second_image.destroy ();
+							second_image = null;
+						}
+						if (first_image != null) {
+							first_image.destroy ();
+							first_image = null;
 						}
 					});
 				}
@@ -205,22 +213,26 @@ namespace Gala
 			animation_duration = duration;
 			animation_progress = progress;
 
-			print ("Animation Update\nfrom: %s to: %s, progress: %f, duration: %f\n", file_from, file_to, progress, duration);
+			animation_load_pending_images = 0;
+
 			if (file_from == null && file_to == null) {
 				queue_update_animation ();
 				return;
 			}
 
-			if (image == null || image.content == null
-				|| (image.content as Meta.Background).get_filename () != file_from) {
-				image = update_image (image, file_from, false);
+			if (file_from != null)
+				animation_load_pending_images++;
+			if (file_to != null)
+				animation_load_pending_images++;
+
+			if (first_image == null || first_image.content == null
+				|| (first_image.content as Meta.Background).get_filename () != file_from) {
+				first_image = update_image (first_image, file_from, false);
 			}
 			if (second_image == null || second_image.content == null
 				|| (second_image.content as Meta.Background).get_filename () != file_to) {
 				second_image = update_image (second_image, file_to, true);
 			}
-
-			update_animation_progress ();
 		}
 
 		/**
@@ -244,9 +256,12 @@ namespace Gala
 			if (image == null) {
 				image = new Meta.BackgroundActor ();
 				image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.ALL, 0));
-				if (topmost)
-					insert_child_above (image, null);
-				else
+				if (topmost) {
+					if (this.image != null)
+						insert_child_below (image, this.image);
+					else
+						insert_child_above (image, null);
+				} else
 					insert_child_above (image, pattern);
 			}
 
@@ -254,6 +269,18 @@ namespace Gala
 			var style = style_string_to_enum (settings.get_string ("picture-options"));
 			cache.load_image.begin (file, monitor, style, (obj, res) => {
 				image.content = cache.load_image.end (res);
+				animation_load_pending_images--;
+				if (animation_load_pending_images == 0) {
+					update_animation_progress ();
+					// fade out and destroy old image
+					if (this.image != null) {
+						this.image.animate (Clutter.AnimationMode.EASE_OUT_QUAD, ANIMATION_TRANSITION_DURATION,
+							opacity: 0).completed.connect (() => {
+							this.image.destroy ();
+							this.image = null;
+						});
+					}
+				}
 			});
 
 			return image;
