@@ -69,9 +69,7 @@ namespace Gala
 			scroll.content = new Clutter.Canvas ();
 			(scroll.content as Clutter.Canvas).draw.connect (draw_scroll);
 			
-#if HAS_MUTTER38
-			plugin.ui_group.button_release_event.connect (outside_clicked);
-#else
+#if !HAS_MUTTER38
 			click_catcher = new Clutter.Actor ();
 			click_catcher.reactive = true;
 			click_catcher.button_release_event.connect ((e) => {
@@ -403,6 +401,10 @@ namespace Gala
 			grab_key_focus ();
 			
 			plugin.begin_modal ();
+			
+#if HAS_MUTTER38
+			plugin.ui_group.button_release_event.connect (outside_clicked);
+#endif
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height + area.y;
