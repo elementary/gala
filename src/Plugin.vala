@@ -259,6 +259,9 @@ namespace Gala
 
 #if HAS_MUTTER38
 			stage.show ();
+
+			// let the session manager move to the next phase
+			Meta.register_with_session ();
 			
 			return false;
 #endif
