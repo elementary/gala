@@ -51,7 +51,7 @@ namespace Gala
 		construct
 		{
 			pattern = new Meta.BackgroundActor ();
-			pattern.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.ALL, 0));
+			pattern.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
 			add_child (pattern);
 
 			load (null);
@@ -148,7 +148,7 @@ namespace Gala
 		void set_image (Meta.Background content)
 		{
 			var new_image = new Meta.BackgroundActor ();
-			new_image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.ALL, 0));
+			new_image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
 			new_image.content = content;
 			new_image.opacity = 0;
 
@@ -266,7 +266,7 @@ namespace Gala
 
 			if (image == null) {
 				image = new Meta.BackgroundActor ();
-				image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.ALL, 0));
+				image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
 				if (topmost) {
 					if (this.image != null)
 						insert_child_below (image, this.image);

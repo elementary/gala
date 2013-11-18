@@ -63,18 +63,18 @@ namespace Gala
 			Meta.Background? content = image_cache.get (hash);
 
 			if (content != null) {
-				/*FIXME apparently we can just copy the content at any point
-				print ("FILENAME: %s\n", content.get_filename ());
 				// the content has been created, but the file is still loading, so we wait
 				if (content.get_filename () == null) {
 					waiting_callbacks.add ({ load_image.callback, hash });
 					yield;
-				}*/
+				}
 
 				return content.copy (monitor, Meta.BackgroundEffects.NONE);
 			}
 
 			content = new Meta.Background (screen, monitor, Meta.BackgroundEffects.NONE);
+
+			image_cache.set (hash, content);
 
 			try {
 				yield content.load_file_async (file, style, null);
@@ -83,7 +83,6 @@ namespace Gala
 				return null;
 			}
 
-			image_cache.set (hash, content);
 			foreach (var callback in waiting_callbacks) {
 				if (callback.hash == hash) {
 					callback.func ();
