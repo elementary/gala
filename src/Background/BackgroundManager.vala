@@ -19,14 +19,23 @@ namespace Gala
 {
 	public class BackgroundManager : Meta.BackgroundGroup
 	{
-		public Meta.Screen screen { get; construct set; }
+		public Meta.Screen screen { get; construct; }
 
 		public BackgroundManager (Meta.Screen screen)
 		{
 			Object (screen: screen);
+		}
+		
+		construct
+		{
+			screen.monitors_changed.connect (update);
 
 			update ();
-			screen.monitors_changed.connect (update);
+		}
+
+		~BackgroundManager ()
+		{
+			screen.monitors_changed.disconnect (update);
 		}
 
 		void update ()

@@ -19,13 +19,26 @@ namespace Gala
 {
 	public class BackgroundCache : Object
 	{
-		public Meta.Screen screen { get; construct set; }
-
 		struct WaitingCallback
 		{
 			SourceFunc func;
 			string hash;
 		}
+
+		static BackgroundCache? instance = null;
+
+		public static void init (Meta.Screen screen)
+		{
+			instance = new BackgroundCache (screen);
+		}
+
+		public static BackgroundCache get_default ()
+			requires (instance != null)
+		{
+			return instance;
+		}
+		
+		public Meta.Screen screen { get; construct; }
 
 		Gee.HashMap<string,Meta.Background> image_cache;
 		Gee.HashMap<string,Meta.Background> pattern_cache;
@@ -34,7 +47,10 @@ namespace Gala
 		BackgroundCache (Meta.Screen screen)
 		{
 			Object (screen: screen);
-
+		}
+		
+		construct
+		{
 			image_cache = new Gee.HashMap<string,Meta.Background> ();
 			pattern_cache = new Gee.HashMap<string,Meta.Background> ();
 			waiting_callbacks = new Gee.LinkedList<WaitingCallback?> ();
@@ -43,7 +59,7 @@ namespace Gala
 		public async Meta.Background? load_image (string file, int monitor,
 			GDesktop.BackgroundStyle style)
 		{
-			string hash = file + "#" + ((int)style).to_string ();
+			string hash = "%s#%i".printf (file, style);
 			Meta.Background? content = image_cache.get (hash);
 
 			if (content != null) {
@@ -81,8 +97,7 @@ namespace Gala
 		public Meta.Background load_pattern (int monitor, Clutter.Color primary, Clutter.Color secondary,
 			GDesktop.BackgroundShading shading_type)
 		{
-			string hash = primary.to_string () + secondary.to_string () +
-				((int)shading_type).to_string ();
+			string hash = "%s#%s#%i".printf (primary.to_string (), secondary.to_string (), shading_type);
 			Meta.Background? content = pattern_cache.get (hash);
 
 			if (content != null)
@@ -97,19 +112,6 @@ namespace Gala
 			pattern_cache.set (hash, content);
 
 			return content;
-		}
-
-		static BackgroundCache? instance = null;
-
-		public static void init (Meta.Screen screen)
-		{
-			instance = new BackgroundCache (screen);
-		}
-
-		public static BackgroundCache get_default ()
-			requires (instance != null)
-		{
-			return instance;
 		}
 	}
 }

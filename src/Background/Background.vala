@@ -24,29 +24,32 @@ namespace Gala
 	 */
 	public class Background : Meta.BackgroundGroup
 	{
+		const uint ANIMATION_TRANSITION_DURATION = 1500;
+		const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
+		const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
+
+		public Meta.Screen screen { get; construct; }
+		public int monitor { get; construct; }
+		public Settings settings { get; construct; }
+
 		Meta.BackgroundActor pattern;
 		Meta.BackgroundActor? image = null;
-
-		const uint ANIMATION_TRANSITION_DURATION = 1500;
-
-		public Meta.Screen screen { get; construct set; }
-		public int monitor { get; construct set; }
-		public Settings settings { get; construct set; }
-
-		Gnome.BGSlideShow? animation = null;
 		Meta.BackgroundActor? first_image = null;
 		Meta.BackgroundActor? second_image = null;
+
+		Gnome.BGSlideShow? animation = null;
 		int animation_load_pending_images = 0;
 		double animation_duration = 0.0;
 		double animation_progress = 0.0;
 		uint update_animation_timeout_id;
-		const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
-		const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
 
 		public Background (Meta.Screen screen, int monitor, Settings settings)
 		{
 			Object (screen: screen, monitor: monitor, settings: settings);
-
+		}
+		
+		construct
+		{
 			pattern = new Meta.BackgroundActor ();
 			pattern.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.ALL, 0));
 			add_child (pattern);
@@ -54,6 +57,14 @@ namespace Gala
 			load (null);
 
 			settings.changed.connect (load);
+		}
+
+		~Background ()
+		{
+			settings.changed.disconnect (load);
+
+			if (update_animation_timeout_id > 0)
+				Source.remove (update_animation_timeout_id);
 		}
 
 		/**

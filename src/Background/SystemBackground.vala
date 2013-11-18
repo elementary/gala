@@ -21,6 +21,11 @@ namespace Gala
 	{
 		public SystemBackground ()
 		{
+			Object ();
+		}
+		
+		construct
+		{
 			var cache = BackgroundCache.get_default ();
 			cache.load_image.begin (Config.PKGDATADIR + "/texture.png", 0,
 				GDesktop.BackgroundStyle.WALLPAPER, (obj, res) => {
