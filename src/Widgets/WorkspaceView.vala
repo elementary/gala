@@ -184,7 +184,11 @@ namespace Gala
 		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
+#if HAS_MUTTER38
 			var thumb = new WorkspaceThumb (workspace, plugin.background_group);
+#else
+			var thumb = new WorkspaceThumb (workspace);
+#endif
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
@@ -461,7 +465,9 @@ namespace Gala
 			if (!visible || animating)
 				return;
 
+#if HAS_MUTTER38
 			plugin.ui_group.button_release_event.disconnect (outside_clicked);
+#endif
 			
 			float width, height;
 			plugin.get_screen ().get_size (out width, out height);
