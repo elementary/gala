@@ -17,6 +17,7 @@
 
 namespace Gala
 {
+#if HAS_MUTTER38
 	public class BackgroundManager : Meta.BackgroundGroup
 	{
 		public Meta.Screen screen { get; construct; }
@@ -55,5 +56,6 @@ namespace Gala
 			}
 		}
 	}
+#endif
 }
 

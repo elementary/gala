@@ -17,6 +17,7 @@
 
 namespace Gala
 {
+#if HAS_MUTTER38
 	public class SystemBackground : Meta.BackgroundActor
 	{
 		public SystemBackground ()
@@ -33,5 +34,6 @@ namespace Gala
 			});
 		}
 	}
+#endif
 }
 

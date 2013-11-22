@@ -17,6 +17,7 @@
 
 namespace Gala
 {
+#if HAS_MUTTER38
 	public class BackgroundCache : Object
 	{
 		struct WaitingCallback
@@ -113,5 +114,6 @@ namespace Gala
 			return content;
 		}
 	}
+#endif
 }
 
