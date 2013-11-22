@@ -26,21 +26,13 @@ namespace Gala
 	public class Background : Meta.BackgroundGroup
 	{
 		const uint ANIMATION_TRANSITION_DURATION = 1500;
-		const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
-		const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
 
 		public Meta.Screen screen { get; construct; }
 		public int monitor { get; construct; }
 		public Settings settings { get; construct; }
 
 		Meta.BackgroundActor pattern;
-		Meta.BackgroundActor? image = null;
-		Meta.BackgroundActor? second_image = null;
-
-		Gnome.BGSlideShow? animation = null;
-		double animation_duration = 0.0;
-		double animation_progress = 0.0;
-		uint update_animation_timeout_id;
+		Clutter.Actor? image = null;
 
 		public Background (Meta.Screen screen, int monitor, Settings settings)
 		{
@@ -61,9 +53,6 @@ namespace Gala
 		~Background ()
 		{
 			settings.changed.disconnect (load);
-
-			if (update_animation_timeout_id > 0)
-				Source.remove (update_animation_timeout_id);
 		}
 
 		/**
@@ -87,41 +76,29 @@ namespace Gala
 
 				// no image at all or malformed picture-uri
 				if (filename == null || filename == "" || style == GDesktop.BackgroundStyle.NONE) {
-					if (image != null) {
-						image.destroy ();
-						image = null;
-					}
-					if (second_image != null) {
-						second_image.destroy ();
-						second_image = null;
-					}
-					animation = null;
+					set_current (null);
 				// animation
 				} else if (filename.has_suffix (".xml")) {
-					animation = new Gnome.BGSlideShow (filename);
-					try {
-						if (animation.load ()) {
-							update_animation ();
-						}
-					} catch (Error e) {
-						warning (e.message);
-					}
+					var slides = new SlideShow (filename, screen, 0, style);
+
+					slides.load.begin ((obj, res) => {
+						if (!slides.load.end (res))
+							set_current (null);
+						else
+							set_current (slides);
+					});
 				// normal wallpaper
 				} else {
-					animation = null;
-					if (second_image != null) {
-						second_image.destroy ();
-						second_image = null;
-					}
 					cache.load_image.begin (filename, monitor, style, (obj, res) => {
 						var content = cache.load_image.end (res);
-						if (content != null) {
-							set_image (content);
-						// if loading failed, destroy our image and show the pattern
-						} else if (image != null) {
-							image.destroy ();
-							image = null;
+						if (content == null) {
+							set_current (null);
+							return;
 						}
+
+						var new_image = new Meta.BackgroundActor ();
+						new_image.content = content;
+						set_current (new_image);
 					});
 				}
 			}
@@ -144,13 +121,23 @@ namespace Gala
 			}
 		}
 
-		void set_image (Meta.Background content)
+		/**
+		 * Fade a new image over the old, then destroy the old one and replace it with the new one
+		 * if new_image is null, fade out and destroy the current image to show the pattern
+		 */
+		void set_current (Clutter.Actor? new_image)
 		{
-			var new_image = new Meta.BackgroundActor ();
-			new_image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
-			new_image.content = content;
-			new_image.opacity = 0;
+			if (new_image == null) {
+				if (image != null)
+					image.animate (Clutter.AnimationMode.EASE_OUT_QUAD, ANIMATION_TRANSITION_DURATION,
+						opacity: 0).completed.connect (() => {
+						image.destroy ();
+					});
+				return;
+			}
 
+			new_image.opacity = 0;
+			new_image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
 			insert_child_above (new_image, null);
 
 			var dest_opacity = (uint8)(settings.get_int ("picture-opacity") / 100.0 * 255);
@@ -200,107 +187,6 @@ namespace Gala
 			}
 
 			return GDesktop.BackgroundStyle.NONE;
-		}
-
-		/**
-		 * SlideShow animation related functions
-		 */
-		void update_animation ()
-		{
-			if (animation == null)
-				return;
-
-			update_animation_timeout_id = 0;
-
-			var geom = screen.get_monitor_geometry (monitor);
-
-			bool is_fixed;
-			string file_from, file_to;
-			double progress, duration;
-			animation.get_current_slide (geom.width, geom.height, out progress,
-				out duration, out is_fixed, out file_from, out file_to);
-
-			animation_duration = duration;
-			animation_progress = progress;
-
-			if (file_from == null && file_to == null) {
-				queue_update_animation ();
-				return;
-			}
-
-			if (image == null || image.content == null
-				|| (image.content as Meta.Background).get_filename () != file_from) {
-				image = update_image (image, file_from, false);
-			}
-			if (second_image == null || second_image.content == null
-				|| (second_image.content as Meta.Background).get_filename () != file_to) {
-				second_image = update_image (second_image, file_to, true);
-			}
-
-			update_animation_progress ();
-		}
-
-		/**
-		 * Returns the passed orig_image with the correct content or a new one if orig_image was null
-		 */
-		Meta.BackgroundActor? update_image (owned Meta.BackgroundActor? orig_image, string? file, bool topmost)
-		{
-			Meta.BackgroundActor image = null;
-
-			if (orig_image != null)
-				image = orig_image;
-
-			if (file == null) {
-				if (image != null) {
-					image.destroy ();
-					image = null;
-				}
-				return null;
-			}
-
-			if (image == null) {
-				image = new Meta.BackgroundActor ();
-				image.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
-				if (topmost)
-					insert_child_above (image, null);
-				else
-					insert_child_above (image, pattern);
-			}
-
-			var cache = BackgroundCache.get_default ();
-			var style = style_string_to_enum (settings.get_string ("picture-options"));
-			cache.load_image.begin (file, monitor, style, (obj, res) => {
-				image.content = cache.load_image.end (res);
-			});
-
-			return image;
-		}
-
-		void queue_update_animation ()
-		{
-			if (update_animation_timeout_id != 0 || animation_duration == 0.0)
-				return;
-
-			var n_steps = 255 / ANIMATION_OPACITY_STEP_INCREMENT;
-			var time_per_step = (uint)((animation_duration * 1000) / n_steps);
-			var interval = uint.max ((uint)(ANIMATION_MIN_WAKEUP_INTERVAL * 1000), time_per_step);
-
-			if (interval > uint.MAX)
-				return;
-
-			update_animation_timeout_id = Timeout.add (interval, () => {
-				update_animation_timeout_id = 0;
-				update_animation ();
-				return false;
-			});
-		}
-
-		void update_animation_progress ()
-		{
-			if (second_image != null)
-				second_image.opacity = (uint)(animation_progress * 255);
-
-			queue_update_animation ();
 		}
 	}
 #endif
