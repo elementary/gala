@@ -75,11 +75,17 @@ namespace Gala
 
 			// update images
 			if (all || key_changed == "picture-uri" || key_changed == "picture-options") {
-				var file = File.new_for_commandline_arg (settings.get_string ("picture-uri")).get_path ();
 				var style = style_string_to_enum (settings.get_string ("picture-options"));
+				var uri = settings.get_string ("picture-uri");
 
-				// no image at all
-				if (style == GDesktop.BackgroundStyle.NONE) {
+				string filename;
+				if (GLib.Uri.parse_scheme (uri) != null)
+					filename = File.new_for_uri (uri).get_path ();
+				else
+					filename = uri;
+
+				// no image at all or malformed picture-uri
+				if (filename == null || filename == "" || style == GDesktop.BackgroundStyle.NONE) {
 					if (image != null) {
 						image.destroy ();
 						image = null;
@@ -90,8 +96,8 @@ namespace Gala
 					}
 					animation = null;
 				// animation
-				} else if (file.has_suffix (".xml")) {
-					animation = new Gnome.BGSlideShow (file);
+				} else if (filename.has_suffix (".xml")) {
+					animation = new Gnome.BGSlideShow (filename);
 					try {
 						if (animation.load ()) {
 							update_animation ();
@@ -106,7 +112,7 @@ namespace Gala
 						second_image.destroy ();
 						second_image = null;
 					}
-					cache.load_image.begin (file, monitor, style, (obj, res) => {
+					cache.load_image.begin (filename, monitor, style, (obj, res) => {
 						var content = cache.load_image.end (res);
 						if (content != null) {
 							set_image (content);
