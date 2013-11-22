@@ -50,7 +50,7 @@ namespace Gala
 		
 #if HAS_MUTTER38
 		internal Actor wallpaper;
-		Actor wallpaper_wrapper;
+		Actor wallpaper_manager;
 #else
 		internal Clone wallpaper;
 #endif
@@ -95,11 +95,11 @@ namespace Gala
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
 #if HAS_MUTTER38
-			wallpaper = new BackgroundManager (screen);
+			wallpaper_manager = new BackgroundManager (screen);
 			//FIXME apparently there are issues with scaling and animating the opacity. The wallpaper will
 			//      start flickering when the opacity changes. Wrapping it in a container solves this.
-			wallpaper_wrapper = new Clutter.Actor ();
-			wallpaper_wrapper.add_child (wallpaper);
+			wallpaper = new Clutter.Actor ();
+			wallpaper.add_child (wallpaper_manager);
 #else
 			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
 #endif
@@ -129,7 +129,7 @@ namespace Gala
 			windows.clip_to_allocation = true;
 			
 			add_child (indicator);
-			add_child (wallpaper_wrapper);
+			add_child (wallpaper);
 			add_child (windows);
 			add_child (icons);
 			add_child (close_button);
@@ -211,8 +211,8 @@ namespace Gala
 			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
 
 #if HAS_MUTTER38
-			wallpaper.scale_x = width / swidth;
-			wallpaper.scale_y = THUMBNAIL_HEIGHT / sheight;
+			wallpaper_manager.scale_x = width / swidth;
+			wallpaper_manager.scale_y = THUMBNAIL_HEIGHT / sheight;
 #endif
 			wallpaper.width = width;
 			windows.width = width;
@@ -434,12 +434,12 @@ namespace Gala
 			}
 			
 			if (index == screen.n_workspaces - 1) {
-				wallpaper_wrapper.opacity = 127;
+				wallpaper.opacity = 127;
 				if (plus.get_parent () != null)
 					plus.get_parent ().remove_child (plus);
 				add_child (plus);
 			} else {
-				wallpaper_wrapper.opacity = 255;
+				wallpaper.opacity = 255;
 				if (contains (plus))
 					remove_child (plus);
 			}
@@ -552,7 +552,7 @@ namespace Gala
 				return false;
 			
 			if (workspace.index () == screen.n_workspaces - 1) {
-				wallpaper_wrapper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
+				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 300, opacity : 210);
 				return true;
 			}
 			
@@ -592,7 +592,7 @@ namespace Gala
 				return false;
 			
 			if (workspace.index () == screen.n_workspaces - 1)
-				wallpaper_wrapper.animate (AnimationMode.EASE_OUT_QUAD, 400, opacity : 127);
+				wallpaper.animate (AnimationMode.EASE_OUT_QUAD, 400, opacity : 127);
 			else
 				hide_close_button ();
 			

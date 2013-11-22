@@ -90,7 +90,9 @@ namespace Gala
 			var screen = get_screen ();
 			
 			DBus.init (this);
+#if HAS_MUTTER38
 			BackgroundCache.init (screen);
+#endif
 			
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area

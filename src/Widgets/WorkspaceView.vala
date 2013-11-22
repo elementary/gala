@@ -76,7 +76,7 @@ namespace Gala
 				hide ();
 				return true;
 			});
-			Compositor.get_stage_for_screen (screen).insert_child_below (click_catcher);
+			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
 #endif
 			
 			add_child (thumbnails);
@@ -118,7 +118,11 @@ namespace Gala
 		void init_thumbnails ()
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
+#if HAS_MUTTER38
 				var thumb = new WorkspaceThumb (workspace, plugin.background_group);
+#else
+				var thumb = new WorkspaceThumb (workspace);
+#endif
 				thumb.clicked.connect (hide);
 				thumb.closed.connect (remove_workspace);
 				thumb.window_on_last.connect (add_workspace);
