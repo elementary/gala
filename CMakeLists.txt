@@ -31,7 +31,7 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/src/Config.vala)
-add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DGNOME_DESKTOP_USE_UNSTABLE_API)
+add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DGNOME_DESKTOP_USE_UNSTABLE_API -w)
 
 find_package(PkgConfig)
 pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 plank gnome-desktop-3.0)
