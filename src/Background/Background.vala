@@ -165,7 +165,7 @@ namespace Gala
 		 *  translates the string returned from gsettings for the color-shading-type key to the
 		 *  appropriate GDesktop.BackgroundShading enum value
 		 */
-		GDesktop.BackgroundShading shading_string_to_enum (string shading)
+		static GDesktop.BackgroundShading shading_string_to_enum (string shading)
 		{
 			switch (shading) {
 				case "horizontal":
@@ -181,7 +181,7 @@ namespace Gala
 		 *  translates the string returned from gsettings for the picture-options key to the
 		 *  appropriate GDesktop.BackgroundStyle enum value
 		 */
-		GDesktop.BackgroundStyle style_string_to_enum (string style)
+		static GDesktop.BackgroundStyle style_string_to_enum (string style)
 		{
 			switch (style) {
 				case "wallpaper":
