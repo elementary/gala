@@ -261,7 +261,7 @@ namespace Gala
 			if (prev_window != current_window) {
 				dim_windows ();
 				// wait for the dimming to finish
-				Timeout.add (250, () => {
+				Clutter.Threads.Timeout.add (250, () => {
 					close (event.time);
 					return false;
 				});

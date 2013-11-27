@@ -447,7 +447,7 @@ namespace Gala
 #endif
 			
 			animating = true;
-			Timeout.add (50, () => {
+			Clutter.Threads.Timeout.add (50, () => {
 				animating = false;
 				return false;
 			}); //catch hot corner hiding problem

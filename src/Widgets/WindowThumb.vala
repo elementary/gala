@@ -88,7 +88,7 @@ namespace Gala
 			window.delete (window.get_screen ().get_display ().get_current_time ());
 			// see if the window is still alive after the animation ended. If it is, it's pretty certain that it
 			// popped up some kind of confirmation dialog, so we focus it
-			Timeout.add (AnimationSettings.get_default ().close_duration + WAIT_FOR_CONFIRMATION_DIALOG, () => {
+			Clutter.Threads.Timeout.add (AnimationSettings.get_default ().close_duration + WAIT_FOR_CONFIRMATION_DIALOG, () => {
 				if (clone != null && clone.source != null && !(clone.source as Meta.WindowActor).is_destroyed ()) {
 					clone.source.opacity = 255;
 					selected (window);

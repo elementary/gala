@@ -282,7 +282,7 @@ namespace Gala
 					window.delete (screen.get_display ().get_current_time ());
 			}
 			
-			GLib.Timeout.add (250, () => {
+			Clutter.Threads.Timeout.add (250, () => {
 				//wait for confirmation dialogs to popup
 				if (Utils.get_n_windows (workspace) == 0) {
 					workspace.window_added.disconnect (handle_window_added);
@@ -498,7 +498,7 @@ namespace Gala
 				return;
 			
 			// we need to wait untill the animation ended, otherwise we get trouble with focus handling
-			Timeout.add (AnimationSettings.get_default ().workspace_switch_duration + 10, () => {
+			Clutter.Threads.Timeout.add (AnimationSettings.get_default ().workspace_switch_duration + 10, () => {
 				// check again, maybe something opened
 				if (workspace == null || Utils.get_n_windows (workspace) > 0)
 					return false;
@@ -537,7 +537,7 @@ namespace Gala
 			workspace.activate (screen.get_display ().get_current_time ());
 			
 			// wait for the animation to be finished before closing, for aesthetic reasons
-			Timeout.add (AnimationSettings.get_default ().workspace_switch_duration, () => {
+			Clutter.Threads.Timeout.add (AnimationSettings.get_default ().workspace_switch_duration, () => {
 				clicked ();
 				return false;
 			});
@@ -563,7 +563,7 @@ namespace Gala
 			if (hover_timer > 0)
 				GLib.Source.remove (hover_timer);
 			
-			hover_timer = Timeout.add (CLOSE_BUTTON_DELAY, () => {
+			hover_timer = Clutter.Threads.Timeout.add (CLOSE_BUTTON_DELAY, () => {
 				close_button.visible = true;
 				close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
 				return false;

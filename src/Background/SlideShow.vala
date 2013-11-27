@@ -143,7 +143,7 @@ namespace Gala
 			if (interval > uint.MAX)
 				return;
 
-			update_animation_timeout_id = Timeout.add (interval, () => {
+			update_animation_timeout_id = Clutter.Threads.Timeout.add (interval, () => {
 				update_animation_timeout_id = 0;
 				update_animation.begin ();
 				return false;
