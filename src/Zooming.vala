@@ -67,7 +67,7 @@ namespace Gala
 				wins.scale_center_x = mx;
 				wins.scale_center_y = my;
 				
-				mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
+				mouse_poll_timer = Clutter.Threads.Timeout.add (MOUSE_POLL_TIME, () => {
 					client_pointer.get_position (null, out mx, out my);
 					if (wins.scale_center_x == mx && wins.scale_center_y == my)
 						return true;

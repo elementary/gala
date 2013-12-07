@@ -31,10 +31,10 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/src/Config.vala)
-add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
+add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DGNOME_DESKTOP_USE_UNSTABLE_API -w)
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 plank)
+pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 plank gnome-desktop-3.0)
 
 set (MUTTER36_FLAGS "")
 pkg_check_modules(MUTTER36 QUIET libmutter>=3.5)
@@ -84,6 +84,11 @@ vala_precompile(VALA_C
     src/TextShadowEffect.vala
     src/Utils.vala
     src/Zooming.vala
+    src/Background/Background.vala
+    src/Background/BackgroundCache.vala
+    src/Background/BackgroundManager.vala
+    src/Background/SlideShow.vala
+    src/Background/SystemBackground.vala
     src/Widgets/AppIcon.vala
     src/Widgets/WindowOverview.vala
     src/Widgets/WindowSwitcher.vala
@@ -99,6 +104,7 @@ PACKAGES
     clutter-gtk-1.0
     gdk-x11-3.0
     gdesktopenums-3.0
+    gnome-desktop-3.0
     xfixes-4.0
 OPTIONS
     -g

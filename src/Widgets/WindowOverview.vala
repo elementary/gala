@@ -578,12 +578,10 @@ namespace Gala
 
 			screen.window_left_monitor.connect (window_left_monitor);
 			
-#if HAS_MUTTER38
-			plugin.wallpaper.
-#else
+#if !HAS_MUTTER38
 			Compositor.get_background_actor_for_screen (screen).
-#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
+#endif
 			
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
@@ -693,7 +691,7 @@ namespace Gala
 			} else {
 				close (true);
 				//wait for the animation to finish before switching
-				Timeout.add (400, () => {
+				Clutter.Threads.Timeout.add (400, () => {
 					window.get_workspace ().activate_with_focus (window, screen.get_display ().get_current_time ());
 					return false;
 				});
@@ -722,15 +720,13 @@ namespace Gala
 				exposed.selected.disconnect (thumb_selected);
 			}
 			
-#if HAS_MUTTER38
-			plugin.wallpaper.
-#else
+#if !HAS_MUTTER38
 			Compositor.get_background_actor_for_screen (screen).
-#endif
 				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
+#endif
 			
 			if (animate) {
-				Timeout.add (300, () => {
+				Clutter.Threads.Timeout.add (300, () => {
 					visible = false;
 					ready = true;
 					

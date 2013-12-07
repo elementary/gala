@@ -51,8 +51,8 @@ namespace Gala
 		ScreenSaver? screensaver;
 		
 #if HAS_MUTTER38
-		// FIXME we need a proper-sized background for every monitor
-		public BackgroundActor wallpaper { get; private set; }
+		public Meta.BackgroundGroup background_group { get; private set; }
+		public Clutter.Actor ui_group { get; private set; }
 #endif
 		
 		Window? moving; //place for the window that is being moved over
@@ -90,6 +90,9 @@ namespace Gala
 			var screen = get_screen ();
 			
 			DBus.init (this);
+#if HAS_MUTTER38
+			BackgroundCache.init (screen);
+#endif
 			
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -102,12 +105,41 @@ namespace Gala
 			
 			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			
-			string color = new Settings ("org.gnome.desktop.background").get_string ("primary-color");
+			var color = BackgroundSettings.get_default ().primary_color;
 			stage.background_color = Clutter.Color.from_string (color);
 			
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
 			
+#if HAS_MUTTER38
+			/* our layer structure, copied from gnome-shell (from bottom to top):
+			 * stage
+			 * + system background
+			 * + ui group
+			 * +-- window group
+			 * +---- background manager
+			 * +-- shell elements
+			 * +-- top window group
+		     */
+
+			var system_background = new SystemBackground ();
+			system_background.add_constraint (new Clutter.BindConstraint (stage,
+				Clutter.BindCoordinate.ALL, 0));
+			stage.insert_child_below (system_background, null);
+
+			ui_group = new Clutter.Actor ();
+			ui_group.reactive = true;
+			stage.add_child (ui_group);
+
+			var window_group = Compositor.get_window_group_for_screen (screen);
+			stage.remove_child (window_group);
+			ui_group.add_child (window_group);
+
+			background_group = new BackgroundManager (screen);
+			window_group.add_child (background_group);
+			window_group.set_child_below_sibling (background_group, null);
+#endif
+
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
 			
@@ -116,13 +148,18 @@ namespace Gala
 			zooming = new Zooming (this);
 			window_overview = new WindowOverview (this);
 			
+#if HAS_MUTTER38
+			ui_group.add_child (workspace_view);
+			ui_group.add_child (winswitcher);
+			ui_group.add_child (window_overview);
+
+			var top_window_group = Compositor.get_top_window_group_for_screen (screen);
+			stage.remove_child (top_window_group);
+			ui_group.add_child (top_window_group);
+#else
 			stage.add_child (workspace_view);
 			stage.add_child (winswitcher);
 			stage.add_child (window_overview);
-			
-#if HAS_MUTTER38
-			// FIXME create a background for every monitor and keep them updated and properly sized
-			wallpaper = new BackgroundActor ();
 #endif
 			
 			/*keybindings*/
@@ -189,8 +226,15 @@ namespace Gala
 				workspace_view.show (true);
 			});
 			
+#if HAS_MUTTER38
+			//FIXME we have to investigate this. Apparently alt-tab is now bound to switch-applications
+			// instead of windows, which we should probably handle too
+			KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
+			KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
+#else
 			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
 			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
+#endif
 			
 			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
@@ -217,6 +261,9 @@ namespace Gala
 
 #if HAS_MUTTER38
 			stage.show ();
+
+			// let the session manager move to the next phase
+			Meta.register_with_session ();
 			
 			return false;
 #endif
@@ -281,7 +328,7 @@ namespace Gala
 			else
 				Utils.set_input_area (screen, InputArea.NONE);
 		}
-		
+
 		public uint32[] get_all_xids ()
 		{
 			var list = new Gee.ArrayList<uint32> ();
@@ -346,6 +393,10 @@ namespace Gala
 #else
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 #endif
+
+#if HAS_MUTTER38
+			Meta.Util.disable_unredirect_for_screen (screen);
+#endif
 		}
 		
 		public new void end_modal ()
@@ -355,7 +406,12 @@ namespace Gala
 				return;
 			
 			update_input_area ();
-			base.end_modal (get_screen ().get_display ().get_current_time ());
+			
+			var screen = get_screen ();
+			base.end_modal (screen.get_display ().get_current_time ());
+#if HAS_MUTTER38
+			Meta.Util.enable_unredirect_for_screen (screen);
+#endif
 		}
 		
 		public void get_current_cursor_position (out int x, out int y)
@@ -786,7 +842,7 @@ namespace Gala
 		/*workspace switcher*/
 		List<WindowActor>? win;
 		List<Clutter.Actor>? par; //class space for kill func
-		List<Clutter.Clone>? clones;
+		List<Clutter.Actor>? clones;
 		Clutter.Actor? in_group;
 		Clutter.Actor? out_group;
 		Clutter.Actor? moving_window_container;
@@ -834,6 +890,8 @@ namespace Gala
 			var group = Compositor.get_window_group_for_screen (screen);
 #if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#else
+			var wallpaper = background_group;
 #endif
 			
 			in_group  = new Clutter.Actor ();
@@ -985,6 +1043,8 @@ namespace Gala
 			
 #if !HAS_MUTTER38
 			var wallpaper = Compositor.get_background_actor_for_screen (screen);
+#else
+			var wallpaper = background_group;
 #endif
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
@@ -1003,6 +1063,15 @@ namespace Gala
 		{
 			return x_handle_event (event) != 0;
 		}
+
+#if HAS_MUTTER38
+		public override bool keybinding_filter (Meta.KeyBinding binding)
+		{
+			// for now we'll just block all keybindings if we're in modal mode, 
+			// do something useful with this later
+			return modal_count > 0;
+		}
+#endif
 		
 		public override unowned PluginInfo? plugin_info ()
 		{
