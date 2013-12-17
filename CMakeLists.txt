@@ -14,6 +14,7 @@ enable_testing ()
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/gala")
+set (PLUGINDIR "${PKGDATADIR}/plugins")
 set (GETTEXT_PACKAGE "gala")
 set (RELEASE_NAME "")
 set (VERSION "0.1.0")
@@ -30,7 +31,7 @@ add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/src/Config.vala)
+configure_file (${CMAKE_SOURCE_DIR}/lib/Config.vala.cmake ${CMAKE_BINARY_DIR}/lib/Config.vala)
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DGNOME_DESKTOP_USE_UNSTABLE_API -w)
 
 find_package(PkgConfig)
@@ -74,16 +75,72 @@ include(ValaVersion)
 ensure_vala_version("0.16.1" MINIMUM)
 
 include(ValaPrecompile)
+
+set(VALA_OPTIONS 
+    -g
+    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
+    ${MUTTER36_FLAGS}
+    ${MUTTER38_FLAGS}
+    ${MUTTER310_FLAGS}
+    ${MUTTER312_FLAGS}
+	)
+
+# libgala
+set(LIB_NAME libgala)
+set(LIB_VERSION 0)
+set(SOVERSION 0)
+
+set (LIB_DEPS
+	libmutter
+	libbamf3
+	plank
+	granite
+	clutter-gtk-1.0
+)
+
+# get a deps file from the dependencies
+set(DEPS_STR "")
+foreach (LIB ${LIB_DEPS})
+	set(DEPS_STR "${DEPS_STR}${LIB}\n")
+endforeach(LIB)
+file(WRITE ${CMAKE_BINARY_DIR}/${LIB_NAME}.deps ${DEPS_STR})
+
+vala_precompile(LIB_VALA_C
+	lib/Plugin.vala
+	lib/Utils.vala
+	lib/WindowManager.vala
+    ${CMAKE_BINARY_DIR}/lib/Config.vala
+PACKAGES
+	${LIB_DEPS}
+OPTIONS
+	${VALA_OPTIONS}
+	-X -shared
+	-X -fPIX
+GENERATE_VAPI
+	${LIB_NAME}
+GENERATE_HEADER
+	${LIB_NAME}
+)
+
+add_library(${LIB_NAME} SHARED ${LIB_VALA_C})
+set_target_properties(${LIB_NAME} PROPERTIES PREFIX "") # prevent cmake from adding another 'lib'
+set_target_properties(${LIB_NAME} PROPERTIES
+	VERSION ${LIB_VERSION}.0
+	SOVERSION ${SOVERSION}
+)
+target_link_libraries(${LIB_NAME} ${DEPS_LIBRARIES})
+
+# gala itself
 vala_precompile(VALA_C
     src/DBus.vala
     src/DragDropAction.vala
+	src/InternalUtils.vala
     src/Main.vala
-    src/Plugin.vala
+	src/PluginManager.vala
     src/ScreenSaver.vala
     src/Settings.vala
     src/TextShadowEffect.vala
-    src/Utils.vala
-    src/Zooming.vala
+	src/WindowManager.vala
     src/Background/Background.vala
     src/Background/BackgroundCache.vala
     src/Background/BackgroundManager.vala
@@ -95,7 +152,6 @@ vala_precompile(VALA_C
     src/Widgets/WindowThumb.vala
     src/Widgets/WorkspaceThumb.vala
     src/Widgets/WorkspaceView.vala
-    ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite
     libbamf3
@@ -106,22 +162,35 @@ PACKAGES
     gdesktopenums-3.0
     gnome-desktop-3.0
     xfixes-4.0
+	gmodule-2.0
+	${LIB_NAME}
 OPTIONS
-    -g
-    --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
-    ${MUTTER36_FLAGS}
-    ${MUTTER38_FLAGS}
-    ${MUTTER310_FLAGS}
-    ${MUTTER312_FLAGS}
+    ${VALA_OPTIONS}
+	--vapidir=${CMAKE_BINARY_DIR}
     )
+
+# add default plugins
+set(PLUGIN_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/plugins)
+file(GLOB plugins RELATIVE ${PLUGIN_SOURCE_DIR} plugins/*)
+foreach(plugin ${plugins})
+	if (NOT ${plugin} STREQUAL "template" AND
+		IS_DIRECTORY ${PLUGIN_SOURCE_DIR}/${plugin})
+		add_subdirectory(${PLUGIN_SOURCE_DIR}/${plugin})
+	endif()
+endforeach()
 
 #add_subdirectory (po)
 
 include(GSettings)
 add_schema ("data/org.pantheon.desktop.gala.gschema.xml")
 
-add_executable(gala ${VALA_C})#src/main.c)
-target_link_libraries(gala m)
+add_executable(gala ${VALA_C})
+target_link_libraries(gala m ${LIB_NAME})
+
+install(TARGETS ${LIB_NAME} DESTINATION lib)
+install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.vapi DESTINATION share/vala/vapi)
+install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.deps DESTINATION share/vala/vapi)
+install(FILES ${CMAKE_BINARY_DIR}/${LIB_NAME}.h DESTINATION include/${LIB_NAME}/)
 
 install(TARGETS gala RUNTIME DESTINATION bin)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/gala.desktop DESTINATION share/applications)

@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,38 +16,55 @@
 // 
 
 using Clutter;
-using Meta;
 
-namespace Gala
+namespace Gala.Plugins.Zoom
 {
-	public class Zooming : Object
+	public class Main : Object, Gala.Plugin
 	{
-		Plugin plugin;
-		
+		public X.Xrectangle[] region { get; protected set; default = {}; }
+		Gala.WindowManager? wm = null;
+
 		const uint MOUSE_POLL_TIME = 50;
 		uint mouse_poll_timer = 0;
 		float current_zoom = 1.0f;
-		
-		public Zooming (Plugin _plugin)
+
+		public void initialize (Gala.WindowManager wm)
 		{
-			plugin = _plugin;
+			this.wm = wm;
+			var display = wm.get_screen ().get_display ();
+			var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
+
+			display.add_keybinding ("zoom-in", schema, 0, zoom_in);
+			display.add_keybinding ("zoom-out", schema, 0, zoom_out);
 		}
-		
-		~Zooming ()
+
+		public void destroy ()
 		{
+			if (wm == null)
+				return;
+
+			var display = wm.get_screen ().get_display ();
+
+			display.remove_keybinding ("zoom-in");
+			display.remove_keybinding ("zoom-out");
+
 			if (mouse_poll_timer > 0)
 				Source.remove (mouse_poll_timer);
 			mouse_poll_timer = 0;
 		}
-		
-		public void zoom_in () {
+
+		void zoom_in (Meta.Display display, Meta.Screen screen,
+			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
+		{
 			zoom (true);
 		}
-		
-		public void zoom_out () {
+
+		void zoom_out (Meta.Display display, Meta.Screen screen,
+			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
+		{
 			zoom (false);
 		}
-		
+
 		void zoom (bool @in)
 		{
 			// Nothing to do if zooming out of our bounds is requested
@@ -56,7 +73,7 @@ namespace Gala
 			else if (current_zoom >= 2.5f && @in)
 				return;
 			
-			var wins = Compositor.get_window_group_for_screen (plugin.get_screen ());
+			var wins = wm.ui_group;
 			
 			// Add timer to poll current mouse position to reposition window-group
 			// to show requested zoomed area
@@ -67,7 +84,7 @@ namespace Gala
 				wins.scale_center_x = mx;
 				wins.scale_center_y = my;
 				
-				mouse_poll_timer = Clutter.Threads.Timeout.add (MOUSE_POLL_TIME, () => {
+				mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
 					client_pointer.get_position (null, out mx, out my);
 					if (wins.scale_center_x == mx && wins.scale_center_y == my)
 						return true;
@@ -99,3 +116,9 @@ namespace Gala
 		}
 	}
 }
+
+public Type register_plugin ()
+{
+	return typeof (Gala.Plugins.Zoom.Main);
+}
+

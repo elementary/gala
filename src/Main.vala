@@ -39,9 +39,9 @@ namespace Gala
 		}
 		
 #if HAS_MUTTER36
-		Meta.Plugin.manager_set_plugin_type (new Plugin ().get_type ());
+		Meta.Plugin.manager_set_plugin_type (new WindowManagerGala ().get_type ());
 #else
-		Meta.Plugin.type_register (new Plugin ().get_type ());
+		Meta.Plugin.type_register (new WindowManagerGala ().get_type ());
 #endif
 		
 		Meta.set_wm_name ("Mutter(Gala)");

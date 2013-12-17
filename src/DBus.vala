@@ -21,12 +21,12 @@ namespace Gala
 	public class DBus
 	{
 		static DBus? instance;
-		static Plugin plugin;
+		static WindowManager wm;
 		
 		[DBus (visibile = false)]
-		public static void init (Plugin _plugin)
+		public static void init (WindowManager _wm)
 		{
-			plugin = _plugin;
+			wm = _wm;
 			
 			Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
 				(connection) => {
@@ -47,7 +47,7 @@ namespace Gala
 		
 		public void perform_action (ActionType type)
 		{
-			plugin.perform_action (type);
+			wm.perform_action (type);
 		}
 	}
 }

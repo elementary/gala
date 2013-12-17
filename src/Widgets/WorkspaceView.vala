@@ -24,7 +24,7 @@ namespace Gala
 		static const float VIEW_HEIGHT = 140.0f;
 		static const float SCROLL_SPEED = 30.0f;
 		
-		Gala.Plugin plugin;
+		Gala.WindowManager wm;
 		Screen screen;
 		
 		Clutter.Actor thumbnails;
@@ -41,10 +41,10 @@ namespace Gala
 		Gtk.StyleContext background_style;
 		Gtk.EventBox background_style_widget;
 		
-		public WorkspaceView (Gala.Plugin _plugin)
+		public WorkspaceView (Gala.WindowManager _wm)
 		{
-			plugin = _plugin;
-			screen = plugin.get_screen ();
+			wm = _wm;
+			screen = wm.get_screen ();
 			
 			height = VIEW_HEIGHT;
 			reactive = true;
@@ -119,7 +119,7 @@ namespace Gala
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
 #if HAS_MUTTER38
-				var thumb = new WorkspaceThumb (workspace, plugin.background_group);
+				var thumb = new WorkspaceThumb (workspace, wm.background_group);
 #else
 				var thumb = new WorkspaceThumb (workspace);
 #endif
@@ -185,7 +185,7 @@ namespace Gala
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
 #if HAS_MUTTER38
-			var thumb = new WorkspaceThumb (workspace, plugin.background_group);
+			var thumb = new WorkspaceThumb (workspace, wm.background_group);
 #else
 			var thumb = new WorkspaceThumb (workspace);
 #endif
@@ -282,7 +282,7 @@ namespace Gala
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
-						plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
+						wm.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
 						switch_to_next_workspace (MotionDirection.LEFT);
 					
@@ -291,7 +291,7 @@ namespace Gala
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
-						plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
+						wm.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
 						switch_to_next_workspace (MotionDirection.RIGHT);
 					
@@ -403,15 +403,15 @@ namespace Gala
 			
 			wait_one_key_release = shortcut;
 			
-			var screen = plugin.get_screen ();
+			var screen = wm.get_screen ();
 
 			visible = true;
 			grab_key_focus ();
 			
-			plugin.begin_modal ();
+			wm.begin_modal ();
 			
 #if HAS_MUTTER38
-			plugin.ui_group.button_release_event.connect (outside_clicked);
+			wm.ui_group.button_release_event.connect (outside_clicked);
 #endif
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
@@ -466,14 +466,14 @@ namespace Gala
 				return;
 
 #if HAS_MUTTER38
-			plugin.ui_group.button_release_event.disconnect (outside_clicked);
+			wm.ui_group.button_release_event.disconnect (outside_clicked);
 #endif
 			
 			float width, height;
-			plugin.get_screen ().get_size (out width, out height);
+			wm.get_screen ().get_size (out width, out height);
 			
-			plugin.end_modal ();
-			plugin.update_input_area ();
+			wm.end_modal ();
+			wm.update_input_area ();
 			
 			animating = true;
 			animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : height).completed.connect (() => {

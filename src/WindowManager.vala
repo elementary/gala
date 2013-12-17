@@ -19,31 +19,12 @@ using Meta;
 
 namespace Gala
 {
-	public enum ActionType
-	{
-		NONE = 0,
-		SHOW_WORKSPACE_VIEW,
-		MAXIMIZE_CURRENT,
-		MINIMIZE_CURRENT,
-		OPEN_LAUNCHER,
-		CUSTOM_COMMAND,
-		WINDOW_OVERVIEW,
-		WINDOW_OVERVIEW_ALL
-	}
-	
-	public enum InputArea {
-		NONE,
-		FULLSCREEN,
-		HOT_CORNER
-	}
-	
-	public class Plugin : Meta.Plugin
+	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
 		PluginInfo info;
 		
 		WindowSwitcher winswitcher;
 		WorkspaceView workspace_view;
-		Zooming zooming;
 		WindowOverview window_overview;
 
 		// used to detect which corner was used to trigger an action
@@ -51,9 +32,11 @@ namespace Gala
 		ScreenSaver? screensaver;
 		
 #if HAS_MUTTER38
-		public Meta.BackgroundGroup background_group { get; private set; }
-		public Clutter.Actor ui_group { get; private set; }
+		public Meta.BackgroundGroup background_group { get; protected set; }
+		public Clutter.Actor ui_group { get; protected set; }
 #endif
+
+		public Clutter.Stage stage { get; protected set; }
 		
 		Window? moving; //place for the window that is being moved over
 		
@@ -65,7 +48,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		
-		public Plugin ()
+		public WindowManagerGala ()
 		{
 			info = PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
 				license = "GPLv3", description = "A nice elementary window manager"};
@@ -145,7 +128,6 @@ namespace Gala
 			
 			winswitcher = new WindowSwitcher (this);
 			
-			zooming = new Zooming (this);
 			window_overview = new WindowOverview (this);
 			
 #if HAS_MUTTER38
@@ -187,12 +169,6 @@ namespace Gala
 				var window = screen.get_display ().get_focus_window ();
 				window.change_workspace (workspace);
 				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
-			});
-			screen.get_display ().add_keybinding ("zoom-in", KeybindingSettings.get_default ().schema, 0, () => {
-				zooming.zoom_in ();
-			});
-			screen.get_display ().add_keybinding ("zoom-out", KeybindingSettings.get_default ().schema, 0, () => {
-				zooming.zoom_out ();
 			});
 			screen.get_display ().add_keybinding ("cycle-workspaces-next", KeybindingSettings.get_default ().schema, 0, () => {
 				cycle_workspaces (1);
@@ -250,14 +226,17 @@ namespace Gala
 			KeyBinding.set_custom_handler ("switch-group-backward", () => {});
 			
 			/*shadows*/
-			Utils.reload_shadow ();
-			ShadowSettings.get_default ().notify.connect (Utils.reload_shadow);
+			InternalUtils.reload_shadow ();
+			ShadowSettings.get_default ().notify.connect (InternalUtils.reload_shadow);
 			
 			/*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
 			configure_hotcorners ();
 			screen.monitors_changed.connect (configure_hotcorners);
 			
 			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+
+			PluginManager.get_default ().initialize (this);
+			update_input_area ();
 
 #if HAS_MUTTER38
 			stage.show ();
@@ -314,19 +293,19 @@ namespace Gala
 			var screen = get_screen ();
 			
 			if (screensaver != null && screensaver.get_active ()) {
-				Utils.set_input_area (screen, InputArea.NONE);
+				InternalUtils.set_input_area (screen, InputArea.NONE);
 				return;
 			}
 			
 			if (modal_count > 0)
-				Utils.set_input_area (screen, InputArea.FULLSCREEN);
+				InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
 			else if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
 				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
-				Utils.set_input_area (screen, InputArea.HOT_CORNER);
+				InternalUtils.set_input_area (screen, InputArea.HOT_CORNER);
 			else
-				Utils.set_input_area (screen, InputArea.NONE);
+				InternalUtils.set_input_area (screen, InputArea.NONE);
 		}
 
 		public uint32[] get_all_xids ()

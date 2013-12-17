@@ -29,7 +29,7 @@ namespace Gala
 	
 	public class WindowOverview : Actor
 	{
-		Plugin plugin;
+		WindowManager wm;
 		Screen screen;
 		
 		bool ready;
@@ -39,10 +39,10 @@ namespace Gala
 		
 		static const int PADDING = 50;
 		
-		public WindowOverview (Plugin _plugin)
+		public WindowOverview (WindowManager _wm)
 		{
-			plugin = _plugin;
-			screen = plugin.get_screen ();
+			wm = _wm;
+			screen = wm.get_screen ();
 			
 			screen.workspace_switched.connect (() => close (false));
 			
@@ -588,7 +588,7 @@ namespace Gala
 			
 			grab_key_focus ();
 			
-			plugin.begin_modal ();
+			wm.begin_modal ();
 			
 			visible = true;
 			
@@ -711,8 +711,8 @@ namespace Gala
 			
 			ready = false;
 			
-			plugin.end_modal ();
-			plugin.update_input_area ();
+			wm.end_modal ();
+			wm.update_input_area ();
 			
 			foreach (var child in get_children ()) {
 				var exposed = child as WindowThumb;
