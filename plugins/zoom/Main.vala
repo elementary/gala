@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using Clutter;
-
 namespace Gala.Plugins.Zoom
 {
 	public class Main : Object, Gala.Plugin
@@ -89,7 +87,7 @@ namespace Gala.Plugins.Zoom
 					if (wins.scale_center_x == mx && wins.scale_center_y == my)
 						return true;
 					
-					wins.animate (AnimationMode.LINEAR, MOUSE_POLL_TIME, scale_center_x : mx, scale_center_y : my);
+					wins.animate (Clutter.AnimationMode.LINEAR, MOUSE_POLL_TIME, scale_center_x : mx, scale_center_y : my);
 					
 					return true;
 				});
@@ -104,7 +102,7 @@ namespace Gala.Plugins.Zoom
 					Source.remove (mouse_poll_timer);
 				mouse_poll_timer = 0;
 				
-				wins.animate (AnimationMode.EASE_OUT_CUBIC, 300, scale_x : 1.0f, scale_y : 1.0f).completed.connect (() => {
+				wins.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 300, scale_x : 1.0f, scale_y : 1.0f).completed.connect (() => {
 					wins.scale_center_x = 0.0f;
 					wins.scale_center_y = 0.0f;
 				});
@@ -112,7 +110,7 @@ namespace Gala.Plugins.Zoom
 				return;
 			}
 			
-			wins.animate (AnimationMode.EASE_OUT_CUBIC, 300, scale_x : current_zoom, scale_y : current_zoom);
+			wins.animate (Clutter.AnimationMode.EASE_OUT_CUBIC, 300, scale_x : current_zoom, scale_y : current_zoom);
 		}
 	}
 }

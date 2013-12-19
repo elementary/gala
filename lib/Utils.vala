@@ -15,10 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using Meta;
-
-using Gala;
-
 namespace Gala
 {
 	public class Utils
@@ -76,7 +72,7 @@ namespace Gala
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_window (Window window, int size)
+		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size)
 		{
 			Gdk.Pixbuf? result = null;
 			
@@ -157,7 +153,7 @@ namespace Gala
 		/**
 		 * get the next window that should be active on a workspace right now
 		 **/
-		public static Window get_next_window (Meta.Workspace workspace, bool backward=false)
+		public static Meta.Window get_next_window (Meta.Workspace workspace, bool backward=false)
 		{
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
@@ -174,15 +170,15 @@ namespace Gala
 		/**
 		 * get the number of toplevel windows on a workspace
 		 **/
-		public static uint get_n_windows (Workspace workspace)
+		public static uint get_n_windows (Meta.Workspace workspace)
 		{
 			var n = 0;
 			foreach (var window in workspace.list_windows ()) {
 				if (window.is_on_all_workspaces ())
 					continue;
-				if (window.window_type == WindowType.NORMAL ||
-					window.window_type == WindowType.DIALOG ||
-					window.window_type == WindowType.MODAL_DIALOG)
+				if (window.window_type == Meta.WindowType.NORMAL ||
+					window.window_type == Meta.WindowType.DIALOG ||
+					window.window_type == Meta.WindowType.MODAL_DIALOG)
 					n ++;
 			}
 		
@@ -203,7 +199,7 @@ namespace Gala
 			return fallback_style;
 		}
 
-		public static void get_window_frame_offset (Window window, out float x, out float y, out float width, out float height)
+		public static void get_window_frame_offset (Meta.Window window, out float x, out float y, out float width, out float height)
 		{
 			var actor = window.get_compositor_private () as Clutter.Actor;
 			var frame = window.get_outer_rect ();
