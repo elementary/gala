@@ -134,13 +134,13 @@ target_link_libraries(${LIB_NAME} ${DEPS_LIBRARIES})
 vala_precompile(VALA_C
     src/DBus.vala
     src/DragDropAction.vala
-	src/InternalUtils.vala
+    src/InternalUtils.vala
     src/Main.vala
-	src/PluginManager.vala
+    src/PluginManager.vala
     src/ScreenSaver.vala
     src/Settings.vala
     src/TextShadowEffect.vala
-	src/WindowManager.vala
+    src/WindowManager.vala
     src/Background/Background.vala
     src/Background/BackgroundCache.vala
     src/Background/BackgroundManager.vala
@@ -162,8 +162,8 @@ PACKAGES
     gdesktopenums-3.0
     gnome-desktop-3.0
     xfixes-4.0
-	gmodule-2.0
-	${LIB_NAME}
+    gmodule-2.0
+    ${LIB_NAME}
 OPTIONS
     ${VALA_OPTIONS}
 	--vapidir=${CMAKE_BINARY_DIR}
@@ -178,8 +178,6 @@ foreach(plugin ${plugins})
 		add_subdirectory(${PLUGIN_SOURCE_DIR}/${plugin})
 	endif()
 endforeach()
-
-#add_subdirectory (po)
 
 include(GSettings)
 add_schema ("data/org.pantheon.desktop.gala.gschema.xml")
