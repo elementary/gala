@@ -354,6 +354,9 @@ namespace Meta {
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
 		public void window_mapped (Meta.Window window);
+#if HAS_MUTTER312
+		public void window_opacity_changed (Meta.Window window);
+#endif
 		public void window_shape_changed (Meta.Window window);
 		public void window_unmapped (Meta.Window window);
 	}
@@ -639,6 +642,9 @@ namespace Meta {
 		public void set_clip_region (owned Cairo.Region clip_region);
 #endif
 		public void set_create_mipmaps (bool create_mipmaps);
+#if HAS_MUTTER312
+		public void set_input_shape_region (Cairo.Region shape_region);
+#endif
 #if HAS_MUTTER38
 		public void set_mask_texture (Cogl.Texture mask_texture);
 #else
@@ -691,6 +697,9 @@ namespace Meta {
 #if HAS_MUTTER38
 		public void check_alive (uint32 timestamp);
 #endif
+#if HAS_MUTTER312
+		public Meta.Rectangle client_rect_to_frame_rect (Meta.Rectangle client_rect);
+#endif
 		public void compute_group ();
 		public void configure_notify (X.ConfigureEvent event);
 		public void @delete (uint32 timestamp);
@@ -698,6 +707,9 @@ namespace Meta {
 		public void focus (uint32 timestamp);
 		public void foreach_ancestor (Meta.WindowForeachFunc func);
 		public void foreach_transient (Meta.WindowForeachFunc func);
+#if HAS_MUTTER312
+		public Meta.Rectangle frame_rect_to_client_rect (Meta.Rectangle frame_rect);
+#endif
 #if HAS_MUTTER38
 		[CCode (array_length_pos = 0.1, array_length_type = "gsize")]
 		public int[] get_all_monitors ();
@@ -708,6 +720,9 @@ namespace Meta {
 		public unowned Meta.Display get_display ();
 		public unowned Meta.Frame get_frame ();
 		public unowned Cairo.Region? get_frame_bounds ();
+#if HAS_MUTTER312
+		public Meta.Rectangle get_frame_rect ();
+#endif
 		public Meta.FrameType get_frame_type ();
 		public unowned Meta.Group get_group ();
 		public unowned string get_gtk_app_menu_object_path ();
@@ -722,6 +737,7 @@ namespace Meta {
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
 		public unowned string get_mutter_hints ();
+		[Deprecated (since = "3.12")]
 		public Meta.Rectangle get_outer_rect ();
 		public int get_pid ();
 		public unowned Meta.Rectangle? get_rect ();
@@ -1255,6 +1271,12 @@ namespace Meta {
 		MOVE_TO_WORKSPACE_RIGHT,
 		MOVE_TO_WORKSPACE_UP,
 		MOVE_TO_WORKSPACE_DOWN,
+#if HAS_MUTTER312
+		MOVE_TO_MONITOR_LEFT,
+		MOVE_TO_MONITOR_RIGHT,
+		MOVE_TO_MONITOR_UP,
+		MOVE_TO_MONITOR_DOWN,
+#endif
 		RAISE_OR_LOWER,
 		RAISE,
 		LOWER,
@@ -1272,6 +1294,9 @@ namespace Meta {
 		OVERLAY_KEY,
 #if HAS_MUTTER310
 		ISO_NEXT_GROUP,
+#endif
+#if HAS_MUTTER312
+		ALWAYS_ON_TOP,
 #endif
 		LAST
 	}
