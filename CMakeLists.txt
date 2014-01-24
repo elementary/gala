@@ -34,7 +34,7 @@ configure_file (${CMAKE_SOURCE_DIR}/src/Config.vala.cmake ${CMAKE_BINARY_DIR}/sr
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DGNOME_DESKTOP_USE_UNSTABLE_API -w)
 
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-1.0 plank gnome-desktop-3.0)
+pkg_check_modules(DEPS REQUIRED libmutter>=3.4 granite clutter-1.0>=1.9.16 clutter-gtk-1.0 libbamf3 xfixes gee-0.8 plank gnome-desktop-3.0)
 
 set (MUTTER36_FLAGS "")
 pkg_check_modules(MUTTER36 QUIET libmutter>=3.5)
