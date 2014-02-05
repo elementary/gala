@@ -875,6 +875,9 @@ namespace Gala
 			
 			var screen = get_screen ();
 			
+			unowned Meta.Workspace wp_from = screen.get_workspace_by_index (from);
+			unowned Meta.Workspace wp_to = screen.get_workspace_by_index (to);
+			
 			unowned List<WindowActor> windows = Compositor.get_window_actors (screen);
 			float w, h;
 			screen.get_size (out w, out h);
@@ -933,13 +936,13 @@ namespace Gala
 					moving != null && window == moving_actor)
 					continue;
 				
-				if (window.get_workspace () == from) {
+				if (meta_window.get_workspace () == wp_from) {
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, out_group);
 					if (meta_window.fullscreen)
 						from_has_fullscreened = true;
-				} else if (window.get_workspace () == to) {
+				} else if (meta_window.get_workspace () == wp_to) {
 					win.append (window);
 					par.append (window.get_parent ());
 					clutter_actor_reparent (window, in_group);

@@ -185,7 +185,8 @@ namespace Gala
 				if (window_actors == null)
 					return;
 				foreach (var window in window_actors) {
-					if (window.get_workspace () == workspace.index () && !window.get_meta_window ().minimized)
+					unowned Meta.Window meta_window = window.get_meta_window ();
+					if (meta_window.get_workspace () == workspace && !meta_window.minimized)
 						window.show ();
 				}
 
