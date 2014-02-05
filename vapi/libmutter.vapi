@@ -636,10 +636,12 @@ namespace Meta {
 #else
 		public unowned Cogl.Handle get_texture ();
 #endif
+#if !HAS_MUTTER312
 #if HAS_MUTTER310
 		public void set_clip_region (Cairo.Region clip_region);
 #else
 		public void set_clip_region (owned Cairo.Region clip_region);
+#endif
 #endif
 		public void set_create_mipmaps (bool create_mipmaps);
 #if HAS_MUTTER312
@@ -846,6 +848,10 @@ namespace Meta {
 		public string mutter_hints { get; }
 		[NoAccessorMethod]
 		public bool resizeable { get; }
+#if HAS_MUTTER312
+		[NoAccessorMethod]
+		public bool skip_taskbar { get; }
+#endif
 		public string title { get; }
 		[NoAccessorMethod]
 		public bool urgent { get; }
@@ -871,11 +877,15 @@ namespace Meta {
 #endif
 		public unowned Meta.Window get_meta_window ();
 		public unowned Clutter.Actor get_texture ();
+#if !HAS_MUTTER312
 		public int get_workspace ();
+#endif
 		public X.Window get_x_window ();
 		public bool is_destroyed ();
+#if !HAS_MUTTER312
 		public bool is_override_redirect ();
 		public bool showing_on_its_workspace ();
+#endif
 		[NoAccessorMethod]
 		public bool no_shadow { get; set; }
 		[NoAccessorMethod]
