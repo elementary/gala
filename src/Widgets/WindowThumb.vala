@@ -32,7 +32,7 @@ namespace Gala
 		public signal void selected (Window window);
 		public signal void closed ();
 		
-		public WindowThumb (Window _window)
+		public WindowThumb (Window _window, bool add_children_to_stage = true)
 		{
 			window = _window;
 			
@@ -40,10 +40,12 @@ namespace Gala
 			
 			var actor = window.get_compositor_private () as WindowActor;
 			clone = new Clone (actor);
+			clone.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
 			
 			icon = new GtkClutter.Texture ();
 			icon.scale_x = 0.0f;
 			icon.scale_y = 0.0f;
+			icon.opacity = 0;
 			icon.scale_gravity = Gravity.CENTER;
 			
 			try {
@@ -65,9 +67,40 @@ namespace Gala
 			
 			add_child (clone);
 			
-			var stage = Compositor.get_stage_for_screen (window.get_screen ());
-			stage.add_child (icon);
-			stage.add_child (close_button);
+			if (add_children_to_stage) {
+				var stage = Compositor.get_stage_for_screen (window.get_screen ());
+				stage.add_child (icon);
+				stage.add_child (close_button);
+			} else {
+				add_child (close_button);
+				add_child (icon);
+			}
+		}
+
+		public void place_children (int width, int height)
+		{
+			float offset_x, offset_y, offset_width;
+			Utils.get_window_frame_offset (window, out offset_x, out offset_y, out offset_width, null);
+			float button_offset = close_button.width * 0.25f;
+
+			float scale = width / (window.get_compositor_private () as WindowActor).width;
+
+			Granite.CloseButtonPosition pos;
+			Granite.Widgets.Utils.get_default_close_button_position (out pos);
+			switch (pos) {
+				case Granite.CloseButtonPosition.LEFT:
+					close_button.x = -offset_x * scale - button_offset;
+					break;
+				case Granite.CloseButtonPosition.RIGHT:
+					close_button.x = width - offset_width * scale - close_button.width / 2;
+					break;
+			}
+			close_button.y = -offset_y * scale - button_offset;
+
+			icon.x = Math.floorf (width / 2.0f - icon.width / 2.0f);
+			icon.y = Math.floorf (height - 50.0f);
+
+			icon.animate (AnimationMode.EASE_OUT_CUBIC, 350, scale_x: 1.0f, scale_y: 1.0f, opacity: 255);
 		}
 		
 		bool close_button_clicked (ButtonEvent event)
@@ -155,15 +188,15 @@ namespace Gala
 			return true;
 		}
 		
-		public void close (bool do_animate = true)
+		public void close (bool do_animate = true, bool use_scale = true)
 		{
 			unowned Meta.Rectangle rect = window.get_outer_rect ();
 			
-			//FIXME need to subtract 10 here to remove jump for most windows, but adds jump for maximized ones
-			float delta = window.maximized_horizontally || window.maximized_vertically ? 0 : 10;
+			float x, y, w, h;
+			Utils.get_window_frame_offset (window, out x, out y, out w, out h);
 			
-			float dest_x = rect.x - delta;
-			float dest_y = rect.y - delta;
+			float dest_x = rect.x + x;
+			float dest_y = rect.y + y;
 			
 			//stop all running animations
 			detach_animation ();
@@ -177,7 +210,17 @@ namespace Gala
 				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f);
 				close_button.animate (AnimationMode.EASE_IN_QUAD, 200, scale_x : 0.0f, scale_y : 0.0f);
 				
-				animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x:1.0f, scale_y:1.0f, x:dest_x, y:dest_y).completed.connect (() => {
+				Animation a;
+				if (use_scale) {
+					a = animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f,
+						x: dest_x, y: dest_y);
+				} else {
+					var window = window.get_compositor_private () as WindowActor;
+					a = animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, width: window.width, height: window.height,
+						x: dest_x, y: dest_y);
+				}
+
+				a.completed.connect (() => {
 					clone.source.show ();
 					destroy ();
 				});

@@ -26,6 +26,8 @@ namespace Gala
 		GRID = 0,
 		NATURAL
 	}
+
+	public delegate void WindowPlacer (Actor window, Meta.Rectangle rect);
 	
 	public class WindowOverview : Actor
 	{
@@ -93,7 +95,7 @@ namespace Gala
 		const int BOTTOM_GAP = 100;
 		
 		//some math utilities
-		int squared_distance (Gdk.Point a, Gdk.Point b)
+		static int squared_distance (Gdk.Point a, Gdk.Point b)
 		{
 			var k1 = b.x - a.x;
 			var k2 = b.y - a.y;
@@ -101,7 +103,7 @@ namespace Gala
 			return k1*k1 + k2*k2;
 		}
 		
-		bool rect_is_overlapping_any (Meta.Rectangle rect, Meta.Rectangle[] rects, Meta.Rectangle border)
+		static bool rect_is_overlapping_any (Meta.Rectangle rect, Meta.Rectangle[] rects, Meta.Rectangle border)
 		{
 			if (!border.contains_rect (rect))
 				return true;
@@ -116,12 +118,12 @@ namespace Gala
 			return false;
 		}
 		
-		Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
+		static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
 		{
 			return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
 		}
 		
-		Gdk.Point rect_center (Meta.Rectangle rect)
+		static Gdk.Point rect_center (Meta.Rectangle rect)
 		{
 			return {rect.x + rect.width / 2, rect.y + rect.height / 2};
 		}
@@ -163,13 +165,13 @@ namespace Gala
 				                       (int)Math.floorf (geom.height - BOTTOM_GAP)};
 				
 				if (BehaviorSettings.get_default ().schema.get_enum ("window-overview-type") == WindowOverviewType.GRID)
-					grid_placement (area, monitors[i]);
+					grid_placement (area, monitors[i], place_window);
 				else
 					natural_placement (area, monitors[i]);
 			}
 		}
 		
-		void grid_placement (Meta.Rectangle area, List<Actor> clones)
+		public static void grid_placement (Meta.Rectangle area, List<Actor> clones, WindowPlacer place)
 		{
 			int columns = (int)Math.ceil (Math.sqrt (clones.length ()));
 			int rows = (int)Math.ceil (clones.length () / (double)columns);
@@ -277,7 +279,7 @@ namespace Gala
 				if (left_over != columns && slot >= columns * (rows - 1))
 					target.x += (columns - left_over) * slot_width / 2;
 				
-				place_window (window, target);
+				place (window, target);
 			}
 		}
 		
@@ -492,8 +494,10 @@ namespace Gala
 		}
 		
 		// animate a window to the given position
-		void place_window (WindowThumb clone, Meta.Rectangle rect)
+		void place_window (Actor actor, Meta.Rectangle rect)
 		{
+			var clone = actor as WindowThumb;
+
 			var fscale = rect.width / clone.width;
 			
 			//animate the windows and icons to the calculated positions

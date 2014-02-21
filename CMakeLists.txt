@@ -95,6 +95,9 @@ vala_precompile(VALA_C
     src/Widgets/WindowThumb.vala
     src/Widgets/WorkspaceThumb.vala
     src/Widgets/WorkspaceView.vala
+	src/Widgets/MultitaskingView/IconGroup.vala
+	src/Widgets/MultitaskingView/MultitaskingView.vala
+	src/Widgets/MultitaskingView/Workspace.vala
     ${CMAKE_BINARY_DIR}/src/Config.vala
 PACKAGES
     granite
@@ -108,6 +111,7 @@ PACKAGES
     xfixes-4.0
 OPTIONS
     -g
+	--enable-deprecated
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
     ${MUTTER36_FLAGS}
     ${MUTTER38_FLAGS}

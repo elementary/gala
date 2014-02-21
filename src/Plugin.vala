@@ -45,6 +45,7 @@ namespace Gala
 		WorkspaceView workspace_view;
 		Zooming zooming;
 		WindowOverview window_overview;
+		MultitaskingView multitasking_view;
 
 		// used to detect which corner was used to trigger an action
 		Clutter.Actor? last_hotcorner;
@@ -52,6 +53,8 @@ namespace Gala
 		
 #if HAS_MUTTER38
 		public Meta.BackgroundGroup background_group { get; private set; }
+		public Clutter.Actor window_group { get; private set; }
+		public Clutter.Actor top_window_group { get; private set; }
 		public Clutter.Actor ui_group { get; private set; }
 #endif
 		
@@ -131,7 +134,7 @@ namespace Gala
 			ui_group.reactive = true;
 			stage.add_child (ui_group);
 
-			var window_group = Compositor.get_window_group_for_screen (screen);
+			window_group = Compositor.get_window_group_for_screen (screen);
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
@@ -143,6 +146,8 @@ namespace Gala
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
 			
+			multitasking_view = new MultitaskingView (this);
+
 			winswitcher = new WindowSwitcher (this);
 			
 			zooming = new Zooming (this);
@@ -152,8 +157,9 @@ namespace Gala
 			ui_group.add_child (workspace_view);
 			ui_group.add_child (winswitcher);
 			ui_group.add_child (window_overview);
+			ui_group.add_child (multitasking_view);
 
-			var top_window_group = Compositor.get_top_window_group_for_screen (screen);
+			top_window_group = Compositor.get_top_window_group_for_screen (screen);
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
 #else
@@ -223,7 +229,8 @@ namespace Gala
 			});
 			
 			KeyBinding.set_custom_handler ("show-desktop", () => {
-				workspace_view.show (true);
+				//workspace_view.show (true);
+				multitasking_view.toggle ();
 			});
 			
 #if HAS_MUTTER38
