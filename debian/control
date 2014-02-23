@@ -12,7 +12,7 @@ Build-Depends: cmake (>= 2.8),
                libgranite-dev,
                libmutter-dev (>= 3.4),
                libplank-dev,
-               valac-0.16 (>= 0.16.1) | valac (>= 0.16.1)
+               valac (>= 0.16.1)
 Standards-Version: 3.9.2
 Homepage: https://launchpad.net/gala
 
