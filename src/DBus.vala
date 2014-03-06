@@ -57,9 +57,8 @@ namespace Gala
 		}
 
 #if HAS_MUTTER38
-		const double MIN_ALPHA = 0.7;
-		const int MIN_VARIANCE = 50;
-		const int MIN_LUM = 25;
+		const double SATURATION_WEIGHT = 1.5;
+		const double WEIGHT_THRESHOLD = 1.0;
 
 		class DummyOffscreenEffect : Clutter.OffscreenEffect {
 			public signal void done_painting ();
@@ -70,8 +69,11 @@ namespace Gala
 			}
 		}
 
-		public struct MeanColorInformation
+		public struct ColorInformation
 		{
+			double average_red;
+			double average_green;
+			double average_blue;
 			double mean;
 			double variance;
 		}
@@ -86,7 +88,8 @@ namespace Gala
 
 		/**
 		 * Attaches a dummy offscreen effect to the background at monitor to get its
-		 * isolated color data. Then calculate the mean color value and variance. Both
+		 * isolated color data. Then calculate the red, green and blue components of 
+		 * the average color in that area and the mean color value and variance. All
 		 * variables are returned as a tuple in that order.
 		 *
 		 * @param monitor          The monitor where the panel will be placed
@@ -97,12 +100,13 @@ namespace Gala
 		 * @param refenrece_width  Width of the rectangle
 		 * @param reference_height Height of the rectangle
 		 */
-		public async MeanColorInformation get_background_color_information (int monitor,
+		public async ColorInformation get_background_color_information (int monitor,
 			int reference_x, int reference_y, int reference_width, int reference_height)
+			throws DBusError
 		{
 			var background = plugin.background_group.get_child_at_index (monitor);
 			if (background == null)
-				return { 0, 0 };
+				throw new DBusError.INVALID_ARGS ("Invalid monitor requested");
 
 			var effect = new DummyOffscreenEffect ();
 			background.add_effect (effect);
@@ -116,10 +120,10 @@ namespace Gala
 			int height = int.min (tex_height - reference_y, reference_height);
 
 			if (x_start > tex_width || x_start > tex_height || width <= 0 || height <= 0)
-				return { 0, 0 };
+				throw new DBusError.INVALID_ARGS ("Invalid rectangle specified");
 
-			double variance = 0;
-			double mean = 0;
+			double variance = 0, mean = 0,
+			       rTotal = 0, gTotal = 0, bTotal = 0;
 
 			ulong paint_signal_handler = 0;
 			paint_signal_handler = effect.done_painting.connect (() => {
@@ -135,17 +139,75 @@ namespace Gala
 				double mean_squares = 0;
 				double pixel = 0;
 
+				double max, min, score, delta, scoreTotal = 0,
+				       rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
+
+				// code to calculate weighted average color is copied from
+				// plank's lib/Drawing/DrawingService.vala average_color()
+				// http://bazaar.launchpad.net/~docky-core/plank/trunk/view/head:/lib/Drawing/DrawingService.vala
 				for (int y = y_start; y < height; y++) {
 					for (int x = x_start; x < width; x++) {
 						int i = y * width * 4 + x * 4;
 
-						pixel = (0.3 * (double) pixels[i] +
-							0.6 * (double) pixels[i + 1] +
-							0.11 * (double) pixels[i + 2]) - 128f;
+						uint8 r = pixels[i];
+						uint8 g = pixels[i + 1];
+						uint8 b = pixels[i + 2];
+
+						pixel = (0.3 * r + 0.6 * g + 0.11 * b) - 128f;
+
+						min = uint8.min (r, uint8.min (g, b));
+						max = uint8.max (r, uint8.max (g, b));
+						delta = max - min;
+
+						// prefer colored pixels over shades of grey
+						score = SATURATION_WEIGHT * (delta == 0 ? 0.0 : delta / max);
+
+						rTotal += score * r;
+						gTotal += score * g;
+						bTotal += score * b;
+						scoreTotal += score;
+
+						rTotal += r;
+						gTotal += g;
+						bTotal += b;
 
 						mean += pixel;
 						mean_squares += pixel * pixel;
 					}
+				}
+
+				scoreTotal /= size;
+				bTotal /= size;
+				gTotal /= size;
+				rTotal /= size;
+
+				if (scoreTotal > 0.0) {
+					bTotal /= scoreTotal;
+					gTotal /= scoreTotal;
+					rTotal /= scoreTotal;
+				}
+
+				bTotal2 /= size * uint8.MAX;
+				gTotal2 /= size * uint8.MAX;
+				rTotal2 /= size * uint8.MAX;
+
+				// combine weighted and not weighted sum depending on the average "saturation"
+				// if saturation isn't reasonable enough
+				// s = 0.0 -> f = 0.0 ; s = WEIGHT_THRESHOLD -> f = 1.0
+				if (scoreTotal <= WEIGHT_THRESHOLD) {
+					var f = 1.0 / WEIGHT_THRESHOLD * scoreTotal;
+					var rf = 1.0 - f;
+					bTotal = bTotal * f + bTotal2 * rf;
+					gTotal = gTotal * f + gTotal2 * rf;
+					rTotal = rTotal * f + rTotal2 * rf;
+				}
+
+				// there shouldn't be values larger then 1.0
+				var max_val = double.max (rTotal, double.max (gTotal, bTotal));
+				if (max_val > 1.0) {
+					bTotal /= max_val;
+					gTotal /= max_val;
+					rTotal /= max_val;
 				}
 
 				mean /= size;
@@ -160,7 +222,7 @@ namespace Gala
 
 			yield;
 
-			return { mean, variance };
+			return { rTotal, gTotal, bTotal, mean, variance };
 		}
 #endif
 	}
