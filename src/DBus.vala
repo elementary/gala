@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012- 2014 Tom Beckmann // TODO add Jacob Parker?
+//  Copyright (C) 2012 - 2014 Tom Beckmann, Jacob Parker
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -70,6 +70,12 @@ namespace Gala
 			}
 		}
 
+		public struct MeanColorInformation
+		{
+			double mean;
+			double variance;
+		}
+
 		/**
 		 * Emitted when the background change occured and the transition ended.
 		 * You can safely call get_optimal_panel_alpha then. It is not guaranteed
@@ -80,70 +86,81 @@ namespace Gala
 
 		/**
 		 * Attaches a dummy offscreen effect to the background at monitor to get its
-		 * isolated color data. Then calculate whether we can savely assign a panel
-		 * 0 alpha or use MIN_ALPHA Instead based on the data up to reference_height.
+		 * isolated color data. Then calculate the mean color value and variance. Both
+		 * variables are returned as a tuple in that order.
 		 *
 		 * @param monitor          The monitor where the panel will be placed
-		 * @param reference_height The height which will serve as a reference for 
-		 *                         gathering color data. You may want to adjust this
-		 *                         depending on the panel's height.
+		 * @param reference_x      X coordinate of the rectangle used to gather color data
+		 *                         relative to the monitor you picked. Values will be clamped
+		 *                         to its dimensions
+		 * @param reference_y      Y coordinate
+		 * @param refenrece_width  Width of the rectangle
+		 * @param reference_height Height of the rectangle
 		 */
-		public async double get_optimal_panel_alpha (int monitor, int reference_height)
+		public async MeanColorInformation get_background_color_information (int monitor,
+			int reference_x, int reference_y, int reference_width, int reference_height)
 		{
 			var background = plugin.background_group.get_child_at_index (monitor);
 			if (background == null)
-				return MIN_ALPHA;
+				return { 0, 0 };
 
 			var effect = new DummyOffscreenEffect ();
 			background.add_effect (effect);
 
-			var width = (int)background.width;
-			var height = (int)background.height;
+			var tex_width = (int)background.width;
+			var tex_height = (int)background.height;
 
-			double alpha = 0;
+			int x_start = reference_x;
+			int y_start = reference_y;
+			int width = int.min (tex_width - reference_x, reference_width);
+			int height = int.min (tex_height - reference_y, reference_height);
+
+			if (x_start > tex_width || x_start > tex_height || width <= 0 || height <= 0)
+				return { 0, 0 };
+
+			double variance = 0;
+			double mean = 0;
 
 			ulong paint_signal_handler = 0;
 			paint_signal_handler = effect.done_painting.connect (() => {
 				SignalHandler.disconnect (effect, paint_signal_handler);
 				background.remove_effect (effect);
 
-				var pixels = new uint8[width * height * 4];
-				((Cogl.Texture)effect.get_texture ()).get_data (Cogl.PixelFormat.BGRA_8888_PRE,
-					0, pixels);
+				var pixels = new uint8[tex_width * tex_height * 4];
+				CoglFixes.texture_get_data ((Cogl.Texture)effect.get_texture (),
+					Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
 
-				int size = width * reference_height;
+				int size = width * height;
 
-				double mean = 0;
 				double mean_squares = 0;
-
 				double pixel = 0;
-				int imax = size * 4;
 
-				for (int i = 0; i < imax; i += 4) {
-					pixel = (0.3 * (double) pixels[i] +
-						0.6 * (double) pixels[i + 1] +
-						0.11 * (double) pixels[i + 2]) - 128f;
+				for (int y = y_start; y < height; y++) {
+					for (int x = x_start; x < width; x++) {
+						int i = y * width * 4 + x * 4;
 
-					mean += pixel;
-					mean_squares += pixel * pixel;
+						pixel = (0.3 * (double) pixels[i] +
+							0.6 * (double) pixels[i + 1] +
+							0.11 * (double) pixels[i + 2]) - 128f;
+
+						mean += pixel;
+						mean_squares += pixel * pixel;
+					}
 				}
 
 				mean /= size;
 				mean_squares *= mean_squares / size;
 
-				double variance = Math.sqrt(mean_squares - mean * mean) / (double) size;
+				variance = Math.sqrt (mean_squares - mean * mean) / (double) size;
 
-				if (mean > MIN_LUM || variance > MIN_VARIANCE)
-					alpha = MIN_ALPHA;
-
-				get_optimal_panel_alpha.callback ();
+				get_background_color_information.callback ();
 			});
 
 			background.queue_redraw ();
 
 			yield;
 
-			return alpha;
+			return { mean, variance };
 		}
 #endif
 	}

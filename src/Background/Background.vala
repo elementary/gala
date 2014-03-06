@@ -27,14 +27,14 @@ namespace Gala
 	{
 		const uint ANIMATION_TRANSITION_DURATION = 1500;
 
+		public signal void changed ();
+
 		public Meta.Screen screen { get; construct; }
 		public int monitor { get; construct; }
 		public Settings settings { get; construct; }
 
 		Meta.BackgroundActor pattern;
 		Clutter.Actor? image = null;
-
-		public signal void changed ();
 
 		public Background (Meta.Screen screen, int monitor, Settings settings)
 		{

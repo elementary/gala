@@ -71,7 +71,7 @@ link_directories(${DEPS_LIBRARY_DIRS})
 
 find_package(Vala REQUIRED)
 include(ValaVersion)
-ensure_vala_version("0.16.1" MINIMUM)
+ensure_vala_version("0.22.0" MINIMUM)
 
 include(ValaPrecompile)
 vala_precompile(VALA_C
@@ -106,6 +106,7 @@ PACKAGES
     gdesktopenums-3.0
     gnome-desktop-3.0
     xfixes-4.0
+    cogl-fixes
 OPTIONS
     -g
     --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi/
