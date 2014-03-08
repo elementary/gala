@@ -21,8 +21,8 @@ namespace Gala
 
 	public interface WindowManager : Meta.Plugin
 	{
-		public abstract Clutter.Actor ui_group { get; protected set; }
 #if HAS_MUTTER38
+		public abstract Clutter.Actor ui_group { get; protected set; }
 		public abstract Meta.BackgroundGroup background_group { get; protected set; }
 #endif
 
