@@ -53,6 +53,6 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	$(libgala_zoom_la_SOURCES) \
+	$(libgala_zoom_la_VALASOURCES) \
 	$(NULL)
 

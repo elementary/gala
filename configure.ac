@@ -1,8 +1,8 @@
 # If not 1, append revision to the version number and enable other development stuff
 m4_define([gala_released], [0])
 
-m4_define([gala_major_version], [3])
-m4_define([gala_minor_version], [0])
+m4_define([gala_major_version], [0])
+m4_define([gala_minor_version], [1])
 m4_define([gala_micro_version], [0])
 m4_define([gala_nano_version], [0])
 
@@ -196,10 +196,10 @@ Makefile
 src/Makefile
 lib/Makefile
 data/Makefile
-po/Makefile.in
 vapi/Makefile
 plugins/Makefile
 plugins/zoom/Makefile
+po/Makefile.in
 ])
 
 AC_OUTPUT

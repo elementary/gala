@@ -12,7 +12,7 @@ DEPS = \
 	gnome-desktop-3.0.deps \
 	$(NULL)
 
-EXTRA_DIST =
+EXTRA_DIST = \
 	$(VAPIS) \
 	$(DEPS) \
 	$(NULL)

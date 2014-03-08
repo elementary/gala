@@ -1,4 +1,4 @@
-stylesdir = $(pkgdatadir)/applications
+stylesdir = $(pkgdatadir)
 styles_DATA = gala.css texture.png
 
 applicationsdir = $(datadir)/applications
