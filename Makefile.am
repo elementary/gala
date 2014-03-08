@@ -3,6 +3,7 @@ include $(top_srcdir)/Makefile.common
 SUBDIRS = \
 	data \
 	lib \
+	plugins \
 	src \
 	vapi \
 	$(NULL)

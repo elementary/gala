@@ -31,7 +31,7 @@ m4_define([gala_module_version], gala_lt_current)
 AC_INIT([gala], gala_version,
         [https://bugs.launchpad.net/gala], [gala],
         [https://launchpad.net/gala])
-AC_DEFINE(RELEASE_NAME, "Simply Powerful.", Codename of this release)
+AC_DEFINE(RELEASE_NAME, "Window Manager.", Codename of this release)
 AC_DEFINE(VERSION_INFO, m4_if(gala_released, [1], "Release", "Development"), Version info for package)
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -177,7 +177,6 @@ fi
 GALA_CORE_VALAFLAGS="$VALAFLAGS $GALA_CORE_VALA_PKGS"
 AC_SUBST(GALA_CORE_VALAFLAGS)
 
-
 # -----------------------------------------------------------
 # Gettext
 # -----------------------------------------------------------
@@ -195,7 +194,10 @@ Makefile
 src/Makefile
 lib/Makefile
 data/Makefile
+po/Makefile.in
 vapi/Makefile
+plugins/Makefile
+plugins/zoom/Makefile
 ])
 
 AC_OUTPUT
