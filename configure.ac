@@ -52,6 +52,8 @@ AC_DISABLE_STATIC
 LT_INIT
 PKG_PROG_PKG_CONFIG([0.21])
 
+GLIB_GSETTINGS
+
 AC_SUBST([CFLAGS])
 AC_SUBST([CPPFLAGS])
 AC_SUBST([LDFLAGS])
@@ -214,6 +216,4 @@ ${PACKAGE} ${VERSION}
     Has libmutter-3.8...........:  ${have_mutter38}
     Has libmutter-3.10..........:  ${have_mutter310}
     Has libmutter-3.12..........:  ${have_mutter312}
-
-    Documentation...............:  ${have_valadoc}
 "
