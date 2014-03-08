@@ -9,7 +9,7 @@ libgala_zoom_la_LTLIBRARIES = libgala-zoom.la
 libgala_zoom_ladir = $(pkglibdir)/plugins
 
 libgala_zoom_la_LDFLAGS = \
-	-avoid-version \
+	$(PLUGIN_LDFLAGS) \
 	$(GALA_CORE_LDFLAGS) \
 	$(top_builddir)/lib/libgala.la \
 	$(NULL)

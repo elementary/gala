@@ -128,6 +128,10 @@ VALAFLAGS="$VALAFLAGS --thread --target-glib=2.32"
 
 PKG_CHECK_MODULES(GALA_CORE, $GALA_CORE_PKGS)
 
+# Plugins
+PLUGIN_LDFLAGS="-module -avoid-version"
+AC_SUBST([PLUGIN_LDFLAGS])
+
 # -----------------------------------------------------------
 # Optional Dependencies
 # -----------------------------------------------------------
