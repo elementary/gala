@@ -69,14 +69,16 @@ namespace Meta {
 		public static bool get_gnome_animations ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_ignore_request_hide_titlebar ();
-#if HAS_MUTTER310
+#if HAS_MUTTER310 && !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned string get_iso_next_group_option ();
 #endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static Meta.KeyBindingAction get_keybinding_action (string name);
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GLib.List<weak Meta.KeyPref> get_keybindings ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 #if HAS_MUTTER38
 		public static int get_mouse_button_menu ();
@@ -91,12 +93,16 @@ namespace Meta {
 #else
 		public static uint get_mouse_button_resize ();
 #endif
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_no_tab_popup ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static int get_num_workspaces ();
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void get_overlay_binding (Meta.KeyCombo combo);
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_raise_on_click ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -123,8 +129,10 @@ namespace Meta {
 		public static void set_force_fullscreen (bool whether);
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void set_ignore_request_hide_titlebar (bool whether);
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void set_no_tab_popup (bool whether);
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void set_num_workspaces (int n_workspaces);
 	}
@@ -181,16 +189,20 @@ namespace Meta {
 		public static Meta.Rectangle? rect (int x, int y, int width, int height);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_remove_verbose_topic")]
 		public static void remove_verbose_topic (Meta.DebugTopic topic);
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_debugging")]
 		public static void set_debugging (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_replace_current_wm")]
 		public static void set_replace_current_wm (bool setting);
+#endif
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_set_stage_input_region")]
 		public static void set_stage_input_region (Meta.Screen screen, X.XserverRegion region);
+#if !HAS_MUTTER312
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_syncing")]
 		public static void set_syncing (bool setting);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_verbose")]
 		public static void set_verbose (bool setting);
+#endif
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_show_dialog")]
 #if HAS_MUTTER36
 		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
@@ -324,6 +336,9 @@ namespace Meta {
 		public static unowned GLib.List<weak Meta.WindowActor>? get_window_actors (Meta.Screen screen);
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_window_group_for_screen")]
 		public static unowned Clutter.Actor? get_window_group_for_screen (Meta.Screen screen);
+#if HAS_MUTTER312
+		public void hide_tile_preview (Meta.Screen screen);
+#endif
 		public void hide_window (Meta.Window window, Meta.CompEffect effect);
 		public void manage_screen (Meta.Screen screen);
 		public void maximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
@@ -337,6 +352,9 @@ namespace Meta {
 		public void set_updates_frozen (Meta.Window window, bool updates_frozen);
 #else
 		public void set_updates (Meta.Window window, bool updates);
+#endif
+#if HAS_MUTTER312
+		public void show_tile_preview (Meta.Screen screen, Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
 #endif
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
 #if HAS_MUTTER310
@@ -353,12 +371,16 @@ namespace Meta {
 #endif
 		public void unmanage_screen (Meta.Screen screen);
 		public void unmaximize_window (Meta.Window window, Meta.Rectangle old_rect, Meta.Rectangle new_rect);
+#if !HAS_MUTTER312
 		public void window_mapped (Meta.Window window);
+#endif
 #if HAS_MUTTER312
 		public void window_opacity_changed (Meta.Window window);
 #endif
 		public void window_shape_changed (Meta.Window window);
+#if !HAS_MUTTER312
 		public void window_unmapped (Meta.Window window);
+#endif
 	}
 #if HAS_MUTTER310
 	[CCode (cheader_filename = "meta/meta-cursor-tracker.h", type_id = "meta_cursor_tracker_get_type ()")]
@@ -497,10 +519,6 @@ namespace Meta {
 		public static void switch_window (Meta.Display display, Meta.Screen screen, Meta.Window event_window, X.Event event, Meta.KeyBinding binding);
 #endif
 	}
-	[CCode (cheader_filename = "meta/main.h")]
-	[Compact]
-	public class KeyHandler {
-	}
 	[CCode (cheader_filename = "meta/meta-plugin.h", type_id = "meta_plugin_get_type ()")]
 	public abstract class Plugin : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -519,6 +537,10 @@ namespace Meta {
 		public void end_modal (uint32 timestamp);
 		public unowned Meta.PluginInfo? get_info ();
 		public unowned Meta.Screen get_screen ();
+#if HAS_MUTTER312
+		[NoWrapper]
+		public virtual void hide_tile_preview ();
+#endif
 #if HAS_MUTTER38
 		[NoWrapper]
 		public virtual bool keybinding_filter (Meta.KeyBinding binding);
@@ -542,6 +564,10 @@ namespace Meta {
 		[NoWrapper]
 		public virtual unowned Meta.PluginInfo? plugin_info ();
 		public bool running ();
+#if HAS_MUTTER312
+ 		[NoWrapper]
+		public virtual void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
+#endif
 		[NoWrapper]
 		public virtual void start ();
 		[NoWrapper]
@@ -628,8 +654,13 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/meta-shaped-texture.h", type_id = "meta_shaped_texture_get_type ()")]
 	public class ShapedTexture : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+#if HAS_MUTTER312
+		[CCode (has_construct_function = false)]
+		protected ShapedTexture ();
+#else
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public ShapedTexture ();
+#endif
 		public Cairo.Surface get_image (Cairo.RectangleInt clip);
 #if HAS_MUTTER38
 		public unowned Cogl.Texture get_texture ();
@@ -655,12 +686,10 @@ namespace Meta {
 #if HAS_MUTTER310
 		public void set_opaque_region (owned Cairo.Region opaque_region);
 #endif
+#if !HAS_MUTTER312
 		public void set_pixmap (X.Pixmap pixmap);
-#if HAS_MUTTER312
-		public void update_area (int x, int y, int width, int height, Cairo.Region unobscured_region);
-#else
-		public void update_area (int x, int y, int width, int height);
 #endif
+		public void update_area (int x, int y, int width, int height);
 	}
 	[CCode (cheader_filename = "meta/theme.h")]
 	[Compact]
@@ -769,7 +798,9 @@ namespace Meta {
 		public bool is_attached_dialog ();
 		public bool is_fullscreen ();
 		public bool is_hidden ();
+#if !HAS_MUTTER312
 		public bool is_mapped ();
+#endif
 		public bool is_modal ();
 #if HAS_MUTTER38
 		public bool is_monitor_sized ();
@@ -811,7 +842,9 @@ namespace Meta {
 		public bool showing_on_its_workspace ();
 		public void shutdown_group ();
 		public void stick ();
+#if !HAS_MUTTER312
 		public bool toplevel_is_mapped ();
+#endif
 		public void unmake_above ();
 		public void unmake_fullscreen ();
 		public void unmaximize (Meta.MaximizeFlags directions);
@@ -860,7 +893,13 @@ namespace Meta {
 		public string wm_class { get; }
 		[CCode (cname = "focus")]
 		public signal void focused ();
+#if HAS_MUTTER312
+		public signal void position_changed ();
+#endif
 		public signal void raised ();
+#if HAS_MUTTER312
+		public signal void size_changed ();
+#endif
 		public signal void unmanaged ();
 		public signal void workspace_changed (int object);
 	}
@@ -890,8 +929,10 @@ namespace Meta {
 		public bool no_shadow { get; set; }
 		[NoAccessorMethod]
 		public string shadow_class { owned get; set; }
+#if !HAS_MUTTER312
 		public signal void position_changed ();
 		public signal void size_changed ();
+#endif
 	}
 	[CCode (cheader_filename = "meta/main.h")]
 	[Compact]
@@ -942,6 +983,7 @@ namespace Meta {
 		public Gtk.Border total;
 		public void clear ();
 	}
+#if !HAS_MUTTER312
 	[CCode (cheader_filename = "meta/prefs.h", has_type_id = false)]
 	public struct KeyCombo {
 		public uint keysym;
@@ -958,6 +1000,7 @@ namespace Meta {
 		public bool per_window;
 		public bool builtin;
 	}
+#endif
 	[CCode (cheader_filename = "meta/meta-plugin.h", has_type_id = false)]
 	public struct PluginInfo {
 		public weak string name;
@@ -1182,6 +1225,7 @@ namespace Meta {
 		KEYBOARD_RESIZING_NE,
 		KEYBOARD_RESIZING_SW,
 		KEYBOARD_RESIZING_NW,
+#if !HAS_MUTTER312
 		KEYBOARD_TABBING_NORMAL,
 		KEYBOARD_TABBING_DOCK,
 		KEYBOARD_ESCAPING_NORMAL,
@@ -1189,6 +1233,7 @@ namespace Meta {
 		KEYBOARD_ESCAPING_GROUP,
 		KEYBOARD_TABBING_GROUP,
 		KEYBOARD_WORKSPACE_SWITCHING,
+#endif
 		CLICKING_MINIMIZE,
 		CLICKING_MAXIMIZE,
 		CLICKING_UNMAXIMIZE,
@@ -1244,8 +1289,10 @@ namespace Meta {
 		CYCLE_WINDOWS_BACKWARD,
 		CYCLE_PANELS,
 		CYCLE_PANELS_BACKWARD,
+#if !HAS_MUTTER312
 		TAB_POPUP_SELECT,
 		TAB_POPUP_CANCEL,
+#endif
 		SHOW_DESKTOP,
 		PANEL_MAIN_MENU,
 		PANEL_RUN_DIALOG,
@@ -1411,7 +1458,9 @@ namespace Meta {
 		EDGE_TILING,
 		FORCE_FULLSCREEN,
 		WORKSPACES_ONLY_ON_PRIMARY,
+#if !HAS_MUTTER312
 		NO_TAB_POPUP,
+#endif
 #if HAS_MUTTER38
 		DRAGGABLE_BORDER_WIDTH,
 		AUTO_MAXIMIZE;
