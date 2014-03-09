@@ -30,26 +30,26 @@ gala_LDADD = \
 	$(NULL)
 
 gala_VALASOURCES = \
-    DBus.vala \
-    DragDropAction.vala \
-    InternalUtils.vala \
-    Main.vala \
-    PluginManager.vala \
-    ScreenSaver.vala \
-    Settings.vala \
-    TextShadowEffect.vala \
-    WindowManager.vala \
-    Background/Background.vala \
-    Background/BackgroundCache.vala \
-    Background/BackgroundManager.vala \
-    Background/SlideShow.vala \
-    Background/SystemBackground.vala \
-    Widgets/AppIcon.vala \
-    Widgets/WindowOverview.vala \
-    Widgets/WindowSwitcher.vala \
-    Widgets/WindowThumb.vala \
-    Widgets/WorkspaceThumb.vala \
-    Widgets/WorkspaceView.vala \
+	DBus.vala \
+	DragDropAction.vala \
+	InternalUtils.vala \
+	Main.vala \
+	PluginManager.vala \
+	ScreenSaver.vala \
+	Settings.vala \
+	TextShadowEffect.vala \
+	WindowManager.vala \
+	Background/Background.vala \
+	Background/BackgroundCache.vala \
+	Background/BackgroundManager.vala \
+	Background/SlideShow.vala \
+	Background/SystemBackground.vala \
+	Widgets/AppIcon.vala \
+	Widgets/WindowOverview.vala \
+	Widgets/WindowSwitcher.vala \
+	Widgets/WindowThumb.vala \
+	Widgets/WorkspaceThumb.vala \
+	Widgets/WorkspaceView.vala \
 	$(NULL)
 
 nodist_gala_SOURCES = \

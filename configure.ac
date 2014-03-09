@@ -75,7 +75,7 @@ AC_SUBST([API_VERSION])
 # -----------------------------------------------------------
 # Vala
 # -----------------------------------------------------------
-VALA_MIN_VERSION=0.16.0
+VALA_MIN_VERSION=0.16.1
 
 AM_PROG_VALAC([$VALA_MIN_VERSION])
 if test "x$VALAC" = "x"; then
@@ -93,6 +93,7 @@ fi
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.32.0
 PLANK_MIN_VERSION=0.3.0
+MUTTER_MIN_VERSION=3.12.0
 
 GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  glib-2.0 >= $GLIB_MIN_VERSION \
@@ -104,7 +105,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  libbamf3 \
                  clutter-gtk-1.0 \
                  granite \
-                 libmutter \
+                 libmutter >= $MUTTER_MIN_VERSION \
                  gee-0.8 \
                  gnome-desktop-3.0 \
                  plank >= $PLANK_MIN_VERSION"
