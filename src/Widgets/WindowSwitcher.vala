@@ -221,9 +221,7 @@ namespace Gala
 			var prev_win = current_window;
 			if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
 				action == Meta.KeyBindingAction.SWITCH_WINDOWS || 
-#if HAS_MUTTER38
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS ||
-#endif
 				event.get_key_symbol () == Clutter.Key.Right) {
 				
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
@@ -232,9 +230,7 @@ namespace Gala
 				
 			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
 				action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD ||
-#if HAS_MUTTER38
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD ||
-#endif
 				event.get_key_symbol () == Clutter.Key.Left) {
 				
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
@@ -296,12 +292,7 @@ namespace Gala
 		{
 			// see if that's happened on our workspace
 			var workspace = wm.get_screen ().get_active_workspace ();
-#if HAS_MUTTER38
 			if (window.located_on_workspace (workspace)) {
-#else
-			if (window.get_workspace () == workspace || 
-				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
-#endif
 				remove_window (window);
 			}
 		}

@@ -93,8 +93,8 @@ fi
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.32.0
 PLANK_MIN_VERSION=0.3.0
-MUTTER_MIN_VERSION=3.4.1
-MUTTER_API="3.4"
+MUTTER_MIN_VERSION=3.8.4
+MUTTER_API="3.8"
 
 GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  glib-2.0 >= $GLIB_MIN_VERSION \
@@ -137,22 +137,6 @@ AC_SUBST([PLUGIN_LDFLAGS])
 # -----------------------------------------------------------
 # Optional Dependencies
 # -----------------------------------------------------------
-
-# mutter 3.6
-PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.5], [have_mutter36=yes], [have_mutter36=no])
-if test "x$have_mutter36" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.6.3])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER36"
-    MUTTER_API="3.6"
-fi
-
-# 3.8
-PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.7], [have_mutter38=yes], [have_mutter38=no])
-if test "x$have_mutter38" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.8.4])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER38"
-    MUTTER_API="3.8"
-fi
 
 # 3.10
 PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.9], [have_mutter310=yes], [have_mutter310=no])

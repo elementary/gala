@@ -17,7 +17,6 @@
 
 namespace Gala
 {
-#if HAS_MUTTER38
 	public class SlideShow : Meta.BackgroundGroup
 	{
 		const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
@@ -158,6 +157,5 @@ namespace Gala
 			queue_update_animation ();
 		}
 	}
-#endif
 }
 

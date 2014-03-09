@@ -17,7 +17,6 @@
 
 namespace Gala
 {
-#if HAS_MUTTER38
 	/**
 	 * Group that holds a pattern at the very bottom and then an image showing the
 	 * current wallpaper above (and one more additional image for transitions).
@@ -189,6 +188,5 @@ namespace Gala
 			return GDesktop.BackgroundStyle.NONE;
 		}
 	}
-#endif
 }
 

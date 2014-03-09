@@ -578,11 +578,6 @@ namespace Gala
 
 			screen.window_left_monitor.connect (window_left_monitor);
 			
-#if !HAS_MUTTER38
-			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
-#endif
-			
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
 			
@@ -615,12 +610,7 @@ namespace Gala
 		{
 			// see if that's happened on one of our workspaces
 			foreach (var workspace in workspaces) {
-#if HAS_MUTTER38
 				if (window.located_on_workspace (workspace)) {
-#else
-				if (window.get_workspace () == workspace || 
-					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
-#endif
 					remove_window (window);
 					return;
 				}
@@ -719,11 +709,6 @@ namespace Gala
 				exposed.close (animate);
 				exposed.selected.disconnect (thumb_selected);
 			}
-			
-#if !HAS_MUTTER38
-			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
-#endif
 			
 			if (animate) {
 				Clutter.Threads.Timeout.add (300, () => {

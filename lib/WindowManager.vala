@@ -13,7 +13,8 @@ namespace Gala
 		WINDOW_OVERVIEW_ALL
 	}
 	
-	public enum InputArea {
+	public enum InputArea
+	{
 		NONE,
 		FULLSCREEN,
 		HOT_CORNER
@@ -21,11 +22,8 @@ namespace Gala
 
 	public interface WindowManager : Meta.Plugin
 	{
-#if HAS_MUTTER38
 		public abstract Clutter.Actor ui_group { get; protected set; }
 		public abstract Meta.BackgroundGroup background_group { get; protected set; }
-#endif
-
 		public abstract Clutter.Stage stage { get; protected set; }
 
 		public abstract void begin_modal ();

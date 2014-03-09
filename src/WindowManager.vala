@@ -31,11 +31,8 @@ namespace Gala
 		Clutter.Actor? last_hotcorner;
 		ScreenSaver? screensaver;
 		
-#if HAS_MUTTER38
 		public Meta.BackgroundGroup background_group { get; protected set; }
 		public Clutter.Actor ui_group { get; protected set; }
-#endif
-
 		public Clutter.Stage stage { get; protected set; }
 		
 		Window? moving; //place for the window that is being moved over
@@ -63,19 +60,15 @@ namespace Gala
 		
 		public override void start ()
 		{
-#if HAS_MUTTER38
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 		}
 		
 		bool show_stage ()
 		{
-#endif
 			var screen = get_screen ();
 			
 			DBus.init (this);
-#if HAS_MUTTER38
 			BackgroundCache.init (screen);
-#endif
 			
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -94,7 +87,6 @@ namespace Gala
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
 			
-#if HAS_MUTTER38
 			/* our layer structure, copied from gnome-shell (from bottom to top):
 			 * stage
 			 * + system background
@@ -121,16 +113,13 @@ namespace Gala
 			background_group = new BackgroundManager (screen);
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
-#endif
 
 			workspace_view = new WorkspaceView (this);
 			workspace_view.visible = false;
 			
 			winswitcher = new WindowSwitcher (this);
-			
 			window_overview = new WindowOverview (this);
 			
-#if HAS_MUTTER38
 			ui_group.add_child (workspace_view);
 			ui_group.add_child (winswitcher);
 			ui_group.add_child (window_overview);
@@ -138,11 +127,6 @@ namespace Gala
 			var top_window_group = Compositor.get_top_window_group_for_screen (screen);
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
-#else
-			stage.add_child (workspace_view);
-			stage.add_child (winswitcher);
-			stage.add_child (window_overview);
-#endif
 			
 			/*keybindings*/
 			
@@ -202,15 +186,10 @@ namespace Gala
 				workspace_view.show (true);
 			});
 			
-#if HAS_MUTTER38
 			//FIXME we have to investigate this. Apparently alt-tab is now bound to switch-applications
 			// instead of windows, which we should probably handle too
 			KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
 			KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
-#else
-			KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
-			KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
-#endif
 			
 			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
@@ -238,14 +217,12 @@ namespace Gala
 			PluginManager.get_default ().initialize (this);
 			update_input_area ();
 
-#if HAS_MUTTER38
 			stage.show ();
 
 			// let the session manager move to the next phase
 			Meta.register_with_session ();
 			
 			return false;
-#endif
 		}
 		
 		void configure_hotcorners ()
@@ -373,9 +350,7 @@ namespace Gala
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 #endif
 
-#if HAS_MUTTER38
 			Meta.Util.disable_unredirect_for_screen (screen);
-#endif
 		}
 		
 		public new void end_modal ()
@@ -388,9 +363,7 @@ namespace Gala
 			
 			var screen = get_screen ();
 			base.end_modal (screen.get_display ().get_current_time ());
-#if HAS_MUTTER38
 			Meta.Util.enable_unredirect_for_screen (screen);
-#endif
 		}
 		
 		public void get_current_cursor_position (out int x, out int y)
@@ -870,11 +843,7 @@ namespace Gala
 				return;
 			
 			var group = Compositor.get_window_group_for_screen (screen);
-#if !HAS_MUTTER38
-			var wallpaper = Compositor.get_background_actor_for_screen (screen);
-#else
 			var wallpaper = background_group;
-#endif
 			
 			in_group  = new Clutter.Actor ();
 			out_group = new Clutter.Actor ();
@@ -1023,11 +992,7 @@ namespace Gala
 				moving_window_container.destroy ();
 			moving_window_container = null;
 			
-#if !HAS_MUTTER38
-			var wallpaper = Compositor.get_background_actor_for_screen (screen);
-#else
 			var wallpaper = background_group;
-#endif
 			wallpaper.detach_animation ();
 			wallpaper.x = 0.0f;
 			
@@ -1046,14 +1011,12 @@ namespace Gala
 			return x_handle_event (event) != 0;
 		}
 
-#if HAS_MUTTER38
 		public override bool keybinding_filter (Meta.KeyBinding binding)
 		{
 			// for now we'll just block all keybindings if we're in modal mode, 
 			// do something useful with this later
 			return modal_count > 0;
 		}
-#endif
 		
 		public override unowned PluginInfo? plugin_info ()
 		{
