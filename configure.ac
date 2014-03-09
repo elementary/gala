@@ -93,7 +93,8 @@ fi
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.32.0
 PLANK_MIN_VERSION=0.3.0
-MUTTER_MIN_VERSION=3.12.0
+MUTTER_MIN_VERSION=3.4.1
+MUTTER_API="3.4"
 
 GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  glib-2.0 >= $GLIB_MIN_VERSION \
@@ -138,36 +139,36 @@ AC_SUBST([PLUGIN_LDFLAGS])
 # -----------------------------------------------------------
 
 # mutter 3.6
-MUTTER_PKGS="libmutter >= 3.6"
-PKG_CHECK_MODULES(MUTTER, $MUTTER_PKGS, [have_mutter36=yes], [have_mutter36=no])
+PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.5], [have_mutter36=yes], [have_mutter36=no])
 if test "x$have_mutter36" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.6.3])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER36"
+    MUTTER_API="3.6"
 fi
-AM_CONDITIONAL([HAS_MUTTER36], [test "x$have_mutter36" = "xyes"])
 
 # 3.8
-MUTTER_PKGS="libmutter >= 3.8"
-PKG_CHECK_MODULES(MUTTER, $MUTTER_PKGS, [have_mutter38=yes], [have_mutter38=no])
+PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.7], [have_mutter38=yes], [have_mutter38=no])
 if test "x$have_mutter38" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.8.4])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER38"
+    MUTTER_API="3.8"
 fi
-AM_CONDITIONAL([HAS_MUTTER38], [test "x$have_mutter38" = "xyes"])
 
 # 3.10
-MUTTER_PKGS="libmutter >= 3.10"
-PKG_CHECK_MODULES(MUTTER, $MUTTER_PKGS, [have_mutter310=yes], [have_mutter310=no])
+PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.9], [have_mutter310=yes], [have_mutter310=no])
 if test "x$have_mutter310" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER, "libmutter >= 3.10.4")
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER310"
+    MUTTER_API="3.10"
 fi
-AM_CONDITIONAL([HAS_MUTTER312], [test "x$have_mutter310" = "xyes"])
 
 # 3.12
-MUTTER_PKGS="libmutter >= 3.12"
-PKG_CHECK_MODULES(MUTTER, $MUTTER_PKGS, [have_mutter312=yes], [have_mutter312=no])
+PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.11], [have_mutter312=yes], [have_mutter312=no])
 if test "x$have_mutter312" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.11.91])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER312"
+    MUTTER_API="3.12"
 fi
-AM_CONDITIONAL([HAS_MUTTER312], [test "x$have_mutter312" = "xyes"])
 
 # -----------------------------------------------------------
 # Addional configure flags
@@ -217,8 +218,5 @@ ${PACKAGE} ${VERSION}
     Vala Flags..................:  ${VALAFLAGS}
     C Compiler Flags............:  ${CFLAGS}
 
-    Has libmutter-3.6...........:  ${have_mutter36}
-    Has libmutter-3.8...........:  ${have_mutter38}
-    Has libmutter-3.10..........:  ${have_mutter310}
-    Has libmutter-3.12..........:  ${have_mutter312}
+    Using Mutter................:  ${MUTTER_API}
 "
