@@ -9,10 +9,6 @@ SUBDIRS = \
 	vapi \
 	$(NULL)
 
-DISTCHECK_CONFIGURE_FLAGS = \
-	--disable-vala \
-	$(NULL)
-
 EXTRA_DIST = \
 	.version \
 	build-aux/bzr-version-gen \
