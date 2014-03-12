@@ -17,16 +17,15 @@
 
 namespace Gala.Plugins.Zoom
 {
-	public class Main : Object, Gala.Plugin
+	public class Main : Gala.Plugin
 	{
-		public X.Xrectangle[] region { get; protected set; default = {}; }
 		Gala.WindowManager? wm = null;
 
 		const uint MOUSE_POLL_TIME = 50;
 		uint mouse_poll_timer = 0;
 		float current_zoom = 1.0f;
 
-		public void initialize (Gala.WindowManager wm)
+		public override void initialize (Gala.WindowManager wm)
 		{
 			this.wm = wm;
 			var display = wm.get_screen ().get_display ();
@@ -36,7 +35,7 @@ namespace Gala.Plugins.Zoom
 			display.add_keybinding ("zoom-out", schema, 0, zoom_out);
 		}
 
-		public void destroy ()
+		public override void destroy ()
 		{
 			if (wm == null)
 				return;
@@ -115,8 +114,14 @@ namespace Gala.Plugins.Zoom
 	}
 }
 
-public Type register_plugin ()
+public Gala.PluginInfo register_plugin ()
 {
-	return typeof (Gala.Plugins.Zoom.Main);
+	return Gala.PluginInfo () {
+		name = "Zoom",
+		author = "Gala Developers",
+		plugin_type = typeof (Gala.Plugins.Zoom.Main),
+		provides = Gala.PluginFunction.ADDITION,
+		load_can_wait = false
+	};
 }
 

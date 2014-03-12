@@ -1,5 +1,5 @@
 //  
-//  Copyright (C) 2012 Tom Beckmann
+//  Copyright (C) 2014 Tom Beckmann
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+// note on compilation: If you want your own plugin within this source tree
+// don't forget to add the new subdirectory to the plugins' Makefile.am
+// SUBDIRS list and add your Makefile to the list of Makefiles found at
+// about the end of the configure.ac file AC_CONFIG_FILES.
+// The API is currently internal until the API is finalized, so you have
+// to build it in this source tree.
+
 /*
   This is a template class showing some of the things that can be done
   with a gala plugin and how to do them.
@@ -22,10 +29,8 @@
 
 namespace Gala.Plugins.Template
 {
-	public class Main : Object, Gala.Plugin
+	public class Main : Gala.Plugin
 	{
-		public X.Xrectangle[] region { get; protected set; default = {}; }
-
 		Gala.WindowManager? wm = null;
 		const int PADDING = 50;
 
@@ -33,7 +38,7 @@ namespace Gala.Plugins.Template
 
 		// This function is called as soon as Gala has started and gives you
 		// an instance of the GalaWindowManager class.
-		public void initialize (Gala.WindowManager wm)
+		public override void initialize (Gala.WindowManager wm)
 		{
 			// we will save the instance to our wm property so we can use it later again
 			// especially helpful when you have larger plugins with more functions,
@@ -58,18 +63,16 @@ namespace Gala.Plugins.Template
 			red_box.y = rect.y + rect.height - red_box.height - PADDING;
 
 			// to order Gala to deliver mouse events to our box instead of the underlying
-			// windows, we need to mark the region where the quad is located. We do so
-			// by setting the region property. If you have multiple areas, you can just
-			// put more rectangle in this array.
-			// Gala will listen to updates on this property and update all the areas
-			// any time this changes for any plugin, so don't change this excessively like
-			// for example if you play an animation, only set the area on the destination
-			// point of the animation instead of making it follow the animated element.
-			X.Xrectangle red_box_area = {
-				(short)red_box.x, (short)red_box.y,
-				(short)red_box.width, (short)red_box.height
-			};
-			region = { red_box_area };
+			// windows, we need to mark the region where the quad is located.
+			// The plugin class offers an utility function for this purpose, the track_actor
+			// function. It will update the region with the allocation of the actor
+			// whenever its allocation changes. Make sure to set freeze_track to 
+			// true while animating the actor to not make gala update the region
+			// every single frame.
+			// You can also handle the region manually by setting the custom_region
+			// property. The tracked actors and custom regions will be merged by
+			// the plugin.
+			track_actor (red_box);
 
 			// now we'll add our box into the ui_group. This is where all the shell
 			// elements and also the windows and backgrouds are located.
@@ -86,7 +89,7 @@ namespace Gala.Plugins.Template
 		// still it might be a good idea to implement it anyway to make sure
 		// your plugin is compatible in case we'd add disabling specific plugins
 		// in the future
-		public void destroy ()
+		public override void destroy ()
 		{
 			// here you would destroy actors you added to the stage or remove
 			// keybindings
@@ -97,11 +100,27 @@ namespace Gala.Plugins.Template
 }
 
 // this little function just tells Gala which class of those you may have in
-// your plugin is the one you want to start with. Make sure it's public and
-// returning the type of the right class
-public Type register_plugin ()
+// your plugin is the one you want to start with and delivers some additional
+// details about your plugin. It also gives you the option to choose a specific
+// function which your plugin fulfils. Gala will then make sure that there is
+// no duplicate functionality.
+public Gala.PluginInfo register_plugin ()
 {
-	return typeof (Gala.Plugins.Template.Main);
+	return {
+		"template-plugin",                    // the plugin's name
+		"Tom Beckmann <tomjonabc@gmail.com>", // you, the author
+		typeof (Gala.Plugins.Template.Main),  // the type of your plugin class
+
+		Gala.PluginFunction.ADDITION,         // the function which your plugin
+		                                      // fulfils, ADDITION means nothing 
+		                                      // specific
+
+		false                                 // indicates whether your plugin's
+		                                      // start can be delayed until gala
+		                                      // has loaded the important stuff or
+		                                      // if you want your plugin to start
+		                                      // right away. False means wait.
+	};
 }
 
 /*

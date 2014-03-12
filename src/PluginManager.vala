@@ -17,7 +17,7 @@
 
 namespace Gala
 {
-	delegate Type RegisterPluginFunction ();
+	delegate PluginInfo RegisterPluginFunction ();
 
 	public class PluginManager : Object
 	{
@@ -28,11 +28,21 @@ namespace Gala
 
 		public bool initialized { get; private set; default = false; }
 
+		public signal void regions_changed ();
+
 		X.Xrectangle[] regions;
+
+		public string? window_switcher_provider { get; private set; default = null; }
+		public string? desktop_provider { get; private set; default = null; }
+		public string? window_overview_provider { get; private set; default = null; }
+		public string? workspace_view_provider { get; private set; default = null; }
+
+		Gee.LinkedList<PluginInfo?> load_later_plugins;
 
 		PluginManager ()
 		{
 			plugins = new HashTable<string,Plugin> (str_hash, str_equal);
+			load_later_plugins = new Gee.LinkedList<PluginInfo?> ();
 
 			if (!Module.supported ()) {
 				warning ("Modules are not supported on this platform");
@@ -44,10 +54,12 @@ namespace Gala
 				return;
 
 			try {
-				var enumerator = plugin_dir.enumerate_children (FileAttribute.STANDARD_NAME, 0);
+				var enumerator = plugin_dir.enumerate_children (FileAttribute.STANDARD_NAME +
+					"," + FileAttribute.STANDARD_CONTENT_TYPE, 0);
 				FileInfo info;
 				while ((info = enumerator.next_file ()) != null) {
-					load_module (info.get_name ());
+					if (info.get_content_type () == "application/x-sharedlib")
+						load_module (info.get_name ());
 				}
 			} catch (Error e) {
 				warning (e.message);
@@ -66,46 +78,100 @@ namespace Gala
 
 		bool load_module (string plugin_name)
 		{
-				var path = Module.build_path (plugin_dir.get_path (), plugin_name);
-				var module = Module.open (path, ModuleFlags.BIND_LOCAL);
-				if (module == null) {
-					warning (Module.error ());
-					return false;
-				}
+			var path = Module.build_path (plugin_dir.get_path (), plugin_name);
+			var module = Module.open (path, ModuleFlags.BIND_LOCAL);
+			if (module == null) {
+				warning (Module.error ());
+				return false;
+			}
 
-				void* function;
-				module.symbol ("register_plugin", out function);
-				if (function == null) {
-					warning ("%s failed to register: register_plugin() function not found", plugin_name);
-					return false;
-				}
-				RegisterPluginFunction register = (RegisterPluginFunction)function;
+			void* function;
+			module.symbol ("register_plugin", out function);
+			if (function == null) {
+				warning ("%s failed to register: register_plugin() function not found", plugin_name);
+				return false;
+			}
+			RegisterPluginFunction register = (RegisterPluginFunction)function;
 
-				var type = register ();
-				if (type.is_a (typeof (Plugin)) == false) {
-					warning ("%s does not return a class of type Plugin", plugin_name);
-					return false;
-				}
+			var info = register ();
+			if (info.plugin_type.is_a (typeof (Plugin)) == false) {
+				warning ("%s does not return a class of type Plugin", plugin_name);
+				return false;
+			}
 
-				module.make_resident ();
+			if (!check_provides (info.name, info.provides)) {
+				return false;
+			}
 
-				var plugin = (Plugin)Object.@new (type);
-				plugins.set (plugin_name, plugin);
+			info.module_name = plugin_name;
+			module.make_resident ();
 
-				if (initialized) {
-					initialize_plugin (plugin_name, plugin);
-					get_all_regions (true);
-				}
+			if (info.load_can_wait) {
+				load_later_plugins.add (info);
+			} else {
+				load_plugin_class (info);
+			}
 
-				return true;
+			return true;
 		}
 
-		void initialize_plugin (string name, Plugin plugin)
+		void load_plugin_class (PluginInfo info)
+		{
+			var plugin = (Plugin)Object.@new (info.plugin_type);
+			plugins.set (info.module_name, plugin);
+
+			debug ("Loaded plugin %s (%s)", info.name, info.module_name);
+
+			if (initialized) {
+				initialize_plugin (info.module_name, plugin);
+				get_all_regions (true);
+			}
+		}
+
+		void initialize_plugin (string plugin_name, Plugin plugin)
 		{
 			plugin.initialize (wm);
-			plugin.notify["region"].connect (() => {
+			plugin.region_changed.connect (() => {
 				get_all_regions (true);
+				regions_changed ();
 			});
+		}
+
+		bool check_provides (string name, PluginFunction provides)
+		{
+			var message = "Plugins %s and %s both provide %s functionality, using first one only";
+			switch (provides) {
+				case PluginFunction.WORKSPACE_VIEW:
+					if (workspace_view_provider != null) {
+						warning (message, workspace_view_provider, name, "workspace view");
+						return false;
+					}
+					workspace_view_provider = name;
+					return true;
+				case PluginFunction.WINDOW_OVERVIEW:
+					if (window_overview_provider != null) {
+						warning (message, window_overview_provider, name, "window overview");
+						return false;
+					}
+					window_overview_provider = name;
+					return true;
+				case PluginFunction.DESKTOP:
+					if (desktop_provider != null) {
+						warning (message, desktop_provider, name, "desktop");
+						return false;
+					}
+					desktop_provider = name;
+					return true;
+				case PluginFunction.WINDOW_SWITCHER:
+					if (window_switcher_provider != null) {
+						warning (message, window_switcher_provider, name, "window switcher");
+						return false;
+					}
+					window_switcher_provider = name;
+					return true;
+			}
+
+			return true;
 		}
 
 		public void initialize (WindowManager _wm)
@@ -116,6 +182,13 @@ namespace Gala
 			get_all_regions (true);
 
 			initialized = true;
+		}
+
+		public void load_waiting_plugins ()
+		{
+			foreach (var info in load_later_plugins) {
+				load_plugin_class (info);
+			}
 		}
 
 		public X.Xrectangle[] get_all_regions (bool update = false)

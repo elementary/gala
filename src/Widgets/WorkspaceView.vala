@@ -218,28 +218,6 @@ namespace Gala
 			}
 		}
 		
-		void switch_to_next_workspace (MotionDirection direction)
-		{
-			var display = screen.get_display ();
-			var old_index = screen.get_active_workspace_index ();
-			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
-			
-			neighbor.activate (display.get_current_time ());
-			
-			// if we didnt switch, show a nudge-over animation. need to take the indices 
-			// here since the changing only applies after the animation ends
-			if (old_index == 0 && direction == MotionDirection.LEFT || 
-				old_index == screen.n_workspaces - 1 && direction == MotionDirection.RIGHT) {
-				
-				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
-				Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
-				Clutter.Threads.Timeout.add (210, () => {
-					Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
-					return false;
-				});
-			}
-		}
-		
 		public override void key_focus_out ()
 		{
 			hide ();
@@ -261,7 +239,7 @@ namespace Gala
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
 						wm.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
-						switch_to_next_workspace (MotionDirection.LEFT);
+						wm.switch_to_next_workspace (MotionDirection.LEFT);
 					
 					last_switch_time = current_time;
 					
@@ -270,7 +248,7 @@ namespace Gala
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
 						wm.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
-						switch_to_next_workspace (MotionDirection.RIGHT);
+						wm.switch_to_next_workspace (MotionDirection.RIGHT);
 					
 					last_switch_time = current_time;
 					
@@ -453,13 +431,6 @@ namespace Gala
 			wins.detach_animation ();
 			wins.x = 0.0f;
 			wins.animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
-		}
-		
-		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-			X.Event event, Meta.KeyBinding binding)
-		{
-			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
-			switch_to_next_workspace (direction);
 		}
 	}
 }

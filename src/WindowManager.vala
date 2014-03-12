@@ -21,11 +21,11 @@ namespace Gala
 {
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
-		PluginInfo info;
+		Meta.PluginInfo info;
 		
-		WindowSwitcher winswitcher;
-		WorkspaceView workspace_view;
-		WindowOverview window_overview;
+		WindowSwitcher? winswitcher = null;
+		WorkspaceView? workspace_view = null;
+		WindowOverview? window_overview = null;
 
 		// used to detect which corner was used to trigger an action
 		Clutter.Actor? last_hotcorner;
@@ -44,10 +44,10 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
-		
+
 		public WindowManagerGala ()
 		{
-			info = PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
+			info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
 				license = "GPLv3", description = "A nice elementary window manager"};
 			
 			Prefs.set_ignore_request_hide_titlebar (true);
@@ -77,9 +77,12 @@ namespace Gala
 				screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
 					"/org/gnome/ScreenSaver");
 				screensaver.active_changed.connect (update_input_area);
-			} catch (Error e) { warning (e.message); }
+			} catch (Error e) {
+				screensaver = null;
+				warning (e.message);
+			}
 			
-			var stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
+			stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
 			
 			var color = BackgroundSettings.get_default ().primary_color;
 			stage.background_color = Clutter.Color.from_string (color);
@@ -114,28 +117,12 @@ namespace Gala
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
 
-			workspace_view = new WorkspaceView (this);
-			workspace_view.visible = false;
-			
-			winswitcher = new WindowSwitcher (this);
-			window_overview = new WindowOverview (this);
-			
-			ui_group.add_child (workspace_view);
-			ui_group.add_child (winswitcher);
-			ui_group.add_child (window_overview);
-
 			var top_window_group = Compositor.get_top_window_group_for_screen (screen);
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
 			
 			/*keybindings*/
 			
-			screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
-				window_overview.open (true);
-			});
-			screen.get_display ().add_keybinding ("expose-all-windows", KeybindingSettings.get_default ().schema, 0, () => {
-				window_overview.open (true, true);
-			});
 			screen.get_display ().add_keybinding ("switch-to-workspace-first", KeybindingSettings.get_default ().schema, 0, () => {
 				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
 			});
@@ -182,19 +169,10 @@ namespace Gala
 				} catch (Error e) { warning (e.message); }
 			});
 			
-			KeyBinding.set_custom_handler ("show-desktop", () => {
-				workspace_view.show (true);
-			});
-			
-			//FIXME we have to investigate this. Apparently alt-tab is now bound to switch-applications
-			// instead of windows, which we should probably handle too
-			KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
-			KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
-			
 			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-left", workspace_view.handle_switch_to_workspace);
-			KeyBinding.set_custom_handler ("switch-to-workspace-right", workspace_view.handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-left", handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-right", handle_switch_to_workspace);
 			
 			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
@@ -214,13 +192,54 @@ namespace Gala
 			
 			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
 
-			PluginManager.get_default ().initialize (this);
+			// initialize plugins and add default components if no plugin overrides them
+			var plugin_manager = PluginManager.get_default ();
+			plugin_manager.initialize (this);
+			plugin_manager.regions_changed.connect (update_input_area);
+
+			if (plugin_manager.workspace_view_provider == null) {
+				workspace_view = new WorkspaceView (this);
+				workspace_view.visible = false;
+				ui_group.add_child (workspace_view);
+				
+				KeyBinding.set_custom_handler ("show-desktop", () => {
+					workspace_view.show (true);
+				});
+			}
+
+			if (plugin_manager.window_switcher_provider == null) {
+				winswitcher = new WindowSwitcher (this);
+				ui_group.add_child (winswitcher);
+
+				//FIXME we have to investigate this. Apparently alt-tab is now bound to switch-applications
+				// instead of windows, which we should probably handle too
+				KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
+			}
+			
+			if (plugin_manager.window_overview_provider == null) {
+				window_overview = new WindowOverview (this);
+				ui_group.add_child (window_overview);
+
+				screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
+					window_overview.open (true);
+				});
+				screen.get_display ().add_keybinding ("expose-all-windows", KeybindingSettings.get_default ().schema, 0, () => {
+					window_overview.open (true, true);
+				});
+			}
+			
 			update_input_area ();
 
 			stage.show ();
 
 			// let the session manager move to the next phase
 			Meta.register_with_session ();
+
+			Idle.add (() => {
+				plugin_manager.load_waiting_plugins ();
+				return false;
+			});
 			
 			return false;
 		}
@@ -264,14 +283,48 @@ namespace Gala
 			hot_corner.y = y;
 		}
 		
+		void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+			X.Event event, Meta.KeyBinding binding)
+		{
+			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
+			switch_to_next_workspace (direction);
+		}
+		
+		public void switch_to_next_workspace (MotionDirection direction)
+		{
+			var screen = get_screen ();
+			var display = screen.get_display ();
+			var old_index = screen.get_active_workspace_index ();
+			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
+			
+			neighbor.activate (display.get_current_time ());
+			
+			// if we didnt switch, show a nudge-over animation. need to take the indices 
+			// here since the changing only applies after the animation ends
+			if (old_index == 0 && direction == MotionDirection.LEFT || 
+				old_index == screen.n_workspaces - 1 && direction == MotionDirection.RIGHT) {
+				
+				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
+				ui_group.animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
+				Timeout.add (210, () => {
+					ui_group.animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
+					return false;
+				});
+			}
+		}
+		
 		public void update_input_area ()
 		{
 			var schema = BehaviorSettings.get_default ().schema;
 			var screen = get_screen ();
 			
-			if (screensaver != null && screensaver.get_active ()) {
-				InternalUtils.set_input_area (screen, InputArea.NONE);
-				return;
+			if (screensaver != null) {
+				try {
+					if (screensaver.get_active ()) {
+						InternalUtils.set_input_area (screen, InputArea.NONE);
+						return;
+					}
+				} catch (IOError e) { warning (e.message); }
 			}
 			
 			if (modal_count > 0)
@@ -1018,7 +1071,7 @@ namespace Gala
 			return modal_count > 0;
 		}
 		
-		public override unowned PluginInfo? plugin_info ()
+		public override unowned Meta.PluginInfo? plugin_info ()
 		{
 			return info;
 		}

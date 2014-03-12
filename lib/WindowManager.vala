@@ -47,6 +47,7 @@ namespace Gala
 		public abstract void perform_action (ActionType type);
 		public abstract void update_input_area ();
 		public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);
+		public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
 	}
 }
 
