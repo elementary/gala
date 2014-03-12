@@ -106,7 +106,7 @@ namespace Gala
 			info.module_name = plugin_name;
 			module.make_resident ();
 
-			if (info.load_can_wait) {
+			if (info.load_priority == LoadPriority.DEFERRED) {
 				load_later_plugins.add (info);
 			} else {
 				load_plugin_class (info);

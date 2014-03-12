@@ -121,7 +121,7 @@ public Gala.PluginInfo register_plugin ()
 		author = "Gala Developers",
 		plugin_type = typeof (Gala.Plugins.Zoom.Main),
 		provides = Gala.PluginFunction.ADDITION,
-		load_can_wait = false
+		load_priority = Gala.LoadPriority.IMMEDIATE
 	};
 }
 

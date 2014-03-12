@@ -26,6 +26,19 @@ namespace Gala
 		WINDOW_OVERVIEW
 	}
 
+	public enum LoadPriority
+	{
+		/**
+		 * Have your plugin loaded immediately once gala has started
+		 */
+		IMMEDIATE,
+		/**
+		 * Allow gala to defer loading your plugin once it got the
+		 * major part of the initialization done
+		 */
+		DEFERRED
+	}
+
 	public struct PluginInfo
 	{
 		string name;
@@ -44,11 +57,11 @@ namespace Gala
 		PluginFunction provides;
 
 		/**
-		 * Indicate that your plugin does not need to be started immediately on
-		 * gala's launch but can wait until there's a bit less stuff going on.
-		 * Especially use this if you're adding a completely new ui component.
+		 * Give gala a hint for when to load your plugin. Especially use DEFERRED
+		 * if you're adding a completely new ui component that's not directly
+		 * related to the wm.
 		 */
-		bool load_can_wait;
+		LoadPriority load_priority;
 
 		/**
 		 * You don't have to fill this field, it will be filled by gala with
@@ -139,6 +152,8 @@ namespace Gala
 		/**
 		 * Stop listening to allocation changes and remove the actor's
 		 * allocation from the region array.
+		 *
+		 * @param actor The actor to stop listening the changes on
 		 */
 		public void untrack_actor (Clutter.Actor actor)
 		{

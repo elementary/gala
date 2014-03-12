@@ -301,8 +301,10 @@ namespace Gala
 			
 			// if we didnt switch, show a nudge-over animation. need to take the indices 
 			// here since the changing only applies after the animation ends
-			if (old_index == 0 && direction == MotionDirection.LEFT || 
-				old_index == screen.n_workspaces - 1 && direction == MotionDirection.RIGHT) {
+			if ((old_index == 0
+				&& direction == MotionDirection.LEFT)
+				|| (old_index == screen.n_workspaces - 1
+				&& direction == MotionDirection.RIGHT)) {
 				
 				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
 				ui_group.animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
