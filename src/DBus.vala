@@ -45,7 +45,7 @@ namespace Gala
 		{
 #if HAS_MUTTER38
 			if (plugin.background_group != null)
-				(plugin.background_group as BackgroundManager).changed.connect (() => background_changed);
+				(plugin.background_group as BackgroundManager).changed.connect (() => background_changed ());
 			else
 				assert_not_reached ();
 #endif
