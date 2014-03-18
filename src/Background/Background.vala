@@ -27,6 +27,8 @@ namespace Gala
 	{
 		const uint ANIMATION_TRANSITION_DURATION = 1500;
 
+		public signal void changed ();
+
 		public Meta.Screen screen { get; construct; }
 		public int monitor { get; construct; }
 		public Settings settings { get; construct; }
@@ -107,6 +109,8 @@ namespace Gala
 			if (all || key_changed == "picture-opacity") {
 				if (image != null)
 					image.opacity = (uint8)(settings.get_int ("picture-opacity") / 100.0 * 255);
+
+				changed ();
 			}
 
 			// update pattern
@@ -118,6 +122,8 @@ namespace Gala
 				var secondary_color = Clutter.Color.from_string (settings.get_string ("secondary-color"));
 				var shading_type = shading_string_to_enum (settings.get_string ("color-shading-type"));
 				pattern.content = cache.load_pattern (monitor, primary_color, secondary_color, shading_type);
+
+				changed ();
 			}
 		}
 
@@ -132,6 +138,8 @@ namespace Gala
 					image.animate (Clutter.AnimationMode.EASE_OUT_QUAD, ANIMATION_TRANSITION_DURATION,
 						opacity: 0).completed.connect (() => {
 						image.destroy ();
+
+						changed ();
 					});
 				return;
 			}
@@ -146,6 +154,8 @@ namespace Gala
 				if (image != null)
 					image.destroy ();
 				image = new_image;
+
+				changed ();
 			});
 		}
 

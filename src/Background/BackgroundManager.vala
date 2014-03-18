@@ -21,6 +21,7 @@ namespace Gala
 	public class BackgroundManager : Meta.BackgroundGroup
 	{
 		public Meta.Screen screen { get; construct; }
+		public signal void changed ();
 
 		public BackgroundManager (Meta.Screen screen)
 		{
@@ -41,6 +42,10 @@ namespace Gala
 
 		void update ()
 		{
+			var reference_child = get_child_at_index (0);
+			if (reference_child != null)
+				(reference_child as Background).changed.disconnect (background_changed);
+
 			remove_all_children ();
 
 			var settings = BackgroundSettings.get_default ().schema;
@@ -53,7 +58,15 @@ namespace Gala
 				background.set_size (geom.width, geom.height);
 
 				add_child (background);
+
+				if (i == 0)
+					background.changed.connect (background_changed);
 			}
+		}
+
+		void background_changed ()
+		{
+			changed ();
 		}
 	}
 #endif
