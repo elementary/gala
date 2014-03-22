@@ -7,6 +7,7 @@ gala_VALAFLAGS = \
 	$(top_builddir)/lib/gala.vapi \
 	--vapidir $(VAPIDIR) \
 	$(VAPIDIR)/config.vapi \
+	$(VAPIDIR)/cogl-fixes.vapi \
 	$(NULL)
 
 galadir = $(bindir)
