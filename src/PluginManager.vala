@@ -21,14 +21,18 @@ namespace Gala
 
 	public class PluginManager : Object
 	{
-		HashTable<string,Plugin> plugins;
-		File plugin_dir;
+		static PluginManager? instance = null;
+		public static PluginManager get_default ()
+		{
+			if (instance == null)
+				instance = new PluginManager ();
 
-		WindowManager? wm = null;
-
-		public bool initialized { get; private set; default = false; }
+			return instance;
+		}
 
 		public signal void regions_changed ();
+
+		public bool initialized { get; private set; default = false; }
 
 		public X.Xrectangle[] regions { get; private set; }
 
@@ -36,6 +40,11 @@ namespace Gala
 		public string? desktop_provider { get; private set; default = null; }
 		public string? window_overview_provider { get; private set; default = null; }
 		public string? workspace_view_provider { get; private set; default = null; }
+
+		HashTable<string,Plugin> plugins;
+		File plugin_dir;
+
+		WindowManager? wm = null;
 
 		Gee.LinkedList<PluginInfo?> load_later_plugins;
 
@@ -194,7 +203,7 @@ namespace Gala
 		 * Iterate over all plugins and grab their regions, update the regions
 		 * array accordingly and emit the regions_changed signal.
 		 */
-		public void recalculate_regions ()
+		void recalculate_regions ()
 		{
 			X.Xrectangle[] regions = {};
 
@@ -205,15 +214,6 @@ namespace Gala
 
 			this.regions = regions;
 			regions_changed ();
-		}
-
-		static PluginManager? instance = null;
-		public static PluginManager get_default ()
-		{
-			if (instance == null)
-				instance = new PluginManager ();
-
-			return instance;
 		}
 	}
 }

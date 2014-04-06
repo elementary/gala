@@ -80,6 +80,11 @@ namespace Gala
 	public abstract class Plugin : Object
 	{
 		/**
+		 * Emitted when update_region is called. Mainly for internal purposes.
+		 */
+		public signal void region_changed ();
+
+		/**
 		 * The region indicates an area where mouse events should be sent to
 		 * the stage, which means your actors, instead of the windows.
 		 *
@@ -112,11 +117,6 @@ namespace Gala
 
 		private X.Xrectangle[]? _custom_region = null;
 		private Gee.LinkedList<Clutter.Actor> tracked_actors = new Gee.LinkedList<Clutter.Actor> ();
-
-		/**
-		 * Emitted when update_region is called. Mainly for internal purposes.
-		 */
-		public signal void region_changed ();
 
 		/**
 		 * Once this method is called you can start adding actors to the stage

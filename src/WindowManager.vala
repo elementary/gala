@@ -21,6 +21,10 @@ namespace Gala
 {
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
+		public Meta.BackgroundGroup background_group { get; protected set; }
+		public Clutter.Actor ui_group { get; protected set; }
+		public Clutter.Stage stage { get; protected set; }
+		
 		Meta.PluginInfo info;
 		
 		WindowSwitcher? winswitcher = null;
@@ -30,10 +34,6 @@ namespace Gala
 		// used to detect which corner was used to trigger an action
 		Clutter.Actor? last_hotcorner;
 		ScreenSaver? screensaver;
-		
-		public Meta.BackgroundGroup background_group { get; protected set; }
-		public Clutter.Actor ui_group { get; protected set; }
-		public Clutter.Stage stage { get; protected set; }
 		
 		Window? moving; //place for the window that is being moved over
 		

@@ -24,9 +24,9 @@ namespace Gala.Plugins.Template
 {
 	public class Main : Gala.Plugin
 	{
-		Gala.WindowManager? wm = null;
 		const int PADDING = 50;
 
+		Gala.WindowManager? wm = null;
 		Clutter.Actor red_box;
 
 		// This function is called as soon as Gala has started and gives you

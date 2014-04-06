@@ -19,9 +19,10 @@ namespace Gala.Plugins.Zoom
 {
 	public class Main : Gala.Plugin
 	{
+		const uint MOUSE_POLL_TIME = 50;
+
 		Gala.WindowManager? wm = null;
 
-		const uint MOUSE_POLL_TIME = 50;
 		uint mouse_poll_timer = 0;
 		float current_zoom = 1.0f;
 
