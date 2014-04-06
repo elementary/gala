@@ -623,9 +623,18 @@ namespace Meta {
 		protected Window ();
 		public void activate (uint32 current_time);
 		public void activate_with_workspace (uint32 current_time, Meta.Workspace workspace);
+#if HAS_MUTTER312
+		public bool allows_move ();
+		public bool allows_resize ();
+#endif
 		public void begin_grab_op (Meta.GrabOp op, bool frame_action, uint32 timestamp);
 #if HAS_MUTTER310
 		public bool can_close ();
+#endif
+#if HAS_MUTTER312
+		public bool can_maximize ();
+		public bool can_minimize ();
+		public bool can_shade ();
 #endif
 		public void change_workspace (Meta.Workspace workspace);
 #if HAS_MUTTER312
@@ -696,6 +705,10 @@ namespace Meta {
 		public X.Window get_xwindow ();
 		public void group_leader_changed ();
 		public bool has_focus ();
+#if HAS_MUTTER312
+		public bool is_above ();
+		public bool is_always_on_all_workspaces ();
+#endif
 		public bool is_ancestor_of_transient (Meta.Window transient);
 		public bool is_attached_dialog ();
 		public bool is_fullscreen ();
@@ -731,9 +744,15 @@ namespace Meta {
 		public void set_demands_attention ();
 		public void set_icon_geometry (Meta.Rectangle? rect);
 		public void shade (uint32 timestamp);
+#if HAS_MUTTER312
+		public void shove_titlebar_onscreen ();
+#endif
 		public bool showing_on_its_workspace ();
 		public void shutdown_group ();
 		public void stick ();
+#if HAS_MUTTER312
+		public bool titlebar_is_onscreen ();
+#endif
 #if !HAS_MUTTER312
 		public bool toplevel_is_mapped ();
 #endif
@@ -1256,7 +1275,12 @@ namespace Meta {
 	[Flags]
 	public enum MaximizeFlags {
 		HORIZONTAL,
+#if HAS_MUTTER312
+		VERTICAL,
+		BOTH
+#else
 		VERTICAL
+#endif
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MENU_OP_", type_id = "meta_menu_op_get_type ()")]
 	[Flags]
