@@ -2,19 +2,22 @@ Source: gala
 Section: x11
 Priority: optional
 Maintainer: Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
-Build-Depends: cmake (>= 2.8),
-               debhelper (>= 9),
+Build-Depends: debhelper (>= 9),
+               dh-autoreconf,
+               gnome-common,
                gsettings-desktop-schemas-dev,
                libbamf3-dev,
                libclutter-1.0-dev (>= 1.9.16),
                libclutter-gtk-1.0-dev,
                libgee-0.8-dev,
+               libglib2.0-dev (>= 2.32),
                libgnome-desktop-3-dev,
                libgranite-dev,
-               libmutter-dev (>= 3.4),
-               libplank-dev,
-               valac (>= 0.16.1)
-Standards-Version: 3.9.2
+               libgtk-3-dev (>= 3.4.0),
+               libmutter-dev (>= 3.8.4),
+               libplank-dev (>= 0.3.0),
+               valac (>= 0.22.0)
+Standards-Version: 3.9.5
 Homepage: https://launchpad.net/gala
 
 Package: gala

@@ -1,10 +1,18 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --parallel
+	dh $@ --parallel --with autoreconf
 
-override_dh_auto_install:
-	dh_auto_install --destdir=debian/gala
+override_dh_autoreconf:
+	dh_autoreconf ./autogen.sh
+
+override_dh_builddeb:
+	dh_builddeb -- -Zxz
+
+override_dh_install:
+	find debian/tmp -name *.la -delete
+	find debian/tmp -name *.a -delete
+	dh_install --fail-missing
 
 override_dh_strip:
 	dh_strip --dbg-package=gala-dbg
