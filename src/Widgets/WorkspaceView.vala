@@ -24,14 +24,11 @@ namespace Gala
 		static const float VIEW_HEIGHT = 140.0f;
 		static const float SCROLL_SPEED = 30.0f;
 		
-		Gala.Plugin plugin;
+		Gala.WindowManager wm;
 		Screen screen;
 		
 		Clutter.Actor thumbnails;
 		Clutter.Actor scroll;
-#if !HAS_MUTTER38
-		Clutter.Actor click_catcher; //invisible plane that catches clicks outside the view
-#endif
 		
 		bool animating; // delay closing the popup
 		
@@ -41,10 +38,10 @@ namespace Gala
 		Gtk.StyleContext background_style;
 		Gtk.EventBox background_style_widget;
 		
-		public WorkspaceView (Gala.Plugin _plugin)
+		public WorkspaceView (Gala.WindowManager _wm)
 		{
-			plugin = _plugin;
-			screen = plugin.get_screen ();
+			wm = _wm;
+			screen = wm.get_screen ();
 			
 			height = VIEW_HEIGHT;
 			reactive = true;
@@ -68,16 +65,6 @@ namespace Gala
 			scroll.height = 12;
 			scroll.content = new Clutter.Canvas ();
 			(scroll.content as Clutter.Canvas).draw.connect (draw_scroll);
-			
-#if !HAS_MUTTER38
-			click_catcher = new Clutter.Actor ();
-			click_catcher.reactive = true;
-			click_catcher.button_release_event.connect ((e) => {
-				hide ();
-				return true;
-			});
-			Compositor.get_stage_for_screen (screen).add_child (click_catcher);
-#endif
 			
 			add_child (thumbnails);
 			add_child (scroll);
@@ -118,11 +105,7 @@ namespace Gala
 		void init_thumbnails ()
 		{
 			foreach (var workspace in screen.get_workspaces ()) {
-#if HAS_MUTTER38
-				var thumb = new WorkspaceThumb (workspace, plugin.background_group);
-#else
-				var thumb = new WorkspaceThumb (workspace);
-#endif
+				var thumb = new WorkspaceThumb (workspace, wm.background_group);
 				thumb.clicked.connect (hide);
 				thumb.closed.connect (remove_workspace);
 				thumb.window_on_last.connect (add_workspace);
@@ -137,13 +120,11 @@ namespace Gala
 				add_workspace ();
 		}
 
-#if HAS_MUTTER38
 		bool outside_clicked (Clutter.ButtonEvent event)
 		{
 			hide ();
 			return true;
 		}
-#endif
 		
 		bool draw_background (Cairo.Context cr)
 		{
@@ -184,11 +165,7 @@ namespace Gala
 		
 		void create_workspace_thumb (Meta.Workspace workspace)
 		{
-#if HAS_MUTTER38
-			var thumb = new WorkspaceThumb (workspace, plugin.background_group);
-#else
-			var thumb = new WorkspaceThumb (workspace);
-#endif
+			var thumb = new WorkspaceThumb (workspace, wm.background_group);
 			thumb.clicked.connect (hide);
 			thumb.closed.connect (remove_workspace);
 			thumb.window_on_last.connect (add_workspace);
@@ -241,28 +218,6 @@ namespace Gala
 			}
 		}
 		
-		void switch_to_next_workspace (MotionDirection direction)
-		{
-			var display = screen.get_display ();
-			var old_index = screen.get_active_workspace_index ();
-			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
-			
-			neighbor.activate (display.get_current_time ());
-			
-			// if we didnt switch, show a nudge-over animation. need to take the indices 
-			// here since the changing only applies after the animation ends
-			if (old_index == 0 && direction == MotionDirection.LEFT || 
-				old_index == screen.n_workspaces - 1 && direction == MotionDirection.RIGHT) {
-				
-				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
-				Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
-				Clutter.Threads.Timeout.add (210, () => {
-					Compositor.get_window_group_for_screen (screen).animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
-					return false;
-				});
-			}
-		}
-		
 		public override void key_focus_out ()
 		{
 			hide ();
@@ -282,18 +237,18 @@ namespace Gala
 			switch (event.keyval) {
 				case Clutter.Key.Left:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
-						plugin.move_window (display.get_focus_window (), MotionDirection.LEFT);
+						wm.move_window (display.get_focus_window (), MotionDirection.LEFT);
 					else
-						switch_to_next_workspace (MotionDirection.LEFT);
+						wm.switch_to_next_workspace (MotionDirection.LEFT);
 					
 					last_switch_time = current_time;
 					
 					return false;
 				case Clutter.Key.Right:
 					if ((event.modifier_state & Clutter.ModifierType.SHIFT_MASK) != 0)
-						plugin.move_window (display.get_focus_window (), MotionDirection.RIGHT);
+						wm.move_window (display.get_focus_window (), MotionDirection.RIGHT);
 					else
-						switch_to_next_workspace (MotionDirection.RIGHT);
+						wm.switch_to_next_workspace (MotionDirection.RIGHT);
 					
 					last_switch_time = current_time;
 					
@@ -403,16 +358,14 @@ namespace Gala
 			
 			wait_one_key_release = shortcut;
 			
-			var screen = plugin.get_screen ();
+			var screen = wm.get_screen ();
 
 			visible = true;
 			grab_key_focus ();
 			
-			plugin.begin_modal ();
+			wm.begin_modal ();
 			
-#if HAS_MUTTER38
-			plugin.ui_group.button_release_event.connect (outside_clicked);
-#endif
+			wm.ui_group.button_release_event.connect (outside_clicked);
 			
 			var area = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			y = area.height + area.y;
@@ -438,14 +391,6 @@ namespace Gala
 			int swidth, sheight;
 			screen.get_size (out swidth, out sheight);
 			
-#if !HAS_MUTTER38
-			click_catcher.width = swidth;
-			click_catcher.height = sheight;
-			click_catcher.x = 0;
-			click_catcher.y = 0;
-			click_catcher.visible = true;
-#endif
-			
 			animating = true;
 			Clutter.Threads.Timeout.add (50, () => {
 				animating = false;
@@ -465,15 +410,13 @@ namespace Gala
 			if (!visible || animating)
 				return;
 
-#if HAS_MUTTER38
-			plugin.ui_group.button_release_event.disconnect (outside_clicked);
-#endif
+			wm.ui_group.button_release_event.disconnect (outside_clicked);
 			
 			float width, height;
-			plugin.get_screen ().get_size (out width, out height);
+			wm.get_screen ().get_size (out width, out height);
 			
-			plugin.end_modal ();
-			plugin.update_input_area ();
+			wm.end_modal ();
+			wm.update_input_area ();
 			
 			animating = true;
 			animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : height).completed.connect (() => {
@@ -484,21 +427,10 @@ namespace Gala
 				visible = false;
 			});
 			
-#if !HAS_MUTTER38
-			click_catcher.visible = false;
-#endif
-			
 			var wins = Compositor.get_window_group_for_screen (screen);
 			wins.detach_animation ();
 			wins.x = 0.0f;
 			wins.animate (Clutter.AnimationMode.EASE_OUT_EXPO, 500, y : 0.0f);
-		}
-		
-		public void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-			X.Event event, Meta.KeyBinding binding)
-		{
-			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
-			switch_to_next_workspace (direction);
 		}
 	}
 }

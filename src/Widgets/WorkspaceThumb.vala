@@ -48,12 +48,8 @@ namespace Gala
 		Gtk.StyleContext selector_style;
 		Gtk.EventBox selector_style_widget;
 		
-#if HAS_MUTTER38
 		internal Actor wallpaper;
 		Actor wallpaper_manager;
-#else
-		internal Clone wallpaper;
-#endif
 		Clutter.Actor windows;
 		internal Clutter.Actor icons;
 		Actor indicator;
@@ -61,11 +57,7 @@ namespace Gala
 		
 		uint hover_timer = 0;
 		
-#if HAS_MUTTER38
 		public WorkspaceThumb (Workspace _workspace, Meta.BackgroundGroup _wallpaper)
-#else
-		public WorkspaceThumb (Workspace _workspace)
-#endif
 		{
 			workspace = _workspace;
 			screen = workspace.get_screen ();
@@ -94,15 +86,11 @@ namespace Gala
 			
 			handle_workspace_switched (-1, screen.get_active_workspace_index (), MotionDirection.LEFT);
 			
-#if HAS_MUTTER38
 			wallpaper_manager = new BackgroundManager (screen);
 			//FIXME apparently there are issues with scaling and animating the opacity. The wallpaper will
 			//      start flickering when the opacity changes. Wrapping it in a container solves this.
 			wallpaper = new Clutter.Actor ();
 			wallpaper.add_child (wallpaper_manager);
-#else
-			wallpaper = new Clone (Compositor.get_background_actor_for_screen (screen));
-#endif
 			wallpaper.x = INDICATOR_BORDER;
 			wallpaper.y = INDICATOR_BORDER;
 			wallpaper.height = THUMBNAIL_HEIGHT;
@@ -210,10 +198,8 @@ namespace Gala
 			indicator.width = width + 2 * INDICATOR_BORDER;
 			(indicator.content as Canvas).set_size ((int)indicator.width, (int)indicator.height);
 
-#if HAS_MUTTER38
 			wallpaper_manager.scale_x = width / swidth;
 			wallpaper_manager.scale_y = THUMBNAIL_HEIGHT / sheight;
-#endif
 			wallpaper.width = width;
 			windows.width = width;
 
@@ -342,12 +328,7 @@ namespace Gala
 		
 		void window_left_monitor (int num, Meta.Window window)
 		{
-#if HAS_MUTTER38
 			if (window.located_on_workspace (workspace))
-#else
-			if (window.get_workspace () == workspace || 
-				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ()))
-#endif
 				handle_window_removed (window);
 		}
 

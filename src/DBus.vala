@@ -21,12 +21,12 @@ namespace Gala
 	public class DBus
 	{
 		static DBus? instance;
-		static Plugin plugin;
+		static WindowManager wm;
 		
 		[DBus (visibile = false)]
-		public static void init (Plugin _plugin)
+		public static void init (WindowManager _wm)
 		{
-			plugin = _plugin;
+			wm = _wm;
 			
 			Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
 				(connection) => {
@@ -43,20 +43,17 @@ namespace Gala
 		
 		private DBus ()
 		{
-#if HAS_MUTTER38
-			if (plugin.background_group != null)
-				(plugin.background_group as BackgroundManager).changed.connect (() => background_changed ());
+			if (wm.background_group != null)
+				(wm.background_group as BackgroundManager).changed.connect (() => background_changed ());
 			else
 				assert_not_reached ();
-#endif
 		}
 		
 		public void perform_action (ActionType type)
 		{
-			plugin.perform_action (type);
+			wm.perform_action (type);
 		}
 
-#if HAS_MUTTER38
 		const double SATURATION_WEIGHT = 1.5;
 		const double WEIGHT_THRESHOLD = 1.0;
 
@@ -104,7 +101,7 @@ namespace Gala
 			int reference_x, int reference_y, int reference_width, int reference_height)
 			throws DBusError
 		{
-			var background = plugin.background_group.get_child_at_index (monitor);
+			var background = wm.background_group.get_child_at_index (monitor);
 			if (background == null)
 				throw new DBusError.INVALID_ARGS ("Invalid monitor requested");
 
@@ -224,6 +221,5 @@ namespace Gala
 
 			return { rTotal, gTotal, bTotal, mean, variance };
 		}
-#endif
 	}
 }

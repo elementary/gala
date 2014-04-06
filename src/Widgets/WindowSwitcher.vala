@@ -22,7 +22,7 @@ namespace Gala
 {
 	public class WindowSwitcher : Clutter.Actor
 	{
-		Gala.Plugin plugin;
+		Gala.WindowManager wm;
 		
 		Gee.ArrayList<Clutter.Clone> window_clones = new Gee.ArrayList<Clutter.Clone> ();
 		
@@ -42,9 +42,9 @@ namespace Gala
 		//estimated value, if possible
 		float dock_width = 0.0f;
 		
-		public WindowSwitcher (Gala.Plugin _plugin)
+		public WindowSwitcher (Gala.WindowManager _wm)
 		{
-			plugin = _plugin;
+			wm = _wm;
 			
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
@@ -131,7 +131,7 @@ namespace Gala
 
 			closing = true;
 
-			var screen = plugin.get_screen ();
+			var screen = wm.get_screen ();
 			var workspace = screen.get_active_workspace ();
 			
 			if (dock_window != null)
@@ -164,7 +164,7 @@ namespace Gala
 				current_window = null;
 			}
 			
-			plugin.end_modal ();
+			wm.end_modal ();
 			
 			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
 				completed.connect (() => {
@@ -201,7 +201,7 @@ namespace Gala
 		bool released = false;
 		public override bool captured_event (Clutter.Event event)
 		{
-			var screen = plugin.get_screen ();
+			var screen = wm.get_screen ();
 			var display = screen.get_display ();
 			
 			if (event.get_type () == EventType.KEY_RELEASE) {
@@ -221,9 +221,7 @@ namespace Gala
 			var prev_win = current_window;
 			if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
 				action == Meta.KeyBindingAction.SWITCH_WINDOWS || 
-#if HAS_MUTTER38
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS ||
-#endif
 				event.get_key_symbol () == Clutter.Key.Right) {
 				
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
@@ -232,9 +230,7 @@ namespace Gala
 				
 			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
 				action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD ||
-#if HAS_MUTTER38
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD ||
-#endif
 				event.get_key_symbol () == Clutter.Key.Left) {
 				
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
@@ -295,20 +291,15 @@ namespace Gala
 		void window_left_monitor (int num, Meta.Window window)
 		{
 			// see if that's happened on our workspace
-			var workspace = plugin.get_screen ().get_active_workspace ();
-#if HAS_MUTTER38
+			var workspace = wm.get_screen ().get_active_workspace ();
 			if (window.located_on_workspace (workspace)) {
-#else
-			if (window.get_workspace () == workspace || 
-				(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
-#endif
 				remove_window (window);
 			}
 		}
 		
 		void add_window (Meta.Window window)
 		{
-			var screen = plugin.get_screen ();
+			var screen = wm.get_screen ();
 			
 			if (window.get_workspace () != screen.get_active_workspace ())
 				return;
@@ -366,7 +357,7 @@ namespace Gala
 			if (meta_win != null &&
 				!window.is_destroyed () &&
 				!meta_win.minimized &&
-				(meta_win.get_workspace () == plugin.get_screen ().get_active_workspace ()) ||
+				(meta_win.get_workspace () == wm.get_screen ().get_active_workspace ()) ||
 				meta_win.is_on_all_workspaces ())
 				window.show ();
 			
@@ -401,7 +392,7 @@ namespace Gala
 		
 		public override void key_focus_out ()
 		{
-			close (plugin.get_screen ().get_display ().get_current_time ());
+			close (wm.get_screen ().get_display ().get_current_time ());
 		}
 		
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
@@ -453,7 +444,7 @@ namespace Gala
 			});
 			
 			closing = false;
-			plugin.begin_modal ();
+			wm.begin_modal ();
 			
 			bool backward = (binding.get_name () == "switch-windows-backward");
 			
@@ -514,7 +505,7 @@ namespace Gala
 			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_state (Gdk.get_default_root_window (),
 				null, out modifiers);
 			if ((modifiers & Gdk.ModifierType.MOD1_MASK) == 0)
-				close (plugin.get_screen ().get_display ().get_current_time ());
+				close (wm.get_screen ().get_display ().get_current_time ());
 		}
 	}
 }

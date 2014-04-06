@@ -29,7 +29,7 @@ namespace Gala
 	
 	public class WindowOverview : Actor
 	{
-		Plugin plugin;
+		WindowManager wm;
 		Screen screen;
 		
 		bool ready;
@@ -39,10 +39,10 @@ namespace Gala
 		
 		static const int PADDING = 50;
 		
-		public WindowOverview (Plugin _plugin)
+		public WindowOverview (WindowManager _wm)
 		{
-			plugin = _plugin;
-			screen = plugin.get_screen ();
+			wm = _wm;
+			screen = wm.get_screen ();
 			
 			screen.workspace_switched.connect (() => close (false));
 			
@@ -578,17 +578,12 @@ namespace Gala
 
 			screen.window_left_monitor.connect (window_left_monitor);
 			
-#if !HAS_MUTTER38
-			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 350, dim_factor : 0.6);
-#endif
-			
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
 			
 			grab_key_focus ();
 			
-			plugin.begin_modal ();
+			wm.begin_modal ();
 			
 			visible = true;
 			
@@ -615,12 +610,7 @@ namespace Gala
 		{
 			// see if that's happened on one of our workspaces
 			foreach (var workspace in workspaces) {
-#if HAS_MUTTER38
 				if (window.located_on_workspace (workspace)) {
-#else
-				if (window.get_workspace () == workspace || 
-					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
-#endif
 					remove_window (window);
 					return;
 				}
@@ -711,19 +701,14 @@ namespace Gala
 			
 			ready = false;
 			
-			plugin.end_modal ();
-			plugin.update_input_area ();
+			wm.end_modal ();
+			wm.update_input_area ();
 			
 			foreach (var child in get_children ()) {
 				var exposed = child as WindowThumb;
 				exposed.close (animate);
 				exposed.selected.disconnect (thumb_selected);
 			}
-			
-#if !HAS_MUTTER38
-			Compositor.get_background_actor_for_screen (screen).
-				animate (AnimationMode.EASE_OUT_QUAD, 300, dim_factor : 1.0);
-#endif
 			
 			if (animate) {
 				Clutter.Threads.Timeout.add (300, () => {
