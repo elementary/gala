@@ -98,7 +98,7 @@ namespace Gala
 
 			// add plugin's requested areas
 			if (area == InputArea.FULLSCREEN || area == InputArea.HOT_CORNER) {
-				foreach (var rect in PluginManager.get_default ().get_all_regions ()) {
+				foreach (var rect in PluginManager.get_default ().regions) {
 					rects += rect;
 				}
 			}

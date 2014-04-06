@@ -30,7 +30,7 @@ namespace Gala
 
 		public signal void regions_changed ();
 
-		X.Xrectangle[] regions;
+		public X.Xrectangle[] regions { get; private set; }
 
 		public string? window_switcher_provider { get; private set; default = null; }
 		public string? desktop_provider { get; private set; default = null; }
@@ -106,7 +106,7 @@ namespace Gala
 			info.module_name = plugin_name;
 			module.make_resident ();
 
-			if (info.load_priority == LoadPriority.DEFERRED) {
+			if (info.load_priority == LoadPriority.DEFERRED && !initialized) {
 				load_later_plugins.add (info);
 			} else {
 				load_plugin_class (info);
@@ -124,17 +124,14 @@ namespace Gala
 
 			if (initialized) {
 				initialize_plugin (info.module_name, plugin);
-				get_all_regions (true);
+				recalculate_regions ();
 			}
 		}
 
 		void initialize_plugin (string plugin_name, Plugin plugin)
 		{
 			plugin.initialize (wm);
-			plugin.region_changed.connect (() => {
-				get_all_regions (true);
-				regions_changed ();
-			});
+			plugin.region_changed.connect (recalculate_regions);
 		}
 
 		bool check_provides (string name, PluginFunction provides)
@@ -179,7 +176,7 @@ namespace Gala
 			wm = _wm;
 
 			plugins.@foreach (initialize_plugin);
-			get_all_regions (true);
+			recalculate_regions ();
 
 			initialized = true;
 		}
@@ -189,19 +186,25 @@ namespace Gala
 			foreach (var info in load_later_plugins) {
 				load_plugin_class (info);
 			}
+
+			load_later_plugins.clear ();
 		}
 
-		public X.Xrectangle[] get_all_regions (bool update = false)
+		/**
+		 * Iterate over all plugins and grab their regions, update the regions
+		 * array accordingly and emit the regions_changed signal.
+		 */
+		public void recalculate_regions ()
 		{
-			if (update) {
-				regions = {};
-				plugins.@foreach ((name, plugin) => {
-					foreach (var region in plugin.region)
-						regions += region;
-				});
-			}
+			X.Xrectangle[] regions = {};
 
-			return regions;
+			plugins.@foreach ((name, plugin) => {
+				foreach (var region in plugin.region)
+					regions += region;
+			});
+
+			this.regions = regions;
+			regions_changed ();
 		}
 
 		static PluginManager? instance = null;
