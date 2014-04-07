@@ -21,9 +21,11 @@ namespace Gala
 {
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
-		public Meta.BackgroundGroup background_group { get; protected set; }
 		public Clutter.Actor ui_group { get; protected set; }
 		public Clutter.Stage stage { get; protected set; }
+		public Clutter.Actor window_group { get; protected set; }
+		public Clutter.Actor top_window_group { get; protected set; }
+		public Meta.BackgroundGroup background_group { get; protected set; }
 		
 		Meta.PluginInfo info;
 		
@@ -68,6 +70,7 @@ namespace Gala
 			var screen = get_screen ();
 			
 			DBus.init (this);
+			EndSessionDialog.register (this);
 			BackgroundCache.init (screen);
 			
 			// Due to a bug which enables access to the stage when using multiple monitors
@@ -109,7 +112,7 @@ namespace Gala
 			ui_group.reactive = true;
 			stage.add_child (ui_group);
 
-			var window_group = Compositor.get_window_group_for_screen (screen);
+			window_group = Compositor.get_window_group_for_screen (screen);
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
@@ -117,7 +120,7 @@ namespace Gala
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
 
-			var top_window_group = Compositor.get_top_window_group_for_screen (screen);
+			top_window_group = Compositor.get_top_window_group_for_screen (screen);
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
 			
