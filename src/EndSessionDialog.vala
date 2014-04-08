@@ -240,11 +240,14 @@ namespace Gala
 		 *                               are registered for the action.
 		 */
 		public void open (uint type, uint timestamp, uint seconds_to_stay_open,
-			ObjectPath[] inhibitor_object_paths) throws Error
+			ObjectPath[] inhibitor_object_paths) throws IOError
 		{
 			// note on the implementation: the unity indicator currently does not use
 			// the seconds_to_stay_open and inhibitor_object_paths parameters, so we
 			// ignore them here for now as well.
+
+			if (type > 2)
+				throw new IOError.INVALID_ARGUMENT ("Invalid type requested");
 
 			wm.ui_group.insert_child_below (this, wm.top_window_group);
 
