@@ -39,8 +39,10 @@ namespace Gala
 	public interface WindowManager : Meta.Plugin
 	{
 		public abstract Clutter.Actor ui_group { get; protected set; }
-		public abstract Meta.BackgroundGroup background_group { get; protected set; }
 		public abstract Clutter.Stage stage { get; protected set; }
+		public abstract Clutter.Actor window_group { get; protected set; }
+		public abstract Clutter.Actor top_window_group { get; protected set; }
+		public abstract Meta.BackgroundGroup background_group { get; protected set; }
 
 		public abstract void begin_modal ();
 		public abstract void end_modal ();

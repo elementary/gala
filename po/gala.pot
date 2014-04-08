@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-08 09:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. the restart type is currently used by the indicator for what is
+#. labelled shutdown because of unity's implementation of it
+#. apparently. So we got to adjust to that until they fix this.
+#. logout
+#: ../src/EndSessionDialog.vala:117
+msgid "Are you sure you want to Log Out?"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:118
+msgid "Log Out"
+msgstr ""
+
+#. shutdown
+#. restart
+#: ../src/EndSessionDialog.vala:123
+msgid "Are you sure you want to Shut Down?"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:124
+msgid "Shut Down"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:147
+msgid "This will close any open app and turn off your device."
+msgstr ""
+
+#. the indicator does not have a separate item for restart, that's
+#. why we show both shutdown and restart for the restart action
+#. (which is sent for shutdown as described above)
+#: ../src/EndSessionDialog.vala:153
+msgid "Restart"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:160
+msgid "Cancel"
+msgstr ""
