@@ -20,6 +20,12 @@
 
 namespace Gala
 {
+	enum EndSessionDialogType {
+		LOGOUT = 0,
+		SHUTDOWN = 1,
+		RESTART = 2
+	}
+	
 	/**
 	 * Private class wrapping most of the Gtk part of this dialog
 	 */
@@ -43,7 +49,7 @@ namespace Gala
 		/**
 		 * Type of the dialog. See constructor for more info.
 		 */
-		public uint dialog_type { get; construct set; }
+		public EndSessionDialogType dialog_type { get; construct; }
 
 		/**
 		 * Creates a new shutdown dialog
@@ -52,37 +58,38 @@ namespace Gala
 		 *             1 creates a shutdown one and 2 will create a combined
 		 *             shutdown/reboot dialog.
 		 */
-		public Dialog (uint type)
+		public Dialog (EndSessionDialogType type)
 		{
 			Object (type: Gtk.WindowType.POPUP, dialog_type: type);
 		}
 
 		construct
 		{
-			string icon_name = "";
-			string heading_text = "";
-			string button_text = "";
+			string icon_name, heading_text, button_text;
 
 			// the restart type is currently used by the indicator for what is
 			// labelled shutdown because of unity's implementation of it 
 			// apparently. So we got to adjust to that until they fix this.
 			switch (dialog_type) {
-				case 0: // logout
+				case EndSessionDialogType.LOGOUT:
 					icon_name = "system-log-out";
 					heading_text = _("Are you sure you want to Log Out?");
 					button_text = _("Log Out");
 					break;
-				case 1: // shutdown
-				case 2: // restart
+				case EndSessionDialogType.SHUTDOWN:
+				case EndSessionDialogType.RESTART:
 					icon_name = "system-shutdown";
 					heading_text = _("Are you sure you want to Shut Down?");
 					button_text = _("Shut Down");
 					break;
-				/*case 2: // restart
+				/*case EndSessionDialogType.RESTART:
 					icon_name = "system-reboot";
 					heading_text = _("Are you sure you want to Restart?");
 					button_text = _("Restart");
 					break;*/
+				default:
+					warn_if_reached ();
+					break;
 			}
 
 			set_position (Gtk.WindowPosition.CENTER_ALWAYS);
@@ -104,7 +111,7 @@ namespace Gala
 			// the indicator does not have a separate item for restart, that's
 			// why we show both shutdown and restart for the restart action
 			// (which is sent for shutdown as described above)
-			if (dialog_type == 2) {
+			if (dialog_type == EndSessionDialogType.RESTART) {
 				var confirm_restart = add_button (_("Restart"), Gtk.ResponseType.OK) as Gtk.Button;
 				confirm_restart.clicked.connect (() => {
 					confirmed_reboot ();
@@ -118,7 +125,8 @@ namespace Gala
 			var confirm = add_button (button_text, Gtk.ResponseType.OK) as Gtk.Button;
 			confirm.get_style_context ().add_class ("destructive-action");
 			confirm.clicked.connect (() => {
-				if (dialog_type == 2 || dialog_type == 1)
+				if (dialog_type == EndSessionDialogType.RESTART
+					|| dialog_type == EndSessionDialogType.SHUTDOWN)
 					confirmed_shutdown ();
 				else
 					confirmed_logout ();
@@ -200,7 +208,7 @@ namespace Gala
 		public signal void closed ();
 
 		[DBus (visible = false)]
-		public WindowManager wm { get; construct set; }
+		public WindowManager wm { get; construct; }
 
 		public EndSessionDialog (WindowManager wm)
 		{
@@ -242,7 +250,7 @@ namespace Gala
 
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 600, opacity: 80);
 
-			var dialog = new Dialog (type);
+			var dialog = new Dialog ((EndSessionDialogType) type);
 			dialog.show_all ();
 			dialog.destroy.connect (() => {
 				animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity: 0)
