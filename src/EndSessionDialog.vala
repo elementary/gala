@@ -20,9 +20,148 @@
 
 namespace Gala
 {
+	/**
+	 * Private class wrapping most of the Gtk part of this dialog
+	 */
+	class Dialog : Gtk.Dialog
+	{
+		/**
+		 * Confirm that logout has been clicked
+		 */
+		public signal void confirmed_logout ();
+
+		/**
+		 * Confirm that reboot has been clicked
+		 */
+		public signal void confirmed_reboot ();
+
+		/**
+		 * Confirm that shutdown has been clicked
+		 */
+		public signal void confirmed_shutdown ();
+
+		/**
+		 * Type of the dialog. See constructor for more info.
+		 */
+		public uint dialog_type { get; construct set; }
+
+		/**
+		 * Creates a new shutdown dialog
+		 *
+		 * @param type Set the type of this dialog. 0 creates a logout one,
+		 *             1 creates a shutdown one and 2 will create a combined
+		 *             shutdown/reboot dialog.
+		 */
+		public Dialog (uint type)
+		{
+			Object (type: Gtk.WindowType.POPUP, dialog_type: type);
+		}
+
+		construct
+		{
+			string icon_name = "";
+			string heading_text = "";
+			string button_text = "";
+
+			// the restart type is currently used by the indicator for what is
+			// labelled shutdown because of unity's implementation of it 
+			// apparently. So we got to adjust to that until they fix this.
+			switch (dialog_type) {
+				case 0: // logout
+					icon_name = "system-log-out";
+					heading_text = _("Are you sure you want to Log Out?");
+					button_text = _("Log Out");
+					break;
+				case 1: // shutdown
+				case 2: // restart
+					icon_name = "system-shutdown";
+					heading_text = _("Are you sure you want to Shut Down?");
+					button_text = _("Shut Down");
+					break;
+				/*case 2: // restart
+					icon_name = "system-reboot";
+					heading_text = _("Are you sure you want to Restart?");
+					button_text = _("Restart");
+					break;*/
+			}
+
+			set_position (Gtk.WindowPosition.CENTER_ALWAYS);
+
+			var heading = new Gtk.Label ("<span weight='bold' size='larger'>" +
+				heading_text + "</span>");
+			heading.get_style_context ().add_class ("larger");
+			heading.use_markup = true;
+			heading.xalign = 0;
+
+			var grid = new Gtk.Grid ();
+			grid.column_spacing = 12;
+			grid.row_spacing = 12;
+			grid.margin_left = grid.margin_right = grid.margin_bottom = 12;
+			grid.attach (new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.DIALOG), 0, 0, 1, 2);
+			grid.attach (heading, 1, 0, 1, 1);
+			grid.attach (new Gtk.Label (_("This will close any open app and turn off your device.")), 1, 1, 1, 1);
+
+			// the indicator does not have a separate item for restart, that's
+			// why we show both shutdown and restart for the restart action
+			// (which is sent for shutdown as described above)
+			if (dialog_type == 2) {
+				var confirm_restart = add_button (_("Restart"), Gtk.ResponseType.OK) as Gtk.Button;
+				confirm_restart.clicked.connect (() => {
+					confirmed_reboot ();
+					destroy ();
+				});
+			}
+
+			var cancel = add_button (_("Cancel"), Gtk.ResponseType.CANCEL) as Gtk.Button;
+			cancel.clicked.connect (() => { destroy (); });
+
+			var confirm = add_button (button_text, Gtk.ResponseType.OK) as Gtk.Button;
+			confirm.get_style_context ().add_class ("destructive-action");
+			confirm.clicked.connect (() => {
+				if (dialog_type == 2 || dialog_type == 1)
+					confirmed_shutdown ();
+				else
+					confirmed_logout ();
+
+				destroy ();
+			});
+			set_default (confirm);
+
+			get_content_area ().add (grid);
+
+			var action_area = get_action_area ();
+			action_area.margin_right = 6;
+			action_area.margin_bottom = 6;
+		}
+
+		public override void map ()
+		{
+			base.map ();
+
+			Gdk.pointer_grab (get_window (), true, Gdk.EventMask.BUTTON_PRESS_MASK
+				| Gdk.EventMask.BUTTON_RELEASE_MASK
+				| Gdk.EventMask.POINTER_MOTION_MASK,
+				null, null, 0);
+			Gdk.keyboard_grab (get_window (), true, 0);
+		}
+
+		public override void destroy ()
+		{
+			Gdk.pointer_ungrab (0);
+			Gdk.keyboard_ungrab (0);
+
+			base.destroy ();
+		}
+	}
+
 	[DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
 	public class EndSessionDialog : Clutter.Actor
 	{
+		/**
+		 * Owns the Unity DBus and registers an instance of the EndSessionDialog
+		 *
+		 * @param wm The window manager
+		 */
 		[DBus (visible = false)]
 		public static void register (WindowManager wm)
 		{
@@ -35,10 +174,29 @@ namespace Gala
 				() => { warning ("Could not acquire Unity bus."); });
 		}
 
+		/**
+		 * Confirm that logout has been clicked
+		 */
 		public signal void confirmed_logout ();
+
+		/**
+		 * Confirm that reboot has been clicked
+		 */
 		public signal void confirmed_reboot ();
+
+		/**
+		 * Confirm that shutdown has been clicked
+		 */
 		public signal void confirmed_shutdown ();
+
+		/**
+		 * The dialog has been cancelled
+		 */
 		public signal void canceled ();
+
+		/**
+		 * The dialog has been closed
+		 */
 		public signal void closed ();
 
 		[DBus (visible = false)]
@@ -47,9 +205,11 @@ namespace Gala
 		public EndSessionDialog (WindowManager wm)
 		{
 			Object (wm: wm);
+		}
 
+		construct
+		{
 			background_color = { 0, 0, 0, 255 };
-
 			opacity = 0;
 
 			add_constraint (new Clutter.BindConstraint (wm.stage, Clutter.BindCoordinate.SIZE, 0));
@@ -92,111 +252,6 @@ namespace Gala
 			dialog.confirmed_logout.connect (() => { confirmed_logout (); });
 			dialog.confirmed_shutdown.connect (() => { confirmed_shutdown (); });
 			dialog.confirmed_reboot.connect (() => { confirmed_reboot (); });
-		}
-
-		class Dialog : Gtk.Dialog
-		{
-			public signal void confirmed_logout ();
-			public signal void confirmed_shutdown ();
-			public signal void confirmed_reboot ();
-
-			public Dialog (uint type)
-			{
-				Object (type: Gtk.WindowType.POPUP);
-
-				string icon_name = "";
-				string heading_text = "";
-				string button_text = "";
-
-				// the restart type is currently used by the indicator for what is
-				// labelled shutdown because of unity's implementation of it 
-				// apparently. So we got to adjust to that until they fix this.
-				switch (type) {
-					case 0: // logout
-						icon_name = "system-log-out";
-						heading_text = _("Are you sure you want to Log Out?");
-						button_text = _("Log Out");
-						break;
-					case 1: // shutdown
-					case 2: // restart
-						icon_name = "system-shutdown";
-						heading_text = _("Are you sure you want to Shut Down?");
-						button_text = _("Shut Down");
-						break;
-					/*case 2: // restart
-						icon_name = "system-reboot";
-						heading_text = _("Are you sure you want to Restart?");
-						button_text = _("Restart");
-						break;*/
-				}
-
-				set_position (Gtk.WindowPosition.CENTER_ALWAYS);
-
-				var heading = new Gtk.Label ("<span weight='bold' size='larger'>" +
-					heading_text + "</span>");
-				heading.get_style_context ().add_class ("larger");
-				heading.use_markup = true;
-				heading.xalign = 0;
-
-				var grid = new Gtk.Grid ();
-				grid.column_spacing = 12;
-				grid.row_spacing = 12;
-				grid.margin_left = grid.margin_right = grid.margin_bottom = 12;
-				grid.attach (new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.DIALOG), 0, 0, 1, 2);
-				grid.attach (heading, 1, 0, 1, 1);
-				grid.attach (new Gtk.Label (_("This will close any open app and turn off your device.")), 1, 1, 1, 1);
-
-				// the indicator does not have a separate item for restart, that's
-				// why we show both shutdown and restart for the restart action
-				// (which is sent for shutdown as described above)
-				if (type == 2) {
-					var confirm_restart = add_button (_("Restart"), Gtk.ResponseType.OK) as Gtk.Button;
-					confirm_restart.clicked.connect (() => {
-						confirmed_reboot ();
-						destroy ();
-					});
-				}
-
-				var cancel = add_button (_("Cancel"), Gtk.ResponseType.CANCEL) as Gtk.Button;
-				cancel.clicked.connect (() => { destroy (); });
-
-				var confirm = add_button (button_text, Gtk.ResponseType.OK) as Gtk.Button;
-				confirm.get_style_context ().add_class ("destructive-action");
-				confirm.clicked.connect (() => {
-					if (type == 2 || type == 1)
-						confirmed_shutdown ();
-					else
-						confirmed_logout ();
-
-					destroy ();
-				});
-				set_default (confirm);
-
-				get_content_area ().add (grid);
-
-				var action_area = get_action_area ();
-				action_area.margin_right = 6;
-				action_area.margin_bottom = 6;
-			}
-
-			public override void map ()
-			{
-				base.map ();
-
-				Gdk.pointer_grab (get_window (), true, Gdk.EventMask.BUTTON_PRESS_MASK
-					| Gdk.EventMask.BUTTON_RELEASE_MASK
-					| Gdk.EventMask.POINTER_MOTION_MASK,
-					null, null, 0);
-				Gdk.keyboard_grab (get_window (), true, 0);
-			}
-
-			public override void destroy ()
-			{
-				Gdk.pointer_ungrab (0);
-				Gdk.keyboard_ungrab (0);
-
-				base.destroy ();
-			}
 		}
 	}
 }
