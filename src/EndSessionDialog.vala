@@ -83,7 +83,6 @@ namespace Gala
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 600, opacity: 80);
 
 			var dialog = new Dialog (type);
-			dialog.set_modal (true);
 			dialog.show_all ();
 			dialog.destroy.connect (() => {
 				animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity: 0)
