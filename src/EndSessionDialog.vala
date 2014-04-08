@@ -83,6 +83,7 @@ namespace Gala
 			animate (Clutter.AnimationMode.EASE_OUT_QUAD, 600, opacity: 80);
 
 			var dialog = new Dialog (type);
+			dialog.set_modal (true);
 			dialog.show_all ();
 			dialog.destroy.connect (() => {
 				animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity: 0)
@@ -152,12 +153,12 @@ namespace Gala
 					var confirm_restart = add_button (_("Restart"), Gtk.ResponseType.OK) as Gtk.Button;
 					confirm_restart.clicked.connect (() => {
 						confirmed_reboot ();
-						close_dialog ();
+						destroy ();
 					});
 				}
 
 				var cancel = add_button (_("Cancel"), Gtk.ResponseType.CANCEL) as Gtk.Button;
-				cancel.clicked.connect (close_dialog);
+				cancel.clicked.connect (() => { destroy (); });
 
 				var confirm = add_button (button_text, Gtk.ResponseType.OK) as Gtk.Button;
 				confirm.get_style_context ().add_class ("destructive-action");
@@ -166,30 +167,35 @@ namespace Gala
 						confirmed_shutdown ();
 					else
 						confirmed_logout ();
-					close_dialog ();
+
+					destroy ();
 				});
+				set_default (confirm);
 
 				get_content_area ().add (grid);
 
 				var action_area = get_action_area ();
 				action_area.margin_right = 6;
 				action_area.margin_bottom = 6;
-
-				map.connect (() => {
-					Gdk.pointer_grab (get_window (), true, Gdk.EventMask.BUTTON_PRESS_MASK
-						| Gdk.EventMask.BUTTON_RELEASE_MASK
-						| Gdk.EventMask.POINTER_MOTION_MASK,
-						null, null, 0);
-					Gdk.keyboard_grab (get_window (), true, 0);
-				});
 			}
 
-			public void close_dialog ()
+			public override void map ()
+			{
+				base.map ();
+
+				Gdk.pointer_grab (get_window (), true, Gdk.EventMask.BUTTON_PRESS_MASK
+					| Gdk.EventMask.BUTTON_RELEASE_MASK
+					| Gdk.EventMask.POINTER_MOTION_MASK,
+					null, null, 0);
+				Gdk.keyboard_grab (get_window (), true, 0);
+			}
+
+			public override void destroy ()
 			{
 				Gdk.pointer_ungrab (0);
 				Gdk.keyboard_ungrab (0);
 
-				destroy ();
+				base.destroy ();
 			}
 		}
 	}
