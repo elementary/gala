@@ -1,19 +1,19 @@
-//  
+//
 //  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 namespace Gala
 {
@@ -23,13 +23,13 @@ namespace Gala
 		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
 		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		static uint cache_clear_timeout = 0;
-		
+
 		static construct
 		{
 			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
 		}
-		
+
 		/**
 		 * Clean icon caches
 		 */
@@ -53,12 +53,12 @@ namespace Gala
 				}
 			}
 		}
-		
+
 		public static void request_clean_icon_cache (uint32[] xids)
 		{
 			if (cache_clear_timeout > 0)
 				GLib.Source.remove (cache_clear_timeout);
-			
+
 			cache_clear_timeout = Timeout.add_seconds (30, () => {
 				cache_clear_timeout = 0;
 				Idle.add (() => {
@@ -68,28 +68,28 @@ namespace Gala
 				return false;
 			});
 		}
-		
+
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
 		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size)
 		{
 			Gdk.Pixbuf? result = null;
-			
+
 			var xid = (uint32)window.get_xwindow ();
 			var xid_key = "%u::%i".printf (xid, size);
-			
+
 			if ((result = xid_pixbuf_cache.get (xid_key)) != null)
 				return result;
-			
+
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
 			result = get_icon_for_application (app, size);
-			
+
 			xid_pixbuf_cache.set (xid_key, result);
-			
+
 			return result;
 		}
-		
+
 		/**
 		 * returns a pixbuf for this application or a default icon
 		 **/
@@ -97,10 +97,10 @@ namespace Gala
 		{
 			Gdk.Pixbuf? image = null;
 			bool not_cached = false;
-			
+
 			string? icon = null;
 			string? icon_key = null;
-			
+
 			if (app != null && app.get_desktop_file () != null) {
 				try {
 					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
@@ -116,7 +116,7 @@ namespace Gala
 					warning (e.message);
 				}
 			}
-			
+
 			if (image == null) {
 				try {
 					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
@@ -130,7 +130,7 @@ namespace Gala
 					warning (e.message);
 				}
 			}
-			
+
 			if (image == null) {
 				icon = "";
 				icon_key = "::%i".printf (size);
@@ -140,16 +140,16 @@ namespace Gala
 					not_cached = true;
 				}
 			}
-			
+
 			if (size != image.width || size != image.height)
 				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
-			
+
 			if (not_cached)
 				icon_pixbuf_cache.set (icon_key, image);
-			
+
 			return image;
 		}
-		
+
 		/**
 		 * get the next window that should be active on a workspace right now
 		 **/
@@ -157,16 +157,16 @@ namespace Gala
 		{
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
-			
-			var window = display.get_tab_next (Meta.TabList.NORMAL, screen, 
+
+			var window = display.get_tab_next (Meta.TabList.NORMAL, screen,
 				screen.get_active_workspace (), null, backward);
-			
+
 			if (window == null)
 				window = display.get_tab_current (Meta.TabList.NORMAL, screen, workspace);
-			
+
 			return window;
 		}
-		
+
 		/**
 		 * get the number of toplevel windows on a workspace
 		 **/
@@ -181,12 +181,12 @@ namespace Gala
 					window.window_type == Meta.WindowType.MODAL_DIALOG)
 					n ++;
 			}
-		
+
 			return n;
 		}
-		
+
 		static Gtk.CssProvider fallback_style = null;
-		
+
 		public static Gtk.CssProvider get_default_style ()
 		{
 			if (fallback_style == null) {
@@ -195,7 +195,7 @@ namespace Gala
 					fallback_style.load_from_path (Config.PKGDATADIR + "/gala.css");
 				} catch (Error e) { warning (e.message); }
 			}
-			
+
 			return fallback_style;
 		}
 

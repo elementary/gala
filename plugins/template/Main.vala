@@ -1,19 +1,19 @@
-//  
+//
 //  Copyright (C) 2014 Tom Beckmann
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 /*
   This is a template class showing some of the things that can be done
@@ -59,7 +59,7 @@ namespace Gala.Plugins.Template
 			// windows, we need to mark the region where the quad is located.
 			// The plugin class offers an utility function for this purpose, the track_actor
 			// function. It will update the region with the allocation of the actor
-			// whenever its allocation changes. Make sure to set freeze_track to 
+			// whenever its allocation changes. Make sure to set freeze_track to
 			// true while animating the actor to not make gala update the region
 			// every single frame.
 			// You can also handle the region manually by setting the custom_region
@@ -105,7 +105,7 @@ public Gala.PluginInfo register_plugin ()
 		typeof (Gala.Plugins.Template.Main),  // the type of your plugin class
 
 		Gala.PluginFunction.ADDITION,         // the function which your plugin
-		                                      // fulfils, ADDITION means nothing 
+		                                      // fulfils, ADDITION means nothing
 		                                      // specific
 
 		Gala.LoadPriority.IMMEDIATE           // indicates whether your plugin's

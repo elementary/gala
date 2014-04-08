@@ -1,19 +1,19 @@
-//  
+//
 //  Copyright (C) 2012 - 2014 Tom Beckmann, Jacob Parker
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 namespace Gala
 {
@@ -22,17 +22,17 @@ namespace Gala
 	{
 		static DBus? instance;
 		static WindowManager wm;
-		
+
 		[DBus (visibile = false)]
 		public static void init (WindowManager _wm)
 		{
 			wm = _wm;
-			
+
 			Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
 				(connection) => {
 					if (instance == null)
 						instance = new DBus ();
-					
+
 					try {
 						connection.register_object ("/org/pantheon/gala", instance);
 					} catch (Error e) { warning (e.message); }
@@ -40,7 +40,7 @@ namespace Gala
 				() => {},
 				() => warning ("Could not acquire name\n") );
 		}
-		
+
 		private DBus ()
 		{
 			if (wm.background_group != null)
@@ -48,7 +48,7 @@ namespace Gala
 			else
 				assert_not_reached ();
 		}
-		
+
 		public void perform_action (ActionType type)
 		{
 			wm.perform_action (type);
@@ -85,7 +85,7 @@ namespace Gala
 
 		/**
 		 * Attaches a dummy offscreen effect to the background at monitor to get its
-		 * isolated color data. Then calculate the red, green and blue components of 
+		 * isolated color data. Then calculate the red, green and blue components of
 		 * the average color in that area and the mean color value and variance. All
 		 * variables are returned as a tuple in that order.
 		 *

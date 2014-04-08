@@ -1,19 +1,19 @@
-//  
+//
 //  Copyright (C) 2014 Tom Beckmann
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 namespace Gala
 {
@@ -129,14 +129,14 @@ namespace Gala
 		/**
 		 * This method is currently not called in the code, however you should
 		 * still implement it to be compatible whenever we decide to use it.
-		 * It should make sure that everything your plugin added to the stage 
+		 * It should make sure that everything your plugin added to the stage
 		 * is cleaned up.
 		 */
 		public abstract void destroy ();
 
 		/**
 		 * Listen to changes to the allocation of actor and update the region
-		 * accordingly. You may add multiple actors, their shapes will be 
+		 * accordingly. You may add multiple actors, their shapes will be
 		 * combined when one of them changes.
 		 *
 		 * @param actor The actor to be tracked
