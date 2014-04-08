@@ -88,6 +88,7 @@ namespace Gala
 			dialog.destroy.connect (() => {
 				animate (Clutter.AnimationMode.EASE_OUT_QUAD, 400, opacity: 0)
 					.completed.connect (() => { wm.ui_group.remove_child (this); });
+				closed ();
 			});
 			dialog.confirmed_logout.connect (() => { confirmed_logout (); });
 			dialog.confirmed_shutdown.connect (() => { confirmed_shutdown (); });
