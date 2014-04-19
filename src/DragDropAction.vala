@@ -1,19 +1,19 @@
-//  
+//
 //  Copyright (C) 2013 Tom Beckmann
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 namespace Gala
 {
@@ -47,7 +47,7 @@ namespace Gala
 
 		/**
 		 * A drag action has successfully been finished.
-		 * 
+		 *
 		 * @param actor The actor on which the drag finished
 		 */
 		public signal void drag_end (Clutter.Actor actor);
@@ -63,7 +63,7 @@ namespace Gala
 		 * Create a new DragDropAction
 		 *
 		 * @param type The type of this actor
-		 * @param id An ID that marks which sources can be dragged on 
+		 * @param id An ID that marks which sources can be dragged on
 		 *     which destinations. It has to be the same for all actors that
 		 *     should be compatible with each other.
 		 */

@@ -28,30 +28,30 @@ namespace Gala
 		public GtkClutter.Texture close_button;
 
 		const int WAIT_FOR_CONFIRMATION_DIALOG = 100;
-		
+
 		public signal void selected (Window window);
 		public signal void closed ();
-		
+
 		public WindowThumb (Window _window, bool add_children_to_stage = true)
 		{
 			window = _window;
-			
+
 			reactive = true;
-			
+
 			var actor = window.get_compositor_private () as WindowActor;
 			clone = new Clone (actor);
 			clone.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
-			
+
 			icon = new GtkClutter.Texture ();
 			icon.scale_x = 0.0f;
 			icon.scale_y = 0.0f;
 			icon.opacity = 0;
 			icon.scale_gravity = Gravity.CENTER;
-			
+
 			try {
 				icon.set_from_pixbuf (Utils.get_icon_for_window (window, 64));
 			} catch (Error e) { warning (e.message); }
-			
+
 			close_button = new GtkClutter.Texture ();
 			close_button.reactive = true;
 			close_button.visible = false;
@@ -60,13 +60,13 @@ namespace Gala
 			close_button.scale_gravity = Gravity.CENTER;
 			close_button.button_release_event.connect (close_button_clicked);
 			close_button.leave_event.connect ((e) => leave_event (e));
-			
+
 			try {
 				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
 			} catch (Error e) { warning (e.message); }
-			
+
 			add_child (clone);
-			
+
 			if (add_children_to_stage) {
 				var stage = Compositor.get_stage_for_screen (window.get_screen ());
 				stage.add_child (icon);
@@ -102,17 +102,17 @@ namespace Gala
 
 			icon.animate (AnimationMode.EASE_OUT_CUBIC, 350, scale_x: 1.0f, scale_y: 1.0f, opacity: 255);
 		}
-		
+
 		bool close_button_clicked (ButtonEvent event)
 		{
 			if (event.button != 1)
 				return false;
-			
+
 			close_window ();
-			
+
 			return true;
 		}
-		
+
 		public void close_window ()
 		{
 			get_parent ().set_child_below_sibling (this, null);
@@ -135,44 +135,44 @@ namespace Gala
 			clone.destroy ();
 			close_button.destroy ();
 			icon.destroy ();
-			
+
 			base.destroy ();
 		}
-		
+
 		public override bool enter_event (CrossingEvent event)
 		{
 			//if we're still animating don't show the close button
 			if (get_animation () != null)
 				return false;
-			
+
 			close_button.visible = true;
 			close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
-			
+
 			return true;
 		}
-		
+
 		public override bool motion_event (MotionEvent event)
 		{
 			if (get_animation () != null)
 				return false;
-			
+
 			close_button.visible = true;
 			close_button.animate (AnimationMode.EASE_OUT_ELASTIC, 400, scale_x : 1.0f, scale_y : 1.0f);
-			
+
 			return true;
 		}
-		
+
 		public override bool leave_event (CrossingEvent event)
 		{
 			if (event.related == close_button)
 				return false;
-			
+
 			close_button.animate (AnimationMode.EASE_IN_QUAD, 200, scale_x : 0.0f, scale_y : 0.0f)
 				.completed.connect (() => close_button.visible = false );
-			
+
 			return true;
 		}
-		
+
 		public override bool button_release_event (ButtonEvent event)
 		{
 			switch (event.button) {
@@ -184,32 +184,32 @@ namespace Gala
 					close_window ();
 					break;
 			}
-			
+
 			return true;
 		}
-		
+
 		public void close (bool do_animate = true, bool use_scale = true)
 		{
 			unowned Meta.Rectangle rect = window.get_outer_rect ();
-			
+
 			float x, y, w, h;
 			Utils.get_window_frame_offset (window, out x, out y, out w, out h);
-			
+
 			float dest_x = rect.x + x;
 			float dest_y = rect.y + y;
-			
+
 			//stop all running animations
 			detach_animation ();
 			icon.detach_animation ();
 			close_button.detach_animation ();
-			
+
 			bool dont_show = window.minimized || window.get_workspace () != window.get_screen ().get_active_workspace ();
 			do_animate = do_animate && !dont_show;
-			
+
 			if (do_animate) {
 				icon.animate (AnimationMode.EASE_IN_CUBIC, 100, scale_x:0.0f, scale_y:0.0f);
 				close_button.animate (AnimationMode.EASE_IN_QUAD, 200, scale_x : 0.0f, scale_y : 0.0f);
-				
+
 				Animation a;
 				if (use_scale) {
 					a = animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f,

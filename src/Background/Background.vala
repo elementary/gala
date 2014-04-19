@@ -1,23 +1,22 @@
-//  
+//
 //  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
-// 
+//
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
-// 
+//
 //  This program is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
 namespace Gala
 {
-#if HAS_MUTTER38
 	/**
 	 * Group that holds a pattern at the very bottom and then an image showing the
 	 * current wallpaper above (and one more additional image for transitions).
@@ -26,6 +25,8 @@ namespace Gala
 	public class Background : Meta.BackgroundGroup
 	{
 		const uint ANIMATION_TRANSITION_DURATION = 1500;
+
+		public signal void changed ();
 
 		public Meta.Screen screen { get; construct; }
 		public int monitor { get; construct; }
@@ -38,7 +39,7 @@ namespace Gala
 		{
 			Object (screen: screen, monitor: monitor, settings: settings);
 		}
-		
+
 		construct
 		{
 			pattern = new Meta.BackgroundActor ();
@@ -107,6 +108,8 @@ namespace Gala
 			if (all || key_changed == "picture-opacity") {
 				if (image != null)
 					image.opacity = (uint8)(settings.get_int ("picture-opacity") / 100.0 * 255);
+
+				changed ();
 			}
 
 			// update pattern
@@ -118,6 +121,8 @@ namespace Gala
 				var secondary_color = Clutter.Color.from_string (settings.get_string ("secondary-color"));
 				var shading_type = shading_string_to_enum (settings.get_string ("color-shading-type"));
 				pattern.content = cache.load_pattern (monitor, primary_color, secondary_color, shading_type);
+
+				changed ();
 			}
 		}
 
@@ -132,6 +137,8 @@ namespace Gala
 					image.animate (Clutter.AnimationMode.EASE_OUT_QUAD, ANIMATION_TRANSITION_DURATION,
 						opacity: 0).completed.connect (() => {
 						image.destroy ();
+
+						changed ();
 					});
 				return;
 			}
@@ -146,6 +153,8 @@ namespace Gala
 				if (image != null)
 					image.destroy ();
 				image = new_image;
+
+				changed ();
 			});
 		}
 
@@ -189,6 +198,5 @@ namespace Gala
 			return GDesktop.BackgroundStyle.NONE;
 		}
 	}
-#endif
 }
 

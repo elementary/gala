@@ -1,0 +1,3 @@
+SUBDIRS = \
+	zoom \
+	$(NULL)

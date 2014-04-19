@@ -5,7 +5,7 @@ namespace Gala
 	public class MultitaskingView : Actor
 	{
 		public Meta.Screen screen { get; construct set; }
-		public Plugin plugin { get; construct set; }
+		public WindowManager wm { get; construct set; }
 
 		Actor icon_groups;
 		Actor workspaces;
@@ -14,9 +14,9 @@ namespace Gala
 
 		const int HIDING_DURATION = 300;
 
-		public MultitaskingView (Plugin plugin)
+		public MultitaskingView (WindowManager wm)
 		{
-			Object (plugin: plugin, screen: plugin.get_screen ());
+			Object (wm: wm, screen: wm.get_screen ());
 
 			visible = false;
 			reactive = true;
@@ -152,11 +152,11 @@ namespace Gala
 			var monitor = screen.get_monitor_geometry (primary_monitor);
 
 			if (opening) {
-				plugin.begin_modal ();
+				wm.begin_modal ();
 
-				plugin.background_group.hide ();
-				plugin.window_group.hide ();
-				plugin.top_window_group.hide ();
+				wm.background_group.hide ();
+				wm.window_group.hide ();
+				wm.top_window_group.hide ();
 				show ();
 				grab_key_focus ();
 
@@ -190,11 +190,11 @@ namespace Gala
 				Timeout.add (290, () => {
 					hide ();
 
-					plugin.background_group.show ();
-					plugin.window_group.show ();
-					plugin.top_window_group.show ();
+					wm.background_group.show ();
+					wm.window_group.show ();
+					wm.top_window_group.show ();
 
-					plugin.end_modal ();
+					wm.end_modal ();
 
 					return false;
 				});
