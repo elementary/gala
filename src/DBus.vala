@@ -127,9 +127,9 @@ namespace Gala
 				SignalHandler.disconnect (effect, paint_signal_handler);
 				background.remove_effect (effect);
 
-				var pixels = new uint8[tex_width * tex_height * 4];
-				CoglFixes.texture_get_data ((Cogl.Texture)effect.get_texture (),
-					Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
+				var texture = (Cogl.Texture)effect.get_texture ();
+				var pixels = new uint8[texture.get_width () * texture.get_height () * 4];
+				CoglFixes.texture_get_data (texture, Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
 
 				int size = width * height;
 
