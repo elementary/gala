@@ -272,6 +272,7 @@ namespace Gala
 		void dim_windows ()
 		{
 			var current_actor = current_window.get_compositor_private () as Actor;
+			var window_opacity = (int)Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
 			var i = 0;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
@@ -280,7 +281,7 @@ namespace Gala
 
 					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
 				} else {
-					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : window_opacity);
 					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 100);
 				}
 
