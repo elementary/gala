@@ -38,11 +38,22 @@ namespace Gala
 
 	public interface WindowManager : Meta.Plugin
 	{
+		/**
+		 * Window stacking changed. You can read the plugin's stacking_order property
+		 * to restack window clones.
+		 */
+		public signal void windows_restacked ();
+
 		public abstract Clutter.Actor ui_group { get; protected set; }
 		public abstract Clutter.Stage stage { get; protected set; }
 		public abstract Clutter.Actor window_group { get; protected set; }
 		public abstract Clutter.Actor top_window_group { get; protected set; }
 		public abstract Meta.BackgroundGroup background_group { get; protected set; }
+		/*
+		 * Provides a hashtable of windows' stable sequences and their stacking order
+		 * counted from 0 up.
+		 */
+		public abstract HashTable<int,int> window_stacking_order { get; protected set; }
 
 		public abstract void begin_modal ();
 		public abstract void end_modal ();

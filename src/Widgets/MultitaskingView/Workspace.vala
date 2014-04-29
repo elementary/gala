@@ -77,19 +77,27 @@ namespace Gala
 
 	public class WorkspaceClone : Clutter.Actor
 	{
+		public static const int BOTTOM_OFFSET = 100;
+		const int TOP_OFFSET = 20;
+		const int HOVER_ACTIVATE_DELAY = 400;
+
+		public WindowManager wm { get; construct; }
 		public Meta.Workspace workspace { get; construct set; }
 		public BackgroundManager background { get; private set; }
 		public IconGroup icon_group { get; private set; }
+		public TiledWorkspaceContainer window_container { get; private set; }
 
 		public signal void window_selected (Meta.Window window);
 		public signal void selected (bool close_view);
 
-		const int TOP_OFFSET = 20;
-		public static const int BOTTOM_OFFSET = 100;
+		uint hover_activate_timeout = 0;
 
-		public WorkspaceClone (Meta.Workspace workspace)
+		public WorkspaceClone (Meta.Workspace workspace, WindowManager wm)
 		{
-			Object (workspace: workspace);
+			Object (workspace: workspace, wm: wm);
+
+			var screen = workspace.get_screen ();
+			var monitor_geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 
 			background = new FramedBackground (workspace.get_screen ());
 			background.reactive = true;
@@ -98,12 +106,40 @@ namespace Gala
 				return false;
 			});
 
-			icon_group = new IconGroup ();
+			window_container = new TiledWorkspaceContainer (wm.window_stacking_order);
+			window_container.window_selected.connect ((w) => { window_selected (w); });
+			window_container.width = monitor_geometry.width;
+			window_container.height = monitor_geometry.height;
+			wm.windows_restacked.connect (() => {
+				window_container.stacking_order = wm.window_stacking_order;
+			});
+
+			icon_group = new IconGroup (workspace);
 			icon_group.selected.connect (() => {
 				selected (false);
 			});
 
-			var screen = workspace.get_screen ();
+			var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+			icon_group.add_action (icons_drop_action);
+
+			var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+			background.add_action (background_drop_action);
+			background_drop_action.crossed.connect ((hovered) => {
+				if (!hovered && hover_activate_timeout != 0) {
+					Source.remove (hover_activate_timeout);
+					hover_activate_timeout = 0;
+					return;
+				}
+
+				if (hovered && hover_activate_timeout == 0) {
+					hover_activate_timeout = Timeout.add (HOVER_ACTIVATE_DELAY, () => {
+						selected (false);
+						hover_activate_timeout = 0;
+						return false;
+					});
+				}
+			});
+
 			screen.window_left_monitor.connect ((monitor, window) => {
 				if (monitor == screen.get_primary_monitor ())
 					remove_window (window);
@@ -117,22 +153,26 @@ namespace Gala
 			workspace.window_added.connect (add_window);
 
 			add_child (background);
+			add_child (window_container);
 		}
 
 		private void add_window (Meta.Window window)
 		{
+			if (window.window_type != Meta.WindowType.NORMAL)
+				return;
+
+			foreach (var child in window_container.get_children ())
+				if ((child as TiledWindow).window == window)
+					return;
+
+			window_container.add_window (window);
+			icon_group.add_window (window);
 		}
 
 		private void remove_window (Meta.Window window)
 		{
-			var window_actor = window.get_compositor_private ();
-
-			foreach (var child in get_children ()) {
-				if (child is Clone && (child as Clone).source == window_actor) {
-					child.destroy ();
-					break;
-				}
-			}
+			icon_group.remove_window (window);
+			// TODO ?
 		}
 
 		private void shrink_rectangle (ref Meta.Rectangle rect, int amount)
@@ -164,51 +204,31 @@ namespace Gala
 
 			icon_group.clear ();
 
-			var unsorted_windows = workspace.list_windows ();
-			var used_windows = new SList<Meta.Window> ();
-			foreach (var window in unsorted_windows) {
+			// TODO this can be optimized
+			window_container.destroy_all_children ();
+			window_container.padding_top = TOP_OFFSET;
+			window_container.padding_left =
+				window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
+			window_container.padding_bottom = BOTTOM_OFFSET;
+
+			var windows = workspace.list_windows ();
+			foreach (var window in windows) {
 				if (window.window_type == Meta.WindowType.NORMAL) {
-					used_windows.append (window);
+					window_container.add_window (window);
 					icon_group.add_window (window, true);
 				}
 			}
+
 			icon_group.redraw ();
-
-			var windows = display.sort_windows_by_stacking (used_windows);
-			var clones = new List<WindowThumb> ();
-
-			foreach (var window in windows) {
-				var window_actor = window.get_compositor_private () as Meta.WindowActor;
-
-				var clone = new WindowThumb (window, false);
-				clone.selected.connect (() => {
-					window_selected (clone.window);
-				});
-				clone.set_position (window_actor.x, window_actor.y);
-
-				add_child (clone);
-				clones.append (clone);
-			}
-
-			if (clones.length () > 0)
-				WindowOverview.grid_placement (area, clones, place_window);
-		}
-
-		void place_window (Actor window, Meta.Rectangle rect)
-		{
-			window.animate (AnimationMode.EASE_OUT_CUBIC, 250,
-				x: rect.x + 0.0f, y: rect.y + 0.0f, width: rect.width + 0.0f, height: rect.height + 0.0f);
-			(window as WindowThumb).place_children (rect.width, rect.height);
+			window_container.restack ();
+			window_container.reflow ();
 		}
 
 		public void close ()
 		{
 			background.animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f);
 
-			foreach (var child in get_children ()) {
-				if (child is WindowThumb)
-					(child as WindowThumb).close (true, false);
-			}
+			window_container.transition_to_original_state ();
 		}
 
 		~Workspace ()

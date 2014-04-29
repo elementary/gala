@@ -54,6 +54,7 @@ gala_VALASOURCES = \
 	Widgets/WorkspaceView.vala \
 	Widgets/MultitaskingView/IconGroup.vala \
 	Widgets/MultitaskingView/MultitaskingView.vala \
+	Widgets/MultitaskingView/TiledWindowContainer.vala \
 	Widgets/MultitaskingView/Workspace.vala \
 	$(NULL)
 

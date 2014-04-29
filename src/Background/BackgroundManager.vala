@@ -47,7 +47,6 @@ namespace Gala
 			}
 
 			destroy_all_children ();
-			print ("DESTROYING!!!! \n");
 
 			var settings = BackgroundSettings.get_default ().schema;
 

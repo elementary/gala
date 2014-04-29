@@ -4,8 +4,6 @@ namespace Gala
 {
 	public class IconGroup : Actor
 	{
-		List<Meta.Window> windows;
-
 		const int SIZE = 64;
 		
 		static const int PLUS_SIZE = 8;
@@ -13,8 +11,14 @@ namespace Gala
 
 		public signal void selected ();
 
-		public IconGroup ()
+		public Meta.Workspace workspace { get; construct; }
+
+		List<Meta.Window> windows;
+
+		public IconGroup (Meta.Workspace workspace)
 		{
+			Object (workspace: workspace);
+
 			clear ();
 
 			width = SIZE;
@@ -45,6 +49,12 @@ namespace Gala
 
 			if (!no_redraw)
 				redraw ();
+		}
+
+		public void remove_window (Meta.Window window)
+		{
+			windows.remove (window);
+			redraw ();
 		}
 
 		public void redraw ()

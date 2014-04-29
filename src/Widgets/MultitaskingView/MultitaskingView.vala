@@ -57,7 +57,7 @@ namespace Gala
 		{
 			float x = 0;
 			WorkspaceClone? active = null;
-			var active_index = screen.get_active_workspace ().index ();;
+			var active_index = screen.get_active_workspace ().index ();
 
 			foreach (var child in workspaces.get_children ()) {
 				var workspace_clone = child as WorkspaceClone;
@@ -80,7 +80,7 @@ namespace Gala
 
 		void add_workspace (int num)
 		{
-			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
+			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num), wm);
 			workspace.window_selected.connect (window_selected);
 			workspace.selected.connect (activate_workspace);
 

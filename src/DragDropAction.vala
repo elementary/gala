@@ -25,19 +25,15 @@ namespace Gala
 
 	public class DragDropAction : Clutter.Action
 	{
-		public DragDropActionType drag_type { get; construct; }
-		public string drag_id { get; construct; }
-		public Clutter.Actor handle { get; private set; }
-
-		Clutter.Actor? hovered = null;
-		bool clicked = false;
-		bool dragging = false;
-
 		/**
-		 * A drag has been started. You have to connect to this signal
-		 * @return A ClutterActor that serves as handle
+		 * A drag has been started. You have to connect to this signal and
+		 * return an actor that is transformed during the drag operation.
+		 *
+		 * @param x The global x coordinate where the action was activated
+		 * @param y The global y coordinate where the action was activated
+		 * @return  A ClutterActor that serves as handle
 		 */
-		public signal Clutter.Actor drag_begin ();
+		public signal Clutter.Actor drag_begin (float x, float y);
 
 		/**
 		 * A drag has been canceled. You may want to consider cleaning up
@@ -60,12 +56,54 @@ namespace Gala
 		public signal void crossed (bool hovered);
 
 		/**
+		 * Emitted on the source when a destination is crossed.
+		 *
+		 * @param destination The destination actor that has been crossed
+		 * @param hovered     Whether the actor is now hovered or has just been left
+		 */
+		public signal void destination_crossed (Clutter.Actor destination, bool hovered);
+
+		/**
+		 * The source has been clicked, but the movement was not larger than
+		 * the drag threshold. Useful if the source is also activable.
+		 */
+		public signal void actor_clicked ();
+
+		/**
+		 * The type of the action
+		 */
+		public DragDropActionType drag_type { get; construct; }
+
+		/**
+		 * The unique id given to this drag-drop-group
+		 */		 
+		public string drag_id { get; construct; }
+
+		public Clutter.Actor handle { get; private set; }
+		/**
+		 * Indicates whether a drag action is currently active
+		 */
+		public bool dragging { get; private set; default = false; }
+
+		/**
+		 * Allow checking the parents of reactive children if they are valid destinations
+		 * if the child is none
+		 */
+		public bool allow_bubbling { get; set; default = true; }
+
+		Clutter.Actor? hovered = null;
+		bool clicked = false;
+		bool actor_was_reactive = false;
+		float last_x;
+		float last_y;
+
+		/**
 		 * Create a new DragDropAction
 		 *
 		 * @param type The type of this actor
-		 * @param id An ID that marks which sources can be dragged on
-		 *     which destinations. It has to be the same for all actors that
-		 *     should be compatible with each other.
+		 * @param id   An ID that marks which sources can be dragged on
+		 *             which destinations. It has to be the same for all actors that
+		 *             should be compatible with each other.
 		 */
 		public DragDropAction (DragDropActionType type, string id)
 		{
@@ -95,7 +133,6 @@ namespace Gala
 		{
 			if (drag_type == DragDropActionType.SOURCE) {
 				actor.button_press_event.disconnect (source_clicked);
-				actor.motion_event.disconnect (source_motion);
 			}
 		}
 
@@ -103,8 +140,13 @@ namespace Gala
 		{
 			if (drag_type == DragDropActionType.SOURCE) {
 				actor.button_press_event.connect (source_clicked);
-				actor.motion_event.connect (source_motion);
 			}
+		}
+
+		void emit_crossed (Clutter.Actor destination, bool hovered)
+		{
+			get_drag_drop_action (destination).crossed (hovered);
+			destination_crossed (destination, hovered);
 		}
 
 		bool source_clicked (Clutter.ButtonEvent event)
@@ -112,29 +154,58 @@ namespace Gala
 			if (event.button != 1)
 				return false;
 
-			clicked = true;
-			return true;
-		}
-
-		bool source_motion (Clutter.MotionEvent event)
-		{
-			if (!clicked)
-				return false;
-
-			handle = drag_begin ();
-			if (handle == null) {
-				critical ("No handle has been returned by the started signal, aborting drag.");
-				return false;
-			}
-
-			dragging = true;
-			clicked = false;
 			actor.get_stage ().captured_event.connect (follow_move);
+			clicked = true;
+			last_x = event.x;
+			last_y = event.y;
+
 			return true;
 		}
 
 		bool follow_move (Clutter.Event event)
 		{
+			// still determining if we actually want to start a drag action
+			if (!dragging) {
+				switch (event.get_type ()) {
+					case Clutter.EventType.MOTION:
+						float x, y;
+						event.get_coords (out x, out y);
+
+						var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
+						if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
+							handle = drag_begin (x, y);
+							if (handle == null) {
+								actor.get_stage ().captured_event.disconnect (follow_move);
+								critical ("No handle has been returned by the started signal, aborting drag.");
+								return false;
+							}
+
+							actor_was_reactive = handle.reactive;
+							handle.reactive = false;
+
+							clicked = false;
+							dragging = true;
+						}
+						return true;
+					case Clutter.EventType.BUTTON_RELEASE:
+						float x, y, ex, ey;
+						event.get_coords (out ex, out ey);
+						actor.get_transformed_position (out x, out y);
+
+						// release has happened within bounds of actor
+						if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+							actor_clicked ();
+						}
+
+						actor.get_stage ().captured_event.disconnect (follow_move);
+						clicked = false;
+						dragging = false;
+						return true;
+					default:
+						return true;
+				}
+			}
+
 			switch (event.get_type ()) {
 				case Clutter.EventType.KEY_PRESS:
 					if (event.get_key_code () == Clutter.Key.Escape) {
@@ -144,25 +215,44 @@ namespace Gala
 				case Clutter.EventType.MOTION:
 					float x, y;
 					event.get_coords (out x, out y);
-					handle.x = x;
-					handle.y = y;
+					handle.x -= last_x - x;
+					handle.y -= last_y - y;
+					last_x = x;
+					last_y = y;
 
+					var stage = actor.get_stage ();
 					var actor = actor.get_stage ().get_actor_at_pos (Clutter.PickMode.REACTIVE, (int)x, (int)y);
 					DragDropAction action = null;
-					if (actor == null || (action = get_drag_drop_action (actor)) == null) {
+					// if we're allowed to bubble and we this actor is not a destination, check its parents
+					if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
+						while ((actor = actor.get_parent ()) != stage) {
+							if ((action = get_drag_drop_action (actor)) != null)
+								break;
+						}
+					}
+
+					// didn't change, no need to do anything
+					if (actor == hovered)
+						return true;
+
+					if (action == null) {
+						// apparently we left ours if we had one before
 						if (hovered != null) {
-							get_drag_drop_action (hovered).crossed (false);
+							emit_crossed (hovered, false);
 							hovered = null;
 						}
+
 						return true;
 					}
 
+					// signal the previous one that we left it
 					if (hovered != null) {
-						get_drag_drop_action (hovered).crossed (false);
+						emit_crossed (hovered, false);
 					}
 
+					// tell the new one that it is hovered
 					hovered = actor;
-					action.crossed (true);
+					emit_crossed (hovered, true);
 
 					return true;
 				case Clutter.EventType.BUTTON_RELEASE:
@@ -212,16 +302,22 @@ namespace Gala
 				actor.get_stage ().captured_event.disconnect (follow_move);
 			}
 
-			drag_canceled ();
 			dragging = false;
+			actor.reactive = actor_was_reactive;
+
+			drag_canceled ();
 		}
 
 		void finish ()
 		{
 			// make sure they reset the style or whatever they changed when hovered
-			get_drag_drop_action (hovered).crossed (false);
+			emit_crossed (hovered, false);
 
 			actor.get_stage ().captured_event.disconnect (follow_move);
+
+			dragging = false;
+			actor.reactive = actor_was_reactive;
+
 			drag_end (hovered);
 		}
 	}
