@@ -104,6 +104,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  gtk+-3.0 >= $GTK_MIN_VERSION \
                  gdk-x11-3.0 >= $GTK_MIN_VERSION \
                  libbamf3 \
+                 clutter-1.0 \
                  clutter-gtk-1.0 \
                  granite \
                  libmutter >= $MUTTER_MIN_VERSION \
@@ -117,6 +118,7 @@ GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
                       --pkg gdk-x11-3.0 \
                       --pkg libbamf3 \
                       --pkg libmutter \
+                      --pkg clutter-1.0 \
                       --pkg clutter-gtk-1.0 \
                       --pkg granite \
                       --pkg gee-0.8 \
