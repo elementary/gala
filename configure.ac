@@ -139,19 +139,27 @@ AC_SUBST([PLUGIN_LDFLAGS])
 # -----------------------------------------------------------
 
 # 3.10
-PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.9], [have_mutter310=yes], [have_mutter310=no])
+PKG_CHECK_MODULES(MUTTER310, [libmutter >= 3.9], [have_mutter310=yes], [have_mutter310=no])
 if test "x$have_mutter310" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER, "libmutter >= 3.10.4")
+    PKG_CHECK_MODULES(MUTTER310, [libmutter >= 3.10.4])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER310"
     MUTTER_API="3.10"
 fi
 
 # 3.12
-PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.11], [have_mutter312=yes], [have_mutter312=no])
+PKG_CHECK_MODULES(MUTTER312, [libmutter >= 3.11], [have_mutter312=yes], [have_mutter312=no])
 if test "x$have_mutter312" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER, [libmutter >= 3.11.91])
+    PKG_CHECK_MODULES(MUTTER312, [libmutter >= 3.11.91])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER312"
     MUTTER_API="3.12"
+fi
+
+# 3.14
+PKG_CHECK_MODULES(MUTTER314, [libmutter >= 3.13], [have_mutter314=yes], [have_mutter314=no])
+if test "x$have_mutter314" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER314, [libmutter >= 3.13.1])
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER314"
+    MUTTER_API="3.14"
 fi
 
 # -----------------------------------------------------------
