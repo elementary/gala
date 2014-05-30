@@ -83,6 +83,9 @@ namespace Gala
 				return result;
 
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
+			if (app == null)
+				return null;
+
 			result = get_icon_for_application (app, size);
 
 			xid_pixbuf_cache.set (xid_key, result);

@@ -5,9 +5,14 @@ namespace Gala
 	public class IconGroup : Actor
 	{
 		const int SIZE = 64;
+		const string FALLBACK_ICON = "application-default-icon";
 		
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
+
+		Gdk.Pixbuf? app_fallback_icon_64 = null;
+		Gdk.Pixbuf? app_fallback_icon_22 = null;
+		Gdk.Pixbuf? app_fallback_icon_16 = null;
 
 		public signal void selected ();
 
@@ -29,6 +34,14 @@ namespace Gala
 			canvas.set_size (SIZE, SIZE);
 			canvas.draw.connect (draw);
 			content = canvas;
+
+			try {
+				app_fallback_icon_64 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 64, 0);
+				app_fallback_icon_22 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 22, 0);
+				app_fallback_icon_16 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 16, 0);
+			} catch (Error e) {
+				warning (e.message);
+			}
 		}
 
 		public override bool button_release_event (ButtonEvent event)
@@ -73,6 +86,13 @@ namespace Gala
 
 			if (n_windows == 1) {
 				var pix = Utils.get_icon_for_window (windows.nth_data (0), 64);
+				if (pix == null) {
+					if (app_fallback_icon_64 != null)
+						pix = app_fallback_icon_64;
+					else
+						return false;
+				}
+
 				Gdk.cairo_set_source_pixbuf (cr, pix, 0, 0);
 				cr.paint ();
 				return false;
@@ -151,6 +171,14 @@ namespace Gala
 			var y = y_offset;
 			for (var i = 0; i < n_windows; i++) {
 				var pix = Utils.get_icon_for_window (windows.nth_data (i), size);
+				if (pix == null) {
+					if (size == 22 && app_fallback_icon_22 != null)
+						pix = app_fallback_icon_22;
+					else if (size == 16 && app_fallback_icon_16 != null)
+						pix = app_fallback_icon_16;
+					else
+						continue;
+				}
 
 				Gdk.cairo_set_source_pixbuf (cr, pix, x, y);
 
