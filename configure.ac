@@ -159,7 +159,7 @@ fi
 # 3.14
 PKG_CHECK_MODULES(MUTTER314, [libmutter >= 3.13], [have_mutter314=yes], [have_mutter314=no])
 if test "x$have_mutter314" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER314, [libmutter >= 3.13.1])
+    PKG_CHECK_MODULES(MUTTER314, [libmutter >= 3.13.2])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER314"
     MUTTER_API="3.14"
 fi

@@ -52,13 +52,21 @@ namespace Gala.Plugins.Zoom
 		}
 
 		void zoom_in (Meta.Display display, Meta.Screen screen,
+#if HAS_MUTTER314
+			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
+#endif
 		{
 			zoom (true);
 		}
 
 		void zoom_out (Meta.Display display, Meta.Screen screen,
+#if HAS_MUTTER314
+			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
+#endif
 		{
 			zoom (false);
 		}

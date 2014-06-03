@@ -99,6 +99,10 @@ namespace Meta {
 #endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_raise_on_click ();
+#if HAS_MUTTER314
+ 		[CCode (cheader_filename = "meta/prefs.h")]
+		public static bool get_show_fallback_app_menu ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned string get_theme ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -107,8 +111,10 @@ namespace Meta {
 		public static bool get_visual_bell ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static GDesktop.VisualBellType get_visual_bell_type ();
+#if !HAS_MUTTER314
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void get_window_binding (string name, uint keysym, Meta.VirtualModifier modifiers);
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static unowned string get_workspace_name (int i);
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -331,6 +337,10 @@ namespace Meta {
 		public void show_tile_preview (Meta.Screen screen, Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
 #endif
 		public void show_window (Meta.Window window, Meta.CompEffect effect);
+#if HAS_MUTTER314
+		public void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y);
+		public void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect);
+#endif
 #if HAS_MUTTER310
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_stage_is_focused")]
 		public static bool stage_is_focused (Meta.Screen screen);
@@ -408,13 +418,11 @@ namespace Meta {
 		public int get_shape_event_base ();
 #if HAS_MUTTER314
 		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Workspace workspace);
-#else
-		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
-#endif
-		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace? workspace);
-#if HAS_MUTTER314
+		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Workspace? workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Workspace workspace, Meta.Window? window, bool backward);
 #else
+		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace);
+		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Screen screen, Meta.Workspace? workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Screen screen, Meta.Workspace workspace, Meta.Window? window, bool backward);
 #endif
 		public unowned X.Display get_xdisplay ();
@@ -541,6 +549,12 @@ namespace Meta {
 #if HAS_MUTTER312
  		[NoWrapper]
 		public virtual void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
+#endif
+#if HAS_MUTTER314
+ 		[NoWrapper]
+		public virtual void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y);
+		[NoWrapper]
+		public virtual void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect);
 #endif
 		[NoWrapper]
 		public virtual void start ();
@@ -740,6 +754,9 @@ namespace Meta {
 		public unowned string get_gtk_application_id ();
 		public unowned string get_gtk_application_object_path ();
 		public unowned string get_gtk_menubar_object_path ();
+#if HAS_MUTTER314
+		public unowned string get_gtk_theme_variant ();
+#endif
 		public unowned string get_gtk_unique_bus_name ();
 		public unowned string get_gtk_window_object_path ();
 		public bool get_icon_geometry (out Meta.Rectangle rect);
@@ -751,7 +768,9 @@ namespace Meta {
 		[Deprecated (since = "3.12")]
 		public Meta.Rectangle get_outer_rect ();
 		public int get_pid ();
+#if !HAS_MUTTER314
 		public unowned Meta.Rectangle? get_rect ();
+#endif
 		public unowned string get_role ();
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
@@ -805,14 +824,18 @@ namespace Meta {
 		public void make_fullscreen ();
 		public void maximize (Meta.MaximizeFlags directions);
 		public void minimize ();
+#if !HAS_MUTTER314
 		public void move (bool user_op, int root_x_nw, int root_y_nw);
+#endif
 		public void move_frame (bool user_op, int root_x_nw, int root_y_nw);
 		public void move_resize_frame (bool user_op, int root_x_nw, int root_y_nw, int w, int h);
 		public void move_to_monitor (int monitor);
 		public void raise ();
 		public bool requested_bypass_compositor ();
 		public bool requested_dont_bypass_compositor ();
+#if !HAS_MUTTER314
 		public void resize (bool user_op, int w, int h);
+#endif
 		public void set_compositor_private (GLib.Object priv);
 		public void set_demands_attention ();
 		public void set_icon_geometry (Meta.Rectangle? rect);
@@ -914,10 +937,12 @@ namespace Meta {
 		public signal void size_changed ();
 #endif
 	}
+#if !HAS_MUTTER314
 	[CCode (cheader_filename = "meta/main.h")]
 	[Compact]
 	public class WindowMenu {
 	}
+#endif
 	[CCode (cheader_filename = "meta/workspace.h", type_id = "meta_workspace_get_type ()")]
 	public class Workspace : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -1049,6 +1074,9 @@ namespace Meta {
 		UNSHADE,
 		UNABOVE,
 		UNSTICK,
+#if HAS_MUTTER314
+		APPMENU,
+#endif
 		LAST
 	}
 	[CCode (cheader_filename = "meta/compositor.h", cprefix = "META_COMP_EFFECT_", type_id = "meta_comp_effect_get_type ()")]
@@ -1061,6 +1089,9 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_CURSOR_", type_id = "meta_cursor_get_type ()")]
 	public enum Cursor {
+#if HAS_MUTTER314
+		NONE,
+#endif
 		DEFAULT,
 		NORTH_RESIZE,
 		SOUTH_RESIZE,
@@ -1145,6 +1176,9 @@ namespace Meta {
 	public enum FrameFlags {
 		ALLOWS_DELETE,
 		ALLOWS_MENU,
+#if HAS_MUTTER314
+		ALLOWS_APPMENU,
+#endif
 		ALLOWS_MINIMIZE,
 		ALLOWS_MAXIMIZE,
 		ALLOWS_VERTICAL_RESIZE,
@@ -1366,6 +1400,7 @@ namespace Meta {
 		VERTICAL
 #endif
 	}
+#if !HAS_MUTTER314
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MENU_OP_", type_id = "meta_menu_op_get_type ()")]
 	[Flags]
 	public enum MenuOp {
@@ -1389,6 +1424,7 @@ namespace Meta {
 		MOVE_DOWN,
 		RECOVER
 	}
+#endif
 	[CCode (cheader_filename = "meta/meta-plugin.h", cprefix = "META_MODAL_", type_id = "meta_modal_options_get_type ()")]
 	[Flags]
 	public enum ModalOptions {
@@ -1512,6 +1548,11 @@ namespace Meta {
 		WAYLAND,
 		X11
 	}
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_WINDOW_MENU_", type_id = "meta_window_menu_type_get_type ()")]
+	public enum WindowMenuType {
+		WM,
+		APP
+	}
 #endif
 	[CCode (cheader_filename = "meta/window.h", cprefix = "META_WINDOW_", type_id = "meta_window_type_get_type ()")]
 	public enum WindowType {
@@ -1546,8 +1587,10 @@ namespace Meta {
 	public delegate void PrefsChangedFunc (Meta.Preference pref);
 	[CCode (cheader_filename = "meta/window.h", instance_pos = 1.9)]
 	public delegate bool WindowForeachFunc (Meta.Window window);
+#if !HAS_MUTTER314
 	[CCode (cheader_filename = "meta/common.h", instance_pos = 6.9)]
 	public delegate void WindowMenuFunc (Meta.WindowMenu menu, X.Display xdisplay, X.Window client_xwindow, uint32 timestamp, Meta.MenuOp op, int workspace);
+#endif
 	[CCode (cheader_filename = "meta/main.h", cname = "META_DEFAULT_ICON_NAME")]
 	public const string DEFAULT_ICON_NAME;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_ICON_HEIGHT")]

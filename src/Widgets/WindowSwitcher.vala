@@ -224,7 +224,11 @@ namespace Gala
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS ||
 				event.get_key_symbol () == Clutter.Key.Right) {
 
+#if HAS_MUTTER314
+				current_window = display.get_tab_next (Meta.TabList.NORMAL,
+#else
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
+#endif
 						screen.get_active_workspace (), current_window, backward);
 				last_time = display.get_current_time_roundtrip ();
 
@@ -233,7 +237,11 @@ namespace Gala
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD ||
 				event.get_key_symbol () == Clutter.Key.Left) {
 
+#if HAS_MUTTER314
+				current_window = display.get_tab_next (Meta.TabList.NORMAL,
+#else
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
+#endif
 						screen.get_active_workspace (), current_window, true);
 				last_time = display.get_current_time_roundtrip ();
 			}
@@ -397,7 +405,11 @@ namespace Gala
 		}
 
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 			X.Event event, Meta.KeyBinding binding)
+#endif
 		{
 			if (visible) {
 				if (window_clones.size != 0)
@@ -407,7 +419,11 @@ namespace Gala
 
 			var workspace = screen.get_active_workspace ();
 
+#if HAS_MUTTER314
+			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+#else
 			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, workspace);
+#endif
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {
