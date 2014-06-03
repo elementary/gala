@@ -65,7 +65,7 @@ namespace Gala
 
 		construct
 		{
-			string icon_name, heading_text, button_text;
+			string icon_name, heading_text, button_text, content_text;
 
 			// the restart type is currently used by the indicator for what is
 			// labelled shutdown because of unity's implementation of it
@@ -74,17 +74,20 @@ namespace Gala
 				case EndSessionDialogType.LOGOUT:
 					icon_name = "system-log-out";
 					heading_text = _("Are you sure you want to Log Out?");
+					content_text = _("This will close all open applications.");
 					button_text = _("Log Out");
 					break;
 				case EndSessionDialogType.SHUTDOWN:
 				case EndSessionDialogType.RESTART:
 					icon_name = "system-shutdown";
 					heading_text = _("Are you sure you want to Shut Down?");
+					content_text = _("This will close all open applications and turn off this device.");
 					button_text = _("Shut Down");
 					break;
 				/*case EndSessionDialogType.RESTART:
 					icon_name = "system-reboot";
 					heading_text = _("Are you sure you want to Restart?");
+					content_text = _("This will close all open applications.");
 					button_text = _("Restart");
 					break;*/
 				default:
@@ -106,7 +109,7 @@ namespace Gala
 			grid.margin_left = grid.margin_right = grid.margin_bottom = 12;
 			grid.attach (new Gtk.Image.from_icon_name (icon_name, Gtk.IconSize.DIALOG), 0, 0, 1, 2);
 			grid.attach (heading, 1, 0, 1, 1);
-			grid.attach (new Gtk.Label (_("This will close any open app and turn off your device.")), 1, 1, 1, 1);
+			grid.attach (new Gtk.Label (content_text), 1, 1, 1, 1);
 
 			// the indicator does not have a separate item for restart, that's
 			// why we show both shutdown and restart for the restart action
