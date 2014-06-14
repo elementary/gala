@@ -12,9 +12,12 @@ namespace Gala
 
 		DragDropAction drag_action;
 		Clone? clone = null;
+		Meta.Rectangle? slot = null;
 
 		Actor prev_parent = null;
 		int prev_index = -1;
+
+		Actor close_button;
 
 		public TiledWindow (Meta.Window window)
 		{
@@ -34,6 +37,9 @@ namespace Gala
 			drag_action.actor_clicked.connect (() => { selected (); });
 
 			add_action (drag_action);
+
+			close_button = Utils.create_close_button ();
+			add_child (close_button);
 		}
 
 		~TiledWindow ()
@@ -55,24 +61,77 @@ namespace Gala
 			}
 
 			clone = new Clone (actor);
-			clone.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
 			add_child (clone);
 
-			set_easing_duration (250);
-			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
-			set_position (actor.x, actor.y);
+			var outer_rect = window.get_outer_rect ();
 
-			request_reposition ();
+			set_position (outer_rect.x, outer_rect.y);
+			set_size (outer_rect.width, outer_rect.height);
 		}
 
 		public void transition_to_original_state ()
 		{
-			var actor = window.get_compositor_private () as Actor;
+			var outer_rect = window.get_outer_rect ();
 
 			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
 			set_easing_duration (300);
-			set_size (actor.width, actor.height);
-			set_position (actor.x, actor.y);
+
+			set_position (outer_rect.x, outer_rect.y);
+			set_size (outer_rect.width, outer_rect.height);
+		}
+
+		public void take_slot (Meta.Rectangle rect)
+		{
+			slot = rect;
+
+			set_easing_duration (250);
+			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+
+			set_size (rect.width, rect.height);
+			set_position (rect.x, rect.y);
+		}
+
+		public override void allocate (ActorBox box, AllocationFlags flags)
+		{
+			base.allocate (box, flags);
+
+			foreach (var child in get_children ()) {
+				if (child != clone)
+					// child.allocate ({ child.x, child.y, child.x + child.width, child.y + child.height }, flags);
+					child.allocate_preferred_size (flags);
+			}
+
+			if (clone == null)
+				return;
+
+			var actor = window.get_compositor_private () as WindowActor;
+			var input_rect = window.get_input_rect ();
+			var outer_rect = window.get_outer_rect ();
+			var scale_factor = (float)width / outer_rect.width;
+
+			var alloc = ActorBox ();
+			alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
+			                  (input_rect.y - outer_rect.y) * scale_factor);
+			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
+
+			clone.allocate (alloc, flags);
+		}
+
+		public void place_widgets (int dest_width, int dest_height)
+		{
+			Granite.CloseButtonPosition pos;
+			Granite.Widgets.Utils.get_default_close_button_position (out pos);
+
+			close_button.y = 0;
+
+			switch (pos) {
+				case Granite.CloseButtonPosition.RIGHT:
+					close_button.x = dest_width;
+					break;
+				case Granite.CloseButtonPosition.LEFT:
+					close_button.x = 0;
+					break;
+			}
 		}
 
 		void unmanaged ()
@@ -115,8 +174,13 @@ namespace Gala
 			if (!(destination is IconGroup))
 				return;
 
-			var scale = hovered ? 0.2 : 0.4;
-			var opacity = hovered ? 100 : 255;
+			var icon_group = destination as IconGroup;
+
+			if (icon_group.workspace == window.get_workspace ())
+				return;
+
+			var scale = hovered ? 0.1 : 0.4;
+			var opacity = hovered ? 50 : 255;
 			var mode = hovered ? AnimationMode.EASE_IN_OUT_BACK : AnimationMode.EASE_OUT_ELASTIC;
 
 			save_easing_state ();
@@ -129,6 +193,12 @@ namespace Gala
 			set_opacity (opacity);
 
 			restore_easing_state ();
+
+			if (hovered) {
+				icon_group.add_window (window, false, true);
+			} else {
+				icon_group.remove_window (window);
+			}
 		}
 
 		void drag_end (Actor destination)
@@ -279,8 +349,8 @@ namespace Gala
 
 			foreach (var tilable in result) {
 				var window = (TiledWindow)tilable.id;
-				window.set_position (tilable.rect.x, tilable.rect.y);
-				window.set_size (tilable.rect.width, tilable.rect.height);
+				window.take_slot (tilable.rect);
+				window.place_widgets (tilable.rect.width, tilable.rect.height);
 			}
 		}
 

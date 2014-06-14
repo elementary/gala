@@ -24,6 +24,8 @@ namespace Gala
 		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		static uint cache_clear_timeout = 0;
 
+		static Gdk.Pixbuf? close_pixbuf = null;
+
 		static construct
 		{
 			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
@@ -72,7 +74,7 @@ namespace Gala
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size)
+		public static Gdk.Pixbuf? get_icon_for_window (Meta.Window window, int size)
 		{
 			Gdk.Pixbuf? result = null;
 
@@ -218,6 +220,49 @@ namespace Gala
 				Gdk.beep ();
 			else
 				screen.get_display ().get_compositor ().flash_screen (screen);
+		}
+
+		/**
+		 * @return the close button pixbuf or null if it failed to load
+		 */
+		public static Gdk.Pixbuf? get_close_button_pixbuf ()
+		{
+			if (close_pixbuf == null) {
+				try {
+					close_pixbuf = new Gdk.Pixbuf.from_file (Config.PKGDATADIR + "/close.png");
+				} catch (Error e) {
+					warning (e.message);
+					return null;
+				}
+			}
+
+			return close_pixbuf;
+		}
+
+		/**
+		 * Creates a new reactive ClutterActor at 28x28 with the close pixbuf
+		 * @return The close button actor
+		 */
+		public static GtkClutter.Texture create_close_button ()
+		{
+			var texture = new GtkClutter.Texture ();
+			var pixbuf = get_close_button_pixbuf ();
+
+			texture.reactive = true;
+			texture.set_size (28, 28);
+
+			if (pixbuf != null) {
+				try {
+					texture.set_from_pixbuf (pixbuf);
+				} catch (Error e) {}
+			} else {
+				// we'll just make this red so there's at least something as an 
+				// indicator that loading failed. Should never happen and this
+				// works as good as some weird fallback-image-failed-to-load pixbuf
+				texture.background_color = { 255, 0, 0, 255 };
+			}
+
+			return texture;
 		}
 
 		/**

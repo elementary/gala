@@ -22,6 +22,7 @@ namespace Gala
 			reactive = true;
 
 			workspaces = new Actor ();
+			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new Actor ();
 			icon_groups.layout_manager = new BoxLayout ();
@@ -35,7 +36,7 @@ namespace Gala
 
 			screen.workspace_added.connect (add_workspace);
 			screen.workspace_removed.connect (remove_workspace);
-			screen.workspace_switched.connect ((from, to, direction) => {
+			screen.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
 		}
@@ -53,29 +54,25 @@ namespace Gala
 			return false;
 		}
 
-		void update_positions (bool animate = false, bool closing = false)
+		void update_positions (bool animate = false)
 		{
-			float x = 0;
-			WorkspaceClone? active = null;
 			var active_index = screen.get_active_workspace ().index ();
+			var active_x = 0.0f;
 
 			foreach (var child in workspaces.get_children ()) {
 				var workspace_clone = child as WorkspaceClone;
 				var index = workspace_clone.workspace.index ();
+				var dest_x = index * (workspace_clone.width - 150);
 
 				if (index == active_index)
-					active = workspace_clone;
+					active_x = dest_x;
 
-				workspace_clone.x = index * (workspace_clone.width - 150);
+				workspace_clone.set_easing_duration (animate ? 200 : 0);
+				workspace_clone.x = dest_x;
 			}
 
-			if (active != null) {
-				var dest_x = -active.x;
-				if (animate)
-					workspaces.animate (AnimationMode.EASE_OUT_QUAD, 300, x: dest_x);
-				else
-					workspaces.x = dest_x;
-			}
+			workspaces.set_easing_duration (animate ? 300 : 0);
+			workspaces.x = -active_x;
 		}
 
 		void add_workspace (int num)
@@ -88,6 +85,9 @@ namespace Gala
 			icon_groups.insert_child_at_index (workspace.icon_group, num);
 
 			update_positions ();
+
+			if (opened)
+				workspace.open ();
 		}
 
 		void remove_workspace (int num)
@@ -111,10 +111,20 @@ namespace Gala
 
 			workspace.window_selected.disconnect (window_selected);
 			workspace.selected.disconnect (activate_workspace);
-			workspace.icon_group.destroy ();
+
+			workspace.icon_group.set_easing_duration (200);
+			workspace.icon_group.set_easing_mode (AnimationMode.LINEAR);
+			workspace.icon_group.opacity = 0;
+			var transition = workspace.icon_group.get_transition ("opacity");
+			if (transition != null)
+				transition.completed.connect (() => {
+					workspace.icon_group.destroy ();
+				});
+			else
+				workspace.icon_group.destroy ();
 			workspace.destroy ();
 
-			update_positions ();
+			update_positions (opened);
 		}
 
 		void activate_workspace (WorkspaceClone clone, bool close_view)
@@ -228,10 +238,10 @@ namespace Gala
 		/**
 		 * checks if val1 is about the same as val2 with a threshold of 2 by default
 		 */
-		private bool about_same (float val1, float val2, float threshold = 2.0f)
+		/*private bool about_same (float val1, float val2, float threshold = 2.0f)
 		{
 			return Math.fabsf (val1 - val2) <= threshold;
-		}
+		}*/
 	}
 }
 

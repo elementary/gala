@@ -90,6 +90,8 @@ namespace Gala
 		public signal void window_selected (Meta.Window window);
 		public signal void selected (bool close_view);
 
+		bool opened = false;
+
 		uint hover_activate_timeout = 0;
 
 		public WorkspaceClone (Meta.Workspace workspace, WindowManager wm)
@@ -171,8 +173,7 @@ namespace Gala
 
 		private void remove_window (Meta.Window window)
 		{
-			icon_group.remove_window (window);
-			// TODO ?
+			icon_group.remove_window (window, opened);
 		}
 
 		private void shrink_rectangle (ref Meta.Rectangle rect, int amount)
@@ -202,9 +203,10 @@ namespace Gala
 			};
 			shrink_rectangle (ref area, 32);
 
-			icon_group.clear ();
+			opened = true;
 
 			// TODO this can be optimized
+			icon_group.clear ();
 			window_container.destroy_all_children ();
 			window_container.padding_top = TOP_OFFSET;
 			window_container.padding_left =
@@ -226,6 +228,8 @@ namespace Gala
 
 		public void close ()
 		{
+			opened = false;
+
 			background.animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f);
 
 			window_container.transition_to_original_state ();

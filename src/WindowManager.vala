@@ -29,6 +29,8 @@ namespace Gala
 		public Meta.BackgroundGroup background_group { get; protected set; }
 		public HashTable<int,int> window_stacking_order { get; protected set; }
 
+		public WorkspaceManager workspace_manager { get; private set; }
+
 		Meta.PluginInfo info;
 
 		WindowSwitcher? winswitcher = null;
@@ -92,8 +94,7 @@ namespace Gala
 			var color = BackgroundSettings.get_default ().primary_color;
 			stage.background_color = Clutter.Color.from_string (color);
 
-			if (Prefs.get_dynamic_workspaces ())
-				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
+			workspace_manager = new WorkspaceManager (screen);
 
 			/* our layer structure, copied from gnome-shell (from bottom to top):
 			 * stage
