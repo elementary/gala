@@ -4,15 +4,14 @@ namespace Gala
 {
 	public class MultitaskingView : Actor
 	{
+		const int HIDING_DURATION = 300;
+
 		public Meta.Screen screen { get; construct set; }
 		public WindowManager wm { get; construct set; }
+		public bool opened { get; private set; default = false; }
 
 		Actor icon_groups;
 		Actor workspaces;
-
-		public bool opened { get; private set; default = false; }
-
-		const int HIDING_DURATION = 300;
 
 		public MultitaskingView (WindowManager wm)
 		{
@@ -43,11 +42,14 @@ namespace Gala
 
 		public override bool scroll_event (ScrollEvent event)
 		{
+			if (event.direction == ScrollDirection.SMOOTH)
+				return false;
+
 			var active_workspace = screen.get_active_workspace ();
 			var new_workspace = active_workspace.get_neighbor (
-					event.direction == ScrollDirection.LEFT ||
-					event.direction == ScrollDirection.UP ?
-						Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+					event.direction == ScrollDirection.UP || event.direction == ScrollDirection.LEFT ?
+					Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+
 			if (active_workspace != new_workspace)
 				new_workspace.activate (screen.get_display ().get_current_time ());
 
