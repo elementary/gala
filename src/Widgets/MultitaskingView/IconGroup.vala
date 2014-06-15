@@ -4,12 +4,6 @@ namespace Gala
 {
 	class WindowIcon : Actor
 	{
-		static Gdk.Pixbuf? app_fallback_icon_64 = null;
-		static Gdk.Pixbuf? app_fallback_icon_22 = null;
-		static Gdk.Pixbuf? app_fallback_icon_16 = null;
-		static bool fallback_attempted_loading = false;
-		static const string FALLBACK_ICON = "application-default-icon";
-
 		public Meta.Window window { get; construct; }
 
 		int _icon_size;
@@ -82,17 +76,6 @@ namespace Gala
 			set_pivot_point (0.5f, 0.5f);
 			set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
 			set_easing_duration (800);
-
-			if (!fallback_attempted_loading) {
-				fallback_attempted_loading = true;
-				try {
-					app_fallback_icon_64 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 64, 0);
-					app_fallback_icon_22 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 22, 0);
-					app_fallback_icon_16 = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, 16, 0);
-				} catch (Error e) {
-					warning (e.message);
-				}
-			}
 		}
 
 		public void place (float x, float y, int size)
@@ -118,25 +101,9 @@ namespace Gala
 			new_icon.opacity = 0;
 
 			var pixbuf = Utils.get_icon_for_window (window, icon_size);
-			if (pixbuf == null) {
-				switch (icon_size) {
-					case 16:
-						pixbuf = app_fallback_icon_16;
-						break;
-					case 22:
-						pixbuf = app_fallback_icon_22;
-						break;
-					case 64:
-						pixbuf = app_fallback_icon_64;
-						break;
-				}
-			}
-
-			if (pixbuf != null) {
-				try {
-					new_icon.set_from_pixbuf (pixbuf);
-				} catch (Error e) {}
-			}
+			try {
+				new_icon.set_from_pixbuf (pixbuf);
+			} catch (Error e) {}
 
 			add_child (new_icon);
 

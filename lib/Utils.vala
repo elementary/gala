@@ -74,7 +74,7 @@ namespace Gala
 		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
-		public static Gdk.Pixbuf? get_icon_for_window (Meta.Window window, int size)
+		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size)
 		{
 			Gdk.Pixbuf? result = null;
 
@@ -85,9 +85,6 @@ namespace Gala
 				return result;
 
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-			if (app == null)
-				return null;
-
 			result = get_icon_for_application (app, size);
 
 			xid_pixbuf_cache.set (xid_key, result);
