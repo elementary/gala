@@ -31,6 +31,8 @@ namespace Gala
 
 		public WorkspaceManager workspace_manager { get; private set; }
 
+		public bool block_keybindings_in_modal { get; set; default = true; }
+
 		Meta.PluginInfo info;
 
 		WindowSwitcher? winswitcher = null;
@@ -1090,9 +1092,7 @@ namespace Gala
 
 		public override bool keybinding_filter (Meta.KeyBinding binding)
 		{
-			// for now we'll just block all keybindings if we're in modal mode,
-			// do something useful with this later
-			return modal_count > 0;
+			return block_keybindings_in_modal && modal_count > 0;
 		}
 
 		public override unowned Meta.PluginInfo? plugin_info ()

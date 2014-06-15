@@ -1,4 +1,5 @@
 using Clutter;
+using Meta;
 
 namespace Gala
 {
@@ -38,6 +39,12 @@ namespace Gala
 			screen.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
+		}
+
+		public override void key_focus_out ()
+		{
+			if (opened)
+				toggle ();
 		}
 
 		public override bool scroll_event (ScrollEvent event)
@@ -141,10 +148,35 @@ namespace Gala
 
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
-			if (event.keyval == Clutter.Key.Escape)
-				toggle ();
+			switch (event.keyval) {
+				case Clutter.Key.Escape:
+					if (opened)
+						toggle ();
+					break;
+				case Clutter.Key.Down:
+					select_window (MotionDirection.DOWN);
+					break;
+				case Clutter.Key.Up:
+					select_window (MotionDirection.UP);
+					break;
+				case Clutter.Key.Left:
+					select_window (MotionDirection.LEFT);
+					break;
+				case Clutter.Key.Right:
+					select_window (MotionDirection.RIGHT);
+					break;
+			}
 
 			return false;
+		}
+
+		void select_window (MotionDirection direction)
+		{
+			foreach (var child in workspaces.get_children ()) {
+				var workspace_clone = child as WorkspaceClone;
+				if (workspace_clone.workspace == screen.get_active_workspace ())
+					workspace_clone.window_container.select_next_window (direction);
+			}
 		}
 
 		void window_selected (Meta.Window window)
@@ -165,6 +197,7 @@ namespace Gala
 
 			if (opening) {
 				wm.begin_modal ();
+				wm.block_keybindings_in_modal = false;
 
 				wm.background_group.hide ();
 				wm.window_group.hide ();
@@ -206,6 +239,7 @@ namespace Gala
 					wm.window_group.show ();
 					wm.top_window_group.show ();
 
+					wm.block_keybindings_in_modal = true;
 					wm.end_modal ();
 
 					return false;

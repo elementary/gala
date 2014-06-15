@@ -6,20 +6,39 @@ namespace Gala
 	public class TiledWindow : Actor
 	{
 		const int WINDOW_ICON_SIZE = 64;
+		const int ACTIVE_SHAPE_SIZE = 12;
 
 		public signal void selected ();
 		public signal void request_reposition ();
 
 		public Meta.Window window { get; construct; }
+		public Meta.Rectangle? slot { get; private set; default = null; }
+
+		bool _active = false;
+		public bool active {
+			get {
+				return _active;
+			}
+			set {
+				_active = value;
+
+				active_shape.save_easing_state ();
+				active_shape.set_easing_duration (200);
+
+				active_shape.opacity = _active ? 255 : 0;
+
+				active_shape.restore_easing_state ();
+			}
+		}
 
 		DragDropAction drag_action;
 		Clone? clone = null;
-		Meta.Rectangle? slot = null;
 
 		Actor prev_parent = null;
 		int prev_index = -1;
 
 		Actor close_button;
+		Actor active_shape;
 		GtkClutter.Texture window_icon;
 
 		public TiledWindow (Meta.Window window)
@@ -27,8 +46,6 @@ namespace Gala
 			Object (window: window);
 
 			reactive = true;
-
-			load_clone ();
 
 			window.unmanaged.connect (unmanaged);
 
@@ -73,8 +90,15 @@ namespace Gala
 				window_icon.set_from_pixbuf (Utils.get_icon_for_window (window, WINDOW_ICON_SIZE));
 			} catch (Error e) {}
 
+			active_shape = new Clutter.Actor ();
+			active_shape.background_color = { 255, 255, 255, 200 };
+			active_shape.opacity = 0;
+
+			add_child (active_shape);
 			add_child (window_icon);
 			add_child (close_button);
+
+			load_clone ();
 		}
 
 		~TiledWindow ()
@@ -97,6 +121,10 @@ namespace Gala
 
 			clone = new Clone (actor);
 			add_child (clone);
+
+			set_child_below_sibling (active_shape, clone);
+			set_child_above_sibling (close_button, clone);
+			set_child_above_sibling (window_icon, clone);
 
 			var outer_rect = window.get_outer_rect ();
 
@@ -135,9 +163,17 @@ namespace Gala
 			base.allocate (box, flags);
 
 			foreach (var child in get_children ()) {
-				if (child != clone)
+				if (child != clone && child != active_shape)
 					child.allocate_preferred_size (flags);
 			}
+
+			ActorBox shape_alloc = {
+				-ACTIVE_SHAPE_SIZE,
+				-ACTIVE_SHAPE_SIZE,
+				box.get_width () + ACTIVE_SHAPE_SIZE,
+				box.get_height () + ACTIVE_SHAPE_SIZE
+			};
+			active_shape.allocate (shape_alloc, flags);
 
 			if (clone == null)
 				return;
@@ -314,6 +350,8 @@ namespace Gala
 			}
 		}
 
+		TiledWindow? current_window = null;
+
 		public TiledWorkspaceContainer (HashTable<int,int> stacking_order)
 		{
 			_stacking_order = stacking_order;
@@ -400,13 +438,79 @@ namespace Gala
 				(int)height - padding_top - padding_bottom
 			};
 
-			var result = InternalUtils.calculate_grid_placement (area, windows);
+			var window_positions = InternalUtils.calculate_grid_placement (area, windows);
 
-			foreach (var tilable in result) {
+			foreach (var tilable in window_positions) {
 				var window = (TiledWindow)tilable.id;
 				window.take_slot (tilable.rect);
 				window.place_widgets (tilable.rect.width, tilable.rect.height);
 			}
+		}
+
+		public void select_next_window (MotionDirection direction)
+		{
+			// TODO
+			return;
+
+			if (get_n_children () < 1)
+				return;
+
+			if (current_window == null) {
+				current_window = get_child_at_index (0) as TiledWindow;
+				return;
+			}
+
+			var current_center = rect_center (current_window.slot);
+
+			TiledWindow? closest = null;
+			var closest_distance = int.MAX;
+			foreach (var window in get_children ()) {
+				if (window == current_window)
+					continue;
+
+				var window_center = rect_center ((window as TiledWindow).slot);
+
+				int window_coord = 0, current_coord = 0;
+				switch (direction) {
+					case MotionDirection.LEFT:
+					case MotionDirection.RIGHT:
+						window_coord = window_center.x;
+						current_coord = current_center.x;
+
+						if ((direction == MotionDirection.LEFT && window_coord > current_coord)
+							|| (direction == MotionDirection.RIGHT && window_coord < current_coord))
+							continue;
+
+						break;
+					case MotionDirection.UP:
+					case MotionDirection.DOWN:
+						window_coord = window_center.y;
+						current_coord = window_center.y;
+
+						if ((direction == MotionDirection.UP && window_coord > current_coord)
+							|| (direction == MotionDirection.DOWN && window_coord < current_coord))
+							continue;
+
+						break;
+				}
+
+				if ((window_coord - current_coord).abs () < closest_distance)
+					closest = window as TiledWindow;
+			}
+
+			if (closest == null)
+				return;
+
+			if (current_window != null)
+				current_window.active = false;
+
+			closest.active = true;
+			current_window = closest;
+		}
+
+		Gdk.Point rect_center (Meta.Rectangle rect)
+		{
+			return { rect.x + rect.width / 2, rect.y + rect.height / 2 };
 		}
 
 		public void transition_to_original_state ()

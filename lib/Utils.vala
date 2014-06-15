@@ -95,7 +95,7 @@ namespace Gala
 		/**
 		 * returns a pixbuf for this application or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application app, int size)
+		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size)
 		{
 			Gdk.Pixbuf? image = null;
 			bool not_cached = false;

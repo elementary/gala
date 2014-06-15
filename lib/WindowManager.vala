@@ -54,6 +54,10 @@ namespace Gala
 		 * counted from 0 up.
 		 */
 		public abstract HashTable<int,int> window_stacking_order { get; protected set; }
+		/**
+		 * If true all keybindings will be blocked while modal mode is active.
+		 */
+		public abstract bool block_keybindings_in_modal { get; set; default = true; }
 
 		public abstract void begin_modal ();
 		public abstract void end_modal ();
