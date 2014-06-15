@@ -66,8 +66,10 @@ namespace Gala
 		/**
 		 * The source has been clicked, but the movement was not larger than
 		 * the drag threshold. Useful if the source is also activable.
+		 *
+		 * @param button The button which was pressed
 		 */
-		public signal void actor_clicked ();
+		public signal void actor_clicked (uint32 button);
 
 		/**
 		 * The type of the action
@@ -151,8 +153,10 @@ namespace Gala
 
 		bool source_clicked (Clutter.ButtonEvent event)
 		{
-			if (event.button != 1)
+			if (event.button != 1) {
+				actor_clicked (event.button);
 				return false;
+			}
 
 			actor.get_stage ().captured_event.connect (follow_move);
 			clicked = true;
@@ -194,7 +198,7 @@ namespace Gala
 
 						// release has happened within bounds of actor
 						if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-							actor_clicked ();
+							actor_clicked (event.get_button ());
 						}
 
 						actor.get_stage ().captured_event.disconnect (follow_move);

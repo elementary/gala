@@ -5,6 +5,8 @@ namespace Gala
 {
 	public class TiledWindow : Actor
 	{
+		const int WINDOW_ICON_SIZE = 64;
+
 		public signal void selected ();
 		public signal void request_reposition ();
 
@@ -18,6 +20,7 @@ namespace Gala
 		int prev_index = -1;
 
 		Actor close_button;
+		GtkClutter.Texture window_icon;
 
 		public TiledWindow (Meta.Window window)
 		{
@@ -34,11 +37,43 @@ namespace Gala
 			drag_action.destination_crossed.connect (drag_destination_crossed);
 			drag_action.drag_end.connect (drag_end);
 			drag_action.drag_canceled.connect (drag_canceled);
-			drag_action.actor_clicked.connect (() => { selected (); });
+			drag_action.actor_clicked.connect ((button) => {
+				switch (button) {
+					case 1:
+						selected ();
+						break;
+					case 2:
+						close_window ();
+						break;
+				}
+			});
 
 			add_action (drag_action);
 
 			close_button = Utils.create_close_button ();
+			close_button.opacity = 0;
+			close_button.set_easing_duration (200);
+			close_button.button_press_event.connect (() => {
+				close_window ();
+				return true;
+			});
+			enter_event.connect (() => {
+				close_button.opacity = 255;
+				return false;
+			});
+			leave_event.connect (() => {
+				close_button.opacity = 0;
+				return false;
+			});
+
+			window_icon = new GtkClutter.Texture ();
+			window_icon.opacity = 0;
+			window_icon.set_easing_duration (300);
+			try {
+				window_icon.set_from_pixbuf (Utils.get_icon_for_window (window, WINDOW_ICON_SIZE));
+			} catch (Error e) {}
+
+			add_child (window_icon);
 			add_child (close_button);
 		}
 
@@ -78,6 +113,8 @@ namespace Gala
 
 			set_position (outer_rect.x, outer_rect.y);
 			set_size (outer_rect.width, outer_rect.height);
+
+			window_icon.opacity = 0;
 		}
 
 		public void take_slot (Meta.Rectangle rect)
@@ -89,6 +126,8 @@ namespace Gala
 
 			set_size (rect.width, rect.height);
 			set_position (rect.x, rect.y);
+
+			window_icon.opacity = 255;
 		}
 
 		public override void allocate (ActorBox box, AllocationFlags flags)
@@ -97,7 +136,6 @@ namespace Gala
 
 			foreach (var child in get_children ()) {
 				if (child != clone)
-					// child.allocate ({ child.x, child.y, child.x + child.width, child.y + child.height }, flags);
 					child.allocate_preferred_size (flags);
 			}
 
@@ -122,16 +160,33 @@ namespace Gala
 			Granite.CloseButtonPosition pos;
 			Granite.Widgets.Utils.get_default_close_button_position (out pos);
 
-			close_button.y = 0;
+			close_button.save_easing_state ();
+			close_button.set_easing_duration (0);
+
+			close_button.y = -close_button.height * 0.25f;
 
 			switch (pos) {
 				case Granite.CloseButtonPosition.RIGHT:
-					close_button.x = dest_width;
+					close_button.x = dest_width + close_button.width * 0.25f;
 					break;
 				case Granite.CloseButtonPosition.LEFT:
-					close_button.x = 0;
+					close_button.x = -close_button.width * 0.25f;
 					break;
 			}
+			close_button.restore_easing_state ();
+
+			window_icon.save_easing_state ();
+			window_icon.set_easing_duration (0);
+
+			window_icon.x = (dest_width - WINDOW_ICON_SIZE) / 2;
+			window_icon.y = dest_height - WINDOW_ICON_SIZE * 0.75f;
+
+			window_icon.restore_easing_state ();
+		}
+
+		void close_window ()
+		{
+			window.delete (window.get_screen ().get_display ().get_current_time ());
 		}
 
 		void unmanaged ()

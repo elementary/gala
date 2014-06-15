@@ -26,7 +26,6 @@ namespace Gala
 				set_size (_icon_size, _icon_size);
 
 				fade_new_icon ();
-				//get_transition ("size").completed.connect (fade_new_icon);
 			}
 		}
 
@@ -132,8 +131,12 @@ namespace Gala
 						break;
 				}
 			}
-			if (pixbuf != null)
-				new_icon.set_from_pixbuf (pixbuf);
+
+			if (pixbuf != null) {
+				try {
+					new_icon.set_from_pixbuf (pixbuf);
+				} catch (Error e) {}
+			}
 
 			add_child (new_icon);
 
