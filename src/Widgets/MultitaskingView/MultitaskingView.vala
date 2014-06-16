@@ -43,7 +43,7 @@ namespace Gala
 
 		public override void key_focus_out ()
 		{
-			if (opened)
+			if (opened && !contains (get_stage ().key_focus))
 				toggle ();
 		}
 

@@ -106,13 +106,13 @@ namespace Gala
 			window.unmanaged.disconnect (unmanaged);
 		}
 
-		public void load_clone ()
+		public void load_clone (bool was_waiting = false)
 		{
 			var actor = window.get_compositor_private () as WindowActor;
 			if (actor == null) {
 				Idle.add (() => {
 					if (window.get_compositor_private () != null)
-						load_clone ();
+						load_clone (true);
 					return false;
 				});
 
@@ -130,6 +130,14 @@ namespace Gala
 
 			set_position (outer_rect.x, outer_rect.y);
 			set_size (outer_rect.width, outer_rect.height);
+
+			// if we were waiting the view was most probably already opened when our window
+			// finally got available. So we fade-in and make sure we took the took place
+			if (was_waiting) {
+				opacity = 0;
+				take_slot (slot);
+				opacity = 255;
+			}
 		}
 
 		public void transition_to_original_state ()
