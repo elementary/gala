@@ -81,14 +81,25 @@ namespace Gala
 		const int TOP_OFFSET = 20;
 		const int HOVER_ACTIVATE_DELAY = 400;
 
+		public signal void window_selected (Meta.Window window);
+		public signal void selected (bool close_view);
+
 		public WindowManager wm { get; construct; }
 		public Meta.Workspace workspace { get; construct set; }
 		public BackgroundManager background { get; private set; }
 		public IconGroup icon_group { get; private set; }
 		public TiledWorkspaceContainer window_container { get; private set; }
 
-		public signal void window_selected (Meta.Window window);
-		public signal void selected (bool close_view);
+		bool _active = false;
+		public bool active {
+			get {
+				return _active;
+			}
+			set {
+				_active = value;
+				icon_group.active = value;
+			}
+		}
 
 		bool opened = false;
 

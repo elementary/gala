@@ -145,9 +145,43 @@ namespace Gala
 
 		public signal void selected ();
 
+		uint8 _backdrop_opacity = 0;
+		public uint8 backdrop_opacity {
+			get {
+				return _backdrop_opacity;
+			}
+			set {
+				_backdrop_opacity = value;
+				queue_redraw ();
+			}
+		}
+		bool _active = false;
+		public bool active {
+			get {
+				return _active;
+			}
+			set {
+				if (_active == value)
+					return;
+
+				if (get_transition ("backdrop-opacity") != null)
+					remove_transition ("backdrop-opacity");
+
+				_active = value;
+
+				var transition = new PropertyTransition ("backdrop-opacity");
+				transition.duration = 300;
+				transition.remove_on_complete = true;
+				transition.set_from_value (_active ? 0 : 60);
+				transition.set_to_value (_active ? 60 : 0);
+
+				add_transition ("backdrop-opacity", transition);
+			}
+		}
 		public Meta.Workspace workspace { get; construct; }
 
 		List<string> windows;
+		Cogl.Material dummy_material;
 
 		int current_icon_size = -1;
 
@@ -165,6 +199,34 @@ namespace Gala
 			canvas.set_size (SIZE, SIZE);
 			canvas.draw.connect (draw);
 			content = canvas;
+
+			dummy_material = new Cogl.Material ();
+		}
+
+		public override void paint ()
+		{
+			var width = 100;
+			var x = (SIZE - width) / 2;
+			var y = -10;
+			var height = height + 120;
+
+			var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
+			var color_bottom = Cogl.Color.from_4ub (backdrop_opacity,
+				backdrop_opacity, backdrop_opacity, backdrop_opacity);
+
+			Cogl.TextureVertex vertices[4];
+			vertices[0] = { x, y, 0, 0, 0, color_top };
+			vertices[1] = { x, y + height, 0, 0, 1, color_bottom };
+			vertices[2] = { x + width, y + height, 0, 1, 1, color_bottom };
+			vertices[3] = { x + width, y, 0, 1, 0, color_top };
+
+			// for some reason cogl will try mapping the textures of the children
+			// to the cogl_polygon call. We can fix this and force it to use our
+			// color by setting a different material with no properties.
+			Cogl.set_source (dummy_material);
+			Cogl.polygon (vertices, true);
+
+			base.paint ();
 		}
 
 		public override bool button_release_event (ButtonEvent event)

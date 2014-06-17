@@ -73,8 +73,12 @@ namespace Gala
 				var index = workspace_clone.workspace.index ();
 				var dest_x = index * (workspace_clone.width - 150);
 
-				if (index == active_index)
+				if (index == active_index) {
 					active_x = dest_x;
+					workspace_clone.active = true;
+				} else {
+					workspace_clone.active = false;
+				}
 
 				workspace_clone.set_easing_duration (animate ? 200 : 0);
 				workspace_clone.x = dest_x;
