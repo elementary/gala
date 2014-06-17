@@ -41,7 +41,7 @@ namespace Gala
 		Actor active_shape;
 		GtkClutter.Texture window_icon;
 
-		public TiledWindow (Meta.Window window)
+		public TiledWindow (Meta.Window window, bool take_slot_when_loaded = false)
 		{
 			Object (window: window);
 
@@ -129,8 +129,10 @@ namespace Gala
 			set_size (outer_rect.width, outer_rect.height);
 
 			// if we were waiting the view was most probably already opened when our window
-			// finally got available. So we fade-in and make sure we took the took place
-			if (was_waiting) {
+			// finally got available. So we fade-in and make sure we took the took place.
+			// If the slot is not available however, the view was probably closed while this
+			// window was opened, so we stay at our old place.
+			if (was_waiting && slot != null) {
 				opacity = 0;
 				take_slot (slot);
 				opacity = 255;
@@ -355,6 +357,26 @@ namespace Gala
 			}
 		}
 
+		bool _opened;
+		public bool opened {
+			get {
+				return _opened;
+			}
+			set {
+				if (value == _opened)
+					return;
+
+				_opened = value;
+
+				if (_opened) {
+					restack ();
+					reflow ();
+				} else {
+					transition_to_original_state ();
+				}
+			}
+		}
+
 		TiledWindow? current_window = null;
 
 		public TiledWorkspaceContainer (HashTable<int,int> stacking_order)
@@ -426,6 +448,9 @@ namespace Gala
 
 		public void reflow ()
 		{
+			if (!opened)
+				return;
+
 			var windows = new List<InternalUtils.TilableWindow?> ();
 			foreach (var child in get_children ()) {
 				var window = child as TiledWindow;
@@ -518,7 +543,7 @@ namespace Gala
 			return { rect.x + rect.width / 2, rect.y + rect.height / 2 };
 		}
 
-		public void transition_to_original_state ()
+		void transition_to_original_state ()
 		{
 			foreach (var child in get_children ()) {
 				var clone = child as TiledWindow;

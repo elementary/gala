@@ -161,19 +161,29 @@ namespace Gala
 			workspace.window_removed.connect (remove_window);
 
 			screen.window_entered_monitor.connect ((monitor, window) => {
-				if (monitor == screen.get_primary_monitor ()
-					&& window.get_workspace () == workspace)
-					add_window (window);
+				add_window (window);
 			});
 			workspace.window_added.connect (add_window);
 
 			add_child (background);
 			add_child (window_container);
+
+			// add existing windows
+			var windows = workspace.list_windows ();
+			foreach (var window in windows) {
+				if (window.window_type == Meta.WindowType.NORMAL
+					&& window.get_monitor () == screen.get_primary_monitor ()) {
+					window_container.add_window (window);
+					icon_group.add_window (window, true);
+				}
+			}
 		}
 
 		private void add_window (Meta.Window window)
 		{
-			if (window.window_type != Meta.WindowType.NORMAL)
+			if (window.window_type != Meta.WindowType.NORMAL
+				|| window.get_workspace () != workspace
+				|| window.get_monitor () != window.get_screen ().get_primary_monitor ())
 				return;
 
 			foreach (var child in window_container.get_children ())
@@ -218,25 +228,13 @@ namespace Gala
 
 			opened = true;
 
-			// TODO this can be optimized
-			icon_group.clear ();
-			window_container.destroy_all_children ();
 			window_container.padding_top = TOP_OFFSET;
 			window_container.padding_left =
 				window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
 			window_container.padding_bottom = BOTTOM_OFFSET;
 
-			var windows = workspace.list_windows ();
-			foreach (var window in windows) {
-				if (window.window_type == Meta.WindowType.NORMAL) {
-					window_container.add_window (window);
-					icon_group.add_window (window, true);
-				}
-			}
-
 			icon_group.redraw ();
-			window_container.restack ();
-			window_container.reflow ();
+			window_container.opened = true;
 		}
 
 		public void close ()
@@ -245,7 +243,7 @@ namespace Gala
 
 			background.animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f);
 
-			window_container.transition_to_original_state ();
+			window_container.opened = false;
 		}
 
 		~Workspace ()
