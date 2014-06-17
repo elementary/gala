@@ -391,6 +391,10 @@ namespace Gala
 				_opened = value;
 
 				if (_opened) {
+					// hide the highlight when opened
+					if (_current_window != null)
+						_current_window.active = false;
+
 					restack ();
 					reflow ();
 				} else {
@@ -399,7 +403,20 @@ namespace Gala
 			}
 		}
 
-		TiledWindow? current_window = null;
+		TiledWindow? _current_window = null;
+		public Window? current_window {
+			get {
+				return _current_window != null ? _current_window.window : null;
+			}
+			set {
+				foreach (var child in get_children ()) {
+					if ((child as TiledWindow).window == value) {
+						_current_window = child as TiledWindow;
+						break;
+					}
+				}
+			}
+		}
 
 		public TiledWorkspaceContainer (HashTable<int,int> stacking_order)
 		{
@@ -501,68 +518,101 @@ namespace Gala
 
 		public void select_next_window (MotionDirection direction)
 		{
-			// TODO
-			return;
-
 			if (get_n_children () < 1)
 				return;
 
-			if (current_window == null) {
-				current_window = get_child_at_index (0) as TiledWindow;
+			if (_current_window == null) {
+				_current_window = get_child_at_index (0) as TiledWindow;
 				return;
 			}
 
-			var current_center = rect_center (current_window.slot);
+			var current_rect = _current_window.slot;
 
 			TiledWindow? closest = null;
-			var closest_distance = int.MAX;
 			foreach (var window in get_children ()) {
-				if (window == current_window)
+				if (window == _current_window)
 					continue;
 
-				var window_center = rect_center ((window as TiledWindow).slot);
+				var window_rect = (window as TiledWindow).slot;
 
-				int window_coord = 0, current_coord = 0;
 				switch (direction) {
 					case MotionDirection.LEFT:
-					case MotionDirection.RIGHT:
-						window_coord = window_center.x;
-						current_coord = current_center.x;
-
-						if ((direction == MotionDirection.LEFT && window_coord > current_coord)
-							|| (direction == MotionDirection.RIGHT && window_coord < current_coord))
+						if (window_rect.x > current_rect.x)
 							continue;
 
+						// test for vertical intersection
+						if (!(window_rect.y + window_rect.height < current_rect.y
+							|| window_rect.y > current_rect.y + current_rect.height)) {
+
+							if (closest != null
+								&& closest.slot.x < window_rect.x)
+								closest = window as TiledWindow;
+							else
+								closest = window as TiledWindow;
+						}
+						break;
+					case MotionDirection.RIGHT:
+						if (window_rect.x < current_rect.x)
+							continue;
+
+						// test for vertical intersection
+						if (!(window_rect.y + window_rect.height < current_rect.y
+							|| window_rect.y > current_rect.y + current_rect.height)) {
+
+							if (closest != null
+								&& closest.slot.x > window_rect.x)
+								closest = window as TiledWindow;
+							else
+								closest = window as TiledWindow;
+						}
 						break;
 					case MotionDirection.UP:
-					case MotionDirection.DOWN:
-						window_coord = window_center.y;
-						current_coord = window_center.y;
-
-						if ((direction == MotionDirection.UP && window_coord > current_coord)
-							|| (direction == MotionDirection.DOWN && window_coord < current_coord))
+						if (window_rect.y > current_rect.y)
 							continue;
 
+						// test for horizontal intersection
+						if (!(window_rect.x + window_rect.width < current_rect.x
+							|| window_rect.x > current_rect.x + current_rect.width)) {
+
+							if (closest != null
+								&& closest.slot.y > window_rect.y)
+								closest = window as TiledWindow;
+							else
+								closest = window as TiledWindow;
+						}
+						break;
+					case MotionDirection.DOWN:
+						if (window_rect.y < current_rect.y)
+							continue;
+
+						// test for horizontal intersection
+						if (!(window_rect.x + window_rect.width < current_rect.x
+							|| window_rect.x > current_rect.x + current_rect.width)) {
+
+							if (closest != null
+								&& closest.slot.y < window_rect.y)
+								closest = window as TiledWindow;
+							else
+								closest = window as TiledWindow;
+						}
 						break;
 				}
-
-				if ((window_coord - current_coord).abs () < closest_distance)
-					closest = window as TiledWindow;
 			}
 
 			if (closest == null)
 				return;
 
-			if (current_window != null)
-				current_window.active = false;
+			if (_current_window != null)
+				_current_window.active = false;
 
 			closest.active = true;
-			current_window = closest;
+			_current_window = closest;
 		}
 
-		Gdk.Point rect_center (Meta.Rectangle rect)
+		public void activate_selected_window ()
 		{
-			return { rect.x + rect.width / 2, rect.y + rect.height / 2 };
+			if (_current_window != null)
+				_current_window.selected ();
 		}
 
 		void transition_to_original_state ()

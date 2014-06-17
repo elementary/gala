@@ -169,6 +169,10 @@ namespace Gala
 				case Clutter.Key.Right:
 					select_window (MotionDirection.RIGHT);
 					break;
+				case Clutter.Key.Return:
+				case Clutter.Key.KP_Enter:
+					get_active_workspace_clone ().window_container.activate_selected_window ();
+					break;
 			}
 
 			return false;
@@ -176,11 +180,21 @@ namespace Gala
 
 		void select_window (MotionDirection direction)
 		{
+			get_active_workspace_clone ().window_container.select_next_window (direction);
+		}
+
+		WorkspaceClone get_active_workspace_clone ()
+		{
 			foreach (var child in workspaces.get_children ()) {
 				var workspace_clone = child as WorkspaceClone;
-				if (workspace_clone.workspace == screen.get_active_workspace ())
-					workspace_clone.window_container.select_next_window (direction);
+				if (workspace_clone.workspace == screen.get_active_workspace ()) {
+					return workspace_clone;
+				}
 			}
+
+			assert_not_reached ();
+
+			return null;
 		}
 
 		void window_selected (Meta.Window window)

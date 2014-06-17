@@ -234,7 +234,10 @@ namespace Gala
 			window_container.padding_bottom = BOTTOM_OFFSET;
 
 			icon_group.redraw ();
+
 			window_container.opened = true;
+			if (screen.get_active_workspace () == workspace)
+				window_container.current_window = display.get_focus_window ();
 		}
 
 		public void close ()
