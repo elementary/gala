@@ -160,7 +160,8 @@ namespace Gala
 			workspace.window_removed.connect (remove_window);
 
 			screen.window_entered_monitor.connect ((monitor, window) => {
-				if (monitor == screen.get_primary_monitor ())
+				if (monitor == screen.get_primary_monitor ()
+					&& window.get_workspace () == workspace)
 					add_window (window);
 			});
 			workspace.window_added.connect (add_window);

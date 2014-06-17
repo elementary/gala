@@ -83,12 +83,9 @@ namespace Gala
 				return false;
 			});
 
-			window_icon = new GtkClutter.Texture ();
+			window_icon = new Utils.WindowIcon (window, WINDOW_ICON_SIZE);
 			window_icon.opacity = 0;
 			window_icon.set_easing_duration (300);
-			try {
-				window_icon.set_from_pixbuf (Utils.get_icon_for_window (window, WINDOW_ICON_SIZE));
-			} catch (Error e) {}
 
 			active_shape = new Clutter.Actor ();
 			active_shape.background_color = { 255, 255, 255, 200 };

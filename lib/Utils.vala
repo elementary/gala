@@ -72,20 +72,88 @@ namespace Gala
 		}
 
 		/**
+		 * Creates a new GtkClutterTexture with an icon for the window at the given size.
+		 * This is recommended way to grab an icon for a window as this method will make
+		 * sure the icon is updated if it becomes available at a later point.
+		 */
+		public class WindowIcon : GtkClutter.Texture
+		{
+			public Meta.Window window { get; construct; }
+			public int icon_size { get; construct; }
+
+			Bamf.Matcher matcher;
+			uint32 xid;
+			bool loaded = false;
+
+			public WindowIcon (Meta.Window window, int icon_size)
+			{
+				Object (window: window, icon_size: icon_size);
+
+				width = icon_size;
+				height = icon_size;
+
+				xid = (uint32)window.get_xwindow ();
+				matcher = Bamf.Matcher.get_default ();
+
+				// new windows often reach mutter earlier than bamf, that's why
+				// we have to wait until the next window opens and hope that it's
+				// ours so we can get a proper icon instead of the default fallback.
+				var app = matcher.get_application_for_xid (xid);
+				if (app == null)
+					matcher.view_opened.connect (retry_load);
+				else
+					loaded = true;
+
+				update_texture (true);
+			}
+
+			~WindowIcon ()
+			{
+				if (!loaded)
+					matcher.view_opened.disconnect (retry_load);
+
+				matcher = null;
+			}
+
+			void retry_load (Bamf.View view)
+			{
+				var app = matcher.get_application_for_xid (xid);
+
+				// retry only once
+				loaded = true;
+				matcher.view_opened.disconnect (retry_load);
+
+				if (app == null)
+					return;
+
+				update_texture (false);
+			}
+
+			void update_texture (bool initial)
+			{
+				var pixbuf = get_icon_for_window (window, icon_size, !initial);
+
+				try {
+					set_from_pixbuf (pixbuf);
+				} catch (Error e) {}
+			}
+		}
+
+		/**
 		 * returns a pixbuf for the application of this window or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size)
+		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size, bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? result = null;
 
 			var xid = (uint32)window.get_xwindow ();
 			var xid_key = "%u::%i".printf (xid, size);
 
-			if ((result = xid_pixbuf_cache.get (xid_key)) != null)
+			if (!ignore_cache && (result = xid_pixbuf_cache.get (xid_key)) != null)
 				return result;
 
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-			result = get_icon_for_application (app, size);
+			result = get_icon_for_application (app, size, ignore_cache);
 
 			xid_pixbuf_cache.set (xid_key, result);
 
@@ -95,7 +163,8 @@ namespace Gala
 		/**
 		 * returns a pixbuf for this application or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size)
+		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
+			bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? image = null;
 			bool not_cached = false;
@@ -109,7 +178,7 @@ namespace Gala
 					if (appinfo != null) {
 						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
 						icon_key = "%s::%i".printf (icon, size);
-						if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
+						if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
 							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
 							not_cached = true;
 						}

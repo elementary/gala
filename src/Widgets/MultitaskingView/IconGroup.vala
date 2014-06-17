@@ -66,8 +66,8 @@ namespace Gala
 
 		bool initial = true;
 
-		GtkClutter.Texture? icon = null;
-		GtkClutter.Texture? old_icon = null;
+		Utils.WindowIcon? icon = null;
+		Utils.WindowIcon? old_icon = null;
 
 		public WindowIcon (Meta.Window window)
 		{
@@ -96,14 +96,9 @@ namespace Gala
 
 		void fade_new_icon ()
 		{
-			var new_icon = new GtkClutter.Texture ();
+			var new_icon = new Utils.WindowIcon (window, icon_size);
 			new_icon.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
 			new_icon.opacity = 0;
-
-			var pixbuf = Utils.get_icon_for_window (window, icon_size);
-			try {
-				new_icon.set_from_pixbuf (pixbuf);
-			} catch (Error e) {}
 
 			add_child (new_icon);
 
