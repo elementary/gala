@@ -36,12 +36,13 @@ namespace Gala
 
 		Actor prev_parent = null;
 		int prev_index = -1;
+		ulong check_confirm_dialog_cb = 0;
 
 		Actor close_button;
 		Actor active_shape;
 		GtkClutter.Texture window_icon;
 
-		public TiledWindow (Meta.Window window, bool take_slot_when_loaded = false)
+		public TiledWindow (Meta.Window window)
 		{
 			Object (window: window);
 
@@ -229,7 +230,22 @@ namespace Gala
 
 		void close_window ()
 		{
+			check_confirm_dialog_cb = window.get_workspace ().window_added.connect (check_confirm_dialog);
+
 			window.delete (window.get_screen ().get_display ().get_current_time ());
+		}
+
+		void check_confirm_dialog (Meta.Window new_window)
+		{
+			if (new_window.get_transient_for () == window) {
+				Idle.add (() => {
+					selected ();
+					return false;
+				});
+
+				SignalHandler.disconnect (window.get_workspace (), check_confirm_dialog_cb);
+				check_confirm_dialog_cb = 0;
+			}
 		}
 
 		void unmanaged ()
@@ -239,6 +255,12 @@ namespace Gala
 
 			if (clone != null)
 				clone.destroy ();
+
+			if (check_confirm_dialog_cb != 0) {
+				SignalHandler.disconnect (window.get_workspace (), check_confirm_dialog_cb);
+				check_confirm_dialog_cb = 0;
+			}
+
 			destroy ();
 		}
 
