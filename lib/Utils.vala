@@ -78,22 +78,23 @@ namespace Gala
 		 */
 		public class WindowIcon : GtkClutter.Texture
 		{
-			public Meta.Window window { get; construct; }
+			public uint32 xid { get; construct; }
 			public int icon_size { get; construct; }
 
-			Bamf.Matcher matcher;
-			uint32 xid;
+			static Bamf.Matcher? matcher = null;
+
 			bool loaded = false;
 
 			public WindowIcon (Meta.Window window, int icon_size)
 			{
-				Object (window: window, icon_size: icon_size);
+				var xid = (uint32)window.get_xwindow ();
+				Object (xid: xid, icon_size: icon_size);
 
 				width = icon_size;
 				height = icon_size;
 
-				xid = (uint32)window.get_xwindow ();
-				matcher = Bamf.Matcher.get_default ();
+				if (matcher == null)
+					matcher = Bamf.Matcher.get_default ();
 
 				// new windows often reach mutter earlier than bamf, that's why
 				// we have to wait until the next window opens and hope that it's
@@ -111,8 +112,6 @@ namespace Gala
 			{
 				if (!loaded)
 					matcher.view_opened.disconnect (retry_load);
-
-				matcher = null;
 			}
 
 			void retry_load (Bamf.View view)
@@ -131,7 +130,7 @@ namespace Gala
 
 			void update_texture (bool initial)
 			{
-				var pixbuf = get_icon_for_window (window, icon_size, !initial);
+				var pixbuf = get_icon_for_xid (xid, icon_size, !initial);
 
 				try {
 					set_from_pixbuf (pixbuf);
@@ -144,9 +143,12 @@ namespace Gala
 		 **/
 		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size, bool ignore_cache = false)
 		{
-			Gdk.Pixbuf? result = null;
+			return get_icon_for_xid ((uint32)window.get_xwindow (), size, ignore_cache);
+		}
 
-			var xid = (uint32)window.get_xwindow ();
+		public static Gdk.Pixbuf get_icon_for_xid (uint32 xid, int size, bool ignore_cache = false)
+		{
+			Gdk.Pixbuf? result = null;
 			var xid_key = "%u::%i".printf (xid, size);
 
 			if (!ignore_cache && (result = xid_pixbuf_cache.get (xid_key)) != null)

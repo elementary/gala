@@ -199,6 +199,8 @@ namespace Gala
 			var primary_monitor = screen.get_primary_monitor ();
 			var monitor = screen.get_monitor_geometry (primary_monitor);
 
+			set_clip (monitor.x, monitor.y, monitor.width, monitor.height);
+
 			if (opening) {
 				wm.begin_modal ();
 				wm.block_keybindings_in_modal = false;

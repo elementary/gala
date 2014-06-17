@@ -2,11 +2,12 @@ using Clutter;
 
 namespace Gala
 {
-	class FramedBackground : BackgroundManager
+	class FramedBackground : Background
 	{
 		public FramedBackground (Meta.Screen screen)
 		{
-			base (screen);
+			base (screen, screen.get_primary_monitor (),
+				BackgroundSettings.get_default ().schema);
 
 			add_effect (new BackgroundShadowEffect (screen));
 		}
@@ -41,15 +42,15 @@ namespace Gala
 			if (bitmap == null) {
 				screen = _screen;
 
-				int screen_width, screen_height;
-				screen.get_size (out screen_width, out screen_height);
+				var primary = screen.get_primary_monitor ();
+				var monitor_geom = screen.get_monitor_geometry (primary);
 
-				width = screen_width + SHADOW_SIZE * 2;
-				height = screen_height + SHADOW_SIZE * 2;
+				width = monitor_geom.width + SHADOW_SIZE * 2;
+				height = monitor_geom.height + SHADOW_SIZE * 2;
 
 				var buffer = new Granite.Drawing.BufferSurface (width, height);
 				buffer.context.rectangle (SHADOW_SIZE - SHADOW_OFFSET, SHADOW_SIZE - SHADOW_OFFSET,
-					screen_width + SHADOW_OFFSET * 2, screen_height + SHADOW_OFFSET * 2);
+					monitor_geom.width + SHADOW_OFFSET * 2, monitor_geom.height + SHADOW_OFFSET * 2);
 				buffer.context.set_source_rgba (0, 0, 0, 0.5);
 				buffer.context.fill ();
 
@@ -86,7 +87,7 @@ namespace Gala
 
 		public WindowManager wm { get; construct; }
 		public Meta.Workspace workspace { get; construct set; }
-		public BackgroundManager background { get; private set; }
+		public Background background { get; private set; }
 		public IconGroup icon_group { get; private set; }
 		public TiledWorkspaceContainer window_container { get; private set; }
 
