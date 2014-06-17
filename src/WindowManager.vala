@@ -428,6 +428,9 @@ namespace Gala
 #else
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 #endif
+			// we assume that while a user is in the modal mode, he won't have a chance
+			// to use an empty workspace anyway, so we have it immediately close.
+			workspace_manager.remove_workspace_immediately = true;
 
 			Meta.Util.disable_unredirect_for_screen (screen);
 		}
@@ -442,6 +445,9 @@ namespace Gala
 
 			var screen = get_screen ();
 			base.end_modal (screen.get_display ().get_current_time ());
+
+			workspace_manager.remove_workspace_immediately = false;
+
 			Meta.Util.enable_unredirect_for_screen (screen);
 		}
 

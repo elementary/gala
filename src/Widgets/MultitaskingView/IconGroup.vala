@@ -267,12 +267,16 @@ namespace Gala
 						w.set_easing_duration (200);
 						w.opacity = 0;
 
-						print ("c\n");
-						w.get_transition ("opacity").completed.connect (() => {
+						var transition = w.get_transition ("opacity");
+						if (transition != null) {
+							transition.completed.connect (() => {
+								w.destroy ();
+								redraw ();
+							});
+						} else {
 							w.destroy ();
-							redraw ();
-						});
-						print ("d\n");
+						}
+
 					} else
 						w.destroy ();
 					break;

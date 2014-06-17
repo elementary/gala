@@ -22,6 +22,12 @@ namespace Gala
 	public class WorkspaceManager : Object
 	{
 		public Screen screen { get; construct; }
+		/**
+		 * While set to true, workspaces that have no windows left will be
+		 * removed immediately. Otherwise they will be kept alive until
+		 * the user switches away from them. Only applies to dynamic workspaces.
+		 */
+		public bool remove_workspace_immediately { get; set; default = false; }
 
 		public WorkspaceManager (Screen screen)
 		{
@@ -102,11 +108,27 @@ namespace Gala
 			if (index < 0)
 				return;
 
+			var is_active_workspace = workspace == screen.get_active_workspace ();
+			var time = screen.get_display ().get_current_time ();
+
 			// remove it right away if it was the active workspace and it's not the very last
-			if (workspace != screen.get_active_workspace ()
+			// or we are requested to immediately remove the workspace anyway
+			if ((!is_active_workspace || remove_workspace_immediately)
 				&& Utils.get_n_windows (workspace) < 1
-				&& index != screen.get_n_workspaces () - 1)
-				screen.remove_workspace (workspace, screen.get_display ().get_current_time ());
+				&& index != screen.get_n_workspaces () - 1) {
+				if (is_active_workspace) {
+					Workspace? next = null;
+
+					next = workspace.get_neighbor (MotionDirection.LEFT);
+					if (next == null)
+						next = screen.get_workspace_by_index (0);
+
+					if (next != null)
+						next.activate (time);
+				}
+
+				screen.remove_workspace (workspace, time);
+			}
 		}
 
 		void prefs_listener (Meta.Preference pref)
