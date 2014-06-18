@@ -20,6 +20,7 @@ namespace Gala
 
 			visible = false;
 			reactive = true;
+			clip_to_allocation = true;
 
 			workspaces = new Actor ();
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -86,6 +87,17 @@ namespace Gala
 
 			workspaces.set_easing_duration (animate ? 300 : 0);
 			workspaces.x = -active_x;
+
+			if (animate) {
+				icon_groups.save_easing_state ();
+				icon_groups.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+				icon_groups.set_easing_duration (200);
+			}
+
+			icon_groups.x = width / 2 - icon_groups.width / 2;
+
+			if (animate)
+				icon_groups.restore_easing_state ();
 		}
 
 		void add_workspace (int num)
@@ -97,7 +109,7 @@ namespace Gala
 			workspaces.insert_child_at_index (workspace, num);
 			icon_groups.insert_child_at_index (workspace.icon_group, num);
 
-			update_positions ();
+			update_positions (opened);
 
 			if (opened)
 				workspace.open ();
@@ -213,7 +225,8 @@ namespace Gala
 			var primary_monitor = screen.get_primary_monitor ();
 			var monitor = screen.get_monitor_geometry (primary_monitor);
 
-			set_clip (monitor.x, monitor.y, monitor.width, monitor.height);
+			set_position (monitor.x, monitor.y);
+			set_size (monitor.width, monitor.height);
 
 			if (opening) {
 				wm.begin_modal ();
@@ -225,7 +238,6 @@ namespace Gala
 				show ();
 				grab_key_focus ();
 
-				icon_groups.x = monitor.width / 2 - icon_groups.width / 2;
 				icon_groups.y = monitor.height - WorkspaceClone.BOTTOM_OFFSET + 20;
 			}
 
