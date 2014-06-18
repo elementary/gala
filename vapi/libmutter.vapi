@@ -330,7 +330,9 @@ namespace Meta {
 		public static unowned Meta.Compositor @new (Meta.Display display);
 		public void queue_frame_drawn (Meta.Window window, bool no_delay_frame);
 		public void remove_window (Meta.Window window);
+#if !HAS_MUTTER314
 		public void set_updates_frozen (Meta.Window window, bool updates_frozen);
+#endif
 #if HAS_MUTTER314
 		public void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
 #elif HAS_MUTTER312
@@ -349,6 +351,7 @@ namespace Meta {
 		public void switch_workspace (Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (uint width, uint height);
 		public void sync_stack (GLib.List<Meta.WindowActor> stack);
+		public void sync_updates_frozen (Meta.Window window);
 #else
 		public void switch_workspace (Meta.Screen screen, Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_screen_size (Meta.Screen screen, uint width, uint height);
@@ -571,10 +574,6 @@ namespace Meta {
 		public bool debug_mode { get; }
 #endif
 	}
-	[CCode (cheader_filename = "meta/main.h")]
-	[Compact]
-	public class ResizePopup {
-	}
 	[CCode (cheader_filename = "meta/screen.h", type_id = "meta_screen_get_type ()")]
 	public class Screen : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -739,6 +738,9 @@ namespace Meta {
 #endif
 		[CCode (array_length_pos = 0.1, array_length_type = "gsize")]
 		public int[] get_all_monitors ();
+#if HAS_MUTTER314
+		public Meta.Rectangle get_buffer_rect ();
+#endif
 		public unowned string get_client_machine ();
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
@@ -760,7 +762,9 @@ namespace Meta {
 		public unowned string get_gtk_unique_bus_name ();
 		public unowned string get_gtk_window_object_path ();
 		public bool get_icon_geometry (out Meta.Rectangle rect);
+#if !HAS_MUTTER314
 		public Meta.Rectangle get_input_rect ();
+#endif
 		public Meta.StackLayer get_layer ();
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
@@ -1597,10 +1601,22 @@ namespace Meta {
 	public const int ICON_HEIGHT;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_ICON_WIDTH")]
 	public const int ICON_WIDTH;
+#if HAS_MUTTER314
+	[CCode (cheader_filename = "meta/main.h", cname = "META_MAJOR_VERSION")]
+	public const int MAJOR_VERSION;
+	[CCode (cheader_filename = "meta/main.h", cname = "META_MICRO_VERSION")]
+	public const int MICRO_VERSION;
+#endif
 	[CCode (cheader_filename = "meta/main.h", cname = "META_MINI_ICON_HEIGHT")]
 	public const int MINI_ICON_HEIGHT;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_MINI_ICON_WIDTH")]
 	public const int MINI_ICON_WIDTH;
+#if HAS_MUTTER314
+	[CCode (cheader_filename = "meta/main.h", cname = "META_MINOR_VERSION")]
+	public const int MINOR_VERSION;
+	[CCode (cheader_filename = "meta/main.h", cname = "META_PLUGIN_API_VERSION")]
+	public const int PLUGIN_API_VERSION;
+#endif
 	[CCode (cheader_filename = "meta/main.h", cname = "META_PRIORITY_BEFORE_REDRAW")]
 	public const int PRIORITY_BEFORE_REDRAW;
 	[CCode (cheader_filename = "meta/main.h", cname = "META_PRIORITY_PREFS_NOTIFY")]
