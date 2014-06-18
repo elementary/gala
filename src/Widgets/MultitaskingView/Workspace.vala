@@ -9,7 +9,10 @@ namespace Gala
 			base (screen, screen.get_primary_monitor (),
 				BackgroundSettings.get_default ().schema);
 
-			add_effect (new BackgroundShadowEffect (screen));
+			var primary = screen.get_primary_monitor ();
+			var monitor_geom = screen.get_monitor_geometry (primary);
+
+			add_effect (new ShadowEffect (monitor_geom.width, monitor_geom.height, 40, 5));
 		}
 
 		public override void paint ()
@@ -23,56 +26,6 @@ namespace Gala
 			Cogl.set_source_color4ub (255, 255, 255, 80);
 			Cogl.Path.rectangle (1, 1, width - 2, height - 2);
 			Cogl.Path.stroke ();
-		}
-	}
-
-	class BackgroundShadowEffect : Effect
-	{
-		static Meta.Screen screen;
-		static Cogl.Texture? bitmap;
-
-		const int SHADOW_SIZE = 40;
-		const int SHADOW_OFFSET = 5;
-
-		static int width;
-		static int height;
-
-		public BackgroundShadowEffect (Meta.Screen _screen)
-		{
-			if (bitmap == null) {
-				screen = _screen;
-
-				var primary = screen.get_primary_monitor ();
-				var monitor_geom = screen.get_monitor_geometry (primary);
-
-				width = monitor_geom.width + SHADOW_SIZE * 2;
-				height = monitor_geom.height + SHADOW_SIZE * 2;
-
-				var buffer = new Granite.Drawing.BufferSurface (width, height);
-				buffer.context.rectangle (SHADOW_SIZE - SHADOW_OFFSET, SHADOW_SIZE - SHADOW_OFFSET,
-					monitor_geom.width + SHADOW_OFFSET * 2, monitor_geom.height + SHADOW_OFFSET * 2);
-				buffer.context.set_source_rgba (0, 0, 0, 0.5);
-				buffer.context.fill ();
-
-				buffer.exponential_blur (20);
-
-				var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-				var cr = new Cairo.Context (surface);
-
-				cr.set_source_surface (buffer.surface, 0, 0);
-				cr.paint ();
-
-				bitmap = new Cogl.Texture.from_data (width, height, 0, Cogl.PixelFormat.BGRA_8888_PRE,
-					Cogl.PixelFormat.ANY, surface.get_stride (), surface.get_data ());
-			}
-		}
-
-		public override void paint (EffectPaintFlags flags)
-		{
-			Cogl.set_source_texture (bitmap);
-			Cogl.rectangle (-SHADOW_SIZE, -SHADOW_SIZE, width - SHADOW_SIZE, height - SHADOW_SIZE);
-
-			actor.continue_paint ();
 		}
 	}
 

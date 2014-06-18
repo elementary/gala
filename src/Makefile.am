@@ -39,6 +39,7 @@ gala_VALASOURCES = \
 	PluginManager.vala \
 	ScreenSaver.vala \
 	Settings.vala \
+	ShadowEffect.vala \
 	TextShadowEffect.vala \
 	WindowManager.vala \
 	WorkspaceManager.vala \

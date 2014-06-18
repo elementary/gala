@@ -117,7 +117,7 @@ namespace Gala
 				return;
 			}
 
-			clone = new Clone (actor);
+			clone = new Clone (actor.get_texture ());
 			add_child (clone);
 
 			set_child_below_sibling (active_shape, clone);
@@ -128,6 +128,8 @@ namespace Gala
 
 			set_position (outer_rect.x, outer_rect.y);
 			set_size (outer_rect.width, outer_rect.height);
+
+			add_effect_with_name ("shadow", new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5));
 
 			// if we were waiting the view was most probably already opened when our window
 			// finally got available. So we fade-in and make sure we took the took place.
@@ -190,6 +192,9 @@ namespace Gala
 			var input_rect = window.get_input_rect ();
 			var outer_rect = window.get_outer_rect ();
 			var scale_factor = (float)width / outer_rect.width;
+
+			var shadow_effect = get_effect ("shadow") as ShadowEffect;
+			shadow_effect.scale_factor = scale_factor;
 
 			var alloc = ActorBox ();
 			alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
@@ -300,7 +305,7 @@ namespace Gala
 				return;
 
 			var scale = hovered ? 0.1 : 0.4;
-			var opacity = hovered ? 50 : 255;
+			var opacity = hovered ? 100 : 255;
 			var mode = hovered ? AnimationMode.EASE_IN_OUT_BACK : AnimationMode.EASE_OUT_ELASTIC;
 
 			save_easing_state ();
