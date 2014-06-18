@@ -450,6 +450,16 @@ namespace Gala
 				reflow ();
 		}
 
+		public void remove_window (Meta.Window window)
+		{
+			foreach (var child in get_children ()) {
+				if ((child as TiledWindow).window == window) {
+					remove_child (child);
+					break;
+				}
+			}
+		}
+
 		void window_selected_cb (TiledWindow tiled)
 		{
 			window_selected (tiled.window);

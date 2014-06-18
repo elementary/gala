@@ -196,6 +196,7 @@ namespace Gala
 
 		private void remove_window (Meta.Window window)
 		{
+			window_container.remove_window (window);
 			icon_group.remove_window (window, opened);
 		}
 
