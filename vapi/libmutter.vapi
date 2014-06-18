@@ -100,7 +100,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_raise_on_click ();
 #if HAS_MUTTER314
- 		[CCode (cheader_filename = "meta/prefs.h")]
+		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_show_fallback_app_menu ();
 #endif
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -550,11 +550,11 @@ namespace Meta {
 		public bool running ();
 #endif
 #if HAS_MUTTER312
- 		[NoWrapper]
+		[NoWrapper]
 		public virtual void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
 #endif
 #if HAS_MUTTER314
- 		[NoWrapper]
+		[NoWrapper]
 		public virtual void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y);
 		[NoWrapper]
 		public virtual void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect);
@@ -671,7 +671,13 @@ namespace Meta {
 #if !HAS_MUTTER312
 		public void set_pixmap (X.Pixmap pixmap);
 #endif
+#if HAS_MUTTER312
+		public bool update_area (int x, int y, int width, int height);
+#elif HAS_MUTTER310
+		public bool update_area (int x, int y, int width, int height, Cairo.Region? unobscured_region);
+#else
 		public void update_area (int x, int y, int width, int height);
+#endif
 	}
 	[CCode (cheader_filename = "meta/theme.h")]
 	[Compact]
