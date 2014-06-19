@@ -77,7 +77,7 @@ namespace Gala
 			var prev_workspace = screen.get_workspace_by_index (from);
 			if (Utils.get_n_windows (prev_workspace) < 1
 				&& from != screen.get_n_workspaces () - 1) {
-				screen.remove_workspace (prev_workspace, screen.get_display ().get_current_time ());
+				remove_workspace (prev_workspace);
 			}
 		}
 
@@ -109,25 +109,13 @@ namespace Gala
 				return;
 
 			var is_active_workspace = workspace == screen.get_active_workspace ();
-			var time = screen.get_display ().get_current_time ();
 
 			// remove it right away if it was the active workspace and it's not the very last
 			// or we are requested to immediately remove the workspace anyway
 			if ((!is_active_workspace || remove_workspace_immediately)
 				&& Utils.get_n_windows (workspace) < 1
 				&& index != screen.get_n_workspaces () - 1) {
-				if (is_active_workspace) {
-					Workspace? next = null;
-
-					next = workspace.get_neighbor (MotionDirection.LEFT);
-					if (next == null)
-						next = screen.get_workspace_by_index (0);
-
-					if (next != null)
-						next.activate (time);
-				}
-
-				screen.remove_workspace (workspace, time);
+				remove_workspace (workspace);
 			}
 		}
 
@@ -160,6 +148,30 @@ namespace Gala
 		void append_workspace ()
 		{
 			screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+		}
+
+		/**
+		 * Make sure we switch to a different workspace and remove the given one
+		 *
+		 * @param workspace The workspace to remove
+		 */
+		void remove_workspace (Workspace workspace)
+		{
+			var time = screen.get_display ().get_current_time ();
+
+			if (workspace == screen.get_active_workspace ()) {
+				Workspace? next = null;
+
+				next = workspace.get_neighbor (MotionDirection.LEFT);
+				// if it's the first one we may have another one to the right
+				if (next == workspace || next == null)
+					next = workspace.get_neighbor (MotionDirection.RIGHT);
+
+				if (next != null)
+					next.activate (time);
+			}
+
+			screen.remove_workspace (workspace, time);
 		}
 	}
 }
