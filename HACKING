@@ -37,13 +37,13 @@ release. Browse it online and look for other branches at:
 ====== Build the code ======
 
 Prepare the source and compile:
-    mkdir build
-    cd build/
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+    ./autogen.sh --prefix=/usr
     make
 
 Run Gala:
-    ./gala --replace # from build/
+    ./src/gala --replace
+
+For more detailed instructions, please see the INSTALL file.
 
 ===== Debugging Code ======
 
