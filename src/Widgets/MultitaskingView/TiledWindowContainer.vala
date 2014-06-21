@@ -136,11 +136,9 @@ namespace Gala
 			set_child_above_sibling (close_button, clone);
 			set_child_above_sibling (window_icon, clone);
 
+			transition_to_original_state (false);
+
 			var outer_rect = window.get_outer_rect ();
-
-			set_position (outer_rect.x, outer_rect.y);
-			set_size (outer_rect.width, outer_rect.height);
-
 			add_effect_with_name ("shadow", new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5));
 #if HAS_MUTTER312
 			window.size_changed.connect (update_shadow_size);
@@ -156,6 +154,8 @@ namespace Gala
 				opacity = 0;
 				take_slot (slot);
 				opacity = 255;
+
+				request_reposition ();
 			}
 		}
 
@@ -171,6 +171,9 @@ namespace Gala
 
 				shadow_update_timeout = 0;
 
+				// if there was a size change it makes sense to recalculate the positions
+				request_reposition ();
+
 				return false;
 			});
 		}
@@ -179,10 +182,16 @@ namespace Gala
 		{
 			var outer_rect = window.get_outer_rect ();
 
+			float offset_x = 0, offset_y = 0;
+
+			var parent = get_parent ();
+			if (parent != null)
+				parent.get_transformed_position (out offset_x, out offset_y);
+
 			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
 			set_easing_duration (animate ? 300 : 0);
 
-			set_position (outer_rect.x, outer_rect.y);
+			set_position (outer_rect.x - offset_x, outer_rect.y - offset_y);
 			set_size (outer_rect.width, outer_rect.height);
 
 			window_icon.opacity = 0;
@@ -334,7 +343,8 @@ namespace Gala
 
 			var icon_group = destination as IconGroup;
 
-			if (icon_group.workspace == window.get_workspace ())
+			if (icon_group.workspace == window.get_workspace ()
+				&& window.get_monitor () == window.get_screen ().get_primary_monitor ())
 				return;
 
 			var scale = hovered ? 0.1 : 0.4;
@@ -367,15 +377,30 @@ namespace Gala
 				workspace = (destination as IconGroup).workspace;
 			} else if (destination is FramedBackground) {
 				workspace = (destination.get_parent () as WorkspaceClone).workspace;
+			} else if (destination is MonitorClone) {
+				window.move_to_monitor ((destination as MonitorClone).monitor);
+				unmanaged ();
+				return;
+			}
+
+			bool did_move = false;
+
+			var primary = window.get_screen ().get_primary_monitor ();
+			if (window.get_monitor () != primary) {
+				window.move_to_monitor (primary);
+				did_move = true;
 			}
 
 			if (workspace != null && workspace != window.get_workspace ()) {
 				window.change_workspace (workspace);
+				did_move = true;
+			}
+
+			if (did_move)
 				unmanaged ();
-			} else {
+			else
 				// if we're dropped at the place where we came from interpret as cancel
 				drag_canceled ();
-			}
 		}
 
 		void drag_canceled ()
@@ -401,10 +426,10 @@ namespace Gala
 	{
 		public signal void window_selected (Meta.Window window);
 
-		public int padding_top { get; set; }
-		public int padding_left { get; set; }
-		public int padding_right { get; set; }
-		public int padding_bottom { get; set; }
+		public int padding_top { get; set; default = 12; }
+		public int padding_left { get; set; default = 12; }
+		public int padding_right { get; set; default = 12; }
+		public int padding_bottom { get; set; default = 12; }
 
 		HashTable<int,int> _stacking_order;
 		public HashTable<int,int> stacking_order {
@@ -502,6 +527,8 @@ namespace Gala
 					break;
 				}
 			}
+
+			reflow ();
 		}
 
 		void window_selected_cb (TiledWindow tiled)

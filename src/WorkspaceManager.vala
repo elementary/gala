@@ -29,9 +29,13 @@ namespace Gala
 		 */
 		public bool remove_workspace_immediately { get; set; default = false; }
 
+		Gee.LinkedList<Workspace> workspaces_marked_removed;
+
 		public WorkspaceManager (Screen screen)
 		{
 			Object (screen: screen);
+
+			workspaces_marked_removed = new Gee.LinkedList<Workspace> ();
 
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
@@ -41,8 +45,29 @@ namespace Gala
 
 			Prefs.add_listener (prefs_listener);
 
-			screen.workspace_added.connect (workspace_added);
 			screen.workspace_switched.connect_after (workspace_switched);
+			screen.workspace_added.connect (workspace_added);
+			screen.workspace_removed.connect_after (() => {
+				unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
+
+				var it = workspaces_marked_removed.iterator ();
+				while (it.next ()) {
+					if (existing_workspaces.index (it.@get ()) < 0)
+						it.remove ();
+				}
+			});
+
+			screen.window_left_monitor.connect ((monitor, window) => {
+				if (InternalUtils.workspaces_only_on_primary ()
+					&& monitor == screen.get_primary_monitor ())
+					window_removed (window.get_workspace (), window);
+			});
+
+			screen.window_entered_monitor.connect ((monitor, window) => {
+				if (InternalUtils.workspaces_only_on_primary ()
+					&& monitor == screen.get_primary_monitor ())
+					window_added (window.get_workspace (), window);
+			});
 
 			// make sure the last workspace has no windows on it
 			if (Prefs.get_dynamic_workspaces ()
@@ -125,23 +150,6 @@ namespace Gala
 				// if the last workspace has a window, we need to append a new workspace
 				if (Utils.get_n_windows (screen.get_workspace_by_index (screen.get_n_workspaces () - 1)) > 0)
 					append_workspace ();
-
-			} else if ((pref == Preference.DYNAMIC_WORKSPACES
-				|| pref == Preference.NUM_WORKSPACES)
-				&& !Prefs.get_dynamic_workspaces ()) {
-
-				var time = screen.get_display ().get_current_time ();
-				var n_workspaces = screen.get_n_workspaces ();
-
-				/* TODO check if this is still needed
-				// only need to listen for the case when workspaces were removed.
-				// Any other case will be caught by the workspace_added signal.
-				// For some reason workspace_removed is not emitted, when changing the workspace number
-				if (Prefs.get_num_workspaces () < n_workspaces) {
-					for (int i = Prefs.get_num_workspaces () - 1; i < n_workspaces; i++) {
-						screen.remove_workspace (screen.get_workspace_by_index (i), time);
-					}
-				}*/
 			}
 		}
 
@@ -170,6 +178,13 @@ namespace Gala
 				if (next != null)
 					next.activate (time);
 			}
+
+			// workspace has already been removed
+			if (workspace in workspaces_marked_removed) {
+				return;
+			}
+
+			workspaces_marked_removed.add (workspace);
 
 			screen.remove_workspace (workspace, time);
 		}

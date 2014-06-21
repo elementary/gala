@@ -23,6 +23,12 @@ namespace Gala
 {
 	public class InternalUtils
 	{
+		public static bool workspaces_only_on_primary ()
+		{
+			return Prefs.get_dynamic_workspaces ()
+				&& Prefs.get_workspaces_only_on_primary ();
+		}
+
 		/*
 		 * Reload shadow settings
 		 */

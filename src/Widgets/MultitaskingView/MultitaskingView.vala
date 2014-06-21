@@ -11,6 +11,8 @@ namespace Gala
 		public WindowManager wm { get; construct set; }
 		public bool opened { get; private set; default = false; }
 
+		List<MonitorClone> window_containers_monitors;
+
 		Actor icon_groups;
 		Actor workspaces;
 
@@ -40,6 +42,67 @@ namespace Gala
 			screen.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
+
+			window_containers_monitors = new List<MonitorClone> ();
+			update_monitors ();
+			screen.monitors_changed.connect (update_monitors);
+
+			Prefs.add_listener ((pref) => {
+				if (pref == Preference.WORKSPACES_ONLY_ON_PRIMARY) {
+					update_monitors ();
+					return;
+				}
+
+				if (Prefs.get_dynamic_workspaces () ||
+					(pref != Preference.DYNAMIC_WORKSPACES && pref != Preference.NUM_WORKSPACES))
+					return;
+
+				Idle.add (() => {
+					unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
+
+					foreach (var child in workspaces.get_children ()) {
+						var workspace_clone = child as WorkspaceClone;
+						if (existing_workspaces.index (workspace_clone.workspace) < 0) {
+							workspace_clone.window_selected.disconnect (window_selected);
+							workspace_clone.selected.disconnect (activate_workspace);
+							workspace_clone.icon_group.destroy ();
+							workspace_clone.destroy ();
+						}
+					}
+
+					update_monitors ();
+					update_positions ();
+
+					return false;
+				});
+			});
+		}
+
+		void update_monitors ()
+		{
+			foreach (var monitor_clone in window_containers_monitors)
+				monitor_clone.destroy ();
+
+			var primary = screen.get_primary_monitor ();
+
+			if (InternalUtils.workspaces_only_on_primary ()) {
+				for (var monitor = 0; monitor < screen.get_n_monitors (); monitor++) {
+					if (monitor == primary)
+						continue;
+
+					var monitor_clone = new MonitorClone (wm, screen, monitor);
+					monitor_clone.window_selected.connect (window_selected);
+					monitor_clone.visible = opened;
+
+					window_containers_monitors.append (monitor_clone);
+					wm.ui_group.add_child (monitor_clone);
+				}
+			}
+
+			var primary_geometry = screen.get_monitor_geometry (primary);
+
+			set_position (primary_geometry.x, primary_geometry.y);
+			set_size (primary_geometry.width, primary_geometry.height);
 		}
 
 		public override void key_focus_out ()
@@ -221,12 +284,13 @@ namespace Gala
 
 			var opening = opened;
 
-			unowned List<Meta.WindowActor> windows = Meta.Compositor.get_window_actors (screen);
-			var primary_monitor = screen.get_primary_monitor ();
-			var monitor = screen.get_monitor_geometry (primary_monitor);
-
-			set_position (monitor.x, monitor.y);
-			set_size (monitor.width, monitor.height);
+			foreach (var container in window_containers_monitors) {
+				if (opening) {
+					container.visible = true;
+					container.open ();
+				} else
+					container.close ();
+			}
 
 			if (opening) {
 				wm.begin_modal ();
@@ -238,7 +302,7 @@ namespace Gala
 				show ();
 				grab_key_focus ();
 
-				icon_groups.y = monitor.height - WorkspaceClone.BOTTOM_OFFSET + 20;
+				icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET + 20;
 			}
 
 			// find active workspace clone and raise it, so there are no overlaps while transitioning
@@ -265,6 +329,10 @@ namespace Gala
 
 			if (!opening) {
 				Timeout.add (290, () => {
+					foreach (var container in window_containers_monitors) {
+						container.visible = false;
+					}
+
 					hide ();
 
 					wm.background_group.show ();
