@@ -350,7 +350,12 @@ namespace Gala
 						InternalUtils.set_input_area (screen, InputArea.NONE);
 						return;
 					}
-				} catch (IOError e) { warning (e.message); }
+				} catch (Error e) {
+					// the screensaver object apparently won't be null even though
+					// it is unavailable. This error will be thrown however, so we
+					// can just ignore it, because if it is thrown, the screensaver
+					// is unavailable.
+				}
 			}
 
 			if (modal_count > 0)
