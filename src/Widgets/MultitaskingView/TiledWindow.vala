@@ -336,8 +336,9 @@ namespace Gala
 			prev_parent = get_parent ();
 			prev_index = prev_parent.get_children ().index (this);
 
+			var stage = get_stage ();
 			prev_parent.remove_child (this);
-			get_stage ().add_child (this);
+			stage.add_child (this);
 
 			save_easing_state ();
 			set_easing_duration (200);
