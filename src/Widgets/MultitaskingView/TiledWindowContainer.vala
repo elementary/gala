@@ -37,6 +37,7 @@ namespace Gala
 		Actor prev_parent = null;
 		int prev_index = -1;
 		ulong check_confirm_dialog_cb = 0;
+		uint shadow_update_timeout = 0;
 
 		Actor close_button;
 		Actor active_shape;
@@ -102,6 +103,17 @@ namespace Gala
 		~TiledWindow ()
 		{
 			window.unmanaged.disconnect (unmanaged);
+
+			if (shadow_update_timeout != 0)
+				Source.remove (shadow_update_timeout);
+
+#if HAS_MUTTER312
+			window.size_changed.disconnect (update_shadow_size);
+#else
+			var actor = window.get_compositor_private () as WindowActor;
+			if (actor != null)
+				actor.size_changed.disconnect (update_shadow_size);
+#endif
 		}
 
 		public void load_clone (bool was_waiting = false)
@@ -130,6 +142,11 @@ namespace Gala
 			set_size (outer_rect.width, outer_rect.height);
 
 			add_effect_with_name ("shadow", new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5));
+#if HAS_MUTTER312
+			window.size_changed.connect (update_shadow_size);
+#else
+			actor.size_changed.connect (update_shadow_size);
+#endif
 
 			// if we were waiting the view was most probably already opened when our window
 			// finally got available. So we fade-in and make sure we took the took place.
@@ -142,12 +159,28 @@ namespace Gala
 			}
 		}
 
-		public void transition_to_original_state ()
+		void update_shadow_size ()
+		{
+			if (shadow_update_timeout != 0)
+				Source.remove (shadow_update_timeout);
+
+			shadow_update_timeout = Timeout.add (500, () => {
+				var rect = window.get_outer_rect ();
+				var effect = get_effect ("shadow") as ShadowEffect;
+				effect.update_size (rect.width, rect.height);
+
+				shadow_update_timeout = 0;
+
+				return false;
+			});
+		}
+
+		public void transition_to_original_state (bool animate = true)
 		{
 			var outer_rect = window.get_outer_rect ();
 
 			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
-			set_easing_duration (300);
+			set_easing_duration (animate ? 300 : 0);
 
 			set_position (outer_rect.x, outer_rect.y);
 			set_size (outer_rect.width, outer_rect.height);
@@ -399,6 +432,12 @@ namespace Gala
 					// hide the highlight when opened
 					if (_current_window != null)
 						_current_window.active = false;
+
+					// make sure our windows are where they belong in case they were moved
+					// while were closed.
+					foreach (var window in get_children ()) {
+						(window as TiledWindow).transition_to_original_state (false);
+					}
 
 					restack ();
 					reflow ();
