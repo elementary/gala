@@ -1,10 +1,28 @@
+//
+//  Copyright (C) 2014 Tom Beckmann
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
 using Clutter;
+using Meta;
 
 namespace Gala
 {
 	class FramedBackground : Background
 	{
-		public FramedBackground (Meta.Screen screen)
+		public FramedBackground (Screen screen)
 		{
 			base (screen, screen.get_primary_monitor (),
 				BackgroundSettings.get_default ().schema);
@@ -35,14 +53,14 @@ namespace Gala
 		const int TOP_OFFSET = 20;
 		const int HOVER_ACTIVATE_DELAY = 400;
 
-		public signal void window_selected (Meta.Window window);
+		public signal void window_selected (Window window);
 		public signal void selected (bool close_view);
 
 		public WindowManager wm { get; construct; }
-		public Meta.Workspace workspace { get; construct set; }
+		public Workspace workspace { get; construct set; }
 		public Background background { get; private set; }
 		public IconGroup icon_group { get; private set; }
-		public TiledWorkspaceContainer window_container { get; private set; }
+		public TiledWindowContainer window_container { get; private set; }
 
 		bool _active = false;
 		public bool active {
@@ -59,7 +77,7 @@ namespace Gala
 
 		uint hover_activate_timeout = 0;
 
-		public WorkspaceClone (Meta.Workspace workspace, WindowManager wm)
+		public WorkspaceClone (Workspace workspace, WindowManager wm)
 		{
 			Object (workspace: workspace, wm: wm);
 
@@ -73,7 +91,7 @@ namespace Gala
 				return false;
 			});
 
-			window_container = new TiledWorkspaceContainer (wm.window_stacking_order);
+			window_container = new TiledWindowContainer (wm.window_stacking_order);
 			window_container.window_selected.connect ((w) => { window_selected (w); });
 			window_container.width = monitor_geometry.width;
 			window_container.height = monitor_geometry.height;
@@ -124,7 +142,7 @@ namespace Gala
 			// add existing windows
 			var windows = workspace.list_windows ();
 			foreach (var window in windows) {
-				if (window.window_type == Meta.WindowType.NORMAL
+				if (window.window_type == WindowType.NORMAL
 					&& window.get_monitor () == screen.get_primary_monitor ()) {
 					window_container.add_window (window);
 					icon_group.add_window (window, true);
@@ -132,9 +150,9 @@ namespace Gala
 			}
 		}
 
-		private void add_window (Meta.Window window)
+		private void add_window (Window window)
 		{
-			if (window.window_type != Meta.WindowType.NORMAL
+			if (window.window_type != WindowType.NORMAL
 				|| window.get_workspace () != workspace
 				|| window.get_monitor () != window.get_screen ().get_primary_monitor ())
 				return;
@@ -147,7 +165,7 @@ namespace Gala
 			icon_group.add_window (window);
 		}
 
-		private void remove_window (Meta.Window window)
+		private void remove_window (Window window)
 		{
 			window_container.remove_window (window);
 			icon_group.remove_window (window, opened);
@@ -170,7 +188,12 @@ namespace Gala
 			var scale = (float)(monitor.height - TOP_OFFSET - BOTTOM_OFFSET) / monitor.height;
 			var pivotY = TOP_OFFSET / (monitor.height - monitor.height * scale);
 			background.set_pivot_point (0.5f, pivotY);
-			background.animate (AnimationMode.EASE_OUT_QUAD, 250, scale_x: scale, scale_y: scale);
+
+			background.save_easing_state ();
+			background.set_easing_duration (250);
+			background.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			background.set_scale (scale, scale);
+			background.restore_easing_state ();
 
 			Meta.Rectangle area = {
 				(int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
@@ -198,7 +221,11 @@ namespace Gala
 		{
 			opened = false;
 
-			background.animate (AnimationMode.EASE_IN_OUT_CUBIC, 300, scale_x: 1.0f, scale_y: 1.0f);
+			background.save_easing_state ();
+			background.set_easing_duration (300);
+			background.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
+			background.set_scale (1, 1);
+			background.restore_easing_state ();
 
 			window_container.opened = false;
 		}

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2012-2014 Tom Beckmann, Rico Tzschichholz
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ namespace Gala
 {
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
-
 		public Clutter.Actor ui_group { get; protected set; }
 		public Clutter.Stage stage { get; protected set; }
 		public Clutter.Actor window_group { get; protected set; }
@@ -261,8 +260,8 @@ namespace Gala
 
 			var i = 0;
 			foreach (var window in Compositor.get_window_actors (get_screen ())) {
-				var seq = window.get_meta_window ().get_stable_sequence ();
-				window_stacking_order.set ((int)window.get_meta_window ().get_stable_sequence (), i++);
+				var seq = (int)window.get_meta_window ().get_stable_sequence ();
+				window_stacking_order.set (seq, i++);
 			}
 
 			windows_restacked ();
@@ -564,8 +563,7 @@ namespace Gala
 			get_screen ().get_size (out width, out height);
 
 			Rectangle icon = {};
-			//FIXME don't use the icon geometry, since it seems broken right now
-			if (false && actor.get_meta_window ().get_icon_geometry (out icon)) {
+			if (actor.get_meta_window ().get_icon_geometry (out icon)) {
 
 				float scale_x  = (float)icon.width  / actor.width;
 				float scale_y  = (float)icon.height / actor.height;
@@ -1044,7 +1042,6 @@ namespace Gala
 				return;
 
 			var screen = get_screen ();
-			var display = screen.get_display ();
 
 			for (var i=0;i<win.length ();i++) {
 				var window = win.nth_data (i);
