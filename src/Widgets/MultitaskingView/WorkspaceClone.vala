@@ -86,7 +86,7 @@ namespace Gala
 		{
 			opened = false;
 
-			var screen = workspace.get_screen ();
+			unowned Screen screen = workspace.get_screen ();
 			var monitor_geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 
 			background = new FramedBackground (workspace.get_screen ());
@@ -130,16 +130,10 @@ namespace Gala
 				}
 			});
 
-			screen.window_left_monitor.connect ((monitor, window) => {
-				if (monitor == screen.get_primary_monitor ())
-					remove_window (window);
-			});
-			workspace.window_removed.connect (remove_window);
-
-			screen.window_entered_monitor.connect ((monitor, window) => {
-				add_window (window);
-			});
+			screen.window_entered_monitor.connect (window_entered_monitor);
+			screen.window_left_monitor.connect (window_left_monitor);
 			workspace.window_added.connect (add_window);
+			workspace.window_removed.connect (remove_window);
 
 			add_child (background);
 			add_child (window_container);
@@ -157,10 +151,17 @@ namespace Gala
 
 		~WorkspaceClone ()
 		{
+			unowned Screen screen = workspace.get_screen ();
+
+			screen.window_entered_monitor.disconnect (window_entered_monitor);
+			screen.window_left_monitor.disconnect (window_left_monitor);
+			workspace.window_added.disconnect (add_window);
+			workspace.window_removed.disconnect (remove_window);
+
 			background.destroy ();
 		}
 
-		private void add_window (Window window)
+		void add_window (Window window)
 		{
 			if (window.window_type != WindowType.NORMAL
 				|| window.get_workspace () != workspace
@@ -175,13 +176,24 @@ namespace Gala
 			icon_group.add_window (window);
 		}
 
-		private void remove_window (Window window)
+		void remove_window (Window window)
 		{
 			window_container.remove_window (window);
 			icon_group.remove_window (window, opened);
 		}
 
-		private void shrink_rectangle (ref Meta.Rectangle rect, int amount)
+		void window_entered_monitor (Screen screen, int monitor, Window window)
+		{
+			add_window (window);
+		}
+
+		void window_left_monitor (Screen screen, int monitor, Window window)
+		{
+			if (monitor == screen.get_primary_monitor ())
+				remove_window (window);
+		}
+
+		static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount)
 		{
 			rect.x += amount;
 			rect.y += amount;
