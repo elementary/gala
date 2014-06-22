@@ -49,7 +49,7 @@ namespace Gala
 
 	public class WorkspaceClone : Clutter.Actor
 	{
-		public static const int BOTTOM_OFFSET = 100;
+		public const int BOTTOM_OFFSET = 100;
 		const int TOP_OFFSET = 20;
 		const int HOVER_ACTIVATE_DELAY = 400;
 
@@ -57,8 +57,7 @@ namespace Gala
 		public signal void selected (bool close_view);
 
 		public WindowManager wm { get; construct; }
-		public Workspace workspace { get; construct set; }
-		public Background background { get; private set; }
+		public Workspace workspace { get; construct; }
 		public IconGroup icon_group { get; private set; }
 		public TiledWindowContainer window_container { get; private set; }
 
@@ -73,13 +72,19 @@ namespace Gala
 			}
 		}
 
-		bool opened = false;
+		Background background;
+		bool opened;
 
 		uint hover_activate_timeout = 0;
 
-		public WorkspaceClone (Workspace workspace, WindowManager wm)
+		public WorkspaceClone (WindowManager wm, Workspace workspace)
 		{
-			Object (workspace: workspace, wm: wm);
+			Object (wm: wm, workspace: workspace);
+		}
+
+		construct
+		{
+			opened = false;
 
 			var screen = workspace.get_screen ();
 			var monitor_geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
@@ -148,6 +153,11 @@ namespace Gala
 					icon_group.add_window (window, true);
 				}
 			}
+		}
+
+		~WorkspaceClone ()
+		{
+			background.destroy ();
 		}
 
 		private void add_window (Window window)
@@ -228,11 +238,6 @@ namespace Gala
 			background.restore_easing_state ();
 
 			window_container.opened = false;
-		}
-
-		~Workspace ()
-		{
-			background.destroy ();
 		}
 	}
 }

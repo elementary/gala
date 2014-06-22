@@ -24,9 +24,10 @@ namespace Gala
 	{
 		const int HIDING_DURATION = 300;
 
-		public Meta.Screen screen { get; construct set; }
-		public WindowManager wm { get; construct set; }
-		public bool opened { get; private set; default = false; }
+		public WindowManager wm { get; construct; }
+
+		Meta.Screen screen;
+		bool opened;
 
 		List<MonitorClone> window_containers_monitors;
 
@@ -35,11 +36,17 @@ namespace Gala
 
 		public MultitaskingView (WindowManager wm)
 		{
-			Object (wm: wm, screen: wm.get_screen ());
+			Object (wm: wm);
+		}
 
+		construct
+		{
 			visible = false;
 			reactive = true;
 			clip_to_allocation = true;
+
+			opened = false;
+			screen = wm.get_screen ();
 
 			workspaces = new Actor ();
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -88,7 +95,7 @@ namespace Gala
 					}
 
 					update_monitors ();
-					update_positions ();
+					update_positions (false);
 
 					return false;
 				});
@@ -107,7 +114,7 @@ namespace Gala
 					if (monitor == primary)
 						continue;
 
-					var monitor_clone = new MonitorClone (wm, screen, monitor);
+					var monitor_clone = new MonitorClone (wm, monitor);
 					monitor_clone.window_selected.connect (window_selected);
 					monitor_clone.visible = opened;
 
@@ -144,7 +151,7 @@ namespace Gala
 			return false;
 		}
 
-		void update_positions (bool animate = false)
+		void update_positions (bool animate)
 		{
 			var active_index = screen.get_active_workspace ().index ();
 			var active_x = 0.0f;
@@ -182,7 +189,7 @@ namespace Gala
 
 		void add_workspace (int num)
 		{
-			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num), wm);
+			var workspace = new WorkspaceClone (wm, screen.get_workspace_by_index (num));
 			workspace.window_selected.connect (window_selected);
 			workspace.selected.connect (activate_workspace);
 

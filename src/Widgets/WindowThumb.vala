@@ -22,15 +22,15 @@ namespace Gala
 {
 	public class WindowThumb : Actor
 	{
-		public weak Window window;
-		Clone clone;
-		public GtkClutter.Texture icon;
-		public GtkClutter.Texture close_button;
-
 		const int WAIT_FOR_CONFIRMATION_DIALOG = 100;
 
 		public signal void selected (Window window);
 		public signal void closed ();
+
+		public weak Window window;
+		Clone clone;
+		public GtkClutter.Texture icon;
+		public GtkClutter.Texture close_button;
 
 		public WindowThumb (Window _window, bool add_children_to_stage = true)
 		{

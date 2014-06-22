@@ -22,20 +22,25 @@ namespace Gala
 {
 	public class MonitorClone : Actor
 	{
-		public WindowManager wm { get; construct; }
-		public Screen screen { get; construct; }
-		public int monitor { get; construct; }
-
 		public signal void window_selected (Window window);
 
+		public WindowManager wm { get; construct; }
+		public int monitor { get; construct; }
+
+		Meta.Screen screen;
 		TiledWindowContainer window_container;
 		Background background;
 
-		public MonitorClone (WindowManager wm, Screen screen, int monitor)
+		public MonitorClone (WindowManager wm, int monitor)
 		{
-			Object (wm: wm, monitor: monitor, screen: screen);
+			Object (wm: wm, monitor: monitor);
+		}
 
+		construct
+		{
 			reactive = true;
+
+			screen = wm.get_screen ();
 
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 			background.set_easing_duration (300);

@@ -89,7 +89,10 @@ namespace Gala
 		public WindowIcon (Meta.Window window)
 		{
 			Object (window: window);
+		}
 
+		construct
+		{
 			set_pivot_point (0.5f, 0.5f);
 			set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
 			set_easing_duration (800);

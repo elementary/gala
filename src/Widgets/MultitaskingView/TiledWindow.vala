@@ -63,7 +63,10 @@ namespace Gala
 		public TiledWindow (Meta.Window window)
 		{
 			Object (window: window);
+		}
 
+		construct
+		{
 			reactive = true;
 
 			window.unmanaged.connect (unmanaged);

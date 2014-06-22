@@ -22,7 +22,7 @@ namespace Gala
 {
 	public class WindowSwitcher : Clutter.Actor
 	{
-		Gala.WindowManager wm;
+		public WindowManager wm { get; construct; }
 
 		Gee.ArrayList<Clutter.Clone> window_clones = new Gee.ArrayList<Clutter.Clone> ();
 
@@ -42,10 +42,13 @@ namespace Gala
 		//estimated value, if possible
 		float dock_width = 0.0f;
 
-		public WindowSwitcher (Gala.WindowManager _wm)
+		public WindowSwitcher (WindowManager wm)
 		{
-			wm = _wm;
+			Object (wm: wm);
+		}
 
+		construct
+		{
 			//pull drawing methods from libplank
 			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
 			dock_settings.notify["Theme"].connect (load_dock_theme);
