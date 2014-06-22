@@ -62,12 +62,12 @@ namespace Gala
 
 					var scale_x_transition = new PropertyTransition ("scale-x");
 					scale_x_transition.set_from_value (0.8);
-					scale_x_transition.set_to_value (1.3);
+					scale_x_transition.set_to_value (1.1);
 					scale_x_transition.auto_reverse = true;
 
 					var scale_y_transition = new PropertyTransition ("scale-y");
 					scale_y_transition.set_from_value (0.8);
-					scale_y_transition.set_to_value (1.3);
+					scale_y_transition.set_to_value (1.1);
 					scale_y_transition.auto_reverse = true;
 
 					transition.add_transition (opacity_transition);
