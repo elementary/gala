@@ -231,11 +231,19 @@ namespace Gala
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
 
+#if HAS_MUTTER314
+			var window = display.get_tab_next (Meta.TabList.NORMAL,
+#else
 			var window = display.get_tab_next (Meta.TabList.NORMAL, screen,
+#endif
 				screen.get_active_workspace (), null, backward);
 
 			if (window == null)
+#if HAS_MUTTER314
+				window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+#else
 				window = display.get_tab_current (Meta.TabList.NORMAL, screen, workspace);
+#endif
 
 			return window;
 		}

@@ -307,7 +307,11 @@ namespace Gala
 		}
 
 		void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 			X.Event event, Meta.KeyBinding binding)
+#endif
 		{
 			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			switch_to_next_workspace (direction);

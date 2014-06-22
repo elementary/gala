@@ -224,7 +224,11 @@ namespace Gala
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS ||
 				event.get_key_symbol () == Clutter.Key.Right) {
 
+#if HAS_MUTTER314
+				current_window = display.get_tab_next (Meta.TabList.NORMAL,
+#else
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
+#endif
 						screen.get_active_workspace (), current_window, backward);
 				last_time = display.get_current_time_roundtrip ();
 
@@ -233,7 +237,11 @@ namespace Gala
 				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD ||
 				event.get_key_symbol () == Clutter.Key.Left) {
 
+#if HAS_MUTTER314
+				current_window = display.get_tab_next (Meta.TabList.NORMAL,
+#else
 				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
+#endif
 						screen.get_active_workspace (), current_window, true);
 				last_time = display.get_current_time_roundtrip ();
 			}
@@ -272,6 +280,7 @@ namespace Gala
 		void dim_windows ()
 		{
 			var current_actor = current_window.get_compositor_private () as Actor;
+			var window_opacity = (int)Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
 			var i = 0;
 			foreach (var clone in window_clones) {
 				if (current_actor == clone.source) {
@@ -280,7 +289,7 @@ namespace Gala
 
 					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
 				} else {
-					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : 0);
+					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : window_opacity);
 					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 100);
 				}
 
@@ -396,7 +405,11 @@ namespace Gala
 		}
 
 		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 			X.Event event, Meta.KeyBinding binding)
+#endif
 		{
 			if (visible) {
 				if (window_clones.size != 0)
@@ -406,7 +419,11 @@ namespace Gala
 
 			var workspace = screen.get_active_workspace ();
 
+#if HAS_MUTTER314
+			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+#else
 			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, workspace);
+#endif
 			if (metawindows.length () == 0)
 				return;
 			if (metawindows.length () == 1) {

@@ -73,6 +73,7 @@ namespace Gala
 		public string button_layout { get; set; }
 		public bool attach_modal_dialogs { get; set; }
 		public bool dim_parents { get; set; }
+		public double alt_tab_window_opacity { get; set; }
 
 		static AppearanceSettings? instance = null;
 
