@@ -30,7 +30,7 @@ namespace Gala
 
 		List<MonitorClone> window_containers_monitors;
 
-		Actor icon_groups;
+		IconGroupContainer icon_groups;
 		Actor workspaces;
 
 		public MultitaskingView (WindowManager wm)
@@ -44,9 +44,7 @@ namespace Gala
 			workspaces = new Actor ();
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
-			icon_groups = new Actor ();
-			icon_groups.layout_manager = new BoxLayout ();
-			(icon_groups.layout_manager as BoxLayout).spacing = 48;
+			icon_groups = new IconGroupContainer (screen);
 
 			add_child (icon_groups);
 			add_child (workspaces);
@@ -82,7 +80,9 @@ namespace Gala
 						if (existing_workspaces.index (workspace_clone.workspace) < 0) {
 							workspace_clone.window_selected.disconnect (window_selected);
 							workspace_clone.selected.disconnect (activate_workspace);
-							workspace_clone.icon_group.destroy ();
+
+							icon_groups.remove_group (workspace_clone.icon_group);
+
 							workspace_clone.destroy ();
 						}
 					}
@@ -187,7 +187,7 @@ namespace Gala
 			workspace.selected.connect (activate_workspace);
 
 			workspaces.insert_child_at_index (workspace, num);
-			icon_groups.insert_child_at_index (workspace.icon_group, num);
+			icon_groups.add_group (workspace.icon_group);
 
 			update_positions (opened);
 
@@ -223,10 +223,11 @@ namespace Gala
 			var transition = workspace.icon_group.get_transition ("opacity");
 			if (transition != null)
 				transition.completed.connect (() => {
-					workspace.icon_group.destroy ();
+					icon_groups.remove_group (workspace.icon_group);
 				});
 			else
-				workspace.icon_group.destroy ();
+				icon_groups.remove_group (workspace.icon_group);
+
 			workspace.destroy ();
 
 			update_positions (opened);

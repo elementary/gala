@@ -52,6 +52,7 @@ gala_VALASOURCES = \
 	Widgets/WindowSwitcher.vala \
 	Widgets/WindowThumb.vala \
 	Widgets/MultitaskingView/IconGroup.vala \
+	Widgets/MultitaskingView/IconGroupContainer.vala \
 	Widgets/MultitaskingView/MonitorClone.vala \
 	Widgets/MultitaskingView/MultitaskingView.vala \
 	Widgets/MultitaskingView/TiledWindow.vala \

@@ -106,9 +106,9 @@ namespace Gala
 			}
 		}
 
-		void window_added (Workspace workspace, Window window)
+		void window_added (Workspace? workspace, Window window)
 		{
-			if (!Prefs.get_dynamic_workspaces ())
+			if (workspace == null || !Prefs.get_dynamic_workspaces ())
 				return;
 
 			if ((window.window_type == WindowType.NORMAL
@@ -118,9 +118,9 @@ namespace Gala
 				append_workspace ();
 		}
 
-		void window_removed (Workspace workspace, Window window)
+		void window_removed (Workspace? workspace, Window window)
 		{
-			if (!Prefs.get_dynamic_workspaces ())
+			if (workspace == null || !Prefs.get_dynamic_workspaces ())
 				return;
 
 			if (window.window_type != WindowType.NORMAL
