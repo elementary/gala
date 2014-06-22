@@ -210,6 +210,11 @@ namespace Gala
 			content = canvas;
 
 			dummy_material = new Cogl.Material ();
+
+			var click = new ClickAction ();
+			click.clicked.connect (() => selected ());
+
+			add_action (click);
 		}
 
 		public override void paint ()
@@ -236,13 +241,6 @@ namespace Gala
 			Cogl.polygon (vertices, true);
 
 			base.paint ();
-		}
-
-		public override bool button_release_event (ButtonEvent event)
-		{
-			selected ();
-
-			return false;
 		}
 
 		public void clear ()
