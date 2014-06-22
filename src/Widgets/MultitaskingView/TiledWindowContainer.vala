@@ -223,14 +223,12 @@ namespace Gala
 							continue;
 
 						// test for vertical intersection
-						if (!(window_rect.y + window_rect.height < current_rect.y
-							|| window_rect.y > current_rect.y + current_rect.height)) {
+						if (window_rect.y + window_rect.height > current_rect.y
+							&& window_rect.y < current_rect.y + current_rect.height) {
 
-							if (closest != null
-								&& closest.slot.x < window_rect.x)
-								closest = window as TiledWindow;
-							else
-								closest = window as TiledWindow;
+							if (closest == null
+								|| closest.slot.x < window_rect.x)
+								closest = (TiledWindow) window;
 						}
 						break;
 					case MotionDirection.RIGHT:
@@ -238,14 +236,12 @@ namespace Gala
 							continue;
 
 						// test for vertical intersection
-						if (!(window_rect.y + window_rect.height < current_rect.y
-							|| window_rect.y > current_rect.y + current_rect.height)) {
+						if (window_rect.y + window_rect.height > current_rect.y
+							&& window_rect.y < current_rect.y + current_rect.height) {
 
-							if (closest != null
-								&& closest.slot.x > window_rect.x)
-								closest = window as TiledWindow;
-							else
-								closest = window as TiledWindow;
+							if (closest == null
+								|| closest.slot.x > window_rect.x)
+								closest = (TiledWindow) window;
 						}
 						break;
 					case MotionDirection.UP:
@@ -253,14 +249,12 @@ namespace Gala
 							continue;
 
 						// test for horizontal intersection
-						if (!(window_rect.x + window_rect.width < current_rect.x
-							|| window_rect.x > current_rect.x + current_rect.width)) {
+						if (window_rect.x + window_rect.width > current_rect.x
+							&& window_rect.x < current_rect.x + current_rect.width) {
 
-							if (closest != null
-								&& closest.slot.y > window_rect.y)
-								closest = window as TiledWindow;
-							else
-								closest = window as TiledWindow;
+							if (closest == null
+								|| closest.slot.y < window_rect.y)
+								closest = (TiledWindow) window;
 						}
 						break;
 					case MotionDirection.DOWN:
@@ -268,14 +262,12 @@ namespace Gala
 							continue;
 
 						// test for horizontal intersection
-						if (!(window_rect.x + window_rect.width < current_rect.x
-							|| window_rect.x > current_rect.x + current_rect.width)) {
+						if (window_rect.x + window_rect.width > current_rect.x
+							&& window_rect.x < current_rect.x + current_rect.width) {
 
-							if (closest != null
-								&& closest.slot.y < window_rect.y)
-								closest = window as TiledWindow;
-							else
-								closest = window as TiledWindow;
+							if (closest == null
+								|| closest.slot.y > window_rect.y)
+								closest = (TiledWindow) window;
 						}
 						break;
 				}
@@ -300,7 +292,7 @@ namespace Gala
 		void transition_to_original_state ()
 		{
 			foreach (var child in get_children ()) {
-				var clone = child as TiledWindow;
+				unowned TiledWindow clone = (TiledWindow) child;
 				clone.transition_to_original_state ();
 			}
 		}
