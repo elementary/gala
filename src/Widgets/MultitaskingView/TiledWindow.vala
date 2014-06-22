@@ -248,7 +248,11 @@ namespace Gala
 				return;
 
 			var actor = window.get_compositor_private () as WindowActor;
+#if HAS_MUTTER314
+			var input_rect = window.get_buffer_rect ();
+#else
 			var input_rect = window.get_input_rect ();
+#endif
 			var outer_rect = window.get_outer_rect ();
 			var scale_factor = (float)width / outer_rect.width;
 
