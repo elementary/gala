@@ -336,10 +336,9 @@ namespace Gala
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.stroke ();
 
-			// the only workspace that can be empty is the last one, so we draw our
-			// plus here if we have dynamic workspaces. Otherwise just return.
 			if (n_windows < 1) {
-				if (!Meta.Prefs.get_dynamic_workspaces ())
+				if (!Meta.Prefs.get_dynamic_workspaces ()
+					|| workspace.index () != workspace.get_screen ().get_n_workspaces () - 1)
 					return false;
 
 				var buffer = new Granite.Drawing.BufferSurface (SIZE, SIZE);
