@@ -365,10 +365,9 @@ namespace Gala
 
 		void drag_destination_crossed (Actor destination, bool hovered)
 		{
-			if (!(destination is IconGroup))
-				return;
-
 			var icon_group = destination as IconGroup;
+			if (icon_group == null)
+				return;
 
 			if (icon_group.workspace == window.get_workspace ()
 				&& window.get_monitor () == window.get_screen ().get_primary_monitor ())
@@ -401,11 +400,11 @@ namespace Gala
 			Meta.Workspace workspace = null;
 
 			if (destination is IconGroup) {
-				workspace = (destination as IconGroup).workspace;
+				workspace = ((IconGroup) destination).workspace;
 			} else if (destination is FramedBackground) {
-				workspace = (destination.get_parent () as WorkspaceClone).workspace;
+				workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
 			} else if (destination is MonitorClone) {
-				window.move_to_monitor ((destination as MonitorClone).monitor);
+				window.move_to_monitor (((MonitorClone) destination).monitor);
 				unmanaged ();
 				return;
 			}

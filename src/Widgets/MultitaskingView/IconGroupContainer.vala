@@ -37,7 +37,7 @@ namespace Gala
 			unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
 
 			foreach (var child in get_children ()) {
-				var icon_group = child as IconGroup;
+				unowned IconGroup icon_group = (IconGroup) child;
 
 				// we don't use meta_workspace_index() here because it crashes
 				// the wm if the workspace has already been removed. This could

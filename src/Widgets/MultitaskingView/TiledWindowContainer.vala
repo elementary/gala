@@ -59,7 +59,7 @@ namespace Gala
 					// make sure our windows are where they belong in case they were moved
 					// while were closed.
 					foreach (var window in get_children ()) {
-						(window as TiledWindow).transition_to_original_state (false);
+						((TiledWindow) window).transition_to_original_state (false);
 					}
 
 					restack ();
@@ -77,8 +77,9 @@ namespace Gala
 			}
 			set {
 				foreach (var child in get_children ()) {
-					if ((child as TiledWindow).window == value) {
-						_current_window = child as TiledWindow;
+					unowned TiledWindow tiled_window = (TiledWindow) child;
+					if (tiled_window.window == value) {
+						_current_window = tiled_window;
 						break;
 					}
 				}
@@ -102,7 +103,7 @@ namespace Gala
 			var children = get_children ();
 			var added = false;
 			foreach (var child in children) {
-				if (stacking_order.get ((int)(child as TiledWindow).window.get_stable_sequence ()) < new_seq) {
+				if (stacking_order.get ((int)((TiledWindow) child).window.get_stable_sequence ()) < new_seq) {
 					insert_child_below (new_window, child);
 					added = true;
 					break;
@@ -120,7 +121,7 @@ namespace Gala
 		public void remove_window (Window window)
 		{
 			foreach (var child in get_children ()) {
-				if ((child as TiledWindow).window == window) {
+				if (((TiledWindow) child).window == window) {
 					remove_child (child);
 					break;
 				}
@@ -137,6 +138,8 @@ namespace Gala
 		void window_destroyed (Actor actor)
 		{
 			var window = actor as TiledWindow;
+			if (window == null)
+				return;
 
 			window.destroy.disconnect (window_destroyed);
 			window.selected.disconnect (window_selected_cb);
@@ -153,8 +156,8 @@ namespace Gala
 			foreach (var child1 in get_children ()) {
 				var i = 0;
 				foreach (var child2 in get_children ()) {
-					int index1 = stacking_order.get ((int)(child1 as TiledWindow).window.get_stable_sequence ());
-					int index2 = stacking_order.get ((int)(child2 as TiledWindow).window.get_stable_sequence ());
+					int index1 = stacking_order.get ((int)((TiledWindow) child1).window.get_stable_sequence ());
+					int index2 = stacking_order.get ((int)((TiledWindow) child2).window.get_stable_sequence ());
 					if (index1 < index2) {
 						set_child_at_index (child1, i);
 						i++;
@@ -171,7 +174,7 @@ namespace Gala
 
 			var windows = new List<InternalUtils.TilableWindow?> ();
 			foreach (var child in get_children ()) {
-				var window = child as TiledWindow;
+				unowned TiledWindow window = (TiledWindow) child;
 				windows.prepend ({ window.window.get_outer_rect (), window });
 			}
 			windows.reverse ();
@@ -189,7 +192,7 @@ namespace Gala
 			var window_positions = InternalUtils.calculate_grid_placement (area, windows);
 
 			foreach (var tilable in window_positions) {
-				var window = (TiledWindow)tilable.id;
+				unowned TiledWindow window = (TiledWindow) tilable.id;
 				window.take_slot (tilable.rect);
 				window.place_widgets (tilable.rect.width, tilable.rect.height);
 			}
@@ -201,7 +204,7 @@ namespace Gala
 				return;
 
 			if (_current_window == null) {
-				_current_window = get_child_at_index (0) as TiledWindow;
+				_current_window = (TiledWindow) get_child_at_index (0);
 				return;
 			}
 
@@ -212,7 +215,7 @@ namespace Gala
 				if (window == _current_window)
 					continue;
 
-				var window_rect = (window as TiledWindow).slot;
+				var window_rect = ((TiledWindow) window).slot;
 
 				switch (direction) {
 					case MotionDirection.LEFT:

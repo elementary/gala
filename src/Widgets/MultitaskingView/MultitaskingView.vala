@@ -83,7 +83,7 @@ namespace Gala
 					unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
 
 					foreach (var child in workspaces.get_children ()) {
-						var workspace_clone = child as WorkspaceClone;
+						unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
 						if (existing_workspaces.index (workspace_clone.workspace) < 0) {
 							workspace_clone.window_selected.disconnect (window_selected);
 							workspace_clone.selected.disconnect (activate_workspace);
@@ -157,7 +157,7 @@ namespace Gala
 			var active_x = 0.0f;
 
 			foreach (var child in workspaces.get_children ()) {
-				var workspace_clone = child as WorkspaceClone;
+				unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
 				var index = workspace_clone.workspace.index ();
 				var dest_x = index * (workspace_clone.width - 150);
 
@@ -210,8 +210,7 @@ namespace Gala
 			unowned List<Meta.Workspace> existing_workspaces = screen.get_workspaces ();
 
 			foreach (var child in workspaces.get_children ()) {
-				var clone = child as WorkspaceClone;
-
+				unowned WorkspaceClone clone = (WorkspaceClone) child;
 				if (existing_workspaces.index (clone.workspace) < 0) {
 					workspace = clone;
 					break;
@@ -286,7 +285,7 @@ namespace Gala
 		WorkspaceClone get_active_workspace_clone ()
 		{
 			foreach (var child in workspaces.get_children ()) {
-				var workspace_clone = child as WorkspaceClone;
+				unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
 				if (workspace_clone.workspace == screen.get_active_workspace ()) {
 					return workspace_clone;
 				}
@@ -332,7 +331,7 @@ namespace Gala
 			WorkspaceClone? active_workspace = null;
 			var active = screen.get_active_workspace ();
 			foreach (var child in workspaces.get_children ()) {
-				var workspace = child as WorkspaceClone;
+				unowned WorkspaceClone workspace = (WorkspaceClone) child;
 				if (workspace.workspace == active) {
 					active_workspace = workspace;
 					break;
@@ -344,10 +343,11 @@ namespace Gala
 			update_positions (false);
 
 			foreach (var child in workspaces.get_children ()) {
+				unowned WorkspaceClone workspace = (WorkspaceClone) child;
 				if (opening)
-					(child as WorkspaceClone).open ();
+					workspace.open ();
 				else
-					(child as WorkspaceClone).close ();
+					workspace.close ();
 			}
 
 			if (!opening) {

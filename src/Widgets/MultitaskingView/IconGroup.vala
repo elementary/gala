@@ -270,7 +270,7 @@ namespace Gala
 		public void remove_window (Meta.Window window, bool animate = true)
 		{
 			foreach (var child in get_children ()) {
-				var w = child as WindowIcon;
+				unowned WindowIcon w = (WindowIcon) child;
 				if (w.window == window) {
 					if (animate) {
 						w.set_easing_mode (AnimationMode.LINEAR);
@@ -313,7 +313,7 @@ namespace Gala
 
 			// single icon => big icon
 			if (n_windows == 1) {
-				var icon = get_child_at_index (0) as WindowIcon;
+				var icon = (WindowIcon) get_child_at_index (0);
 				icon.place (0, 0, 64);
 
 				return false;
@@ -402,7 +402,7 @@ namespace Gala
 			var x = x_offset;
 			var y = y_offset;
 			for (var i = 0; i < n_windows; i++) {
-				var window = get_child_at_index (i) as WindowIcon;
+				var window = (WindowIcon) get_child_at_index (i);
 
 				// draw an ellipsis at the 9th position if we need one
 				if (show_ellipsis && i == 8) {

@@ -168,7 +168,7 @@ namespace Gala
 				return;
 
 			foreach (var child in window_container.get_children ())
-				if ((child as TiledWindow).window == window)
+				if (((TiledWindow) child).window == window)
 					return;
 
 			window_container.add_window (window);
