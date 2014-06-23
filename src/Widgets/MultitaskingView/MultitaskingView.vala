@@ -181,7 +181,12 @@ namespace Gala
 				icon_groups.set_easing_duration (200);
 			}
 
-			icon_groups.x = width / 2 - icon_groups.width / 2;
+			// make sure the active workspace's icongroup is always visible
+			if (icon_groups.width > width) {
+				icon_groups.x = (-active_index * (IconGroupContainer.SPACING + IconGroup.SIZE) + width / 2)
+					.clamp (width - icon_groups.width - 64, 64);
+			} else
+				icon_groups.x = width / 2 - icon_groups.width / 2;
 
 			if (animate)
 				icon_groups.restore_easing_state ();

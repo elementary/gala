@@ -23,7 +23,8 @@ namespace Gala
 	// TODO: allow DnD to insert new workspaces
 	public class IconGroupContainer : Actor
 	{
-		const int SPACING = 48;
+		public static const int SPACING = 48;
+		public static const int GROUP_WIDTH = 64;
 
 		public Screen screen { get; construct; }
 
