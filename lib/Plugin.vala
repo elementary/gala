@@ -108,19 +108,30 @@ namespace Gala
 			}
 		}
 
+		bool _freeze_track = false;
 		/**
 		 * Set this property to true while animating an actor if you have tracked
 		 * actors to prevent constant recalculations of the regions during an
 		 * animation.
 		 */
-		protected bool freeze_track { get; protected set; default = false; }
+		protected bool freeze_track {
+			get {
+				return _freeze_track;
+			}
+			set {
+				_freeze_track = value;
+
+				if (!_freeze_track)
+					update_region ();
+			}
+		}
 
 		private X.Xrectangle[]? _custom_region = null;
 		private Gee.LinkedList<Clutter.Actor> tracked_actors = new Gee.LinkedList<Clutter.Actor> ();
 
 		/**
 		 * Once this method is called you can start adding actors to the stage
-		 * using via the windowmanager instance that is given to you.
+		 * via the windowmanager instance that is given to you.
 		 *
 		 * @param wm The window manager.
 		 */

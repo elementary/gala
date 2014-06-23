@@ -198,6 +198,7 @@ lib/Makefile
 data/Makefile
 vapi/Makefile
 plugins/Makefile
+plugins/notify/Makefile
 plugins/zoom/Makefile
 po/Makefile.in
 ])
