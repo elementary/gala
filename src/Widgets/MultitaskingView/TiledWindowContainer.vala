@@ -29,17 +29,6 @@ namespace Gala
 		public int padding_right { get; set; default = 12; }
 		public int padding_bottom { get; set; default = 12; }
 
-		HashTable<int,int> _stacking_order;
-		public HashTable<int,int> stacking_order {
-			get {
-				return _stacking_order;
-			}
-			set {
-				_stacking_order = value;
-				restack ();
-			}
-		}
-
 		bool _opened;
 		public bool opened {
 			get {
@@ -62,7 +51,6 @@ namespace Gala
 						((TiledWindow) window).transition_to_original_state (false);
 					}
 
-					restack ();
 					reflow ();
 				} else {
 					transition_to_original_state ();
@@ -86,25 +74,45 @@ namespace Gala
 			}
 		}
 
-		public TiledWindowContainer (HashTable<int,int> stacking_order)
+		public TiledWindowContainer ()
 		{
-			_stacking_order = stacking_order;
 		}
 
 		public void add_window (Window window, bool reflow_windows = true)
 		{
+			unowned Meta.Display display = window.get_display ();
+			var children = get_children ();
+			
+			GLib.SList<unowned Meta.Window> windows = new GLib.SList<unowned Meta.Window> ();
+			foreach (unowned Actor child in children) {
+				unowned TiledWindow tw = (TiledWindow) child;
+				windows.prepend (tw.window);
+			}
+			windows.prepend (window);
+			windows.reverse ();
+			
+			var windows_ordered = display.sort_windows_by_stacking (windows);
+			
 			var new_window = new TiledWindow (window);
-			var new_seq = stacking_order.get ((int)window.get_stable_sequence ());
 
 			new_window.selected.connect (window_selected_cb);
 			new_window.destroy.connect (window_destroyed);
 			new_window.request_reposition.connect (reflow);
 
-			var children = get_children ();
 			var added = false;
-			foreach (var child in children) {
-				if (stacking_order.get ((int)((TiledWindow) child).window.get_stable_sequence ()) < new_seq) {
-					insert_child_below (new_window, child);
+			unowned Meta.Window? target = null;
+			foreach (unowned Meta.Window w in windows_ordered) {
+				if (w != window) {
+					target = w;
+					continue;
+				}
+				break;
+			}
+
+			foreach (unowned Actor child in children) {
+				unowned TiledWindow tw = (TiledWindow) child;
+				if (target == tw.window) {
+					insert_child_above (new_window, tw);
 					added = true;
 					break;
 				}
@@ -150,16 +158,26 @@ namespace Gala
 			});
 		}
 
-		public void restack ()
+		public void restack_windows (Screen screen)
 		{
-			// FIXME there is certainly a way to do this in less than n^2 steps
-			foreach (var child1 in get_children ()) {
+			unowned Meta.Display display = screen.get_display ();
+			var children = get_children ();
+
+			GLib.SList<unowned Meta.Window> windows = new GLib.SList<unowned Meta.Window> ();
+			foreach (unowned Actor child in children) {
+				unowned TiledWindow tw = (TiledWindow) child;
+				windows.prepend (tw.window);
+			}
+
+			var windows_ordered = display.sort_windows_by_stacking (windows);
+			windows_ordered.reverse ();
+
+			foreach (unowned Meta.Window window in windows_ordered) {
 				var i = 0;
-				foreach (var child2 in get_children ()) {
-					int index1 = stacking_order.get ((int)((TiledWindow) child1).window.get_stable_sequence ());
-					int index2 = stacking_order.get ((int)((TiledWindow) child2).window.get_stable_sequence ());
-					if (index1 < index2) {
-						set_child_at_index (child1, i);
+				foreach (unowned Actor child in children) {
+					if (((TiledWindow) child).window == window) {
+						set_child_at_index (child, i);
+						children.remove (child);
 						i++;
 						break;
 					}

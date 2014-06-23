@@ -96,13 +96,11 @@ namespace Gala
 				return false;
 			});
 
-			window_container = new TiledWindowContainer (wm.window_stacking_order);
+			window_container = new TiledWindowContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
 			window_container.width = monitor_geometry.width;
 			window_container.height = monitor_geometry.height;
-			wm.windows_restacked.connect (() => {
-				window_container.stacking_order = wm.window_stacking_order;
-			});
+			screen.restacked.connect (window_container.restack_windows);
 
 			icon_group = new IconGroup (workspace);
 			icon_group.selected.connect (() => {
@@ -152,6 +150,8 @@ namespace Gala
 		~WorkspaceClone ()
 		{
 			unowned Screen screen = workspace.get_screen ();
+
+			screen.restacked.disconnect (window_container.restack_windows);
 
 			screen.window_entered_monitor.disconnect (window_entered_monitor);
 			screen.window_left_monitor.disconnect (window_left_monitor);

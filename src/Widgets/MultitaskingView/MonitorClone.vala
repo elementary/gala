@@ -45,12 +45,9 @@ namespace Gala
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 			background.set_easing_duration (300);
 
-			window_container = new TiledWindowContainer (wm.window_stacking_order);
+			window_container = new TiledWindowContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
-
-			wm.windows_restacked.connect (() => {
-				window_container.stacking_order = wm.window_stacking_order;
-			});
+			screen.restacked.connect (window_container.restack_windows);
 
 			screen.window_entered_monitor.connect (window_entered);
 			screen.window_left_monitor.connect (window_left);
@@ -69,6 +66,13 @@ namespace Gala
 			add_action (drop);
 
 			update_allocation ();
+		}
+
+		~MonitorClone ()
+		{
+			screen.window_entered_monitor.disconnect (window_entered);
+			screen.window_left_monitor.disconnect (window_left);
+			screen.restacked.disconnect (window_container.restack_windows);
 		}
 
 		public void update_allocation ()

@@ -26,7 +26,6 @@ namespace Gala
 		public Clutter.Actor window_group { get; protected set; }
 		public Clutter.Actor top_window_group { get; protected set; }
 		public Meta.BackgroundGroup background_group { get; protected set; }
-		public HashTable<int,int> window_stacking_order { get; protected set; }
 
 		public WorkspaceManager workspace_manager { get; private set; }
 
@@ -127,10 +126,6 @@ namespace Gala
 			top_window_group = Compositor.get_top_window_group_for_screen (screen);
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
-
-			window_stacking_order = new HashTable<int,int> (null, null);
-			update_stacking_order ();
-			screen.restacked.connect (update_stacking_order);
 
 			/*keybindings*/
 
@@ -252,19 +247,6 @@ namespace Gala
 			});
 
 			return false;
-		}
-
-		void update_stacking_order ()
-		{
-			window_stacking_order.remove_all ();
-
-			var i = 0;
-			foreach (var window in Compositor.get_window_actors (get_screen ())) {
-				var seq = (int)window.get_meta_window ().get_stable_sequence ();
-				window_stacking_order.set (seq, i++);
-			}
-
-			windows_restacked ();
 		}
 
 		void configure_hotcorners ()
