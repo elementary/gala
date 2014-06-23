@@ -296,8 +296,15 @@ namespace Gala
 
 		void window_selected (Meta.Window window)
 		{
-			window.activate (screen.get_display ().get_current_time ());
-			toggle ();
+			var time = screen.get_display ().get_current_time ();
+			var workspace = window.get_workspace ();
+
+			if (workspace != screen.get_active_workspace ())
+				workspace.activate (time);
+			else {
+				window.activate (time);
+				toggle ();
+			}
 		}
 
 		public void toggle ()
