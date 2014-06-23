@@ -16,12 +16,13 @@
 //
 
 using Clutter;
+using Meta;
 
 namespace Gala
 {
 	class WindowIcon : Actor
 	{
-		public Meta.Window window { get; construct; }
+		public Window window { get; construct; }
 
 		int _icon_size;
 		public int icon_size {
@@ -86,7 +87,7 @@ namespace Gala
 		Utils.WindowIcon? icon = null;
 		Utils.WindowIcon? old_icon = null;
 
-		public WindowIcon (Meta.Window window)
+		public WindowIcon (Window window)
 		{
 			Object (window: window);
 		}
@@ -193,11 +194,13 @@ namespace Gala
 				add_transition ("backdrop-opacity", transition);
 			}
 		}
-		public Meta.Workspace workspace { get; construct; }
+		public Workspace workspace { get; construct; }
 
+		Actor close_button;
+		Actor icon_container;
 		Cogl.Material dummy_material;
 
-		public IconGroup (Meta.Workspace workspace)
+		public IconGroup (Workspace workspace)
 		{
 			Object (workspace: workspace);
 
@@ -216,8 +219,60 @@ namespace Gala
 
 			var click = new ClickAction ();
 			click.clicked.connect (() => selected ());
-
 			add_action (click);
+
+			icon_container = new Actor ();
+			icon_container.width = width;
+			icon_container.height = height;
+
+			add_child (icon_container);
+
+			close_button = Utils.create_close_button ();
+			close_button.x = -Math.floorf (close_button.width * 0.4f);
+			close_button.y = -Math.floorf (close_button.height * 0.4f);
+			close_button.opacity = 0;
+			close_button.reactive = true;
+			close_button.visible = false;
+			close_button.set_easing_duration (200);
+
+			// block propagation of button presses on the close button, otherwise
+			// the click action on the icon group will act weirdly
+			close_button.button_press_event.connect (() => { return true; });
+
+			add_child (close_button);
+
+			var close_click = new ClickAction ();
+			close_click.clicked.connect (close);
+			close_button.add_action (close_click);
+		}
+
+		public override bool enter_event (CrossingEvent event)
+		{
+			// don't display the close button when we don't have dynamic workspaces
+			// or when there are no windows on us. For one, our method for closing
+			// wouldn't work anyway without windows and it's also the last workspace
+			// which we don't want to have closed if everything went correct
+			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
+				return false;
+
+			close_button.visible = true;
+			close_button.opacity = 255;
+
+			return false;
+		}
+
+		public override bool leave_event (CrossingEvent event)
+		{
+			close_button.opacity = 0;
+			var transition = get_transition ("opacity");
+			if (transition != null)
+				transition.completed.connect (() => {
+					close_button.visible = false;
+				});
+			else
+				close_button.visible = false;
+
+			return false;
 		}
 
 		public override void paint ()
@@ -251,7 +306,7 @@ namespace Gala
 			destroy_all_children ();
 		}
 
-		public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false)
+		public void add_window (Window window, bool no_redraw = false, bool temporary = false)
 		{
 			var new_window = new WindowIcon (window);
 
@@ -261,15 +316,15 @@ namespace Gala
 			new_window.restore_easing_state ();
 			new_window.temporary = temporary;
 
-			add_child (new_window);
+			icon_container.add_child (new_window);
 
 			if (!no_redraw)
 				redraw ();
 		}
 
-		public void remove_window (Meta.Window window, bool animate = true)
+		public void remove_window (Window window, bool animate = true)
 		{
-			foreach (var child in get_children ()) {
+			foreach (var child in icon_container.get_children ()) {
 				unowned WindowIcon w = (WindowIcon) child;
 				if (w.window == window) {
 					if (animate) {
@@ -299,6 +354,17 @@ namespace Gala
 			content.invalidate ();
 		}
 
+		void close ()
+		{
+			var time = workspace.get_screen ().get_display ().get_current_time ();
+			foreach (var window in workspace.list_windows ()) {
+				var type = window.window_type;
+				if (!window.is_on_all_workspaces () && (type == WindowType.NORMAL
+					|| type == WindowType.DIALOG || type == WindowType.MODAL_DIALOG))
+					window.@delete (time);
+			}
+		}
+
 		/**
 		 * Draw the background or plus sign and do layouting. We won't lose performance here
 		 * by relayouting in the same function, as it's only ever called when we invalidate it.
@@ -309,11 +375,11 @@ namespace Gala
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 
-			var n_windows = get_n_children ();
+			var n_windows = icon_container.get_n_children ();
 
 			// single icon => big icon
 			if (n_windows == 1) {
-				var icon = (WindowIcon) get_child_at_index (0);
+				var icon = (WindowIcon) icon_container.get_child_at_index (0);
 				icon.place (0, 0, 64);
 
 				return false;
@@ -340,7 +406,7 @@ namespace Gala
 			cr.stroke ();
 
 			if (n_windows < 1) {
-				if (!Meta.Prefs.get_dynamic_workspaces ()
+				if (!Prefs.get_dynamic_workspaces ()
 					|| workspace.index () != workspace.get_screen ().get_n_workspaces () - 1)
 					return false;
 
@@ -402,7 +468,7 @@ namespace Gala
 			var x = x_offset;
 			var y = y_offset;
 			for (var i = 0; i < n_windows; i++) {
-				var window = (WindowIcon) get_child_at_index (i);
+				var window = (WindowIcon) icon_container.get_child_at_index (i);
 
 				// draw an ellipsis at the 9th position if we need one
 				if (show_ellipsis && i == 8) {
