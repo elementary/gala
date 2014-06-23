@@ -28,7 +28,14 @@ namespace Gala.Plugins.Notify
 		CRITICAL = 2
 	}
 
-	[DBus (name="org.freedesktop.Notifications")]
+	[DBus (name = "org.freedesktop.DBus")]
+	private interface DBus : Object
+	{
+		[DBus (name = "GetConnectionUnixProcessID")]
+		public abstract uint32 get_connection_unix_process_id (string name) throws Error;
+	}
+
+	[DBus (name = "org.freedesktop.Notifications")]
 	public class NotifyServer : Object
 	{
 		const int DEFAULT_TMEOUT = 3000;
@@ -36,15 +43,23 @@ namespace Gala.Plugins.Notify
 
 		[DBus (visible = false)]
 		public signal void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-			NotificationUrgency urgency, int32 expire_timeout, Window? window, string[] actions);
+			NotificationUrgency urgency, int32 expire_timeout, uint32 sender_pid, string[] actions);
 
 		[DBus (visible = false)]
 		public signal void notification_closed (uint32 id);
 
 		uint32 id_counter = 0;
 
+		DBus? bus_proxy = null;
+
 		public NotifyServer ()
 		{
+			try {
+				bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
+			} catch (Error e) {
+				warning (e.message);
+				bus_proxy = null;
+			}
 		}
 
 		public void close_notification (uint32 id)
@@ -67,23 +82,22 @@ namespace Gala.Plugins.Notify
 		}
 
 		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary, 
-			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName name)
+			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
 		{
 			var id = replaces_id != 0 ? replaces_id : ++id_counter;
 			var pixbuf = get_pixbuf (hints, app_name, app_icon);
-			var window = get_window ();
 			var timeout = expire_timeout == uint32.MAX ? DEFAULT_TMEOUT : expire_timeout;
 			var urgency = hints.contains ("urgency") ?
 				(NotificationUrgency) hints.lookup ("urgency").get_byte () : NotificationUrgency.NORMAL;
 
-			show_notification (id, summary, body, pixbuf, urgency, timeout, window, actions);
+			uint32 pid = 0;
+			try {
+				pid = bus_proxy.get_connection_unix_process_id (sender);
+			} catch (Error e) { warning (e.message); }
+
+			show_notification (id, summary, body, pixbuf, urgency, timeout, pid, actions);
 
 			return id_counter;
-		}
-
-		Window? get_window ()
-		{
-			return null;
 		}
 
 		Gdk.Pixbuf? get_pixbuf (HashTable<string, Variant> hints, string app, string icon)

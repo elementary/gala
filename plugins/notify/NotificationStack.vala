@@ -24,15 +24,19 @@ namespace Gala.Plugins.Notify
 	{
 		public signal void animations_changed (bool running);
 
+		public Screen screen { get; construct; }
+
 		int animation_counter = 0;
 
-		public NotificationStack ()
+		public NotificationStack (Screen screen)
 		{
+			Object (screen: screen);
+
 			width = Notification.WIDTH + 2 * Notification.MARGIN;
 		}
 
 		public void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-			NotificationUrgency urgency, int32 expire_timeout, Window? window, string[] actions)
+			NotificationUrgency urgency, int32 expire_timeout, uint32 sender_pid, string[] actions)
 		{
 			if (animation_counter == 0)
 				animations_changed (true);
@@ -56,8 +60,8 @@ namespace Gala.Plugins.Notify
 				}
 			}
 
-			var notification = new Notification (id, summary, body, icon, urgency,
-				expire_timeout, window, actions);
+			var notification = new Notification (screen, id, summary, body, icon,
+				urgency, expire_timeout, sender_pid, actions);
 
 			add_child (notification);
 

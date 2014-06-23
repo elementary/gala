@@ -29,13 +29,14 @@ namespace Gala.Plugins.Notify
 		const int SPACING = 6;
 		const int PADDING = 4;
 
+		public Screen screen { get; construct; }
 		public uint32 id { get; construct; }
 		public string summary { get; construct set; }
 		public string body { get; construct set; }
 		public Gdk.Pixbuf? icon { get; construct set; }
 		public NotificationUrgency urgency { get; construct; }
 		public int32 expire_timeout { get; construct set; }
-		public Window? window { get; construct; }
+		public uint32 sender_pid { get; construct; }
 		public string[] notification_actions { get; construct set; }
 
 		public uint64 relevancy_time { get; private set; }
@@ -48,17 +49,18 @@ namespace Gala.Plugins.Notify
 
 		uint remove_timeout = 0;
 
-		public Notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-			NotificationUrgency urgency, int32 expire_timeout, Window? window, string[] actions)
+		public Notification (Screen screen, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
+			NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
 		{
 			Object (
+				screen: screen,
 				id: id,
 				summary: summary,
 				body: body,
 				icon: icon,
 				urgency: urgency,
 				expire_timeout: expire_timeout,
-				window: window,
+				sender_pid: pid,
 				notification_actions: actions
 			);
 
@@ -81,16 +83,7 @@ namespace Gala.Plugins.Notify
 
 			icon_texture = new GtkClutter.Texture ();
 
-			// TODO replace with the real close button once multitaskingview is merged
-			// close_button = Utils.create_close_button ();
-			close_button = new GtkClutter.Texture ();
-			try {
-				close_button.set_from_pixbuf (Granite.Widgets.Utils.get_close_pixbuf ());
-			} catch (Error e) {
-				close_button.background_color = { 180, 0, 0, 255 };
-			}
-			close_button.width = 28;
-			close_button.height = 28;
+			close_button = Utils.create_close_button ();
 			close_button.opacity = 0;
 			close_button.reactive = true;
 			close_button.set_easing_duration (300);
@@ -124,6 +117,21 @@ namespace Gala.Plugins.Notify
 			transition.add_transition (slide_transition);
 
 			add_transition ("entry", transition);
+
+			var click = new ClickAction ();
+			click.clicked.connect (() => {
+				var window = get_window ();
+				if (window != null) {
+					var workspace = window.get_workspace ();
+					var time = screen.get_display ().get_current_time ();
+
+					if (workspace != screen.get_active_workspace ())
+						workspace.activate_with_focus (window, time);
+					else
+						window.activate (time);
+				}
+			});
+			add_action (click);
 		}
 
 		public void close ()
@@ -132,6 +140,24 @@ namespace Gala.Plugins.Notify
 
 			being_destroyed = true;
 			get_transition ("opacity").completed.connect (() => destroy ());
+		}
+
+		Window? get_window ()
+		{
+			if (sender_pid == 0)
+				return null;
+
+			foreach (var actor in Compositor.get_window_actors (screen)) {
+				var window = actor.get_meta_window ();
+
+				// the windows are sorted by stacking order when returned
+				// from meta_get_window_actors, so we can just pick the first
+				// one we find and have a pretty good match
+				if (window.get_pid () == sender_pid)
+					return window;
+			}
+
+			return null;
 		}
 
 		public void update (string summary, string body, Gdk.Pixbuf? icon, int32 expire_timeout,

@@ -31,7 +31,7 @@ namespace Gala.Plugins.Notify
 		{
 			this.wm = wm;
 
-			stack = new NotificationStack ();
+			stack = new NotificationStack (wm.get_screen ());
 			wm.ui_group.add_child (stack);
 			track_actor (stack);
 
