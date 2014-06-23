@@ -19,6 +19,9 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
+	[CCode (cname = "get_pixbuf_from_dbus_variant")]
+	public extern Gdk.Pixbuf get_pixbuf_from_dbus_variant (Variant variant);
+
 	public enum NotificationUrgency {
 		LOW = 0,
 		NORMAL = 1,
@@ -96,31 +99,24 @@ namespace Gala.Plugins.Notify
 			Gdk.Pixbuf? pixbuf = null;
 			var size = Notification.ICON_SIZE;
 
-			if (hints.contains ("image_data")) {
+			if (hints.contains ("image_data") || hints.contains ("image-data")) {
 
-				int width;
-				int height;
-				int rowstride;
-				bool has_alpha;
-				int bits_per_sample;
-				int channels;
-				weak Array<uint8> data;
+				var image = hints.contains ("image_data") ?
+					hints.lookup ("image_data") : hints.lookup ("image-data");
 
-				hints.lookup ("image_data").get ("(iiibiiay)", out width, out height, out rowstride,
-					out has_alpha, out bits_per_sample, out channels, out data, uint.MAX);
-
-				pixbuf = new Gdk.Pixbuf.from_data ((uint8[])data, Gdk.Colorspace.RGB, has_alpha,
-					bits_per_sample, width, height, rowstride, null);
+				pixbuf = get_pixbuf_from_dbus_variant (image);
 
 				pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
 
-			} else if (hints.contains ("image-path")) {
+			} else if (hints.contains ("image-path") || hints.contains ("image_path")) {
 
-				var image_path = hints.lookup ("image-path").get_string ();
+				var image_path = (hints.contains ("image-path") ?
+					hints.lookup ("image-path") : hints.lookup ("image_path")).get_string ();
 
 				try {
-					if (image_path.has_prefix ("file://")) {
-						pixbuf = new Gdk.Pixbuf.from_file_at_scale (image_path, size, size, true);
+					if (image_path.has_prefix ("file://") || image_path.has_prefix ("/")) {
+						var file_path = File.new_for_commandline_arg (image_path).get_path ();
+						pixbuf = new Gdk.Pixbuf.from_file_at_scale (file_path, size, size, true);
 					} else {
 						pixbuf = Gtk.IconTheme.get_default ().load_icon (image_path, size, 0);
 					}
@@ -135,16 +131,17 @@ namespace Gala.Plugins.Notify
 			} else if (hints.contains ("icon_data")) {
 				print ("IMPLEMENT ICON_DATA!!!!!!!!\n");
 
-				/*Gdk.Pixdata data = {};
+				Gdk.Pixdata data = {};
 				try {
-					if (data.deserialize ((uint8[])hints.lookup ("image-data").get_data ()))
-						tex.set_from_pixbuf (Gdk.Pixbuf.from_pixdata (data));
+					if (data.deserialize ((uint8[])hints.lookup ("icon_data").get_data ()))
+						pixbuf = Gdk.Pixbuf.from_pixdata (data);
 					else
 						warning ("Error while deserializing icon_data");
-				} catch (Error e) { warning (e.message); }*/
+				} catch (Error e) { warning (e.message); }
 			}
 
 			if (pixbuf == null) {
+
 				try {
 					pixbuf = Gtk.IconTheme.get_default ().load_icon (app.down (), size, 0);
 				} catch (Error e) {

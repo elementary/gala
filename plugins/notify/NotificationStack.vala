@@ -37,11 +37,10 @@ namespace Gala.Plugins.Notify
 			if (animation_counter == 0)
 				animations_changed (true);
 
-
 			foreach (var child in get_children ()) {
 				var notification = (Notification) child;
 
-				if (notification.id == id) {
+				if (notification.id == id && !notification.being_destroyed) {
 					notification.update (summary, body, icon, expire_timeout, actions);
 
 					var transition = notification.get_transition ("update");

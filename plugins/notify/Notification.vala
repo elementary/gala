@@ -39,6 +39,7 @@ namespace Gala.Plugins.Notify
 		public string[] notification_actions { get; construct set; }
 
 		public uint64 relevancy_time { get; private set; }
+		public bool being_destroyed { get; private set; default = false; }
 
 		Text summary_label;
 		Text body_label;
@@ -129,6 +130,7 @@ namespace Gala.Plugins.Notify
 		{
 			opacity = 0;
 
+			being_destroyed = true;
 			get_transition ("opacity").completed.connect (() => destroy ());
 		}
 

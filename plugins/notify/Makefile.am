@@ -42,6 +42,7 @@ libgala_notify_la_VALASOURCES = \
 nodist_libgala_notify_la_SOURCES = \
 	$(BUILT_SOURCES) \
 	$(libgala_notify_la_VALASOURCES:.vala=.c) \
+	pixbuf-dbus-util.c \
 	$(NULL)
 
 libgala_notify_la_vala.stamp: $(libgala_notify_la_VALASOURCES)
