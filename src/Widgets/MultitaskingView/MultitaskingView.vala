@@ -385,39 +385,7 @@ namespace Gala
 					return false;
 				});
 			}
-
-			/**
-			 * three types of animation for docks:
-			 * - window appears to be at the bottom --> slide up
-			 * - window appears to be at the top --> slide down
-			 * - window appears to be somewhere else --> fade out
-			var rect = meta_window.get_outer_rect ();
-
-			if (about_same (rect.y, monitor_geometry.y)) {
-
-				float dest = opening ? monitor_geometry.y - rect.height : rect.y;
-				window.animate (AnimationMode.EASE_OUT_QUAD, HIDING_DURATION, y: dest);
-
-			} else if (about_same (rect.y + rect.height,
-				monitor_geometry.y + monitor_geometry.height)) {
-
-				float dest = opening ? monitor_geometry.y + monitor_geometry.height : rect.y;
-				window.animate (AnimationMode.EASE_OUT_QUAD, HIDING_DURATION, y: dest);
-
-			} else {
-				uint dest = opening ? 0 : 255;
-				window.animate (AnimationMode.LINEAR, HIDING_DURATION, opacity: dest);
-			}
-			*/
 		}
-
-		/**
-		 * checks if val1 is about the same as val2 with a threshold of 2 by default
-		 */
-		/*private bool about_same (float val1, float val2, float threshold = 2.0f)
-		{
-			return Math.fabsf (val1 - val2) <= threshold;
-		}*/
 	}
 }
 
