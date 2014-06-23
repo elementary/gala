@@ -140,6 +140,11 @@ namespace Gala
 			if (event.direction == ScrollDirection.SMOOTH)
 				return false;
 
+			// don't allow scrolling while switching to limit the rate at which
+			// workspaces are skipped during a scroll motion
+			if (workspaces.get_transition ("x") != null)
+				return false;
+
 			var active_workspace = screen.get_active_workspace ();
 			var new_workspace = active_workspace.get_neighbor (
 					event.direction == ScrollDirection.UP || event.direction == ScrollDirection.LEFT ?
