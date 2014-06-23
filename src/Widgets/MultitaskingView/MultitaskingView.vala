@@ -342,6 +342,8 @@ namespace Gala
 				grab_key_focus ();
 
 				icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET + 20;
+			} else {
+				DragDropAction.cancel_all_by_id ("multitaskingview-window");
 			}
 
 			// find active workspace clone and raise it, so there are no overlaps while transitioning
