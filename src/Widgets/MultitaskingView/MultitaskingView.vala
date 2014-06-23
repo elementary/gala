@@ -23,11 +23,14 @@ namespace Gala
 	public class MultitaskingView : Actor
 	{
 		const int HIDING_DURATION = 300;
+		const int SMOOTH_SCROLL_DELAY = 500;
 
 		public WindowManager wm { get; construct; }
 
 		Meta.Screen screen;
 		bool opened;
+
+		bool is_smooth_scrolling = false;
 
 		List<MonitorClone> window_containers_monitors;
 
@@ -135,20 +138,44 @@ namespace Gala
 				toggle ();
 		}
 
-		public override bool scroll_event (ScrollEvent event)
+		public override bool scroll_event (ScrollEvent scroll_event)
 		{
-			if (event.direction == ScrollDirection.SMOOTH)
+			if (scroll_event.direction != ScrollDirection.SMOOTH)
 				return false;
 
-			// don't allow scrolling while switching to limit the rate at which
-			// workspaces are skipped during a scroll motion
-			if (workspaces.get_transition ("x") != null)
+			double dx, dy;
+			var event = (Event*)(&scroll_event);
+			event->get_scroll_delta (out dx, out dy);
+
+			var direction = MotionDirection.LEFT;
+
+			// concept from maya to detect mouse wheel and proper smooth scroll and prevent
+			// too much repetition on the events
+			if (Math.fabs (dy) == 1.0) {
+				// mouse wheel scroll
+				direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
+			} else if (!is_smooth_scrolling) {
+				// actual smooth scroll
+				var choice = Math.fabs (dx) > Math.fabs (dy) ? dx : dy;
+
+				if (choice > 0.3)
+					direction = MotionDirection.RIGHT;
+				else if (choice < -0.3)
+					direction = MotionDirection.LEFT;
+				else
+					return false;
+
+				is_smooth_scrolling = true;
+				Timeout.add (SMOOTH_SCROLL_DELAY, () => {
+					is_smooth_scrolling = false;
+					return false;
+				});
+			} else
+				// smooth scroll delay still active
 				return false;
 
 			var active_workspace = screen.get_active_workspace ();
-			var new_workspace = active_workspace.get_neighbor (
-					event.direction == ScrollDirection.UP || event.direction == ScrollDirection.LEFT ?
-					Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+			var new_workspace = active_workspace.get_neighbor (direction);
 
 			if (active_workspace != new_workspace)
 				new_workspace.activate (screen.get_display ().get_current_time ());
