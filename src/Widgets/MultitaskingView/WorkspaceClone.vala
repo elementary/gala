@@ -24,9 +24,12 @@ namespace Gala
 	{
 		public FramedBackground (Screen screen)
 		{
-			base (screen, screen.get_primary_monitor (),
-				BackgroundSettings.get_default ().schema);
-
+			Object (screen: screen, monitor: screen.get_primary_monitor (), 
+				settings: BackgroundSettings.get_default ().schema);
+		}
+		
+		construct
+		{
 			var primary = screen.get_primary_monitor ();
 			var monitor_geom = screen.get_monitor_geometry (primary);
 
