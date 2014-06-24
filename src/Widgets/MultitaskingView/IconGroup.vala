@@ -477,9 +477,14 @@ namespace Gala
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.stroke ();
 
+			// it's not safe to to call meta_workspace_index() here, we may be still animating something
+			// while the workspace is already gone, which would result in a crash.
+			var screen = workspace.get_screen ();
+			var workspace_index = screen.get_workspaces ().index (workspace);
+
 			if (n_windows < 1) {
 				if (!Prefs.get_dynamic_workspaces ()
-					|| workspace.index () != workspace.get_screen ().get_n_workspaces () - 1)
+					|| workspace_index != screen.get_n_workspaces () - 1)
 					return false;
 
 				var buffer = new Granite.Drawing.BufferSurface (SIZE, SIZE);
