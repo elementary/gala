@@ -53,7 +53,8 @@ namespace Gala
 
 					reflow ();
 				} else {
-					transition_to_original_state ();
+					foreach (var window in get_children ())
+						((TiledWindow) window).transition_to_original_state (true);
 				}
 			}
 		}
@@ -78,7 +79,7 @@ namespace Gala
 		{
 		}
 
-		public void add_window (Window window, bool reflow_windows = true)
+		public void add_window (Window window)
 		{
 			unowned Meta.Display display = window.get_display ();
 			var children = get_children ();
@@ -122,8 +123,7 @@ namespace Gala
 			if (!added)
 				add_child (new_window);
 
-			if (reflow_windows)
-				reflow ();
+			reflow ();
 		}
 
 		public void remove_window (Window window)
@@ -305,14 +305,6 @@ namespace Gala
 		{
 			if (_current_window != null)
 				_current_window.selected ();
-		}
-
-		void transition_to_original_state ()
-		{
-			foreach (var child in get_children ()) {
-				unowned TiledWindow clone = (TiledWindow) child;
-				clone.transition_to_original_state ();
-			}
 		}
 	}
 }

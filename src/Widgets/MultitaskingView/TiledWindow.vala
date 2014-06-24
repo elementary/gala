@@ -136,7 +136,7 @@ namespace Gala
 #endif
 		}
 
-		public void load_clone (bool was_waiting = false)
+		void load_clone (bool was_waiting = false)
 		{
 			var actor = window.get_compositor_private () as WindowActor;
 			if (actor == null) {
@@ -198,7 +198,7 @@ namespace Gala
 			});
 		}
 
-		public void transition_to_original_state (bool animate = true)
+		public void transition_to_original_state (bool animate)
 		{
 			var outer_rect = window.get_outer_rect ();
 
