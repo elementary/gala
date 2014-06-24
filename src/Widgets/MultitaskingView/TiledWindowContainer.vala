@@ -29,54 +29,17 @@ namespace Gala
 		public int padding_right { get; set; default = 12; }
 		public int padding_bottom { get; set; default = 12; }
 
-		bool _opened;
-		public bool opened {
-			get {
-				return _opened;
-			}
-			set {
-				if (value == _opened)
-					return;
-
-				_opened = value;
-
-				if (_opened) {
-					// hide the highlight when opened
-					if (_current_window != null)
-						_current_window.active = false;
-
-					// make sure our windows are where they belong in case they were moved
-					// while were closed.
-					foreach (var window in get_children ()) {
-						((TiledWindow) window).transition_to_original_state (false);
-					}
-
-					reflow ();
-				} else {
-					foreach (var window in get_children ())
-						((TiledWindow) window).transition_to_original_state (true);
-				}
-			}
-		}
-
-		TiledWindow? _current_window = null;
-		public Window? current_window {
-			get {
-				return _current_window != null ? _current_window.window : null;
-			}
-			set {
-				foreach (var child in get_children ()) {
-					unowned TiledWindow tiled_window = (TiledWindow) child;
-					if (tiled_window.window == value) {
-						_current_window = tiled_window;
-						break;
-					}
-				}
-			}
-		}
+		bool opened;
+		TiledWindow? current_window;
 
 		public TiledWindowContainer ()
 		{
+		}
+
+		construct
+		{
+			opened = false;
+			current_window = null;
 		}
 
 		public void add_window (Window window)
@@ -221,16 +184,16 @@ namespace Gala
 			if (get_n_children () < 1)
 				return;
 
-			if (_current_window == null) {
-				_current_window = (TiledWindow) get_child_at_index (0);
+			if (current_window == null) {
+				current_window = (TiledWindow) get_child_at_index (0);
 				return;
 			}
 
-			var current_rect = _current_window.slot;
+			var current_rect = current_window.slot;
 
 			TiledWindow? closest = null;
 			foreach (var window in get_children ()) {
-				if (window == _current_window)
+				if (window == current_window)
 					continue;
 
 				var window_rect = ((TiledWindow) window).slot;
@@ -294,17 +257,57 @@ namespace Gala
 			if (closest == null)
 				return;
 
-			if (_current_window != null)
-				_current_window.active = false;
+			if (current_window != null)
+				current_window.active = false;
 
 			closest.active = true;
-			_current_window = closest;
+			current_window = closest;
 		}
 
 		public void activate_selected_window ()
 		{
-			if (_current_window != null)
-				_current_window.selected ();
+			if (current_window != null)
+				current_window.selected ();
+		}
+
+		public void open (Window? selected_window = null)
+		{
+			if (opened)
+				return;
+			
+			opened = true;
+			
+			// hide the highlight when opened
+			if (selected_window != null) {
+				foreach (var child in get_children ()) {
+					unowned TiledWindow tiled_window = (TiledWindow) child;
+					if (tiled_window.window == selected_window) {
+						current_window = tiled_window;
+						break;
+					}
+				}
+				current_window.active = false;
+			} else {
+				current_window = null;
+			}
+
+			// make sure our windows are where they belong in case they were moved
+			// while were closed.
+			foreach (var window in get_children ())
+				((TiledWindow) window).transition_to_original_state (false);
+
+			reflow ();
+		}
+
+		public void close ()
+		{
+			if (!opened)
+				return;
+			
+			opened = false;
+
+			foreach (var window in get_children ())
+				((TiledWindow) window).transition_to_original_state (true);
 		}
 	}
 }

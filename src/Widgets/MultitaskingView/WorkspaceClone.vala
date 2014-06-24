@@ -205,6 +205,11 @@ namespace Gala
 
 		public void open ()
 		{
+			if (opened)
+				return;
+			
+			opened = true;
+
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
 
@@ -227,8 +232,6 @@ namespace Gala
 			};
 			shrink_rectangle (ref area, 32);
 
-			opened = true;
-
 			window_container.padding_top = TOP_OFFSET;
 			window_container.padding_left =
 				window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
@@ -236,13 +239,14 @@ namespace Gala
 
 			icon_group.redraw ();
 
-			window_container.opened = true;
-			if (screen.get_active_workspace () == workspace)
-				window_container.current_window = display.get_focus_window ();
+			window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null);
 		}
 
 		public void close ()
 		{
+			if (!opened)
+				return;
+			
 			opened = false;
 
 			background.save_easing_state ();
@@ -251,7 +255,7 @@ namespace Gala
 			background.set_scale (1, 1);
 			background.restore_easing_state ();
 
-			window_container.opened = false;
+			window_container.close ();
 		}
 	}
 }

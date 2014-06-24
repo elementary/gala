@@ -83,13 +83,13 @@ namespace Gala
 
 		public void open ()
 		{
-			window_container.opened = true;
+			window_container.open ();
 			// background.opacity = 0; TODO consider this option
 		}
 
 		public void close ()
 		{
-			window_container.opened = false;
+			window_container.close ();
 			background.opacity = 255;
 		}
 
