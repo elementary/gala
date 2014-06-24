@@ -226,7 +226,7 @@ namespace Gala
 
 		void add_workspace (int num)
 		{
-			var workspace = new WorkspaceClone (wm, screen.get_workspace_by_index (num));
+			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
 			workspace.window_selected.connect (window_selected);
 			workspace.selected.connect (activate_workspace);
 

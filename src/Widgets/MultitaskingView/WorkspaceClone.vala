@@ -56,7 +56,6 @@ namespace Gala
 		public signal void window_selected (Window window);
 		public signal void selected (bool close_view);
 
-		public WindowManager wm { get; construct; }
 		public Workspace workspace { get; construct; }
 		public IconGroup icon_group { get; private set; }
 		public TiledWindowContainer window_container { get; private set; }
@@ -77,9 +76,9 @@ namespace Gala
 
 		uint hover_activate_timeout = 0;
 
-		public WorkspaceClone (WindowManager wm, Workspace workspace)
+		public WorkspaceClone (Workspace workspace)
 		{
-			Object (wm: wm, workspace: workspace);
+			Object (workspace: workspace);
 		}
 
 		construct
