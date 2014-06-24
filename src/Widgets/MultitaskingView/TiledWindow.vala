@@ -20,18 +20,39 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * A container for a clone of the texture of a MetaWindow, a WindowIcon,
+	 * a close button and a shadow. Used together with the TiledWindowContainer.
+	 */
 	public class TiledWindow : Actor
 	{
 		const int WINDOW_ICON_SIZE = 64;
 		const int ACTIVE_SHAPE_SIZE = 12;
 
+		/**
+		 * The window was selected. The MultitaskingView should consider activating
+		 * the window and closing the view.
+		 */
 		public signal void selected ();
+
+		/**
+		 * The window was moved or resized and a relayout of the tiling layout may
+		 * be sensible right now.
+		 */
 		public signal void request_reposition ();
 
 		public Meta.Window window { get; construct; }
+
+		/**
+		 * The currently assigned slot of the window in the tiling layout. May be null.
+		 */
 		public Meta.Rectangle? slot { get; private set; default = null; }
 
 		bool _active = false;
+		/**
+		 * When active fades a white border around the window in. Used for the visually
+		 * indicating the TiledWindowContainer's current_window.
+		 */
 		public bool active {
 			get {
 				return _active;
@@ -136,6 +157,16 @@ namespace Gala
 #endif
 		}
 
+		/**
+		 * Waits for the texture of a new WindowActor to be available
+		 * and makes a close of it. If it was already was assigned a slot
+		 * at this point it will animate to it. Otherwise it will just place
+		 * itself at the location of the original window. Also adds the shadow
+		 * effect and makes sure the shadow is updated on size changes.
+		 *
+		 * @param was_waiting Internal argument used to indicate that we had to 
+		 *                    wait before the window's texture became available.
+		 */
 		void load_clone (bool was_waiting = false)
 		{
 			var actor = window.get_compositor_private () as WindowActor;
@@ -179,6 +210,11 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Sets a timeout of 500ms after which, if no new resize action reset it,
+		 * the shadow will be resized and a request_reposition() will be emitted to
+		 * make the TiledWindowContainer calculate a new layout to honor the new size.
+		 */
 		void update_shadow_size ()
 		{
 			if (shadow_update_timeout != 0)
@@ -198,6 +234,11 @@ namespace Gala
 			});
 		}
 
+		/**
+		 * Place the window at the location of the original MetaWindow
+		 *
+		 * @param animate Animate the transformation of the placement
+		 */
 		public void transition_to_original_state (bool animate)
 		{
 			var outer_rect = window.get_outer_rect ();
@@ -217,6 +258,9 @@ namespace Gala
 			window_icon.opacity = 0;
 		}
 
+		/**
+		 * Animate the window to the given slot
+		 */
 		public void take_slot (Meta.Rectangle rect)
 		{
 			slot = rect;
@@ -230,6 +274,11 @@ namespace Gala
 			window_icon.opacity = 255;
 		}
 
+		/**
+		 * Except for the texture clone and the highlight all children are placed
+		 * according to their given allocations. The first two are placed in a way
+		 * that compensates for invisible borders of the texture.
+		 */
 		public override void allocate (ActorBox box, AllocationFlags flags)
 		{
 			base.allocate (box, flags);
@@ -270,6 +319,10 @@ namespace Gala
 			clone.allocate (alloc, flags);
 		}
 
+		/**
+		 * Place the widgets, that is the close button and the WindowIcon of the window,
+		 * at their positions inside the actor for a given width and height.
+		 */
 		public void place_widgets (int dest_width, int dest_height)
 		{
 			Granite.CloseButtonPosition pos;
@@ -299,6 +352,12 @@ namespace Gala
 			window_icon.restore_easing_state ();
 		}
 
+		/**
+		 * Send the window the delete signal and listen for new windows to be added
+		 * to the window's workspace, in which case we check if the new window is a
+		 * dialog of the window we were going to delete. If that's the case, we request
+		 * to select our window.
+		 */
 		void close_window ()
 		{
 			check_confirm_dialog_cb = window.get_workspace ().window_added.connect (check_confirm_dialog);
@@ -319,6 +378,9 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * The window unmanaged by the compositor, so we need to destroy ourselves too.
+		 */
 		void unmanaged ()
 		{
 			if (drag_action.dragging)
@@ -335,6 +397,11 @@ namespace Gala
 			destroy ();
 		}
 
+		/**
+		 * A drag action has been initiated on us, we reparent ourselves to the stage so
+		 * we can move freely, scale ourselves to a smaller scale and request that the
+		 * position we just freed is immediately filled by the TiledWindowContainer.
+		 */
 		Actor drag_begin (float click_x, float click_y)
 		{
 			float abs_x, abs_y;
@@ -363,6 +430,11 @@ namespace Gala
 			return this;
 		}
 
+		/**
+		 * When we cross an IconGroup, we animate to an even smaller size and slightly
+		 * less opacity and add ourselves as temporary window to the group. When left, 
+		 * we reverse those steps.
+		 */
 		void drag_destination_crossed (Actor destination, bool hovered)
 		{
 			var icon_group = destination as IconGroup;
@@ -395,6 +467,11 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Depending on the destination we have different ways to find the correct destination.
+		 * After we found one we destroy ourselves so the dragged clone immediately disappears,
+		 * otherwise we cancel the drag and animate back to our old place.
+		 */
 		void drag_end (Actor destination)
 		{
 			Meta.Workspace workspace = null;
@@ -429,6 +506,9 @@ namespace Gala
 				drag_canceled ();
 		}
 
+		/**
+		 * Animate back to our previous position with a bouncing animation.
+		 */
 		void drag_canceled ()
 		{
 			get_parent ().remove_child (this);

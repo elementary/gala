@@ -20,6 +20,11 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * The central class for the MultitaskingView which takes care of
+	 * preparing the wm, opening the components and holds containers for
+	 * the icon groups, the WorkspaceClones and the MonitorClones.
+	 */
 	public class MultitaskingView : Actor
 	{
 		const int HIDING_DURATION = 300;
@@ -105,6 +110,10 @@ namespace Gala
 			});
 		}
 
+		/**
+		 * Places the primary container for the WorkspaceClones and the
+		 * MonitorClones at the right positions
+		 */
 		void update_monitors ()
 		{
 			foreach (var monitor_clone in window_containers_monitors)
@@ -132,12 +141,19 @@ namespace Gala
 			set_size (primary_geometry.width, primary_geometry.height);
 		}
 
+		/**
+		 * We generally assume that when the key-focus-out signal is emitted
+		 * a different component was opened, so we close in that case.
+		 */
 		public override void key_focus_out ()
 		{
 			if (opened && !contains (get_stage ().key_focus))
 				toggle ();
 		}
 
+		/**
+		 * Scroll through workspaces
+		 */
 		public override bool scroll_event (ScrollEvent scroll_event)
 		{
 			if (scroll_event.direction != ScrollDirection.SMOOTH)
@@ -183,6 +199,13 @@ namespace Gala
 			return false;
 		}
 
+		/**
+		 * Places the WorkspaceClones, moves the view so that the active one is shown
+		 * and does the same for the IconGroups.
+		 *
+		 * @param animate Whether to animate the movement or have all elements take their
+		 *                positions immediately.
+		 */
 		void update_positions (bool animate)
 		{
 			var active_index = screen.get_active_workspace ().index ();
@@ -276,6 +299,14 @@ namespace Gala
 			update_positions (opened);
 		}
 
+		/**
+		 * Activates the workspace of a WorkspaceClone
+		 *
+		 * @param close_view Whether to close the view as well. Will only be considered
+		 *                   if the workspace is also the currently active workspace.
+		 *                   Otherwise it will only be made active, but the view won't be
+		 *                   closed.
+		 */
 		void activate_workspace (WorkspaceClone clone, bool close_view)
 		{
 			close_view = close_view && screen.get_active_workspace () == clone.workspace;
@@ -286,6 +317,10 @@ namespace Gala
 				toggle ();
 		}
 
+		/**
+		 * Collect key events, mainly for redirecting them to the TiledWindowContainers to
+		 * select the active window.
+		 */
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			switch (event.keyval) {
@@ -314,11 +349,22 @@ namespace Gala
 			return false;
 		}
 
+		/**
+		 * Inform the current TiledWindowContainer that we want to move the focus in
+		 * a specific direction.
+		 *
+		 * @param direction The direction in which to move the focus to
+		 */
 		void select_window (MotionDirection direction)
 		{
 			get_active_workspace_clone ().window_container.select_next_window (direction);
 		}
 
+		/**
+		 * Finds the active WorkspaceClone
+		 *
+		 * @return The active WorkspaceClone
+		 */
 		WorkspaceClone get_active_workspace_clone ()
 		{
 			foreach (var child in workspaces.get_children ()) {
@@ -344,6 +390,11 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Toggles the view open or closed. Takes care of all the wm related tasks, like
+		 * starting the modal mode and hiding the WindowGroup. Finally tells all components
+		 * to animate to their positions.
+		 */
 		public void toggle ()
 		{
 			opened = !opened;

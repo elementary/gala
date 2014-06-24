@@ -20,11 +20,20 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * Private class which is basically just a container for the actual
+	 * icon and takes care of blending the same icon in different sizes
+	 * over each other and various animations related to the icons
+	 */
 	class WindowIcon : Actor
 	{
 		public Window window { get; construct; }
 
 		int _icon_size;
+		/**
+		 * The icon size of the WindowIcon. Once set the new icon will be
+		 * faded over the old one and the actor animates to the new size.
+		 */
 		public int icon_size {
 			get {
 				return _icon_size;
@@ -42,6 +51,11 @@ namespace Gala
 		}
 
 		bool _temporary;
+		/**
+		 * Mark the WindowIcon as temporary. Only effect of this is that a pulse
+		 * animation will be played on the actor. Used while DnDing window thumbs
+		 * over the group.
+		 */
 		public bool temporary {
 			get {
 				return _temporary;
@@ -99,6 +113,13 @@ namespace Gala
 			set_easing_duration (800);
 		}
 
+		/**
+		 * Shortcut to set both position and size of the icon
+		 *
+		 * @param x    The x coordinate to which to animate to
+		 * @param y    The y coordinate to which to animate to
+		 * @param size The size to which to animate to and display the icon in
+		 */
 		public void place (float x, float y, int size)
 		{
 			if (initial) {
@@ -115,6 +136,9 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Fades out the old icon and fades in the new icon
+		 */
 		void fade_new_icon ()
 		{
 			var new_icon = new Utils.WindowIcon (window, icon_size);
@@ -152,6 +176,11 @@ namespace Gala
 		}
 	}
 
+	/**
+	 * Container for WindowIcons which takes care of the scaling and positioning.
+	 * It also decides whether to draw the container shape, a plus sign or an ellipsis.
+	 * Lastly it also includes the drawing code for the active highlight.
+	 */
 	public class IconGroup : Actor
 	{
 		public static const int SIZE = 64;
@@ -159,10 +188,17 @@ namespace Gala
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
 
+		/**
+		 * The group has been clicked. The MultitaskingView should consider activating
+		 * its workspace.
+		 */
 		public signal void selected ();
 
 		uint8 _backdrop_opacity = 0;
-		public uint8 backdrop_opacity {
+		/**
+		 * The opacity of the backdrop/highlight. Set by the active property setter.
+		 */
+		protected uint8 backdrop_opacity {
 			get {
 				return _backdrop_opacity;
 			}
@@ -171,7 +207,11 @@ namespace Gala
 				queue_redraw ();
 			}
 		}
+
 		bool _active = false;
+		/**
+		 * Fades in/out the backdrop/highlight
+		 */
 		public bool active {
 			get {
 				return _active;
@@ -194,6 +234,7 @@ namespace Gala
 				add_transition ("backdrop-opacity", transition);
 			}
 		}
+
 		public Workspace workspace { get; construct; }
 
 		Actor close_button;
@@ -203,8 +244,6 @@ namespace Gala
 		public IconGroup (Workspace workspace)
 		{
 			Object (workspace: workspace);
-
-			clear ();
 
 			width = SIZE;
 			height = SIZE;
@@ -275,8 +314,16 @@ namespace Gala
 			return false;
 		}
 
+		/**
+		 * Override the paint handler to draw our backdrop if necessary
+		 */
 		public override void paint ()
 		{
+			if (backdrop_opacity < 1) {
+				base.paint ();
+				return;
+			}
+
 			var width = 100;
 			var x = (SIZE - width) / 2;
 			var y = -10;
@@ -301,11 +348,23 @@ namespace Gala
 			base.paint ();
 		}
 
+		/**
+		 * Remove all currently added WindowIcons
+		 */
 		public void clear ()
 		{
-			destroy_all_children ();
+			icon_container.destroy_all_children ();
 		}
 
+		/**
+		 * Creates a WindowIcon for the given window and adds it to the group
+		 *
+		 * @param window    The MetaWindow for which to create the WindowIcon
+		 * @param no_redraw If you add multiple windows at once you may want to consider
+		 *                  settings this to true and when done calling redraw() manually
+		 * @param temporary Mark the WindowIcon as temporary. Used for windows dragged over
+		 *                  the group.
+		 */
 		public void add_window (Window window, bool no_redraw = false, bool temporary = false)
 		{
 			var new_window = new WindowIcon (window);
@@ -322,6 +381,11 @@ namespace Gala
 				redraw ();
 		}
 
+		/**
+		 * Remove the WindowIcon for a MetaWindow from the group
+		 *
+		 * @param animate Whether to fade the icon out before removing it
+		 */
 		public void remove_window (Window window, bool animate = true)
 		{
 			foreach (var child in icon_container.get_children ()) {
@@ -349,11 +413,19 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Trigger a redraw
+		 */
 		public void redraw ()
 		{
 			content.invalidate ();
 		}
 
+		/**
+		 * Close handler. We close the workspace by deleting all the windows on it.
+		 * That way the workspace won't be deleted if windows decide to ignore the
+		 * delete signal
+		 */
 		void close ()
 		{
 			var time = workspace.get_screen ().get_display ().get_current_time ();

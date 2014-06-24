@@ -20,7 +20,11 @@ using Meta;
 
 namespace Gala
 {
-	// TODO: allow DnD to insert new workspaces
+	/**
+	 * This class contains the icon groups at the bottom and will take
+	 * care of displaying actors for inserting windows between the groups
+	 * once implemented
+	 */
 	public class IconGroupContainer : Actor
 	{
 		public static const int SPACING = 48;

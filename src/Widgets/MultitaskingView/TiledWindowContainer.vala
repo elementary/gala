@@ -20,6 +20,9 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * Container which controls the layout of a set of TiledWindows.
+	 */
 	public class TiledWindowContainer : Actor
 	{
 		public signal void window_selected (Window window);
@@ -30,6 +33,11 @@ namespace Gala
 		public int padding_bottom { get; set; default = 12; }
 
 		bool opened;
+
+		/**
+		 * The window that is currently selected via keyboard shortcuts. It is not
+		 * necessarily the same as the active window.
+		 */
 		TiledWindow? current_window;
 
 		public TiledWindowContainer ()
@@ -42,6 +50,11 @@ namespace Gala
 			current_window = null;
 		}
 
+		/**
+		 * Create a TiledWindow for a MetaWindow and add it to the group
+		 *
+		 * @param window The window for which to create the TiledWindow for
+		 */
 		public void add_window (Window window)
 		{
 			unowned Meta.Display display = window.get_display ();
@@ -89,6 +102,9 @@ namespace Gala
 			reflow ();
 		}
 
+		/**
+		 * Find and remove the TiledWindow for a MetaWindow
+		 */
 		public void remove_window (Window window)
 		{
 			foreach (var child in get_children ()) {
@@ -121,6 +137,10 @@ namespace Gala
 			});
 		}
 
+		/**
+		 * Sort the windows z-order by their actual stacking to make intersections
+		 * during animations correct.
+		 */
 		public void restack_windows (Screen screen)
 		{
 			unowned Meta.Display display = screen.get_display ();
@@ -148,6 +168,10 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Recalculate the tiling positions of the windows and animate them to
+		 * the resulting spots.
+		 */
 		public void reflow ()
 		{
 			if (!opened)
@@ -179,6 +203,12 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Look for the next window in a direction and make this window the
+		 * new current_window. Used for keyboard navigation.
+		 *
+		 * @param direction The MetaMotionDirection in which to search for windows for.
+		 */
 		public void select_next_window (MotionDirection direction)
 		{
 			if (get_n_children () < 1)
@@ -264,12 +294,18 @@ namespace Gala
 			current_window = closest;
 		}
 
+		/**
+		 * Emit the selected signal for the current_window.
+		 */
 		public void activate_selected_window ()
 		{
 			if (current_window != null)
 				current_window.selected ();
 		}
 
+		/**
+		 * When opened the TiledWindows are animated to a tiled layout
+		 */
 		public void open (Window? selected_window = null)
 		{
 			if (opened)
@@ -299,6 +335,10 @@ namespace Gala
 			reflow ();
 		}
 
+		/**
+		 * Calls the transition_to_original_state() function on each child
+		 * to make them take their original locations again.
+		 */
 		public void close ()
 		{
 			if (!opened)

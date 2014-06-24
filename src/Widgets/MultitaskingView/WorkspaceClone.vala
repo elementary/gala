@@ -20,6 +20,9 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * Utility class which adds a border and a shadow to a Background
+	 */
 	class FramedBackground : Background
 	{
 		public FramedBackground (Screen screen)
@@ -50,13 +53,43 @@ namespace Gala
 		}
 	}
 
-	public class WorkspaceClone : Clutter.Actor
+	/**
+	 * This is the container which manages a clone of the background which will
+	 * be scaled and animated inwards, a TiledWindowContainer for the windows on
+	 * this workspace and also holds the instance for this workspace's IconGroup.
+	 * The latter is not added to the WorkspaceClone itself though but to a container
+	 * of the MultitaskingView.
+	 */
+	public class WorkspaceClone : Actor
 	{
+		/**
+		 * The offset of the scaled background to the bottom of the monitor bounds
+		 */
 		public const int BOTTOM_OFFSET = 100;
+
+		/**
+		 * The offset of the scaled background to the top of the monitor bounds
+		 */
 		const int TOP_OFFSET = 20;
+
+		/**
+		 * The amount of time a window has to be over the WorkspaceClone while in drag
+		 * before we activate the workspace.
+		 */
 		const int HOVER_ACTIVATE_DELAY = 400;
 
+		/**
+		 * A window has been selected, the MultitaskingView should consider activating
+		 * and closing the view.
+		 */
 		public signal void window_selected (Window window);
+
+		/**
+		 * The background has been selected. Switch to that workspace.
+		 *
+		 * @param close_view If the MultitaskingView should also consider closing itself
+		 *                   after switching.
+		 */
 		public signal void selected (bool close_view);
 
 		public Workspace workspace { get; construct; }
@@ -64,6 +97,10 @@ namespace Gala
 		public TiledWindowContainer window_container { get; private set; }
 
 		bool _active = false;
+		/**
+		 * If this WorkspaceClone is currently the active one. Also sets the active
+		 * state on its IconGroup.
+		 */
 		public bool active {
 			get {
 				return _active;
@@ -163,6 +200,10 @@ namespace Gala
 			background.destroy ();
 		}
 
+		/**
+		 * Add a window to the TiledWindowContainer and the IconGroup if it really
+		 * belongs to this workspace and this monitor.
+		 */
 		void add_window (Window window)
 		{
 			if (window.window_type != WindowType.NORMAL
@@ -178,6 +219,9 @@ namespace Gala
 			icon_group.add_window (window);
 		}
 
+		/**
+		 * Remove a window from the TiledWindowContainer and the IconGroup
+		 */
 		void remove_window (Window window)
 		{
 			window_container.remove_window (window);
@@ -195,6 +239,12 @@ namespace Gala
 				remove_window (window);
 		}
 
+		/**
+		 * Utility function to shrink a MetaRectangle on all sides for the given amount.
+		 * Negative amounts will scale it instead.
+		 *
+		 * @param amount The amount in px to shrink.
+		 */
 		static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount)
 		{
 			rect.x += amount;
@@ -203,6 +253,12 @@ namespace Gala
 			rect.height -= amount * 2;
 		}
 
+		/**
+		 * Animates the background to its scale, causes a redraw on the IconGroup and
+		 * makes sure the TiledWindowContainer animates its windows to their tiled layout.
+		 * Also sets the current_window of the TiledWindowContainer to the active window
+		 * if it belongs to this workspace.
+		 */
 		public void open ()
 		{
 			if (opened)
@@ -242,6 +298,10 @@ namespace Gala
 			window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null);
 		}
 
+		/**
+		 * Close the view again by animating the background back to its scale and
+		 * the windows back to their old locations.
+		 */
 		public void close ()
 		{
 			if (!opened)

@@ -20,6 +20,13 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * More or less utility class to contain a TiledWindowContainer for each
+	 * non-primary monitor. It's the pendant to the WorkspaceClone which is
+	 * only placed on the primary monitor. It also draws a wallpaper behind itself
+	 * as the WindowGroup is hidden while the view is active. Only used when
+	 * workspaces-only-on-primary is set to true.
+	 */
 	public class MonitorClone : Actor
 	{
 		public signal void window_selected (Window window);
@@ -72,6 +79,9 @@ namespace Gala
 			screen.restacked.disconnect (window_container.restack_windows);
 		}
 
+		/**
+		 * Make sure the MonitorClone is at the location of the monitor on the stage
+		 */
 		public void update_allocation ()
 		{
 			var monitor_geometry = screen.get_monitor_geometry (monitor);
@@ -81,12 +91,18 @@ namespace Gala
 			window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 		}
 
+		/**
+		 * Animate the windows from their old location to a tiled layout
+		 */
 		public void open ()
 		{
 			window_container.open ();
 			// background.opacity = 0; TODO consider this option
 		}
 
+		/**
+		 * Animate the windows back to their old location
+		 */
 		public void close ()
 		{
 			window_container.close ();
