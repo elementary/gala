@@ -94,7 +94,7 @@ namespace Gala
 			var color = BackgroundSettings.get_default ().primary_color;
 			stage.background_color = Clutter.Color.from_string (color);
 
-			workspace_manager = new WorkspaceManager (screen);
+			workspace_manager = new WorkspaceManager (this);
 
 			/* our layer structure, copied from gnome-shell (from bottom to top):
 			 * stage
@@ -418,9 +418,6 @@ namespace Gala
 #else
 			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
 #endif
-			// we assume that while a user is in the modal mode, he won't have a chance
-			// to use an empty workspace anyway, so we have it immediately close.
-			workspace_manager.remove_workspace_immediately = true;
 
 			Meta.Util.disable_unredirect_for_screen (screen);
 		}
@@ -436,9 +433,12 @@ namespace Gala
 			var screen = get_screen ();
 			base.end_modal (screen.get_display ().get_current_time ());
 
-			workspace_manager.remove_workspace_immediately = false;
-
 			Meta.Util.enable_unredirect_for_screen (screen);
+		}
+
+		public bool is_modal ()
+		{
+			return (modal_count > 0);
 		}
 
 		public void get_current_cursor_position (out int x, out int y)

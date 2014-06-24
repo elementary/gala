@@ -50,6 +50,7 @@ namespace Gala
 
 		public abstract void begin_modal ();
 		public abstract void end_modal ();
+		public abstract bool is_modal ();
 		public abstract void perform_action (ActionType type);
 		public abstract void update_input_area ();
 		public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);

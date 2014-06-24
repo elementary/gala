@@ -21,19 +21,18 @@ namespace Gala
 {
 	public class WorkspaceManager : Object
 	{
-		public Screen screen { get; construct; }
-		/**
-		 * While set to true, workspaces that have no windows left will be
-		 * removed immediately. Otherwise they will be kept alive until
-		 * the user switches away from them. Only applies to dynamic workspaces.
-		 */
-		public bool remove_workspace_immediately { get; set; default = false; }
+		public WindowManager wm { get; construct; }
 
 		Gee.LinkedList<Workspace> workspaces_marked_removed;
 
-		public WorkspaceManager (Screen screen)
+		public WorkspaceManager (WindowManager wm)
 		{
-			Object (screen: screen);
+			Object (wm: wm);
+		}
+
+		construct
+		{
+			unowned Screen screen = wm.get_screen ();
 
 			workspaces_marked_removed = new Gee.LinkedList<Workspace> ();
 
@@ -47,27 +46,9 @@ namespace Gala
 
 			screen.workspace_switched.connect_after (workspace_switched);
 			screen.workspace_added.connect (workspace_added);
-			screen.workspace_removed.connect_after (() => {
-				unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
-
-				var it = workspaces_marked_removed.iterator ();
-				while (it.next ()) {
-					if (existing_workspaces.index (it.@get ()) < 0)
-						it.remove ();
-				}
-			});
-
-			screen.window_left_monitor.connect ((monitor, window) => {
-				if (InternalUtils.workspaces_only_on_primary ()
-					&& monitor == screen.get_primary_monitor ())
-					window_removed (window.get_workspace (), window);
-			});
-
-			screen.window_entered_monitor.connect ((monitor, window) => {
-				if (InternalUtils.workspaces_only_on_primary ()
-					&& monitor == screen.get_primary_monitor ())
-					window_added (window.get_workspace (), window);
-			});
+			screen.workspace_removed.connect_after (workspace_removed);
+			screen.window_entered_monitor.connect (window_entered_monitor);
+			screen.window_left_monitor.connect (window_left_monitor);
 
 			// make sure the last workspace has no windows on it
 			if (Prefs.get_dynamic_workspaces ()
@@ -77,10 +58,15 @@ namespace Gala
 
 		~WorkspaceManager ()
 		{
+			unowned Screen screen = wm.get_screen ();
+
 			Prefs.remove_listener (prefs_listener);
 
 			screen.workspace_added.disconnect (workspace_added);
 			screen.workspace_switched.disconnect (workspace_switched);
+			screen.workspace_removed.disconnect (workspace_removed);
+			screen.window_entered_monitor.disconnect (window_entered_monitor);
+			screen.window_left_monitor.disconnect (window_left_monitor);
 		}
 
 		void workspace_added (Screen screen, int index)
@@ -91,6 +77,17 @@ namespace Gala
 
 			workspace.window_added.connect (window_added);
 			workspace.window_removed.connect (window_removed);
+		}
+
+		void workspace_removed (Screen screen, int index)
+		{
+			unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
+
+			var it = workspaces_marked_removed.iterator ();
+			while (it.next ()) {
+				if (existing_workspaces.index (it.@get ()) < 0)
+					it.remove ();
+			}
 		}
 
 		void workspace_switched (Screen screen, int from, int to, MotionDirection direction)
@@ -111,6 +108,8 @@ namespace Gala
 			if (workspace == null || !Prefs.get_dynamic_workspaces ())
 				return;
 
+			unowned Screen screen = workspace.get_screen ();
+
 			if ((window.window_type == WindowType.NORMAL
 				|| window.window_type == WindowType.DIALOG
 				|| window.window_type == WindowType.MODAL_DIALOG)
@@ -122,6 +121,8 @@ namespace Gala
 		{
 			if (workspace == null || !Prefs.get_dynamic_workspaces ())
 				return;
+
+			unowned Screen screen = workspace.get_screen ();
 
 			if (window.window_type != WindowType.NORMAL
 				&& window.window_type != WindowType.DIALOG
@@ -136,16 +137,32 @@ namespace Gala
 			var is_active_workspace = workspace == screen.get_active_workspace ();
 
 			// remove it right away if it was the active workspace and it's not the very last
-			// or we are requested to immediately remove the workspace anyway
-			if ((!is_active_workspace || remove_workspace_immediately)
+			// or we are in modal-mode
+			if ((!is_active_workspace || wm.is_modal ())
 				&& Utils.get_n_windows (workspace) < 1
 				&& index != screen.get_n_workspaces () - 1) {
 				remove_workspace (workspace);
 			}
 		}
 
+		void window_entered_monitor (Screen screen, int monitor, Window window)
+		{
+			if (InternalUtils.workspaces_only_on_primary ()
+				&& monitor == screen.get_primary_monitor ())
+				window_added (window.get_workspace (), window);
+		}
+
+		void window_left_monitor (Screen screen, int monitor, Window window)
+		{
+			if (InternalUtils.workspaces_only_on_primary ()
+				&& monitor == screen.get_primary_monitor ())
+				window_removed (window.get_workspace (), window);
+		}
+
 		void prefs_listener (Meta.Preference pref)
 		{
+			unowned Screen screen = wm.get_screen ();
+
 			if (pref == Preference.DYNAMIC_WORKSPACES && Prefs.get_dynamic_workspaces ()) {
 				// if the last workspace has a window, we need to append a new workspace
 				if (Utils.get_n_windows (screen.get_workspace_by_index (screen.get_n_workspaces () - 1)) > 0)
@@ -155,6 +172,8 @@ namespace Gala
 
 		void append_workspace ()
 		{
+			unowned Screen screen = wm.get_screen ();
+
 			screen.append_new_workspace (false, screen.get_display ().get_current_time ());
 		}
 
@@ -165,6 +184,8 @@ namespace Gala
 		 */
 		void remove_workspace (Workspace workspace)
 		{
+			unowned Screen screen = workspace.get_screen ();
+
 			var time = screen.get_display ().get_current_time ();
 
 			if (workspace == screen.get_active_workspace ()) {
@@ -184,6 +205,9 @@ namespace Gala
 				return;
 			}
 
+			workspace.window_added.disconnect (window_added);
+			workspace.window_removed.disconnect (window_removed);
+			
 			workspaces_marked_removed.add (workspace);
 
 			screen.remove_workspace (workspace, time);
