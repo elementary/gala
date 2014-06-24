@@ -24,23 +24,20 @@ namespace Gala
 	{
 		public signal void window_selected (Window window);
 
-		public WindowManager wm { get; construct; }
+		public Screen screen { get; construct; }
 		public int monitor { get; construct; }
 
-		Meta.Screen screen;
 		TiledWindowContainer window_container;
 		Background background;
 
-		public MonitorClone (WindowManager wm, int monitor)
+		public MonitorClone (Screen screen, int monitor)
 		{
-			Object (wm: wm, monitor: monitor);
+			Object (screen: screen, monitor: monitor);
 		}
 
 		construct
 		{
 			reactive = true;
-
-			screen = wm.get_screen ();
 
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 			background.set_easing_duration (300);

@@ -117,7 +117,7 @@ namespace Gala
 					if (monitor == primary)
 						continue;
 
-					var monitor_clone = new MonitorClone (wm, monitor);
+					var monitor_clone = new MonitorClone (screen, monitor);
 					monitor_clone.window_selected.connect (window_selected);
 					monitor_clone.visible = opened;
 
