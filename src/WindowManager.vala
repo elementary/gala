@@ -1100,6 +1100,30 @@ namespace Gala
 			return modal_count > 0;
 		}
 
+#if HAS_MUTTER310
+		public override void confirm_display_change ()
+		{
+			var pid = Util.show_dialog ("--question",
+				_("Does the display look OK?"),
+				"30",
+				null,
+				_("Keep This Configuration"),
+				_("Restore Previous Configuration"),
+				"preferences-desktop-display",
+				0,
+				null, null);
+
+			ChildWatch.add (pid, (pid, status) => {
+				var ok = false;
+				try {
+					ok = Process.check_exit_status (status);
+				} catch (Error e) {}
+
+				complete_display_change (ok);
+			});
+		}
+#endif
+
 		public override unowned Meta.PluginInfo? plugin_info ()
 		{
 			return info;
