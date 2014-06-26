@@ -244,6 +244,11 @@ namespace Gala
 		public IconGroup (Workspace workspace)
 		{
 			Object (workspace: workspace);
+		}
+
+		construct
+		{
+			clear ();
 
 			width = SIZE;
 			height = SIZE;
