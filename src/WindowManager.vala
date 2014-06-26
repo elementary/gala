@@ -516,6 +516,26 @@ namespace Gala
 			}
 		}
 
+#if HAS_MUTTER314
+		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
+		{
+			//TODO implement window/app menus, their implementation where removed with mutter 3.13+
+			switch (menu) {
+			case WindowMenuType.WM:
+				message ("TODO: show window menu for %s at %ix%i\n", window.get_description (), x, y);
+				break;
+			case WindowMenuType.APP:
+				message ("TODO: show app menu for %s at %ix%i\n", window.get_description (), x, y);
+				break;
+			}
+		}
+
+		public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect)
+		{
+			show_window_menu (window, menu, rect.x, rect.y);
+		}
+#endif
+
 		/*
 		 * effects
 		 */
