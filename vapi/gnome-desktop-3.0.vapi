@@ -181,6 +181,7 @@ namespace Gnome {
 		public uint32 get_id ();
 		public void get_ids_from_edid (out string vendor, out string product, out string serial);
 		public bool get_is_primary ();
+		public int get_min_backlight_step ();
 		public unowned string get_name ();
 		public void get_physical_size (out int width_mm, out int height_mm);
 		public void get_position (out int x, out int y);
@@ -214,6 +215,7 @@ namespace Gnome {
 		public void set_primary (bool primary);
 		public void set_refresh_rate (int rate);
 		public void set_rotation (Gnome.RRRotation rotation);
+		public bool supports_rotation (Gnome.RRRotation rotation);
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-rr.h", type_id = "gnome_rr_screen_get_type ()")]
 	public class RRScreen : GLib.Object, GLib.AsyncInitable, GLib.Initable {
