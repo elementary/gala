@@ -204,7 +204,7 @@ namespace Meta {
 		public static void set_verbose (bool setting);
 #endif
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_show_dialog")]
-		public static GLib.Pid show_dialog (string type, string message, string timeout, string display, string ok_text, string cancel_text, string icon_name, int transient_for, GLib.SList<string> columns, GLib.SList<string> entries);
+		public static GLib.Pid show_dialog (string type, string message, string? timeout = null, string? display = null, string? ok_text = null, string? cancel_text = null, string? icon_name = null, int transient_for = 0, GLib.SList<string>? columns = null, GLib.SList<string>? entries = null);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_unsigned_long_equal")]
