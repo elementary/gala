@@ -33,6 +33,7 @@ namespace Gala.Plugins.Notify
 			Object (screen: screen);
 
 			width = Notification.WIDTH + 2 * Notification.MARGIN;
+			clip_to_allocation = true;
 		}
 
 		public void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
@@ -63,7 +64,11 @@ namespace Gala.Plugins.Notify
 			var notification = new Notification (screen, id, summary, body, icon,
 				urgency, expire_timeout, sender_pid, actions);
 
-			add_child (notification);
+			float height;
+			notification.get_preferred_height (Notification.WIDTH, out height, null);
+			update_positions (height);
+
+			insert_child_at_index (notification, 0);
 
 			animation_counter++;
 
@@ -71,6 +76,27 @@ namespace Gala.Plugins.Notify
 				if (--animation_counter == 0)
 					animations_changed (false);
 			});
+		}
+
+		void update_positions (float add_y = 0.0f)
+		{
+			var y = add_y;
+			var i = get_n_children ();
+			var delay_step = i > 0 ? 150 / i : 0;
+			foreach (var child in get_children ()) {
+				if (((Notification) child).being_destroyed)
+					continue;
+
+				child.save_easing_state ();
+				child.set_easing_mode (AnimationMode.EASE_OUT_BACK);
+				child.set_easing_duration (200);
+				child.set_easing_delay ((i--) * delay_step);
+
+				child.y = y;
+				child.restore_easing_state ();
+
+				y += child.height;
+			}
 		}
 	}
 }

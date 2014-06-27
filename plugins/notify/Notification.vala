@@ -67,9 +67,7 @@ namespace Gala.Plugins.Notify
 			relevancy_time = new DateTime.now_local ().to_unix ();
 			width = WIDTH + MARGIN * 2;
 			reactive = true;
-
-			set_easing_duration (300);
-			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			margin_left = 12;
 
 			summary_label = new Text.with_text (null, "");
 			summary_label.line_wrap = true;
@@ -99,24 +97,21 @@ namespace Gala.Plugins.Notify
 
 			set_values ();
 
-			var transition = new TransitionGroup ();
-			transition.duration = 400;
-			transition.remove_on_complete = true;
+			save_easing_state ();
+			set_easing_duration (0);
+			x = WIDTH + MARGIN * 2;
+			restore_easing_state ();
 
-			var opacity_transition = new PropertyTransition ("opacity");
-			opacity_transition.set_from_value (0);
-			opacity_transition.set_to_value (255);
-
-			var slide_transition = new PropertyTransition ("y");
-			slide_transition.set_from_value (-60);
+			var slide_transition = new PropertyTransition ("x");
+			slide_transition.set_from_value (WIDTH);
 			slide_transition.set_to_value (0);
 			slide_transition.progress_mode = urgency == NotificationUrgency.LOW ?
-				AnimationMode.EASE_OUT_CUBIC : AnimationMode.EASE_OUT_BOUNCE;
+				AnimationMode.EASE_OUT_CUBIC : AnimationMode.EASE_OUT_BACK;
+			slide_transition.duration = 200;
+			slide_transition.remove_on_complete = true;
+			slide_transition.delay = 200;
 
-			transition.add_transition (opacity_transition);
-			transition.add_transition (slide_transition);
-
-			add_transition ("entry", transition);
+			add_transition ("entry", slide_transition);
 
 			var click = new ClickAction ();
 			click.clicked.connect (() => {
@@ -136,10 +131,20 @@ namespace Gala.Plugins.Notify
 
 		public void close ()
 		{
+			set_easing_duration (200);
+
+			set_easing_mode (AnimationMode.EASE_IN_QUAD);
 			opacity = 0;
 
+			set_easing_mode (AnimationMode.EASE_IN_BACK);
+			x = WIDTH + MARGIN * 2;
+
 			being_destroyed = true;
-			get_transition ("opacity").completed.connect (() => destroy ());
+			var transition = get_transition ("x");
+			if (transition != null)
+				transition.completed.connect (() => destroy ());
+			else
+				destroy ();
 		}
 
 		Window? get_window ()

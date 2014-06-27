@@ -38,7 +38,7 @@ namespace Gala.Plugins.Notify
 	[DBus (name = "org.freedesktop.Notifications")]
 	public class NotifyServer : Object
 	{
-		const int DEFAULT_TMEOUT = 3000;
+		const int DEFAULT_TMEOUT = 4000;
 		const string FALLBACK_ICON = "dialog-information";
 
 		[DBus (visible = false)]
