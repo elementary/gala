@@ -48,16 +48,15 @@ gala_VALASOURCES = \
 	Background/BackgroundManager.vala \
 	Background/SlideShow.vala \
 	Background/SystemBackground.vala \
+	Widgets/IconGroup.vala \
+	Widgets/IconGroupContainer.vala \
+	Widgets/MonitorClone.vala \
+	Widgets/MultitaskingView.vala \
+	Widgets/TiledWindow.vala \
+	Widgets/TiledWindowContainer.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
-	Widgets/WindowThumb.vala \
-	Widgets/MultitaskingView/IconGroup.vala \
-	Widgets/MultitaskingView/IconGroupContainer.vala \
-	Widgets/MultitaskingView/MonitorClone.vala \
-	Widgets/MultitaskingView/MultitaskingView.vala \
-	Widgets/MultitaskingView/TiledWindow.vala \
-	Widgets/MultitaskingView/TiledWindowContainer.vala \
-	Widgets/MultitaskingView/WorkspaceClone.vala \
+	Widgets/WorkspaceClone.vala \
 	$(NULL)
 
 nodist_gala_SOURCES = \

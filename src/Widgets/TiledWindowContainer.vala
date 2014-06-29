@@ -32,6 +32,8 @@ namespace Gala
 		public int padding_right { get; set; default = 12; }
 		public int padding_bottom { get; set; default = 12; }
 
+		public bool overview_mode { get; construct; }
+
 		bool opened;
 
 		/**
@@ -40,8 +42,9 @@ namespace Gala
 		 */
 		TiledWindow? current_window;
 
-		public TiledWindowContainer ()
+		public TiledWindowContainer (bool overview_mode = false)
 		{
+			Object (overview_mode: overview_mode);
 		}
 
 		construct
@@ -70,7 +73,7 @@ namespace Gala
 			
 			var windows_ordered = display.sort_windows_by_stacking (windows);
 			
-			var new_window = new TiledWindow (window);
+			var new_window = new TiledWindow (window, overview_mode);
 
 			new_window.selected.connect (window_selected_cb);
 			new_window.destroy.connect (window_destroyed);
@@ -180,12 +183,24 @@ namespace Gala
 			var windows = new List<InternalUtils.TilableWindow?> ();
 			foreach (var child in get_children ()) {
 				unowned TiledWindow window = (TiledWindow) child;
+#if HAS_MUTTER312
+				windows.prepend ({ window.window.get_frame_rect (), window });
+#else
 				windows.prepend ({ window.window.get_outer_rect (), window });
+#endif
 			}
-			windows.reverse ();
 
 			if (windows.length () < 1)
 				return;
+
+			// make sure the windows are always in the same order so the algorithm
+			// doesn't give us different slots based on stacking order, which can lead
+			// to windows flying around weirdly
+			windows.sort ((a, b) => {
+				var seq_a = ((TiledWindow) a.id).window.get_stable_sequence ();
+				var seq_b = ((TiledWindow) b.id).window.get_stable_sequence ();
+				return (int) (seq_b - seq_a);
+			});
 
 			Meta.Rectangle area = {
 				padding_left,

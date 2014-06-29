@@ -69,6 +69,8 @@ namespace Gala
 			}
 		}
 
+		public bool overview_mode { get; construct; }
+
 		DragDropAction drag_action;
 		Clone? clone = null;
 
@@ -81,9 +83,9 @@ namespace Gala
 		Actor active_shape;
 		GtkClutter.Texture window_icon;
 
-		public TiledWindow (Meta.Window window)
+		public TiledWindow (Meta.Window window, bool overview_mode = false)
 		{
-			Object (window: window);
+			Object (window: window, overview_mode: overview_mode);
 		}
 
 		construct
@@ -92,23 +94,23 @@ namespace Gala
 
 			window.unmanaged.connect (unmanaged);
 
-			drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
-			drag_action.drag_begin.connect (drag_begin);
-			drag_action.destination_crossed.connect (drag_destination_crossed);
-			drag_action.drag_end.connect (drag_end);
-			drag_action.drag_canceled.connect (drag_canceled);
-			drag_action.actor_clicked.connect ((button) => {
-				switch (button) {
-					case 1:
-						selected ();
-						break;
-					case 2:
-						close_window ();
-						break;
-				}
-			});
+			if (overview_mode) {
+				var click_action = new ClickAction ();
+				click_action.clicked.connect (() => {
+					actor_clicked (click_action.get_button ());
+				});
 
-			add_action (drag_action);
+				add_action (click_action);
+			} else {
+				drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
+				drag_action.drag_begin.connect (drag_begin);
+				drag_action.destination_crossed.connect (drag_destination_crossed);
+				drag_action.drag_end.connect (drag_end);
+				drag_action.drag_canceled.connect (drag_canceled);
+				drag_action.actor_clicked.connect (actor_clicked);
+
+				add_action (drag_action);
+			}
 
 			close_button = Utils.create_close_button ();
 			close_button.opacity = 0;
@@ -180,6 +182,9 @@ namespace Gala
 				return;
 			}
 
+			if (overview_mode)
+				actor.hide ();
+
 			clone = new Clone (actor.get_texture ());
 			add_child (clone);
 
@@ -189,13 +194,20 @@ namespace Gala
 
 			transition_to_original_state (false);
 
+#if HAS_MUTTER312
+			var outer_rect = window.get_frame_rect ();
+#else
 			var outer_rect = window.get_outer_rect ();
+#endif
 			add_effect_with_name ("shadow", new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5));
 #if HAS_MUTTER312
 			window.size_changed.connect (update_shadow_size);
 #else
 			actor.size_changed.connect (update_shadow_size);
 #endif
+
+			if (should_fade ())
+				opacity = 0;
 
 			// if we were waiting the view was most probably already opened when our window
 			// finally got available. So we fade-in and make sure we took the took place.
@@ -211,6 +223,16 @@ namespace Gala
 		}
 
 		/**
+		 * If we are in overview mode, we may display windows from workspaces other than
+		 * the current one. To ease their appearance we have to fade them in.
+		 */
+		bool should_fade ()
+		{
+			return overview_mode
+				&& window.get_workspace () != window.get_screen ().get_active_workspace ();
+		}
+
+		/**
 		 * Sets a timeout of 500ms after which, if no new resize action reset it,
 		 * the shadow will be resized and a request_reposition() will be emitted to
 		 * make the TiledWindowContainer calculate a new layout to honor the new size.
@@ -221,7 +243,11 @@ namespace Gala
 				Source.remove (shadow_update_timeout);
 
 			shadow_update_timeout = Timeout.add (500, () => {
+#if HAS_MUTTER312
+				var rect = window.get_frame_rect ();
+#else
 				var rect = window.get_outer_rect ();
+#endif
 				var effect = get_effect ("shadow") as ShadowEffect;
 				effect.update_size (rect.width, rect.height);
 
@@ -241,13 +267,24 @@ namespace Gala
 		 */
 		public void transition_to_original_state (bool animate)
 		{
+#if HAS_MUTTER312
+			var outer_rect = window.get_frame_rect ();
+#else
 			var outer_rect = window.get_outer_rect ();
+#endif
 
 			float offset_x = 0, offset_y = 0;
 
 			var parent = get_parent ();
-			if (parent != null)
-				parent.get_transformed_position (out offset_x, out offset_y);
+			if (parent != null) {
+				// in overview_mode the parent has just been added to the stage, so the
+				// transforme position is not set yet. However, the set position is correct
+				// for overview anyway, so we can just use that.
+				if (overview_mode)
+					parent.get_position (out offset_x, out offset_y);
+				else
+					parent.get_transformed_position (out offset_x, out offset_y);
+			}
 
 			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
 			set_easing_duration (animate ? 300 : 0);
@@ -256,6 +293,9 @@ namespace Gala
 			set_size (outer_rect.width, outer_rect.height);
 
 			window_icon.opacity = 0;
+
+			if (should_fade ())
+				opacity = 0;
 		}
 
 		/**
@@ -272,6 +312,17 @@ namespace Gala
 			set_position (rect.x, rect.y);
 
 			window_icon.opacity = 255;
+
+			// for overview mode, windows may be faded out initially. Make sure
+			// to fade those in.
+			if (overview_mode) {
+				save_easing_state ();
+				set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+				set_easing_duration (300);
+
+				opacity = 255;
+				restore_easing_state ();
+			}
 		}
 
 		/**
@@ -305,7 +356,11 @@ namespace Gala
 #else
 			var input_rect = window.get_input_rect ();
 #endif
+#if HAS_MUTTER312
+			var outer_rect = window.get_frame_rect ();
+#else
 			var outer_rect = window.get_outer_rect ();
+#endif
 			var scale_factor = (float)width / outer_rect.width;
 
 			var shadow_effect = get_effect ("shadow") as ShadowEffect;
@@ -395,6 +450,17 @@ namespace Gala
 			}
 
 			destroy ();
+		}
+
+		void actor_clicked (uint32 button) {
+			switch (button) {
+				case 1:
+					selected ();
+					break;
+				case 2:
+					close_window ();
+					break;
+			}
 		}
 
 		/**
