@@ -248,8 +248,6 @@ namespace Gala
 
 		construct
 		{
-			clear ();
-
 			width = SIZE;
 			height = SIZE;
 			reactive = true;
