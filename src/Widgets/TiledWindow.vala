@@ -512,7 +512,7 @@ namespace Gala
 				return;
 
 			var scale = hovered ? 0.1 : 0.4;
-			var opacity = hovered ? 100 : 255;
+			var opacity = hovered ? 50 : 255;
 			var mode = hovered ? AnimationMode.EASE_IN_OUT_BACK : AnimationMode.EASE_OUT_ELASTIC;
 
 			save_easing_state ();

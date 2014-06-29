@@ -24,19 +24,22 @@ namespace Gala
 
 		public float scale_factor { get; set; default = 1; }
 
-		Cogl.Texture? shadow = null;
+		Cogl.Material material;
 		string? current_key = null;
 
 		public ShadowEffect (int actor_width, int actor_height, int shadow_size, int shadow_spread)
 		{
 			Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
 
+			material = new Cogl.Material ();
+
 			update_size (actor_width, actor_height);
 		}
 
 		public void update_size (int actor_width, int actor_height)
 		{
-			shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
+			var shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
+			material.set_layer (0, shadow);
 		}
 
 		~ShadowEffect ()
@@ -104,7 +107,12 @@ namespace Gala
 		{
 			var size = shadow_size * scale_factor;
 
-			Cogl.set_source_texture (shadow);
+			var alpha = Cogl.Color.from_4ub (255, 255, 255, actor.get_paint_opacity ());
+			alpha.premultiply ();
+
+			material.set_color (alpha);
+
+			Cogl.set_source (material);
 			Cogl.rectangle (-size, -size, actor.width + size, actor.height + size);
 
 			actor.continue_paint ();
