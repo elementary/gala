@@ -44,7 +44,7 @@ namespace Gala
 		// the workspaces which we expose right now
 		List<Workspace> workspaces;
 
-		public WindowOverview (WindowManager _wm)
+		public WindowOverview (WindowManager wm)
 		{
 			Object (wm : wm);
 		}
