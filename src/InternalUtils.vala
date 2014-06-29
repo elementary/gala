@@ -23,6 +23,38 @@ namespace Gala
 {
 	public class InternalUtils
 	{
+		/**
+		 * A clone for a MetaWindowActor that will guard against the
+		 * meta_window_appears_focused crash by disabling painting the clone
+		 * as soon as it gets unavailable.
+		 */
+		public class SafeWindowClone : Clutter.Clone
+		{
+			public Window window { get; construct; }
+
+			public SafeWindowClone (Window window)
+			{
+				var actor = (WindowActor) window.get_compositor_private ();
+				Object (window: window, source: actor);
+
+				if (source != null)
+					window.unmanaged.connect (reset_source);
+			}
+
+			void reset_source ()
+			{
+				// actually destroying the clone will be handled somewhere else, we just need
+				// to make sure the clone doesn't attempt to draw a clone of a window that
+				// has been destroyed
+				source = null;
+			}
+
+			~SafeWindowClone ()
+			{
+				window.unmanaged.disconnect (reset_source);
+			}
+		}
+
 		public static bool workspaces_only_on_primary ()
 		{
 			return Prefs.get_dynamic_workspaces ()

@@ -886,112 +886,122 @@ namespace Gala
 		}
 
 		/*workspace switcher*/
-		List<WindowActor>? win;
-		List<Clutter.Actor>? par; //class space for kill func
-		List<Clutter.Actor>? clones;
-		Clutter.Actor? in_group;
-		Clutter.Actor? out_group;
-		Clutter.Actor? moving_window_container;
-
-		void watch_window (Meta.Workspace workspace, Meta.Window window)
-		{
-			if (clones == null) {
-				critical ("watch_window called on '%s' while not switching workspaces", window.get_title ());
-				return;
-			}
-
-			warning ("Dock window '%s' closed while switching workspaces", window.get_title ());
-
-			// finding the correct window here is not so easy
-			// and for those default 400ms we can live with
-			// some windows disappearing which in fact should never
-			// happen unless a dock crashes
-			foreach (var clone in clones) {
-				clone.destroy ();
-			}
-			clones = null;
-		}
+		List<Clutter.Actor>? windows;
+		List<Clutter.Actor>? parents;
+		List<Clutter.Actor>? tmp_actors;
 
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().workspace_switch_duration == 0) {
+			if (!AnimationSettings.get_default ().enable_animations
+				|| AnimationSettings.get_default ().workspace_switch_duration == 0
+				|| (direction != MotionDirection.LEFT && direction != MotionDirection.RIGHT)) {
 				switch_workspace_completed ();
 				return;
 			}
 
+			float screen_width, screen_height;
 			var screen = get_screen ();
+			var primary = screen.get_primary_monitor ();
+			var move_primary_only = InternalUtils.workspaces_only_on_primary ();
+			var monitor_geom = screen.get_monitor_geometry (primary);
 
-			unowned Meta.Workspace wp_from = screen.get_workspace_by_index (from);
-			unowned Meta.Workspace wp_to = screen.get_workspace_by_index (to);
+			screen.get_size (out screen_width, out screen_height);
 
-			unowned List<WindowActor> windows = Compositor.get_window_actors (screen);
-			float w, h;
-			screen.get_size (out w, out h);
+			unowned Meta.Workspace workspace_from = screen.get_workspace_by_index (from);
+			unowned Meta.Workspace workspace_to = screen.get_workspace_by_index (to);
 
-			var x2 = 0.0f; var y2 = 0.0f;
-			if (direction == MotionDirection.LEFT)
-				x2 = w;
-			else if (direction == MotionDirection.RIGHT)
-				x2 = -w;
-			else
-				return;
+			var main_container = new Clutter.Actor ();
+			var static_windows = new Clutter.Actor ();
+			var in_group  = new Clutter.Actor ();
+			var out_group = new Clutter.Actor ();
+			windows = new List<WindowActor> ();
+			parents = new List<Clutter.Actor> ();
+			tmp_actors = new List<Clutter.Clone> ();
 
-			var group = Compositor.get_window_group_for_screen (screen);
-			var wallpaper = background_group;
+			tmp_actors.append (main_container);
+			tmp_actors.append (in_group);
+			tmp_actors.append (out_group);
+			tmp_actors.append (static_windows);
 
-			in_group  = new Clutter.Actor ();
-			out_group = new Clutter.Actor ();
-			win = new List<WindowActor> ();
-			par = new List<Clutter.Actor> ();
-			clones = new List<Clutter.Clone> ();
+			window_group.add_child (main_container);
+
+			// prepare wallpaper
+			Clutter.Actor wallpaper;
+			if (move_primary_only) {
+				wallpaper = background_group.get_child_at_index (primary);
+				wallpaper.set_data<int> ("prev-x", (int) wallpaper.x);
+			} else
+				wallpaper = background_group;
+
+			windows.append (wallpaper);
+			parents.append (wallpaper.get_parent ());
 
 			var wallpaper_clone = new Clutter.Clone (wallpaper);
-			wallpaper_clone.x = (x2 < 0 ? w : -w);
+			tmp_actors.append (wallpaper_clone);
 
-			clones.append (wallpaper_clone);
+			clutter_actor_reparent (wallpaper, main_container);
+			main_container.add_child (wallpaper_clone);
+			main_container.add_child (out_group);
+			main_container.add_child (in_group);
+			main_container.add_child (static_windows);
 
-			group.add_child (wallpaper_clone);
-			group.add_child (in_group);
-			group.add_child (out_group);
-
-			WindowActor moving_actor = null;
 			if (moving != null) {
-				moving_actor = moving.get_compositor_private () as WindowActor;
+				var moving_actor = (WindowActor) moving.get_compositor_private ();
 
-				win.append (moving_actor);
-				par.append (moving_actor.get_parent ());
+				windows.append (moving_actor);
+				parents.append (moving_actor.get_parent ());
 
-				// for some reason the actor alone won't stay where it should, only in a container
-				moving_window_container = new Clutter.Actor ();
-				clutter_actor_reparent (moving_actor, moving_window_container);
-				group.add_child (moving_window_container);
+				clutter_actor_reparent (moving_actor, static_windows);
 			}
 
 			var to_has_fullscreened = false;
 			var from_has_fullscreened = false;
 			var docks = new List<WindowActor> ();
 
-			foreach (var window in windows) {
-				var meta_window = window.get_meta_window ();
+			foreach (var actor in Compositor.get_window_actors (screen)) {
+				var window = actor.get_meta_window ();
 
-				if (!meta_window.showing_on_its_workspace () ||
-					moving != null && window == moving_actor)
+				if (!window.showing_on_its_workspace () ||
+					(move_primary_only && window.get_monitor () != primary) ||
+					(moving != null && window == moving))
 					continue;
 
-				if (meta_window.get_workspace () == wp_from) {
-					win.append (window);
-					par.append (window.get_parent ());
-					clutter_actor_reparent (window, out_group);
-					if (meta_window.fullscreen)
+				if (window.is_on_all_workspaces ()) {
+					// only collect docks here that need to be displayed on both workspaces
+					// all other windows will be collected below
+					if (window.window_type == WindowType.DOCK) {
+						docks.append (actor);
+					} else {
+						// windows that are on all workspaces will be faded out and back in
+						windows.append (actor);
+						parents.append (actor.get_parent ());
+						clutter_actor_reparent (actor, static_windows);
+
+						actor.save_easing_state ();
+						actor.set_easing_duration (300);
+						actor.opacity = 0;
+						actor.restore_easing_state ();
+					}
+
+					continue;
+				}
+
+				if (window.get_workspace () == workspace_from) {
+					windows.append (actor);
+					parents.append (actor.get_parent ());
+					clutter_actor_reparent (actor, out_group);
+
+					if (window.fullscreen)
 						from_has_fullscreened = true;
-				} else if (meta_window.get_workspace () == wp_to) {
-					win.append (window);
-					par.append (window.get_parent ());
-					clutter_actor_reparent (window, in_group);
-					if (meta_window.fullscreen)
+
+				} else if (window.get_workspace () == workspace_to) {
+					windows.append (actor);
+					parents.append (actor.get_parent ());
+					clutter_actor_reparent (actor, in_group);
+
+					if (window.fullscreen)
 						to_has_fullscreened = true;
-				} else if (meta_window.window_type == WindowType.DOCK) {
-					docks.append (window);
+
 				}
 			}
 
@@ -1000,98 +1010,131 @@ namespace Gala
 			// work, mutter probably reverts the order internally to match
 			// the display stack
 			foreach (var window in docks) {
-				win.append (window);
-				par.append (window.get_parent ());
+				if (!to_has_fullscreened) {
+					var clone = new InternalUtils.SafeWindowClone (window.get_meta_window ());
+					clone.x = window.x;
+					clone.y = window.y;
 
-				var clone = new Clutter.Clone (window);
-				clone.x = window.x;
-				clone.y = window.y;
-
-				clones.append (clone);
-				if (!to_has_fullscreened)
 					in_group.add_child (clone);
-				if (!from_has_fullscreened)
+					tmp_actors.append (clone);
+				}
+
+				if (!from_has_fullscreened) {
+					windows.append (window);
+					parents.append (window.get_parent ());
+
 					clutter_actor_reparent (window, out_group);
+				}
 			}
 
-			// monitor the workspaces to see whether a window was removed
-			// in which case we need to stop the clones from drawing
-			// we monitor every workspace here because finding the ones a
-			// particular dock belongs to did not seem reliable enough
-			foreach (var workspace in screen.get_workspaces ()) {
-				workspace.window_removed.connect (watch_window);
-			}
+			main_container.clip_to_allocation = true;
+			main_container.x = move_primary_only ? monitor_geom.x : 0;
+			main_container.y = move_primary_only ? monitor_geom.x : 0;
+			main_container.width = move_primary_only ? monitor_geom.width : screen_width;
+			main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
-			in_group.set_position (-x2, -y2);
-			group.set_child_above_sibling (in_group, null);
-			if (moving_window_container != null)
-				group.set_child_above_sibling (moving_window_container, null);
+			var x2 = move_primary_only ? monitor_geom.width : screen_width;
+			if (direction == MotionDirection.RIGHT)
+				x2 = -x2;
+
+			out_group.x = 0;
+			wallpaper.x = 0;
+			in_group.x = -x2;
+			wallpaper_clone.x = -x2;
 
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
-			in_group.width = out_group.width = w;
-			in_group.height = out_group.height = h;
+			in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
+			in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
 
 			var animation_duration = AnimationSettings.get_default ().workspace_switch_duration;
 			var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
-			out_group.animate (animation_mode, animation_duration, x : x2, y : y2);
-			in_group.animate (animation_mode, animation_duration, x : 0.0f, y : 0.0f).completed.connect (() => {
+			out_group.set_easing_mode (animation_mode);
+			out_group.set_easing_duration (animation_duration);
+			in_group.set_easing_mode (animation_mode);
+			in_group.set_easing_duration (animation_duration);
+			wallpaper_clone.set_easing_mode (animation_mode);
+			wallpaper_clone.set_easing_duration (animation_duration);
+
+			wallpaper.save_easing_state ();
+			wallpaper.set_easing_mode (animation_mode);
+			wallpaper.set_easing_duration (animation_duration);
+
+			out_group.x = x2;
+			in_group.x = move_primary_only ? monitor_geom.x : 0;
+
+			wallpaper.x = x2;
+			wallpaper_clone.x = move_primary_only ? monitor_geom.x : 0;
+			wallpaper.restore_easing_state ();
+
+			var transition = in_group.get_transition ("x");
+			if (transition != null)
+				transition.completed.connect (end_switch_workspace);
+			else
 				end_switch_workspace ();
-			});
-			wallpaper.animate (animation_mode, animation_duration, x : (x2 < 0 ? -w : w));
-			wallpaper_clone.animate (animation_mode, animation_duration, x : 0.0f);
 		}
 
 		void end_switch_workspace ()
 		{
-			if (win == null || par == null)
+			if (windows == null || parents == null)
 				return;
 
 			var screen = get_screen ();
+			var active_workspace = screen.get_active_workspace ();
 
-			for (var i=0;i<win.length ();i++) {
-				var window = win.nth_data (i);
+			for (var i = 0; i < windows.length (); i++) {
+				var actor = windows.nth_data (i);
+
+				// to maintain the correct order of monitor, we need to insert the Background
+				// back manually
+				if (actor is Background) {
+					var background = (Background) actor;
+
+					background.get_parent ().remove_child (background);
+					background_group.insert_child_at_index (background, background.monitor);
+					background.x = background.steal_data<int> ("prev-x");
+					continue;
+				} else if (actor is BackgroundManager) {
+					actor.x = 0;
+					// thankfully mutter will take care of stacking it at the right place for us
+					clutter_actor_reparent (actor, window_group);
+					continue;
+				}
+
+				var window = actor as WindowActor;
+
+				if (window == null || !window.is_destroyed ())
+					clutter_actor_reparent (actor, parents.nth_data (i));
+
 				if (window == null || window.is_destroyed ())
 					continue;
 
-				if (window.get_parent () == out_group) {
-					clutter_actor_reparent (window, par.nth_data (i));
+				var meta_window = window.get_meta_window ();
+				if (meta_window.get_workspace () != active_workspace
+					&& !meta_window.is_on_all_workspaces ())
 					window.hide ();
-				} else
-					clutter_actor_reparent (window, par.nth_data (i));
-			}
 
-			foreach (var workspace in screen.get_workspaces ()) {
-				workspace.window_removed.disconnect (watch_window);
-			}
-
-			if (clones != null) {
-				foreach (var clone in clones) {
-					clone.destroy ();
+				// some static windows may have been faded out
+				if (actor.opacity < 255) {
+					actor.save_easing_state ();
+					actor.set_easing_duration (300);
+					actor.opacity = 255;
+					actor.restore_easing_state ();
 				}
-				clones = null;
 			}
 
-			win = null;
-			par = null;
+			if (tmp_actors != null) {
+				foreach (var actor in tmp_actors) {
+					actor.destroy ();
+				}
+				tmp_actors = null;
+			}
 
-			if (in_group != null)
-				in_group.destroy ();
-			in_group = null;
-			if (out_group != null)
-				out_group.destroy ();
-			out_group = null;
-			if (moving_window_container != null)
-				moving_window_container.destroy ();
-			moving_window_container = null;
-
-			var wallpaper = background_group;
-			wallpaper.detach_animation ();
-			wallpaper.x = 0.0f;
+			windows = null;
+			parents = null;
+			moving = null;
 
 			switch_workspace_completed ();
-
-			moving = null;
 		}
 
 		public override void kill_switch_workspace ()
