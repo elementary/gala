@@ -32,7 +32,7 @@ namespace Gala
 	public class WindowOverview : Actor
 	{
 		const int BORDER = 10;
-		const int TOP_GAP = 20;
+		const int TOP_GAP = 30;
 		const int BOTTOM_GAP = 100;
 
 		WindowManager wm;
@@ -149,6 +149,9 @@ namespace Gala
 				var geometry = screen.get_monitor_geometry (i);
 
 				var container = new TiledWindowContainer (true);
+				container.padding_top = TOP_GAP;
+				container.padding_left = container.padding_right = BORDER;
+				container.padding_bottom = BOTTOM_GAP;
 				container.set_position (geometry.x, geometry.y);
 				container.set_size (geometry.width, geometry.height);
 				container.window_selected.connect (thumb_selected);
