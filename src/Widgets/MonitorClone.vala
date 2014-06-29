@@ -21,7 +21,7 @@ using Meta;
 namespace Gala
 {
 	/**
-	 * More or less utility class to contain a TiledWindowContainer for each
+	 * More or less utility class to contain a WindowCloneContainer for each
 	 * non-primary monitor. It's the pendant to the WorkspaceClone which is
 	 * only placed on the primary monitor. It also draws a wallpaper behind itself
 	 * as the WindowGroup is hidden while the view is active. Only used when
@@ -34,7 +34,7 @@ namespace Gala
 		public Screen screen { get; construct; }
 		public int monitor { get; construct; }
 
-		TiledWindowContainer window_container;
+		WindowCloneContainer window_container;
 		Background background;
 
 		public MonitorClone (Screen screen, int monitor)
@@ -49,7 +49,7 @@ namespace Gala
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 			background.set_easing_duration (300);
 
-			window_container = new TiledWindowContainer ();
+			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
 			screen.restacked.connect (window_container.restack_windows);
 

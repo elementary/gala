@@ -148,7 +148,7 @@ namespace Gala
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				var geometry = screen.get_monitor_geometry (i);
 
-				var container = new TiledWindowContainer (true);
+				var container = new WindowCloneContainer (true);
 				container.padding_top = TOP_GAP;
 				container.padding_left = container.padding_right = BORDER;
 				container.padding_bottom = BOTTOM_GAP;
@@ -165,11 +165,11 @@ namespace Gala
 					return;
 				actor.hide ();
 
-				((TiledWindowContainer) get_child_at_index (window.get_monitor ())).add_window (window);
+				((WindowCloneContainer) get_child_at_index (window.get_monitor ())).add_window (window);
 			}
 
 			foreach (var child in get_children ())
-				((TiledWindowContainer) child).open ();
+				((WindowCloneContainer) child).open ();
 
 			ready = true;
 		}
@@ -177,7 +177,7 @@ namespace Gala
 		void restack_windows (Screen screen)
 		{
 			foreach (var child in get_children ())
-				((TiledWindowContainer) child).restack_windows (screen);
+				((WindowCloneContainer) child).restack_windows (screen);
 		}
 
 		void window_left_monitor (int num, Window window)
@@ -190,7 +190,7 @@ namespace Gala
 				if (window.get_workspace () == workspace || 
 					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
 #endif
-					((TiledWindowContainer) get_child_at_index (num)).remove_window (window);
+					((WindowCloneContainer) get_child_at_index (num)).remove_window (window);
 					return;
 				}
 			}
@@ -205,12 +205,12 @@ namespace Gala
 			// make sure the window belongs to one of our workspaces
 			foreach (var workspace in workspaces)
 				if (window.get_workspace () == workspace)
-					((TiledWindowContainer) get_child_at_index (window.get_monitor ())).add_window (window);
+					((WindowCloneContainer) get_child_at_index (window.get_monitor ())).add_window (window);
 		}
 
 		void remove_window (Window window)
 		{
-			((TiledWindowContainer) get_child_at_index (window.get_monitor ())).remove_window (window);
+			((WindowCloneContainer) get_child_at_index (window.get_monitor ())).remove_window (window);
 		}
 
 		void thumb_selected (Window window)
@@ -246,7 +246,7 @@ namespace Gala
 			wm.update_input_area ();
 
 			foreach (var child in get_children ()) {
-				((TiledWindowContainer) child).close ();
+				((WindowCloneContainer) child).close ();
 			}
 
 			if (animate) {

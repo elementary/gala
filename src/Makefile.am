@@ -52,8 +52,8 @@ gala_VALASOURCES = \
 	Widgets/IconGroupContainer.vala \
 	Widgets/MonitorClone.vala \
 	Widgets/MultitaskingView.vala \
-	Widgets/TiledWindow.vala \
-	Widgets/TiledWindowContainer.vala \
+	Widgets/WindowClone.vala \
+	Widgets/WindowCloneContainer.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
 	Widgets/WorkspaceClone.vala \

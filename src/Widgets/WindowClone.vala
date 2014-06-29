@@ -22,9 +22,9 @@ namespace Gala
 {
 	/**
 	 * A container for a clone of the texture of a MetaWindow, a WindowIcon,
-	 * a close button and a shadow. Used together with the TiledWindowContainer.
+	 * a close button and a shadow. Used together with the WindowCloneContainer.
 	 */
-	public class TiledWindow : Actor
+	public class WindowClone : Actor
 	{
 		const int WINDOW_ICON_SIZE = 64;
 		const int ACTIVE_SHAPE_SIZE = 12;
@@ -51,7 +51,7 @@ namespace Gala
 		bool _active = false;
 		/**
 		 * When active fades a white border around the window in. Used for the visually
-		 * indicating the TiledWindowContainer's current_window.
+		 * indicating the WindowCloneContainer's current_window.
 		 */
 		public bool active {
 			get {
@@ -83,7 +83,7 @@ namespace Gala
 		Actor active_shape;
 		GtkClutter.Texture window_icon;
 
-		public TiledWindow (Meta.Window window, bool overview_mode = false)
+		public WindowClone (Meta.Window window, bool overview_mode = false)
 		{
 			Object (window: window, overview_mode: overview_mode);
 		}
@@ -143,7 +143,7 @@ namespace Gala
 			load_clone ();
 		}
 
-		~TiledWindow ()
+		~WindowClone ()
 		{
 			window.unmanaged.disconnect (unmanaged);
 
@@ -235,7 +235,7 @@ namespace Gala
 		/**
 		 * Sets a timeout of 500ms after which, if no new resize action reset it,
 		 * the shadow will be resized and a request_reposition() will be emitted to
-		 * make the TiledWindowContainer calculate a new layout to honor the new size.
+		 * make the WindowCloneContainer calculate a new layout to honor the new size.
 		 */
 		void update_shadow_size ()
 		{
@@ -466,7 +466,7 @@ namespace Gala
 		/**
 		 * A drag action has been initiated on us, we reparent ourselves to the stage so
 		 * we can move freely, scale ourselves to a smaller scale and request that the
-		 * position we just freed is immediately filled by the TiledWindowContainer.
+		 * position we just freed is immediately filled by the WindowCloneContainer.
 		 */
 		Actor drag_begin (float click_x, float click_y)
 		{

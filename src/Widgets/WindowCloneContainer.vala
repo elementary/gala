@@ -21,9 +21,9 @@ using Meta;
 namespace Gala
 {
 	/**
-	 * Container which controls the layout of a set of TiledWindows.
+	 * Container which controls the layout of a set of WindowClones.
 	 */
-	public class TiledWindowContainer : Actor
+	public class WindowCloneContainer : Actor
 	{
 		public signal void window_selected (Window window);
 
@@ -40,9 +40,9 @@ namespace Gala
 		 * The window that is currently selected via keyboard shortcuts. It is not
 		 * necessarily the same as the active window.
 		 */
-		TiledWindow? current_window;
+		WindowClone? current_window;
 
-		public TiledWindowContainer (bool overview_mode = false)
+		public WindowCloneContainer (bool overview_mode = false)
 		{
 			Object (overview_mode: overview_mode);
 		}
@@ -54,9 +54,9 @@ namespace Gala
 		}
 
 		/**
-		 * Create a TiledWindow for a MetaWindow and add it to the group
+		 * Create a WindowClone for a MetaWindow and add it to the group
 		 *
-		 * @param window The window for which to create the TiledWindow for
+		 * @param window The window for which to create the WindowClone for
 		 */
 		public void add_window (Window window)
 		{
@@ -65,7 +65,7 @@ namespace Gala
 			
 			GLib.SList<unowned Meta.Window> windows = new GLib.SList<unowned Meta.Window> ();
 			foreach (unowned Actor child in children) {
-				unowned TiledWindow tw = (TiledWindow) child;
+				unowned WindowClone tw = (WindowClone) child;
 				windows.prepend (tw.window);
 			}
 			windows.prepend (window);
@@ -73,7 +73,7 @@ namespace Gala
 			
 			var windows_ordered = display.sort_windows_by_stacking (windows);
 			
-			var new_window = new TiledWindow (window, overview_mode);
+			var new_window = new WindowClone (window, overview_mode);
 
 			new_window.selected.connect (window_selected_cb);
 			new_window.destroy.connect (window_destroyed);
@@ -90,7 +90,7 @@ namespace Gala
 			}
 
 			foreach (unowned Actor child in children) {
-				unowned TiledWindow tw = (TiledWindow) child;
+				unowned WindowClone tw = (WindowClone) child;
 				if (target == tw.window) {
 					insert_child_above (new_window, tw);
 					added = true;
@@ -106,12 +106,12 @@ namespace Gala
 		}
 
 		/**
-		 * Find and remove the TiledWindow for a MetaWindow
+		 * Find and remove the WindowClone for a MetaWindow
 		 */
 		public void remove_window (Window window)
 		{
 			foreach (var child in get_children ()) {
-				if (((TiledWindow) child).window == window) {
+				if (((WindowClone) child).window == window) {
 					remove_child (child);
 					break;
 				}
@@ -120,14 +120,14 @@ namespace Gala
 			reflow ();
 		}
 
-		void window_selected_cb (TiledWindow tiled)
+		void window_selected_cb (WindowClone tiled)
 		{
 			window_selected (tiled.window);
 		}
 
 		void window_destroyed (Actor actor)
 		{
-			var window = actor as TiledWindow;
+			var window = actor as WindowClone;
 			if (window == null)
 				return;
 
@@ -151,7 +151,7 @@ namespace Gala
 
 			GLib.SList<unowned Meta.Window> windows = new GLib.SList<unowned Meta.Window> ();
 			foreach (unowned Actor child in children) {
-				unowned TiledWindow tw = (TiledWindow) child;
+				unowned WindowClone tw = (WindowClone) child;
 				windows.prepend (tw.window);
 			}
 
@@ -161,7 +161,7 @@ namespace Gala
 			foreach (unowned Meta.Window window in windows_ordered) {
 				var i = 0;
 				foreach (unowned Actor child in children) {
-					if (((TiledWindow) child).window == window) {
+					if (((WindowClone) child).window == window) {
 						set_child_at_index (child, i);
 						children.remove (child);
 						i++;
@@ -182,7 +182,7 @@ namespace Gala
 
 			var windows = new List<InternalUtils.TilableWindow?> ();
 			foreach (var child in get_children ()) {
-				unowned TiledWindow window = (TiledWindow) child;
+				unowned WindowClone window = (WindowClone) child;
 #if HAS_MUTTER312
 				windows.prepend ({ window.window.get_frame_rect (), window });
 #else
@@ -197,8 +197,8 @@ namespace Gala
 			// doesn't give us different slots based on stacking order, which can lead
 			// to windows flying around weirdly
 			windows.sort ((a, b) => {
-				var seq_a = ((TiledWindow) a.id).window.get_stable_sequence ();
-				var seq_b = ((TiledWindow) b.id).window.get_stable_sequence ();
+				var seq_a = ((WindowClone) a.id).window.get_stable_sequence ();
+				var seq_b = ((WindowClone) b.id).window.get_stable_sequence ();
 				return (int) (seq_b - seq_a);
 			});
 
@@ -212,7 +212,7 @@ namespace Gala
 			var window_positions = InternalUtils.calculate_grid_placement (area, windows);
 
 			foreach (var tilable in window_positions) {
-				unowned TiledWindow window = (TiledWindow) tilable.id;
+				unowned WindowClone window = (WindowClone) tilable.id;
 				window.take_slot (tilable.rect);
 				window.place_widgets (tilable.rect.width, tilable.rect.height);
 			}
@@ -230,18 +230,18 @@ namespace Gala
 				return;
 
 			if (current_window == null) {
-				current_window = (TiledWindow) get_child_at_index (0);
+				current_window = (WindowClone) get_child_at_index (0);
 				return;
 			}
 
 			var current_rect = current_window.slot;
 
-			TiledWindow? closest = null;
+			WindowClone? closest = null;
 			foreach (var window in get_children ()) {
 				if (window == current_window)
 					continue;
 
-				var window_rect = ((TiledWindow) window).slot;
+				var window_rect = ((WindowClone) window).slot;
 
 				switch (direction) {
 					case MotionDirection.LEFT:
@@ -254,7 +254,7 @@ namespace Gala
 
 							if (closest == null
 								|| closest.slot.x < window_rect.x)
-								closest = (TiledWindow) window;
+								closest = (WindowClone) window;
 						}
 						break;
 					case MotionDirection.RIGHT:
@@ -267,7 +267,7 @@ namespace Gala
 
 							if (closest == null
 								|| closest.slot.x > window_rect.x)
-								closest = (TiledWindow) window;
+								closest = (WindowClone) window;
 						}
 						break;
 					case MotionDirection.UP:
@@ -280,7 +280,7 @@ namespace Gala
 
 							if (closest == null
 								|| closest.slot.y < window_rect.y)
-								closest = (TiledWindow) window;
+								closest = (WindowClone) window;
 						}
 						break;
 					case MotionDirection.DOWN:
@@ -293,7 +293,7 @@ namespace Gala
 
 							if (closest == null
 								|| closest.slot.y > window_rect.y)
-								closest = (TiledWindow) window;
+								closest = (WindowClone) window;
 						}
 						break;
 				}
@@ -319,7 +319,7 @@ namespace Gala
 		}
 
 		/**
-		 * When opened the TiledWindows are animated to a tiled layout
+		 * When opened the WindowClones are animated to a tiled layout
 		 */
 		public void open (Window? selected_window = null)
 		{
@@ -331,7 +331,7 @@ namespace Gala
 			// hide the highlight when opened
 			if (selected_window != null) {
 				foreach (var child in get_children ()) {
-					unowned TiledWindow tiled_window = (TiledWindow) child;
+					unowned WindowClone tiled_window = (WindowClone) child;
 					if (tiled_window.window == selected_window) {
 						current_window = tiled_window;
 						break;
@@ -345,7 +345,7 @@ namespace Gala
 			// make sure our windows are where they belong in case they were moved
 			// while were closed.
 			foreach (var window in get_children ())
-				((TiledWindow) window).transition_to_original_state (false);
+				((WindowClone) window).transition_to_original_state (false);
 
 			reflow ();
 		}
@@ -362,7 +362,7 @@ namespace Gala
 			opened = false;
 
 			foreach (var window in get_children ())
-				((TiledWindow) window).transition_to_original_state (true);
+				((WindowClone) window).transition_to_original_state (true);
 		}
 	}
 }

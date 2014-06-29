@@ -55,7 +55,7 @@ namespace Gala
 
 	/**
 	 * This is the container which manages a clone of the background which will
-	 * be scaled and animated inwards, a TiledWindowContainer for the windows on
+	 * be scaled and animated inwards, a WindowCloneContainer for the windows on
 	 * this workspace and also holds the instance for this workspace's IconGroup.
 	 * The latter is not added to the WorkspaceClone itself though but to a container
 	 * of the MultitaskingView.
@@ -94,7 +94,7 @@ namespace Gala
 
 		public Workspace workspace { get; construct; }
 		public IconGroup icon_group { get; private set; }
-		public TiledWindowContainer window_container { get; private set; }
+		public WindowCloneContainer window_container { get; private set; }
 
 		bool _active = false;
 		/**
@@ -135,7 +135,7 @@ namespace Gala
 				return false;
 			});
 
-			window_container = new TiledWindowContainer ();
+			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
 			window_container.width = monitor_geometry.width;
 			window_container.height = monitor_geometry.height;
@@ -201,7 +201,7 @@ namespace Gala
 		}
 
 		/**
-		 * Add a window to the TiledWindowContainer and the IconGroup if it really
+		 * Add a window to the WindowCloneContainer and the IconGroup if it really
 		 * belongs to this workspace and this monitor.
 		 */
 		void add_window (Window window)
@@ -212,7 +212,7 @@ namespace Gala
 				return;
 
 			foreach (var child in window_container.get_children ())
-				if (((TiledWindow) child).window == window)
+				if (((WindowClone) child).window == window)
 					return;
 
 			window_container.add_window (window);
@@ -220,7 +220,7 @@ namespace Gala
 		}
 
 		/**
-		 * Remove a window from the TiledWindowContainer and the IconGroup
+		 * Remove a window from the WindowCloneContainer and the IconGroup
 		 */
 		void remove_window (Window window)
 		{
@@ -255,8 +255,8 @@ namespace Gala
 
 		/**
 		 * Animates the background to its scale, causes a redraw on the IconGroup and
-		 * makes sure the TiledWindowContainer animates its windows to their tiled layout.
-		 * Also sets the current_window of the TiledWindowContainer to the active window
+		 * makes sure the WindowCloneContainer animates its windows to their tiled layout.
+		 * Also sets the current_window of the WindowCloneContainer to the active window
 		 * if it belongs to this workspace.
 		 */
 		public void open ()

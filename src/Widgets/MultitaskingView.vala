@@ -318,7 +318,7 @@ namespace Gala
 		}
 
 		/**
-		 * Collect key events, mainly for redirecting them to the TiledWindowContainers to
+		 * Collect key events, mainly for redirecting them to the WindowCloneContainers to
 		 * select the active window.
 		 */
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -350,7 +350,7 @@ namespace Gala
 		}
 
 		/**
-		 * Inform the current TiledWindowContainer that we want to move the focus in
+		 * Inform the current WindowCloneContainer that we want to move the focus in
 		 * a specific direction.
 		 *
 		 * @param direction The direction in which to move the focus to
