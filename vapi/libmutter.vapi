@@ -896,6 +896,11 @@ namespace Meta {
 		[NoAccessorMethod]
 		public bool minimized { get; }
 		public string mutter_hints { get; }
+#if HAS_MUTTER312
+// backported from mutter 3.14 to 3.12.2-1ubuntu99~elementary0.3.3
+		[NoAccessorMethod]
+		public bool on_all_workspaces { get; }
+#endif
 		[NoAccessorMethod]
 		public bool resizeable { get; }
 #if HAS_MUTTER312
@@ -942,6 +947,9 @@ namespace Meta {
 		public bool no_shadow { get; set; }
 		[NoAccessorMethod]
 		public string shadow_class { owned get; set; }
+#if HAS_MUTTER314
+		public signal void first_frame ();
+#endif
 #if !HAS_MUTTER312
 		public signal void position_changed ();
 		public signal void size_changed ();
