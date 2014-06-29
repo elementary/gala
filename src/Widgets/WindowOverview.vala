@@ -35,8 +35,9 @@ namespace Gala
 		const int TOP_GAP = 30;
 		const int BOTTOM_GAP = 100;
 
-		WindowManager wm;
-		Screen screen;
+		public WindowManager wm { get; construct; }
+
+		Meta.Screen screen;
 
 		bool ready;
 
@@ -45,7 +46,11 @@ namespace Gala
 
 		public WindowOverview (WindowManager _wm)
 		{
-			wm = _wm;
+			Object (wm : wm);
+		}
+
+		construct
+		{
 			screen = wm.get_screen ();
 
 			screen.workspace_switched.connect (() => close (false));
@@ -54,6 +59,11 @@ namespace Gala
 			visible = false;
 			ready = true;
 			reactive = true;
+		}
+
+		~WindowOverview ()
+		{
+			screen.restacked.disconnect (restack_windows);
 		}
 
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -107,7 +117,9 @@ namespace Gala
 						window.window_type != WindowType.DOCK && 
 						window.window_type != WindowType.DIALOG || 
 						window.is_attached_dialog ()) {
-						(window.get_compositor_private () as Actor).hide ();
+						var actor = window.get_compositor_private () as WindowActor;
+						if (actor != null)
+							actor.hide ();
 						continue;
 					}
 					if (window.window_type == WindowType.DOCK)
@@ -160,12 +172,15 @@ namespace Gala
 			}
 
 			foreach (var window in windows) {
-				var actor = window.get_compositor_private () as WindowActor;
-				if (actor == null)
-					return;
-				actor.hide ();
+				unowned WindowActor actor = window.get_compositor_private () as WindowActor;
+				if (actor != null)
+					actor.hide ();
 
-				((WindowCloneContainer) get_child_at_index (window.get_monitor ())).add_window (window);
+				unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
+				if (container == null)
+					continue;
+
+				container.add_window (window);
 			}
 
 			foreach (var child in get_children ())
@@ -182,18 +197,16 @@ namespace Gala
 
 		void window_left_monitor (int num, Window window)
 		{
-			// see if that's happened on one of our workspaces
-			foreach (var workspace in workspaces) {
-#if HAS_MUTTER38
+			unowned WindowCloneContainer container = get_child_at_index (num) as WindowCloneContainer;
+			if (container == null)
+				return;
+
+			// make sure the window belongs to one of our workspaces
+			foreach (var workspace in workspaces)
 				if (window.located_on_workspace (workspace)) {
-#else
-				if (window.get_workspace () == workspace || 
-					(window.is_on_all_workspaces () && window.get_screen () == workspace.get_screen ())) {
-#endif
-					((WindowCloneContainer) get_child_at_index (num)).remove_window (window);
-					return;
+					container.remove_window (window);
+					break;
 				}
-			}
 		}
 
 		void add_window (Window window)
@@ -202,15 +215,25 @@ namespace Gala
 				|| (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DIALOG))
 				return;
 
+			unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
+			if (container == null)
+				return;
+
 			// make sure the window belongs to one of our workspaces
 			foreach (var workspace in workspaces)
-				if (window.get_workspace () == workspace)
-					((WindowCloneContainer) get_child_at_index (window.get_monitor ())).add_window (window);
+				if (window.located_on_workspace (workspace)) {
+					container.add_window (window);
+					break;
+				}
 		}
 
 		void remove_window (Window window)
 		{
-			((WindowCloneContainer) get_child_at_index (window.get_monitor ())).remove_window (window);
+			unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
+			if (container == null)
+				return;
+
+			container.remove_window (window);
 		}
 
 		void thumb_selected (Window window)
@@ -266,7 +289,7 @@ namespace Gala
 
 			foreach (var window in screen.get_active_workspace ().list_windows ())
 				if (window.showing_on_its_workspace ())
-					(window.get_compositor_private () as Actor).show ();
+					((Actor) window.get_compositor_private ()).show ();
 
 			destroy_all_children ();
 		}
