@@ -184,7 +184,7 @@ namespace Gala
 	public class IconGroup : Actor
 	{
 		public static const int SIZE = 64;
-		
+
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
 
@@ -228,8 +228,8 @@ namespace Gala
 				var transition = new PropertyTransition ("backdrop-opacity");
 				transition.duration = 300;
 				transition.remove_on_complete = true;
-				transition.set_from_value (_active ? 0 : 60);
-				transition.set_to_value (_active ? 60 : 0);
+				transition.set_from_value (_active ? 0 : 40);
+				transition.set_to_value (_active ? 40 : 0);
 
 				add_transition ("backdrop-opacity", transition);
 			}
@@ -330,11 +330,11 @@ namespace Gala
 			var width = 100;
 			var x = (SIZE - width) / 2;
 			var y = -10;
-			var height = height + 120;
+			var height = WorkspaceClone.BOTTOM_OFFSET;
 
 			var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
-			var color_bottom = Cogl.Color.from_4ub (backdrop_opacity,
-				backdrop_opacity, backdrop_opacity, backdrop_opacity);
+			var color_bottom = Cogl.Color.from_4ub (255, 255, 255, backdrop_opacity);
+			color_bottom.premultiply ();
 
 			Cogl.TextureVertex vertices[4];
 			vertices[0] = { x, y, 0, 0, 0, color_top };
@@ -461,7 +461,7 @@ namespace Gala
 			}
 
 			// more than one => we need a folder
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, (int)width - 1, (int)height - 1, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, (int) width - 1, (int) height - 1, 5);
 
 			cr.set_source_rgba (0, 0, 0, 0.1);
 			cr.fill_preserve ();
@@ -475,7 +475,7 @@ namespace Gala
 			cr.set_source (grad);
 			cr.stroke ();
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 1.5, 1.5, (int)width - 3, (int)height - 3, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 1.5, 1.5, (int) width - 3, (int) height - 3, 5);
 
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.stroke ();
@@ -527,8 +527,8 @@ namespace Gala
 				size = 16;
 
 			var n_tiled_windows = uint.min (n_windows, 9);
-			var columns = (int)Math.ceil (Math.sqrt (n_tiled_windows));
-			var rows = (int)Math.ceil (n_tiled_windows / (double)columns);
+			var columns = (int) Math.ceil (Math.sqrt (n_tiled_windows));
+			var rows = (int) Math.ceil (n_tiled_windows / (double) columns);
 
 			const int spacing = 6;
 
