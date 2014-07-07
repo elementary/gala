@@ -146,6 +146,31 @@ namespace Gala
 		}
 
 		/**
+		 * Inserts a workspace at the given index. To ensure the workspace is not immediately
+		 * removed again when in dynamic workspaces, the window is first placed on it.
+		 *
+		 * @param index  The index at which to insert the workspace
+		 * @param window A window that should be moved to the new workspace
+		 */
+		public static void insert_workspace_with_window (int index, Window new_window)
+		{
+			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+
+			new_window.change_workspace_by_index (index, false);
+
+			foreach (var actor in actors) {
+				var window = actor.get_meta_window ();
+				var window_index = window.get_workspace ().index ();
+
+				if (!window.on_all_workspaces
+					&& window != new_window
+					&& window_index >= index) {
+					window.change_workspace_by_index (window_index + 1, false);
+				}
+			}
+		}
+
+		/**
 		 * Code ported from KWin present windows effect
 		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 		 **/

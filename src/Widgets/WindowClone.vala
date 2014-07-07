@@ -514,11 +514,14 @@ namespace Gala
 		 */
 		void drag_destination_crossed (Actor destination, bool hovered)
 		{
-			var icon_group = destination as IconGroup;
-			if (icon_group == null)
+			IconGroup? icon_group = destination as IconGroup;
+
+			if (icon_group == null && !(destination is WorkspaceInsertThumb))
 				return;
 
-			if (icon_group.workspace == window.get_workspace ()
+			// for an icon group, we only do animations if there is an actual movement possible
+			if (icon_group != null
+				&& icon_group.workspace == window.get_workspace ()
 				&& window.get_monitor () == window.get_screen ().get_primary_monitor ())
 				return;
 
@@ -536,6 +539,10 @@ namespace Gala
 			set_opacity (opacity);
 
 			restore_easing_state ();
+
+			// now only for icon group
+			if (icon_group == null)
+				return;
 
 			if (hovered) {
 				icon_group.add_window (window, false, true);
@@ -557,6 +564,18 @@ namespace Gala
 				workspace = ((IconGroup) destination).workspace;
 			} else if (destination is FramedBackground) {
 				workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
+			} else if (destination is WorkspaceInsertThumb) {
+				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
+				InternalUtils.insert_workspace_with_window (inserter.current_index, window);
+
+				// if we don't actually change workspaces, which is the case when we insert
+				// a workspace at the very start, the window-added/removed signals won't be
+				// so we can just keep our window here
+				if (inserter.current_index == 0)
+					drag_canceled ();
+				else
+					unmanaged ();
+				return;
 			} else if (destination is MonitorClone) {
 				window.move_to_monitor (((MonitorClone) destination).monitor);
 				unmanaged ();
