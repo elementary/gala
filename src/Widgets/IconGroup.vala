@@ -111,6 +111,20 @@ namespace Gala
 			set_pivot_point (0.5f, 0.5f);
 			set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
 			set_easing_duration (800);
+
+			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
+		}
+
+		~WindowIcon ()
+		{
+			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
+		}
+
+		void on_all_workspaces_changed ()
+		{
+			// we don't display windows that are on all workspaces
+			if (window.on_all_workspaces)
+				destroy ();
 		}
 
 		/**
@@ -286,6 +300,13 @@ namespace Gala
 			var close_click = new ClickAction ();
 			close_click.clicked.connect (close);
 			close_button.add_action (close_click);
+
+			icon_container.actor_removed.connect_after (redraw);
+		}
+
+		~IconGroup ()
+		{
+			icon_container.actor_removed.disconnect (redraw);
 		}
 
 		public override bool enter_event (CrossingEvent event)
@@ -403,7 +424,6 @@ namespace Gala
 						if (transition != null) {
 							transition.completed.connect (() => {
 								w.destroy ();
-								redraw ();
 							});
 						} else {
 							w.destroy ();

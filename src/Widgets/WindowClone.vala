@@ -93,6 +93,7 @@ namespace Gala
 			reactive = true;
 
 			window.unmanaged.connect (unmanaged);
+			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
 
 			if (overview_mode) {
 				var click_action = new ClickAction ();
@@ -146,6 +147,7 @@ namespace Gala
 		~WindowClone ()
 		{
 			window.unmanaged.disconnect (unmanaged);
+			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
 
 			if (shadow_update_timeout != 0)
 				Source.remove (shadow_update_timeout);
@@ -258,6 +260,15 @@ namespace Gala
 
 				return false;
 			});
+		}
+
+		void on_all_workspaces_changed ()
+		{
+			// we don't display windows that are on all workspaces
+			if (window.on_all_workspaces) {
+				WindowListener.get_default ().listen_on_window (window);
+				unmanaged ();
+			}
 		}
 
 		/**

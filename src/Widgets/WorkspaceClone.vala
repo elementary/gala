@@ -179,11 +179,15 @@ namespace Gala
 			var windows = workspace.list_windows ();
 			foreach (var window in windows) {
 				if (window.window_type == WindowType.NORMAL
+					&& !window.on_all_workspaces
 					&& window.get_monitor () == screen.get_primary_monitor ()) {
 					window_container.add_window (window);
 					icon_group.add_window (window, true);
 				}
 			}
+
+			var listener = WindowListener.get_default ();
+			listener.window_no_longer_on_all_workspaces.connect (add_window);
 		}
 
 		~WorkspaceClone ()
@@ -197,6 +201,9 @@ namespace Gala
 			workspace.window_added.disconnect (add_window);
 			workspace.window_removed.disconnect (remove_window);
 
+			var listener = WindowListener.get_default ();
+			listener.window_no_longer_on_all_workspaces.disconnect (add_window);
+
 			background.destroy ();
 		}
 
@@ -208,6 +215,7 @@ namespace Gala
 		{
 			if (window.window_type != WindowType.NORMAL
 				|| window.get_workspace () != workspace
+				|| window.on_all_workspaces
 				|| window.get_monitor () != window.get_screen ().get_primary_monitor ())
 				return;
 
@@ -263,7 +271,7 @@ namespace Gala
 		{
 			if (opened)
 				return;
-			
+
 			opened = true;
 
 			var screen = workspace.get_screen ();

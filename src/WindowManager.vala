@@ -76,6 +76,7 @@ namespace Gala
 			DBus.init (this);
 			EndSessionDialog.register (this);
 			BackgroundCache.init (screen);
+			WindowListener.init (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area

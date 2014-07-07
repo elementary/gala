@@ -41,6 +41,7 @@ gala_VALASOURCES = \
 	Settings.vala \
 	ShadowEffect.vala \
 	TextShadowEffect.vala \
+	WindowListener.vala \
 	WindowManager.vala \
 	WorkspaceManager.vala \
 	Background/Background.vala \
