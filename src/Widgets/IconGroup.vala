@@ -275,6 +275,12 @@ namespace Gala
 
 			var click = new ClickAction ();
 			click.clicked.connect (() => selected ());
+			// when the actor is pressed, the ClickAction grabs all events, so we won't be
+			// notified when the cursor leaves the actor, which makes our close button stay
+			// forever. To fix this we hide the button for as long as the actor is pressed.
+			click.notify["pressed"].connect (() => {
+				toggle_close_button (!click.pressed && get_has_pointer ());
+			});
 			add_action (click);
 
 			icon_container = new Actor ();
@@ -318,14 +324,25 @@ namespace Gala
 			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
 				return false;
 
-			close_button.visible = true;
-			close_button.opacity = 255;
+			toggle_close_button (true);
 
 			return false;
 		}
 
 		public override bool leave_event (CrossingEvent event)
 		{
+			toggle_close_button (false);
+			return false;
+		}
+
+		void toggle_close_button (bool show)
+		{
+			if (show) {
+				close_button.visible = true;
+				close_button.opacity = 255;
+				return;
+			}
+
 			close_button.opacity = 0;
 			var transition = get_transition ("opacity");
 			if (transition != null)
@@ -334,8 +351,6 @@ namespace Gala
 				});
 			else
 				close_button.visible = false;
-
-			return false;
 		}
 
 		/**
