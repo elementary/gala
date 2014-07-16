@@ -60,6 +60,7 @@ namespace Gala
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new IconGroupContainer (screen);
+			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
 
 			add_child (icon_groups);
 			add_child (workspaces);
@@ -230,6 +231,13 @@ namespace Gala
 			workspaces.set_easing_duration (animate ? 300 : 0);
 			workspaces.x = -active_x;
 
+			reposition_icon_groups (animate);
+		}
+
+		void reposition_icon_groups (bool animate)
+		{
+			var active_index = screen.get_active_workspace ().index ();
+
 			if (animate) {
 				icon_groups.save_easing_state ();
 				icon_groups.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -237,11 +245,12 @@ namespace Gala
 			}
 
 			// make sure the active workspace's icongroup is always visible
-			if (icon_groups.width > width) {
+			var icon_groups_width = icon_groups.calculate_total_width ();
+			if (icon_groups_width > width) {
 				icon_groups.x = (-active_index * (IconGroupContainer.SPACING + IconGroup.SIZE) + width / 2)
-					.clamp (width - icon_groups.width - 64, 64);
+					.clamp (width - icon_groups_width - 64, 64);
 			} else
-				icon_groups.x = width / 2 - icon_groups.width / 2;
+				icon_groups.x = width / 2 - icon_groups_width / 2;
 
 			if (animate)
 				icon_groups.restore_easing_state ();

@@ -23,19 +23,20 @@ namespace Gala
 	public class WorkspaceInsertThumb : Actor
 	{
 		public int workspace_index { get; construct set; }
+		public bool expanded { get; private set; default = false; }
 
 		public WorkspaceInsertThumb (int workspace_index)
 		{
 			Object (workspace_index: workspace_index);
 
 			width = IconGroupContainer.SPACING;
-			height = IconGroupContainer.SPACING;
+			height = IconGroupContainer.GROUP_WIDTH;
 			y = (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING) / 2;
 			opacity = 0;
 			set_pivot_point (0.5f, 0.5f);
 			reactive = true;
 
-			layout_manager = new BinLayout (BinAlignment.CENTER, BinAlignment.CENTER);
+			layout_manager = new BinLayout (BinAlignment.CENTER);
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
 			drop.crossed.connect ((hovered) => {
@@ -46,10 +47,12 @@ namespace Gala
 					remove_transition ("pulse");
 					opacity = 0;
 					width = IconGroupContainer.SPACING;
+					expanded = false;
 				} else {
 					add_pulse_animation ();
 					opacity = 200;
-					width = IconGroupContainer.SPACING + 64;
+					width = IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2;
+					expanded = true;
 				}
 
 				restore_easing_state ();
@@ -62,7 +65,7 @@ namespace Gala
 		{
 			destroy_all_children ();
 
-			var icon = new Utils.WindowIcon (window, IconGroupContainer.SPACING);
+			var icon = new Utils.WindowIcon (window, IconGroupContainer.GROUP_WIDTH);
 			icon.x_align = ActorAlign.CENTER;
 			add_child (icon);
 		}
@@ -102,6 +105,8 @@ namespace Gala
 		public static const int SPACING = 48;
 		public static const int GROUP_WIDTH = 64;
 
+		public signal void request_reposition ();
+
 		public Screen screen { get; construct; }
 
 		public IconGroupContainer (Screen screen)
@@ -125,54 +130,54 @@ namespace Gala
 			});
 		}
 
-		void update_positions ()
-		{
-			/*unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
-
-			var current_inserter_index = 0;
-
-			foreach (var child in get_children ()) {
-				if (child is IconGroup) {
-					unowned IconGroup icon_group = (IconGroup) child;
-
-					// we don't use meta_workspace_index() here because it crashes
-					// the wm if the workspace has already been removed. This could
-					// happen here if two workspaces are removed very shortly after
-					// each other and a transition is still playing. Also, 
-					// meta_workspace_index() does the exact same thing.
-					var index = existing_workspaces.index (icon_group.workspace);
-
-					if (index < 0)
-						child.visible = false;
-					else
-						child.x = index * (GROUP_WIDTH + SPACING);
-				} else {
-					child.x = -SPACING + current_inserter_index * (GROUP_WIDTH + SPACING);
-					((WorkspaceInsertThumb) child).current_index = current_inserter_index++;
-				}
-			}*/
-		}
-
 		public void add_group (IconGroup group)
 		{
 			var index = group.workspace.index ();
 
 			insert_child_at_index (group, index * 2);
 
-			if (Prefs.get_dynamic_workspaces ())
-				insert_child_at_index (new WorkspaceInsertThumb (index), index * 2);
+			if (Prefs.get_dynamic_workspaces ()) {
+				var thumb = new WorkspaceInsertThumb (index);
+				thumb.notify["expanded"].connect (expanded_changed);
+				insert_child_at_index (thumb, index * 2);
+			}
 
 			update_inserter_indices ();
 		}
 
 		public void remove_group (IconGroup group)
 		{
-			if (Prefs.get_dynamic_workspaces ())
-				remove_child (group.get_previous_sibling ());
+			if (Prefs.get_dynamic_workspaces ()) {
+				var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
+				thumb.notify["expanded"].disconnect (expanded_changed);
+				remove_child (thumb);
+			}
 
 			remove_child (group);
 
 			update_inserter_indices ();
+		}
+
+		void expanded_changed (ParamSpec param)
+		{
+			request_reposition ();
+		}
+
+		/**
+		 * Calculates the width that will be occupied taking currently running animations
+		 * end states into account
+		 */
+		public float calculate_total_width ()
+		{
+			var width = 0.0f;
+			foreach (var child in get_children ()) {
+				if (child is WorkspaceInsertThumb && ((WorkspaceInsertThumb) child).expanded)
+					width += GROUP_WIDTH + SPACING * 2;
+				else
+					width += child.width;
+			}
+
+			return width;
 		}
 
 		void update_inserter_indices ()
