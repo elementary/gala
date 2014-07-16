@@ -515,8 +515,9 @@ namespace Gala
 		void drag_destination_crossed (Actor destination, bool hovered)
 		{
 			IconGroup? icon_group = destination as IconGroup;
+			WorkspaceInsertThumb? insert_thumb = destination as WorkspaceInsertThumb;
 
-			if (icon_group == null && !(destination is WorkspaceInsertThumb))
+			if (icon_group == null && insert_thumb == null)
 				return;
 
 			// for an icon group, we only do animations if there is an actual movement possible
@@ -540,14 +541,15 @@ namespace Gala
 
 			restore_easing_state ();
 
-			// now only for icon group
-			if (icon_group == null)
-				return;
+			if (insert_thumb != null) {
+				insert_thumb.set_window_thumb (window);
+			}
 
-			if (hovered) {
-				icon_group.add_window (window, false, true);
-			} else {
-				icon_group.remove_window (window);
+			if (icon_group != null) {
+				if (hovered)
+					icon_group.add_window (window, false, true);
+				else
+					icon_group.remove_window (window);
 			}
 		}
 

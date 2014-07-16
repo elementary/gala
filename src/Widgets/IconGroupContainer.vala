@@ -22,9 +22,6 @@ namespace Gala
 {
 	public class WorkspaceInsertThumb : Actor
 	{
-		const int PLUS_SIZE = 8;
-		const int PLUS_WIDTH = 24;
-
 		public int workspace_index { get; construct set; }
 
 		public WorkspaceInsertThumb (int workspace_index)
@@ -38,10 +35,7 @@ namespace Gala
 			set_pivot_point (0.5f, 0.5f);
 			reactive = true;
 
-			var canvas = new Canvas ();
-			canvas.draw.connect (draw_plus);
-			canvas.set_size (IconGroupContainer.SPACING, IconGroupContainer.SPACING);
-			content = canvas;
+			layout_manager = new BinLayout (BinAlignment.CENTER, BinAlignment.CENTER);
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
 			drop.crossed.connect ((hovered) => {
@@ -51,9 +45,11 @@ namespace Gala
 				if (!hovered) {
 					remove_transition ("pulse");
 					opacity = 0;
+					width = IconGroupContainer.SPACING;
 				} else {
 					add_pulse_animation ();
 					opacity = 200;
+					width = IconGroupContainer.SPACING + 64;
 				}
 
 				restore_easing_state ();
@@ -62,41 +58,13 @@ namespace Gala
 			add_action (drop);
 		}
 
-		bool draw_plus (Cairo.Context cr)
+		public void set_window_thumb (Window window)
 		{
-			cr.set_operator (Cairo.Operator.CLEAR);
-			cr.paint ();
-			cr.set_operator (Cairo.Operator.OVER);
+			destroy_all_children ();
 
-			var size = IconGroupContainer.SPACING;
-			var buffer = new Granite.Drawing.BufferSurface (size, size);
-			var offset = size / 2 - PLUS_WIDTH / 2;
-
-			buffer.context.rectangle (PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + offset,
-				0.5 + offset,
-				PLUS_SIZE - 1,
-				PLUS_WIDTH - 1);
-
-			buffer.context.rectangle (0.5 + offset,
-				PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + offset,
-				PLUS_WIDTH - 1,
-				PLUS_SIZE - 1);
-
-			buffer.context.set_source_rgb (0, 0, 0);
-			buffer.context.fill_preserve ();
-			buffer.exponential_blur (5);
-
-			buffer.context.set_source_rgb (1, 1, 1);
-			buffer.context.set_line_width (1);
-			buffer.context.stroke_preserve ();
-
-			buffer.context.set_source_rgb (0.8, 0.8, 0.8);
-			buffer.context.fill ();
-
-			cr.set_source_surface (buffer.surface, 0, 0);
-			cr.paint ();
-
-			return false;
+			var icon = new Utils.WindowIcon (window, IconGroupContainer.SPACING);
+			icon.x_align = ActorAlign.CENTER;
+			add_child (icon);
 		}
 
 		void add_pulse_animation ()
