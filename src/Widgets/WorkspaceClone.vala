@@ -47,7 +47,7 @@ namespace Gala
 			Cogl.Path.rectangle (0, 0, width, height);
 			Cogl.Path.stroke ();
 
-			Cogl.set_source_color4ub (255, 255, 255, 80);
+			Cogl.set_source_color4ub (255, 255, 255, 25);
 			Cogl.Path.rectangle (1, 1, width - 2, height - 2);
 			Cogl.Path.stroke ();
 		}
