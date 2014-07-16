@@ -27,8 +27,6 @@ namespace Gala
 		public Clutter.Actor top_window_group { get; protected set; }
 		public Meta.BackgroundGroup background_group { get; protected set; }
 
-		public WorkspaceManager workspace_manager { get; private set; }
-
 		public bool block_keybindings_in_modal { get; set; default = true; }
 
 		Meta.PluginInfo info;
@@ -95,7 +93,7 @@ namespace Gala
 			var color = BackgroundSettings.get_default ().primary_color;
 			stage.background_color = Clutter.Color.from_string (color);
 
-			workspace_manager = new WorkspaceManager (this);
+			WorkspaceManager.init (this);
 
 			/* our layer structure, copied from gnome-shell (from bottom to top):
 			 * stage

@@ -566,15 +566,17 @@ namespace Gala
 				workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
 			} else if (destination is WorkspaceInsertThumb) {
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
-				InternalUtils.insert_workspace_with_window (inserter.current_index, window);
 
-				// if we don't actually change workspaces, which is the case when we insert
-				// a workspace at the very start, the window-added/removed signals won't be
-				// so we can just keep our window here
-				if (inserter.current_index == 0)
+				var will_move = window.get_workspace ().index () != inserter.workspace_index;
+				InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
+
+				// if we don't actually change workspaces, the window-added/removed signals won't
+				// be emitted so we can just keep our window here
+				if (!will_move)
 					drag_canceled ();
 				else
 					unmanaged ();
+
 				return;
 			} else if (destination is MonitorClone) {
 				window.move_to_monitor (((MonitorClone) destination).monitor);

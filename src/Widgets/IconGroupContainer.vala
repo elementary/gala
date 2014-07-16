@@ -25,10 +25,12 @@ namespace Gala
 		const int PLUS_SIZE = 8;
 		const int PLUS_WIDTH = 24;
 
-		public int current_index { get; set; default = 0; }
+		public int workspace_index { get; construct set; }
 
-		public WorkspaceInsertThumb ()
+		public WorkspaceInsertThumb (int workspace_index)
 		{
+			Object (workspace_index: workspace_index);
+
 			width = IconGroupContainer.SPACING;
 			height = IconGroupContainer.SPACING;
 			y = (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING) / 2;
@@ -137,11 +139,27 @@ namespace Gala
 		public IconGroupContainer (Screen screen)
 		{
 			Object (screen: screen);
+
+			layout_manager = new BoxLayout ();
+
+			Prefs.add_listener ((pref) => {
+				if (pref != Preference.DYNAMIC_WORKSPACES)
+					return;
+
+				if (!Prefs.get_dynamic_workspaces ()) {
+					foreach (var child in get_children ()) {
+						if (child is WorkspaceInsertThumb)
+							child.destroy ();
+					}
+				} else {
+					// TODO insert WorkspaceInsertThumbs everywhere
+				}
+			});
 		}
 
 		void update_positions ()
 		{
-			unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
+			/*unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
 
 			var current_inserter_index = 0;
 
@@ -164,35 +182,41 @@ namespace Gala
 					child.x = -SPACING + current_inserter_index * (GROUP_WIDTH + SPACING);
 					((WorkspaceInsertThumb) child).current_index = current_inserter_index++;
 				}
-			}
+			}*/
 		}
 
 		public void add_group (IconGroup group)
 		{
-			add_child (group);
+			var index = group.workspace.index ();
+
+			insert_child_at_index (group, index * 2);
 
 			if (Prefs.get_dynamic_workspaces ())
-				add_child (new WorkspaceInsertThumb ());
+				insert_child_at_index (new WorkspaceInsertThumb (index), index * 2);
 
-			update_positions ();
+			update_inserter_indices ();
 		}
 
 		public void remove_group (IconGroup group)
 		{
+			if (Prefs.get_dynamic_workspaces ())
+				remove_child (group.get_previous_sibling ());
+
 			remove_child (group);
 
-			if (Prefs.get_dynamic_workspaces ()) {
-				// find some WorkspaceInsertThumb to remove, update_positions orders
-				// them differently anyway, so position doesn't matter here
-				foreach (var child in get_children ()) {
-					if (child is WorkspaceInsertThumb) {
-						remove_child (child);
-						break;
-					}
+			update_inserter_indices ();
+		}
+
+		void update_inserter_indices ()
+		{
+			var current_index = 0;
+
+			foreach (var child in get_children ()) {
+				unowned WorkspaceInsertThumb thumb = child as WorkspaceInsertThumb;
+				if (thumb != null) {
+					thumb.workspace_index = current_index++;
 				}
 			}
-
-			update_positions ();
 		}
 	}
 }

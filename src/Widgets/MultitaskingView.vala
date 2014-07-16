@@ -283,16 +283,7 @@ namespace Gala
 			workspace.window_selected.disconnect (window_selected);
 			workspace.selected.disconnect (activate_workspace);
 
-			workspace.icon_group.set_easing_duration (200);
-			workspace.icon_group.set_easing_mode (AnimationMode.LINEAR);
-			workspace.icon_group.opacity = 0;
-			var transition = workspace.icon_group.get_transition ("opacity");
-			if (transition != null)
-				transition.completed.connect (() => {
-					icon_groups.remove_group (workspace.icon_group);
-				});
-			else
-				icon_groups.remove_group (workspace.icon_group);
+			icon_groups.remove_group (workspace.icon_group);
 
 			workspace.destroy ();
 

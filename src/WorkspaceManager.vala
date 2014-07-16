@@ -21,11 +21,26 @@ namespace Gala
 {
 	public class WorkspaceManager : Object
 	{
+		public static void init (WindowManager wm)
+			requires (instance == null)
+		{
+			instance = new WorkspaceManager (wm);
+		}
+
+		public static WorkspaceManager get_default ()
+			requires (instance != null)
+		{
+			return instance;
+		}
+
+		static WorkspaceManager? instance = null;
+
 		public WindowManager wm { get; construct; }
 
 		Gee.LinkedList<Workspace> workspaces_marked_removed;
+		int remove_freeze_count = 0;
 
-		public WorkspaceManager (WindowManager wm)
+		WorkspaceManager (WindowManager wm)
 		{
 			Object (wm: wm);
 		}
@@ -139,6 +154,7 @@ namespace Gala
 			// remove it right away if it was the active workspace and it's not the very last
 			// or we are in modal-mode
 			if ((!is_active_workspace || wm.is_modal ())
+				&& remove_freeze_count < 1
 				&& Utils.get_n_windows (workspace) < 1
 				&& index != screen.get_n_workspaces () - 1) {
 				remove_workspace (workspace);
@@ -211,6 +227,45 @@ namespace Gala
 			workspaces_marked_removed.add (workspace);
 
 			screen.remove_workspace (workspace, time);
+		}
+
+		/**
+		 * Temporarily disables removing workspaces when they are empty
+		 */
+		public void freeze_remove ()
+		{
+			remove_freeze_count++;
+		}
+
+		/**
+		 * Undo the effect of freeze_remove()
+		 */
+		public void thaw_remove ()
+		{
+			remove_freeze_count--;
+
+			assert (remove_freeze_count >= 0);
+		}
+
+		/**
+		 * If workspaces are dynamic, checks if there are empty workspaces that should
+		 * be removed. Particularily useful in conjunction with freeze/thaw_remove to
+		 * cleanup after an operation that required stable workspace/window indices
+		 */
+		public void cleanup ()
+		{
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+
+			var screen = wm.get_screen ();
+			var last_index = screen.get_n_workspaces () - 1;
+
+			foreach (var workspace in screen.get_workspaces ()) {
+				if (Utils.get_n_windows (workspace) < 1
+					&& workspace.index () != last_index) {
+					remove_workspace (workspace);
+				}
+			}
 		}
 	}
 }

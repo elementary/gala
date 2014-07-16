@@ -156,6 +156,9 @@ namespace Gala
 		{
 			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
 
+			var workspace_manager = WorkspaceManager.get_default ();
+			workspace_manager.freeze_remove ();
+
 			new_window.change_workspace_by_index (index, false);
 
 			foreach (var actor in actors) {
@@ -165,9 +168,12 @@ namespace Gala
 				if (!window.on_all_workspaces
 					&& window != new_window
 					&& window_index >= index) {
-					window.change_workspace_by_index (window_index + 1, false);
+					window.change_workspace_by_index (window_index + 1, true);
 				}
 			}
+
+			workspace_manager.thaw_remove ();
+			workspace_manager.cleanup ();
 		}
 
 		/**
