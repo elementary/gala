@@ -446,7 +446,9 @@ namespace Gala
 
 					} else
 						w.destroy ();
-					break;
+
+					// don't break here! If people spam hover events and we animate
+					// removal, we can actually multiple instances of the same window icon
 				}
 			}
 		}
