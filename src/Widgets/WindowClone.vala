@@ -504,6 +504,8 @@ namespace Gala
 			set_position (abs_x, abs_y);
 			set_pivot_point ((click_x - abs_x) / width, (click_y - abs_y) / height);
 
+			close_button.opacity = 0;
+
 			return this;
 		}
 
