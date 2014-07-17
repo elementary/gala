@@ -33,7 +33,8 @@ namespace Gala
 		public WindowManager wm { get; construct; }
 
 		Meta.Screen screen;
-		bool opened;
+		bool opened = false;
+		bool animating = false;
 
 		bool is_smooth_scrolling = false;
 
@@ -397,8 +398,12 @@ namespace Gala
 		 */
 		public void toggle ()
 		{
-			opened = !opened;
+			if (animating)
+				return;
 
+			animating = true;
+
+			opened = !opened;
 			var opening = opened;
 
 			foreach (var container in window_containers_monitors) {
@@ -462,6 +467,13 @@ namespace Gala
 					wm.block_keybindings_in_modal = true;
 					wm.end_modal ();
 
+					animating = false;
+
+					return false;
+				});
+			} else {
+				Timeout.add (200, () => {
+					animating = false;
 					return false;
 				});
 			}
