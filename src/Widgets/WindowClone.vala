@@ -464,6 +464,11 @@ namespace Gala
 				check_confirm_dialog_cb = 0;
 			}
 
+			if (shadow_update_timeout != 0) {
+				Source.remove (shadow_update_timeout);
+				shadow_update_timeout = 0;
+			}
+
 			destroy ();
 		}
 
@@ -582,6 +587,7 @@ namespace Gala
 		void drag_end (Actor destination)
 		{
 			Meta.Workspace workspace = null;
+			var primary = window.get_screen ().get_primary_monitor ();
 
 			if (destination is IconGroup) {
 				workspace = ((IconGroup) destination).workspace;
@@ -596,6 +602,12 @@ namespace Gala
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 
 				var will_move = window.get_workspace ().index () != inserter.workspace_index;
+
+				if (Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+					window.move_to_monitor (primary);
+					will_move = true;
+				}
+
 				InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
 
 				// if we don't actually change workspaces, the window-added/removed signals won't
@@ -614,8 +626,7 @@ namespace Gala
 
 			bool did_move = false;
 
-			var primary = window.get_screen ().get_primary_monitor ();
-			if (window.get_monitor () != primary) {
+			if (Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
 				window.move_to_monitor (primary);
 				did_move = true;
 			}
