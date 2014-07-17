@@ -619,8 +619,13 @@ namespace Gala
 
 				return;
 			} else if (destination is MonitorClone) {
-				window.move_to_monitor (((MonitorClone) destination).monitor);
-				unmanaged ();
+				var monitor = ((MonitorClone) destination).monitor;
+				if (window.get_monitor () != monitor) {
+					window.move_to_monitor (monitor);
+					unmanaged ();
+				} else
+					drag_canceled ();
+
 				return;
 			}
 
