@@ -48,6 +48,8 @@ namespace Gala
 		 */
 		public Meta.Rectangle? slot { get; private set; default = null; }
 
+		public bool dragging { get; private set; default = false; }
+
 		bool _active = false;
 		/**
 		 * When active fades a white border around the window in. Used for the visually
@@ -131,7 +133,7 @@ namespace Gala
 
 			window_icon = new Utils.WindowIcon (window, WINDOW_ICON_SIZE);
 			window_icon.opacity = 0;
-			window_icon.set_easing_duration (300);
+			window_icon.set_pivot_point (0.5f, 0.5f);
 
 			active_shape = new Clutter.Actor ();
 			active_shape.background_color = { 255, 255, 255, 200 };
@@ -409,13 +411,14 @@ namespace Gala
 			}
 			close_button.restore_easing_state ();
 
-			window_icon.save_easing_state ();
-			window_icon.set_easing_duration (0);
+			if (!dragging) {
+				window_icon.save_easing_state ();
+				window_icon.set_easing_duration (0);
 
-			window_icon.x = (dest_width - WINDOW_ICON_SIZE) / 2;
-			window_icon.y = dest_height - WINDOW_ICON_SIZE * 0.75f;
+				window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - WINDOW_ICON_SIZE * 0.75f);
 
-			window_icon.restore_easing_state ();
+				window_icon.restore_easing_state ();
+			}
 		}
 
 		/**
@@ -426,12 +429,13 @@ namespace Gala
 		 */
 		void close_window ()
 		{
-			check_confirm_dialog_cb = window.get_workspace ().window_added.connect (check_confirm_dialog);
+			var screen = window.get_screen ();
+			check_confirm_dialog_cb = screen.window_entered_monitor.connect (check_confirm_dialog);
 
-			window.delete (window.get_screen ().get_display ().get_current_time ());
+			window.@delete (screen.get_display ().get_current_time ());
 		}
 
-		void check_confirm_dialog (Meta.Window new_window)
+		void check_confirm_dialog (int monitor, Meta.Window new_window)
 		{
 			if (new_window.get_transient_for () == window) {
 				Idle.add (() => {
@@ -439,7 +443,7 @@ namespace Gala
 					return false;
 				});
 
-				SignalHandler.disconnect (window.get_workspace (), check_confirm_dialog_cb);
+				SignalHandler.disconnect (window.get_screen (), check_confirm_dialog_cb);
 				check_confirm_dialog_cb = 0;
 			}
 		}
@@ -456,7 +460,7 @@ namespace Gala
 				clone.destroy ();
 
 			if (check_confirm_dialog_cb != 0) {
-				SignalHandler.disconnect (window.get_workspace (), check_confirm_dialog_cb);
+				SignalHandler.disconnect (window.get_screen (), check_confirm_dialog_cb);
 				check_confirm_dialog_cb = 0;
 			}
 
@@ -482,7 +486,6 @@ namespace Gala
 		Actor drag_begin (float click_x, float click_y)
 		{
 			float abs_x, abs_y;
-			get_transformed_position (out abs_x, out abs_y);
 
 			prev_parent = get_parent ();
 			prev_index = prev_parent.get_children ().index (this);
@@ -491,20 +494,36 @@ namespace Gala
 			prev_parent.remove_child (this);
 			stage.add_child (this);
 
-			save_easing_state ();
-			set_easing_duration (200);
-			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
-			set_scale (0.4, 0.4);
-			restore_easing_state ();
+			var scale = window_icon.width / clone.width;
+
+			((ShadowEffect) get_effect ("shadow")).shadow_opacity = 0;
+
+			clone.get_transformed_position (out abs_x, out abs_y);
+			clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
+			clone.save_easing_state ();
+			clone.set_easing_duration (200);
+			clone.set_easing_mode (AnimationMode.EASE_IN_CUBIC);
+			clone.set_scale (scale, scale);
+			clone.opacity = 0;
+			clone.restore_easing_state ();
 
 			request_reposition ();
+
+			get_transformed_position (out abs_x, out abs_y);
 
 			save_easing_state ();
 			set_easing_duration (0);
 			set_position (abs_x, abs_y);
-			set_pivot_point ((click_x - abs_x) / width, (click_y - abs_y) / height);
+
+			window_icon.save_easing_state ();
+			window_icon.set_easing_duration (200);
+			window_icon.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
+			window_icon.set_position (click_x - abs_x - window_icon.width / 2, click_y - abs_y - window_icon.height / 2);
+			window_icon.restore_easing_state ();
 
 			close_button.opacity = 0;
+
+			dragging = true;
 
 			return this;
 		}
@@ -530,20 +549,18 @@ namespace Gala
 				&& window.get_monitor () == window.get_screen ().get_primary_monitor ())
 				return;
 
-			var scale = hovered ? 0.1 : 0.4;
-			var opacity = hovered ? 50 : 255;
-			var mode = hovered ? AnimationMode.EASE_IN_OUT_BACK : AnimationMode.EASE_OUT_ELASTIC;
+			var scale = hovered ? 0.4 : 1.0;
+			var opacity = hovered ? 0 : 255;
+			var duration = hovered && insert_thumb != null ? WorkspaceInsertThumb.EXPAND_DELAY : 100;
 
-			save_easing_state ();
+			window_icon.save_easing_state ();
 
-			set_easing_mode (mode);
-			set_easing_duration (300);
-			set_scale (scale, scale);
+			window_icon.set_easing_mode (AnimationMode.LINEAR);
+			window_icon.set_easing_duration (duration);
+			window_icon.set_scale (scale, scale);
+			window_icon.set_opacity (opacity);
 
-			set_easing_mode (AnimationMode.LINEAR);
-			set_opacity (opacity);
-
-			restore_easing_state ();
+			window_icon.restore_easing_state ();
 
 			if (insert_thumb != null) {
 				insert_thumb.set_window_thumb (window);
@@ -623,17 +640,36 @@ namespace Gala
 			get_parent ().remove_child (this);
 			prev_parent.insert_child_at_index (this, prev_index);
 
-			save_easing_state ();
-			set_easing_duration (400);
-			set_easing_mode (AnimationMode.EASE_OUT_BOUNCE);
-			set_scale (1, 1);
+			clone.save_easing_state ();
+			clone.set_easing_duration (250);
+			clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			clone.set_scale (1, 1);
+			clone.opacity = 255;
+
+			Clutter.Callback finished = () => {
+				((ShadowEffect) get_effect ("shadow")).shadow_opacity = 255;
+			};
+
+			var transition = clone.get_transition ("scale-x");
+			if (transition != null)
+				transition.completed.connect (() => finished (this));
+			else
+				finished (this);
+
+			clone.restore_easing_state ();
 
 			request_reposition ();
 
-			restore_easing_state ();
+			// pop 0 animation duration from drag_begin()
 			restore_easing_state ();
 
-			opacity = 255;
+			window_icon.save_easing_state ();
+			window_icon.set_easing_duration (250);
+			window_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			window_icon.set_position ((slot.width - WINDOW_ICON_SIZE) / 2, slot.height - WINDOW_ICON_SIZE * 0.75f);
+			window_icon.restore_easing_state ();
+
+			dragging = false;
 		}
 	}
 }

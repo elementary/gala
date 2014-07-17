@@ -22,7 +22,7 @@ namespace Gala
 {
 	public class WorkspaceInsertThumb : Actor
 	{
-		const int EXPAND_DELAY = 300;
+		public const int EXPAND_DELAY = 300;
 
 		public int workspace_index { get; construct set; }
 		public bool expanded { get; private set; default = false; }

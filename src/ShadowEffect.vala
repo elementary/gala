@@ -23,6 +23,7 @@ namespace Gala
 		public int shadow_spread { get; construct; }
 
 		public float scale_factor { get; set; default = 1; }
+		public uint8 shadow_opacity { get; set; default = 255; }
 
 		Cogl.Material material;
 		string? current_key = null;
@@ -107,7 +108,8 @@ namespace Gala
 		{
 			var size = shadow_size * scale_factor;
 
-			var alpha = Cogl.Color.from_4ub (255, 255, 255, actor.get_paint_opacity ());
+			var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
+			var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
 			alpha.premultiply ();
 
 			material.set_color (alpha);
