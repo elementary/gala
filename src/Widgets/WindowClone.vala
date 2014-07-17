@@ -519,7 +519,9 @@ namespace Gala
 			IconGroup? icon_group = destination as IconGroup;
 			WorkspaceInsertThumb? insert_thumb = destination as WorkspaceInsertThumb;
 
-			if (icon_group == null && insert_thumb == null)
+			// if we have don't dynamic workspace, we don't allow inserting
+			if (icon_group == null && insert_thumb == null
+				|| (insert_thumb != null && !Prefs.get_dynamic_workspaces ()))
 				return;
 
 			// for an icon group, we only do animations if there is an actual movement possible
@@ -569,6 +571,11 @@ namespace Gala
 			} else if (destination is FramedBackground) {
 				workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
 			} else if (destination is WorkspaceInsertThumb) {
+				if (!Prefs.get_dynamic_workspaces ()) {
+					drag_canceled ();
+					return;
+				}
+
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 
 				var will_move = window.get_workspace ().index () != inserter.workspace_index;

@@ -40,7 +40,11 @@ namespace Gala
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
 			drop.crossed.connect ((hovered) => {
+				if (!Prefs.get_dynamic_workspaces ())
+					return;
+
 				save_easing_state ();
+				set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 				set_easing_duration (200);
 
 				if (!hovered) {
@@ -114,20 +118,6 @@ namespace Gala
 			Object (screen: screen);
 
 			layout_manager = new BoxLayout ();
-
-			Prefs.add_listener ((pref) => {
-				if (pref != Preference.DYNAMIC_WORKSPACES)
-					return;
-
-				if (!Prefs.get_dynamic_workspaces ()) {
-					foreach (var child in get_children ()) {
-						if (child is WorkspaceInsertThumb)
-							child.destroy ();
-					}
-				} else {
-					// TODO insert WorkspaceInsertThumbs everywhere
-				}
-			});
 		}
 
 		public void add_group (IconGroup group)
@@ -136,22 +126,18 @@ namespace Gala
 
 			insert_child_at_index (group, index * 2);
 
-			if (Prefs.get_dynamic_workspaces ()) {
-				var thumb = new WorkspaceInsertThumb (index);
-				thumb.notify["expanded"].connect (expanded_changed);
-				insert_child_at_index (thumb, index * 2);
-			}
+			var thumb = new WorkspaceInsertThumb (index);
+			thumb.notify["expanded"].connect_after (expanded_changed);
+			insert_child_at_index (thumb, index * 2);
 
 			update_inserter_indices ();
 		}
 
 		public void remove_group (IconGroup group)
 		{
-			if (Prefs.get_dynamic_workspaces ()) {
-				var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
-				thumb.notify["expanded"].disconnect (expanded_changed);
-				remove_child (thumb);
-			}
+			var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
+			thumb.notify["expanded"].disconnect (expanded_changed);
+			remove_child (thumb);
 
 			remove_child (group);
 
@@ -171,10 +157,13 @@ namespace Gala
 		{
 			var width = 0.0f;
 			foreach (var child in get_children ()) {
-				if (child is WorkspaceInsertThumb && ((WorkspaceInsertThumb) child).expanded)
-					width += GROUP_WIDTH + SPACING * 2;
-				else
-					width += child.width;
+				if (child is WorkspaceInsertThumb) {
+					if (((WorkspaceInsertThumb) child).expanded)
+						width += GROUP_WIDTH + SPACING * 2;
+					else
+						width += SPACING;
+				} else
+					width += GROUP_WIDTH;
 			}
 
 			return width;
