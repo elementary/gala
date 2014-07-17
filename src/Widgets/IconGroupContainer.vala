@@ -22,8 +22,12 @@ namespace Gala
 {
 	public class WorkspaceInsertThumb : Actor
 	{
+		const int EXPAND_DELAY = 300;
+
 		public int workspace_index { get; construct set; }
 		public bool expanded { get; private set; default = false; }
+
+		uint expand_timeout = 0;
 
 		public WorkspaceInsertThumb (int workspace_index)
 		{
@@ -43,23 +47,15 @@ namespace Gala
 				if (!Prefs.get_dynamic_workspaces ())
 					return;
 
-				save_easing_state ();
-				set_easing_mode (AnimationMode.EASE_OUT_QUAD);
-				set_easing_duration (200);
-
 				if (!hovered) {
-					remove_transition ("pulse");
-					opacity = 0;
-					width = IconGroupContainer.SPACING;
-					expanded = false;
-				} else {
-					add_pulse_animation ();
-					opacity = 200;
-					width = IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2;
-					expanded = true;
-				}
+					if (expand_timeout != 0) {
+						Source.remove (expand_timeout);
+						expand_timeout = 0;
+					}
 
-				restore_easing_state ();
+					transform (false);
+				} else
+					expand_timeout = Timeout.add (EXPAND_DELAY, expand);
 			});
 
 			add_action (drop);
@@ -72,6 +68,36 @@ namespace Gala
 			var icon = new Utils.WindowIcon (window, IconGroupContainer.GROUP_WIDTH);
 			icon.x_align = ActorAlign.CENTER;
 			add_child (icon);
+		}
+
+		bool expand ()
+		{
+			expand_timeout = 0;
+
+			transform (true);
+
+			return false;
+		}
+
+		void transform (bool expand)
+		{
+			save_easing_state ();
+			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			set_easing_duration (200);
+
+			if (!expand) {
+				remove_transition ("pulse");
+				opacity = 0;
+				width = IconGroupContainer.SPACING;
+				expanded = false;
+			} else {
+				add_pulse_animation ();
+				opacity = 200;
+				width = IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2;
+				expanded = true;
+			}
+
+			restore_easing_state ();
 		}
 
 		void add_pulse_animation ()
