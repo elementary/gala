@@ -305,7 +305,7 @@ namespace Gala
 		{
 			if (close_pixbuf == null) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_file (Config.PKGDATADIR + "/close.png");
+					close_pixbuf = new Gdk.Pixbuf.from_file (Config.PKGDATADIR + "/close.svg");
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -325,7 +325,7 @@ namespace Gala
 			var pixbuf = get_close_button_pixbuf ();
 
 			texture.reactive = true;
-			texture.set_size (28, 28);
+			texture.set_size (36, 36);
 
 			if (pixbuf != null) {
 				try {

@@ -1,5 +1,5 @@
 stylesdir = $(pkgdatadir)
-styles_DATA = gala.css texture.png close.png
+styles_DATA = gala.css texture.png close.svg
 
 applicationsdir = $(datadir)/applications
 applications_DATA = gala.desktop
@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	gala.css \
 	gala.desktop \
 	texture.png \
-	close.png \
+	close.svg \
 	org.pantheon.desktop.gala.gschema.xml.in.in \
 	$(NULL)
 
