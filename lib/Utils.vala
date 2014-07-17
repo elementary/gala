@@ -80,6 +80,7 @@ namespace Gala
 		{
 			public uint32 xid { get; construct; }
 			public int icon_size { get; construct; }
+			public Meta.Window window { get; construct; }
 
 			static Bamf.Matcher? matcher = null;
 
@@ -88,7 +89,7 @@ namespace Gala
 			public WindowIcon (Meta.Window window, int icon_size)
 			{
 				var xid = (uint32)window.get_xwindow ();
-				Object (xid: xid, icon_size: icon_size);
+				Object (window: window, xid: xid, icon_size: icon_size);
 
 				width = icon_size;
 				height = icon_size;
