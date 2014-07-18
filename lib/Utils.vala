@@ -171,7 +171,7 @@ namespace Gala
 		/**
 		 * returns a pixbuf for this application or a default icon
 		 **/
-		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
+		static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
 			bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? image = null;
@@ -284,16 +284,6 @@ namespace Gala
 			}
 
 			return fallback_style;
-		}
-
-		public static void get_window_frame_offset (Meta.Window window, out float x, out float y, out float width, out float height)
-		{
-			var actor = window.get_compositor_private () as Clutter.Actor;
-			var frame = window.get_outer_rect ();
-			x = actor.x - frame.x;
-			y = actor.y - frame.y;
-			width = actor.width - frame.width;
-			height = actor.height - frame.height;
 		}
 
 		public static void bell (Meta.Screen screen)

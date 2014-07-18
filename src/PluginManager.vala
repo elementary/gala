@@ -208,8 +208,16 @@ namespace Gala
 			X.Xrectangle[] regions = {};
 
 			plugins.@foreach ((name, plugin) => {
-				foreach (var region in plugin.region)
-					regions += region;
+				foreach (var region in plugin.region) {
+					X.Xrectangle rect = {
+						(short) region.x,
+						(short) region.y,
+						(ushort) region.width,
+						(ushort) region.height
+					};
+
+					regions += rect;
+				}
 			});
 
 			this.regions = regions;

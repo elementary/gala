@@ -91,14 +91,14 @@ namespace Gala
 		 * It is calculated by the system whenever update_region is called.
 		 * You can influce it with the custom_region and the track_actor function.
 		 */
-		public X.Xrectangle[] region { get; set; }
+		public Meta.Rectangle[] region { get; set; }
 
 		/**
 		 * This list will be merged with the region property. See region for
 		 * more details. Changing this property will cause update_region to be
 		 * called. Default to null.
 		 */
-		protected X.Xrectangle[]? custom_region {
+		protected Meta.Rectangle[]? custom_region {
 			get {
 			   return _custom_region;
 			}
@@ -113,14 +113,25 @@ namespace Gala
 		 * actors to prevent constant recalculations of the regions during an
 		 * animation.
 		 */
-		protected bool freeze_track { get; protected set; default = false; }
+		protected bool freeze_track {
+			get {
+				return _freeze_track;
+			}
+			set {
+				_freeze_track = value;
 
-		private X.Xrectangle[]? _custom_region = null;
+				if (!_freeze_track)
+					update_region ();
+			}
+		}
+
+		private bool _freeze_track = false;
+		private Meta.Rectangle[]? _custom_region = null;
 		private Gee.LinkedList<Clutter.Actor> tracked_actors = new Gee.LinkedList<Clutter.Actor> ();
 
 		/**
 		 * Once this method is called you can start adding actors to the stage
-		 * using via the windowmanager instance that is given to you.
+		 * via the windowmanager instance that is given to you.
 		 *
 		 * @param wm The window manager.
 		 */
@@ -175,7 +186,7 @@ namespace Gala
 			var has_custom = custom_region != null;
 			var len = tracked_actors.size + (has_custom ? custom_region.length : 0);
 
-			X.Xrectangle[] regions = new X.Xrectangle[len];
+			Meta.Rectangle[] regions = new Meta.Rectangle[len];
 			var i = 0;
 
 			if (has_custom) {
@@ -192,7 +203,7 @@ namespace Gala
 				if (w == 0 || h == 0)
 					continue;
 
-				regions[i++] = { (short)x, (short)y, (short)w, (short)h };
+				regions[i++] = { (int) x, (int) y, (int) w, (int) h };
 			}
 
 			region = regions;
