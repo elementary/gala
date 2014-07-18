@@ -56,7 +56,13 @@ namespace Gala
 			}
 		}
 
-		internal static void request_clean_icon_cache (uint32[] xids)
+		/**
+		 * Marks the given xids as no longer needed, the corresponding icons
+		 * may be freed now. Mainly for internal purposes.
+		 *
+		 * @param xids The xids of the window that no longer need icons
+		 */
+		public static void request_clean_icon_cache (uint32[] xids)
 		{
 			if (cache_clear_timeout > 0)
 				GLib.Source.remove (cache_clear_timeout);
