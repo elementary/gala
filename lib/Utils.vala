@@ -78,24 +78,29 @@ namespace Gala
 		 */
 		public class WindowIcon : GtkClutter.Texture
 		{
-			public uint32 xid { get; construct; }
-			public int icon_size { get; construct; }
-			public Meta.Window window { get; construct; }
+			static Bamf.Matcher matcher;
 
-			static Bamf.Matcher? matcher = null;
+			static construct
+			{
+				matcher = Bamf.Matcher.get_default ();
+			}
+
+			public Meta.Window window { get; construct; }
+			public int icon_size { get; construct; }
 
 			bool loaded = false;
+			uint32 xid;
 
 			public WindowIcon (Meta.Window window, int icon_size)
 			{
-				var xid = (uint32)window.get_xwindow ();
-				Object (window: window, xid: xid, icon_size: icon_size);
+				Object (window: window, icon_size: icon_size);
+			}
 
+			construct
+			{
 				width = icon_size;
 				height = icon_size;
-
-				if (matcher == null)
-					matcher = Bamf.Matcher.get_default ();
+				xid = (uint32) window.get_xwindow ();
 
 				// new windows often reach mutter earlier than bamf, that's why
 				// we have to wait until the next window opens and hope that it's

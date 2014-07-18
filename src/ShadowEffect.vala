@@ -36,6 +36,11 @@ namespace Gala
 		// so we keep a cache to avoid creating the same texture all over again.
 		static Gee.HashMap<string,Shadow> shadow_cache;
 
+		static construct
+		{
+			shadow_cache = new Gee.HashMap<string,Shadow> ();
+		}
+
 		public int shadow_size { get; construct; }
 		public int shadow_spread { get; construct; }
 
@@ -54,24 +59,20 @@ namespace Gala
 			update_size (actor_width, actor_height);
 		}
 
-		public void update_size (int actor_width, int actor_height)
-		{
-			var shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
-			material.set_layer (0, shadow);
-		}
-
 		~ShadowEffect ()
 		{
 			if (current_key != null)
 				decrement_shadow_users (current_key);
 		}
 
+		public void update_size (int actor_width, int actor_height)
+		{
+			var shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
+			material.set_layer (0, shadow);
+		}
+
 		Cogl.Texture get_shadow (int actor_width, int actor_height, int shadow_size, int shadow_spread)
 		{
-			if (shadow_cache == null) {
-				shadow_cache = new Gee.HashMap<string,Shadow> ();
-			}
-
 			if (current_key != null) {
 				decrement_shadow_users (current_key);
 			}

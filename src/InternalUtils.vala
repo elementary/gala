@@ -17,8 +17,6 @@
 
 using Meta;
 
-using Gala;
-
 namespace Gala
 {
 	public class InternalUtils
@@ -36,9 +34,17 @@ namespace Gala
 			{
 				var actor = (WindowActor) window.get_compositor_private ();
 				Object (window: window, source: actor);
+			}
 
+			construct
+			{
 				if (source != null)
 					window.unmanaged.connect (reset_source);
+			}
+
+			~SafeWindowClone ()
+			{
+				window.unmanaged.disconnect (reset_source);
 			}
 
 			void reset_source ()
@@ -47,11 +53,6 @@ namespace Gala
 				// to make sure the clone doesn't attempt to draw a clone of a window that
 				// has been destroyed
 				source = null;
-			}
-
-			~SafeWindowClone ()
-			{
-				window.unmanaged.disconnect (reset_source);
 			}
 		}
 
@@ -182,9 +183,9 @@ namespace Gala
 		 **/
 
 		// constants, mainly for natural expo
-		static const int GAPS = 10;
-		static const int MAX_TRANSLATIONS = 100000;
-		static const int ACCURACY = 20;
+		const int GAPS = 10;
+		const int MAX_TRANSLATIONS = 100000;
+		const int ACCURACY = 20;
 
 		// some math utilities
 		static int squared_distance (Gdk.Point a, Gdk.Point b)
@@ -345,7 +346,8 @@ namespace Gala
 			return result;
 		}
 
-		/*public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
+		/* TODO needs porting
+		public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
 		{
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 
