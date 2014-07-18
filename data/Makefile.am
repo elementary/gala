@@ -1,5 +1,5 @@
 stylesdir = $(pkgdatadir)
-styles_DATA = gala.css texture.png close.png
+styles_DATA = texture.png close.png
 
 applicationsdir = $(datadir)/applications
 applications_DATA = gala.desktop
@@ -19,7 +19,6 @@ gschemas.compiled: Makefile $(gsettings_SCHEMAS:.xml=.valid)
 all-local: gschemas.compiled
 
 EXTRA_DIST = \
-	gala.css \
 	gala.desktop \
 	texture.png \
 	close.png \
