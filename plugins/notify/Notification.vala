@@ -68,6 +68,7 @@ namespace Gala.Plugins.Notify
 			width = WIDTH + MARGIN * 2;
 			reactive = true;
 			margin_left = 12;
+			set_pivot_point (0.5f, 0.5f);
 
 			summary_label = new Text.with_text (null, "");
 			summary_label.line_wrap = true;
@@ -80,6 +81,7 @@ namespace Gala.Plugins.Notify
 			body_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
 
 			icon_texture = new GtkClutter.Texture ();
+			icon_texture.set_pivot_point (0.5f, 0.5f);
 
 			close_button = Utils.create_close_button ();
 			close_button.opacity = 0;
@@ -97,22 +99,6 @@ namespace Gala.Plugins.Notify
 
 			set_values ();
 
-			save_easing_state ();
-			set_easing_duration (0);
-			x = WIDTH + MARGIN * 2;
-			restore_easing_state ();
-
-			var slide_transition = new PropertyTransition ("x");
-			slide_transition.set_from_value (WIDTH);
-			slide_transition.set_to_value (0);
-			slide_transition.progress_mode = urgency == NotificationUrgency.LOW ?
-				AnimationMode.EASE_OUT_CUBIC : AnimationMode.EASE_OUT_BACK;
-			slide_transition.duration = 200;
-			slide_transition.remove_on_complete = true;
-			slide_transition.delay = 200;
-
-			add_transition ("entry", slide_transition);
-
 			var click = new ClickAction ();
 			click.clicked.connect (() => {
 				var window = get_window ();
@@ -127,6 +113,98 @@ namespace Gala.Plugins.Notify
 				}
 			});
 			add_action (click);
+
+			open ();
+		}
+
+		public void open () {
+			var entry = new TransitionGroup ();
+			entry.remove_on_complete = true;
+			entry.progress_mode = AnimationMode.EASE_IN_OUT_CUBIC;
+			entry.duration = 600;
+
+			var opacity_transition = new PropertyTransition ("opacity");
+			opacity_transition.set_from_value (0);
+			opacity_transition.set_to_value (255);
+
+			var flip_transition = new KeyframeTransition ("rotation-angle-x");
+			flip_transition.set_from_value (-90.0);
+			flip_transition.set_to_value (0.0);
+			flip_transition.set_key_frames ({ 0.6 });
+			flip_transition.set_values ({ 10.0 });
+
+			entry.add_transition (opacity_transition);
+			entry.add_transition (flip_transition);
+			add_transition ("entry", entry);
+
+			switch (urgency) {
+				case NotificationUrgency.LOW:
+					return;
+				case NotificationUrgency.NORMAL:
+					var icon_entry = new TransitionGroup ();
+					icon_entry.duration = 1000;
+					icon_entry.remove_on_complete = true;
+					icon_entry.progress_mode = AnimationMode.EASE_IN_OUT_CUBIC;
+
+					var icon_opacity_transition = new KeyframeTransition ("opacity");
+					icon_opacity_transition.set_from_value (0);
+					icon_opacity_transition.set_to_value (255);
+					icon_opacity_transition.set_key_frames ({ 0.1, 0.6 });
+					icon_opacity_transition.set_values ({ 0, 255 });
+
+					var scale_x_transition = new KeyframeTransition ("scale-x");
+					scale_x_transition.set_from_value (0.0);
+					scale_x_transition.set_to_value (1.0);
+					scale_x_transition.set_key_frames ({ 0.1, 0.6 });
+					scale_x_transition.set_values ({ 0, 1.3 });
+
+					var scale_y_transition = new KeyframeTransition ("scale-y");
+					scale_y_transition.set_from_value (0.0);
+					scale_y_transition.set_to_value (1.0);
+					scale_y_transition.set_key_frames ({ 0.15, 0.6 });
+					scale_y_transition.set_values ({ 0, 1.3 });
+
+					icon_entry.add_transition (icon_opacity_transition);
+					icon_entry.add_transition (scale_x_transition);
+					icon_entry.add_transition (scale_y_transition);
+
+					icon_texture.add_transition ("entry", icon_entry);
+
+					return;
+				case NotificationUrgency.CRITICAL:
+					var icon_entry = new TransitionGroup ();
+					icon_entry.duration = 1000;
+					icon_entry.remove_on_complete = true;
+					icon_entry.progress_mode = AnimationMode.EASE_IN_OUT_CUBIC;
+
+					double[] keyframes = { 0.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+					GLib.Value[] scale = { 0.0, 1.2, 1.6, 1.6, 1.6, 1.6, 1.2, 1.0 };
+
+					var rotate_transition = new KeyframeTransition ("rotation-angle-z");
+					rotate_transition.set_from_value (30.0);
+					rotate_transition.set_to_value (0.0);
+					rotate_transition.set_key_frames (keyframes);
+					rotate_transition.set_values ({ 30.0, -30.0, 30.0, -20.0, 10.0, -5.0, 2.0, 0.0 });
+
+					var scale_x_transition = new KeyframeTransition ("scale-x");
+					scale_x_transition.set_from_value (0.0);
+					scale_x_transition.set_to_value (1.0);
+					scale_x_transition.set_key_frames (keyframes);
+					scale_x_transition.set_values (scale);
+
+					var scale_y_transition = new KeyframeTransition ("scale-y");
+					scale_y_transition.set_from_value (0.0);
+					scale_y_transition.set_to_value (1.0);
+					scale_y_transition.set_key_frames (keyframes);
+					scale_y_transition.set_values (scale);
+
+					icon_entry.add_transition (rotate_transition);
+					icon_entry.add_transition (scale_x_transition);
+					icon_entry.add_transition (scale_y_transition);
+
+					icon_texture.add_transition ("entry", icon_entry);
+					return;
+			}
 		}
 
 		public void close ()

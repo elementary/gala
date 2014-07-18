@@ -33,7 +33,6 @@ namespace Gala.Plugins.Notify
 			Object (screen: screen);
 
 			width = Notification.WIDTH + 2 * Notification.MARGIN;
-			clip_to_allocation = true;
 		}
 
 		public void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
@@ -66,7 +65,7 @@ namespace Gala.Plugins.Notify
 
 			float height;
 			notification.get_preferred_height (Notification.WIDTH, out height, null);
-			update_positions (height);
+			//update_positions (height);
 
 			insert_child_at_index (notification, 0);
 

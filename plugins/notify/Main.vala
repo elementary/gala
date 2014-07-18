@@ -30,6 +30,7 @@ namespace Gala.Plugins.Notify
 		public override void initialize (Gala.WindowManager wm)
 		{
 			this.wm = wm;
+			var screen = wm.get_screen ();
 
 			stack = new NotificationStack (wm.get_screen ());
 			wm.ui_group.add_child (stack);
@@ -43,7 +44,8 @@ namespace Gala.Plugins.Notify
 			server.show_notification.connect (stack.show_notification);
 
 			update_position ();
-			wm.get_screen ().monitors_changed.connect (update_position);
+			screen.monitors_changed.connect (update_position);
+			screen.workareas_changed.connect (update_position);
 
 			Bus.own_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameOwnerFlags.NONE,
 				(connection) => {
