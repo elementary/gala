@@ -56,7 +56,7 @@ namespace Gala
 			}
 		}
 
-		public static void request_clean_icon_cache (uint32[] xids)
+		internal static void request_clean_icon_cache (uint32[] xids)
 		{
 			if (cache_clear_timeout > 0)
 				GLib.Source.remove (cache_clear_timeout);
@@ -78,23 +78,29 @@ namespace Gala
 		 */
 		public class WindowIcon : GtkClutter.Texture
 		{
-			public uint32 xid { get; construct; }
+			static Bamf.Matcher matcher;
+
+			static construct
+			{
+				matcher = Bamf.Matcher.get_default ();
+			}
+
+			public Meta.Window window { get; construct; }
 			public int icon_size { get; construct; }
 
-			static Bamf.Matcher? matcher = null;
-
 			bool loaded = false;
+			uint32 xid;
 
 			public WindowIcon (Meta.Window window, int icon_size)
 			{
-				var xid = (uint32)window.get_xwindow ();
-				Object (xid: xid, icon_size: icon_size);
+				Object (window: window, icon_size: icon_size);
+			}
 
+			construct
+			{
 				width = icon_size;
 				height = icon_size;
-
-				if (matcher == null)
-					matcher = Bamf.Matcher.get_default ();
+				xid = (uint32) window.get_xwindow ();
 
 				// new windows often reach mutter earlier than bamf, that's why
 				// we have to wait until the next window opens and hope that it's
@@ -139,13 +145,23 @@ namespace Gala
 		}
 
 		/**
-		 * returns a pixbuf for the application of this window or a default icon
-		 **/
+		 * Returns a pixbuf for the application of this window or a default icon
+		 *
+		 * @param window       The window to get an icon for
+		 * @param size         The size of the icon
+		 * @param ignore_cache Should not be necessary in most cases, if you care about the icon
+		 *                     being loaded correctly, you should consider using the WindowIcon class
+		 */
 		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size, bool ignore_cache = false)
 		{
 			return get_icon_for_xid ((uint32)window.get_xwindow (), size, ignore_cache);
 		}
 
+		/**
+		 * Returns a pixbuf for a given xid or a default icon
+		 *
+		 * @see get_icon_for_window
+		 */
 		public static Gdk.Pixbuf get_icon_for_xid (uint32 xid, int size, bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? result = null;
@@ -163,9 +179,11 @@ namespace Gala
 		}
 
 		/**
-		 * returns a pixbuf for this application or a default icon
-		 **/
-		public static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
+		 * Returns a pixbuf for this application or a default icon
+		 *
+		 * @see get_icon_for_window
+		 */
+		static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
 			bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? image = null;
@@ -224,9 +242,13 @@ namespace Gala
 		}
 
 		/**
-		 * get the next window that should be active on a workspace right now
-		 **/
-		public static Meta.Window get_next_window (Meta.Workspace workspace, bool backward=false)
+		 * Get the next window that should be active on a workspace right now. Based on
+		 * stacking order
+		 *
+		 * @param workspace The workspace on which to find the window
+		 * @param backward  Whether to get the previous one instead
+		 */
+		public static Meta.Window get_next_window (Meta.Workspace workspace, bool backward = false)
 		{
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
@@ -236,7 +258,7 @@ namespace Gala
 #else
 			var window = display.get_tab_next (Meta.TabList.NORMAL, screen,
 #endif
-				screen.get_active_workspace (), null, backward);
+				workspace, null, backward);
 
 			if (window == null)
 #if HAS_MUTTER314
@@ -249,8 +271,11 @@ namespace Gala
 		}
 
 		/**
-		 * get the number of toplevel windows on a workspace
-		 **/
+		 * Get the number of toplevel windows on a workspace excluding those that are
+		 * on all workspaces
+		 *
+		 * @param workspace The workspace on which to count the windows
+		 */
 		public static uint get_n_windows (Meta.Workspace workspace)
 		{
 			var n = 0;
@@ -266,30 +291,12 @@ namespace Gala
 			return n;
 		}
 
-		static Gtk.CssProvider fallback_style = null;
-
-		public static Gtk.CssProvider get_default_style ()
-		{
-			if (fallback_style == null) {
-				fallback_style = new Gtk.CssProvider ();
-				try {
-					fallback_style.load_from_path (Config.PKGDATADIR + "/gala.css");
-				} catch (Error e) { warning (e.message); }
-			}
-
-			return fallback_style;
-		}
-
-		public static void get_window_frame_offset (Meta.Window window, out float x, out float y, out float width, out float height)
-		{
-			var actor = window.get_compositor_private () as Clutter.Actor;
-			var frame = window.get_outer_rect ();
-			x = actor.x - frame.x;
-			y = actor.y - frame.y;
-			width = actor.width - frame.width;
-			height = actor.height - frame.height;
-		}
-
+		/**
+		 * Ring the system bell, will most likely emit a <beep> error sound or, if the
+		 * audible bell is disabled, flash the screen
+		 *
+		 * @param screen The screen to flash, if necessary
+		 */
 		public static void bell (Meta.Screen screen)
 		{
 			if (Meta.Prefs.bell_is_audible ())
@@ -299,6 +306,9 @@ namespace Gala
 		}
 
 		/**
+		 * Returns the pixbuf that is used for close buttons throughout gala at a
+		 * size of 36px
+		 *
 		 * @return the close button pixbuf or null if it failed to load
 		 */
 		public static Gdk.Pixbuf? get_close_button_pixbuf ()
@@ -316,7 +326,8 @@ namespace Gala
 		}
 
 		/**
-		 * Creates a new reactive ClutterActor at 28x28 with the close pixbuf
+		 * Creates a new reactive ClutterActor at 36px with the close pixbuf
+		 *
 		 * @return The close button actor
 		 */
 		public static GtkClutter.Texture create_close_button ()
@@ -325,7 +336,7 @@ namespace Gala
 			var pixbuf = get_close_button_pixbuf ();
 
 			texture.reactive = true;
-			texture.set_size (28, 28);
+			texture.set_size (36, 36);
 
 			if (pixbuf != null) {
 				try {
@@ -342,7 +353,7 @@ namespace Gala
 		}
 
 		/**
-		 * Plank DockTheme
+		 * Provides access to a PlankDrawingDockTheme and PlankDockPrefereces
 		 */
 		public class DockThemeManager : Object
 		{
@@ -354,7 +365,9 @@ namespace Gala
 
 			DockThemeManager ()
 			{
-				dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
+				var file = Environment.get_user_config_dir () + "/plank/dock1/settings";
+
+				dock_settings = new Plank.DockPreferences.with_filename (file);
 				dock_settings.notify["Theme"].connect (load_dock_theme);
 			}
 

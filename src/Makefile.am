@@ -41,6 +41,7 @@ gala_VALASOURCES = \
 	Settings.vala \
 	ShadowEffect.vala \
 	TextShadowEffect.vala \
+	WindowListener.vala \
 	WindowManager.vala \
 	WorkspaceManager.vala \
 	Background/Background.vala \
@@ -48,16 +49,15 @@ gala_VALASOURCES = \
 	Background/BackgroundManager.vala \
 	Background/SlideShow.vala \
 	Background/SystemBackground.vala \
+	Widgets/IconGroup.vala \
+	Widgets/IconGroupContainer.vala \
+	Widgets/MonitorClone.vala \
+	Widgets/MultitaskingView.vala \
+	Widgets/WindowClone.vala \
+	Widgets/WindowCloneContainer.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
-	Widgets/WindowThumb.vala \
-	Widgets/MultitaskingView/IconGroup.vala \
-	Widgets/MultitaskingView/IconGroupContainer.vala \
-	Widgets/MultitaskingView/MonitorClone.vala \
-	Widgets/MultitaskingView/MultitaskingView.vala \
-	Widgets/MultitaskingView/TiledWindow.vala \
-	Widgets/MultitaskingView/TiledWindowContainer.vala \
-	Widgets/MultitaskingView/WorkspaceClone.vala \
+	Widgets/WorkspaceClone.vala \
 	$(NULL)
 
 nodist_gala_SOURCES = \

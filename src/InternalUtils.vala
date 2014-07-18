@@ -17,12 +17,45 @@
 
 using Meta;
 
-using Gala;
-
 namespace Gala
 {
 	public class InternalUtils
 	{
+		/**
+		 * A clone for a MetaWindowActor that will guard against the
+		 * meta_window_appears_focused crash by disabling painting the clone
+		 * as soon as it gets unavailable.
+		 */
+		public class SafeWindowClone : Clutter.Clone
+		{
+			public Window window { get; construct; }
+
+			public SafeWindowClone (Window window)
+			{
+				var actor = (WindowActor) window.get_compositor_private ();
+				Object (window: window, source: actor);
+			}
+
+			construct
+			{
+				if (source != null)
+					window.unmanaged.connect (reset_source);
+			}
+
+			~SafeWindowClone ()
+			{
+				window.unmanaged.disconnect (reset_source);
+			}
+
+			void reset_source ()
+			{
+				// actually destroying the clone will be handled somewhere else, we just need
+				// to make sure the clone doesn't attempt to draw a clone of a window that
+				// has been destroyed
+				source = null;
+			}
+		}
+
 		public static bool workspaces_only_on_primary ()
 		{
 			return Prefs.get_dynamic_workspaces ()
@@ -114,14 +147,45 @@ namespace Gala
 		}
 
 		/**
+		 * Inserts a workspace at the given index. To ensure the workspace is not immediately
+		 * removed again when in dynamic workspaces, the window is first placed on it.
+		 *
+		 * @param index  The index at which to insert the workspace
+		 * @param window A window that should be moved to the new workspace
+		 */
+		public static void insert_workspace_with_window (int index, Window new_window)
+		{
+			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+
+			var workspace_manager = WorkspaceManager.get_default ();
+			workspace_manager.freeze_remove ();
+
+			new_window.change_workspace_by_index (index, false);
+
+			foreach (var actor in actors) {
+				var window = actor.get_meta_window ();
+				var window_index = window.get_workspace ().index ();
+
+				if (!window.on_all_workspaces
+					&& window != new_window
+					&& window_index >= index) {
+					window.change_workspace_by_index (window_index + 1, true);
+				}
+			}
+
+			workspace_manager.thaw_remove ();
+			workspace_manager.cleanup ();
+		}
+
+		/**
 		 * Code ported from KWin present windows effect
 		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 		 **/
 
 		// constants, mainly for natural expo
-		static const int GAPS = 10;
-		static const int MAX_TRANSLATIONS = 100000;
-		static const int ACCURACY = 20;
+		const int GAPS = 10;
+		const int MAX_TRANSLATIONS = 100000;
+		const int ACCURACY = 20;
 
 		// some math utilities
 		static int squared_distance (Gdk.Point a, Gdk.Point b)
@@ -282,7 +346,8 @@ namespace Gala
 			return result;
 		}
 
-		/*public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
+		/* TODO needs porting
+		public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
 		{
 			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
 

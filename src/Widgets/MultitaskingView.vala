@@ -20,14 +20,23 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * The central class for the MultitaskingView which takes care of
+	 * preparing the wm, opening the components and holds containers for
+	 * the icon groups, the WorkspaceClones and the MonitorClones.
+	 */
 	public class MultitaskingView : Actor
 	{
 		const int HIDING_DURATION = 300;
+		const int SMOOTH_SCROLL_DELAY = 500;
 
 		public WindowManager wm { get; construct; }
 
 		Meta.Screen screen;
-		bool opened;
+		bool opened = false;
+		bool animating = false;
+
+		bool is_smooth_scrolling = false;
 
 		List<MonitorClone> window_containers_monitors;
 
@@ -52,6 +61,7 @@ namespace Gala
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new IconGroupContainer (screen);
+			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
 
 			add_child (icon_groups);
 			add_child (workspaces);
@@ -102,6 +112,10 @@ namespace Gala
 			});
 		}
 
+		/**
+		 * Places the primary container for the WorkspaceClones and the
+		 * MonitorClones at the right positions
+		 */
 		void update_monitors ()
 		{
 			foreach (var monitor_clone in window_containers_monitors)
@@ -114,7 +128,7 @@ namespace Gala
 					if (monitor == primary)
 						continue;
 
-					var monitor_clone = new MonitorClone (wm, monitor);
+					var monitor_clone = new MonitorClone (screen, monitor);
 					monitor_clone.window_selected.connect (window_selected);
 					monitor_clone.visible = opened;
 
@@ -129,21 +143,57 @@ namespace Gala
 			set_size (primary_geometry.width, primary_geometry.height);
 		}
 
+		/**
+		 * We generally assume that when the key-focus-out signal is emitted
+		 * a different component was opened, so we close in that case.
+		 */
 		public override void key_focus_out ()
 		{
 			if (opened && !contains (get_stage ().key_focus))
 				toggle ();
 		}
 
-		public override bool scroll_event (ScrollEvent event)
+		/**
+		 * Scroll through workspaces
+		 */
+		public override bool scroll_event (ScrollEvent scroll_event)
 		{
-			if (event.direction == ScrollDirection.SMOOTH)
+			if (scroll_event.direction != ScrollDirection.SMOOTH)
+				return false;
+
+			double dx, dy;
+			var event = (Event*)(&scroll_event);
+			event->get_scroll_delta (out dx, out dy);
+
+			var direction = MotionDirection.LEFT;
+
+			// concept from maya to detect mouse wheel and proper smooth scroll and prevent
+			// too much repetition on the events
+			if (Math.fabs (dy) == 1.0) {
+				// mouse wheel scroll
+				direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
+			} else if (!is_smooth_scrolling) {
+				// actual smooth scroll
+				var choice = Math.fabs (dx) > Math.fabs (dy) ? dx : dy;
+
+				if (choice > 0.3)
+					direction = MotionDirection.RIGHT;
+				else if (choice < -0.3)
+					direction = MotionDirection.LEFT;
+				else
+					return false;
+
+				is_smooth_scrolling = true;
+				Timeout.add (SMOOTH_SCROLL_DELAY, () => {
+					is_smooth_scrolling = false;
+					return false;
+				});
+			} else
+				// smooth scroll delay still active
 				return false;
 
 			var active_workspace = screen.get_active_workspace ();
-			var new_workspace = active_workspace.get_neighbor (
-					event.direction == ScrollDirection.UP || event.direction == ScrollDirection.LEFT ?
-					Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+			var new_workspace = active_workspace.get_neighbor (direction);
 
 			if (active_workspace != new_workspace)
 				new_workspace.activate (screen.get_display ().get_current_time ());
@@ -151,6 +201,13 @@ namespace Gala
 			return false;
 		}
 
+		/**
+		 * Places the WorkspaceClones, moves the view so that the active one is shown
+		 * and does the same for the IconGroups.
+		 *
+		 * @param animate Whether to animate the movement or have all elements take their
+		 *                positions immediately.
+		 */
 		void update_positions (bool animate)
 		{
 			var active_index = screen.get_active_workspace ().index ();
@@ -175,13 +232,26 @@ namespace Gala
 			workspaces.set_easing_duration (animate ? 300 : 0);
 			workspaces.x = -active_x;
 
+			reposition_icon_groups (animate);
+		}
+
+		void reposition_icon_groups (bool animate)
+		{
+			var active_index = screen.get_active_workspace ().index ();
+
 			if (animate) {
 				icon_groups.save_easing_state ();
 				icon_groups.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 				icon_groups.set_easing_duration (200);
 			}
 
-			icon_groups.x = width / 2 - icon_groups.width / 2;
+			// make sure the active workspace's icongroup is always visible
+			var icon_groups_width = icon_groups.calculate_total_width ();
+			if (icon_groups_width > width) {
+				icon_groups.x = (-active_index * (IconGroupContainer.SPACING + IconGroup.SIZE) + width / 2)
+					.clamp (width - icon_groups_width - 64, 64);
+			} else
+				icon_groups.x = width / 2 - icon_groups_width / 2;
 
 			if (animate)
 				icon_groups.restore_easing_state ();
@@ -189,7 +259,7 @@ namespace Gala
 
 		void add_workspace (int num)
 		{
-			var workspace = new WorkspaceClone (wm, screen.get_workspace_by_index (num));
+			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
 			workspace.window_selected.connect (window_selected);
 			workspace.selected.connect (activate_workspace);
 
@@ -223,22 +293,21 @@ namespace Gala
 			workspace.window_selected.disconnect (window_selected);
 			workspace.selected.disconnect (activate_workspace);
 
-			workspace.icon_group.set_easing_duration (200);
-			workspace.icon_group.set_easing_mode (AnimationMode.LINEAR);
-			workspace.icon_group.opacity = 0;
-			var transition = workspace.icon_group.get_transition ("opacity");
-			if (transition != null)
-				transition.completed.connect (() => {
-					icon_groups.remove_group (workspace.icon_group);
-				});
-			else
-				icon_groups.remove_group (workspace.icon_group);
+			icon_groups.remove_group (workspace.icon_group);
 
 			workspace.destroy ();
 
 			update_positions (opened);
 		}
 
+		/**
+		 * Activates the workspace of a WorkspaceClone
+		 *
+		 * @param close_view Whether to close the view as well. Will only be considered
+		 *                   if the workspace is also the currently active workspace.
+		 *                   Otherwise it will only be made active, but the view won't be
+		 *                   closed.
+		 */
 		void activate_workspace (WorkspaceClone clone, bool close_view)
 		{
 			close_view = close_view && screen.get_active_workspace () == clone.workspace;
@@ -249,6 +318,10 @@ namespace Gala
 				toggle ();
 		}
 
+		/**
+		 * Collect key events, mainly for redirecting them to the WindowCloneContainers to
+		 * select the active window.
+		 */
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			switch (event.keyval) {
@@ -277,11 +350,22 @@ namespace Gala
 			return false;
 		}
 
+		/**
+		 * Inform the current WindowCloneContainer that we want to move the focus in
+		 * a specific direction.
+		 *
+		 * @param direction The direction in which to move the focus to
+		 */
 		void select_window (MotionDirection direction)
 		{
 			get_active_workspace_clone ().window_container.select_next_window (direction);
 		}
 
+		/**
+		 * Finds the active WorkspaceClone
+		 *
+		 * @return The active WorkspaceClone
+		 */
 		WorkspaceClone get_active_workspace_clone ()
 		{
 			foreach (var child in workspaces.get_children ()) {
@@ -296,14 +380,30 @@ namespace Gala
 
 		void window_selected (Meta.Window window)
 		{
-			window.activate (screen.get_display ().get_current_time ());
-			toggle ();
+			var time = screen.get_display ().get_current_time ();
+			var workspace = window.get_workspace ();
+
+			if (workspace != screen.get_active_workspace ())
+				workspace.activate (time);
+			else {
+				window.activate (time);
+				toggle ();
+			}
 		}
 
+		/**
+		 * Toggles the view open or closed. Takes care of all the wm related tasks, like
+		 * starting the modal mode and hiding the WindowGroup. Finally tells all components
+		 * to animate to their positions.
+		 */
 		public void toggle ()
 		{
-			opened = !opened;
+			if (animating)
+				return;
 
+			animating = true;
+
+			opened = !opened;
 			var opening = opened;
 
 			foreach (var container in window_containers_monitors) {
@@ -325,6 +425,8 @@ namespace Gala
 				grab_key_focus ();
 
 				icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET + 20;
+			} else {
+				DragDropAction.cancel_all_by_id ("multitaskingview-window");
 			}
 
 			// find active workspace clone and raise it, so there are no overlaps while transitioning
@@ -365,42 +467,17 @@ namespace Gala
 					wm.block_keybindings_in_modal = true;
 					wm.end_modal ();
 
+					animating = false;
+
+					return false;
+				});
+			} else {
+				Timeout.add (200, () => {
+					animating = false;
 					return false;
 				});
 			}
-
-			/**
-			 * three types of animation for docks:
-			 * - window appears to be at the bottom --> slide up
-			 * - window appears to be at the top --> slide down
-			 * - window appears to be somewhere else --> fade out
-			var rect = meta_window.get_outer_rect ();
-
-			if (about_same (rect.y, monitor_geometry.y)) {
-
-				float dest = opening ? monitor_geometry.y - rect.height : rect.y;
-				window.animate (AnimationMode.EASE_OUT_QUAD, HIDING_DURATION, y: dest);
-
-			} else if (about_same (rect.y + rect.height,
-				monitor_geometry.y + monitor_geometry.height)) {
-
-				float dest = opening ? monitor_geometry.y + monitor_geometry.height : rect.y;
-				window.animate (AnimationMode.EASE_OUT_QUAD, HIDING_DURATION, y: dest);
-
-			} else {
-				uint dest = opening ? 0 : 255;
-				window.animate (AnimationMode.LINEAR, HIDING_DURATION, opacity: dest);
-			}
-			*/
 		}
-
-		/**
-		 * checks if val1 is about the same as val2 with a threshold of 2 by default
-		 */
-		/*private bool about_same (float val1, float val2, float threshold = 2.0f)
-		{
-			return Math.fabsf (val1 - val2) <= threshold;
-		}*/
 	}
 }
 

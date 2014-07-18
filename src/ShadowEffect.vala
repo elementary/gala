@@ -1,3 +1,20 @@
+//
+//  Copyright (C) 2014 Tom Beckmann
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
 using Clutter;
 
 namespace Gala
@@ -19,24 +36,27 @@ namespace Gala
 		// so we keep a cache to avoid creating the same texture all over again.
 		static Gee.HashMap<string,Shadow> shadow_cache;
 
+		static construct
+		{
+			shadow_cache = new Gee.HashMap<string,Shadow> ();
+		}
+
 		public int shadow_size { get; construct; }
 		public int shadow_spread { get; construct; }
 
 		public float scale_factor { get; set; default = 1; }
+		public uint8 shadow_opacity { get; set; default = 255; }
 
-		Cogl.Texture? shadow = null;
+		Cogl.Material material;
 		string? current_key = null;
 
 		public ShadowEffect (int actor_width, int actor_height, int shadow_size, int shadow_spread)
 		{
 			Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
 
-			update_size (actor_width, actor_height);
-		}
+			material = new Cogl.Material ();
 
-		public void update_size (int actor_width, int actor_height)
-		{
-			shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
+			update_size (actor_width, actor_height);
 		}
 
 		~ShadowEffect ()
@@ -45,12 +65,14 @@ namespace Gala
 				decrement_shadow_users (current_key);
 		}
 
+		public void update_size (int actor_width, int actor_height)
+		{
+			var shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
+			material.set_layer (0, shadow);
+		}
+
 		Cogl.Texture get_shadow (int actor_width, int actor_height, int shadow_size, int shadow_spread)
 		{
-			if (shadow_cache == null) {
-				shadow_cache = new Gee.HashMap<string,Shadow> ();
-			}
-
 			if (current_key != null) {
 				decrement_shadow_users (current_key);
 			}
@@ -104,7 +126,13 @@ namespace Gala
 		{
 			var size = shadow_size * scale_factor;
 
-			Cogl.set_source_texture (shadow);
+			var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
+			var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
+			alpha.premultiply ();
+
+			material.set_color (alpha);
+
+			Cogl.set_source (material);
 			Cogl.rectangle (-size, -size, actor.width + size, actor.height + size);
 
 			actor.continue_paint ();

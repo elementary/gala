@@ -20,13 +20,19 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * Utility class which adds a border and a shadow to a Background
+	 */
 	class FramedBackground : Background
 	{
 		public FramedBackground (Screen screen)
 		{
-			base (screen, screen.get_primary_monitor (),
-				BackgroundSettings.get_default ().schema);
-
+			Object (screen: screen, monitor: screen.get_primary_monitor (), 
+				settings: BackgroundSettings.get_default ().schema);
+		}
+		
+		construct
+		{
 			var primary = screen.get_primary_monitor ();
 			var monitor_geom = screen.get_monitor_geometry (primary);
 
@@ -41,27 +47,60 @@ namespace Gala
 			Cogl.Path.rectangle (0, 0, width, height);
 			Cogl.Path.stroke ();
 
-			Cogl.set_source_color4ub (255, 255, 255, 80);
-			Cogl.Path.rectangle (1, 1, width - 2, height - 2);
+			Cogl.set_source_color4ub (255, 255, 255, 25);
+			Cogl.Path.rectangle (0.5f, 0.5f, width - 1, height - 1);
 			Cogl.Path.stroke ();
 		}
 	}
 
-	public class WorkspaceClone : Clutter.Actor
+	/**
+	 * This is the container which manages a clone of the background which will
+	 * be scaled and animated inwards, a WindowCloneContainer for the windows on
+	 * this workspace and also holds the instance for this workspace's IconGroup.
+	 * The latter is not added to the WorkspaceClone itself though but to a container
+	 * of the MultitaskingView.
+	 */
+	public class WorkspaceClone : Actor
 	{
+		/**
+		 * The offset of the scaled background to the bottom of the monitor bounds
+		 */
 		public const int BOTTOM_OFFSET = 100;
+
+		/**
+		 * The offset of the scaled background to the top of the monitor bounds
+		 */
 		const int TOP_OFFSET = 20;
+
+		/**
+		 * The amount of time a window has to be over the WorkspaceClone while in drag
+		 * before we activate the workspace.
+		 */
 		const int HOVER_ACTIVATE_DELAY = 400;
 
+		/**
+		 * A window has been selected, the MultitaskingView should consider activating
+		 * and closing the view.
+		 */
 		public signal void window_selected (Window window);
+
+		/**
+		 * The background has been selected. Switch to that workspace.
+		 *
+		 * @param close_view If the MultitaskingView should also consider closing itself
+		 *                   after switching.
+		 */
 		public signal void selected (bool close_view);
 
-		public WindowManager wm { get; construct; }
 		public Workspace workspace { get; construct; }
 		public IconGroup icon_group { get; private set; }
-		public TiledWindowContainer window_container { get; private set; }
+		public WindowCloneContainer window_container { get; private set; }
 
 		bool _active = false;
+		/**
+		 * If this WorkspaceClone is currently the active one. Also sets the active
+		 * state on its IconGroup.
+		 */
 		public bool active {
 			get {
 				return _active;
@@ -77,9 +116,9 @@ namespace Gala
 
 		uint hover_activate_timeout = 0;
 
-		public WorkspaceClone (WindowManager wm, Workspace workspace)
+		public WorkspaceClone (Workspace workspace)
 		{
-			Object (wm: wm, workspace: workspace);
+			Object (workspace: workspace);
 		}
 
 		construct
@@ -96,17 +135,18 @@ namespace Gala
 				return false;
 			});
 
-			window_container = new TiledWindowContainer (wm.window_stacking_order);
+			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
 			window_container.width = monitor_geometry.width;
 			window_container.height = monitor_geometry.height;
-			wm.windows_restacked.connect (() => {
-				window_container.stacking_order = wm.window_stacking_order;
-			});
+			screen.restacked.connect (window_container.restack_windows);
 
 			icon_group = new IconGroup (workspace);
 			icon_group.selected.connect (() => {
-				selected (false);
+				if (workspace == screen.get_active_workspace ())
+					Utils.bell (screen);
+				else
+					selected (false);
 			});
 
 			var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
@@ -142,40 +182,57 @@ namespace Gala
 			var windows = workspace.list_windows ();
 			foreach (var window in windows) {
 				if (window.window_type == WindowType.NORMAL
+					&& !window.on_all_workspaces
 					&& window.get_monitor () == screen.get_primary_monitor ()) {
 					window_container.add_window (window);
 					icon_group.add_window (window, true);
 				}
 			}
+
+			var listener = WindowListener.get_default ();
+			listener.window_no_longer_on_all_workspaces.connect (add_window);
 		}
 
 		~WorkspaceClone ()
 		{
 			unowned Screen screen = workspace.get_screen ();
 
+			screen.restacked.disconnect (window_container.restack_windows);
+
 			screen.window_entered_monitor.disconnect (window_entered_monitor);
 			screen.window_left_monitor.disconnect (window_left_monitor);
 			workspace.window_added.disconnect (add_window);
 			workspace.window_removed.disconnect (remove_window);
 
+			var listener = WindowListener.get_default ();
+			listener.window_no_longer_on_all_workspaces.disconnect (add_window);
+
 			background.destroy ();
 		}
 
+		/**
+		 * Add a window to the WindowCloneContainer and the IconGroup if it really
+		 * belongs to this workspace and this monitor.
+		 */
 		void add_window (Window window)
 		{
 			if (window.window_type != WindowType.NORMAL
 				|| window.get_workspace () != workspace
+				|| window.on_all_workspaces
 				|| window.get_monitor () != window.get_screen ().get_primary_monitor ())
 				return;
 
 			foreach (var child in window_container.get_children ())
-				if (((TiledWindow) child).window == window)
+				if (((WindowClone) child).window == window)
 					return;
 
 			window_container.add_window (window);
 			icon_group.add_window (window);
 		}
 
+		/**
+		 * Remove a window from the WindowCloneContainer and the IconGroup
+		 */
 		void remove_window (Window window)
 		{
 			window_container.remove_window (window);
@@ -193,6 +250,12 @@ namespace Gala
 				remove_window (window);
 		}
 
+		/**
+		 * Utility function to shrink a MetaRectangle on all sides for the given amount.
+		 * Negative amounts will scale it instead.
+		 *
+		 * @param amount The amount in px to shrink.
+		 */
 		static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount)
 		{
 			rect.x += amount;
@@ -201,8 +264,19 @@ namespace Gala
 			rect.height -= amount * 2;
 		}
 
+		/**
+		 * Animates the background to its scale, causes a redraw on the IconGroup and
+		 * makes sure the WindowCloneContainer animates its windows to their tiled layout.
+		 * Also sets the current_window of the WindowCloneContainer to the active window
+		 * if it belongs to this workspace.
+		 */
 		public void open ()
 		{
+			if (opened)
+				return;
+
+			opened = true;
+
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
 
@@ -225,8 +299,6 @@ namespace Gala
 			};
 			shrink_rectangle (ref area, 32);
 
-			opened = true;
-
 			window_container.padding_top = TOP_OFFSET;
 			window_container.padding_left =
 				window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
@@ -234,13 +306,18 @@ namespace Gala
 
 			icon_group.redraw ();
 
-			window_container.opened = true;
-			if (screen.get_active_workspace () == workspace)
-				window_container.current_window = display.get_focus_window ();
+			window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null);
 		}
 
+		/**
+		 * Close the view again by animating the background back to its scale and
+		 * the windows back to their old locations.
+		 */
 		public void close ()
 		{
+			if (!opened)
+				return;
+			
 			opened = false;
 
 			background.save_easing_state ();
@@ -249,7 +326,7 @@ namespace Gala
 			background.set_scale (1, 1);
 			background.restore_easing_state ();
 
-			window_container.opened = false;
+			window_container.close ();
 		}
 	}
 }

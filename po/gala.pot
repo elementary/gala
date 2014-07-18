@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-03 20:20+0200\n"
+"POT-Creation-Date: 2014-06-26 14:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,4 +50,16 @@ msgstr ""
 
 #: ../src/EndSessionDialog.vala:125
 msgid "Cancel"
+msgstr ""
+
+#: ../src/WindowManager.vala:1107
+msgid "Does the display look OK?"
+msgstr ""
+
+#: ../src/WindowManager.vala:1110
+msgid "Keep This Configuration"
+msgstr ""
+
+#: ../src/WindowManager.vala:1111
+msgid "Restore Previous Configuration"
 msgstr ""

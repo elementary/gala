@@ -248,9 +248,9 @@ namespace Gala
 					last_y = y;
 
 					var stage = actor.get_stage ();
-					var actor = actor.get_stage ().get_actor_at_pos (PickMode.REACTIVE, (int)x, (int)y);
+					var actor = stage.get_actor_at_pos (PickMode.REACTIVE, (int) x, (int) y);
 					DragDropAction action = null;
-					// if we're allowed to bubble and we this actor is not a destination, check its parents
+					// if we're allowed to bubble and this actor is not a destination, check its parents
 					if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
 						while ((actor = actor.get_parent ()) != stage) {
 							if ((action = get_drag_drop_action (actor)) != null)
@@ -328,6 +328,26 @@ namespace Gala
 			cleanup ();
 
 			drag_canceled ();
+		}
+
+		/**
+		 * Allows you to abort all drags currently running for a given drag-id
+		 */
+		public static void cancel_all_by_id (string id)
+		{
+			var actors = sources.@get (id);
+			if (actors == null)
+				return;
+
+			foreach (var actor in actors) {
+				foreach (var action in actor.get_actions ()) {
+					var drag_action = action as DragDropAction;
+					if (drag_action != null && drag_action.dragging) {
+						drag_action.cancel ();
+						break;
+					}
+				}
+			}
 		}
 
 		void finish ()

@@ -20,37 +20,38 @@ using Meta;
 
 namespace Gala
 {
+	/**
+	 * More or less utility class to contain a WindowCloneContainer for each
+	 * non-primary monitor. It's the pendant to the WorkspaceClone which is
+	 * only placed on the primary monitor. It also draws a wallpaper behind itself
+	 * as the WindowGroup is hidden while the view is active. Only used when
+	 * workspaces-only-on-primary is set to true.
+	 */
 	public class MonitorClone : Actor
 	{
 		public signal void window_selected (Window window);
 
-		public WindowManager wm { get; construct; }
+		public Screen screen { get; construct; }
 		public int monitor { get; construct; }
 
-		Meta.Screen screen;
-		TiledWindowContainer window_container;
+		WindowCloneContainer window_container;
 		Background background;
 
-		public MonitorClone (WindowManager wm, int monitor)
+		public MonitorClone (Screen screen, int monitor)
 		{
-			Object (wm: wm, monitor: monitor);
+			Object (screen: screen, monitor: monitor);
 		}
 
 		construct
 		{
 			reactive = true;
 
-			screen = wm.get_screen ();
-
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 			background.set_easing_duration (300);
 
-			window_container = new TiledWindowContainer (wm.window_stacking_order);
+			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
-
-			wm.windows_restacked.connect (() => {
-				window_container.stacking_order = wm.window_stacking_order;
-			});
+			screen.restacked.connect (window_container.restack_windows);
 
 			screen.window_entered_monitor.connect (window_entered);
 			screen.window_left_monitor.connect (window_left);
@@ -71,6 +72,16 @@ namespace Gala
 			update_allocation ();
 		}
 
+		~MonitorClone ()
+		{
+			screen.window_entered_monitor.disconnect (window_entered);
+			screen.window_left_monitor.disconnect (window_left);
+			screen.restacked.disconnect (window_container.restack_windows);
+		}
+
+		/**
+		 * Make sure the MonitorClone is at the location of the monitor on the stage
+		 */
 		public void update_allocation ()
 		{
 			var monitor_geometry = screen.get_monitor_geometry (monitor);
@@ -80,15 +91,21 @@ namespace Gala
 			window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 		}
 
+		/**
+		 * Animate the windows from their old location to a tiled layout
+		 */
 		public void open ()
 		{
-			window_container.opened = true;
+			window_container.open ();
 			// background.opacity = 0; TODO consider this option
 		}
 
+		/**
+		 * Animate the windows back to their old location
+		 */
 		public void close ()
 		{
-			window_container.opened = false;
+			window_container.close ();
 			background.opacity = 255;
 		}
 

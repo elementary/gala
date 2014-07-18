@@ -16,14 +16,24 @@
 //
 
 using Clutter;
+using Meta;
 
 namespace Gala
 {
+	/**
+	 * Private class which is basically just a container for the actual
+	 * icon and takes care of blending the same icon in different sizes
+	 * over each other and various animations related to the icons
+	 */
 	class WindowIcon : Actor
 	{
-		public Meta.Window window { get; construct; }
+		public Window window { get; construct; }
 
 		int _icon_size;
+		/**
+		 * The icon size of the WindowIcon. Once set the new icon will be
+		 * faded over the old one and the actor animates to the new size.
+		 */
 		public int icon_size {
 			get {
 				return _icon_size;
@@ -41,6 +51,11 @@ namespace Gala
 		}
 
 		bool _temporary;
+		/**
+		 * Mark the WindowIcon as temporary. Only effect of this is that a pulse
+		 * animation will be played on the actor. Used while DnDing window thumbs
+		 * over the group.
+		 */
 		public bool temporary {
 			get {
 				return _temporary;
@@ -86,7 +101,7 @@ namespace Gala
 		Utils.WindowIcon? icon = null;
 		Utils.WindowIcon? old_icon = null;
 
-		public WindowIcon (Meta.Window window)
+		public WindowIcon (Window window)
 		{
 			Object (window: window);
 		}
@@ -96,8 +111,29 @@ namespace Gala
 			set_pivot_point (0.5f, 0.5f);
 			set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
 			set_easing_duration (800);
+
+			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
 		}
 
+		~WindowIcon ()
+		{
+			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
+		}
+
+		void on_all_workspaces_changed ()
+		{
+			// we don't display windows that are on all workspaces
+			if (window.on_all_workspaces)
+				destroy ();
+		}
+
+		/**
+		 * Shortcut to set both position and size of the icon
+		 *
+		 * @param x    The x coordinate to which to animate to
+		 * @param y    The y coordinate to which to animate to
+		 * @param size The size to which to animate to and display the icon in
+		 */
 		public void place (float x, float y, int size)
 		{
 			if (initial) {
@@ -114,6 +150,9 @@ namespace Gala
 			}
 		}
 
+		/**
+		 * Fades out the old icon and fades in the new icon
+		 */
 		void fade_new_icon ()
 		{
 			var new_icon = new Utils.WindowIcon (window, icon_size);
@@ -151,17 +190,29 @@ namespace Gala
 		}
 	}
 
+	/**
+	 * Container for WindowIcons which takes care of the scaling and positioning.
+	 * It also decides whether to draw the container shape, a plus sign or an ellipsis.
+	 * Lastly it also includes the drawing code for the active highlight.
+	 */
 	public class IconGroup : Actor
 	{
-		const int SIZE = 64;
-		
+		public static const int SIZE = 64;
+
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
 
+		/**
+		 * The group has been clicked. The MultitaskingView should consider activating
+		 * its workspace.
+		 */
 		public signal void selected ();
 
 		uint8 _backdrop_opacity = 0;
-		public uint8 backdrop_opacity {
+		/**
+		 * The opacity of the backdrop/highlight. Set by the active property setter.
+		 */
+		protected uint8 backdrop_opacity {
 			get {
 				return _backdrop_opacity;
 			}
@@ -170,7 +221,11 @@ namespace Gala
 				queue_redraw ();
 			}
 		}
+
 		bool _active = false;
+		/**
+		 * Fades in/out the backdrop/highlight
+		 */
 		public bool active {
 			get {
 				return _active;
@@ -187,22 +242,26 @@ namespace Gala
 				var transition = new PropertyTransition ("backdrop-opacity");
 				transition.duration = 300;
 				transition.remove_on_complete = true;
-				transition.set_from_value (_active ? 0 : 60);
-				transition.set_to_value (_active ? 60 : 0);
+				transition.set_from_value (_active ? 0 : 40);
+				transition.set_to_value (_active ? 40 : 0);
 
 				add_transition ("backdrop-opacity", transition);
 			}
 		}
-		public Meta.Workspace workspace { get; construct; }
 
+		public Workspace workspace { get; construct; }
+
+		Actor close_button;
+		Actor icon_container;
 		Cogl.Material dummy_material;
 
-		public IconGroup (Meta.Workspace workspace)
+		public IconGroup (Workspace workspace)
 		{
 			Object (workspace: workspace);
+		}
 
-			clear ();
-
+		construct
+		{
 			width = SIZE;
 			height = SIZE;
 			reactive = true;
@@ -216,20 +275,102 @@ namespace Gala
 
 			var click = new ClickAction ();
 			click.clicked.connect (() => selected ());
-
+			// when the actor is pressed, the ClickAction grabs all events, so we won't be
+			// notified when the cursor leaves the actor, which makes our close button stay
+			// forever. To fix this we hide the button for as long as the actor is pressed.
+			click.notify["pressed"].connect (() => {
+				toggle_close_button (!click.pressed && get_has_pointer ());
+			});
 			add_action (click);
+
+			icon_container = new Actor ();
+			icon_container.width = width;
+			icon_container.height = height;
+
+			add_child (icon_container);
+
+			close_button = Utils.create_close_button ();
+			close_button.x = -Math.floorf (close_button.width * 0.4f);
+			close_button.y = -Math.floorf (close_button.height * 0.4f);
+			close_button.opacity = 0;
+			close_button.reactive = true;
+			close_button.visible = false;
+			close_button.set_easing_duration (200);
+
+			// block propagation of button presses on the close button, otherwise
+			// the click action on the icon group will act weirdly
+			close_button.button_press_event.connect (() => { return true; });
+
+			add_child (close_button);
+
+			var close_click = new ClickAction ();
+			close_click.clicked.connect (close);
+			close_button.add_action (close_click);
+
+			icon_container.actor_removed.connect_after (redraw);
 		}
 
+		~IconGroup ()
+		{
+			icon_container.actor_removed.disconnect (redraw);
+		}
+
+		public override bool enter_event (CrossingEvent event)
+		{
+			// don't display the close button when we don't have dynamic workspaces
+			// or when there are no windows on us. For one, our method for closing
+			// wouldn't work anyway without windows and it's also the last workspace
+			// which we don't want to have closed if everything went correct
+			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
+				return false;
+
+			toggle_close_button (true);
+
+			return false;
+		}
+
+		public override bool leave_event (CrossingEvent event)
+		{
+			toggle_close_button (false);
+			return false;
+		}
+
+		void toggle_close_button (bool show)
+		{
+			if (show) {
+				close_button.visible = true;
+				close_button.opacity = 255;
+				return;
+			}
+
+			close_button.opacity = 0;
+			var transition = get_transition ("opacity");
+			if (transition != null)
+				transition.completed.connect (() => {
+					close_button.visible = false;
+				});
+			else
+				close_button.visible = false;
+		}
+
+		/**
+		 * Override the paint handler to draw our backdrop if necessary
+		 */
 		public override void paint ()
 		{
+			if (backdrop_opacity < 1) {
+				base.paint ();
+				return;
+			}
+
 			var width = 100;
 			var x = (SIZE - width) / 2;
 			var y = -10;
-			var height = height + 120;
+			var height = WorkspaceClone.BOTTOM_OFFSET;
 
 			var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
-			var color_bottom = Cogl.Color.from_4ub (backdrop_opacity,
-				backdrop_opacity, backdrop_opacity, backdrop_opacity);
+			var color_bottom = Cogl.Color.from_4ub (255, 255, 255, backdrop_opacity);
+			color_bottom.premultiply ();
 
 			Cogl.TextureVertex vertices[4];
 			vertices[0] = { x, y, 0, 0, 0, color_top };
@@ -246,12 +387,24 @@ namespace Gala
 			base.paint ();
 		}
 
+		/**
+		 * Remove all currently added WindowIcons
+		 */
 		public void clear ()
 		{
-			destroy_all_children ();
+			icon_container.destroy_all_children ();
 		}
 
-		public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false)
+		/**
+		 * Creates a WindowIcon for the given window and adds it to the group
+		 *
+		 * @param window    The MetaWindow for which to create the WindowIcon
+		 * @param no_redraw If you add multiple windows at once you may want to consider
+		 *                  settings this to true and when done calling redraw() manually
+		 * @param temporary Mark the WindowIcon as temporary. Used for windows dragged over
+		 *                  the group.
+		 */
+		public void add_window (Window window, bool no_redraw = false, bool temporary = false)
 		{
 			var new_window = new WindowIcon (window);
 
@@ -261,15 +414,20 @@ namespace Gala
 			new_window.restore_easing_state ();
 			new_window.temporary = temporary;
 
-			add_child (new_window);
+			icon_container.add_child (new_window);
 
 			if (!no_redraw)
 				redraw ();
 		}
 
-		public void remove_window (Meta.Window window, bool animate = true)
+		/**
+		 * Remove the WindowIcon for a MetaWindow from the group
+		 *
+		 * @param animate Whether to fade the icon out before removing it
+		 */
+		public void remove_window (Window window, bool animate = true)
 		{
-			foreach (var child in get_children ()) {
+			foreach (var child in icon_container.get_children ()) {
 				unowned WindowIcon w = (WindowIcon) child;
 				if (w.window == window) {
 					if (animate) {
@@ -281,7 +439,6 @@ namespace Gala
 						if (transition != null) {
 							transition.completed.connect (() => {
 								w.destroy ();
-								redraw ();
 							});
 						} else {
 							w.destroy ();
@@ -289,14 +446,35 @@ namespace Gala
 
 					} else
 						w.destroy ();
-					break;
+
+					// don't break here! If people spam hover events and we animate
+					// removal, we can actually multiple instances of the same window icon
 				}
 			}
 		}
 
+		/**
+		 * Trigger a redraw
+		 */
 		public void redraw ()
 		{
 			content.invalidate ();
+		}
+
+		/**
+		 * Close handler. We close the workspace by deleting all the windows on it.
+		 * That way the workspace won't be deleted if windows decide to ignore the
+		 * delete signal
+		 */
+		void close ()
+		{
+			var time = workspace.get_screen ().get_display ().get_current_time ();
+			foreach (var window in workspace.list_windows ()) {
+				var type = window.window_type;
+				if (!window.is_on_all_workspaces () && (type == WindowType.NORMAL
+					|| type == WindowType.DIALOG || type == WindowType.MODAL_DIALOG))
+					window.@delete (time);
+			}
 		}
 
 		/**
@@ -309,18 +487,18 @@ namespace Gala
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 
-			var n_windows = get_n_children ();
+			var n_windows = icon_container.get_n_children ();
 
 			// single icon => big icon
 			if (n_windows == 1) {
-				var icon = (WindowIcon) get_child_at_index (0);
+				var icon = (WindowIcon) icon_container.get_child_at_index (0);
 				icon.place (0, 0, 64);
 
 				return false;
 			}
 
 			// more than one => we need a folder
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, (int)width - 1, (int)height - 1, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, (int) width - 1, (int) height - 1, 5);
 
 			cr.set_source_rgba (0, 0, 0, 0.1);
 			cr.fill_preserve ();
@@ -334,14 +512,19 @@ namespace Gala
 			cr.set_source (grad);
 			cr.stroke ();
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 1.5, 1.5, (int)width - 3, (int)height - 3, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 1.5, 1.5, (int) width - 3, (int) height - 3, 5);
 
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.stroke ();
 
+			// it's not safe to to call meta_workspace_index() here, we may be still animating something
+			// while the workspace is already gone, which would result in a crash.
+			var screen = workspace.get_screen ();
+			var workspace_index = screen.get_workspaces ().index (workspace);
+
 			if (n_windows < 1) {
-				if (!Meta.Prefs.get_dynamic_workspaces ()
-					|| workspace.index () != workspace.get_screen ().get_n_workspaces () - 1)
+				if (!Prefs.get_dynamic_workspaces ()
+					|| workspace_index != screen.get_n_workspaces () - 1)
 					return false;
 
 				var buffer = new Granite.Drawing.BufferSurface (SIZE, SIZE);
@@ -381,8 +564,8 @@ namespace Gala
 				size = 16;
 
 			var n_tiled_windows = uint.min (n_windows, 9);
-			var columns = (int)Math.ceil (Math.sqrt (n_tiled_windows));
-			var rows = (int)Math.ceil (n_tiled_windows / (double)columns);
+			var columns = (int) Math.ceil (Math.sqrt (n_tiled_windows));
+			var rows = (int) Math.ceil (n_tiled_windows / (double) columns);
 
 			const int spacing = 6;
 
@@ -402,7 +585,7 @@ namespace Gala
 			var x = x_offset;
 			var y = y_offset;
 			for (var i = 0; i < n_windows; i++) {
-				var window = (WindowIcon) get_child_at_index (i);
+				var window = (WindowIcon) icon_container.get_child_at_index (i);
 
 				// draw an ellipsis at the 9th position if we need one
 				if (show_ellipsis && i == 8) {
