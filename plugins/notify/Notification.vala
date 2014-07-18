@@ -37,6 +37,8 @@ namespace Gala.Plugins.Notify
 		public uint64 relevancy_time { get; private set; }
 		public bool being_destroyed { get; private set; default = false; }
 
+		protected bool icon_only { get; protected set; default = false; }
+
 		GtkClutter.Texture icon_texture;
 		GtkClutter.Texture close_button;
 
@@ -267,7 +269,8 @@ namespace Gala.Plugins.Notify
 		public override void allocate (ActorBox box, AllocationFlags flags)
 		{
 			var icon_alloc = ActorBox ();
-			icon_alloc.set_origin (MARGIN + PADDING, MARGIN + PADDING);
+
+			icon_alloc.set_origin (icon_only ? (WIDTH - ICON_SIZE) / 2 : MARGIN + PADDING, MARGIN + PADDING);
 			icon_alloc.set_size (ICON_SIZE, ICON_SIZE);
 			icon_texture.allocate (icon_alloc, flags);
 

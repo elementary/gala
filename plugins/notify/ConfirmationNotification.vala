@@ -37,10 +37,11 @@ namespace Gala.Plugins.Notify
 			}
 		}
 
-		public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, int progress)
+		public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, bool icon_only, int progress)
 		{
 			base (id, icon, NotificationUrgency.LOW, DURATION);
 
+			this.icon_only = icon_only;
 			this.has_progress = progress > -1;
 			this.progress = progress;
 		}

@@ -138,7 +138,7 @@ namespace Gala.Plugins.Notify
 
 			Notification notification;
 			if (confirmation)
-				notification = new ConfirmationNotification (id, pixbuf,
+				notification = new ConfirmationNotification (id, pixbuf, icon_only,
 					progress ? hints.@get ("value").get_int32 () : -1);
 			else
 				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
@@ -189,7 +189,7 @@ namespace Gala.Plugins.Notify
 
 				var actual_icon = icon;
 				// fix icon names that are sent to notify-osd to the ones that actually exist
-				if (icon.has_prefix ("notification-"))
+				if (icon.has_prefix ("notification-audio"))
 					actual_icon = icon.substring (13) + "-symbolic";
 
 				try {
