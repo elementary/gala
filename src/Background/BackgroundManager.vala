@@ -42,10 +42,11 @@ namespace Gala
 		void update ()
 		{
 			var reference_child = get_child_at_index (0);
-			if (reference_child != null)
+			if (reference_child != null) {
 				(reference_child as Background).changed.disconnect (background_changed);
+			}
 
-			remove_all_children ();
+			destroy_all_children ();
 
 			var settings = BackgroundSettings.get_default ().schema;
 

@@ -21,7 +21,7 @@ namespace Gala
 	{
 		struct WaitingCallback
 		{
-			SourceFunc func;
+			unowned SourceFunc func;
 			string hash;
 		}
 

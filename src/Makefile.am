@@ -39,19 +39,25 @@ gala_VALASOURCES = \
 	PluginManager.vala \
 	ScreenSaver.vala \
 	Settings.vala \
+	ShadowEffect.vala \
 	TextShadowEffect.vala \
+	WindowListener.vala \
 	WindowManager.vala \
+	WorkspaceManager.vala \
 	Background/Background.vala \
 	Background/BackgroundCache.vala \
 	Background/BackgroundManager.vala \
 	Background/SlideShow.vala \
 	Background/SystemBackground.vala \
-	Widgets/AppIcon.vala \
+	Widgets/IconGroup.vala \
+	Widgets/IconGroupContainer.vala \
+	Widgets/MonitorClone.vala \
+	Widgets/MultitaskingView.vala \
+	Widgets/WindowClone.vala \
+	Widgets/WindowCloneContainer.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
-	Widgets/WindowThumb.vala \
-	Widgets/WorkspaceThumb.vala \
-	Widgets/WorkspaceView.vala \
+	Widgets/WorkspaceClone.vala \
 	$(NULL)
 
 nodist_gala_SOURCES = \

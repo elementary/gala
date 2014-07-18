@@ -100,7 +100,7 @@ namespace Gala
 				warning ("%s failed to register: register_plugin() function not found", plugin_name);
 				return false;
 			}
-			RegisterPluginFunction register = (RegisterPluginFunction)function;
+			unowned RegisterPluginFunction register = (RegisterPluginFunction)function;
 
 			var info = register ();
 			if (info.plugin_type.is_a (typeof (Plugin)) == false) {

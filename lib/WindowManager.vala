@@ -43,9 +43,14 @@ namespace Gala
 		public abstract Clutter.Actor window_group { get; protected set; }
 		public abstract Clutter.Actor top_window_group { get; protected set; }
 		public abstract Meta.BackgroundGroup background_group { get; protected set; }
+		/**
+		 * If true all keybindings will be blocked while modal mode is active.
+		 */
+		public abstract bool block_keybindings_in_modal { get; set; default = true; }
 
 		public abstract void begin_modal ();
 		public abstract void end_modal ();
+		public abstract bool is_modal ();
 		public abstract void perform_action (ActionType type);
 		public abstract void update_input_area ();
 		public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);

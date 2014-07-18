@@ -64,20 +64,14 @@ namespace Gala
 		public async bool load ()
 		{
 			animation = new Gnome.BGSlideShow (file);
-			try {
-				animation.load_async (null, (obj, res) => {
-					load.callback ();
-				});
-				yield;
+			animation.load_async (null, (obj, res) => {
+				load.callback ();
+			});
+			yield;
 
-				yield update_animation ();
+			yield update_animation ();
 
-				return true;
-			} catch (Error e) {
-				warning (e.message);
-			}
-
-			return false;
+			return true;
 		}
 
 		/**
