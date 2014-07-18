@@ -40,8 +40,7 @@ namespace Gala.Plugins.Notify
 				freeze_track = running;
 			});
 
-			server = new NotifyServer ();
-			server.show_notification.connect (stack.show_notification);
+			server = new NotifyServer (stack);
 
 			update_position ();
 			screen.monitors_changed.connect (update_position);

@@ -34,6 +34,8 @@ libgala_notify_la_LIBADD = \
 
 libgala_notify_la_VALASOURCES = \
 	Main.vala \
+	ConfirmationNotification.vala \
+	NormalNotification.vala \
 	Notification.vala \
 	NotificationStack.vala \
 	NotifyServer.vala \

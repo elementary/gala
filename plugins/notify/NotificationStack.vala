@@ -35,37 +35,18 @@ namespace Gala.Plugins.Notify
 			width = Notification.WIDTH + 2 * Notification.MARGIN;
 		}
 
-		public void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-			NotificationUrgency urgency, int32 expire_timeout, uint32 sender_pid, string[] actions)
+		public void show_notification (Notification notification)
 		{
 			if (animation_counter == 0)
 				animations_changed (true);
 
-			foreach (var child in get_children ()) {
-				var notification = (Notification) child;
-
-				if (notification.id == id && !notification.being_destroyed) {
-					notification.update (summary, body, icon, expire_timeout, actions);
-
-					var transition = notification.get_transition ("update");
-					if (transition != null) {
-						animation_counter++;
-						transition.completed.connect (() => {
-							if (--animation_counter == 0)
-								animations_changed (false);
-						});
-					}
-
-					return;
-				}
-			}
-
-			var notification = new Notification (screen, id, summary, body, icon,
-				urgency, expire_timeout, sender_pid, actions);
+			notification.destroy.connect (() => {
+				update_positions ();
+			});
 
 			float height;
 			notification.get_preferred_height (Notification.WIDTH, out height, null);
-			//update_positions (height);
+			update_positions (height);
 
 			insert_child_at_index (notification, 0);
 

@@ -42,18 +42,22 @@ namespace Gala.Plugins.Notify
 		const string FALLBACK_ICON = "dialog-information";
 
 		[DBus (visible = false)]
-		public signal void show_notification (uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-			NotificationUrgency urgency, int32 expire_timeout, uint32 sender_pid, string[] actions);
+		public signal void show_notification (Notification notification);
 
 		[DBus (visible = false)]
 		public signal void notification_closed (uint32 id);
+
+		[DBus (visible = false)]
+		public NotificationStack stack { get; construct; }
 
 		uint32 id_counter = 0;
 
 		DBus? bus_proxy = null;
 
-		public NotifyServer ()
+		public NotifyServer (NotificationStack stack)
 		{
+			Object (stack: stack);
+
 			try {
 				bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
 			} catch (Error e) {
@@ -69,7 +73,12 @@ namespace Gala.Plugins.Notify
 
 		public string [] get_capabilities ()
 		{
-			return { "body", "body-markup" };
+			return {
+				"body",
+				"body-markup",
+				"x-canonical-private-synchronous",
+				"x-canonical-private-icon-only"
+			};
 		}
 
 		public void get_server_information (out string name, out string vendor,
@@ -90,14 +99,54 @@ namespace Gala.Plugins.Notify
 			var urgency = hints.contains ("urgency") ?
 				(NotificationUrgency) hints.lookup ("urgency").get_byte () : NotificationUrgency.NORMAL;
 
+			var icon_only = hints.contains ("x-canonical-private-icon-only");
+			var confirmation = hints.contains ("x-canonical-private-synchronous");
+			var progress = confirmation && hints.contains ("value");
+
+#if true //debug notifications
+			print ("Notification from '%s', replaces: %u\n" +
+				"\tapp icon: '%s'\n\tsummary: '%s'\n\tbody: '%s'\n\tn actions: %u\n\texpire: %i\n\tHints:\n",
+				app_name, replaces_id, app_icon, summary, body, actions.length);
+			hints.@foreach ((key, val) => {
+				print ("\t\t%s => %s\n", key, val.is_of_type (VariantType.STRING) ?
+					val.get_string () : "<" + val.get_type ().dup_string () + ">");
+			});
+#endif
+
 			uint32 pid = 0;
 			try {
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
 
-			show_notification (id, summary, body, pixbuf, urgency, timeout, pid, actions);
+			foreach (var child in stack.get_children ()) {
+				unowned Notification notification = (Notification) child;
 
-			return id_counter;
+				if (notification.id == id && !notification.being_destroyed) {
+					var normal_notification = notification as NormalNotification;
+					var confirmation_notification = notification as ConfirmationNotification;
+
+					if (normal_notification != null)
+						normal_notification.update (summary, body, pixbuf, expire_timeout, actions);
+
+					if (confirmation_notification != null)
+						confirmation_notification.update (pixbuf,
+							progress ? hints.@get ("value").get_int32 () : 0);
+
+					return id;
+				}
+			}
+
+			Notification notification;
+			if (confirmation)
+				notification = new ConfirmationNotification (id, pixbuf,
+					progress ? hints.@get ("value").get_int32 () : -1);
+			else
+				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
+					urgency, timeout, pid, actions);
+
+			stack.show_notification (notification);
+
+			return id;
 		}
 
 		Gdk.Pixbuf? get_pixbuf (HashTable<string, Variant> hints, string app, string icon)
@@ -138,20 +187,17 @@ namespace Gala.Plugins.Notify
 
 			} else if (icon != "") {
 
+				var actual_icon = icon;
+				// fix icon names that are sent to notify-osd to the ones that actually exist
+				if (icon.has_prefix ("notification-"))
+					actual_icon = icon.substring (13) + "-symbolic";
+
 				try {
-					pixbuf = Gtk.IconTheme.get_default ().load_icon (icon, size, 0);
-				} catch (Error e) {}
+					pixbuf = Gtk.IconTheme.get_default ().load_icon (actual_icon, size, 0);
+				} catch (Error e) { warning (e.message); }
 
 			} else if (hints.contains ("icon_data")) {
-				print ("IMPLEMENT ICON_DATA!!!!!!!!\n");
-
-				Gdk.Pixdata data = {};
-				try {
-					if (data.deserialize ((uint8[])hints.lookup ("icon_data").get_data ()))
-						pixbuf = Gdk.Pixbuf.from_pixdata (data);
-					else
-						warning ("Error while deserializing icon_data");
-				} catch (Error e) { warning (e.message); }
+				warning ("icon data is not supported");
 			}
 
 			if (pixbuf == null) {
