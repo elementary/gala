@@ -16,32 +16,38 @@
 //
 
 using Clutter;
-using Granite.Drawing;
+using Meta;
 
 namespace Gala
 {
 	public class WindowSwitcher : Clutter.Actor
 	{
+		const int MIN_DELTA = 100;
+
 		public WindowManager wm { get; construct; }
 
-		Gee.ArrayList<Clutter.Clone> window_clones = new Gee.ArrayList<Clutter.Clone> ();
+		Utils.WindowIcon? current_window = null;
 
-		Meta.Window? current_window;
+		Actor window_clones;
+		List<Actor> clone_sort_order;
 
-		Meta.WindowActor? dock_window;
+		WindowActor? dock_window;
 		Actor dock;
-		CairoTexture dock_background;
 		Plank.Drawing.DockSurface? dock_surface;
 		Plank.Drawing.DockTheme dock_theme;
 		Plank.DockPreferences dock_settings;
-		BindConstraint y_constraint;
-		BindConstraint h_constraint;
+		float dock_y_offset;
+		float dock_height_offset;
+		FileMonitor monitor;
 
+		uint modifier_mask;
+		int64 last_switch = 0;
 		bool closing = false;
 		ModalProxy modal_proxy;
 
-		//estimated value, if possible
+		// estimated value, if possible
 		float dock_width = 0.0f;
+		int n_dock_items = 0;
 
 		public WindowSwitcher (WindowManager wm)
 		{
@@ -50,33 +56,54 @@ namespace Gala
 
 		construct
 		{
-			//pull drawing methods from libplank
-			dock_settings = new Plank.DockPreferences.with_filename (Environment.get_user_config_dir () + "/plank/dock1/settings");
+			// pull drawing methods from libplank
+			var settings_file = Environment.get_user_config_dir () + "/plank/dock1/settings";
+			dock_settings = new Plank.DockPreferences.with_filename (settings_file);
+			dock_settings.notify.connect (update_dock);
 			dock_settings.notify["Theme"].connect (load_dock_theme);
+
+			var launcher_folder = Plank.Services.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
+
+			if (launcher_folder.query_exists ()) {
+				try {
+					monitor = launcher_folder.monitor (FileMonitorFlags.NONE);
+					monitor.changed.connect (update_n_dock_items);
+				} catch (Error e) { warning (e.message); }
+
+				// initial update, pretend a file was created
+				update_n_dock_items (launcher_folder, null, FileMonitorEvent.CREATED);
+			}
 
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
-			dock.anchor_gravity = Clutter.Gravity.CENTER;
 
-			dock_background = new CairoTexture (100, dock_settings.IconSize);
-			dock_background.anchor_gravity = Clutter.Gravity.CENTER;
-			dock_background.auto_resize = true;
-			dock_background.draw.connect (draw_dock_background);
+			var dock_canvas = new Canvas ();
+			dock_canvas.draw.connect (draw_dock_background);
 
-			y_constraint = new BindConstraint (dock, BindCoordinate.Y, 0);
-			h_constraint = new BindConstraint (dock, BindCoordinate.HEIGHT, 0);
-
-			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.X, 0));
-			dock_background.add_constraint (y_constraint);
-			dock_background.add_constraint (new BindConstraint (dock, BindCoordinate.WIDTH, 0));
-			dock_background.add_constraint (h_constraint);
-
-			add_child (dock_background);
-			add_child (dock);
+			dock.content = dock_canvas;
+			dock.actor_removed.connect (icon_removed);
+			dock.notify["allocation"].connect (() =>
+				dock_canvas.set_size ((int) dock.width, (int) dock.height));
 
 			load_dock_theme ();
 
+			window_clones = new Actor ();
+			window_clones.actor_removed.connect (window_removed);
+
+			add_child (window_clones);
+			add_child (dock);
+
+			wm.get_screen ().monitors_changed.connect (update_dock);
+
 			visible = false;
+		}
+
+		~WindowSwitcher ()
+		{
+			if (monitor != null)
+				monitor.cancel ();
+
+			wm.get_screen ().monitors_changed.disconnect (update_dock);
 		}
 
 		void load_dock_theme ()
@@ -91,41 +118,272 @@ namespace Gala
 			update_dock ();
 		}
 
-		//set the values which don't get set every time and need to be updated when the theme changes
+		/**
+		 * set the values which don't get set every time and need to be updated when the theme changes
+		 */
 		void update_dock ()
 		{
-			(dock.layout_manager as BoxLayout).spacing = (uint)(dock_theme.ItemPadding / 10.0 * dock_settings.IconSize);
-			dock.height = dock_settings.IconSize;
+			var screen = wm.get_screen ();
+			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			var layout = dock.layout_manager as BoxLayout;
 
-			var top_offset = (int)(dock_theme.TopPadding / 10.0 * dock_settings.IconSize);
-			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
+			var position = dock_settings.Position;
+			var icon_size = dock_settings.IconSize;
+			var scaled_icon_size = icon_size / 10.0f;
+			var horizontal = position == Gtk.PositionType.TOP || position == Gtk.PositionType.BOTTOM;
 
-			y_constraint.offset = -top_offset / 2 + bottom_offset / 2;
-			h_constraint.offset = top_offset + bottom_offset;
+			var top_padding = (float) dock_theme.TopPadding * scaled_icon_size;
+			var bottom_padding = (float) dock_theme.BottomPadding * scaled_icon_size;
+			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
+			var line_width = dock_theme.LineWidth;
+
+			var top_offset = 2 * line_width + top_padding;
+			var bottom_offset = (dock_theme.BottomRoundness > 0 ? 2 * line_width : 0) + bottom_padding;
+
+			layout.spacing = (uint) item_padding;
+			layout.orientation = horizontal ? Orientation.HORIZONTAL : Orientation.VERTICAL;
+
+			dock_y_offset = -top_offset;
+			dock_height_offset = top_offset + bottom_offset;
+
+			var height = icon_size + (top_offset > 0 ? top_offset : 0) + bottom_offset;
+
+			dock.anchor_gravity = horizontal ? Gravity.NORTH : Gravity.WEST;
+
+			if (horizontal) {
+				dock.height = height;
+				dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
+			} else {
+				dock.width = height;
+				dock.y = Math.ceilf (geometry.y + geometry.height / 2.0f);
+			}
+
+			switch (position) {
+				case Gtk.PositionType.TOP:
+					dock.y = Math.ceilf (geometry.y);
+					break;
+				case Gtk.PositionType.BOTTOM:
+					dock.y = Math.ceilf (geometry.y + geometry.height - height);
+					break;
+				case Gtk.PositionType.LEFT:
+					dock.x = Math.ceilf (geometry.x);
+					break;
+				case Gtk.PositionType.RIGHT:
+					dock.x = Math.ceilf (geometry.x + geometry.width - height);
+					break;
+			}
+
+			dock_surface = null;
 		}
 
 		bool draw_dock_background (Cairo.Context cr)
 		{
-			if (dock_surface == null || dock_surface.Width != dock_background.width) {
-				dock_surface = dock_theme.create_background ((int)dock_background.width,
-					(int)dock_background.height, Gtk.PositionType.BOTTOM,
-					new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ()));
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
+
+			var position = dock_settings.Position;
+
+			var width = (int) dock.width;
+			var height = (int) dock.height;
+
+			switch (position) {
+				case Gtk.PositionType.RIGHT:
+					width += (int) dock_height_offset;
+					break;
+				case Gtk.PositionType.LEFT:
+					width -= (int) dock_y_offset;
+					break;
+				case Gtk.PositionType.TOP:
+					height -= (int) dock_y_offset;
+					break;
+				case Gtk.PositionType.BOTTOM:
+					height += (int) dock_height_offset;
+					break;
 			}
 
-			cr.set_source_surface (dock_surface.Internal, 0, 0);
+			if (dock_surface == null || dock_surface.Width != width || dock_surface.Height != height) {
+				var dummy_surface = new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ());
+
+				dock_surface = dock_theme.create_background (width, height, position, dummy_surface);
+			}
+
+			float x = 0, y = 0;
+			switch (position) {
+				case Gtk.PositionType.RIGHT:
+					x = dock_y_offset;
+					break;
+				case Gtk.PositionType.BOTTOM:
+					y = dock_y_offset;
+					break;
+				case Gtk.PositionType.LEFT:
+					x = 0;
+					break;
+				case Gtk.PositionType.TOP:
+					y = 0;
+					break;
+			}
+
+			cr.set_source_surface (dock_surface.Internal, x, y);
 			cr.paint ();
 
 			return false;
 		}
 
-		public override bool key_release_event (Clutter.KeyEvent event)
+		bool is_horizontal_dock ()
 		{
-			if (((event.modifier_state & ModifierType.MOD1_MASK) == 0) ||
-					event.keyval == Key.Alt_L) {
-				close (event.time);
+			var position = dock_settings.Position;
+			return position == Gtk.PositionType.TOP || position == Gtk.PositionType.BOTTOM;
+		}
+
+		void place_dock ()
+		{
+			var icon_size = dock_settings.IconSize;
+			var scaled_icon_size = icon_size / 10.0f;
+			var line_width = dock_theme.LineWidth;
+			var horiz_padding = dock_theme.HorizPadding * scaled_icon_size;
+			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
+			var items_offset = (int) (2 * line_width + (horiz_padding > 0 ? horiz_padding : 0));
+
+			if (n_dock_items > 0)
+				dock_width = n_dock_items * (item_padding + icon_size) + items_offset * 2;
+			else
+				dock_width = (dock_window != null ? dock_window.width : 300.0f);
+
+			if (is_horizontal_dock ()) {
+				dock.width = dock_width;
+				dock.get_first_child ().margin_left = items_offset;
+				dock.get_last_child ().margin_right = items_offset;
+			} else {
+				dock.height = dock_width;
+				dock.get_first_child ().margin_top = items_offset;
+				dock.get_last_child ().margin_bottom = items_offset;
 			}
 
+			dock.opacity = 255;
+		}
+
+		void animate_dock_width ()
+		{
+			dock.save_easing_state ();
+			dock.set_easing_duration (250);
+			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
+
+			float dest_width;
+			if (is_horizontal_dock ()) {
+				dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
+				dock.width = dest_width;
+			} else {
+				dock.layout_manager.get_preferred_height (dock, dock.width, null, out dest_width);
+				dock.height = dest_width;
+			}
+
+			dock.restore_easing_state ();
+		}
+
+		bool clicked_icon (Clutter.ButtonEvent event) {
+			unowned Utils.WindowIcon icon = (Utils.WindowIcon) event.source;
+
+			if (current_window != icon) {
+				current_window = icon;
+				dim_windows ();
+
+				// wait for the dimming to finish
+				Timeout.add (250, () => {
+					close (wm.get_screen ().get_display ().get_current_time ());
+					return false;
+				});
+			} else
+				close (event.time);
+
 			return true;
+		}
+
+		void window_removed (Actor actor)
+		{
+			clone_sort_order.remove (actor);
+		}
+
+		void icon_removed (Actor actor)
+		{
+			if (dock.get_n_children () == 1) {
+				close (wm.get_screen ().get_display ().get_current_time ());
+				return;
+			}
+
+			if (actor == current_window) {
+				current_window = (Utils.WindowIcon) current_window.get_next_sibling ();
+				if (current_window == null)
+					current_window = (Utils.WindowIcon) dock.get_first_child ();
+
+				dim_windows ();
+			}
+
+			animate_dock_width ();
+		}
+
+		public override bool key_release_event (Clutter.KeyEvent event)
+		{
+			if ((get_current_modifiers () & modifier_mask) == 0)
+				close (event.time);
+
+			return true;
+		}
+
+		public override void key_focus_out ()
+		{
+			close (wm.get_screen ().get_display ().get_current_time ());
+		}
+
+		public void handle_switch_windows (Display display, Screen screen, Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, KeyBinding binding)
+#else
+			X.Event event, KeyBinding binding)
+#endif
+		{
+			var now = get_monotonic_time () / 1000;
+			if (now - last_switch < MIN_DELTA)
+				return;
+
+			last_switch = now;
+
+			var workspace = screen.get_active_workspace ();
+			var binding_name = binding.get_name ();
+			var backward = binding_name.has_suffix ("-backward");
+
+			// FIXME for unknown reasons, switch-applications-backward won't be emitted, so we
+			//       test manually if shift is held down
+			backward = binding_name == "switch-applications"
+				&& (get_current_modifiers () & ModifierType.SHIFT_MASK) != 0;
+
+			if (visible && !closing) {
+				current_window = next_window (workspace, backward);
+				dim_windows ();
+				return;
+			}
+
+			if (!collect_windows (workspace))
+				return;
+
+			set_primary_modifier (binding.get_mask ());
+
+			current_window = next_window (workspace, backward);
+
+			place_dock ();
+
+			visible = true;
+			closing = false;
+			wm.block_keybindings_in_modal = false;
+			modal_proxy = wm.push_modal ();
+
+			animate_dock_width ();
+
+			dim_windows ();
+			grab_key_focus ();
+
+			if ((get_current_modifiers () & modifier_mask) == 0)
+				close (wm.get_screen ().get_display ().get_current_time ());
 		}
 
 		void close (uint time)
@@ -134,399 +392,286 @@ namespace Gala
 				return;
 
 			closing = true;
+			last_switch = 0;
 
 			var screen = wm.get_screen ();
 			var workspace = screen.get_active_workspace ();
 
-			if (dock_window != null)
-				dock_window.opacity = 0;
+			foreach (var actor in clone_sort_order) {
+				unowned InternalUtils.SafeWindowClone clone = (InternalUtils.SafeWindowClone) actor;
 
-			var dest_width = (dock_width > 0 ? dock_width : 600.0f);
-			dock_width = 0;
-
-			set_child_above_sibling (dock, null);
-			dock_background.animate (AnimationMode.EASE_OUT_CUBIC, 250, opacity : 0);
-
-			if (dock_window != null) {
-				dock_window.show ();
-				dock_window.animate (AnimationMode.LINEAR, 250, opacity : 255);
-			}
-
-			foreach (var clone in window_clones) {
-				//current window stays on top
-				if ((clone.source as Meta.WindowActor).get_meta_window () == current_window)
+				// current window stays on top
+				if (clone.window == current_window.window)
 					continue;
 
-				//reset order
-				clone.get_parent ().set_child_below_sibling (clone, null);
-				if (!(clone.source as Meta.WindowActor).get_meta_window ().minimized)
-					clone.animate (AnimationMode.EASE_OUT_CUBIC, 150, depth : 0.0f, opacity : 255);
+				// reset order
+				window_clones.set_child_below_sibling (clone, null);
+
+				if (!clone.window.minimized) {
+					clone.save_easing_state ();
+					clone.set_easing_duration (150);
+					clone.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
+					clone.z_position = 0;
+					clone.opacity = 255;
+					clone.restore_easing_state ();
+				}
 			}
 
 			if (current_window != null) {
-				current_window.activate (time);
+				current_window.window.activate (time);
 				current_window = null;
 			}
 
 			wm.pop_modal (modal_proxy);
 
-			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
-				completed.connect (() => {
-				dock.remove_all_children ();
+			if (dock_window != null)
+				dock_window.opacity = 0;
 
-				if (dock_window != null)
-					dock_window = null;
+			var dest_width = (dock_width > 0 ? dock_width : 600.0f);
 
+			set_child_above_sibling (dock, null);
+
+			if (dock_window != null) {
+				dock_window.show ();
+				dock_window.save_easing_state ();
+				dock_window.set_easing_mode (AnimationMode.LINEAR);
+				dock_window.set_easing_duration (250);
+				dock_window.opacity = 255;
+				dock_window.restore_easing_state ();
+			}
+
+			dock.save_easing_state ();
+			dock.set_easing_duration (250);
+			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
+
+			if (is_horizontal_dock ())
+				dock.width = dest_width;
+			else
+				dock.height = dest_width;
+
+			dock.opacity = 0;
+			dock.restore_easing_state ();
+
+			Clutter.Callback cleanup = () => {
+				dock.destroy_all_children ();
+
+				dock_window = null;
 				visible = false;
 
-				foreach (var clone in window_clones)
-					remove_clone (clone);
-				window_clones.clear ();
+				window_clones.destroy_all_children ();
 
-				//need to go through all the windows because of hidden dialogs
-				unowned List<Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
-				warn_if_fail (window_actors != null);
-				if (window_actors == null)
-					return;
-				foreach (var window in window_actors) {
-					unowned Meta.Window meta_window = window.get_meta_window ();
-					if (meta_window.get_workspace () == workspace && !meta_window.minimized)
-						window.show ();
+				// need to go through all the windows because of hidden dialogs
+				unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
+				foreach (var actor in window_actors) {
+					unowned Window window = actor.get_meta_window ();
+
+					if (window.get_workspace () == workspace
+						&& window.showing_on_its_workspace ())
+						actor.show ();
 				}
+			};
 
-				workspace.window_added.disconnect (add_window);
-				workspace.window_removed.disconnect (remove_window);
-				screen.window_left_monitor.disconnect (window_left_monitor);
-			});
+			var transition = dock.get_transition ("opacity");
+			if (transition != null)
+				transition.completed.connect (() => cleanup (this));
+			else
+				cleanup (this);
 		}
 
-		//used to figure out delays between switching when holding the tab key
-		uint last_time = -1;
-		bool released = false;
-		public override bool captured_event (Clutter.Event event)
+		Utils.WindowIcon? add_window (Window window)
 		{
-			var screen = wm.get_screen ();
-			var display = screen.get_display ();
+			var actor = window.get_compositor_private () as WindowActor;
+			if (actor == null)
+				return null;
 
-			if (event.get_type () == EventType.KEY_RELEASE) {
-				released = true;
-				return false;
-			}
+			actor.hide ();
 
-			if (!(event.get_type () == EventType.KEY_PRESS) ||
-				(!released && display.get_current_time_roundtrip () < (last_time + 300)))
-				return false;
+			var clone = new InternalUtils.SafeWindowClone (window, true);
+			clone.x = actor.x;
+			clone.y = actor.y;
 
-			released = false;
+			window_clones.add_child (clone);
 
-			bool backward = (event.get_state () & X.KeyMask.ShiftMask) != 0;
-			var action = display.get_keybinding_action (event.get_key_code (), event.get_state ());
+			var icon = new Utils.WindowIcon (window, dock_settings.IconSize, true);
+			icon.reactive = true;
+			icon.opacity = 100;
+			icon.x_expand = true;
+			icon.y_expand = true;
+			icon.x_align = ActorAlign.CENTER;
+			icon.y_align = ActorAlign.CENTER;
+			icon.button_release_event.connect (clicked_icon);
 
-			var prev_win = current_window;
-			if (action == Meta.KeyBindingAction.SWITCH_GROUP ||
-				action == Meta.KeyBindingAction.SWITCH_WINDOWS ||
-				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS ||
-				event.get_key_symbol () == Clutter.Key.Right) {
+			dock.add_child (icon);
 
-#if HAS_MUTTER314
-				current_window = display.get_tab_next (Meta.TabList.NORMAL,
-#else
-				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
-#endif
-						screen.get_active_workspace (), current_window, backward);
-				last_time = display.get_current_time_roundtrip ();
-
-			} else if (action == Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD ||
-				action == Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD ||
-				action == Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD ||
-				event.get_key_symbol () == Clutter.Key.Left) {
-
-#if HAS_MUTTER314
-				current_window = display.get_tab_next (Meta.TabList.NORMAL,
-#else
-				current_window = display.get_tab_next (Meta.TabList.NORMAL, screen,
-#endif
-						screen.get_active_workspace (), current_window, true);
-				last_time = display.get_current_time_roundtrip ();
-			}
-
-			if (prev_win != current_window) {
-				dim_windows ();
-			}
-
-			return true;
-		}
-
-		bool clicked_icon (Clutter.ButtonEvent event) {
-			var index = 0;
-			for (; index < dock.get_n_children (); index++) {
-				if (dock.get_child_at_index (index) == event.source)
-					break;
-			}
-
-			var prev_window = current_window;
-			current_window = (window_clones.get (index).source as Meta.WindowActor).get_meta_window ();
-
-			if (prev_window != current_window) {
-				dim_windows ();
-				// wait for the dimming to finish
-				Clutter.Threads.Timeout.add (250, () => {
-					close (event.time);
-					return false;
-				});
-			} else {
-				close (event.time);
-			}
-
-			return true;
+			return icon;
 		}
 
 		void dim_windows ()
 		{
-			var current_actor = current_window.get_compositor_private () as Actor;
-			var window_opacity = (int)Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
-			var i = 0;
-			foreach (var clone in window_clones) {
-				if (current_actor == clone.source) {
-					set_child_below_sibling (clone, dock_background);
-					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : 0.0f, opacity : 255);
+			var window_opacity = (int) Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
 
-					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 255);
+			foreach (var actor in window_clones.get_children ()) {
+				unowned InternalUtils.SafeWindowClone clone = (InternalUtils.SafeWindowClone) actor;
+
+				actor.save_easing_state ();
+				actor.set_easing_duration (250);
+				actor.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+
+				if (clone.window == current_window.window) {
+					window_clones.set_child_above_sibling (actor, null);
+					actor.z_position = 0;
+					actor.opacity = 255;
 				} else {
-					clone.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250, depth : -200.0f, opacity : window_opacity);
-					dock.get_child_at_index (i).animate (AnimationMode.LINEAR, 100, opacity : 100);
+					actor.z_position = -200;
+					actor.opacity = window_opacity;
 				}
 
-				i++;
+				actor.restore_easing_state ();
+			}
+
+			foreach (var actor in dock.get_children ()) {
+				unowned Utils.WindowIcon icon = (Utils.WindowIcon) actor;
+				icon.save_easing_state ();
+				icon.set_easing_duration (100);
+				icon.set_easing_mode (AnimationMode.LINEAR);
+
+				if (icon == current_window)
+					icon.opacity = 255;
+				else
+					icon.opacity = 100;
+
+				icon.restore_easing_state ();
 			}
 		}
 
-		void window_left_monitor (int num, Meta.Window window)
+		/**
+		 * Adds the suitable windows on the given workspace to the switcher
+		 *
+		 * @return whether the switcher should actually be started or if there are
+		 *         not enough windows
+		 */
+		bool collect_windows (Workspace workspace)
 		{
-			// see if that's happened on our workspace
-			var workspace = wm.get_screen ().get_active_workspace ();
-			if (window.located_on_workspace (workspace)) {
-				remove_window (window);
-			}
-		}
-
-		void add_window (Meta.Window window)
-		{
-			var screen = wm.get_screen ();
-
-			if (window.get_workspace () != screen.get_active_workspace ())
-				return;
-
-			var actor = window.get_compositor_private () as Meta.WindowActor;
-			if (actor == null) {
-				//the window possibly hasn't reached the compositor yet
-				Idle.add (() => {
-					if (window.get_compositor_private () != null &&
-						window.get_workspace () == screen.get_active_workspace ())
-						add_window (window);
-					return false;
-				});
-				return;
-			}
-
-			if (actor.is_destroyed ())
-				return;
-
-			actor.hide ();
-
-			var clone = new Clone (actor);
-			clone.x = actor.x;
-			clone.y = actor.y;
-
-			add_child (clone);
-			window_clones.add (clone);
-
-			var icon = new GtkClutter.Texture ();
-			icon.reactive = true;
-			icon.button_release_event.connect (clicked_icon);
-			try {
-				var pix = Utils.get_icon_for_window (window, dock_settings.IconSize);
-				icon.set_from_pixbuf (pix);
-			} catch (Error e) { warning (e.message); }
-
-			icon.opacity = 100;
-			dock.add_child (icon);
-			(dock.layout_manager as BoxLayout).set_expand (icon, true);
-
-			//if the window has been added while being in alt-tab, redim
-			if (visible) {
-				float dest_width;
-				dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
-				dock.animate (AnimationMode.EASE_OUT_CUBIC, 400, width : dest_width);
-				dim_windows ();
-			}
-		}
-
-		void remove_clone (Clone clone)
-		{
-			var window = clone.source as Meta.WindowActor;
-
-			var meta_win = window.get_meta_window ();
-			if (meta_win != null &&
-				!window.is_destroyed () &&
-				!meta_win.minimized &&
-				(meta_win.get_workspace () == wm.get_screen ().get_active_workspace ()) ||
-				meta_win.is_on_all_workspaces ())
-				window.show ();
-
-			clone.destroy ();
-
-			float dest_width;
-			dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
-			dock.animate (AnimationMode.EASE_OUT_CUBIC, 400, width : dest_width);
-		}
-
-		void remove_window (Meta.Window window)
-		{
-			Clone found = null;
-			foreach (var clone in window_clones) {
-				if ((clone.source as Meta.WindowActor).get_meta_window () == window) {
-					found = clone;
-					break;
-				}
-			}
-
-			if (found == null) {
-				warning ("No clone found for removed window");
-				return;
-			}
-
-			var icon = dock.get_child_at_index (window_clones.index_of (found));
-			icon.button_release_event.disconnect (clicked_icon);
-			icon.destroy ();
-			window_clones.remove (found);
-			remove_clone (found);
-		}
-
-		public override void key_focus_out ()
-		{
-			close (wm.get_screen ().get_display ().get_current_time ());
-		}
-
-		public void handle_switch_windows (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
-			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
-		{
-			if (visible) {
-				if (window_clones.size != 0)
-					close (screen.get_display ().get_current_time ());
-				return;
-			}
-
-			var workspace = screen.get_active_workspace ();
+			var screen = workspace.get_screen ();
+			var display = screen.get_display ();
 
 #if HAS_MUTTER314
-			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+			var windows = display.get_tab_list (TabList.NORMAL, workspace);
+			var current = display.get_tab_current (TabList.NORMAL, workspace);
 #else
-			var metawindows = display.get_tab_list (Meta.TabList.NORMAL, screen, workspace);
+			var windows = display.get_tab_list (TabList.NORMAL, screen, workspace);
+			var current = display.get_tab_current (TabList.NORMAL, screen, workspace);
 #endif
-			if (metawindows.length () == 0)
-				return;
-			if (metawindows.length () == 1) {
-				var win = metawindows.nth_data (0);
-				if (win.minimized)
-					win.unminimize ();
-				else {
+
+			if (windows.length () < 1)
+				return false;
+
+			if (windows.length () == 1) {
+				var window = windows.data;
+				if (window.minimized)
+					window.unminimize ();
+				else
 					Utils.bell (screen);
-					return;
-				}
+
+				window.activate (display.get_current_time ());
+
+				return false;
 			}
 
-			workspace.window_added.connect (add_window);
-			workspace.window_removed.connect (remove_window);
-			screen.window_left_monitor.connect (window_left_monitor);
+			foreach (var window in windows) {
+				var clone = add_window (window);
+				if (window == current)
+					current_window = clone;
+			}
 
-			//grab the windows to be switched
-			var layout = dock.layout_manager as BoxLayout;
-			window_clones.clear ();
-			foreach (var win in metawindows)
-				add_window (win);
+			clone_sort_order = window_clones.get_children ().copy ();
 
-			visible = true;
+			if (current_window == null)
+				current_window = (Utils.WindowIcon) dock.get_child_at_index (0);
 
-			//hide the others
-			Meta.Compositor.get_window_actors (screen).foreach ((w) => {
-				var type = w.get_meta_window ().window_type;
-				if (type != Meta.WindowType.DOCK && type != Meta.WindowType.DESKTOP && type != Meta.WindowType.NOTIFICATION)
-					w.hide ();
+			// hide the others
+			foreach (var actor in Compositor.get_window_actors (screen)) {
+				var window = actor.get_meta_window ();
+				var type = window.window_type;
 
-				if (w.get_meta_window ().title in BehaviorSettings.get_default ().dock_names && type == Meta.WindowType.DOCK) {
-					dock_window = w;
+				if (type != WindowType.DOCK
+					&& type != WindowType.DESKTOP
+					&& type != WindowType.NOTIFICATION)
+					actor.hide ();
+
+				if (window.title in BehaviorSettings.get_default ().dock_names
+					&& type == WindowType.DOCK) {
+					dock_window = actor;
 					dock_window.hide ();
 				}
-			});
-
-			closing = false;
-			modal_proxy = wm.push_modal ();
-
-			bool backward = (binding.get_name () == "switch-windows-backward");
-
-			current_window = Utils.get_next_window (screen.get_active_workspace (), backward);
-			if (current_window == null)
-				return;
-
-			if (binding.get_mask () == 0) {
-				current_window.activate (display.get_current_time ());
-				return;
 			}
 
-			//plank type switcher thing
-			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			return true;
+		}
 
-			dock.width = (dock_window != null ? dock_window.width : 300.0f);
-			//FIXME do this better
-			//count the launcher items to get an estimate of the window size
-			var launcher_folder = Plank.Services.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
-			if (launcher_folder.query_exists ()) {
-				try {
-					int count = 0;
-					var children = launcher_folder.enumerate_children ("", 0);
-					while (children.next_file () != null)
-						count ++;
-
-					if (count > 0)
-						dock.width = count * (float)(dock_settings.IconSize + dock_theme.ItemPadding);
-
-					dock_width = dock.width;
-
-				} catch (Error e) { warning (e.message); }
+		Utils.WindowIcon next_window (Workspace workspace, bool backward)
+		{
+			Actor actor;
+			if (!backward) {
+				actor = current_window.get_next_sibling ();
+				if (actor == null)
+					actor = dock.get_first_child ();
+			} else {
+				actor = current_window.get_previous_sibling ();
+				if (actor == null)
+					actor = dock.get_last_child ();
 			}
 
+			return (Utils.WindowIcon) actor;
+		}
 
-			var bottom_offset = (int)(dock_theme.BottomPadding / 10.0 * dock_settings.IconSize);
-			dock.opacity = 255;
-			dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
-			dock.y = Math.ceilf (geometry.y + geometry.height - dock.height / 2.0f) - bottom_offset;
+		/**
+		 * copied from gnome-shell, finds the primary modifier in the mask and saves it
+		 * to our modifier_mask field
+		 *
+		 * @param mask The modifier mask to extract the primary one from
+		 */
+		void set_primary_modifier (uint mask)
+		{
+			if (mask == 0)
+				modifier_mask = 0;
+			else {
+				modifier_mask = 1;
+				while (mask > 1) {
+					mask >>= 1;
+					modifier_mask <<= 1;
+				}
+			}
+		}
 
-			//add spacing on outer most items
-			var horiz_padding = (float) Math.ceil (dock_theme.HorizPadding / 10.0 * dock_settings.IconSize + layout.spacing / 2.0);
-			dock.get_first_child ().margin_left = horiz_padding;
-			dock.get_last_child ().margin_right = horiz_padding;
+		/**
+		 * Counts the launcher items to get an estimate of the window size
+		 */
+		void update_n_dock_items (File folder, File? other_file, FileMonitorEvent event)
+		{
+			if (event != FileMonitorEvent.CREATED && event != FileMonitorEvent.DELETED)
+				return;
 
-			float dest_width;
-			layout.get_preferred_width (dock, dock.height, null, out dest_width);
+			var count = 0;
 
-			set_child_above_sibling (dock_background, null);
-			dock_background.opacity = 255;
-			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width : dest_width);
-			set_child_above_sibling (dock, null);
+			try {
+				var children = folder.enumerate_children ("", 0);
+				while (children.next_file () != null)
+					count++;
 
-			dim_windows ();
-			grab_key_focus ();
+			} catch (Error e) { warning (e.message); }
 
+			n_dock_items = count;
+		}
+
+		Gdk.ModifierType get_current_modifiers ()
+		{
 			Gdk.ModifierType modifiers;
-			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_state (Gdk.get_default_root_window (),
-				null, out modifiers);
-			if ((modifiers & Gdk.ModifierType.MOD1_MASK) == 0)
-				close (wm.get_screen ().get_display ().get_current_time ());
+			double[] axes = {};
+			Gdk.Display.get_default ().get_device_manager ().get_client_pointer ()
+				.get_state (Gdk.get_default_root_window (), axes, out modifiers);
+
+			return modifiers;
 		}
 	}
 }
