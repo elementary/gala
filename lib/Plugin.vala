@@ -91,7 +91,7 @@ namespace Gala
 		 * It is calculated by the system whenever update_region is called.
 		 * You can influce it with the custom_region and the track_actor function.
 		 */
-		public Meta.Rectangle[] region { get; set; }
+		public Meta.Rectangle[] region { get; private set; }
 
 		/**
 		 * This list will be merged with the region property. See region for
