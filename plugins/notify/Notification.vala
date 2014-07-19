@@ -313,12 +313,13 @@ namespace Gala.Plugins.Notify
 
 			var buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
 			var cr = buffer.context;
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x - 0.5 , y - 0.5, width + 1, height + 1, 4);
 
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x , y + 3, width, height, 4);
 			cr.set_source_rgba (0, 0, 0, 0.3);
-			cr.fill_preserve ();
+			cr.fill ();
 			buffer.exponential_blur (6);
 
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x - 0.5 , y - 0.5, width + 1, height + 1, 4);
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.set_line_width (1);
 			cr.stroke ();
