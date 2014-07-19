@@ -19,9 +19,6 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
-	[CCode (cname = "get_pixbuf_from_dbus_variant")]
-	public extern Gdk.Pixbuf get_pixbuf_from_dbus_variant (Variant variant);
-
 	public enum NotificationUrgency {
 		LOW = 0,
 		NORMAL = 1,
@@ -179,12 +176,9 @@ namespace Gala.Plugins.Notify
 
 			if (hints.contains ("image_data") || hints.contains ("image-data")) {
 
-				var image = hints.contains ("image_data") ?
+				var data = hints.contains ("image_data") ?
 					hints.lookup ("image_data") : hints.lookup ("image-data");
-
-				pixbuf = get_pixbuf_from_dbus_variant (image);
-
-				pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
+				pixbuf = load_from_variant_at_size (data, size);
 
 			} else if (hints.contains ("image-path") || hints.contains ("image_path")) {
 
@@ -210,7 +204,10 @@ namespace Gala.Plugins.Notify
 				} catch (Error e) { warning (e.message); }
 
 			} else if (hints.contains ("icon_data")) {
-				warning ("icon data is not supported");
+
+				var data = hints.lookup ("icon_data");
+				pixbuf = load_from_variant_at_size (data, size);
+
 			}
 
 			if (pixbuf == null) {
@@ -227,6 +224,26 @@ namespace Gala.Plugins.Notify
 
 			return pixbuf;
 		}
+
+		static Gdk.Pixbuf? load_from_variant_at_size (Variant variant, int size)
+		{
+			if (!variant.is_of_type (new VariantType ("(iiibiiay)"))) {
+				critical ("notify icon/image-data format invalid");
+				return null;
+			}
+
+			int width, height, rowstride, bits_per_sample, n_channels;
+			bool has_alpha;
+
+			variant.get ("(iiibiiay)", out width, out height, out rowstride,
+				out has_alpha, out bits_per_sample, out n_channels, null);
+
+			var data = variant.get_child_value (6);
+			unowned uint8[] pixel_data = (uint8[]) data.get_data ();
+
+			var pixbuf = new Gdk.Pixbuf.with_unowned_data (pixel_data, Gdk.Colorspace.RGB, has_alpha, bits_per_sample, width, height, rowstride, null);
+			return pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
+		}		
 	}
 }
 
