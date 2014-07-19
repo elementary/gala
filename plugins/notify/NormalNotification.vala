@@ -22,6 +22,17 @@ namespace Gala.Plugins.Notify
 {
 	public class NormalNotification : Notification
 	{
+		static Regex entity_regex;
+		static Regex tag_regex;
+
+		static construct
+		{
+			try {
+				entity_regex = new Regex ("&(?!amp;|quot;|apos;|lt;|gt;)");
+				tag_regex = new Regex ("<(?!\\/?[biu]>)");
+			} catch (Error e) {}
+		}
+
 		public string summary { get; construct set; }
 		public string body { get; construct set; }
 		public uint32 sender_pid { get; construct; }
@@ -95,8 +106,23 @@ namespace Gala.Plugins.Notify
 
 		void set_values ()
 		{
-			summary_label.set_markup ("<b>" + summary + "</b>");
-			body_label.set_markup (body);
+			summary_label.set_markup ("<b>" + fix_markup (summary) + "</b>");
+			body_label.set_markup (fix_markup (body));
+		}
+
+		/**
+		 * Copied from gnome-shell, fixes the mess of markup that is sent to us
+		 */
+		string fix_markup (string markup)
+		{
+			var text = markup;
+
+			try {
+				text = entity_regex.replace (markup, markup.length, 0, "&amp;");
+				text = tag_regex.replace (text, text.length, 0, "&lt;");
+			} catch (Error e) {}
+
+			return text;
 		}
 
 		public override void update_allocation (out float content_height, AllocationFlags flags)
