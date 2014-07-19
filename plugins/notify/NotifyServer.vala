@@ -187,13 +187,11 @@ namespace Gala.Plugins.Notify
 
 			} else if (icon != "") {
 
-				var actual_icon = icon;
-				// fix icon names that are sent to notify-osd to the ones that actually exist
-				if (icon.has_prefix ("notification-audio"))
-					actual_icon = icon.substring (13) + "-symbolic";
-
 				try {
-					pixbuf = Gtk.IconTheme.get_default ().load_icon (actual_icon, size, 0);
+					var themed = new ThemedIcon.with_default_fallbacks (icon);
+					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
+					if (info != null)
+						pixbuf = info.load_icon ();
 				} catch (Error e) { warning (e.message); }
 
 			} else if (hints.contains ("icon_data")) {

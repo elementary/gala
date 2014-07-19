@@ -108,37 +108,7 @@ namespace Gala.Plugins.Notify
 
 			switch (urgency) {
 				case NotificationUrgency.LOW:
-					return;
 				case NotificationUrgency.NORMAL:
-					var icon_entry = new TransitionGroup ();
-					icon_entry.duration = 1000;
-					icon_entry.remove_on_complete = true;
-					icon_entry.progress_mode = AnimationMode.EASE_IN_OUT_CUBIC;
-
-					var icon_opacity_transition = new KeyframeTransition ("opacity");
-					icon_opacity_transition.set_from_value (0);
-					icon_opacity_transition.set_to_value (255);
-					icon_opacity_transition.set_key_frames ({ 0.1, 0.6 });
-					icon_opacity_transition.set_values ({ 0, 255 });
-
-					var scale_x_transition = new KeyframeTransition ("scale-x");
-					scale_x_transition.set_from_value (0.0);
-					scale_x_transition.set_to_value (1.0);
-					scale_x_transition.set_key_frames ({ 0.1, 0.6 });
-					scale_x_transition.set_values ({ 0, 1.3 });
-
-					var scale_y_transition = new KeyframeTransition ("scale-y");
-					scale_y_transition.set_from_value (0.0);
-					scale_y_transition.set_to_value (1.0);
-					scale_y_transition.set_key_frames ({ 0.15, 0.6 });
-					scale_y_transition.set_values ({ 0, 1.3 });
-
-					icon_entry.add_transition (icon_opacity_transition);
-					icon_entry.add_transition (scale_x_transition);
-					icon_entry.add_transition (scale_y_transition);
-
-					icon_texture.add_transition ("entry", icon_entry);
-
 					return;
 				case NotificationUrgency.CRITICAL:
 					var icon_entry = new TransitionGroup ();
