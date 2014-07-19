@@ -31,6 +31,8 @@ data/gschemas.compiled
 data/org.pantheon.desktop.gala.gschema.valid
 data/org.pantheon.desktop.gala.gschema.xml
 data/org.pantheon.desktop.gala.gschema.xml.in
+docs/gala
+docs/libgala
 lib/gala.vapi
 po/*.gmo
 po/.intltool-merge-cache

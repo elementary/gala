@@ -5,6 +5,7 @@ SUBDIRS = \
 	lib \
 	plugins \
 	src \
+	docs \
 	po \
 	vapi \
 	$(NULL)
