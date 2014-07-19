@@ -38,9 +38,11 @@ namespace Gala.Plugins.Notify
 		public bool being_destroyed { get; private set; default = false; }
 
 		protected bool icon_only { get; protected set; default = false; }
+		protected GtkClutter.Texture icon_texture { get; private set; }
+		protected Actor icon_container { get; private set; }
 
-		GtkClutter.Texture icon_texture;
 		GtkClutter.Texture close_button;
+		Granite.Drawing.BufferSurface? buffer = null;
 
 		uint remove_timeout = 0;
 
@@ -66,12 +68,15 @@ namespace Gala.Plugins.Notify
 			icon_texture = new GtkClutter.Texture ();
 			icon_texture.set_pivot_point (0.5f, 0.5f);
 
+			icon_container = new Actor ();
+			icon_container.add_child (icon_texture);
+
 			close_button = Utils.create_close_button ();
 			close_button.opacity = 0;
 			close_button.reactive = true;
 			close_button.set_easing_duration (300);
 
-			add_child (icon_texture);
+			add_child (icon_container);
 			add_child (close_button);
 
 			var canvas = new Canvas ();
@@ -166,7 +171,7 @@ namespace Gala.Plugins.Notify
 				destroy ();
 		}
 
-		public void update_base (Gdk.Pixbuf? icon, int32 expire_timeout)
+		protected void update_base (Gdk.Pixbuf? icon, int32 expire_timeout)
 		{
 			this.icon = icon;
 			this.expire_timeout = expire_timeout;
@@ -244,7 +249,7 @@ namespace Gala.Plugins.Notify
 
 			icon_alloc.set_origin (icon_only ? (WIDTH - ICON_SIZE) / 2 : MARGIN + PADDING, MARGIN + PADDING);
 			icon_alloc.set_size (ICON_SIZE, ICON_SIZE);
-			icon_texture.allocate (icon_alloc, flags);
+			icon_container.allocate (icon_alloc, flags);
 
 			var close_alloc = ActorBox ();
 			close_alloc.set_origin (MARGIN + PADDING - close_button.width / 2,
@@ -283,33 +288,32 @@ namespace Gala.Plugins.Notify
 			var width = canvas.width - MARGIN * 2;
 			var height = canvas.height - MARGIN * 2;
 
-			var buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
-			var cr = buffer.context;
+			if (buffer == null || buffer.width != canvas.width || buffer.height != canvas.height) {
+				buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
+				var cr = buffer.context;
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x , y + 3, width, height, 4);
-			cr.set_source_rgba (0, 0, 0, 0.3);
-			cr.fill ();
-			buffer.exponential_blur (6);
+				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x , y + 3, width, height, 4);
+				cr.set_source_rgba (0, 0, 0, 0.3);
+				cr.fill ();
+				buffer.exponential_blur (6);
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x - 0.5 , y - 0.5, width + 1, height + 1, 4);
-			cr.set_source_rgba (0, 0, 0, 0.3);
-			cr.set_line_width (1);
-			cr.stroke ();
+				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x - 0.5 , y - 0.5, width + 1, height + 1, 4);
+				cr.set_source_rgba (0, 0, 0, 0.3);
+				cr.set_line_width (1);
+				cr.stroke ();
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width, height, 4);
-			cr.set_source_rgb (0.945, 0.945, 0.945);
-			cr.fill ();
+				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width, height, 4);
+				cr.set_source_rgb (0.945, 0.945, 0.945);
+				cr.fill ();
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x + 0.5, y + 0.5, width - 1, height - 1, 3);
-			var gradient = new Cairo.Pattern.linear (0, 0, 0, height - 2);
-			gradient.add_color_stop_rgba (0, 1, 1, 1, 1.0);
-			gradient.add_color_stop_rgba (1, 1, 1, 1, 0.6);
-			cr.set_source (gradient);
-			cr.set_line_width (1);
-			cr.stroke ();
-
-			// TODO move buffer out and optimize content drawing
-			draw_content (cr);
+				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x + 0.5, y + 0.5, width - 1, height - 1, 3);
+				var gradient = new Cairo.Pattern.linear (0, 0, 0, height - 2);
+				gradient.add_color_stop_rgba (0, 1, 1, 1, 1.0);
+				gradient.add_color_stop_rgba (1, 1, 1, 1, 0.6);
+				cr.set_source (gradient);
+				cr.set_line_width (1);
+				cr.stroke ();
+			}
 
 			canvas_cr.set_operator (Cairo.Operator.CLEAR);
 			canvas_cr.paint ();
@@ -317,6 +321,8 @@ namespace Gala.Plugins.Notify
 
 			canvas_cr.set_source_surface (buffer.surface, 0, 0);
 			canvas_cr.paint ();
+
+			draw_content (canvas_cr);
 
 			return false;
 		}

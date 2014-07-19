@@ -70,8 +70,8 @@ namespace Gala.Plugins.Notify
 			body_label.use_markup = true;
 			body_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
 
-			add_child (summary_label);
-			add_child (body_label);
+			insert_child_below (summary_label, null);
+			insert_child_below (body_label, null);
 
 			set_values ();
 		}

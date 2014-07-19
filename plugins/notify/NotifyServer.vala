@@ -124,16 +124,27 @@ namespace Gala.Plugins.Notify
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
 
+				if (notification.being_destroyed)
+					continue;
+
+				// we only want a single confirmation notification, so we just take the
+				// first one that can be found, no need to check ids or anything
+				var confirmation_notification = notification as ConfirmationNotification;
+				if (confirmation && confirmation_notification != null) {
+					confirmation_notification.update (pixbuf,
+						progress ? hints.@get ("value").get_int32 () : 0,
+						hints.@get ("x-canonical-private-synchronous").get_string (),
+						icon_only,
+						progress);
+
+					return id;
+				}
+
 				if (notification.id == id && !notification.being_destroyed) {
 					var normal_notification = notification as NormalNotification;
-					var confirmation_notification = notification as ConfirmationNotification;
 
 					if (normal_notification != null)
 						normal_notification.update (summary, body, pixbuf, expire_timeout, actions);
-
-					if (confirmation_notification != null)
-						confirmation_notification.update (pixbuf,
-							progress ? hints.@get ("value").get_int32 () : 0);
 
 					return id;
 				}
@@ -142,7 +153,8 @@ namespace Gala.Plugins.Notify
 			Notification notification;
 			if (confirmation)
 				notification = new ConfirmationNotification (id, pixbuf, icon_only,
-					progress ? hints.@get ("value").get_int32 () : -1);
+					progress ? hints.@get ("value").get_int32 () : -1,
+					hints.@get ("x-canonical-private-synchronous").get_string ());
 			else
 				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 					urgency, timeout, pid, actions);
