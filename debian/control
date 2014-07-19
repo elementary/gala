@@ -1,7 +1,7 @@
 Source: gala
 Section: x11
 Priority: optional
-Maintainer: Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
+Maintainer: Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
 Build-Depends: debhelper (>= 9),
                dh-autoreconf,
                gnome-common,
