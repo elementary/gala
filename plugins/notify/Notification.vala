@@ -321,23 +321,19 @@ namespace Gala.Plugins.Notify
 
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.set_line_width (1);
-			cr.stroke_preserve ();
+			cr.stroke ();
 
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width, height, 4);
 			cr.set_source_rgb (0.945, 0.945, 0.945);
-			cr.fill_preserve ();
-			cr.set_source_rgba (0, 0, 0, 0.0);
-			cr.stroke_preserve ();
-
-//			var gradient = new Cairo.Pattern.linear (0, 0, 0, height - 2);
-//			gradient.add_color_stop_rgba (0, 1, 1, 1, 1.0);
-//			gradient.add_color_stop_rgba (1, 1, 1, 1, 0.6);
-//			cr.set_source (gradient);
+			cr.fill ();
 
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x + 0.5, y + 0.5, width - 1, height - 1, 3);
-			cr.set_source_rgba (1, 0, 0, 0.3);
+			var gradient = new Cairo.Pattern.linear (0, 0, 0, height - 2);
+			gradient.add_color_stop_rgba (0, 1, 1, 1, 1.0);
+			gradient.add_color_stop_rgba (1, 1, 1, 1, 0.6);
+			cr.set_source (gradient);
 			cr.set_line_width (1);
-			cr.stroke_preserve ();
+			cr.stroke ();
 
 			// TODO move buffer out and optimize content drawing
 			draw_content (cr);
