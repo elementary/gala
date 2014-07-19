@@ -22,6 +22,8 @@ namespace Gala.Plugins.Notify
 {
 	public class NotificationStack : Actor
 	{
+		const int ADDITIONAL_MARGIN = 12;
+
 		public signal void animations_changed (bool running);
 
 		public Screen screen { get; construct; }
@@ -35,13 +37,18 @@ namespace Gala.Plugins.Notify
 
 		construct
 		{
-			width = Notification.WIDTH + 2 * Notification.MARGIN;
+			width = Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN;
+			clip_to_allocation = true;
 		}
 
 		public void show_notification (Notification notification)
 		{
 			if (animation_counter == 0)
 				animations_changed (true);
+
+			// we have a shoot-over on the start of the close animation, which gets clipped
+			// unless we make our container a bit wider and move the notifications over
+			notification.margin_left = ADDITIONAL_MARGIN;
 
 			notification.destroy.connect (() => {
 				update_positions ();

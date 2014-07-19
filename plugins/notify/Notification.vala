@@ -62,7 +62,6 @@ namespace Gala.Plugins.Notify
 			relevancy_time = new DateTime.now_local ().to_unix ();
 			width = WIDTH + MARGIN * 2;
 			reactive = true;
-			margin_left = 12;
 			set_pivot_point (0.5f, 0.5f);
 
 			icon_texture = new GtkClutter.Texture ();
