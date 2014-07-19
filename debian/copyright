@@ -4,26 +4,18 @@ Source: https://launchpad.net/gala
 
 
 Files: *
-Copyright: 2012 Tom Beckmann
-           2012 Rico Tzschichholz
-License: GPL-3.0+
-
-
-Files: src/Widgets/AppIcon.vala src/Widgets/WindowThumb.vala src/DBus.vala
-Copyright: 2012 Tom Beckmann
-License: GPL-3.0+
-
-
-Files: src/Settings.vala
-Copyright: 2012 GardenGnome
-           2012 Tom Beckmann
-           2012 Rico Tzschichholz
+Copyright: 2012-2014 Tom Beckmann <tom@elementaryos.org>
+           2012-2014 Rico Tzschichholz <ricotz@ubuntu.com>
+           2012-2014 Daniel Fore <daniel@elementaryos.org>
+           2012 Garden Gnome <gardengnome85@gmail.com>
+           2012 Niels Avonds <niels.avonds@gmail.com>
+           2013 Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
 License: GPL-3.0+
 
 
 Files: debian/*
-Copyright: 2012 Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
-           2014 Rico Tzschichholz
+Copyright: 2012-2014 Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
+           2012-2014 Rico Tzschichholz <ricotz@ubuntu.com>
 License: GPL-3.0+
 
 
