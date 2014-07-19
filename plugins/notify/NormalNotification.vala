@@ -22,6 +22,8 @@ namespace Gala.Plugins.Notify
 {
 	public class NormalNotification : Notification
 	{
+		const int LABEL_SPACING = 2;
+
 		static Regex entity_regex;
 		static Regex tag_regex;
 
@@ -134,7 +136,7 @@ namespace Gala.Plugins.Notify
 			summary_label.get_preferred_height (label_width, null, out summary_height);
 			body_label.get_preferred_height (label_width, null, out body_height);
 
-			var label_height = summary_height + SPACING + body_height;
+			var label_height = summary_height + LABEL_SPACING + body_height;
 			var label_y = MARGIN + PADDING;
 			// center
 			if (label_height < ICON_SIZE)
@@ -146,7 +148,7 @@ namespace Gala.Plugins.Notify
 			summary_label.allocate (summary_alloc, flags);
 
 			var body_alloc = ActorBox ();
-			body_alloc.set_origin (label_x, label_y + summary_height + SPACING);
+			body_alloc.set_origin (label_x, label_y + summary_height + LABEL_SPACING);
 			body_alloc.set_size (label_width, body_height);
 			body_label.allocate (body_alloc, flags);
 
@@ -162,7 +164,7 @@ namespace Gala.Plugins.Notify
 			summary_label.get_preferred_height (label_width, null, out summary_height);
 			body_label.get_preferred_height (label_width, null, out body_height);
 
-			var label_height = summary_height + SPACING + body_height;
+			var label_height = summary_height + LABEL_SPACING + body_height;
 			var content_height = label_height < ICON_SIZE ? ICON_SIZE : label_height;
 
 			min_height = nat_height = content_height + (MARGIN + SPACING) * 2;
