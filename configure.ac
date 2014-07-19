@@ -109,7 +109,6 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  granite \
                  libmutter >= $MUTTER_MIN_VERSION \
                  gee-0.8 \
-                 dbus-glib-1 \
                  gnome-desktop-3.0 \
                  plank >= $PLANK_MIN_VERSION"
 
