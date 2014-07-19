@@ -51,7 +51,7 @@ namespace Gala.Plugins.Notify
 			content_height = ICON_SIZE;
 		}
 
-		const int PROGRESS_HEIGHT = 12;
+		const int PROGRESS_HEIGHT = 6;
 
 		public override void draw_content (Cairo.Context cr)
 		{
@@ -60,7 +60,7 @@ namespace Gala.Plugins.Notify
 
 			var x = MARGIN + PADDING + ICON_SIZE + SPACING;
 			var y = MARGIN + PADDING + (ICON_SIZE - PROGRESS_HEIGHT) / 2;
-			var width = WIDTH - x - PADDING - MARGIN;
+			var width = WIDTH - x - MARGIN;
 			var fraction = (int) Math.floor (progress.clamp (0, 100) / 100.0 * width);
 
 			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width,
@@ -84,4 +84,3 @@ namespace Gala.Plugins.Notify
 		}
 	}
 }
-
