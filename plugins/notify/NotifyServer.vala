@@ -57,7 +57,10 @@ namespace Gala.Plugins.Notify
 		public NotifyServer (NotificationStack stack)
 		{
 			Object (stack: stack);
+		}
 
+		construct
+		{
 			try {
 				bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
 			} catch (Error e) {

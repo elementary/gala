@@ -23,6 +23,7 @@ namespace Gala.Plugins.Notify
 	public class ConfirmationNotification : Notification
 	{
 		const int DURATION = 2000;
+		const int PROGRESS_HEIGHT = 6;
 
 		public bool has_progress { get; private set; }
 
@@ -39,7 +40,7 @@ namespace Gala.Plugins.Notify
 
 		public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, bool icon_only, int progress)
 		{
-			base (id, icon, NotificationUrgency.LOW, DURATION);
+			Object (id: id, icon: icon, urgency: NotificationUrgency.LOW, expire_timeout: DURATION);
 
 			this.icon_only = icon_only;
 			this.has_progress = progress > -1;
@@ -50,8 +51,6 @@ namespace Gala.Plugins.Notify
 		{
 			content_height = ICON_SIZE;
 		}
-
-		const int PROGRESS_HEIGHT = 6;
 
 		public override void draw_content (Cairo.Context cr)
 		{

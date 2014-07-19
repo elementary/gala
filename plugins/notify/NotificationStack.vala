@@ -31,7 +31,10 @@ namespace Gala.Plugins.Notify
 		public NotificationStack (Screen screen)
 		{
 			Object (screen: screen);
+		}
 
+		construct
+		{
 			width = Notification.WIDTH + 2 * Notification.MARGIN;
 		}
 

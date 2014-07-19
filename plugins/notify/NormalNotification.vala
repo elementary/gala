@@ -22,11 +22,11 @@ namespace Gala.Plugins.Notify
 {
 	public class NormalNotification : Notification
 	{
-		public string summary { get; private set; }
-		public string body { get; private set; }
-		public uint32 sender_pid { get; private set; }
-		public string[] notification_actions { get; private set; }
-		public Screen screen { get; private set; }
+		public string summary { get; construct set; }
+		public string body { get; construct set; }
+		public uint32 sender_pid { get; construct; }
+		public string[] notification_actions { get; construct; }
+		public Screen screen { get; construct; }
 
 		Text summary_label;
 		Text body_label;
@@ -34,14 +34,21 @@ namespace Gala.Plugins.Notify
 		public NormalNotification (Screen screen, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
 			NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
 		{
-			base (id, icon, urgency, expire_timeout);
+			Object (
+				id: id,
+				icon: icon,
+				urgency: urgency,
+				expire_timeout: expire_timeout,
+				screen: screen,
+				summary: summary,
+				body: body,
+				sender_pid: pid,
+				notification_actions: actions
+			);
+		}
 
-			this.screen = screen;
-			this.summary = summary;
-			this.body = body;
-			this.sender_pid = pid;
-			this.notification_actions = actions;
-
+		construct
+		{
 			summary_label = new Text.with_text (null, "");
 			summary_label.line_wrap = true;
 			summary_label.use_markup = true;

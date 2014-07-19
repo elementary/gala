@@ -53,7 +53,10 @@ namespace Gala.Plugins.Notify
 				urgency: urgency,
 				expire_timeout: expire_timeout
 			);
+		}
 
+		construct
+		{
 			relevancy_time = new DateTime.now_local ().to_unix ();
 			width = WIDTH + MARGIN * 2;
 			reactive = true;
@@ -186,7 +189,7 @@ namespace Gala.Plugins.Notify
 		void set_timeout ()
 		{
 			// crtitical notifications have to be dismissed manually
-			if (expire_timeout == 0 || urgency == NotificationUrgency.CRITICAL)
+			if (expire_timeout <= 0 || urgency == NotificationUrgency.CRITICAL)
 				return;
 
 			clear_timeout ();
