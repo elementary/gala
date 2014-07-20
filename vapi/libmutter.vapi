@@ -460,6 +460,10 @@ namespace Meta {
 		public signal bool modifiers_accelerator_activated ();
 #endif
 		public signal void overlay_key ();
+#if HAS_MUTTER314
+		public signal bool restart ();
+		public signal bool show_restart_message (string? message);
+#endif
 		public signal void window_created (Meta.Window object);
 		public signal void window_demands_attention (Meta.Window object);
 		public signal void window_marked_urgent (Meta.Window object);
@@ -811,6 +815,9 @@ namespace Meta {
 #endif
 		public bool is_ancestor_of_transient (Meta.Window transient);
 		public bool is_attached_dialog ();
+#if !HAS_MUTTER314
+		public bool is_client_decorated ();
+#endif
 		public bool is_fullscreen ();
 		public bool is_hidden ();
 #if !HAS_MUTTER312
@@ -1657,12 +1664,18 @@ namespace Meta {
 	public static void init ();
 #if HAS_MUTTER314
 	[CCode (cheader_filename = "meta/main.h")]
+	public static bool is_restart ();
+	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_wayland_compositor ();
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void quit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void register_with_session ();
+#if HAS_MUTTER314
+ 	[CCode (cheader_filename = "meta/main.h")]
+	public static void restart (string message);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
 	[CCode (cheader_filename = "meta/main.h")]
