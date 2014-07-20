@@ -174,7 +174,14 @@ namespace Gala.Plugins.Notify
 			Gdk.Pixbuf? pixbuf = null;
 			var size = Notification.ICON_SIZE;
 
+			var mask_offset = 4;
+			var mask_size_offset = mask_offset * 2;
+			var has_mask = false;
+
 			if (hints.contains ("image_data") || hints.contains ("image-data")) {
+
+				has_mask = true;
+				size = size - mask_size_offset;
 
 				var data = hints.contains ("image_data") ?
 					hints.lookup ("image_data") : hints.lookup ("image-data");
@@ -187,6 +194,9 @@ namespace Gala.Plugins.Notify
 
 				try {
 					if (image_path.has_prefix ("file://") || image_path.has_prefix ("/")) {
+						has_mask = true;
+						size = size - mask_size_offset;
+
 						var file_path = File.new_for_commandline_arg (image_path).get_path ();
 						pixbuf = new Gdk.Pixbuf.from_file_at_scale (file_path, size, size, true);
 					} else {
@@ -205,6 +215,9 @@ namespace Gala.Plugins.Notify
 
 			} else if (hints.contains ("icon_data")) {
 
+				has_mask = true;
+				size = size - mask_size_offset;
+
 				var data = hints.lookup ("icon_data");
 				pixbuf = load_from_variant_at_size (data, size);
 
@@ -220,6 +233,28 @@ namespace Gala.Plugins.Notify
 						pixbuf = Gtk.IconTheme.get_default ().load_icon (FALLBACK_ICON, size, 0);
 					} catch (Error e) { warning (e.message); }
 				}
+			} else if (has_mask) {
+				var mask_size = Notification.ICON_SIZE;
+				var offset_x = mask_offset;
+				var offset_y = mask_offset + 1;
+
+				var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, mask_size, mask_size);
+				var cr = new Cairo.Context (surface);
+
+				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr,
+					offset_x, offset_y, size, size, 4);
+				cr.clip ();
+
+				Gdk.cairo_set_source_pixbuf (cr, pixbuf, offset_x, offset_y);
+				cr.paint ();
+
+				cr.reset_clip ();
+
+				var mask = new Cairo.ImageSurface.from_png (Config.PKGDATADIR + "/image-mask.png");
+				cr.set_source_surface (mask, 0, 0);
+				cr.paint ();
+
+				pixbuf = Gdk.pixbuf_get_from_surface (surface, 0, 0, mask_size, mask_size);
 			}
 
 			return pixbuf;

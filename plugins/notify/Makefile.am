@@ -2,6 +2,9 @@ include $(top_srcdir)/Makefile.common
 
 VAPIDIR = $(top_srcdir)/vapi
 
+imagedir = $(pkgdatadir)
+image_DATA = data/image-mask.png
+
 BUILT_SOURCES = libgala_notify_la_vala.stamp
 
 libgala_notify_la_LTLIBRARIES = libgala-notify.la
@@ -54,10 +57,12 @@ libgala_notify_la_vala.stamp: $(libgala_notify_la_VALASOURCES)
 	$(AM_V_at)touch $@
 
 CLEANFILES = \
+	$(image_DATA) \
 	$(nodist_libgala_notify_la_SOURCES) \
 	$(NULL)
 
 EXTRA_DIST = \
+	$(image_DATA) \
 	$(libgala_notify_la_VALASOURCES) \
 	$(NULL)
 
