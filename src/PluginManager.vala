@@ -199,6 +199,11 @@ namespace Gala
 			load_later_plugins.clear ();
 		}
 
+		public Plugin? get_plugin (string id)
+		{
+			return plugins.lookup (id);
+		}
+
 		/**
 		 * Iterate over all plugins and grab their regions, update the regions
 		 * array accordingly and emit the regions_changed signal.

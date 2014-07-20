@@ -1,6 +1,7 @@
 include $(top_srcdir)/Makefile.common
 
 libgala_doc_files = \
+	$(top_srcdir)/lib/ActivatableComponent.vala \
 	$(top_srcdir)/lib/Plugin.vala \
 	$(top_srcdir)/lib/Utils.vala \
 	$(top_srcdir)/lib/WindowManager.vala \
