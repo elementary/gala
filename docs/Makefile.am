@@ -51,8 +51,6 @@ valadoc_flags_gala = \
 
 #if HAVE_VALADOC
 
-all: html libhtml
-
 html: $(libgala_doc_files) $(gala_doc_files) Makefile
 	$(AM_V_GEN)$(VALADOC) \
 		-o gala/ \
