@@ -73,10 +73,8 @@ namespace Gala.Plugins.Notify
 				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, MARGIN, MARGIN, WIDTH - MARGIN * 2, ICON_SIZE + PADDING * 2, 4);
 				cr.clip ();
 
-				var height_offset = ICON_SIZE + PADDING * 2;
-
 				draw_progress_bar (cr, x, y + animation_slide_y_offset, width, old_progress);
-				draw_progress_bar (cr, x, y + animation_slide_y_offset - height_offset, width, progress);
+				draw_progress_bar (cr, x, y + animation_slide_y_offset - animation_slide_height, width, progress);
 
 				cr.reset_clip ();
 			}
@@ -112,7 +110,8 @@ namespace Gala.Plugins.Notify
 				this.confirmation_type = confirmation_type;
 
 				old_progress = this.progress;
-				play_update_transition ();
+
+				play_update_transition (ICON_SIZE + PADDING * 2);
 			}
 
 			if (this.icon_only != icon_only) {

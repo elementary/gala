@@ -181,7 +181,18 @@ namespace Gala.Plugins.Notify
 
 				content_container.add_child (old_notification_content);
 
-				play_update_transition ();
+				this.summary = summary;
+				this.body = body;
+				notification_content.set_values (summary, body);
+
+				float content_height, old_content_height;
+				notification_content.get_preferred_height (0, null, out content_height);
+				old_notification_content.get_preferred_height (0, null, out old_content_height);
+
+				content_height = float.max (content_height, old_content_height);
+
+				play_update_transition (content_height + PADDING * 2);
+
 				get_transition ("switch").completed.connect (() => {
 					if (old_notification_content != null)
 						old_notification_content.destroy ();
@@ -189,10 +200,6 @@ namespace Gala.Plugins.Notify
 				});
 			}
 
-			this.summary = summary;
-			this.body = body;
-
-			notification_content.set_values (summary, body);
 			update_base (icon, expire_timeout);
 		}
 
@@ -201,7 +208,7 @@ namespace Gala.Plugins.Notify
 			if (old_notification_content != null)
 				old_notification_content.y = animation_slide_y_offset;
 
-			notification_content.y = animation_slide_y_offset - ICON_SIZE - PADDING * 2;
+			notification_content.y = animation_slide_y_offset - animation_slide_height;
 		}
 
 		public override void update_allocation (out float content_height, AllocationFlags flags)

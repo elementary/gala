@@ -52,6 +52,7 @@ namespace Gala.Plugins.Notify
 		uint remove_timeout = 0;
 
 		// temporary things needed for the slide transition
+		protected float animation_slide_height { get; private set; }
 		GtkClutter.Texture old_texture;
 		float _animation_slide_y_offset = 0.0f;
 		public float animation_slide_y_offset {
@@ -61,9 +62,7 @@ namespace Gala.Plugins.Notify
 			set {
 				_animation_slide_y_offset = value;
 
-				var height = ICON_SIZE + PADDING * 2;
-
-				icon_texture.y = -height + _animation_slide_y_offset;
+				icon_texture.y = -animation_slide_height + _animation_slide_y_offset;
 				old_texture.y = _animation_slide_y_offset;
 
 				update_slide_animation ();
@@ -302,13 +301,15 @@ namespace Gala.Plugins.Notify
 			min_height = nat_height = ICON_SIZE + (MARGIN + PADDING) * 2;
 		}
 
-		protected void play_update_transition ()
+		protected void play_update_transition (float slide_height)
 		{
 			Transition transition;
 			if ((transition = get_transition ("switch")) != null) {
 				transition.completed ();
 				remove_transition ("switch");
 			}
+
+			animation_slide_height = slide_height;
 
 			old_texture = new GtkClutter.Texture ();
 			icon_container.add_child (old_texture);
@@ -322,7 +323,7 @@ namespace Gala.Plugins.Notify
 			transition.duration = 200;
 			transition.progress_mode = AnimationMode.EASE_IN_OUT_QUAD;
 			transition.set_from_value (0.0f);
-			transition.set_to_value (ICON_SIZE + PADDING * 2.0f);
+			transition.set_to_value (animation_slide_height);
 			transition.remove_on_complete = true;
 
 			transition.completed.connect (() => {

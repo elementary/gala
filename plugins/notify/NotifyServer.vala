@@ -136,8 +136,11 @@ namespace Gala.Plugins.Notify
 					return id;
 				}
 
-				if (notification.id == id && !notification.being_destroyed) {
-					var normal_notification = notification as NormalNotification;
+				var normal_notification = notification as NormalNotification;
+				if (!confirmation
+					&& notification.id == id
+					&& !notification.being_destroyed
+					&& normal_notification != null) {
 
 					if (normal_notification != null)
 						normal_notification.update (summary, body, pixbuf, timeout, actions);
