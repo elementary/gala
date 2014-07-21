@@ -141,7 +141,7 @@ namespace Gala.Plugins.Notify
 					var normal_notification = notification as NormalNotification;
 
 					if (normal_notification != null)
-						normal_notification.update (summary, body, pixbuf, expire_timeout, actions);
+						normal_notification.update (summary, body, pixbuf, timeout, actions);
 
 					return id;
 				}
