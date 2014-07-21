@@ -41,10 +41,34 @@ namespace Gala.Plugins.Notify
 		protected GtkClutter.Texture icon_texture { get; private set; }
 		protected Actor icon_container { get; private set; }
 
+		/**
+		 * Whether we're currently sliding content for an update animation
+		 */
+		protected bool transitioning { get; private set; default = false; }
+
 		GtkClutter.Texture close_button;
 		Granite.Drawing.BufferSurface? buffer = null;
 
 		uint remove_timeout = 0;
+
+		// temporary things needed for the slide transition
+		GtkClutter.Texture old_texture;
+		float _animation_slide_y_offset = 0.0f;
+		public float animation_slide_y_offset {
+			get {
+				return _animation_slide_y_offset;
+			}
+			set {
+				_animation_slide_y_offset = value;
+
+				var height = ICON_SIZE + PADDING * 2;
+
+				icon_texture.y = -height + _animation_slide_y_offset;
+				old_texture.y = _animation_slide_y_offset;
+
+				update_slide_animation ();
+			}
+		}
 
 		public Notification (uint32 id, Gdk.Pixbuf? icon, NotificationUrgency urgency,
 			int32 expire_timeout)
@@ -276,6 +300,44 @@ namespace Gala.Plugins.Notify
 		public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
 		{
 			min_height = nat_height = ICON_SIZE + (MARGIN + PADDING) * 2;
+		}
+
+		protected void play_update_transition ()
+		{
+			Transition transition;
+			if ((transition = get_transition ("switch")) != null) {
+				transition.completed ();
+				remove_transition ("switch");
+			}
+
+			old_texture = new GtkClutter.Texture ();
+			icon_container.add_child (old_texture);
+			icon_container.set_clip (0, -PADDING, ICON_SIZE, ICON_SIZE + PADDING * 2);
+
+			try {
+				old_texture.set_from_pixbuf (this.icon);
+			} catch (Error e) {}
+
+			transition = new PropertyTransition ("animation-slide-y-offset");
+			transition.duration = 200;
+			transition.progress_mode = AnimationMode.EASE_IN_OUT_QUAD;
+			transition.set_from_value (0.0f);
+			transition.set_to_value (ICON_SIZE + PADDING * 2.0f);
+			transition.remove_on_complete = true;
+
+			transition.completed.connect (() => {
+				old_texture.destroy ();
+				icon_container.remove_clip ();
+				_animation_slide_y_offset = 0;
+				transitioning = false;
+			});
+
+			add_transition ("switch", transition);
+			transitioning = true;
+		}
+
+		protected virtual void update_slide_animation ()
+		{
 		}
 
 		bool draw (Cairo.Context canvas_cr)

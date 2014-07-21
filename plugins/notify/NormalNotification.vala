@@ -20,10 +20,13 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
-	public class NormalNotification : Notification
+	/**
+	 * Wrapper class only containing the summary and body label. Allows us to
+	 * instantiate the content very easily for when we need to slide the old
+	 * and new content down.
+	 */
+	class NormalNotificationContent : Actor
 	{
-		const int LABEL_SPACING = 2;
-
 		static Regex entity_regex;
 		static Regex tag_regex;
 
@@ -35,14 +38,107 @@ namespace Gala.Plugins.Notify
 			} catch (Error e) {}
 		}
 
+		const int LABEL_SPACING = 2;
+
+		Text summary_label;
+		Text body_label;
+
+		construct
+		{
+			summary_label = new Text.with_text (null, "");
+			summary_label.line_wrap = true;
+			summary_label.use_markup = true;
+			summary_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
+
+			body_label = new Text.with_text (null, "");
+			body_label.line_wrap = true;
+			body_label.use_markup = true;
+			body_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
+
+			add_child (summary_label);
+			add_child (body_label);
+		}
+
+		public void set_values (string summary, string body)
+		{
+			summary_label.set_markup ("<b>%s</b>".printf (fix_markup (summary)));
+			body_label.set_markup (fix_markup (body));
+		}
+
+		public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
+		{
+			float label_height;
+			get_allocation_values (null, null, null, null, out label_height, null);
+
+			min_height = nat_height = label_height;
+		}
+
+		public override void allocate (ActorBox box, AllocationFlags flags)
+		{
+			float label_x, label_width, summary_height, body_height, label_height, label_y;
+			get_allocation_values (out label_x, out label_width, out summary_height,
+				out body_height, out label_height, out label_y);
+
+			var summary_alloc = ActorBox ();
+			summary_alloc.set_origin (label_x, label_y);
+			summary_alloc.set_size (label_width, summary_height);
+			summary_label.allocate (summary_alloc, flags);
+
+			var body_alloc = ActorBox ();
+			body_alloc.set_origin (label_x, label_y + summary_height + LABEL_SPACING);
+			body_alloc.set_size (label_width, body_height);
+			body_label.allocate (body_alloc, flags);
+
+			base.allocate (box, flags);
+		}
+
+		void get_allocation_values (out float label_x, out float label_width, out float summary_height,
+			out float body_height, out float label_height, out float label_y)
+		{
+			var height = Notification.ICON_SIZE;
+
+			label_x = Notification.MARGIN + Notification.PADDING + height + Notification.SPACING;
+			label_width = Notification.WIDTH - label_x - Notification.MARGIN - Notification.SPACING;
+
+			summary_label.get_preferred_height (label_width, null, out summary_height);
+			body_label.get_preferred_height (label_width, null, out body_height);
+
+			label_height = summary_height + LABEL_SPACING + body_height;
+			label_y = Notification.MARGIN + Notification.PADDING;
+			// center
+			if (label_height < height) {
+				label_y += (height - (int) label_height) / 2;
+				label_height = height;
+			}
+		}
+
+		/**
+		 * Copied from gnome-shell, fixes the mess of markup that is sent to us
+		 */
+		string fix_markup (string markup)
+		{
+			var text = markup;
+
+			try {
+				text = entity_regex.replace (markup, markup.length, 0, "&amp;");
+				text = tag_regex.replace (text, text.length, 0, "&lt;");
+			} catch (Error e) {}
+
+			return text;
+		}
+	}
+
+	public class NormalNotification : Notification
+	{
 		public string summary { get; construct set; }
 		public string body { get; construct set; }
 		public uint32 sender_pid { get; construct; }
 		public string[] notification_actions { get; construct; }
 		public Screen screen { get; construct; }
 
-		Text summary_label;
-		Text body_label;
+		Actor content_container;
+		NormalNotificationContent notification_content;
+		NormalNotificationContent? old_notification_content = null;
 
 		public NormalNotification (Screen screen, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
 			NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
@@ -62,20 +158,13 @@ namespace Gala.Plugins.Notify
 
 		construct
 		{
-			summary_label = new Text.with_text (null, "");
-			summary_label.line_wrap = true;
-			summary_label.use_markup = true;
-			summary_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
+			content_container = new Actor ();
 
-			body_label = new Text.with_text (null, "");
-			body_label.line_wrap = true;
-			body_label.use_markup = true;
-			body_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
+			notification_content = new NormalNotificationContent ();
+			notification_content.set_values (summary, body);
 
-			insert_child_below (summary_label, null);
-			insert_child_below (body_label, null);
-
-			set_values ();
+			content_container.add_child (notification_content);
+			add_child (content_container);
 		}
 
 		public void update (string summary, string body, Gdk.Pixbuf? icon, int32 expire_timeout,
@@ -83,91 +172,64 @@ namespace Gala.Plugins.Notify
 		{
 			var visible_change = this.summary != summary || this.body != body;
 
+			if (visible_change) {
+				if (old_notification_content != null)
+					old_notification_content.destroy ();
+
+				old_notification_content = new NormalNotificationContent ();
+				old_notification_content.set_values (this.summary, this.body);
+
+				content_container.add_child (old_notification_content);
+
+				play_update_transition ();
+				get_transition ("switch").completed.connect (() => {
+					if (old_notification_content != null)
+						old_notification_content.destroy ();
+					old_notification_content = null;
+				});
+			}
+
 			this.summary = summary;
 			this.body = body;
 
 			set_values ();
 			update_base (icon, expire_timeout);
+		}
 
-			if (!visible_change)
-				return;
+		protected override void update_slide_animation ()
+		{
+			if (old_notification_content != null)
+				old_notification_content.y = animation_slide_y_offset;
 
-			if (get_transition ("update") != null)
-				remove_transition ("update");
-
-			var opacity_transition = new PropertyTransition ("opacity");
-			opacity_transition.set_from_value (255);
-			opacity_transition.set_to_value (0);
-			opacity_transition.duration = 400;
-			opacity_transition.auto_reverse = true;
-			opacity_transition.repeat_count = 1;
-			opacity_transition.remove_on_complete = true;
-
-			add_transition ("update", opacity_transition);
+			notification_content.y = animation_slide_y_offset - ICON_SIZE - PADDING * 2;
 		}
 
 		void set_values ()
 		{
-			summary_label.set_markup ("<b>" + fix_markup (summary) + "</b>");
-			body_label.set_markup (fix_markup (body));
-		}
-
-		/**
-		 * Copied from gnome-shell, fixes the mess of markup that is sent to us
-		 */
-		string fix_markup (string markup)
-		{
-			var text = markup;
-
-			try {
-				text = entity_regex.replace (markup, markup.length, 0, "&amp;");
-				text = tag_regex.replace (text, text.length, 0, "&lt;");
-			} catch (Error e) {}
-
-			return text;
+			notification_content.set_values (summary, body);
 		}
 
 		public override void update_allocation (out float content_height, AllocationFlags flags)
 		{
-			var label_x = MARGIN + PADDING + ICON_SIZE + SPACING;
-			var label_width = WIDTH - label_x - MARGIN - SPACING;
+			var box = ActorBox ();
+			box.set_origin (0, 0);
+			box.set_size (width, height);
 
-			float summary_height, body_height;
-			summary_label.get_preferred_height (label_width, null, out summary_height);
-			body_label.get_preferred_height (label_width, null, out body_height);
+			content_container.allocate (box, flags);
 
-			var label_height = summary_height + LABEL_SPACING + body_height;
-			var label_y = MARGIN + PADDING;
-			// center
-			if (label_height < ICON_SIZE)
-				label_y += (ICON_SIZE - (int) label_height) / 2;
+			// the for_width is not needed in our implementation of get_preferred_height as we
+			// assume a constant width
+			notification_content.get_preferred_height (0, null, out content_height);
 
-			var summary_alloc = ActorBox ();
-			summary_alloc.set_origin (label_x, label_y);
-			summary_alloc.set_size (label_width, summary_height);
-			summary_label.allocate (summary_alloc, flags);
-
-			var body_alloc = ActorBox ();
-			body_alloc.set_origin (label_x, label_y + summary_height + LABEL_SPACING);
-			body_alloc.set_size (label_width, body_height);
-			body_label.allocate (body_alloc, flags);
-
-			content_height = label_height < ICON_SIZE ? ICON_SIZE : label_height;
+			content_container.set_clip (MARGIN, MARGIN, MARGIN * 2 + WIDTH, content_height + PADDING * 2);
 		}
 
 		public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
 		{
-			var label_x = MARGIN + PADDING + ICON_SIZE + SPACING;
-			var label_width = WIDTH - label_x - MARGIN - SPACING;
+			float content_height;
+			notification_content.get_preferred_height (for_width, null, out content_height);
 
-			float summary_height, body_height;
-			summary_label.get_preferred_height (label_width, null, out summary_height);
-			body_label.get_preferred_height (label_width, null, out body_height);
-
-			var label_height = summary_height + LABEL_SPACING + body_height;
-			var content_height = label_height < ICON_SIZE ? ICON_SIZE : label_height;
-
-			min_height = nat_height = content_height + (MARGIN + SPACING) * 2;
+			min_height = nat_height = content_height + (MARGIN + PADDING) * 2;
 		}
 
 		public override void activate ()
