@@ -14,11 +14,13 @@ libgala_notify_ladir = $(pkglibdir)/plugins
 libgala_notify_la_LDFLAGS = \
 	$(PLUGIN_LDFLAGS) \
 	$(GALA_CORE_LDFLAGS) \
+	$(NOTIFICATION_PLUGIN_LDFLAGS) \
 	$(top_builddir)/lib/libgala.la \
 	$(NULL)
 
 libgala_notify_la_CFLAGS = \
 	$(GALA_CORE_CFLAGS) \
+	$(NOTIFICATION_PLUGIN_CFLAGS) \
 	-include config.h \
 	-w \
 	-I$(top_builddir)/lib \
@@ -26,6 +28,7 @@ libgala_notify_la_CFLAGS = \
 
 libgala_notify_la_VALAFLAGS = \
 	$(GALA_CORE_VALAFLAGS) \
+	$(NOTIFICATION_PLUGIN_VALA_PKGS) \
 	$(top_builddir)/lib/gala.vapi \
 	--vapidir $(VAPIDIR) \
 	$(VAPIDIR)/config.vapi \
@@ -33,6 +36,7 @@ libgala_notify_la_VALAFLAGS = \
 
 libgala_notify_la_LIBADD = \
 	$(GALA_CORE_LIBS) \
+	$(NOTIFICATION_PLUGIN_LIBS) \
 	$(NULL)
 
 libgala_notify_la_VALASOURCES = \

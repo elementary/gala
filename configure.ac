@@ -165,6 +165,20 @@ if test "x$have_mutter314" = "xyes" ; then
 fi
 
 # -----------------------------------------------------------
+# Dependencies for Notifications plugin
+# -----------------------------------------------------------
+
+NOTIFICATION_PLUGIN_PKGS="libcanberra \
+                          libcanberra-gtk"
+
+NOTIFICATION_PLUGIN_VALA_PKGS="--pkg libcanberra \
+                               --pkg libcanberra-gtk"
+
+PKG_CHECK_MODULES(NOTIFICAION_PLUGIN, $NOTIFICATION_PLUGIN_PKGS)
+
+AC_SUBST([NOTIFICATION_PLUGIN_VALA_PKGS])
+
+# -----------------------------------------------------------
 # Addional configure flags
 # -----------------------------------------------------------
 

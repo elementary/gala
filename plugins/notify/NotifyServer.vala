@@ -55,6 +55,8 @@ namespace Gala.Plugins.Notify
 
 		[DBus (visible = false)]
 		public NotificationStack stack { get; construct; }
+		[DBus (visible = false)]
+		public unowned Canberra.Context? ca_context { get; construct; }
 
 		uint32 id_counter = 0;
 
@@ -62,7 +64,7 @@ namespace Gala.Plugins.Notify
 
 		public NotifyServer (NotificationStack stack)
 		{
-			Object (stack: stack);
+			Object (stack: stack, ca_context: CanberraGtk.context_get ());
 		}
 
 		construct
@@ -73,6 +75,14 @@ namespace Gala.Plugins.Notify
 				warning (e.message);
 				bus_proxy = null;
 			}
+
+			var locale = Intl.setlocale (LocaleCategory.MESSAGES, null);
+			ca_context.change_props (Canberra.PROP_APPLICATION_NAME, "Gala",
+			                         Canberra.PROP_APPLICATION_ID, "org.pantheon.gala",
+									 Canberra.PROP_APPLICATION_NAME, "start-here",
+									 Canberra.PROP_APPLICATION_LANGUAGE, locale,
+									 null);
+			ca_context.open ();
 		}
 
 		public string [] get_capabilities ()
@@ -80,6 +90,7 @@ namespace Gala.Plugins.Notify
 			return {
 				"body",
 				"body-markup",
+				"sound",
 				"x-canonical-private-synchronous",
 				"x-canonical-private-icon-only"
 			};
@@ -143,6 +154,8 @@ namespace Gala.Plugins.Notify
 			try {
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
+
+			handle_sounds (hints);
 
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
@@ -307,7 +320,116 @@ namespace Gala.Plugins.Notify
 
 			var pixbuf = new Gdk.Pixbuf.with_unowned_data (pixel_data, Gdk.Colorspace.RGB, has_alpha, bits_per_sample, width, height, rowstride, null);
 			return pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
-		}		
+		}
+
+		void handle_sounds (HashTable<string,Variant> hints)
+		{
+			if (ca_context == null
+				|| ("suppress-sound" in hints
+				&& hints.lookup ("supress-sound").get_boolean ()))
+				return;
+
+			Canberra.Proplist props;
+			Canberra.Proplist.create (out props);
+			props.sets (Canberra.PROP_CANBERRA_CACHE_CONTROL, "volatile");
+
+			bool play_sound = false;
+
+			if ("x-canonical-private-synchronous" in hints) {
+				var confirmation_type = hints.lookup ("x-canonical-private-synchronous").get_string ();
+
+				// FIXME (or better GSD or something). Sound change confirmation notifications emit
+				//       a sound by themselves, but don't send suppress-sound, which is bad because
+				//       we get two sounds playing.
+				if (confirmation_type == "volume")
+					return;
+
+				// the indicator on the other hand won't emit a sound at all, even though for
+				// consistency it should.
+				if (confirmation_type == "indicator-sound") {
+					props.sets (Canberra.PROP_EVENT_ID, "audio-volume-change");
+					play_sound = true;
+				}
+			}
+
+			if ("sound-name" in hints) {
+				var sound_name = hints.lookup ("sound-name").get_string ();
+				props.sets (Canberra.PROP_EVENT_ID, sound_name);
+				play_sound = true;
+			}
+
+			if ("sound-file" in hints) {
+				var sound_file = hints.lookup ("sound-file").get_string ();
+				props.sets (Canberra.PROP_MEDIA_FILENAME, sound_file);
+				play_sound = true;
+			}
+
+			// use a generic sound
+			if (!play_sound && !("category" in hints)) {
+				props.sets (Canberra.PROP_EVENT_ID, "dialog-information");
+				play_sound = true;
+			}
+
+			if (!play_sound) {
+				var category = hints.lookup ("category").get_string ();
+				var sound_name = "dialog-information";
+
+				play_sound = true;
+
+				switch (category) {
+					case "device.added":
+						sound_name = "device-added";
+						break;
+					case "device.removed":
+						sound_name = "device-removed";
+						break;
+					case "im":
+						sound_name = "message";
+						break;
+					case "im.received":
+						sound_name = "message-new-instant";
+						break;
+					case "network.connected":
+						sound_name = "network-connectivity-established";
+						break;
+					case "network.disconnected":
+						sound_name = "network-connectivity-lost";
+						break;
+					case "presence.online":
+						sound_name = "service-login";
+						break;
+					case "presence.offline":
+						sound_name = "service-logout";
+						break;
+					// no sound at all
+					case "x-gnome.music":
+						play_sound = false;
+						break;
+					// generic errors
+					case "device.error":
+					case "email.bounced":
+					case "im.error":
+					case "network.error":
+					case "transfer.error":
+						sound_name = "dialog-error";
+						break;
+					// use generic default
+					case "network":
+					case "email":
+					case "email.arrived":
+					case "presence":
+					case "transfer":
+					case "transfer.complete":
+					default:
+						break;
+				}
+
+				props.sets (Canberra.PROP_EVENT_ID, sound_name);
+			}
+
+			if (play_sound)
+				ca_context.play_full (0, props);
+		}
 
 		void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
 		{
