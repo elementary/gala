@@ -130,11 +130,15 @@ namespace Gala.Plugins.Notify
 		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary, 
 			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
 		{
+			Variant? variant;
+
 			var id = replaces_id != 0 ? replaces_id : ++id_counter;
-			var pixbuf = get_pixbuf (hints, app_name, app_icon);
+			var pixbuf = get_pixbuf (app_name, app_icon, hints);
 			var timeout = expire_timeout == uint32.MAX ? DEFAULT_TMEOUT : expire_timeout;
-			var urgency = hints.contains ("urgency") ?
-				(NotificationUrgency) hints.lookup ("urgency").get_byte () : NotificationUrgency.NORMAL;
+
+			var urgency = NotificationUrgency.NORMAL;
+			if ((variant = hints.lookup ("urgency")) != null)
+				urgency = (NotificationUrgency) variant.get_byte ();
 
 			var icon_only = hints.contains ("x-canonical-private-icon-only");
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
@@ -165,8 +169,9 @@ namespace Gala.Plugins.Notify
 
 				// we only want a single confirmation notification, so we just take the
 				// first one that can be found, no need to check ids or anything
-				var confirmation_notification = notification as ConfirmationNotification;
-				if (confirmation && confirmation_notification != null) {
+				unowned ConfirmationNotification? confirmation_notification = notification as ConfirmationNotification;
+				if (confirmation
+					&& confirmation_notification != null) {
 					confirmation_notification.update (pixbuf,
 						progress ? hints.@get ("value").get_int32 () : -1,
 						hints.@get ("x-canonical-private-synchronous").get_string (),
@@ -175,14 +180,12 @@ namespace Gala.Plugins.Notify
 					return id;
 				}
 
-				var normal_notification = notification as NormalNotification;
+				unowned NormalNotification? normal_notification = notification as NormalNotification;
 				if (!confirmation
 					&& notification.id == id
-					&& !notification.being_destroyed
 					&& normal_notification != null) {
 
-					if (normal_notification != null)
-						normal_notification.update (summary, body, pixbuf, timeout, actions);
+					normal_notification.update (summary, body, pixbuf, timeout, actions);
 
 					return id;
 				}
@@ -203,7 +206,7 @@ namespace Gala.Plugins.Notify
 			return id;
 		}
 
-		Gdk.Pixbuf? get_pixbuf (HashTable<string, Variant> hints, string app, string icon)
+		static Gdk.Pixbuf? get_pixbuf (string app_name, string app_icon, HashTable<string, Variant> hints)
 		{
 			// decide on the icon, order:
 			// - image-data
@@ -214,25 +217,24 @@ namespace Gala.Plugins.Notify
 			// - fallback to dialog-information
 
 			Gdk.Pixbuf? pixbuf = null;
+			Variant? variant = null;
 			var size = Notification.ICON_SIZE;
-
 			var mask_offset = 4;
 			var mask_size_offset = mask_offset * 2;
 			var has_mask = false;
 
-			if (hints.contains ("image_data") || hints.contains ("image-data")) {
+			if ((variant = hints.lookup ("image-data")) != null
+				|| (variant = hints.lookup ("image_data")) != null) {
 
 				has_mask = true;
 				size = size - mask_size_offset;
 
-				var data = hints.contains ("image_data") ?
-					hints.lookup ("image_data") : hints.lookup ("image-data");
-				pixbuf = load_from_variant_at_size (data, size);
+				pixbuf = load_from_variant_at_size (variant, size);
 
-			} else if (hints.contains ("image-path") || hints.contains ("image_path")) {
+			} else if ((variant = hints.lookup ("image-path")) != null
+				|| (variant = hints.lookup ("image_path")) != null) {
 
-				var image_path = (hints.contains ("image-path") ?
-					hints.lookup ("image-path") : hints.lookup ("image_path")).get_string ();
+				var image_path = variant.get_string ();
 
 				try {
 					if (image_path.has_prefix ("file://") || image_path.has_prefix ("/")) {
@@ -246,29 +248,28 @@ namespace Gala.Plugins.Notify
 					}
 				} catch (Error e) { warning (e.message); }
 
-			} else if (icon != "") {
+			} else if (app_icon != "") {
 
 				try {
-					var themed = new ThemedIcon.with_default_fallbacks (icon);
+					var themed = new ThemedIcon.with_default_fallbacks (app_icon);
 					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
 					if (info != null)
 						pixbuf = info.load_icon ();
 				} catch (Error e) { warning (e.message); }
 
-			} else if (hints.contains ("icon_data")) {
+			} else if ((variant = hints.lookup ("icon_data")) != null) {
 
 				has_mask = true;
 				size = size - mask_size_offset;
 
-				var data = hints.lookup ("icon_data");
-				pixbuf = load_from_variant_at_size (data, size);
+				pixbuf = load_from_variant_at_size (variant, size);
 
 			}
 
 			if (pixbuf == null) {
 
 				try {
-					pixbuf = Gtk.IconTheme.get_default ().load_icon (app.down (), size, 0);
+					pixbuf = Gtk.IconTheme.get_default ().load_icon (app_name.down (), size, 0);
 				} catch (Error e) {
 
 					try {
@@ -318,7 +319,9 @@ namespace Gala.Plugins.Notify
 			var data = variant.get_child_value (6);
 			unowned uint8[] pixel_data = (uint8[]) data.get_data ();
 
-			var pixbuf = new Gdk.Pixbuf.with_unowned_data (pixel_data, Gdk.Colorspace.RGB, has_alpha, bits_per_sample, width, height, rowstride, null);
+			var pixbuf = new Gdk.Pixbuf.with_unowned_data (pixel_data, Gdk.Colorspace.RGB, has_alpha,
+				bits_per_sample, width, height, rowstride, null);
+
 			return pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
 		}
 
