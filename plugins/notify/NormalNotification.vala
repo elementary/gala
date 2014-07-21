@@ -192,7 +192,7 @@ namespace Gala.Plugins.Notify
 			this.summary = summary;
 			this.body = body;
 
-			set_values ();
+			notification_content.set_values (summary, body);
 			update_base (icon, expire_timeout);
 		}
 
@@ -202,11 +202,6 @@ namespace Gala.Plugins.Notify
 				old_notification_content.y = animation_slide_y_offset;
 
 			notification_content.y = animation_slide_y_offset - ICON_SIZE - PADDING * 2;
-		}
-
-		void set_values ()
-		{
-			notification_content.set_values (summary, body);
 		}
 
 		public override void update_allocation (out float content_height, AllocationFlags flags)

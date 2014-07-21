@@ -129,10 +129,9 @@ namespace Gala.Plugins.Notify
 				var confirmation_notification = notification as ConfirmationNotification;
 				if (confirmation && confirmation_notification != null) {
 					confirmation_notification.update (pixbuf,
-						progress ? hints.@get ("value").get_int32 () : 0,
+						progress ? hints.@get ("value").get_int32 () : -1,
 						hints.@get ("x-canonical-private-synchronous").get_string (),
-						icon_only,
-						progress);
+						icon_only);
 
 					return id;
 				}

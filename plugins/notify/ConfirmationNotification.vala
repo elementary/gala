@@ -106,7 +106,7 @@ namespace Gala.Plugins.Notify
 		}
 
 		public void update (Gdk.Pixbuf? icon, int progress, string confirmation_type,
-			bool icon_only, bool has_progress)
+			bool icon_only)
 		{
 			if (this.confirmation_type != confirmation_type) {
 				this.confirmation_type = confirmation_type;
@@ -120,7 +120,7 @@ namespace Gala.Plugins.Notify
 				queue_relayout ();
 			}
 
-			this.has_progress = has_progress;
+			this.has_progress = progress > -1;
 			this.progress = progress;
 
 			update_base (icon, DURATION);
