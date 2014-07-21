@@ -19,10 +19,19 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
-	public enum NotificationUrgency {
+	public enum NotificationUrgency
+	{
 		LOW = 0,
 		NORMAL = 1,
 		CRITICAL = 2
+	}
+
+	public enum NotificationClosedReason
+	{
+		EXPIRED = 1,
+		DISMISSED = 2,
+		CLOSE_NOTIFICATION_CALL = 3,
+		UNDEFINED = 4
 	}
 
 	[DBus (name = "org.freedesktop.DBus")]
@@ -41,8 +50,8 @@ namespace Gala.Plugins.Notify
 		[DBus (visible = false)]
 		public signal void show_notification (Notification notification);
 
-		[DBus (visible = false)]
-		public signal void notification_closed (uint32 id);
+		public signal void notification_closed (uint32 id, uint32 reason);
+		public signal void action_invoked (uint32 id, string action_key);
 
 		[DBus (visible = false)]
 		public NotificationStack stack { get; construct; }
@@ -66,11 +75,6 @@ namespace Gala.Plugins.Notify
 			}
 		}
 
-		public void close_notification (uint32 id)
-		{
-			notification_closed (id);
-		}
-
 		public string [] get_capabilities ()
 		{
 			return {
@@ -88,6 +92,28 @@ namespace Gala.Plugins.Notify
 			vendor = "elementaryOS";
 			version = "0.1";
 			spec_version = "1.1";
+		}
+
+		/**
+		 * Implementation of the CloseNotification DBus method
+		 *
+		 * @param id The id of the notification to be closed.
+		 */
+		public void close_notification (uint32 id) throws DBusError
+		{
+			foreach (var child in stack.get_children ()) {
+				unowned Notification notification = (Notification) child;
+				if (notification.id == id) {
+					notification_closed_callback (notification, id,
+						NotificationClosedReason.CLOSE_NOTIFICATION_CALL);
+					notification.close ();
+					return;
+				}
+			}
+
+			// according to spec, an empty dbus error should be sent if the notification
+			// doesn't exist (anymore)
+			throw new DBusError.FAILED ("");
 		}
 
 		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary, 
@@ -158,6 +184,7 @@ namespace Gala.Plugins.Notify
 				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 					urgency, timeout, pid, actions);
 
+			notification.closed.connect (notification_closed_callback);
 			stack.show_notification (notification);
 
 			return id;
@@ -281,6 +308,13 @@ namespace Gala.Plugins.Notify
 			var pixbuf = new Gdk.Pixbuf.with_unowned_data (pixel_data, Gdk.Colorspace.RGB, has_alpha, bits_per_sample, width, height, rowstride, null);
 			return pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
 		}		
+
+		void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
+		{
+			notification.closed.disconnect (notification_closed_callback);
+
+			notification_closed (id, reason);
+		}
 	}
 }
 

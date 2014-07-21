@@ -29,6 +29,8 @@ namespace Gala.Plugins.Notify
 		public const int SPACING = 6;
 		public const int PADDING = 4;
 
+		public signal void closed (uint32 id, uint32 reason);
+
 		public uint32 id { get; construct; }
 		public Gdk.Pixbuf? icon { get; construct set; }
 		public NotificationUrgency urgency { get; construct; }
@@ -97,6 +99,13 @@ namespace Gala.Plugins.Notify
 			close_button.opacity = 0;
 			close_button.reactive = true;
 			close_button.set_easing_duration (300);
+
+			var close_click = new ClickAction ();
+			close_click.clicked.connect (() => {
+				closed (id, NotificationClosedReason.DISMISSED);
+				close ();
+			});
+			close_button.add_action (close_click);
 
 			add_child (icon_container);
 			add_child (close_button);
@@ -222,6 +231,7 @@ namespace Gala.Plugins.Notify
 			clear_timeout ();
 
 			remove_timeout = Timeout.add (expire_timeout, () => {
+				closed (id, NotificationClosedReason.EXPIRED);
 				close ();
 				remove_timeout = 0;
 				return false;
@@ -278,10 +288,6 @@ namespace Gala.Plugins.Notify
 				MARGIN + PADDING - close_button.height / 2);
 			close_alloc.set_size (close_button.width, close_button.height);
 			close_button.allocate (close_alloc, flags);
-
-			var close_click = new ClickAction ();
-			close_click.clicked.connect (close);
-			close_button.add_action (close_click);
 
 			float content_height;
 			update_allocation (out content_height, flags);
