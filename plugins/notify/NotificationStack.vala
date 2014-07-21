@@ -46,6 +46,9 @@ namespace Gala.Plugins.Notify
 			if (animation_counter == 0)
 				animations_changed (true);
 
+			// raise ourselves when we got something to show
+			get_parent ().set_child_above_sibling (this, null);
+
 			// we have a shoot-over on the start of the close animation, which gets clipped
 			// unless we make our container a bit wider and move the notifications over
 			notification.margin_left = ADDITIONAL_MARGIN;
