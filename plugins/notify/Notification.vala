@@ -292,7 +292,7 @@ namespace Gala.Plugins.Notify
 			var canvas = (Canvas) content;
 			var canvas_width = (int) box.get_width ();
 			var canvas_height = (int) box.get_height ();
-			if (canvas.width != canvas_width || canvas_height != canvas_height)
+			if (canvas.width != canvas_width || canvas.height != canvas_height)
 				canvas.set_size (canvas_width, canvas_height);
 		}
 
