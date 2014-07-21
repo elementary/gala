@@ -191,7 +191,6 @@ namespace Gala.Plugins.Notify
 			set_easing_mode (AnimationMode.EASE_IN_QUAD);
 			opacity = 0;
 
-			set_easing_mode (AnimationMode.EASE_IN_BACK);
 			x = WIDTH + MARGIN * 2;
 
 			being_destroyed = true;
