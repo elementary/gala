@@ -186,7 +186,7 @@ namespace Gala.Plugins.Notify
 
 		public void close ()
 		{
-			set_easing_duration (200);
+			set_easing_duration (100);
 
 			set_easing_mode (AnimationMode.EASE_IN_QUAD);
 			opacity = 0;
