@@ -338,21 +338,17 @@ namespace Gala.Plugins.Notify
 
 			bool play_sound = false;
 
+			// no sounds for confirmation bubbles
 			if ("x-canonical-private-synchronous" in hints) {
 				var confirmation_type = hints.lookup ("x-canonical-private-synchronous").get_string ();
 
-				// FIXME (or better GSD or something). Sound change confirmation notifications emit
-				//       a sound by themselves, but don't send suppress-sound, which is bad because
-				//       we get two sounds playing.
-				if (confirmation_type == "volume")
+				// the sound indicator is an exception here, it won't emit a sound at all, even though for
+				// consistency it should. So we make it emit the default one.
+				if (confirmation_type != "indicator-sound")
 					return;
 
-				// the indicator on the other hand won't emit a sound at all, even though for
-				// consistency it should.
-				if (confirmation_type == "indicator-sound") {
-					props.sets (Canberra.PROP_EVENT_ID, "audio-volume-change");
-					play_sound = true;
-				}
+				props.sets (Canberra.PROP_EVENT_ID, "audio-volume-change");
+				play_sound = true;
 			}
 
 			if ("sound-name" in hints) {
@@ -367,12 +363,13 @@ namespace Gala.Plugins.Notify
 				play_sound = true;
 			}
 
-			// use a generic sound
+			// use a generic sound if not category is set
 			if (!play_sound && !("category" in hints)) {
 				props.sets (Canberra.PROP_EVENT_ID, "dialog-information");
 				play_sound = true;
 			}
 
+			// pick a sound according to the category
 			if (!play_sound) {
 				var category = hints.lookup ("category").get_string ();
 				var sound_name = "dialog-information";
