@@ -144,7 +144,7 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
-#if true //debug notifications
+#if 0 // enable to debug notifications
 			print ("Notification from '%s', replaces: %u\n" +
 				"\tapp icon: '%s'\n\tsummary: '%s'\n\tbody: '%s'\n\tn actions: %u\n\texpire: %i\n\tHints:\n",
 				app_name, replaces_id, app_icon, summary, body, actions.length);
