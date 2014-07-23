@@ -55,16 +55,15 @@ namespace Gala.Plugins.Notify
 
 		[DBus (visible = false)]
 		public NotificationStack stack { get; construct; }
-		[DBus (visible = false)]
-		public unowned Canberra.Context? ca_context { get; construct; }
 
 		uint32 id_counter = 0;
 
 		DBus? bus_proxy = null;
+		unowned Canberra.Context? ca_context = null;
 
 		public NotifyServer (NotificationStack stack)
 		{
-			Object (stack: stack, ca_context: CanberraGtk.context_get ());
+			Object (stack: stack);
 		}
 
 		construct
@@ -77,11 +76,12 @@ namespace Gala.Plugins.Notify
 			}
 
 			var locale = Intl.setlocale (LocaleCategory.MESSAGES, null);
+			ca_context = CanberraGtk.context_get ();
 			ca_context.change_props (Canberra.PROP_APPLICATION_NAME, "Gala",
 			                         Canberra.PROP_APPLICATION_ID, "org.pantheon.gala",
-									 Canberra.PROP_APPLICATION_NAME, "start-here",
-									 Canberra.PROP_APPLICATION_LANGUAGE, locale,
-									 null);
+			                         Canberra.PROP_APPLICATION_NAME, "start-here",
+			                         Canberra.PROP_APPLICATION_LANGUAGE, locale,
+			                         null);
 			ca_context.open ();
 		}
 
@@ -114,12 +114,14 @@ namespace Gala.Plugins.Notify
 		{
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
-				if (notification.id == id) {
-					notification_closed_callback (notification, id,
-						NotificationClosedReason.CLOSE_NOTIFICATION_CALL);
-					notification.close ();
-					return;
-				}
+				if (notification.id != id)
+					continue;
+
+				notification_closed_callback (notification, id,
+					NotificationClosedReason.CLOSE_NOTIFICATION_CALL);
+				notification.close ();
+
+				return;
 			}
 
 			// according to spec, an empty dbus error should be sent if the notification
@@ -327,9 +329,11 @@ namespace Gala.Plugins.Notify
 
 		void handle_sounds (HashTable<string,Variant> hints)
 		{
+			Variant? variant = null;
+
 			if (ca_context == null
-				|| ("suppress-sound" in hints
-				&& hints.lookup ("supress-sound").get_boolean ()))
+				|| ((variant = hints.lookup ("supress-sound")) != null
+				&& variant.get_boolean ()))
 				return;
 
 			Canberra.Proplist props;
@@ -339,8 +343,8 @@ namespace Gala.Plugins.Notify
 			bool play_sound = false;
 
 			// no sounds for confirmation bubbles
-			if ("x-canonical-private-synchronous" in hints) {
-				var confirmation_type = hints.lookup ("x-canonical-private-synchronous").get_string ();
+			if ((variant = hints.lookup ("x-canonical-private-synchronous")) != null) {
+				var confirmation_type = variant.get_string ();
 
 				// the sound indicator is an exception here, it won't emit a sound at all, even though for
 				// consistency it should. So we make it emit the default one.
@@ -351,14 +355,14 @@ namespace Gala.Plugins.Notify
 				play_sound = true;
 			}
 
-			if ("sound-name" in hints) {
-				var sound_name = hints.lookup ("sound-name").get_string ();
+			if ((variant = hints.lookup ("sound-name")) != null) {
+				var sound_name = variant.get_string ();
 				props.sets (Canberra.PROP_EVENT_ID, sound_name);
 				play_sound = true;
 			}
 
-			if ("sound-file" in hints) {
-				var sound_file = hints.lookup ("sound-file").get_string ();
+			if ((variant = hints.lookup ("sound-file")) != null) {
+				var sound_file = variant.get_string ();
 				props.sets (Canberra.PROP_MEDIA_FILENAME, sound_file);
 				play_sound = true;
 			}
