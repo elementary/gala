@@ -323,11 +323,14 @@ namespace Gala.Plugins.Notify
 
 		void handle_sounds (HashTable<string,Variant> hints)
 		{
+			if (ca_context == null)
+				return;
+
 			Variant? variant = null;
 
-			if (ca_context == null
-				|| ((variant = hints.lookup ("supress-sound")) != null
-				&& variant.get_boolean ()))
+			// Are we suppose to play a sound at all?
+			if ((variant = hints.lookup ("supress-sound")) != null
+				&& variant.get_boolean ())
 				return;
 
 			Canberra.Proplist props;
@@ -350,83 +353,89 @@ namespace Gala.Plugins.Notify
 			}
 
 			if ((variant = hints.lookup ("sound-name")) != null) {
-				var sound_name = variant.get_string ();
-				props.sets (Canberra.PROP_EVENT_ID, sound_name);
+				props.sets (Canberra.PROP_EVENT_ID, variant.get_string ());
 				play_sound = true;
 			}
 
 			if ((variant = hints.lookup ("sound-file")) != null) {
-				var sound_file = variant.get_string ();
-				props.sets (Canberra.PROP_MEDIA_FILENAME, sound_file);
-				play_sound = true;
-			}
-
-			// use a generic sound if not category is set
-			if (!play_sound && !("category" in hints)) {
-				props.sets (Canberra.PROP_EVENT_ID, "dialog-information");
+				props.sets (Canberra.PROP_MEDIA_FILENAME, variant.get_string ());
 				play_sound = true;
 			}
 
 			// pick a sound according to the category
 			if (!play_sound) {
-				var category = hints.lookup ("category").get_string ();
-				var sound_name = "dialog-information";
+				variant = hints.lookup ("category");
+				string? sound_name = null;
 
-				play_sound = true;
+				if (variant != null)
+					sound_name = category_to_sound (variant.get_string ());
+				else
+					sound_name = "dialog-information";
 
-				switch (category) {
-					case "device.added":
-						sound_name = "device-added";
-						break;
-					case "device.removed":
-						sound_name = "device-removed";
-						break;
-					case "im":
-						sound_name = "message";
-						break;
-					case "im.received":
-						sound_name = "message-new-instant";
-						break;
-					case "network.connected":
-						sound_name = "network-connectivity-established";
-						break;
-					case "network.disconnected":
-						sound_name = "network-connectivity-lost";
-						break;
-					case "presence.online":
-						sound_name = "service-login";
-						break;
-					case "presence.offline":
-						sound_name = "service-logout";
-						break;
-					// no sound at all
-					case "x-gnome.music":
-						play_sound = false;
-						break;
-					// generic errors
-					case "device.error":
-					case "email.bounced":
-					case "im.error":
-					case "network.error":
-					case "transfer.error":
-						sound_name = "dialog-error";
-						break;
-					// use generic default
-					case "network":
-					case "email":
-					case "email.arrived":
-					case "presence":
-					case "transfer":
-					case "transfer.complete":
-					default:
-						break;
+				if (sound_name != null) {
+					props.sets (Canberra.PROP_EVENT_ID, sound_name);
+					play_sound = true;
 				}
-
-				props.sets (Canberra.PROP_EVENT_ID, sound_name);
 			}
 
 			if (play_sound)
 				ca_context.play_full (0, props);
+		}
+
+		static string? category_to_sound (string category)
+		{
+			string? sound = null;
+
+			switch (category) {
+				case "device.added":
+					sound = "device-added";
+					break;
+				case "device.removed":
+					sound = "device-removed";
+					break;
+				case "im":
+					sound = "message";
+					break;
+				case "im.received":
+					sound = "message-new-instant";
+					break;
+				case "network.connected":
+					sound = "network-connectivity-established";
+					break;
+				case "network.disconnected":
+					sound = "network-connectivity-lost";
+					break;
+				case "presence.online":
+					sound = "service-login";
+					break;
+				case "presence.offline":
+					sound = "service-logout";
+					break;
+				// no sound at all
+				case "x-gnome.music":
+					sound = null;
+					break;
+				// generic errors
+				case "device.error":
+				case "email.bounced":
+				case "im.error":
+				case "network.error":
+				case "transfer.error":
+					sound = "dialog-error";
+					break;
+				// use generic default
+				case "network":
+				case "email":
+				case "email.arrived":
+				case "presence":
+				case "transfer":
+				case "transfer.complete":
+				default:
+					sound = "dialog-information";
+					break;
+			}
+
+			return sound;
 		}
 
 		void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
