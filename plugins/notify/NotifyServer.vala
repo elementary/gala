@@ -226,7 +226,8 @@ namespace Gala.Plugins.Notify
 			var has_mask = false;
 
 			if ((variant = hints.lookup ("image-data")) != null
-				|| (variant = hints.lookup ("image_data")) != null) {
+				|| (variant = hints.lookup ("image_data")) != null
+				|| (variant = hints.lookup ("icon_data")) != null) {
 
 				has_mask = true;
 				size = size - mask_size_offset;
@@ -258,13 +259,6 @@ namespace Gala.Plugins.Notify
 					if (info != null)
 						pixbuf = info.load_icon ();
 				} catch (Error e) { warning (e.message); }
-
-			} else if ((variant = hints.lookup ("icon_data")) != null) {
-
-				has_mask = true;
-				size = size - mask_size_offset;
-
-				pixbuf = load_from_variant_at_size (variant, size);
 
 			}
 
