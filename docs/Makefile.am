@@ -9,7 +9,6 @@ libgala_doc_files = \
 gala_doc_files = \
 	$(top_srcdir)/src/DBus.vala \
 	$(top_srcdir)/src/DragDropAction.vala \
-	$(top_srcdir)/src/EndSessionDialog.vala \
 	$(top_srcdir)/src/InternalUtils.vala \
 	$(top_srcdir)/src/Main.vala \
 	$(top_srcdir)/src/PluginManager.vala \

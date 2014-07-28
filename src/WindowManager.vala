@@ -72,7 +72,6 @@ namespace Gala
 			var screen = get_screen ();
 
 			DBus.init (this);
-			EndSessionDialog.register (this);
 			BackgroundCache.init (screen);
 			WindowListener.init (screen);
 
