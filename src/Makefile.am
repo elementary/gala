@@ -33,7 +33,6 @@ gala_LDADD = \
 gala_VALASOURCES = \
 	DBus.vala \
 	DragDropAction.vala \
-	EndSessionDialog.vala \
 	InternalUtils.vala \
 	Main.vala \
 	PluginManager.vala \
