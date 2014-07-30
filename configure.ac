@@ -165,7 +165,7 @@ if test "x$have_mutter314" = "xyes" ; then
 fi
 
 # -----------------------------------------------------------
-# Addional configure flags
+# Additional configure flags
 # -----------------------------------------------------------
 
 # Enable Vala debug-flag by default for non-release builds
@@ -180,6 +180,13 @@ GALA_CORE_VALAFLAGS="$VALAFLAGS $VALAFLAGS_CORE $GALA_CORE_VALA_PKGS"
 AC_SUBST(GALA_CORE_VALAFLAGS)
 GALA_DOCS_VALAFLAGS="$VALAFLAGS $GALA_CORE_VALA_PKGS"
 AC_SUBST(GALA_DOCS_VALAFLAGS)
+
+# -----------------------------------------------------------
+# Additional build flags
+# -----------------------------------------------------------
+
+# Use RUNPATH instead of RPATH if needed
+CFLAGS="$CFLAGS -Wl,--enable-new-dtags"
 
 # -----------------------------------------------------------
 # Documentation
