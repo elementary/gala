@@ -191,7 +191,9 @@ namespace Gala
 				} else
 					width += GROUP_WIDTH;
 			}
-
+			
+			width += SPACING;
+			
 			return width;
 		}
 
@@ -208,4 +210,3 @@ namespace Gala
 		}
 	}
 }
-
