@@ -301,25 +301,21 @@ namespace Gala
 		{
 			var screen = get_screen ();
 			var display = screen.get_display ();
-			var old_index = screen.get_active_workspace_index ();
-			var neighbor = screen.get_active_workspace ().get_neighbor (direction);
+			var active_workspace = screen.get_active_workspace ();
+			var neighbor = active_workspace.get_neighbor (direction);
 
-			neighbor.activate (display.get_current_time ());
-
-			// if we didnt switch, show a nudge-over animation. need to take the indices
-			// here since the changing only applies after the animation ends
-			if ((old_index == 0
-				&& direction == MotionDirection.LEFT)
-				|| (old_index == screen.n_workspaces - 1
-				&& direction == MotionDirection.RIGHT)) {
-
-				var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
-				ui_group.animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
-				Timeout.add (210, () => {
-					ui_group.animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
-					return false;
-				});
+			if (neighbor != active_workspace) {
+				neighbor.activate (display.get_current_time ());
+				return;
 			}
+
+			// if we didnt switch, show a nudge-over animation
+			var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
+			ui_group.animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
+			Timeout.add (210, () => {
+				ui_group.animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
+				return false;
+			});
 		}
 
 		public void update_input_area ()
