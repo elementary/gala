@@ -1,0 +1,65 @@
+# Tamil translation for noise
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the noise package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: noise\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-07-20 08:32+0000\n"
+"PO-Revision-Date: 2014-04-17 10:54+0000\n"
+"Last-Translator: SyedKhaleel Jageer <jskcse4@gmail.com>\n"
+"Language-Team: Tamil <ta@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-07-24 05:12+0000\n"
+"X-Generator: Launchpad (build 17114)\n"
+
+#: ../src/EndSessionDialog.vala:76
+msgid "Are you sure you want to Log Out?"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:77
+msgid "This will close all open applications."
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:78
+msgid "Log Out"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:83
+msgid "Are you sure you want to Shut Down?"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:84
+msgid "This will close all open applications and turn off this device."
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:85
+msgid "Shut Down"
+msgstr ""
+
+#. the indicator does not have a separate item for restart, that's
+#. why we show both shutdown and restart for the restart action
+#. (which is sent for shutdown as described above)
+#: ../src/EndSessionDialog.vala:118
+msgid "Restart"
+msgstr ""
+
+#: ../src/EndSessionDialog.vala:125
+msgid "Cancel"
+msgstr ""
+
+#: ../src/WindowManager.vala:1158
+msgid "Does the display look OK?"
+msgstr ""
+
+#: ../src/WindowManager.vala:1161
+msgid "Keep This Configuration"
+msgstr ""
+
+#: ../src/WindowManager.vala:1162
+msgid "Restore Previous Configuration"
+msgstr ""

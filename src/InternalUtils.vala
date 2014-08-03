@@ -177,10 +177,8 @@ namespace Gala
 			workspace_manager.cleanup ();
 		}
 
-		/**
-		 * Code ported from KWin present windows effect
-		 * https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
-		 **/
+		// Code ported from KWin present windows effect
+		// https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
 		// constants, mainly for natural expo
 		const int GAPS = 10;

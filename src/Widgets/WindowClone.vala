@@ -399,14 +399,14 @@ namespace Gala
 			close_button.save_easing_state ();
 			close_button.set_easing_duration (0);
 
-			close_button.y = -close_button.height * 0.25f;
+			close_button.y = -close_button.height * 0.33f;
 
 			switch (pos) {
 				case Granite.CloseButtonPosition.RIGHT:
-					close_button.x = dest_width + close_button.width * 0.25f;
+					close_button.x = dest_width - close_button.width * 0.5f;
 					break;
 				case Granite.CloseButtonPosition.LEFT:
-					close_button.x = -close_button.width * 0.25f;
+					close_button.x = -close_button.width * 0.5f;
 					break;
 			}
 			close_button.restore_easing_state ();
