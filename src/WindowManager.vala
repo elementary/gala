@@ -309,13 +309,25 @@ namespace Gala
 				return;
 			}
 
-			// if we didnt switch, show a nudge-over animation
+			// if we didnt switch, show a nudge-over animation if one is not already in progress
+			if (ui_group.get_transition ("nudge") != null)
+				return;
+
 			var dest = (direction == MotionDirection.LEFT ? 32.0f : -32.0f);
-			ui_group.animate (Clutter.AnimationMode.LINEAR, 100, x:dest);
-			Timeout.add (210, () => {
-				ui_group.animate (Clutter.AnimationMode.LINEAR, 150, x:0.0f);
-				return false;
-			});
+
+			double[] keyframes = { 0.28, 0.58 };
+			GLib.Value[] x = { dest, dest };
+
+			var nudge = new Clutter.KeyframeTransition ("x");
+			nudge.duration = 360;
+			nudge.remove_on_complete = true;
+			nudge.progress_mode = Clutter.AnimationMode.LINEAR;
+			nudge.set_from_value (0.0f);
+			nudge.set_to_value (0.0f);
+			nudge.set_key_frames (keyframes);
+			nudge.set_values (x);
+
+			ui_group.add_transition ("nudge", nudge);
 		}
 
 		public void update_input_area ()
