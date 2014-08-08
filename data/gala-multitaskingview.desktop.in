@@ -1,10 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=Multitasking View
-Comment=View all open windows and workspaces
+_Name=Multitasking View
+_Comment=View all open windows and workspaces
 GenericName=Multitasking View
 Icon=document-export
 Terminal=false
 Categories=Gnome;Gtk
 Exec=dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1
-X-Gnome-Gettext-Domain=gala
