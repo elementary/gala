@@ -49,7 +49,8 @@ namespace Gala.Plugins.Notify
 		protected bool transitioning { get; private set; default = false; }
 
 		GtkClutter.Texture close_button;
-		Granite.Drawing.BufferSurface? buffer = null;
+
+		Gtk.StyleContext style_context;
 
 		uint remove_timeout = 0;
 
@@ -109,6 +110,22 @@ namespace Gala.Plugins.Notify
 
 			add_child (icon_container);
 			add_child (close_button);
+
+			var default_css = new Gtk.CssProvider ();
+			try {
+				default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
+			} catch (Error e) {
+				warning ("Loading default styles failed: %s", e.message);
+			}
+
+			var style_path = new Gtk.WidgetPath ();
+			style_path.append_type (typeof (Gtk.Window));
+			style_path.append_type (typeof (Gtk.EventBox));
+
+			style_context = new Gtk.StyleContext ();
+			style_context.add_provider (default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			style_context.add_class ("gala-notification");
+			style_context.set_path (style_path);
 
 			var canvas = new Canvas ();
 			canvas.draw.connect (draw);
@@ -346,7 +363,7 @@ namespace Gala.Plugins.Notify
 		{
 		}
 
-		bool draw (Cairo.Context canvas_cr)
+		bool draw (Cairo.Context cr)
 		{
 			var canvas = (Canvas) content;
 
@@ -354,42 +371,14 @@ namespace Gala.Plugins.Notify
 			var y = MARGIN;
 			var width = canvas.width - MARGIN * 2;
 			var height = canvas.height - MARGIN * 2;
+			cr.set_operator (Cairo.Operator.CLEAR);
+			cr.paint ();
+			cr.set_operator (Cairo.Operator.OVER);
 
-			if (buffer == null || buffer.width != canvas.width || buffer.height != canvas.height) {
-				buffer = new Granite.Drawing.BufferSurface (canvas.width, canvas.height);
-				var cr = buffer.context;
+			style_context.render_background (cr, x, y, width, height);
+			style_context.render_frame (cr, x, y, width, height);
 
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x , y + 3, width, height, 4);
-				cr.set_source_rgba (0, 0, 0, 0.3);
-				cr.fill ();
-				buffer.exponential_blur (6);
-
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x - 0.5 , y - 0.5, width + 1, height + 1, 4);
-				cr.set_source_rgba (0, 0, 0, 0.3);
-				cr.set_line_width (1);
-				cr.stroke ();
-
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width, height, 4);
-				cr.set_source_rgb (0.945, 0.945, 0.945);
-				cr.fill ();
-
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x + 0.5, y + 0.5, width - 1, height - 1, 3);
-				var gradient = new Cairo.Pattern.linear (0, 0, 0, height - 2);
-				gradient.add_color_stop_rgba (0, 1, 1, 1, 1.0);
-				gradient.add_color_stop_rgba (1, 1, 1, 1, 0.6);
-				cr.set_source (gradient);
-				cr.set_line_width (1);
-				cr.stroke ();
-			}
-
-			canvas_cr.set_operator (Cairo.Operator.CLEAR);
-			canvas_cr.paint ();
-			canvas_cr.set_operator (Cairo.Operator.OVER);
-
-			canvas_cr.set_source_surface (buffer.surface, 0, 0);
-			canvas_cr.paint ();
-
-			draw_content (canvas_cr);
+			draw_content (cr);
 
 			return false;
 		}
