@@ -22,6 +22,8 @@ namespace Gala.Plugins.Notify
 {
 	public abstract class Notification : Actor
 	{
+		public static Gtk.CssProvider? default_css = null;
+
 		public const int WIDTH = 300;
 		public const int ICON_SIZE = 48;
 		public const int MARGIN = 12;
@@ -111,11 +113,13 @@ namespace Gala.Plugins.Notify
 			add_child (icon_container);
 			add_child (close_button);
 
-			var default_css = new Gtk.CssProvider ();
-			try {
-				default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
-			} catch (Error e) {
-				warning ("Loading default styles failed: %s", e.message);
+			if (default_css == null) {
+				default_css = new Gtk.CssProvider ();
+				try {
+					default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
+				} catch (Error e) {
+					warning ("Loading default styles failed: %s", e.message);
+				}
 			}
 
 			var style_path = new Gtk.WidgetPath ();
@@ -126,6 +130,10 @@ namespace Gala.Plugins.Notify
 			style_context.add_provider (default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			style_context.add_class ("gala-notification");
 			style_context.set_path (style_path);
+
+			var label_style_path = style_path.copy ();
+			label_style_path.iter_add_class (1, "gala-notification");
+			label_style_path.append_type (typeof (Gtk.Label));
 
 			var canvas = new Canvas ();
 			canvas.draw.connect (draw);

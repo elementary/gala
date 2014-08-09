@@ -55,6 +55,40 @@ namespace Gala.Plugins.Notify
 			body_label.use_markup = true;
 			body_label.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
 
+			var style_path = new Gtk.WidgetPath ();
+			style_path.append_type (typeof (Gtk.Window));
+			style_path.append_type (typeof (Gtk.EventBox));
+			style_path.iter_add_class (1, "gala-notification");
+			style_path.append_type (typeof (Gtk.Label));
+
+			var label_style_context = new Gtk.StyleContext ();
+			label_style_context.add_provider (Notification.default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			label_style_context.set_path (style_path);
+
+			Gdk.RGBA color;
+
+			label_style_context.save ();
+			label_style_context.add_class ("title");
+			color = label_style_context.get_color (Gtk.StateFlags.NORMAL);
+			summary_label.color = {
+				(uint8) (color.red * 255),
+				(uint8) (color.green * 255),
+				(uint8) (color.blue * 255),
+				(uint8) (color.alpha * 255)
+			};
+			label_style_context.restore ();
+
+			label_style_context.save ();
+			label_style_context.add_class ("label");
+			color = label_style_context.get_color (Gtk.StateFlags.NORMAL);
+			body_label.color = {
+				(uint8) (color.red * 255),
+				(uint8) (color.green * 255),
+				(uint8) (color.blue * 255),
+				(uint8) (color.alpha * 255)
+			};
+			label_style_context.restore ();
+
 			add_child (summary_label);
 			add_child (body_label);
 		}

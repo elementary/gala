@@ -24,3 +24,7 @@
 	border-radius: 4px;
 }
 
+.gala-notification .title, .gala-notification .label {
+    color: #333;
+}
+
