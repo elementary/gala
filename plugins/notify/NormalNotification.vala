@@ -198,7 +198,7 @@ namespace Gala.Plugins.Notify
 			notification_content.set_values (summary, body);
 
 			content_container.add_child (notification_content);
-			add_child (content_container);
+			insert_child_below (content_container, null);
 		}
 
 		public void update (string summary, string body, Gdk.Pixbuf? icon, int32 expire_timeout,
