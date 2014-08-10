@@ -169,7 +169,7 @@ fi
 # -----------------------------------------------------------
 
 NOTIFICATION_PLUGIN_PKGS="libcanberra \
-                          libcanberra-gtk"
+                          libcanberra-gtk3"
 
 NOTIFICATION_PLUGIN_VALA_PKGS="--pkg libcanberra \
                                --pkg libcanberra-gtk"
