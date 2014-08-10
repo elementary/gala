@@ -174,8 +174,14 @@ namespace Gala.Plugins.Notify
 				unowned ConfirmationNotification? confirmation_notification = notification as ConfirmationNotification;
 				if (confirmation
 					&& confirmation_notification != null) {
+
+					// value may be -1 for a muted state, but -1 is interpreted as no progress set by the
+					// ConfirmationNotification class, so if we do have a progress, we make sure it's set
+					// to 0 for a muted state.
+					var progress_value = progress ? int.max (hints.@get ("value").get_int32 (), 0) : -1;
+
 					confirmation_notification.update (pixbuf,
-						progress ? hints.@get ("value").get_int32 () : -1,
+						progress_value,
 						hints.@get ("x-canonical-private-synchronous").get_string (),
 						icon_only);
 
