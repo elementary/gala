@@ -202,6 +202,8 @@ namespace Gala
 		static const int PLUS_SIZE = 8;
 		static const int PLUS_WIDTH = 24;
 
+		const int SHOW_CLOSE_BUTTON_DELAY = 200;
+
 		/**
 		 * The group has been clicked. The MultitaskingView should consider activating
 		 * its workspace.
@@ -254,6 +256,8 @@ namespace Gala
 		Actor close_button;
 		Actor icon_container;
 		Cogl.Material dummy_material;
+
+		uint show_close_button_timeout = 0;
 
 		public IconGroup (Workspace workspace)
 		{
@@ -317,29 +321,47 @@ namespace Gala
 
 		public override bool enter_event (CrossingEvent event)
 		{
-			// don't display the close button when we don't have dynamic workspaces
-			// or when there are no windows on us. For one, our method for closing
-			// wouldn't work anyway without windows and it's also the last workspace
-			// which we don't want to have closed if everything went correct
-			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
-				return false;
-
 			toggle_close_button (true);
-
 			return false;
 		}
 
 		public override bool leave_event (CrossingEvent event)
 		{
-			toggle_close_button (false);
+			if (!contains (event.related))
+				toggle_close_button (false);
+
 			return false;
 		}
 
+		/**
+		 * Requests toggling the close button. If show is true, a timeout will be set after which
+		 * the close button is shown, if false, the close button is hidden and the timeout is removed,
+		 * if it exists. The close button may not be shown even though requested if the workspace has
+		 * no windows or workspaces aren't set to be dynamic.
+		 *
+		 * @param show Whether to show the close button
+		 */
 		void toggle_close_button (bool show)
 		{
+			// don't display the close button when we don't have dynamic workspaces
+			// or when there are no windows on us. For one, our method for closing
+			// wouldn't work anyway without windows and it's also the last workspace
+			// which we don't want to have closed if everything went correct
+			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
+				return;
+
+			if (show_close_button_timeout != 0) {
+				Source.remove (show_close_button_timeout);
+				show_close_button_timeout = 0;
+			}
+
 			if (show) {
-				close_button.visible = true;
-				close_button.opacity = 255;
+				show_close_button_timeout = Timeout.add (SHOW_CLOSE_BUTTON_DELAY, () => {
+					close_button.visible = true;
+					close_button.opacity = 255;
+					show_close_button_timeout = 0;
+					return false;
+				});
 				return;
 			}
 
