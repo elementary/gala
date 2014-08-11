@@ -22,6 +22,9 @@ namespace Gala.Plugins.Notify
 {
 	public class NotificationStack : Actor
 	{
+		// we need to keep a small offset to the top, because we clip the container to
+		// its allocations and the close button would be off for the first notification
+		const int TOP_OFFSET = 2;
 		const int ADDITIONAL_MARGIN = 12;
 
 		public signal void animations_changed (bool running);
@@ -61,6 +64,7 @@ namespace Gala.Plugins.Notify
 			notification.get_preferred_height (Notification.WIDTH, out height, null);
 			update_positions (height);
 
+			notification.y = TOP_OFFSET;
 			insert_child_at_index (notification, 0);
 
 			animation_counter++;
@@ -73,7 +77,7 @@ namespace Gala.Plugins.Notify
 
 		void update_positions (float add_y = 0.0f)
 		{
-			var y = add_y;
+			var y = add_y + TOP_OFFSET;
 			var i = get_n_children ();
 			var delay_step = i > 0 ? 150 / i : 0;
 			foreach (var child in get_children ()) {
