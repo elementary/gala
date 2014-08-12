@@ -34,6 +34,14 @@ namespace GDesktop {
 		SMART,
 		STRICT
 	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_LOCATION_ACCURACY_LEVEL_", has_type_id = false)]
+	public enum LocationAccuracyLevel {
+		COUNTRY,
+		CITY,
+		NEIGHBORHOOD,
+		STREET,
+		EXACT
+	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_MAGNIFIER_CARET_TRACKING_MODE_", has_type_id = false)]
 	public enum MagnifierCaretTrackingMode {
 		NONE,

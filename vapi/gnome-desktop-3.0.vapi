@@ -16,8 +16,6 @@ namespace Gnome {
 		public static Gdk.Pixbuf scale_down_pixbuf (Gdk.Pixbuf pixbuf, int dest_width, int dest_height);
 	}
 	namespace Languages {
-		[CCode (array_length = false, array_null_terminated = true, cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_all_languages")]
-		public static string[] get_all_languages ();
 		[CCode (array_length = false, array_null_terminated = true, cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_all_locales")]
 		public static string[] get_all_locales ();
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_country_from_code")]
@@ -47,7 +45,6 @@ namespace Gnome {
 		public Gdk.Pixbuf create_thumbnail (Gnome.DesktopThumbnailFactory factory, Gdk.Screen screen, int dest_width, int dest_height);
 		public void draw (Gdk.Pixbuf dest, Gdk.Screen screen, bool is_root);
 		public void get_color (GDesktop.BackgroundShading type, Gdk.Color primary, Gdk.Color secondary);
-		public bool get_draw_background ();
 		public unowned string get_filename ();
 		public bool get_image_size (Gnome.DesktopThumbnailFactory factory, int best_width, int best_height, int width, int height);
 		public GDesktop.BackgroundStyle get_placement ();
@@ -57,7 +54,6 @@ namespace Gnome {
 		public void load_from_preferences (GLib.Settings settings);
 		public void save_to_preferences (GLib.Settings settings);
 		public void set_color (GDesktop.BackgroundShading type, Gdk.Color primary, Gdk.Color secondary);
-		public void set_draw_background (bool draw_background);
 		public void set_filename (string filename);
 		public void set_placement (GDesktop.BackgroundStyle placement);
 		public static void set_surface_as_root (Gdk.Screen screen, Cairo.Surface surface);
@@ -152,9 +148,9 @@ namespace Gnome {
 	[Compact]
 	public class RRCrtc {
 		public bool can_drive_output (Gnome.RROutput output);
-		public Gnome.RRMode get_current_mode ();
+		public unowned Gnome.RRMode get_current_mode ();
 		public Gnome.RRRotation get_current_rotation ();
-		public bool get_gamma (int size, ushort red, ushort green, ushort blue);
+		public bool get_gamma (int size, out ushort red, out ushort green, out ushort blue);
 		public uint32 get_id ();
 		public void get_position (out int x, out int y);
 		public Gnome.RRRotation get_rotations ();
@@ -174,8 +170,8 @@ namespace Gnome {
 	public class RROutput {
 		public bool can_clone (Gnome.RROutput clone);
 		public int get_backlight ();
-		public Gnome.RRCrtc get_crtc ();
-		public Gnome.RRMode get_current_mode ();
+		public unowned Gnome.RRCrtc get_crtc ();
+		public unowned Gnome.RRMode get_current_mode ();
 		public unowned string get_display_name ();
 		public uint8 get_edid_data (size_t size);
 		public uint32 get_id ();
@@ -185,10 +181,12 @@ namespace Gnome {
 		public unowned string get_name ();
 		public void get_physical_size (out int width_mm, out int height_mm);
 		public void get_position (out int x, out int y);
-		public Gnome.RRCrtc get_possible_crtcs ();
-		public Gnome.RRMode get_preferred_mode ();
+		[CCode (array_length = false, array_null_terminated = true)]
+		public unowned Gnome.RRCrtc[] get_possible_crtcs ();
+		public unowned Gnome.RRMode get_preferred_mode ();
 		public bool is_builtin_display ();
-		public Gnome.RRMode list_modes ();
+		[CCode (array_length = false, array_null_terminated = true)]
+		public unowned Gnome.RRMode[] list_modes ();
 		public bool set_backlight (int value) throws GLib.Error;
 		public bool supports_mode (Gnome.RRMode mode);
 	}
@@ -251,6 +249,7 @@ namespace Gnome {
 		public WallClock ();
 		public unowned string get_clock ();
 		public unowned GLib.TimeZone get_timezone ();
+		public string string_for_datetime (GLib.DateTime now, GDesktop.ClockFormat clock_format, bool show_weekday, bool show_full_date, bool show_seconds);
 		public string clock { get; }
 		[NoAccessorMethod]
 		public bool time_only { get; set; }

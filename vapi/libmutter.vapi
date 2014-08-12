@@ -216,6 +216,15 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_warning")]
 		public static void warning (string format, ...);
 	}
+#if HAS_MUTTER314
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_backend_get_type ()")]
+	public abstract class Backend : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected Backend ();
+		public void lock_layout_group (uint idx);
+		public void set_keymap (string layouts, string variants, string options);
+	}
+#endif
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public class Background : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false)]
@@ -432,6 +441,9 @@ namespace Meta {
 		public int get_xinput_opcode ();
 		public uint grab_accelerator (string accelerator);
 		public bool has_shape ();
+#if HAS_MUTTER314
+		public bool is_pointer_emulating_sequence (Clutter.EventSequence? sequence);
+#endif
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
 #if !HAS_MUTTER314
@@ -571,6 +583,11 @@ namespace Meta {
 		[NoWrapper]
 		public virtual void unmaximize (Meta.WindowActor actor, int x, int y, int width, int height);
 		public void unmaximize_completed (Meta.WindowActor actor);
+#if HAS_MUTTER314
+ 		[NoWrapper]
+		public virtual void unminimize (Meta.WindowActor actor);
+		public void unminimize_completed (Meta.WindowActor actor);
+#endif
 		[NoWrapper]
 		public virtual bool xevent_filter (X.Event event);
 #if !HAS_MUTTER314
@@ -681,6 +698,9 @@ namespace Meta {
 		public bool update_area (int x, int y, int width, int height, Cairo.Region? unobscured_region);
 #else
 		public void update_area (int x, int y, int width, int height);
+#endif
+#if HAS_MUTTER314
+		public signal void size_changed ();
 #endif
 	}
 	[CCode (cheader_filename = "meta/theme.h")]
@@ -1653,9 +1673,15 @@ namespace Meta {
 #if HAS_MUTTER314
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool activate_session ();
+ 	[CCode (cheader_filename = "meta/main.h")]
+	public static void clutter_init ();
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
+#if HAS_MUTTER314
+ 	[CCode (cheader_filename = "meta/main.h")]
+	public static unowned Meta.Backend get_backend ();
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.OptionContext get_option_context ();
 	[CCode (cheader_filename = "meta/main.h")]
