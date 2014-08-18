@@ -125,12 +125,12 @@ namespace Gala
 		{
 			var screen = wm.get_screen ();
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			var layout = dock.layout_manager as BoxLayout;
+			var layout = (BoxLayout) dock.layout_manager;
 
 			var position = dock_settings.Position;
 			var icon_size = dock_settings.IconSize;
 			var scaled_icon_size = icon_size / 10.0f;
-			var horizontal = position == Gtk.PositionType.TOP || position == Gtk.PositionType.BOTTOM;
+			var horizontal = dock_settings.is_horizontal_dock ();
 
 			var top_padding = (float) dock_theme.TopPadding * scaled_icon_size;
 			var bottom_padding = (float) dock_theme.BottomPadding * scaled_icon_size;
@@ -230,12 +230,6 @@ namespace Gala
 			return false;
 		}
 
-		bool is_horizontal_dock ()
-		{
-			var position = dock_settings.Position;
-			return position == Gtk.PositionType.TOP || position == Gtk.PositionType.BOTTOM;
-		}
-
 		void place_dock ()
 		{
 			var icon_size = dock_settings.IconSize;
@@ -250,7 +244,7 @@ namespace Gala
 			else
 				dock_width = (dock_window != null ? dock_window.width : 300.0f);
 
-			if (is_horizontal_dock ()) {
+			if (dock_settings.is_horizontal_dock ()) {
 				dock.width = dock_width;
 				dock.get_first_child ().margin_left = items_offset;
 				dock.get_last_child ().margin_right = items_offset;
@@ -270,7 +264,7 @@ namespace Gala
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 
 			float dest_width;
-			if (is_horizontal_dock ()) {
+			if (dock_settings.is_horizontal_dock ()) {
 				dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
 				dock.width = dest_width;
 			} else {
@@ -444,7 +438,7 @@ namespace Gala
 			dock.set_easing_duration (250);
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 
-			if (is_horizontal_dock ())
+			if (dock_settings.is_horizontal_dock ())
 				dock.width = dest_width;
 			else
 				dock.height = dest_width;
