@@ -403,7 +403,7 @@ namespace Gala
 		/**
 		 * {@inheritDoc}
 		 */
-		public void open (Gee.HashMap<string,GLib.Value?>? hints = null)
+		public void open (HashTable<string,Variant>? hints = null)
 		{
 			if (opened)
 				return;

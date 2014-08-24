@@ -32,7 +32,7 @@ namespace Gala
 		 *              to the component. Currently, the only one implemented is the
 		 *              'all-windows' hint to the windowoverview.
 		 */
-		public abstract void open (Gee.HashMap<string,Value?>? hints = null);
+		public abstract void open (HashTable<string,Variant>? hints = null);
 
 		/**
 		 * The component was requested to be closed.

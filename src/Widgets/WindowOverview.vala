@@ -103,7 +103,7 @@ namespace Gala
 		 * {@inheritDoc}
 		 * You may specify 'all-windows' in hints to expose all windows
 		 */
-		public void open (Gee.HashMap<string,GLib.Value?>? hints = null)
+		public void open (HashTable<string,Variant>? hints = null)
 		{
 			if (!ready)
 				return;
@@ -113,7 +113,7 @@ namespace Gala
 				return;
 			}
 
-			var all_windows = hints != null && hints.has_key ("all-windows");
+			var all_windows = hints != null && "all-windows" in hints;
 
 			var used_windows = new SList<Window> ();
 

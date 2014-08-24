@@ -258,7 +258,7 @@ namespace Gala
 				if (window_overview.is_opened ())
 					window_overview.close ();
 				else {
-					var hints = new Gee.HashMap<string,GLib.Value?> ();
+					var hints = new HashTable<string,Variant> (str_hash, str_equal);
 					hints.@set ("all-windows", true);
 					window_overview.open (hints);
 				}
@@ -607,7 +607,7 @@ namespace Gala
 					if (window_overview.is_opened ())
 						window_overview.close ();
 					else {
-						var hints = new Gee.HashMap<string,GLib.Value?> ();
+						var hints = new HashTable<string,Variant> (str_hash, str_equal);
 						hints.@set ("all-windows", true);
 						window_overview.open (hints);
 					}
