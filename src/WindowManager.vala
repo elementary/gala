@@ -330,9 +330,8 @@ namespace Gala
 			ui_group.add_transition ("nudge", nudge);
 		}
 
-		public void update_input_area ()
+		void update_input_area ()
 		{
-			var schema = BehaviorSettings.get_default ().schema;
 			var screen = get_screen ();
 
 			if (screensaver != null) {
@@ -351,13 +350,8 @@ namespace Gala
 
 			if (modal_count > 0)
 				InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
-			else if (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ||
-				schema.get_enum ("hotcorner-topright") != ActionType.NONE ||
-				schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ||
-				schema.get_enum ("hotcorner-bottomright") != ActionType.NONE)
-				InternalUtils.set_input_area (screen, InputArea.HOT_CORNER);
 			else
-				InternalUtils.set_input_area (screen, InputArea.NONE);
+				InternalUtils.set_input_area (screen, InputArea.DEFAULT);
 		}
 
 		public uint32[] get_all_xids ()

@@ -266,7 +266,6 @@ namespace Gala
 
 			wm.end_modal ();
 			wm.block_keybindings_in_modal = true;
-			wm.update_input_area ();
 
 			foreach (var child in get_children ()) {
 				((WindowCloneContainer) child).close ();

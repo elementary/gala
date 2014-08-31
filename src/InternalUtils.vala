@@ -19,6 +19,13 @@ using Meta;
 
 namespace Gala
 {
+	public enum InputArea
+	{
+		NONE,
+		FULLSCREEN,
+		DEFAULT
+	}
+
 	public class InternalUtils
 	{
 		/**
@@ -113,7 +120,7 @@ namespace Gala
 					X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
 					rects = {rect};
 					break;
-				case InputArea.HOT_CORNER:
+				case InputArea.DEFAULT:
 					var schema = BehaviorSettings.get_default ().schema;
 
 					// if ActionType is NONE make it 0 sized
@@ -128,18 +135,18 @@ namespace Gala
 					X.Xrectangle bottomright = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), br_size, br_size};
 
 					rects = {topleft, topright, bottomleft, bottomright};
+
+					// add plugin's requested areas
+					if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
+						foreach (var rect in PluginManager.get_default ().regions) {
+							rects += rect;
+						}
+					}
 					break;
 				case InputArea.NONE:
 				default:
 					Util.empty_stage_input_region (screen);
 					return;
-			}
-
-			// add plugin's requested areas
-			if (area == InputArea.FULLSCREEN || area == InputArea.HOT_CORNER) {
-				foreach (var rect in PluginManager.get_default ().regions) {
-					rects += rect;
-				}
 			}
 
 			var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);

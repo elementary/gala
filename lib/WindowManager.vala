@@ -29,13 +29,6 @@ namespace Gala
 		WINDOW_OVERVIEW_ALL
 	}
 
-	public enum InputArea
-	{
-		NONE,
-		FULLSCREEN,
-		HOT_CORNER
-	}
-
 	public interface WindowManager : Meta.Plugin
 	{
 		public abstract Clutter.Actor ui_group { get; protected set; }
@@ -52,7 +45,6 @@ namespace Gala
 		public abstract void end_modal ();
 		public abstract bool is_modal ();
 		public abstract void perform_action (ActionType type);
-		public abstract void update_input_area ();
 		public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);
 		public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
 	}
