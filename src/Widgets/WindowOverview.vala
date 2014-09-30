@@ -207,8 +207,7 @@ namespace Gala
 		bool keybinding_filter (KeyBinding binding)
 		{
 			var name = binding.get_name ();
-			return name != "expose-windows"
-				&& name != "expose-all-windows";
+			return (name != "expose-windows" && name != "expose-all-windows");
 		}
 
 		void restack_windows (Screen screen)

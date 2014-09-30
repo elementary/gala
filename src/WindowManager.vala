@@ -451,7 +451,7 @@ namespace Gala
 			modal_stack.offer_head (proxy);
 
 			// modal already active
-			if (modal_stack.size > 2)
+			if (modal_stack.size >= 2)
 				return proxy;
 
 			var screen = get_screen ();
@@ -479,7 +479,7 @@ namespace Gala
 				return;
 			}
 
-			if (modal_stack.size > 0)
+			if (is_modal ())
 				return;
 
 			update_input_area ();
@@ -495,7 +495,7 @@ namespace Gala
 		 */
 		public bool is_modal ()
 		{
-			return modal_stack.size > 0;
+			return (modal_stack.size > 0);
 		}
 
 		/**
@@ -503,7 +503,7 @@ namespace Gala
 		 */
 		public bool modal_proxy_valid (ModalProxy proxy)
 		{
-			return proxy in modal_stack;
+			return (proxy in modal_stack);
 		}
 
 		public void get_current_cursor_position (out int x, out int y)
@@ -1238,11 +1238,14 @@ namespace Gala
 
 		public override bool keybinding_filter (Meta.KeyBinding binding)
 		{
+			if (!is_modal ())
+				return false;
+
 			var modal_proxy = modal_stack.peek_head ();
 
-			return is_modal ()
+			return (modal_proxy != null
 				&& modal_proxy.keybinding_filter != null
-				&& modal_proxy.keybinding_filter (binding);
+				&& modal_proxy.keybinding_filter (binding));
 		}
 
 #if HAS_MUTTER310
