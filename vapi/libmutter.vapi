@@ -239,9 +239,22 @@ namespace Meta {
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
 		public signal void keymap_changed ();
+		public signal void keymap_layout_group_changed (uint object);
 	}
 #endif
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
+#if HAS_MUTTER314
+	public class Background : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Background (Meta.Screen screen);
+		public void set_blend (string filename1, string filename2, double blend_factor, GDesktop.BackgroundStyle style);
+		public void set_color (Clutter.Color color);
+		public void set_filename (string filename, GDesktop.BackgroundStyle style);
+		public void set_gradient (GDesktop.BackgroundShading shading_direction, Clutter.Color color, Clutter.Color second_color);
+		[NoAccessorMethod]
+		public Meta.Screen meta_screen { owned get; construct; }
+		public signal void changed ();
+#else
 	public class Background : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false)]
 		public Background (Meta.Screen screen, int monitor, Meta.BackgroundEffects effects);
@@ -254,9 +267,7 @@ namespace Meta {
 		public void load_color (Clutter.Color color);
 		public async bool load_file_async (string filename, GDesktop.BackgroundStyle style, GLib.Cancellable? cancellable) throws GLib.Error;
 		public void load_gradient (GDesktop.BackgroundShading shading_direction, Clutter.Color color, Clutter.Color second_color);
-#if !HAS_MUTTER314
 		public void load_still_frame ();
-#endif
 		[NoAccessorMethod]
 		public float brightness { get; set construct; }
 		[NoAccessorMethod]
@@ -267,17 +278,55 @@ namespace Meta {
 		public int monitor { get; set construct; }
 		[NoAccessorMethod]
 		public float vignette_sharpness { get; set construct; }
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background-actor.h", type_id = "meta_background_actor_get_type ()")]
 	public class BackgroundActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
+#if HAS_MUTTER314
+		public BackgroundActor (Meta.Screen screen, int monitor);
+		public void set_background (Meta.Background background);
+		public void set_vignette (bool enabled, double brightness, double sharpness);
+		[NoAccessorMethod]
+		public Meta.Background background { owned get; set; }
+		[NoAccessorMethod]
+		public double brightness { get; set; }
+		[NoAccessorMethod]
+		public Meta.Screen meta_screen { owned get; construct; }
+		[NoAccessorMethod]
+		public int monitor { get; construct; }
+		[NoAccessorMethod]
+		public bool vignette { get; set; }
+		[NoAccessorMethod]
+		public double vignette_sharpness { get; set; }
+#else
 		public BackgroundActor ();
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background-group.h", type_id = "meta_background_group_get_type ()")]
 	public class BackgroundGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundGroup ();
 	}
+#if HAS_MUTTER314
+	[CCode (cheader_filename = "meta/meta-background-image.h", type_id = "meta_background_image_get_type ()")]
+	public class BackgroundImage : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected BackgroundImage ();
+		public bool get_success ();
+		public unowned Cogl.Texture get_texture ();
+		public bool is_loaded ();
+		public signal void loaded ();
+	}
+	[CCode (cheader_filename = "meta/meta-background-image.h", type_id = "meta_background_image_cache_get_type ()")]
+	public class BackgroundImageCache : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected BackgroundImageCache ();
+		public static unowned Meta.BackgroundImageCache get_default ();
+		public Meta.BackgroundImage load (string filename);
+		public void purge (string filename);
+	}
+#endif
 	[CCode (cheader_filename = "meta/barrier.h", type_id = "meta_barrier_get_type ()")]
 	public class Barrier : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -1123,12 +1172,14 @@ namespace Meta {
 		public Meta.Rectangle rect;
 		public Meta.Side side;
 	}
+#if !HAS_MUTTER314
 	[CCode (cheader_filename = "meta/meta-background.h", cprefix = "META_BACKGROUND_EFFECTS_", type_id = "meta_background_effects_get_type ()")]
 	[Flags]
 	public enum BackgroundEffects {
 		NONE,
 		VIGNETTE
 	}
+#endif
 	[CCode (cheader_filename = "meta/barrier.h", cprefix = "META_BARRIER_DIRECTION_", type_id = "meta_barrier_direction_get_type ()")]
 	[Flags]
 	public enum BarrierDirection {
