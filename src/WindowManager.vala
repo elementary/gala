@@ -576,12 +576,15 @@ namespace Gala
 				float anchor_x = (float)(actor.x - icon.x) * actor.width  / (icon.width  - actor.width);
 				float anchor_y = (float)(actor.y - icon.y) * actor.height / (icon.height - actor.height);
 
-				actor.move_anchor_point (anchor_x, anchor_y);
+				// FIXME set_pivot_point appears to show weird behavior for negative values, which we will need
+				//       in some cases. scale_center_{x,y} works fine so far.
+				actor.scale_center_x = anchor_x;
+				actor.scale_center_y = anchor_y;
+
 				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration,
-					scale_x:scale_x, scale_y:scale_y,opacity:0)
-					.completed.connect (() => {
-					//FIXME once we enable this part and we still haven't found a fix for below issue, add the idle here too
-					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+					scale_x:scale_x, scale_y:scale_y,opacity:0).completed.connect (() => {
+
+					actor.scale_center_x = actor.scale_center_y = 0;
 					actor.opacity = 255;
 					actor.scale_x = 1.0;
 					actor.scale_y = 1.0;
@@ -592,20 +595,16 @@ namespace Gala
 			} else {
 				actor.scale_center_x = width / 2.0f - actor.x;
 				actor.scale_center_y = height - actor.y;
+
 				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration,
-					scale_x : 0.0f, scale_y : 0.0f, opacity : 0)
-					.completed.connect (() => {
-					//FIXME for unknown reasons clutter won't apply properties that are changed here,
-					//      so we got to use an idle
-					Idle.add (() => {
-						actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
-						actor.opacity = 255;
-						actor.scale_x = 1.0;
-						actor.scale_y = 1.0;
-						minimize_completed (actor);
-						minimizing.remove (actor);
-						return false;
-					});
+					scale_x : 0.0f, scale_y : 0.0f, opacity : 0).completed.connect (() => {
+
+					actor.set_pivot_point (0, 0);
+					actor.opacity = 255;
+					actor.scale_x = 1.0;
+					actor.scale_y = 1.0;
+					minimize_completed (actor);
+					minimizing.remove (actor);
 				});
 			}
 		}
