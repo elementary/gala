@@ -218,11 +218,10 @@ namespace Gala
 			plugin_manager.initialize (this);
 			plugin_manager.regions_changed.connect (update_input_area);
 
-			if (plugin_manager.workspace_view_provider == null) {
+			if (plugin_manager.workspace_view_provider == null
+				|| (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
 				workspace_view = new MultitaskingView (this);
 				ui_group.add_child ((Clutter.Actor) workspace_view);
-			} else if (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) is ActivatableComponent) {
-				workspace_view = (ActivatableComponent) plugin_manager.get_plugin (plugin_manager.workspace_view_provider);
 			}
 
 			KeyBinding.set_custom_handler ("show-desktop", () => {
@@ -240,12 +239,10 @@ namespace Gala
 				KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
 			}
 
-			if (plugin_manager.window_overview_provider == null) {
+			if (plugin_manager.window_overview_provider == null
+				|| (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null) {
 				window_overview = new WindowOverview (this);
 				ui_group.add_child ((Clutter.Actor) window_overview);
-
-			} else if (plugin_manager.get_plugin (plugin_manager.window_overview_provider) is ActivatableComponent) {
-				window_overview = (ActivatableComponent) plugin_manager.get_plugin (plugin_manager.window_overview_provider);
 			}
 
 			screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
