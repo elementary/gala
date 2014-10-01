@@ -221,7 +221,7 @@ namespace Gala
 			if (plugin_manager.workspace_view_provider == null) {
 				workspace_view = new MultitaskingView (this);
 				ui_group.add_child ((Clutter.Actor) workspace_view);
-			} else if (plugin_manager.workspace_view_provider is ActivatableComponent) {
+			} else if (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) is ActivatableComponent) {
 				workspace_view = (ActivatableComponent) plugin_manager.get_plugin (plugin_manager.workspace_view_provider);
 			}
 
@@ -244,7 +244,7 @@ namespace Gala
 				window_overview = new WindowOverview (this);
 				ui_group.add_child ((Clutter.Actor) window_overview);
 
-			} else if (plugin_manager.window_overview_provider is ActivatableComponent) {
+			} else if (plugin_manager.get_plugin (plugin_manager.window_overview_provider) is ActivatableComponent) {
 				window_overview = (ActivatableComponent) plugin_manager.get_plugin (plugin_manager.window_overview_provider);
 			}
 
