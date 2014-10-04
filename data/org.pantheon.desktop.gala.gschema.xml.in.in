@@ -135,7 +135,7 @@
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="gala">
 		<key type="b" name="attach-modal-dialogs">
-			<default>true</default>
+			<default>false</default>
 			<summary>Attach modal dialogs</summary>
 			<description>When true, instead of having independent titlebars, modal dialogs appear attached to the titlebar of the parent window and are moved together with the parent window.</description>
 		</key>
