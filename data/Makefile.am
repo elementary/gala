@@ -1,3 +1,7 @@
+SUBDIRS = \
+	icons \
+	$(NULL)
+
 stylesdir = $(pkgdatadir)
 styles_DATA = gala.css texture.png close.png
 
