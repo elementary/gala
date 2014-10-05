@@ -581,7 +581,7 @@ namespace Gala
 
 			int size;
 			if (n_windows < 5)
-				size = 22;
+				size = 24;
 			else
 				size = 16;
 
