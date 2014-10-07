@@ -91,6 +91,11 @@ namespace Gala.Plugins.Notify
 				"body",
 				"body-markup",
 				"sound",
+				// even though we don't fully support actions, we still want to receive the default
+				// action. Well written applications will check if the actions capability is available
+				// before settings a default action, so we have to specify it here. Also, not displaying
+				// certain actions even though requested is allowed according to spec, so we should be fine
+				"actions",
 				"x-canonical-private-synchronous",
 				"x-canonical-private-icon-only"
 			};
@@ -154,6 +159,11 @@ namespace Gala.Plugins.Notify
 				print ("\t\t%s => %s\n", key, val.is_of_type (VariantType.STRING) ?
 					val.get_string () : "<" + val.get_type ().dup_string () + ">");
 			});
+			print ("\tActions: ");
+			foreach (var action in actions) {
+				print ("%s, ", action);
+			}
+			print ("\n");
 #endif
 
 			uint32 pid = 0;
@@ -208,6 +218,7 @@ namespace Gala.Plugins.Notify
 				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 					urgency, timeout, pid, actions);
 
+			notification.action_invoked.connect (notification_action_invoked_callback);
 			notification.closed.connect (notification_closed_callback);
 			stack.show_notification (notification);
 
@@ -454,9 +465,15 @@ namespace Gala.Plugins.Notify
 
 		void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
 		{
+			notification.action_invoked.disconnect (notification_action_invoked_callback);
 			notification.closed.disconnect (notification_closed_callback);
 
 			notification_closed (id, reason);
+		}
+
+		void notification_action_invoked_callback (Notification notification, uint32 id, string action)
+		{
+			action_invoked (id, action);
 		}
 	}
 }

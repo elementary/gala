@@ -31,6 +31,7 @@ namespace Gala.Plugins.Notify
 		public const int SPACING = 6;
 		public const int PADDING = 4;
 
+		public signal void action_invoked (uint32 id, string action);
 		public signal void closed (uint32 id, uint32 reason);
 
 		public uint32 id { get; construct; }
