@@ -167,8 +167,10 @@ namespace Gala.Plugins.Notify
 		public string summary { get; construct set; }
 		public string body { get; construct set; }
 		public uint32 sender_pid { get; construct; }
-		public string[] notification_actions { get; construct; }
+		public string[] notification_actions { get; construct set; }
 		public Screen screen { get; construct; }
+
+		public signal void default_action_invoked ();
 
 		Actor content_container;
 		NormalNotificationContent notification_content;
@@ -234,6 +236,7 @@ namespace Gala.Plugins.Notify
 				});
 			}
 
+			notification_actions = actions;
 			update_base (icon, expire_timeout);
 		}
 
@@ -270,6 +273,17 @@ namespace Gala.Plugins.Notify
 
 		public override void activate ()
 		{
+			// we currently only support the default action, which can be triggered by clicking
+			// on the notification according to spec
+			for (var i = 0; i < notification_actions.length; i += 2) {
+				if (notification_actions[i] == "default") {
+					default_action_invoked ();
+					return;
+				}
+			}
+
+			// if no default action has been set, we fallback to trying to find a window for the
+			// notification's sender process
 			var window = get_window ();
 			if (window != null) {
 				var workspace = window.get_workspace ();
