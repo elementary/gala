@@ -170,8 +170,6 @@ namespace Gala.Plugins.Notify
 		public string[] notification_actions { get; construct set; }
 		public Screen screen { get; construct; }
 
-		public signal void default_action_invoked ();
-
 		Actor content_container;
 		NormalNotificationContent notification_content;
 		NormalNotificationContent? old_notification_content = null;
@@ -277,7 +275,7 @@ namespace Gala.Plugins.Notify
 			// on the notification according to spec
 			for (var i = 0; i < notification_actions.length; i += 2) {
 				if (notification_actions[i] == "default") {
-					default_action_invoked ();
+					action_invoked (id, "default");
 					return;
 				}
 			}

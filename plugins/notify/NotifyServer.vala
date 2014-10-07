@@ -214,12 +214,11 @@ namespace Gala.Plugins.Notify
 				notification = new ConfirmationNotification (id, pixbuf, icon_only,
 					progress ? hints.@get ("value").get_int32 () : -1,
 					hints.@get ("x-canonical-private-synchronous").get_string ());
-			else {
+			else
 				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 					urgency, timeout, pid, actions);
-				((NormalNotification) notification).default_action_invoked.connect (default_action_invoked);
-			}
 
+			notification.action_invoked.connect (notification_action_invoked_callback);
 			notification.closed.connect (notification_closed_callback);
 			stack.show_notification (notification);
 
@@ -466,18 +465,15 @@ namespace Gala.Plugins.Notify
 
 		void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
 		{
+			notification.action_invoked.disconnect (notification_action_invoked_callback);
 			notification.closed.disconnect (notification_closed_callback);
-
-			var normal_notification = notification as NormalNotification;
-			if (normal_notification != null)
-				normal_notification.default_action_invoked.disconnect (default_action_invoked);
 
 			notification_closed (id, reason);
 		}
 
-		void default_action_invoked (Notification notification)
+		void notification_action_invoked_callback (Notification notification, uint32 id, string action)
 		{
-			action_invoked (notification.id, "default");
+			action_invoked (id, action);
 		}
 	}
 }
