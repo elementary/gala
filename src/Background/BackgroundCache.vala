@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2013 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2014 Tom Beckmann
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -19,99 +19,94 @@ namespace Gala
 {
 	public class BackgroundCache : Object
 	{
-		struct WaitingCallback
-		{
-			unowned SourceFunc func;
-			string hash;
-		}
-
 		static BackgroundCache? instance = null;
 
-		public static void init (Meta.Screen screen)
-		{
-			instance = new BackgroundCache (screen);
-		}
-
 		public static BackgroundCache get_default ()
-			requires (instance != null)
 		{
+			if (instance == null)
+				instance = new BackgroundCache ();
+
 			return instance;
 		}
 
-		public Meta.Screen screen { get; construct; }
+		public signal void file_changed (string filename);
 
-		Gee.HashMap<string,Meta.Background> image_cache;
-		Gee.HashMap<string,Meta.Background> pattern_cache;
-		Gee.LinkedList<WaitingCallback?> waiting_callbacks;
+		Gee.HashMap<string,FileMonitor> file_monitors;
+		Gee.HashMap<string,BackgroundSource> background_sources;
 
-		BackgroundCache (Meta.Screen screen)
+		Animation animation;
+		string animation_filename;
+
+		public BackgroundCache ()
 		{
-			Object (screen: screen);
+			file_monitors = new Gee.HashMap<string,FileMonitor> ();
+			background_sources = new Gee.HashMap<string,BackgroundSource> ();
 		}
 
-		construct
-		{
-			image_cache = new Gee.HashMap<string,Meta.Background> ();
-			pattern_cache = new Gee.HashMap<string,Meta.Background> ();
-			waiting_callbacks = new Gee.LinkedList<WaitingCallback?> ();
-		}
+		public void monitor_file (string filename) {
+			if (file_monitors.has_key (filename))
+				return;
 
-		public async Meta.Background? load_image (string file, int monitor,
-			GDesktop.BackgroundStyle style)
-		{
-			string hash = "%s#%i".printf (file, style);
-			Meta.Background? content = image_cache.get (hash);
-
-			if (content != null) {
-				// the content has been created, but the file is still loading, so we wait
-				if (content.get_filename () == null) {
-					waiting_callbacks.add ({ load_image.callback, hash });
-					yield;
-				}
-
-				return content.copy (monitor, Meta.BackgroundEffects.NONE);
-			}
-
-			content = new Meta.Background (screen, monitor, Meta.BackgroundEffects.NONE);
-
-			image_cache.set (hash, content);
-
+			var file = File.new_for_path (filename);
 			try {
-				yield content.load_file_async (file, style, null);
+				var monitor = file.monitor (FileMonitorFlags.NONE, null);
+				monitor.changed.connect(() => {
+					file_changed (filename);
+				});
+
+				file_monitors[filename] = monitor;
 			} catch (Error e) {
-				warning (e.message);
-				return null;
+				warning ("Failed to monitor %s: %s", filename, e.message);
 			}
-
-			foreach (var callback in waiting_callbacks) {
-				if (callback.hash == hash) {
-					callback.func ();
-					waiting_callbacks.remove (callback);
-				}
-			}
-
-			return content;
 		}
 
-		public Meta.Background load_pattern (int monitor, Clutter.Color primary, Clutter.Color secondary,
-			GDesktop.BackgroundShading shading_type)
+		public async Animation get_animation (string filename)
 		{
-			string hash = "%s#%s#%i".printf (primary.to_string (), secondary.to_string (), shading_type);
-			Meta.Background? content = pattern_cache.get (hash);
+			if (animation_filename == filename) {
+				Idle.add (() => {
+					get_animation.callback ();
+					return false;
+				});
+				yield;
 
-			if (content != null)
-				return content.copy (monitor, Meta.BackgroundEffects.NONE);
+				return animation;
+			}
 
-			content = new Meta.Background (screen, monitor, Meta.BackgroundEffects.NONE);
-			if (shading_type == GDesktop.BackgroundShading.SOLID)
-				content.load_color (primary);
-			else
-				content.load_gradient (shading_type, primary, secondary);
+			var animation = new Animation (filename);
 
-			pattern_cache.set (hash, content);
+			yield animation.load ();
 
-			return content;
+			Idle.add (() => {
+				get_animation.callback ();
+				return false;
+			});
+			yield;
+
+			return animation;
+		}
+
+		public BackgroundSource get_background_source (Meta.Screen screen, string settings_schema)
+		{
+			var background_source = background_sources[settings_schema];
+			if (background_source == null) {
+				background_source = new BackgroundSource (screen, settings_schema);
+				background_source.use_count = 1;
+				background_sources[settings_schema] = background_source;
+			} else
+				background_source.use_count++;
+
+			return background_source;
+		}
+
+		public void release_background_source (string settings_schema)
+		{
+			if (background_sources.has_key (settings_schema)) {
+				var source = background_sources[settings_schema];
+				if (--source.use_count == 0) {
+					background_sources.unset (settings_schema);
+					source.destroy ();
+				}
+			}
 		}
 	}
 }
-

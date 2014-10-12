@@ -35,7 +35,7 @@ namespace Gala
 		public int monitor { get; construct; }
 
 		WindowCloneContainer window_container;
-		Background background;
+		BackgroundManager background;
 
 		public MonitorClone (Screen screen, int monitor)
 		{
@@ -46,7 +46,7 @@ namespace Gala
 		{
 			reactive = true;
 
-			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
+			background = new BackgroundManager (screen, monitor, false);
 			background.set_easing_duration (300);
 
 			window_container = new WindowCloneContainer ();

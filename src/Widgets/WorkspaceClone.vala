@@ -23,14 +23,13 @@ namespace Gala
 	/**
 	 * Utility class which adds a border and a shadow to a Background
 	 */
-	class FramedBackground : Background
+	class FramedBackground : BackgroundManager
 	{
 		public FramedBackground (Screen screen)
 		{
-			Object (screen: screen, monitor: screen.get_primary_monitor (), 
-				settings: BackgroundSettings.get_default ().schema);
+			Object (screen: screen, monitor_index: screen.get_primary_monitor (), control_position: false);
 		}
-		
+
 		construct
 		{
 			var primary = screen.get_primary_monitor ();
@@ -111,7 +110,7 @@ namespace Gala
 			}
 		}
 
-		Background background;
+		BackgroundManager background;
 		bool opened;
 
 		uint hover_activate_timeout = 0;
