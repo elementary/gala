@@ -27,6 +27,7 @@ Makefile.in
 *.pc
 *.stamp
 data/gala.desktop
+data/gala-multitaskingview.desktop
 data/gschemas.compiled
 data/org.pantheon.desktop.gala.gschema.valid
 data/org.pantheon.desktop.gala.gschema.xml

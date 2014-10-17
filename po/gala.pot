@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-28 13:31+0200\n"
+"POT-Creation-Date: 2014-08-08 19:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/WindowManager.vala:1157
+#: ../src/WindowManager.vala:1165
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../src/WindowManager.vala:1160
+#: ../src/WindowManager.vala:1168
 msgid "Keep This Configuration"
 msgstr ""
 
-#: ../src/WindowManager.vala:1161
+#: ../src/WindowManager.vala:1169
 msgid "Restore Previous Configuration"
+msgstr ""
+
+#: ../data/gala-multitaskingview.desktop.in.h:1
+msgid "Multitasking View"
+msgstr ""
+
+#: ../data/gala-multitaskingview.desktop.in.h:2
+msgid "View all open windows and workspaces"
 msgstr ""

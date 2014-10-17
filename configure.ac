@@ -244,6 +244,7 @@ src/Makefile
 lib/Makefile
 docs/Makefile
 data/Makefile
+data/icons/Makefile
 vapi/Makefile
 plugins/Makefile
 plugins/notify/Makefile
