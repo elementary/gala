@@ -29,7 +29,7 @@ namespace Gala
 
 	public delegate void WindowPlacer (Actor window, Meta.Rectangle rect);
 
-	public class WindowOverview : Actor
+	public class WindowOverview : Actor, ActivatableComponent
 	{
 		const int BORDER = 10;
 		const int TOP_GAP = 30;
@@ -39,6 +39,7 @@ namespace Gala
 
 		Meta.Screen screen;
 
+		ModalProxy modal_proxy;
 		bool ready;
 
 		// the workspaces which we expose right now
@@ -53,7 +54,7 @@ namespace Gala
 		{
 			screen = wm.get_screen ();
 
-			screen.workspace_switched.connect (() => close (false));
+			screen.workspace_switched.connect (close);
 			screen.restacked.connect (restack_windows);
 
 			visible = false;
@@ -69,7 +70,7 @@ namespace Gala
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
 			if (event.keyval == Clutter.Key.Escape) {
-				close (true);
+				close ();
 
 				return true;
 			}
@@ -79,26 +80,40 @@ namespace Gala
 
 		public override void key_focus_out ()
 		{
-			close (false);
+			close ();
 		}
 
 		public override bool button_release_event (Clutter.ButtonEvent event)
 		{
 			if (event.button == 1)
-				close (true);
+				close ();
 
 			return true;
 		}
 
-		public void open (bool animate = true, bool all_windows = false)
+		/**
+		 * {@inheritDoc}
+		 */
+		public bool is_opened ()
+		{
+			return visible;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * You may specify 'all-windows' in hints to expose all windows
+		 */
+		public void open (HashTable<string,Variant>? hints = null)
 		{
 			if (!ready)
 				return;
 
 			if (visible) {
-				close (true);
+				close ();
 				return;
 			}
+
+			var all_windows = hints != null && "all-windows" in hints;
 
 			var used_windows = new SList<Window> ();
 
@@ -152,8 +167,8 @@ namespace Gala
 
 			grab_key_focus ();
 
-			wm.block_keybindings_in_modal = false;
-			wm.begin_modal ();
+			modal_proxy = wm.push_modal ();
+			modal_proxy.keybinding_filter = keybinding_filter;
 
 			visible = true;
 
@@ -187,6 +202,12 @@ namespace Gala
 				((WindowCloneContainer) child).open ();
 
 			ready = true;
+		}
+
+		bool keybinding_filter (KeyBinding binding)
+		{
+			var name = binding.get_name ();
+			return (name != "expose-windows" && name != "expose-all-windows");
 		}
 
 		void restack_windows (Screen screen)
@@ -240,9 +261,9 @@ namespace Gala
 		{
 			if (window.get_workspace () == screen.get_active_workspace ()) {
 				window.activate (screen.get_display ().get_current_time ());
-				close (true);
+				close ();
 			} else {
-				close (true);
+				close ();
 				//wait for the animation to finish before switching
 				Timeout.add (400, () => {
 					window.get_workspace ().activate_with_focus (window, screen.get_display ().get_current_time ());
@@ -251,7 +272,10 @@ namespace Gala
 			}
 		}
 
-		void close (bool animate)
+		/**
+		 * {@inheritDoc}
+		 */
+		public void close ()
 		{
 			if (!visible || !ready)
 				return;
@@ -264,21 +288,17 @@ namespace Gala
 
 			ready = false;
 
-			wm.end_modal ();
-			wm.block_keybindings_in_modal = true;
+			wm.pop_modal (modal_proxy);
 
 			foreach (var child in get_children ()) {
 				((WindowCloneContainer) child).close ();
 			}
 
-			if (animate) {
-				Clutter.Threads.Timeout.add (300, () => {
-					cleanup ();
-
-					return false;
-				});
-			} else
+			Clutter.Threads.Timeout.add (300, () => {
 				cleanup ();
+
+				return false;
+			});
 		}
 
 		void cleanup ()

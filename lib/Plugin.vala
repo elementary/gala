@@ -127,7 +127,7 @@ namespace Gala
 
 		private bool _freeze_track = false;
 		private Meta.Rectangle[]? _custom_region = null;
-		private Gee.LinkedList<Clutter.Actor> tracked_actors = new Gee.LinkedList<Clutter.Actor> ();
+		private List<Clutter.Actor> tracked_actors = new List<Clutter.Actor> ();
 
 		/**
 		 * Once this method is called you can start adding actors to the stage
@@ -154,7 +154,7 @@ namespace Gala
 		 */
 		public void track_actor (Clutter.Actor actor)
 		{
-			tracked_actors.add (actor);
+			tracked_actors.prepend (actor);
 			actor.allocation_changed.connect (actor_allocation_changed);
 
 			update_region ();
@@ -168,9 +168,8 @@ namespace Gala
 		 */
 		public void untrack_actor (Clutter.Actor actor)
 		{
-			if (tracked_actors.remove (actor)) {
-				actor.allocation_changed.disconnect (actor_allocation_changed);
-			}
+			tracked_actors.remove (actor);
+			actor.allocation_changed.disconnect (actor_allocation_changed);
 		}
 
 		/**
@@ -184,7 +183,7 @@ namespace Gala
 		public void update_region ()
 		{
 			var has_custom = custom_region != null;
-			var len = tracked_actors.size + (has_custom ? custom_region.length : 0);
+			var len = tracked_actors.length () + (has_custom ? custom_region.length : 0);
 
 			Meta.Rectangle[] regions = new Meta.Rectangle[len];
 			var i = 0;

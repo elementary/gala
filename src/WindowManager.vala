@@ -21,19 +21,36 @@ namespace Gala
 {
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
+		/**
+		 * {@inheritDoc}
+		 */
 		public Clutter.Actor ui_group { get; protected set; }
-		public Clutter.Stage stage { get; protected set; }
-		public Clutter.Actor window_group { get; protected set; }
-		public Clutter.Actor top_window_group { get; protected set; }
-		public Meta.BackgroundGroup background_group { get; protected set; }
 
-		public bool block_keybindings_in_modal { get; set; default = true; }
+		/**
+		 * {@inheritDoc}
+		 */
+		public Clutter.Stage stage { get; protected set; }
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Clutter.Actor window_group { get; protected set; }
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Clutter.Actor top_window_group { get; protected set; }
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public Meta.BackgroundGroup background_group { get; protected set; }
 
 		Meta.PluginInfo info;
 
 		WindowSwitcher? winswitcher = null;
-		MultitaskingView? workspace_view = null;
-		WindowOverview? window_overview = null;
+		ActivatableComponent? workspace_view = null;
+		ActivatableComponent? window_overview = null;
 
 		// used to detect which corner was used to trigger an action
 		Clutter.Actor? last_hotcorner;
@@ -41,7 +58,7 @@ namespace Gala
 
 		Window? moving; //place for the window that is being moved over
 
-		int modal_count = 0; //count of modal modes overlaying each other
+		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
 		Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -201,36 +218,48 @@ namespace Gala
 			plugin_manager.initialize (this);
 			plugin_manager.regions_changed.connect (update_input_area);
 
-			if (plugin_manager.workspace_view_provider == null) {
+			if (plugin_manager.workspace_view_provider == null
+				|| (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
 				workspace_view = new MultitaskingView (this);
-				ui_group.add_child (workspace_view);
-
-				KeyBinding.set_custom_handler ("show-desktop", () => {
-					workspace_view.toggle ();
-				});
+				ui_group.add_child ((Clutter.Actor) workspace_view);
 			}
+
+			KeyBinding.set_custom_handler ("show-desktop", () => {
+				if (workspace_view.is_opened ())
+					workspace_view.close ();
+				else
+					workspace_view.open ();
+			});
 
 			if (plugin_manager.window_switcher_provider == null) {
 				winswitcher = new WindowSwitcher (this);
 				ui_group.add_child (winswitcher);
 
-				//FIXME we have to investigate this. Apparently alt-tab is now bound to switch-applications
-				// instead of windows, which we should probably handle too
 				KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
 				KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
 			}
 
-			if (plugin_manager.window_overview_provider == null) {
+			if (plugin_manager.window_overview_provider == null
+				|| (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null) {
 				window_overview = new WindowOverview (this);
-				ui_group.add_child (window_overview);
-
-				screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
-					window_overview.open (true);
-				});
-				screen.get_display ().add_keybinding ("expose-all-windows", KeybindingSettings.get_default ().schema, 0, () => {
-					window_overview.open (true, true);
-				});
+				ui_group.add_child ((Clutter.Actor) window_overview);
 			}
+
+			screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
+				if (window_overview.is_opened ())
+					window_overview.close ();
+				else
+					window_overview.open ();
+			});
+			screen.get_display ().add_keybinding ("expose-all-windows", KeybindingSettings.get_default ().schema, 0, () => {
+				if (window_overview.is_opened ())
+					window_overview.close ();
+				else {
+					var hints = new HashTable<string,Variant> (str_hash, str_equal);
+					hints.@set ("all-windows", true);
+					window_overview.open (hints);
+				}
+			});
 
 			update_input_area ();
 
@@ -297,6 +326,9 @@ namespace Gala
 			switch_to_next_workspace (direction);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void switch_to_next_workspace (MotionDirection direction)
 		{
 			var screen = get_screen ();
@@ -348,7 +380,7 @@ namespace Gala
 				}
 			}
 
-			if (modal_count > 0)
+			if (is_modal ())
 				InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
 			else
 				InternalUtils.set_input_area (screen, InputArea.DEFAULT);
@@ -378,6 +410,9 @@ namespace Gala
 			screen.get_workspace_by_index (index).activate (screen.get_display ().get_current_time ());
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void move_window (Window? window, MotionDirection direction)
 		{
 			if (window == null)
@@ -403,42 +438,69 @@ namespace Gala
 			next.activate_with_focus (window, display.get_current_time ());
 		}
 
-		public new void begin_modal ()
+		/**
+		 * {@inheritDoc}
+		 */
+		public ModalProxy push_modal ()
 		{
-			modal_count ++;
-			if (modal_count > 1)
-				return;
+			var proxy = new ModalProxy ();
+
+			modal_stack.offer_head (proxy);
+
+			// modal already active
+			if (modal_stack.size >= 2)
+				return proxy;
 
 			var screen = get_screen ();
-			var display = screen.get_display ();
+			var time = screen.get_display ().get_current_time ();
 
 			update_input_area ();
 #if HAS_MUTTER310
-			base.begin_modal (0, display.get_current_time ());
+			begin_modal (0, time);
 #else
-			base.begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, display.get_current_time ());
+			begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, time);
 #endif
 
 			Meta.Util.disable_unredirect_for_screen (screen);
+
+			return proxy;
 		}
 
-		public new void end_modal ()
+		/**
+		 * {@inheritDoc}
+		 */
+		public void pop_modal (ModalProxy proxy)
 		{
-			modal_count --;
-			if (modal_count > 0)
+			if (!modal_stack.remove (proxy)) {
+				warning ("Attempted to remove a modal proxy that was not in the stack");
+				return;
+			}
+
+			if (is_modal ())
 				return;
 
 			update_input_area ();
 
 			var screen = get_screen ();
-			base.end_modal (screen.get_display ().get_current_time ());
+			end_modal (screen.get_display ().get_current_time ());
 
 			Meta.Util.enable_unredirect_for_screen (screen);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public bool is_modal ()
 		{
-			return (modal_count > 0);
+			return (modal_stack.size > 0);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public bool modal_proxy_valid (ModalProxy proxy)
+		{
+			return (proxy in modal_stack);
 		}
 
 		public void get_current_cursor_position (out int x, out int y)
@@ -459,6 +521,9 @@ namespace Gala
 				win.clear_effects ();*/
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void perform_action (ActionType type)
 		{
 			var screen = get_screen ();
@@ -467,7 +532,13 @@ namespace Gala
 
 			switch (type) {
 				case ActionType.SHOW_WORKSPACE_VIEW:
-					workspace_view.toggle ();
+					if (workspace_view == null)
+						break;
+
+					if (workspace_view.is_opened ())
+						workspace_view.close ();
+					else
+						workspace_view.open ();
 					break;
 				case ActionType.MAXIMIZE_CURRENT:
 					if (current == null || current.window_type != WindowType.NORMAL)
@@ -518,10 +589,25 @@ namespace Gala
 					}
 					break;
 				case ActionType.WINDOW_OVERVIEW:
-					window_overview.open (true);
+					if (window_overview == null)
+						break;
+
+					if (window_overview.is_opened ())
+						window_overview.close ();
+					else
+						window_overview.open ();
 					break;
 				case ActionType.WINDOW_OVERVIEW_ALL:
-					window_overview.open (true, true);
+					if (window_overview == null)
+						break;
+
+					if (window_overview.is_opened ())
+						window_overview.close ();
+					else {
+						var hints = new HashTable<string,Variant> (str_hash, str_equal);
+						hints.@set ("all-windows", true);
+						window_overview.open (hints);
+					}
 					break;
 				default:
 					warning ("Trying to run unknown action");
@@ -1148,7 +1234,14 @@ namespace Gala
 
 		public override bool keybinding_filter (Meta.KeyBinding binding)
 		{
-			return block_keybindings_in_modal && modal_count > 0;
+			if (!is_modal ())
+				return false;
+
+			var modal_proxy = modal_stack.peek_head ();
+
+			return (modal_proxy != null
+				&& modal_proxy.keybinding_filter != null
+				&& modal_proxy.keybinding_filter (binding));
 		}
 
 #if HAS_MUTTER310

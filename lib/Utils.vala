@@ -20,16 +20,16 @@ namespace Gala
 	public class Utils
 	{
 		// Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
-		static Gee.HashMap<string, Gdk.Pixbuf> xid_pixbuf_cache;
-		static Gee.HashMap<string, Gdk.Pixbuf> icon_pixbuf_cache;
+		static HashTable<string, Gdk.Pixbuf> xid_pixbuf_cache;
+		static HashTable<string, Gdk.Pixbuf> icon_pixbuf_cache;
 		static uint cache_clear_timeout = 0;
 
 		static Gdk.Pixbuf? close_pixbuf = null;
 
 		static construct
 		{
-			xid_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
-			icon_pixbuf_cache = new Gee.HashMap<string, Gdk.Pixbuf> ();
+			xid_pixbuf_cache = new HashTable<string, Gdk.Pixbuf> (str_hash, str_equal);
+			icon_pixbuf_cache = new HashTable<string, Gdk.Pixbuf> (str_hash, str_equal);
 		}
 
 		/**
@@ -37,21 +37,21 @@ namespace Gala
 		 */
 		static void clean_icon_cache (uint32[] xids)
 		{
-			var list = xid_pixbuf_cache.keys.to_array ();
-			var pixbuf_list = icon_pixbuf_cache.values.to_array ();
-			var icon_list = icon_pixbuf_cache.keys.to_array ();
+			var list = xid_pixbuf_cache.get_keys ();
+			var pixbuf_list = icon_pixbuf_cache.get_values ();
+			var icon_list = icon_pixbuf_cache.get_keys ();
 
 			foreach (var xid_key in list) {
 				var xid = (uint32)uint64.parse (xid_key.split ("::")[0]);
 				if (!(xid in xids)) {
 					var pixbuf = xid_pixbuf_cache.get (xid_key);
-					for (var j = 0; j < pixbuf_list.length; j++) {
-						if (pixbuf_list[j] == pixbuf) {
-							xid_pixbuf_cache.unset (icon_list[j]);
+					for (var j = 0; j < pixbuf_list.length (); j++) {
+						if (pixbuf_list.nth_data (j) == pixbuf) {
+							xid_pixbuf_cache.remove (icon_list.nth_data (j));
 						}
 					}
 
-					xid_pixbuf_cache.unset (xid_key);
+					xid_pixbuf_cache.remove (xid_key);
 				}
 			}
 		}

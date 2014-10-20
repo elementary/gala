@@ -25,7 +25,7 @@ namespace Gala
 	 * preparing the wm, opening the components and holds containers for
 	 * the icon groups, the WorkspaceClones and the MonitorClones.
 	 */
-	public class MultitaskingView : Actor
+	public class MultitaskingView : Actor, ActivatableComponent
 	{
 		const int HIDING_DURATION = 300;
 		const int SMOOTH_SCROLL_DELAY = 500;
@@ -33,6 +33,7 @@ namespace Gala
 		public WindowManager wm { get; construct; }
 
 		Meta.Screen screen;
+		ModalProxy modal_proxy;
 		bool opened = false;
 		bool animating = false;
 
@@ -392,11 +393,41 @@ namespace Gala
 		}
 
 		/**
+		 * {@inheritDoc}
+		 */
+		public bool is_opened ()
+		{
+			return opened;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void open (HashTable<string,Variant>? hints = null)
+		{
+			if (opened)
+				return;
+
+			toggle ();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		public void close ()
+		{
+			if (!opened)
+				return;
+
+			toggle ();
+		}
+
+		/**
 		 * Toggles the view open or closed. Takes care of all the wm related tasks, like
 		 * starting the modal mode and hiding the WindowGroup. Finally tells all components
 		 * to animate to their positions.
 		 */
-		public void toggle ()
+		void toggle ()
 		{
 			if (animating)
 				return;
@@ -415,8 +446,8 @@ namespace Gala
 			}
 
 			if (opening) {
-				wm.begin_modal ();
-				wm.block_keybindings_in_modal = false;
+				modal_proxy = wm.push_modal ();
+				modal_proxy.keybinding_filter = keybinding_filter;
 
 				wm.background_group.hide ();
 				wm.window_group.hide ();
@@ -464,8 +495,7 @@ namespace Gala
 					wm.window_group.show ();
 					wm.top_window_group.show ();
 
-					wm.block_keybindings_in_modal = true;
-					wm.end_modal ();
+					wm.pop_modal (modal_proxy);
 
 					animating = false;
 
@@ -476,6 +506,19 @@ namespace Gala
 					animating = false;
 					return false;
 				});
+			}
+		}
+
+		bool keybinding_filter (KeyBinding binding)
+		{
+			var action = Prefs.get_keybinding_action (binding.get_name ());
+			switch (action) {
+				case KeyBindingAction.WORKSPACE_LEFT:
+				case KeyBindingAction.WORKSPACE_RIGHT:
+				case KeyBindingAction.SHOW_DESKTOP:
+					return false;
+				default:
+					return true;
 			}
 		}
 	}

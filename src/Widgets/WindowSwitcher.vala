@@ -38,6 +38,7 @@ namespace Gala
 		BindConstraint h_constraint;
 
 		bool closing = false;
+		ModalProxy modal_proxy;
 
 		//estimated value, if possible
 		float dock_width = 0.0f;
@@ -167,7 +168,7 @@ namespace Gala
 				current_window = null;
 			}
 
-			wm.end_modal ();
+			wm.pop_modal (modal_proxy);
 
 			dock.animate (AnimationMode.EASE_OUT_CUBIC, 250, width:dest_width, opacity : 0).
 				completed.connect (() => {
@@ -464,7 +465,7 @@ namespace Gala
 			});
 
 			closing = false;
-			wm.begin_modal ();
+			modal_proxy = wm.push_modal ();
 
 			bool backward = (binding.get_name () == "switch-windows-backward");
 
