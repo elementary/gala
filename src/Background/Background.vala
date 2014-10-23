@@ -38,9 +38,13 @@ namespace Gala
 		Cancellable cancellable;
 		uint update_animation_timeout_id = 0;
 
-		public Background (Meta.Screen screen, int monitor_index, string? filename, Settings settings, GDesktop.BackgroundStyle style) {
+		public Background (Meta.Screen screen, int monitor_index, string? filename, Settings settings, GDesktop.BackgroundStyle style)
+		{
 			Object (screen: screen, monitor_index: monitor_index, settings: settings, style: style, filename: filename);
+		}
 
+		construct
+		{
 			background = new Meta.Background (screen);
 			background.set_data<Background> ("delegate", this);
 

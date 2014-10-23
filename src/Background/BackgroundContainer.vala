@@ -19,8 +19,9 @@ namespace Gala
 {
 	public class BackgroundContainer : Meta.BackgroundGroup
 	{
-		public Meta.Screen screen { get; construct; }
 		public signal void changed ();
+
+		public Meta.Screen screen { get; construct; }
 
 		public BackgroundContainer (Meta.Screen screen)
 		{

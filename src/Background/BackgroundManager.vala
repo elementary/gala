@@ -24,9 +24,9 @@ namespace Gala
 
 		public signal void changed ();
 
+		public Meta.Screen screen { get; construct; }
 		public int monitor_index { get; construct; }
 		public bool control_position { get; construct; }
-		public Meta.Screen screen { get; construct; }
 
 		BackgroundSource background_source;
 		Meta.BackgroundActor background_actor;
@@ -101,18 +101,19 @@ namespace Gala
 
 			var background = new_background_actor.background.get_data<Background> ("delegate");
 
-			if (background.is_loaded)
+			if (background.is_loaded) {
 				swap_background_actor ();
-			else {
-				ulong handler = 0;
-				handler = background.loaded.connect (() => {
-					SignalHandler.disconnect (background, handler);
-					background.set_data<ulong> ("background-loaded-handler", 0);
-
-					swap_background_actor ();
-				});
-				background.set_data<ulong> ("background-loaded-handler", handler);
+				return;
 			}
+
+			ulong handler = 0;
+			handler = background.loaded.connect (() => {
+				SignalHandler.disconnect (background, handler);
+				background.set_data<ulong> ("background-loaded-handler", 0);
+
+				swap_background_actor ();
+			});
+			background.set_data<ulong> ("background-loaded-handler", handler);
 		}
 
 		Meta.BackgroundActor create_background_actor ()

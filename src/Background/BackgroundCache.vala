@@ -39,11 +39,17 @@ namespace Gala
 
 		public BackgroundCache ()
 		{
+			Object ();
+		}
+
+		construct
+		{
 			file_monitors = new Gee.HashMap<string,FileMonitor> ();
 			background_sources = new Gee.HashMap<string,BackgroundSource> ();
 		}
 
-		public void monitor_file (string filename) {
+		public void monitor_file (string filename)
+		{
 			if (file_monitors.has_key (filename))
 				return;
 

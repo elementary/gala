@@ -20,17 +20,19 @@ namespace Gala
 	public class BackgroundSource : Object
 	{
 		public Meta.Screen screen { get; construct; }
+		public Settings settings { get; construct; }
 
 		internal int use_count { get; set; default = 0; }
 
-		Settings settings;
 		Gee.HashMap<int,Background> backgrounds;
 
 		public BackgroundSource (Meta.Screen screen, string settings_schema)
 		{
-			Object (screen: screen);
+			Object (screen: screen, settings: new Settings (settings_schema));
+		}
 
-			settings = new Settings(settings_schema);
+		construct
+		{
 			backgrounds = new Gee.HashMap<int,Background> ();
 
 			screen.monitors_changed.connect (monitors_changed);
@@ -42,14 +44,15 @@ namespace Gala
 			var i = 0;
 
 			foreach (var background in backgrounds.values) {
-				if (i++ < n)
+				if (i++ < n) {
 					background.update_resolution ();
-				else {
-					background.changed.disconnect (background_changed);
-					background.destroy ();
-					// TODO can we remove from a list while iterating?
-					backgrounds.unset (i);
+					continue;
 				}
+
+				background.changed.disconnect (background_changed);
+				background.destroy ();
+				// TODO can we remove from a list while iterating?
+				backgrounds.unset (i);
 			}
 		}
 
