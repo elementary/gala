@@ -34,9 +34,7 @@ namespace Gala
 
 		public async void load ()
 		{
-			var file = File.new_for_path (filename);
-
-			show = new Gnome.BGSlideShow(filename);
+			show = new Gnome.BGSlideShow (filename);
 
 			show.load_async (null, (obj, res) => {
 				loaded = true;

@@ -42,14 +42,11 @@ namespace Gala
 
 		void update ()
 		{
-			var reference_child = get_child_at_index (0);
-			if (reference_child != null) {
-				(reference_child as Background).changed.disconnect (background_changed);
-			}
+			var reference_child = (get_child_at_index (0) as Background);
+			if (reference_child != null)
+				reference_child.changed.disconnect (background_changed);
 
 			destroy_all_children ();
-
-			var settings = BackgroundSettings.get_default ().schema;
 
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				var background = new BackgroundManager (screen, i);

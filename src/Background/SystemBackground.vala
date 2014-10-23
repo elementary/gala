@@ -19,6 +19,9 @@ namespace Gala
 {
 	public class SystemBackground : Meta.BackgroundActor
 	{
+		const Clutter.Color DEFAULT_BACKGROUND_COLOR = { 0x2e, 0x34, 0x36, 0xff };
+		const string DEFAULT_BACKGROUND_FILE = Config.PKGDATADIR + "/texture.png";
+
 		static Meta.Background? system_background = null;
 
 		public signal void loaded ();
@@ -30,17 +33,16 @@ namespace Gala
 
 		construct
 		{
-			var filename = Config.PKGDATADIR + "/texture.png";
-
 			if (system_background == null) {
 				system_background = new Meta.Background (meta_screen);
-				system_background.set_filename (filename, GDesktop.BackgroundStyle.WALLPAPER);
+				system_background.set_color (DEFAULT_BACKGROUND_COLOR);
+				system_background.set_filename (DEFAULT_BACKGROUND_FILE, GDesktop.BackgroundStyle.WALLPAPER);
 			}
 
 			background = system_background;
 
 			var cache = Meta.BackgroundImageCache.get_default ();
-			var image = cache.load (filename);
+			var image = cache.load (DEFAULT_BACKGROUND_FILE);
 			if (image.is_loaded ()) {
 				image = null;
 				Idle.add(() => {
