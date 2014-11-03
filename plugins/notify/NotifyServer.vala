@@ -171,7 +171,7 @@ namespace Gala.Plugins.Notify
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
 
-			if (!NotifySettings.get_default ().do_not_disturb)
+			if (app_name in NotifySettings.get_default ().sounds && !NotifySettings.get_default ().do_not_disturb)
 				handle_sounds (hints);
 
 			foreach (var child in stack.get_children ()) {
@@ -210,7 +210,7 @@ namespace Gala.Plugins.Notify
 				}
 			}
 
-			if (!NotifySettings.get_default ().do_not_disturb) {
+			if (app_name in NotifySettings.get_default ().bubbles && !NotifySettings.get_default ().do_not_disturb) {
 				Notification notification;
 				if (confirmation)
 					notification = new ConfirmationNotification (id, pixbuf, icon_only,
