@@ -28,7 +28,7 @@ namespace Gala.Plugins.Notify
 
 		private NotifySettings ()
 		{
-			base ("org.pantheon.desktop.notifications");
+			base (Config.SCHEMA + ".notifications");
 		}
 
 		public static NotifySettings get_default ()

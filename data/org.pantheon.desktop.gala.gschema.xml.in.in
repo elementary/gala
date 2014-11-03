@@ -213,4 +213,19 @@
 			<description>See normal-focused</description>
 		</key>
 	</schema>
+	
+	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="gala">
+		<key type="b" name="do-not-disturb">
+			<default>false</default>
+			<summary>Disable all notifications</summary>
+		</key>
+		<key type="as" name="bubbles">
+			<default>[]</default>
+			<summary>List of apps that are allowed to show notification-bubbles</summary>
+		</key>
+		<key type="as" name="sounds">
+			<default>[]</default>
+			<summary>List of apps that are allowed to play notification-sounds</summary>
+		</key>
+	</schema>
 </schemalist>
