@@ -46,6 +46,7 @@ libgala_notify_la_VALASOURCES = \
 	Notification.vala \
 	NotificationStack.vala \
 	NotifyServer.vala \
+	NotifySettings.vala \
 	$(NULL)
 
 nodist_libgala_notify_la_SOURCES = \
@@ -69,4 +70,3 @@ EXTRA_DIST = \
 	$(image_DATA) \
 	$(libgala_notify_la_VALASOURCES) \
 	$(NULL)
-
