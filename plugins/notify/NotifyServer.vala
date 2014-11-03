@@ -171,7 +171,8 @@ namespace Gala.Plugins.Notify
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
 
-			handle_sounds (hints);
+			if (!NotifySettings.get_default ().do_not_disturb)
+				handle_sounds (hints);
 
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
@@ -209,18 +210,20 @@ namespace Gala.Plugins.Notify
 				}
 			}
 
-			Notification notification;
-			if (confirmation)
-				notification = new ConfirmationNotification (id, pixbuf, icon_only,
-					progress ? hints.@get ("value").get_int32 () : -1,
-					hints.@get ("x-canonical-private-synchronous").get_string ());
-			else
-				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
-					urgency, timeout, pid, actions);
+			if (!NotifySettings.get_default ().do_not_disturb) {
+				Notification notification;
+				if (confirmation)
+					notification = new ConfirmationNotification (id, pixbuf, icon_only,
+						progress ? hints.@get ("value").get_int32 () : -1,
+						hints.@get ("x-canonical-private-synchronous").get_string ());
+				else
+					notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
+						urgency, timeout, pid, actions);
 
-			notification.action_invoked.connect (notification_action_invoked_callback);
-			notification.closed.connect (notification_closed_callback);
-			stack.show_notification (notification);
+				notification.action_invoked.connect (notification_action_invoked_callback);
+				notification.closed.connect (notification_closed_callback);
+				stack.show_notification (notification);
+			}
 
 #if !VALA_0_26
 			// fixes memleaks as described in https://bugzilla.gnome.org/show_bug.cgi?id=698260
@@ -477,4 +480,3 @@ namespace Gala.Plugins.Notify
 		}
 	}
 }
-
