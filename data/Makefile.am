@@ -12,9 +12,6 @@ applications_DATA = gala.desktop gala-multitaskingview.desktop
 
 gsettings_SCHEMAS = org.pantheon.desktop.gala.gschema.xml
 
-%.gschema.xml.in: %.gschema.xml.in.in Makefile
-	$(AM_V_GEN) sed -e 's|@GETTEXT_PACKAGE[@]|$(GETTEXT_PACKAGE)|g' $< > $@ || rm $@
-
 @INTLTOOL_XML_RULE@
 
 @GSETTINGS_RULES@

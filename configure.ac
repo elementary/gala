@@ -244,6 +244,7 @@ src/Makefile
 lib/Makefile
 docs/Makefile
 data/Makefile
+data/org.pantheon.desktop.gala.gschema.xml.in
 data/icons/Makefile
 vapi/Makefile
 plugins/Makefile
