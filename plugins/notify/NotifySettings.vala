@@ -20,9 +20,9 @@ namespace Gala.Plugins.Notify
 	public class NotifySettings : Granite.Services.Settings
 	{
 		public bool do_not_disturb { get; set; }
-
-		public string[] bubbles { get; set; }
-		public string[] sounds { get; set; }
+		public int default_priority { get; set; }
+		public int default_sounds_enabled { get; set; }
+		public string[] apps { get; set; }
 
 		static NotifySettings? instance = null;
 

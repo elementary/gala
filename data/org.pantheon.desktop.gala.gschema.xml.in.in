@@ -219,13 +219,18 @@
 			<default>false</default>
 			<summary>Disable all notifications</summary>
 		</key>
-		<key type="as" name="bubbles">
-			<default>[]</default>
-			<summary>List of apps that are allowed to show notification-bubbles</summary>
+		<key type="i" name="default-priority">
+			<default>3</default>
+			<summary>0 => Don't show notifications, 1 => Show only Critical notifications, 2 => Show Critical notifications and informations, 3 => Show all notifications</summary>
 		</key>
-		<key type="as" name="sounds">
+		<key type="i" name="default-sounds-enabled">
+			<default>1</default>
+			<summary>0 => Disabled, 1 => Enabled</summary>
+		</key>
+		<key type="as" name="apps">
 			<default>[]</default>
-			<summary>List of apps that are allowed to play notification-sounds</summary>
+			<summary>List of apps and their notification-permissions. Example: ['noise:2,1', 'pantheon-terminal:0,0']</summary>
+			<description>Structure: ['{APP-NAME}:{PRIORITY (0-3)},{ENABLE SOUNDS 0/1}', ...]</description>
 		</key>
 	</schema>
 </schemalist>

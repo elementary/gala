@@ -151,6 +151,56 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
+			var allow_bubble = true;
+			var allow_sound = true;
+			var app_found = false;
+
+			var parameters = new string[2];
+
+			for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
+				var properties = NotifySettings.get_default ().apps[i].split (":");
+
+				if (properties[0] == app_name) {
+					parameters = properties[1].split (",");
+					app_found = true;
+
+					break;
+				}
+			}
+
+			if (!app_found) {
+				var apps_new = new string[NotifySettings.get_default ().apps.length + 1];
+
+				for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
+					apps_new[i] = NotifySettings.get_default ().apps[i];
+				}
+
+				parameters[0] = NotifySettings.get_default ().default_priority.to_string ();
+				parameters[1] = NotifySettings.get_default ().default_sounds_enabled.to_string ();
+
+				apps_new[NotifySettings.get_default ().apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
+
+				NotifySettings.get_default ().apps = apps_new;
+			}
+
+			if (NotifySettings.get_default ().do_not_disturb == false) {
+				switch (urgency) {
+					case NotificationUrgency.LOW:
+						allow_bubble = (parameters[0] == "3");
+						break;
+					case NotificationUrgency.NORMAL:
+						allow_bubble = (parameters[0] == "2" || parameters[0] == "3");
+						break;
+					case NotificationUrgency.CRITICAL:
+						allow_bubble = (parameters[0] == "1" || parameters[0] == "2" || parameters[0] == "3");
+						break;
+				}
+			} else {
+				allow_bubble = false;
+			}
+
+			allow_sound = (allow_bubble && parameters[1] == "1");
+
 #if 0 // enable to debug notifications
 			print ("Notification from '%s', replaces: %u\n" +
 				"\tapp icon: '%s'\n\tsummary: '%s'\n\tbody: '%s'\n\tn actions: %u\n\texpire: %i\n\tHints:\n",
@@ -171,7 +221,7 @@ namespace Gala.Plugins.Notify
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
 
-			if (app_name in NotifySettings.get_default ().sounds && !NotifySettings.get_default ().do_not_disturb)
+			if (allow_sound)
 				handle_sounds (hints);
 
 			foreach (var child in stack.get_children ()) {
@@ -210,7 +260,7 @@ namespace Gala.Plugins.Notify
 				}
 			}
 
-			if (app_name in NotifySettings.get_default ().bubbles && !NotifySettings.get_default ().do_not_disturb) {
+			if (allow_bubble) {
 				Notification notification;
 				if (confirmation)
 					notification = new ConfirmationNotification (id, pixbuf, icon_only,
