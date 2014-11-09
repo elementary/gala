@@ -160,15 +160,22 @@ namespace Gala.Plugins.Notify
 			for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
 				var properties = NotifySettings.get_default ().apps[i].split (":");
 
-				if (properties[0] == app_name) {
-					parameters = properties[1].split (",");
-					app_found = true;
+				// Don't crash! (If this entry is invalid search for another or create a new one)
+				if (properties.length == 2) {
+					if (properties[0] == app_name) {
+						parameters = properties[1].split (",");
 
-					break;
+						if (parameters.length == 2) {
+							app_found = true;
+							break;
+						}
+					}
 				}
 			}
 
+			// App found?
 			if (!app_found) {
+				// No, create a new one!
 				var apps_new = new string[NotifySettings.get_default ().apps.length + 1];
 
 				for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
@@ -184,6 +191,7 @@ namespace Gala.Plugins.Notify
 			}
 
 			if (NotifySettings.get_default ().do_not_disturb == false) {
+				// Is my priority enabled?
 				switch (urgency) {
 					case NotificationUrgency.LOW:
 						allow_bubble = (parameters[0] == "3");
