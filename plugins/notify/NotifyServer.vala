@@ -151,63 +151,67 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
+			// Default values for confirmations
 			var allow_bubble = true;
 			var allow_sound = true;
-			var app_found = false;
 
-			var parameters = new string[2];
+			if (!confirmation) {
+				var app_found = false;
 
-			for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
-				var properties = NotifySettings.get_default ().apps[i].split (":");
+				var parameters = new string[2];
 
-				// Don't crash! (If this entry is invalid search for another or create a new one)
-				if (properties.length == 2) {
-					if (properties[0] == app_name) {
-						parameters = properties[1].split (",");
+				for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
+					var properties = NotifySettings.get_default ().apps[i].split (":");
 
-						if (parameters.length == 2) {
-							app_found = true;
-							break;
+					// Don't crash! (If this entry is invalid search for another or create a new one)
+					if (properties.length == 2) {
+						if (properties[0] == app_name) {
+							parameters = properties[1].split (",");
+
+							if (parameters.length == 2) {
+								app_found = true;
+								break;
+							}
 						}
 					}
 				}
-			}
 
-			// App found?
-			if (!app_found) {
-				// No, create a new one!
-				var apps_new = new string[NotifySettings.get_default ().apps.length + 1];
+				// App found?
+				if (!app_found) {
+					// No, create a new one!
+					var apps_new = new string[NotifySettings.get_default ().apps.length + 1];
 
-				for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
-					apps_new[i] = NotifySettings.get_default ().apps[i];
+					for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
+						apps_new[i] = NotifySettings.get_default ().apps[i];
+					}
+
+					parameters[0] = NotifySettings.get_default ().default_priority.to_string ();
+					parameters[1] = NotifySettings.get_default ().default_sounds_enabled.to_string ();
+
+					apps_new[NotifySettings.get_default ().apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
+
+					NotifySettings.get_default ().apps = apps_new;
 				}
 
-				parameters[0] = NotifySettings.get_default ().default_priority.to_string ();
-				parameters[1] = NotifySettings.get_default ().default_sounds_enabled.to_string ();
-
-				apps_new[NotifySettings.get_default ().apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
-
-				NotifySettings.get_default ().apps = apps_new;
-			}
-
-			if (NotifySettings.get_default ().do_not_disturb == false) {
-				// Is my priority enabled?
-				switch (urgency) {
-					case NotificationUrgency.LOW:
-						allow_bubble = (parameters[0] == "3");
-						break;
-					case NotificationUrgency.NORMAL:
-						allow_bubble = (parameters[0] == "2" || parameters[0] == "3");
-						break;
-					case NotificationUrgency.CRITICAL:
-						allow_bubble = (parameters[0] == "1" || parameters[0] == "2" || parameters[0] == "3");
-						break;
+				if (NotifySettings.get_default ().do_not_disturb == false) {
+					// Is my priority enabled?
+					switch (urgency) {
+						case NotificationUrgency.LOW:
+							allow_bubble = (parameters[0] == "3");
+							break;
+						case NotificationUrgency.NORMAL:
+							allow_bubble = (parameters[0] == "2" || parameters[0] == "3");
+							break;
+						case NotificationUrgency.CRITICAL:
+							allow_bubble = (parameters[0] == "1" || parameters[0] == "2" || parameters[0] == "3");
+							break;
+					}
+				} else {
+					allow_bubble = false;
 				}
-			} else {
-				allow_bubble = false;
-			}
 
-			allow_sound = (allow_bubble && parameters[1] == "1");
+				allow_sound = (allow_bubble && parameters[1] == "1");
+			}
 
 #if 0 // enable to debug notifications
 			print ("Notification from '%s', replaces: %u\n" +
