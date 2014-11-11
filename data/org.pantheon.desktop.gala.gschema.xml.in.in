@@ -14,6 +14,12 @@
 		<value nick='grid' value='0'/>
 		<value nick='natural' value='1'/>
 	</enum>
+	<enum id="GalaNotificationPriority">
+		<value nick='hide-all' value='0'/>
+		<value nick='critical-only' value='1'/>
+		<value nick='critical-and-normal' value='2'/>
+		<value nick='show-all' value='3'/>
+	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
 		<key enum="GalaActionType" name="hotcorner-topleft">
@@ -219,13 +225,13 @@
 			<default>false</default>
 			<summary>Disable all notifications</summary>
 		</key>
-		<key type="i" name="default-priority">
-			<default>3</default>
-			<summary>0 => Don't show notifications, 1 => Show only Critical notifications, 2 => Show Critical notifications and informations, 3 => Show all notifications</summary>
+		<key enum="GalaNotificationPriority" name="default-priority">
+			<default>'show-all'</default>
+			<summary>The default priority that would be used for new apps</summary>
 		</key>
-		<key type="i" name="default-sounds-enabled">
-			<default>1</default>
-			<summary>0 => Disabled, 1 => Enabled</summary>
+		<key type="b" name="default-sounds-enabled">
+			<default>true</default>
+			<summary>The default setting for the sounds that would be used for new apps</summary>
 		</key>
 		<key type="as" name="apps">
 			<default>[]</default>

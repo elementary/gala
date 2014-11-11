@@ -151,6 +151,8 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
+			var options = NotifySettings.get_default ();
+
 			// Default values for confirmations
 			var allow_bubble = true;
 			var allow_sound = true;
@@ -160,8 +162,8 @@ namespace Gala.Plugins.Notify
 
 				var parameters = new string[2];
 
-				for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
-					var properties = NotifySettings.get_default ().apps[i].split (":");
+				for (int i = 0; i < options.apps.length; i++) {
+					var properties = options.apps[i].split (":");
 
 					// Don't crash! (If this entry is invalid search for another or create a new one)
 					if (properties.length == 2) {
@@ -179,31 +181,36 @@ namespace Gala.Plugins.Notify
 				// App found?
 				if (!app_found) {
 					// No, create a new one!
-					var apps_new = new string[NotifySettings.get_default ().apps.length + 1];
+					var apps_new = new string[options.apps.length + 1];
 
-					for (int i = 0; i < NotifySettings.get_default ().apps.length; i++) {
-						apps_new[i] = NotifySettings.get_default ().apps[i];
+					for (int i = 0; i < options.apps.length; i++) {
+						apps_new[i] = options.apps[i];
 					}
 
-					parameters[0] = NotifySettings.get_default ().default_priority.to_string ();
-					parameters[1] = NotifySettings.get_default ().default_sounds_enabled.to_string ();
+					parameters[0] = options.default_priority;
 
-					apps_new[NotifySettings.get_default ().apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
+					if (options.default_sounds_enabled) {
+						parameters[1] = "on";
+					} else {
+						parameters[1] = "off";
+					}
 
-					NotifySettings.get_default ().apps = apps_new;
+					apps_new[options.apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
+
+					options.apps = apps_new;
 				}
 
-				if (NotifySettings.get_default ().do_not_disturb == false) {
+				if (options.do_not_disturb == false) {
 					// Is my priority enabled?
 					switch (urgency) {
 						case NotificationUrgency.LOW:
-							allow_bubble = (parameters[0] == "3");
+							allow_bubble = (parameters[0] == "show-all");
 							break;
 						case NotificationUrgency.NORMAL:
-							allow_bubble = (parameters[0] == "2" || parameters[0] == "3");
+							allow_bubble = (parameters[0] == "critical-and-normal" || parameters[0] == "show-all");
 							break;
 						case NotificationUrgency.CRITICAL:
-							allow_bubble = (parameters[0] == "1" || parameters[0] == "2" || parameters[0] == "3");
+							allow_bubble = (parameters[0] == "critical-only" || parameters[0] == "critical-and-normal" || parameters[0] == "show-all");
 							break;
 					}
 				} else {
