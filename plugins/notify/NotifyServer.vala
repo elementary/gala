@@ -201,17 +201,10 @@ namespace Gala.Plugins.Notify
 				}
 
 				if (options.do_not_disturb == false) {
-					// Is my priority enabled?
-					switch (urgency) {
-						case NotificationUrgency.LOW:
-							allow_bubble = (parameters[0] == "show-all");
-							break;
-						case NotificationUrgency.NORMAL:
-							allow_bubble = (parameters[0] == "critical-and-normal" || parameters[0] == "show-all");
-							break;
-						case NotificationUrgency.CRITICAL:
-							allow_bubble = (parameters[0] == "critical-only" || parameters[0] == "critical-and-normal" || parameters[0] == "show-all");
-							break;
+					if (parameters[0] == "show") {
+						allow_bubble = true;
+					} else {
+						allow_bubble = false;
 					}
 				} else {
 					allow_bubble = false;

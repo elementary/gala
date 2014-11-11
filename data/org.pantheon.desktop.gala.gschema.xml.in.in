@@ -15,10 +15,8 @@
 		<value nick='natural' value='1'/>
 	</enum>
 	<enum id="GalaNotificationPriority">
-		<value nick='hide-all' value='0'/>
-		<value nick='critical-only' value='1'/>
-		<value nick='critical-and-normal' value='2'/>
-		<value nick='show-all' value='3'/>
+		<value nick='hide' value='0'/>
+		<value nick='show' value='1'/>
 	</enum>
 	
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="gala">
@@ -226,7 +224,7 @@
 			<summary>Disable all notifications</summary>
 		</key>
 		<key enum="GalaNotificationPriority" name="default-priority">
-			<default>'show-all'</default>
+			<default>'show'</default>
 			<summary>The default priority that would be used for new apps</summary>
 		</key>
 		<key type="b" name="default-sounds-enabled">
