@@ -233,8 +233,8 @@
 		</key>
 		<key type="as" name="apps">
 			<default>[]</default>
-			<summary>List of apps and their notification-permissions. Example: ['noise:2,1', 'pantheon-terminal:0,0']</summary>
-			<description>Structure: ['{APP-NAME}:{PRIORITY (0-3)},{ENABLE SOUNDS 0/1}', ...]</description>
+			<summary>List of apps and their notification-permissions. Example: ['noise:show,on', 'pantheon-terminal:show,off']</summary>
+			<description>Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]</description>
 		</key>
 	</schema>
 </schemalist>
