@@ -187,9 +187,13 @@ namespace Gala.Plugins.Notify
 						apps_new[i] = options.apps[i];
 					}
 
-					parameters[0] = options.default_priority;
+					if (options.default_bubbles) {
+						parameters[0] = "show";
+					} else {
+						parameters[0] = "hide";
+					}
 
-					if (options.default_sounds_enabled) {
+					if (options.default_sounds) {
 						parameters[1] = "on";
 					} else {
 						parameters[1] = "off";
