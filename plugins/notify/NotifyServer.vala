@@ -160,8 +160,8 @@ namespace Gala.Plugins.Notify
 			if (!confirmation) {
 				var app_found = false;
 
-				var param_bubbles = options.default_bubbles ? "show" : "hide";
-				var param_sounds = options.default_sounds ? "on" : "off";
+				var param_bubbles = (options.default_bubbles ? "show" : "hide");
+				var param_sounds = (options.default_sounds ? "on" : "off");
 
 				for (int i = 0; i < options.apps.length; i++) {
 					var properties = options.apps[i].split (":");
@@ -183,9 +183,8 @@ namespace Gala.Plugins.Notify
 					}
 				}
 
-				// App found?
 				if (!app_found) {
-					// No, add the default values to the list.
+					// if no matching app was found, add the default values to the list
 					var apps_new = new string[options.apps.length + 1];
 
 					for (int i = 0; i < options.apps.length; i++) {
@@ -197,16 +196,7 @@ namespace Gala.Plugins.Notify
 					options.apps = apps_new;
 				}
 
-				if (options.do_not_disturb == false) {
-					if (param_bubbles == "show") {
-						allow_bubble = true;
-					} else {
-						allow_bubble = false;
-					}
-				} else {
-					allow_bubble = false;
-				}
-
+				allow_bubble = (!options.do_not_disturb && param_bubbles == "show");
 				allow_sound = (allow_bubble && param_sounds == "on");
 			}
 

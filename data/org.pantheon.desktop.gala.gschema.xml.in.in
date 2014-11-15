@@ -214,23 +214,23 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="gala">
+	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="do-not-disturb">
 			<default>false</default>
-			<summary>Disable all notifications</summary>
+			<_summary>Disable all notifications</_summary>
 		</key>
 		<key type="b" name="default-bubbles">
 			<default>true</default>
-			<summary>The default setting for the bubbles that would be used for new apps</summary>
+			<_summary>The default setting for the bubbles that would be used for new apps</_summary>
 		</key>
 		<key type="b" name="default-sounds">
 			<default>true</default>
-			<summary>The default setting for the sounds that would be used for new apps</summary>
+			<_summary>The default setting for the sounds that would be used for new apps</_summary>
 		</key>
 		<key type="as" name="apps">
 			<default>[]</default>
-			<summary>List of apps and their notification-permissions. Example: ['noise:show,on', 'pantheon-terminal:show,off']</summary>
-			<description>Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]</description>
+			<_summary>List of apps and their notification-permissions. Example: ['noise:show,on', 'pantheon-terminal:show,off']</_summary>
+			<_description>Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]</_description>
 		</key>
 	</schema>
 </schemalist>
