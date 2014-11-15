@@ -160,7 +160,20 @@ namespace Gala.Plugins.Notify
 			if (!confirmation) {
 				var app_found = false;
 
-				var parameters = new string[2];
+				string param_bubbles;
+				string param_sounds;
+
+				if (options.default_bubbles) {
+					param_bubbles = "show";
+				} else {
+					param_bubbles = "hide";
+				}
+
+				if (options.default_sounds) {
+					param_sounds = "on";
+				} else {
+					param_sounds = "off";
+				}
 
 				for (int i = 0; i < options.apps.length; i++) {
 					var properties = options.apps[i].split (":");
@@ -168,10 +181,14 @@ namespace Gala.Plugins.Notify
 					// Don't crash! (If this entry is invalid search for another or create a new one)
 					if (properties.length == 2) {
 						if (properties[0] == app_name) {
-							parameters = properties[1].split (",");
+							var parameters = properties[1].split (",");
 
 							if (parameters.length == 2) {
+								param_bubbles = parameters[0];
+								param_sounds = parameters[1];
+
 								app_found = true;
+
 								break;
 							}
 						}
@@ -180,32 +197,20 @@ namespace Gala.Plugins.Notify
 
 				// App found?
 				if (!app_found) {
-					// No, create a new one!
+					// No, add the default values to the list.
 					var apps_new = new string[options.apps.length + 1];
 
 					for (int i = 0; i < options.apps.length; i++) {
 						apps_new[i] = options.apps[i];
 					}
 
-					if (options.default_bubbles) {
-						parameters[0] = "show";
-					} else {
-						parameters[0] = "hide";
-					}
-
-					if (options.default_sounds) {
-						parameters[1] = "on";
-					} else {
-						parameters[1] = "off";
-					}
-
-					apps_new[options.apps.length] = app_name + ":" + parameters[0] + "," + parameters[1];
+					apps_new[options.apps.length] = app_name + ":" + param_bubbles + "," + param_sounds;
 
 					options.apps = apps_new;
 				}
 
 				if (options.do_not_disturb == false) {
-					if (parameters[0] == "show") {
+					if (param_bubbles == "show") {
 						allow_bubble = true;
 					} else {
 						allow_bubble = false;
@@ -214,7 +219,7 @@ namespace Gala.Plugins.Notify
 					allow_bubble = false;
 				}
 
-				allow_sound = (allow_bubble && parameters[1] == "1");
+				allow_sound = (allow_bubble && param_sounds == "on");
 			}
 
 #if 0 // enable to debug notifications
