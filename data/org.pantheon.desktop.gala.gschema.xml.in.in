@@ -213,4 +213,24 @@
 			<_description>See normal-focused</_description>
 		</key>
 	</schema>
+	
+	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="gala">
+		<key type="b" name="do-not-disturb">
+			<default>false</default>
+			<summary>Disable all notifications</summary>
+		</key>
+		<key type="b" name="default-bubbles">
+			<default>true</default>
+			<summary>The default setting for the bubbles that would be used for new apps</summary>
+		</key>
+		<key type="b" name="default-sounds">
+			<default>true</default>
+			<summary>The default setting for the sounds that would be used for new apps</summary>
+		</key>
+		<key type="as" name="apps">
+			<default>[]</default>
+			<summary>List of apps and their notification-permissions. Example: ['noise:show,on', 'pantheon-terminal:show,off']</summary>
+			<description>Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]</description>
+		</key>
+	</schema>
 </schemalist>

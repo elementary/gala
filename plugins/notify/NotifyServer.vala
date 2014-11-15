@@ -151,6 +151,65 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
+			var options = NotifySettings.get_default ();
+
+			// Default values for confirmations
+			var allow_bubble = true;
+			var allow_sound = true;
+
+			if (!confirmation) {
+				var app_found = false;
+
+				var param_bubbles = options.default_bubbles ? "show" : "hide";
+				var param_sounds = options.default_sounds ? "on" : "off";
+
+				for (int i = 0; i < options.apps.length; i++) {
+					var properties = options.apps[i].split (":");
+
+					// Don't crash! (If this entry is invalid search for another or create a new one)
+					if (properties.length == 2) {
+						if (properties[0] == app_name) {
+							var parameters = properties[1].split (",");
+
+							if (parameters.length == 2) {
+								param_bubbles = parameters[0];
+								param_sounds = parameters[1];
+
+								app_found = true;
+
+								break;
+							}
+						}
+					}
+				}
+
+				// App found?
+				if (!app_found) {
+					// No, add the default values to the list.
+					var apps_new = new string[options.apps.length + 1];
+
+					for (int i = 0; i < options.apps.length; i++) {
+						apps_new[i] = options.apps[i];
+					}
+
+					apps_new[options.apps.length] = app_name + ":" + param_bubbles + "," + param_sounds;
+
+					options.apps = apps_new;
+				}
+
+				if (options.do_not_disturb == false) {
+					if (param_bubbles == "show") {
+						allow_bubble = true;
+					} else {
+						allow_bubble = false;
+					}
+				} else {
+					allow_bubble = false;
+				}
+
+				allow_sound = (allow_bubble && param_sounds == "on");
+			}
+
 #if 0 // enable to debug notifications
 			print ("Notification from '%s', replaces: %u\n" +
 				"\tapp icon: '%s'\n\tsummary: '%s'\n\tbody: '%s'\n\tn actions: %u\n\texpire: %i\n\tHints:\n",
@@ -171,7 +230,8 @@ namespace Gala.Plugins.Notify
 				pid = bus_proxy.get_connection_unix_process_id (sender);
 			} catch (Error e) { warning (e.message); }
 
-			handle_sounds (hints);
+			if (allow_sound)
+				handle_sounds (hints);
 
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
@@ -209,18 +269,20 @@ namespace Gala.Plugins.Notify
 				}
 			}
 
-			Notification notification;
-			if (confirmation)
-				notification = new ConfirmationNotification (id, pixbuf, icon_only,
-					progress ? hints.@get ("value").get_int32 () : -1,
-					hints.@get ("x-canonical-private-synchronous").get_string ());
-			else
-				notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
-					urgency, timeout, pid, actions);
+			if (allow_bubble) {
+				Notification notification;
+				if (confirmation)
+					notification = new ConfirmationNotification (id, pixbuf, icon_only,
+						progress ? hints.@get ("value").get_int32 () : -1,
+						hints.@get ("x-canonical-private-synchronous").get_string ());
+				else
+					notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
+						urgency, timeout, pid, actions);
 
-			notification.action_invoked.connect (notification_action_invoked_callback);
-			notification.closed.connect (notification_closed_callback);
-			stack.show_notification (notification);
+				notification.action_invoked.connect (notification_action_invoked_callback);
+				notification.closed.connect (notification_closed_callback);
+				stack.show_notification (notification);
+			}
 
 #if !VALA_0_26
 			// fixes memleaks as described in https://bugzilla.gnome.org/show_bug.cgi?id=698260
@@ -477,4 +539,3 @@ namespace Gala.Plugins.Notify
 		}
 	}
 }
-
