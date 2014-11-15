@@ -160,20 +160,8 @@ namespace Gala.Plugins.Notify
 			if (!confirmation) {
 				var app_found = false;
 
-				string param_bubbles;
-				string param_sounds;
-
-				if (options.default_bubbles) {
-					param_bubbles = "show";
-				} else {
-					param_bubbles = "hide";
-				}
-
-				if (options.default_sounds) {
-					param_sounds = "on";
-				} else {
-					param_sounds = "off";
-				}
+				var param_bubbles = options.default_bubbles ? "show" : "hide";
+				var param_sounds = options.default_sounds ? "on" : "off";
 
 				for (int i = 0; i < options.apps.length; i++) {
 					var properties = options.apps[i].split (":");
