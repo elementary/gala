@@ -368,8 +368,18 @@ namespace Gala
 
 			visible = true;
 			closing = false;
-			wm.block_keybindings_in_modal = false;
 			modal_proxy = wm.push_modal ();
+			modal_proxy.keybinding_filter = (binding) => {
+				// if it's not built-in, we can block it right away
+				if (!binding.is_builtin ())
+					return true;
+
+				// otherwise we determine by name if it's meant for us
+				var name = binding.get_name ();
+
+				return (name != "switch-applications" && name == "switch-applications-backward"
+					&& name == "switch-windows" && name == "switch-windows-backward");
+			};
 
 			animate_dock_width ();
 
