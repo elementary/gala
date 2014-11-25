@@ -377,8 +377,8 @@ namespace Gala
 				// otherwise we determine by name if it's meant for us
 				var name = binding.get_name ();
 
-				return (name != "switch-applications" && name == "switch-applications-backward"
-					&& name == "switch-windows" && name == "switch-windows-backward");
+				return !(name == "switch-applications" || name == "switch-applications-backward"
+					|| name == "switch-windows" || name == "switch-windows-backward");
 			};
 
 			animate_dock_width ();
