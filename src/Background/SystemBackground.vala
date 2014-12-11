@@ -36,13 +36,21 @@ namespace Gala
 			if (system_background == null) {
 				system_background = new Meta.Background (meta_screen);
 				system_background.set_color (DEFAULT_BACKGROUND_COLOR);
+#if HAS_MUTTER316
+				system_background.set_file (File.new_for_path (DEFAULT_BACKGROUND_FILE), GDesktop.BackgroundStyle.WALLPAPER);
+#else
 				system_background.set_filename (DEFAULT_BACKGROUND_FILE, GDesktop.BackgroundStyle.WALLPAPER);
+#endif
 			}
 
 			background = system_background;
 
 			var cache = Meta.BackgroundImageCache.get_default ();
+#if HAS_MUTTER316
+			var image = cache.load (File.new_for_path (DEFAULT_BACKGROUND_FILE));
+#else
 			var image = cache.load (DEFAULT_BACKGROUND_FILE);
+#endif
 			if (image.is_loaded ()) {
 				image = null;
 				Idle.add(() => {
