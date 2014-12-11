@@ -164,6 +164,14 @@ if test "x$have_mutter314" = "xyes" ; then
     MUTTER_API="3.14"
 fi
 
+# 3.16
+PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.15], [have_mutter316=yes], [have_mutter316=no])
+if test "x$have_mutter316" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.15.2])
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316"
+    MUTTER_API="3.16"
+fi
+
 # -----------------------------------------------------------
 # Dependencies for Notifications plugin
 # -----------------------------------------------------------

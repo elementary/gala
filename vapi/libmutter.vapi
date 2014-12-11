@@ -2,6 +2,7 @@
 
 [CCode (cprefix = "Meta", gir_namespace = "Meta", gir_version = "3.0", lower_case_cprefix = "meta_")]
 namespace Meta {
+#if !HAS_MUTTER316
 	namespace Gradient {
 		[CCode (cheader_filename = "meta/gradient.h")]
 		public static void add_alpha (Gdk.Pixbuf pixbuf, uint8 alphas, int n_alphas, Meta.GradientType type);
@@ -12,6 +13,7 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/gradient.h")]
 		public static Gdk.Pixbuf create_simple (int width, int height, Gdk.RGBA from, Gdk.RGBA to, Meta.GradientType style);
 	}
+#endif
 	namespace Prefs {
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void add_listener (Meta.PrefsChangedFunc func);
@@ -247,9 +249,17 @@ namespace Meta {
 	public class Background : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Background (Meta.Screen screen);
+#if HAS_MUTTER316
+		public void set_blend (GLib.File file1, GLib.File file2, double blend_factor, GDesktop.BackgroundStyle style);
+#else
 		public void set_blend (string filename1, string filename2, double blend_factor, GDesktop.BackgroundStyle style);
+#endif
 		public void set_color (Clutter.Color color);
+#if HAS_MUTTER316
+		public void set_file (GLib.File file, GDesktop.BackgroundStyle style);
+#else
 		public void set_filename (string filename, GDesktop.BackgroundStyle style);
+#endif
 		public void set_gradient (GDesktop.BackgroundShading shading_direction, Clutter.Color color, Clutter.Color second_color);
 		[NoAccessorMethod]
 		public Meta.Screen meta_screen { owned get; construct; }
@@ -323,8 +333,13 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected BackgroundImageCache ();
 		public static unowned Meta.BackgroundImageCache get_default ();
+#if HAS_MUTTER316
+		public Meta.BackgroundImage load (GLib.File file);
+		public void purge (GLib.File file);
+#else
 		public Meta.BackgroundImage load (string filename);
 		public void purge (string filename);
+#endif
 	}
 #endif
 	[CCode (cheader_filename = "meta/barrier.h", type_id = "meta_barrier_get_type ()")]
@@ -379,6 +394,10 @@ namespace Meta {
 #else
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_focus_stage_window")]
 		public static void focus_stage_window (Meta.Screen screen, uint32 timestamp);
+#endif
+#if HAS_MUTTER316
+		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_feedback_group_for_screen")]
+		public static unowned Clutter.Actor get_feedback_group_for_screen (Meta.Screen screen);
 #endif
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_stage_for_screen")]
 		public static unowned Clutter.Actor? get_stage_for_screen (Meta.Screen screen);
@@ -474,7 +493,11 @@ namespace Meta {
 		public void clear_mouse_mode ();
 		public void end_grab_op (uint32 timestamp);
 		public void focus_the_no_focus_window (Meta.Screen screen, uint32 timestamp);
+#if HAS_MUTTER316
+		public void freeze_keyboard (uint32 timestamp);
+#else
 		public void freeze_keyboard (X.Window window, uint32 timestamp);
+#endif
 		public unowned Meta.Compositor get_compositor ();
 #if !HAS_MUTTER314
 		public void get_compositor_version (int major, int minor);
@@ -1384,6 +1407,7 @@ namespace Meta {
 		KEYBOARD_RESIZING_SE,
 		KEYBOARD_RESIZING_W
 	}
+#if !HAS_MUTTER316
 	[CCode (cheader_filename = "meta/gradient.h", cprefix = "META_GRADIENT_", type_id = "meta_gradient_type_get_type ()")]
 	public enum GradientType {
 		VERTICAL,
@@ -1391,6 +1415,7 @@ namespace Meta {
 		DIAGONAL,
 		LAST
 	}
+#endif
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEYBINDING_ACTION_", type_id = "meta_key_binding_action_get_type ()")]
 	public enum KeyBindingAction {
 		NONE,
