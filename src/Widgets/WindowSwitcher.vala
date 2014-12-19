@@ -340,6 +340,12 @@ namespace Gala
 			if (now - last_switch < MIN_DELTA)
 				return;
 
+			// if we were still closing while the next invocation comes in, we need to cleanup
+			// things right away
+			if (visible && closing) {
+				close_cleanup ();
+			}
+
 			last_switch = now;
 
 			var workspace = screen.get_active_workspace ();
@@ -388,6 +394,30 @@ namespace Gala
 
 			if ((get_current_modifiers () & modifier_mask) == 0)
 				close (wm.get_screen ().get_display ().get_current_time ());
+		}
+
+		void close_cleanup ()
+		{
+			var screen = wm.get_screen ();
+			var workspace = screen.get_active_workspace ();
+
+			dock.destroy_all_children ();
+
+			dock_window = null;
+			visible = false;
+			closing = false;
+
+			window_clones.destroy_all_children ();
+
+			// need to go through all the windows because of hidden dialogs
+			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
+			foreach (var actor in window_actors) {
+				unowned Window window = actor.get_meta_window ();
+
+				if (window.get_workspace () == workspace
+					&& window.showing_on_its_workspace ())
+					actor.show ();
+			}
 		}
 
 		void close (uint time)
@@ -456,30 +486,11 @@ namespace Gala
 			dock.opacity = 0;
 			dock.restore_easing_state ();
 
-			Clutter.Callback cleanup = () => {
-				dock.destroy_all_children ();
-
-				dock_window = null;
-				visible = false;
-
-				window_clones.destroy_all_children ();
-
-				// need to go through all the windows because of hidden dialogs
-				unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
-				foreach (var actor in window_actors) {
-					unowned Window window = actor.get_meta_window ();
-
-					if (window.get_workspace () == workspace
-						&& window.showing_on_its_workspace ())
-						actor.show ();
-				}
-			};
-
 			var transition = dock.get_transition ("opacity");
 			if (transition != null)
-				transition.completed.connect (() => cleanup (this));
+				transition.completed.connect (() => close_cleanup ());
 			else
-				cleanup (this);
+				close_cleanup ();
 		}
 
 		Utils.WindowIcon? add_window (Window window)
