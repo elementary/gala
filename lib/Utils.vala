@@ -94,12 +94,42 @@ namespace Gala
 			public Meta.Window window { get; construct; }
 			public int icon_size { get; construct; }
 
+			/**
+			 * If set to true, the SafeWindowClone will destroy itself when the connected
+			 * window is unmanaged
+			 */
+			public bool destroy_on_unmanaged {
+				get {
+					return _destroy_on_unmanaged;
+				}
+				construct set {
+					if (_destroy_on_unmanaged == value)
+						return;
+
+					_destroy_on_unmanaged = value;
+					if (_destroy_on_unmanaged)
+						window.unmanaged.connect (unmanaged);
+					else
+						window.unmanaged.disconnect (unmanaged);
+				}
+			}
+
+			bool _destroy_on_unmanaged = false;
 			bool loaded = false;
 			uint32 xid;
 
-			public WindowIcon (Meta.Window window, int icon_size)
+			/**
+			 * Creates a new WindowIcon
+			 *
+			 * @param window               The window for which to create the icon
+			 * @param icon_size            The size of the icon in pixels
+			 * @param destroy_on_unmanaged @see destroy_on_unmanaged
+			 */
+			public WindowIcon (Meta.Window window, int icon_size, bool destroy_on_unmanaged = false)
 			{
-				Object (window: window, icon_size: icon_size);
+				Object (window: window,
+						icon_size: icon_size,
+						destroy_on_unmanaged: destroy_on_unmanaged);
 			}
 
 			construct
@@ -147,6 +177,11 @@ namespace Gala
 				try {
 					set_from_pixbuf (pixbuf);
 				} catch (Error e) {}
+			}
+
+			void unmanaged (Meta.Window window)
+			{
+				destroy ();
 			}
 		}
 

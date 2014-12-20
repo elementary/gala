@@ -237,6 +237,8 @@ namespace Gala
 
 				KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
 				KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
 			}
 
 			if (plugin_manager.window_overview_provider == null
