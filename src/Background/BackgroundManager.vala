@@ -133,20 +133,24 @@ namespace Gala
 				background_actor.set_position (monitor.x, monitor.y);
 			}
 
-			ulong handler = 0;
-			handler = background.changed.connect (() => {
-				SignalHandler.disconnect (background, handler);
-				handler = 0;
+			ulong changed_handler = 0;
+			changed_handler = background.changed.connect (() => {
+				SignalHandler.disconnect (background, changed_handler);
+				changed_handler = 0;
 				update_background_actor ();
 			});
 
 			background_actor.destroy.connect (() => {
-				if (handler != 0)
-					SignalHandler.disconnect (background, handler);
+				if (changed_handler != 0) {
+					SignalHandler.disconnect (background, changed_handler);
+					changed_handler = 0;
+				}
 
 				var loaded_handler = background.get_data<ulong> ("background-loaded-handler");
-				if (loaded_handler != 0)
+				if (loaded_handler != 0) {
 					SignalHandler.disconnect (background, loaded_handler);
+					background.set_data<ulong> ("background-loaded-handler", 0);
+				}
 			});
 
 			return background_actor;

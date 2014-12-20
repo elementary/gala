@@ -27,7 +27,7 @@ namespace Gala
 
 		public Meta.Screen screen { get; construct; }
 		public int monitor_index { get; construct; }
-		public Settings settings { get; construct; }
+		public BackgroundSource background_source { get; construct; }
 		public bool is_loaded { get; private set; default = false; }
 		public GDesktop.BackgroundStyle style { get; construct; }
 		public string? filename { get; construct; }
@@ -38,9 +38,14 @@ namespace Gala
 		Cancellable cancellable;
 		uint update_animation_timeout_id = 0;
 
-		public Background (Meta.Screen screen, int monitor_index, string? filename, Settings settings, GDesktop.BackgroundStyle style)
+		public Background (Meta.Screen screen, int monitor_index, string? filename,
+				BackgroundSource background_source, GDesktop.BackgroundStyle style)
 		{
-			Object (screen: screen, monitor_index: monitor_index, settings: settings, style: style, filename: filename);
+			Object (screen: screen,
+					monitor_index: monitor_index,
+					background_source: background_source,
+					style: style,
+					filename: filename);
 		}
 
 		construct
@@ -51,7 +56,7 @@ namespace Gala
 			file_watches = new Gee.HashMap<string,ulong> ();
 			cancellable = new Cancellable ();
 
-			settings.changed.connect (settings_changed);
+			background_source.changed.connect (settings_changed);
 
 			load ();
 		}
@@ -67,7 +72,7 @@ namespace Gala
 				SignalHandler.disconnect (cache, watch);
 			}
 
-			settings.changed.disconnect (settings_changed);
+			background_source.settings.changed.disconnect (settings_changed);
 		}
 
 		public void update_resolution ()
@@ -94,6 +99,7 @@ namespace Gala
 		void load_pattern ()
 		{
 			string color_string;
+			var settings = background_source.settings;
 
 			color_string = settings.get_string ("primary-color");
 			var color = Clutter.Color.from_string (color_string);
@@ -275,7 +281,7 @@ namespace Gala
 				load_file (filename);
 		}
 
-		void settings_changed (Settings settings, string key)
+		void settings_changed ()
 		{
 			changed ();
 		}

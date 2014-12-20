@@ -42,7 +42,7 @@ namespace Gala
 
 		void update ()
 		{
-			var reference_child = (get_child_at_index (0) as Background);
+			var reference_child = (get_child_at_index (0) as BackgroundManager);
 			if (reference_child != null)
 				reference_child.changed.disconnect (background_changed);
 
