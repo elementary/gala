@@ -1046,6 +1046,9 @@ namespace Gala
 			var docks = new List<WindowActor> ();
 
 			foreach (var actor in Compositor.get_window_actors (screen)) {
+				if (actor.is_destroyed ())
+					continue;
+
 				var window = actor.get_meta_window ();
 
 				if (!window.showing_on_its_workspace () ||
