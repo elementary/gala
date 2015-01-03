@@ -23,7 +23,11 @@ namespace Gala
 	/**
 	 * Utility class which adds a border and a shadow to a Background
 	 */
+#if HAS_MUTTER314
 	class FramedBackground : BackgroundManager
+#else
+	class FramedBackground : Background
+#endif
 	{
 		public FramedBackground (Screen screen)
 		{
@@ -110,7 +114,11 @@ namespace Gala
 			}
 		}
 
+#if HAS_MUTTER314
 		BackgroundManager background;
+#else
+		Background background;
+#endif
 		bool opened;
 
 		uint hover_activate_timeout = 0;

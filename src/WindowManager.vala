@@ -89,6 +89,9 @@ namespace Gala
 			var screen = get_screen ();
 
 			DBus.init (this);
+#if !HAS_MUTTER314
+			BackgroundCache.init (screen);
+#endif
 			WindowListener.init (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
@@ -120,7 +123,11 @@ namespace Gala
 			 * +-- top window group
 		     */
 
+#if HAS_MUTTER314
 			var system_background = new SystemBackground (screen);
+#else
+			var system_background = new SystemBackground ();
+#endif
 			system_background.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.insert_child_below (system_background, null);
@@ -1176,14 +1183,23 @@ namespace Gala
 
 				// to maintain the correct order of monitor, we need to insert the Background
 				// back manually
+#if HAS_MUTTER314
 				if (actor is BackgroundManager) {
 					var background = (BackgroundManager) actor;
+#else
+				if (actor is Background) {
+					var background = (Background) actor;
+#endif
 
 					background.get_parent ().remove_child (background);
 					background_group.insert_child_at_index (background, background.monitor_index);
 					background.x = background.steal_data<int> ("prev-x");
 					continue;
+#if HAS_MUTTER314
 				} else if (actor is Meta.BackgroundGroup) {
+#else
+				} else if (actor is BackgroundManager) {
+#endif
 					actor.x = 0;
 					// thankfully mutter will take care of stacking it at the right place for us
 					clutter_actor_reparent (actor, window_group);

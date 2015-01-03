@@ -43,13 +43,6 @@ gala_VALASOURCES = \
 	WindowListener.vala \
 	WindowManager.vala \
 	WorkspaceManager.vala \
-	Background/Animation.vala \
-	Background/Background.vala \
-	Background/BackgroundCache.vala \
-	Background/BackgroundContainer.vala \
-	Background/BackgroundManager.vala \
-	Background/BackgroundSource.vala \
-	Background/SystemBackground.vala \
 	Widgets/IconGroup.vala \
 	Widgets/IconGroupContainer.vala \
 	Widgets/MonitorClone.vala \
@@ -58,8 +51,25 @@ gala_VALASOURCES = \
 	Widgets/WindowCloneContainer.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
-	Widgets/WorkspaceClone.vala \
-	$(NULL)
+	Widgets/WorkspaceClone.vala
+
+if HAVE_MUTTER314
+gala_VALASOURCES += Background/Animation.vala \
+	Background/Background.vala \
+	Background/BackgroundCache.vala \
+	Background/BackgroundContainer.vala \
+	Background/BackgroundManager.vala \
+	Background/BackgroundSource.vala \
+	Background/SystemBackground.vala
+else
+gala_VALASOURCES += Background312/Background.vala \
+	Background312/BackgroundCache.vala \
+	Background312/BackgroundManager.vala \
+	Background312/SlideShow.vala \
+	Background312/SystemBackground.vala
+endif
+
+gala_VALASOURCES += $(NULL)
 
 nodist_gala_SOURCES = \
 	gala_vala.stamp \
