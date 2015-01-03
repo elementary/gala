@@ -624,16 +624,27 @@ namespace Gala
 		}
 
 #if HAS_MUTTER314
+		WindowMenu? window_menu = null;
+
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
 		{
-			//TODO implement window/app menus, their implementation where removed with mutter 3.13+
+			var time = get_screen ().get_display ().get_current_time_roundtrip ();
+
 			switch (menu) {
-			case WindowMenuType.WM:
-				message ("TODO: show window menu for %s at %ix%i\n", window.get_description (), x, y);
-				break;
-			case WindowMenuType.APP:
-				message ("TODO: show app menu for %s at %ix%i\n", window.get_description (), x, y);
-				break;
+				case WindowMenuType.WM:
+					if (window_menu == null)
+						window_menu = new WindowMenu ();
+
+					window_menu.current_window = window;
+					window_menu.show_all ();
+					window_menu.popup (null, null, (menu, out menu_x, out menu_y, out push_in) => {
+						menu_x = x;
+						menu_y = y;
+					}, Gdk.BUTTON_SECONDARY, time);
+					break;
+				case WindowMenuType.APP:
+					// FIXME we don't have any sort of app menus
+					break;
 			}
 		}
 
