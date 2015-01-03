@@ -140,7 +140,11 @@ namespace Gala
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
+#if HAS_MUTTER314
 			background_group = new BackgroundContainer (screen);
+#else
+			background_group = new BackgroundManager (screen);
+#endif
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
 
@@ -1209,7 +1213,11 @@ namespace Gala
 #endif
 
 					background.get_parent ().remove_child (background);
+#if HAS_MUTTER314
 					background_group.insert_child_at_index (background, background.monitor_index);
+#else
+					background_group.insert_child_at_index (background, background.monitor);
+#endif
 					background.x = background.steal_data<int> ("prev-x");
 					continue;
 #if HAS_MUTTER314

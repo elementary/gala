@@ -31,7 +31,12 @@ namespace Gala
 	{
 		public FramedBackground (Screen screen)
 		{
+#if HAS_MUTTER314
 			Object (screen: screen, monitor_index: screen.get_primary_monitor (), control_position: false);
+#else
+			Object (screen: screen, monitor: screen.get_primary_monitor (), 
+					settings: BackgroundSettings.get_default ().schema);
+#endif
 		}
 
 		construct
