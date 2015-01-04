@@ -1,3 +1,4 @@
 src/WindowManager.vala
+src/Widgets/WindowMenu.vala
 data/gala-multitaskingview.desktop.in
 data/org.pantheon.desktop.gala.gschema.xml.in.in

@@ -83,9 +83,7 @@ namespace Gala
 
 			if (!backgrounds.has_key (monitor_index)) {
 				var background = new Background (screen, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
-
 				background.changed.connect (background_changed);
-
 				backgrounds[monitor_index] = background;
 			}
 
