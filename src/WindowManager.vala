@@ -65,6 +65,9 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
+#if HAS_MUTTER314
+		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
+#endif
 
 		public WindowManagerGala ()
 		{
@@ -766,6 +769,49 @@ namespace Gala
 			maximize_completed (actor);
 		}
 
+#if HAS_MUTTER314
+		public override void unminimize (WindowActor actor)
+		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				actor.show ();
+				unminimize_completed (actor);
+				return;
+			}
+
+			var window = actor.get_meta_window ();
+
+			actor.detach_animation ();
+			actor.show ();
+
+			switch (window.window_type) {
+				case WindowType.NORMAL:
+					if (AnimationSettings.get_default ().minimize_duration == 0) {
+						unminimize_completed (actor);
+						return;
+					}
+
+					unminimizing.add (actor);
+
+					actor.scale_gravity = Clutter.Gravity.SOUTH;
+					actor.scale_x = 0.01f;
+					actor.scale_y = 0.1f;
+					actor.opacity = 0;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().minimize_duration,
+						scale_x:1.0f, scale_y:1.0f, opacity:255)
+						.completed.connect ( () => {
+
+						unminimizing.remove (actor);
+						unminimize_completed (actor);
+					});
+
+					break;
+				default:
+					unminimize_completed (actor);
+					break;
+			}
+		}
+#endif
+
 		public override void map (WindowActor actor)
 		{
 			if (!AnimationSettings.get_default ().enable_animations) {
@@ -989,6 +1035,10 @@ namespace Gala
 		{
 			if (end_animation (ref mapping, actor))
 				map_completed (actor);
+#if HAS_MUTTER314
+			if (end_animation (ref unminimizing, actor))
+				unminimize_completed (actor);
+#endif
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
