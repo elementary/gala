@@ -74,6 +74,7 @@ namespace Gala
 		public bool attach_modal_dialogs { get; set; }
 		public bool dim_parents { get; set; }
 		public double alt_tab_window_opacity { get; set; }
+		public string workspace_switcher_background { get; set; }
 
 		static AppearanceSettings? instance = null;
 

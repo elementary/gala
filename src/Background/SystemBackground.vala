@@ -27,7 +27,7 @@ namespace Gala
 		construct
 		{
 			var cache = BackgroundCache.get_default ();
-			cache.load_image.begin (Config.PKGDATADIR + "/texture.png", 0,
+			cache.load_image.begin (InternalUtils.get_system_background_path (), 0,
 				GDesktop.BackgroundStyle.WALLPAPER, (obj, res) => {
 				content = cache.load_image.end (res);
 			});
