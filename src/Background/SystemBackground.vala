@@ -26,18 +26,8 @@ namespace Gala
 
 		construct
 		{
-			var filename = AppearanceSettings.get_default ().workspace_switcher_background;
-			var default_file = Config.PKGDATADIR + "/texture.png";
-
-			if (filename == "") {
-				filename = default_file;
-			} else if (!FileUtils.test (filename, FileTest.IS_REGULAR)) {
-				warning ("Failed to load %s", filename);
-				filename = default_file;
-			}
-
 			var cache = BackgroundCache.get_default ();
-			cache.load_image.begin (filename, 0,
+			cache.load_image.begin (InternalUtils.get_system_background_path (), 0,
 				GDesktop.BackgroundStyle.WALLPAPER, (obj, res) => {
 				content = cache.load_image.end (res);
 			});
