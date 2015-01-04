@@ -153,6 +153,10 @@
 			<default>0.0</default>
 			<_summary>The opacity of the windows located in the background in the alt-tab-switcher.</_summary>
 		</key>
+		<key type="s" name="workspace-switcher-background">
+			<default>''</default>
+			<_summary>Background-image used in the workspace-switcher</_summary>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations" gettext-domain="@GETTEXT_PACKAGE@">
