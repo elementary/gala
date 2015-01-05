@@ -727,41 +727,51 @@ namespace Gala
 			}
 		}
 
-		//stolen from original mutter plugin
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			float x, y, width, height;
-			actor.get_size (out width, out height);
-			actor.get_position (out x, out y);
+			var duration = AnimationSettings.get_default ().snap_duration;
 
-			if (!AnimationSettings.get_default ().enable_animations ||
-				AnimationSettings.get_default ().snap_duration == 0 ||
-				(x == ex && y == ey && ew == width && eh == height)) {
+			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
 				maximize_completed (actor);
 				return;
 			}
 
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				maximizing.add (actor);
+				var old_inner_rect = WindowListener.get_default ().last_maximized_window_frame_rect;
+				var old_outer_rect = WindowListener.get_default ().last_maximized_window_buffer_rect;
+				var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
 
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
+				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
 
-				//reset the actor's anchors
-				actor.scale_gravity = actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
+				ui_group.add_child (old_actor);
 
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration,
-					scale_x:scale_x, scale_y:scale_y).get_timeline ().completed.connect ( () => {
+				var scale_x = (double) ew / old_inner_rect.width;
+				var scale_y = (double) eh / old_inner_rect.height;
 
-					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-					actor.set_scale (1.0, 1.0);
+				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						x: (float) ex,
+						y: (float) ey,
+						opacity: 0,
+						scale_x: scale_x,
+						scale_y: scale_y).completed.connect (() => {
+					old_actor.destroy ();
 
-					maximizing.remove (actor);
-					maximize_completed (actor);
+					actor.translation_x = 0;
+					actor.translation_y = 0;
 				});
+
+				maximize_completed (actor);
+				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.translation_x = old_inner_rect.x - ex;
+				actor.translation_y = old_inner_rect.y - ey;
+				actor.scale_x = 1.0 / scale_x;
+				actor.scale_y = 1.0 / scale_y;
+
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						scale_x: 1.0,
+						scale_y: 1.0,
+						translation_x: 0.0f,
+						translation_y: 0.0f);
 
 				return;
 			}
@@ -974,33 +984,45 @@ namespace Gala
 
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().snap_duration == 0) {
+			var duration = AnimationSettings.get_default ().snap_duration;
+
+			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
 				unmaximize_completed (actor);
 				return;
 			}
 
 			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				unmaximizing.add (actor);
+				Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
+				var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
 
-				float x, y, width, height;
-				actor.get_size (out width, out height);
-				actor.get_position (out x, out y);
+				old_actor.set_position (old_rect.x, old_rect.y);
 
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
+				ui_group.add_child (old_actor);
 
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration,
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f,
-						scale_y:1.0f);//just scaling didnt want to work..
+				var scale_x = (double) ew / old_rect.width;
+				var scale_y = (double) eh / old_rect.height;
 
-					unmaximizing.remove (actor);
-					unmaximize_completed (actor);
+				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						x: (float) ex,
+						y: (float) ey,
+						opacity: 0,
+						scale_x: scale_x,
+						scale_y: scale_y).completed.connect (() => {
+					old_actor.destroy ();
 				});
+
+				unmaximize_completed (actor);
+				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.translation_x = -actor.x;
+				actor.translation_y = -actor.y;
+				actor.scale_x = 1.0 / scale_x;
+				actor.scale_y = 1.0 / scale_y;
+
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						scale_x: 1.0,
+						scale_y: 1.0,
+						translation_x: 0.0,
+						translation_y: 0.0);
 
 				return;
 			}

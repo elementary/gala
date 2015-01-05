@@ -225,6 +225,38 @@ namespace Gala
 		}
 
 		/**
+		 * Creates an actor showing the current contents of the given WindowActor.
+		 *
+		 * @param actor 	 The actor from which to create a shnapshot
+		 * @param inner_rect The inner (actually visible) rectangle of the window
+		 * @param outer_rect The outer (input region) rectangle of the window
+		 */
+		public static Clutter.Actor get_window_actor_snapshot (Meta.WindowActor actor, Meta.Rectangle inner_rect, Meta.Rectangle outer_rect)
+		{
+			var surface = ((Meta.ShapedTexture) actor.get_texture ()).get_image ({
+				inner_rect.x - outer_rect.x,
+				inner_rect.y - outer_rect.y,
+				inner_rect.width,
+				inner_rect.height
+			});
+
+			var canvas = new Clutter.Canvas ();
+			var handler = canvas.draw.connect ((cr) => {
+				cr.set_source_surface (surface, 0, 0);
+				cr.paint ();
+				return false;
+			});
+			canvas.set_size (inner_rect.width, inner_rect.height);
+			SignalHandler.disconnect (canvas, handler);
+
+			var container = new Clutter.Actor ();
+			container.set_size (inner_rect.width, inner_rect.height);
+			container.content = canvas;
+
+			return container;
+		}
+
+		/**
 		 * Ring the system bell, will most likely emit a <beep> error sound or, if the
 		 * audible bell is disabled, flash the screen
 		 *
