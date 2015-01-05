@@ -120,7 +120,8 @@ namespace Gala
 
 		void window_added (Workspace? workspace, Window window)
 		{
-			if (workspace == null || !Prefs.get_dynamic_workspaces ())
+			if (workspace == null || !Prefs.get_dynamic_workspaces ()
+				|| window.on_all_workspaces)
 				return;
 
 			unowned Screen screen = workspace.get_screen ();

@@ -65,6 +65,9 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
+#if HAS_MUTTER314
+		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
+#endif
 
 		public WindowManagerGala ()
 		{
@@ -89,7 +92,9 @@ namespace Gala
 			var screen = get_screen ();
 
 			DBus.init (this);
+#if !HAS_MUTTER314
 			BackgroundCache.init (screen);
+#endif
 			WindowListener.init (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
@@ -121,7 +126,11 @@ namespace Gala
 			 * +-- top window group
 		     */
 
+#if HAS_MUTTER314
+			var system_background = new SystemBackground (screen);
+#else
 			var system_background = new SystemBackground ();
+#endif
 			system_background.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.insert_child_below (system_background, null);
@@ -134,7 +143,11 @@ namespace Gala
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
+#if HAS_MUTTER314
+			background_group = new BackgroundContainer (screen);
+#else
 			background_group = new BackgroundManager (screen);
+#endif
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
 
@@ -618,17 +631,34 @@ namespace Gala
 		}
 
 #if HAS_MUTTER314
+		WindowMenu? window_menu = null;
+
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
 		{
-			//TODO implement window/app menus, their implementation where removed with mutter 3.13+
+#if false
+			// Spawning native menus inside mutter appears to be no longer working, mouse
+			// event are apparently never delivered to the menu. Until this is fixed, we
+			// disable windowmenus all together
+
+			var time = get_screen ().get_display ().get_current_time_roundtrip ();
+
 			switch (menu) {
-			case WindowMenuType.WM:
-				message ("TODO: show window menu for %s at %ix%i\n", window.get_description (), x, y);
-				break;
-			case WindowMenuType.APP:
-				message ("TODO: show app menu for %s at %ix%i\n", window.get_description (), x, y);
-				break;
+				case WindowMenuType.WM:
+					if (window_menu == null)
+						window_menu = new WindowMenu ();
+
+					window_menu.current_window = window;
+					window_menu.show_all ();
+					window_menu.popup (null, null, (menu, out menu_x, out menu_y, out push_in) => {
+						menu_x = x;
+						menu_y = y;
+					}, Gdk.BUTTON_SECONDARY, time);
+					break;
+				case WindowMenuType.APP:
+					// FIXME we don't have any sort of app menus
+					break;
 			}
+#endif
 		}
 
 		public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect)
@@ -738,6 +768,49 @@ namespace Gala
 
 			maximize_completed (actor);
 		}
+
+#if HAS_MUTTER314
+		public override void unminimize (WindowActor actor)
+		{
+			if (!AnimationSettings.get_default ().enable_animations) {
+				actor.show ();
+				unminimize_completed (actor);
+				return;
+			}
+
+			var window = actor.get_meta_window ();
+
+			actor.detach_animation ();
+			actor.show ();
+
+			switch (window.window_type) {
+				case WindowType.NORMAL:
+					if (AnimationSettings.get_default ().minimize_duration == 0) {
+						unminimize_completed (actor);
+						return;
+					}
+
+					unminimizing.add (actor);
+
+					actor.scale_gravity = Clutter.Gravity.SOUTH;
+					actor.scale_x = 0.01f;
+					actor.scale_y = 0.1f;
+					actor.opacity = 0;
+					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().minimize_duration,
+						scale_x:1.0f, scale_y:1.0f, opacity:255)
+						.completed.connect ( () => {
+
+						unminimizing.remove (actor);
+						unminimize_completed (actor);
+					});
+
+					break;
+				default:
+					unminimize_completed (actor);
+					break;
+			}
+		}
+#endif
 
 		public override void map (WindowActor actor)
 		{
@@ -962,6 +1035,10 @@ namespace Gala
 		{
 			if (end_animation (ref mapping, actor))
 				map_completed (actor);
+#if HAS_MUTTER314
+			if (end_animation (ref unminimizing, actor))
+				unminimize_completed (actor);
+#endif
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
@@ -1177,14 +1254,27 @@ namespace Gala
 
 				// to maintain the correct order of monitor, we need to insert the Background
 				// back manually
+#if HAS_MUTTER314
+				if (actor is BackgroundManager) {
+					var background = (BackgroundManager) actor;
+#else
 				if (actor is Background) {
 					var background = (Background) actor;
+#endif
 
 					background.get_parent ().remove_child (background);
+#if HAS_MUTTER314
+					background_group.insert_child_at_index (background, background.monitor_index);
+#else
 					background_group.insert_child_at_index (background, background.monitor);
+#endif
 					background.x = background.steal_data<int> ("prev-x");
 					continue;
+#if HAS_MUTTER314
+				} else if (actor is Meta.BackgroundGroup) {
+#else
 				} else if (actor is BackgroundManager) {
+#endif
 					actor.x = 0;
 					// thankfully mutter will take care of stacking it at the right place for us
 					clutter_actor_reparent (actor, window_group);

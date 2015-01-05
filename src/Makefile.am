@@ -43,21 +43,41 @@ gala_VALASOURCES = \
 	WindowListener.vala \
 	WindowManager.vala \
 	WorkspaceManager.vala \
-	Background/Background.vala \
-	Background/BackgroundCache.vala \
-	Background/BackgroundManager.vala \
-	Background/SlideShow.vala \
-	Background/SystemBackground.vala \
 	Widgets/IconGroup.vala \
 	Widgets/IconGroupContainer.vala \
 	Widgets/MonitorClone.vala \
 	Widgets/MultitaskingView.vala \
 	Widgets/WindowClone.vala \
 	Widgets/WindowCloneContainer.vala \
+	Widgets/WindowMenu.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
 	Widgets/WorkspaceClone.vala \
 	$(NULL)
+
+gala_background = \
+	Background/Animation.vala \
+	Background/Background.vala \
+	Background/BackgroundCache.vala \
+	Background/BackgroundContainer.vala \
+	Background/BackgroundManager.vala \
+	Background/BackgroundSource.vala \
+	Background/SystemBackground.vala \
+	$(NULL)
+
+gala_background312 = \
+	Background-3.12/Background.vala \
+	Background-3.12/BackgroundCache.vala \
+	Background-3.12/BackgroundManager.vala \
+	Background-3.12/SlideShow.vala \
+	Background-3.12/SystemBackground.vala \
+	$(NULL)
+
+if HAVE_MUTTER314
+gala_VALASOURCES += $(gala_background)
+else
+gala_VALASOURCES += $(gala_background312)
+endif
 
 nodist_gala_SOURCES = \
 	gala_vala.stamp \
@@ -78,6 +98,8 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	$(gala_background) \
+	$(gala_background312) \
 	$(gala_VALASOURCES) \
 	$(NULL)
 
