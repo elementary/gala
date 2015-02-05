@@ -257,6 +257,7 @@ data/org.pantheon.desktop.gala.gschema.xml.in
 data/icons/Makefile
 vapi/Makefile
 plugins/Makefile
+plugins/maskcorners/Makefile
 plugins/notify/Makefile
 plugins/zoom/Makefile
 po/Makefile.in
