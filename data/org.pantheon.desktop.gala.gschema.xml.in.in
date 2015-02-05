@@ -237,4 +237,25 @@
 			<_description>Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]</_description>
 		</key>
 	</schema>
+	
+	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="b" name="enable">
+			<default>true</default>
+			<_summary>Enable rounded corner mask</_summary>
+		</key>
+		<key type="i" name="corner-radius">
+			<default>4</default>
+			<range min="1" max="32"/>
+			<_summary>Corner radius</_summary>
+		</key>
+		<key type="b" name="disable-on-fullscreen">
+			<default>true</default>
+			<_summary>Disable corner mask on fullscreen</_summary>
+			<description>If enabled, when an application is fullscreen (fills the monitor), the corner masks will be disabled on that monitor.</description>
+		</key>
+		<key type="b" name="only-on-primary">
+			<default>false</default>
+			<_summary>Only show corner masks on primary monitor</_summary>
+		</key>
+	</schema>
 </schemalist>
