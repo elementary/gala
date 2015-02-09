@@ -276,6 +276,8 @@ namespace Gala.Plugins.Notify
 			for (var i = 0; i < notification_actions.length; i += 2) {
 				if (notification_actions[i] == "default") {
 					action_invoked (id, "default");
+					dismiss ();
+
 					return;
 				}
 			}
@@ -291,6 +293,8 @@ namespace Gala.Plugins.Notify
 					workspace.activate_with_focus (window, time);
 				else
 					window.activate (time);
+
+				dismiss ();
 			}
 		}
 
@@ -310,6 +314,12 @@ namespace Gala.Plugins.Notify
 			}
 
 			return null;
+		}
+
+		void dismiss ()
+		{
+			closed (id, NotificationClosedReason.DISMISSED);
+			close ();
 		}
 	}
 }
