@@ -27,7 +27,7 @@ namespace Gala
 	 */
 	public class MultitaskingView : Actor, ActivatableComponent
 	{
-		const int HIDING_DURATION = 300;
+		public const int ANIMATION_DURATION = 250;
 		const int SMOOTH_SCROLL_DELAY = 500;
 
 		public WindowManager wm { get; construct; }
@@ -226,11 +226,14 @@ namespace Gala
 					workspace_clone.active = false;
 				}
 
+				workspace_clone.save_easing_state ();
 				workspace_clone.set_easing_duration (animate ? 200 : 0);
 				workspace_clone.x = dest_x;
+				workspace_clone.restore_easing_state ();
 			}
 
-			workspaces.set_easing_duration (animate ? 300 : 0);
+			workspaces.set_easing_duration (animate ?
+				AnimationSettings.get_default ().workspace_switch_duration : 0);
 			workspaces.x = -active_x;
 
 			reposition_icon_groups (animate);
@@ -473,6 +476,11 @@ namespace Gala
 			if (active_workspace != null)
 				workspaces.set_child_above_sibling (active_workspace, null);
 
+			workspaces.remove_all_transitions ();
+			foreach (var child in workspaces.get_children ()) {
+				child.remove_all_transitions ();
+			}
+
 			update_positions (false);
 
 			foreach (var child in workspaces.get_children ()) {
@@ -484,7 +492,8 @@ namespace Gala
 			}
 
 			if (!opening) {
-				Timeout.add (290, () => {
+
+				Timeout.add (ANIMATION_DURATION, () => {
 					foreach (var container in window_containers_monitors) {
 						container.visible = false;
 					}
@@ -502,7 +511,7 @@ namespace Gala
 					return false;
 				});
 			} else {
-				Timeout.add (200, () => {
+				Timeout.add (ANIMATION_DURATION, () => {
 					animating = false;
 					return false;
 				});

@@ -276,24 +276,17 @@ namespace Gala
 			var outer_rect = window.get_outer_rect ();
 #endif
 
-			float offset_x = 0, offset_y = 0;
+			var monitor_geom = window.get_screen ().get_monitor_geometry (window.get_monitor ());
+			var offset_x = monitor_geom.x;
+			var offset_y = monitor_geom.y;
 
-			var parent = get_parent ();
-			if (parent != null) {
-				// in overview_mode the parent has just been added to the stage, so the
-				// transforme position is not set yet. However, the set position is correct
-				// for overview anyway, so we can just use that.
-				if (overview_mode)
-					parent.get_position (out offset_x, out offset_y);
-				else
-					parent.get_transformed_position (out offset_x, out offset_y);
-			}
-
+			save_easing_state ();
 			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
-			set_easing_duration (animate ? 300 : 0);
+			set_easing_duration (animate ? MultitaskingView.ANIMATION_DURATION : 0);
 
 			set_position (outer_rect.x - offset_x, outer_rect.y - offset_y);
 			set_size (outer_rect.width, outer_rect.height);
+			restore_easing_state ();
 
 			window_icon.opacity = 0;
 
@@ -308,13 +301,15 @@ namespace Gala
 		{
 			slot = rect;
 
-			set_easing_duration (250);
+			save_easing_state ();
+			set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			set_size (rect.width, rect.height);
 			set_position (rect.x, rect.y);
 
 			window_icon.opacity = 255;
+			restore_easing_state ();
 
 			// for overview mode, windows may be faded out initially. Make sure
 			// to fade those in.
