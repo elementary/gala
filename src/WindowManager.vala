@@ -736,9 +736,14 @@ namespace Gala
 				return;
 			}
 
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				var old_inner_rect = WindowListener.get_default ().last_maximized_window_frame_rect;
-				var old_outer_rect = WindowListener.get_default ().last_maximized_window_buffer_rect;
+			var window = actor.get_meta_window ();
+
+			if (window.window_type == WindowType.NORMAL) {
+				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
+				var window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
+				var old_inner_rect = window_geometry != null ? window_geometry.inner : fallback;
+				var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
+
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
 
 				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
@@ -761,6 +766,23 @@ namespace Gala
 				});
 
 				maximize_completed (actor);
+
+				// FIMXE that's a hacky part. There is a short moment right after maximized_completed
+				//       where the texture is screwed up and shows things it's not supposed to show,
+				//       resulting in flashing. Waiting here transparently shortly fixes that issue. There
+				//       appears to be no signal that would inform when that moment happens.
+				//       We can't spend arbitrary amounts of time transparent since the overlay fades away,
+				//       about a third has proven to be a solid time. So this fix will only apply for
+				//       durations >= FLASH_PREVENT_TIMEOUT*3
+				const int FLASH_PREVENT_TIMEOUT = 100;
+				if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
+					actor.opacity = 0;
+					Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
+						actor.opacity = 255;
+						return false;
+					});
+				}
+
 				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
 				actor.translation_x = old_inner_rect.x - ex;
 				actor.translation_y = old_inner_rect.y - ey;
@@ -991,7 +1013,24 @@ namespace Gala
 				return;
 			}
 
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
+			var window = actor.get_meta_window ();
+
+			if (window.window_type == WindowType.NORMAL) {
+				float offset_x, offset_y, offset_width, offset_height;
+				var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
+
+				if (unmaximized_window_geometry != null) {
+					offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
+					offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
+					offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
+					offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
+				} else {
+					offset_x = 0;
+					offset_y = 0;
+					offset_width = 0;
+					offset_height = 0;
+				}
+
 				Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
 
@@ -999,22 +1038,26 @@ namespace Gala
 
 				ui_group.add_child (old_actor);
 
-				var scale_x = (double) ew / old_rect.width;
-				var scale_y = (double) eh / old_rect.height;
+				var scale_x = (double) (ew - offset_width) / old_rect.width;
+				var scale_y = (double) (eh - offset_height) / old_rect.height;
 
 				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						x: (float) ex,
-						y: (float) ey,
+						x: (float) (ex - offset_x),
+						y: (float) (ey - offset_y),
 						opacity: 0,
 						scale_x: scale_x,
 						scale_y: scale_y).completed.connect (() => {
 					old_actor.destroy ();
 				});
 
+				var maximized_x = actor.x;
+				var maximized_y = actor.y;
 				unmaximize_completed (actor);
 				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
-				actor.translation_x = -actor.x;
-				actor.translation_y = -actor.y;
+				actor.x = ex;
+				actor.y = ey;
+				actor.translation_x = -ex + offset_x * (float) (1.0 / scale_x) + maximized_x;
+				actor.translation_y = -ey + offset_y * (float) (1.0 / scale_y) + maximized_y;
 				actor.scale_x = 1.0 / scale_x;
 				actor.scale_y = 1.0 / scale_y;
 

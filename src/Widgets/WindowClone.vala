@@ -267,10 +267,8 @@ namespace Gala
 		void on_all_workspaces_changed ()
 		{
 			// we don't display windows that are on all workspaces
-			if (window.on_all_workspaces) {
-				WindowListener.get_default ().listen_on_window (window);
+			if (window.on_all_workspaces)
 				unmanaged ();
-			}
 		}
 
 		/**

@@ -20,6 +20,11 @@ using Meta;
 
 namespace Gala
 {
+	public struct WindowGeometry {
+		Meta.Rectangle inner;
+		Meta.Rectangle outer;
+	}
+
 	public class WindowListener : Object
 	{
 		static WindowListener? instance = null;
@@ -33,9 +38,6 @@ namespace Gala
 
 			foreach (var actor in Compositor.get_window_actors (screen)) {
 				var window = actor.get_meta_window ();
-
-				if (window.on_all_workspaces)
-					instance.listen_on_window (window);
 
 				if (window.window_type == WindowType.NORMAL)
 					instance.monitor_window (window);
@@ -55,75 +57,76 @@ namespace Gala
 
 		public signal void window_no_longer_on_all_workspaces (Window window);
 
-		public Meta.Rectangle last_maximized_window_frame_rect;
-		public Meta.Rectangle last_maximized_window_buffer_rect;
-
-		Gee.List<Window> listened_windows_sticky;
+		Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
 		WindowListener ()
 		{
-			listened_windows_sticky = new Gee.LinkedList<Window> ();
-		}
-
-		public void listen_on_window (Window window)
-		{
-			if (!window.on_all_workspaces)
-				return;
-
-			window.notify["on-all-workspaces"].connect (window_on_all_workspaces_changed);
-			window.unmanaged.connect (window_removed);
-
-			listened_windows_sticky.add (window);
-		}
-
-		void window_on_all_workspaces_changed (Object object, ParamSpec param)
-		{
-			var window = (Window) object;
-
-			if (window.on_all_workspaces)
-				return;
-
-			window.notify.disconnect (window_on_all_workspaces_changed);
-			window.unmanaged.disconnect (sticky_window_removed);
-			listened_windows_sticky.remove (window);
-
-			window_no_longer_on_all_workspaces (window);
+			unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
 		}
 
 		void monitor_window (Window window)
 		{
-			window.notify["maximized-horizontally"].connect (window_maximized_changed);
-			window.notify["maximized-vertically"].connect (window_maximized_changed);
+			window.notify.connect (window_notify);
 			window.unmanaged.connect (window_removed);
+
+			window_maximized_changed (window);
 		}
 
-		void window_maximized_changed (Object object, ParamSpec pspec)
+		void window_notify (Object object, ParamSpec pspec)
 		{
 			var window = (Window) object;
 
+			switch (pspec.name) {
+				case "maximized-horizontally":
+				case "maximized-vertically":
+					window_maximized_changed (window);
+					break;
+				case "on-all-workspaces":
+					window_on_all_workspaces_changed (window);
+					break;
+			}
+		}
+
+		void window_on_all_workspaces_changed (Window window)
+		{
+			if (window.on_all_workspaces)
+				return;
+
+			window_no_longer_on_all_workspaces (window);
+		}
+
+		void window_maximized_changed (Window window)
+		{
+			// we only need to save when we were unmaximized and now go maximized
+			if (!window.maximized_vertically || !window.maximized_horizontally)
+				return;
+
+			WindowGeometry window_geometry = {};
+
 #if HAS_MUTTER312
-			last_maximized_window_frame_rect = window.get_frame_rect ();
+			window_geometry.inner = window.get_frame_rect ();
 #else
-			last_maximized_window_frame_rect = window.get_outer_rect ();
+			window_geometry.inner = window.get_outer_rect ();
 #endif
 
 #if HAS_MUTTER314
-			last_maximized_window_buffer_rect = window.get_buffer_rect ();
+			window_geometry.outer = window.get_buffer_rect ();
 #else
-			last_maximized_window_buffer_rect = window.get_input_rect ();
+			window_geometry.outer = window.get_input_rect ();
 #endif
+
+			unmaximized_state_geometry.@set (window, window_geometry);
+		}
+
+		public WindowGeometry? get_unmaximized_state_geometry (Window window)
+		{
+			return unmaximized_state_geometry.@get (window);
 		}
 
 		void window_removed (Window window)
 		{
-			window.notify["maximized-horizontally"].disconnect (window_maximized_changed);
-			window.notify["maximized-vertically"].disconnect (window_maximized_changed);
+			window.notify.disconnect (window_notify);
 			window.unmanaged.disconnect (window_removed);
-		}
-
-		void sticky_window_removed (Window window)
-		{
-			listened_windows_sticky.remove (window);
 		}
 	}
 }
