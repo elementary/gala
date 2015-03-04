@@ -21,177 +21,7 @@ using Meta;
 namespace Gala
 {
 	/**
-	 * Private class which is basically just a container for the actual
-	 * icon and takes care of blending the same icon in different sizes
-	 * over each other and various animations related to the icons
-	 */
-	class WindowIcon : Actor
-	{
-		public Window window { get; construct; }
-
-		int _icon_size;
-		/**
-		 * The icon size of the WindowIcon. Once set the new icon will be
-		 * faded over the old one and the actor animates to the new size.
-		 */
-		public int icon_size {
-			get {
-				return _icon_size;
-			}
-			set {
-				if (value == _icon_size)
-					return;
-
-				_icon_size = value;
-
-				set_size (_icon_size, _icon_size);
-
-				fade_new_icon ();
-			}
-		}
-
-		bool _temporary;
-		/**
-		 * Mark the WindowIcon as temporary. Only effect of this is that a pulse
-		 * animation will be played on the actor. Used while DnDing window thumbs
-		 * over the group.
-		 */
-		public bool temporary {
-			get {
-				return _temporary;
-			}
-			set {
-				if (_temporary && !value) {
-					remove_transition ("pulse");
-				} else if (!_temporary && value) {
-					var transition = new TransitionGroup ();
-					transition.duration = 800;
-					transition.auto_reverse = true;
-					transition.repeat_count = -1;
-					transition.progress_mode = AnimationMode.LINEAR;
-
-					var opacity_transition = new PropertyTransition ("opacity");
-					opacity_transition.set_from_value (100);
-					opacity_transition.set_to_value (255);
-					opacity_transition.auto_reverse = true;
-
-					var scale_x_transition = new PropertyTransition ("scale-x");
-					scale_x_transition.set_from_value (0.8);
-					scale_x_transition.set_to_value (1.1);
-					scale_x_transition.auto_reverse = true;
-
-					var scale_y_transition = new PropertyTransition ("scale-y");
-					scale_y_transition.set_from_value (0.8);
-					scale_y_transition.set_to_value (1.1);
-					scale_y_transition.auto_reverse = true;
-
-					transition.add_transition (opacity_transition);
-					transition.add_transition (scale_x_transition);
-					transition.add_transition (scale_y_transition);
-
-					add_transition ("pulse", transition);
-				}
-
-				_temporary = value;
-			}
-		}
-
-		bool initial = true;
-
-		Utils.WindowIcon? icon = null;
-		Utils.WindowIcon? old_icon = null;
-
-		public WindowIcon (Window window)
-		{
-			Object (window: window);
-		}
-
-		construct
-		{
-			set_pivot_point (0.5f, 0.5f);
-			set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
-			set_easing_duration (800);
-
-			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
-		}
-
-		~WindowIcon ()
-		{
-			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
-		}
-
-		void on_all_workspaces_changed ()
-		{
-			// we don't display windows that are on all workspaces
-			if (window.on_all_workspaces)
-				destroy ();
-		}
-
-		/**
-		 * Shortcut to set both position and size of the icon
-		 *
-		 * @param x    The x coordinate to which to animate to
-		 * @param y    The y coordinate to which to animate to
-		 * @param size The size to which to animate to and display the icon in
-		 */
-		public void place (float x, float y, int size)
-		{
-			if (initial) {
-				save_easing_state ();
-				set_easing_duration (10);
-			}
-
-			set_position (x, y);
-			icon_size = size;
-
-			if (initial) {
-				restore_easing_state ();
-				initial = false;
-			}
-		}
-
-		/**
-		 * Fades out the old icon and fades in the new icon
-		 */
-		void fade_new_icon ()
-		{
-			var new_icon = new Utils.WindowIcon (window, icon_size);
-			new_icon.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
-			new_icon.opacity = 0;
-
-			add_child (new_icon);
-
-			new_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
-			new_icon.set_easing_duration (500);
-
-			if (icon == null) {
-				icon = new_icon;
-			} else {
-				old_icon = icon;
-			}
-
-			new_icon.opacity = 255;
-
-			if (old_icon != null) {
-				old_icon.opacity = 0;
-				var transition = old_icon.get_transition ("opacity");
-				if (transition != null) {
-					transition.completed.connect (() => {
-						old_icon.destroy ();
-						old_icon = null;
-					});
-				} else {
-					old_icon.destroy ();
-					old_icon = null;
-				}
-			}
-
-			icon = new_icon;
-		}
-	}
-
-	/**
-	 * Container for WindowIcons which takes care of the scaling and positioning.
+	 * Container for WindowIconActors which takes care of the scaling and positioning.
 	 * It also decides whether to draw the container shape, a plus sign or an ellipsis.
 	 * Lastly it also includes the drawing code for the active highlight.
 	 */
@@ -410,7 +240,7 @@ namespace Gala
 		}
 
 		/**
-		 * Remove all currently added WindowIcons
+		 * Remove all currently added WindowIconActors
 		 */
 		public void clear ()
 		{
@@ -418,17 +248,17 @@ namespace Gala
 		}
 
 		/**
-		 * Creates a WindowIcon for the given window and adds it to the group
+		 * Creates a WindowIconActor for the given window and adds it to the group
 		 *
-		 * @param window    The MetaWindow for which to create the WindowIcon
+		 * @param window    The MetaWindow for which to create the WindowIconActor
 		 * @param no_redraw If you add multiple windows at once you may want to consider
 		 *                  settings this to true and when done calling redraw() manually
-		 * @param temporary Mark the WindowIcon as temporary. Used for windows dragged over
+		 * @param temporary Mark the WindowIconActor as temporary. Used for windows dragged over
 		 *                  the group.
 		 */
 		public void add_window (Window window, bool no_redraw = false, bool temporary = false)
 		{
-			var new_window = new WindowIcon (window);
+			var new_window = new WindowIconActor (window);
 
 			new_window.save_easing_state ();
 			new_window.set_easing_duration (0);
@@ -443,14 +273,14 @@ namespace Gala
 		}
 
 		/**
-		 * Remove the WindowIcon for a MetaWindow from the group
+		 * Remove the WindowIconActor for a MetaWindow from the group
 		 *
 		 * @param animate Whether to fade the icon out before removing it
 		 */
 		public void remove_window (Window window, bool animate = true)
 		{
 			foreach (var child in icon_container.get_children ()) {
-				unowned WindowIcon w = (WindowIcon) child;
+				unowned WindowIconActor w = (WindowIconActor) child;
 				if (w.window == window) {
 					if (animate) {
 						w.set_easing_mode (AnimationMode.LINEAR);
@@ -513,7 +343,7 @@ namespace Gala
 
 			// single icon => big icon
 			if (n_windows == 1) {
-				var icon = (WindowIcon) icon_container.get_child_at_index (0);
+				var icon = (WindowIconActor) icon_container.get_child_at_index (0);
 				icon.place (0, 0, 64);
 
 				return false;
@@ -607,7 +437,7 @@ namespace Gala
 			var x = x_offset;
 			var y = y_offset;
 			for (var i = 0; i < n_windows; i++) {
-				var window = (WindowIcon) icon_container.get_child_at_index (i);
+				var window = (WindowIconActor) icon_container.get_child_at_index (i);
 
 				// draw an ellipsis at the 9th position if we need one
 				if (show_ellipsis && i == 8) {

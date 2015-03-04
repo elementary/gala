@@ -131,7 +131,7 @@ namespace Gala
 				return false;
 			});
 
-			window_icon = new Utils.WindowIcon (window, WINDOW_ICON_SIZE);
+			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE);
 			window_icon.opacity = 0;
 			window_icon.set_pivot_point (0.5f, 0.5f);
 

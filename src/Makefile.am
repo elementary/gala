@@ -32,6 +32,7 @@ gala_LDADD = \
 
 gala_VALASOURCES = \
 	DBus.vala \
+	DockThemeManager.vala \
 	DragDropAction.vala \
 	InternalUtils.vala \
 	Main.vala \
@@ -49,10 +50,12 @@ gala_VALASOURCES = \
 	Widgets/MultitaskingView.vala \
 	Widgets/WindowClone.vala \
 	Widgets/WindowCloneContainer.vala \
+	Widgets/WindowIconActor.vala \
 	Widgets/WindowMenu.vala \
 	Widgets/WindowOverview.vala \
 	Widgets/WindowSwitcher.vala \
 	Widgets/WorkspaceClone.vala \
+	Widgets/WorkspaceInsertThumb.vala \
 	$(NULL)
 
 gala_background = \

@@ -35,6 +35,7 @@ libgala_la_VALASOURCES = \
 	ActivatableComponent.vala \
 	Plugin.vala \
 	Utils.vala \
+	WindowIcon.vala \
 	WindowManager.vala \
 	$(NULL)
 

@@ -26,7 +26,7 @@ namespace Gala
 
 		public WindowManager wm { get; construct; }
 
-		Utils.WindowIcon? current_window = null;
+		WindowIcon? current_window = null;
 
 		Actor window_clones;
 		List<Actor> clone_sort_order;
@@ -276,7 +276,7 @@ namespace Gala
 		}
 
 		bool clicked_icon (Clutter.ButtonEvent event) {
-			unowned Utils.WindowIcon icon = (Utils.WindowIcon) event.source;
+			unowned WindowIcon icon = (WindowIcon) event.source;
 
 			if (current_window != icon) {
 				current_window = icon;
@@ -306,9 +306,9 @@ namespace Gala
 			}
 
 			if (actor == current_window) {
-				current_window = (Utils.WindowIcon) current_window.get_next_sibling ();
+				current_window = (WindowIcon) current_window.get_next_sibling ();
 				if (current_window == null)
-					current_window = (Utils.WindowIcon) dock.get_first_child ();
+					current_window = (WindowIcon) dock.get_first_child ();
 
 				dim_windows ();
 			}
@@ -493,7 +493,7 @@ namespace Gala
 				close_cleanup ();
 		}
 
-		Utils.WindowIcon? add_window (Window window)
+		WindowIcon? add_window (Window window)
 		{
 			var actor = window.get_compositor_private () as WindowActor;
 			if (actor == null)
@@ -507,7 +507,7 @@ namespace Gala
 
 			window_clones.add_child (clone);
 
-			var icon = new Utils.WindowIcon (window, dock_settings.IconSize, true);
+			var icon = new WindowIcon (window, dock_settings.IconSize, true);
 			icon.reactive = true;
 			icon.opacity = 100;
 			icon.x_expand = true;
@@ -545,7 +545,7 @@ namespace Gala
 			}
 
 			foreach (var actor in dock.get_children ()) {
-				unowned Utils.WindowIcon icon = (Utils.WindowIcon) actor;
+				unowned WindowIcon icon = (WindowIcon) actor;
 				icon.save_easing_state ();
 				icon.set_easing_duration (100);
 				icon.set_easing_mode (AnimationMode.LINEAR);
@@ -602,7 +602,7 @@ namespace Gala
 			clone_sort_order = window_clones.get_children ().copy ();
 
 			if (current_window == null)
-				current_window = (Utils.WindowIcon) dock.get_child_at_index (0);
+				current_window = (WindowIcon) dock.get_child_at_index (0);
 
 			// hide the others
 			foreach (var actor in Compositor.get_window_actors (screen)) {
@@ -624,7 +624,7 @@ namespace Gala
 			return true;
 		}
 
-		Utils.WindowIcon next_window (Workspace workspace, bool backward)
+		WindowIcon next_window (Workspace workspace, bool backward)
 		{
 			Actor actor;
 			if (!backward) {
@@ -637,7 +637,7 @@ namespace Gala
 					actor = dock.get_last_child ();
 			}
 
-			return (Utils.WindowIcon) actor;
+			return (WindowIcon) actor;
 		}
 
 		/**
