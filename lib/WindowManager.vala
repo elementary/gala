@@ -46,7 +46,7 @@ namespace Gala
 		 * Defaults to blocking all.
 		 * @see KeybindingFilter
 		 */
-		public KeybindingFilter? keybinding_filter { get; set; default = () => true; }
+		public KeybindingFilter? keybinding_filter { get; owned set; default = () => true; }
 
 		public ModalProxy ()
 		{
