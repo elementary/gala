@@ -87,7 +87,7 @@ nodist_gala_SOURCES = \
 	$(gala_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-gala_vala.stamp: $(gala_VALASOURCES)
+gala_vala.stamp: $(gala_VALASOURCES) $(top_builddir)/lib/gala.vapi Makefile
 	$(AM_V_VALA)$(VALAC) \
 		$(gala_VALAFLAGS) \
 		--basedir $(srcdir) \

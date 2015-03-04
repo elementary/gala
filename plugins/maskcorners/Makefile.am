@@ -42,7 +42,7 @@ nodist_libgala_maskcorners_la_SOURCES = \
 	$(libgala_maskcorners_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-libgala_maskcorners_la_vala.stamp: $(libgala_maskcorners_la_VALASOURCES)
+libgala_maskcorners_la_vala.stamp: $(libgala_maskcorners_la_VALASOURCES) $(top_builddir)/lib/gala.vapi Makefile
 	$(AM_V_VALA)$(VALAC) \
 		$(libgala_maskcorners_la_VALAFLAGS) \
 		-C \

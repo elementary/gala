@@ -6,9 +6,20 @@ BUILT_SOURCES = \
 	libgala_la_vala.stamp \
 	$(NULL)
 
-libgala_la_LTLIBRARIES = libgala.la
+libgalaincludedir = $(includedir)/gala
+nodist_libgalainclude_HEADERS = gala.h
 
-libgala_ladir = $(pkglibdir)
+vapidir = $(datadir)/vala/vapi
+nodist_vapi_DATA = \
+	gala.vapi \
+	gala.deps \
+	$(NULL)
+
+pkgconfigdir = $(libdir)/pkgconfig
+nodist_pkgconfig_DATA = gala.pc
+
+
+lib_LTLIBRARIES = libgala.la
 
 libgala_la_CFLAGS = \
 	$(GALA_CORE_CFLAGS) \
@@ -17,8 +28,12 @@ libgala_la_CFLAGS = \
 	$(NULL)
 
 libgala_la_LDFLAGS = \
-	-avoid-version \
+	$(AM_LDLAGS) \
 	$(GALA_CORE_LDFLAGS) \
+	-no-undefined \
+	-version-info "$(LT_CURRENT)":"$(LT_REVISION)":"$(LT_AGE)" \
+	-export-dynamic \
+	-export-symbols-regex '^gala_.*' \
 	$(NULL)
 
 libgala_la_VALAFLAGS = \
@@ -44,7 +59,9 @@ nodist_libgala_la_SOURCES = \
 	$(libgala_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-libgala_la_vala.stamp: $(libgala_la_VALASOURCES)
+gala.h gala.vapi: libgala_la_vala.stamp
+
+libgala_la_vala.stamp: $(libgala_la_VALASOURCES) Makefile
 	$(AM_V_VALA)$(VALAC) \
 		$(libgala_la_VALAFLAGS) \
 		--basedir $(srcdir) \

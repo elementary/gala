@@ -54,7 +54,7 @@ nodist_libgala_notify_la_SOURCES = \
 	$(libgala_notify_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
-libgala_notify_la_vala.stamp: $(libgala_notify_la_VALASOURCES)
+libgala_notify_la_vala.stamp: $(libgala_notify_la_VALASOURCES) $(top_builddir)/lib/gala.vapi Makefile
 	$(AM_V_VALA)$(VALAC) \
 		$(libgala_notify_la_VALAFLAGS) \
 		-C \
