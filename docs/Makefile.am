@@ -33,6 +33,7 @@ gala_doc_files = \
 	$(top_srcdir)/src/Widgets/IconGroupContainer.vala \
 	$(top_srcdir)/src/Widgets/MonitorClone.vala \
 	$(top_srcdir)/src/Widgets/MultitaskingView.vala \
+	$(top_srcdir)/src/Widgets/SafeWindowClone.vala \
 	$(top_srcdir)/src/Widgets/WindowClone.vala \
 	$(top_srcdir)/src/Widgets/WindowCloneContainer.vala \
 	$(top_srcdir)/src/Widgets/WindowIconActor.vala \

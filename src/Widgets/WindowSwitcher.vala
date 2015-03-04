@@ -428,11 +428,8 @@ namespace Gala
 			closing = true;
 			last_switch = 0;
 
-			var screen = wm.get_screen ();
-			var workspace = screen.get_active_workspace ();
-
 			foreach (var actor in clone_sort_order) {
-				unowned InternalUtils.SafeWindowClone clone = (InternalUtils.SafeWindowClone) actor;
+				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				// current window stays on top
 				if (clone.window == current_window.window)
@@ -501,7 +498,7 @@ namespace Gala
 
 			actor.hide ();
 
-			var clone = new InternalUtils.SafeWindowClone (window, true);
+			var clone = new SafeWindowClone (window, true);
 			clone.x = actor.x;
 			clone.y = actor.y;
 
@@ -526,7 +523,7 @@ namespace Gala
 			var window_opacity = (int) Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
 
 			foreach (var actor in window_clones.get_children ()) {
-				unowned InternalUtils.SafeWindowClone clone = (InternalUtils.SafeWindowClone) actor;
+				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				actor.save_easing_state ();
 				actor.set_easing_duration (250);

@@ -1178,7 +1178,7 @@ namespace Gala
 			// the display stack
 			foreach (var window in docks) {
 				if (!to_has_fullscreened) {
-					var clone = new InternalUtils.SafeWindowClone (window.get_meta_window ());
+					var clone = new SafeWindowClone (window.get_meta_window ());
 					clone.x = window.x;
 					clone.y = window.y;
 

@@ -48,6 +48,7 @@ gala_VALASOURCES = \
 	Widgets/IconGroupContainer.vala \
 	Widgets/MonitorClone.vala \
 	Widgets/MultitaskingView.vala \
+	Widgets/SafeWindowClone.vala \
 	Widgets/WindowClone.vala \
 	Widgets/WindowCloneContainer.vala \
 	Widgets/WindowIconActor.vala \
