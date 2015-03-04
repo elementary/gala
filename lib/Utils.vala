@@ -130,18 +130,14 @@ namespace Gala
 			string? icon_key = null;
 
 			if (app != null && app.get_desktop_file () != null) {
-				try {
-					var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
-					if (appinfo != null) {
-						icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-						icon_key = "%s::%i".printf (icon, size);
-						if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-							image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
-							not_cached = true;
-						}
+				var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
+				if (appinfo != null) {
+					icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
+					icon_key = "%s::%i".printf (icon, size);
+					if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
+						image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
+						not_cached = true;
 					}
-				} catch (Error e) {
-					warning (e.message);
 				}
 			}
 
