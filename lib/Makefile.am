@@ -81,5 +81,6 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	$(libgala_la_VALASOURCES) \
+	gala.deps \
 	$(NULL)
 

@@ -31,11 +31,9 @@ EXTRA_DIST = \
 	$(NULL)
 
 CLEANFILES = \
-	$(applications_DATA) \
-	$(styles_DATA) \
-	$(gsettings_SCHEMAS) \
+	gala-multitaskingview.desktop \
 	gschemas.compiled \
-	data/org.pantheon.desktop.gala.gschema.xml \
-	data/org.pantheon.desktop.gala.gschema.xml.in \
+	org.pantheon.desktop.gala.gschema.xml \
+	org.pantheon.desktop.gala.gschema.xml.in \
 	$(NULL)
 
