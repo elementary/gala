@@ -47,7 +47,7 @@ namespace Gala
 			 * Creates a new SafeWindowClone
 			 *
 			 * @param window               The window to clone from
-			 * @param destroy_on_unmanaged @see destroy_on_unmanaged
+			 * @param destroy_on_unmanaged see destroy_on_unmanaged property
 			 */
 			public SafeWindowClone (Window window, bool destroy_on_unmanaged = false)
 			{
@@ -191,7 +191,7 @@ namespace Gala
 		 * removed again when in dynamic workspaces, the window is first placed on it.
 		 *
 		 * @param index  The index at which to insert the workspace
-		 * @param window A window that should be moved to the new workspace
+		 * @param new_window A window that should be moved to the new workspace
 		 */
 		public static void insert_workspace_with_window (int index, Window new_window)
 		{

@@ -63,7 +63,7 @@ namespace Gala
 		 *
 		 * @param window               The window for which to create the icon
 		 * @param icon_size            The size of the icon in pixels
-		 * @param destroy_on_unmanaged @see destroy_on_unmanaged
+		 * @param destroy_on_unmanaged see destroy_on_unmanaged property
 		 */
 		public WindowIcon (Meta.Window window, int icon_size, bool destroy_on_unmanaged = false)
 		{
