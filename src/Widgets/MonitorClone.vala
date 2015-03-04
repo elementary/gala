@@ -55,7 +55,7 @@ namespace Gala
 #else
 			background = new Background (screen, monitor, BackgroundSettings.get_default ().schema);
 #endif
-			background.set_easing_duration (300);
+			background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
 			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });

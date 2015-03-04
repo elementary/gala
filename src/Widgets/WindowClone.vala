@@ -281,7 +281,7 @@ namespace Gala
 			var offset_y = monitor_geom.y;
 
 			save_easing_state ();
-			set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
+			set_easing_mode (MultitaskingView.ANIMATION_MODE);
 			set_easing_duration (animate ? MultitaskingView.ANIMATION_DURATION : 0);
 
 			set_position (outer_rect.x - offset_x, outer_rect.y - offset_y);
@@ -303,7 +303,7 @@ namespace Gala
 
 			save_easing_state ();
 			set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			set_easing_mode (MultitaskingView.ANIMATION_MODE);
 
 			set_size (rect.width, rect.height);
 			set_position (rect.x, rect.y);

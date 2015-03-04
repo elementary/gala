@@ -28,6 +28,7 @@ namespace Gala
 	public class MultitaskingView : Actor, ActivatableComponent
 	{
 		public const int ANIMATION_DURATION = 250;
+		public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 		const int SMOOTH_SCROLL_DELAY = 500;
 
 		public WindowManager wm { get; construct; }
@@ -43,6 +44,7 @@ namespace Gala
 
 		IconGroupContainer icon_groups;
 		Actor workspaces;
+		Actor dock_clones;
 
 		public MultitaskingView (WindowManager wm)
 		{
@@ -64,8 +66,11 @@ namespace Gala
 			icon_groups = new IconGroupContainer (screen);
 			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
 
+			dock_clones = new Actor ();
+
 			add_child (icon_groups);
 			add_child (workspaces);
+			add_child (dock_clones);
 
 			foreach (var workspace in screen.get_workspaces ())
 				add_workspace (workspace.index ());
@@ -491,8 +496,49 @@ namespace Gala
 					workspace.close ();
 			}
 
-			if (!opening) {
+			if (opening) {
+				unowned List<WindowActor> actors = Compositor.get_window_actors (screen);
+				foreach (var actor in actors) {
+					const int MAX_OFFSET = 100;
 
+					var window = actor.get_meta_window ();
+
+					if (window.window_type != WindowType.DOCK)
+						continue;
+
+					var monitor_geom = screen.get_monitor_geometry (window.get_monitor ());
+
+#if HAS_MUTTER312
+					var window_geom = window.get_frame_rect ();
+#else
+					var window_geom = window.get_outer_rect ();
+#endif
+					var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
+					var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+
+					if (!top && !bottom)
+						continue;
+
+					var clone = new SafeWindowClone (window, true);
+					clone.set_position (actor.x, actor.y);
+					clone.set_easing_duration (ANIMATION_DURATION);
+					clone.set_easing_mode (ANIMATION_MODE);
+					dock_clones.add_child (clone);
+
+					if (top)
+						clone.y = actor.y - actor.height;
+					else if (bottom)
+						clone.y = actor.y + actor.height;
+				}
+			} else {
+				foreach (var child in dock_clones.get_children ()) {
+					var dock = (Clone) child;
+
+					dock.y = dock.source.y;
+				}
+			}
+
+			if (!opening) {
 				Timeout.add (ANIMATION_DURATION, () => {
 					foreach (var container in window_containers_monitors) {
 						container.visible = false;
@@ -503,6 +549,8 @@ namespace Gala
 					wm.background_group.show ();
 					wm.window_group.show ();
 					wm.top_window_group.show ();
+
+					dock_clones.destroy_all_children ();
 
 					wm.pop_modal (modal_proxy);
 
