@@ -1,5 +1,4 @@
 usr/bin
-usr/lib/*/gala/lib*.so
 usr/lib/*/gala/plugins/lib*.so
 usr/share/applications
 usr/share/gala
