@@ -235,9 +235,9 @@ namespace Gala
 		 */
 		public static Clutter.Actor? get_window_actor_snapshot (Meta.WindowActor actor, Meta.Rectangle inner_rect, Meta.Rectangle outer_rect)
 		{
-			Meta.ShapedTexture? texture;
+			var texture = actor.get_texture () as Meta.ShapedTexture;
 
-			if ((texture = actor.get_texture () as Meta.ShapedTexture) == null)
+			if (texture == null)
 				return null;
 
 			var surface = texture.get_image ({
