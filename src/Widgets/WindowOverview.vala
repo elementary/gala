@@ -83,7 +83,7 @@ namespace Gala
 			close ();
 		}
 
-		public override bool button_release_event (Clutter.ButtonEvent event)
+		public override bool button_press_event (Clutter.ButtonEvent event)
 		{
 			if (event.button == 1)
 				close ();

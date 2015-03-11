@@ -73,7 +73,7 @@ namespace Gala
 
 		public bool overview_mode { get; construct; }
 
-		DragDropAction drag_action;
+		DragDropAction? drag_action = null;
 		Clone? clone = null;
 
 		Actor prev_parent = null;
@@ -453,7 +453,7 @@ namespace Gala
 		 */
 		void unmanaged ()
 		{
-			if (drag_action.dragging)
+			if (drag_action != null && drag_action.dragging)
 				drag_action.cancel ();
 
 			if (clone != null)
