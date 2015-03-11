@@ -745,27 +745,14 @@ namespace Gala
 				var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
 
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
+				if (old_actor == null) {
+					maximize_completed (actor);
+					return;
+				}
 
 				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
 
 				ui_group.add_child (old_actor);
-
-				var scale_x = (double) ew / old_inner_rect.width;
-				var scale_y = (double) eh / old_inner_rect.height;
-
-				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						x: (float) ex,
-						y: (float) ey,
-						opacity: 0,
-						scale_x: scale_x,
-						scale_y: scale_y).completed.connect (() => {
-					old_actor.destroy ();
-
-					actor.translation_x = 0;
-					actor.translation_y = 0;
-				});
-
-				maximize_completed (actor);
 
 				// FIMXE that's a hacky part. There is a short moment right after maximized_completed
 				//       where the texture is screwed up and shows things it's not supposed to show,
@@ -774,14 +761,44 @@ namespace Gala
 				//       We can't spend arbitrary amounts of time transparent since the overlay fades away,
 				//       about a third has proven to be a solid time. So this fix will only apply for
 				//       durations >= FLASH_PREVENT_TIMEOUT*3
-				const int FLASH_PREVENT_TIMEOUT = 100;
+				const int FLASH_PREVENT_TIMEOUT = 80;
+				var delay = 0;
 				if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
 					actor.opacity = 0;
+					delay = FLASH_PREVENT_TIMEOUT;
 					Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
 						actor.opacity = 255;
 						return false;
 					});
 				}
+
+				var scale_x = (double) ew / old_inner_rect.width;
+				var scale_y = (double) eh / old_inner_rect.height;
+
+				old_actor.save_easing_state ();
+				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				old_actor.set_easing_duration (duration);
+				old_actor.x = ex;
+				old_actor.y = ey;
+				old_actor.scale_x = scale_x;
+				old_actor.scale_y = scale_y;
+
+				// the opacity animation is special, since we have to wait for the
+				// FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
+				old_actor.save_easing_state ();
+				old_actor.set_easing_delay (delay);
+				old_actor.set_easing_duration (duration - delay);
+				old_actor.opacity = 0;
+				old_actor.restore_easing_state ();
+
+				old_actor.get_transition ("x").stopped.connect (() => {
+					old_actor.destroy ();
+					actor.translation_x = 0;
+					actor.translation_y = 0;
+				});
+				old_actor.restore_easing_state ();
+
+				maximize_completed (actor);
 
 				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
 				actor.translation_x = old_inner_rect.x - ex;
@@ -789,11 +806,14 @@ namespace Gala
 				actor.scale_x = 1.0 / scale_x;
 				actor.scale_y = 1.0 / scale_y;
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						scale_x: 1.0,
-						scale_y: 1.0,
-						translation_x: 0.0f,
-						translation_y: 0.0f);
+				actor.save_easing_state ();
+				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				actor.set_easing_duration (duration);
+				actor.scale_x = 1;
+				actor.scale_y = 1;
+				actor.translation_x = 0;
+				actor.translation_y = 0;
+				actor.restore_easing_state ();
 
 				return;
 			}
@@ -1033,6 +1053,11 @@ namespace Gala
 
 				Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
+
+				if (old_actor == null) {
+					unmaximize_completed (actor);
+					return;
+				}
 
 				old_actor.set_position (old_rect.x, old_rect.y);
 

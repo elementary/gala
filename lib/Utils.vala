@@ -230,15 +230,25 @@ namespace Gala
 		 * @param actor 	 The actor from which to create a shnapshot
 		 * @param inner_rect The inner (actually visible) rectangle of the window
 		 * @param outer_rect The outer (input region) rectangle of the window
+		 *
+		 * @return           A copy of the actor at that time or %NULL
 		 */
-		public static Clutter.Actor get_window_actor_snapshot (Meta.WindowActor actor, Meta.Rectangle inner_rect, Meta.Rectangle outer_rect)
+		public static Clutter.Actor? get_window_actor_snapshot (Meta.WindowActor actor, Meta.Rectangle inner_rect, Meta.Rectangle outer_rect)
 		{
-			var surface = ((Meta.ShapedTexture) actor.get_texture ()).get_image ({
+			Meta.ShapedTexture? texture;
+
+			if ((texture = actor.get_texture () as Meta.ShapedTexture) == null)
+				return null;
+
+			var surface = texture.get_image ({
 				inner_rect.x - outer_rect.x,
 				inner_rect.y - outer_rect.y,
 				inner_rect.width,
 				inner_rect.height
 			});
+
+			if (surface == null)
+				return null;
 
 			var canvas = new Clutter.Canvas ();
 			var handler = canvas.draw.connect ((cr) => {
