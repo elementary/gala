@@ -49,7 +49,7 @@ namespace Gala
 			});
 		}
 
-		public static WindowListener get_default ()
+		public static unowned WindowListener get_default ()
 			requires (instance != null)
 		{
 			return instance;

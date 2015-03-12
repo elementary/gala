@@ -21,7 +21,7 @@ namespace Gala
 	{
 		static BackgroundCache? instance = null;
 
-		public static BackgroundCache get_default ()
+		public static unowned BackgroundCache get_default ()
 		{
 			if (instance == null)
 				instance = new BackgroundCache ();

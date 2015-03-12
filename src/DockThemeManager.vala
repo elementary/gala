@@ -24,7 +24,7 @@ namespace Gala
 	{
 		static DockThemeManager? instance = null;
 
-		public static DockThemeManager get_default ()
+		public static unowned DockThemeManager get_default ()
 		{
 			if (instance == null)
 				instance = new DockThemeManager ();

@@ -27,7 +27,7 @@ namespace Gala
 			instance = new WorkspaceManager (wm);
 		}
 
-		public static WorkspaceManager get_default ()
+		public static unowned WorkspaceManager get_default ()
 			requires (instance != null)
 		{
 			return instance;

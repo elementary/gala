@@ -4,7 +4,7 @@ namespace Gala.Plugins.MaskCorners
 	{
 		static Settings? instance = null;
 
-		public static Settings get_default ()
+		public static unowned Settings get_default ()
 		{
 			if (instance == null)
 				instance = new Settings ();

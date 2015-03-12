@@ -32,7 +32,7 @@ namespace Gala
 			instance = new BackgroundCache (screen);
 		}
 
-		public static BackgroundCache get_default ()
+		public static unowned BackgroundCache get_default ()
 			requires (instance != null)
 		{
 			return instance;

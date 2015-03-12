@@ -22,7 +22,7 @@ namespace Gala
 	public class PluginManager : Object
 	{
 		static PluginManager? instance = null;
-		public static PluginManager get_default ()
+		public static unowned PluginManager get_default ()
 		{
 			if (instance == null)
 				instance = new PluginManager ();

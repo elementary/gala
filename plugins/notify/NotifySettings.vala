@@ -34,7 +34,7 @@ namespace Gala.Plugins.Notify
 			base (Config.SCHEMA + ".notifications");
 		}
 
-		public static NotifySettings get_default ()
+		public static unowned NotifySettings get_default ()
 		{
 			if (instance == null)
 				instance = new NotifySettings ();
