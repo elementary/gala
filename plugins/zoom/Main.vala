@@ -32,8 +32,8 @@ namespace Gala.Plugins.Zoom
 			var display = wm.get_screen ().get_display ();
 			var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-			display.add_keybinding ("zoom-in", schema, 0, zoom_in);
-			display.add_keybinding ("zoom-out", schema, 0, zoom_out);
+			display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
+			display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
 		}
 
 		public override void destroy ()
@@ -51,6 +51,7 @@ namespace Gala.Plugins.Zoom
 			mouse_poll_timer = 0;
 		}
 
+		[CCode (instance_pos = -1)]
 		void zoom_in (Meta.Display display, Meta.Screen screen,
 #if HAS_MUTTER314
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
@@ -61,6 +62,7 @@ namespace Gala.Plugins.Zoom
 			zoom (true);
 		}
 
+		[CCode (instance_pos = -1)]
 		void zoom_out (Meta.Display display, Meta.Screen screen,
 #if HAS_MUTTER314
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
