@@ -146,6 +146,11 @@ namespace Gala
 			load_clone ();
 		}
 
+		public override bool button_press_event (Clutter.ButtonEvent event)
+		{
+			return true;
+		}
+
 		~WindowClone ()
 		{
 			window.unmanaged.disconnect (unmanaged);
