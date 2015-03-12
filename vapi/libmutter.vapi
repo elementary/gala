@@ -892,7 +892,7 @@ namespace Meta {
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
 		public unowned Meta.Frame get_frame ();
-		public unowned Cairo.Region? get_frame_bounds ();
+		public unowned Cairo.Region get_frame_bounds ();
 #if HAS_MUTTER312
 		public Meta.Rectangle get_frame_rect ();
 #endif
@@ -915,8 +915,10 @@ namespace Meta {
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
 		public unowned string get_mutter_hints ();
+#if !HAS_MUTTER316
 		[Deprecated (since = "3.12")]
 		public Meta.Rectangle get_outer_rect ();
+#endif
 		public int get_pid ();
 #if !HAS_MUTTER314
 		public unowned Meta.Rectangle? get_rect ();
@@ -925,7 +927,7 @@ namespace Meta {
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
 		public unowned string get_startup_id ();
-		public unowned Meta.Window? get_tile_match ();
+		public unowned Meta.Window get_tile_match ();
 		public unowned string get_title ();
 		public unowned Meta.Window get_transient_for ();
 #if !HAS_MUTTER314
