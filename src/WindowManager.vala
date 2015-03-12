@@ -727,41 +727,93 @@ namespace Gala
 			}
 		}
 
-		//stolen from original mutter plugin
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			float x, y, width, height;
-			actor.get_size (out width, out height);
-			actor.get_position (out x, out y);
+			var duration = AnimationSettings.get_default ().snap_duration;
 
-			if (!AnimationSettings.get_default ().enable_animations ||
-				AnimationSettings.get_default ().snap_duration == 0 ||
-				(x == ex && y == ey && ew == width && eh == height)) {
+			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
 				maximize_completed (actor);
 				return;
 			}
 
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				maximizing.add (actor);
+			var window = actor.get_meta_window ();
 
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
+			if (window.window_type == WindowType.NORMAL) {
+				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
+				var window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
+				var old_inner_rect = window_geometry != null ? window_geometry.inner : fallback;
+				var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
 
-				//reset the actor's anchors
-				actor.scale_gravity = actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration,
-					scale_x:scale_x, scale_y:scale_y).get_timeline ().completed.connect ( () => {
-
-					actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-					actor.set_scale (1.0, 1.0);
-
-					maximizing.remove (actor);
+				var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
+				if (old_actor == null) {
 					maximize_completed (actor);
+					return;
+				}
+
+				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
+
+				ui_group.add_child (old_actor);
+
+				// FIMXE that's a hacky part. There is a short moment right after maximized_completed
+				//       where the texture is screwed up and shows things it's not supposed to show,
+				//       resulting in flashing. Waiting here transparently shortly fixes that issue. There
+				//       appears to be no signal that would inform when that moment happens.
+				//       We can't spend arbitrary amounts of time transparent since the overlay fades away,
+				//       about a third has proven to be a solid time. So this fix will only apply for
+				//       durations >= FLASH_PREVENT_TIMEOUT*3
+				const int FLASH_PREVENT_TIMEOUT = 80;
+				var delay = 0;
+				if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
+					actor.opacity = 0;
+					delay = FLASH_PREVENT_TIMEOUT;
+					Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
+						actor.opacity = 255;
+						return false;
+					});
+				}
+
+				var scale_x = (double) ew / old_inner_rect.width;
+				var scale_y = (double) eh / old_inner_rect.height;
+
+				old_actor.save_easing_state ();
+				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				old_actor.set_easing_duration (duration);
+				old_actor.x = ex;
+				old_actor.y = ey;
+				old_actor.scale_x = scale_x;
+				old_actor.scale_y = scale_y;
+
+				// the opacity animation is special, since we have to wait for the
+				// FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
+				old_actor.save_easing_state ();
+				old_actor.set_easing_delay (delay);
+				old_actor.set_easing_duration (duration - delay);
+				old_actor.opacity = 0;
+				old_actor.restore_easing_state ();
+
+				old_actor.get_transition ("x").stopped.connect (() => {
+					old_actor.destroy ();
+					actor.translation_x = 0;
+					actor.translation_y = 0;
 				});
+				old_actor.restore_easing_state ();
+
+				maximize_completed (actor);
+
+				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.translation_x = old_inner_rect.x - ex;
+				actor.translation_y = old_inner_rect.y - ey;
+				actor.scale_x = 1.0 / scale_x;
+				actor.scale_y = 1.0 / scale_y;
+
+				actor.save_easing_state ();
+				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				actor.set_easing_duration (duration);
+				actor.scale_x = 1;
+				actor.scale_y = 1;
+				actor.translation_x = 0;
+				actor.translation_y = 0;
+				actor.restore_easing_state ();
 
 				return;
 			}
@@ -974,33 +1026,71 @@ namespace Gala
 
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			if (!AnimationSettings.get_default ().enable_animations || AnimationSettings.get_default ().snap_duration == 0) {
+			var duration = AnimationSettings.get_default ().snap_duration;
+
+			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
 				unmaximize_completed (actor);
 				return;
 			}
 
-			if (actor.get_meta_window ().window_type == WindowType.NORMAL) {
-				unmaximizing.add (actor);
+			var window = actor.get_meta_window ();
 
-				float x, y, width, height;
-				actor.get_size (out width, out height);
-				actor.get_position (out x, out y);
+			if (window.window_type == WindowType.NORMAL) {
+				float offset_x, offset_y, offset_width, offset_height;
+				var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
-				float scale_x  = (float)ew  / width;
-				float scale_y  = (float)eh / height;
-				float anchor_x = (float)(x - ex) * width  / (ew - width);
-				float anchor_y = (float)(y - ey) * height / (eh - height);
+				if (unmaximized_window_geometry != null) {
+					offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
+					offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
+					offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
+					offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
+				} else {
+					offset_x = 0;
+					offset_y = 0;
+					offset_width = 0;
+					offset_height = 0;
+				}
 
-				actor.move_anchor_point (anchor_x, anchor_y);
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_SINE, AnimationSettings.get_default ().snap_duration,
-					scale_x:scale_x, scale_y:scale_y).completed.connect ( () => {
-					actor.move_anchor_point_from_gravity (Clutter.Gravity.NORTH_WEST);
-					actor.animate (Clutter.AnimationMode.LINEAR, 1, scale_x:1.0f,
-						scale_y:1.0f);//just scaling didnt want to work..
+				Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
+				var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
 
-					unmaximizing.remove (actor);
+				if (old_actor == null) {
 					unmaximize_completed (actor);
+					return;
+				}
+
+				old_actor.set_position (old_rect.x, old_rect.y);
+
+				ui_group.add_child (old_actor);
+
+				var scale_x = (double) (ew - offset_width) / old_rect.width;
+				var scale_y = (double) (eh - offset_height) / old_rect.height;
+
+				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						x: (ex - offset_x),
+						y: (ey - offset_y),
+						opacity: 0,
+						scale_x: scale_x,
+						scale_y: scale_y).completed.connect (() => {
+					old_actor.destroy ();
 				});
+
+				var maximized_x = actor.x;
+				var maximized_y = actor.y;
+				unmaximize_completed (actor);
+				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.x = ex;
+				actor.y = ey;
+				actor.translation_x = -ex + offset_x * (float) (1.0 / scale_x) + maximized_x;
+				actor.translation_y = -ey + offset_y * (float) (1.0 / scale_y) + maximized_y;
+				actor.scale_x = 1.0 / scale_x;
+				actor.scale_y = 1.0 / scale_y;
+
+				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
+						scale_x: 1.0,
+						scale_y: 1.0,
+						translation_x: 0.0,
+						translation_y: 0.0);
 
 				return;
 			}

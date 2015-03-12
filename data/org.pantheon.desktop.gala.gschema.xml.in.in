@@ -169,7 +169,7 @@
 			<default>350</default>
 		</key>
 		<key type="i" name="snap-duration">
-			<default>150</default>
+			<default>250</default>
 			<_summary>Duration of the snap animation as used by maximize/unmaximize</_summary>
 		</key>
 		<key type="i" name="close-duration">

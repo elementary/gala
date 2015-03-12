@@ -20,6 +20,11 @@ using Meta;
 
 namespace Gala
 {
+	public struct WindowGeometry {
+		Meta.Rectangle inner;
+		Meta.Rectangle outer;
+	}
+
 	public class WindowListener : Object
 	{
 		static WindowListener? instance = null;
@@ -34,9 +39,14 @@ namespace Gala
 			foreach (var actor in Compositor.get_window_actors (screen)) {
 				var window = actor.get_meta_window ();
 
-				if (window.on_all_workspaces)
-					instance.listen_on_window (window);
+				if (window.window_type == WindowType.NORMAL)
+					instance.monitor_window (window);
 			}
+
+			screen.get_display ().window_created.connect ((window) => {
+				if (window.window_type == WindowType.NORMAL)
+					instance.monitor_window (window);
+			});
 		}
 
 		public static WindowListener get_default ()
@@ -47,41 +57,76 @@ namespace Gala
 
 		public signal void window_no_longer_on_all_workspaces (Window window);
 
-		Gee.List<Window> listened_windows;
+		Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
 		WindowListener ()
 		{
-			listened_windows = new Gee.LinkedList<Window> ();
+			unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
 		}
 
-		public void listen_on_window (Window window)
+		void monitor_window (Window window)
 		{
-			if (!window.on_all_workspaces)
-				return;
-
-			window.notify["on-all-workspaces"].connect (window_on_all_workspaces_changed);
+			window.notify.connect (window_notify);
 			window.unmanaged.connect (window_removed);
 
-			listened_windows.add (window);
+			window_maximized_changed (window);
 		}
 
-		void window_on_all_workspaces_changed (Object object, ParamSpec param)
+		void window_notify (Object object, ParamSpec pspec)
 		{
 			var window = (Window) object;
 
+			switch (pspec.name) {
+				case "maximized-horizontally":
+				case "maximized-vertically":
+					window_maximized_changed (window);
+					break;
+				case "on-all-workspaces":
+					window_on_all_workspaces_changed (window);
+					break;
+			}
+		}
+
+		void window_on_all_workspaces_changed (Window window)
+		{
 			if (window.on_all_workspaces)
 				return;
-
-			window.notify.disconnect (window_on_all_workspaces_changed);
-			window.unmanaged.disconnect (window_removed);
-			listened_windows.remove (window);
 
 			window_no_longer_on_all_workspaces (window);
 		}
 
+		void window_maximized_changed (Window window)
+		{
+			// we only need to save when we were unmaximized and now go maximized
+			if (!window.maximized_vertically || !window.maximized_horizontally)
+				return;
+
+			WindowGeometry window_geometry = {};
+
+#if HAS_MUTTER312
+			window_geometry.inner = window.get_frame_rect ();
+#else
+			window_geometry.inner = window.get_outer_rect ();
+#endif
+
+#if HAS_MUTTER314
+			window_geometry.outer = window.get_buffer_rect ();
+#else
+			window_geometry.outer = window.get_input_rect ();
+#endif
+
+			unmaximized_state_geometry.@set (window, window_geometry);
+		}
+
+		public WindowGeometry? get_unmaximized_state_geometry (Window window)
+		{
+			return unmaximized_state_geometry.@get (window);
+		}
+
 		void window_removed (Window window)
 		{
-			listened_windows.remove (window);
+			window.notify.disconnect (window_notify);
+			window.unmanaged.disconnect (window_removed);
 		}
 	}
 }
