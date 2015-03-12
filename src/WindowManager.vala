@@ -360,7 +360,7 @@ namespace Gala
 				return;
 
 			var index = (binding.get_name () == "move-to-workspace-first" ? 0 : screen.get_n_workspaces () - 1);
-			var workspace = screen.get_workspace_by_index (0);
+			var workspace = screen.get_workspace_by_index (index);
 			window.change_workspace (workspace);
 			workspace.activate_with_focus (window, display.get_current_time ());
 		}
