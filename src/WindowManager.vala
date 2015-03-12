@@ -1067,8 +1067,8 @@ namespace Gala
 				var scale_y = (double) (eh - offset_height) / old_rect.height;
 
 				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						x: (float) (ex - offset_x),
-						y: (float) (ey - offset_y),
+						x: (ex - offset_x),
+						y: (ey - offset_y),
 						opacity: 0,
 						scale_x: scale_x,
 						scale_y: scale_y).completed.connect (() => {
