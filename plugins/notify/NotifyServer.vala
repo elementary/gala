@@ -151,7 +151,7 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains ("x-canonical-private-synchronous");
 			var progress = confirmation && hints.contains ("value");
 
-			var options = NotifySettings.get_default ();
+			unowned NotifySettings options = NotifySettings.get_default ();
 
 			// Default values for confirmations
 			var allow_bubble = true;
