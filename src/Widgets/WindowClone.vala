@@ -122,14 +122,6 @@ namespace Gala
 				close_window ();
 				return true;
 			});
-			enter_event.connect (() => {
-				close_button.opacity = 255;
-				return false;
-			});
-			leave_event.connect (() => {
-				close_button.opacity = 0;
-				return false;
-			});
 
 			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE);
 			window_icon.opacity = 0;
@@ -144,11 +136,6 @@ namespace Gala
 			add_child (close_button);
 
 			load_clone ();
-		}
-
-		public override bool button_press_event (Clutter.ButtonEvent event)
-		{
-			return true;
 		}
 
 		~WindowClone ()
@@ -388,6 +375,25 @@ namespace Gala
 			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
 			clone.allocate (alloc, flags);
+		}
+
+		public override bool button_press_event (Clutter.ButtonEvent event)
+		{
+			return true;
+		}
+
+		public override	bool enter_event (Clutter.CrossingEvent event)
+		{
+			close_button.opacity = 255;
+
+			return false;
+		}
+		
+		public override	bool leave_event (Clutter.CrossingEvent event)
+		{
+			close_button.opacity = 0;
+
+			return false;
 		}
 
 		/**
