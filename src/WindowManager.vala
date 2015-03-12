@@ -709,9 +709,12 @@ namespace Gala
 
 		public override void minimize (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations ||
-				AnimationSettings.get_default ().minimize_duration == 0 ||
-				actor.get_meta_window ().window_type != WindowType.NORMAL) {
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			var duration = animation_settings.minimize_duration;
+			
+			if (!animation_settings.enable_animations
+				|| duration == 0
+				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
 				minimize_completed (actor);
 				return;
 			}
@@ -735,7 +738,7 @@ namespace Gala
 				actor.scale_center_x = anchor_x;
 				actor.scale_center_y = anchor_y;
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration,
+				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, duration,
 					scale_x:scale_x, scale_y:scale_y,opacity:0).completed.connect (() => {
 
 					actor.scale_center_x = actor.scale_center_y = 0;
@@ -750,7 +753,7 @@ namespace Gala
 				actor.scale_center_x = width / 2.0f - actor.x;
 				actor.scale_center_y = height - actor.y;
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, AnimationSettings.get_default ().minimize_duration,
+				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, duration,
 					scale_x : 0.0f, scale_y : 0.0f, opacity : 0).completed.connect (() => {
 
 					actor.set_pivot_point (0, 0);
@@ -765,9 +768,11 @@ namespace Gala
 
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			var duration = AnimationSettings.get_default ().snap_duration;
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			var duration = animation_settings.snap_duration;
 
-			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
+			if (!animation_settings.enable_animations
+				|| duration == 0) {
 				maximize_completed (actor);
 				return;
 			}
@@ -860,7 +865,9 @@ namespace Gala
 #if HAS_MUTTER314
 		public override void unminimize (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations) {
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+
+			if (!animation_settings.enable_animations) {
 				actor.show ();
 				unminimize_completed (actor);
 				return;
@@ -873,7 +880,8 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					if (AnimationSettings.get_default ().minimize_duration == 0) {
+					var duration = animation_settings.minimize_duration;
+					if (duration == 0) {
 						unminimize_completed (actor);
 						return;
 					}
@@ -884,7 +892,7 @@ namespace Gala
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().minimize_duration,
+					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, duration,
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 
@@ -902,7 +910,9 @@ namespace Gala
 
 		public override void map (WindowActor actor)
 		{
-			if (!AnimationSettings.get_default ().enable_animations) {
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+
+			if (!animation_settings.enable_animations) {
 				actor.show ();
 				map_completed (actor);
 				return;
@@ -915,7 +925,8 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					if (AnimationSettings.get_default ().open_duration == 0) {
+					var duration = animation_settings.open_duration;
+					if (duration == 0) {
 						map_completed (actor);
 						return;
 					}
@@ -926,7 +937,7 @@ namespace Gala
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, AnimationSettings.get_default ().open_duration,
+					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, duration,
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 
@@ -937,7 +948,8 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					if (AnimationSettings.get_default ().menu_duration == 0) {
+					var duration = animation_settings.menu_duration;
+					if (duration == 0) {
 						map_completed (actor);
 						return;
 					}
@@ -949,7 +961,7 @@ namespace Gala
 					actor.scale_x = 0.9f;
 					actor.scale_y = 0.9f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().menu_duration,
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, duration,
 						scale_x:1.0f, scale_y:1.0f, opacity:255)
 						.completed.connect ( () => {
 
@@ -987,9 +999,10 @@ namespace Gala
 
 		public override void destroy (WindowActor actor)
 		{
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var window = actor.get_meta_window ();
 
-			if (!AnimationSettings.get_default ().enable_animations) {
+			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
 
 				// only NORMAL windows have icons
@@ -1003,7 +1016,8 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					if (AnimationSettings.get_default ().close_duration == 0) {
+					var duration = animation_settings.close_duration;
+					if (duration == 0) {
 						destroy_completed (actor);
 						return;
 					}
@@ -1012,7 +1026,7 @@ namespace Gala
 
 					actor.scale_gravity = Clutter.Gravity.CENTER;
 					actor.show ();
-					actor.animate (Clutter.AnimationMode.LINEAR, AnimationSettings.get_default ().close_duration,
+					actor.animate (Clutter.AnimationMode.LINEAR, duration,
 						scale_x:0.8f, scale_y:0.8f, opacity:0)
 						.completed.connect ( () => {
 
@@ -1039,14 +1053,15 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					if (AnimationSettings.get_default ().menu_duration == 0) {
+					var duration = animation_settings.menu_duration;
+					if (duration == 0) {
 						destroy_completed (actor);
 						return;
 					}
 
 					destroying.add (actor);
 
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, AnimationSettings.get_default ().menu_duration,
+					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, duration,
 						scale_x:0.8f, scale_y:0.8f, opacity:0)
 						.completed.connect ( () => {
 
@@ -1062,9 +1077,11 @@ namespace Gala
 
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			var duration = AnimationSettings.get_default ().snap_duration;
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			var duration = animation_settings.snap_duration;
 
-			if (!AnimationSettings.get_default ().enable_animations || duration == 0) {
+			if (!animation_settings.enable_animations
+				|| duration == 0) {
 				unmaximize_completed (actor);
 				return;
 			}
@@ -1182,8 +1199,11 @@ namespace Gala
 
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			if (!AnimationSettings.get_default ().enable_animations
-				|| AnimationSettings.get_default ().workspace_switch_duration == 0
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			var animation_duration = animation_settings.workspace_switch_duration;
+
+			if (!animation_settings.enable_animations
+				|| animation_duration == 0
 				|| (direction != MotionDirection.LEFT && direction != MotionDirection.RIGHT)) {
 				switch_workspace_completed ();
 				return;
@@ -1339,7 +1359,6 @@ namespace Gala
 			in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
 			in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
 
-			var animation_duration = AnimationSettings.get_default ().workspace_switch_duration;
 			var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
 			out_group.set_easing_mode (animation_mode);
