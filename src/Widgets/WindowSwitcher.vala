@@ -329,6 +329,7 @@ namespace Gala
 			close (wm.get_screen ().get_display ().get_current_time ());
 		}
 
+		[CCode (instance_pos = -1)]
 		public void handle_switch_windows (Display display, Screen screen, Window? window,
 #if HAS_MUTTER314
 			Clutter.KeyEvent event, KeyBinding binding)

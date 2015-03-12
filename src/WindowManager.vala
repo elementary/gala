@@ -90,6 +90,7 @@ namespace Gala
 		bool show_stage ()
 		{
 			var screen = get_screen ();
+			var display = screen.get_display ();
 
 			DBus.init (this);
 #if !HAS_MUTTER314
@@ -157,32 +158,16 @@ namespace Gala
 
 			/*keybindings*/
 
-			screen.get_display ().add_keybinding ("switch-to-workspace-first", KeybindingSettings.get_default ().schema, 0, () => {
-				screen.get_workspace_by_index (0).activate (screen.get_display ().get_current_time ());
-			});
-			screen.get_display ().add_keybinding ("switch-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
-				screen.get_workspace_by_index (screen.n_workspaces - 1).activate (screen.get_display ().get_current_time ());
-			});
-			screen.get_display ().add_keybinding ("move-to-workspace-first", KeybindingSettings.get_default ().schema, 0, () => {
-				var workspace = screen.get_workspace_by_index (0);
-				var window = screen.get_display ().get_focus_window ();
-				window.change_workspace (workspace);
-				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
-			});
-			screen.get_display ().add_keybinding ("move-to-workspace-last", KeybindingSettings.get_default ().schema, 0, () => {
-				var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
-				var window = screen.get_display ().get_focus_window ();
-				window.change_workspace (workspace);
-				workspace.activate_with_focus (window, screen.get_display ().get_current_time ());
-			});
-			screen.get_display ().add_keybinding ("cycle-workspaces-next", KeybindingSettings.get_default ().schema, 0, () => {
-				cycle_workspaces (1);
-			});
-			screen.get_display ().add_keybinding ("cycle-workspaces-previous", KeybindingSettings.get_default ().schema, 0, () => {
-				cycle_workspaces (-1);
-			});
+			var keybinding_schema = KeybindingSettings.get_default ().schema;
 
-			screen.get_display ().overlay_key.connect (() => {
+			display.add_keybinding ("switch-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+			display.add_keybinding ("switch-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+			display.add_keybinding ("move-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+			display.add_keybinding ("move-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+			display.add_keybinding ("cycle-workspaces-next", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+			display.add_keybinding ("cycle-workspaces-previous", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+
+			display.overlay_key.connect (() => {
 				try {
 					Process.spawn_command_line_async (
 						BehaviorSettings.get_default ().overlay_action);
@@ -205,13 +190,13 @@ namespace Gala
 
 			KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("switch-to-workspace-left", handle_switch_to_workspace);
-			KeyBinding.set_custom_handler ("switch-to-workspace-right", handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-left", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
+			KeyBinding.set_custom_handler ("switch-to-workspace-right", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
 
 			KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
 			KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
-			KeyBinding.set_custom_handler ("move-to-workspace-left",  (d, s, w) => move_window (w, MotionDirection.LEFT) );
-			KeyBinding.set_custom_handler ("move-to-workspace-right", (d, s, w) => move_window (w, MotionDirection.RIGHT) );
+			KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
+			KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
 			KeyBinding.set_custom_handler ("switch-group", () => {});
 			KeyBinding.set_custom_handler ("switch-group-backward", () => {});
@@ -248,10 +233,10 @@ namespace Gala
 				winswitcher = new WindowSwitcher (this);
 				ui_group.add_child (winswitcher);
 
-				KeyBinding.set_custom_handler ("switch-applications", winswitcher.handle_switch_windows);
-				KeyBinding.set_custom_handler ("switch-applications-backward", winswitcher.handle_switch_windows);
-				KeyBinding.set_custom_handler ("switch-windows", winswitcher.handle_switch_windows);
-				KeyBinding.set_custom_handler ("switch-windows-backward", winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+				KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
 			}
 
 			if (plugin_manager.window_overview_provider == null
@@ -260,13 +245,13 @@ namespace Gala
 				ui_group.add_child ((Clutter.Actor) window_overview);
 			}
 
-			screen.get_display ().add_keybinding ("expose-windows", KeybindingSettings.get_default ().schema, 0, () => {
+			display.add_keybinding ("expose-windows", keybinding_schema, 0, () => {
 				if (window_overview.is_opened ())
 					window_overview.close ();
 				else
 					window_overview.open ();
 			});
-			screen.get_display ().add_keybinding ("expose-all-windows", KeybindingSettings.get_default ().schema, 0, () => {
+			display.add_keybinding ("expose-all-windows", keybinding_schema, 0, () => {
 				if (window_overview.is_opened ())
 					window_overview.close ();
 				else {
@@ -330,6 +315,57 @@ namespace Gala
 			hot_corner.y = y;
 		}
 
+		[CCode (instance_pos = -1)]
+		void handle_cycle_workspaces (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
+			X.Event event, Meta.KeyBinding binding)
+#endif
+		{
+			var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
+			var index = screen.get_active_workspace_index () + direction;
+			if (index < 0)
+				index = screen.get_n_workspaces () - 1;
+			else if (index > screen.get_n_workspaces () - 1)
+				index = 0;
+
+			screen.get_workspace_by_index (index).activate (display.get_current_time ());
+		}
+
+		[CCode (instance_pos = -1)]
+		void handle_move_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
+			X.Event event, Meta.KeyBinding binding)
+#endif
+		{
+			if (window == null)
+				return;
+
+			var direction = (binding.get_name () == "move-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
+			move_window (window, direction);
+		}
+
+		[CCode (instance_pos = -1)]
+		void handle_move_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
+			X.Event event, Meta.KeyBinding binding)
+#endif
+		{
+			if (window == null)
+				return;
+
+			var index = (binding.get_name () == "move-to-workspace-first" ? 0 : screen.get_n_workspaces () - 1);
+			var workspace = screen.get_workspace_by_index (0);
+			window.change_workspace (workspace);
+			workspace.activate_with_focus (window, display.get_current_time ());
+		}
+
+		[CCode (instance_pos = -1)]
 		void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 #if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
@@ -339,6 +375,18 @@ namespace Gala
 		{
 			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			switch_to_next_workspace (direction);
+		}
+
+		[CCode (instance_pos = -1)]
+		void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
+			X.Event event, Meta.KeyBinding binding)
+#endif
+		{
+			var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
+			screen.get_workspace_by_index (index).activate (display.get_current_time ());
 		}
 
 		/**
@@ -411,18 +459,6 @@ namespace Gala
 			}
 
 			return list.to_array ();
-		}
-
-		void cycle_workspaces (int direction)
-		{
-			var screen = get_screen ();
-			var index = screen.get_active_workspace_index () + direction;
-			if (index < 0)
-				index = screen.get_n_workspaces () - 1;
-			else if (index > screen.get_n_workspaces () - 1)
-				index = 0;
-
-			screen.get_workspace_by_index (index).activate (screen.get_display ().get_current_time ());
 		}
 
 		/**
