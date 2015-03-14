@@ -166,6 +166,8 @@ namespace Gala
 			display.add_keybinding ("move-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
 			display.add_keybinding ("cycle-workspaces-next", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 			display.add_keybinding ("cycle-workspaces-previous", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+			display.add_keybinding ("switch-input-source", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_input_source);
+			display.add_keybinding ("switch-input-source-backward", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
 			display.overlay_key.connect (() => {
 				try {
@@ -313,6 +315,31 @@ namespace Gala
 
 			hot_corner.x = x;
 			hot_corner.y = y;
+		}
+
+		[CCode (instance_pos = -1)]
+		void handle_switch_input_source (Meta.Display display, Meta.Screen screen, Meta.Window? window,
+#if HAS_MUTTER314
+			Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
+			X.Event event, Meta.KeyBinding binding)
+#endif
+		{
+			var keyboard_input_settings = new GLib.Settings ("org.gnome.desktop.input-sources");
+
+			var n_sources = (uint) keyboard_input_settings.get_value ("sources").n_children ();
+			if (n_sources < 2)
+				return;
+
+			var new_index = 0U;
+			var current_index = keyboard_input_settings.get_uint ("current");
+
+			if (binding.get_name () == "switch-input-source")
+				new_index = (current_index + 1) % n_sources;
+			else
+				new_index = (current_index - 1 + n_sources) % n_sources;
+
+			keyboard_input_settings.set_uint ("current", new_index);
 		}
 
 		[CCode (instance_pos = -1)]

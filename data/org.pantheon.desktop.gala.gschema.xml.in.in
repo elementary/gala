@@ -131,6 +131,14 @@
 			<default><![CDATA[['<Super><Shift>Tab']]]></default>
 			<_summary>Cycle to the next workspace to the right or to back to the first</_summary>
 		</key>
+		<key type="as" name="switch-input-source">
+			<default><![CDATA[['<Shift>space']]]></default>
+			<_summary>Cycle to next keyboard layout</_summary>
+		</key>
+		<key type="as" name="switch-input-source-backward">
+			<default><![CDATA[['']]]></default>
+			<_summary>Cycle to previous keyboard layout</_summary>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
