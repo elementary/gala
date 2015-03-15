@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-22 16:22+0000\n"
+"POT-Creation-Date: 2015-03-12 21:41+0000\n"
 "PO-Revision-Date: 2015-02-12 22:52+0000\n"
 "Last-Translator: Ramazan Buğdaycı <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-02-23 05:29+0000\n"
-"X-Generator: Launchpad (build 17355)\n"
+"X-Launchpad-Export-Date: 2015-03-13 05:25+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 "Language: tr\n"
 
-#: ../src/WindowManager.vala:1346
+#: ../src/WindowManager.vala:1491
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../src/WindowManager.vala:1349
+#: ../src/WindowManager.vala:1494
 msgid "Keep This Configuration"
 msgstr ""
 
-#: ../src/WindowManager.vala:1350
+#: ../src/WindowManager.vala:1495
 msgid "Restore Previous Configuration"
 msgstr ""
 

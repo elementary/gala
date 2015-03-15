@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-02-22 16:22+0000\n"
-"PO-Revision-Date: 2015-02-09 03:50+0000\n"
-"Last-Translator: TMUkmkd <Unknown>\n"
+"POT-Creation-Date: 2015-03-12 21:41+0000\n"
+"PO-Revision-Date: 2015-03-09 15:14+0000\n"
+"Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-02-23 05:29+0000\n"
-"X-Generator: Launchpad (build 17355)\n"
+"X-Launchpad-Export-Date: 2015-03-13 05:25+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
-#: ../src/WindowManager.vala:1346
+#: ../src/WindowManager.vala:1491
 msgid "Does the display look OK?"
 msgstr "Adakah paparan kelihatan baik?"
 
-#: ../src/WindowManager.vala:1349
+#: ../src/WindowManager.vala:1494
 msgid "Keep This Configuration"
 msgstr "Kekalkan Konfigurasi Ini"
 
-#: ../src/WindowManager.vala:1350
+#: ../src/WindowManager.vala:1495
 msgid "Restore Previous Configuration"
 msgstr "Pulih Konfigurasi Terdahulu"
 
@@ -47,7 +47,7 @@ msgstr "Sentiasa di Atas"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Sentiasa di Ruang Kerja Tampak"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
@@ -83,7 +83,7 @@ msgstr "Aksi untuk sudut atas kiri"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Algoritma untuk bentangan selayang pandang tetingkap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
@@ -106,6 +106,8 @@ msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"Perintah yang akan dilakukan pada tindakan bucu panas 'custom-command' atau "
+"pelbagai"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -116,10 +118,18 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Jika anda hanya meletakkan satu perintah, perintah tersebut akan digunakan "
+"untuk setiap bucu panas yang diberikan kepada 'custom-command'. Jika anda "
+"menggunakan corak 'hotcorner-topleft:command;;hotcorner-bottomright:command' "
+"perintah terperinci akan digunakan pada setiap bucu panas. Pengenalpasti "
+"yang boleh digunakan adalah 'hotcorner-[topleft; topright; bottomleft; "
+"bottomright]' diikuti dengan ':' dan perintah. ';;' digunakan  sebagai "
+"pembahagi antara takrifan perintah."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
 msgstr ""
+"Benarkan penjubinan pinggir bila melepaskan tetingkap pada pinggir skrin"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -127,29 +137,38 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Jika dibenarkan, pelepasan tetingkap pada pinggir skrin menegak maksimumkan "
+"tetingkap secara menegak dan saizkan semula tetingkap secara mengufuk untuk "
+"melitupi separuh dari kawasan yang ada. Pelepasan tetingkap pada pinggir "
+"skrin atas akan maksimumkan tetingkap sepenuhnya."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Tindakan menu utama panel"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Tetapkan perintah yang dijalankan bila pengikatan kekunci panel-main-menu "
+"ditekan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Benarkan ruang kerja dinamik selain dari yang statik"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Guna nombor meningkat atau menurun secara dinamik, yang diperlukan bagi "
+"ruang kerja selain dari nombor tetap yang statik"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
+"Nama yang dikenalpasti sebagai tetingkap labuh untuk penukar tetingkap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -157,46 +176,49 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Bila menlancarkan penukar-tetingka, gala iterasikan senarai ini dan cuba "
+"mencari tetingkap yang sepadan dengan nama. Jika berlaku, ia akan "
+"sembunyikan tetingkap ini dan resapkannya, bilamana penukar ditutup."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Pintasan untuk alih ke ruang kerja pertama"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Pintasan untuk alih ke ruang kerja terakhir"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Pintasan untuk alih tetingkap semasa ke ruang kerja pertama"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Pintasan untuk alih tetingkap semasa ke ruang kerja terakhir"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Zum masuk"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Zum keluar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Pintasan untuk buka selayang pandang tetingkap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Pintasan untuk buka selayang pandang tetingkap untuk semua tetingkap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "La"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Lampir dialog modal"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid ""
@@ -204,10 +226,13 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Bila benar, selain dari mempunyai palang tajuk bebas, dialog modal muncul "
+"dengan palang tajuk tetingkap induk dan bergerak bersama-sama dengan "
+"tetingkap induk."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Penyusunan butang pada palang tajuk"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -219,53 +244,64 @@ msgid ""
 "without breaking older versions. A special spacer tag can be used to insert "
 "some space between two adjacent buttons."
 msgstr ""
+"Susunan butang pada palang tajuk. Nilai sepatutnya rentetan, seperti "
+"\"menu:minimum,maksimum,peruang,tutup\"; titik bertindih memisahkan sudut "
+"kiri daripada sudut kanan tetingkap, dan nama butang terpisah tanda-koma. "
+"Butang pendua tidak dibenarkan. Nama butang tidak diketahui diabaikan supaya "
+"butang boleh ditambahkan kepada versi masa depan metacity tanpa merosakkan "
+"versi lama. Satu label peruang khas boleh digunakan untuk sisipkan jarak "
+"diantara dua butang bersebelahan."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
 msgstr ""
+"Jadikan tetingkap untuk yang membentuk dialog dilampir modal bila dimalapkan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
 msgstr ""
+"Kelegapan tetingkap yang berada disebalik tabir dengan alt-tab-switcher."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Imej-latar-belakang yang digunakan dalma penukar-ruang-kerja"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid "Enable Animations"
-msgstr ""
+msgstr "Benarkan Animasi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Sama ada animasi patut dipaparkan. Perhatian: Ini adalah kekunci sejagat, ia "
+"menukar kelakuan bagi pengurus tetingkap, panel dll."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Jangkamasa animasi lekap yang digunakan oleh maksimum/nyahmaksimum"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "Jangkamasa animasi tutup"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "Jangkamasa animasi minimumkan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Jangkamasa animasi tukar ruang kerja"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Jangkamasa animasi pemetaan menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Takrif bayang tetingkap terfokus biasa"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid ""
@@ -274,64 +310,69 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"Nilai pertama jejari bayang kabur, yang kedua resap atas (biasanya hanya -"
+"1), ketiga dan keempat ofset x- dan y dan terakhir adalah kelegapan. Maka "
+"[blur-radius, top-fade, x-offset, y-offset, opacity]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Takrif bayang bagi tetingkap tidak fokus biasa"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid "See normal-focused"
-msgstr ""
+msgstr "Lihat normal-terfokus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a menu"
-msgstr ""
+msgstr "Takrif bayang menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "Defines the shadow of a focused dialog"
-msgstr ""
+msgstr "Takrifkan bayang dialog terfokus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Takrifkan bayang dialog tidak difokus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Lumpuhkan semua pemberitahuan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:48
 msgid "The default setting for the bubbles that would be used for new apps"
-msgstr ""
+msgstr "Tetapan lalai untuk bebuih yang digunakan untuk apl baharu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "The default setting for the sounds that would be used for new apps"
-msgstr ""
+msgstr "Tetapan lalai untuk bunyi yang digunakan untuk apl baharu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid ""
 "List of apps and their notification-permissions. Example: ['noise:show,on', "
 "'pantheon-terminal:show,off']"
 msgstr ""
+"Senarai apl dan keizinan-pemberitahuan mereka. Contohnya: ['noise:show,on', "
+"'pantheon-terminal:show,off']"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
-msgstr ""
+msgstr "Struktur: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Benarkan topeng bucu terbundar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Corner radius"
-msgstr ""
+msgstr "Jejari bucu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Lumpuhkan topeng bucu bila berskrin penuh"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Hanya tunjuk topeng bucu pada monitor utama"
 
 #~ msgid "Cancel"
 #~ msgstr "Batal"

@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-02-22 16:22+0000\n"
-"PO-Revision-Date: 2015-01-18 19:47+0000\n"
-"Last-Translator: Fabio Zaramella <FFabio.96.X@Gmail.com>\n"
+"POT-Creation-Date: 2015-03-12 21:41+0000\n"
+"PO-Revision-Date: 2015-03-06 16:58+0000\n"
+"Last-Translator: Matteo Formenti <matteoformenti1998@gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-02-23 05:29+0000\n"
-"X-Generator: Launchpad (build 17355)\n"
+"X-Launchpad-Export-Date: 2015-03-13 05:25+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
-#: ../src/WindowManager.vala:1346
+#: ../src/WindowManager.vala:1491
 msgid "Does the display look OK?"
 msgstr "La visualizzazione appare corretta?"
 
-#: ../src/WindowManager.vala:1349
+#: ../src/WindowManager.vala:1494
 msgid "Keep This Configuration"
 msgstr "Mantieni questa configurazione"
 
-#: ../src/WindowManager.vala:1350
+#: ../src/WindowManager.vala:1495
 msgid "Restore Previous Configuration"
 msgstr "Ripristina la configurazione precedente"
 
@@ -260,7 +260,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "Scurisci la finestra principale quando genera altre finestre"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -270,7 +270,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Immagine di sfondo usata cambiando lo spazio di lavoro"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid "Enable Animations"
@@ -329,7 +329,7 @@ msgstr "Definisce l'ombra di una normale finestra senza focus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid "See normal-focused"
-msgstr ""
+msgstr "Vedi normale"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a menu"
@@ -375,19 +375,19 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Attiva gli angoli arrotondati"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Corner radius"
-msgstr ""
+msgstr "Raggio dell'angolo"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Disattiva gli angoli arrotondati quando a schermo intero"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Visualizza angoli arrotondati solo su schermo principale"
 
 #~ msgid "Cancel"
 #~ msgstr "Annulla"
