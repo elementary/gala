@@ -24,7 +24,10 @@ Homepage: https://launchpad.net/gala
 
 Package: gala
 Architecture: any
-Depends: libgala0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: gsettings-desktop-schemas,
+         libgala0 (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Provides: x-window-manager
 Description: Pantheon Window Manager
  gala is a window & compositing manager based on libmutter. It manages the
