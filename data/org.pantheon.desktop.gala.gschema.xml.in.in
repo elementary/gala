@@ -132,7 +132,7 @@
 			<_summary>Cycle to the next workspace to the right or to back to the first</_summary>
 		</key>
 		<key type="as" name="switch-input-source">
-			<default><![CDATA[['<Shift>space']]]></default>
+			<default><![CDATA[['<Alt>space']]]></default>
 			<_summary>Cycle to next keyboard layout</_summary>
 		</key>
 		<key type="as" name="switch-input-source-backward">
