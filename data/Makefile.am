@@ -12,7 +12,7 @@ applications_DATA = gala.desktop gala-multitaskingview.desktop
 
 gsettings_SCHEMAS = org.pantheon.desktop.gala.gschema.xml
 
-@INTLTOOL_XML_RULE@
+@INTLTOOL_XML_NOMERGE_RULE@
 
 @GSETTINGS_RULES@
 
