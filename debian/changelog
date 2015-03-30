@@ -1,5 +1,5 @@
-gala (0.1) UNRELEASED; urgency=low
+gala (0.2.0-1) UNRELEASED; urgency=low
 
   * Initial release.
 
- -- Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>  Wed, 23 May 2012 16:19:58 +0400
+ -- Rico Tzschichholz <ricotz@ubuntu.com>  Mon, 30 Mar 2015 22:42:30 +0200
