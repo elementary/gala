@@ -496,8 +496,12 @@ namespace Gala
 					workspace.close ();
 			}
 
+			float clone_offset_x, clone_offset_y;
+			dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
+
 			if (opening) {
 				unowned List<WindowActor> actors = Compositor.get_window_actors (screen);
+
 				foreach (var actor in actors) {
 					const int MAX_OFFSET = 100;
 
@@ -520,21 +524,21 @@ namespace Gala
 						continue;
 
 					var clone = new SafeWindowClone (window, true);
-					clone.set_position (actor.x, actor.y);
+					clone.set_position (actor.x - clone_offset_x, actor.y - clone_offset_y);
 					clone.set_easing_duration (ANIMATION_DURATION);
 					clone.set_easing_mode (ANIMATION_MODE);
 					dock_clones.add_child (clone);
 
 					if (top)
-						clone.y = actor.y - actor.height;
+						clone.y = actor.y - actor.height - clone_offset_y;
 					else if (bottom)
-						clone.y = actor.y + actor.height;
+						clone.y = actor.y + actor.height - clone_offset_y;
 				}
 			} else {
 				foreach (var child in dock_clones.get_children ()) {
 					var dock = (Clone) child;
 
-					dock.y = dock.source.y;
+					dock.y = dock.source.y - clone_offset_y;
 				}
 			}
 
