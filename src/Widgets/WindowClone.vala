@@ -73,6 +73,7 @@ namespace Gala
 
 		public bool overview_mode { get; construct; }
 
+		[CCode (notify = false)]
 		public uint8 shadow_opacity {
 			get {
 				return shadow_effect != null ? shadow_effect.shadow_opacity : 255;
@@ -302,14 +303,8 @@ namespace Gala
 			set_size (outer_rect.width, outer_rect.height);
 			restore_easing_state ();
 
-			if (animate) {
-				var shadow_transition = new PropertyTransition ("shadow-opacity");
-				shadow_transition.set_from_value (255);
-				shadow_transition.set_to_value (0);
-				shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
-				shadow_transition.remove_on_complete = true;
-				add_transition ("shadow-opacity", shadow_transition);
-			}
+			if (animate)
+				toggle_shadow (false);
 
 			window_icon.opacity = 0;
 
@@ -334,12 +329,7 @@ namespace Gala
 			window_icon.opacity = 255;
 			restore_easing_state ();
 
-			var shadow_transition = new PropertyTransition ("shadow-opacity");
-			shadow_transition.set_from_value (0);
-			shadow_transition.set_to_value (255);
-			shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
-			shadow_transition.remove_on_complete = true;
-			add_transition ("shadow-opacity", shadow_transition);
+			toggle_shadow (true);
 
 			// for overview mode, windows may be faded out initially. Make sure
 			// to fade those in.
@@ -453,6 +443,21 @@ namespace Gala
 
 				window_icon.restore_easing_state ();
 			}
+		}
+
+		void toggle_shadow (bool show)
+		{
+			var shadow_transition = new PropertyTransition ("shadow-opacity");
+			shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
+			shadow_transition.remove_on_complete = true;
+			shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
+
+			if (show)
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), 0, 255);
+			else
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), 255, 0);
+
+			add_transition ("shadow-opacity", shadow_transition);
 		}
 
 		/**
