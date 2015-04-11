@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 18:02+0000\n"
-"PO-Revision-Date: 2014-12-12 17:24+0000\n"
-"Last-Translator: ITPROJECTS <Unknown>\n"
+"POT-Creation-Date: 2015-03-30 22:22+0200\n"
+"PO-Revision-Date: 2015-04-07 15:49+0000\n"
+"Last-Translator: Nikola Lardev <nikolalardev@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-03-21 05:36+0000\n"
-"X-Generator: Launchpad (build 17405)\n"
+"X-Launchpad-Export-Date: 2015-04-08 05:32+0000\n"
+"X-Generator: Launchpad (build 17413)\n"
 "Language: bg\n"
 
 #: ../src/WindowManager.vala:1518
@@ -32,35 +32,35 @@ msgstr "Възстанови предишните настройки"
 
 #: ../src/Widgets/WindowMenu.vala:58
 msgid "Minimize"
-msgstr ""
+msgstr "Минимизиране"
 
 #: ../src/Widgets/WindowMenu.vala:73
 msgid "Move"
-msgstr ""
+msgstr "Премести"
 
 #: ../src/Widgets/WindowMenu.vala:80
 msgid "Resize"
-msgstr ""
+msgstr "Преоразмеряване"
 
 #: ../src/Widgets/WindowMenu.vala:87
 msgid "Always on Top"
-msgstr ""
+msgstr "Винаги отгоре"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Винаги на видимия работен плот"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Преместване на работния плот вляво"
 
 #: ../src/Widgets/WindowMenu.vala:113
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Преместване на работния плот вдясно"
 
 #: ../src/Widgets/WindowMenu.vala:121
 msgid "Close"
-msgstr ""
+msgstr "Затвори"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Unmaximize"
