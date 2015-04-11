@@ -298,8 +298,8 @@ namespace Gala
 			background.set_pivot_point (0.5f, pivotY);
 
 			background.save_easing_state ();
-			background.set_easing_duration (250);
-			background.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+			background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+			background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
 			background.set_scale (scale, scale);
 			background.restore_easing_state ();
 
@@ -333,8 +333,8 @@ namespace Gala
 			opened = false;
 
 			background.save_easing_state ();
-			background.set_easing_duration (300);
-			background.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
+			background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+			background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
 			background.set_scale (1, 1);
 			background.restore_easing_state ();
 
