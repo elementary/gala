@@ -506,11 +506,15 @@ namespace Gala
 					const int MAX_OFFSET = 100;
 
 					var window = actor.get_meta_window ();
+					var monitor = window.get_monitor ();
 
 					if (window.window_type != WindowType.DOCK)
 						continue;
 
-					var monitor_geom = screen.get_monitor_geometry (window.get_monitor ());
+					if (screen.get_monitor_in_fullscreen (monitor))
+						continue;
+
+					var monitor_geom = screen.get_monitor_geometry (monitor);
 
 #if HAS_MUTTER312
 					var window_geom = window.get_frame_rect ();
