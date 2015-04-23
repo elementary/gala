@@ -7,68 +7,68 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 22:22+0200\n"
-"PO-Revision-Date: 2014-12-13 04:46+0000\n"
+"POT-Creation-Date: 2015-04-12 20:47+0000\n"
+"PO-Revision-Date: 2015-04-12 01:53+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-03-31 05:53+0000\n"
-"X-Generator: Launchpad (build 17413)\n"
+"X-Launchpad-Export-Date: 2015-04-13 05:35+0000\n"
+"X-Generator: Launchpad (build 17423)\n"
 "Language: zh_TW\n"
 
-#: ../src/WindowManager.vala:1518
+#: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
 msgstr "顯示器畫面是否正常？"
 
-#: ../src/WindowManager.vala:1521
+#: ../src/WindowManager.vala:1532
 msgid "Keep This Configuration"
 msgstr "保留此設定"
 
-#: ../src/WindowManager.vala:1522
+#: ../src/WindowManager.vala:1533
 msgid "Restore Previous Configuration"
 msgstr "恢復先前設定"
 
 #: ../src/Widgets/WindowMenu.vala:58
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
 #: ../src/Widgets/WindowMenu.vala:73
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
 #: ../src/Widgets/WindowMenu.vala:80
 msgid "Resize"
-msgstr ""
+msgstr "調整大小"
 
 #: ../src/Widgets/WindowMenu.vala:87
 msgid "Always on Top"
-msgstr ""
+msgstr "永遠在最上層"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "永遠在顯示的工作區"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "向左移動工作區"
 
 #: ../src/Widgets/WindowMenu.vala:113
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "向右移動工作區"
 
 #: ../src/Widgets/WindowMenu.vala:121
 msgid "Close"
-msgstr ""
+msgstr "關閉"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Unmaximize"
-msgstr ""
+msgstr "取消最大化"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Maximize"
-msgstr ""
+msgstr "最大化"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
@@ -201,11 +201,11 @@ msgstr "向右循環切換到下個工作區，或是返回到第一個工作區
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "循環切換至下個鍵盤配置"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "循環切換至上個鍵盤配置"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
@@ -247,7 +247,7 @@ msgstr "位於 alt-tab 切換器背景中的視窗不透明度。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "用於工作區切換器的背景影像"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -337,19 +337,19 @@ msgstr "結構：['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "啟用圓轉角遮罩"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Corner radius"
-msgstr ""
+msgstr "轉角半徑"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "全螢幕時停用轉角遮罩"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "僅在主螢幕上顯示轉角遮罩"
 
 #~ msgid "Cancel"
 #~ msgstr "取消"
