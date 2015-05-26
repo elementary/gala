@@ -333,8 +333,13 @@ namespace Gala.Plugins.Notify
 				try {
 					var themed = new ThemedIcon.with_default_fallbacks (app_icon);
 					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
-					if (info != null)
+					if (info != null) {
 						pixbuf = info.load_icon ();
+
+						if (pixbuf.heiht != size)
+							pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
+
+					}
 				} catch (Error e) { warning (e.message); }
 
 			}
