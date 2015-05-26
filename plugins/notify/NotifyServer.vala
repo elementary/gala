@@ -336,7 +336,7 @@ namespace Gala.Plugins.Notify
 					if (info != null) {
 						pixbuf = info.load_icon ();
 
-						if (pixbuf.heiht != size)
+						if (pixbuf.height != size)
 							pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
 
 					}
