@@ -167,6 +167,7 @@ namespace Gala.Plugins.Notify
 
 			if (!confirmation) {
 				var app_found = false;
+				var app_key = app_name.replace (":", "_").down ();
 
 				unowned string param_bubbles = (options.default_bubbles ? APP_BUBBLES_SHOW : APP_BUBBLES_HIDE);
 				unowned string param_sounds = (options.default_sounds ? APP_SOUNDS_ON : APP_SOUNDS_OFF);
@@ -174,7 +175,7 @@ namespace Gala.Plugins.Notify
 				foreach (unowned string app in options.apps) {
 					var properties = app.split (":");
 
-					if (properties.length == 2 && properties[0] == app_name) {
+					if (properties.length == 2 && properties[0].down () == app_key) {
 						var parameters = properties[1].split (",");
 
 						if (parameters.length == 2) {
@@ -191,7 +192,7 @@ namespace Gala.Plugins.Notify
 				// if no matching app was found, add the default values to the list
 				if (!app_found) {
 					var apps_new = options.apps;
-					apps_new += "%s:%s,%s".printf (app_name, param_bubbles, param_sounds);
+					apps_new += "%s:%s,%s".printf (app_key, param_bubbles, param_sounds);
 					options.apps = apps_new;
 				}
 
