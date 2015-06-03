@@ -7,56 +7,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-12 20:47+0000\n"
-"PO-Revision-Date: 2015-02-12 22:52+0000\n"
-"Last-Translator: Ramazan Buğdaycı <Unknown>\n"
+"POT-Creation-Date: 2015-05-26 11:19+0000\n"
+"PO-Revision-Date: 2015-05-19 03:41+0000\n"
+"Last-Translator: Sadık <sadikpoyraz01@gmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-04-13 05:35+0000\n"
-"X-Generator: Launchpad (build 17423)\n"
+"X-Launchpad-Export-Date: 2015-05-27 05:27+0000\n"
+"X-Generator: Launchpad (build 17514)\n"
 "Language: tr\n"
 
 #: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "Ekranı sorunsuz görebiliyor musunuz?"
 
 #: ../src/WindowManager.vala:1532
 msgid "Keep This Configuration"
-msgstr ""
+msgstr "Bu Yapılandırmayı Koru"
 
 #: ../src/WindowManager.vala:1533
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "Önceki Yapılandırmaya Geri Dön"
 
 #: ../src/Widgets/WindowMenu.vala:58
 msgid "Minimize"
-msgstr ""
+msgstr "Simge Durumuna Küçült"
 
 #: ../src/Widgets/WindowMenu.vala:73
 msgid "Move"
-msgstr ""
+msgstr "Taşı"
 
 #: ../src/Widgets/WindowMenu.vala:80
 msgid "Resize"
-msgstr ""
+msgstr "Yeniden Boyutlandır"
 
 #: ../src/Widgets/WindowMenu.vala:87
 msgid "Always on Top"
-msgstr ""
+msgstr "Her Zaman Üstte"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Her Zaman Görünür Çalışma Alanında"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Soldaki Çalışma Alanına Taşı"
 
 #: ../src/Widgets/WindowMenu.vala:113
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Sağdaki Çalışma Alanına Taşı"
 
 #: ../src/Widgets/WindowMenu.vala:121
 msgid "Close"
@@ -64,49 +64,49 @@ msgstr "Kapat"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Unmaximize"
-msgstr ""
+msgstr "Tam Ekrandan Çık"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Maximize"
-msgstr ""
+msgstr "Ekranı Kapla"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "Çoklu Görev Görünümü"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "Tüm açık pencereleri ve çalışma alanlarını göster"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "Sol üst köşe eylemi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Pencere görünüm düzeni algoritması"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Pencerelerin gösterimi için kullanılacak algoritmayı seçin"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "Sağ üst köşe eylemi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "Sol alt köşe eylemi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "Sağ alt köşe eylemi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
-msgstr ""
+msgstr "'özel-komut' ya da çoklu etkin-köşe eylemi için çalıştırılacak komut"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -117,10 +117,16 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Sadece bir komut girerseniz, bu 'custom-command'a atanmış tüm etkin-köşeler "
+"için kullanılır. Bunun yerine 'hotcorner-topleft:komut;;hotcorner-"
+"bottomright:komut' kalıbını kullanırsanız, her bir etkin-köşe için "
+"belirlediğiniz komutlar kullanılacaktır. Olası tanımlayıcılar 'hotcorner-"
+"[topleft; topright; bottomleft; bottomright] ardından ':' ve komuttur. ';;' "
+"komut tanımları arasında ayraç işlevi görür."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Ekran kenarlarına pencere bırakırken kenar döşemesini etkinleştir"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -128,25 +134,32 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Etkinleştirildiğinde, dikey ekran kenarlarına pencereleri bırakmak onları "
+"dikey olarak büyütür ve kullanılabilir alanın yarısını kapsayacak şekilde de "
+"yatay olarak yeniden boyutlandırır. Pencereleri üst ekran kenarına bırakmak "
+"tamamen büyütür."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Panel ana menüsü eylemi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Panel ana menüsünde bağlanmış tuşa basıldığında çalışacak komutu belirleyin"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Dinamik çalışma alanını etkinleştir"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Durağan ve sabit sayıda çalışma alanı yerine ihtiyaca göre dinamik olarak "
+"artan ya da azalan sayıda çalışma alanı kullanın."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -161,43 +174,43 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "İlk çalışma alanına geçiş için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Son çalışma alanına geçiş için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Mevcut pencereyi ilk çalışma alanına taşımak için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Mevcut pencereyi son çalışma alanına taşımak için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Yakınlaştır"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Uzaklaştır"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Pencere genel görünümüne geçiş için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Tüm pencerelerin genel görünümüne geçiş için kısayol"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "Sonraki ilk çalışma alanına geçiş yap ya da ilk çalışma alanına dön"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Sonraki klavye düzenine geçiş yap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
@@ -216,7 +229,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Başlık çubuğundaki düğmelerin düzeni"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -228,6 +241,13 @@ msgid ""
 "without breaking older versions. A special spacer tag can be used to insert "
 "some space between two adjacent buttons."
 msgstr ""
+"Başlık çubuğundaki düğmelerin düzeni. Dizgi türünde bir değer alır, örneğin "
+"\"menu:minimize,maximize,spacer,close\"; pencerenin sol köşesindekilerle sağ "
+"köşesindekileri iki noktayla, düğme adlarını virgülle ayırın. Bir düğme "
+"birden çok kez kullanılamaz. Gelecek metacity sürümlerinde eski sürümlerde "
+"soruna yol açmadan yeni düğmeler eklenebilmesi için bilinmeyen düğme adları "
+"hata vermeden göz ardı edilecektir. Ard arda iki düğme arasında biraz boşluk "
+"eklemek için özel spacer etiketi kullanılabilir."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
@@ -244,13 +264,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "Canlandırmaları Etkinleştir"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Canlandırmaların gösterilip gösterilmemesi. Not: Bu genel bir anahtardır ve "
+"pencere yöneticisi, panel vb. işleyişlerini değiştirir."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -258,19 +280,19 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "Kapanış animasyonu süresi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "Simge durumuna küçültme animasyonu süresi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Çalışma alanı değiştirme animasyonu süresi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Menü haritalama animasyonu süresi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
@@ -306,25 +328,28 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Tüm bildirimleri kapat"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "The default setting for the bubbles that would be used for new apps"
-msgstr ""
+msgstr "Yeni uygulamalar için kullanılacak varsayılan baloncuk ayarları"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "The default setting for the sounds that would be used for new apps"
-msgstr ""
+msgstr "Yeni uygulamaların çıkaracağı sesler için varsayılan ayarlar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid ""
 "List of apps and their notification-permissions. Example: ['noise:show,on', "
 "'pantheon-terminal:show,off']"
 msgstr ""
+"Uygulama listesi ve bildirim-yetkileri. Örneğin: ['noise:göster,açık', "
+"'pantheon-terminal:göster,kapalı']"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
 msgstr ""
+"Plan: ['{UYGULAMA-ISIM}:{ÖNCELİK (göster/gizle)},{SESLER açık/kapalı}', ...]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
@@ -332,15 +357,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Corner radius"
-msgstr ""
+msgstr "Köşe yarıçapı"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Tam ekranda köşe maskesi devredışı"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Köşe maskelerini sadece ana ekranda göster"
 
 #~ msgid "Cancel"
 #~ msgstr "Vazgeç"
