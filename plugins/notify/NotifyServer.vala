@@ -19,6 +19,14 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
+	const string APP_BUBBLES_SHOW = "show";
+	const string APP_BUBBLES_HIDE = "hide";
+	const string APP_SOUNDS_ON = "on";
+	const string APP_SOUNDS_OFF = "off";
+
+	const string X_CANONICAL_PRIVATE_SYNCHRONOUS = "x-canonical-private-synchronous";
+	const string X_CANONICAL_PRIVATE_ICON_ONLY = "x-canonical-private-icon-only";
+
 	public enum NotificationUrgency
 	{
 		LOW = 0,
@@ -96,8 +104,8 @@ namespace Gala.Plugins.Notify
 				// before settings a default action, so we have to specify it here. Also, not displaying
 				// certain actions even though requested is allowed according to spec, so we should be fine
 				"actions",
-				"x-canonical-private-synchronous",
-				"x-canonical-private-icon-only"
+				X_CANONICAL_PRIVATE_SYNCHRONOUS,
+				X_CANONICAL_PRIVATE_ICON_ONLY
 			};
 		}
 
@@ -137,18 +145,18 @@ namespace Gala.Plugins.Notify
 		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary, 
 			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
 		{
-			Variant? variant;
+			unowned Variant? variant;
 
-			var id = replaces_id != 0 ? replaces_id : ++id_counter;
+			var id = (replaces_id != 0 ? replaces_id : ++id_counter);
 			var pixbuf = get_pixbuf (app_name, app_icon, hints);
-			var timeout = expire_timeout == uint32.MAX ? DEFAULT_TMEOUT : expire_timeout;
+			var timeout = (expire_timeout == uint32.MAX ? DEFAULT_TMEOUT : expire_timeout);
 
 			var urgency = NotificationUrgency.NORMAL;
 			if ((variant = hints.lookup ("urgency")) != null)
 				urgency = (NotificationUrgency) variant.get_byte ();
 
-			var icon_only = hints.contains ("x-canonical-private-icon-only");
-			var confirmation = hints.contains ("x-canonical-private-synchronous");
+			var icon_only = hints.contains (X_CANONICAL_PRIVATE_ICON_ONLY);
+			var confirmation = hints.contains (X_CANONICAL_PRIVATE_SYNCHRONOUS);
 			var progress = confirmation && hints.contains ("value");
 
 			unowned NotifySettings options = NotifySettings.get_default ();
@@ -160,44 +168,35 @@ namespace Gala.Plugins.Notify
 			if (!confirmation) {
 				var app_found = false;
 
-				var param_bubbles = (options.default_bubbles ? "show" : "hide");
-				var param_sounds = (options.default_sounds ? "on" : "off");
+				unowned string param_bubbles = (options.default_bubbles ? APP_BUBBLES_SHOW : APP_BUBBLES_HIDE);
+				unowned string param_sounds = (options.default_sounds ? APP_SOUNDS_ON : APP_SOUNDS_OFF);
 
-				for (int i = 0; i < options.apps.length; i++) {
-					var properties = options.apps[i].split (":");
+				foreach (unowned string app in options.apps) {
+					var properties = app.split (":");
 
-					// Don't crash! (If this entry is invalid search for another or create a new one)
-					if (properties.length == 2) {
-						if (properties[0] == app_name) {
-							var parameters = properties[1].split (",");
+					if (properties.length == 2 && properties[0] == app_name) {
+						var parameters = properties[1].split (",");
 
-							if (parameters.length == 2) {
-								param_bubbles = parameters[0];
-								param_sounds = parameters[1];
+						if (parameters.length == 2) {
+							param_bubbles = parameters[0];
+							param_sounds = parameters[1];
 
-								app_found = true;
+							app_found = true;
 
-								break;
-							}
+							break;
 						}
 					}
 				}
 
+				// if no matching app was found, add the default values to the list
 				if (!app_found) {
-					// if no matching app was found, add the default values to the list
-					var apps_new = new string[options.apps.length + 1];
-
-					for (int i = 0; i < options.apps.length; i++) {
-						apps_new[i] = options.apps[i];
-					}
-
-					apps_new[options.apps.length] = app_name + ":" + param_bubbles + "," + param_sounds;
-
+					var apps_new = options.apps;
+					apps_new += "%s:%s,%s".printf (app_name, param_bubbles, param_sounds);
 					options.apps = apps_new;
 				}
 
-				allow_bubble = (!options.do_not_disturb && param_bubbles == "show");
-				allow_sound = (allow_bubble && param_sounds == "on");
+				allow_bubble = (!options.do_not_disturb && param_bubbles == APP_BUBBLES_SHOW);
+				allow_sound = (allow_bubble && param_sounds == APP_SOUNDS_ON);
 			}
 
 #if 0 // enable to debug notifications
@@ -242,7 +241,7 @@ namespace Gala.Plugins.Notify
 
 					confirmation_notification.update (pixbuf,
 						progress_value,
-						hints.@get ("x-canonical-private-synchronous").get_string (),
+						hints.@get (X_CANONICAL_PRIVATE_SYNCHRONOUS).get_string (),
 						icon_only);
 
 					return id;
@@ -264,7 +263,7 @@ namespace Gala.Plugins.Notify
 				if (confirmation)
 					notification = new ConfirmationNotification (id, pixbuf, icon_only,
 						progress ? hints.@get ("value").get_int32 () : -1,
-						hints.@get ("x-canonical-private-synchronous").get_string ());
+						hints.@get (X_CANONICAL_PRIVATE_SYNCHRONOUS).get_string ());
 				else
 					notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 						urgency, timeout, pid, actions);
@@ -422,7 +421,7 @@ namespace Gala.Plugins.Notify
 			bool play_sound = false;
 
 			// no sounds for confirmation bubbles
-			if ((variant = hints.lookup ("x-canonical-private-synchronous")) != null) {
+			if ((variant = hints.lookup (X_CANONICAL_PRIVATE_SYNCHRONOUS)) != null) {
 				var confirmation_type = variant.get_string ();
 
 				// the sound indicator is an exception here, it won't emit a sound at all, even though for
@@ -447,7 +446,7 @@ namespace Gala.Plugins.Notify
 			// pick a sound according to the category
 			if (!play_sound) {
 				variant = hints.lookup ("category");
-				string? sound_name = null;
+				unowned string? sound_name = null;
 
 				if (variant != null)
 					sound_name = category_to_sound (variant.get_string ());
@@ -464,9 +463,9 @@ namespace Gala.Plugins.Notify
 				ca_context.play_full (0, props);
 		}
 
-		static string? category_to_sound (string category)
+		static unowned string? category_to_sound (string category)
 		{
-			string? sound = null;
+			unowned string? sound = null;
 
 			switch (category) {
 				case "device.added":
