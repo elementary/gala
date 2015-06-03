@@ -244,6 +244,9 @@ namespace Meta {
 		public void set_keymap (string layouts, string variants, string options);
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
+#if HAS_MUTTER316
+		public signal void last_device_changed (int object);
+#endif
 	}
 #endif
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
@@ -251,6 +254,7 @@ namespace Meta {
 	public class Background : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Background (Meta.Screen screen);
+		public static void refresh_all ();
 #if HAS_MUTTER316
 		public void set_blend (GLib.File file1, GLib.File file2, double blend_factor, GDesktop.BackgroundStyle style);
 #else
@@ -892,7 +896,7 @@ namespace Meta {
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
 		public unowned Meta.Frame get_frame ();
-		public unowned Cairo.Region get_frame_bounds ();
+		public unowned Cairo.Region? get_frame_bounds ();
 #if HAS_MUTTER312
 		public Meta.Rectangle get_frame_rect ();
 #endif
@@ -927,7 +931,7 @@ namespace Meta {
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
 		public unowned string get_startup_id ();
-		public unowned Meta.Window get_tile_match ();
+		public unowned Meta.Window? get_tile_match ();
 		public unowned string get_title ();
 		public unowned Meta.Window get_transient_for ();
 #if !HAS_MUTTER314
