@@ -169,6 +169,7 @@ namespace Gala.Plugins.Notify
 				var app_found = false;
 				var app_key = app_name.replace (":", "_").down ();
 
+				string[] parameters;
 				unowned string param_bubbles = (options.default_bubbles ? APP_BUBBLES_SHOW : APP_BUBBLES_HIDE);
 				unowned string param_sounds = (options.default_sounds ? APP_SOUNDS_ON : APP_SOUNDS_OFF);
 
@@ -176,7 +177,7 @@ namespace Gala.Plugins.Notify
 					var properties = app.split (":");
 
 					if (properties.length == 2 && properties[0].down () == app_key) {
-						var parameters = properties[1].split (",");
+						parameters = properties[1].split (",");
 
 						if (parameters.length == 2) {
 							param_bubbles = parameters[0];
