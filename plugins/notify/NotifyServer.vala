@@ -412,7 +412,7 @@ namespace Gala.Plugins.Notify
 			Variant? variant = null;
 
 			// Are we suppose to play a sound at all?
-			if ((variant = hints.lookup ("supress-sound")) != null
+			if ((variant = hints.lookup ("suppress-sound")) != null
 				&& variant.get_boolean ())
 				return;
 
