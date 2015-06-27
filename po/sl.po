@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-26 11:19+0000\n"
-"PO-Revision-Date: 2015-01-22 17:39+0000\n"
+"POT-Creation-Date: 2015-06-12 16:10+0000\n"
+"PO-Revision-Date: 2015-06-23 17:31+0000\n"
 "Last-Translator: Jernej Virag <Unknown>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-05-27 05:27+0000\n"
-"X-Generator: Launchpad (build 17514)\n"
+"X-Launchpad-Export-Date: 2015-06-24 05:28+0000\n"
+"X-Generator: Launchpad (build 17572)\n"
 "Language: sl\n"
 
 #: ../src/WindowManager.vala:1529
@@ -207,15 +207,15 @@ msgstr "Premik na desno namizje oz. vrnitev na prvo"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Naslenji razpored tipk na tipkovnici"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Prejšnji razpored tipk na tipkovnici"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr "Priklopi modalne dialoge"
+msgstr "Pripni modalna pogovorna okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -256,7 +256,7 @@ msgstr "Prosojnost oken v ozadju alt-tab preklopnika"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Slika za ozadje v preklopniku"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -351,19 +351,19 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Vklopi masko za zaobljene vogale"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Corner radius"
-msgstr ""
+msgstr "Zaobljenost vogala"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Izklopi masko za zaobljene vogale v polnozaslonskem načinu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Uporabi masko za zaobljene vogale samo na primarnem zaslonu"
 
 #~ msgid "Cancel"
 #~ msgstr "Prekliči"
