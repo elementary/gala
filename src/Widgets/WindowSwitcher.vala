@@ -355,8 +355,8 @@ namespace Gala
 
 			// FIXME for unknown reasons, switch-applications-backward won't be emitted, so we
 			//       test manually if shift is held down
-			backward = binding_name == "switch-applications"
-				&& (get_current_modifiers () & ModifierType.SHIFT_MASK) != 0;
+			if (binding_name == "switch-applications")
+				backward = ((get_current_modifiers () & ModifierType.SHIFT_MASK) != 0);
 
 			if (visible && !closing) {
 				current_window = next_window (workspace, backward);
