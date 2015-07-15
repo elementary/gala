@@ -6,7 +6,7 @@ stylesdir = $(pkgdatadir)
 styles_DATA = gala.css texture.png close.png
 
 applicationsdir = $(datadir)/applications
-applications_DATA = gala.desktop gala-multitaskingview.desktop
+applications_DATA = gala.desktop gala-wayland.desktop gala-multitaskingview.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 
@@ -24,6 +24,7 @@ all-local: gschemas.compiled
 EXTRA_DIST = \
 	gala.css \
 	gala.desktop \
+	gala-wayland.desktop \
 	gala-multitaskingview.desktop.in \
 	texture.png \
 	close.png \
