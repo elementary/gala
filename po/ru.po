@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-06-12 16:10+0000\n"
-"PO-Revision-Date: 2015-01-07 00:23+0000\n"
+"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"PO-Revision-Date: 2015-09-03 20:25+0000\n"
 "Last-Translator: Artem Anufrij <Unknown>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-06-13 05:41+0000\n"
-"X-Generator: Launchpad (build 17557)\n"
+"X-Launchpad-Export-Date: 2015-09-04 05:29+0000\n"
+"X-Generator: Launchpad (build 17706)\n"
 
 #: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
@@ -31,35 +31,35 @@ msgstr "Восстановить предыдущие настройки"
 
 #: ../src/Widgets/WindowMenu.vala:58
 msgid "Minimize"
-msgstr ""
+msgstr "Свернуть"
 
 #: ../src/Widgets/WindowMenu.vala:73
 msgid "Move"
-msgstr ""
+msgstr "Переместить"
 
 #: ../src/Widgets/WindowMenu.vala:80
 msgid "Resize"
-msgstr ""
+msgstr "Изменить размер"
 
 #: ../src/Widgets/WindowMenu.vala:87
 msgid "Always on Top"
-msgstr ""
+msgstr "Всегда поверх всех окон"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Всегда на видимом рабочем столе"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Переместить на рабочее место слева"
 
 #: ../src/Widgets/WindowMenu.vala:113
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Переместить на рабочее место справа"
 
 #: ../src/Widgets/WindowMenu.vala:121
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Unmaximize"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Maximize"
-msgstr ""
+msgstr "Развернуть на весь экран"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
@@ -83,11 +83,11 @@ msgstr "Действие в левом верхнем углу"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Алгоритм просмотра окон"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Выбрать алгоритм, используемый для раскрытия окна"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
@@ -106,6 +106,8 @@ msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"Команда, выполняющаяся при выбранном для активного угла действии \"Выполнить "
+"команду\", или сразу несколько команд"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -119,7 +121,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Включить прикрепление окон к границам экрана"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""

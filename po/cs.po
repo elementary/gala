@@ -7,20 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 16:10+0000\n"
-"PO-Revision-Date: 2014-12-06 00:27+0000\n"
-"Last-Translator: Marek Doležel <marekdolezel@gmail.com>\n"
+"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"PO-Revision-Date: 2015-09-05 21:58+0000\n"
+"Last-Translator: Long Do Hai <mailbox@thinky.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-06-13 05:41+0000\n"
-"X-Generator: Launchpad (build 17557)\n"
+"X-Launchpad-Export-Date: 2015-09-06 05:53+0000\n"
+"X-Generator: Launchpad (build 17706)\n"
 "Language: cs\n"
 
 #: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "Vypadá displej v pořádku?"
 
 #: ../src/WindowManager.vala:1532
 msgid "Keep This Configuration"
@@ -32,47 +32,47 @@ msgstr "Obnovit předchozí nastavení"
 
 #: ../src/Widgets/WindowMenu.vala:58
 msgid "Minimize"
-msgstr ""
+msgstr "Minimalizovat"
 
 #: ../src/Widgets/WindowMenu.vala:73
 msgid "Move"
-msgstr ""
+msgstr "Přesunout"
 
 #: ../src/Widgets/WindowMenu.vala:80
 msgid "Resize"
-msgstr ""
+msgstr "Změnit velikost"
 
 #: ../src/Widgets/WindowMenu.vala:87
 msgid "Always on Top"
-msgstr ""
+msgstr "Vždy nahoře"
 
 #: ../src/Widgets/WindowMenu.vala:96
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Vždy na viditelné ploše"
 
 #: ../src/Widgets/WindowMenu.vala:105
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Přesunout na plochu vlevo"
 
 #: ../src/Widgets/WindowMenu.vala:113
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Přesunout na plochu vpravo"
 
 #: ../src/Widgets/WindowMenu.vala:121
 msgid "Close"
-msgstr ""
+msgstr "Zavřít"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Unmaximize"
-msgstr ""
+msgstr "Zrušit maximalizaci"
 
 #: ../src/Widgets/WindowMenu.vala:133
 msgid "Maximize"
-msgstr ""
+msgstr "Maximalizovat"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "Zobrazení multitaskingu"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
@@ -88,7 +88,7 @@ msgstr "Algoritmus pro rozložení zobrazení oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Zvolte algoritmus pro vystavení oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
@@ -117,10 +117,16 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Pokud nastavíte pouze jeden příkaz, bude daný příkaz použit pro jakýkoliv "
+"roh, který má nastaven uživatelský příkaz. Pokud místo toho použijete "
+"pattern 'hotcorner-topleft:command;;hotcorner-bottomright:command' "
+"specifické příkazy budou použity pro daný roh. Možné identifikátory jsou "
+"'hotcorner-[topleft; topright; bottomleft; bottomright]'následovaný ':' a "
+"příkazem. ';;' je použit jako oddělovač mezi definicemi příkazů."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Povolit dláždění u hrany při upuštění okna u hrany obrazovky"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -128,6 +134,9 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Je-li zapnuto, jsou okna po upuštění u svislé hrany obrazovky svisle "
+"maximalizována a vodorovně nastavena na poloviční šířku dostupné plochy. Při "
+"upuštění u horní hrany obrazovky je okno maximalizováno celé."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
@@ -137,16 +146,20 @@ msgstr "Akce panelu hlavní nabídky"
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Nastaví příkaz, který se spustí při stisku klávesové zkratky pro panel-main-"
+"menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Povolit dynamické pracovní plochy místo statických"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Podle potřeby zvyšovat nebo snižovat počet ploch dynamicky, místo "
+"statického, pevného počtu ploch"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -175,22 +188,23 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
 msgstr ""
+"Klávesová zkratka pro přesun aktuálního okna na poslední pracovní plochu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Přiblížit"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Oddálit"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Klávesová zkratka pro zobrazení přehledu oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Klávesová zkratka pro zobrazení přehledu všech oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
@@ -198,15 +212,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Přepnout na další rozložení klávesnice"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Přepnout na předchozí rozložení klávesnice"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Připojit modální dialogová okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -214,10 +228,13 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Je-li \"true\", pak se namísto samostatných záhlaví oken modální dialogy "
+"zobrazují jako připojené k záhlaví okna rodiče a jsou přesunovány společně s "
+"oknem rodiče."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Uspořádání tlačítek na záhlaví okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -245,7 +262,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "Povolit animace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
@@ -255,27 +272,27 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Doba trvání animace přichycení při maximalizaci/zrušení maximalizace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "Doba trvání animace zavření"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "Doba trvání animace minimalizace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Doba trvání animace přepnutí pracovní plochy"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Doba trvání animace mapování menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Definuje stín normálních vybraných oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -284,10 +301,14 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"První hodnota je poloměr rozmazání stínu, druhá je horní zaslabování (které "
+"je obvykle -1), třetí a čtvrtá jsou x- a y-offsety a poslední je "
+"průhlednost. Tedy [poloměr-rozmazání, horní-zaslabování, x-offset, y-offset, "
+"průhlednost]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Definuje stín normálních nevybraných oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"

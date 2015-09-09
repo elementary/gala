@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-06-12 16:10+0000\n"
-"PO-Revision-Date: 2015-04-12 08:17+0000\n"
-"Last-Translator: TcodingT <TcodingT@gmail.com>\n"
+"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"PO-Revision-Date: 2015-08-18 17:17+0000\n"
+"Last-Translator: nilux <contact@nilux.org>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-06-13 05:41+0000\n"
-"X-Generator: Launchpad (build 17557)\n"
+"X-Launchpad-Export-Date: 2015-08-19 05:50+0000\n"
+"X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "L'affichage semble-t-il correct ?"
 
 #: ../src/WindowManager.vala:1532
 msgid "Keep This Configuration"
@@ -87,7 +87,7 @@ msgstr "Algorithme de disposition de l'aperçu des fenêtres"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Choisissez l’algorithme employé pour l’exposition des fenêtres"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
@@ -106,6 +106,8 @@ msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"La commande qui sera exécutée pour l'action des coins actifs « custom-"
+"command » ou multiples"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -120,6 +122,8 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
 msgstr ""
+"Activer le positionnement en tuile lors du déplacement d'une fenêtre sur la "
+"bordure écran"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -130,7 +134,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Action du menu principal du panneau"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
@@ -139,13 +143,14 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Activer les espaces de travail dynamiques au lieu des statiques"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Utiliser un nombre variable d'espaces de travail au lieu d'un nombre fixe"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -157,6 +162,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Lors du bascul de fenêtres, gala lit cette liste et essaie de chercher "
+"chaque nom de fenêtre correspondant. Si cela en est le cas, la fenêtre sera "
+"cachée et reprendra le focus à la fin du bascul."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -178,11 +186,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Zoom avant"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Zoom arrière"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
@@ -198,15 +206,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Basculer vers la prochaine disposition clavier"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Basculer vers la précédente disposition clavier"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Attacher les boîtes de dialogue modales"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -214,6 +222,9 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Si vrai, à la place d'avoir des barres de titre indépendantes, les boîtes de "
+"dialogue apparaisseront attachées à la barre de titre de la fenêtre parente "
+"et seront déplacées avec la fenêtre parente."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -233,6 +244,8 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
 msgstr ""
+"Rendre une fenêtre parente assombrie lorsque celle-ci ouvre une boîte de "
+"dialogue"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
@@ -241,7 +254,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Arrière-plan utilisé avec la bascule d'espaces de travail"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -252,6 +265,9 @@ msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Indique si les animations devraient être affichées. Note: Ceci est une clé "
+"globale, elle change le comportement du gestionnaire de fenêtre, du tableau "
+"de bord, etc."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -275,7 +291,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Définition de l'ombre des fenêtres à focus normal"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -287,7 +303,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Définit l'ombre d'une fenêtre normale en arrière-plan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
@@ -295,7 +311,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
-msgstr ""
+msgstr "Définit l'ombre d'un menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Defines the shadow of a focused dialog"
@@ -307,7 +323,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Désactiver toutes les notifications"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "The default setting for the bubbles that would be used for new apps"
@@ -322,26 +338,30 @@ msgid ""
 "List of apps and their notification-permissions. Example: ['noise:show,on', "
 "'pantheon-terminal:show,off']"
 msgstr ""
+"Liste des applications et de leurs permissions de notification. Exemple : "
+"['noise:show,on', 'pantheon-terminal:show,off']"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
 msgstr ""
+"Structure: ['{NOM-DE-L'APPLICATION}:{PRIORITÉ (show/hide)},{SONS on/off}', "
+"...]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Activer le masque des coins arrondis"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Corner radius"
-msgstr ""
+msgstr "Rayon des coins"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Désactiver le masque des coins en plein écran"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Ne pas afficher le masque des coins sur les écrans secondaires"
 
 #~ msgid "Cancel"
 #~ msgstr "Annuler"

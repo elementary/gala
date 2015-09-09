@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-06-12 16:10+0000\n"
-"PO-Revision-Date: 2015-02-08 11:39+0000\n"
-"Last-Translator: Ivan Cizik <Unknown>\n"
+"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"PO-Revision-Date: 2015-09-06 19:42+0000\n"
+"Last-Translator: Adam Lukacovic <lukacovic.adam@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-06-13 05:41+0000\n"
-"X-Generator: Launchpad (build 17557)\n"
+"X-Launchpad-Export-Date: 2015-09-07 05:53+0000\n"
+"X-Generator: Launchpad (build 17706)\n"
 
 #: ../src/WindowManager.vala:1529
 msgid "Does the display look OK?"
@@ -215,11 +215,11 @@ msgstr "Prepnúť na ďalšiu plochu napravo alebo späť na prvú"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Prepnúť na nasledujúce rozloženie klávesnice"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Prepnúť na predchádzajúce rozloženie klávesnice"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
@@ -267,7 +267,7 @@ msgstr "Priehľadnosť okien umiestnených v pozadí alt-tab prepínača okien"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Pozadie pre prepínač virtuálnych pracovných plôch"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -369,7 +369,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Corner radius"
-msgstr ""
+msgstr "Polomer zakrivenia rohu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Disable corner mask on fullscreen"
