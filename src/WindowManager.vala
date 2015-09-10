@@ -734,6 +734,14 @@ namespace Gala
 		 * effects
 		 */
 
+#if HAS_MUTTER318
+		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
+		{
+			//FIXME Animations need to be re-implemented using the given arguments
+			size_change_completed (actor);
+		}
+#endif
+
 		public override void minimize (WindowActor actor)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
@@ -793,6 +801,7 @@ namespace Gala
 			}
 		}
 
+#if !HAS_MUTTER318
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
@@ -888,6 +897,7 @@ namespace Gala
 
 			maximize_completed (actor);
 		}
+#endif
 
 #if HAS_MUTTER314
 		public override void unminimize (WindowActor actor)
@@ -1102,6 +1112,7 @@ namespace Gala
 			}
 		}
 
+#if !HAS_MUTTER318
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
@@ -1177,6 +1188,7 @@ namespace Gala
 
 			unmaximize_completed (actor);
 		}
+#endif
 
 		// Cancel attached animation of an actor and reset it
 		bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
@@ -1212,9 +1224,17 @@ namespace Gala
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
+#if HAS_MUTTER318
+				size_change_completed (actor);
+#else
 				maximize_completed (actor);
+#endif
 			if (end_animation (ref unmaximizing, actor))
+#if HAS_MUTTER318
+				size_change_completed (actor);
+#else
 				unmaximize_completed (actor);
+#endif
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 		}
