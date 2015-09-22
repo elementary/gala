@@ -19,11 +19,6 @@ using Meta;
 
 namespace Gala.Plugins.Notify
 {
-	const string APP_BUBBLES_SHOW = "show";
-	const string APP_BUBBLES_HIDE = "hide";
-	const string APP_SOUNDS_ON = "on";
-	const string APP_SOUNDS_OFF = "off";
-
 	const string X_CANONICAL_PRIVATE_SYNCHRONOUS = "x-canonical-private-synchronous";
 	const string X_CANONICAL_PRIVATE_ICON_ONLY = "x-canonical-private-icon-only";
 
@@ -68,6 +63,7 @@ namespace Gala.Plugins.Notify
 
 		DBus? bus_proxy = null;
 		unowned Canberra.Context? ca_context = null;
+		Gee.HashMap<string, Settings> app_settings_cache;
 
 		public NotifyServer (NotificationStack stack)
 		{
@@ -91,6 +87,8 @@ namespace Gala.Plugins.Notify
 			                         Canberra.PROP_APPLICATION_LANGUAGE, locale,
 			                         null);
 			ca_context.open ();
+
+			app_settings_cache = new Gee.HashMap<string, Settings> ();
 		}
 
 		public string [] get_capabilities ()
@@ -159,46 +157,31 @@ namespace Gala.Plugins.Notify
 			var confirmation = hints.contains (X_CANONICAL_PRIVATE_SYNCHRONOUS);
 			var progress = confirmation && hints.contains ("value");
 
-			unowned NotifySettings options = NotifySettings.get_default ();
+			unowned NotifySettings notify_settings = NotifySettings.get_default ();
 
 			// Default values for confirmations
 			var allow_bubble = true;
 			var allow_sound = true;
 
 			if (!confirmation) {
-				var app_found = false;
-				var app_key = app_name.replace (":", "_").down ();
+				if (notify_settings.do_not_disturb) {
+					allow_bubble = allow_sound = false;
+				} else {
+					Settings? app_settings = app_settings_cache.get (app_name);
 
-				string[] parameters;
-				unowned string param_bubbles = (options.default_bubbles ? APP_BUBBLES_SHOW : APP_BUBBLES_HIDE);
-				unowned string param_sounds = (options.default_sounds ? APP_SOUNDS_ON : APP_SOUNDS_OFF);
-
-				foreach (unowned string app in options.apps) {
-					var properties = app.split (":");
-
-					if (properties.length == 2 && properties[0].down () == app_key) {
-						parameters = properties[1].split (",");
-
-						if (parameters.length == 2) {
-							param_bubbles = parameters[0];
-							param_sounds = parameters[1];
-
-							app_found = true;
-
-							break;
+					if (app_settings == null) {
+						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", false);
+						if (schema != null) {
+							app_settings = new Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_name));
+							app_settings_cache.set (app_name, app_settings);
 						}
 					}
-				}
 
-				// if no matching app was found, add the default values to the list
-				if (!app_found) {
-					var apps_new = options.apps;
-					apps_new += "%s:%s,%s".printf (app_key, param_bubbles, param_sounds);
-					options.apps = apps_new;
+					if (app_settings != null) {
+						allow_bubble = app_settings.get_boolean ("bubbles");
+						allow_sound = app_settings.get_boolean ("sounds");
+					}
 				}
-
-				allow_bubble = (!options.do_not_disturb && param_bubbles == APP_BUBBLES_SHOW);
-				allow_sound = (allow_bubble && param_sounds == APP_SOUNDS_ON);
 			}
 
 #if 0 // enable to debug notifications
