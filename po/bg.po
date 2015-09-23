@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"POT-Creation-Date: 2015-09-22 16:32+0000\n"
 "PO-Revision-Date: 2015-04-07 15:49+0000\n"
 "Last-Translator: Nikola Lardev <nikolalardev@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-07-17 05:31+0000\n"
-"X-Generator: Launchpad (build 17628)\n"
+"X-Launchpad-Export-Date: 2015-09-23 06:25+0000\n"
+"X-Generator: Launchpad (build 17749)\n"
 "Language: bg\n"
 
-#: ../src/WindowManager.vala:1529
+#: ../src/WindowManager.vala:1549
 msgid "Does the display look OK?"
 msgstr "Наред ли е екрана?"
 
-#: ../src/WindowManager.vala:1532
+#: ../src/WindowManager.vala:1552
 msgid "Keep This Configuration"
 msgstr "Запази тези настройки"
 
-#: ../src/WindowManager.vala:1533
+#: ../src/WindowManager.vala:1553
 msgid "Restore Previous Configuration"
 msgstr "Възстанови предишните настройки"
 
@@ -351,43 +351,30 @@ msgid "Disable all notifications"
 msgstr "Забрани всички известия"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
-msgid "The default setting for the bubbles that would be used for new apps"
+msgid "Enable bubbles"
 msgstr ""
-"Настройката по подразбиране на балончетата, която да бъде използвана за нови "
-"програми"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
-msgid "The default setting for the sounds that would be used for new apps"
+msgid "Enable sounds"
 msgstr ""
-"Настройката по подразбиране на звуците, която да бъде използвана за нови "
-"програми"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
-msgid ""
-"List of apps and their notification-permissions. Example: ['noise:show,on', "
-"'pantheon-terminal:show,off']"
+msgid "Show missed notifications in notification center"
 msgstr ""
-"Списък на приложения и техните оповестителни разрешения. За пример: "
-"['noise:show,on', 'pantheon-terminal:show,off']"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
-msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
-msgstr ""
-"Устройство: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
-
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
 msgstr ""
 
