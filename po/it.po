@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-07-16 05:58+0000\n"
+"POT-Creation-Date: 2015-09-22 16:32+0000\n"
 "PO-Revision-Date: 2015-03-20 18:52+0000\n"
 "Last-Translator: Fabio Zaramella <FFabio.96.X@Gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-07-17 05:31+0000\n"
-"X-Generator: Launchpad (build 17628)\n"
+"X-Launchpad-Export-Date: 2015-09-23 06:25+0000\n"
+"X-Generator: Launchpad (build 17749)\n"
 
-#: ../src/WindowManager.vala:1529
+#: ../src/WindowManager.vala:1549
 msgid "Does the display look OK?"
 msgstr "La visualizzazione appare corretta?"
 
-#: ../src/WindowManager.vala:1532
+#: ../src/WindowManager.vala:1552
 msgid "Keep This Configuration"
 msgstr "Mantieni questa configurazione"
 
-#: ../src/WindowManager.vala:1533
+#: ../src/WindowManager.vala:1553
 msgid "Restore Previous Configuration"
 msgstr "Ripristina la configurazione precedente"
 
@@ -356,44 +356,30 @@ msgid "Disable all notifications"
 msgstr "Disattiva tutte le notifiche"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
-msgid "The default setting for the bubbles that would be used for new apps"
+msgid "Enable bubbles"
 msgstr ""
-"L'impostazione di default per le bolle che sarebbero state utilizzate per le "
-"nuove applicazioni"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
-msgid "The default setting for the sounds that would be used for new apps"
+msgid "Enable sounds"
 msgstr ""
-"L'impostazione di default per i suoni che sarebbero stati utilizzati per le "
-"nuove applicazioni"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
-msgid ""
-"List of apps and their notification-permissions. Example: ['noise:show,on', "
-"'pantheon-terminal:show,off']"
+msgid "Show missed notifications in notification center"
 msgstr ""
-"Elenco delle applicazioni e dei loro permessi di notifica. Esempio: "
-"['musica: mostra, no', 'terminale: mostra, no']"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
-msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
-msgstr ""
-"Struttura: ['{NOME-APP}:{PRIORITÀ (mostra/nascondi)},{SUONI "
-"(acceso/spento)}', ...]"
-
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
 msgstr "Attiva gli angoli arrotondati"
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
 msgstr "Raggio dell'angolo"
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
 msgstr "Disattiva gli angoli arrotondati quando a schermo intero"
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
 msgstr "Visualizza angoli arrotondati solo su schermo principale"
 
