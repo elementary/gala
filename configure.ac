@@ -2,7 +2,7 @@
 m4_define([gala_released], [0])
 
 m4_define([gala_major_version], [0])
-m4_define([gala_minor_version], [2])
+m4_define([gala_minor_version], [3])
 m4_define([gala_micro_version], [0])
 m4_define([gala_nano_version], [0])
 
