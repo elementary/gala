@@ -50,6 +50,8 @@ namespace Gala.Plugins.Notify
 		const int DEFAULT_TMEOUT = 4000;
 		const string FALLBACK_ICON = "dialog-information";
 
+		static Gdk.RGBA? icon_fg_color = null;
+
 		[DBus (visible = false)]
 		public signal void show_notification (Notification notification);
 
@@ -269,6 +271,34 @@ namespace Gala.Plugins.Notify
 			return id;
 		}
 
+		static Gdk.RGBA? get_icon_fg_color ()
+		{
+			if (icon_fg_color != null)
+				return icon_fg_color;
+
+			var default_css = new Gtk.CssProvider ();
+			try {
+				default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
+			} catch (Error e) {
+				warning ("Loading default styles failed: %s", e.message);
+			}
+
+			var style_path = new Gtk.WidgetPath ();
+			style_path.append_type (typeof (Gtk.Window));
+			style_path.append_type (typeof (Gtk.EventBox));
+			style_path.iter_add_class (1, "gala-notification");
+			style_path.append_type (typeof (Gtk.Label));
+
+			var label_style_context = new Gtk.StyleContext ();
+			label_style_context.add_provider (default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			label_style_context.set_path (style_path);
+			label_style_context.add_class ("label");
+			label_style_context.set_state (Gtk.StateFlags.NORMAL);
+			icon_fg_color = label_style_context.get_color (Gtk.StateFlags.NORMAL);
+
+			return icon_fg_color;
+		}
+
 		static Gdk.Pixbuf? get_pixbuf (string app_name, string app_icon, HashTable<string, Variant> hints)
 		{
 			// decide on the icon, order:
@@ -315,10 +345,10 @@ namespace Gala.Plugins.Notify
 			} else if (app_icon != "") {
 
 				try {
-					var themed = new ThemedIcon.with_default_fallbacks (app_icon);
+					var themed = new ThemedIcon.with_default_fallbacks ("%s-symbolic".printf (app_icon));
 					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
 					if (info != null) {
-						pixbuf = info.load_icon ();
+						pixbuf = info.load_symbolic (get_icon_fg_color ());
 
 						if (pixbuf.height != size)
 							pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
@@ -331,7 +361,14 @@ namespace Gala.Plugins.Notify
 			if (pixbuf == null) {
 
 				try {
-					pixbuf = Gtk.IconTheme.get_default ().load_icon (app_name.down (), size, 0);
+					var themed = new ThemedIcon (app_name.down ());
+					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
+					if (info != null) {
+						pixbuf = info.load_symbolic (get_icon_fg_color ());
+
+						if (pixbuf.height != size)
+							pixbuf = pixbuf.scale_simple (size, size, Gdk.InterpType.HYPER);
+					}
 				} catch (Error e) {
 
 					try {
