@@ -25,6 +25,7 @@ namespace Gala.Plugins.Zoom
 
 		uint mouse_poll_timer = 0;
 		float current_zoom = 1.0f;
+		ulong wins_handler_id = 0UL;
 
 		public override void initialize (Gala.WindowManager wm)
 		{
@@ -89,23 +90,21 @@ namespace Gala.Plugins.Zoom
 				float mx, my;
 				var client_pointer = Gdk.Display.get_default ().get_device_manager ().get_client_pointer ();
 				client_pointer.get_position (null, out mx, out my);
-				var pivot = wins.pivot_point;
-				pivot.x = mx/wins.width;
-				pivot.y = my/wins.height;
+				var pivot = Clutter.Point.alloc ();
+				pivot.init (mx / wins.width, my / wins.height);
 				wins.pivot_point = pivot;
 
 				mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
 					client_pointer.get_position (null, out mx, out my);
-					if (wins.pivot_point.x == mx/wins.width && wins.pivot_point.y == my/wins.height)
+					var new_pivot = Clutter.Point.alloc ();
+					new_pivot.init (mx / wins.width, my / wins.height);
+					if (wins.pivot_point.equals (new_pivot))
 						return true;
 
 					wins.save_easing_state ();
 					wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
 					wins.set_easing_duration (MOUSE_POLL_TIME);
-					pivot = wins.pivot_point;
-					pivot.x = mx/wins.width;
-					pivot.y = my/wins.height;
-					wins.pivot_point = pivot;
+					wins.pivot_point = new_pivot;
 					wins.restore_easing_state ();
 					return true;
 				});
@@ -119,18 +118,18 @@ namespace Gala.Plugins.Zoom
 				if (mouse_poll_timer > 0)
 					Source.remove (mouse_poll_timer);
 				mouse_poll_timer = 0;
+
 				wins.save_easing_state ();
 				wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
 				wins.set_easing_duration (300);
 				wins.scale_x = 1.0f;
 				wins.scale_y = 1.0f;
 				wins.restore_easing_state ();
-				ulong sid = 0;
-				sid = wins.transitions_completed.connect (() => {
-					wins.disconnect (sid);
-					var pivot = wins.pivot_point;
-					pivot.x = 0.0f;
-					pivot.y = 0.0f;
+
+				wins_handler_id = wins.transitions_completed.connect (() => {
+					wins.disconnect (wins_handler_id);
+					var pivot = Clutter.Point.alloc ();
+					pivot.init (0.0f, 0.0f);
 					wins.pivot_point = pivot;
 				});
 
