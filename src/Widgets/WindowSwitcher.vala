@@ -33,8 +33,13 @@ namespace Gala
 
 		WindowActor? dock_window;
 		Actor dock;
+#if HAVE_PLANK_0_11
+		Plank.Surface? dock_surface;
+		Plank.DockTheme dock_theme;
+#else
 		Plank.Drawing.DockSurface? dock_surface;
 		Plank.Drawing.DockTheme dock_theme;
+#endif
 		Plank.DockPreferences dock_settings;
 		float dock_y_offset;
 		float dock_height_offset;
@@ -57,12 +62,20 @@ namespace Gala
 		construct
 		{
 			// pull drawing methods from libplank
+#if HAVE_PLANK_0_11
+			dock_settings = new Plank.DockPreferences ("dock1");
+#else
 			var settings_file = Environment.get_user_config_dir () + "/plank/dock1/settings";
 			dock_settings = new Plank.DockPreferences.with_filename (settings_file);
+#endif
 			dock_settings.notify.connect (update_dock);
 			dock_settings.notify["Theme"].connect (load_dock_theme);
 
+#if HAVE_PLANK_0_11
+			var launcher_folder = Plank.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
+#else
 			var launcher_folder = Plank.Services.Paths.AppConfigFolder.get_child ("dock1").get_child ("launchers");
+#endif
 
 			if (launcher_folder.query_exists ()) {
 				try {
@@ -111,7 +124,11 @@ namespace Gala
 			if (dock_theme != null)
 				dock_theme.notify.disconnect (update_dock);
 
+#if HAVE_PLANK_0_11
+			dock_theme = new Plank.DockTheme (dock_settings.Theme);
+#else
 			dock_theme = new Plank.Drawing.DockTheme (dock_settings.Theme);
+#endif
 			dock_theme.load ("dock");
 			dock_theme.notify.connect (update_dock);
 
@@ -203,7 +220,11 @@ namespace Gala
 			}
 
 			if (dock_surface == null || dock_surface.Width != width || dock_surface.Height != height) {
+#if HAVE_PLANK_0_11
+				var dummy_surface = new Plank.Surface.with_cairo_surface (1, 1, cr.get_target ());
+#else
 				var dummy_surface = new Plank.Drawing.DockSurface.with_surface (1, 1, cr.get_target ());
+#endif
 
 				dock_surface = dock_theme.create_background (width, height, position, dummy_surface);
 			}

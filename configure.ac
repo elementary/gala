@@ -181,6 +181,13 @@ if test "x$have_mutter318" = "xyes" ; then
     MUTTER_API="3.18"
 fi
 
+# Check for newer Plank
+PLANK_PKGS="plank >= 0.10.9"
+PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])
+if test "x$enable_plank_0_11" = "xyes" ; then
+    VALAFLAGS="$VALAFLAGS --define HAVE_PLANK_0_11"
+fi
+
 # -----------------------------------------------------------
 # Dependencies for Notifications plugin
 # -----------------------------------------------------------
