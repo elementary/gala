@@ -1784,7 +1784,9 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/meta-enum-types.h", cprefix = "META_SIZE_CHANGE_", type_id = "meta_size_change_get_type ()")]
 	public enum SizeChange {
 		MAXIMIZE,
-		UNMAXIMIZE
+		UNMAXIMIZE,
+		FULLSCREEN,
+		UNFULLSCREEN
 	}
 #endif
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_LAYER_", type_id = "meta_stack_layer_get_type ()")]
