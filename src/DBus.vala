@@ -23,7 +23,7 @@ namespace Gala
 		static DBus? instance;
 		static WindowManager wm;
 
-		[DBus (visibile = false)]
+		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
 		{
 			wm = _wm;
