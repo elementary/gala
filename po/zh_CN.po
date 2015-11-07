@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-09-22 16:32+0000\n"
-"PO-Revision-Date: 2015-05-06 06:44+0000\n"
+"POT-Creation-Date: 2015-10-09 16:41+0000\n"
+"PO-Revision-Date: 2015-10-25 13:11+0000\n"
 "Last-Translator: colindemian <dengmengpc@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-23 06:25+0000\n"
-"X-Generator: Launchpad (build 17749)\n"
+"X-Launchpad-Export-Date: 2015-10-26 05:20+0000\n"
+"X-Generator: Launchpad (build 17812)\n"
 
 #: ../src/WindowManager.vala:1549
 msgid "Does the display look OK?"
@@ -105,7 +105,7 @@ msgstr "右下方热角"
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
-msgstr ""
+msgstr "用于执行热角动作的“自定义指令”或多重指令"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -116,6 +116,10 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"若您只输入一条指令，该指令将会被所有设置为“自定义指令”的热角使用。如果您使用如下模式 “hotcorner-"
+"topleft:command;;hotcorner-bottomright:command”，则指令将会按代码分配到热角。可用的标识符有 "
+"“hotcorner-[topleft; topright; bottomleft; bottomright]” "
+"加英文冒号“:”，并用英文分号“;;”充当不同定义指令间的分隔符。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -126,7 +130,7 @@ msgid ""
 "If enabled, dropping windows on vertical screen edges maximizes them "
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
+msgstr "启用时，拖放窗口至屏幕左右边缘，窗口将自动铺满半屏；拖放窗口至屏幕顶部边缘，窗口将自动全屏。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
@@ -149,14 +153,14 @@ msgstr "在有需要时动态增减工作区的数量，而不是静态工作区
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr ""
+msgstr "被窗口切换器识别为 Dock 窗口的名称"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
 "When launching the window-switcher, gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
-msgstr ""
+msgstr "窗口切换器启动时，gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏此窗口，并在窗口切换器关闭后恢复显示。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -312,15 +316,15 @@ msgstr "禁用所有通知"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "启用气泡"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "启用声音"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "在通知中心显示错过的通知"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
