@@ -724,34 +724,45 @@ namespace Gala
 				float scale_y  = (float)icon.height / actor.height;
 				float anchor_x = (float)(actor.x - icon.x) * actor.width  / (icon.width  - actor.width);
 				float anchor_y = (float)(actor.y - icon.y) * actor.height / (icon.height - actor.height);
+				actor.set_pivot_point (anchor_x, anchor_y);
 
-				// FIXME set_pivot_point appears to show weird behavior for negative values, which we will need
-				//       in some cases. scale_center_{x,y} works fine so far.
-				actor.scale_center_x = anchor_x;
-				actor.scale_center_y = anchor_y;
+				actor.save_easing_state ();
+				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
+				actor.set_easing_duration (duration);
+				actor.scale_x = scale_x;
+				actor.scale_y = scale_y;
+				actor.opacity = 0U;
+				actor.restore_easing_state ();
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, duration,
-					scale_x:scale_x, scale_y:scale_y,opacity:0).completed.connect (() => {
-
-					actor.scale_center_x = actor.scale_center_y = 0;
-					actor.opacity = 255;
-					actor.scale_x = 1.0;
-					actor.scale_y = 1.0;
+				ulong minimize_handler_id = 0UL;
+				minimize_handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (minimize_handler_id);
+					actor.set_pivot_point (0.0f, 0.0f);
+					actor.opacity = 255U;
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
 					minimize_completed (actor);
 					minimizing.remove (actor);
 				});
 
 			} else {
-				actor.scale_center_x = width / 2.0f - actor.x;
-				actor.scale_center_y = height - actor.y;
+				actor.set_pivot_point (width / 2.0f - actor.x, height - actor.y);
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_EXPO, duration,
-					scale_x : 0.0f, scale_y : 0.0f, opacity : 0).completed.connect (() => {
+				actor.save_easing_state ();
+				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
+				actor.set_easing_duration (duration);
+				actor.scale_x = 0.0f;
+				actor.scale_y = 0.0f;
+				actor.opacity = 0U;
+				actor.restore_easing_state ();
 
-					actor.set_pivot_point (0, 0);
-					actor.opacity = 255;
-					actor.scale_x = 1.0;
-					actor.scale_y = 1.0;
+				ulong minimize_handler_id = 0UL;
+				minimize_handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (minimize_handler_id);
+					actor.set_pivot_point (0.0f, 0.0f);
+					actor.opacity = 255U;
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
 					minimize_completed (actor);
 					minimizing.remove (actor);
 				});
@@ -834,7 +845,7 @@ namespace Gala
 
 				maximize_completed (actor);
 
-				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.set_pivot_point (0.0f, 0.0f);
 				actor.translation_x = old_inner_rect.x - ex;
 				actor.translation_y = old_inner_rect.y - ey;
 				actor.scale_x = 1.0 / scale_x;
@@ -881,14 +892,22 @@ namespace Gala
 
 					unminimizing.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.SOUTH;
+					actor.set_pivot_point (0.5f, 1.0f);
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
-					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, duration,
-						scale_x:1.0f, scale_y:1.0f, opacity:255)
-						.completed.connect ( () => {
+					actor.opacity = 0U;
 
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
+					actor.set_easing_duration (duration);
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
+					actor.opacity = 255U;
+					actor.restore_easing_state ();
+
+					ulong unminimize_handler_id = 0UL;
+					unminimize_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (unminimize_handler_id);
 						unminimizing.remove (actor);
 						unminimize_completed (actor);
 					});
@@ -925,14 +944,22 @@ namespace Gala
 
 					mapping.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.SOUTH;
+					actor.set_pivot_point (0.5f, 1.0f);
 					actor.scale_x = 0.01f;
 					actor.scale_y = 0.1f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_EXPO, duration,
-						scale_x:1.0f, scale_y:1.0f, opacity:255)
-						.completed.connect ( () => {
 
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
+					actor.set_easing_duration (duration);
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
+					actor.opacity = 255U;
+					actor.restore_easing_state ();
+
+					ulong map_handler_id = 0UL;
+					map_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
 					});
@@ -948,15 +975,23 @@ namespace Gala
 
 					mapping.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.CENTER;
-					actor.rotation_center_x = {0, 0, 10};
+					actor.set_pivot_point (0.5f, 0.5f);
+					actor.set_pivot_point_z (0.2f);
 					actor.scale_x = 0.9f;
 					actor.scale_y = 0.9f;
 					actor.opacity = 0;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, duration,
-						scale_x:1.0f, scale_y:1.0f, opacity:255)
-						.completed.connect ( () => {
 
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+					actor.set_easing_duration (duration);
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
+					actor.opacity = 255U;
+					actor.restore_easing_state ();
+
+					ulong map_handler_id = 0UL;
+					map_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
 					});
@@ -966,13 +1001,21 @@ namespace Gala
 
 					mapping.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.NORTH;
+					actor.set_pivot_point (0.5f, 0.0f);
 					actor.scale_y = 0.0f;
 					actor.opacity = 0;
 
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 250,
-						scale_y:1.0f, opacity:255).completed.connect ( () => {
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+					actor.set_easing_duration (250);
+					actor.scale_x = 1.0f;
+					actor.scale_y = 1.0f;
+					actor.opacity = 255U;
+					actor.restore_easing_state ();
 
+					ulong map_handler_id = 0UL;
+					map_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
 					});
@@ -1016,12 +1059,20 @@ namespace Gala
 
 					destroying.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.CENTER;
+					actor.set_pivot_point (0.5f, 0.5f);
 					actor.show ();
-					actor.animate (Clutter.AnimationMode.LINEAR, duration,
-						scale_x:0.8f, scale_y:0.8f, opacity:0)
-						.completed.connect ( () => {
 
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
+					actor.set_easing_duration (duration);
+					actor.scale_x = 0.8f;
+					actor.scale_y = 0.8f;
+					actor.opacity = 0U;
+					actor.restore_easing_state ();
+
+					ulong destroy_handler_id = 0UL;
+					destroy_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (destroy_handler_id);
 						destroying.remove (actor);
 						destroy_completed (actor);
 						Utils.request_clean_icon_cache (get_all_xids ());
@@ -1031,10 +1082,17 @@ namespace Gala
 				case WindowType.DIALOG:
 					destroying.add (actor);
 
-					actor.scale_gravity = Clutter.Gravity.NORTH;
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, 200,
-						scale_y:0.0f, opacity:0).completed.connect ( () => {
+					actor.set_pivot_point (0.5f, 0.0f);
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+					actor.set_easing_duration (200);
+					actor.scale_y = 0.0f;
+					actor.opacity = 0U;
+					actor.restore_easing_state ();
 
+					ulong destroy_handler_id = 0UL;
+					destroy_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (destroy_handler_id);
 						destroying.remove (actor);
 						destroy_completed (actor);
 					});
@@ -1052,11 +1110,17 @@ namespace Gala
 					}
 
 					destroying.add (actor);
+					actor.save_easing_state ();
+					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+					actor.set_easing_duration (duration);
+					actor.scale_x = 0.8f;
+					actor.scale_y = 0.8f;
+					actor.opacity = 0U;
+					actor.restore_easing_state ();
 
-					actor.animate (Clutter.AnimationMode.EASE_OUT_QUAD, duration,
-						scale_x:0.8f, scale_y:0.8f, opacity:0)
-						.completed.connect ( () => {
-
+					ulong destroy_handler_id = 0UL;
+					destroy_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (destroy_handler_id);
 						destroying.remove (actor);
 						destroy_completed (actor);
 					});
@@ -1109,34 +1173,44 @@ namespace Gala
 
 				ui_group.add_child (old_actor);
 
-				var scale_x = (double) (ew - offset_width) / old_rect.width;
-				var scale_y = (double) (eh - offset_height) / old_rect.height;
+				var scale_x = (float) (ew - offset_width) / old_rect.width;
+				var scale_y = (float) (eh - offset_height) / old_rect.height;
 
-				old_actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						x: (ex - offset_x),
-						y: (ey - offset_y),
-						opacity: 0,
-						scale_x: scale_x,
-						scale_y: scale_y).completed.connect (() => {
+				old_actor.save_easing_state ();
+				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				old_actor.set_easing_duration (duration);
+				old_actor.x = ex - offset_x;
+				old_actor.y = ey - offset_y;
+				old_actor.scale_x = scale_x;
+				old_actor.scale_y = scale_y;
+				old_actor.opacity = 0U;
+				old_actor.restore_easing_state ();
+
+				ulong unmaximize_old_handler_id = 0UL;
+				unmaximize_old_handler_id = old_actor.transitions_completed.connect (() => {
+					old_actor.disconnect (unmaximize_old_handler_id);
 					old_actor.destroy ();
 				});
 
 				var maximized_x = actor.x;
 				var maximized_y = actor.y;
 				unmaximize_completed (actor);
-				actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+				actor.set_pivot_point (0.0f, 0.0f);
 				actor.x = ex;
 				actor.y = ey;
-				actor.translation_x = -ex + offset_x * (float) (1.0 / scale_x) + maximized_x;
-				actor.translation_y = -ey + offset_y * (float) (1.0 / scale_y) + maximized_y;
-				actor.scale_x = 1.0 / scale_x;
-				actor.scale_y = 1.0 / scale_y;
+				actor.translation_x = -ex + offset_x * (1.0f / scale_x) + maximized_x;
+				actor.translation_y = -ey + offset_y * (1.0f / scale_y) + maximized_y;
+				actor.scale_x = 1.0f / scale_x;
+				actor.scale_y = 1.0f / scale_y;
 
-				actor.animate (Clutter.AnimationMode.EASE_IN_OUT_QUAD, duration,
-						scale_x: 1.0,
-						scale_y: 1.0,
-						translation_x: 0.0,
-						translation_y: 0.0);
+				actor.save_easing_state ();
+				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				actor.set_easing_duration (duration);
+				actor.scale_x = 1.0f;
+				actor.scale_y = 1.0f;
+				actor.translation_x = 0.0f;
+				actor.translation_y = 0.0f;
+				actor.restore_easing_state ();
 
 				return;
 			}
@@ -1157,12 +1231,11 @@ namespace Gala
 			}
 
 			actor.detach_animation ();
-			actor.opacity = 255;
+			actor.opacity = 255U;
 			actor.scale_x = 1.0f;
 			actor.scale_y = 1.0f;
 			actor.rotation_angle_x = 0.0f;
-			actor.anchor_gravity = Clutter.Gravity.NORTH_WEST;
-			actor.scale_gravity = Clutter.Gravity.NORTH_WEST;
+			actor.set_pivot_point (0.0f, 0.0f);
 
 			list.remove (actor);
 			return true;
@@ -1214,8 +1287,8 @@ namespace Gala
 			var primary = screen.get_primary_monitor ();
 			var move_primary_only = InternalUtils.workspaces_only_on_primary ();
 			var monitor_geom = screen.get_monitor_geometry (primary);
-			var clone_offset_x = move_primary_only ? monitor_geom.x : 0;
-			var clone_offset_y = move_primary_only ? monitor_geom.y : 0;
+			var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
+			var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
 
 			screen.get_size (out screen_width, out screen_height);
 
@@ -1344,15 +1417,15 @@ namespace Gala
 				if (!from_has_fullscreened) {
 					windows.prepend (window);
 					parents.prepend (window.get_parent ());
-					window.set_translation (-clone_offset_x, -clone_offset_y, 0);
+					window.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
 
 					clutter_actor_reparent (window, out_group);
 				}
 			}
 
 			main_container.clip_to_allocation = true;
-			main_container.x = move_primary_only ? monitor_geom.x : 0;
-			main_container.y = move_primary_only ? monitor_geom.y : 0;
+			main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
+			main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
 			main_container.width = move_primary_only ? monitor_geom.width : screen_width;
 			main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
@@ -1360,8 +1433,8 @@ namespace Gala
 			if (direction == MotionDirection.RIGHT)
 				x2 = -x2;
 
-			out_group.x = 0;
-			wallpaper.x = 0;
+			out_group.x = 0.0f;
+			wallpaper.x = 0.0f;
 			in_group.x = -x2;
 			wallpaper_clone.x = -x2;
 
@@ -1383,10 +1456,10 @@ namespace Gala
 			wallpaper.set_easing_duration (animation_duration);
 
 			out_group.x = x2;
-			in_group.x = 0;
+			in_group.x = 0.0f;
 
 			wallpaper.x = x2;
-			wallpaper_clone.x = 0;
+			wallpaper_clone.x = 0.0f;
 			wallpaper.restore_easing_state ();
 
 			var transition = in_group.get_transition ("x");
@@ -1406,7 +1479,7 @@ namespace Gala
 
 			for (var i = 0; i < windows.length (); i++) {
 				var actor = windows.nth_data (i);
-				actor.set_translation (0, 0, 0);
+				actor.set_translation (0.0f, 0.0f, 0.0f);
 
 				// to maintain the correct order of monitor, we need to insert the Background
 				// back manually
@@ -1438,10 +1511,10 @@ namespace Gala
 					window.hide ();
 
 				// some static windows may have been faded out
-				if (actor.opacity < 255) {
+				if (actor.opacity < 255U) {
 					actor.save_easing_state ();
 					actor.set_easing_duration (300);
-					actor.opacity = 255;
+					actor.opacity = 255U;
 					actor.restore_easing_state ();
 				}
 			}

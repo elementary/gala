@@ -39,8 +39,7 @@ namespace Gala
 			opacity = 0;
 			set_pivot_point (0.5f, 0.5f);
 			reactive = true;
-
-			layout_manager = new BinLayout (BinAlignment.CENTER);
+			x_align = Clutter.ActorAlign.CENTER;
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
 			drop.crossed.connect ((hovered) => {

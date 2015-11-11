@@ -165,8 +165,6 @@ namespace Gala
 
 			var height = icon_size + (top_offset > 0 ? top_offset : 0) + bottom_offset;
 
-			dock.anchor_gravity = horizontal ? Gravity.NORTH : Gravity.WEST;
-
 			if (horizontal) {
 				dock.height = height;
 				dock.x = Math.ceilf (geometry.x + geometry.width / 2.0f);
@@ -267,10 +265,12 @@ namespace Gala
 
 			if (dock_settings.is_horizontal_dock ()) {
 				dock.width = dock_width;
+				dock.translation_x = Math.ceilf (-dock_width / 2.0f);
 				dock.get_first_child ().margin_left = items_offset;
 				dock.get_last_child ().margin_right = items_offset;
 			} else {
 				dock.height = dock_width;
+				dock.translation_y = Math.ceilf (-dock_width / 2.0f);
 				dock.get_first_child ().margin_top = items_offset;
 				dock.get_last_child ().margin_bottom = items_offset;
 			}
@@ -288,9 +288,11 @@ namespace Gala
 			if (dock_settings.is_horizontal_dock ()) {
 				dock.layout_manager.get_preferred_width (dock, dock.height, null, out dest_width);
 				dock.width = dest_width;
+				dock.translation_x = Math.ceilf (-dest_width / 2.0f);
 			} else {
 				dock.layout_manager.get_preferred_height (dock, dock.width, null, out dest_width);
 				dock.height = dest_width;
+				dock.translation_y = Math.ceilf (-dest_width / 2.0f);
 			}
 
 			dock.restore_easing_state ();
@@ -493,10 +495,13 @@ namespace Gala
 			dock.set_easing_duration (250);
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 
-			if (dock_settings.is_horizontal_dock ())
+			if (dock_settings.is_horizontal_dock ()) {
 				dock.width = dest_width;
-			else
+				dock.translation_x = Math.ceilf (-dest_width / 2.0f);
+			} else {
 				dock.height = dest_width;
+				dock.translation_y = Math.ceilf (-dest_width / 2.0f);
+			}
 
 			dock.opacity = 0;
 			dock.restore_easing_state ();
