@@ -65,9 +65,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
-#if HAS_MUTTER314
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
-#endif
 
 		public WindowManagerGala ()
 		{
@@ -93,9 +91,6 @@ namespace Gala
 			var display = screen.get_display ();
 
 			DBus.init (this);
-#if !HAS_MUTTER314
-			BackgroundCache.init (screen);
-#endif
 			WindowListener.init (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
@@ -127,11 +122,7 @@ namespace Gala
 			 * +-- top window group
 		     */
 
-#if HAS_MUTTER314
 			var system_background = new SystemBackground (screen);
-#else
-			var system_background = new SystemBackground ();
-#endif
 			system_background.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.insert_child_below (system_background, null);
@@ -144,11 +135,7 @@ namespace Gala
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
 
-#if HAS_MUTTER314
 			background_group = new BackgroundContainer (screen);
-#else
-			background_group = new BackgroundManager (screen);
-#endif
 			window_group.add_child (background_group);
 			window_group.set_child_below_sibling (background_group, null);
 
@@ -319,11 +306,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_switch_input_source (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			var keyboard_input_settings = new GLib.Settings ("org.gnome.desktop.input-sources");
 
@@ -344,11 +327,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_cycle_workspaces (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
 			var index = screen.get_active_workspace_index () + direction;
@@ -362,11 +341,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_move_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			if (window == null)
 				return;
@@ -377,11 +352,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_move_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			if (window == null)
 				return;
@@ -394,11 +365,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
 			switch_to_next_workspace (direction);
@@ -406,11 +373,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
 			screen.get_workspace_by_index (index).activate (display.get_current_time ());
@@ -533,11 +496,7 @@ namespace Gala
 			var time = screen.get_display ().get_current_time ();
 
 			update_input_area ();
-#if HAS_MUTTER310
 			begin_modal (0, time);
-#else
-			begin_modal (x_get_stage_window (Compositor.get_stage_for_screen (screen)), {}, 0, time);
-#endif
 
 			Meta.Util.disable_unredirect_for_screen (screen);
 
@@ -693,7 +652,6 @@ namespace Gala
 			}
 		}
 
-#if HAS_MUTTER314
 		WindowMenu? window_menu = null;
 
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
@@ -728,7 +686,6 @@ namespace Gala
 		{
 			show_window_menu (window, menu, rect.x, rect.y);
 		}
-#endif
 
 		/*
 		 * effects
@@ -899,7 +856,6 @@ namespace Gala
 		}
 #endif
 
-#if HAS_MUTTER314
 		public override void unminimize (WindowActor actor)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
@@ -943,7 +899,6 @@ namespace Gala
 					break;
 			}
 		}
-#endif
 
 		public override void map (WindowActor actor)
 		{
@@ -1217,10 +1172,8 @@ namespace Gala
 		{
 			if (end_animation (ref mapping, actor))
 				map_completed (actor);
-#if HAS_MUTTER314
 			if (end_animation (ref unminimizing, actor))
 				unminimize_completed (actor);
-#endif
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
@@ -1457,27 +1410,14 @@ namespace Gala
 
 				// to maintain the correct order of monitor, we need to insert the Background
 				// back manually
-#if HAS_MUTTER314
 				if (actor is BackgroundManager) {
 					var background = (BackgroundManager) actor;
-#else
-				if (actor is Background) {
-					var background = (Background) actor;
-#endif
 
 					background.get_parent ().remove_child (background);
-#if HAS_MUTTER314
 					background_group.insert_child_at_index (background, background.monitor_index);
-#else
-					background_group.insert_child_at_index (background, background.monitor);
-#endif
 					background.x = background.steal_data<int> ("prev-x");
 					continue;
-#if HAS_MUTTER314
 				} else if (actor is Meta.BackgroundGroup) {
-#else
-				} else if (actor is BackgroundManager) {
-#endif
 					actor.x = 0;
 					// thankfully mutter will take care of stacking it at the right place for us
 					clutter_actor_reparent (actor, window_group);
@@ -1542,7 +1482,6 @@ namespace Gala
 				&& modal_proxy.keybinding_filter (binding));
 		}
 
-#if HAS_MUTTER310
 		public override void confirm_display_change ()
 		{
 			var pid = Util.show_dialog ("--question",
@@ -1564,7 +1503,6 @@ namespace Gala
 				complete_display_change (ok);
 			});
 		}
-#endif
 
 		public override unowned Meta.PluginInfo? plugin_info ()
 		{

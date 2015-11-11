@@ -160,13 +160,7 @@ namespace Gala
 			if (shadow_update_timeout != 0)
 				Source.remove (shadow_update_timeout);
 
-#if HAS_MUTTER312
 			window.size_changed.disconnect (update_shadow_size);
-#else
-			var actor = window.get_compositor_private () as WindowActor;
-			if (actor != null)
-				actor.size_changed.disconnect (update_shadow_size);
-#endif
 		}
 
 		/**
@@ -204,18 +198,10 @@ namespace Gala
 
 			transition_to_original_state (false);
 
-#if HAS_MUTTER312
 			var outer_rect = window.get_frame_rect ();
-#else
-			var outer_rect = window.get_outer_rect ();
-#endif
 			shadow_effect = new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5);
 			add_effect_with_name ("shadow", shadow_effect);
-#if HAS_MUTTER312
 			window.size_changed.connect (update_shadow_size);
-#else
-			actor.size_changed.connect (update_shadow_size);
-#endif
 
 			if (should_fade ())
 				opacity = 0;
@@ -254,11 +240,7 @@ namespace Gala
 				Source.remove (shadow_update_timeout);
 
 			shadow_update_timeout = Timeout.add (500, () => {
-#if HAS_MUTTER312
 				var rect = window.get_frame_rect ();
-#else
-				var rect = window.get_outer_rect ();
-#endif
 				var effect = get_effect ("shadow") as ShadowEffect;
 				effect.update_size (rect.width, rect.height);
 
@@ -285,11 +267,7 @@ namespace Gala
 		 */
 		public void transition_to_original_state (bool animate)
 		{
-#if HAS_MUTTER312
 			var outer_rect = window.get_frame_rect ();
-#else
-			var outer_rect = window.get_outer_rect ();
-#endif
 
 			var monitor_geom = window.get_screen ().get_monitor_geometry (window.get_monitor ());
 			var offset_x = monitor_geom.x;
@@ -369,16 +347,8 @@ namespace Gala
 				return;
 
 			var actor = window.get_compositor_private () as WindowActor;
-#if HAS_MUTTER314
 			var input_rect = window.get_buffer_rect ();
-#else
-			var input_rect = window.get_input_rect ();
-#endif
-#if HAS_MUTTER312
 			var outer_rect = window.get_frame_rect ();
-#else
-			var outer_rect = window.get_outer_rect ();
-#endif
 			var scale_factor = (float)width / outer_rect.width;
 
 			var shadow_effect = get_effect ("shadow") as ShadowEffect;

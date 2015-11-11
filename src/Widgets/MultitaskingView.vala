@@ -516,11 +516,7 @@ namespace Gala
 
 					var monitor_geom = screen.get_monitor_geometry (monitor);
 
-#if HAS_MUTTER312
 					var window_geom = window.get_frame_rect ();
-#else
-					var window_geom = window.get_outer_rect ();
-#endif
 					var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
 					var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
 

@@ -102,18 +102,8 @@ namespace Gala
 				return;
 
 			WindowGeometry window_geometry = {};
-
-#if HAS_MUTTER312
 			window_geometry.inner = window.get_frame_rect ();
-#else
-			window_geometry.inner = window.get_outer_rect ();
-#endif
-
-#if HAS_MUTTER314
 			window_geometry.outer = window.get_buffer_rect ();
-#else
-			window_geometry.outer = window.get_input_rect ();
-#endif
 
 			unmaximized_state_geometry.@set (window, window_geometry);
 		}

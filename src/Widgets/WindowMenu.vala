@@ -17,8 +17,6 @@
 //  Authored By: Tom Beckmann
 //
 
-#if HAS_MUTTER314
-
 namespace Gala
 {
 	/**
@@ -148,5 +146,3 @@ namespace Gala
 		}
 	}
 }
-
-#endif

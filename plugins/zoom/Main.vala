@@ -54,22 +54,14 @@ namespace Gala.Plugins.Zoom
 
 		[CCode (instance_pos = -1)]
 		void zoom_in (Meta.Display display, Meta.Screen screen,
-#if HAS_MUTTER314
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			zoom (true);
 		}
 
 		[CCode (instance_pos = -1)]
 		void zoom_out (Meta.Display display, Meta.Screen screen,
-#if HAS_MUTTER314
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
-#else
-			Meta.Window? window, X.Event event, Meta.KeyBinding binding)
-#endif
 		{
 			zoom (false);
 		}

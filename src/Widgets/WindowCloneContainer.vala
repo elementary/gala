@@ -183,11 +183,7 @@ namespace Gala
 			var windows = new List<InternalUtils.TilableWindow?> ();
 			foreach (var child in get_children ()) {
 				unowned WindowClone window = (WindowClone) child;
-#if HAS_MUTTER312
 				windows.prepend ({ window.window.get_frame_rect (), window });
-#else
-				windows.prepend ({ window.window.get_outer_rect (), window });
-#endif
 			}
 
 			if (windows.length () < 1)

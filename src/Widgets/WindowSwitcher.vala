@@ -352,11 +352,7 @@ namespace Gala
 
 		[CCode (instance_pos = -1)]
 		public void handle_switch_windows (Display display, Screen screen, Window? window,
-#if HAS_MUTTER314
 			Clutter.KeyEvent event, KeyBinding binding)
-#else
-			X.Event event, KeyBinding binding)
-#endif
 		{
 			var now = get_monotonic_time () / 1000;
 			if (now - last_switch < MIN_DELTA)
@@ -589,13 +585,8 @@ namespace Gala
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
 
-#if HAS_MUTTER314
 			var windows = display.get_tab_list (TabList.NORMAL, workspace);
 			var current = display.get_tab_current (TabList.NORMAL, workspace);
-#else
-			var windows = display.get_tab_list (TabList.NORMAL, screen, workspace);
-			var current = display.get_tab_current (TabList.NORMAL, screen, workspace);
-#endif
 
 			if (windows.length () < 1)
 				return false;
