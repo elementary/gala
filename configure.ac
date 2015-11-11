@@ -181,6 +181,14 @@ if test "x$have_mutter318" = "xyes" ; then
     MUTTER_API="3.18"
 fi
 
+# 3.20
+PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19], [have_mutter320=yes], [have_mutter320=no])
+if test "x$have_mutter320" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19.1])
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320"
+    MUTTER_API="3.20"
+fi
+
 # Check for newer Plank
 PLANK_PKGS="plank >= 0.10.9"
 PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])

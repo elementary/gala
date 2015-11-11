@@ -1311,12 +1311,14 @@ namespace Meta {
 		MINIMIZE,
 		MAXIMIZE,
 		CLOSE,
+#if !HAS_MUTTER320
 		SHADE,
 		ABOVE,
 		STICK,
 		UNSHADE,
 		UNABOVE,
 		UNSTICK,
+#endif
 #if HAS_MUTTER314
 		APPMENU,
 #endif
@@ -1864,7 +1866,7 @@ namespace Meta {
 #endif
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 5.9)]
 #if HAS_MUTTER314
-	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding);
+	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding);
 #else
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen, Meta.Window? window, X.Event event, Meta.KeyBinding binding);
 #endif
