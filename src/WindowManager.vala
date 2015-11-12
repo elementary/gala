@@ -729,8 +729,7 @@ namespace Gala
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
 				actor.set_easing_duration (duration);
-				actor.scale_x = scale_x;
-				actor.scale_y = scale_y;
+				actor.set_scale (scale_x, scale_y);
 				actor.opacity = 0U;
 				actor.restore_easing_state ();
 
@@ -738,9 +737,8 @@ namespace Gala
 				minimize_handler_id = actor.transitions_completed.connect (() => {
 					actor.disconnect (minimize_handler_id);
 					actor.set_pivot_point (0.0f, 0.0f);
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
 					minimize_completed (actor);
 					minimizing.remove (actor);
 				});
@@ -751,8 +749,7 @@ namespace Gala
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
 				actor.set_easing_duration (duration);
-				actor.scale_x = 0.0f;
-				actor.scale_y = 0.0f;
+				actor.set_scale (0.0f, 0.0f);
 				actor.opacity = 0U;
 				actor.restore_easing_state ();
 
@@ -760,9 +757,8 @@ namespace Gala
 				minimize_handler_id = actor.transitions_completed.connect (() => {
 					actor.disconnect (minimize_handler_id);
 					actor.set_pivot_point (0.0f, 0.0f);
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
 					minimize_completed (actor);
 					minimizing.remove (actor);
 				});
@@ -823,10 +819,8 @@ namespace Gala
 				old_actor.save_easing_state ();
 				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				old_actor.set_easing_duration (duration);
-				old_actor.x = ex;
-				old_actor.y = ey;
-				old_actor.scale_x = scale_x;
-				old_actor.scale_y = scale_y;
+				old_actor.set_position (ex, ey);
+				old_actor.set_scale (scale_x, scale_y);
 
 				// the opacity animation is special, since we have to wait for the
 				// FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
@@ -838,26 +832,21 @@ namespace Gala
 
 				old_actor.get_transition ("x").stopped.connect (() => {
 					old_actor.destroy ();
-					actor.translation_x = 0;
-					actor.translation_y = 0;
+					actor.set_translation (0.0f, 0.0f, 0.0f);
 				});
 				old_actor.restore_easing_state ();
 
 				maximize_completed (actor);
 
 				actor.set_pivot_point (0.0f, 0.0f);
-				actor.translation_x = old_inner_rect.x - ex;
-				actor.translation_y = old_inner_rect.y - ey;
-				actor.scale_x = 1.0 / scale_x;
-				actor.scale_y = 1.0 / scale_y;
+				actor.set_translation (old_inner_rect.x - ex, old_inner_rect.y - ey, 0.0f);
+				actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				actor.set_easing_duration (duration);
-				actor.scale_x = 1;
-				actor.scale_y = 1;
-				actor.translation_x = 0;
-				actor.translation_y = 0;
+				actor.set_scale (1.0f, 1.0f);
+				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
 
 				return;
@@ -893,15 +882,13 @@ namespace Gala
 					unminimizing.add (actor);
 
 					actor.set_pivot_point (0.5f, 1.0f);
-					actor.scale_x = 0.01f;
-					actor.scale_y = 0.1f;
+					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0U;
 
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
 					actor.set_easing_duration (duration);
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
 					actor.restore_easing_state ();
 
@@ -945,15 +932,13 @@ namespace Gala
 					mapping.add (actor);
 
 					actor.set_pivot_point (0.5f, 1.0f);
-					actor.scale_x = 0.01f;
-					actor.scale_y = 0.1f;
+					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0;
 
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
 					actor.set_easing_duration (duration);
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
 					actor.restore_easing_state ();
 
@@ -977,15 +962,13 @@ namespace Gala
 
 					actor.set_pivot_point (0.5f, 0.5f);
 					actor.set_pivot_point_z (0.2f);
-					actor.scale_x = 0.9f;
-					actor.scale_y = 0.9f;
+					actor.set_scale (0.9f, 0.9f);
 					actor.opacity = 0;
 
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 					actor.set_easing_duration (duration);
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
 					actor.restore_easing_state ();
 
@@ -1002,14 +985,13 @@ namespace Gala
 					mapping.add (actor);
 
 					actor.set_pivot_point (0.5f, 0.0f);
-					actor.scale_y = 0.0f;
+					actor.set_scale (1.0f, 0.0f);
 					actor.opacity = 0;
 
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 					actor.set_easing_duration (250);
-					actor.scale_x = 1.0f;
-					actor.scale_y = 1.0f;
+					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
 					actor.restore_easing_state ();
 
@@ -1065,8 +1047,7 @@ namespace Gala
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
 					actor.set_easing_duration (duration);
-					actor.scale_x = 0.8f;
-					actor.scale_y = 0.8f;
+					actor.set_scale (0.8f, 0.8f);
 					actor.opacity = 0U;
 					actor.restore_easing_state ();
 
@@ -1086,7 +1067,7 @@ namespace Gala
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 					actor.set_easing_duration (200);
-					actor.scale_y = 0.0f;
+					actor.set_scale (1.0f, 0.0f);
 					actor.opacity = 0U;
 					actor.restore_easing_state ();
 
@@ -1113,8 +1094,7 @@ namespace Gala
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 					actor.set_easing_duration (duration);
-					actor.scale_x = 0.8f;
-					actor.scale_y = 0.8f;
+					actor.set_scale (0.8f, 0.8f);
 					actor.opacity = 0U;
 					actor.restore_easing_state ();
 
@@ -1179,10 +1159,8 @@ namespace Gala
 				old_actor.save_easing_state ();
 				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				old_actor.set_easing_duration (duration);
-				old_actor.x = ex - offset_x;
-				old_actor.y = ey - offset_y;
-				old_actor.scale_x = scale_x;
-				old_actor.scale_y = scale_y;
+				old_actor.set_position (ex - offset_x, ey - offset_y);
+				old_actor.set_scale (scale_x, scale_y);
 				old_actor.opacity = 0U;
 				old_actor.restore_easing_state ();
 
@@ -1196,20 +1174,15 @@ namespace Gala
 				var maximized_y = actor.y;
 				unmaximize_completed (actor);
 				actor.set_pivot_point (0.0f, 0.0f);
-				actor.x = ex;
-				actor.y = ey;
-				actor.translation_x = -ex + offset_x * (1.0f / scale_x) + maximized_x;
-				actor.translation_y = -ey + offset_y * (1.0f / scale_y) + maximized_y;
-				actor.scale_x = 1.0f / scale_x;
-				actor.scale_y = 1.0f / scale_y;
+				actor.set_position (ex, ey);
+				actor.set_translation (-ex + offset_x * (1.0f / scale_x) + maximized_x, -ey + offset_y * (1.0f / scale_y) + maximized_y, 0.0f);
+				actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				actor.set_easing_duration (duration);
-				actor.scale_x = 1.0f;
-				actor.scale_y = 1.0f;
-				actor.translation_x = 0.0f;
-				actor.translation_y = 0.0f;
+				actor.set_scale (1.0f, 1.0f);
+				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
 
 				return;
@@ -1232,8 +1205,7 @@ namespace Gala
 
 			actor.detach_animation ();
 			actor.opacity = 255U;
-			actor.scale_x = 1.0f;
-			actor.scale_y = 1.0f;
+			actor.set_scale (1.0f, 1.0f);
 			actor.rotation_angle_x = 0.0f;
 			actor.set_pivot_point (0.0f, 0.0f);
 

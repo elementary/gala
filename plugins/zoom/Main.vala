@@ -82,9 +82,7 @@ namespace Gala.Plugins.Zoom
 				float mx, my;
 				var client_pointer = Gdk.Display.get_default ().get_device_manager ().get_client_pointer ();
 				client_pointer.get_position (null, out mx, out my);
-				var pivot = Clutter.Point.alloc ();
-				pivot.init (mx / wins.width, my / wins.height);
-				wins.pivot_point = pivot;
+				wins.set_pivot_point (mx / wins.width, my / wins.height);
 
 				mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
 					client_pointer.get_position (null, out mx, out my);
@@ -114,15 +112,12 @@ namespace Gala.Plugins.Zoom
 				wins.save_easing_state ();
 				wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
 				wins.set_easing_duration (300);
-				wins.scale_x = 1.0f;
-				wins.scale_y = 1.0f;
+				wins.set_scale (1.0f, 1.0f);
 				wins.restore_easing_state ();
 
 				wins_handler_id = wins.transitions_completed.connect (() => {
 					wins.disconnect (wins_handler_id);
-					var pivot = Clutter.Point.alloc ();
-					pivot.init (0.0f, 0.0f);
-					wins.pivot_point = pivot;
+					wins.set_pivot_point (0.0f, 0.0f);
 				});
 
 				return;
@@ -131,8 +126,7 @@ namespace Gala.Plugins.Zoom
 			wins.save_easing_state ();
 			wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
 			wins.set_easing_duration (300);
-			wins.scale_x = current_zoom;
-			wins.scale_y = current_zoom;
+			wins.set_scale (current_zoom, current_zoom);
 			wins.restore_easing_state ();
 		}
 	}
