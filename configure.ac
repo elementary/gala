@@ -93,6 +93,7 @@ fi
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.32.0
 PLANK_MIN_VERSION=0.3.0
+CLUTTER_MIN_VERSION=1.12.0
 MUTTER_MIN_VERSION=3.14.4
 MUTTER_API="3.14"
 
@@ -104,7 +105,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  gtk+-3.0 >= $GTK_MIN_VERSION \
                  gdk-x11-3.0 >= $GTK_MIN_VERSION \
                  libbamf3 \
-                 clutter-1.0 \
+                 clutter-1.0 >= $CLUTTER_MIN_VERSION \
                  clutter-gtk-1.0 \
                  granite \
                  libmutter >= $MUTTER_MIN_VERSION \
