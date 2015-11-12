@@ -868,7 +868,7 @@ namespace Gala
 
 			var window = actor.get_meta_window ();
 
-			actor.detach_animation ();
+			actor.remove_all_transitions ();
 			actor.show ();
 
 			switch (window.window_type) {
@@ -918,7 +918,7 @@ namespace Gala
 
 			var window = actor.get_meta_window ();
 
-			actor.detach_animation ();
+			actor.remove_all_transitions ();
 			actor.show ();
 
 			switch (window.window_type) {
@@ -1029,7 +1029,7 @@ namespace Gala
 				return;
 			}
 
-			actor.detach_animation ();
+			actor.remove_all_transitions ();
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
@@ -1203,7 +1203,7 @@ namespace Gala
 				return false;
 			}
 
-			actor.detach_animation ();
+			actor.remove_all_transitions ();
 			actor.opacity = 255U;
 			actor.set_scale (1.0f, 1.0f);
 			actor.rotation_angle_x = 0.0f;
