@@ -417,6 +417,9 @@ namespace Gala
 
 		void toggle_shadow (bool show)
 		{
+			if (get_transition ("shadow-opacity") != null)
+				remove_transition ("shadow-opacity");
+
 			var shadow_transition = new PropertyTransition ("shadow-opacity");
 			shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
 			shadow_transition.remove_on_complete = true;
@@ -462,6 +465,8 @@ namespace Gala
 		 */
 		void unmanaged ()
 		{
+			remove_all_transitions ();
+
 			if (drag_action != null && drag_action.dragging)
 				drag_action.cancel ();
 
