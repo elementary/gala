@@ -345,7 +345,7 @@ namespace Gala.Plugins.Notify
 			} else if (app_icon != "") {
 
 				try {
-					var themed = new ThemedIcon.with_default_fallbacks ("%s-symbolic".printf (app_icon));
+					var themed = new ThemedIcon.with_default_fallbacks (app_icon);
 					var info = Gtk.IconTheme.get_default ().lookup_by_gicon (themed, size, 0);
 					if (info != null) {
 						pixbuf = info.load_symbolic (get_icon_fg_color ());
