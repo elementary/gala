@@ -7,65 +7,65 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-10-09 16:41+0000\n"
+"POT-Creation-Date: 2015-11-16 19:55+0000\n"
 "PO-Revision-Date: 2015-02-07 21:35+0000\n"
 "Last-Translator: Yvo Marques <macghivo@gmail.com>\n"
 "Language-Team: Luxembourgish <lb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-10 05:50+0000\n"
-"X-Generator: Launchpad (build 17802)\n"
+"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
+"X-Generator: Launchpad (build 17847)\n"
 
-#: ../src/WindowManager.vala:1549
+#: ../src/WindowManager.vala:1488
 msgid "Does the display look OK?"
 msgstr "Gesäit den Bildschierm OK aus?"
 
-#: ../src/WindowManager.vala:1552
+#: ../src/WindowManager.vala:1491
 msgid "Keep This Configuration"
 msgstr "Configuratioun behalen"
 
-#: ../src/WindowManager.vala:1553
+#: ../src/WindowManager.vala:1492
 msgid "Restore Previous Configuration"
 msgstr "Letzt configuratioun opruffen"
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
 msgstr "Kleng maachen"
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
 msgstr "Bewegen"
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
 msgstr "D'gréisst änneren"
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
 msgstr "Ëmmer on Top"
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
 msgstr "Ëmmer op déi siichtbar Aarbeschtsfläch"
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
 msgstr "Zoumaachen"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
 msgstr "Verklengern"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
 msgstr "vergréisseren"
 

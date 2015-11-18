@@ -7,66 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-09 16:41+0000\n"
+"POT-Creation-Date: 2015-11-16 19:55+0000\n"
 "PO-Revision-Date: 2015-04-25 13:31+0000\n"
 "Last-Translator: Silas Riisager Dahl <dahl.silas@yahoo.com>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-10 05:50+0000\n"
-"X-Generator: Launchpad (build 17802)\n"
+"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
+"X-Generator: Launchpad (build 17847)\n"
 "Language: da\n"
 
-#: ../src/WindowManager.vala:1549
+#: ../src/WindowManager.vala:1488
 msgid "Does the display look OK?"
 msgstr "Ser skærmbilledet acceptabelt ud?"
 
-#: ../src/WindowManager.vala:1552
+#: ../src/WindowManager.vala:1491
 msgid "Keep This Configuration"
 msgstr "Behold denne konfiguration"
 
-#: ../src/WindowManager.vala:1553
+#: ../src/WindowManager.vala:1492
 msgid "Restore Previous Configuration"
 msgstr "Gendan tidligere konfiguration"
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
 msgstr "Flyt"
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
 msgstr "Tilpas størrelse"
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
 msgstr "Altid øverst"
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
 msgstr "Altid på det synlige arbejdsområde"
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
 msgstr "Flyt til arbejdsområdet til venstre"
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
 msgstr "Flyt til arbejdsområdet til højre"
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
 msgstr "Luk"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
 msgstr "Afmaksimér"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
 msgstr "Maksimér"
 

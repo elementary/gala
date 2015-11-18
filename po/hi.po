@@ -7,66 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-09 16:41+0000\n"
+"POT-Creation-Date: 2015-11-16 19:55+0000\n"
 "PO-Revision-Date: 2015-09-18 03:55+0000\n"
 "Last-Translator: Vishal Biswas <vshlbiswas@ymail.com>\n"
 "Language-Team: Hindi <hi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-10 05:50+0000\n"
-"X-Generator: Launchpad (build 17802)\n"
+"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
+"X-Generator: Launchpad (build 17847)\n"
 "Language: hi\n"
 
-#: ../src/WindowManager.vala:1549
+#: ../src/WindowManager.vala:1488
 msgid "Does the display look OK?"
 msgstr "क्या यह प्रदर्शन ठीक है?"
 
-#: ../src/WindowManager.vala:1552
+#: ../src/WindowManager.vala:1491
 msgid "Keep This Configuration"
 msgstr "इस कॉन्फ़िगरेशन को बनायें रखें"
 
-#: ../src/WindowManager.vala:1553
+#: ../src/WindowManager.vala:1492
 msgid "Restore Previous Configuration"
 msgstr "पिछले विन्यास बहाल करे"
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
 msgstr "न्यूनतम करें"
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
 msgstr "स्थानान्तर"
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
 msgstr "आकार बदलें"
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
 msgstr "हमेशा ऊपर"
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
 msgstr "हमेशा दिखाई कार्यस्थानों पर"
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
 msgstr "बाए कार्यस्थल पर भेजे"
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
 msgstr "डाए कार्यस्थल पर भेजे"
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
 msgstr "बंद करें"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
 msgstr "छोटा करें"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
 msgstr "बड़ा करें"
 

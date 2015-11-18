@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-30 22:22+0200\n"
+"POT-Creation-Date: 2015-11-18 07:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/WindowManager.vala:1518
+#: ../src/WindowManager.vala:1533
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../src/WindowManager.vala:1521
+#: ../src/WindowManager.vala:1536
 msgid "Keep This Configuration"
 msgstr ""
 
-#: ../src/WindowManager.vala:1522
+#: ../src/WindowManager.vala:1537
 msgid "Restore Previous Configuration"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
 msgstr ""
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
 msgstr ""
 
@@ -307,35 +307,29 @@ msgid "Disable all notifications"
 msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
-msgid "The default setting for the bubbles that would be used for new apps"
+msgid "Enable bubbles"
 msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
-msgid "The default setting for the sounds that would be used for new apps"
+msgid "Enable sounds"
 msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
-msgid ""
-"List of apps and their notification-permissions. Example: ['noise:show,on', "
-"'pantheon-terminal:show,off']"
+msgid "Show missed notifications in notification center"
 msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
-msgid "Structure: ['{APP-NAME}:{PRIORITY (show/hide)},{SOUNDS on/off}', ...]"
-msgstr ""
-
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Enable rounded corner mask"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
 msgstr ""
 
-#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:57
+#: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
 msgstr ""

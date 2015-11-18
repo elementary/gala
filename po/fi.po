@@ -7,65 +7,65 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-10-09 16:41+0000\n"
-"PO-Revision-Date: 2015-11-01 20:21+0000\n"
-"Last-Translator: Samu Nuutamo <Unknown>\n"
+"POT-Creation-Date: 2015-11-16 19:55+0000\n"
+"PO-Revision-Date: 2015-11-14 11:01+0000\n"
+"Last-Translator: Jiri Grönroos <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-02 05:27+0000\n"
-"X-Generator: Launchpad (build 17838)\n"
+"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
+"X-Generator: Launchpad (build 17847)\n"
 
-#: ../src/WindowManager.vala:1549
+#: ../src/WindowManager.vala:1488
 msgid "Does the display look OK?"
 msgstr "Näyttääkö näyttö kelvolliselta?"
 
-#: ../src/WindowManager.vala:1552
+#: ../src/WindowManager.vala:1491
 msgid "Keep This Configuration"
 msgstr "Säilytä asetukset"
 
-#: ../src/WindowManager.vala:1553
+#: ../src/WindowManager.vala:1492
 msgid "Restore Previous Configuration"
 msgstr "Palauta aiemmat asetukset"
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
 msgstr "Pienennä"
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
 msgstr "Siirrä"
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
 msgstr "Muuta kokoa"
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
 msgstr "Aina päällimmäisenä"
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
 msgstr "Aina näkyvissä olevassa työtilassa"
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
 msgstr "Siirrä vasemalla olevaan työtilaan"
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
 msgstr "Siirrä oikealla olevaan työtilaan"
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
 msgstr "Sulje"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
 msgstr "Palauta koko"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
 msgstr "Suurenna"
 
@@ -202,19 +202,19 @@ msgstr "Näppäinoikotie kaikkien ikkunoiden yleiskatsauksen näyttämiseksi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "Siirry seuraavaan työtilaan oikealle tai takaisin ensimmäiseen"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Vaihda seuraavaan näppäimistöasetteluun"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Vaihda edelliseen näppäimistöasetteluun"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Kiinnitä modaalidialogit"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -222,6 +222,8 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Kun valittuna, modaalidialogit näytetään kiinnitettyinä pääikkunaan sen "
+"sijaan että niillä olisi oma otsikkopalkkinsa"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -240,12 +242,12 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "Himmennä pääikkunat jotka avaavat kiinnitetyn modaalidialogin"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+msgstr "Alt-tab -vaihtajan taustalla olevien ikkunoiden läpinäkymättömyys"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
@@ -263,7 +265,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Napsautusanimaatioiden kesto maksimoitaessa/minimoitaessa"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
@@ -279,11 +281,11 @@ msgstr "Työtilan vaihtoanimaation kesto"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Valikkoanimaation kesto"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Määrittää tavallisen aktiivisen ikkunan varjon"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -292,14 +294,18 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"Ensimmäinen arvo on varjon sumennuksen säde, toinen yläosan häivytys "
+"(tavallisesti -1), kolmas ja neljäs x- ja y-siirtymä, ja viimeinen "
+"läpinäkymättömyys. Eli [sumennuksen säde, yläosan häivytys, x-siirtymä, y-"
+"siirtymä, läpinäkymättömyys]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Määrittää tavallisen epäaktiivisen ikkunan varjon"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
-msgstr ""
+msgstr "Katso normal-focused"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
@@ -311,7 +317,7 @@ msgstr "Määrittää kohdistetun ikkunan varjon"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:48
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Määrittää epäaktiivisen dialogin varjon"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
@@ -319,15 +325,15 @@ msgstr "Poista kaikki ilmoitukset käytöstä"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Käytä kuplia"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Käytä ääniä"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Näytä huomiotta jääneet ilmoitukset ilmoituskeskuksessa"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"

@@ -7,105 +7,107 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-10-09 16:41+0000\n"
-"PO-Revision-Date: 2014-04-17 10:53+0000\n"
+"POT-Creation-Date: 2015-11-16 19:55+0000\n"
+"PO-Revision-Date: 2015-11-16 18:45+0000\n"
 "Last-Translator: Beqa Arabuli <arabulibeqa@yahoo.com>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-10 05:50+0000\n"
-"X-Generator: Launchpad (build 17802)\n"
+"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
+"X-Generator: Launchpad (build 17847)\n"
 
-#: ../src/WindowManager.vala:1549
+#: ../src/WindowManager.vala:1488
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "ეს დისპლეი კარგად გამოიყურება?"
 
-#: ../src/WindowManager.vala:1552
+#: ../src/WindowManager.vala:1491
 msgid "Keep This Configuration"
-msgstr ""
+msgstr "ამ კონფიგურაციის დატოვება"
 
-#: ../src/WindowManager.vala:1553
+#: ../src/WindowManager.vala:1492
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "წინა კონფიგურაციის აღდგენა"
 
-#: ../src/Widgets/WindowMenu.vala:58
+#: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr ""
+msgstr "ჩაკეცვა"
 
-#: ../src/Widgets/WindowMenu.vala:73
+#: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr ""
+msgstr "გადატანა"
 
-#: ../src/Widgets/WindowMenu.vala:80
+#: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
-msgstr ""
+msgstr "ზომის შეცვლა"
 
-#: ../src/Widgets/WindowMenu.vala:87
+#: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
-msgstr ""
+msgstr "ყოველთვის წინა პლანზე"
 
-#: ../src/Widgets/WindowMenu.vala:96
+#: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "ყოველთვის ხილულ სამუშაო გარემოში"
 
-#: ../src/Widgets/WindowMenu.vala:105
+#: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "მარცხენა სამუშაო გარემოში გადატანა"
 
-#: ../src/Widgets/WindowMenu.vala:113
+#: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "მარჯვენა სამუშაო გარემოში გადატანა"
 
-#: ../src/Widgets/WindowMenu.vala:121
+#: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr ""
+msgstr "დახურვა"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "გაშლის დაბრუნება"
 
-#: ../src/Widgets/WindowMenu.vala:133
+#: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr ""
+msgstr "გაშლა"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "მრავალამოცანიანი ხედი"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "ყველა გახსნილი ფანჯრის და სამუშაო გარემოს ნახვა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "მოქმედება ზედა მარცხენა კუთხისთვის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "ალგორითმი ფანჯრის მიმოხილვის გეგმისთვის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "ფანჯრების ექსპონირებისთვის გამოყენებული ალგორითმის არჩევა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "მოქმედება ზედა მაჯრვენა კუთხისთვის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "მოქმედება ქვედა მარცხენა კუთხისთვის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "მოქმედება ქვედა მაჯრვენა კუთხისთვის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"ბრძანება, რომელიც გაეშვება ცხელი კუთხის მოქმედებისთვის. 'მითითებული-"
+"ბრძანება' ან მრავალი."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -116,10 +118,17 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"თუ თქვენ შეიყვანთ ერთ ბრძანებას, ის გამოყენებული იქნება ყველა ცხელი "
+"კუთხისთვის, რომელიც მიკუთვნილია 'მითითებული-ბრძანებას'. თუ ამის ნაცვლად "
+"გამოიყენებთ გეგმას 'hotcorner-topleft:command;;hotcorner-"
+"bottomright:command' ყოველი ცხელი კუთხისთვის გამოიყენება მითითებული "
+"ბრძანებები. შესაძლო იდენტიფიკატორები არის 'hotcorner-[topleft; topright; "
+"bottomleft; bottomright]' რომელსაც მოსდევს ':' და შემდეგ ბრძანება. ';;' "
+"გამოიყენება ბრძანების განსაზღვრებების გასამიჯნად."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "ფანჯრების ეკრანის კიდეებზე დაგდებისას კიდის მოპირკეთება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -127,29 +136,38 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"თუ ჩართულია, ეკრანის ვერიკალურ კიდეებზე ფანჯრების დაგდებისას, ისინი "
+"ხელმისაწვოდმი სივრცის ნახევრის დასაფარად ვერტიკალურად იშლებიან და ზომას "
+"იცვლია ჰორიზონტალუად. ეკრანის ზედა კიდეზე ფანჯრების დაგდებისაას ისინი "
+"სრულიად იშლებიან."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "პანელის მთავარი მენიუს მოქმედება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"ბრძანების მითითება, რომელიც panel-main-menu კლავიატურის მაკავშირებელზე "
+"დაჭერისას გაეშვება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "სტატიკური სამუშაო გარემოს ნაცვლად დინამიკურის გააქტიურება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"სამუშაო მაგიდების სტატიკური, დადგენილი ციფრის ნაცვლად დინამიკურად გაზრდადი "
+"ან შემცირებადი ციფრის გამოყენება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
+"სახელები, რომელბიც ფანჯრების გადამრთველისთვის ცნობილია როგორც დოკ ფანჯრები"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -157,54 +175,57 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"ფანჯრის-გადამრთველის გაშვებისას, გალა ამ სიას ანულებს და ცდილობს სახელების "
+"მსგავსი ფანჯრების პოვნას. თუ იპოვის, გადამრთველის დახურვისას, ის ამ ფანჯარას "
+"დამალავს და უკან გადაიტანს,"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "პირველ სამუშაო გარემოზე გადასასვლელი მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "ბოლო სამუშაო გარემოზე გადასასვლელი მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "მიმდინარე ფანჯრის პირველ სამუშაო გარემოზე გადატანის მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "მიმდინარე ფანჯრის ბოლო სამუშაო გარემოზე გადატანის მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "მიახლოება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "დაშორება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "ფანჯრების მიმოხილვის გასახსნელი მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "ყველა ფანჯრისთვის ფანჯრების მიმოხილვის გასახსნელი მალსახმობი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "მარჯვნივ, მომდევნო სამუშაო გარემოზე ან უკან, პირველზე გადასვლა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "კლავიატურის მომდევნო გეგმაზე გადასვლა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "კლავიატურის წინა გეგმაზე გადასვლა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "მოდალური დიალოგების მიბმა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
