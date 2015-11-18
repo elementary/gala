@@ -172,6 +172,16 @@ if test "x$enable_plank_0_11" = "xyes" ; then
     VALAFLAGS="$VALAFLAGS --define HAVE_PLANK_0_11"
 fi
 
+# Check for Gnome Settings Daemon 3.10
+PKG_CHECK_MODULES(GSD310, [gnome-settings-daemon >= 3.9.5], [have_gsd310=yes], [have_gsd310=no])
+if test "x$have_gsd310" = "xyes" ; then
+    VALAFLAGS="$VALAFLAGS --define HAS_GSD310"
+fi
+PKG_CHECK_MODULES(GSD316, [gnome-settings-daemon >= 3.15.2], [have_gsd316=yes], [have_gsd316=no])
+if test "x$have_gsd316" = "xyes" ; then
+    VALAFLAGS="$VALAFLAGS --define HAS_GSD316"
+fi
+
 # -----------------------------------------------------------
 # Dependencies for Notifications plugin
 # -----------------------------------------------------------

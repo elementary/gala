@@ -91,6 +91,9 @@ namespace Gala
 			var display = screen.get_display ();
 
 			DBus.init (this);
+#if HAS_GSD310
+			DBusAccelerator.init (this);
+#endif
 			WindowListener.init (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
