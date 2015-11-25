@@ -75,7 +75,7 @@ AC_SUBST([API_VERSION])
 # -----------------------------------------------------------
 # Vala
 # -----------------------------------------------------------
-VALA_MIN_VERSION=0.22.0
+VALA_MIN_VERSION=0.28.0
 
 AM_PROG_VALAC([$VALA_MIN_VERSION])
 if test "x$VALAC" = "x"; then

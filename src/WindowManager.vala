@@ -659,11 +659,6 @@ namespace Gala
 
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
 		{
-#if false
-			// Spawning native menus inside mutter appears to be no longer working, mouse
-			// event are apparently never delivered to the menu. Until this is fixed, we
-			// disable windowmenus all together
-
 			var time = get_screen ().get_display ().get_current_time_roundtrip ();
 
 			switch (menu) {
@@ -673,7 +668,7 @@ namespace Gala
 
 					window_menu.current_window = window;
 					window_menu.show_all ();
-					window_menu.popup (null, null, (menu, out menu_x, out menu_y, out push_in) => {
+					window_menu.popup (null, null, (menu, ref menu_x, ref menu_y, out push_in) => {
 						menu_x = x;
 						menu_y = y;
 					}, Gdk.BUTTON_SECONDARY, time);
@@ -682,7 +677,6 @@ namespace Gala
 					// FIXME we don't have any sort of app menus
 					break;
 			}
-#endif
 		}
 
 		public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect)
