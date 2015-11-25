@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 9),
                libgtk-3-dev (>= 3.4.0),
                libmutter-dev (>= 3.14.4),
                libplank-dev (>= 0.10.9),
-               valac (>= 0.22.0)
+               valac (>= 0.28.0)
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/gala
 
