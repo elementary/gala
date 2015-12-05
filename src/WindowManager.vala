@@ -1507,11 +1507,6 @@ namespace Gala
 			end_switch_workspace ();
 		}
 
-		public override bool xevent_filter (X.Event event)
-		{
-			return x_handle_event (event) != 0;
-		}
-
 		public override bool keybinding_filter (Meta.KeyBinding binding)
 		{
 			if (!is_modal ())
@@ -1563,8 +1558,6 @@ namespace Gala
 		}
 	}
 
-	[CCode (cname="clutter_x11_handle_event")]
-	public extern int x_handle_event (X.Event xevent);
 	[CCode (cname="clutter_x11_get_stage_window")]
 	public extern X.Window x_get_stage_window (Clutter.Actor stage);
 }
