@@ -90,6 +90,9 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
+#if HAS_MUTTER318
+		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
+#endif
 
 		public WindowManagerGala ()
 		{
@@ -732,9 +735,58 @@ namespace Gala
 		 */
 
 #if HAS_MUTTER318
+		void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change)
+		{
+			// Only handle windows which are located on the primary monitor
+			if (!window.is_on_primary_monitor ())
+				return;
+
+			// Due to how this is implemented, by relying on the functionality
+			// offered by the dynamic workspace handler, let's just bail out
+			// if that's not available.
+			if (!Prefs.get_dynamic_workspaces ())
+				return;
+
+			unowned Meta.Screen screen = get_screen ();
+			var time = screen.get_display ().get_current_time ();
+			unowned Meta.Workspace win_ws = window.get_workspace ();
+
+			if (which_change == Meta.SizeChange.FULLSCREEN) {
+				// Do nothing if the current workspace would be empty
+				if (Utils.get_n_windows (win_ws) <= 1)
+					return;
+
+				var new_ws_index = screen.get_n_workspaces () - 1;
+				var old_ws_index = win_ws.index ();
+				var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
+				window.change_workspace (new_ws_obj);
+				new_ws_obj.activate_with_focus (window, time);
+
+				ws_assoc.insert (window, old_ws_index);
+			} else if (ws_assoc.contains (window)) {
+				var old_ws_index = ws_assoc.get (window);
+				var new_ws_index = win_ws.index ();
+
+				if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
+					var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
+					window.change_workspace (old_ws_obj);
+					old_ws_obj.activate_with_focus (window, time);
+				}
+
+				ws_assoc.remove (window);
+			}
+		}
+
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
 			//FIXME Animations need to be re-implemented using the given arguments
+			switch (which_change) {
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (actor.get_meta_window (), which_change);
+					break;
+			}
+
 			size_change_completed (actor);
 		}
 #endif
@@ -1058,6 +1110,8 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var window = actor.get_meta_window ();
+
+			ws_assoc.remove (window);
 
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
