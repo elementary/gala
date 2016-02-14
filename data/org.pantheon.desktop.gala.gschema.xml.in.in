@@ -57,7 +57,7 @@
 			<_description>If enabled, dropping windows on vertical screen edges maximizes them vertically and resizes them horizontally to cover half of the available area. Dropping windows on the top screen edge maximizes them completely.</_description>
 		</key>
 		<key type="s" name="panel-main-menu-action">
-			<default>'slingshot-launcher'</default>
+			<default>''</default>
 			<_summary>Panel main menu action</_summary>
 			<_description>Sets the command to run when the panel-main-menu keybinding is pressed</_description>
 		</key>
