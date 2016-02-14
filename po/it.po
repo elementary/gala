@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-11-16 19:55+0000\n"
-"PO-Revision-Date: 2015-09-27 15:25+0000\n"
+"POT-Creation-Date: 2016-02-13 08:36+0000\n"
+"PO-Revision-Date: 2015-12-06 08:50+0000\n"
 "Last-Translator: Fabio Zaramella <FFabio.96.X@Gmail.com>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
-"X-Generator: Launchpad (build 17847)\n"
+"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
 
-#: ../src/WindowManager.vala:1488
+#: ../src/WindowManager.vala:1622
 msgid "Does the display look OK?"
 msgstr "La visualizzazione appare corretta?"
 
-#: ../src/WindowManager.vala:1491
+#: ../src/WindowManager.vala:1625
 msgid "Keep This Configuration"
 msgstr "Mantieni questa configurazione"
 
-#: ../src/WindowManager.vala:1492
+#: ../src/WindowManager.vala:1626
 msgid "Restore Previous Configuration"
 msgstr "Ripristina la configurazione precedente"
 
@@ -123,7 +123,8 @@ msgstr ""
 "topleft: Comando;; hotcorner-bottomright: comando' i comandi specifici "
 "saranno utilizzati per hotcorner. Possibili identificatori sono 'hotcorner- "
 "[topleft; topright; bottomleft; bottomright] 'seguito da un': 'e quindi il "
-"comando. ';;' viene utilizzato come delimitatore tra defintions comando."
+"comando. ';;' viene utilizzato come delimitatore tra le definizioni dei "
+"comandi."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -341,7 +342,7 @@ msgstr "Vedi normale"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
-msgstr "Definisce l'ombra di un menu"
+msgstr "Definisce l'ombra di un menù"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Defines the shadow of a focused dialog"
@@ -357,11 +358,11 @@ msgstr "Disattiva tutte le notifiche"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr "Abilita bolle"
+msgstr "Abilita le bolle"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr "Abilita suoni"
+msgstr "Abilita i suoni"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"

@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-11-16 19:55+0000\n"
-"PO-Revision-Date: 2015-01-05 17:34+0000\n"
+"POT-Creation-Date: 2016-02-13 08:36+0000\n"
+"PO-Revision-Date: 2015-12-10 13:09+0000\n"
 "Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
-"X-Generator: Launchpad (build 17847)\n"
+"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
 
-#: ../src/WindowManager.vala:1488
+#: ../src/WindowManager.vala:1622
 msgid "Does the display look OK?"
 msgstr "Czy wyświetlany obraz wygląda poprawnie?"
 
-#: ../src/WindowManager.vala:1491
+#: ../src/WindowManager.vala:1625
 msgid "Keep This Configuration"
-msgstr "Zachowaj ustawienia"
+msgstr "Zachowaj bieżące ustawienia"
 
-#: ../src/WindowManager.vala:1492
+#: ../src/WindowManager.vala:1626
 msgid "Restore Previous Configuration"
 msgstr "Przywróć poprzednie ustawienia"
 
@@ -35,7 +35,7 @@ msgstr "Zminimalizuj"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr "Przesuń"
+msgstr "Przenieś"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
@@ -47,15 +47,15 @@ msgstr "Zawsze na wierzchu"
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr "Zawsze na widocznym obszarze roboczym"
+msgstr "Zawsze na aktywnym obszarze roboczym"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr "Przesuń na lewą przestrzeń roboczą"
+msgstr "Przesuń do lewej części obszaru roboczego"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr "Przesuń na prawą przestrzeń roboczą"
+msgstr "Przesuń do prawej części obszaru roboczego"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
@@ -75,11 +75,11 @@ msgstr "Widok wielozadaniowy"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr "Pokaż wszystkie otwarte okna i pulpity"
+msgstr "Pokaż wszystkie otwarte okna i obszary robocze"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr "Akcja dla lewego górnego rogu"
+msgstr "Działanie lewego górnego rogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
@@ -91,23 +91,23 @@ msgstr "Wybierz algorytm używany dla ekspozycji okien"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr "Akcja dla prawego górnego rogu"
+msgstr "Działanie prawego górnego rogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr "Akcja dla lewego dolnego rogu"
+msgstr "Działanie lewego dolnego rogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr "Akcja dla prawego lewego rogu"
+msgstr "Działanie prawego lewego rogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Polecenie lub polecenia, które zostaną wykonane dla działania gorących "
-"narożników \"własna komenda\""
+"Polecenie lub polecenia, które zostaną wykonane dla działania \"polecenie-"
+"własne\" gorących narożników"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -118,6 +118,13 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Jeśli umieścisz jedno polecenie, będzie ono użyte dla każdego gorącego "
+"narożnika oraz przypisane do 'polecenie-własne'. Jeśli zamiast tego użyjesz "
+"wzorca 'hotcorner-topleft:polecenie;;hotcorner-bottomright:polecenie' "
+"konkretne polecenia zostaną użyte na każdy gorący narożnik. Możliwe "
+"identyfikatory to 'hotcorner-[topleft; topright; bottomleft; bottomright]' "
+"poprzedzone ':', następnie polecenie. ';;' jest używane jako separator "
+"pomiędzy definicjami poleceń."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -129,10 +136,10 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
-"Jeśli jest włączone, to przeniesienie okien do pionowych krawędzi ekranu "
-"spowoduje ich maksymalizację w pionie i zmianę rozmiaru w poziomie, aby "
-"pokryć połowę dostępnego obszaru. Przeniesienie okien na górną krawędź "
-"ekranu spowoduje ich całkowitą maksymalizację."
+"Jeśli włączone, upuszczanie okien na pionowych krawędziach ekranu "
+"maksymalizuje je w pionie i rozciąga je w poziomie do połowy dostępnego "
+"obszaru. Upuszczanie okien na górnej krawędzi ekranu powoduje ich całkowitą "
+"maksymalizację."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
@@ -142,6 +149,8 @@ msgstr "Działanie głównego menu panelu"
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Ustawia polecenie do uruchomienia, gdy wciśnięta jest kombinacja klawiszy "
+"głównego menu panelu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
@@ -152,10 +161,12 @@ msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Używaj dynamicznie zwiększającej lub zmniejszającej się w miarę potrzeb "
+"liczby obszarów roboczych, zamiast ustalonej liczby"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr ""
+msgstr "Nazwy, które są rozpoznawane, jako dok okna dla przełącznika okien"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -163,6 +174,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Po uruchomieniu przełącznika okien, gala wykonuje powtórzenie tej listy i "
+"próbuje dopasować okna do nazw. Następnie odnalezione okno zostaje ukryte; "
+"pojawia się ponownie wraz z zamknięciem przełącznika."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -199,14 +213,15 @@ msgstr "Skrót do otwierania podglądu okna dla wszystich okien"
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
 msgstr ""
+"Przejdź do następnego obszaru roboczego po prawej lub wróć do pierwszego."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Przełącz do nastęnego układu klawiatury"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Przełącz do poprzedniego układu klawiatury"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
@@ -218,6 +233,9 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Jeśli prawda, zamiast niezależnych pasków tytułowych, okna dialogowe "
+"przyłączą się do paska tytułu nadrzędnego okna oraz będą przesuwane wraz z "
+"oknem nadrzędnym."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -243,16 +261,17 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "Wygaś okna nadrzędne, które pojawiły się jako modalne okna dialogowe"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
 msgstr ""
+"Przezroczystość okien znajdujących się w tle, w przełączniku alt-tab."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Tło pulpitu użyte w przełączniku obszarów roboczych"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -268,27 +287,27 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Czas trwania animacji minimalizacji/maksymalizacji okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr "Długość zamykania animacji"
+msgstr "Czas trwania zamykania animacji"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr "Długość minimalizacji animacji"
+msgstr "Czas trwania animacji minimalizacji"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Czas trwania animacji zmiany obszaru roboczego"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Czas trwania animacji mapowania menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Określa cień zwykłego aktywnego okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -297,26 +316,30 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"Pierwsza wartość to promień rozmycia cienia, druga to współczynnik "
+"blaknięcia, trzecia i czwarta to przesunięcie na osi X i Y, a ostatnia - to "
+"przezroczystość. Tak więc [blur-radius, top-fade, x-offset, y-offset, "
+"opacity]"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Określa cień zwykłego nieaktywnego okna"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
-msgstr ""
+msgstr "Zobacz zwykłe aktywne okno"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
-msgstr ""
+msgstr "Określa cień menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Defines the shadow of a focused dialog"
-msgstr ""
+msgstr "Określa cień aktywnego okna dialogowego"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:48
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Określa cień nieaktywnego okna dialogowego"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
@@ -324,31 +347,31 @@ msgstr "Wyłącz wszystkie powiadomienia"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Włącz bąbelki"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Włącz dźwięki"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Pokaż pominięte powiadomienia w centrum powiadomień"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Włącz maskę zaokrąglonego narożnika"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "Promień narożnika"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Wyłącz maskę narożnika w trybie pełnoekranowym"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Pokaż maski narożników tylko na głównym monitorze"
 
 #~ msgid "Cancel"
 #~ msgstr "Anuluj"

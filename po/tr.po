@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 19:55+0000\n"
-"PO-Revision-Date: 2015-05-19 03:41+0000\n"
-"Last-Translator: Sadık Poyraz <sadikpoyraz01@gmail.com>\n"
+"POT-Creation-Date: 2016-02-13 08:36+0000\n"
+"PO-Revision-Date: 2016-02-01 01:33+0000\n"
+"Last-Translator: mistrafantastic <mistrafantastic@gmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
-"X-Generator: Launchpad (build 17847)\n"
+"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
 "Language: tr\n"
 
-#: ../src/WindowManager.vala:1488
+#: ../src/WindowManager.vala:1622
 msgid "Does the display look OK?"
 msgstr "Ekranı sorunsuz görebiliyor musunuz?"
 
-#: ../src/WindowManager.vala:1491
+#: ../src/WindowManager.vala:1625
 msgid "Keep This Configuration"
 msgstr "Bu Yapılandırmayı Koru"
 
-#: ../src/WindowManager.vala:1492
+#: ../src/WindowManager.vala:1626
 msgid "Restore Previous Configuration"
 msgstr "Önceki Yapılandırmaya Geri Dön"
 
@@ -164,6 +164,8 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
+"Pencere değiştiricisi tarafından görev çubuğu penceresi olarak tanınan "
+"isimler"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -171,6 +173,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Pencere değiştiricisi çalıştığında, Gala listeyi tarar ve isimler arasından "
+"eşleşen bir pencere bulmaya çalışır. Eğer bulursa, pencereyi saklar ve "
+"değiştirici kapatıldığında geriye gönderir."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -214,11 +219,11 @@ msgstr "Sonraki klavye düzenine geçiş yap"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Önceki klavye düzenine dönüş"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Model Diyalogları ekle"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""

@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-11-16 19:55+0000\n"
-"PO-Revision-Date: 2015-11-16 18:45+0000\n"
+"POT-Creation-Date: 2016-02-13 08:36+0000\n"
+"PO-Revision-Date: 2015-11-28 20:54+0000\n"
 "Last-Translator: Beqa Arabuli <arabulibeqa@yahoo.com>\n"
 "Language-Team: Georgian <ka@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
-"X-Generator: Launchpad (build 17847)\n"
+"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
 
-#: ../src/WindowManager.vala:1488
+#: ../src/WindowManager.vala:1622
 msgid "Does the display look OK?"
 msgstr "ეს დისპლეი კარგად გამოიყურება?"
 
-#: ../src/WindowManager.vala:1491
+#: ../src/WindowManager.vala:1625
 msgid "Keep This Configuration"
 msgstr "ამ კონფიგურაციის დატოვება"
 
-#: ../src/WindowManager.vala:1492
+#: ../src/WindowManager.vala:1626
 msgid "Restore Previous Configuration"
 msgstr "წინა კონფიგურაციის აღდგენა"
 
@@ -236,7 +236,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "სათაურის ზოლში ღილაკების განლაგება"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -256,37 +256,39 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+msgstr "alt-tab-გადამრთველის ფონად გამოყენებული ფანჯრის გაუმჭვირვობა."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "სამუშაო გარემოებების გადამრთველის მიერ გამოყენებული ფონის სურათი"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "ანიმაციების ჩართვა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"გამოჩნდეს თუ არა ანიმაციები. შენიშვნა: ეს გლობალური კლავიშია და ფანჯრების "
+"მმართველის, პანელის და ა.შ. თვისებებს ცვლის"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "გადიდების/არგადიდების მიერ გამოყენებული სნეპ ანიმაციის ხანგრძლივობა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "დახურვის ანიმაციის ხანგრძლივობა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "ჩაკეცვის ანიმაციის ხანგრძლივობა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "სამუშაო გარემოს გადართვის ანიმაციის ხანგრძლივობა"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"

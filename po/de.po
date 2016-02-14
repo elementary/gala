@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-11-16 19:55+0000\n"
-"PO-Revision-Date: 2015-09-27 17:02+0000\n"
-"Last-Translator: Phillip Sz <Unknown>\n"
+"POT-Creation-Date: 2016-02-13 08:36+0000\n"
+"PO-Revision-Date: 2015-12-21 22:08+0000\n"
+"Last-Translator: Artem Anufrij <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-17 05:48+0000\n"
-"X-Generator: Launchpad (build 17847)\n"
+"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Generator: Launchpad (build 17925)\n"
 
-#: ../src/WindowManager.vala:1488
+#: ../src/WindowManager.vala:1622
 msgid "Does the display look OK?"
 msgstr "Ist die Bildschirmanzeige korrekt?"
 
-#: ../src/WindowManager.vala:1491
+#: ../src/WindowManager.vala:1625
 msgid "Keep This Configuration"
 msgstr "Diese Einstellung speichern"
 
-#: ../src/WindowManager.vala:1492
+#: ../src/WindowManager.vala:1626
 msgid "Restore Previous Configuration"
 msgstr "Vorherige Einstellung wiederherstellen"
 
@@ -71,7 +71,7 @@ msgstr "Maximieren"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr "Arbeitsflächenübersicht"
+msgstr "Übersicht der Arbeitsflächen"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
@@ -370,7 +370,7 @@ msgstr "Töne aktivieren"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Zeige verpasste Benachrichtigungen im Benachrichtigungscenter"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
