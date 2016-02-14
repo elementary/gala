@@ -814,8 +814,8 @@ namespace Gala
 
 				float scale_x  = (float)icon.width  / actor.width;
 				float scale_y  = (float)icon.height / actor.height;
-				float anchor_x = (float)(actor.x - icon.x) * actor.width  / (icon.width  - actor.width);
-				float anchor_y = (float)(actor.y - icon.y) * actor.height / (icon.height - actor.height);
+				float anchor_x = (float)(actor.x - icon.x) / (icon.width  - actor.width);
+				float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
 				actor.set_pivot_point (anchor_x, anchor_y);
 
 				actor.save_easing_state ();
@@ -836,7 +836,7 @@ namespace Gala
 				});
 
 			} else {
-				actor.set_pivot_point (width / 2.0f - actor.x, height - actor.y);
+				actor.set_pivot_point (0.5f, 1.0f);
 
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
