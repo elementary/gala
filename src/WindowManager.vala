@@ -779,8 +779,15 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			//FIXME Animations need to be re-implemented using the given arguments
+			var new_rect = actor.get_meta_window ().get_frame_rect ();
+			
 			switch (which_change) {
+				case Meta.SizeChange.MAXIMIZE:
+					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.UNMAXIMIZE:
+					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
 				case Meta.SizeChange.FULLSCREEN:
 				case Meta.SizeChange.UNFULLSCREEN:
 					handle_fullscreen_window (actor.get_meta_window (), which_change);
@@ -857,8 +864,16 @@ namespace Gala
 			}
 		}
 
+#if HAS_MUTTER318
+		void maximize_completed (WindowActor actor)
+		{
+		}
+		
+		void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
+#endif
 #if !HAS_MUTTER318
 		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
+#endif
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.snap_duration;
@@ -946,7 +961,6 @@ namespace Gala
 
 			maximize_completed (actor);
 		}
-#endif
 
 		public override void unminimize (WindowActor actor)
 		{
@@ -1205,8 +1219,16 @@ namespace Gala
 			}
 		}
 
+#if HAS_MUTTER318
+		void unmaximize_completed (Meta.WindowActor actor)
+		{
+		}
+		
+		void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
+#endif
 #if !HAS_MUTTER318
 		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
+#endif
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.snap_duration;
@@ -1247,13 +1269,13 @@ namespace Gala
 
 				ui_group.add_child (old_actor);
 
-				var scale_x = (float) (ew - offset_width) / old_rect.width;
-				var scale_y = (float) (eh - offset_height) / old_rect.height;
+				var scale_x = (float) ew / old_rect.width;
+				var scale_y = (float) eh / old_rect.height;
 
 				old_actor.save_easing_state ();
 				old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				old_actor.set_easing_duration (duration);
-				old_actor.set_position (ex - offset_x, ey - offset_y);
+				old_actor.set_position (ex, ey);
 				old_actor.set_scale (scale_x, scale_y);
 				old_actor.opacity = 0U;
 				old_actor.restore_easing_state ();
@@ -1269,7 +1291,7 @@ namespace Gala
 				unmaximize_completed (actor);
 				actor.set_pivot_point (0.0f, 0.0f);
 				actor.set_position (ex, ey);
-				actor.set_translation (-ex + offset_x * (1.0f / scale_x) + maximized_x, -ey + offset_y * (1.0f / scale_y) + maximized_y, 0.0f);
+				actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + maximized_x, -ey + offset_y * (1.0f / scale_y - 1.0f) + maximized_y, 0.0f);
 				actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
 				actor.save_easing_state ();
@@ -1284,7 +1306,6 @@ namespace Gala
 
 			unmaximize_completed (actor);
 		}
-#endif
 
 		// Cancel attached animation of an actor and reset it
 		bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
