@@ -506,9 +506,11 @@ namespace Gala
 		Actor drag_begin (float click_x, float click_y)
 		{
 			float abs_x, abs_y;
+			float prev_parent_x, prev_parent_y;
 
 			prev_parent = get_parent ();
 			prev_index = prev_parent.get_children ().index (this);
+			prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
 
 			var stage = get_stage ();
 			prev_parent.remove_child (this);
@@ -519,12 +521,12 @@ namespace Gala
 			((ShadowEffect) get_effect ("shadow")).shadow_opacity = 0;
 
 			clone.get_transformed_position (out abs_x, out abs_y);
-			clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
 			clone.save_easing_state ();
 			clone.set_easing_duration (200);
 			clone.set_easing_mode (AnimationMode.EASE_IN_CUBIC);
 			clone.set_scale (scale, scale);
 			clone.opacity = 0;
+			clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
 			clone.restore_easing_state ();
 
 			request_reposition ();
@@ -533,12 +535,13 @@ namespace Gala
 
 			save_easing_state ();
 			set_easing_duration (0);
-			set_position (abs_x, abs_y);
+			set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
 			window_icon.save_easing_state ();
 			window_icon.set_easing_duration (200);
 			window_icon.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
-			window_icon.set_position (click_x - abs_x - window_icon.width / 2, click_y - abs_y - window_icon.height / 2);
+			window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
+				click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
 			window_icon.restore_easing_state ();
 
 			close_button.opacity = 0;
