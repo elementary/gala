@@ -285,6 +285,7 @@ namespace Gala
 				toggle_shadow (false);
 
 			window_icon.opacity = 0;
+			close_button.opacity = 0;
 
 			if (should_fade ())
 				opacity = 0;
