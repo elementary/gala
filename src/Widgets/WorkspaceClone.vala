@@ -35,7 +35,7 @@ namespace Gala
 			var primary = screen.get_primary_monitor ();
 			var monitor_geom = screen.get_monitor_geometry (primary);
 
-			add_effect (new ShadowEffect (monitor_geom.width, monitor_geom.height, 40, 5));
+			add_effect (new ShadowEffect (40, 5));
 		}
 
 		public override void paint ()

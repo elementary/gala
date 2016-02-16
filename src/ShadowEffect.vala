@@ -50,13 +50,14 @@ namespace Gala
 		Cogl.Material material;
 		string? current_key = null;
 
-		public ShadowEffect (int actor_width, int actor_height, int shadow_size, int shadow_spread)
+		public ShadowEffect (int shadow_size, int shadow_spread)
 		{
 			Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
+		}
 
+		construct
+		{
 			material = new Cogl.Material ();
-
-			update_size (actor_width, actor_height);
 		}
 
 		~ShadowEffect ()
@@ -65,24 +66,18 @@ namespace Gala
 				decrement_shadow_users (current_key);
 		}
 
-		public void update_size (int actor_width, int actor_height)
+		Cogl.Texture? get_shadow (int width, int height, int shadow_size, int shadow_spread)
 		{
-			var shadow = get_shadow (actor_width, actor_height, shadow_size, shadow_spread);
-			material.set_layer (0, shadow);
-		}
-
-		Cogl.Texture get_shadow (int actor_width, int actor_height, int shadow_size, int shadow_spread)
-		{
-			if (current_key != null) {
-				decrement_shadow_users (current_key);
-			}
-
-			Shadow? shadow = null;
-
-			var width = actor_width + shadow_size * 2;
-			var height = actor_height + shadow_size * 2;
+			var old_key = current_key;
 
 			current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
+			if (old_key == current_key)
+				return null;
+
+			if (old_key != null)
+				decrement_shadow_users (old_key);
+
+			Shadow? shadow = null;
 			if ((shadow = shadow_cache.@get (current_key)) != null) {
 				shadow.users++;
 				return shadow.texture;
@@ -91,7 +86,7 @@ namespace Gala
 			// fill a new texture for this size
 			var buffer = new Granite.Drawing.BufferSurface (width, height);
 			buffer.context.rectangle (shadow_size - shadow_spread, shadow_size - shadow_spread,
-				actor_width + shadow_spread * 2, actor_height + shadow_spread * 2);
+				width - shadow_size * 2 + shadow_spread * 2, height - shadow_size * 2 + shadow_spread * 2);
 			buffer.context.set_source_rgba (0, 0, 0, 0.7);
 			buffer.context.fill ();
 
@@ -124,7 +119,12 @@ namespace Gala
 
 		public override void paint (EffectPaintFlags flags)
 		{
-			var size = shadow_size * scale_factor;
+			var bounding_box = get_bounding_box ();
+			var shadow = get_shadow ((int) (bounding_box.x2 - bounding_box.x1), (int) (bounding_box.y2 - bounding_box.y1),
+				shadow_size, shadow_spread);
+
+			if (shadow != null)
+				material.set_layer (0, shadow);
 
 			var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
 			var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
@@ -133,10 +133,20 @@ namespace Gala
 			material.set_color (alpha);
 
 			Cogl.set_source (material);
-			Cogl.rectangle (-size, -size, actor.width + size, actor.height + size);
+			Cogl.rectangle (bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
 
 			actor.continue_paint ();
 		}
+
+		public virtual ActorBox get_bounding_box ()
+		{
+			var size = shadow_size * scale_factor;
+			var bounding_box = ActorBox ();
+
+			bounding_box.set_origin (-size, -size);
+			bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
+
+			return bounding_box;
+		}
 	}
 }
-

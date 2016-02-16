@@ -20,6 +20,31 @@ using Meta;
 
 namespace Gala
 {
+	class WindowShadowEffect : ShadowEffect
+	{
+		public Meta.Window window { get; construct; }
+
+		public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread)
+		{
+			Object (window: window, shadow_size: shadow_size, shadow_spread: shadow_spread, shadow_opacity: 255);
+		}
+
+		public override ActorBox get_bounding_box ()
+		{
+			var size = shadow_size * scale_factor;
+
+			var input_rect = window.get_buffer_rect ();
+			var outer_rect = window.get_frame_rect ();
+
+			// Occupy only window frame area plus shadow size
+			var bounding_box = ActorBox ();
+			bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size);
+			bounding_box.set_size (outer_rect.width + size * 2, outer_rect.height + size * 2);
+
+			return bounding_box;
+		}
+	}
+
 	/**
 	 * A container for a clone of the texture of a MetaWindow, a WindowIcon,
 	 * a close button and a shadow. Used together with the WindowCloneContainer.
@@ -159,8 +184,6 @@ namespace Gala
 
 			if (shadow_update_timeout != 0)
 				Source.remove (shadow_update_timeout);
-
-			window.size_changed.disconnect (update_shadow_size);
 		}
 
 		/**
@@ -198,10 +221,8 @@ namespace Gala
 
 			transition_to_original_state (false);
 
-			var outer_rect = window.get_frame_rect ();
-			shadow_effect = new ShadowEffect (outer_rect.width, outer_rect.height, 40, 5);
-			add_effect_with_name ("shadow", shadow_effect);
-			window.size_changed.connect (update_shadow_size);
+			shadow_effect = new WindowShadowEffect (window, 40, 5);
+			clone.add_effect_with_name ("shadow", shadow_effect);
 
 			if (should_fade ())
 				opacity = 0;
@@ -227,30 +248,6 @@ namespace Gala
 		{
 			return overview_mode
 				&& window.get_workspace () != window.get_screen ().get_active_workspace ();
-		}
-
-		/**
-		 * Sets a timeout of 500ms after which, if no new resize action reset it,
-		 * the shadow will be resized and a request_reposition() will be emitted to
-		 * make the WindowCloneContainer calculate a new layout to honor the new size.
-		 */
-		void update_shadow_size ()
-		{
-			if (shadow_update_timeout != 0)
-				Source.remove (shadow_update_timeout);
-
-			shadow_update_timeout = Timeout.add (500, () => {
-				var rect = window.get_frame_rect ();
-				var effect = get_effect ("shadow") as ShadowEffect;
-				effect.update_size (rect.width, rect.height);
-
-				shadow_update_timeout = 0;
-
-				// if there was a size change it makes sense to recalculate the positions
-				request_reposition ();
-
-				return false;
-			});
 		}
 
 		void on_all_workspaces_changed ()
@@ -344,18 +341,15 @@ namespace Gala
 			};
 			active_shape.allocate (shape_alloc, flags);
 
-			if (clone == null)
+			if (clone == null || dragging)
 				return;
 
-			var actor = window.get_compositor_private () as WindowActor;
+			var actor = (WindowActor) window.get_compositor_private ();
 			var input_rect = window.get_buffer_rect ();
 			var outer_rect = window.get_frame_rect ();
 			var scale_factor = (float)width / outer_rect.width;
 
-			var shadow_effect = get_effect ("shadow") as ShadowEffect;
-			shadow_effect.scale_factor = scale_factor;
-
-			var alloc = ActorBox ();
+			ActorBox alloc = {};
 			alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
 			                  (input_rect.y - outer_rect.y) * scale_factor);
 			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
@@ -427,9 +421,9 @@ namespace Gala
 			shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
 
 			if (show)
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), 0, 255);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 255);
 			else
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), 255, 0);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 0);
 
 			add_transition ("shadow-opacity", shadow_transition);
 		}
@@ -517,8 +511,6 @@ namespace Gala
 			stage.add_child (this);
 
 			var scale = window_icon.width / clone.width;
-
-			((ShadowEffect) get_effect ("shadow")).shadow_opacity = 0;
 
 			clone.get_transformed_position (out abs_x, out abs_y);
 			clone.save_easing_state ();
@@ -674,22 +666,13 @@ namespace Gala
 			get_parent ().remove_child (this);
 			prev_parent.insert_child_at_index (this, prev_index);
 
+			clone.set_pivot_point (0, 0);
+
 			clone.save_easing_state ();
 			clone.set_easing_duration (250);
 			clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 			clone.set_scale (1, 1);
 			clone.opacity = 255;
-
-			Clutter.Callback finished = () => {
-				((ShadowEffect) get_effect ("shadow")).shadow_opacity = 255;
-			};
-
-			var transition = clone.get_transition ("scale-x");
-			if (transition != null)
-				transition.completed.connect (() => finished (this));
-			else
-				finished (this);
-
 			clone.restore_easing_state ();
 
 			request_reposition ();
