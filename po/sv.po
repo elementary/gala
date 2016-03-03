@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-02-13 08:36+0000\n"
-"PO-Revision-Date: 2015-04-13 17:46+0000\n"
-"Last-Translator: fsavje <fred_ubuntu@savje.com>\n"
+"POT-Creation-Date: 2016-02-15 15:42+0000\n"
+"PO-Revision-Date: 2016-02-26 10:50+0000\n"
+"Last-Translator: Marcus Lundgren <lp@gaoth.org>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-02-14 06:06+0000\n"
+"X-Launchpad-Export-Date: 2016-02-27 04:59+0000\n"
 "X-Generator: Launchpad (build 17925)\n"
 "X-Poedit-Language: Swedish\n"
 
@@ -161,11 +161,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Genväg för att förflytta sig till första arbetsytan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Genväg för att förflytta sig till sista arbetsytan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
@@ -201,7 +201,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Byt till föregående tangentbordslayout"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
