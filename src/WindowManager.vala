@@ -1111,7 +1111,9 @@ namespace Gala
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var window = actor.get_meta_window ();
 
+#if HAS_MUTTER318
 			ws_assoc.remove (window);
+#endif
 
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
