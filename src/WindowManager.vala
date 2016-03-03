@@ -1023,6 +1023,11 @@ namespace Gala
 
 					mapping.add (actor);
 
+					if (window.maximized_vertically || window.maximized_horizontally) {
+						var outer_rect = window.get_frame_rect ();
+						actor.set_position (outer_rect.x, outer_rect.y);
+					}
+					
 					actor.set_pivot_point (0.5f, 1.0f);
 					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0;
