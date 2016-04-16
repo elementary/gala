@@ -1325,7 +1325,9 @@ namespace Meta {
 		TOP,
 		DOCK,
 		FULLSCREEN,
+#if !HAS_MUTTER320
 		FOCUSED_WINDOW,
+#endif
 		OVERRIDE_REDIRECT,
 		LAST
 	}
