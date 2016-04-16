@@ -25,7 +25,7 @@ gala_CFLAGS = \
 	$(NULL)
 
 gala_LDADD = \
-	-lm \
+	$(LIBM) \
 	$(GALA_CORE_LIBS) \
 	$(top_builddir)/lib/libgala.la \
 	$(NULL)

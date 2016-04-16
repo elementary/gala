@@ -1,5 +1,7 @@
 include $(top_srcdir)/Makefile.common
 
+ACLOCAL_AMFLAGS = --install -I m4 ${ACLOCAL_FLAGS}
+
 SUBDIRS = \
 	data \
 	lib \
