@@ -9,6 +9,7 @@ VAPIS = \
 	$(NULL)
 
 DEPS = \
+	libbamf3.deps \
 	libmutter.deps \
 	gnome-desktop-3.0.deps \
 	$(NULL)
