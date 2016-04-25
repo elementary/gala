@@ -168,8 +168,12 @@ namespace Gala
 				return false;
 
 			double dx, dy;
+#if VALA_0_32
+			scroll_event.get_scroll_delta (out dx, out dy);
+#else
 			var event = (Event*)(&scroll_event);
 			event->get_scroll_delta (out dx, out dy);
+#endif
 
 			var direction = MotionDirection.LEFT;
 
