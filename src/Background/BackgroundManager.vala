@@ -64,6 +64,8 @@ namespace Gala
 
 		void swap_background_actor ()
 		{
+			return_if_fail (new_background_actor != null);
+
 			var old_background_actor = background_actor;
 			background_actor = new_background_actor;
 			new_background_actor = null;
