@@ -72,7 +72,7 @@ namespace Gala
 				SignalHandler.disconnect (cache, watch);
 			}
 
-			background_source.settings.changed.disconnect (settings_changed);
+			background_source.changed.disconnect (settings_changed);
 		}
 
 		public void update_resolution ()
