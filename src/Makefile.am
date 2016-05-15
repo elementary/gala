@@ -36,6 +36,7 @@ gala_VALASOURCES = \
 	DockThemeManager.vala \
 	DragDropAction.vala \
 	InternalUtils.vala \
+	KeyboardManager.vala \
 	Main.vala \
 	PluginManager.vala \
 	ScreenSaver.vala \
