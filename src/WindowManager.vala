@@ -248,7 +248,7 @@ namespace Gala
 			configure_hotcorners ();
 			screen.monitors_changed.connect (configure_hotcorners);
 
-			BehaviorSettings.get_default ().schema.changed.connect ((key) => update_input_area ());
+			BehaviorSettings.get_default ().schema.changed.connect (configure_hotcorners);
 
 			// initialize plugins and add default components if no plugin overrides them
 			var plugin_manager = PluginManager.get_default ();
@@ -329,11 +329,20 @@ namespace Gala
 
 		void add_hotcorner (float x, float y, string key)
 		{
-			Clutter.Actor hot_corner;
-			var stage = Compositor.get_stage_for_screen (get_screen ());
+			unowned Clutter.Actor? stage = Compositor.get_stage_for_screen (get_screen ());
+			return_if_fail (stage != null);
+
+			var action = (ActionType) BehaviorSettings.get_default ().schema.get_enum (key);
+			Clutter.Actor? hot_corner = stage.find_child_by_name (key);
+
+			if (action == ActionType.NONE) {
+				if (hot_corner != null)
+					stage.remove_child (hot_corner);
+				return;
+			}
 
 			// if the hot corner already exists, just reposition it, create it otherwise
-			if ((hot_corner = stage.find_child_by_name (key)) == null) {
+			if (hot_corner == null) {
 				hot_corner = new Clutter.Actor ();
 				hot_corner.width = 1;
 				hot_corner.height = 1;
@@ -343,9 +352,9 @@ namespace Gala
 
 				stage.add_child (hot_corner);
 
-				hot_corner.enter_event.connect (() => {
-					last_hotcorner = hot_corner;
-					perform_action ((ActionType)BehaviorSettings.get_default ().schema.get_enum (key));
+				hot_corner.enter_event.connect ((actor, event) => {
+					last_hotcorner = actor;
+					perform_action ((ActionType) BehaviorSettings.get_default ().schema.get_enum (actor.name));
 					return false;
 				});
 			}
