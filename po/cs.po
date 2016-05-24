@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-16 08:34+0000\n"
-"PO-Revision-Date: 2015-09-05 21:58+0000\n"
-"Last-Translator: Long Do Hai <mailbox@thinky.cz>\n"
+"POT-Creation-Date: 2016-05-15 13:04+0000\n"
+"PO-Revision-Date: 2016-05-20 21:57+0000\n"
+"Last-Translator: Hlobil Vaclav <Unknown>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-04-17 05:53+0000\n"
-"X-Generator: Launchpad (build 17995)\n"
+"X-Launchpad-Export-Date: 2016-05-21 05:36+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 "Language: cs\n"
 
-#: ../src/WindowManager.vala:1648
+#: ../src/WindowManager.vala:1649
 msgid "Does the display look OK?"
 msgstr "Vypadá displej v pořádku?"
 
-#: ../src/WindowManager.vala:1651
+#: ../src/WindowManager.vala:1652
 msgid "Keep This Configuration"
 msgstr "Zachovat toto nastavení"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1653
 msgid "Restore Previous Configuration"
 msgstr "Obnovit předchozí nastavení"
 
@@ -163,7 +163,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr ""
+msgstr "Názvy, které jsou přepínačem oken rozpoznávány jako dokovací okna."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -171,6 +171,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Při aktivaci přepínače oken projde gala celý tento seznam a pokusí se najít "
+"okno se stejným názvem. Pokud ho nalezne, skryje toto okno a znovu jej "
+"zobrazí až po zavření přepínače."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -208,7 +211,7 @@ msgstr "Klávesová zkratka pro zobrazení přehledu všech oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "Přejít na další pracovní plochu vpravo nebo zpět na první"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
@@ -246,19 +249,26 @@ msgid ""
 "without breaking older versions. A special spacer tag can be used to insert "
 "some space between two adjacent buttons."
 msgstr ""
+"Uspořádání tlačítek v záhlaví okna. Hodnota by měla být řetězcem, např. "
+"„menu:minimize,maximize,spacer,close“; dvojtečka odděluje levý roh okna od "
+"pravého, názvy tlačítek jsou odděleny čárkami. Opakování tlačítek není "
+"dovoleno. Neznámé názvy tlačítek jsou v tichosti ignorovány, aby mohla být v "
+"budoucích verzích metacity tlačítka přidána bez vlivu na starší verze. K "
+"vložení místa mezi dvě přiléhající tlačítka může být použita speciální "
+"oddělovací značka."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "Ztmavit rodičovské okno, které vyvolalo modální dialog"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+msgstr "Průhlednost oken umístěných na pozadí v alt-tab přepínači."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Obrázek na pozadí v přepínači ploch"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -269,6 +279,8 @@ msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Jestli mají být zobrazovány animace. Poznámka: toto je globální klíč, který "
+"změní chování správce oken, panelu atd."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -312,23 +324,23 @@ msgstr "Definuje stín normálních nevybraných oken"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
-msgstr ""
+msgstr "Prohlédnout normálně přiblížené"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
-msgstr ""
+msgstr "Určuje stín menu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Defines the shadow of a focused dialog"
-msgstr ""
+msgstr "Určuje stín aktivního dialogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:48
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Určuje stín neaktivního dialogu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Zakázat všechna oznámení"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
@@ -336,11 +348,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Povolit zvuky"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Zobrazit promeškaná oznámení v oznamovacím centru"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
@@ -348,7 +360,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "Poloměr rohu"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"

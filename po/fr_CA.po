@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-16 08:34+0000\n"
+"POT-Creation-Date: 2016-05-15 13:04+0000\n"
 "PO-Revision-Date: 2014-04-17 10:18+0000\n"
 "Last-Translator: Corentin Noël <corentin@elementaryos.org>\n"
 "Language-Team: French (Canada) <fr_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-04-17 05:53+0000\n"
-"X-Generator: Launchpad (build 17995)\n"
+"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
+"X-Generator: Launchpad (build 18025)\n"
 "Language: \n"
 
-#: ../src/WindowManager.vala:1648
+#: ../src/WindowManager.vala:1649
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../src/WindowManager.vala:1651
+#: ../src/WindowManager.vala:1652
 msgid "Keep This Configuration"
 msgstr ""
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1653
 msgid "Restore Previous Configuration"
 msgstr ""
 
