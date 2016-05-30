@@ -48,6 +48,8 @@ namespace Gala
 			
 			settings = new GLib.Settings.full (schema, null, null);
 			Signal.connect (settings, "changed", (Callback) set_keyboard_layout, this);
+
+			set_keyboard_layout (settings, "current");
 		}
 
 		[CCode (instance_pos = -1)]
