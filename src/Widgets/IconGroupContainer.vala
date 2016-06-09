@@ -27,8 +27,8 @@ namespace Gala
 	 */
 	public class IconGroupContainer : Actor
 	{
-		public static const int SPACING = 48;
-		public static const int GROUP_WIDTH = 64;
+		public const int SPACING = 48;
+		public const int GROUP_WIDTH = 64;
 
 		public signal void request_reposition ();
 

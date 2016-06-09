@@ -27,10 +27,10 @@ namespace Gala
 	 */
 	public class IconGroup : Actor
 	{
-		public static const int SIZE = 64;
+		public const int SIZE = 64;
 
-		static const int PLUS_SIZE = 8;
-		static const int PLUS_WIDTH = 24;
+		const int PLUS_SIZE = 8;
+		const int PLUS_WIDTH = 24;
 
 		const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
