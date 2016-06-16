@@ -64,9 +64,9 @@ namespace Gala
 			return_if_fail (sources.is_of_type (sources_variant_type));
 
 			var current = settings.get_uint ("current");
-			var child = sources.get_child_value (current);
-			unowned string type, name;
-			child.get ("(&s&s)", out type, out name);
+			unowned string? type = null, name = null;
+			if (sources.n_children () > current)
+				sources.get_child (current, "(&s&s)", out type, out name);
 			if (type == "xkb") {
 				string[] arr = name.split ("+", 2);
 				layout = arr[0];
