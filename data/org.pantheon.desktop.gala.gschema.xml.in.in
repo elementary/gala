@@ -134,10 +134,12 @@
 		<key type="as" name="switch-input-source">
 			<default><![CDATA[['<Alt>space']]]></default>
 			<_summary>Cycle to next keyboard layout</_summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="as" name="switch-input-source-backward">
 			<default><![CDATA[['']]]></default>
 			<_summary>Cycle to previous keyboard layout</_summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 	</schema>
 	

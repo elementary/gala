@@ -22,11 +22,14 @@ namespace Gala
 		static KeyboardManager? instance;
 		static VariantType sources_variant_type;
 
-		public static void init ()
+		public static void init (Meta.Display display)
 		{
-			if (instance == null) {
-				instance = new KeyboardManager ();
-			}
+			if (instance != null)
+				return;
+
+			instance = new KeyboardManager ();
+
+			display.modifiers_accelerator_activated.connect (instance.handle_modifiers_accelerator_activated);
 		}
 
 		static construct
@@ -50,6 +53,24 @@ namespace Gala
 			Signal.connect (settings, "changed", (Callback) set_keyboard_layout, this);
 
 			set_keyboard_layout (settings, "current");
+		}
+
+		[CCode (instance_pos = -1)]
+		bool handle_modifiers_accelerator_activated (Meta.Display display)
+		{
+			display.ungrab_keyboard (display.get_current_time ());
+
+			var sources = settings.get_value ("sources");
+			return_val_if_fail (sources.is_of_type (sources_variant_type), true);
+
+			var n_sources = (uint) sources.n_children ();
+			if (n_sources < 2)
+				return true;
+
+			var current = settings.get_uint ("current");
+			settings.set_uint ("current", (current + 1) % n_sources);
+
+			return true;
 		}
 
 		[CCode (instance_pos = -1)]
