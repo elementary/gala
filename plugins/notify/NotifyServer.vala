@@ -49,6 +49,7 @@ namespace Gala.Plugins.Notify
 	{
 		const int DEFAULT_TMEOUT = 4000;
 		const string FALLBACK_ICON = "dialog-information";
+		const string FALLBACK_APP_ID = "gala-other";
 
 		static Gdk.RGBA? icon_fg_color = null;
 
@@ -66,6 +67,7 @@ namespace Gala.Plugins.Notify
 		DBus? bus_proxy = null;
 		unowned Canberra.Context? ca_context = null;
 		Gee.HashMap<string, Settings> app_settings_cache;
+		Gee.HashMap<string, AppInfo> app_info_cache;
 
 		public NotifyServer (NotificationStack stack)
 		{
@@ -91,6 +93,7 @@ namespace Gala.Plugins.Notify
 			ca_context.open ();
 
 			app_settings_cache = new Gee.HashMap<string, Settings> ();
+			app_info_cache = new Gee.HashMap<string, AppInfo> ();
 		}
 
 		public string [] get_capabilities ()
@@ -115,7 +118,7 @@ namespace Gala.Plugins.Notify
 			name = "pantheon-notify";
 			vendor = "elementaryOS";
 			version = "0.1";
-			spec_version = "1.1";
+			spec_version = "1.2";
 		}
 
 		/**
@@ -142,13 +145,30 @@ namespace Gala.Plugins.Notify
 			throw new DBusError.FAILED ("");
 		}
 
-		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary, 
+		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
 			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
 		{
-			unowned Variant? variant;
+			unowned Variant? variant = null;
+
+			AppInfo? app_info = null;
+
+			if ((variant = hints.lookup ("desktop-entry")) != null) {
+				string desktop_id = variant.get_string ();
+				if (!desktop_id.has_suffix (".desktop"))
+					desktop_id += ".desktop";
+
+				app_info = new DesktopAppInfo (desktop_id);
+			} else {
+				app_info = get_appinfo_from_app_name (app_name);
+			}
+
+			// Get app icon from .desktop as fallback
+			string icon = app_icon;
+			if (app_icon == "" && app_info != null)
+				icon = app_info.get_icon ().to_string ();
 
 			var id = (replaces_id != 0 ? replaces_id : ++id_counter);
-			var pixbuf = get_pixbuf (app_name, app_icon, hints);
+			var pixbuf = get_pixbuf (app_name, icon, hints);
 			var timeout = (expire_timeout == uint32.MAX ? DEFAULT_TMEOUT : expire_timeout);
 
 			var urgency = NotificationUrgency.NORMAL;
@@ -169,13 +189,24 @@ namespace Gala.Plugins.Notify
 				if (notify_settings.do_not_disturb) {
 					allow_bubble = allow_sound = false;
 				} else {
-					Settings? app_settings = app_settings_cache.get (app_name);
+					string app_id = "";
+					bool has_notifications_key = false;
 
+					if (app_info != null) {
+						app_id = app_info.get_id ().replace (".desktop", "");
+						if (app_info is DesktopAppInfo)
+							has_notifications_key = ((DesktopAppInfo) app_info).get_boolean ("X-GNOME-UsesNotifications");
+					}
+
+					if (!has_notifications_key)
+						app_id = FALLBACK_APP_ID;
+
+					Settings? app_settings = app_settings_cache.get (app_id);
 					if (app_settings == null) {
 						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", false);
 						if (schema != null) {
-							app_settings = new Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_name));
-							app_settings_cache.set (app_name, app_settings);
+							app_settings = new Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_id));
+							app_settings_cache.set (app_id, app_settings);
 						}
 					}
 
@@ -258,6 +289,8 @@ namespace Gala.Plugins.Notify
 				notification.action_invoked.connect (notification_action_invoked_callback);
 				notification.closed.connect (notification_closed_callback);
 				stack.show_notification (notification);
+			} else {
+				notification_closed (id, NotificationClosedReason.EXPIRED);
 			}
 
 #if !VALA_0_26
@@ -552,6 +585,59 @@ namespace Gala.Plugins.Notify
 		void notification_action_invoked_callback (Notification notification, uint32 id, string action)
 		{
 			action_invoked (id, action);
+		}
+
+		AppInfo? get_appinfo_from_app_name (string app_name)
+		{
+			if (app_name.strip () == "")
+				return null;
+
+			AppInfo? app_info = app_info_cache.get (app_name);
+			if (app_info != null)
+				return app_info;
+
+			foreach (unowned AppInfo info in AppInfo.get_all ()) {
+				if (info == null || !validate (info, app_name))
+					continue;
+
+				app_info = info;
+				break;
+			}
+
+			app_info_cache.set (app_name, app_info);
+
+			return app_info;
+		}
+
+		static bool validate (AppInfo appinfo, string name)
+		{
+			string? app_executable = appinfo.get_executable ();
+			string? app_name = appinfo.get_name ();
+			string? app_display_name = appinfo.get_display_name ();
+
+			if (app_name == null || app_executable == null || app_display_name == null)
+				return false;
+
+			string token = name.down ().strip ();
+			string? token_executable = token;
+			if (!token_executable.has_prefix (Path.DIR_SEPARATOR_S))
+				token_executable = Environment.find_program_in_path (token_executable);
+
+			if (!app_executable.has_prefix (Path.DIR_SEPARATOR_S))
+				app_executable = Environment.find_program_in_path (app_executable);
+
+			string[] args;
+
+			try {
+ 				Shell.parse_argv (appinfo.get_commandline (), out args);
+			} catch (ShellError e) {
+				warning ("%s", e.message);
+ 			}
+ 
+			return (app_name.down () == token
+				|| token_executable == app_executable
+				|| args[0] == token
+				|| app_display_name.down ().contains (token));
 		}
 	}
 }
