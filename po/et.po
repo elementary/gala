@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-15 13:04+0000\n"
-"PO-Revision-Date: 2015-03-19 14:29+0000\n"
+"POT-Creation-Date: 2016-07-14 20:35+0000\n"
+"PO-Revision-Date: 2016-06-20 23:24+0000\n"
 "Last-Translator: Kristjan Vool <tictac7x@gmail.com>\n"
 "Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
+"X-Generator: Launchpad (build 18115)\n"
 "Language: et\n"
 
-#: ../src/WindowManager.vala:1649
+#: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
 msgstr "Kas ekraani pilt tundub korras olevat?"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
 msgstr "Kinnita praegune seadistus"
 
-#: ../src/WindowManager.vala:1653
+#: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
 msgstr "Taasta eelmine seadistus"
 
@@ -78,6 +78,14 @@ msgstr "Tööalade ülevaade"
 msgid "View all open windows and workspaces"
 msgstr "Kõikide avatud akende ja tööalade vaatamine"
 
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr ""
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
 msgstr "Vasakpoolse ülemise nurga funktsioon"
@@ -119,10 +127,16 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Ühe käsu lisades kasutatakse seda kõikide nurkade puhul, kus on valitud "
+"kohandatud käsu käivitamine. Kasutades loogikat 'hotcorner-"
+"topleft:käsk;;hotcorner-bottomright:käsk', käivitatakse erinev käsk "
+"vastavalt nurgale. Sobilikud nimed nurkadele on: 'hotcorner-[topleft; "
+"topright; bottomleft; bottomright]', mille järgnevad ':' ning seejärel käsk. "
+"';;' pannakse erinevate nurkade käskude vahele."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Akende lohistamisel ekraani servade nende paanimine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -130,6 +144,9 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Akende lohistamisel vasakusse või paremasse äärde maksimeeritakse aken "
+"vertikaalselt ning horisontaalselt poole ekraani suuruseks. Akna "
+"lohistamisel ülaserva maksimeeritakse aken täielikult."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
@@ -138,7 +155,7 @@ msgstr "Paneeli põhimenüü toiming"
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr ""
+msgstr "Paneeli menuu avamise kiirklahvi vajutamisel käivitatav käsk"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
@@ -154,7 +171,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr ""
+msgstr "Nimed, mis tuvastatakse dokiakendena akende vahetamisel"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -162,6 +179,8 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Aknavahetaja kävitamisel peidetakse kõik nende nimedega aknad ning "
+"aknavahetaja sulgemisel kuvatakse antud aknad tavaliselt, nii nagu varem."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -201,11 +220,11 @@ msgstr "Vahetamine järgmisele tööalale (paremale) või eelmisele (vasakule)"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Järgmise klaviatuurpaigutuse valimine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Eelmise klaviatuurpaigutuse valimine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
@@ -254,7 +273,7 @@ msgstr "Taustal olevate akende läbipaistvus alt-tab kasutamisel."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Pilt, mida kasutatakse töölaua vahetajas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -270,7 +289,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Maksimeerimise ja minimeerimise animatsiooni kestvus."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
@@ -286,7 +305,7 @@ msgstr "Tööalade vahetamise animatsiooni kiirus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Menüü animatsiooni kestvus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
@@ -310,7 +329,7 @@ msgstr "Taustal oleva akna varju tugevus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
-msgstr ""
+msgstr "Normaalfokuseeritud"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
@@ -330,19 +349,19 @@ msgstr "Kõikide märguannete keelamine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Märguannete mullide lubamine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Märguannete helide lubamine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Tähelepanuta märguannete näitamine märguannete keskuses"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Ümarate ekraaninurkade lubamine"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
@@ -351,10 +370,11 @@ msgstr "Nurga raadius"
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
 msgstr ""
+"Ümarate ekraaninurkade lubamine, kui rakendus on täisekraani režiimis"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Ümarate ekraaninurkade lubamine ainult põhiekraanil"
 
 #~ msgid "Cancel"
 #~ msgstr "Loobu"

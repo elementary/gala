@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-05-15 13:04+0000\n"
-"PO-Revision-Date: 2015-11-29 22:56+0000\n"
-"Last-Translator: Luis Manuel Oliveira <luisv.moliveira@gmail.com>\n"
+"POT-Creation-Date: 2016-07-14 20:35+0000\n"
+"PO-Revision-Date: 2016-07-15 13:13+0000\n"
+"Last-Translator: Pedro Monteiro <Unknown>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-07-17 06:05+0000\n"
+"X-Generator: Launchpad (build 18140)\n"
 
-#: ../src/WindowManager.vala:1649
+#: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
 msgstr "O ecrã está bem assim?"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
 msgstr "Manter esta configuração"
 
-#: ../src/WindowManager.vala:1653
+#: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
 msgstr "Restaurar configuração anterior"
 
@@ -76,6 +76,14 @@ msgstr "Vista multi-tarefa"
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
 msgstr "Ver todas as janelas e ambientes de trabalho"
+
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr "Outras"
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "Ficheiro .desktop para as notificações de aplicações legadas."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"

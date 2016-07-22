@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-05-15 13:04+0000\n"
-"PO-Revision-Date: 2016-01-10 09:32+0000\n"
-"Last-Translator: Lukáš Papík <stereo839@gmail.com>\n"
+"POT-Creation-Date: 2016-07-14 20:35+0000\n"
+"PO-Revision-Date: 2016-07-17 21:23+0000\n"
+"Last-Translator: Igor Štefanko <istefanko@gmail.com>\n"
 "Language-Team: Slovak <sk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-07-18 05:30+0000\n"
+"X-Generator: Launchpad (build 18140)\n"
 
-#: ../src/WindowManager.vala:1649
+#: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
 msgstr "Je zobrazenie na displeji v poriadku?"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
 msgstr "Ponechať toto nastavenie"
 
-#: ../src/WindowManager.vala:1653
+#: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
 msgstr "Obnoviť pôvodné nastavenie"
 
@@ -39,7 +39,7 @@ msgstr "Presun"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
-msgstr "Zmena veľkosť"
+msgstr "Zmeniť veľkosť"
 
 #: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
@@ -59,11 +59,11 @@ msgstr "Presun na pracovný priestor v pravo"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr "Zatvoriť"
+msgstr "Zavrieť"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr "Zrušiť maximalizáciu"
+msgstr "Obnoviť"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
@@ -76,6 +76,14 @@ msgstr "Multitaskingový pohľad"
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
 msgstr "Ukázať všetky otvorené okná a plochy"
+
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr "Iné"
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"

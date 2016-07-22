@@ -7,27 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-05-15 13:04+0000\n"
-"PO-Revision-Date: 2016-01-26 12:30+0000\n"
-"Last-Translator: tatsuteng <tatsuteng@gmail.com>\n"
+"POT-Creation-Date: 2016-07-14 20:35+0000\n"
+"PO-Revision-Date: 2016-07-15 17:48+0000\n"
+"Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-07-17 06:05+0000\n"
+"X-Generator: Launchpad (build 18140)\n"
 
-#: ../src/WindowManager.vala:1649
+#: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
 msgstr "当前显示是否正常？"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
-msgstr "保留当前设定"
+msgstr "保留当前设置"
 
-#: ../src/WindowManager.vala:1653
+#: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
-msgstr "恢复之前的设置"
+msgstr "恢复之前设置"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
@@ -51,11 +51,11 @@ msgstr "总在可见工作区"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr "移至左边的工作区"
+msgstr "移至左侧工作区"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr "移至右边的工作区"
+msgstr "移至右侧工作区"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
@@ -77,6 +77,14 @@ msgstr "多任务视图"
 msgid "View all open windows and workspaces"
 msgstr "查看所有打开的窗口和工作区"
 
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr "其它"
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "从过旧的应用程序中撤回通知所用的桌面文件。"
+
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
 msgstr "左上方热角"
@@ -87,7 +95,7 @@ msgstr "窗口布局概览方式"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr "选择陈列窗口的方式"
+msgstr "选择窗口陈列方式"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
@@ -139,7 +147,7 @@ msgstr "面板主菜单行为"
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr "设定当 panel-main-menu 组合键按下时要运行的命令"
+msgstr "设定按下 panel-main-menu 组合键时运行的命令"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
@@ -160,7 +168,7 @@ msgid ""
 "When launching the window-switcher, gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
-msgstr "窗口切换器启动时，gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏此窗口，并在窗口切换器关闭后恢复显示。"
+msgstr "窗口切换器启动时，Gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏此窗口，并在窗口切换器关闭后恢复显示。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -215,7 +223,7 @@ msgid ""
 "When true, instead of having independent titlebars, modal dialogs appear "
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
-msgstr "当为 true 时，模态对话框会依附在父窗口的标题栏出现，并随父窗口移动，而不使用单独的标题栏。"
+msgstr "值为 true 时，模态对话框会依附在父窗口的标题栏出现，并随父窗口移动，而不使用单独的标题栏。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -237,12 +245,12 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr "当模式窗口弹出时，其父窗口淡化"
+msgstr "当模式窗口弹出时，淡化上级窗口"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr "Alt+Tab 切换时窗口的透明图"
+msgstr "Alt + Tab 切换时窗口的透明度"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
@@ -256,7 +264,7 @@ msgstr "启用动画"
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
-msgstr "是否显示动画。注意：这是一个全局键，它会更改窗口管理器、面板等的行为。"
+msgstr "是否显示动画。注意：此键为全局键，它会更改窗口管理器、面板等的行为。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -288,7 +296,7 @@ msgid ""
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
-msgstr "这四项数值分别是阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明度"
+msgstr "四项数值分别为阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明度"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
@@ -324,7 +332,7 @@ msgstr "启用声音"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr "在通知中心显示错过的通知"
+msgstr "在通知中心显示未读通知"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"

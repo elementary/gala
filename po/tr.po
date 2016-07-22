@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-15 13:04+0000\n"
+"POT-Creation-Date: 2016-07-14 20:35+0000\n"
 "PO-Revision-Date: 2016-02-01 01:33+0000\n"
 "Last-Translator: mistrafantastic <mistrafantastic@gmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-05-16 05:53+0000\n"
-"X-Generator: Launchpad (build 18025)\n"
+"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
+"X-Generator: Launchpad (build 18115)\n"
 "Language: tr\n"
 
-#: ../src/WindowManager.vala:1649
+#: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
 msgstr "Ekranı sorunsuz görebiliyor musunuz?"
 
-#: ../src/WindowManager.vala:1652
+#: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
 msgstr "Bu Yapılandırmayı Koru"
 
-#: ../src/WindowManager.vala:1653
+#: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
 msgstr "Önceki Yapılandırmaya Geri Dön"
 
@@ -77,6 +77,14 @@ msgstr "Çoklu Görev Görünümü"
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
 msgstr "Tüm açık pencereleri ve çalışma alanlarını göster"
+
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr ""
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
