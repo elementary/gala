@@ -31,8 +31,6 @@ namespace Gala.Plugins.Notify
 
 		public Screen screen { get; construct; }
 
-		int animation_counter = 0;
-
 		public NotificationStack (Screen screen)
 		{
 			Object (screen: screen);
@@ -46,8 +44,7 @@ namespace Gala.Plugins.Notify
 
 		public void show_notification (Notification notification)
 		{
-			if (animation_counter == 0)
-				animations_changed (true);
+			animations_changed (true);
 
 			// raise ourselves when we got something to show
 			get_parent ().set_child_above_sibling (this, null);
@@ -56,8 +53,17 @@ namespace Gala.Plugins.Notify
 			// unless we make our container a bit wider and move the notifications over
 			notification.margin_left = ADDITIONAL_MARGIN;
 
+			notification.notify["being-destroyed"].connect (() => {
+				animations_changed (true);
+			});
+
 			notification.destroy.connect (() => {
+				animations_changed (false);
 				update_positions ();
+			});
+
+			notification.get_transition ("entry").completed.connect (() => {
+				animations_changed (false);
 			});
 
 			float height;
@@ -66,13 +72,6 @@ namespace Gala.Plugins.Notify
 
 			notification.y = TOP_OFFSET;
 			insert_child_at_index (notification, 0);
-
-			animation_counter++;
-
-			notification.get_transition ("entry").completed.connect (() => {
-				if (--animation_counter == 0)
-					animations_changed (false);
-			});
 		}
 
 		void update_positions (float add_y = 0.0f)
