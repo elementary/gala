@@ -139,6 +139,7 @@ namespace Gala
 			DBus.init (this);
 #if HAS_GSD310
 			DBusAccelerator.init (this);
+			MediaFeedback.init ();
 #endif
 			WindowListener.init (screen);
 			KeyboardManager.init (display);

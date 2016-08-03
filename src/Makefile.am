@@ -38,6 +38,7 @@ gala_VALASOURCES = \
 	InternalUtils.vala \
 	KeyboardManager.vala \
 	Main.vala \
+	MediaFeedback.vala \
 	PluginManager.vala \
 	ScreenSaver.vala \
 	Settings.vala \

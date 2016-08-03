@@ -118,5 +118,27 @@ namespace Gala
 
 			return ret;
 		}
+
+		[DBus (name = "ShowOSD")]
+		public void show_osd (GLib.HashTable<string, Variant> parameters)
+		{
+			int32 monitor_index = -1;
+			if (parameters.contains ("monitor"))
+				monitor_index = parameters["monitor"].get_int32 ();
+			string icon = "";
+			if (parameters.contains ("icon"))
+				icon = parameters["icon"].get_string ();
+			string label = "";
+			if (parameters.contains ("label"))
+				label = parameters["label"].get_string ();
+			int32 level = 0;
+			if (parameters.contains ("level"))
+				level = parameters["level"].get_int32 ();
+			
+			//if (monitor_index > -1)
+			//	message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
+			
+			MediaFeedback.send (icon, level);
+		}
 	}
 }
