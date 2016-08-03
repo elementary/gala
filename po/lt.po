@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-07-14 20:35+0000\n"
-"PO-Revision-Date: 2015-02-10 11:28+0000\n"
-"Last-Translator: Mantas Kriaučiūnas <mantas@akl.lt>\n"
+"POT-Creation-Date: 2016-07-31 10:51+0000\n"
+"PO-Revision-Date: 2016-08-02 16:42+0000\n"
+"Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
-"X-Generator: Launchpad (build 18115)\n"
+"X-Launchpad-Export-Date: 2016-08-03 05:50+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
 
 #: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
@@ -23,15 +23,15 @@ msgstr "Ar vaizdas ekrane atrodo gerai?"
 
 #: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
-msgstr "Palikti šiuos nustatymus"
+msgstr "Palikti šią konfigūraciją"
 
 #: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
-msgstr "Atstatyti buvusius nustatymus"
+msgstr "Atkurti ankstesnę konfigūraciją"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr "Sumažinti"
+msgstr "Suskleisti"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
@@ -47,15 +47,15 @@ msgstr "Visada viršuje"
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr "Visada matomame darbalaukyje"
+msgstr "Visada matomoje darbo srityje"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr "Perkeltį į darbalaukį kairėje"
+msgstr "Perkelti į darbo sritį kairėje"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr "Perkeltį į darbalaukį dešinėje"
+msgstr "Perkelti į darbo sritį dešinėje"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
@@ -67,19 +67,19 @@ msgstr "Atkurti dydį"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr "Išdidinti"
+msgstr "Išskleisti"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "Daugiaprogramio apdorojimo rodinys"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr "Rodyti visus atvertus langus ir visus darbastalius"
+msgstr "Rodyti visus atvertus langus ir visas darbo sritis"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Kita"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -184,11 +184,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr "Priartinti"
+msgstr "Didinti"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr "Atitolinti"
+msgstr "Mažinti"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
@@ -258,7 +258,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr "Įjungti animaciją"
+msgstr "Įjungti animacijas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
@@ -266,7 +266,7 @@ msgid ""
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
 "Ar animacijos turėtų būti rodomos. Pastaba: tai yra visuotinis raktas, jis "
-"paveikia langų tvarkyklės, skydelio ir t.t. veikimą."
+"keičia langų tvarkytuvės, skydelio ir t.t. elgseną."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -278,11 +278,11 @@ msgstr "Lango užvėrimo animacijos trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr "Lango sumažinimo animacijos trukmė"
+msgstr "Lango suskleidimo animacijos trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Darbo srities perjungimo animacijos trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"

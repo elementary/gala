@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-18 07:43+0100\n"
+"POT-Creation-Date: 2016-08-03 13:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/WindowManager.vala:1533
+#: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../src/WindowManager.vala:1536
+#: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
 msgstr ""
 
-#: ../src/WindowManager.vala:1537
+#: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
 msgstr ""
 
@@ -75,6 +75,14 @@ msgstr ""
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
+msgstr ""
+
+#: ../data/gala-other.desktop.in.h:1
+msgid "Other"
+msgstr ""
+
+#: ../data/gala-other.desktop.in.h:2
+msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1

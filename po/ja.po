@@ -7,72 +7,72 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-14 20:35+0000\n"
-"PO-Revision-Date: 2014-04-17 10:24+0000\n"
-"Last-Translator: Corentin Noël <corentin@elementaryos.org>\n"
+"POT-Creation-Date: 2016-07-31 10:51+0000\n"
+"PO-Revision-Date: 2016-08-02 08:45+0000\n"
+"Last-Translator: BALLOON a.k.a. Fu-sen. (Keiichi SHIGA) <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
-"X-Generator: Launchpad (build 18115)\n"
+"X-Launchpad-Export-Date: 2016-08-03 05:50+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
 "Language: ja\n"
 
 #: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "ディスプレイの設定に問題はありませんか？"
 
 #: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
-msgstr ""
+msgstr "この設定を保つ"
 
 #: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "前の設定へ戻す"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
-msgstr ""
+msgstr "サイズの変更"
 
 #: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
-msgstr ""
+msgstr "常に手前へ表示する"
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "全てのワークスペースに表示する"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "左のワークスペースへ移動"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "右のワークスペースへ移動"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr ""
+msgstr "閉じる"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "元のサイズに戻す"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr ""
+msgstr "最大化"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "マルチタスクビュー"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
@@ -80,7 +80,7 @@ msgstr ""
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "その他"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -88,7 +88,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "左上端の動作"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
@@ -100,15 +100,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "右上端の動作"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "左下端の動作"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "右下端の動作"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
@@ -139,7 +139,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "パネルにあるメインメニューの動作"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
@@ -185,11 +185,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "拡大する"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "縮小する"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
@@ -224,7 +224,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "タイトルバー内ボタンの配置"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -236,6 +236,10 @@ msgid ""
 "without breaking older versions. A special spacer tag can be used to insert "
 "some space between two adjacent buttons."
 msgstr ""
+"タイトルバーのボタンの位置を指定します。ここで指定する値は \"menu:minimize,maximize,spacer,close\" "
+"のような文字列にしてください; "
+"コロンでウィンドウの右上隅と左上隅を分割し、ボタン名はコンマで区切ります。ボタンを重複させることはできません。不明なボタン名は単に無視されるだけなので、m"
+"etacity の将来のバージョンでも利用できます。spacer というタグはボタンとボタンの間に挿入する空白を意味します。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
@@ -252,13 +256,14 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "アニメーションを有効にする"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"アニメーションを有効にするかどうかを設定します。注意: これはグローバルな設定なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -322,7 +327,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "サウンドを有効にする"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"

@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-14 20:35+0000\n"
-"PO-Revision-Date: 2015-04-07 15:49+0000\n"
-"Last-Translator: Nikola Lardev <nikolalardev@gmail.com>\n"
+"POT-Creation-Date: 2016-07-31 10:51+0000\n"
+"PO-Revision-Date: 2016-07-25 14:33+0000\n"
+"Last-Translator: Адмирал АнимЕ <Unknown>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
-"X-Generator: Launchpad (build 18115)\n"
+"X-Launchpad-Export-Date: 2016-08-01 05:30+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
 "Language: bg\n"
 
 #: ../src/WindowManager.vala:1635
@@ -24,19 +24,19 @@ msgstr "Наред ли е екрана?"
 
 #: ../src/WindowManager.vala:1638
 msgid "Keep This Configuration"
-msgstr "Запази тези настройки"
+msgstr "Запазване на тези настройки"
 
 #: ../src/WindowManager.vala:1639
 msgid "Restore Previous Configuration"
-msgstr "Възстанови предишните настройки"
+msgstr "Възстановяване на предишните настройки"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr "Минимизиране"
+msgstr "Смаляване"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr "Премести"
+msgstr "Преместване"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
@@ -60,15 +60,15 @@ msgstr "Преместване на работния плот вдясно"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr "Затвори"
+msgstr "Затваряне"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "Връщане от уголемяване"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr ""
+msgstr "Уголемяване"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
@@ -80,7 +80,7 @@ msgstr "Прегледа на всички прозорци и на работн
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Друго"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -376,7 +376,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "Радиус на заобляне"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"

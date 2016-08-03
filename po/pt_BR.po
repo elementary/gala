@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-07-14 20:35+0000\n"
-"PO-Revision-Date: 2015-11-03 17:05+0000\n"
-"Last-Translator: Cleiton Floss <cleitonfloss@gmail.com>\n"
+"POT-Creation-Date: 2016-07-31 10:51+0000\n"
+"PO-Revision-Date: 2016-08-01 13:45+0000\n"
+"Last-Translator: magno <magnojose.tavares@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
-"X-Generator: Launchpad (build 18115)\n"
+"X-Launchpad-Export-Date: 2016-08-02 05:54+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
 
 #: ../src/WindowManager.vala:1635
 msgid "Does the display look OK?"
@@ -79,11 +79,12 @@ msgstr "Ver todas as janelas e áreas de trabalho abertas"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+"Pasta desktop reserva para notificações de aplicações desatualizadas."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"

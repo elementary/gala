@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-07-14 20:35+0000\n"
-"PO-Revision-Date: 2016-02-26 10:50+0000\n"
-"Last-Translator: Marcus Lundgren <lp@gaoth.org>\n"
+"POT-Creation-Date: 2016-07-31 10:51+0000\n"
+"PO-Revision-Date: 2016-07-26 12:51+0000\n"
+"Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-07-15 05:33+0000\n"
-"X-Generator: Launchpad (build 18115)\n"
+"X-Launchpad-Export-Date: 2016-08-01 05:30+0000\n"
+"X-Generator: Launchpad (build 18169)\n"
 "X-Poedit-Language: Swedish\n"
 
 #: ../src/WindowManager.vala:1635
@@ -115,6 +115,7 @@ msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"Kommandot som ska köras för hörnhändelsen \"Utför anpassat kommando\""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -125,6 +126,13 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Om du bara anger ett kommando så kommer det användas för alla hörn med "
+"\"Utför anpassat kommando\". Om du istället använder mönstret \"hotcorner-"
+"topleft:command;;hotcorner-bottomright:command\" kommer respektive kommando "
+"att användas för varje hörn. Möjliga identifieringssträngar är \"hotcorner-"
+"[topleft; topright; bottomleft; bottomright]\" följt av \":\" and sedan det "
+"önskade kommandot. \";;\" används som avgränsare mellan "
+"kommandodefinitionerna."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -136,15 +144,19 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Om aktiverat maximeras släppta fönster på en vertikal skärmkant och "
+"storleksändras horisontellt för att täcka halva den tillgängliga ytan. Att "
+"släppa fönster på översta skärmkanten maximerar dem fullständigt."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Händelse för panelhuvudmeny"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Anger kommandot som körs när 'panel-main-menu'-tangentkombinationen trycks"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
@@ -155,6 +167,8 @@ msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Använd ett, efter behov, dynamiskt ökande eller minskande antal arbetsytor "
+"istället för ett fast antal"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -166,6 +180,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"När fönsterväxlaren startar söker gala igenom den här listan och försöker "
+"hitta ett fönster med matchande namn. Vid matchning kommer den gömma "
+"fönstret och när växlaren stängs öppna fönstret igen."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
@@ -177,27 +194,27 @@ msgstr "Genväg för att förflytta sig till sista arbetsytan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Genväg för att flytta det aktiva fönstret till första arbetsytan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Genväg för att flytta det aktiva fönstret till sista arbetsytan"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Zooma in"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Zooma ut"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Genväg för att öppna fönsteröversikten"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Genväg för att öppna fönsteröversikten för alla fönster"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
