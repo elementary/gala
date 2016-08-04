@@ -56,8 +56,11 @@ namespace Gala
 			screen.window_entered_monitor.connect (window_entered);
 			screen.window_left_monitor.connect (window_left);
 
-			foreach (var window_actor in Compositor.get_window_actors (screen)) {
-				var window = window_actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
+				if (window_actor.is_destroyed ())
+					continue;
+
+				unowned Meta.Window window = window_actor.get_meta_window ();
 				if (window.get_monitor () == monitor) {
 					window_entered (monitor, window);
 				}

@@ -36,9 +36,11 @@ namespace Gala
 
 			instance = new WindowListener ();
 
-			foreach (var actor in Compositor.get_window_actors (screen)) {
-				var window = actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+				if (actor.is_destroyed ())
+					continue;
 
+				unowned Meta.Window window = actor.get_meta_window ();
 				if (window.window_type == WindowType.NORMAL)
 					instance.monitor_window (window);
 			}

@@ -1427,11 +1427,11 @@ namespace Gala
 			var docks = new List<WindowActor> ();
 
 			// collect all windows and put them in the appropriate containers
-			foreach (var actor in Compositor.get_window_actors (screen)) {
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
 				if (actor.is_destroyed ())
 					continue;
 
-				var window = actor.get_meta_window ();
+				unowned Meta.Window window = actor.get_meta_window ();
 
 				if (!window.showing_on_its_workspace () ||
 					(move_primary_only && window.get_monitor () != primary) ||

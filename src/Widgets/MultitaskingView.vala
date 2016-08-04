@@ -504,12 +504,13 @@ namespace Gala
 			dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
 			if (opening) {
-				unowned List<WindowActor> actors = Compositor.get_window_actors (screen);
-
-				foreach (var actor in actors) {
+				foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
 					const int MAX_OFFSET = 100;
 
-					var window = actor.get_meta_window ();
+					if (actor.is_destroyed ())
+						continue;
+
+					unowned Meta.Window window = actor.get_meta_window ();
 					var monitor = window.get_monitor ();
 
 					if (window.window_type != WindowType.DOCK)

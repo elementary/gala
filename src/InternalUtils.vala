@@ -149,8 +149,8 @@ namespace Gala
 
 			new_window.change_workspace_by_index (index, false);
 
-			foreach (var actor in actors) {
-				var window = actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor actor in actors) {
+				unowned Meta.Window window = actor.get_meta_window ();
 				var window_index = window.get_workspace ().index ();
 
 				if (!window.on_all_workspaces

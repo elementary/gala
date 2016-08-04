@@ -430,10 +430,11 @@ namespace Gala
 			window_clones.destroy_all_children ();
 
 			// need to go through all the windows because of hidden dialogs
-			unowned List<WindowActor>? window_actors = Compositor.get_window_actors (screen);
-			foreach (var actor in window_actors) {
-				unowned Window window = actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+				if (actor.is_destroyed ())
+					continue;
 
+				unowned Meta.Window window = actor.get_meta_window ();
 				if (window.get_workspace () == workspace
 					&& window.showing_on_its_workspace ())
 					actor.show ();
@@ -620,8 +621,11 @@ namespace Gala
 				current_window = (WindowIcon) dock.get_child_at_index (0);
 
 			// hide the others
-			foreach (var actor in Compositor.get_window_actors (screen)) {
-				var window = actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+				if (actor.is_destroyed ())
+					continue;
+
+				unowned Meta.Window window = actor.get_meta_window ();
 				var type = window.window_type;
 
 				if (type != WindowType.DOCK

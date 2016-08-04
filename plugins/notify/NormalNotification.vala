@@ -284,9 +284,9 @@ namespace Gala.Plugins.Notify
 
 			// if no default action has been set, we fallback to trying to find a window for the
 			// notification's sender process
-			var window = get_window ();
+			unowned Meta.Window? window = get_window ();
 			if (window != null) {
-				var workspace = window.get_workspace ();
+				unowned Meta.Workspace workspace = window.get_workspace ();
 				var time = screen.get_display ().get_current_time ();
 
 				if (workspace != screen.get_active_workspace ())
@@ -298,13 +298,16 @@ namespace Gala.Plugins.Notify
 			}
 		}
 
-		Window? get_window ()
+		unowned Meta.Window? get_window ()
 		{
 			if (sender_pid == 0)
 				return null;
 
-			foreach (var actor in Compositor.get_window_actors (screen)) {
-				var window = actor.get_meta_window ();
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+				if (actor.is_destroyed ())
+					continue;
+
+				unowned Meta.Window window = actor.get_meta_window ();
 
 				// the windows are sorted by stacking order when returned
 				// from meta_get_window_actors, so we can just pick the first
