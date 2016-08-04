@@ -293,14 +293,6 @@ namespace Gala.Plugins.Notify
 				notification_closed (id, NotificationClosedReason.EXPIRED);
 			}
 
-#if !VALA_0_26
-			// fixes memleaks as described in https://bugzilla.gnome.org/show_bug.cgi?id=698260
-			// valac >= 0.26 already has this fix
-			hints.@foreach ((key, val) => {
-				g_variant_unref (val);
-			});
-#endif
-
 			return id;
 		}
 
