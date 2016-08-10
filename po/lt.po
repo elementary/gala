@@ -7,25 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-07-31 10:51+0000\n"
-"PO-Revision-Date: 2016-08-02 16:42+0000\n"
+"POT-Creation-Date: 2016-08-04 21:27+0000\n"
+"PO-Revision-Date: 2016-08-06 22:40+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-03 05:50+0000\n"
+"X-Launchpad-Export-Date: 2016-08-07 05:28+0000\n"
 "X-Generator: Launchpad (build 18169)\n"
 
-#: ../src/WindowManager.vala:1635
+#: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
 msgstr "Ar vaizdas ekrane atrodo gerai?"
 
-#: ../src/WindowManager.vala:1638
+#: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
 msgstr "Palikti šią konfigūraciją"
 
-#: ../src/WindowManager.vala:1639
+#: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
 msgstr "Atkurti ankstesnę konfigūraciją"
 
@@ -84,36 +84,40 @@ msgstr "Kita"
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+"Atsarginis darbalaukio (desktop) failas, skirtas pranešimams iš pasenusių "
+"programų."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "Viršutinio kairiojo kampo veiksmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Langų apžvalgos išdėstymo algoritmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Pasirinkti algoritmą, skirtą langų parodymui"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "Viršutinio dešiniojo kampo veiksmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "Apatinio kairiojo kampo veiksmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "Apatinio dešiniojo kampo veiksmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"Komanda ar kelios komandos, kurios bus vykdomos karštojo kampo veiksmui "
+"\"tinkinta komanda\" (angl. custom-command)"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -124,10 +128,17 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Jeigu nurodysite vieną komandą, ji bus naudojama kiekvienam karštajam "
+"kampui, kuriam priskirta tinkinta komanda (angl. custom-command). Jeigu "
+"vietoj to naudosite šabloną 'hotcorner-topleft:command;;hotcorner-"
+"bottomright:command', tuomet kiekvienam kampui bus naudojama tam tikra "
+"komanda. Galimi identifikatoriai yra 'hotcorner-[topleft; topright; "
+"bottomleft; bottomright]' po kurių seka \":\", o tuomet komanda. ';;' yra "
+"naudojamas kaip skirtukas tarp komandų apibrėžimų."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Įjungti išklojimą kraštuose, kai langai paleidžiami ekrano kraštuose"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -135,29 +146,38 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Jei įjungta, langų paleidimas vertikaliuose ekrano kraštuose išskleis juos "
+"vertikaliai ir pakeis jų horizontalųjį dydį, kad jie uždengtų pusę "
+"prieinamos srities. Langų paleidimas viršutiniame ekrano krašte išskleis "
+"juos pilnai."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Skydelio pagrindinio meniu veiksmas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
+"Nustato komandą, kurią vykdyti, kai nuspaudžiamas skydelio pagrindinio meniu "
+"klavišų susiejimas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Vietoj statinių darbo sričių, įjungti dinamines darbo sritis"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
+"Vietoj statinio pastovaus darbo sričių skaičiaus, pagal poreikį naudoti "
+"dinamiškai didėjantį ar mažėjantį skaičių"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:15
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
+"Pavadinimai, kurie langų perjungiklyje yra atpažįstami kaip skydelio langai"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:16
 msgid ""
@@ -165,22 +185,25 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Paleidžiant langų perjungiklį, gala pereina per šį sąrašą ir bando rasti "
+"langus, kurie atitiktų pavadinimus. Juos radusi, ji juos paslepia, o užvėrus "
+"perjungiklį, vėl juos parodo."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Susiejimas, skirtas perkelti į pirmą darbo sritį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Susiejimas, skirtas perkelti į paskutinę darbo sritį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Susiejimas, skirtas perkelti esamą langą į pirmą darbo sritį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Susiejimas, skirtas perkelti esamą langą į paskutinę darbo sritį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
@@ -192,27 +215,28 @@ msgstr "Mažinti"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Susiejimas, skirtas atverti langų apžvalgą"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Susiejimas skirtas atverti visų langų apžvalgą"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
 msgstr ""
+"Persijungti į kitą darbo sritį dešinėje arba atgal į pirmą darbo sritį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Perjungti į kitą klaviatūros išdėstymą"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Perjungti į ankstesnį klaviatūros išdėstymą"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Prijungti modalinius dialogus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -220,6 +244,9 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"Kai teigiama, vietoj to, kad modaliniai dialogai turėtų savo atskiras "
+"pavadinimų juostas, jie bus rodomi pridėti prie savo tėvinio lango "
+"pavadinimo juostos ir bus perkeliami kartu su tėviniu langu."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -245,16 +272,16 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "Užtemdyti tėvinius langus, sukuriančius pridėtą modalinį dialogą"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+msgstr "Foninių langų nepermatomumas langų perjungiklyje"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Darbo sričių perjungiklyje naudojamas fono paveikslas"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -270,7 +297,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Išskleidimo/suskleidimo animacijos trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
@@ -286,11 +313,11 @@ msgstr "Darbo srities perjungimo animacijos trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Meniu atvaizdavimo trukmė"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Apibrėžia normalaus sufokusuoto lango šėšėlį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -299,55 +326,81 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"Pirmoji reikšmė yra šešėlio suliejimo spindulys, antroji reikšmė - "
+"viršutinis išblukimas (kuri, dažniausiai, yra -1), trečioji ir ketvirtoji "
+"yra x- ir y-poslinkis, o paskutinė - nepermatomumas. Taigi, [suliejimo-"
+"spindulys, viršutinis-išblukimas, x-poslinkis, y-poslinkis, nepermatomumas] "
+"(angl. [blur-radius, top-fade, x-offset, y-offset, opacity])"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Apibrėžia nesufokusuoto normalaus lango šėšėlį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
-msgstr ""
+msgstr "Žiūrėkite normalus sufokusuotas (angl. normal-focused)"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:46
 msgid "Defines the shadow of a menu"
-msgstr ""
+msgstr "Apibrėžia meniu šėšėlį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:47
 msgid "Defines the shadow of a focused dialog"
-msgstr ""
+msgstr "Apibrėžia sufokusuoto dialogo šėšėlį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:48
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Apibrėžia nesufokusuoto dialogo šėšėlį"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Išjungti visus pranešimus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Įjungti burbulus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Įjungti garsus"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Rodyti praleistus pranešimus pranešimų centre"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Įjungti apvalinto kampo kaukę"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "Kampo spindulys"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Išjungti kampo kauke viso ekrano veiksenoje"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Rodyti kampų kaukes tik pirminiame vaizduoklyje"
+
+#~ msgid "Cancel"
+#~ msgstr "Atsisakyti"
+
+#~ msgid "This will close any open app and turn off your device."
+#~ msgstr "Tai užvers bet kokią atvertą programą ir išjungs jūsų įrenginį."
+
+#~ msgid "Restart"
+#~ msgstr "Paleisti iš naujo"
+
+#~ msgid "Are you sure you want to Shut Down?"
+#~ msgstr "Ar tikrai norite išjungti?"
+
+#~ msgid "Shut Down"
+#~ msgstr "Išjungti"
+
+#~ msgid "Are you sure you want to Log Out?"
+#~ msgstr "Ar tikrai norite atsijungti?"
+
+#~ msgid "Log Out"
+#~ msgstr "Atsijungti"

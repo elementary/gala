@@ -7,26 +7,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-31 10:51+0000\n"
-"PO-Revision-Date: 2016-07-25 14:33+0000\n"
-"Last-Translator: Адмирал АнимЕ <Unknown>\n"
+"POT-Creation-Date: 2016-08-04 21:27+0000\n"
+"PO-Revision-Date: 2016-08-04 20:07+0000\n"
+"Last-Translator: Stanislav <stunito0o0o0@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-01 05:30+0000\n"
+"X-Launchpad-Export-Date: 2016-08-05 05:37+0000\n"
 "X-Generator: Launchpad (build 18169)\n"
 "Language: bg\n"
 
-#: ../src/WindowManager.vala:1635
+#: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
 msgstr "Наред ли е екрана?"
 
-#: ../src/WindowManager.vala:1638
+#: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
 msgstr "Запазване на тези настройки"
 
-#: ../src/WindowManager.vala:1639
+#: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
 msgstr "Възстановяване на предишните настройки"
 
@@ -226,11 +226,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:26
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Превключи към следващата клавиатурна подредба"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:27
 msgid "Cycle to previous keyboard layout"
-msgstr ""
+msgstr "Превключи към предишната клавиатурна подредба"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
@@ -364,11 +364,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Включи звуците"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Покажи пропуснатите известия в центъра на известията"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"

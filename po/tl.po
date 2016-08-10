@@ -7,27 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-07-31 10:51+0000\n"
-"PO-Revision-Date: 2016-07-15 21:48+0000\n"
+"POT-Creation-Date: 2016-08-04 21:27+0000\n"
+"PO-Revision-Date: 2016-08-09 20:38+0000\n"
 "Last-Translator: yavinfour <anjelo.passionist@gmail.com>\n"
 "Language-Team: Tagalog <tl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-01 05:30+0000\n"
+"X-Launchpad-Export-Date: 2016-08-10 05:34+0000\n"
 "X-Generator: Launchpad (build 18169)\n"
 
-#: ../src/WindowManager.vala:1635
+#: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
 msgstr "Mukhang OK ba ang display"
 
-#: ../src/WindowManager.vala:1638
-msgid "Keep This Configuration"
-msgstr ""
-
 #: ../src/WindowManager.vala:1639
+msgid "Keep This Configuration"
+msgstr "Panatilihin ang Configuration na ito"
+
+#: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "Ibalik ang Nakaraang Configuration"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
@@ -51,11 +51,11 @@ msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Ilipat sa Workspace na nasa Kaliwa"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Ilipat sa Workspace na nasa Kanan"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
@@ -63,7 +63,7 @@ msgstr "Isara"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "Tanggalin sa pagmamaximize"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
@@ -71,7 +71,7 @@ msgstr "Palakihin"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr ""
+msgstr "View na Pang-multitasking"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
@@ -87,27 +87,27 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "Aksyon para sa kaliwang itaas na sulok"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Algorithm para sa layout ng window overview"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Piliin ang algorithm na gagamitin para sa pag-eexpose ng mga window"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "Aksyon para kanang itaas na sulok"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "Aksyon para sa ibabang kaliwang sulok"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "Aksyon para sa ibabang kanang sulok"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
@@ -147,7 +147,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Paganahin ang dynamic workspace imbis na static"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
@@ -168,19 +168,19 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Shortcut para pumunta sa unang workspace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Shortcut para pumunta sa huling workspace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Shortcut para ilipat ang kasalukuyang window sa unang workspace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Shortcut para ilipat ang kasalukuyang window sa huling workspace"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
@@ -192,11 +192,12 @@ msgstr "Mag-zoom out"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Shortcut para buksan ang window na pang-overview"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
 msgstr ""
+"Shortcut para buksan ang window na pang-overview para sa lahat ng mga window"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
@@ -247,11 +248,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Background na imaheng ginagamit sa workspace-switcher"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "Paganahin ang mga Animation"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
@@ -261,23 +262,23 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "Kahabaan ng snap animation na ginagamit sa maximize/unmaximize"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "Kahabaan ng close animation"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "Kahabaan ng minimize animation"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Kahabaan ng workspace switch animation"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Kahabaan ng menu mapping animation"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
@@ -313,19 +314,19 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Patayin ang lahat ng mga notification"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Paganahin ang mga bubbles"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Paganahin ang mga tunog"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Ipakita ang mga hindi nakitang notification sa notification center"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
