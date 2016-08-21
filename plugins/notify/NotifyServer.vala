@@ -152,7 +152,8 @@ namespace Gala.Plugins.Notify
 
 			AppInfo? app_info = null;
 
-			if ((variant = hints.lookup ("desktop-entry")) != null) {
+			if ((variant = hints.lookup ("desktop-entry")) != null
+				&& variant.is_of_type (VariantType.STRING)) {
 				string desktop_id = variant.get_string ();
 				if (!desktop_id.has_suffix (".desktop"))
 					desktop_id += ".desktop";
