@@ -149,7 +149,7 @@ AC_SUBST([PLUGIN_LDFLAGS])
 # 3.16
 PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.15], [have_mutter316=yes], [have_mutter316=no])
 if test "x$have_mutter316" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.16.2])
+    PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.16.4])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316"
     MUTTER_API="3.16"
 fi
@@ -157,7 +157,7 @@ fi
 # 3.18
 PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.17], [have_mutter318=yes], [have_mutter318=no])
 if test "x$have_mutter318" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.18.1])
+    PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.18.4])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER318"
     MUTTER_API="3.18"
 fi
@@ -165,7 +165,7 @@ fi
 # 3.20
 PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19], [have_mutter320=yes], [have_mutter320=no])
 if test "x$have_mutter320" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19.1])
+    PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.20.3])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320"
     MUTTER_API="3.20"
 fi
