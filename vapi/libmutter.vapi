@@ -179,7 +179,11 @@ namespace Meta {
 		public static void warning (string format, ...);
 	}
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_backend_get_type ()")]
+#if HAS_MUTTER322
+	public abstract class Backend : GLib.Object, GLib.Initable {
+#else
 	public abstract class Backend : GLib.Object {
+#endif
 		[CCode (has_construct_function = false)]
 		protected Backend ();
 		[CCode (cheader_filename = "meta/meta-backend.h", cname = "meta_get_backend")]
@@ -187,6 +191,9 @@ namespace Meta {
 		public unowned Clutter.Actor get_stage ();
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
+#if HAS_MUTTER322
+		public void set_numlock (bool numlock_state);
+#endif
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
 #if HAS_MUTTER316
@@ -381,6 +388,9 @@ namespace Meta {
 		public Meta.GrabOp get_grab_op ();
 		public uint get_keybinding_action (uint keycode, ulong mask);
 		public uint32 get_last_user_time ();
+#if HAS_MUTTER322
+		public string get_pad_action_label (Clutter.InputDevice pad, Meta.PadActionType action_type, uint action_number);
+#endif
 		public int get_shape_event_base ();
 		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Workspace workspace);
 		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Workspace? workspace);
@@ -392,6 +402,9 @@ namespace Meta {
 		public bool is_pointer_emulating_sequence (Clutter.EventSequence? sequence);
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 		public bool remove_keybinding (string name);
+#if HAS_MUTTER322
+		public void request_pad_osd (Clutter.InputDevice pad, bool edition_mode);
+#endif
 		public void set_input_focus_window (Meta.Window window, bool focus_frame, uint32 timestamp);
 		public GLib.SList<weak Meta.Window> sort_windows_by_stacking (GLib.SList<Meta.Window> windows);
 		public bool supports_extended_barriers ();
@@ -402,11 +415,17 @@ namespace Meta {
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
 		public signal void accelerator_activated (uint object, uint p0, uint p1);
+#if HAS_MUTTER322
+		public signal void gl_video_memory_purged ();
+#endif
 		public signal void grab_op_begin (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void grab_op_end (Meta.Screen object, Meta.Window p0, Meta.GrabOp p1);
 		public signal bool modifiers_accelerator_activated ();
 		public signal void overlay_key ();
 		public signal bool restart ();
+#if HAS_MUTTER322
+		public signal unowned Clutter.Actor? show_pad_osd (Clutter.InputDevice pad, GLib.Settings settings, string layout_path, bool edition_mode, int monitor_idx);
+#endif
 #if HAS_MUTTER316
 		public signal bool show_resize_popup (bool object, Meta.Rectangle p0, int p1, int p2);
 #endif
@@ -458,6 +477,9 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected MonitorManager ();
 		public static unowned Meta.MonitorManager @get ();
+#if HAS_MUTTER322
+		public bool get_is_builtin_display_on ();
+#endif
 		public int get_monitor_for_output (uint id);
 		public signal void confirm_display_change ();
 	}
@@ -805,6 +827,9 @@ namespace Meta {
 		public unowned Clutter.Actor get_texture ();
 		public X.Window get_x_window ();
 		public bool is_destroyed ();
+#if HAS_MUTTER322
+		public void sync_visibility ();
+#endif
 #if !HAS_MUTTER318
 		[NoAccessorMethod]
 		public bool no_shadow { get; set; }
@@ -853,14 +878,14 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/common.h", has_type_id = false)]
 	public struct ButtonLayout {
-		[CCode (array_length = false, array_null_terminated = true)]
-		public weak Meta.ButtonFunction[] left_buttons;
-		[CCode (array_length = false, array_null_terminated = true)]
-		public weak bool[] left_buttons_has_spacer;
-		[CCode (array_length = false, array_null_terminated = true)]
-		public weak Meta.ButtonFunction[] right_buttons;
-		[CCode (array_length = false, array_null_terminated = true)]
-		public weak bool[] right_buttons_has_spacer;
+		[CCode (array_length = false)]
+		public weak Meta.ButtonFunction left_buttons[5];
+		[CCode (array_length = false)]
+		public weak bool left_buttons_has_spacer[5];
+		[CCode (array_length = false)]
+		public weak Meta.ButtonFunction right_buttons[5];
+		[CCode (array_length = false)]
+		public weak bool right_buttons_has_spacer[5];
 	}
 	[CCode (cheader_filename = "meta/boxes.h", has_type_id = false)]
 	public struct Edge {
@@ -1238,6 +1263,14 @@ namespace Meta {
 		DOWN_LEFT,
 		DOWN_RIGHT
 	}
+#if HAS_MUTTER322
+	[CCode (cheader_filename = "meta/display.h", cprefix = "META_PAD_ACTION_", type_id = "meta_pad_action_type_get_type ()")]
+	public enum PadActionType {
+		BUTTON,
+		RING,
+		STRIP
+	}
+#endif
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_PREF_", type_id = "meta_preference_get_type ()")]
 	public enum Preference {
 		MOUSE_BUTTON_MODS,
@@ -1324,7 +1357,9 @@ namespace Meta {
 		NORMAL,
 		TOP,
 		DOCK,
+#if !HAS_MUTTER322
 		FULLSCREEN,
+#endif
 #if !HAS_MUTTER320
 		FOCUSED_WINDOW,
 #endif
@@ -1443,7 +1478,7 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void register_with_session ();
  	[CCode (cheader_filename = "meta/main.h")]
-	public static void restart (string message);
+	public static void restart (string? message);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
 	[CCode (cheader_filename = "meta/main.h")]
