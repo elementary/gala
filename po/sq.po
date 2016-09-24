@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-08-04 21:27+0000\n"
-"PO-Revision-Date: 2015-06-25 18:32+0000\n"
+"POT-Creation-Date: 2016-08-22 14:03+0000\n"
+"PO-Revision-Date: 2016-08-30 09:49+0000\n"
 "Last-Translator: Indrit Bashkimi <indrit.bashkimi@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-05 05:37+0000\n"
-"X-Generator: Launchpad (build 18169)\n"
+"X-Launchpad-Export-Date: 2016-08-31 06:14+0000\n"
+"X-Generator: Launchpad (build 18179)\n"
 
 #: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
@@ -35,7 +35,7 @@ msgstr "Minimizo"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr "Zhvendos"
+msgstr "Lëviz"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
@@ -51,11 +51,11 @@ msgstr "Gjithmonë në hapësirën e dukshme të punës"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr "Zhvendose në hapësirën e punës majtas"
+msgstr "Lëvize në hapësirën e punës majtas"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr "Zhvendose në hapësirën e punës djathtas"
+msgstr "Lëvize në hapësirën e punës djathtas"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
@@ -79,7 +79,7 @@ msgstr "Shfaqi të gjitha dritaret e hapura dhe hapësirat e punës"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Tjetër"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."

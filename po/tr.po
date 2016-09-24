@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-04 21:27+0000\n"
-"PO-Revision-Date: 2016-02-01 01:33+0000\n"
-"Last-Translator: mistrafantastic <mistrafantastic@gmail.com>\n"
+"POT-Creation-Date: 2016-08-22 14:03+0000\n"
+"PO-Revision-Date: 2016-09-19 23:20+0000\n"
+"Last-Translator: Sadık Poyraz <sadikpoyraz01@gmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-05 05:38+0000\n"
-"X-Generator: Launchpad (build 18169)\n"
+"X-Launchpad-Export-Date: 2016-09-20 07:49+0000\n"
+"X-Generator: Launchpad (build 18200)\n"
 "Language: tr\n"
 
 #: ../src/WindowManager.vala:1636
@@ -80,7 +80,7 @@ msgstr "Tüm açık pencereleri ve çalışma alanlarını göster"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Diğer"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -273,7 +273,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Arka plan resmi çalışma alanı değiştiricisinde kullanıldı"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -309,7 +309,7 @@ msgstr "Menü haritalama animasyonu süresi"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Odaklanılmış penceredeki gölge miktarını tanımlar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:43
 msgid ""
@@ -321,7 +321,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:44
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Odaklanılmamış penceredeki gölge miktarını tanımlar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:45
 msgid "See normal-focused"
