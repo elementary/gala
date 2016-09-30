@@ -151,6 +151,9 @@ namespace Gala
 
 			foreach (unowned Meta.WindowActor actor in actors) {
 				unowned Meta.Window window = actor.get_meta_window ();
+				if (actor.is_destroyed ())
+					continue;
+
 				var window_index = window.get_workspace ().index ();
 
 				if (!window.on_all_workspaces
