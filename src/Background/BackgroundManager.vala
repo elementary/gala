@@ -118,6 +118,10 @@ namespace Gala
 			background.set_data<ulong> ("background-loaded-handler", handler);
 		}
 
+		public void set_size (float width, float height) {
+			background_actor.set_size (width, height);
+		}
+
 		Meta.BackgroundActor create_background_actor ()
 		{
 			var background = background_source.get_background (monitor_index);

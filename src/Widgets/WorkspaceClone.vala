@@ -136,8 +136,7 @@ namespace Gala
 
 			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
-			window_container.width = monitor_geometry.width;
-			window_container.height = monitor_geometry.height;
+			window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 			screen.restacked.connect (window_container.restack_windows);
 
 			icon_group = new IconGroup (workspace);
@@ -249,6 +248,14 @@ namespace Gala
 				remove_window (window);
 		}
 
+		void update_size (Meta.Rectangle monitor_geometry)
+		{
+			if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
+				window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+				background.set_size (window_container.width, window_container.height);
+			}
+		}
+
 		/**
 		 * Utility function to shrink a MetaRectangle on all sides for the given amount.
 		 * Negative amounts will scale it instead.
@@ -282,6 +289,9 @@ namespace Gala
 			var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			var scale = (float)(monitor.height - TOP_OFFSET - BOTTOM_OFFSET) / monitor.height;
 			var pivotY = TOP_OFFSET / (monitor.height - monitor.height * scale);
+
+			update_size (monitor);
+
 			background.set_pivot_point (0.5f, pivotY);
 
 			background.save_easing_state ();
