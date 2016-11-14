@@ -7,20 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 14:03+0000\n"
-"PO-Revision-Date: 2014-10-19 14:58+0000\n"
-"Last-Translator: Alfredo Hernández <Unknown>\n"
+"POT-Creation-Date: 2016-09-30 05:18+0000\n"
+"PO-Revision-Date: 2016-11-11 12:12+0000\n"
+"Last-Translator: Davidmp <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-23 05:59+0000\n"
-"X-Generator: Launchpad (build 18176)\n"
+"X-Launchpad-Export-Date: 2016-11-12 06:03+0000\n"
+"X-Generator: Launchpad (build 18255)\n"
 "Language: ca\n"
 
 #: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
-msgstr "Es visualitza correctament la pantalla?"
+msgstr "Es veu correctament la pantalla?"
 
 #: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
@@ -32,19 +32,19 @@ msgstr "Restaura la configuració prèvia"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr ""
+msgstr "Minimitza"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr ""
+msgstr "Mou"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
-msgstr ""
+msgstr "Redimensiona"
 
 #: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
-msgstr ""
+msgstr "Sempre al davant"
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
@@ -52,31 +52,31 @@ msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Mou a l'espai de treball de l'esquerra"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Mou a l'espai de treball de la dreta"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr ""
+msgstr "Tanca"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "Desmaximitza"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr ""
+msgstr "Maximitza"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr "Visualització multitasca"
+msgstr "Vista de multitasca"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr "Visualitza totes les finestres i àrees de treball"
+msgstr "Visualitza totes les finestres obertes i totes les àrees de treball"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
@@ -84,37 +84,39 @@ msgstr ""
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Fitxer alternatiu per a notificacions d'aplicacions antigues."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "Acció per a la cantonada de dalt a l'esquerra"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Algoritme per a la disposició de la vista de finestres"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
-msgstr ""
+msgstr "Trieu l'algoritme que s'ha d'usar per exposar les finestres"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:4
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "Acció per a la cantonada de dalt a la dreta"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:5
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "Acció per a la canotnada de baix a l'esquerra"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:6
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "Acció per a la cantonada de baix a la dreta"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:7
 msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
+"L'ordre que s'executarà per a l'acció de la cantonada activa \"ordre "
+"personalitzada\" o múltiple"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:8
 msgid ""
@@ -129,6 +131,7 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
 msgstr ""
+"Habilita el mosaic quan es deixin anar finestres a les vores de la pantalla"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -139,7 +142,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Acció del menú del plafó principal"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
@@ -148,7 +151,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Habilita l'espai de treball dinàmic en comptes dels estàtics"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""

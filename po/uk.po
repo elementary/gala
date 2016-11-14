@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 14:03+0000\n"
-"PO-Revision-Date: 2016-08-10 18:15+0000\n"
-"Last-Translator: Roman Sytnyk <Unknown>\n"
+"POT-Creation-Date: 2016-09-30 05:18+0000\n"
+"PO-Revision-Date: 2016-10-27 17:17+0000\n"
+"Last-Translator: neiron13 <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-08-23 06:00+0000\n"
-"X-Generator: Launchpad (build 18176)\n"
+"X-Launchpad-Export-Date: 2016-10-28 05:41+0000\n"
+"X-Generator: Launchpad (build 18246)\n"
 "Language: uk\n"
 
 #: ../src/WindowManager.vala:1636
@@ -72,7 +72,7 @@ msgstr "Розгорнути"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr "Багатозадачний вид"
+msgstr "Багатозадачний вигляд"
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
@@ -84,7 +84,7 @@ msgstr "Інше"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Файл замінює стільницю для повідомлень від застарілих додатків."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:1
 msgid "Action for the top left corner"
