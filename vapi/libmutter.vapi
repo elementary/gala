@@ -302,7 +302,7 @@ namespace Meta {
 		public double x;
 		public double y;
 	}
-	[CCode (cheader_filename = "meta/compositor.h")]
+	[CCode (cheader_filename = "meta/compositor.h", has_type_id = false)]
 	[Compact]
 	public class Compositor {
 		public void add_window (Meta.Window window);
@@ -434,11 +434,11 @@ namespace Meta {
 		public signal void window_demands_attention (Meta.Window object);
 		public signal void window_marked_urgent (Meta.Window object);
 	}
-	[CCode (cheader_filename = "meta/common.h")]
+	[CCode (cheader_filename = "meta/common.h", has_type_id = false)]
 	[Compact]
 	public class Frame {
 	}
-	[CCode (cheader_filename = "meta/group.h")]
+	[CCode (cheader_filename = "meta/group.h", has_type_id = false)]
 	[Compact]
 	public class Group {
 		public int get_size ();
@@ -629,7 +629,7 @@ namespace Meta {
 		public bool update_area (int x, int y, int width, int height);
 		public signal void size_changed ();
 	}
-	[CCode (cheader_filename = "meta/theme.h")]
+	[CCode (cheader_filename = "meta/theme.h", has_type_id = false)]
 	[Compact]
 	public class Theme {
 		public void free ();
@@ -681,6 +681,9 @@ namespace Meta {
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
+#if HAS_MUTTER322
+		public unowned string get_flatpak_id ();
+#endif
 		public unowned Meta.Frame get_frame ();
 		public unowned Cairo.Region? get_frame_bounds ();
 		public Meta.Rectangle get_frame_rect ();
