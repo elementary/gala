@@ -18,11 +18,11 @@
 namespace Gala
 {
 	/**
-	 * Creates a new GtkClutterTexture with an icon for the window at the given size.
+	 * Creates a new ClutterTexture with an icon for the window at the given size.
 	 * This is recommended way to grab an icon for a window as this method will make
 	 * sure the icon is updated if it becomes available at a later point.
 	 */
-	public class WindowIcon : GtkClutter.Texture
+	public class WindowIcon : Clutter.Texture
 	{
 		static Bamf.Matcher matcher;
 
@@ -115,7 +115,9 @@ namespace Gala
 			var pixbuf = Gala.Utils.get_icon_for_xid (xid, icon_size, !initial);
 
 			try {
-				set_from_pixbuf (pixbuf);
+				set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
+					pixbuf.get_width (), pixbuf.get_height (),
+					pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
 			} catch (Error e) {}
 		}
 

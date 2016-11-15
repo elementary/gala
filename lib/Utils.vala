@@ -309,22 +309,24 @@ namespace Gala
 		 *
 		 * @return The close button actor
 		 */
-		public static GtkClutter.Texture create_close_button ()
+		public static Clutter.Actor create_close_button ()
 		{
-			var texture = new GtkClutter.Texture ();
+			var texture = new Clutter.Texture ();
 			var pixbuf = get_close_button_pixbuf ();
 
 			texture.reactive = true;
-			texture.set_size (36, 36);
 
 			if (pixbuf != null) {
 				try {
-					texture.set_from_pixbuf (pixbuf);
+					texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
+						pixbuf.get_width (), pixbuf.get_height (),
+						pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
 				} catch (Error e) {}
 			} else {
 				// we'll just make this red so there's at least something as an 
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
+				texture.set_size (36, 36);
 				texture.background_color = { 255, 0, 0, 255 };
 			}
 

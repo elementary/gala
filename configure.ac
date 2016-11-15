@@ -110,10 +110,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  gtk+-3.0 >= $GTK_MIN_VERSION \
                  gdk-x11-3.0 >= $GTK_MIN_VERSION \
                  libbamf3 \
-                 clutter-1.0 >= $CLUTTER_MIN_VERSION \
-                 clutter-gtk-1.0 \
                  granite \
-                 libmutter >= $MUTTER_MIN_VERSION \
                  gee-0.8 \
                  gnome-desktop-3.0 \
                  plank >= $PLANK_MIN_VERSION"
@@ -123,9 +120,6 @@ GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
                       --pkg gtk+-3.0 \
                       --pkg gdk-x11-3.0 \
                       --pkg libbamf3 \
-                      --pkg libmutter \
-                      --pkg clutter-1.0 \
-                      --pkg clutter-gtk-1.0 \
                       --pkg granite \
                       --pkg gee-0.8 \
                       --pkg gdesktopenums-3.0 \
@@ -136,7 +130,10 @@ GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
 VALAFLAGS="--target-glib=2.32"
 VALAFLAGS_CORE="--thread"
 
-PKG_CHECK_MODULES(GALA_CORE, $GALA_CORE_PKGS)
+MUTTER_PKGS="cogl-1.0 clutter-1.0 >= $CLUTTER_MIN_VERSION libmutter >= $MUTTER_MIN_VERSION"
+MUTTER_VALA_PKGS="--pkg cogl-1.0 --pkg clutter-1.0 --pkg libmutter"
+MUTTER_CFLAGS=""
+MUTTER_LDFLAGS=""
 
 # Plugins
 PLUGIN_LDFLAGS="-module -avoid-version"
@@ -170,6 +167,18 @@ if test "x$have_mutter320" = "xyes" ; then
     MUTTER_API="3.20"
 fi
 
+# 3.22
+PKG_CHECK_MODULES(MUTTER322, [libmutter >= 3.21], [have_mutter322=yes], [have_mutter322=no])
+if test "x$have_mutter322" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER322, [libmutter >= 3.22.0])
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER322"
+    MUTTER_CFLAGS="-DCLUTTER_ENABLE_COMPOSITOR_API -DCLUTTER_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_2_0_API"
+    MUTTER_PKGS="mutter-cogl-1.0 mutter-cogl-pango-1.0 mutter-cogl-path-1.0 mutter-clutter-1.0 libmutter >= 3.22"
+    MUTTER_VALA_PKGS="--pkg mutter-cogl-1.0 --pkg mutter-clutter-1.0 --pkg libmutter"
+    MUTTER_API="3.22"
+    MUTTER_LDFLAGS="-R`$PKG_CONFIG --variable=typelibdir libmutter`"
+fi
+
 # Check for newer Plank
 PLANK_PKGS="plank >= 0.10.9"
 PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])
@@ -186,6 +195,15 @@ PKG_CHECK_MODULES(GSD316, [gnome-settings-daemon >= 3.15.2], [have_gsd316=yes], 
 if test "x$have_gsd316" = "xyes" ; then
     VALAFLAGS="$VALAFLAGS --define HAS_GSD316"
 fi
+
+GALA_CORE_PKGS="$GALA_CORE_PKGS $MUTTER_PKGS"
+GALA_CORE_VALA_PKGS="$GALA_CORE_VALA_PKGS $MUTTER_VALA_PKGS"
+CFLAGS="$CFLAGS $MUTTER_CFLAGS"
+LDFLAGS="$LDFLAGS $MUTTER_LDFLAGS"
+
+PKG_CHECK_MODULES(GALA_CORE, $GALA_CORE_PKGS)
+AC_SUBST([MUTTER_PKGS])
+AC_SUBST([MUTTER_CFLAGS])
 
 # -----------------------------------------------------------
 # Dependencies for Notifications plugin

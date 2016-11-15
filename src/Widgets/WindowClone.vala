@@ -122,7 +122,7 @@ namespace Gala
 
 		Actor close_button;
 		Actor active_shape;
-		GtkClutter.Texture window_icon;
+		Actor window_icon;
 
 		public WindowClone (Meta.Window window, bool overview_mode = false)
 		{

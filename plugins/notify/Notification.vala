@@ -43,7 +43,7 @@ namespace Gala.Plugins.Notify
 		public bool being_destroyed { get; private set; default = false; }
 
 		protected bool icon_only { get; protected set; default = false; }
-		protected GtkClutter.Texture icon_texture { get; private set; }
+		protected Clutter.Texture icon_texture { get; private set; }
 		protected Actor icon_container { get; private set; }
 
 		/**
@@ -51,7 +51,7 @@ namespace Gala.Plugins.Notify
 		 */
 		protected bool transitioning { get; private set; default = false; }
 
-		GtkClutter.Texture close_button;
+		Clutter.Actor close_button;
 
 		Gtk.StyleContext style_context;
 
@@ -59,7 +59,7 @@ namespace Gala.Plugins.Notify
 
 		// temporary things needed for the slide transition
 		protected float animation_slide_height { get; private set; }
-		GtkClutter.Texture old_texture;
+		Clutter.Texture old_texture;
 		float _animation_slide_y_offset = 0.0f;
 		public float animation_slide_y_offset {
 			get {
@@ -93,7 +93,7 @@ namespace Gala.Plugins.Notify
 			reactive = true;
 			set_pivot_point (0.5f, 0.5f);
 
-			icon_texture = new GtkClutter.Texture ();
+			icon_texture = new Clutter.Texture ();
 			icon_texture.set_pivot_point (0.5f, 0.5f);
 
 			icon_container = new Actor ();
@@ -240,7 +240,9 @@ namespace Gala.Plugins.Notify
 		{
 			if (icon != null) {
 				try {
-					icon_texture.set_from_pixbuf (icon);
+					icon_texture.set_from_rgb_data (icon.get_pixels (), icon.get_has_alpha (),
+						icon.get_width (), icon.get_height (),
+						icon.get_rowstride (), (icon.get_has_alpha () ? 4 : 3), 0);
 				} catch (Error e) {}
 			}
 
@@ -342,13 +344,17 @@ namespace Gala.Plugins.Notify
 
 			animation_slide_height = slide_height;
 
-			old_texture = new GtkClutter.Texture ();
+			old_texture = new Clutter.Texture ();
 			icon_container.add_child (old_texture);
 			icon_container.set_clip (0, -PADDING, ICON_SIZE, ICON_SIZE + PADDING * 2);
 
-			try {
-				old_texture.set_from_pixbuf (this.icon);
-			} catch (Error e) {}
+			if (icon != null) {
+				try {
+					old_texture.set_from_rgb_data (icon.get_pixels (), icon.get_has_alpha (),
+						icon.get_width (), icon.get_height (),
+						icon.get_rowstride (), (icon.get_has_alpha () ? 4 : 3), 0);
+				} catch (Error e) {}
+			}
 
 			transition = new PropertyTransition ("animation-slide-y-offset");
 			transition.duration = 200;

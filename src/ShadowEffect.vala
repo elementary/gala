@@ -21,14 +21,15 @@ namespace Gala
 {
 	public class ShadowEffect : Effect
 	{
-		private class Shadow : Object
+		private class Shadow
 		{
-			public int users { get; set; default = 1; }
-			public Cogl.Texture texture { get; construct; }
+			public int users;
+			public Cogl.Texture texture;
 
-			public Shadow (Cogl.Texture texture)
+			public Shadow (Cogl.Texture _texture)
 			{
-				Object (texture: texture);
+				texture = _texture;
+				users = 1;
 			}
 		}
 
