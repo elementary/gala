@@ -1082,13 +1082,13 @@ namespace Gala
 
 					mapping.add (actor);
 
-					actor.set_pivot_point (0.5f, 0.0f);
-					actor.set_scale (1.0f, 0.0f);
+					actor.set_pivot_point (0.5f, 0.5f);
+					actor.set_scale (0.9f, 0.9f);
 					actor.opacity = 0;
 
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-					actor.set_easing_duration (250);
+					actor.set_easing_duration (150);
 					actor.set_scale (1.0f, 1.0f);
 					actor.opacity = 255U;
 					actor.restore_easing_state ();
@@ -1165,11 +1165,11 @@ namespace Gala
 				case WindowType.DIALOG:
 					destroying.add (actor);
 
-					actor.set_pivot_point (0.5f, 0.0f);
+					actor.set_pivot_point (0.5f, 0.5f);
 					actor.save_easing_state ();
 					actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-					actor.set_easing_duration (200);
-					actor.set_scale (1.0f, 0.0f);
+					actor.set_easing_duration (100);
+					actor.set_scale (0.9f, 0.9f);
 					actor.opacity = 0U;
 					actor.restore_easing_state ();
 
