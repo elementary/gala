@@ -294,7 +294,7 @@ namespace Gala
 		{
 			if (close_pixbuf == null) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_file (Config.PKGDATADIR + "/close.png");
+					close_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/close.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;

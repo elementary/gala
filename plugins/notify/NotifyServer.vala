@@ -52,6 +52,7 @@ namespace Gala.Plugins.Notify
 		const string FALLBACK_APP_ID = "gala-other";
 
 		static Gdk.RGBA? icon_fg_color = null;
+		static Gdk.Pixbuf? image_mask_pixbuf = null;
 
 		[DBus (visible = false)]
 		public signal void show_notification (Notification notification);
@@ -418,8 +419,15 @@ namespace Gala.Plugins.Notify
 
 				cr.reset_clip ();
 
-				var mask = new Cairo.ImageSurface.from_png (Config.PKGDATADIR + "/image-mask.png");
-				cr.set_source_surface (mask, 0, 0);
+				if (image_mask_pixbuf == null) {
+					try {
+						image_mask_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/image-mask.svg", -1, mask_size, true);
+					} catch (Error e) {
+						warning (e.message);
+					}
+				}
+
+				Gdk.cairo_set_source_pixbuf (cr, image_mask_pixbuf, 0, 0);
 				cr.paint ();
 
 				pixbuf = Gdk.pixbuf_get_from_surface (surface, 0, 0, mask_size, mask_size);

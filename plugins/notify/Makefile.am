@@ -3,7 +3,7 @@ include $(top_srcdir)/Makefile.common
 VAPIDIR = $(top_srcdir)/vapi
 
 imagedir = $(pkgdatadir)
-dist_image_DATA = data/image-mask.png
+dist_image_DATA = data/image-mask.svg
 
 BUILT_SOURCES = libgala_notify_la_vala.stamp
 
