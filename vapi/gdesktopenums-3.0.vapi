@@ -23,6 +23,12 @@ namespace GDesktop {
 		@24H,
 		@12H
 	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_DEVICE_SEND_EVENTS_", has_type_id = false)]
+	public enum DeviceSendEvents {
+		ENABLED,
+		DISABLED,
+		DISABLED_ON_EXTERNAL_MOUSE
+	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_FOCUS_MODE_", has_type_id = false)]
 	public enum FocusMode {
 		CLICK,
@@ -84,6 +90,19 @@ namespace GDesktop {
 		WINDOW,
 		GESTURE
 	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_PAD_BUTTON_ACTION_", has_type_id = false)]
+	public enum PadButtonAction {
+		NONE,
+		HELP,
+		SWITCH_MONITOR,
+		KEYBINDING
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_POINTER_ACCEL_PROFILE_", has_type_id = false)]
+	public enum PointerAccelProfile {
+		DEFAULT,
+		FLAT,
+		ADAPTIVE
+	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_PROXY_MODE_", has_type_id = false)]
 	public enum ProxyMode {
 		NONE,
@@ -95,6 +114,19 @@ namespace GDesktop {
 		BLANK_ONLY,
 		RANDOM,
 		SINGLE
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_STYLUS_BUTTON_ACTION_", has_type_id = false)]
+	public enum StylusButtonAction {
+		DEFAULT,
+		MIDDLE,
+		RIGHT,
+		BACK,
+		FORWARD
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_TABLET_MAPPING_", has_type_id = false)]
+	public enum TabletMapping {
+		ABSOLUTE,
+		RELATIVE
 	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_TITLEBAR_ACTION_", has_type_id = false)]
 	public enum TitlebarAction {
@@ -118,6 +150,19 @@ namespace GDesktop {
 		BOTH_HORIZ,
 		ICONS,
 		TEXT
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_TOUCHPAD_CLICK_METHOD_", has_type_id = false)]
+	public enum TouchpadClickMethod {
+		DEFAULT,
+		NONE,
+		AREAS,
+		FINGERS
+	}
+	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_TOUCHPAD_HANDEDNESS_", has_type_id = false)]
+	public enum TouchpadHandedness {
+		RIGHT,
+		LEFT,
+		MOUSE
 	}
 	[CCode (cheader_filename = "gsettings-desktop-schemas/gdesktop-enums.h", cprefix = "G_DESKTOP_VISUAL_BELL_", has_type_id = false)]
 	public enum VisualBellType {

@@ -4,35 +4,48 @@
 namespace Gnome {
 	namespace DesktopThumbnail {
 		[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h")]
+		[Version (since = "2.2")]
 		public static bool has_uri (Gdk.Pixbuf pixbuf, string uri);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h")]
+		[Version (since = "2.2")]
 		public static bool is_valid (Gdk.Pixbuf pixbuf, string uri, long mtime);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h")]
-		[Deprecated (since = "2.22")]
+		[Version (deprecated = true, deprecated_since = "2.22", since = "2.2")]
 		public static string md5 (string uri);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h")]
+		[Version (since = "2.2")]
 		public static string path_for_uri (string uri, Gnome.DesktopThumbnailSize size);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h")]
+		[Version (since = "2.2")]
 		public static Gdk.Pixbuf scale_down_pixbuf (Gdk.Pixbuf pixbuf, int dest_width, int dest_height);
 	}
 	namespace Languages {
 		[CCode (array_length = false, array_null_terminated = true, cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_all_locales")]
+		[Version (since = "3.8")]
 		public static string[] get_all_locales ();
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_country_from_code")]
+		[Version (since = "3.8")]
 		public static string get_country_from_code (string code, string? translation);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_country_from_locale")]
+		[Version (since = "3.8")]
 		public static string get_country_from_locale (string locale, string? translation);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_input_source_from_locale")]
+		[Version (since = "3.8")]
 		public static bool get_input_source_from_locale (string locale, out unowned string type, out unowned string id);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_language_from_code")]
+		[Version (since = "3.8")]
 		public static string get_language_from_code (string code, string? translation);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_get_language_from_locale")]
+		[Version (since = "3.8")]
 		public static string get_language_from_locale (string locale, string? translation);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_language_has_translations")]
+		[Version (since = "3.8")]
 		public static bool language_has_translations (string code);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_normalize_locale")]
+		[Version (since = "3.8")]
 		public static string normalize_locale (string locale);
 		[CCode (cheader_filename = "libgnome-desktop/gnome-languages.h", cname = "gnome_parse_locale")]
+		[Version (since = "3.8")]
 		public static bool parse_locale (string locale, out string language_codep, out string country_codep, out string codesetp, out string modifierp);
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-bg.h", type_id = "gnome_bg_get_type ()")]
@@ -83,7 +96,7 @@ namespace Gnome {
 		public void get_current_slide (int width, int height, out double progress, out double duration, out bool is_fixed, out unowned string file1, out unowned string file2);
 		public bool get_has_multiple_sizes ();
 		public int get_num_slides ();
-		public bool get_slide (int frame_number, int width, int height, double progress, out double duration, out bool is_fixed, out unowned string file1, out unowned string file2);
+		public bool get_slide (int frame_number, int width, int height, out double progress, out double duration, out bool is_fixed, out unowned string file1, out unowned string file2);
 		public double get_start_time ();
 		public double get_total_duration ();
 		public bool load () throws GLib.Error;
@@ -97,12 +110,19 @@ namespace Gnome {
 	[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h", type_id = "gnome_desktop_thumbnail_factory_get_type ()")]
 	public class DesktopThumbnailFactory : GLib.Object {
 		[CCode (has_construct_function = false)]
+		[Version (since = "2.2")]
 		public DesktopThumbnailFactory (Gnome.DesktopThumbnailSize size);
+		[Version (since = "2.2")]
 		public bool can_thumbnail (string uri, string mime_type, long mtime);
+		[Version (since = "2.2")]
 		public void create_failed_thumbnail (string uri, long mtime);
+		[Version (since = "2.2")]
 		public Gdk.Pixbuf generate_thumbnail (string uri, string mime_type);
+		[Version (since = "2.2")]
 		public bool has_valid_failed_thumbnail (string uri, long mtime);
+		[Version (since = "2.2")]
 		public string lookup (string uri, long mtime);
+		[Version (since = "2.2")]
 		public void save_thumbnail (Gdk.Pixbuf thumbnail, string uri, long original_mtime);
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-idle-monitor.h", type_id = "gnome_idle_monitor_get_type ()")]
@@ -161,8 +181,11 @@ namespace Gnome {
 	[Compact]
 	public class RRMode {
 		public int get_freq ();
+		public double get_freq_f ();
 		public uint get_height ();
 		public uint32 get_id ();
+		public bool get_is_interlaced ();
+		public bool get_is_tiled ();
 		public uint get_width ();
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-rr.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "gnome_rr_output_get_type ()")]
@@ -177,6 +200,7 @@ namespace Gnome {
 		public uint32 get_id ();
 		public void get_ids_from_edid (out string vendor, out string product, out string serial);
 		public bool get_is_primary ();
+		public bool get_is_underscanning ();
 		public int get_min_backlight_step ();
 		public unowned string get_name ();
 		public void get_physical_size (out int width_mm, out int height_mm);
@@ -189,6 +213,7 @@ namespace Gnome {
 		public unowned Gnome.RRMode[] list_modes ();
 		public bool set_backlight (int value) throws GLib.Error;
 		public bool supports_mode (Gnome.RRMode mode);
+		public bool supports_underscanning ();
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-rr-config.h", type_id = "gnome_rr_output_info_get_type ()")]
 	public class RROutputInfo : GLib.Object {
@@ -205,21 +230,23 @@ namespace Gnome {
 		public int get_refresh_rate ();
 		public Gnome.RRRotation get_rotation ();
 		public unowned string get_serial ();
+		public bool get_underscanning ();
 		public unowned string get_vendor ();
 		public bool is_active ();
 		public bool is_connected ();
+		public bool is_primary_tile ();
 		public void set_active (bool active);
 		public void set_geometry (int x, int y, int width, int height);
 		public void set_primary (bool primary);
 		public void set_refresh_rate (int rate);
 		public void set_rotation (Gnome.RRRotation rotation);
+		public void set_underscanning (bool underscanning);
 		public bool supports_rotation (Gnome.RRRotation rotation);
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-rr.h", type_id = "gnome_rr_screen_get_type ()")]
 	public class RRScreen : GLib.Object, GLib.AsyncInitable, GLib.Initable {
 		[CCode (has_construct_function = false)]
 		public RRScreen (Gdk.Screen screen) throws GLib.Error;
-		public Gnome.RRMode create_clone_modes ();
 		[CCode (cname = "gnome_rr_screen_new_async", has_construct_function = false)]
 		public async RRScreen.from_async (Gdk.Screen screen) throws GLib.Error;
 		public unowned Gnome.RRCrtc get_crtc_by_id (uint32 id);
@@ -237,6 +264,8 @@ namespace Gnome {
 		public unowned Gnome.RROutput[] list_outputs ();
 		public bool refresh () throws GLib.Error;
 		public bool set_dpms_mode (Gnome.RRDpmsMode mode) throws GLib.Error;
+		[NoAccessorMethod]
+		public Gnome.RRDpmsModeType dpms_mode { get; set; }
 		[NoAccessorMethod]
 		public Gdk.Screen gdk_screen { owned get; construct; }
 		public virtual signal void changed ();
@@ -259,13 +288,23 @@ namespace Gnome {
 	public class XkbInfo : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public XkbInfo ();
+		[Version (since = "3.8")]
 		public unowned string description_for_group (string group_id);
+		[Version (since = "3.6")]
 		public unowned string description_for_option (string group_id, string id);
+		[Version (since = "3.6")]
 		public GLib.List<weak string> get_all_layouts ();
+		[Version (since = "3.6")]
 		public GLib.List<weak string> get_all_option_groups ();
+		[Version (since = "3.18")]
+		public GLib.List<weak string> get_languages_for_layout (string layout_id);
+		[Version (since = "3.6")]
 		public bool get_layout_info (string id, out unowned string display_name, out unowned string short_name, out unowned string xkb_layout, out unowned string xkb_variant);
+		[Version (since = "3.8")]
 		public GLib.List<weak string> get_layouts_for_country (string country_code);
+		[Version (since = "3.8")]
 		public GLib.List<weak string> get_layouts_for_language (string language_code);
+		[Version (since = "3.6")]
 		public GLib.List<weak string> get_options_for_group (string group_id);
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-desktop-thumbnail.h", cprefix = "GNOME_DESKTOP_THUMBNAIL_SIZE_", has_type_id = false)]
@@ -279,7 +318,14 @@ namespace Gnome {
 		STANDBY,
 		SUSPEND,
 		OFF,
-		DISABLED,
+		UNKNOWN
+	}
+	[CCode (cheader_filename = "libgnome-desktop/gnome-rr.h", cprefix = "GNOME_RR_DPMS_", type_id = "gnome_rr_dpms_mode_get_type ()")]
+	public enum RRDpmsModeType {
+		ON,
+		STANDBY,
+		SUSPEND,
+		OFF,
 		UNKNOWN
 	}
 	[CCode (cheader_filename = "libgnome-desktop/gnome-rr.h", cprefix = "GNOME_RR_", has_type_id = false)]
