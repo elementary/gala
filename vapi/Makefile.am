@@ -1,5 +1,6 @@
 VAPIS = \
 	cogl-fixes.vapi \
+	compat.vapi \
 	config.vapi \
 	libbamf3.vapi \
 	gdesktopenums-3.0.vapi \
