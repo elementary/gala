@@ -39,6 +39,16 @@ namespace Gala
 				},
 				() => {},
 				() => warning ("Could not acquire name\n") );
+
+			Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
+				(connection) => {
+					try {
+						connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm));
+						connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
+					} catch (Error e) { warning (e.message); }
+				},
+				() => {},
+				() => critical ("Could not acquire name") );
 		}
 
 		private DBus ()

@@ -27,24 +27,14 @@ namespace Gala
 	public class DBusAccelerator
 	{
 		static DBusAccelerator? instance;
-		static WindowManager wm;
-
+		
 		[DBus (visible = false)]
-		public static void init (WindowManager _wm)
+		public static unowned DBusAccelerator init (WindowManager wm)
 		{
-			wm = _wm;
+			if (instance == null)
+				instance = new DBusAccelerator (wm);
 
-			Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
-				(connection) => {
-					if (instance == null)
-						instance = new DBusAccelerator ();
-
-					try {
-						connection.register_object ("/org/gnome/Shell", instance);
-					} catch (Error e) { warning (e.message); }
-				},
-				() => {},
-				() => critical ("Could not acquire name") );
+			return instance;
 		}
 
 #if HAS_GSD316
@@ -53,10 +43,12 @@ namespace Gala
 		public signal void accelerator_activated (uint action, uint device_id, uint timestamp);
 #endif
 
+		WindowManager wm;
 		HashTable<string, uint?> grabbed_accelerators;
 
-		DBusAccelerator ()
+		DBusAccelerator (WindowManager _wm)
 		{
+			wm = _wm;
 			grabbed_accelerators = new HashTable<string, uint> (str_hash, str_equal);
 
 			wm.get_screen ().get_display ().accelerator_activated.connect (on_accelerator_activated);

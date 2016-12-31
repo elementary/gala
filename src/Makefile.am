@@ -41,6 +41,7 @@ gala_VALASOURCES = \
 	MediaFeedback.vala \
 	PluginManager.vala \
 	ScreenSaver.vala \
+	ScreenshotManager.vala \
 	Settings.vala \
 	ShadowEffect.vala \
 	TextShadowEffect.vala \
