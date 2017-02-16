@@ -49,6 +49,11 @@ namespace Gala
 				},
 				() => {},
 				() => critical ("Could not acquire name") );
+
+			Bus.own_name (BusType.SESSION, "org.gnome.Shell.Screenshot", BusNameOwnerFlags.REPLACE,
+				() => {},
+				() => {},
+				() => critical ("Could not acquire name") );
 		}
 
 		private DBus ()
