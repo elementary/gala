@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2016-11-19 11:17+0000\n"
-"PO-Revision-Date: 2014-08-02 17:41+0000\n"
-"Last-Translator: Jim Spentzos <Unknown>\n"
+"POT-Creation-Date: 2017-01-05 14:05+0000\n"
+"PO-Revision-Date: 2017-02-05 13:19+0000\n"
+"Last-Translator: Christos Iatropoulos <Unknown>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-11-20 06:22+0000\n"
-"X-Generator: Launchpad (build 18269)\n"
+"X-Launchpad-Export-Date: 2017-02-06 06:03+0000\n"
+"X-Generator: Launchpad (build 18322)\n"
 
 #: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
@@ -23,19 +23,19 @@ msgstr "Φαίνεται εντάξει η οθόνη;"
 
 #: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
-msgstr "Διατήρηση Αυτής της Ρύθμισης"
+msgstr "Διατήρηση αυτής της ρύθμισης"
 
 #: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
-msgstr "Επαναφορά στην Προηγούμενη Ρύθμιση"
+msgstr "Επαναφορά της προηγούμενης ρύθμισης"
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr ""
+msgstr "Ελαχιστοποίηση"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr ""
+msgstr "Μετακίνηση"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
@@ -43,23 +43,23 @@ msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
-msgstr ""
+msgstr "Πάντα στη κορυφή"
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Πάντα σε ορατό χώρο εργασίας"
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Μετακίνηση στα αριστερά του χώρου εργασίας"
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Μετακίνηση στα δεξιά του χώρου εργασίας"
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr ""
+msgstr "Κλείσιμο"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr ""
+msgstr "Μεγιστοποίηση"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
@@ -75,7 +75,7 @@ msgstr ""
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "Προβολή όλων των ανοικτών παραθύρων και χώρων εργασίας"
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
@@ -91,7 +91,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:2
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Αλγόριθμος για τη διάταξη επισκόπησης παραθύρου"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:3
 msgid "Choose the algorithm used for exposing the windows"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Ενεργοποίηση δυναμικών χώρων εργασίας αντί στατικών"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:14
 msgid ""
@@ -168,35 +168,39 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:17
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Συντόμευση για μετακίνηση στον πρώτο χώρο εργασίας"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:18
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Συντόμευση για μετακίνηση στον τελευταίο χώρο εργασίας"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:19
 msgid "Shortcut to move the current window to first workspace"
 msgstr ""
+"Συντόμευση για μετακίνηση του τρέχοντος παραθύρου στον πρώτο χώρο εργασίας"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:20
 msgid "Shortcut to move the current window to last workspace"
 msgstr ""
+"Συντόμευση για μετακίνηση του τρέχοντος παράθυρου στον τελευταίο χώρο "
+"εργασίας"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Μεγέθυνση"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Σμίκρυνση"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Συντόμευση για το άνοιγμα της επισκόπησης παραθύρων"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:24
 msgid "Shortcut to open the window overview for all windows"
 msgstr ""
+"Συντόμευση για το άνοιγμα της επισκόπησης παραθύρων για όλα τα παράθυρα"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:25
 msgid "Cycle to the next workspace to the right or to back to the first"
@@ -223,7 +227,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Διάταξη των κουμπιών στην μπάρα τίτλου"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -313,7 +317,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:49
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Απενεργοποίηση όλων των ειδοποιήσεων"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:50
 msgid "Enable bubbles"
@@ -321,11 +325,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:51
 msgid "Enable sounds"
-msgstr ""
+msgstr "Ενεργοποίηση ήχων"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Εμφάνιση χαμένων ειδοποιήσεων στο κέντρο ειδοποιήσεων"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
@@ -333,7 +337,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "Ακτίνα γωνίας"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"

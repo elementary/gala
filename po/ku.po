@@ -1,86 +1,85 @@
-# Hungarian translation for noise
-# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
-# This file is distributed under the same license as the noise package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+# Kurdish translation for gala
+# Copyright (c) 2017 Rosetta Contributors and Canonical Ltd 2017
+# This file is distributed under the same license as the gala package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: noise\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: gala\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-01-05 14:05+0000\n"
-"PO-Revision-Date: 2015-08-25 17:05+0000\n"
-"Last-Translator: Breznyik Péter <pbreznyik@gmail.com>\n"
-"Language-Team: Hungarian <hu@li.org>\n"
+"PO-Revision-Date: 2017-02-09 12:06+0000\n"
+"Last-Translator: Rokar <Unknown>\n"
+"Language-Team: Kurdish <ku@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-01-06 06:09+0000\n"
-"X-Generator: Launchpad (build 18302)\n"
-"Language: hu\n"
+"X-Launchpad-Export-Date: 2017-02-10 05:42+0000\n"
+"X-Generator: Launchpad (build 18326)\n"
 
 #: ../src/WindowManager.vala:1636
 msgid "Does the display look OK?"
-msgstr "Megfelelően jelenik meg a kép?"
+msgstr ""
 
 #: ../src/WindowManager.vala:1639
 msgid "Keep This Configuration"
-msgstr "Beállítások megtartása"
+msgstr ""
 
 #: ../src/WindowManager.vala:1640
 msgid "Restore Previous Configuration"
-msgstr "Az előző beállítások visszaállítása"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:56
 msgid "Minimize"
-msgstr "Minimalizálás"
+msgstr "Biçûk bike"
 
 #: ../src/Widgets/WindowMenu.vala:71
 msgid "Move"
-msgstr "Áthelyezés"
+msgstr "Guhestin"
 
 #: ../src/Widgets/WindowMenu.vala:78
 msgid "Resize"
-msgstr "Átméretezés"
+msgstr "Mezinahîyê biguherîne"
 
 #: ../src/Widgets/WindowMenu.vala:85
 msgid "Always on Top"
-msgstr "Mindig felül"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr "Mindig a látható munkaterületen"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
-msgstr "Mozgatás a bal oldali munkaterületre"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:111
 msgid "Move to Workspace Right"
-msgstr "Mozgatás a jobb oldali munkaterületre"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:119
 msgid "Close"
-msgstr "Bezárás"
+msgstr "Bigire"
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr "Eredeti méret"
+msgstr ""
 
 #: ../src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
-msgstr "Teljes méret"
+msgstr "Mezintirîn"
 
 #: ../data/gala-multitaskingview.desktop.in.h:1
 msgid "Multitasking View"
-msgstr "Többfeladatos nézet"
+msgstr ""
 
 #: ../data/gala-multitaskingview.desktop.in.h:2
 msgid "View all open windows and workspaces"
-msgstr "Az összes nyitott ablak és munkaterület mutatása"
+msgstr ""
 
 #: ../data/gala-other.desktop.in.h:1
 msgid "Other"
-msgstr ""
+msgstr "Wekî Din"
 
 #: ../data/gala-other.desktop.in.h:2
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -185,11 +184,11 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:21
 msgid "Zoom in"
-msgstr ""
+msgstr "Nêzîk bike"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:22
 msgid "Zoom out"
-msgstr ""
+msgstr "Dûr bike"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:23
 msgid "Shortcut to open the window overview"
@@ -224,7 +223,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
-msgstr ""
+msgstr "Pergala bişkokên ku di darikê sernavan de ye"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:31
 msgid ""
@@ -252,13 +251,15 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
-msgstr ""
+msgstr "Derbasbariya dîmenên livkar"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:36
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Heke xebitandina wêneyên livkar pêwist be. Nişe: Ev mifteya giştî ye, rewşa "
+"gerînendeyê paceyê, panelê hwd diguherîne."
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -343,25 +344,3 @@ msgstr ""
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
 msgstr ""
-
-#~ msgid "Cancel"
-#~ msgstr "Mégsem"
-
-#~ msgid "This will close any open app and turn off your device."
-#~ msgstr ""
-#~ "Ez ki fog lépni minden megnyitott alkalmazásból, és kikapcsolja készülékét."
-
-#~ msgid "Restart"
-#~ msgstr "Újraindítás"
-
-#~ msgid "Are you sure you want to Shut Down?"
-#~ msgstr "Biztos, hogy le akarja állítani a gépet?"
-
-#~ msgid "Shut Down"
-#~ msgstr "Leállítás"
-
-#~ msgid "Are you sure you want to Log Out?"
-#~ msgstr "Biztos, hogy ki akar jelentkezni?"
-
-#~ msgid "Log Out"
-#~ msgstr "Kijelentkezés"

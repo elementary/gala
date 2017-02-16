@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-19 11:17+0000\n"
-"PO-Revision-Date: 2016-11-08 06:47+0000\n"
-"Last-Translator: masashi tanimura <Unknown>\n"
+"POT-Creation-Date: 2017-01-05 14:05+0000\n"
+"PO-Revision-Date: 2017-01-25 10:20+0000\n"
+"Last-Translator: Ryo Nakano <Unknown>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-11-20 06:22+0000\n"
-"X-Generator: Launchpad (build 18269)\n"
+"X-Launchpad-Export-Date: 2017-01-26 06:15+0000\n"
+"X-Generator: Launchpad (build 18315)\n"
 "Language: ja\n"
 
 #: ../src/WindowManager.vala:1636
@@ -128,7 +128,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:9
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "ウィンドウをスクリーンの端にドロップしたときに整列させる"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:10
 msgid ""
@@ -136,6 +136,8 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"この機能を有効にした場合、スクリーンの横端にウィンドウをドロップした時にウィンドウを垂直方向に最大化し、利用可能な場所の半分を埋めるように水平方向にリサイ"
+"ズします。ウィンドウをスクリーンの上端にドロップしたときにウィンドウを最大化します。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:11
 msgid "Panel main menu action"
@@ -144,7 +146,7 @@ msgstr "パネルにあるメインメニューの動作"
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:12
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr ""
+msgstr "パネルメインメニューの割り当てキーが押されたときに実行するコマンドを設定する"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:13
 msgid "Enable dynamic workspace instead of static ones"
@@ -213,7 +215,7 @@ msgstr "前のキーボードレイアウトに変更する"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:28
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "モーダル表示のダイアログを親ウィンドウにくっつける"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:29
 msgid ""
@@ -221,6 +223,8 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"この機能が有効の時、独立したタイトルバーの代わりに、親ウィンドウのタイトルバーにくっついたモーダル表示のダイアログが表示され、親ウィンドウと一緒に移動させ"
+"られます。"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:30
 msgid "Arrangement of buttons on the titlebar"
@@ -243,7 +247,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:32
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "モーダル表示のダイアログを持つ親ウィンドウを薄暗くさせる"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:33
 msgid ""
@@ -252,7 +256,7 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:34
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "ワークスペース スイッチャーで使用される背景"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:35
 msgid "Enable Animations"
@@ -267,23 +271,23 @@ msgstr ""
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:37
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+msgstr "最大化・最大化からの復元時に使われるスナップ アニメーションの長さ"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:38
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "閉じる時のアニメーションの長さ"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:39
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "最小化時のアニメーションの長さ"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:40
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "ワークスペースの切り替え時のアニメーションの長さ"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:41
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "メニュー マッピングのアニメーションの長さ"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:42
 msgid "Defines the shadow of normal focused windows"
@@ -331,23 +335,23 @@ msgstr "サウンドを有効にする"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:52
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "通知センターで見損なった通知を見る"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:53
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "丸い角を隠す"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:54
 msgid "Corner radius"
-msgstr ""
+msgstr "四隅の丸み付け"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:55
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "フルスクリーン時に角を隠さない"
 
 #: ../data/org.pantheon.desktop.gala.gschema.xml.in.in.h:56
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "現在のモニターのみで角を隠す"
 
 #~ msgid "Cancel"
 #~ msgstr "キャンセル"
