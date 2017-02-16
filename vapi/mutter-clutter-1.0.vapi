@@ -7330,7 +7330,7 @@ namespace Clutter {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		[Version (since = "0.8")]
 		public Stage ();
-		public bool capture (bool paint, Cairo.RectangleInt rect, Clutter.Capture captures, int n_captures);
+		public bool capture (bool paint, Cairo.RectangleInt rect, out Clutter.Capture[] captures);
 		[CCode (cname = "clutter_stage_event")]
 		[Version (since = "0.4")]
 		public bool emit_event (Clutter.Event event);
@@ -8361,9 +8361,9 @@ namespace Clutter {
 		public bool prev (out unowned Clutter.Actor child);
 		public void remove ();
 	}
-	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	[CCode (cheader_filename = "clutter/clutter.h", has_destroy_function = false, has_type_id = false)]
 	public struct Capture {
-		public weak Cairo.Surface image;
+		public Cairo.ImageSurface image;
 		public Cairo.RectangleInt rect;
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "CLUTTER_TYPE_COLOR")]

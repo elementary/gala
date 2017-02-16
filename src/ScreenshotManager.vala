@@ -114,18 +114,54 @@ namespace Gala
 			}
 		}
 
-		static Cairo.ImageSurface take_screenshot (int x, int y, int width, int height)
+		Cairo.ImageSurface take_screenshot (int x, int y, int width, int height)
 		{
+			Cairo.ImageSurface image;
+#if HAS_MUTTER322
+			Clutter.Capture[] captures;
+			wm.stage.capture (false, {x, y, width, height}, out captures);
+
+			if (captures.length == 0)
+				image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+			else if (captures.length == 1)
+				image = captures[0].image;
+			else
+				image = composite_capture_images (captures, x, y, width, height);
+#else
 			unowned Clutter.Backend backend = Clutter.get_default_backend ();
 			unowned Cogl.Context context = Clutter.backend_get_cogl_context (backend);
 
-			var image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+			image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
 			var bitmap = Cogl.bitmap_new_for_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE, image.get_stride (), image.get_data ());
 			Cogl.framebuffer_read_pixels_into_bitmap (Cogl.get_draw_framebuffer (), x, y, Cogl.ReadPixelsFlags.BUFFER, bitmap);
 			image.mark_dirty ();
+#endif
 
 			return image;
 		}
 
+#if HAS_MUTTER322
+		Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height)
+		{
+			var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
+			var cr = new Cairo.Context (image);
+
+			foreach (unowned Clutter.Capture capture in captures) {
+				// Ignore capture regions with scale other than 1 for now; mutter can't
+				// produce them yet, so there is no way to test them.
+				double capture_scale = 1.0;
+				capture.image.get_device_scale (out capture_scale, null);
+				if (capture_scale != 1.0)
+					continue;
+
+				cr.save ();
+				cr.translate (capture.rect.x - x, capture.rect.y - y);
+				cr.set_source_surface (capture.image, 0, 0);
+				cr.restore ();
+			}
+
+			return image;
+		}
+#endif
 	}
 }
