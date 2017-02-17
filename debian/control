@@ -69,8 +69,7 @@ Description: Library to build plugins for Pantheon Window Manager
 Package: libgala-dev
 Architecture: any
 Section: libdevel
-Depends: libclutter-gtk-1.0-dev,
-         libgala0 (= ${binary:Version}),
+Depends: libgala0 (= ${binary:Version}),
          libgdk-pixbuf2.0-dev,
          libglib2.0-dev (>= 2.32),
          libmutter-dev (>= 3.14.4),
