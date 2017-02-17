@@ -51,6 +51,13 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 
+GETTEXT_PACKAGE=AC_PACKAGE_NAME
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
+
+AM_GNU_GETTEXT_VERSION([0.19.6])
+AM_GNU_GETTEXT([external])
+
 LT_PREREQ([2.2.6])
 LT_INIT([disable-static])
 PKG_PROG_PKG_CONFIG([0.21])
@@ -278,17 +285,6 @@ AM_CONDITIONAL([HAVE_VALADOC], [test "x$have_valadoc" = "xyes"])
 if test "x$enable_docs" = "xyes" -a "x$have_valadoc" != "xyes"; then
     AC_MSG_ERROR([Doc building requested but valadoc not installed.])
 fi
-
-
-# -----------------------------------------------------------
-# Gettext
-# -----------------------------------------------------------
-GETTEXT_PACKAGE=AC_PACKAGE_NAME
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
-
-AM_GNU_GETTEXT_VERSION([0.19.6])
-AM_GNU_GETTEXT([external])
 
 # -----------------------------------------------------------
 # Final output
