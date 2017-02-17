@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-_Name=Multitasking View
-_Comment=View all open windows and workspaces
+Name=Multitasking View
+Comment=View all open windows and workspaces
 GenericName=Multitasking View
 Icon=multitasking-view
 Terminal=false

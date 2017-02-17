@@ -1,3 +1,4 @@
+ABOUT-NLS
 aclocal.m4
 autom4te.cache
 /build-aux/*
@@ -7,9 +8,6 @@ config.h.in
 config.log
 config.status
 configure
-intltool-extract.in
-intltool-merge.in
-intltool-update.in
 libtool
 m4
 mkinstalldirs
@@ -37,9 +35,13 @@ docs/gala
 docs/libgala
 lib/gala.vapi
 po/*.gmo
-po/.intltool-merge-cache
+po/*.header
+po/*.sed
+po/*.sin
 po/Makefile.in.in
+po/Makevars.template
 po/POTFILES
-po/stamp-it
+po/Rules-quot
+po/stamp-po
 src/gala
 build

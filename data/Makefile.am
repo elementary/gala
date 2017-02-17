@@ -8,11 +8,11 @@ styles_DATA = gala.css texture.png close.svg
 applicationsdir = $(datadir)/applications
 applications_DATA = gala.desktop gala-wayland.desktop gala-other.desktop gala-multitaskingview.desktop
 
-@INTLTOOL_DESKTOP_RULE@
-
 gsettings_SCHEMAS = org.pantheon.desktop.gala.gschema.xml
 
-@INTLTOOL_XML_NOMERGE_RULE@
+%.gschema.xml: %.gschema.xml.in Makefile
+	$(AM_V_GEN) sed -e 's|@GETTEXT_PACKAGE[@]|$(GETTEXT_PACKAGE)|g' \
+	$< > $@ || rm $@
 
 @GSETTINGS_RULES@
 
@@ -20,6 +20,12 @@ gschemas.compiled: Makefile $(gsettings_SCHEMAS:.xml=.valid)
 	$(AM_V_GEN) $(GLIB_COMPILE_SCHEMAS) --targetdir=$(builddir) $(builddir)
 
 all-local: gschemas.compiled
+
+%.desktop: %.desktop.in
+	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
+
+%.appdata.xml: %.appdata.xml.in
+	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 EXTRA_DIST = \
 	gala.css \
@@ -29,7 +35,7 @@ EXTRA_DIST = \
 	gala-multitaskingview.desktop.in \
 	texture.png \
 	close.svg \
-	org.pantheon.desktop.gala.gschema.xml.in.in \
+	org.pantheon.desktop.gala.gschema.xml.in \
 	$(NULL)
 
 CLEANFILES = \
@@ -37,6 +43,5 @@ CLEANFILES = \
 	gala-multitaskingview.desktop \
 	gschemas.compiled \
 	org.pantheon.desktop.gala.gschema.xml \
-	org.pantheon.desktop.gala.gschema.xml.in \
 	$(NULL)
 

@@ -286,8 +286,9 @@ fi
 GETTEXT_PACKAGE=AC_PACKAGE_NAME
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define the gettext package to be used])
-IT_PROG_INTLTOOL([0.35.0])
 
+AM_GNU_GETTEXT_VERSION([0.19.6])
+AM_GNU_GETTEXT([external])
 
 # -----------------------------------------------------------
 # Final output
@@ -299,7 +300,6 @@ lib/Makefile
 lib/gala.pc
 docs/Makefile
 data/Makefile
-data/org.pantheon.desktop.gala.gschema.xml.in
 data/icons/Makefile
 vapi/Makefile
 plugins/Makefile
