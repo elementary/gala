@@ -51,7 +51,7 @@ namespace Gala
 		construct
 		{
 			background = new Meta.Background (screen);
-			background.set_data<Background> ("delegate", this);
+			background.set_data<unowned Background> ("delegate", this);
 
 			file_watches = new Gee.HashMap<string,ulong> ();
 			cancellable = new Cancellable ();

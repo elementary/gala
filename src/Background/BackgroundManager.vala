@@ -101,7 +101,7 @@ namespace Gala
 			new_background_actor.brightness = background_actor.brightness;
 			new_background_actor.visible = background_actor.visible;
 
-			var background = new_background_actor.background.get_data<Background> ("delegate");
+			var background = new_background_actor.background.get_data<unowned Background> ("delegate");
 
 			if (background.is_loaded) {
 				swap_background_actor ();
