@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gala 0.3.0.559\n"
+"Project-Id-Version: gala 0.3.0.565\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gala\n"
-"POT-Creation-Date: 2017-02-17 14:00+0100\n"
+"POT-Creation-Date: 2017-02-20 08:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,6 +80,14 @@ msgstr ""
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
+msgstr ""
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr ""
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 
 #: data/gala-other.desktop.in:6

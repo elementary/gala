@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-_Name=Other
-_Comment=Fallback desktop file for notifications from outdated applications.
+Name=Other
+Comment=Fallback desktop file for notifications from outdated applications.
 Icon=applications-other
 NoDisplay=true
 X-GNOME-UsesNotifications=true
