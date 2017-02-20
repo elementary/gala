@@ -22,7 +22,9 @@ gschemas.compiled: Makefile $(gsettings_SCHEMAS:.xml=.valid)
 all-local: gschemas.compiled
 
 %.desktop: %.desktop.in
-	$(AM_V_GEN)$(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
+	$(AM_V_GEN)$(MSGFMT) --desktop --keyword= --keyword=Name \
+		--keyword=GenericName --keyword=Comment --keyword=Keywords \
+		--template $< -d $(top_srcdir)/po -o $@
 
 %.appdata.xml: %.appdata.xml.in
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
