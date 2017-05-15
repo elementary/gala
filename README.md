@@ -1,5 +1,7 @@
 # Gala
 
+A window & compositing manager based on libmutter and designed by elementary for use with Pantheon.
+
 ## Building, Testing, and Installation
 
 You'll need the following dependencies:
