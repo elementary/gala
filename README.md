@@ -4,7 +4,6 @@
 
 You'll need the following dependencies:
 * gettext (>= 0.19.6)
-* gnome-common
 * gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
 * libbamf3-dev
