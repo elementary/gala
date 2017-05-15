@@ -5,6 +5,7 @@ A window & compositing manager based on libmutter and designed by elementary for
 ## Building, Testing, and Installation
 
 You'll need the following dependencies:
+* automake
 * gettext (>= 0.19.6)
 * gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
