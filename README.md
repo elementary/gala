@@ -6,6 +6,7 @@ A window & compositing manager based on libmutter and designed by elementary for
 
 You'll need the following dependencies:
 * automake
+* autopoint
 * gettext (>= 0.19.6)
 * gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
@@ -20,6 +21,7 @@ You'll need the following dependencies:
 * libgtk-3-dev (>= 3.4.0)
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)
+* libtool
 * valac (>= 0.28.0)
 
 Run `autogen.sh` to configure the build environment and then `make` to build
