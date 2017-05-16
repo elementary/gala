@@ -24,7 +24,7 @@ m4_define([gala_full_version],
 
 # Extend version with bzr revision for non-release builds
 m4_define([gala_version], m4_if(gala_released, [1],
-          [gala_full_version], [m4_esyscmd([build-aux/bzr-version-gen gala_full_version])]))
+          [gala_full_version], [m4_esyscmd([build-aux/git-version-gen --prefix "" --fallback gala_full_version $srcdir/.tarball-version])]))
 m4_define([gala_major_minor_version], gala_major_version.gala_minor_version)
 m4_define([gala_module_version], gala_lt_current)
 
