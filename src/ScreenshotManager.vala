@@ -59,8 +59,7 @@ namespace Gala
 			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
 			flash_actor.set_opacity (0);
 
-			var top_window_group = wm.top_window_group;
-			top_window_group.add (flash_actor);
+			wm.top_window_group.add (flash_actor);
 
 			flash_actor.add_transition ("flash", transition);
 		}
