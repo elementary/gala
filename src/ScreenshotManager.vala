@@ -40,7 +40,29 @@ namespace Gala
 
 		public void flash_area (int x, int y, int width, int height)
 		{
-			warning ("FlashArea not implemented");
+			debug ("Flashing area");
+
+			double[] keyframes = { 0.3f, 0.8f };
+			GLib.Value[] values = { 255U, 0U };
+
+			var transition = new Clutter.KeyframeTransition ("opacity");
+			transition.duration = 200;
+			transition.remove_on_complete = true;
+			transition.progress_mode = Clutter.AnimationMode.LINEAR;
+			transition.set_key_frames (keyframes);
+			transition.set_values (values);
+			transition.set_to_value (0.0f);
+			
+			var flash_actor = new Clutter.Actor ();
+			flash_actor.set_size (width, height);
+			flash_actor.set_position (x, y);
+			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
+			flash_actor.set_opacity (0);
+
+			var top_window_group = wm.top_window_group;
+			top_window_group.add (flash_actor);
+
+			flash_actor.add_transition ("flash", transition);
 		}
 
 		public void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
@@ -56,11 +78,10 @@ namespace Gala
 
 		public void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
 		{
-			warning ("ScreenShotArea not implemented");
-			filename_used = "";
-			success = false;
+			debug ("Taking area screenshot");
 
-			throw new DBusError.FAILED ("ScreenShotArea not implemented");
+			var image = take_screenshot (x, y, width, height);
+			success = save_image (image, filename, out filename_used);
 		}
 
 		public void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
