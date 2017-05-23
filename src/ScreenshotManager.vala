@@ -52,15 +52,19 @@ namespace Gala
 			transition.set_key_frames (keyframes);
 			transition.set_values (values);
 			transition.set_to_value (0.0f);
-			
+
+			var top_window_group = wm.top_window_group;
+
 			var flash_actor = new Clutter.Actor ();
 			flash_actor.set_size (width, height);
 			flash_actor.set_position (x, y);
 			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
 			flash_actor.set_opacity (0);
+			flash_actor.transitions_completed.connect (() => {
+				top_window_group.remove_child (flash_actor);
+			});
 
-			wm.top_window_group.add (flash_actor);
-
+			top_window_group.add (flash_actor);
 			flash_actor.add_transition ("flash", transition);
 		}
 
@@ -70,6 +74,9 @@ namespace Gala
 
 			int width, height;
 			wm.get_screen ().get_size (out width, out height);
+
+			if (flash)
+				flash_area (0, 0, width, height);
 
 			var image = take_screenshot (0, 0, width, height);
 			success = save_image (image, filename, out filename_used);
@@ -81,6 +88,8 @@ namespace Gala
 
 			var image = take_screenshot (x, y, width, height);
 			success = save_image (image, filename, out filename_used);
+			if (!success)
+				throw new DBusError.FAILED ("Failed to save image");
 		}
 
 		public void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
