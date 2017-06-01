@@ -74,7 +74,7 @@
 		<key type="b" name="dynamic-workspaces">
 			<default>true</default>
 			<summary>Enable dynamic workspace instead of static ones</summary>
-			<description>Use a dynamically increasing or decreseasing number, as needed, of workspaces instead of a static, fixed number</description>
+			<description>Use a dynamically increasing or decreasing number, as needed, of workspaces instead of a static, fixed number</description>
 		</key>
 		<key type="as" name="dock-names">
 			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
