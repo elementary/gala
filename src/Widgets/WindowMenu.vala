@@ -25,13 +25,18 @@ namespace Gala
 	 */
 	public class WindowMenu : Gtk.Menu
 	{
+
+		private bool setting_current_window = false;
+
 		public Meta.Window current_window {
 			get {
 				return _current_window;
 			}
 			set {
+				setting_current_window = true;
 				_current_window = value;
 				update_window ();
+				setting_current_window = false;
 			}
 		}
 
@@ -84,6 +89,8 @@ namespace Gala
 
 			always_on_top = new Gtk.CheckMenuItem.with_label (_("Always on Top"));
 			always_on_top.activate.connect (() => {
+				if (setting_current_window) return;
+
 				if (current_window.is_above ())
 					current_window.unmake_above ();
 				else
@@ -93,6 +100,8 @@ namespace Gala
 
 			on_visible_workspace = new Gtk.CheckMenuItem.with_label (_("Always on Visible Workspace"));
 			on_visible_workspace.activate.connect (() => {
+				if (setting_current_window) return;
+
 				if (current_window.on_all_workspaces)
 					current_window.unstick ();
 				else
