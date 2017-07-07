@@ -461,7 +461,7 @@ namespace Gala
 
 				if (!clone.window.minimized) {
 					clone.save_easing_state ();
-					clone.set_easing_duration (150);
+					clone.set_easing_duration (SwitchingSettings.get_default ().ease_out_switch_speed);
 					clone.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 					clone.z_position = 0;
 					clone.opacity = 255;
@@ -550,7 +550,7 @@ namespace Gala
 				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				actor.save_easing_state ();
-				actor.set_easing_duration (250);
+				actor.set_easing_duration (SwitchingSettings.get_default ().ease_in_switch_speed);
 				actor.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 				if (clone.window == current_window.window) {
