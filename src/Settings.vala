@@ -178,4 +178,25 @@ namespace Gala
 			return instance;
 		}
 	}
+
+	public class SwitchingSettings : Granite.Services.Settings
+	{
+		public int ease_in_switch_speed { get; set; }
+		public int ease_out_switch_speed { get; set; }
+
+		static SwitchingSettings? instance = null;
+
+		private SwitchingSettings ()
+		{
+			base (Config.SCHEMA + ".switching");
+		}
+
+		public static unowned SwitchingSettings get_default ()
+		{
+			if (instance == null)
+				instance = new SwitchingSettings ();
+
+			return instance;
+		}
+	}
 }
