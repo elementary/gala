@@ -301,6 +301,7 @@ vapi/Makefile
 plugins/Makefile
 plugins/maskcorners/Makefile
 plugins/notify/Makefile
+plugins/pip/Makefile
 plugins/zoom/Makefile
 po/Makefile.in
 ])
