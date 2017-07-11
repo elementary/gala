@@ -178,4 +178,32 @@ namespace Gala
 			return instance;
 		}
 	}
+
+	public class SwitcherSettings : Granite.Services.Settings
+	{
+		public int window_switch_ease_duration { get; set; }
+		public int window_switch_out_opacity { get; set; }
+		public int window_switch_out_zoom_out { get; set; }
+		public int icons_bar_ease_in_duration { get; set; }
+		public int icons_bar_ease_out_duration { get; set; }
+		public bool icons_bar_center { get; set; }
+		public int icon_size { get; set; }
+		public int icon_switch_ease_duration { get; set; }
+		public int icon_switch_out_opacity { get; set; }
+
+		static SwitcherSettings? instance = null;
+
+		private SwitcherSettings ()
+		{
+			base (Config.SCHEMA + ".switcher");
+		}
+
+		public static unowned SwitcherSettings get_default ()
+		{
+			if (instance == null)
+				instance = new SwitcherSettings ();
+
+			return instance;
+		}
+	}
 }
