@@ -44,4 +44,5 @@ po/POTFILES
 po/Rules-quot
 po/stamp-po
 src/gala
+src/**/*.o
 build
