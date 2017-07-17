@@ -17,7 +17,7 @@
 
 using Clutter;
 
-namespace Gala
+namespace Gala.Plugins.PIP
 {
 	public class ShadowEffect : Effect
 	{
