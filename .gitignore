@@ -5,6 +5,7 @@ autom4te.cache
 ChangeLog
 config.h
 config.h.in
+config.h.in~
 config.log
 config.status
 configure
@@ -22,6 +23,7 @@ Makefile.in
 *.h
 *.lo
 *.la
+*.o
 *.pc
 *.stamp
 data/gala.desktop

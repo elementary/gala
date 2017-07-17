@@ -25,13 +25,22 @@ namespace Gala
 	 */
 	public class WindowMenu : Gtk.Menu
 	{
+		ulong always_on_top_handler_id;
+		ulong on_visible_workspace_handler_id;
+
 		public Meta.Window current_window {
 			get {
 				return _current_window;
 			}
 			set {
+				SignalHandler.block (always_on_top, always_on_top_handler_id);
+				SignalHandler.block (on_visible_workspace, on_visible_workspace_handler_id);
+
 				_current_window = value;
 				update_window ();
+
+				SignalHandler.unblock (always_on_top, always_on_top_handler_id);
+				SignalHandler.unblock (on_visible_workspace, on_visible_workspace_handler_id);
 			}
 		}
 
@@ -83,7 +92,7 @@ namespace Gala
 			append (resize);
 
 			always_on_top = new Gtk.CheckMenuItem.with_label (_("Always on Top"));
-			always_on_top.activate.connect (() => {
+			always_on_top_handler_id = always_on_top.activate.connect (() => {
 				if (current_window.is_above ())
 					current_window.unmake_above ();
 				else
@@ -92,7 +101,7 @@ namespace Gala
 			append (always_on_top);
 
 			on_visible_workspace = new Gtk.CheckMenuItem.with_label (_("Always on Visible Workspace"));
-			on_visible_workspace.activate.connect (() => {
+			on_visible_workspace_handler_id = on_visible_workspace.activate.connect (() => {
 				if (current_window.on_all_workspaces)
 					current_window.unstick ();
 				else
