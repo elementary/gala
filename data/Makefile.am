@@ -3,7 +3,7 @@ SUBDIRS = \
 	$(NULL)
 
 stylesdir = $(pkgdatadir)
-styles_DATA = gala.css texture.png
+styles_DATA = gala.css
 
 applicationsdir = $(datadir)/applications
 applications_DATA = gala.desktop gala-wayland.desktop gala-other.desktop gala-multitaskingview.desktop
@@ -36,7 +36,7 @@ EXTRA_DIST = \
 	gala-other.desktop.in \
 	gala-multitaskingview.desktop.in \
 	gala.gresource.xml \
-	texture.png \
+	default-background.png \
 	close.svg \
 	resize.svg \
 	org.pantheon.desktop.gala.gschema.xml.in \
