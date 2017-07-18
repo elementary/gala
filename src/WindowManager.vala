@@ -135,10 +135,8 @@ namespace Gala
 			var display = screen.get_display ();
 
 			DBus.init (this);
-#if HAS_GSD310
 			DBusAccelerator.init (this);
 			MediaFeedback.init ();
-#endif
 			WindowListener.init (screen);
 			KeyboardManager.init (display);
 
