@@ -234,8 +234,6 @@ CFLAGS="$CFLAGS -Wl,--enable-new-dtags"
 # -----------------------------------------------------------
 # Documentation
 # -----------------------------------------------------------
-VALADOC_MIN_VERSION=0.3.1
-
 AC_ARG_ENABLE([docs],
               AS_HELP_STRING([--enable-docs],[Enable documentation generation]),
               [enable_docs=$enableval], [enable_docs=no])
@@ -243,8 +241,6 @@ AM_CONDITIONAL([ENABLE_DOCS], [test "x$enable_docs" = "xyes"])
 
 have_valadoc=no
 if test "x$enable_docs" = "xyes"; then
-    # make sure the library is new enough and the program exists
-    PKG_CHECK_MODULES([VALADOC], [valadoc-1.0 >= $VALADOC_MIN_VERSION])
     AC_PATH_PROG([VALADOC], [valadoc], [:])
     AS_IF([test "$VALADOC" != :], have_valadoc=yes)
 fi
