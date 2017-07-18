@@ -12,4 +12,5 @@ AM_CPPFLAGS = \
 	-DPKGLIBDIR=\"$(pkglibdir)\" \
 	-DPLUGINDIR=\"$(pkglibdir)/plugins\" \
 	-DSCHEMA=\"org.pantheon.desktop.gala\" \
+	-DRESOURCEPATH=\"/org/pantheon/desktop/gala\" \
 	$(NULL)

@@ -3,7 +3,7 @@ SUBDIRS = \
 	$(NULL)
 
 stylesdir = $(pkgdatadir)
-styles_DATA = gala.css texture.png close.svg resize.svg
+styles_DATA = gala.css texture.png
 
 applicationsdir = $(datadir)/applications
 applications_DATA = gala.desktop gala-wayland.desktop gala-other.desktop gala-multitaskingview.desktop
@@ -35,6 +35,7 @@ EXTRA_DIST = \
 	gala-wayland.desktop \
 	gala-other.desktop.in \
 	gala-multitaskingview.desktop.in \
+	gala.gresource.xml \
 	texture.png \
 	close.svg \
 	resize.svg \
