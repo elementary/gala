@@ -106,6 +106,7 @@ GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.44.0
 PLANK_MIN_VERSION=0.3.0
 CLUTTER_MIN_VERSION=1.12.0
+GSD_MIN_VERSION=3.15.2
 MUTTER_MIN_VERSION=3.18.3
 MUTTER_API="3.18"
 
@@ -120,6 +121,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  granite \
                  gee-0.8 \
                  gnome-desktop-3.0 \
+                 gnome-settings-daemon >= $GSD_MIN_VERSION \
                  plank >= $PLANK_MIN_VERSION"
 
 GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
@@ -187,16 +189,6 @@ PLANK_PKGS="plank >= 0.10.9"
 PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])
 if test "x$enable_plank_0_11" = "xyes" ; then
     VALAFLAGS="$VALAFLAGS --define HAVE_PLANK_0_11"
-fi
-
-# Check for Gnome Settings Daemon 3.10
-PKG_CHECK_MODULES(GSD310, [gnome-settings-daemon >= 3.9.5], [have_gsd310=yes], [have_gsd310=no])
-if test "x$have_gsd310" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAS_GSD310"
-fi
-PKG_CHECK_MODULES(GSD316, [gnome-settings-daemon >= 3.15.2], [have_gsd316=yes], [have_gsd316=no])
-if test "x$have_gsd316" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAS_GSD316"
 fi
 
 GALA_CORE_PKGS="$GALA_CORE_PKGS $MUTTER_PKGS"
