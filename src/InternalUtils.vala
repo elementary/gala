@@ -118,19 +118,23 @@ namespace Gala
 			Util.set_stage_input_region (screen, xregion);
 		}
 
-		public static string get_system_background_path ()
+		public static File get_system_background_file ()
 		{
-			var filename = AppearanceSettings.get_default ().workspace_switcher_background;
-			var default_file = Config.PKGDATADIR + "/texture.png";
+			var default_uri = "gresource://" + Config.RESOURCEPATH + "/textures/default-background.png";
+			File file;
 
+			var filename = AppearanceSettings.get_default ().workspace_switcher_background;
 			if (filename == "") {
-				filename = default_file;
-			} else if (!FileUtils.test (filename, FileTest.IS_REGULAR)) {
-				warning ("Failed to load %s", filename);
-				filename = default_file;
+				file = File.new_for_uri (default_uri);
+			} else {
+				file = File.new_for_path (filename);
+				if (file.query_exists ()) {
+					warning ("Failed to load %s", filename);
+					file = File.new_for_uri (default_uri);
+				}
 			}
 
-			return filename;
+			return file;
 		}
 
 		/**

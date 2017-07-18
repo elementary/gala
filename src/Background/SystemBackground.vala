@@ -32,19 +32,19 @@ namespace Gala
 
 		construct
 		{
-			var path = InternalUtils.get_system_background_path ();
+			var file = InternalUtils.get_system_background_file ();
 
 			if (system_background == null) {
 				system_background = new Meta.Background (meta_screen);
 				system_background.set_color (DEFAULT_BACKGROUND_COLOR);
 
-				system_background.set_file (File.new_for_path (path), GDesktop.BackgroundStyle.WALLPAPER);
+				system_background.set_file (file, GDesktop.BackgroundStyle.WALLPAPER);
 			}
 
 			background = system_background;
 
 			var cache = Meta.BackgroundImageCache.get_default ();
-			var image = cache.load (File.new_for_path (path));
+			var image = cache.load (file);
 			if (image.is_loaded ()) {
 				image = null;
 				Idle.add(() => {

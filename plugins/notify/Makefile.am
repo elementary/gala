@@ -2,10 +2,10 @@ include $(top_srcdir)/Makefile.common
 
 VAPIDIR = $(top_srcdir)/vapi
 
-imagedir = $(pkgdatadir)
-dist_image_DATA = data/image-mask.svg
-
-BUILT_SOURCES = libgala_notify_la_vala.stamp
+BUILT_SOURCES = \
+	libgala_notify_la_vala.stamp \
+	notify-resources.c \
+	$(NULL)
 
 libgala_notify_la_LTLIBRARIES = libgala-notify.la
 
@@ -54,6 +54,9 @@ nodist_libgala_notify_la_SOURCES = \
 	$(libgala_notify_la_VALASOURCES:.vala=.c) \
 	$(NULL)
 
+notify-resources.c: $(srcdir)/notify.gresource.xml Makefile $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies --sourcedir $(srcdir) $(srcdir)/notify.gresource.xml)
+	$(AM_V_GEN) XMLLINT=$(XMLLINT) $(GLIB_COMPILE_RESOURCES) --target $@ --sourcedir $(srcdir) --generate --c-name gala_plugins_notify $<
+
 libgala_notify_la_vala.stamp: $(libgala_notify_la_VALASOURCES) $(top_builddir)/lib/gala.vapi Makefile
 	$(AM_V_VALA)$(VALAC) \
 		$(libgala_notify_la_VALAFLAGS) \
@@ -67,4 +70,5 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	$(libgala_notify_la_VALASOURCES) \
+	data/image-mask.svg \
 	$(NULL)

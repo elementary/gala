@@ -16,9 +16,7 @@
     along with this program.  If not, see <http:  www.gnu.org/licenses/>.
 -->
 <gresources>
-	<gresource prefix="/org/pantheon/desktop/gala">
-		<file alias="buttons/close.svg" compressed="true" preprocess="xml-stripblanks">close.svg</file>
-		<file alias="buttons/resize.svg" compressed="true" preprocess="xml-stripblanks">resize.svg</file>
-		<file alias="textures/default-background.png">default-background.png</file>
+	<gresource prefix="/org/pantheon/desktop/gala/plugins/notify">
+		<file alias="image-mask.svg" compressed="true" preprocess="xml-stripblanks">data/image-mask.svg</file>
 	</gresource>
 </gresources>

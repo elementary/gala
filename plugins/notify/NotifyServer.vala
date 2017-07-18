@@ -421,7 +421,7 @@ namespace Gala.Plugins.Notify
 
 				if (image_mask_pixbuf == null) {
 					try {
-						image_mask_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/image-mask.svg", -1, mask_size, true);
+						image_mask_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/plugins/notify/image-mask.svg", -1, mask_size, true);
 					} catch (Error e) {
 						warning (e.message);
 					}
