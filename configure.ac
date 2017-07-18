@@ -106,8 +106,8 @@ GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.44.0
 PLANK_MIN_VERSION=0.3.0
 CLUTTER_MIN_VERSION=1.12.0
-MUTTER_MIN_VERSION=3.14.4
-MUTTER_API="3.14"
+MUTTER_MIN_VERSION=3.18.3
+MUTTER_API="3.18"
 
 GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  glib-2.0 >= $GLIB_MIN_VERSION \
@@ -150,22 +150,6 @@ AC_SUBST([PLUGIN_LDFLAGS])
 # Optional Dependencies
 # -----------------------------------------------------------
 
-# 3.16
-PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.15], [have_mutter316=yes], [have_mutter316=no])
-if test "x$have_mutter316" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.16.4])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316"
-    MUTTER_API="3.16"
-fi
-
-# 3.18
-PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.17], [have_mutter318=yes], [have_mutter318=no])
-if test "x$have_mutter318" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.18.4])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER318"
-    MUTTER_API="3.18"
-fi
-
 # 3.20
 PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19], [have_mutter320=yes], [have_mutter320=no])
 if test "x$have_mutter320" = "xyes" ; then
@@ -190,8 +174,7 @@ fi
 PKG_CHECK_MODULES(MUTTER324, [libmutter-0 >= 3.23], [have_mutter324=yes], [have_mutter324=no])
 if test "x$have_mutter324" = "xyes" ; then
     PKG_CHECK_MODULES(MUTTER324, [libmutter >= 3.23.90])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316 --define HAS_MUTTER318 --define HAS_MUTTER320 --define HAS_MUTTER322"
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER324"
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320 --define HAS_MUTTER322 --define HAS_MUTTER324"
     MUTTER_CFLAGS="-DCLUTTER_ENABLE_COMPOSITOR_API -DCLUTTER_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_2_0_API"
     MUTTER_PKGS="mutter-cogl-0 mutter-cogl-pango-0 mutter-cogl-path-0 mutter-clutter-0 libmutter-0 >= 3.23.90"
     MUTTER_VALA_PKGS="--pkg mutter-cogl-0 --pkg mutter-clutter-0 --pkg libmutter-0"
