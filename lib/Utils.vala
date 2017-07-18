@@ -25,6 +25,7 @@ namespace Gala
 		static uint cache_clear_timeout = 0;
 
 		static Gdk.Pixbuf? close_pixbuf = null;
+		static Gdk.Pixbuf? resize_pixbuf = null;
 
 		static construct
 		{
@@ -312,6 +313,54 @@ namespace Gala
 				} catch (Error e) {}
 			} else {
 				// we'll just make this red so there's at least something as an 
+				// indicator that loading failed. Should never happen and this
+				// works as good as some weird fallback-image-failed-to-load pixbuf
+				texture.set_size (36, 36);
+				texture.background_color = { 255, 0, 0, 255 };
+			}
+
+			return texture;
+		}
+		/**
+		 * Returns the pixbuf that is used for resize buttons throughout gala at a
+		 * size of 36px
+		 *
+		 * @return the close button pixbuf or null if it failed to load
+		 */
+		public static Gdk.Pixbuf? get_resize_button_pixbuf ()
+		{
+			if (resize_pixbuf == null) {
+				try {
+					resize_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/resize.svg", -1, 36, true);
+				} catch (Error e) {
+					warning (e.message);
+					return null;
+				}
+			}
+
+			return resize_pixbuf;
+		}
+
+		/**
+		 * Creates a new reactive ClutterActor at 36px with the resize pixbuf
+		 *
+		 * @return The resize button actor
+		 */
+		public static Clutter.Actor create_resize_button ()
+		{
+			var texture = new Clutter.Texture ();
+			var pixbuf = get_resize_button_pixbuf ();
+
+			texture.reactive = true;
+
+			if (pixbuf != null) {
+				try {
+					texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
+						pixbuf.get_width (), pixbuf.get_height (),
+						pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+				} catch (Error e) {}
+			} else {
+				// we'll just make this red so there's at least something as an
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
 				texture.set_size (36, 36);
