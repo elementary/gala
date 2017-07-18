@@ -90,9 +90,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
-#if HAS_MUTTER318
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
-#endif
 
 		public WindowManagerGala ()
 		{
@@ -137,10 +135,8 @@ namespace Gala
 			var display = screen.get_display ();
 
 			DBus.init (this);
-#if HAS_GSD310
 			DBusAccelerator.init (this);
 			MediaFeedback.init ();
-#endif
 			WindowListener.init (screen);
 			KeyboardManager.init (display);
 
@@ -722,7 +718,6 @@ namespace Gala
 		 * effects
 		 */
 
-#if HAS_MUTTER318
 		void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change)
 		{
 			// Only handle windows which are located on the primary monitor
@@ -784,7 +779,6 @@ namespace Gala
 
 			size_change_completed (actor);
 		}
-#endif
 
 		public override void minimize (WindowActor actor)
 		{
@@ -852,22 +846,13 @@ namespace Gala
 			}
 		}
 
-#if HAS_MUTTER318
-		inline void maximize_completed (WindowActor actor)
-		{
-		}
-		
 		void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
-#else
-		public override void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
-#endif
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.snap_duration;
 
 			if (!animation_settings.enable_animations
 				|| duration == 0) {
-				maximize_completed (actor);
 				return;
 			}
 
@@ -881,7 +866,6 @@ namespace Gala
 
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
 				if (old_actor == null) {
-					maximize_completed (actor);
 					return;
 				}
 
@@ -930,8 +914,6 @@ namespace Gala
 				});
 				old_actor.restore_easing_state ();
 
-				maximize_completed (actor);
-
 				actor.set_pivot_point (0.0f, 0.0f);
 				actor.set_translation (old_inner_rect.x - ex, old_inner_rect.y - ey, 0.0f);
 				actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
@@ -942,11 +924,7 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
-
-				return;
 			}
-
-			maximize_completed (actor);
 		}
 
 		public override void unminimize (WindowActor actor)
@@ -1117,9 +1095,7 @@ namespace Gala
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var window = actor.get_meta_window ();
 
-#if HAS_MUTTER318
 			ws_assoc.remove (window);
-#endif
 
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
@@ -1213,22 +1189,13 @@ namespace Gala
 			}
 		}
 
-#if HAS_MUTTER318
-		inline void unmaximize_completed (Meta.WindowActor actor)
-		{
-		}
-		
 		void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
-#else
-		public override void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
-#endif
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.snap_duration;
 
 			if (!animation_settings.enable_animations
 				|| duration == 0) {
-				unmaximize_completed (actor);
 				return;
 			}
 
@@ -1254,7 +1221,6 @@ namespace Gala
 				var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
 
 				if (old_actor == null) {
-					unmaximize_completed (actor);
 					return;
 				}
 
@@ -1281,7 +1247,6 @@ namespace Gala
 
 				var maximized_x = actor.x;
 				var maximized_y = actor.y;
-				unmaximize_completed (actor);
 				actor.set_pivot_point (0.0f, 0.0f);
 				actor.set_position (ex, ey);
 				actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + maximized_x, -ey + offset_y * (1.0f / scale_y - 1.0f) + maximized_y, 0.0f);
@@ -1293,11 +1258,7 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
-
-				return;
 			}
-
-			unmaximize_completed (actor);
 		}
 
 		// Cancel attached animation of an actor and reset it
@@ -1330,17 +1291,9 @@ namespace Gala
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
 			if (end_animation (ref maximizing, actor))
-#if HAS_MUTTER318
 				size_change_completed (actor);
-#else
-				maximize_completed (actor);
-#endif
 			if (end_animation (ref unmaximizing, actor))
-#if HAS_MUTTER318
 				size_change_completed (actor);
-#else
-				unmaximize_completed (actor);
-#endif
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 		}
