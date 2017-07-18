@@ -147,6 +147,23 @@ PLUGIN_LDFLAGS="-module -avoid-version"
 AC_SUBST([PLUGIN_LDFLAGS])
 
 # -----------------------------------------------------------
+# GLib Resources
+# -----------------------------------------------------------
+
+AC_ARG_VAR([GLIB_COMPILE_RESOURCES],[the glib-compile-resources program])
+AC_PATH_PROG([GLIB_COMPILE_RESOURCES],[glib-compile-resources],[])
+if test -z "$GLIB_COMPILE_RESOURCES"; then
+  AC_MSG_ERROR([glib-compile-resources not found])
+fi
+
+AC_ARG_VAR([XMLLINT],[the xmllint program])
+AC_PATH_PROG([XMLLINT],[xmllint],[])
+if test -z "$XMLLINT"; then
+  AC_MSG_ERROR([xmllint not found])
+fi
+
+
+# -----------------------------------------------------------
 # Optional Dependencies
 # -----------------------------------------------------------
 

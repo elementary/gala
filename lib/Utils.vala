@@ -295,7 +295,7 @@ namespace Gala
 		{
 			if (close_pixbuf == null) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/close.svg", -1, 36, true);
+					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -343,7 +343,7 @@ namespace Gala
 		{
 			if (resize_pixbuf == null) {
 				try {
-					resize_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/resize.svg", -1, 36, true);
+					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;

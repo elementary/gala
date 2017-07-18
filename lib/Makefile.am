@@ -4,6 +4,7 @@ VAPIDIR = $(top_srcdir)/vapi
 
 BUILT_SOURCES = \
 	libgala_la_vala.stamp \
+	gala-resources.c \
 	$(NULL)
 
 libgalaincludedir = $(includedir)/gala
@@ -58,6 +59,9 @@ nodist_libgala_la_SOURCES = \
 	$(BUILT_SOURCES) \
 	$(libgala_la_VALASOURCES:.vala=.c) \
 	$(NULL)
+
+gala-resources.c: $(top_srcdir)/data/gala.gresource.xml Makefile $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies --sourcedir $(top_srcdir)/data $(top_srcdir)/data/gala.gresource.xml)
+	$(AM_V_GEN) XMLLINT=$(XMLLINT) $(GLIB_COMPILE_RESOURCES) --target $@ --sourcedir $(top_srcdir)/data --generate --c-name gala $<
 
 gala.h gala.vapi: libgala_la_vala.stamp
 
