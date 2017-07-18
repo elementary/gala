@@ -132,18 +132,10 @@ namespace Gala
 			if (app != null && app.get_desktop_file () != null) {
 				var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 				if (appinfo != null) {
-#if HAVE_PLANK_0_11
 					icon = Plank.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-#else
-					icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-#endif
 					icon_key = "%s::%i".printf (icon, size);
 					if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-#if HAVE_PLANK_0_11
 						image = Plank.DrawingService.load_icon (icon, size, size);
-#else
-						image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
-#endif
 						not_cached = true;
 					}
 				}
@@ -174,11 +166,7 @@ namespace Gala
 			}
 
 			if (size != image.width || size != image.height)
-#if HAVE_PLANK_0_11
 				image = Plank.DrawingService.ar_scale (image, size, size);
-#else
-				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
-#endif
 
 			if (not_cached)
 				icon_pixbuf_cache.set (icon_key, image);

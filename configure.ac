@@ -104,7 +104,7 @@ fi
 # -----------------------------------------------------------
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.44.0
-PLANK_MIN_VERSION=0.3.0
+PLANK_MIN_VERSION=0.11.0
 CLUTTER_MIN_VERSION=1.12.0
 GSD_MIN_VERSION=3.15.2
 MUTTER_MIN_VERSION=3.18.3
@@ -182,13 +182,6 @@ if test "x$have_mutter324" = "xyes" ; then
     MUTTER_VALA_PKGS="--pkg mutter-cogl-0 --pkg mutter-clutter-0 --pkg libmutter-0"
     MUTTER_API="3.24"
     MUTTER_LDFLAGS="-R`$PKG_CONFIG --variable=typelibdir libmutter-0`"
-fi
-
-# Check for newer Plank
-PLANK_PKGS="plank >= 0.10.9"
-PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])
-if test "x$enable_plank_0_11" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAVE_PLANK_0_11"
 fi
 
 GALA_CORE_PKGS="$GALA_CORE_PKGS $MUTTER_PKGS"
