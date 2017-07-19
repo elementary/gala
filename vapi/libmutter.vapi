@@ -176,6 +176,9 @@ namespace Meta {
 		public unowned Meta.Dnd get_dnd ();
 #endif
 		public unowned Clutter.Actor get_stage ();
+#if HAS_MUTTER326
+		public int get_ui_scaling_factor ();
+#endif
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
 #if HAS_MUTTER322
@@ -184,6 +187,9 @@ namespace Meta {
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (int object);
+#if HAS_MUTTER326
+		public signal void x11_display_opened ();
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public class Background : GLib.Object {
@@ -447,13 +453,23 @@ namespace Meta {
 	public abstract class MonitorManager : GLib.DBusInterfaceSkeleton, GLib.DBusInterface {
 		[CCode (has_construct_function = false)]
 		protected MonitorManager ();
+#if HAS_MUTTER326
+		public bool can_switch_config ();
+#endif
 		public static unowned Meta.MonitorManager @get ();
 #if HAS_MUTTER322
 		public bool get_is_builtin_display_on ();
 #endif
+#if HAS_MUTTER326
+		public int get_monitor_for_connector (string connector);
+#endif
 		public int get_monitor_for_output (uint id);
 		public signal void confirm_display_change ();
-#if HAS_MUTTER324
+#if HAS_MUTTER326
+		public Meta.MonitorSwitchConfigType get_switch_config ();
+		public void switch_config (Meta.MonitorSwitchConfigType config_type);
+#endif
+#if HAS_MUTTER324 && !HAS_MUTTER326
 		public signal void lid_is_closed_changed ();
 #endif
 	}
@@ -465,6 +481,10 @@ namespace Meta {
 		public void complete_display_change (bool ok);
 		[NoWrapper]
 		public virtual void confirm_display_change ();
+#if HAS_MUTTER326
+		[NoWrapper]
+		public virtual unowned Meta.CloseDialog create_close_dialog (Meta.Window window);
+#endif
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
@@ -553,6 +573,14 @@ namespace Meta {
 		public signal void workspace_removed (int object);
 		public signal void workspace_switched (int object, int p0, Meta.MotionDirection p1);
 	}
+#if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/meta-settings.h", has_type_id = false)]
+	[Compact]
+	public class Settings {
+		public int get_font_dpi ();
+		public int get_ui_scaling_factor ();
+	}
+#endif
 	[CCode (cheader_filename = "meta/meta-shadow-factory.h", ref_function = "meta_shadow_ref", type_id = "meta_shadow_get_type ()", unref_function = "meta_shadow_unref")]
 	[Compact]
 	public class Shadow {
@@ -804,6 +832,19 @@ namespace Meta {
 		public signal void window_added (Meta.Window object);
 		public signal void window_removed (Meta.Window object);
 	}
+#if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/meta-close-dialog.h", type_cname = "MetaCloseDialogInterface", type_id = "meta_close_dialog_get_type ()")]
+	public interface CloseDialog : GLib.Object {
+		public abstract void focus ();
+		public abstract void hide ();
+		public bool is_visible ();
+		public abstract void show ();
+		[NoAccessorMethod]
+		public abstract Meta.Window window { owned get; construct; }
+		[HasEmitter]
+		public signal void response (Meta.CloseDialogResponse response);
+	}
+#endif
 	[CCode (cheader_filename = "meta/common.h", has_type_id = false)]
 	public struct ButtonLayout {
 		[CCode (array_length = false)]
@@ -897,6 +938,13 @@ namespace Meta {
 		APPMENU,
 		LAST
 	}
+#if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_CLOSE_DIALOG_RESPONSE_", type_id = "meta_close_dialog_response_get_type ()")]
+	public enum CloseDialogResponse {
+		WAIT,
+		FORCE_CLOSE
+	}
+#endif
 	[CCode (cheader_filename = "meta/compositor.h", cprefix = "META_COMP_EFFECT_", type_id = "meta_comp_effect_get_type ()")]
 	public enum CompEffect {
 		CREATE,
@@ -1132,6 +1180,10 @@ namespace Meta {
 		OVERLAY_KEY,
 		ISO_NEXT_GROUP,
 		ALWAYS_ON_TOP,
+#if HAS_MUTTER326
+		SWITCH_MONITOR,
+		ROTATE_MONITOR,
+#endif
 		LAST
 	}
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_", type_id = "meta_key_binding_flags_get_type ()")]
@@ -1169,6 +1221,16 @@ namespace Meta {
 		POINTER_ALREADY_GRABBED,
 		KEYBOARD_ALREADY_GRABBED
 	}
+#if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_MONITOR_SWITCH_CONFIG_", type_id = "meta_monitor_switch_config_type_get_type ()")]
+	public enum MonitorSwitchConfigType {
+		ALL_MIRROR,
+		ALL_LINEAR,
+		EXTERNAL,
+		BUILTIN,
+		UNKNOWN
+	}
+#endif
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MOTION_", type_id = "meta_motion_direction_get_type ()")]
 	public enum MotionDirection {
 		UP,

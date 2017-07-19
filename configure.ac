@@ -201,6 +201,15 @@ if test "x$have_mutter324" = "xyes" ; then
     MUTTER_LDFLAGS="-R`$PKG_CONFIG --variable=typelibdir libmutter-0`"
 fi
 
+# 3.26
+PKG_CHECK_MODULES(MUTTER326, [libmutter-0 >= 3.25], [have_mutter326=yes], [have_mutter326=no])
+if test "x$have_mutter326" = "xyes" ; then
+    PKG_CHECK_MODULES(MUTTER326, [libmutter-0 >= 3.25.3])
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER326"
+    MUTTER_PKGS="mutter-cogl-0 mutter-cogl-pango-0 mutter-cogl-path-0 mutter-clutter-0 libmutter-0 >= 3.25.3"
+    MUTTER_API="3.26"
+fi
+
 GALA_CORE_PKGS="$GALA_CORE_PKGS $MUTTER_PKGS"
 GALA_CORE_VALA_PKGS="$GALA_CORE_VALA_PKGS $MUTTER_VALA_PKGS"
 CFLAGS="$CFLAGS $MUTTER_CFLAGS"
