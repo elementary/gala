@@ -192,10 +192,10 @@ fi
 # 3.24
 PKG_CHECK_MODULES(MUTTER324, [libmutter-0 >= 3.23], [have_mutter324=yes], [have_mutter324=no])
 if test "x$have_mutter324" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER324, [libmutter >= 3.23.90])
+    PKG_CHECK_MODULES(MUTTER324, [libmutter-0 >= 3.24.0])
     VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320 --define HAS_MUTTER322 --define HAS_MUTTER324"
     MUTTER_CFLAGS="-DCLUTTER_ENABLE_COMPOSITOR_API -DCLUTTER_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_2_0_API"
-    MUTTER_PKGS="mutter-cogl-0 mutter-cogl-pango-0 mutter-cogl-path-0 mutter-clutter-0 libmutter-0 >= 3.23.90"
+    MUTTER_PKGS="mutter-cogl-0 mutter-cogl-pango-0 mutter-cogl-path-0 mutter-clutter-0 libmutter-0 >= 3.24.0"
     MUTTER_VALA_PKGS="--pkg mutter-cogl-0 --pkg mutter-clutter-0 --pkg libmutter-0"
     MUTTER_API="3.24"
     MUTTER_LDFLAGS="-R`$PKG_CONFIG --variable=typelibdir libmutter-0`"
