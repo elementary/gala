@@ -104,10 +104,11 @@ fi
 # -----------------------------------------------------------
 GTK_MIN_VERSION=3.4.0
 GLIB_MIN_VERSION=2.44.0
-PLANK_MIN_VERSION=0.3.0
+PLANK_MIN_VERSION=0.11.0
 CLUTTER_MIN_VERSION=1.12.0
-MUTTER_MIN_VERSION=3.14.4
-MUTTER_API="3.14"
+GSD_MIN_VERSION=3.15.2
+MUTTER_MIN_VERSION=3.18.3
+MUTTER_API="3.18"
 
 GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  glib-2.0 >= $GLIB_MIN_VERSION \
@@ -120,6 +121,7 @@ GALA_CORE_PKGS="gobject-2.0 >= $GLIB_MIN_VERSION \
                  granite \
                  gee-0.8 \
                  gnome-desktop-3.0 \
+                 gnome-settings-daemon >= $GSD_MIN_VERSION \
                  plank >= $PLANK_MIN_VERSION"
 
 GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
@@ -147,24 +149,25 @@ PLUGIN_LDFLAGS="-module -avoid-version"
 AC_SUBST([PLUGIN_LDFLAGS])
 
 # -----------------------------------------------------------
-# Optional Dependencies
+# GLib Resources
 # -----------------------------------------------------------
 
-# 3.16
-PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.15], [have_mutter316=yes], [have_mutter316=no])
-if test "x$have_mutter316" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER316, [libmutter >= 3.16.4])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316"
-    MUTTER_API="3.16"
+AC_ARG_VAR([GLIB_COMPILE_RESOURCES],[the glib-compile-resources program])
+AC_PATH_PROG([GLIB_COMPILE_RESOURCES],[glib-compile-resources],[])
+if test -z "$GLIB_COMPILE_RESOURCES"; then
+  AC_MSG_ERROR([glib-compile-resources not found])
 fi
 
-# 3.18
-PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.17], [have_mutter318=yes], [have_mutter318=no])
-if test "x$have_mutter318" = "xyes" ; then
-    PKG_CHECK_MODULES(MUTTER318, [libmutter >= 3.18.4])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER318"
-    MUTTER_API="3.18"
+AC_ARG_VAR([XMLLINT],[the xmllint program])
+AC_PATH_PROG([XMLLINT],[xmllint],[])
+if test -z "$XMLLINT"; then
+  AC_MSG_ERROR([xmllint not found])
 fi
+
+
+# -----------------------------------------------------------
+# Optional Dependencies
+# -----------------------------------------------------------
 
 # 3.20
 PKG_CHECK_MODULES(MUTTER320, [libmutter >= 3.19], [have_mutter320=yes], [have_mutter320=no])
@@ -190,30 +193,12 @@ fi
 PKG_CHECK_MODULES(MUTTER324, [libmutter-0 >= 3.23], [have_mutter324=yes], [have_mutter324=no])
 if test "x$have_mutter324" = "xyes" ; then
     PKG_CHECK_MODULES(MUTTER324, [libmutter >= 3.23.90])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER316 --define HAS_MUTTER318 --define HAS_MUTTER320 --define HAS_MUTTER322"
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER324"
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320 --define HAS_MUTTER322 --define HAS_MUTTER324"
     MUTTER_CFLAGS="-DCLUTTER_ENABLE_COMPOSITOR_API -DCLUTTER_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_API -DCOGL_ENABLE_EXPERIMENTAL_2_0_API"
     MUTTER_PKGS="mutter-cogl-0 mutter-cogl-pango-0 mutter-cogl-path-0 mutter-clutter-0 libmutter-0 >= 3.23.90"
     MUTTER_VALA_PKGS="--pkg mutter-cogl-0 --pkg mutter-clutter-0 --pkg libmutter-0"
     MUTTER_API="3.24"
     MUTTER_LDFLAGS="-R`$PKG_CONFIG --variable=typelibdir libmutter-0`"
-fi
-
-# Check for newer Plank
-PLANK_PKGS="plank >= 0.10.9"
-PKG_CHECK_MODULES(PLANK_0_11, $PLANK_PKGS, [enable_plank_0_11=yes], [enable_plank_0_11=no])
-if test "x$enable_plank_0_11" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAVE_PLANK_0_11"
-fi
-
-# Check for Gnome Settings Daemon 3.10
-PKG_CHECK_MODULES(GSD310, [gnome-settings-daemon >= 3.9.5], [have_gsd310=yes], [have_gsd310=no])
-if test "x$have_gsd310" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAS_GSD310"
-fi
-PKG_CHECK_MODULES(GSD316, [gnome-settings-daemon >= 3.15.2], [have_gsd316=yes], [have_gsd316=no])
-if test "x$have_gsd316" = "xyes" ; then
-    VALAFLAGS="$VALAFLAGS --define HAS_GSD316"
 fi
 
 GALA_CORE_PKGS="$GALA_CORE_PKGS $MUTTER_PKGS"
@@ -266,8 +251,6 @@ CFLAGS="$CFLAGS -Wl,--enable-new-dtags"
 # -----------------------------------------------------------
 # Documentation
 # -----------------------------------------------------------
-VALADOC_MIN_VERSION=0.3.1
-
 AC_ARG_ENABLE([docs],
               AS_HELP_STRING([--enable-docs],[Enable documentation generation]),
               [enable_docs=$enableval], [enable_docs=no])
@@ -275,8 +258,6 @@ AM_CONDITIONAL([ENABLE_DOCS], [test "x$enable_docs" = "xyes"])
 
 have_valadoc=no
 if test "x$enable_docs" = "xyes"; then
-    # make sure the library is new enough and the program exists
-    PKG_CHECK_MODULES([VALADOC], [valadoc-1.0 >= $VALADOC_MIN_VERSION])
     AC_PATH_PROG([VALADOC], [valadoc], [:])
     AS_IF([test "$VALADOC" != :], have_valadoc=yes)
 fi

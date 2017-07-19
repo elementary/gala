@@ -25,8 +25,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private const float MAXIMUM_SCALE = 1.0f;
 	private const int SCREEN_MARGIN = 0;
 
-	private static Clutter.Image? resize_image;
-
 	public signal void closed ();
 
 	public Gala.WindowManager wm { get; construct; }
@@ -58,27 +56,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		float ratio = float.min (max_width / src_width, max_height / src_height);
 		width = src_width * ratio;
 		height = src_height * ratio;
-	}
-
-	static Clutter.Image? get_resize_image ()
-	{
-		if (resize_image == null) {
-			try {
-				string filename = Path.build_filename (Config.PKGDATADIR, "resize.svg");
-				var pixbuf = new Gdk.Pixbuf.from_file (filename);
-
-				resize_image = new Clutter.Image ();
-				resize_image.set_data (pixbuf.get_pixels (),
-								Cogl.PixelFormat.RGBA_8888,
-								pixbuf.get_width (),
-								pixbuf.get_height (),
-								pixbuf.get_rowstride ());
-			} catch (Error e) {
-				warning (e.message);
-			}
-		}
-
-		return resize_image;
 	}
 
 	static void get_current_cursor_position (out int x, out int y)
@@ -151,13 +128,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		resize_handle.reactive = true;
 		resize_handle.add_action (resize_action);
 
-		resize_button = new Clutter.Actor ();
+		resize_button = Utils.create_resize_button ();
 		resize_button.set_pivot_point (0.5f, 0.5f);
-		resize_button.set_size (BUTTON_SIZE, BUTTON_SIZE);
-		resize_button.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
+		resize_button.set_position (width - resize_button.width, height - resize_button.height);
 		resize_button.opacity = 0;
 		resize_button.reactive = true;
-		resize_button.content = get_resize_image ();
 
 		add_child (container);
 		add_child (close_button);

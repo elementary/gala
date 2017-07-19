@@ -25,6 +25,7 @@ namespace Gala
 		static uint cache_clear_timeout = 0;
 
 		static Gdk.Pixbuf? close_pixbuf = null;
+		static Gdk.Pixbuf? resize_pixbuf = null;
 
 		static construct
 		{
@@ -132,18 +133,10 @@ namespace Gala
 			if (app != null && app.get_desktop_file () != null) {
 				var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 				if (appinfo != null) {
-#if HAVE_PLANK_0_11
 					icon = Plank.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-#else
-					icon = Plank.Drawing.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-#endif
 					icon_key = "%s::%i".printf (icon, size);
 					if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-#if HAVE_PLANK_0_11
 						image = Plank.DrawingService.load_icon (icon, size, size);
-#else
-						image = Plank.Drawing.DrawingService.load_icon (icon, size, size);
-#endif
 						not_cached = true;
 					}
 				}
@@ -174,11 +167,7 @@ namespace Gala
 			}
 
 			if (size != image.width || size != image.height)
-#if HAVE_PLANK_0_11
 				image = Plank.DrawingService.ar_scale (image, size, size);
-#else
-				image = Plank.Drawing.DrawingService.ar_scale (image, size, size);
-#endif
 
 			if (not_cached)
 				icon_pixbuf_cache.set (icon_key, image);
@@ -294,7 +283,7 @@ namespace Gala
 		{
 			if (close_pixbuf == null) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_file_at_scale (Config.PKGDATADIR + "/close.svg", -1, 36, true);
+					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -324,6 +313,54 @@ namespace Gala
 				} catch (Error e) {}
 			} else {
 				// we'll just make this red so there's at least something as an 
+				// indicator that loading failed. Should never happen and this
+				// works as good as some weird fallback-image-failed-to-load pixbuf
+				texture.set_size (36, 36);
+				texture.background_color = { 255, 0, 0, 255 };
+			}
+
+			return texture;
+		}
+		/**
+		 * Returns the pixbuf that is used for resize buttons throughout gala at a
+		 * size of 36px
+		 *
+		 * @return the close button pixbuf or null if it failed to load
+		 */
+		public static Gdk.Pixbuf? get_resize_button_pixbuf ()
+		{
+			if (resize_pixbuf == null) {
+				try {
+					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36, true);
+				} catch (Error e) {
+					warning (e.message);
+					return null;
+				}
+			}
+
+			return resize_pixbuf;
+		}
+
+		/**
+		 * Creates a new reactive ClutterActor at 36px with the resize pixbuf
+		 *
+		 * @return The resize button actor
+		 */
+		public static Clutter.Actor create_resize_button ()
+		{
+			var texture = new Clutter.Texture ();
+			var pixbuf = get_resize_button_pixbuf ();
+
+			texture.reactive = true;
+
+			if (pixbuf != null) {
+				try {
+					texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
+						pixbuf.get_width (), pixbuf.get_height (),
+						pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+				} catch (Error e) {}
+			} else {
+				// we'll just make this red so there's at least something as an
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
 				texture.set_size (36, 36);
