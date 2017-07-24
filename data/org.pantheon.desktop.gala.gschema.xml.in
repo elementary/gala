@@ -142,7 +142,7 @@
 			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="as" name="pip">
-			<default><![CDATA[['<Super>D']]]></default>
+			<default><![CDATA[['<Super>d']]]></default>
 			<summary>The shortcut to enable picture-in-picture window</summary>
 			<description>The shortcut to show the selection area to choose a window</description>
 		</key>
