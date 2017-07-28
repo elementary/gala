@@ -67,7 +67,7 @@ namespace Gala.Plugins.Notify
 
 		DBus? bus_proxy = null;
 		unowned Canberra.Context? ca_context = null;
-		Gee.HashMap<string, Settings> app_settings_cache;
+		Gee.HashMap<string, GLib.Settings> app_settings_cache;
 		Gee.HashMap<string, AppInfo> app_info_cache;
 
 		public NotifyServer (NotificationStack stack)
@@ -93,7 +93,7 @@ namespace Gala.Plugins.Notify
 			                         null);
 			ca_context.open ();
 
-			app_settings_cache = new Gee.HashMap<string, Settings> ();
+			app_settings_cache = new Gee.HashMap<string, GLib.Settings> ();
 			app_info_cache = new Gee.HashMap<string, AppInfo> ();
 		}
 
@@ -203,11 +203,11 @@ namespace Gala.Plugins.Notify
 					if (!has_notifications_key)
 						app_id = FALLBACK_APP_ID;
 
-					Settings? app_settings = app_settings_cache.get (app_id);
+					GLib.Settings? app_settings = app_settings_cache.get (app_id);
 					if (app_settings == null) {
 						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", false);
 						if (schema != null) {
-							app_settings = new Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_id));
+							app_settings = new GLib.Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_id));
 							app_settings_cache.set (app_id, app_settings);
 						}
 					}
