@@ -276,4 +276,51 @@
 			<summary>Only show corner masks on primary monitor</summary>
 		</key>
 	</schema>
+	
+	<schema path="/org/pantheon/desktop/gala/switcher/" id="org.pantheon.desktop.gala.switcher" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="i" name="window-switch-ease-duration">
+			<default>250</default>
+			<range min="0" max="10000"/>
+			<summary>Duration of  easing for windows when switching in</summary>
+		</key>
+		<key type="i" name="window-switch-out-opacity">
+			<default>0</default>
+			<range min="0" max="255"/>
+			<summary>Opacity of switched out windows</summary>
+		</key>
+		<key type="i" name="window-switch-out-zoom-out">
+			<default>200</default>
+			<range min="0" max="10000"/>
+			<summary>Zoom out amount of switched out windows</summary>
+		</key>
+		<key type="i" name="icons-bar-ease-in-duration">
+			<default>250</default>
+			<range min="0" max="10000"/>
+			<summary>Duration of easings for windows when switching in</summary>
+		</key>
+		<key type="i" name="icons-bar-ease-out-duration">
+			<default>150</default>
+			<range min="0" max="10000"/>
+			<summary>Duration of easings for windows when switching out</summary>
+		</key>
+		<key type="b" name="icons-bar-center">
+			<default>false</default>
+			<summary>Center the icons bar</summary>
+		</key>
+		<key type="i" name="icon-size">
+			<default>56</default>
+			<range min="0" max="10000"/>
+			<summary>Size of icons in the switch bar</summary>
+		</key>
+		<key type="i" name="icon-switch-ease-duration">
+			<default>100</default>
+			<range min="0" max="10000"/>
+			<summary>Duration of easings for icons switch</summary>
+		</key>
+		<key type="i" name="icon-switch-out-opacity">
+			<default>100</default>
+			<range min="0" max="255"/>
+			<summary>Opacity of switched out icons (as in, not selected in the switcher)</summary>
+		</key>
+	</schema>
 </schemalist>

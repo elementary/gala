@@ -127,7 +127,7 @@ namespace Gala
 			var layout = (BoxLayout) dock.layout_manager;
 
 			var position = dock_settings.Position;
-			var icon_size = dock_settings.IconSize;
+			var icon_size = SwitcherSettings.get_default ().icon_size;
 			var scaled_icon_size = icon_size / 10.0f;
 			var horizontal = dock_settings.is_horizontal_dock ();
 
@@ -229,7 +229,10 @@ namespace Gala
 
 		void place_dock ()
 		{
-			var icon_size = dock_settings.IconSize;
+			int screen_width = 0;
+			int screen_height = 0;
+			wm.get_screen().get_size(out screen_width, out screen_height);
+			var icon_size = SwitcherSettings.get_default ().icon_size;
 			var scaled_icon_size = icon_size / 10.0f;
 			var line_width = dock_theme.LineWidth;
 			var horiz_padding = dock_theme.HorizPadding * scaled_icon_size;
@@ -244,11 +247,23 @@ namespace Gala
 			if (dock_settings.is_horizontal_dock ()) {
 				dock.width = dock_width;
 				dock.translation_x = Math.ceilf (-dock_width / 2.0f);
+				if (SwitcherSettings.get_default ().icons_bar_center) {
+					dock.translation_y = -(screen_height/2);	
+				}
+				else {
+					dock.translation_y = 0;
+				}
 				dock.get_first_child ().margin_left = items_offset;
 				dock.get_last_child ().margin_right = items_offset;
 			} else {
 				dock.height = dock_width;
 				dock.translation_y = Math.ceilf (-dock_width / 2.0f);
+				if (SwitcherSettings.get_default ().icons_bar_center) {
+					dock.translation_x = -(screen_width/2);	
+				}
+				else {
+					dock.translation_x = 0;
+				}
 				dock.get_first_child ().margin_top = items_offset;
 				dock.get_last_child ().margin_bottom = items_offset;
 			}
@@ -259,7 +274,7 @@ namespace Gala
 		void animate_dock_width ()
 		{
 			dock.save_easing_state ();
-			dock.set_easing_duration (250);
+			dock.set_easing_duration (SwitcherSettings.get_default ().icons_bar_ease_in_duration);
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 
 			float dest_width;
@@ -439,7 +454,7 @@ namespace Gala
 
 				if (!clone.window.minimized) {
 					clone.save_easing_state ();
-					clone.set_easing_duration (150);
+					clone.set_easing_duration (SwitcherSettings.get_default ().icons_bar_ease_out_duration);
 					clone.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 					clone.z_position = 0;
 					clone.opacity = 255;
@@ -471,7 +486,7 @@ namespace Gala
 			}
 
 			dock.save_easing_state ();
-			dock.set_easing_duration (250);
+			dock.set_easing_duration (SwitcherSettings.get_default ().icons_bar_ease_out_duration);
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
 
 			if (dock_settings.is_horizontal_dock ()) {
@@ -506,7 +521,7 @@ namespace Gala
 
 			window_clones.add_child (clone);
 
-			var icon = new WindowIcon (window, dock_settings.IconSize, true);
+			var icon = new WindowIcon (window, SwitcherSettings.get_default ().icon_size, true);
 			icon.reactive = true;
 			icon.opacity = 100;
 			icon.x_expand = true;
@@ -528,7 +543,7 @@ namespace Gala
 				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				actor.save_easing_state ();
-				actor.set_easing_duration (250);
+				actor.set_easing_duration (SwitcherSettings.get_default ().window_switch_ease_duration);
 				actor.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 				if (clone.window == current_window.window) {
@@ -536,8 +551,8 @@ namespace Gala
 					actor.z_position = 0;
 					actor.opacity = 255;
 				} else {
-					actor.z_position = -200;
-					actor.opacity = window_opacity;
+					actor.z_position = -(SwitcherSettings.get_default ().window_switch_out_zoom_out);
+					actor.opacity = SwitcherSettings.get_default ().window_switch_out_opacity;
 				}
 
 				actor.restore_easing_state ();
@@ -546,13 +561,13 @@ namespace Gala
 			foreach (var actor in dock.get_children ()) {
 				unowned WindowIcon icon = (WindowIcon) actor;
 				icon.save_easing_state ();
-				icon.set_easing_duration (100);
+				icon.set_easing_duration (SwitcherSettings.get_default ().icon_switch_ease_duration);
 				icon.set_easing_mode (AnimationMode.LINEAR);
 
 				if (icon == current_window)
 					icon.opacity = 255;
 				else
-					icon.opacity = 100;
+					icon.opacity = SwitcherSettings.get_default ().icon_switch_out_opacity;
 
 				icon.restore_easing_state ();
 			}
