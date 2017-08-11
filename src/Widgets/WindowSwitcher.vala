@@ -23,6 +23,8 @@ namespace Gala
 	public class WindowSwitcher : Clutter.Actor
 	{
 		const int MIN_DELTA = 100;
+		const float BACKGROUND_OPACITY = 155.0f;
+		const float DIM_WINDOW_BRIGHTNESS = -BACKGROUND_OPACITY / 255.0f;
 
 		public WindowManager wm { get; construct; }
 
@@ -304,7 +306,7 @@ namespace Gala
 			background.save_easing_state ();
 			background.set_easing_duration (250);
 			background.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
-			background.opacity = 155;
+			background.opacity = (uint)BACKGROUND_OPACITY;
 			background.restore_easing_state ();
 		}
 
@@ -572,16 +574,21 @@ namespace Gala
 				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				actor.save_easing_state ();
-				actor.set_easing_duration (250);
-				actor.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                actor.set_easing_duration (250);
+                actor.set_easing_mode (AnimationMode.EASE_IN_OUT_QUART);
 
 				if (clone.window == current_window.window) {
 					window_clones.set_child_above_sibling (actor, null);
+					actor.remove_effect_by_name ("brightness");
 					actor.z_position = 0;
-					actor.opacity = 255;
 				} else {
-					actor.z_position = -200;
-					actor.opacity = window_opacity;
+					if (actor.get_effect ("brightness") == null) {
+						var brightness_effect = new BrightnessContrastEffect ();
+						brightness_effect.set_brightness (DIM_WINDOW_BRIGHTNESS);
+						actor.add_effect_with_name ("brightness", brightness_effect);
+					}
+
+					actor.z_position = -100;
 				}
 
 				actor.restore_easing_state ();
