@@ -482,6 +482,7 @@ namespace Gala
 				window_clones.set_child_below_sibling (clone, null);
 
 				if (!clone.window.minimized) {
+					clone.remove_effect_by_name ("brightness");
 					clone.save_easing_state ();
 					clone.set_easing_duration (150);
 					clone.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
@@ -514,6 +515,8 @@ namespace Gala
 				dock_window.restore_easing_state ();
 			}
 
+			hide_background ();
+
 			dock.save_easing_state ();
 			dock.set_easing_duration (250);
 			dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
@@ -528,8 +531,6 @@ namespace Gala
 
 			dock.opacity = 0;
 			dock.restore_easing_state ();
-
-			hide_background ();
 
 			var transition = dock.get_transition ("opacity");
 			if (transition != null)
