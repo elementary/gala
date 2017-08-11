@@ -40,6 +40,8 @@ namespace Gala
 		float dock_height_offset;
 		FileMonitor monitor;
 
+		Actor background;
+
 		uint modifier_mask;
 		int64 last_switch = 0;
 		bool closing = false;
@@ -89,10 +91,15 @@ namespace Gala
 			window_clones = new Actor ();
 			window_clones.actor_removed.connect (window_removed);
 
+			background = new Actor ();
+			background.background_color = Color.get_static (StaticColor.BLACK);
+			update_background ();
+
+			add_child (background);
 			add_child (window_clones);
 			add_child (dock);
 
-			wm.get_screen ().monitors_changed.connect (update_dock);
+			wm.get_screen ().monitors_changed.connect (update_actors);
 
 			visible = false;
 		}
@@ -102,7 +109,7 @@ namespace Gala
 			if (monitor != null)
 				monitor.cancel ();
 
-			wm.get_screen ().monitors_changed.disconnect (update_dock);
+			wm.get_screen ().monitors_changed.disconnect (update_actors);
 		}
 
 		void load_dock_theme ()
@@ -171,6 +178,22 @@ namespace Gala
 			}
 
 			dock_surface = null;
+		}
+
+		void update_background ()
+		{
+			var screen = wm.get_screen ();
+			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
+			background.x = geometry.x;
+			background.y = geometry.y;
+			background.width = geometry.width;
+			background.height = geometry.height;
+		}
+
+		void update_actors ()
+		{
+			update_dock ();
+			update_background ();
 		}
 
 		bool draw_dock_background (Cairo.Context cr)
@@ -274,6 +297,24 @@ namespace Gala
 			}
 
 			dock.restore_easing_state ();
+		}
+
+		void show_background ()
+		{
+			background.save_easing_state ();
+			background.set_easing_duration (250);
+			background.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
+			background.opacity = 155;
+			background.restore_easing_state ();
+		}
+
+		void hide_background ()
+		{
+			background.save_easing_state ();
+			background.set_easing_duration (250);
+			background.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
+			background.opacity = 0;
+			background.restore_easing_state ();
 		}
 
 		bool clicked_icon (Clutter.ButtonEvent event) {
@@ -386,6 +427,7 @@ namespace Gala
 			};
 
 			animate_dock_width ();
+			show_background ();
 
 			dim_windows ();
 			grab_key_focus ();
@@ -484,6 +526,8 @@ namespace Gala
 
 			dock.opacity = 0;
 			dock.restore_easing_state ();
+
+			hide_background ();
 
 			var transition = dock.get_transition ("opacity");
 			if (transition != null)
