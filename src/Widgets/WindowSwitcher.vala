@@ -569,8 +569,6 @@ namespace Gala
 
 		void dim_windows ()
 		{
-			var window_opacity = (int) Math.floor (AppearanceSettings.get_default ().alt_tab_window_opacity * 255);
-
 			foreach (var actor in window_clones.get_children ()) {
 				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
