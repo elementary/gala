@@ -184,12 +184,17 @@ namespace Gala
 
 		void update_background ()
 		{
+			int width = 0, height = 0;
+
 			var screen = wm.get_screen ();
-			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			background.x = geometry.x;
-			background.y = geometry.y;
-			background.width = geometry.width;
-			background.height = geometry.height;
+			for (int i = 0; i < screen.get_n_monitors (); i++) {
+				var geometry = screen.get_monitor_geometry (i);
+				width += geometry.width;
+				height = geometry.height;
+			}
+
+			background.width = width;
+			background.height = height;
 		}
 
 		void update_actors ()
@@ -478,11 +483,12 @@ namespace Gala
 				if (clone.window == current_window.window)
 					continue;
 
+				clone.remove_effect_by_name ("brightness");
+
 				// reset order
 				window_clones.set_child_below_sibling (clone, null);
 
 				if (!clone.window.minimized) {
-					clone.remove_effect_by_name ("brightness");
 					clone.save_easing_state ();
 					clone.set_easing_duration (150);
 					clone.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
