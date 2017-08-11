@@ -574,8 +574,8 @@ namespace Gala
 				unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
 				actor.save_easing_state ();
-                actor.set_easing_duration (250);
-                actor.set_easing_mode (AnimationMode.EASE_IN_OUT_QUART);
+				actor.set_easing_duration (250);
+				actor.set_easing_mode (AnimationMode.EASE_IN_OUT_QUART);
 
 				if (clone.window == current_window.window) {
 					window_clones.set_child_above_sibling (actor, null);
