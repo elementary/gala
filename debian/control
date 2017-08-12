@@ -17,7 +17,7 @@ Build-Depends: debhelper (>= 9),
                libgnome-desktop-3-dev,
                libgranite-dev,
                libgtk-3-dev (>= 3.4.0),
-               libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.18.3),
+               libmutter-1-dev (>= 3.25.90) | libmutter-0-dev (>= 3.24.0) | libmutter-dev (>= 3.18.3),
                libplank-dev (>= 0.11.0),
                libxml2-utils,
                valac (>= 0.28.0)
@@ -74,7 +74,7 @@ Section: libdevel
 Depends: libgala0 (= ${binary:Version}),
          libgdk-pixbuf2.0-dev,
          libglib2.0-dev (>= 2.44),
-         libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.18.3),
+         libmutter-1-dev (>= 3.25.90) | libmutter-0-dev (>= 3.24.0) | libmutter-dev (>= 3.18.3),
          ${misc:Depends}
 Description: Library to build plugins for Pantheon Window Manager (development files)
  gala is a window & compositing manager based on libmutter. It manages the
