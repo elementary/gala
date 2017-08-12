@@ -187,8 +187,7 @@ namespace Gala
 			int width = 0, height = 0;
 			wm.get_screen ().get_size (out width, out height);
 
-			background.width = width;
-			background.height = height;
+			background.set_size (width, height);
 		}
 
 		void update_actors ()
