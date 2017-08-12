@@ -185,13 +185,7 @@ namespace Gala
 		void update_background ()
 		{
 			int width = 0, height = 0;
-
-			var screen = wm.get_screen ();
-			for (int i = 0; i < screen.get_n_monitors (); i++) {
-				var geometry = screen.get_monitor_geometry (i);
-				width += geometry.width;
-				height = geometry.height;
-			}
+			wm.get_screen ().get_size (out width, out height);
 
 			background.width = width;
 			background.height = height;
