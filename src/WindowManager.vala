@@ -1349,7 +1349,7 @@ namespace Gala
 			var static_windows = new Clutter.Actor ();
 			var in_group  = new Clutter.Actor ();
 			var out_group = new Clutter.Actor ();
-			windows = new List<Clutter.Actor> ();
+			windows = new List<WindowActor> ();
 			parents = new List<Clutter.Actor> ();
 			tmp_actors = new List<Clutter.Clone> ();
 
