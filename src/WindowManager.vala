@@ -1308,7 +1308,6 @@ namespace Gala
 				unminimize_completed (actor);
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
-				size_change_completed (actor);
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 
