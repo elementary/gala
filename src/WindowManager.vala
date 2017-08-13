@@ -873,6 +873,8 @@ namespace Gala
 
 				ui_group.add_child (old_actor);
 
+				maximizing.add (actor);
+
 				// FIMXE that's a hacky part. There is a short moment right after maximized_completed
 				//       where the texture is screwed up and shows things it's not supposed to show,
 				//       resulting in flashing. Waiting here transparently shortly fixes that issue. There
@@ -924,6 +926,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong maximize_handler_id = 0UL;
+				maximize_handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (maximize_handler_id);
+					maximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1228,6 +1236,8 @@ namespace Gala
 
 				ui_group.add_child (old_actor);
 
+				unmaximizing.add (actor);
+
 				var scale_x = (float) ew / old_rect.width;
 				var scale_y = (float) eh / old_rect.height;
 
@@ -1258,6 +1268,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong unmaximize_handler_id = 0UL;
+				unmaximize_handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (unmaximize_handler_id);
+					unmaximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1290,10 +1306,10 @@ namespace Gala
 				unminimize_completed (actor);
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
-			if (end_animation (ref maximizing, actor))
-				size_change_completed (actor);
-			if (end_animation (ref unmaximizing, actor))
-				size_change_completed (actor);
+
+			end_animation (ref maximizing, actor);
+			end_animation (ref unmaximizing, actor);
+
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 		}
@@ -1367,6 +1383,7 @@ namespace Gala
 			// if we have a move action, pack that window to the static ones
 			if (moving != null) {
 				var moving_actor = (WindowActor) moving.get_compositor_private ();
+				kill_window_effects (moving_actor);
 
 				windows.prepend (moving_actor);
 				parents.prepend (moving_actor.get_parent ());
@@ -1390,6 +1407,8 @@ namespace Gala
 					(move_primary_only && window.get_monitor () != primary) ||
 					(moving != null && window == moving))
 					continue;
+
+				kill_window_effects (actor);
 
 				if (window.is_on_all_workspaces ()) {
 					// only collect docks here that need to be displayed on both workspaces
