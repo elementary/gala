@@ -919,7 +919,7 @@ namespace Gala
 				actor.set_pivot_point (0.0f, 0.0f);
 				actor.set_translation (old_inner_rect.x - ex, old_inner_rect.y - ey, 0.0f);
 				actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-				
+
 				actor.save_easing_state ();
 				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				actor.set_easing_duration (duration);
