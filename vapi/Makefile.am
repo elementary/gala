@@ -11,12 +11,18 @@ EXTRA_DIST = \
 	libmutter.vapi \
 	libmutter-0.deps \
 	libmutter-0.vapi \
+	libmutter-1.deps \
+	libmutter-1.vapi \
 	mutter-clutter-0.deps \
 	mutter-clutter-0.vapi \
+	mutter-clutter-1.deps \
+	mutter-clutter-1.vapi \
 	mutter-clutter-1.0.deps \
 	mutter-clutter-1.0.vapi \
 	mutter-cogl-0.deps \
 	mutter-cogl-0.vapi \
+	mutter-cogl-1.deps \
+	mutter-cogl-1.vapi \
 	mutter-cogl-1.0.deps \
 	mutter-cogl-1.0.vapi \
 	xfixes-4.0.vapi \
