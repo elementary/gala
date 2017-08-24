@@ -1311,6 +1311,11 @@ namespace Gala
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
 
+			/*FIXME:
+			It appears that at least with the version of mutter in Loki, `size_change_completed` has to be called 
+			right away after executing an action on `size_change`, if not it crashes. 
+			This should be added to the IF block above once gala support for Loki is dropped.
+			*/
 			end_animation (ref unmaximizing, actor);
 			end_animation (ref maximizing, actor);
 		}
