@@ -205,7 +205,7 @@ fi
 PKG_CHECK_MODULES(MUTTER326, [libmutter-1 >= 3.25], [have_mutter326=yes], [have_mutter326=no])
 if test "x$have_mutter326" = "xyes" ; then
     PKG_CHECK_MODULES(MUTTER326, [libmutter-1 >= 3.25.90])
-    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER326"
+    VALAFLAGS="$VALAFLAGS --define HAS_MUTTER320 --define HAS_MUTTER322 --define HAS_MUTTER324 --define HAS_MUTTER326"
     MUTTER_PKGS="mutter-cogl-1 mutter-cogl-pango-1 mutter-cogl-path-1 mutter-clutter-1 libmutter-1 >= 3.25.90"
     MUTTER_VALA_PKGS="--pkg mutter-cogl-1 --pkg mutter-clutter-1 --pkg libmutter-1"
     MUTTER_API="3.26"
