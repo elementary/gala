@@ -378,7 +378,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		if (container_clip != null) {
 			width = container_clip.get_width ();
 			height = container_clip.get_height ();
-		} else if (clone.has_clip){
+		} else if (clone.has_clip) {
 			float clone_clip_width = 0.0f, clone_clip_height = 0.0f;
 			clone.get_clip (null, null, out clone_clip_width, out clone_clip_height);
 			width = clone_clip_width;
