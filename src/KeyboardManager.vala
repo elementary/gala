@@ -47,7 +47,6 @@ namespace Gala
 		construct
 		{
 			var schema = GLib.SettingsSchemaSource.get_default ().lookup ("org.gnome.desktop.input-sources", true);
-			return_if_fail (schema != null);
 			
 			settings = new GLib.Settings.full (schema, null, null);
 			Signal.connect (settings, "changed", (Callback) set_keyboard_layout, this);
