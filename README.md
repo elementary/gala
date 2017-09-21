@@ -6,8 +6,7 @@ A window & compositing manager based on libmutter and designed by elementary for
 ## Building, Testing, and Installation
 
 You'll need the following dependencies:
-* automake
-* autopoint
+* meson
 * gettext (>= 0.19.6)
 * gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
@@ -22,16 +21,20 @@ You'll need the following dependencies:
 * libgtk-3-dev (>= 3.4.0)
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)
-* libtool
 * libxml2-utils
 * valac (>= 0.28.0)
 
-Run `autogen.sh` to configure the build environment and then `make` to build
+Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
 
-    ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu/
-    make
+    meson build --prefix=/usr
+    cd build
+    ninja
 
-To install, use `make install`, then execute with `gala --replace`
+You can set the `documentation` option to `true` to build the documentation. In the build directory, use `meson configure`
 
-    sudo make install
+    meson configure -Ddocumentation=true
+
+To install, use `ninja install`, then execute with `gala --replace`
+
+    sudo ninja install
     gala --replace
