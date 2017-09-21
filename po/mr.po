@@ -1,0 +1,190 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-21 17:53+0200\n"
+"PO-Revision-Date: 2017-07-01 13:46+0000\n"
+"Last-Translator: Abhijeet <hargange68b@gmail.com>\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/installer/"
+"installer/mr/>\n"
+"Language: mr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.14\n"
+"X-Launchpad-Export-Date: 2016-09-27 06:41+0000\n"
+
+#: src/WindowManager.vala:1589
+msgid "Does the display look OK?"
+msgstr ""
+
+#: src/WindowManager.vala:1592
+msgid "Keep This Configuration"
+msgstr ""
+
+#: src/WindowManager.vala:1593
+msgid "Restore Previous Configuration"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:65
+msgid "Minimize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:80
+msgid "Move"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:87
+msgid "Resize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:94
+msgid "Always on Top"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:103
+msgid "Always on Visible Workspace"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:112
+msgid "Move to Workspace Left"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:120
+msgid "Move to Workspace Right"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:128
+msgid "Close"
+msgstr "बंद करा"
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Unmaximize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Maximize"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:7
+msgid "multitasking-view"
+msgstr ""
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr ""
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+
+#: data/gala-other.desktop.in:6
+msgid "applications-other"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Back"
+#~ msgstr "बॅकस्पेस"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "Launchpad Contributions:\n"
+#~ "  Maxwell Barvian https://launchpad.net/~mbarvian-deactivatedaccount\n"
+#~ "  Sandeep Pinge https://launchpad.net/~spinge"
+
+#~ msgid "Calculator"
+#~ msgstr "गणनयंत्र"
+
+#~ msgid "History"
+#~ msgstr "इतिहास"
+
+#~ msgid "Value to add:"
+#~ msgstr "मूल्य जोडा:"
+
+#~ msgid "Result"
+#~ msgstr "निकाल"
+
+#~ msgid "Expression"
+#~ msgstr "सूत्रीकरण"
+
+#~ msgid "Add"
+#~ msgstr "जोडा"
+
+#~ msgid "Show extended functionality"
+#~ msgstr "विस्तारित कार्यक्षमतेला दर्शवा"
+
+#~ msgid "Calculate Result"
+#~ msgstr "निकाल मोजा"
+
+#~ msgid "Add last result"
+#~ msgstr "गेला निकाल जोडा"
+
+#~ msgid "Clear entry"
+#~ msgstr "नोंद खोडा"
+
+#~ msgid "Subtract"
+#~ msgstr "वजा"
+
+#~ msgid "Multiply"
+#~ msgstr "गुणिले"
+
+#~ msgid "Divide"
+#~ msgstr "भागिले"
+
+#~ msgid "Percentage"
+#~ msgstr "टक्केवारी"
+
+#~ msgid "Start Group"
+#~ msgstr "सुरू संच"
+
+#~ msgid "End Group"
+#~ msgstr "शेवट संच"
+
+#~ msgid "Exponent"
+#~ msgstr "एक्सपोनंट"
+
+#~ msgid "Root"
+#~ msgstr "रूट"
+
+#~ msgid "Sine"
+#~ msgstr "साईन"
+
+#~ msgid "Hyperbolic Sine"
+#~ msgstr "हायपरबोलीक साईन"
+
+#~ msgid "Cosine"
+#~ msgstr "कोसाईन"
+
+#~ msgid "Hyperbolic Cosine"
+#~ msgstr "हायपर्बोलिक कोसाईन"
+
+#~ msgid "Tangent"
+#~ msgstr "टँजंट"
+
+#~ msgid "Hyperbolic Tangent"
+#~ msgstr "हायपरबोलीक टँजंट"
+
+#~ msgid "Pi"
+#~ msgstr "पाय"
+
+#~ msgid "Euler's Number"
+#~ msgstr "युलरचा नंबर"
+
+#~ msgid "Hide extended functionality"
+#~ msgstr "विस्तारित कार्यक्षमतेला लपवा"
+
+#~ msgid "'%s' is invalid."
+#~ msgstr "'%s' अवैध आहे."
+
+#~ msgid "'%s' is unknown."
+#~ msgstr "'%s' अज्ञात आहे."

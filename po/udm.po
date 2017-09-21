@@ -1,0 +1,249 @@
+# Udmurt translation for pantheon-calculator
+# Copyright (c) 2016 Rosetta Contributors and Canonical Ltd 2016
+# This file is distributed under the same license as the pantheon-calculator package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pantheon-calculator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-01 14:30-0600\n"
+"PO-Revision-Date: 2016-05-27 15:29+0000\n"
+"Last-Translator: Maxwell Barvian <Unknown>\n"
+"Language-Team: Udmurt <udm@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2016-09-27 06:41+0000\n"
+"X-Generator: Launchpad (build 18204)\n"
+
+#: ../src/Application.vala:28
+msgid "Installer"
+msgstr ""
+
+#: ../src/Application.vala:40
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  Alexey https://launchpad.net/~ger-alex\n"
+"  Maxwell Barvian https://launchpad.net/~mbarvian-deactivatedaccount"
+
+#: ../src/Dialogs/EndSessionDialog.vala:43
+msgid "Are you sure you want to Shut Down?"
+msgstr ""
+
+#: ../src/Dialogs/EndSessionDialog.vala:50
+msgid "This will cancel installation and turn off this device."
+msgstr ""
+
+#: ../src/Dialogs/EndSessionDialog.vala:66 ../src/Views/SuccessView.vala:54
+msgid "Restart"
+msgstr ""
+
+#: ../src/Dialogs/EndSessionDialog.vala:68
+msgid "Cancel"
+msgstr ""
+
+#: ../src/Dialogs/EndSessionDialog.vala:70 ../src/Views/SuccessView.vala:52
+#: ../src/Views/TryInstallView.vala:103
+msgid "Shut Down"
+msgstr ""
+
+#: ../src/Helpers/LocaleHelper.vala:114
+#: ../src/Views/KeyboardLayoutView.vala:133
+msgid "%s…"
+msgstr ""
+
+#: ../src/MainWindow.vala:39 ../src/Views/TryInstallView.vala:37
+#: ../src/Views/TryInstallView.vala:99
+msgid "Install %s"
+msgstr ""
+
+#: ../src/Utils.vala:156
+msgid "Operating System"
+msgstr ""
+
+#: ../src/Views/AbstractInstallerView.vala:47
+msgid "Cancel Installation"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:61
+msgid "Ignore"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:208
+msgid "Not Enough Space"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:209
+msgid ""
+"There is not enough room on your device to install %s. We recommend a "
+"minimum of %s of storage."
+msgstr ""
+
+#: ../src/Views/CheckView.vala:220
+msgid "Your Device May Be Too Slow"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:221
+msgid ""
+"Your device doesn't meet the recommended hardware requirements. This may "
+"cause it to run slowly or freeze."
+msgstr ""
+
+#: ../src/Views/CheckView.vala:237
+msgid "Connect to a Power Source"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:238
+msgid ""
+"Your device is running on battery power. It's recommended to be plugged in "
+"while installing."
+msgstr ""
+
+#: ../src/Views/CheckView.vala:293
+msgid "Recommended:"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:297
+msgid "Your Device:"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:301 ../src/Views/CheckView.vala:303
+msgid "Processor:"
+msgstr ""
+
+#: ../src/Views/CheckView.vala:309 ../src/Views/CheckView.vala:311
+msgid "Memory:"
+msgstr ""
+
+#: ../src/Views/DiskView.vala:49
+msgid "Select a drive to use for installation"
+msgstr ""
+
+#: ../src/Views/DiskView.vala:54
+msgid ""
+"This will erase all data on the selected drive. If you have not backed your "
+"data up, you can cancel the installation and use Demo Mode."
+msgstr ""
+
+#: ../src/Views/DiskView.vala:65
+msgid "Getting the current configuration…"
+msgstr ""
+
+#: ../src/Views/DiskView.vala:94
+msgid "Erase and Install"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:39
+msgid "Could not install %s"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:45
+msgid ""
+"The installation failed, so your device may not restart properly. You can "
+"try one of the following:"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:51
+msgid "• Try the installation again"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:57
+msgid "• Use Demo Mode and try to manually recover"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:63
+msgid "• Restart your device to boot from another drive"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:81
+msgid "Restart Device"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:83 ../src/Views/TryInstallView.vala:97
+msgid "Try Demo Mode"
+msgstr ""
+
+#: ../src/Views/ErrorView.vala:85
+msgid "Try Installing Again"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:28
+msgid "Keyboard Layout"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:36
+msgid "Type to test your layout"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:39
+msgid "Show keyboard layout"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:54 ../src/Views/TryInstallView.vala:95
+msgid "Back"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:56 ../src/Views/LanguageView.vala:110
+#: ../src/Views/LanguageView.vala:147
+msgid "Select"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:96
+msgid "Default"
+msgstr ""
+
+#: ../src/Views/KeyboardLayoutView.vala:101
+msgid "Input Language"
+msgstr ""
+
+#: ../src/Views/LanguageView.vala:178
+msgid "Select a Language"
+msgstr ""
+
+#: ../src/Views/LanguageView.vala:206
+msgid "Currently active language"
+msgstr ""
+
+#: ../src/Views/SuccessView.vala:32
+msgid "Restart your device to continue setting up"
+msgstr ""
+
+#: ../src/Views/SuccessView.vala:38
+msgid ""
+"%s has been installed. Your device will automatically restart in 30 seconds "
+"to set up a new user, or you can shut down now and set a user up later."
+msgstr ""
+
+#: ../src/Views/TryInstallView.vala:42
+msgid ""
+"You can install %s on this device now, or try Demo Mode without installing."
+msgstr ""
+
+#: ../src/Views/TryInstallView.vala:48
+msgid "Data from your previous operating system is unchanged in Demo Mode."
+msgstr ""
+
+#: ../src/Views/TryInstallView.vala:66
+msgid "Any changes you make in Demo Mode will not be saved."
+msgstr ""
+
+#: ../src/Views/TryInstallView.vala:74
+msgid ""
+"You can always return from Demo Mode to the installer by selecting the "
+"Install icon."
+msgstr ""
+
+#~ msgid "Calculator"
+#~ msgstr "лыдъет"
+
+#~ msgid "Close"
+#~ msgstr "ворсано"
+
+#~ msgid "Add"
+#~ msgstr "ватсано"
+
+#~ msgid "Clear entry"
+#~ msgstr "Сузяно"

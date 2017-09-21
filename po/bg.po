@@ -7,66 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-20 08:08+0100\n"
+"POT-Creation-Date: 2017-09-21 17:53+0200\n"
 "PO-Revision-Date: 2016-08-11 13:32+0000\n"
 "Last-Translator: Stanislav <stunito0o0o0@gmail.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
+"Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
-"Language: bg\n"
 
-#: src/WindowManager.vala:1636
+#: src/WindowManager.vala:1589
 msgid "Does the display look OK?"
 msgstr "Наред ли е екрана?"
 
-#: src/WindowManager.vala:1639
+#: src/WindowManager.vala:1592
 msgid "Keep This Configuration"
 msgstr "Запазване на тези настройки"
 
-#: src/WindowManager.vala:1640
+#: src/WindowManager.vala:1593
 msgid "Restore Previous Configuration"
 msgstr "Възстановяване на предишните настройки"
 
-#: src/Widgets/WindowMenu.vala:56
+#: src/Widgets/WindowMenu.vala:65
 msgid "Minimize"
 msgstr "Смаляване"
 
-#: src/Widgets/WindowMenu.vala:71
+#: src/Widgets/WindowMenu.vala:80
 msgid "Move"
 msgstr "Преместване"
 
-#: src/Widgets/WindowMenu.vala:78
+#: src/Widgets/WindowMenu.vala:87
 msgid "Resize"
 msgstr "Преоразмеряване"
 
-#: src/Widgets/WindowMenu.vala:85
+#: src/Widgets/WindowMenu.vala:94
 msgid "Always on Top"
 msgstr "Винаги отгоре"
 
-#: src/Widgets/WindowMenu.vala:94
+#: src/Widgets/WindowMenu.vala:103
 msgid "Always on Visible Workspace"
 msgstr "Винаги на видимия работен плот"
 
-#: src/Widgets/WindowMenu.vala:103
+#: src/Widgets/WindowMenu.vala:112
 msgid "Move to Workspace Left"
 msgstr "Преместване на работния плот вляво"
 
-#: src/Widgets/WindowMenu.vala:111
+#: src/Widgets/WindowMenu.vala:120
 msgid "Move to Workspace Right"
 msgstr "Преместване на работния плот вдясно"
 
-#: src/Widgets/WindowMenu.vala:119
+#: src/Widgets/WindowMenu.vala:128
 msgid "Close"
 msgstr "Затваряне"
 
-#: src/Widgets/WindowMenu.vala:131
+#: src/Widgets/WindowMenu.vala:140
 msgid "Unmaximize"
 msgstr "Връщане от уголемяване"
 
-#: src/Widgets/WindowMenu.vala:131
+#: src/Widgets/WindowMenu.vala:140
 msgid "Maximize"
 msgstr "Уголемяване"
 
@@ -95,320 +95,244 @@ msgstr ""
 msgid "applications-other"
 msgstr ""
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:21
-msgid "Action for the top left corner"
-msgstr "Действие на горния ляв ъгъл"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Действие на горния ляв ъгъл"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:26
-msgid "Algorithm for window overview layout"
-msgstr "Последователност в оформлението за преглед на прозорци"
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Последователност в оформлението за преглед на прозорци"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Изберете последователността използвана за прказване на прозорците"
+#~ msgid "Choose the algorithm used for exposing the windows"
+#~ msgstr "Изберете последователността използвана за прказване на прозорците"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:31
-msgid "Action for the top right corner"
-msgstr "Действие на горния десен ъгъл"
+#~ msgid "Action for the top right corner"
+#~ msgstr "Действие на горния десен ъгъл"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:36
-msgid "Action for the bottom left corner"
-msgstr "Действие на долния ляв ъгъл"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Действие на долния ляв ъгъл"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:41
-msgid "Action for the bottom right corner"
-msgstr "Действие на долния десен ъгъл"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Действие на долния десен ъгъл"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:46
-msgid ""
-"The command that will be executed for the hotcorner action 'custom-command' "
-"or multiple"
-msgstr ""
-"Заповедта, която ще бъде изпълнена за действието при горещия ъгъл 'къстом-"
-"команд' или множеството"
+#~ msgid ""
+#~ "The command that will be executed for the hotcorner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr ""
+#~ "Заповедта, която ще бъде изпълнена за действието при горещия ъгъл 'къстом-"
+#~ "команд' или множеството"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
-msgid ""
-"If you just put a single command, it will be used for every hotcorner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"Ако само сложете една заповед, тя ще бъде ползвана за всеки горещ ъгъл. Ако "
-"вместо това използвате шаблон 'горещъгъл-гореляво:заповед;;горещъгъл-"
-"долудясно:заповед', заповедите ще бъдат изпълненеи на определения горещ "
-"ъгъл. Възможни програмни думи са  'hotcorner-[topleft; topright; bottomleft; "
-"bottomright]'  последвани от  ':' и тогава заповедта. ';;' се използва като "
-"отделител между две заповеди."
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hotcorner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "Ако само сложете една заповед, тя ще бъде ползвана за всеки горещ ъгъл. "
+#~ "Ако вместо това използвате шаблон 'горещъгъл-гореляво:заповед;;горещъгъл-"
+#~ "долудясно:заповед', заповедите ще бъдат изпълненеи на определения горещ "
+#~ "ъгъл. Възможни програмни думи са  'hotcorner-[topleft; topright; "
+#~ "bottomleft; bottomright]'  последвани от  ':' и тогава заповедта. ';;' се "
+#~ "използва като отделител между две заповеди."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:56
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
-"Разреши ъгловото плочкуване кагато прозорците са метнати в ъглите на екрана"
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr ""
+#~ "Разреши ъгловото плочкуване кагато прозорците са метнати в ъглите на "
+#~ "екрана"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Ако е разрешено, мятането на прозорци на отвесните екранни ръбове ще ги "
-"увеличи по дължина изцяло и по ширина на половина от достъпното място. "
-"Мятането на прозорци в горната част екрана ги оголемява на цял екран."
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Ако е разрешено, мятането на прозорци на отвесните екранни ръбове ще ги "
+#~ "увеличи по дължина изцяло и по ширина на половина от достъпното място. "
+#~ "Мятането на прозорци в горната част екрана ги оголемява на цял екран."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:61
-msgid "Panel main menu action"
-msgstr "Основно действие на панелното меню"
+#~ msgid "Panel main menu action"
+#~ msgstr "Основно действие на панелното меню"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid ""
-"Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr ""
-"Настройва коя команда да се изпълни когато копчето за основното панелното "
-"меню е натиснато"
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed"
+#~ msgstr ""
+#~ "Настройва коя команда да се изпълни когато копчето за основното панелното "
+#~ "меню е натиснато"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:76
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Разреши променлив брой на работни плотове, вместо крайно определен"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Разреши променлив брой на работни плотове, вместо крайно определен"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
-"workspaces instead of a static, fixed number"
-msgstr ""
-"Използване на променлив намалящ или увеличаващ се, при нужда, брой работни "
-"плотове, вместо точно крайно определен"
+#~ msgid ""
+#~ "Use a dynamically increasing or decreseasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number"
+#~ msgstr ""
+#~ "Използване на променлив намалящ или увеличаващ се, при нужда, брой "
+#~ "работни плотове, вместо точно крайно определен"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:81
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Имена разпознати като панелни прозорци за прозоречния превключвател"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Имена разпознати като панелни прозорци за прозоречния превключвател"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid ""
-"When launching the window-switcher, gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
-"При пускането на прозоречния превключвател, Гала превърта списъка и се "
-"апитва да намери прозореца съвпадащ на дадените имена. Ако намери такива, ще "
-"ги скрие, когато превключвателя бъде затворен."
+#~ msgid ""
+#~ "When launching the window-switcher, gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "При пускането на прозоречния превключвател, Гала превърта списъка и се "
+#~ "апитва да намери прозореца съвпадащ на дадените имена. Ако намери такива, "
+#~ "ще ги скрие, когато превключвателя бъде затворен."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:89
-msgid "Shortcut to move to first workspace"
-msgstr "Клавиши за преминаване на първи работен плот"
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Клавиши за преминаване на първи работен плот"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:94
-msgid "Shortcut to move to last workspace"
-msgstr "Клавиши за преминаване на последен работен плот"
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Клавиши за преминаване на последен работен плот"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:99
-msgid "Shortcut to move the current window to first workspace"
-msgstr "Клавиши за преместване на текущия прозорец на първи работен плот"
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr "Клавиши за преместване на текущия прозорец на първи работен плот"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:104
-msgid "Shortcut to move the current window to last workspace"
-msgstr "Клавиши за преместване на текущия прозорец на последния работен плот"
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr ""
+#~ "Клавиши за преместване на текущия прозорец на последния работен плот"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:109
-msgid "Zoom in"
-msgstr "Увеличаване на мащаба"
+#~ msgid "Zoom in"
+#~ msgstr "Увеличаване на мащаба"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:114
-msgid "Zoom out"
-msgstr "Намаляване на мащаба"
+#~ msgid "Zoom out"
+#~ msgstr "Намаляване на мащаба"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:118
-msgid "Shortcut to open the window overview"
-msgstr "Клавиши за отваряне на прегледа на прозорци"
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Клавиши за отваряне на прегледа на прозорци"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:123
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Клавиши за отваряне на прегледа на всички прозорци"
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Клавиши за отваряне на прегледа на всички прозорци"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:128
-#: data/org.pantheon.desktop.gala.gschema.xml.in:132
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
-"Клавиши за превъртане към следващия работен плот надясно или обратно към "
-"първия"
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr ""
+#~ "Клавиши за превъртане към следващия работен плот надясно или обратно към "
+#~ "първия"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:136
-msgid "Cycle to next keyboard layout"
-msgstr "Превключи към следващата клавиатурна подредба"
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Превключи към следващата клавиатурна подредба"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Превключи към предишната клавиатурна подредба"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:141
-msgid "Cycle to previous keyboard layout"
-msgstr "Превключи към предишната клавиатурна подредба"
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Закрепи междинните прозорци"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:149
-msgid "Attach modal dialogs"
-msgstr "Закрепи междинните прозорци"
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "Когато е обозначено вярно, вместо независими заглавни ленти, междинните "
+#~ "прозорци ще изглеждат прикрепени към заглавната лента на процореца, към "
+#~ "който те са съпричастни. Двата прозореца ще се движат заедно."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:150
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"Когато е обозначено вярно, вместо независими заглавни ленти, междинните "
-"прозорци ще изглеждат прикрепени към заглавната лента на процореца, към "
-"който те са съпричастни. Двата прозореца ще се движат заедно."
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Подредба на копчетата в заглавната лента"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:154
-msgid "Arrangement of buttons on the titlebar"
-msgstr "Подредба на копчетата в заглавната лента"
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Подредба на бутоните в заглавната лента. Стойността трябва да е низ от "
+#~ "вида „menu:minimize,maximize,spacer,close“. С „:“ се разделят левия от "
+#~ "десния ъгъл на прозореца, а със „,“ — имената на бутоните. Не са "
+#~ "позволени повторения на бутоните. Непознатите имена се игнорират, така че "
+#~ "в бъдещи версии на Metacity да могат да се добавят нови бутони, без да се "
+#~ "пречи на старите версии. Може да се използва специален етикет „spacer“ за "
+#~ "вмъкване на шпация между два съседни бутона."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"Подредба на бутоните в заглавната лента. Стойността трябва да е низ от вида "
-"„menu:minimize,maximize,spacer,close“. С „:“ се разделят левия от десния "
-"ъгъл на прозореца, а със „,“ — имената на бутоните. Не са позволени "
-"повторения на бутоните. Непознатите имена се игнорират, така че в бъдещи "
-"версии на Metacity да могат да се добавят нови бутони, без да се пречи на "
-"старите версии. Може да се използва специален етикет „spacer“ за вмъкване на "
-"шпация между два съседни бутона."
+#~ msgid "Make parent windows that spawn a modal attached dialog being dimmed"
+#~ msgstr ""
+#~ "Нека основните прозорци, които създават междинни прозорци, да бъдат "
+#~ "затъмнени"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:159
-msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
-"Нека основните прозорци, които създават междинни прозорци, да бъдат затъмнени"
+#~ msgid ""
+#~ "The opacity of the windows located in the background in the alt-tab-"
+#~ "switcher."
+#~ msgstr ""
+#~ "Непрозрачността на прозорците намерени на фона на алт-табулация-"
+#~ "превключвателя."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:164
-msgid ""
-"The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
-"Непрозрачността на прозорците намерени на фона на алт-табулация-"
-"превключвателя."
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Фоново изображение за  Превключвателя на работни места"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:168
-msgid "Background-image used in the workspace-switcher"
-msgstr "Фоново изображение за  Превключвателя на работни места"
+#~ msgid "Enable Animations"
+#~ msgstr "Разрешени анимации"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "Enable Animations"
-msgstr "Разрешени анимации"
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Дали да се показват анимации. Забележка: това е глобална настройка, тя "
+#~ "променя поведението на мениджъра на прозорци, панела и др."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:176
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"Дали да се показват анимации. Забележка: това е глобална настройка, тя "
-"променя поведението на мениджъра на прозорци, панела и др."
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr ""
+#~ "Времетраене на анимации при използването им за намаляни илил увеличаване "
+#~ "на прозореца"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
-"Времетраене на анимации при използването им за намаляни илил увеличаване на "
-"прозореца"
+#~ msgid "Duration of the close animation"
+#~ msgstr "Времетраене на анимацията за затварянето"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:187
-msgid "Duration of the close animation"
-msgstr "Времетраене на анимацията за затварянето"
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Времетраене на анимацията за намалянето"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:191
-msgid "Duration of the minimize animation"
-msgstr "Времетраене на анимацията за намалянето"
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Времетраене на анимацията за превключване на работния плот"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:195
-msgid "Duration of the workspace switch animation"
-msgstr "Времетраене на анимацията за превключване на работния плот"
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Времетраене на анимацията на менюто"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:199
-msgid "Duration of the menu mapping animation"
-msgstr "Времетраене на анимацията на менюто"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Определя сянката на обикновен съсредоточен прозорец"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
-msgid "Defines the shadow of normal focused windows"
-msgstr "Определя сянката на обикновен съсредоточен прозорец"
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]"
+#~ msgstr ""
+#~ "Първото число е радиуса на замъгляването, второто е горното избелване "
+#~ "(обикновено е просто -1), а третото и четвъртото са х- и у-разликите. "
+#~ "Последното е непрозрачносттал Така, че [blur-radius, top-fade, x-offset, "
+#~ "y-offset, opacity]"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:207
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
-msgstr ""
-"Първото число е радиуса на замъгляването, второто е горното избелване "
-"(обикновено е просто -1), а третото и четвъртото са х- и у-разликите. "
-"Последното е непрозрачносттал Така, че [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Определете сянката на обикновен несъсредоточен прозорец"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:211
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Определете сянката на обикновен несъсредоточен прозорец"
+#~ msgid "See normal-focused"
+#~ msgstr "Вижте обикновенно съсредоточените"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:212
-#: data/org.pantheon.desktop.gala.gschema.xml.in:217
-#: data/org.pantheon.desktop.gala.gschema.xml.in:222
-#: data/org.pantheon.desktop.gala.gschema.xml.in:227
-msgid "See normal-focused"
-msgstr "Вижте обикновенно съсредоточените"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Определя сянката на менюто"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:216
-msgid "Defines the shadow of a menu"
-msgstr "Определя сянката на менюто"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Определя сянката на съсредоточен диалог"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:221
-msgid "Defines the shadow of a focused dialog"
-msgstr "Определя сянката на съсредоточен диалог"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Определя сянката на несъсредоточен диалог"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:226
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Определя сянката на несъсредоточен диалог"
+#~ msgid "Disable all notifications"
+#~ msgstr "Забрани всички известия"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "Disable all notifications"
-msgstr "Забрани всички известия"
+#~ msgid "Enable bubbles"
+#~ msgstr "Включване на мехурчетата"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:242
-msgid "Enable bubbles"
-msgstr "Включване на мехурчетата"
+#~ msgid "Enable sounds"
+#~ msgstr "Включи звуците"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:246
-msgid "Enable sounds"
-msgstr "Включи звуците"
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Покажи пропуснатите известия в центъра на известията"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:250
-msgid "Show missed notifications in notification center"
-msgstr "Покажи пропуснатите известия в центъра на известията"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
-msgid "Enable rounded corner mask"
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:262
-msgid "Corner radius"
-msgstr "Радиус на заобляне"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:266
-msgid "Disable corner mask on fullscreen"
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:267
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:271
-msgid "Only show corner masks on primary monitor"
-msgstr ""
+#~ msgid "Corner radius"
+#~ msgstr "Радиус на заобляне"
 
 #~ msgid "Cancel"
 #~ msgstr "Отказ"

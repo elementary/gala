@@ -1,0 +1,187 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-21 17:53+0200\n"
+"PO-Revision-Date: 2016-06-26 17:01+0000\n"
+"Last-Translator: Bone Pyae Sone <bone.burma@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2016-09-27 06:40+0000\n"
+"X-Generator: Launchpad (build 18204)\n"
+
+#: src/WindowManager.vala:1589
+msgid "Does the display look OK?"
+msgstr ""
+
+#: src/WindowManager.vala:1592
+msgid "Keep This Configuration"
+msgstr ""
+
+#: src/WindowManager.vala:1593
+msgid "Restore Previous Configuration"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:65
+msgid "Minimize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:80
+msgid "Move"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:87
+msgid "Resize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:94
+msgid "Always on Top"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:103
+msgid "Always on Visible Workspace"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:112
+msgid "Move to Workspace Left"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:120
+msgid "Move to Workspace Right"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:128
+msgid "Close"
+msgstr "ပိတ်"
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Unmaximize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Maximize"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:7
+msgid "multitasking-view"
+msgstr ""
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr ""
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+
+#: data/gala-other.desktop.in:6
+msgid "applications-other"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Back"
+#~ msgstr "Backspace"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "Launchpad Contributions:\n"
+#~ "  Bone Pyae Sone https://launchpad.net/~bonepyaesone"
+
+#~ msgid "Calculator"
+#~ msgstr "ဂဏန်းတွက်စက်"
+
+#~ msgid "History"
+#~ msgstr "မှတ်တမ်း"
+
+#~ msgid "Value to add:"
+#~ msgstr "ထပ်ပေါင်းမည့်တန်ဖိုး"
+
+#~ msgid "Result"
+#~ msgstr "ရလဒ်"
+
+#~ msgid "Expression"
+#~ msgstr "ထုတ်ဖော်ချက်"
+
+#~ msgid "Add"
+#~ msgstr "ပေါင်းထည့်"
+
+#~ msgid "Show extended functionality"
+#~ msgstr "ထပ်တိုးထားသည့် ဖန်ရှင်များပြ"
+
+#~ msgid "Calculate Result"
+#~ msgstr "အဖြေတွက်"
+
+#~ msgid "Add last result"
+#~ msgstr "နောက်ဆုံးအဖြေကို ထပ်ထည့်"
+
+#~ msgid "Clear entry"
+#~ msgstr "အားလုံးဖျက်"
+
+#~ msgid "Subtract"
+#~ msgstr "အနှုတ်"
+
+#~ msgid "Multiply"
+#~ msgstr "အမြှောက်"
+
+#~ msgid "Divide"
+#~ msgstr "အစား"
+
+#~ msgid "Percentage"
+#~ msgstr "ရာခိုင်နူန်း"
+
+#~ msgid "Start Group"
+#~ msgstr "အဖွဲ့ဖွဲ့"
+
+#~ msgid "End Group"
+#~ msgstr "အဖွဲ့ပိတ်"
+
+#~ msgid "Exponent"
+#~ msgstr "ထပ်ကိန်း"
+
+#~ msgid "Root"
+#~ msgstr "ကိန်းရင်း"
+
+#~ msgid "Sine"
+#~ msgstr "Sine"
+
+#~ msgid "Hyperbolic Sine"
+#~ msgstr "Hyperbolic Sine"
+
+#~ msgid "Cosine"
+#~ msgstr "Cosine"
+
+#~ msgid "Hyperbolic Cosine"
+#~ msgstr "Hyperbolic Cosine"
+
+#~ msgid "Tangent"
+#~ msgstr "Tangent"
+
+#~ msgid "Hyperbolic Tangent"
+#~ msgstr "Hyperbolic Tangent"
+
+#~ msgid "Pi"
+#~ msgstr "Pi"
+
+#~ msgid "Euler's Number"
+#~ msgstr "Euler's နံပါတ်"
+
+#~ msgid "Hide extended functionality"
+#~ msgstr "ထပ်တိုးဖန်ရှင်"
+
+#~ msgid "'%s' is invalid."
+#~ msgstr "'%s' မှာ မရပါ"
+
+#~ msgid "'%s' is unknown."
+#~ msgstr "'%s' ကို မသိရှိပါ"

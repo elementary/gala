@@ -7,66 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-20 08:08+0100\n"
+"POT-Creation-Date: 2017-09-21 17:53+0200\n"
 "PO-Revision-Date: 2015-12-04 09:54+0000\n"
 "Last-Translator: Harald Eilertsen <haraldei@anduin.net>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
-"Language: nb\n"
 
-#: src/WindowManager.vala:1636
+#: src/WindowManager.vala:1589
 msgid "Does the display look OK?"
 msgstr "Ser skjermen bra ut?"
 
-#: src/WindowManager.vala:1639
+#: src/WindowManager.vala:1592
 msgid "Keep This Configuration"
 msgstr "Behold denne konfigurasjonen"
 
-#: src/WindowManager.vala:1640
+#: src/WindowManager.vala:1593
 msgid "Restore Previous Configuration"
 msgstr "Gjenopprett forrige konfigurasjon"
 
-#: src/Widgets/WindowMenu.vala:56
+#: src/Widgets/WindowMenu.vala:65
 msgid "Minimize"
 msgstr "Minimér"
 
-#: src/Widgets/WindowMenu.vala:71
+#: src/Widgets/WindowMenu.vala:80
 msgid "Move"
 msgstr "Flytt"
 
-#: src/Widgets/WindowMenu.vala:78
+#: src/Widgets/WindowMenu.vala:87
 msgid "Resize"
 msgstr "Skaler"
 
-#: src/Widgets/WindowMenu.vala:85
+#: src/Widgets/WindowMenu.vala:94
 msgid "Always on Top"
 msgstr "Alltid øverst"
 
-#: src/Widgets/WindowMenu.vala:94
+#: src/Widgets/WindowMenu.vala:103
 msgid "Always on Visible Workspace"
 msgstr "Alltid på synlig arbeidsområde"
 
-#: src/Widgets/WindowMenu.vala:103
+#: src/Widgets/WindowMenu.vala:112
 msgid "Move to Workspace Left"
 msgstr "Flytt til arbeidsområdet til venstre"
 
-#: src/Widgets/WindowMenu.vala:111
+#: src/Widgets/WindowMenu.vala:120
 msgid "Move to Workspace Right"
 msgstr "Flytt til arbeidsområdet til høyre"
 
-#: src/Widgets/WindowMenu.vala:119
+#: src/Widgets/WindowMenu.vala:128
 msgid "Close"
 msgstr "Lukk"
 
-#: src/Widgets/WindowMenu.vala:131
+#: src/Widgets/WindowMenu.vala:140
 msgid "Unmaximize"
 msgstr "Gjenopprett"
 
-#: src/Widgets/WindowMenu.vala:131
+#: src/Widgets/WindowMenu.vala:140
 msgid "Maximize"
 msgstr "Maksimér"
 
@@ -95,294 +95,183 @@ msgstr ""
 msgid "applications-other"
 msgstr ""
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:21
-msgid "Action for the top left corner"
-msgstr "Handling for hjørnet oppe til venstre"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Handling for hjørnet oppe til venstre"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:26
-msgid "Algorithm for window overview layout"
-msgstr "Algoritme for oppsettet av vindusoversikt"
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Algoritme for oppsettet av vindusoversikt"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Velg algoritmen til bruk for visning av vinduer"
+#~ msgid "Choose the algorithm used for exposing the windows"
+#~ msgstr "Velg algoritmen til bruk for visning av vinduer"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:31
-msgid "Action for the top right corner"
-msgstr "Handling for hjørnet oppe til høyre"
+#~ msgid "Action for the top right corner"
+#~ msgstr "Handling for hjørnet oppe til høyre"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:36
-msgid "Action for the bottom left corner"
-msgstr "Handling for hjørnet nede til venstre"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Handling for hjørnet nede til venstre"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:41
-msgid "Action for the bottom right corner"
-msgstr "Handling for hjørnet nede til høyre"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Handling for hjørnet nede til høyre"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:46
-msgid ""
-"The command that will be executed for the hotcorner action 'custom-command' "
-"or multiple"
-msgstr "H"
+#~ msgid ""
+#~ "The command that will be executed for the hotcorner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr "H"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
-msgid ""
-"If you just put a single command, it will be used for every hotcorner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr "Aktivér kantflislegging når vinduer trekkes mot skjermkantene"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:56
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr "Aktivér kantflislegging når vinduer trekkes mot skjermkantene"
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Når dette er slått på, kan vinduer trekkes mot kantene av skjermen for å "
+#~ "maksimere dem vertikalt i gjeldende halvdel av skjermen. Når vinduer "
+#~ "trekkes mot skjermens toppkant, blir de maksimert."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Når dette er slått på, kan vinduer trekkes mot kantene av skjermen for å "
-"maksimere dem vertikalt i gjeldende halvdel av skjermen. Når vinduer trekkes "
-"mot skjermens toppkant, blir de maksimert."
+#~ msgid "Panel main menu action"
+#~ msgstr "Handling for panelets hovedmeny"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:61
-msgid "Panel main menu action"
-msgstr "Handling for panelets hovedmeny"
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed"
+#~ msgstr ""
+#~ "Kjører kommandoen når  tastekombinasjonen for panel-hovedmeny trykkes"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid ""
-"Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr ""
-"Kjører kommandoen når  tastekombinasjonen for panel-hovedmeny trykkes"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Bruk dynamisk arbeidsområde istedenfor statiske"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:76
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Bruk dynamisk arbeidsområde istedenfor statiske"
+#~ msgid ""
+#~ "Use a dynamically increasing or decreseasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number"
+#~ msgstr ""
+#~ "Bruk et dynamisk antall arbeidsområder i steden for et statisk, fastsatt "
+#~ "antall"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
-"workspaces instead of a static, fixed number"
-msgstr ""
-"Bruk et dynamisk antall arbeidsområder i steden for et statisk, fastsatt "
-"antall"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Navn som gjenkjennes som dokkvinduer av vinduvelgeren"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:81
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Navn som gjenkjennes som dokkvinduer av vinduvelgeren"
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Snarvei for å gå til det første arbeidsområdet"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid ""
-"When launching the window-switcher, gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Snarvei for å gå til det siste arbeidsområdet"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:89
-msgid "Shortcut to move to first workspace"
-msgstr "Snarvei for å gå til det første arbeidsområdet"
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr ""
+#~ "Snarvei til å flytte det aktive vinduet til det første arbeidsområdet"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:94
-msgid "Shortcut to move to last workspace"
-msgstr "Snarvei for å gå til det siste arbeidsområdet"
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr ""
+#~ "Snarvei til å flytte det aktive vinduet til det siste arbeidsområdet"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:99
-msgid "Shortcut to move the current window to first workspace"
-msgstr ""
-"Snarvei til å flytte det aktive vinduet til det første arbeidsområdet"
+#~ msgid "Zoom in"
+#~ msgstr "Zoom inn"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:104
-msgid "Shortcut to move the current window to last workspace"
-msgstr "Snarvei til å flytte det aktive vinduet til det siste arbeidsområdet"
+#~ msgid "Zoom out"
+#~ msgstr "Zoom ut"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:109
-msgid "Zoom in"
-msgstr "Zoom inn"
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Snarvei for å åpne vindusoversikten"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:114
-msgid "Zoom out"
-msgstr "Zoom ut"
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Snarvei for å åpne oversikten over alle vinduer"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:118
-msgid "Shortcut to open the window overview"
-msgstr "Snarvei for å åpne vindusoversikten"
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr "Bytt til neste arbeidsområde til høyre eller tilbake til det første"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:123
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Snarvei for å åpne oversikten over alle vinduer"
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Bytt til neste tastaturoppsett"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:128
-#: data/org.pantheon.desktop.gala.gschema.xml.in:132
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr "Bytt til neste arbeidsområde til høyre eller tilbake til det første"
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Bytt til forrige tastaturoppsett"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:136
-msgid "Cycle to next keyboard layout"
-msgstr "Bytt til neste tastaturoppsett"
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Fest modale dialoger"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Plassering av knapper på tittellinjen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:141
-msgid "Cycle to previous keyboard layout"
-msgstr "Bytt til forrige tastaturoppsett"
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Plassering av knapper på tittellinjen. Verdien skal være en streng av "
+#~ "type «menu:minimize,maximize,spacer,close»; kolon skiller venstre hjørne "
+#~ "av vinduet fra høyre hjørne, og knappenavnene skilles av komma. "
+#~ "Duplisering av knapper er ikke lovlig. Ukjente knapper ignoreres uten "
+#~ "tilbakemelding, slik at knapper kan legges til i fremtidige versjoner "
+#~ "uten å ødelegge for eldre versjoner. En tagg for mellomrom kan brukes for "
+#~ "å sette inn mellomrom mellom to knapper."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:149
-msgid "Attach modal dialogs"
-msgstr "Fest modale dialoger"
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Bakgrunnsbilde brukt i arbeidsområde-velger"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:150
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
+#~ msgid "Enable Animations"
+#~ msgstr "Aktiver animasjoner"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:154
-msgid "Arrangement of buttons on the titlebar"
-msgstr "Plassering av knapper på tittellinjen"
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Hvorvidt animasjoner skal vises. Merk: Dette er en global nøkkel, den "
+#~ "endrer oppførselen til vindusbehandleren, panelet osv."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"Plassering av knapper på tittellinjen. Verdien skal være en streng av type "
-"«menu:minimize,maximize,spacer,close»; kolon skiller venstre hjørne av "
-"vinduet fra høyre hjørne, og knappenavnene skilles av komma. Duplisering av "
-"knapper er ikke lovlig. Ukjente knapper ignoreres uten tilbakemelding, slik "
-"at knapper kan legges til i fremtidige versjoner uten å ødelegge for eldre "
-"versjoner. En tagg for mellomrom kan brukes for å sette inn mellomrom mellom "
-"to knapper."
+#~ msgid "Duration of the close animation"
+#~ msgstr "Varighet for animasjon ved lukking"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:159
-msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Varighet for animasjon ved minimering"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:164
-msgid ""
-"The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Varighet for animasjon ved bytte av arbeidsområde"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:168
-msgid "Background-image used in the workspace-switcher"
-msgstr "Bakgrunnsbilde brukt i arbeidsområde-velger"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Definerer skyggen til vanlige vinduer i fokus"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "Enable Animations"
-msgstr "Aktiver animasjoner"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Definerer skyggen til vanlige vinduer ute av fokus"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:176
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"Hvorvidt animasjoner skal vises. Merk: Dette er en global nøkkel, den endrer "
-"oppførselen til vindusbehandleren, panelet osv."
+#~ msgid "See normal-focused"
+#~ msgstr "Se normal-fokusert"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Definerer skyggen av en meny"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:187
-msgid "Duration of the close animation"
-msgstr "Varighet for animasjon ved lukking"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Definerer skuggen av en dialogboks i fokus"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:191
-msgid "Duration of the minimize animation"
-msgstr "Varighet for animasjon ved minimering"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Definerer skuggen av en dialogboks ute av fokus"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:195
-msgid "Duration of the workspace switch animation"
-msgstr "Varighet for animasjon ved bytte av arbeidsområde"
+#~ msgid "Disable all notifications"
+#~ msgstr "Skru av alle varsler"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:199
-msgid "Duration of the menu mapping animation"
-msgstr ""
+#~ msgid "Enable bubbles"
+#~ msgstr "Slå på bobler"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
-msgid "Defines the shadow of normal focused windows"
-msgstr "Definerer skyggen til vanlige vinduer i fokus"
+#~ msgid "Enable sounds"
+#~ msgstr "Aktiver lyder"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:207
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
-msgstr ""
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Vis uleste meldinger i meldingssenteret"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:211
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Definerer skyggen til vanlige vinduer ute av fokus"
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Bruk maske for avrundede hjørner"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:212
-#: data/org.pantheon.desktop.gala.gschema.xml.in:217
-#: data/org.pantheon.desktop.gala.gschema.xml.in:222
-#: data/org.pantheon.desktop.gala.gschema.xml.in:227
-msgid "See normal-focused"
-msgstr "Se normal-fokusert"
+#~ msgid "Corner radius"
+#~ msgstr "Hjørneradius:"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:216
-msgid "Defines the shadow of a menu"
-msgstr "Definerer skyggen av en meny"
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Ikke bruk hjørnemaske i fullskjerm"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:221
-msgid "Defines the shadow of a focused dialog"
-msgstr "Definerer skuggen av en dialogboks i fokus"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:226
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Definerer skuggen av en dialogboks ute av fokus"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "Disable all notifications"
-msgstr "Skru av alle varsler"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:242
-msgid "Enable bubbles"
-msgstr "Slå på bobler"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:246
-msgid "Enable sounds"
-msgstr "Aktiver lyder"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:250
-msgid "Show missed notifications in notification center"
-msgstr "Vis uleste meldinger i meldingssenteret"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
-msgid "Enable rounded corner mask"
-msgstr "Bruk maske for avrundede hjørner"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:262
-msgid "Corner radius"
-msgstr "Hjørneradius:"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:266
-msgid "Disable corner mask on fullscreen"
-msgstr "Ikke bruk hjørnemaske i fullskjerm"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:267
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:271
-msgid "Only show corner masks on primary monitor"
-msgstr "Bruk bare hjørnemasker på primærskjermen"
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Bruk bare hjørnemasker på primærskjermen"
 
 #~ msgid "Cancel"
 #~ msgstr "Avbryt"
