@@ -15,7 +15,7 @@
 		<value nick='natural' value='1'/>
 	</enum>
 	
-	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
 		<key enum="GalaActionType" name="hotcorner-topleft">
 			<default>'none'</default>
 			<summary>Action for the top left corner</summary>
@@ -83,7 +83,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">
 		<key type="as" name="switch-to-workspace-first">
 			<default><![CDATA[['<Super>Home']]]></default>
 			<summary>Shortcut to move to first workspace</summary>
@@ -148,7 +148,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance">
 		<key type="b" name="attach-modal-dialogs">
 			<default>false</default>
 			<summary>Attach modal dialogs</summary>
@@ -175,7 +175,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations">
 		<key type="b" name="enable-animations">
 			<default>true</default>
 			<summary>Enable Animations</summary>
@@ -206,7 +206,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/shadows/" id="org.pantheon.desktop.gala.shadows" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/shadows/" id="org.pantheon.desktop.gala.shadows">
 		<key type="as" name="normal-focused">
 			<default>['20', '-1', '0', '15', '220']</default>
 			<summary>Defines the shadow of normal focused windows</summary>
@@ -234,7 +234,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications">
 		<key type="b" name="do-not-disturb">
 			<default>false</default>
 			<summary>Disable all notifications</summary>
@@ -242,7 +242,7 @@
 		<child name="applications" schema="org.pantheon.desktop.gala.notifications.application" />
 	</schema>
 
-	<schema id="org.pantheon.desktop.gala.notifications.application" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema id="org.pantheon.desktop.gala.notifications.application">
 		<key type="b" name="bubbles">
 			<default>true</default>
 			<summary>Enable bubbles</summary>
@@ -257,7 +257,7 @@
 		</key>
 	</schema>
 	
-	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners">
 		<key type="b" name="enable">
 			<default>true</default>
 			<summary>Enable rounded corner mask</summary>
