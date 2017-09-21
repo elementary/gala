@@ -26,6 +26,7 @@ basic_command = [
     '--package-version', GALA_SO_VERSION,
     '--driver', meson.get_compiler('vala').version(),
     packages_command,
+    vala_flags,
     '--vapidir=' + join_paths(meson.build_root(), 'lib'),
     '--vapidir=' + vapi_dir,
     '--doclet=html',
@@ -100,7 +101,6 @@ all_doc_target = custom_target(
         '--pkg', 'granite',
         '--pkg', 'gnome-desktop-3.0',
         '--pkg', 'gmodule-2.0',
-        vala_flags,
         '-o', join_paths(meson.build_root(), 'docs', 'full'),
         '@INPUT@'
     ],
