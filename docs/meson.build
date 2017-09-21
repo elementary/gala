@@ -2,6 +2,7 @@ valadoc = find_program('valadoc')
 
 packages_command = [
     '--pkg', 'config',
+    '--pkg', 'compat',
     '--pkg', 'cogl-fixes',
     '--pkg', 'gobject-2.0',
     '--pkg', 'glib-2.0',
