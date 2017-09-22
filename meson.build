@@ -172,8 +172,11 @@ core_dependencies_txt += libmutter_name
 
 add_project_arguments(vala_flags, language: 'vala')
 add_project_arguments(c_flags, language: 'c')
+
 subdir('po')
 subdir('data')
+meson.add_install_script('meson/post_install.py')
+
 subdir('lib')
 
 gala_dependencies = [
