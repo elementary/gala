@@ -1,4 +1,4 @@
-gala_files = [
+gala_files = files([
     'DBus.vala',
     'DBusAccelerator.vala',
     'DockThemeManager.vala',
@@ -36,7 +36,7 @@ gala_files = [
     'Widgets/WindowSwitcher.vala',
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala'
-]
+])
 
 executable('gala', gala_files,
            dependencies : [core_dependencies, gala_dependencies],

@@ -158,10 +158,6 @@ endif
 
 add_project_arguments(vala_flags, language: 'vala')
 add_project_arguments(c_flags, language: 'c')
-
-if (get_option('documentation'))
-    subdir('docs')
-endif
 subdir('po')
 subdir('data')
 subdir('lib')
@@ -180,6 +176,10 @@ gala_dependencies = [
 ]
 
 subdir('src')
+
+if (get_option('documentation'))
+    subdir('docs')
+endif
 
 # dependencies for the notification plugin
 libcanberra_dep = dependency('libcanberra')

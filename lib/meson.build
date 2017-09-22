@@ -1,11 +1,11 @@
 
-lib_files = [
+lib_files = files([
     'ActivatableComponent.vala',
     'Plugin.vala',
     'Utils.vala',
     'WindowIcon.vala',
     'WindowManager.vala'
-]
+])
 
 resources = gnome.compile_resources('gala-resources', join_paths(meson.source_root(), 'data', 'gala.gresource.xml'),
                                     source_dir: join_paths(meson.source_root(), 'data'))
