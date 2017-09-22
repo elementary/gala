@@ -5,13 +5,14 @@ i18n = import('i18n')
 pkg = import('pkgconfig')
 
 GALA_SO_VERSION = '0.0.0'
+library_name = 'gala'
 
 GLIB_MIN_VERSION = '>=2.44.0'
 GTK_MIN_VERSION = '>=3.4.0'
 
 vapi_dir = join_paths(meson.current_source_dir(), 'vapi')
-plugin_dir = join_paths(get_option('prefix'), get_option('libdir'), 'gala', 'plugins')
-pkg_data_dir = join_paths(get_option('prefix'), get_option('datadir'), 'gala')
+plugin_dir = join_paths(get_option('prefix'), get_option('libdir'), library_name, 'plugins')
+pkg_data_dir = join_paths(get_option('prefix'), get_option('datadir'), library_name)
 
 gobject_dep = dependency('gobject-2.0', version : GLIB_MIN_VERSION)
 glib_dep = dependency('glib-2.0', version : GLIB_MIN_VERSION)
@@ -39,6 +40,17 @@ add_project_arguments('-DPLUGINDIR="' + plugin_dir + '"', language:'c')
 add_project_arguments('-DSCHEMA="org.pantheon.desktop.gala"', language:'c')
 add_project_arguments('-DGNOME_DESKTOP_USE_UNSTABLE_API', language:'c')
 add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
+
+core_dependencies_txt = [
+    'gobject-2.0',
+    'glib-2.0',
+    'gio-2.0',
+    'gio-unix-2.0',
+    'gtk+-3.0',
+    'gdk-x11-3.0',
+    'libbamf3',
+    'plank',
+]
 
 core_dependencies = [
     gobject_dep,
@@ -156,14 +168,14 @@ if libmutter_name == ''
     error ('Mutter library not found')
 endif
 
+core_dependencies_txt += libmutter_name
+
 add_project_arguments(vala_flags, language: 'vala')
 add_project_arguments(c_flags, language: 'c')
 subdir('po')
 subdir('data')
 subdir('lib')
 
-libgala_dep = declare_dependency(link_with: gala_lib)
-libgala_dir = include_directories('./lib')
 gala_dependencies = [
     libgala_dep,
     gee_dep,
@@ -185,10 +197,15 @@ endif
 libcanberra_dep = dependency('libcanberra')
 # We need these three steps because the .vapi and .pc have different names
 libcanberra_gtk_lib = meson.get_compiler('c').find_library('libcanberra-gtk3')
-libcanberra_gtk_vapi = meson.get_compiler('vala').find_library('libcanberra-gtk',
-    dirs: [join_paths(get_option('prefix'), get_option('datadir'), 'vala', 'vapi'),
-           join_paths('/usr', 'share', 'vala', 'vapi')])
+libcanberra_gtk_vapi = meson.get_compiler('vala').find_library(
+    'libcanberra-gtk',
+    dirs: [
+        join_paths(get_option('prefix'), get_option('datadir'), 'vala', 'vapi'),
+        join_paths('/usr', 'share', 'vala', 'vapi')
+    ]
+)
 libcanberra_gtk_dep = declare_dependency(dependencies: [libcanberra_gtk_lib, libcanberra_gtk_vapi])
+
 notification_dependencies = [
     libcanberra_dep,
     libcanberra_gtk_dep

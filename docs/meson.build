@@ -4,16 +4,12 @@ packages_command = [
     '--pkg', 'config',
     '--pkg', 'compat',
     '--pkg', 'cogl-fixes',
-    '--pkg', 'gobject-2.0',
-    '--pkg', 'glib-2.0',
-    '--pkg', 'gio-2.0',
-    '--pkg', 'gio-unix-2.0',
-    '--pkg', 'gtk+-3.0',
-    '--pkg', 'gdk-x11-3.0',
-    '--pkg', 'libbamf3',
-    '--pkg', 'plank',
     '--pkg', libmutter_name,
 ]
+
+foreach core_pkg : core_dependencies_txt
+    packages_command += ['--pkg', core_pkg]
+endforeach
 
 foreach libmutter_extra_pkg : libmutter_extra
     packages_command += ['--pkg', libmutter_extra_pkg]

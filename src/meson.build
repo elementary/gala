@@ -38,6 +38,8 @@ gala_files = files([
     'Widgets/WorkspaceInsertThumb.vala'
 ])
 
-executable('gala', gala_files,
-           dependencies : [core_dependencies, gala_dependencies],
-           include_directories: libgala_dir)
+executable(
+    'gala',
+    gala_files,
+    dependencies : [core_dependencies, gala_dependencies]
+)
