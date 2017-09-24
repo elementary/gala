@@ -23,6 +23,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 	private Gala.WindowManager? wm = null;
 	private SelectionArea? selection_area;
 
+	static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y)
+	{
+		return x >= rect.x && x < rect.x + rect.width
+			&& y >= rect.y && y < rect.y + rect.height;
+	}
+
 	construct
 	{
 		windows = new Gee.ArrayList<PopupWindow> ();
@@ -110,7 +116,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 		}
 	}
 
-	private Meta.WindowActor? get_window_actor_at (float x, float y)
+	private Meta.WindowActor? get_window_actor_at (int x, int y)
 	{
 		var screen = wm.get_screen ();
 		unowned List<weak Meta.WindowActor> actors = Meta.Compositor.get_window_actors (screen);
@@ -125,8 +131,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 			}
 
 			var window = actor.get_meta_window ();
-			var bbox = actor.get_allocation_box ();
-			if (!window.is_hidden () && !window.is_skip_taskbar () && bbox.contains (x, y)) {
+			var rect = window.get_frame_rect ();
+			if (!window.is_hidden () && !window.is_skip_taskbar () && meta_rectangle_contains (rect, x, y)) {
 				selected = actor;
 			}
 		});
