@@ -282,8 +282,13 @@ namespace Gala
 		public static Gdk.Pixbuf? get_close_button_pixbuf ()
 		{
 			if (close_pixbuf == null) {
+#if HAS_MUTTER326
+				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+				var scale = 1;
+#endif
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36, true);
+					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36 * scale, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -315,7 +320,12 @@ namespace Gala
 				// we'll just make this red so there's at least something as an 
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
-				texture.set_size (36, 36);
+#if HAS_MUTTER326
+				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+				var scale = 1;
+#endif
+				texture.set_size (36 * scale, 36 * scale);
 				texture.background_color = { 255, 0, 0, 255 };
 			}
 
@@ -330,8 +340,13 @@ namespace Gala
 		public static Gdk.Pixbuf? get_resize_button_pixbuf ()
 		{
 			if (resize_pixbuf == null) {
+#if HAS_MUTTER326
+				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+				var scale = 1;
+#endif
 				try {
-					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36, true);
+					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36 * scale, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -363,7 +378,12 @@ namespace Gala
 				// we'll just make this red so there's at least something as an
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
-				texture.set_size (36, 36);
+#if HAS_MUTTER326
+				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+				var scale = 1;
+#endif
+				texture.set_size (36 * scale, 36 * scale);
 				texture.background_color = { 255, 0, 0, 255 };
 			}
 
