@@ -175,10 +175,10 @@ namespace Meta {
 #if HAS_MUTTER324
 		public unowned Meta.Dnd get_dnd ();
 #endif
-		public unowned Clutter.Actor get_stage ();
 #if HAS_MUTTER326
-		public int get_ui_scaling_factor ();
+		public unowned Meta.Settings get_settings ();
 #endif
+		public unowned Clutter.Actor get_stage ();
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
 #if HAS_MUTTER322
@@ -187,9 +187,6 @@ namespace Meta {
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (int object);
-#if HAS_MUTTER326
-		public signal void x11_display_opened ();
-#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public class Background : GLib.Object {
@@ -209,11 +206,23 @@ namespace Meta {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundActor (Meta.Screen screen, int monitor);
 		public void set_background (Meta.Background background);
+#if HAS_MUTTER326
+		public void set_gradient (bool enabled, int height, double tone_start);
+		public void set_monitor (int monitor);
+#endif
 		public void set_vignette (bool enabled, double brightness, double sharpness);
 		[NoAccessorMethod]
 		public Meta.Background background { owned get; set; }
 		[NoAccessorMethod]
 		public double brightness { get; set; }
+#if HAS_MUTTER326
+		[NoAccessorMethod]
+		public bool gradient { get; set; }
+		[NoAccessorMethod]
+		public int gradient_height { get; set; }
+		[NoAccessorMethod]
+		public double gradient_max_darkness { get; set; }
+#endif
 		[NoAccessorMethod]
 		public Meta.Screen meta_screen { owned get; construct; }
 		[NoAccessorMethod]
@@ -457,6 +466,9 @@ namespace Meta {
 		public bool can_switch_config ();
 #endif
 		public static unowned Meta.MonitorManager @get ();
+#if HAS_MUTTER326
+		public static int get_display_configuration_timeout ();
+#endif
 #if HAS_MUTTER322
 		public bool get_is_builtin_display_on ();
 #endif
@@ -484,6 +496,8 @@ namespace Meta {
 #if HAS_MUTTER326
 		[NoWrapper]
 		public virtual unowned Meta.CloseDialog create_close_dialog (Meta.Window window);
+		[NoWrapper]
+		public virtual unowned Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window);
 #endif
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
@@ -833,6 +847,15 @@ namespace Meta {
 		public signal void window_removed (Meta.Window object);
 	}
 #if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/main.h", type_cname = "MetaInhibitShortcutsDialogInterface", type_id = "meta_inhibit_shortcuts_dialog_get_type ()")]
+	public interface InhibitShortcutsDialog : GLib.Object {
+		public abstract void hide ();
+		public abstract void show ();
+		[NoAccessorMethod]
+		public abstract Meta.Window window { owned get; construct; }
+		[HasEmitter]
+		public signal void response (Meta.InhibitShortcutsDialogResponse response);
+	}
 	[CCode (cheader_filename = "meta/meta-close-dialog.h", type_cname = "MetaCloseDialogInterface", type_id = "meta_close_dialog_get_type ()")]
 	public interface CloseDialog : GLib.Object {
 		public abstract void focus ();
@@ -1089,6 +1112,13 @@ namespace Meta {
 		KEYBOARD_RESIZING_SE,
 		KEYBOARD_RESIZING_W
 	}
+#if HAS_MUTTER326
+	[CCode (cheader_filename = "meta/main.h", cprefix = "META_INHIBIT_SHORTCUTS_DIALOG_RESPONSE_", type_id = "meta_inhibit_shortcuts_dialog_response_get_type ()")]
+	public enum InhibitShortcutsDialogResponse {
+		ALLOW,
+		DENY
+	}
+#endif
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEYBINDING_ACTION_", type_id = "meta_key_binding_action_get_type ()")]
 	public enum KeyBindingAction {
 		NONE,
@@ -1192,6 +1222,9 @@ namespace Meta {
 		NONE,
 		PER_WINDOW,
 		BUILTIN,
+#if HAS_MUTTER326
+		NON_MASKABLE,
+#endif
 		IS_REVERSED
 	}
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_LATER_", type_id = "meta_later_type_get_type ()")]
