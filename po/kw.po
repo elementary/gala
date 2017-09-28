@@ -1,0 +1,76 @@
+#: src/WindowManager.vala:1589
+msgid "Does the display look OK?"
+msgstr ""
+
+#: src/WindowManager.vala:1592
+msgid "Keep This Configuration"
+msgstr ""
+
+#: src/WindowManager.vala:1593
+msgid "Restore Previous Configuration"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:65
+msgid "Minimize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:80
+msgid "Move"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:87
+msgid "Resize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:94
+msgid "Always on Top"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:103
+msgid "Always on Visible Workspace"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:112
+msgid "Move to Workspace Left"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:120
+msgid "Move to Workspace Right"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:128
+msgid "Close"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Unmaximize"
+msgstr ""
+
+#: src/Widgets/WindowMenu.vala:140
+msgid "Maximize"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:7
+msgid "multitasking-view"
+msgstr ""
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr ""
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+
+#: data/gala-other.desktop.in:6
+msgid "applications-other"
+msgstr ""

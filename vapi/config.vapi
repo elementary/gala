@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-[CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "config.h")]
+[CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "")]
 namespace Config
 {
 	public const string DATADIR;
@@ -25,5 +25,4 @@ namespace Config
 	public const string VERSION_INFO;
 	public const string PLUGINDIR;
 	public const string SCHEMA;
-	public const string RESOURCEPATH;
 }

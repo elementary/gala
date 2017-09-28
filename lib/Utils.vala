@@ -220,7 +220,7 @@ namespace Gala
 		/**
 		 * Creates an actor showing the current contents of the given WindowActor.
 		 *
-		 * @param actor 	 The actor from which to create a shnapshot
+		 * @param actor      The actor from which to create a shnapshot
 		 * @param inner_rect The inner (actually visible) rectangle of the window
 		 * @param outer_rect The outer (input region) rectangle of the window
 		 *
@@ -283,7 +283,7 @@ namespace Gala
 		{
 			if (close_pixbuf == null) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36, true);
+					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale ("/io/elementary/gala/buttons/close.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -331,7 +331,7 @@ namespace Gala
 		{
 			if (resize_pixbuf == null) {
 				try {
-					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36, true);
+					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale ("/io/elementary/gala/buttons/resize.svg", -1, 36, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
