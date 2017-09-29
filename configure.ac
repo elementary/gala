@@ -136,7 +136,7 @@ GALA_CORE_VALA_PKGS="--pkg gio-unix-2.0 \
                       --pkg xfixes-4.0 \
                       --pkg plank"
 
-VALAFLAGS="--target-glib=2.44"
+VALAFLAGS="$VALAFLAGS --target-glib=2.44"
 VALAFLAGS_CORE=""
 
 MUTTER_PKGS="cogl-1.0 clutter-1.0 >= $CLUTTER_MIN_VERSION libmutter >= $MUTTER_MIN_VERSION"
