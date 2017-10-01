@@ -396,16 +396,19 @@ namespace Gala.Plugins.Notify
 			var canvas = (Canvas) content;
 
 			var scale = style_context.get_scale ();
-			var x = MARGIN * scale;
-			var y = MARGIN * scale;
-			var width = canvas.width - MARGIN * 2 * scale;
-			var height = canvas.height - MARGIN * 2 * scale;
+			var x = MARGIN;
+			var y = MARGIN;
+			var width = canvas.width / scale - MARGIN * 2;
+			var height = canvas.height / scale - MARGIN * 2;
 			cr.set_operator (Cairo.Operator.CLEAR);
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
 
+			cr.save ();
+			cr.scale (scale, scale);
 			style_context.render_background (cr, x, y, width, height);
 			style_context.render_frame (cr, x, y, width, height);
+			cr.restore ();
 
 			draw_content (cr);
 
