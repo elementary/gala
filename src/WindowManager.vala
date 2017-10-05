@@ -107,6 +107,7 @@ namespace Gala
 
 		public override void start ()
 		{
+			Meta.MonitorManager.get ();
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
 			// Handle FBO issue with nvidia blob
