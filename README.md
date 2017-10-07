@@ -24,6 +24,7 @@ You'll need the following dependencies:
 * libplank-dev (>= 0.10.9)
 * libtool
 * valac (>= 0.28.0)
+* libxml2-utils
 
 Run `autogen.sh` to configure the build environment and then `make` to build
 
