@@ -23,8 +23,8 @@ You'll need the following dependencies:
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)
 * libtool
-* valac (>= 0.28.0)
 * libxml2-utils
+* valac (>= 0.28.0)
 
 Run `autogen.sh` to configure the build environment and then `make` to build
 
