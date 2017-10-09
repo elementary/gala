@@ -143,14 +143,25 @@ namespace Gala
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
+		static unowned string find_target_path ()
+		{
+			unowned string? path;
+
+			path = Environment.get_variable ("PANTHEON_SCREENSHOTS_DIR");
+			if (path != null && FileUtils.test (path, FileTest.EXISTS))
+				return path;
+
+			path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			if (path != null && FileUtils.test (path, FileTest.EXISTS))
+				return path;
+
+			return Environment.get_home_dir ();
+		}
+
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
 			if (!Path.is_absolute (filename)) {
-				string path = Environment.get_user_special_dir (UserDirectory.PICTURES);
-				if (!FileUtils.test (path, FileTest.EXISTS)) {
-					path = Environment.get_home_dir ();
-				}
-
+				unowned string path = find_target_path ();
 				if (!filename.has_suffix (".png")) {
 					used_filename = Path.build_filename (path, filename.concat (".png"), null);
 				} else {
