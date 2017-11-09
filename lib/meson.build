@@ -1,10 +1,10 @@
-gala_lib_sources = [
+gala_lib_sources = files(
 	'ActivatableComponent.vala',
 	'Plugin.vala',
 	'Utils.vala',
 	'WindowIcon.vala',
 	'WindowManager.vala',
-]
+)
 
 gala_resources = gnome.compile_resources(
 	'gala-resources',
