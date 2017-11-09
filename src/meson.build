@@ -1,4 +1,4 @@
-gala_bin_sources = [
+gala_bin_sources = files(
 	'DBus.vala',
 	'DBusAccelerator.vala',
 	'DockThemeManager.vala',
@@ -36,7 +36,7 @@ gala_bin_sources = [
 	'Widgets/WindowSwitcher.vala',
 	'Widgets/WorkspaceClone.vala',
 	'Widgets/WorkspaceInsertThumb.vala',
-]
+)
 
 gala_bin = executable(
 	'gala',
