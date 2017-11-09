@@ -28,7 +28,7 @@ You'll need the following dependencies:
 
 Run `autogen.sh` to configure the build environment and then `make` to build
 
-    ./autogen.sh --prefix=/usr
+    ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu/
     make
 
 To install, use `make install`, then execute with `gala --replace`
