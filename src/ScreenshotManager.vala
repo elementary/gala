@@ -56,11 +56,12 @@ namespace Gala
 
 		public void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
 		{
-			warning ("ScreenShotArea not implemented");
-			filename_used = "";
-			success = false;
-
-			throw new DBusError.FAILED ("ScreenShotArea not implemented");
+			debug ("Taking area screenshot");
+			
+			var image = take_screenshot (x, y, width, height);
+			success = save_image (image, filename, out filename_used);
+			if (!success)
+				throw new DBusError.FAILED ("Failed to save image");
 		}
 
 		public void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
