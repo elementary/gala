@@ -85,7 +85,7 @@ namespace Gala
 			success = save_image (image, filename, out filename_used);
 		}
 
-		public async void select_area (out int x, out int y, out int width, out int height) throws DBusError
+		public async void select_area (out int x, out int y, out int width, out int height)
 		{
 			var selection_area = new SelectionArea (wm);
 			selection_area.closed.connect (() => Idle.add (select_area.callback));
