@@ -87,8 +87,6 @@ namespace Gala
 
 		public async void select_area (out int x, out int y, out int width, out int height) throws DBusError
 		{
-			x = y = width = height = 0;
-
 			var selection_area = new SelectionArea (wm);
 			selection_area.closed.connect (() => Idle.add (select_area.callback));
 			wm.ui_group.add (selection_area);

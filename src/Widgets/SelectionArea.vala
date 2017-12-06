@@ -87,6 +87,7 @@ namespace Gala
 
             if (!dragging) {
                 close ();
+                closed ();
                 return true;
             }
 
