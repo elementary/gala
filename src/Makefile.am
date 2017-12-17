@@ -69,6 +69,7 @@ gala_VALASOURCES = \
 	Widgets/WindowSwitcher.vala \
 	Widgets/WorkspaceClone.vala \
 	Widgets/WorkspaceInsertThumb.vala \
+	Widgets/SelectionArea.vala \
 	$(NULL)
 
 nodist_gala_SOURCES = \
