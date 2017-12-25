@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2017-12-25 03:06+0000\n"
+"PO-Revision-Date: 2017-12-26 00:09+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Traditional) "
 "<https://weblate.elementary.io/projects/desktop/gala/zh_TW/>\n"
@@ -83,7 +83,7 @@ msgstr "檢視所有開啟的視窗與工作區"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "多工作業檢視"
+msgstr "多工作業-檢視"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
