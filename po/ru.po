@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
 "PO-Revision-Date: 2017-12-28 20:11+0000\n"
-"Last-Translator: Kirill Romanov <djaler1@gmail.com>\n"
+"Last-Translator: Mike Wortin <wig64@meta.ua>\n"
 "Language-Team: Russian "
 "<https://weblate.elementary.io/projects/desktop/gala/ru/>\n"
 "Language: ru\n"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Устаревший файл desktop для уведомлений от устаревших приложений"
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
