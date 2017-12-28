@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
 "PO-Revision-Date: 2017-12-28 20:11+0000\n"
-"Last-Translator: Mike Wortin <wig64@meta.ua>\n"
+"Last-Translator: Kirill Romanov <djaler1@gmail.com>\n"
 "Language-Team: Russian "
 "<https://weblate.elementary.io/projects/desktop/gala/ru/>\n"
 "Language: ru\n"
@@ -96,7 +96,7 @@ msgstr "Устаревший файл desktop для уведомлений от
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:21
 msgid "Action for the top left corner"
