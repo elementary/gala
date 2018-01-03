@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2017-12-30 00:08+0000\n"
+"PO-Revision-Date: 2018-01-04 00:13+0000\n"
 "Last-Translator: Kirill Romanov <djaler1@gmail.com>\n"
 "Language-Team: Russian "
 "<https://weblate.elementary.io/projects/desktop/gala/ru/>\n"
@@ -92,7 +92,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Устаревший файл desktop для уведомлений от устаревших приложений"
+msgstr "Устаревший файл desktop для уведомлений от устаревших приложений."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
@@ -241,7 +241,7 @@ msgstr "Цикличное переключение на следующую ра
 #: data/org.pantheon.desktop.gala.gschema.xml.in:137
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "УСТАРЕЛО: Это сочетание клавиш устарело и игнорируется"
+msgstr "УСТАРЕЛО: Это сочетание клавиш устарело и игнорируется."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:141
 msgid "Cycle to previous keyboard layout"
