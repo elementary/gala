@@ -42,6 +42,6 @@ gala_bin = executable(
 	'gala',
 	gala_bin_sources,
 	dependencies: [gala_dep, gala_base_dep],
-	include_directories: config_inc_dir,
+	include_directories: config_inc_dir, 
 	install: true,
 )

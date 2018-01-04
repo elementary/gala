@@ -26,6 +26,7 @@ pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.proj
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 config_inc_dir = include_directories('.')
+blur_inc_dir = include_directories('src/blur')
 
 conf = configuration_data()
 conf.set_quoted('PACKAGE', meson.project_name())
@@ -68,6 +69,7 @@ add_project_arguments([
 		'--pkg', 'config',
 		'--pkg', 'cogl-fixes',
 		'--pkg', 'compat',
+		'--pkg', 'deepin-blur',
 	],
 	language: 'vala',
 )
@@ -137,7 +139,7 @@ if mutter322_dep.found()
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-1.0'), dependency('mutter-cogl-pango-1.0'),
-		dependency('mutter-cogl-path-1.0'), dependency('mutter-clutter-1.0')
+		dependency('mutter-cogl-path-1.0'), dependency('clutter-1.0')
 	]
 	add_project_arguments(['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322'], language: 'vala')
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
@@ -180,7 +182,15 @@ endif
 
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(libmutter_dep.get_pkgconfig_variable('typelibdir'))], language: 'c')
 
-gala_base_dep = [glib_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep]
+lib_blur = static_library('blur', 'src/blur/meta-blur-actor.c', include_directories : blur_inc_dir,
+	dependencies: [dependency('clutter-1.0'), mutter_dep])
+
+libblur_dep = declare_dependency(
+   include_directories : blur_inc_dir,
+   link_with : lib_blur,
+   sources : ['src/blur/meta-blur-actor.c', 'src/blur/cogl-utils.c', 'src/blur/blur-utils.c'])
+
+gala_base_dep = [glib_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, libblur_dep]
 
 subdir('data')
 subdir('lib')

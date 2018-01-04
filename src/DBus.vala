@@ -22,6 +22,7 @@ namespace Gala
 	{
 		static DBus? instance;
 		static WindowManager wm;
+		Gee.HashMap<uint32, Meta.BlurActor> blur_actors;
 
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
@@ -58,6 +59,8 @@ namespace Gala
 
 		private DBus ()
 		{
+			blur_actors = new Gee.HashMap<uint32, Meta.BlurActor> ();
+
 			if (wm.background_group != null)
 				(wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
 			else
@@ -235,6 +238,102 @@ namespace Gala
 			yield;
 
 			return { rTotal, gTotal, bTotal, mean, variance };
+		}
+
+		/**
+		 * Adds a blur behind effect to a specific window.
+		 * 
+		 * Makes the contents displayed behind the window blurred
+		 * by the specified radius. This effect can be only seeen
+		 * when the window's background is transparent. The added blur effect
+		 * is applied and redrawn real time to always represent
+		 * what's behind the window.
+		 * 
+		 * The blur_rounds parameter specifies how many times does the blur
+		 * of a specified radius has to be applied for each paint. This parameter should be used
+		 * when one wants to achieve a bigger blur radius than what is supported.
+		 * 
+		 * If your window is not always transparent, you should consider disabling
+		 * the blur effect with disable_blur_behind at the time of disabling transparency for the target window so
+		 * that the effect is not drawn unnecessarily.
+		 * 
+		 * Further calls to this method on the same window will update the properties of the
+		 * current blur effect to the new ones.
+		 * 
+		 * @param xid the X window ID of the target window to enable the blur effect
+		 * @param radius the blur radius in pixels, the maximum is 49, pass -1 for the default radius
+		 * @param blur_rounds how many times the blur has to be applied for each painted frame,
+		 * 		  the maximum is 99, pass -1 for the default rounds value
+		 * 
+		 * @return true if the blur was successfully added to the target window, false otherwise
+		 */
+		public bool enable_blur_behind (uint32 xid, int radius, int blur_rounds) throws DBusError {
+			if (!Meta.BlurActor.get_supported ()) {
+				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
+			}
+
+			var screen = wm.get_screen ();
+
+			if (radius == -1) {
+				radius = Meta.BlurActor.DEFAULT_BLUR_RADIUS;
+			} else {
+				radius = radius.clamp (0, Meta.BlurActor.MAX_BLUR_RADIUS);
+			}
+
+			if (blur_rounds == -1) {
+				blur_rounds = Meta.BlurActor.DEFAULT_BLUR_ROUNDS;
+			} else {
+				if (blur_rounds % 2 == 0) {
+					blur_rounds -= 1;
+				}	
+
+				blur_rounds = blur_rounds.clamp (1, Meta.BlurActor.MAX_BLUR_ROUNDS);
+			}
+
+			var blur_actor = blur_actors[xid];
+			if (blur_actor != null) {
+				blur_actor.set_radius (radius);
+				blur_actor.set_rounds (blur_rounds);
+				return true;
+			}
+
+			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
+				var window = window_actor.get_meta_window ();
+				if (window.get_xwindow () == xid) {
+					var actor = new Meta.BlurActor (screen);
+					actor.set_window_actor (window_actor);
+					actor.set_radius (radius);
+					actor.set_rounds (blur_rounds);
+
+					window_actor.insert_child_below (actor, null);
+					blur_actors[xid] = actor;
+					
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Disables the blur effect behind the specified window.
+		 * 
+		 * Finds and removes the blur actor added behind the specified
+		 * window.
+		 *
+		 * This method will throw an error when the specified X window ID
+		 * does not have an associated blur actor with it.
+		 * 
+		 * @param xid the X window ID of the target window to disable the blur effect
+		 */
+		public void disable_blur_behind (uint32 xid) throws DBusError {
+			var actor = blur_actors[xid];
+			if (actor != null) {
+				actor.destroy ();
+				blur_actors.unset (xid);
+			} else {
+				throw new DBusError.FAILED ("Blur actor was not found for the specified window ID");
+			}
 		}
 	}
 }
