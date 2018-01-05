@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-01-05 01:03+0000\n"
-"Last-Translator: colindemian <colindemian@outlook.com>\n"
+"PO-Revision-Date: 2018-01-05 01:06+0000\n"
+"Last-Translator: 孙不服 <sunyoubufu@qq.com>\n"
 "Language-Team: Chinese (Simplified) "
 "<https://weblate.elementary.io/projects/desktop/gala/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -107,7 +107,7 @@ msgstr "窗口布局概览方式"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:27
 msgid "Choose the algorithm used for exposing the windows"
-msgstr "选择窗口陈列方式"
+msgstr "选择窗口排列方式"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:31
 msgid "Action for the top right corner"
