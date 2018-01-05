@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-01-05 01:06+0000\n"
-"Last-Translator: 孙不服 <sunyoubufu@qq.com>\n"
+"PO-Revision-Date: 2018-01-06 00:16+0000\n"
+"Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) "
 "<https://weblate.elementary.io/projects/desktop/gala/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -91,7 +91,7 @@ msgstr "其他"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "过期应用通知的备用桌面文件"
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
@@ -169,7 +169,7 @@ msgstr "启用动态工作区而不是静态工作区"
 msgid ""
 "Use a dynamically increasing or decreseasing number, as needed, of "
 "workspaces instead of a static, fixed number"
-msgstr "在有需要时动态增减工作区的数量，而不是静态工作区的固定数量。"
+msgstr "在有需要时动态增减工作区的数量，而非固定的静态工作区数量"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:81
 msgid "Names that are recognized as dock windows for the window switcher"
