@@ -56,11 +56,12 @@ namespace Gala
 
 		public void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
 		{
-			warning ("ScreenShotArea not implemented");
-			filename_used = "";
-			success = false;
-
-			throw new DBusError.FAILED ("ScreenShotArea not implemented");
+			debug ("Taking area screenshot");
+			
+			var image = take_screenshot (x, y, width, height);
+			success = save_image (image, filename, out filename_used);
+			if (!success)
+				throw new DBusError.FAILED ("Failed to save image");
 		}
 
 		public void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
@@ -84,12 +85,16 @@ namespace Gala
 			success = save_image (image, filename, out filename_used);
 		}
 
-		public void select_area (out int x, out int y, out int width, out int height) throws DBusError
+		public async void select_area (out int x, out int y, out int width, out int height)
 		{
-			warning ("SelectArea not implemented");
-			x = y = width = height = 0;
+			var selection_area = new SelectionArea (wm);
+			selection_area.closed.connect (() => Idle.add (select_area.callback));
+			wm.ui_group.add (selection_area);
+			selection_area.start_selection ();
 
-			throw new DBusError.FAILED ("SelectArea not implemented");
+			yield;
+			selection_area.get_selection_rectangle (out x, out y, out width, out height);
+			wm.ui_group.remove (selection_area);
 		}
 
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
