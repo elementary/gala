@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-01-05 01:02+0000\n"
-"Last-Translator: 孙不服 <sunyoubufu@qq.com>\n"
+"PO-Revision-Date: 2018-01-05 01:03+0000\n"
+"Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) "
 "<https://weblate.elementary.io/projects/desktop/gala/zh_CN/>\n"
 "Language: zh_CN\n"
@@ -66,7 +66,7 @@ msgstr "关闭"
 
 #: src/Widgets/WindowMenu.vala:131
 msgid "Unmaximize"
-msgstr "取消最大化"
+msgstr "还原"
 
 #: src/Widgets/WindowMenu.vala:131
 msgid "Maximize"
