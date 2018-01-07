@@ -40,6 +40,7 @@ namespace Gala
 		Plank.DockPreferences dock_settings;
 		float dock_y_offset;
 		float dock_height_offset;
+		int ui_scale_factor = 1;
 		FileMonitor monitor;
 
 		Actor background;
@@ -76,6 +77,8 @@ namespace Gala
 				// initial update, pretend a file was created
 				update_n_dock_items (launcher_folder, null, FileMonitorEvent.CREATED);
 			}
+
+			ui_scale_factor = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
 
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
@@ -136,7 +139,7 @@ namespace Gala
 			var layout = (BoxLayout) dock.layout_manager;
 
 			var position = dock_settings.Position;
-			var icon_size = dock_settings.IconSize;
+			var icon_size = dock_settings.IconSize * ui_scale_factor;
 			var scaled_icon_size = icon_size / 10.0f;
 			var horizontal = dock_settings.is_horizontal_dock ();
 
@@ -552,7 +555,7 @@ namespace Gala
 
 			window_clones.add_child (clone);
 
-			var icon = new WindowIcon (window, dock_settings.IconSize, true);
+			var icon = new WindowIcon (window, dock_settings.IconSize * ui_scale_factor, true);
 			icon.reactive = true;
 			icon.opacity = 100;
 			icon.x_expand = true;
