@@ -78,7 +78,7 @@ namespace Gala
 				update_n_dock_items (launcher_folder, null, FileMonitorEvent.CREATED);
 			}
 
-			ui_scale_factor = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+			ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
 
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
