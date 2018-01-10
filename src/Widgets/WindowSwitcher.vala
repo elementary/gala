@@ -146,7 +146,7 @@ namespace Gala
 			var top_padding = (float) dock_theme.TopPadding * scaled_icon_size;
 			var bottom_padding = (float) dock_theme.BottomPadding * scaled_icon_size;
 			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
-			var line_width = dock_theme.LineWidth;
+			var line_width = dock_theme.LineWidth * ui_scale_factor;
 
 			var top_offset = 2 * line_width + top_padding;
 			var bottom_offset = (dock_theme.BottomRoundness > 0 ? 2 * line_width : 0) + bottom_padding;
@@ -255,9 +255,9 @@ namespace Gala
 
 		void place_dock ()
 		{
-			var icon_size = dock_settings.IconSize;
+			var icon_size = dock_settings.IconSize * ui_scale_factor;
 			var scaled_icon_size = icon_size / 10.0f;
-			var line_width = dock_theme.LineWidth;
+			var line_width = dock_theme.LineWidth * ui_scale_factor;
 			var horiz_padding = dock_theme.HorizPadding * scaled_icon_size;
 			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
 			var items_offset = (int) (2 * line_width + (horiz_padding > 0 ? horiz_padding : 0));
@@ -555,7 +555,7 @@ namespace Gala
 
 			window_clones.add_child (clone);
 
-			var icon = new WindowIcon (window, dock_settings.IconSize * ui_scale_factor, true);
+			var icon = new WindowIcon (window, dock_settings.IconSize, ui_scale_factor, true);
 			icon.reactive = true;
 			icon.opacity = 100;
 			icon.x_expand = true;
