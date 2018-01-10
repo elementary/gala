@@ -136,13 +136,10 @@ namespace Gala
 					icon = Plank.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
 					icon_key = "%s::%i::%i".printf (icon, size, scale);
 					if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-						var image_path = icon.to_string ();
-						if (image_path.has_prefix ("file://") || image_path.has_prefix ("/")) {
-							var file_path = File.new_for_commandline_arg (image_path).get_path ();
-							image = new Gdk.Pixbuf.from_file_at_scale (file_path, size * scale, size * scale, true);
-						} else {
-							image = Gtk.IconTheme.get_default ().load_icon_for_scale (image_path, size, scale, 0);
-						}
+						var scaled_size = size * scale;
+						var surface = Plank.DrawingService.load_icon_for_scale (icon, scaled_size, scaled_size, scale);
+						image = Gdk.pixbuf_get_from_surface (surface, 0, 0, scaled_size, scaled_size);
+						not_cached = true;
 					}
 				}
 			}
