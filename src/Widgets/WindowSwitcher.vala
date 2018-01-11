@@ -247,15 +247,19 @@ namespace Gala
 					break;
 			}
 
+			cr.save ();
 			cr.scale (ui_scale_factor, ui_scale_factor);
 			cr.set_source_surface (dock_surface.Internal, x, y);
 			cr.paint ();
+			cr.restore ();
 
 			return false;
 		}
 
 		void place_dock ()
 		{
+			ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
+
 			var icon_size = dock_settings.IconSize * ui_scale_factor;
 			var scaled_icon_size = icon_size / 10.0f;
 			var line_width = dock_theme.LineWidth * ui_scale_factor;
