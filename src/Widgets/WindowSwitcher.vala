@@ -228,7 +228,7 @@ namespace Gala
 			if (dock_surface == null || dock_surface.Width != width || dock_surface.Height != height) {
 				var dummy_surface = new Plank.Surface.with_cairo_surface (1, 1, cr.get_target ());
 
-				dock_surface = dock_theme.create_background (width, height, position, dummy_surface);
+				dock_surface = dock_theme.create_background (width / ui_scale_factor, height / ui_scale_factor, position, dummy_surface);
 			}
 
 			float x = 0, y = 0;
@@ -237,7 +237,7 @@ namespace Gala
 					x = dock_y_offset;
 					break;
 				case Gtk.PositionType.BOTTOM:
-					y = dock_y_offset;
+					y = dock_y_offset / ui_scale_factor;
 					break;
 				case Gtk.PositionType.LEFT:
 					x = 0;
@@ -247,6 +247,7 @@ namespace Gala
 					break;
 			}
 
+			cr.scale (ui_scale_factor, ui_scale_factor);
 			cr.set_source_surface (dock_surface.Internal, x, y);
 			cr.paint ();
 

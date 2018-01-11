@@ -87,6 +87,7 @@ namespace Gala
 		 *
 		 * @param window       The window to get an icon for
 		 * @param size         The size of the icon
+		 * @param scale        The desired scale of the icon
 		 * @param ignore_cache Should not be necessary in most cases, if you care about the icon
 		 *                     being loaded correctly, you should consider using the WindowIcon class
 		 */
