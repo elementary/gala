@@ -11,7 +11,7 @@ gala_gschema_compile = gnome.compile_schemas()
 i18n.merge_file(
 	input: 'gala-multitaskingview.desktop.in',
 	output: 'gala-multitaskingview.desktop',
-	po_dir: '../po',
+	po_dir: join_paths(meson.source_root (), 'po'),
 	type: 'desktop',
 	install: true,
 	install_dir: join_paths(data_dir, 'applications')
@@ -19,7 +19,7 @@ i18n.merge_file(
 i18n.merge_file(
 	input: 'gala-other.desktop.in',
 	output: 'gala-other.desktop',
-	po_dir: '../po',
+	po_dir: join_paths(meson.source_root (), 'po'),
 	type: 'desktop',
 	install: true,
 	install_dir: join_paths(data_dir, 'applications')
