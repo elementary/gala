@@ -877,13 +877,12 @@ void meta_blur_actor_set_radius (MetaBlurActor *self, int radius)
     }
 }
 
-
 void meta_blur_actor_set_rounds (MetaBlurActor *self, int rounds)
 {
     MetaBlurActorPrivate *priv = self->priv;
 
     g_return_if_fail (META_IS_BLUR_ACTOR (self));
-    g_return_if_fail (rounds >= 1 && rounds <= 100);
+    g_return_if_fail (rounds >= 1 && rounds <= META_BLUR_ACTOR_MAX_BLUR_ROUNDS);
 
     if (priv->rounds != rounds) {
         priv->rounds = rounds;
@@ -901,6 +900,10 @@ void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *win
     MetaBlurActorPrivate *priv = self->priv;
 
     g_return_if_fail (META_IS_BLUR_ACTOR (self));
+    if (priv->window_actor == window_actor)
+    {
+        return;
+    }
 
     priv->window_actor = META_WINDOW_ACTOR (g_object_ref (window_actor));
     if (priv->window_actor)
@@ -909,6 +912,8 @@ void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *win
     } else {
         priv->window = NULL;
     }
+
+    clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
 }
 
 
