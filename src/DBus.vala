@@ -268,11 +268,21 @@ namespace Gala
 		 * Further calls to this method on the same window will update the properties of the
 		 * current blur effect to the new ones.
 		 * 
+		 * The x, y, width and height parameters can be used for setting a clip which the blur actor
+		 * covers behind the window. The clip is relative to the window coordinates.
+		 * If you want to exclusively constrain only the position or size of the blur effect you can pass 0's
+		 * for all other values you do not want to constrain, e.g: making the blur effect appear with an always
+		 * fixed height can be achieved by passing 0's to x, y and width parameters and the
+		 * requested value for the height parameter.
+		 * 
 		 * @param xid the X window ID of the target window to enable the blur effect
 		 * @param radius the blur radius in pixels, the maximum is 49, pass -1 for the default radius
 		 * @param blur_rounds how many times the blur has to be applied for each painted frame,
 		 * 		  the maximum is 99, pass -1 for the default rounds value
-		 * 
+		 * @param x the X value in pixels of the clip, relative to the requested window
+		 * @param y the Y value in pixels of the clip, relative to the requested window
+		 * @param width the width value in pixels of the clip, relative to the requested window
+		 * @param height the height value in pixels of the clip, relative to the requested window
 		 * @return true if the blur was successfully added to the target window, false otherwise
 		 */
 		public bool enable_blur_behind (uint32 xid, int radius, int blur_rounds, int x, int y, int width, int height) throws DBusError {
