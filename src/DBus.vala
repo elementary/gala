@@ -61,6 +61,14 @@ namespace Gala
 		{
 			blur_actors = new Gee.HashMap<uint32, Meta.BlurActor> ();
 
+			unowned AppearanceSettings settings = AppearanceSettings.get_default ();
+			settings.notify["blur-behind"].connect (() => {
+				bool enabled = settings.blur_behind;
+				foreach (var blur_actor in blur_actors.values) {
+					blur_actor.set_enabled (enabled);
+				}
+			});
+
 			if (wm.background_group != null)
 				(wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
 			else

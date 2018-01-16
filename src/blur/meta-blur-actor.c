@@ -930,6 +930,7 @@ void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val)
             g_clear_pointer (&priv->fb2, cogl_object_unref);
             g_clear_pointer (&priv->texture, cogl_object_unref);
         }
+        
         invalidate_pipeline (self, CHANGED_EFFECTS);
         clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
         priv->enabled = val;
