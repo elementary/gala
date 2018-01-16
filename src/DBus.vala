@@ -275,7 +275,7 @@ namespace Gala
 		 * 
 		 * @return true if the blur was successfully added to the target window, false otherwise
 		 */
-		public bool enable_blur_behind (uint32 xid, int radius, int blur_rounds) throws DBusError {
+		public bool enable_blur_behind (uint32 xid, int radius, int blur_rounds, int x, int y, int width, int height) throws DBusError {
 			if (!Meta.BlurActor.get_supported ()) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
 			}
@@ -302,6 +302,7 @@ namespace Gala
 			if (blur_actor != null) {
 				blur_actor.set_radius (radius);
 				blur_actor.set_rounds (blur_rounds);
+				blur_actor.set_clip_rect ({ x, y, width, height });
 				return true;
 			}
 
@@ -312,10 +313,10 @@ namespace Gala
 					actor.set_window_actor (window_actor);
 					actor.set_radius (radius);
 					actor.set_rounds (blur_rounds);
+					actor.set_clip_rect ({ x, y, width, height });
 
 					window_actor.insert_child_below (actor, null);
 					blur_actors[xid] = actor;
-					
 					return true;
 				}
 			}

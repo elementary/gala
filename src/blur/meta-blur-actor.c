@@ -50,7 +50,6 @@ typedef enum {
     CHANGED_ALL = 0xFFFF
 } ChangedFlags;
 
-
 static void build_gaussian_blur_kernel(int* pradius, float* offset, float* weight)
 {
     int radius = *pradius;
@@ -115,7 +114,7 @@ struct _MetaBlurActorPrivate
     float fb_width;
     float fb_height;
 
-    cairo_region_t *clip_region;
+    cairo_rectangle_int_t clip_rect;
 
     int queued_redraw;
     int pipeline_res_location;
@@ -150,16 +149,6 @@ gboolean meta_blur_actor_get_supported (void)
             NULL);
 }
 
-static void set_clip_region (MetaBlurActor *self,
-        cairo_region_t      *clip_region)
-{
-    MetaBlurActorPrivate *priv = self->priv;
-
-    g_clear_pointer (&priv->clip_region, (GDestroyNotify) cairo_region_destroy);
-    if (clip_region)
-        priv->clip_region = cairo_region_copy (clip_region);
-}
-
 static void invalidate_pipeline (MetaBlurActor *self,
         ChangedFlags         changed)
 {
@@ -173,7 +162,6 @@ static void meta_blur_actor_dispose (GObject *object)
     MetaBlurActor *self = META_BLUR_ACTOR (object);
     MetaBlurActorPrivate *priv = self->priv;
 
-    set_clip_region (self, NULL);
     if (priv->fbTex) {
         cogl_object_unref (priv->fbTex);
         cogl_object_unref (priv->fbTex2);
@@ -194,7 +182,7 @@ static void meta_blur_actor_dispose (GObject *object)
     g_clear_pointer (&priv->blur_mask_texture, cogl_object_unref);
     g_clear_pointer (&priv->blur_mask, cairo_surface_destroy);
 
-    g_clear_pointer (&priv->clip_region, cairo_region_destroy);
+   // g_clear_pointer (&priv->clip_region, cairo_region_destroy);
 
     if (_stage_remove_always_redraw_actor)
        _stage_remove_always_redraw_actor (meta_get_stage_for_screen (priv->screen), self);
@@ -488,8 +476,18 @@ meta_blur_actor_allocate (ClutterActor        *actor,
 
         MetaRectangle rect;
         meta_window_get_frame_rect (priv->window, &rect);
-        clutter_actor_box_set_size (box, rect.width, rect.height);
-        clutter_actor_box_set_origin (box, rect.x - x, rect.y - y);
+
+        float width = rect.width, height = rect.height;
+        if (priv->clip_rect.width > 0) {
+            width = priv->clip_rect.width;
+        }
+
+        if (priv->clip_rect.height > 0) {
+            height = priv->clip_rect.height;
+        }
+
+        clutter_actor_box_set_size (box, width, height);
+        clutter_actor_box_set_origin (box, rect.x - x + priv->clip_rect.x, rect.y - y + priv->clip_rect.y);
     }
 
     invalidate_pipeline (self, CHANGED_SIZE);
@@ -536,9 +534,6 @@ static void meta_blur_actor_paint (ClutterActor *actor)
     float tx, ty, tw, th;
 
     priv->queued_redraw = 0;
-
-    if ((priv->clip_region && cairo_region_is_empty (priv->clip_region)))
-        return;
 
     if (!priv->enabled) {
         CLUTTER_ACTOR_CLASS (meta_blur_actor_parent_class)->paint (actor);
@@ -898,10 +893,9 @@ void meta_blur_actor_set_rounds (MetaBlurActor *self, int rounds)
 void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *window_actor)
 {
     MetaBlurActorPrivate *priv = self->priv;
-
     g_return_if_fail (META_IS_BLUR_ACTOR (self));
-    if (priv->window_actor == window_actor)
-    {
+    
+    if (priv->window_actor == window_actor) {
         return;
     }
 
@@ -913,9 +907,27 @@ void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *win
         priv->window = NULL;
     }
 
+    clutter_actor_queue_relayout (CLUTTER_ACTOR (self));
     clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
 }
 
+void meta_blur_actor_set_clip_rect (MetaBlurActor *self, const cairo_rectangle_int_t *clip_rect)
+{
+    MetaBlurActorPrivate *priv = self->priv;
+    g_return_if_fail (META_IS_BLUR_ACTOR (self));
+
+    if (priv->clip_rect.x == clip_rect->x &&
+        priv->clip_rect.y == clip_rect->y &&
+        priv->clip_rect.width == clip_rect->width &&
+        priv->clip_rect.height == clip_rect->height)
+    {
+        return;
+    }
+
+    priv->clip_rect = *clip_rect;
+    clutter_actor_queue_relayout (CLUTTER_ACTOR (self));
+    clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
+}
 
 void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val)
 {
@@ -930,7 +942,7 @@ void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val)
             g_clear_pointer (&priv->fb2, cogl_object_unref);
             g_clear_pointer (&priv->texture, cogl_object_unref);
         }
-        
+
         invalidate_pipeline (self, CHANGED_EFFECTS);
         clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
         priv->enabled = val;

@@ -59,6 +59,7 @@ void meta_blur_actor_set_rounds (MetaBlurActor *self, int rounds);
 void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *window_actor);
 void meta_blur_actor_set_blur_mask (MetaBlurActor *self, cairo_surface_t* mask);
 void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val);
+void meta_blur_actor_set_clip_rect (MetaBlurActor *self, const cairo_rectangle_int_t *clip_rect);
 
 #define META_BLUR_ACTOR_MAX_BLUR_RADIUS 49
 #define META_BLUR_ACTOR_MAX_BLUR_ROUNDS 99
