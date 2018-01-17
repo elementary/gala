@@ -182,8 +182,6 @@ static void meta_blur_actor_dispose (GObject *object)
     g_clear_pointer (&priv->blur_mask_texture, cogl_object_unref);
     g_clear_pointer (&priv->blur_mask, cairo_surface_destroy);
 
-   // g_clear_pointer (&priv->clip_region, cairo_region_destroy);
-
     if (_stage_remove_always_redraw_actor)
        _stage_remove_always_redraw_actor (meta_get_stage_for_screen (priv->screen), self);
     G_OBJECT_CLASS (meta_blur_actor_parent_class)->dispose (object);
