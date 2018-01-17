@@ -341,7 +341,7 @@ namespace Gala
 			uint32 xid = 0;
 			foreach (var entry in blur_actors.entries) {
 				if (entry.value == actor) {
-					xid = (int)entry.key;
+					xid = entry.key;
 					found = true;
 					break;
 				}
