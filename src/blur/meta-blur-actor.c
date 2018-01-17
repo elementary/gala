@@ -170,6 +170,7 @@ static void meta_blur_actor_dispose (GObject *object)
         cogl_object_unref (priv->texture);
         priv->fbTex = NULL;
     }
+    
     if (priv->pipeline) {
         cogl_object_unref (priv->pipeline);
         cogl_object_unref (priv->pipeline2);

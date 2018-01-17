@@ -324,6 +324,7 @@ namespace Gala
 					actor.set_radius (radius);
 					actor.set_rounds (blur_rounds);
 					actor.set_clip_rect ({ x, y, width, height });
+					actor.destroy.connect (on_blur_actor_destroyed);
 
 					window_actor.insert_child_below (actor, null);
 					blur_actors[xid] = actor;
@@ -332,6 +333,23 @@ namespace Gala
 			}
 
 			return false;
+		}
+
+		void on_blur_actor_destroyed (Clutter.Actor actor)
+		{
+			bool found = false;
+			uint32 xid = 0;
+			foreach (var entry in blur_actors.entries) {
+				if (entry.value == actor) {
+					xid = (int)entry.key;
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
+				blur_actors.unset (xid);
+			}
 		}
 
 		/**
@@ -349,7 +367,6 @@ namespace Gala
 			var actor = blur_actors[xid];
 			if (actor != null) {
 				actor.destroy ();
-				blur_actors.unset (xid);
 			} else {
 				throw new DBusError.FAILED ("Blur actor was not found for the specified window ID");
 			}
