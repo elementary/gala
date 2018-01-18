@@ -6,6 +6,39 @@
 #include <glib.h>
 #include <math.h>
 
+void build_gaussian_blur_kernel(int* pradius, float* offset, float* weight)
+{
+    int radius = *pradius;
+    radius += (radius + 1) % 2;
+    int sz = (radius+2)*2-1;
+    int N = sz-1;
+    float sigma = 1.0f;
+
+    float sum = powf(2, N);
+    weight[radius+1] = 1.0;
+    for (int i = 1; i < radius+2; i++) {
+        weight[radius-i+1] = weight[radius-i+2] * (N-i+1) / i;
+    }
+    sum -= (weight[radius+1] + weight[radius]) * 2.0;
+
+    for (int i = 0; i < radius; i++) {
+        offset[i] = (float)i*sigma;
+        weight[i] /= sum;
+    }
+
+    *pradius = radius;
+
+    radius = (radius+1)/2;
+    for (int i = 1; i < radius; i++) {
+        float w = weight[i*2] + weight[i*2-1];
+        float off = (offset[i*2] * weight[i*2] + offset[i*2-1] * weight[i*2-1]) / w;
+        offset[i] = off;
+        weight[i] = w;
+    }
+    
+    *pradius = radius;
+}
+
 char *build_shader(int direction, int radius, float* offsets, float *weight)
 {
     GString *sbuf = g_string_sized_new(4096);

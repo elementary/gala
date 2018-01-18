@@ -25,5 +25,6 @@ static const char* gaussian_blur_global_definition = "#define texpick texture2D\
 static const char* gaussian_blur_glsl_declarations = "uniform vec2 resolution;";
 
 char *build_shader(int direction, int radius, float* offsets, float *weight);
+void build_gaussian_blur_kernel(int* pradius, float* offset, float* weight);
 
 #endif /* ifndef _COMPOSITOR_BLUR_UTILS_H */

@@ -50,39 +50,6 @@ typedef enum {
     CHANGED_ALL = 0xFFFF
 } ChangedFlags;
 
-static void build_gaussian_blur_kernel(int* pradius, float* offset, float* weight)
-{
-    int radius = *pradius;
-    radius += (radius + 1) % 2;
-    int sz = (radius+2)*2-1;
-    int N = sz-1;
-    float sigma = 1.0f;
-
-    float sum = powf(2, N);
-    weight[radius+1] = 1.0;
-    for (int i = 1; i < radius+2; i++) {
-        weight[radius-i+1] = weight[radius-i+2] * (N-i+1) / i;
-    }
-    sum -= (weight[radius+1] + weight[radius]) * 2.0;
-
-    for (int i = 0; i < radius; i++) {
-        offset[i] = (float)i*sigma;
-        weight[i] /= sum;
-    }
-
-    *pradius = radius;
-
-    radius = (radius+1)/2;
-    for (int i = 1; i < radius; i++) {
-        float w = weight[i*2] + weight[i*2-1];
-        float off = (offset[i*2] * weight[i*2] + offset[i*2-1] * weight[i*2-1]) / w;
-        offset[i] = off;
-        weight[i] = w;
-    }
-    
-    *pradius = radius;
-}
-
 struct _MetaBlurActorPrivate
 {
     guint enabled: 1;
@@ -90,6 +57,7 @@ struct _MetaBlurActorPrivate
     MetaScreen *screen;
     MetaWindowActor *window_actor;
     MetaWindow *window;
+    ClutterActor *ui_group;
 
     gboolean blurred;
     int radius;
@@ -113,6 +81,8 @@ struct _MetaBlurActorPrivate
     CoglOffscreen* fb, *fb2;
     float fb_width;
     float fb_height;
+
+    int fb_scale;
 
     cairo_rectangle_int_t clip_rect;
 
@@ -170,7 +140,7 @@ static void meta_blur_actor_dispose (GObject *object)
         cogl_object_unref (priv->texture);
         priv->fbTex = NULL;
     }
-    
+
     if (priv->pipeline) {
         cogl_object_unref (priv->pipeline);
         cogl_object_unref (priv->pipeline2);
@@ -213,7 +183,6 @@ static void make_pipeline (MetaBlurActor* self)
 static void create_texture (MetaBlurActor* self)
 {
     MetaBlurActorPrivate* priv = self->priv;
-    int scale = 2;
 
     CoglContext *ctx = clutter_backend_get_cogl_context(clutter_get_default_backend());
 
@@ -231,8 +200,8 @@ static void create_texture (MetaBlurActor* self)
     fb_width = MAX (1, fb_width);
     fb_height = MAX (1, fb_height);
 
-    fb_width >>= scale;
-    fb_height >>= scale;
+    fb_width >>= priv->fb_scale;
+    fb_height >>= priv->fb_scale;
 
     if (priv->fbTex2 != NULL && (priv->fb_width == fb_width && priv->fb_height == fb_height)) {
         return;
@@ -250,7 +219,7 @@ static void create_texture (MetaBlurActor* self)
 
     priv->fbTex = cogl_texture_2d_new_with_size(ctx, priv->fb_width, priv->fb_height);
     cogl_texture_set_components(priv->fbTex, COGL_TEXTURE_COMPONENTS_RGBA);
-    cogl_primitive_texture_set_auto_mipmap(priv->fbTex, FALSE);
+    cogl_primitive_texture_set_auto_mipmap(priv->fbTex, TRUE);
 
     CoglError *error = NULL;
     if (cogl_texture_allocate(priv->fbTex, &error) == FALSE) {
@@ -269,7 +238,7 @@ static void create_texture (MetaBlurActor* self)
 
     priv->fbTex2 = cogl_texture_2d_new_with_size(ctx, priv->fb_width, priv->fb_height);
     cogl_texture_set_components(priv->fbTex2, COGL_TEXTURE_COMPONENTS_RGBA);
-    cogl_primitive_texture_set_auto_mipmap(priv->fbTex2, FALSE);
+    cogl_primitive_texture_set_auto_mipmap(priv->fbTex2, TRUE);
 
     if (cogl_texture_allocate(priv->fbTex2, &error) == FALSE) {
         meta_warning ("cogl_texture_allocat failed: %s\n", error->message);
@@ -328,13 +297,21 @@ static gboolean prepare_texture(MetaBlurActor* self)
     float x, y;
     float width, height;
     int fw, fh;
-    
 
     if (!clutter_actor_is_visible(self)) {
         return TRUE;
     }
 
     clutter_actor_get_size (self, &width, &height);
+
+    if (priv->ui_group) {
+        double sx, sy;
+        clutter_actor_get_scale (priv->ui_group, &sx, &sy);
+
+        width *= sx;
+        height *= sy;
+    }
+
     width = MAX(width, 1.0);
     height = MAX(height, 1.0);
 
@@ -364,7 +341,7 @@ static gboolean prepare_texture(MetaBlurActor* self)
         cogl_pipeline_set_layer_filters (priv->pipeline, 0,
                 COGL_PIPELINE_FILTER_LINEAR_MIPMAP_LINEAR,
                 COGL_PIPELINE_FILTER_LINEAR);
-    } else {
+    } else if (!_stage_add_always_redraw_actor) {
         uint twidth, theight;
         twidth = cogl_texture_get_width (priv->texture);
         theight = cogl_texture_get_height (priv->texture);
@@ -431,7 +408,7 @@ static gboolean prepare_texture(MetaBlurActor* self)
 }
 
 
-static void setup_pipeline (MetaBlurActor   *self, cairo_rectangle_int_t *rect)
+static void setup_pipeline (MetaBlurActor *self, cairo_rectangle_int_t *rect)
 {
     MetaBlurActorPrivate *priv = self->priv;
 
@@ -541,6 +518,7 @@ static void meta_blur_actor_paint (ClutterActor *actor)
 
     clutter_actor_get_transformed_position (actor, &tx, &ty);
     clutter_actor_get_transformed_size (actor, &tw, &th);
+
     transformed.x1 = tx;
     transformed.y1 = ty;
     transformed.x2 = tx + tw;
@@ -581,7 +559,7 @@ static void meta_blur_actor_paint (ClutterActor *actor)
     } else {
         cogl_pipeline_set_layer_texture (pipeline, 0, priv->texture);
     }
-
+    
     if (pipeline == priv->pl_passthrough) {
         cogl_framebuffer_draw_textured_rectangle (
                 cogl_get_draw_framebuffer (), pipeline,
@@ -659,6 +637,11 @@ static void meta_blur_actor_set_property (GObject      *object,
     {
         case PROP_META_SCREEN:
             priv->screen = g_value_get_object (value);
+
+            ClutterActor *top_window_group;
+
+            top_window_group = meta_get_top_window_group_for_screen (priv->screen);
+            priv->ui_group = clutter_actor_get_parent (top_window_group);
             break;
         case PROP_RADIUS:
             meta_blur_actor_set_radius (self,
@@ -726,30 +709,6 @@ meta_blur_actor_class_init (MetaBlurActorClass *klass)
     g_object_class_install_property (object_class,
             PROP_META_SCREEN,
             param_spec);
-
-    param_spec = g_param_spec_int ("radius",
-                "blur radius",
-                "blur radius",
-                0,
-                META_BLUR_ACTOR_MAX_BLUR_RADIUS,
-                META_BLUR_ACTOR_DEFAULT_BLUR_RADIUS,
-                G_PARAM_READWRITE);
-
-    g_object_class_install_property (object_class,
-            PROP_RADIUS,
-            param_spec);
-
-    param_spec = g_param_spec_int ("rounds",
-                "blur rounds",
-                "blur rounds",
-                1,
-                META_BLUR_ACTOR_MAX_BLUR_ROUNDS,
-                META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS,
-                G_PARAM_READWRITE);
-
-    g_object_class_install_property (object_class,
-            PROP_ROUNDS,
-            param_spec);
 }
 
 static void on_parent_queue_redraw (ClutterActor *actor,
@@ -791,12 +750,13 @@ static void meta_blur_actor_init (MetaBlurActor *self)
     priv->radius = 0; // means no blur
     priv->rounds = 1;
     priv->enabled = TRUE;
+    priv->fb_scale = META_BLUR_ACTOR_DEFAULT_TEXTURE_SCALE;
 
     meta_bind_texture = cogl_get_proc_address ("glBindTexture");
     meta_copy_sub_tex = cogl_get_proc_address ("glCopyTexSubImage2D");
 
     // if clutter is not patched, use this hack instead
-    if (_stage_add_always_redraw_actor == NULL) {
+    if (!_stage_add_always_redraw_actor) {
         meta_warning ("clutter is not patched, visual artifacts may happen.");
         g_signal_connect (G_OBJECT(self), "parent-set", on_parent_changed, NULL);
     }
@@ -820,7 +780,7 @@ void meta_blur_actor_set_radius (MetaBlurActor *self, int radius)
     MetaBlurActorPrivate *priv = self->priv;
 
     g_return_if_fail (META_IS_BLUR_ACTOR (self));
-    g_return_if_fail (radius >= 0 && radius <= 49);
+    g_return_if_fail (radius >= 0 && radius <= META_BLUR_ACTOR_MAX_BLUR_RADIUS);
 
     if (priv->radius != radius) {
         priv->radius = radius;
@@ -861,7 +821,7 @@ void meta_blur_actor_set_radius (MetaBlurActor *self, int radius)
             cogl_pipeline_add_layer_snippet (priv->pipeline2, 0, snippet);
             cogl_object_unref (snippet);
 
-            priv->pipeline2_res_location = cogl_pipeline_get_uniform_location(priv->pipeline2, "resolution");
+            priv->pipeline2_res_location = cogl_pipeline_get_uniform_location (priv->pipeline2, "resolution");
 
             free(hs);
         }

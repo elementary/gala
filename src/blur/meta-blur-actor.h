@@ -65,6 +65,7 @@ void meta_blur_actor_set_clip_rect (MetaBlurActor *self, const cairo_rectangle_i
 #define META_BLUR_ACTOR_MAX_BLUR_ROUNDS 99
 #define META_BLUR_ACTOR_DEFAULT_BLUR_RADIUS 30
 #define META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS 3
+#define META_BLUR_ACTOR_DEFAULT_TEXTURE_SCALE 2
 
 #endif /* META_BLUR_ACTOR_H */
 
