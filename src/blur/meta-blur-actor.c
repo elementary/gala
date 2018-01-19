@@ -82,7 +82,7 @@ struct _MetaBlurActorPrivate
     float fb_width;
     float fb_height;
 
-    int fb_scale;
+    int fb_downscale;
 
     cairo_rectangle_int_t clip_rect;
 
@@ -194,14 +194,11 @@ static void create_texture (MetaBlurActor* self)
     float width, height;
     clutter_actor_box_get_size (&box, &width, &height);
 
-    fb_width = width;
-    fb_height = height;
+    fb_width = width / priv->fb_downscale;
+    fb_height = height / priv->fb_downscale;
 
     fb_width = MAX (1, fb_width);
     fb_height = MAX (1, fb_height);
-
-    fb_width >>= priv->fb_scale;
-    fb_height >>= priv->fb_scale;
 
     if (priv->fbTex2 != NULL && (priv->fb_width == fb_width && priv->fb_height == fb_height)) {
         return;
@@ -219,7 +216,7 @@ static void create_texture (MetaBlurActor* self)
 
     priv->fbTex = cogl_texture_2d_new_with_size(ctx, priv->fb_width, priv->fb_height);
     cogl_texture_set_components(priv->fbTex, COGL_TEXTURE_COMPONENTS_RGBA);
-    cogl_primitive_texture_set_auto_mipmap(priv->fbTex, TRUE);
+    cogl_primitive_texture_set_auto_mipmap(priv->fbTex, FALSE);
 
     CoglError *error = NULL;
     if (cogl_texture_allocate(priv->fbTex, &error) == FALSE) {
@@ -238,7 +235,7 @@ static void create_texture (MetaBlurActor* self)
 
     priv->fbTex2 = cogl_texture_2d_new_with_size(ctx, priv->fb_width, priv->fb_height);
     cogl_texture_set_components(priv->fbTex2, COGL_TEXTURE_COMPONENTS_RGBA);
-    cogl_primitive_texture_set_auto_mipmap(priv->fbTex2, TRUE);
+    cogl_primitive_texture_set_auto_mipmap(priv->fbTex2, FALSE);
 
     if (cogl_texture_allocate(priv->fbTex2, &error) == FALSE) {
         meta_warning ("cogl_texture_allocat failed: %s\n", error->message);
@@ -304,6 +301,9 @@ static gboolean prepare_texture(MetaBlurActor* self)
 
     clutter_actor_get_size (self, &width, &height);
 
+    width = MAX(width, 1.0);
+    height = MAX(height, 1.0);
+
     if (priv->ui_group) {
         double sx, sy;
         clutter_actor_get_scale (priv->ui_group, &sx, &sy);
@@ -311,9 +311,6 @@ static gboolean prepare_texture(MetaBlurActor* self)
         width *= sx;
         height *= sy;
     }
-
-    width = MAX(width, 1.0);
-    height = MAX(height, 1.0);
 
     clutter_actor_get_transformed_position (self, &x, &y);
 
@@ -355,6 +352,7 @@ static gboolean prepare_texture(MetaBlurActor* self)
 
         if (error) {
             meta_warning ("clearing blur texture data failed: %s\n", error->message);
+            cogl_error_free (error);
         }
     }
 
@@ -555,7 +553,6 @@ static void meta_blur_actor_paint (ClutterActor *actor)
 
     if (priv->radius > 0) {
         cogl_pipeline_set_layer_texture (pipeline, 0, priv->fbTex2);
-
     } else {
         cogl_pipeline_set_layer_texture (pipeline, 0, priv->texture);
     }
@@ -564,7 +561,7 @@ static void meta_blur_actor_paint (ClutterActor *actor)
         cogl_framebuffer_draw_textured_rectangle (
                 cogl_get_draw_framebuffer (), pipeline,
                 bounding.x, bounding.y, bounding.width, bounding.height,
-                0.0f, 0.0f, 1.00f, 1.00f);
+                0.0f, 0.0f, 1.0f, 1.0f);
     } else {
         // blur with blur_mask
         float tex[8];
@@ -573,12 +570,10 @@ static void meta_blur_actor_paint (ClutterActor *actor)
         tex[2] = 1.0;
         tex[3] = 1.0;
 
-
         tex[4] = 0.0;
         tex[5] = 0.0;
         tex[6] = 1.0;
         tex[7] = 1.0;
-
 
         if (transformed.x1 < 0.0f) {
             float sx = fabsf(transformed.x1) / (transformed.x2 - transformed.x1);
@@ -639,7 +634,7 @@ static void meta_blur_actor_set_property (GObject      *object,
             priv->screen = g_value_get_object (value);
 
             ClutterActor *top_window_group;
-
+            
             top_window_group = meta_get_top_window_group_for_screen (priv->screen);
             priv->ui_group = clutter_actor_get_parent (top_window_group);
             break;
@@ -709,6 +704,30 @@ meta_blur_actor_class_init (MetaBlurActorClass *klass)
     g_object_class_install_property (object_class,
             PROP_META_SCREEN,
             param_spec);
+
+    param_spec = g_param_spec_int ("radius",
+            "blur radius",
+            "blur radius",
+            0,
+            META_BLUR_ACTOR_MAX_BLUR_RADIUS,
+            META_BLUR_ACTOR_DEFAULT_BLUR_RADIUS,
+            G_PARAM_READWRITE);
+
+    g_object_class_install_property (object_class,
+            PROP_RADIUS,
+            param_spec);
+
+    param_spec = g_param_spec_int ("rounds",
+                "blur rounds",
+                "blur rounds",
+                1,
+                META_BLUR_ACTOR_MAX_BLUR_ROUNDS,
+                META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS,
+                G_PARAM_READWRITE);
+
+    g_object_class_install_property (object_class,
+            PROP_ROUNDS,
+            param_spec);            
 }
 
 static void on_parent_queue_redraw (ClutterActor *actor,
@@ -723,7 +742,6 @@ static void on_parent_queue_redraw (ClutterActor *actor,
     clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
 
     g_signal_stop_emission_by_name (actor, "queue-redraw");
-
 }
 
 static void on_parent_changed (ClutterActor *actor,
@@ -748,9 +766,9 @@ static void meta_blur_actor_init (MetaBlurActor *self)
             MetaBlurActorPrivate);
 
     priv->radius = 0; // means no blur
-    priv->rounds = 1;
+    priv->rounds = META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS;
     priv->enabled = TRUE;
-    priv->fb_scale = META_BLUR_ACTOR_DEFAULT_TEXTURE_SCALE;
+    priv->fb_downscale = META_BLUR_ACTOR_DEFAULT_TEXTURE_DOWNSCALE;
 
     meta_bind_texture = cogl_get_proc_address ("glBindTexture");
     meta_copy_sub_tex = cogl_get_proc_address ("glCopyTexSubImage2D");
@@ -762,7 +780,7 @@ static void meta_blur_actor_init (MetaBlurActor *self)
     }
 }
 
-ClutterActor * meta_blur_actor_new (MetaScreen *screen)
+ClutterActor *meta_blur_actor_new (MetaScreen *screen)
 {
     MetaBlurActor *self;
 
@@ -823,7 +841,7 @@ void meta_blur_actor_set_radius (MetaBlurActor *self, int radius)
 
             priv->pipeline2_res_location = cogl_pipeline_get_uniform_location (priv->pipeline2, "resolution");
 
-            free(hs);
+            free (hs);
         }
 
         invalidate_pipeline (self, CHANGED_EFFECTS);
@@ -888,6 +906,21 @@ void meta_blur_actor_set_clip_rect (MetaBlurActor *self, const cairo_rectangle_i
     clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
 }
 
+void meta_blur_actor_set_texture_downscale (MetaBlurActor *self, int downscale)
+{
+    MetaBlurActorPrivate *priv = self->priv;
+    g_return_if_fail (META_IS_BLUR_ACTOR (self));
+    
+    if (priv->fb_downscale == downscale) {
+        return;
+    }
+
+    priv->fb_downscale = downscale;
+    invalidate_pipeline (self, CHANGED_EFFECTS);
+    clutter_actor_queue_relayout (CLUTTER_ACTOR (self));
+    clutter_actor_queue_redraw (CLUTTER_ACTOR (self));
+}
+
 void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val)
 {
     MetaBlurActorPrivate *priv = self->priv;
@@ -907,4 +940,3 @@ void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val)
         priv->enabled = val;
     }
 }
-

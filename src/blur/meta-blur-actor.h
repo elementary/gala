@@ -60,12 +60,14 @@ void meta_blur_actor_set_window_actor (MetaBlurActor *self, MetaWindowActor *win
 void meta_blur_actor_set_blur_mask (MetaBlurActor *self, cairo_surface_t* mask);
 void meta_blur_actor_set_enabled (MetaBlurActor *self, gboolean val);
 void meta_blur_actor_set_clip_rect (MetaBlurActor *self, const cairo_rectangle_int_t *clip_rect);
+void meta_blur_actor_set_texture_downscale (MetaBlurActor *self, int scale);
 
 #define META_BLUR_ACTOR_MAX_BLUR_RADIUS 49
 #define META_BLUR_ACTOR_MAX_BLUR_ROUNDS 99
-#define META_BLUR_ACTOR_DEFAULT_BLUR_RADIUS 30
-#define META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS 3
-#define META_BLUR_ACTOR_DEFAULT_TEXTURE_SCALE 2
+#define META_BLUR_ACTOR_MAX_TEXTURE_DOWNSCALE 16
+#define META_BLUR_ACTOR_DEFAULT_BLUR_RADIUS 7
+#define META_BLUR_ACTOR_DEFAULT_BLUR_ROUNDS 1
+#define META_BLUR_ACTOR_DEFAULT_TEXTURE_DOWNSCALE 16
 
 #endif /* META_BLUR_ACTOR_H */
 

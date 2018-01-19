@@ -257,16 +257,15 @@ namespace Gala
 		 * is applied and redrawn real time to always represent
 		 * what's behind the window.
 		 * 
-		 * The blur_rounds parameter specifies how many times does the blur
-		 * of a specified radius has to be applied for each paint. This parameter should be used
-		 * when one wants to achieve a bigger blur radius than what is supported.
+		 * The texture_downscale parameter determines how much the original non-blurred texture
+		 * has to be downscaled, setting this parameter to higher values will cause
+		 * better performance but also bigger blur radius applied since the same radius
+		 * will be applied to a smaller area. The best effects will only be achieved if
+		 * the passed value is a factor of 2 e.g: 2, 4, 8 and 16.
 		 * 
 		 * If your window is not always transparent, you should consider disabling
 		 * the blur effect with disable_blur_behind at the time of disabling transparency for the target window so
 		 * that the effect is not drawn unnecessarily.
-		 * 
-		 * Further calls to this method on the same window will update the properties of the
-		 * current blur effect to the new ones.
 		 * 
 		 * The x, y, width and height parameters can be used for setting a clip which the blur actor
 		 * covers behind the window. The clip is relative to the window coordinates.
@@ -275,17 +274,20 @@ namespace Gala
 		 * fixed height can be achieved by passing 0's to x, y and width parameters and the
 		 * requested value for the height parameter.
 		 * 
+		 * Further calls to this method on the same window will update the properties of the
+		 * current blur effect to the new ones.
+		 * 
 		 * @param xid the X window ID of the target window to enable the blur effect
 		 * @param radius the blur radius in pixels, the maximum is 49, pass -1 for the default radius
-		 * @param blur_rounds how many times the blur has to be applied for each painted frame,
-		 * 		  the maximum is 99, pass -1 for the default rounds value
+		 * @param texture_downscale a value between 1 and 16 of how much
+		 *        the original texture has to be downscaled, pass -1 for the default value
 		 * @param x the X value in pixels of the clip, relative to the requested window
 		 * @param y the Y value in pixels of the clip, relative to the requested window
 		 * @param width the width value in pixels of the clip, relative to the requested window
 		 * @param height the height value in pixels of the clip, relative to the requested window
 		 * @return true if the blur was successfully added to the target window, false otherwise
 		 */
-		public bool enable_blur_behind (uint32 xid, int radius, int blur_rounds, int x, int y, int width, int height) throws DBusError {
+		public bool enable_blur_behind (uint32 xid, int radius, int texture_downscale, int x, int y, int width, int height) throws DBusError {
 			if (!Meta.BlurActor.get_supported ()) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
 			}
@@ -298,20 +300,18 @@ namespace Gala
 				radius = radius.clamp (0, Meta.BlurActor.MAX_BLUR_RADIUS);
 			}
 
-			if (blur_rounds == -1) {
-				blur_rounds = Meta.BlurActor.DEFAULT_BLUR_ROUNDS;
+			if (texture_downscale == -1) {
+				texture_downscale = Meta.BlurActor.DEFAULT_TEXTURE_DOWNSCALE;
 			} else {
-				if (blur_rounds % 2 == 0) {
-					blur_rounds -= 1;
-				}	
-
-				blur_rounds = blur_rounds.clamp (1, Meta.BlurActor.MAX_BLUR_ROUNDS);
+				texture_downscale = texture_downscale.clamp (1, Meta.BlurActor.MAX_TEXTURE_DOWNSCALE);
 			}
+
+			print (texture_downscale.to_string () + "\n");
 
 			var blur_actor = blur_actors[xid];
 			if (blur_actor != null) {
 				blur_actor.set_radius (radius);
-				blur_actor.set_rounds (blur_rounds);
+				blur_actor.set_texture_downscale (texture_downscale);
 				blur_actor.set_clip_rect ({ x, y, width, height });
 				return true;
 			}
@@ -322,7 +322,7 @@ namespace Gala
 					var actor = new Meta.BlurActor (screen);
 					actor.set_window_actor (window_actor);
 					actor.set_radius (radius);
-					actor.set_rounds (blur_rounds);
+					actor.set_texture_downscale (texture_downscale);
 					actor.set_clip_rect ({ x, y, width, height });
 					actor.destroy.connect (on_blur_actor_destroyed);
 

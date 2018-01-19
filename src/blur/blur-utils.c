@@ -63,7 +63,6 @@ char *build_shader(int direction, int radius, float* offsets, float *weight)
                     offsets[i], weight[i]);
         }
     } else {
-
         g_string_append_printf(sbuf,
                 "vec2 tc = vec2(cogl_tex_coord.s, 1.0 - cogl_tex_coord.t); \n"
                 "cogl_texel = texture2D(cogl_sampler, tc) * %f;\n",
