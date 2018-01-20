@@ -306,8 +306,6 @@ namespace Gala
 				texture_downscale = texture_downscale.clamp (1, Meta.BlurActor.MAX_TEXTURE_DOWNSCALE);
 			}
 
-			print (texture_downscale.to_string () + "\n");
-
 			var blur_actor = blur_actors[xid];
 			if (blur_actor != null) {
 				blur_actor.set_radius (radius);
