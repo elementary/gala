@@ -477,6 +477,102 @@ namespace Gala
 				InternalUtils.set_input_area (screen, InputArea.DEFAULT);
 		}
 
+		void show_bottom_stack_window (Meta.Window bottom_window)
+		{
+			unowned Meta.Workspace workspace = bottom_window.get_workspace ();
+			if (get_n_normal_windows_workspace (workspace) < 2) {
+				return;
+			}
+
+			bool enable_animations = AnimationSettings.get_default ().enable_animations;
+
+			var bottom_actor = bottom_window.get_compositor_private () as Meta.WindowActor;
+			if (enable_animations) {
+				animate_bottom_window_scale (bottom_actor);
+			}
+
+			uint fade_out_duration = 1700U;
+			double[] op_keyframes = { 0.1, 0.9 };
+			GLib.Value[] opacity = { 20U, 20U };
+
+			var top_stack = new Gee.ArrayList<unowned Meta.Window> ();
+			workspace.list_windows ().@foreach ((window) => {
+				if (window.get_xwindow () == bottom_window.get_xwindow ()
+					|| !get_window_is_normal (window)
+					|| window.minimized) {
+					return;
+				}
+	
+				var actor = window.get_compositor_private () as Clutter.Actor;
+				if (enable_animations) {
+					var op_trans = new Clutter.KeyframeTransition ("opacity");
+					op_trans.duration = fade_out_duration;
+					op_trans.remove_on_complete = true;
+					op_trans.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
+					op_trans.set_from_value (255.0f);
+					op_trans.set_to_value (255.0f);
+					op_trans.set_key_frames (op_keyframes);
+					op_trans.set_values (opacity);
+	
+					actor.add_transition ("opacity-hide", op_trans);
+				} else {
+					Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
+						actor.opacity = (uint)opacity[0];
+						return false;
+					});
+
+					Timeout.add ((uint)(fade_out_duration * op_keyframes[1]), () => {
+						actor.opacity = 255U;
+						return false;
+					});
+				}
+			});
+		}
+
+		void animate_bottom_window_scale (Meta.WindowActor actor)
+		{
+			const string[] props = { "scale-x", "scale-y" };
+
+			foreach (string prop in props) {
+				double[] scale_keyframes = { 0.2, 0.3, 0.9 };
+				GLib.Value[] scale = { 1.0f, 1.1f, 1.1f };
+
+				var scale_trans = new Clutter.KeyframeTransition (prop);
+				scale_trans.duration = 1400;
+				scale_trans.remove_on_complete = true;
+				scale_trans.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
+				scale_trans.set_from_value (1.0f);
+				scale_trans.set_to_value (1.0f);
+				scale_trans.set_key_frames (scale_keyframes);
+				scale_trans.set_values (scale);
+
+				actor.add_transition ("magnify-%s".printf (prop), scale_trans);
+			}
+		}
+
+		static int get_n_normal_windows_workspace (Meta.Workspace workspace) {
+			int n = 0;
+			workspace.list_windows ().@foreach ((window) => {
+				if (get_window_is_normal (window)) {
+					n++;
+				}
+			});
+	
+			return n;
+		}
+
+		static inline bool get_window_is_normal (Meta.Window window)
+		{
+			switch (window.get_window_type ()) {
+				case Meta.WindowType.NORMAL:
+				case Meta.WindowType.DIALOG:
+				case Meta.WindowType.MODAL_DIALOG:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 		public uint32[] get_all_xids ()
 		{
 			var list = new Gee.ArrayList<uint32> ();
@@ -1040,13 +1136,17 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 
+			var window = actor.get_meta_window ();
 			if (!animation_settings.enable_animations) {
 				actor.show ();
 				map_completed (actor);
+
+				if (get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
+					show_bottom_stack_window (window);
+				}
+
 				return;
 			}
-
-			var window = actor.get_meta_window ();
 
 			actor.remove_all_transitions ();
 			actor.show ();
@@ -1082,6 +1182,10 @@ namespace Gala
 						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
+
+						if (window.get_layer () == Meta.StackLayer.BOTTOM) {
+							show_bottom_stack_window (window);
+						}
 					});
 					break;
 				case WindowType.MENU:
@@ -1135,6 +1239,10 @@ namespace Gala
 						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
+
+						if (window.get_layer () == Meta.StackLayer.BOTTOM) {
+							show_bottom_stack_window (window);
+						}
 					});
 
 					if (AppearanceSettings.get_default ().dim_parents &&
