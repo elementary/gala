@@ -334,6 +334,29 @@ namespace Gala
 			return result;
 		}
 
+		public static int get_n_normal_windows_workspace (Meta.Workspace workspace) {
+			int n = 0;
+			workspace.list_windows ().@foreach ((window) => {
+				if (get_window_is_normal (window)) {
+					n++;
+				}
+			});
+	
+			return n;
+		}
+
+		public static inline bool get_window_is_normal (Meta.Window window)
+		{
+			switch (window.get_window_type ()) {
+				case Meta.WindowType.NORMAL:
+				case Meta.WindowType.DIALOG:
+				case Meta.WindowType.MODAL_DIALOG:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 		/* TODO needs porting
 		public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
 		{

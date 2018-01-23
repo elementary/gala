@@ -480,7 +480,7 @@ namespace Gala
 		void show_bottom_stack_window (Meta.Window bottom_window)
 		{
 			unowned Meta.Workspace workspace = bottom_window.get_workspace ();
-			if (get_n_normal_windows_workspace (workspace) < 2) {
+			if (InternalUtils.get_n_normal_windows_workspace (workspace) < 2) {
 				return;
 			}
 
@@ -498,7 +498,7 @@ namespace Gala
 			var top_stack = new Gee.ArrayList<unowned Meta.Window> ();
 			workspace.list_windows ().@foreach ((window) => {
 				if (window.get_xwindow () == bottom_window.get_xwindow ()
-					|| !get_window_is_normal (window)
+					|| !InternalUtils.get_window_is_normal (window)
 					|| window.minimized) {
 					return;
 				}
@@ -547,29 +547,6 @@ namespace Gala
 				scale_trans.set_values (scale);
 
 				actor.add_transition ("magnify-%s".printf (prop), scale_trans);
-			}
-		}
-
-		static int get_n_normal_windows_workspace (Meta.Workspace workspace) {
-			int n = 0;
-			workspace.list_windows ().@foreach ((window) => {
-				if (get_window_is_normal (window)) {
-					n++;
-				}
-			});
-	
-			return n;
-		}
-
-		static inline bool get_window_is_normal (Meta.Window window)
-		{
-			switch (window.get_window_type ()) {
-				case Meta.WindowType.NORMAL:
-				case Meta.WindowType.DIALOG:
-				case Meta.WindowType.MODAL_DIALOG:
-					return true;
-				default:
-					return false;
 			}
 		}
 
@@ -1141,7 +1118,7 @@ namespace Gala
 				actor.show ();
 				map_completed (actor);
 
-				if (get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
+				if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
 					show_bottom_stack_window (window);
 				}
 
