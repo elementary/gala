@@ -337,7 +337,7 @@ namespace Meta {
 		protected CursorTracker ();
 		public static unowned Meta.CursorTracker get_for_screen (Meta.Screen screen);
 		public void get_hot (out int x, out int y);
-		public void get_pointer (int x, int y, Clutter.ModifierType mods);
+		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
 		public unowned Cogl.Texture get_sprite ();
 		public void set_pointer_visible (bool visible);
 		public signal void cursor_changed ();
@@ -475,11 +475,18 @@ namespace Meta {
 #if HAS_MUTTER326
 		public int get_monitor_for_connector (string connector);
 #endif
+#if !HAS_MUTTER328
 		public int get_monitor_for_output (uint id);
+#endif
 		public signal void confirm_display_change ();
 #if HAS_MUTTER326
 		public Meta.MonitorSwitchConfigType get_switch_config ();
 		public void switch_config (Meta.MonitorSwitchConfigType config_type);
+#endif
+#if HAS_MUTTER328
+		[NoAccessorMethod]
+		public Meta.Backend backend { owned get; construct; }
+		public signal void monitors_changed_internal ();
 #endif
 #if HAS_MUTTER324 && !HAS_MUTTER326
 		public signal void lid_is_closed_changed ();
@@ -667,7 +674,7 @@ namespace Meta {
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
-#if HAS_MUTTER322
+#if HAS_MUTTER322 && !HAS_MUTTER328
 		public unowned string get_flatpak_id ();
 #endif
 		public unowned Meta.Frame get_frame ();
@@ -689,6 +696,9 @@ namespace Meta {
 		public unowned string get_mutter_hints ();
 		public int get_pid ();
 		public unowned string get_role ();
+#if HAS_MUTTER328
+		public unowned string get_sandboxed_app_id ();
+#endif
 		public unowned Meta.Screen get_screen ();
 		public uint get_stable_sequence ();
 		public unowned string get_startup_id ();
@@ -1083,7 +1093,7 @@ namespace Meta {
 		ATTACHED,
 		LAST;
 		[CCode (cheader_filename = "meta/main.h")]
-		public static unowned string to_string (Meta.FrameType type);
+		public unowned string to_string ();
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_GRAB_OP_", type_id = "meta_grab_op_get_type ()")]
 	public enum GrabOp {
@@ -1319,7 +1329,7 @@ namespace Meta {
 		CENTER_NEW_WINDOWS,
 		DRAG_THRESHOLD;
 		[CCode (cheader_filename = "meta/main.h")]
-		public static unowned string to_string (Meta.Preference pref);
+		public unowned string to_string ();
 	}
 	[CCode (cheader_filename = "meta/screen.h", cprefix = "META_SCREEN_", type_id = "meta_screen_corner_get_type ()")]
 	public enum ScreenCorner {
