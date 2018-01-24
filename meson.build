@@ -205,6 +205,27 @@ if mutter326_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
+mutter328_dep = dependency('libmutter-1', version: ['>= 3.27', '< 3.29'], required: false)
+if mutter328_dep.found()
+	mutter_packages_command = [
+		'--pkg', 'libmutter-1',
+		'--pkg', 'mutter-cogl-1',
+		'--pkg', 'mutter-cogl-pango-1',
+		'--pkg', 'mutter-cogl-path-1',
+		'--pkg', 'mutter-clutter-1'
+	]
+	libmutter_dep = dependency('libmutter-1', version: '>= 3.27.1')
+	pkgconf.set('MUTTER_PKGS', 'libmutter-1 >= 3.27.1')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-1'), dependency('mutter-cogl-pango-1'),
+		dependency('mutter-cogl-path-1'), dependency('mutter-clutter-1')
+	]
+	vala_flags += ['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322', '--define', 'HAS_MUTTER324', '--define', 'HAS_MUTTER326', '--define', 'HAS_MUTTER328']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
 if mutter_dep.length() == 0
 	error ('No supported mutter library found!')
 endif
