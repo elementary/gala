@@ -244,7 +244,9 @@ subdir('plugins/notify')
 subdir('plugins/pip')
 subdir('plugins/template')
 subdir('plugins/zoom')
-subdir('docs')
+if get_option('documentation')
+	subdir('docs')
+endif
 subdir('po')
 
 meson.add_install_script('build-aux/meson/post_install.py')
