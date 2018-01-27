@@ -796,8 +796,10 @@ namespace Gala
 				if (Utils.get_n_windows (win_ws) <= 1)
 					return;
 
-				var new_ws_index = screen.get_n_workspaces () - 1;
 				var old_ws_index = win_ws.index ();
+				var new_ws_index = old_ws_index + 1;
+				InternalUtils.insert_workspace_with_window (new_ws_index, window);
+
 				var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
 				window.change_workspace (new_ws_obj);
 				new_ws_obj.activate_with_focus (window, time);
