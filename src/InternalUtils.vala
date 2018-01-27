@@ -334,17 +334,6 @@ namespace Gala
 			return result;
 		}
 
-		public static int get_n_normal_windows_workspace (Meta.Workspace workspace) {
-			int n = 0;
-			workspace.list_windows ().@foreach ((window) => {
-				if (get_window_is_normal (window)) {
-					n++;
-				}
-			});
-	
-			return n;
-		}
-
 		public static inline bool get_window_is_normal (Meta.Window window)
 		{
 			switch (window.get_window_type ()) {

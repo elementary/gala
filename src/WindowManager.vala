@@ -480,7 +480,7 @@ namespace Gala
 		void show_bottom_stack_window (Meta.Window bottom_window)
 		{
 			unowned Meta.Workspace workspace = bottom_window.get_workspace ();
-			if (InternalUtils.get_n_normal_windows_workspace (workspace) < 2) {
+			if (Utils.get_n_windows (workspace) == 0) {
 				return;
 			}
 
