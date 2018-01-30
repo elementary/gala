@@ -77,6 +77,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 		var window = window_actor.get_meta_window ();
 		window.unmanaged.connect (on_close_click_clicked);
+		window.notify["appears-focused"].connect (on_appears_focused_changed);
 
 		clone = new Clutter.Clone (window_actor.get_texture ());
 
@@ -151,6 +152,22 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		opacity = 255;
 
 		set_easing_duration (0);
+	}
+
+	public override void hide ()
+	{
+		opacity = 255;
+		
+		set_easing_duration (200);
+		opacity = 0;
+
+		set_easing_duration (0);
+
+		ulong completed_id = 0UL;
+		completed_id = transitions_completed.connect (() => {
+			disconnect (completed_id);
+			base.hide ();
+		});
 	}
 
 	public override bool enter_event (Clutter.CrossingEvent event)
@@ -263,6 +280,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 			closed ();
 			return false;
 		});
+	}
+
+	private void on_appears_focused_changed ()
+	{
+		var window = window_actor.get_meta_window ();
+		if (window.appears_focused) {
+			hide ();
+		} else {
+			show ();
+		}
 	}
 
 	private void update_size ()
