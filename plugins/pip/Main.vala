@@ -91,9 +91,23 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 				var clip = rect.init (point_x, point_y, width, height);
 
 				var popup_window = new PopupWindow (wm, active, clip);
+				popup_window.show.connect (on_popup_window_show);
+				popup_window.hide.connect (on_popup_window_hide);
 				add_window (popup_window);
 			}
 		}
+	}
+
+	private void on_popup_window_show (Clutter.Actor popup_window)
+	{
+		track_actor (popup_window);
+		update_region ();
+	}
+
+	private void on_popup_window_hide (Clutter.Actor popup_window)
+	{
+		untrack_actor (popup_window);
+		update_region ();
 	}
 
 	private void select_window_at (int x, int y)
@@ -101,6 +115,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 		var selected = get_window_actor_at (x, y);
 		if (selected != null) {
 			var popup_window = new PopupWindow (wm, selected, null);
+			popup_window.show.connect (on_popup_window_show);
+			popup_window.hide.connect (on_popup_window_hide);
 			add_window (popup_window);
 		}
 	}
@@ -167,7 +183,6 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 	{
 		popup_window.closed.connect (() => remove_window (popup_window));
 		windows.add (popup_window);
-		track_actor (popup_window);
 		wm.ui_group.add_child (popup_window);
 	}
 
