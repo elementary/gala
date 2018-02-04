@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-02-04 15:03+0000\n"
+"PO-Revision-Date: 2018-02-05 00:10+0000\n"
 "Last-Translator: Jovennan <jovennan@gmail.com>\n"
 "Language-Team: Portuguese "
 "<https://weblate.elementary.io/projects/desktop/gala/pt/>\n"
@@ -238,7 +238,8 @@ msgstr "Atalho para abrir a visão geral de todas janelas"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:132
 msgid "Cycle to the next workspace to the right or to back to the first"
 msgstr ""
-"Alternar para o próximo workspace à direita ou de volta para o primeiro."
+"Alternar para a próxima área de trabalho à direita ou de volta para a "
+"primeira"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:136
 msgid "Cycle to next keyboard layout"
