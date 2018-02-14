@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-01-23 00:06+0000\n"
+"PO-Revision-Date: 2018-02-15 00:00+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock@gmail.com>\n"
 "Language-Team: Japanese "
 "<https://weblate.elementary.io/projects/desktop/gala/ja/>\n"
@@ -50,7 +50,7 @@ msgstr "常に手前へ表示する"
 
 #: src/Widgets/WindowMenu.vala:94
 msgid "Always on Visible Workspace"
-msgstr "全てのワークスペースに表示する"
+msgstr "すべてのワークスペースに表示する"
 
 #: src/Widgets/WindowMenu.vala:103
 msgid "Move to Workspace Left"
@@ -215,7 +215,7 @@ msgstr "ウィンドウのオーバービューを開くショートカット"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:123
 msgid "Shortcut to open the window overview for all windows"
-msgstr "全てのウィンドウのオーバービューを開くショートカット"
+msgstr "すべてのウィンドウのオーバービューを開くショートカット"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:128
 #: data/org.pantheon.desktop.gala.gschema.xml.in:132
