@@ -49,6 +49,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private float begin_resize_width = 0.0f;
 	private float begin_resize_height = 0.0f;
 
+	static unowned Meta.Window? previous_focus = null;
+
 	// From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
 	static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
 		out float width, out float height)
@@ -56,6 +58,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		float ratio = float.min (max_width / src_width, max_height / src_height);
 		width = src_width * ratio;
 		height = src_height * ratio;
+	}
+
+	static bool get_window_is_normal (Meta.Window window)
+	{
+		var window_type = window.get_window_type ();
+		return window_type == Meta.WindowType.NORMAL
+			|| window_type == Meta.WindowType.DIALOG
+			|| window_type == Meta.WindowType.MODAL_DIALOG;
 	}
 
 	static void get_current_cursor_position (out int x, out int y)
@@ -77,6 +87,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 		var window = window_actor.get_meta_window ();
 		window.unmanaged.connect (on_close_click_clicked);
+		window.notify["appears-focused"].connect (() => {
+			Idle.add (() => {
+				update_window_focus ();
+				return false;
+			});
+		});
 
 		clone = new Clutter.Clone (window_actor.get_texture ());
 
@@ -151,6 +167,22 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		opacity = 255;
 
 		set_easing_duration (0);
+	}
+
+	public override void hide ()
+	{
+		opacity = 255;
+		
+		set_easing_duration (200);
+		opacity = 0;
+
+		set_easing_duration (0);
+
+		ulong completed_id = 0UL;
+		completed_id = transitions_completed.connect (() => {
+			disconnect (completed_id);
+			base.hide ();
+		});
 	}
 
 	public override bool enter_event (Clutter.CrossingEvent event)
@@ -263,6 +295,25 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 			closed ();
 			return false;
 		});
+	}
+
+	private void update_window_focus ()
+	{
+		unowned Meta.Window focus_window = wm.get_screen ().get_display ().get_focus_window ();
+		if ((focus_window != null && !get_window_is_normal (focus_window))
+			|| (previous_focus != null && !get_window_is_normal (previous_focus))) {
+			previous_focus = focus_window;
+			return;
+		}
+
+		var window = window_actor.get_meta_window ();
+		if (window.appears_focused) {
+			hide ();
+		} else {
+			show ();
+		}
+
+		previous_focus = focus_window;
 	}
 
 	private void update_size ()
