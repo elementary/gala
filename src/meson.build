@@ -44,5 +44,6 @@ gala_bin = executable(
 	gala_bin_sources,
 	dependencies: [gala_dep, gala_base_dep],
 	include_directories: config_inc_dir,
+	install_rpath: libmutter_dep.get_pkgconfig_variable('typelibdir'),
 	install: true,
 )
