@@ -25,11 +25,20 @@ namespace Gala
 		public signal void prepare_for_sleep (bool suspending);
 	}
 
+	[DBus (name = "io.elementary.gala.daemon")]
+	public interface MenuDaemon: GLib.Object
+	{
+		public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+	}
+
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
 		const uint GL_VENDOR = 0x1F00;
 		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
 		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
+
+		const string MENU_DBUS_NAME = "io.elementary.gala.daemon";
+		const string MENU_DBUS_OBJECT_PATH = "/io/elementary/gala/daemon";
 
 		delegate unowned string? GlQueryFunc (uint id);
 
@@ -83,6 +92,7 @@ namespace Gala
 		Window? moving; //place for the window that is being moved over
 
 		LoginDRemote? logind_proxy = null;
+		MenuDaemon? menu_proxy = null;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -120,6 +130,29 @@ namespace Gala
 				} catch (Error e) {
 					warning ("Failed to get LoginD proxy: %s", e.message);
 				}
+			}
+
+			Bus.watch_name (BusType.SESSION, MENU_DBUS_NAME, BusNameWatcherFlags.NONE, has_menu, lost_menu);
+		}
+
+		void on_menu_get(GLib.Object? o, GLib.AsyncResult? res)
+		{
+			try {
+				menu_proxy = Bus.get_proxy.end(res);
+			} catch (Error e) {
+				warning("Failed to get Menu proxy: %s", e.message);
+			}
+		}
+
+		void lost_menu()
+		{
+			menu_proxy = null;
+		}
+
+		void has_menu()
+		{
+			if (menu_proxy == null) {
+				Bus.get_proxy.begin<MenuDaemon> (BusType.SESSION, MENU_DBUS_NAME, MENU_DBUS_OBJECT_PATH, 0, null, on_menu_get);
 			}
 		}
 
@@ -701,6 +734,50 @@ namespace Gala
 					if (current != null && current.window_type == WindowType.NORMAL)
 						current.minimize ();
 					break;
+				case ActionType.START_MOVE_CURRENT:
+					if (current != null && current.allows_move ())
+						current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
+					break;
+				case ActionType.START_RESIZE_CURRENT:
+					if (current != null && current.allows_resize ())
+						current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
+					break;
+				case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
+					if (current == null)
+						break;
+
+					if (current.is_above ())
+						current.unmake_above ();
+					else
+						current.make_above ();
+					break;
+				case ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT:
+					if (current == null)
+						break;
+
+					if (current.on_all_workspaces)
+						current.unstick ();
+					else
+						current.stick ();
+					break;
+				case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
+					if (current != null) {
+						var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.LEFT);
+						if (wp != null)
+							current.change_workspace (wp);
+					}
+					break;
+				case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
+					if (current != null) {
+						var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.RIGHT);
+						if (wp != null)
+							current.change_workspace (wp);
+					}
+					break;
+				case ActionType.CLOSE_CURRENT:
+					if (current != null && current.can_close ())
+						current.@delete (Gtk.get_current_event_time ());
+					break;
 				case ActionType.OPEN_LAUNCHER:
 					try {
 						Process.spawn_command_line_async (BehaviorSettings.get_default ().panel_main_menu_action);
@@ -767,23 +844,55 @@ namespace Gala
 			}
 		}
 
-		WindowMenu? window_menu = null;
-
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
 		{
 			var time = get_screen ().get_display ().get_current_time_roundtrip ();
 
 			switch (menu) {
 				case WindowMenuType.WM:
-					if (window_menu == null)
-						window_menu = new WindowMenu ();
+					if (menu_proxy == null) {
+						return;
+					}
 
-					window_menu.current_window = window;
-					window_menu.show_all ();
-					window_menu.popup (null, null, (menu, ref menu_x, ref menu_y, out push_in) => {
-						menu_x = x;
-						menu_y = y;
-					}, Gdk.BUTTON_SECONDARY, time);
+					WindowFlags flags = WindowFlags.NONE;
+					if (window.can_minimize ()) {
+						flags |= WindowFlags.CAN_MINIMIZE;
+					}
+
+					if (window.can_maximize ()) {
+						flags |= WindowFlags.CAN_MAXIMIZE;
+					}
+
+					if (window.get_maximized () > 0) {
+						flags |= WindowFlags.IS_MAXIMIZED;
+					}
+
+					if (window.allows_move ()) {
+						flags |= WindowFlags.ALLOWS_MOVE;
+					}
+
+					if (window.allows_resize ()) {
+						flags |= WindowFlags.ALLOWS_RESIZE;
+					}
+
+					if (window.is_above ()) {
+						flags |= WindowFlags.ALWAYS_ON_TOP;
+					}
+
+					if (window.on_all_workspaces) {
+						flags |= WindowFlags.ON_ALL_WORKSPACES;
+					}
+
+					if (window.can_close ()) {
+						flags |= WindowFlags.CAN_CLOSE;
+					}
+
+					try {
+						menu_proxy.show_window_menu.begin (flags, x, y);
+					} catch (Error e) {
+						message ("Error invoking MenuManager: %s", e.message);
+					}
+
 					break;
 				case WindowMenuType.APP:
 					// FIXME we don't have any sort of app menus
