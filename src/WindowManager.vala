@@ -855,37 +855,29 @@ namespace Gala
 					}
 
 					WindowFlags flags = WindowFlags.NONE;
-					if (window.can_minimize ()) {
+					if (window.can_minimize ())
 						flags |= WindowFlags.CAN_MINIMIZE;
-					}
 
-					if (window.can_maximize ()) {
+					if (window.can_maximize ())
 						flags |= WindowFlags.CAN_MAXIMIZE;
-					}
 
-					if (window.get_maximized () > 0) {
+					if (window.get_maximized () > 0)
 						flags |= WindowFlags.IS_MAXIMIZED;
-					}
 
-					if (window.allows_move ()) {
+					if (window.allows_move ())
 						flags |= WindowFlags.ALLOWS_MOVE;
-					}
 
-					if (window.allows_resize ()) {
+					if (window.allows_resize ())
 						flags |= WindowFlags.ALLOWS_RESIZE;
-					}
 
-					if (window.is_above ()) {
+					if (window.is_above ())
 						flags |= WindowFlags.ALWAYS_ON_TOP;
-					}
 
-					if (window.on_all_workspaces) {
+					if (window.on_all_workspaces)
 						flags |= WindowFlags.ON_ALL_WORKSPACES;
-					}
 
-					if (window.can_close ()) {
+					if (window.can_close ())
 						flags |= WindowFlags.CAN_CLOSE;
-					}
 
 					try {
 						menu_proxy.show_window_menu.begin (flags, x, y);
