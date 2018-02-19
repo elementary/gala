@@ -33,6 +33,7 @@ gala_LDADD = \
 
 gala_VALASOURCES = \
 	DBus.vala \
+	BlurActor.vala \
 	DBusAccelerator.vala \
 	DockThemeManager.vala \
 	DragDropAction.vala \

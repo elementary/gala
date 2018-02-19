@@ -236,5 +236,14 @@ namespace Gala
 
 			return { rTotal, gTotal, bTotal, mean, variance };
 		}
+
+		public void test_enable_blur ()
+		{
+			var actor = new BlurActor (2, 3, wm.ui_group);
+			actor.set_size (400, 400);
+			actor.set_position (0, 0);
+
+			wm.ui_group.add_child (actor);
+		}
 	}
 }
