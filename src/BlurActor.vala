@@ -104,7 +104,10 @@ namespace Gala
         float stage_height;
 
         int iterations;
+        int expand_size;
     
+        int tex_height;
+
         unowned Clutter.Actor ui_group;
 
         Cogl.Material material;
@@ -149,22 +152,23 @@ namespace Gala
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
         }    
 
-        public BlurActor (int iterations, float offset, Clutter.Actor ui_group)
+        public BlurActor (int iterations, float offset, int expand_size, Clutter.Actor ui_group)
         {
             this.iterations = iterations;
+            this.expand_size = expand_size;
             this.ui_group = ui_group;
 
             textures = new Gee.ArrayList<FramebufferContainer> ();
             result_textures = new Gee.ArrayList<FramebufferContainer> ();
     
             down_material = new Cogl.Material ();
-            CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+            CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             CoglFixes.set_user_program (down_material, down_program);
     
             up_material = new Cogl.Material ();
-            CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             up_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+            CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             CoglFixes.set_user_program (up_material, up_program);
     
             material = new Cogl.Material ();
@@ -181,30 +185,33 @@ namespace Gala
 
         public override void paint ()
         {
-            float width, height, _x, _y;
+            float width, height, x, y;
             get_size (out width, out height);
-            get_transformed_position (out _x, out _y);
+            get_transformed_position (out x, out y);
+
+            x = float.max (0, x - expand_size);
+            y = float.max (0, y - expand_size);
 
             double sx, sy;
+
             ui_group.get_scale (out sx, out sy);
 
-            int tex_width = (int)(width * sx);
-            int tex_height = (int)(height * sy);
+            int tex_width = int.min ((int)((width + expand_size * 2) * sx), (int)stage_width);
+            tex_height = int.min ((int)((height + expand_size * 2) * sy), (int)stage_height);
 
-            int x = int.min ((int)_x, (int)stage_width);
-            int y = int.min ((int)(stage_height - _y - tex_height), (int)stage_height);
+            int tex_x = int.min ((int)x, (int)stage_width);
+            int tex_y = int.min ((int)(stage_height - y - tex_height), (int)stage_height);
 
             Cogl.begin_gl ();
             bind_texture (target, handle);
-            copy_tex_sub_image (target, 0, 0, 0, x, y, tex_width, tex_height);
+            copy_tex_sub_image (target, 0, 0, 0, tex_x, tex_y, tex_width, tex_height);
             bind_texture (target, 0);
             Cogl.end_gl ();
 
             downsample ();
             upsample ();
 
-            var res = result_textures[1];
-
+            var res = result_textures.first ();
             material.set_layer (0, res.texture);
 
             uint8 paint_opacity = get_paint_opacity ();
@@ -212,7 +219,9 @@ namespace Gala
 
             Cogl.set_source (material);
             CoglFixes.framebuffer_push_rectangle_clip (Cogl.get_draw_framebuffer (), 0, 0, width, height);
-            Cogl.rectangle_with_texture_coords (0, 0, stage_width, stage_height, 0, 0, 1, 1);
+
+            Cogl.translate (-expand_size / (float)sx, -expand_size / (float)sy, 0);
+            Cogl.rectangle_with_texture_coords (0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
             CoglFixes.framebuffer_pop_clip (Cogl.get_draw_framebuffer ());         
         }
 
@@ -231,10 +240,12 @@ namespace Gala
                 var fbo = new Cogl.Offscreen.to_texture (texture);
                 textures.add (new FramebufferContainer (fbo, texture));
 
-                texture = new Cogl.Texture.with_size (width, height,
-                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
-                fbo = new Cogl.Offscreen.to_texture (texture);
-                result_textures.add (new FramebufferContainer (fbo, texture));
+                if (i > 0) {
+                    texture = new Cogl.Texture.with_size (width, height,
+                        Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
+                    fbo = new Cogl.Offscreen.to_texture (texture);
+                    result_textures.add (new FramebufferContainer (fbo, texture));
+                }
             }
 
             CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, out target);
@@ -257,15 +268,15 @@ namespace Gala
         {
             Cogl.set_source (up_material);
             var source_cont = textures[iterations];
-            var dest_cont = result_textures[iterations];
+            var dest_cont = result_textures[iterations - 1];
 
             render_to_fbo ((Cogl.Framebuffer)dest_cont.fbo, dest_cont.texture,
                         source_cont.texture, up_material,
                         up_program, up_width_location, up_height_location);
     
             for (int i = iterations - 1; i > 0; i--) {
-                source_cont = result_textures[i + 1];
-                dest_cont = result_textures[i];
+                source_cont = result_textures[i];
+                dest_cont = result_textures[i - 1];
 
                 render_to_fbo ((Cogl.Framebuffer)dest_cont.fbo, dest_cont.texture,
                             source_cont.texture, up_material,
@@ -289,8 +300,9 @@ namespace Gala
 
             Cogl.push_framebuffer ((Cogl.Framebuffer)target);
 
+            Cogl.clear (new Cogl.Color.from_4ub (0, 0, 0, 0), Cogl.BufferBit.COLOR);
             if (y_flip) {
-                float y_translate = source.get_height () - height;
+                float y_translate = (float)source.get_height () - tex_height;
 
                 Cogl.push_matrix ();
                 Cogl.scale (1.0f, -1.0f, 1.0f);
