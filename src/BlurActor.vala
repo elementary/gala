@@ -94,8 +94,6 @@ namespace Gala
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
 
-        static Cogl.Color clear_color;
-
         delegate void GlCopyTexSubFunc (uint target, int level,
                                         int xoff, int yoff,
                                         int x, int y,
@@ -152,8 +150,6 @@ namespace Gala
 
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
-
-            clear_color = Cogl.Color.from_4ub (0, 0, 0, 0);
         }    
 
         public BlurActor (int iterations, float offset, int expand_size, Clutter.Actor ui_group)
