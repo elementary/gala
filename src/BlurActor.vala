@@ -94,6 +94,8 @@ namespace Gala
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
 
+        static Cogl.Color clear_color;
+
         delegate void GlCopyTexSubFunc (uint target, int level,
                                         int xoff, int yoff,
                                         int x, int y,
@@ -150,6 +152,8 @@ namespace Gala
 
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
+
+            clear_color = Cogl.Color.from_4ub (0, 0, 0, 0);
         }    
 
         public BlurActor (int iterations, float offset, int expand_size, Clutter.Actor ui_group)
@@ -189,6 +193,9 @@ namespace Gala
             get_size (out width, out height);
             get_transformed_position (out x, out y);
 
+            float actor_x = x;
+            float actor_y = y;
+
             x = float.max (0, x - expand_size);
             y = float.max (0, y - expand_size);
 
@@ -220,7 +227,14 @@ namespace Gala
             Cogl.set_source (material);
             CoglFixes.framebuffer_push_rectangle_clip (Cogl.get_draw_framebuffer (), 0, 0, width, height);
 
-            Cogl.translate (-expand_size / (float)sx, -expand_size / (float)sy, 0);
+            if (x >= expand_size && y >= expand_size) {
+                Cogl.translate (-expand_size / (float)sx, -expand_size / (float)sy, 0);
+            } else {
+                float tx = actor_x < expand_size ? -actor_x / (float)sx : -expand_size;
+                float ty = actor_y < expand_size ? -actor_y / (float)sx : -expand_size;
+                Cogl.translate (tx, ty, 0);
+            }
+
             Cogl.rectangle_with_texture_coords (0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
             CoglFixes.framebuffer_pop_clip (Cogl.get_draw_framebuffer ());         
         }
@@ -300,11 +314,11 @@ namespace Gala
 
             Cogl.push_framebuffer ((Cogl.Framebuffer)target);
 
-            Cogl.clear (new Cogl.Color.from_4ub (0, 0, 0, 0), Cogl.BufferBit.COLOR);
             if (y_flip) {
+                Cogl.push_matrix ();
+                
                 float y_translate = (float)source.get_height () - tex_height;
 
-                Cogl.push_matrix ();
                 Cogl.scale (1.0f, -1.0f, 1.0f);
                 Cogl.translate (0.0f, y_translate / theight, 0.0f);
                 Cogl.rectangle_with_texture_coords (-1, -1, 1, 1, 0, 0, 1, 1);
