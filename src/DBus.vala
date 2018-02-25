@@ -237,13 +237,17 @@ namespace Gala
 			return { rTotal, gTotal, bTotal, mean, variance };
 		}
 
-		public void test_enable_blur ()
+		public void test_enable_blur (uint32 xid)
 		{
-			var actor = new BlurActor (2, 3, 20, wm.ui_group);
-			actor.set_size (400,400);
-			actor.set_position (0, 0);
-
-			wm.ui_group.add_child (actor);
+			var screen = wm.get_screen ();
+			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
+				var window = window_actor.get_meta_window ();
+				if (window.get_xwindow () == xid) {
+					var actor = new BlurActor (window_actor, 3, 8, 150, wm.ui_group);
+					window_actor.insert_child_below (actor, null);
+					break;
+				}
+			}
 		}
 	}
 }

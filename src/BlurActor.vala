@@ -27,10 +27,10 @@ namespace Gala
         public Cogl.Offscreen fbo;
         public Cogl.Texture texture;
     
-        public FramebufferContainer (Cogl.Offscreen fbo, Cogl.Texture texture)
+        public FramebufferContainer (Cogl.Texture texture)
         {
-            this.fbo = fbo;
             this.texture = texture;
+            fbo = new Cogl.Offscreen.to_texture (texture);
         }
     }    
 
@@ -100,15 +100,18 @@ namespace Gala
                                         int width, int height);
         delegate void GlBindTextureFunc (uint target, uint texture);
 
+        public int iterations { get; construct; }
+        public int expand_size { get; construct; }
+
+        public Meta.WindowActor? window_actor { get; construct; }
+        public unowned Clutter.Actor ui_group { get; construct; }
+
+        Meta.Window? window;
+
         float stage_width;
         float stage_height;
 
-        int iterations;
-        int expand_size;
-    
         int tex_height;
-
-        unowned Clutter.Actor ui_group;
 
         Cogl.Material material;
         Cogl.Material down_material;
@@ -118,7 +121,8 @@ namespace Gala
         uint handle; 
         uint target;
 
-        static construct {
+        static construct
+        {
             var fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
             fragment.source (DOWNSAMPLE_FRAG_SHADER);
     
@@ -151,12 +155,8 @@ namespace Gala
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
         }    
 
-        public BlurActor (int iterations, float offset, int expand_size, Clutter.Actor ui_group)
+        construct
         {
-            this.iterations = iterations;
-            this.expand_size = expand_size;
-            this.ui_group = ui_group;
-
             textures = new Gee.ArrayList<FramebufferContainer> ();
 
             down_material = new Cogl.Material ();
@@ -171,14 +171,70 @@ namespace Gala
     
             material = new Cogl.Material ();
             material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR_MIPMAP_LINEAR, Cogl.MaterialFilter.LINEAR);
-    
-            CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
-            CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);    
-            
+
+            if (window_actor != null) {
+                window = window_actor.get_meta_window ();
+            }
+
             var stage = ui_group.get_stage ();
             stage.get_size (out stage_width, out stage_height);
+            stage.allocation_changed.connect (() => init_fbo_textures ());
 
             init_fbo_textures ();
+        }
+
+        public BlurActor (Meta.WindowActor? window_actor, int iterations, float offset, int expand_size, Clutter.Actor ui_group)
+        {
+            Object (window_actor: window_actor, iterations: iterations, expand_size: expand_size, ui_group: ui_group);
+
+            CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
+            CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
+        }
+
+        void init_fbo_textures ()
+        {
+            textures.clear ();
+
+            for (int i = 0; i <= iterations; i++) {
+                int downscale = 1 << i;
+    
+                int width = (int)(stage_width / downscale);
+                int height = (int)(stage_height / downscale);
+
+                var texture = new Cogl.Texture.with_size (width, height,
+                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
+                textures.add (new FramebufferContainer (texture));
+            }
+
+            for (int i = iterations - 1; i >= 0; i--) {
+                int downscale = 1 << i;
+
+                int width = (int)(stage_width / downscale);
+                int height = (int)(stage_height / downscale);
+
+                var texture = new Cogl.Texture.with_size (width, height,
+                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
+                textures.add (new FramebufferContainer (texture));
+            }
+
+            CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, out target);
+        }
+
+        public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags)
+        {
+            if (window != null) {
+                float x, y;
+                window_actor.get_position (out x, out y);
+
+                var rect = window.get_frame_rect ();
+                float width = rect.width;
+                float height = rect.height;
+
+                box.set_size (width, height);
+                box.set_origin (rect.x - x, rect.y - y);
+            }
+
+            base.allocate (box, flags);
         }
 
         public override void paint ()
@@ -190,12 +246,12 @@ namespace Gala
             float actor_x = x;
             float actor_y = y;
 
-            x = float.max (0, x - expand_size);
-            y = float.max (0, y - expand_size);
-
             double sx, sy;
             ui_group.get_scale (out sx, out sy);
 
+            x = float.max (0, x - expand_size);
+            y = float.max (0, y - expand_size);
+            
             int tex_width = int.min ((int)((width + expand_size * 2) * sx), (int)stage_width);
             tex_height = int.min ((int)((height + expand_size * 2) * sy), (int)stage_height);
 
@@ -213,50 +269,19 @@ namespace Gala
             material.set_layer (0, res.texture);
             material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
 
-            Cogl.set_source (material);
             CoglFixes.framebuffer_push_rectangle_clip (Cogl.get_draw_framebuffer (), 0, 0, width, height);
 
+            Cogl.set_source (material);
             if (x >= expand_size && y >= expand_size) {
                 Cogl.translate (-expand_size / (float)sx, -expand_size / (float)sy, 0);
             } else {
-                float tx = actor_x < expand_size ? -actor_x / (float)sx : -expand_size;
-                float ty = actor_y < expand_size ? -actor_y / (float)sx : -expand_size;
+                float tx = actor_x < expand_size ? -actor_x / (float)sx : -expand_size / (float)sx;
+                float ty = actor_y < expand_size ? -actor_y / (float)sy : -expand_size / (float)sy;
                 Cogl.translate (tx, ty, 0);
             }
 
             Cogl.rectangle_with_texture_coords (0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
-            CoglFixes.framebuffer_pop_clip (Cogl.get_draw_framebuffer ());         
-        }
-
-        void init_fbo_textures ()
-        {
-            textures.clear ();
-
-            for (int i = 0; i <= iterations; i++) {
-                int downscale = 1 << i;
-    
-                int width = (int)(stage_width / downscale);
-                int height = (int)(stage_height / downscale);
-
-                var texture = new Cogl.Texture.with_size (width, height,
-                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
-                var fbo = new Cogl.Offscreen.to_texture (texture);
-                textures.add (new FramebufferContainer (fbo, texture));
-            }
-
-            for (int i = iterations - 1; i >= 0; i--) {
-                int downscale = 1 << i;
-
-                int width = (int)(stage_width / downscale);
-                int height = (int)(stage_height / downscale);
-
-                var texture = new Cogl.Texture.with_size (width, height,
-                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
-                var fbo = new Cogl.Offscreen.to_texture (texture);
-                textures.add (new FramebufferContainer (fbo, texture));
-            }
-
-            CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, out target);
+            CoglFixes.framebuffer_pop_clip (Cogl.get_draw_framebuffer ());
         }
 
         void copy_target_texture (int x, int y, int width, int height)
