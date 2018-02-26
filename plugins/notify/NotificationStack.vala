@@ -99,7 +99,7 @@ namespace Gala.Plugins.Notify
 					continue;
 
 				child.save_easing_state ();
-				child.set_easing_mode (AnimationMode.EASE_OUT_BACK);
+				child.set_easing_mode (AnimationMode.EASE_OUT);
 				child.set_easing_duration (200);
 				child.set_easing_delay ((i--) * delay_step);
 

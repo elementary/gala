@@ -160,20 +160,26 @@ namespace Gala.Plugins.Notify
 		public void open () {
 			var entry = new TransitionGroup ();
 			entry.remove_on_complete = true;
-			entry.duration = 400;
+			entry.duration = 300;
 
 			var opacity_transition = new PropertyTransition ("opacity");
 			opacity_transition.set_from_value (0);
 			opacity_transition.set_to_value (255);
 
-			var flip_transition = new KeyframeTransition ("rotation-angle-x");
-			flip_transition.set_from_value (90.0);
-			flip_transition.set_to_value (0.0);
-			flip_transition.set_key_frames ({ 0.6 });
-			flip_transition.set_values ({ -10.0 });
+			// var flip_transition = new KeyframeTransition ("rotation-angle-x");
+			// flip_transition.set_from_value (90.0);
+			// flip_transition.set_to_value (0.0);
+			// flip_transition.set_key_frames ({ 0.6 });
+			// flip_transition.set_values ({ -10.0 });
 
-			entry.add_transition (opacity_transition);
-			entry.add_transition (flip_transition);
+			var slide_in_transition = new PropertyTransition ("anchor-x");
+			
+			slide_in_transition.progress_mode = AnimationMode.EASE_OUT_BACK;
+			slide_in_transition.set_from_value (-400);
+			slide_in_transition.set_to_value (0);
+
+			// entry.add_transition (opacity_transition);
+			entry.add_transition (slide_in_transition);
 			add_transition ("entry", entry);
 
 			switch (urgency) {
@@ -218,9 +224,9 @@ namespace Gala.Plugins.Notify
 
 		public void close ()
 		{
-			set_easing_duration (100);
+			set_easing_duration (200);
 
-			set_easing_mode (AnimationMode.EASE_IN_QUAD);
+			set_easing_mode (AnimationMode.EASE_IN_CUBIC);
 			opacity = 0;
 
 			x = (WIDTH + MARGIN * 2) * style_context.get_scale ();
