@@ -173,17 +173,12 @@ namespace Gala.Plugins.Notify
 			// flip_transition.set_values ({ -10.0 });
 
 			var slide_in_transition = new PropertyTransition ("anchor-x");
-			slide_in_transition.progress_mode = AnimationMode.EASE_OUT_CUBIC;
-			slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale () );
+			
+			slide_in_transition.progress_mode = AnimationMode.EASE_OUT_BACK;
+			slide_in_transition.set_from_value (-400);
 			slide_in_transition.set_to_value (0);
 
-			if (urgency == NotificationUrgency.LOW) {
-				entry.duration = 200;
-			} else {
-				entry.duration = 400;
-			}
-
-			entry.add_transition (opacity_transition);
+			// entry.add_transition (opacity_transition);
 			entry.add_transition (slide_in_transition);
 			add_transition ("entry", entry);
 
