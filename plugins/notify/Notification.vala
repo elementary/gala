@@ -175,7 +175,7 @@ namespace Gala.Plugins.Notify
 			var slide_in_transition = new PropertyTransition ("anchor-x");
 			
 			slide_in_transition.progress_mode = AnimationMode.EASE_OUT_BACK;
-			slide_in_transition.set_from_value (-400);
+			slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale ());
 			slide_in_transition.set_to_value (0);
 
 			// entry.add_transition (opacity_transition);
@@ -228,15 +228,24 @@ namespace Gala.Plugins.Notify
 
 			set_easing_mode (AnimationMode.EASE_IN_CUBIC);
 			opacity = 0;
+			// rotation_angle_x = 90.0;  //this rotation is ugly
 
-			x = (WIDTH + MARGIN * 2) * style_context.get_scale ();
+			// this doesn't work, i.e. does nothing
+			var flip_transition = new KeyframeTransition ("rotation-angle-x");
+			flip_transition.set_from_value (0.0);
+			flip_transition.set_to_value (90.0);
+			flip_transition.set_key_frames ({ 0.6 });
+			flip_transition.set_values ({ -10.0 });
+			add_transition("dat_flip", flip_transition);
+			// end of "does nothing"
 
 			being_destroyed = true;
-			var transition = get_transition ("x");
-			if (transition != null)
+			var transition = get_transition ("opacity");
+			if (transition != null) {
 				transition.completed.connect (() => destroy ());
-			else
+			} else {
 				destroy ();
+			}
 		}
 
 		protected void update_base (Gdk.Pixbuf? icon, int32 expire_timeout)
