@@ -243,7 +243,8 @@ namespace Gala
 			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
 				var window = window_actor.get_meta_window ();
 				if (window.get_xwindow () == xid) {
-					var actor = new BlurActor (window_actor, 3, 8, 150, wm.ui_group);
+					var actor = new BlurActor (window_actor, 2, 5, 50, wm.ui_group);
+					actor.opacity = 50;
 					window_actor.insert_child_below (actor, null);
 					break;
 				}

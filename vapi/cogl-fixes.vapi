@@ -11,9 +11,6 @@ namespace CoglFixes
 	[CCode (cname = "cogl_program_set_uniform_1i")]
 	public void set_uniform_1i (Cogl.Program program, int uniform_no, int value);	
 
-	[CCode (cname = "cogl_program_set_uniform_matrix")]
-	public void set_uniform_matrix (Cogl.Program program, int uniform_no, int size, bool transpose, float[] value);
-
 	[CCode (cname = "cogl_framebuffer_push_rectangle_clip")]
 	public void framebuffer_push_rectangle_clip (Cogl.Framebuffer framebuffer, float x_1, float x_2, float y_1, float y_2);
 

@@ -91,7 +91,6 @@ namespace Gala
 
         static int down_offset_location;
         static int up_offset_location;
-        static int down_scale_location;
 
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
@@ -119,7 +118,6 @@ namespace Gala
         bool is_dock = false;
         int tex_expand_size;
 
-        Cogl.Material material;
         Cogl.Material down_material;
         Cogl.Material up_material;
         Gee.ArrayList<FramebufferContainer> textures;
@@ -175,8 +173,6 @@ namespace Gala
             CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             CoglFixes.set_user_program (up_material, up_program);
     
-            material = new Cogl.Material ();
-
             if (window_actor != null) {
                 window = window_actor.get_meta_window ();
                 window.notify["window-type"].connect (update_window_type);
@@ -224,7 +220,7 @@ namespace Gala
                 textures.add (new FramebufferContainer (texture, downscale));
             }
 
-            for (int i = iterations - 1; i >= 0; i--) {
+            for (int i = iterations - 1; i >= 1; i--) {
                 int downscale = 1 << i;
 
                 int width = (int)(stage_width / downscale);
@@ -281,24 +277,25 @@ namespace Gala
             downsample ();
             upsample ();
 
-            var res = textures.last ();
-            uint8 paint_opacity = get_paint_opacity ();
+            CoglFixes.set_uniform_1f (up_program, up_width_location, 0.5f / stage_width);
+            CoglFixes.set_uniform_1f (up_program, up_height_location, 0.5f / stage_height);    
 
-            material.set_layer (0, res.texture);
-            material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
-
-            CoglFixes.framebuffer_push_rectangle_clip (Cogl.get_draw_framebuffer (), 0, 0, width, height);
+            var texture = textures.last ().texture;
+            up_material.set_layer (0, texture);
+            
+            unowned Cogl.Framebuffer draw_fbo = Cogl.get_draw_framebuffer ();
+            CoglFixes.framebuffer_push_rectangle_clip (draw_fbo, 0, 0, width, height);
 
             if (x >= tex_expand_size && y >= tex_expand_size && !is_dock) {
-                CoglFixes.framebuffer_translate (Cogl.get_draw_framebuffer (), -tex_expand_size / (float)sx, -tex_expand_size / (float)sy, 0);
+                CoglFixes.framebuffer_translate (draw_fbo, -tex_expand_size / (float)sx, -tex_expand_size / (float)sy, 0);
             } else {
                 float tx = actor_x < tex_expand_size ? -actor_x / (float)sx : -tex_expand_size / (float)sx;
                 float ty = actor_y < tex_expand_size ? -actor_y / (float)sy : -tex_expand_size / (float)sy;
-                CoglFixes.framebuffer_translate (Cogl.get_draw_framebuffer (), tx, ty, 0);
+                CoglFixes.framebuffer_translate (draw_fbo, tx, ty, 0);
             }
 
-            CoglFixes.framebuffer_draw_textured_rectangle (Cogl.get_draw_framebuffer (), material, 0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
-            CoglFixes.framebuffer_pop_clip (Cogl.get_draw_framebuffer ());
+            CoglFixes.framebuffer_draw_textured_rectangle (draw_fbo, up_material, 0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
+            CoglFixes.framebuffer_pop_clip (draw_fbo);
         }
 
         void update_window_type ()
@@ -323,7 +320,7 @@ namespace Gala
                 var dest_cont = textures[i];
 
                 render_to_fbo (source_cont, dest_cont, down_material,
-                            down_program, down_width_location, down_height_location, i == 1);
+                            down_program, down_width_location, down_height_location);
             }
         }
     
@@ -340,8 +337,7 @@ namespace Gala
         }
 
         void render_to_fbo (FramebufferContainer source, FramebufferContainer dest, Cogl.Material material,
-                            Cogl.Program program, int width_location,
-                            int height_location, bool y_flip = false)
+                            Cogl.Program program, int width_location, int height_location)
         {
             var source_texture = source.texture;
             material.set_layer (0, source_texture);
@@ -349,10 +345,14 @@ namespace Gala
             unowned Cogl.Framebuffer target = (Cogl.Framebuffer)dest.fbo;
             var target_texture = dest.texture;
 
-            float target_height = target_texture.get_height ();
+            float source_width = source_texture.get_width ();
+            float source_height = source_texture.get_height ();
 
-            CoglFixes.set_uniform_1f (program, width_location, 0.5f / source_texture.get_width ());
-            CoglFixes.set_uniform_1f (program, height_location, 0.5f / source_texture.get_height ());    
+            float target_width = (float)target_texture.get_width ();
+            float target_height = (float)target_texture.get_height ();
+
+            CoglFixes.set_uniform_1f (program, width_location, 0.5f / target_width);
+            CoglFixes.set_uniform_1f (program, height_location, 0.5f / target_height);    
 
             int source_downscale = source.downscale;
             int dest_downscale = dest.downscale;
@@ -362,25 +362,14 @@ namespace Gala
 
             float target_rect_width = (float)tex_width / dest_downscale;
             float target_rect_height = (float)tex_height / dest_downscale;
-            map_screen_area_to_gl (target_texture.get_width (), target_height, 
+            map_screen_area_to_gl (target_width, target_height, 
                                 ref target_rect_width, ref target_rect_height);
 
-            float texcoord_width = src_rect_width / source_texture.get_width ();
-            float texcoord_height = src_rect_height / source_texture.get_height ();
+            float texcoord_width = src_rect_width / source_width;
+            float texcoord_height = src_rect_height / source_height;
                     
-            if (y_flip) {
-                float y_translate = (float)source_texture.get_height () - tex_height;
-
-                CoglFixes.framebuffer_push_matrix (target);
-                CoglFixes.framebuffer_scale (target, 1.0f, -1.0f, 1.0f);
-                CoglFixes.framebuffer_translate (target, 0.0f, -y_translate / target_height, 0.0f);
-                CoglFixes.framebuffer_draw_textured_rectangle (target, material,
-                                                            -1, target_rect_height, target_rect_width, 1, 0, 0, texcoord_width, texcoord_height);
-                CoglFixes.framebuffer_pop_matrix (target);
-            } else {
-                CoglFixes.framebuffer_draw_textured_rectangle (target, material,
-                                                            -1, target_rect_height, target_rect_width, 1, 0, 0, texcoord_width, texcoord_height);
-            }
+            CoglFixes.framebuffer_draw_textured_rectangle (target, material,
+                                                        -1, target_rect_height, target_rect_width, 1, 0, 0, texcoord_width, texcoord_height);
         }
     }    
 }
