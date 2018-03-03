@@ -23,6 +23,8 @@ namespace Gala
 		static DBus? instance;
 		static WindowManager wm;
 
+		Gee.HashMap<uint32, BlurActor> blur_actors;
+
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
 		{
@@ -58,6 +60,8 @@ namespace Gala
 
 		private DBus ()
 		{
+			blur_actors = new Gee.HashMap<uint32, BlurActor> ();
+
 			if (wm.background_group != null)
 				(wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
 			else
@@ -237,17 +241,58 @@ namespace Gala
 			return { rTotal, gTotal, bTotal, mean, variance };
 		}
 
-		public void test_enable_blur (uint32 xid)
+		public void enable_blur_behind (uint32 xid) throws DBusError
 		{
+			if (!BlurActor.get_supported ()) {
+				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
+			}
+
+			if (!BlurActor.is_initted ()) {
+				BlurActor.init (4, 3.8f, 150, wm.ui_group);
+			}
+
 			var screen = wm.get_screen ();
 			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
 				var window = window_actor.get_meta_window ();
 				if (window.get_xwindow () == xid) {
-					var actor = new BlurActor (window_actor, 2, 5, 50, wm.ui_group);
-					actor.opacity = 50;
+					var actor = new BlurActor (window_actor);
+					actor.destroy.connect (on_blur_actor_destroyed);
+
 					window_actor.insert_child_below (actor, null);
+					blur_actors[xid] = actor;
 					break;
 				}
+			}
+		}
+
+		void on_blur_actor_destroyed (Clutter.Actor actor)
+		{
+			bool found = false;
+			uint32 xid = 0;
+			foreach (var entry in blur_actors.entries) {
+				if (entry.value == actor) {
+					xid = entry.key;
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
+				blur_actors.unset (xid);
+			}
+
+			if (blur_actors.size == 0) {
+				BlurActor.deinit ();
+			}
+		}
+
+		public void disable_blur_behind (uint32 xid) throws DBusError
+		{
+			var actor = blur_actors[xid];
+			if (actor != null) {
+				actor.destroy ();
+			} else {
+				throw new DBusError.FAILED ("Blur actor was not found for the specified window ID");
 			}
 		}
 	}

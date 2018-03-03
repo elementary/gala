@@ -89,11 +89,27 @@ namespace Gala
         static Cogl.Program down_program;
         static Cogl.Program up_program;
 
+        static Cogl.Material down_material;
+        static Cogl.Material up_material;
+
         static int down_offset_location;
         static int up_offset_location;
 
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
+
+        static Gee.ArrayList<FramebufferContainer> textures;
+
+        static uint handle; 
+        static uint target;
+
+        static int iterations;
+        static int expand_size;
+
+        static float stage_width;
+        static float stage_height;
+
+        static unowned Clutter.Actor ui_group;
 
         delegate void GlCopyTexSubFunc (uint target, int level,
                                         int xoff, int yoff,
@@ -101,16 +117,9 @@ namespace Gala
                                         int width, int height);
         delegate void GlBindTextureFunc (uint target, uint texture);
 
-        public int iterations { get; construct; }
-        public int expand_size { get; construct; }
-
         public Meta.WindowActor? window_actor { get; construct; }
-        public unowned Clutter.Actor ui_group { get; construct; }
 
         Meta.Window? window;
-
-        float stage_width;
-        float stage_height;
 
         int tex_width;
         int tex_height;
@@ -118,15 +127,12 @@ namespace Gala
         bool is_dock = false;
         int tex_expand_size;
 
-        Cogl.Material down_material;
-        Cogl.Material up_material;
-        Gee.ArrayList<FramebufferContainer> textures;
-
-        uint handle; 
-        uint target;
-
-        static construct
+        public static void init (int _iterations, float offset, int _expand_size, Clutter.Actor _ui_group)
         {
+            iterations = _iterations;
+            ui_group = _ui_group;
+            expand_size = _expand_size;
+
             var fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
             fragment.source (DOWNSAMPLE_FRAG_SHADER);
     
@@ -140,6 +146,16 @@ namespace Gala
             up_program = new Cogl.Program ();
             up_program.attach_shader (fragment);
             up_program.link ();
+
+            down_material = new Cogl.Material ();
+            down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+            CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
+            CoglFixes.set_user_program (down_material, down_program);
+    
+            up_material = new Cogl.Material ();
+            up_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+            CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
+            CoglFixes.set_user_program (up_material, up_program);
 
             int tex_location = down_program.get_uniform_location ("tex");
             CoglFixes.set_uniform_1i (down_program, tex_location, 0);
@@ -155,37 +171,41 @@ namespace Gala
             up_height_location = up_program.get_uniform_location ("halfheight");
             up_offset_location = up_program.get_uniform_location ("offset");
 
+            CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
+            CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
+
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
-        }
 
-        construct
-        {
             textures = new Gee.ArrayList<FramebufferContainer> ();
-
-            down_material = new Cogl.Material ();
-            down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
-            CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
-            CoglFixes.set_user_program (down_material, down_program);
-    
-            up_material = new Cogl.Material ();
-            up_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
-            CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
-            CoglFixes.set_user_program (up_material, up_program);
-    
-            if (window_actor != null) {
-                window = window_actor.get_meta_window ();
-                window.notify["window-type"].connect (update_window_type);
-                update_window_type ();
-            } else {
-                tex_expand_size = expand_size;
-            }
 
             var stage = ui_group.get_stage ();
             stage.get_size (out stage_width, out stage_height);
             stage.allocation_changed.connect (() => init_fbo_textures ());
 
             init_fbo_textures ();
+        }
+
+        public static void deinit ()
+        {
+            if (!is_initted ()) {
+                return;
+            }
+
+            textures.clear ();
+        }
+
+        public static bool is_initted ()
+        {
+            return textures != null && textures.size > 0;
+        }
+
+        public static bool get_supported ()
+        {
+            return Cogl.features_available (Cogl.FeatureFlags.OFFSCREEN |
+                                            Cogl.FeatureFlags.SHADERS_GLSL |
+                                            Cogl.FeatureFlags.TEXTURE_RECTANGLE |
+                                            Cogl.FeatureFlags.TEXTURE_NPOT);
         }
 
         // Maps x and y coordinates within a screen to GL coordinates (-1 to 1)
@@ -197,17 +217,28 @@ namespace Gala
             y = (2.0f / screen_height * (screen_height - y)) - 1.0f;
         }
 
-        public BlurActor (Meta.WindowActor? window_actor, int iterations, float offset, int expand_size, Clutter.Actor ui_group)
+        construct
         {
-            Object (window_actor: window_actor, iterations: iterations, expand_size: expand_size, ui_group: ui_group);
-
-            CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
-            CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
+            if (window_actor != null) {
+                window = window_actor.get_meta_window ();
+                window.notify["window-type"].connect (update_window_type);
+                update_window_type ();
+            } else {
+                tex_expand_size = expand_size;
+            }
         }
 
-        void init_fbo_textures ()
+        public BlurActor (Meta.WindowActor? window_actor)
+        {
+            Object (window_actor: window_actor);
+        }
+
+        static void init_fbo_textures ()
         {
             textures.clear ();
+
+            var stage = ui_group.get_stage ();
+            stage.get_size (out stage_width, out stage_height);
 
             for (int i = 0; i <= iterations; i++) {
                 int downscale = 1 << i;
@@ -280,9 +311,12 @@ namespace Gala
             CoglFixes.set_uniform_1f (up_program, up_width_location, 0.5f / stage_width);
             CoglFixes.set_uniform_1f (up_program, up_height_location, 0.5f / stage_height);    
 
+            uint8 paint_opacity = get_paint_opacity ();
+
             var texture = textures.last ().texture;
             up_material.set_layer (0, texture);
-            
+            up_material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
+
             unowned Cogl.Framebuffer draw_fbo = Cogl.get_draw_framebuffer ();
             CoglFixes.framebuffer_push_rectangle_clip (draw_fbo, 0, 0, width, height);
 
@@ -296,6 +330,8 @@ namespace Gala
 
             CoglFixes.framebuffer_draw_textured_rectangle (draw_fbo, up_material, 0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
             CoglFixes.framebuffer_pop_clip (draw_fbo);
+
+            up_material.set_color4ub (255, 255, 255, 255);
         }
 
         void update_window_type ()
