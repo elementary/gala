@@ -284,6 +284,8 @@ namespace Gala
 
         public override void paint ()
         {
+            ui_group.get_stage ().ensure_viewport ();
+
             float width, height, x, y;
             get_size (out width, out height);
             get_transformed_position (out x, out y);
