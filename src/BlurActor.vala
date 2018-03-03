@@ -74,7 +74,7 @@ namespace Gala
             sum += texture2D (tex, uv + vec2(0.0, -halfpixel.y * 2.0) * offset);
             sum += texture2D (tex, uv + vec2(-halfpixel.x, -halfpixel.y) * offset) * 2.0;
 
-            cogl_color_out = sum / 12.0;
+            cogl_color_out = (sum * cogl_color_in) / 12.0;
         }
     """;
 
@@ -347,7 +347,7 @@ namespace Gala
             Cogl.begin_gl ();
             bind_texture (target, handle);
             copy_tex_sub_image (target, 0, 0, 0, x, y, width, height);
-            bind_texture (target, 0);
+            bind_texture (target, 1);
             Cogl.end_gl ();
         }
 
