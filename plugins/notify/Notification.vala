@@ -160,7 +160,6 @@ namespace Gala.Plugins.Notify
 		public void open () {
 			var entry = new TransitionGroup ();
 			entry.remove_on_complete = true;
-			entry.duration = 300;
 
 			var opacity_transition = new PropertyTransition ("opacity");
 			opacity_transition.set_from_value (0);
@@ -178,8 +177,16 @@ namespace Gala.Plugins.Notify
 			slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale ());
 			slide_in_transition.set_to_value (0);
 
-			// entry.add_transition (opacity_transition);
-			entry.add_transition (slide_in_transition);
+			if (urgency != NotificationUrgency.LOW) {
+				entry.duration = 300;
+				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUINT;
+				entry.add_transition (slide_in_transition);
+			} else {
+				entry.duration = 100;
+				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUAD;
+			}
+			entry.add_transition (opacity_transition);
+
 			add_transition ("entry", entry);
 
 			switch (urgency) {
