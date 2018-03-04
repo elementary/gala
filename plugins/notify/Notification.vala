@@ -228,7 +228,9 @@ namespace Gala.Plugins.Notify
 
 			set_easing_mode (AnimationMode.EASE_IN_CUBIC);
 			opacity = 0;
-			translation_y = -20 * style_context.get_scale ();
+			if (urgency != NotificationUrgency.LOW) {
+				translation_y = -20 * style_context.get_scale ();
+			}
 
 			being_destroyed = true;
 			var transition = get_transition ("opacity");
