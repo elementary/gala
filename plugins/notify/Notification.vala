@@ -228,16 +228,7 @@ namespace Gala.Plugins.Notify
 
 			set_easing_mode (AnimationMode.EASE_IN_CUBIC);
 			opacity = 0;
-			// rotation_angle_x = 90.0;  //this rotation is ugly
-
-			// this doesn't work, i.e. does nothing
-			var flip_transition = new KeyframeTransition ("rotation-angle-x");
-			flip_transition.set_from_value (0.0);
-			flip_transition.set_to_value (90.0);
-			flip_transition.set_key_frames ({ 0.6 });
-			flip_transition.set_values ({ -10.0 });
-			add_transition("dat_flip", flip_transition);
-			// end of "does nothing"
+			translation_y = -20 * style_context.get_scale ();
 
 			being_destroyed = true;
 			var transition = get_transition ("opacity");
