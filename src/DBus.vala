@@ -22,6 +22,7 @@ namespace Gala
 	{
 		static DBus? instance;
 		static WindowManager wm;
+		Gee.HashMap<uint32, Meta.BlurActor> blur_actors;
 
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
@@ -58,6 +59,16 @@ namespace Gala
 
 		private DBus ()
 		{
+			blur_actors = new Gee.HashMap<uint32, Meta.BlurActor> ();
+
+			unowned AppearanceSettings settings = AppearanceSettings.get_default ();
+			settings.notify["blur-behind"].connect (() => {
+				bool enabled = settings.blur_behind;
+				foreach (var blur_actor in blur_actors.values) {
+					blur_actor.set_enabled (enabled);
+				}
+			});
+
 			if (wm.background_group != null)
 				(wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
 			else
@@ -235,6 +246,128 @@ namespace Gala
 			yield;
 
 			return { rTotal, gTotal, bTotal, mean, variance };
+		}
+
+		/**
+		 * Adds a blur behind effect to a specific window.
+		 * 
+		 * Makes the contents displayed behind the window blurred
+		 * by the specified radius. This effect can be only seeen
+		 * when the window's background is transparent. The added blur effect
+		 * is applied and redrawn real time to always represent
+		 * what's behind the window.
+		 * 
+		 * The texture_downscale parameter determines how much the original non-blurred texture
+		 * has to be downscaled, setting this parameter to higher values will cause
+		 * better performance but also bigger blur radius applied since the same radius
+		 * will be applied to a smaller area. The best effects will only be achieved if
+		 * the passed value is a factor of 2 e.g: 2, 4, 8 and 16.
+		 * 
+		 * If your window is not always transparent, you should consider disabling
+		 * the blur effect with disable_blur_behind at the time of disabling transparency for the target window so
+		 * that the effect is not drawn unnecessarily.
+		 * 
+		 * The x, y, width and height parameters can be used for setting a clip which the blur actor
+		 * covers behind the window. The clip is relative to the window coordinates.
+		 * If you want to exclusively constrain only the position or size of the blur effect you can pass 0's
+		 * for all other values you do not want to constrain, e.g: making the blur effect appear with an always
+		 * fixed height can be achieved by passing 0's to x, y and width parameters and the
+		 * requested value for the height parameter.
+		 * 
+		 * Further calls to this method on the same window will update the properties of the
+		 * current blur effect to the new ones.
+		 * 
+		 * @param xid the X window ID of the target window to enable the blur effect
+		 * @param radius the blur radius in pixels, the maximum is 49, pass -1 for the default radius
+		 * @param texture_downscale a value between 1 and 16 of how much
+		 *        the original texture has to be downscaled, pass -1 for the default value
+		 * @param x the X value in pixels of the clip, relative to the requested window
+		 * @param y the Y value in pixels of the clip, relative to the requested window
+		 * @param width the width value in pixels of the clip, relative to the requested window
+		 * @param height the height value in pixels of the clip, relative to the requested window
+		 * @return true if the blur was successfully added to the target window, false otherwise
+		 */
+		public bool enable_blur_behind (uint32 xid, int radius, int texture_downscale, int x, int y, int width, int height) throws DBusError {
+			if (!Meta.BlurActor.get_supported ()) {
+				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
+			}
+
+			var screen = wm.get_screen ();
+
+			if (radius == -1) {
+				radius = Meta.BlurActor.DEFAULT_BLUR_RADIUS;
+			} else {
+				radius = radius.clamp (0, Meta.BlurActor.MAX_BLUR_RADIUS);
+			}
+
+			if (texture_downscale == -1) {
+				texture_downscale = Meta.BlurActor.DEFAULT_TEXTURE_DOWNSCALE;
+			} else {
+				texture_downscale = texture_downscale.clamp (1, Meta.BlurActor.MAX_TEXTURE_DOWNSCALE);
+			}
+
+			var blur_actor = blur_actors[xid];
+			if (blur_actor != null) {
+				blur_actor.set_radius (radius);
+				blur_actor.set_texture_downscale (texture_downscale);
+				blur_actor.set_clip_rect ({ x, y, width, height });
+				return true;
+			}
+
+			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
+				var window = window_actor.get_meta_window ();
+				if (window.get_xwindow () == xid) {
+					var actor = new Meta.BlurActor (screen);
+					actor.set_window_actor (window_actor);
+					actor.set_radius (radius);
+					actor.set_texture_downscale (texture_downscale);
+					actor.set_clip_rect ({ x, y, width, height });
+					actor.destroy.connect (on_blur_actor_destroyed);
+
+					window_actor.insert_child_below (actor, null);
+					blur_actors[xid] = actor;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		void on_blur_actor_destroyed (Clutter.Actor actor)
+		{
+			bool found = false;
+			uint32 xid = 0;
+			foreach (var entry in blur_actors.entries) {
+				if (entry.value == actor) {
+					xid = entry.key;
+					found = true;
+					break;
+				}
+			}
+
+			if (found) {
+				blur_actors.unset (xid);
+			}
+		}
+
+		/**
+		 * Disables the blur effect behind the specified window.
+		 * 
+		 * Finds and removes the blur actor added behind the specified
+		 * window.
+		 *
+		 * This method will throw an error when the specified X window ID
+		 * does not have an associated blur actor with it.
+		 * 
+		 * @param xid the X window ID of the target window to disable the blur effect
+		 */
+		public void disable_blur_behind (uint32 xid) throws DBusError {
+			var actor = blur_actors[xid];
+			if (actor != null) {
+				actor.destroy ();
+			} else {
+				throw new DBusError.FAILED ("Blur actor was not found for the specified window ID");
+			}
 		}
 	}
 }

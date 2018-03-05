@@ -173,6 +173,11 @@
 			<default>''</default>
 			<summary>Background-image used in the workspace-switcher</summary>
 		</key>
+		<key type="b" name="blur-behind">
+			<default>true</default>
+			<summary>Apply blur effect to certain elements</summary>
+			<description>Apply a blur behind effect to transparent windows, panels and other elements for better visibility</description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations" gettext-domain="@GETTEXT_PACKAGE@">
