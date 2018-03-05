@@ -40,6 +40,7 @@ namespace Gala
 		Plank.DockPreferences dock_settings;
 		float dock_y_offset;
 		float dock_height_offset;
+		int ui_scale_factor = 1;
 		FileMonitor monitor;
 
 		Actor background;
@@ -76,6 +77,8 @@ namespace Gala
 				// initial update, pretend a file was created
 				update_n_dock_items (launcher_folder, null, FileMonitorEvent.CREATED);
 			}
+
+			ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
 
 			dock = new Actor ();
 			dock.layout_manager = new BoxLayout ();
@@ -136,14 +139,14 @@ namespace Gala
 			var layout = (BoxLayout) dock.layout_manager;
 
 			var position = dock_settings.Position;
-			var icon_size = dock_settings.IconSize;
+			var icon_size = dock_settings.IconSize * ui_scale_factor;
 			var scaled_icon_size = icon_size / 10.0f;
 			var horizontal = dock_settings.is_horizontal_dock ();
 
 			var top_padding = (float) dock_theme.TopPadding * scaled_icon_size;
 			var bottom_padding = (float) dock_theme.BottomPadding * scaled_icon_size;
 			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
-			var line_width = dock_theme.LineWidth;
+			var line_width = dock_theme.LineWidth * ui_scale_factor;
 
 			var top_offset = 2 * line_width + top_padding;
 			var bottom_offset = (dock_theme.BottomRoundness > 0 ? 2 * line_width : 0) + bottom_padding;
@@ -225,7 +228,7 @@ namespace Gala
 			if (dock_surface == null || dock_surface.Width != width || dock_surface.Height != height) {
 				var dummy_surface = new Plank.Surface.with_cairo_surface (1, 1, cr.get_target ());
 
-				dock_surface = dock_theme.create_background (width, height, position, dummy_surface);
+				dock_surface = dock_theme.create_background (width / ui_scale_factor, height / ui_scale_factor, position, dummy_surface);
 			}
 
 			float x = 0, y = 0;
@@ -234,7 +237,7 @@ namespace Gala
 					x = dock_y_offset;
 					break;
 				case Gtk.PositionType.BOTTOM:
-					y = dock_y_offset;
+					y = dock_y_offset / ui_scale_factor;
 					break;
 				case Gtk.PositionType.LEFT:
 					x = 0;
@@ -244,17 +247,22 @@ namespace Gala
 					break;
 			}
 
+			cr.save ();
+			cr.scale (ui_scale_factor, ui_scale_factor);
 			cr.set_source_surface (dock_surface.Internal, x, y);
 			cr.paint ();
+			cr.restore ();
 
 			return false;
 		}
 
 		void place_dock ()
 		{
-			var icon_size = dock_settings.IconSize;
+			ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
+
+			var icon_size = dock_settings.IconSize * ui_scale_factor;
 			var scaled_icon_size = icon_size / 10.0f;
-			var line_width = dock_theme.LineWidth;
+			var line_width = dock_theme.LineWidth * ui_scale_factor;
 			var horiz_padding = dock_theme.HorizPadding * scaled_icon_size;
 			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
 			var items_offset = (int) (2 * line_width + (horiz_padding > 0 ? horiz_padding : 0));
@@ -552,7 +560,7 @@ namespace Gala
 
 			window_clones.add_child (clone);
 
-			var icon = new WindowIcon (window, dock_settings.IconSize, true);
+			var icon = new WindowIcon (window, dock_settings.IconSize, ui_scale_factor, true);
 			icon.reactive = true;
 			icon.opacity = 100;
 			icon.x_expand = true;

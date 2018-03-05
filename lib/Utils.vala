@@ -87,12 +87,13 @@ namespace Gala
 		 *
 		 * @param window       The window to get an icon for
 		 * @param size         The size of the icon
+		 * @param scale        The desired scale of the icon
 		 * @param ignore_cache Should not be necessary in most cases, if you care about the icon
 		 *                     being loaded correctly, you should consider using the WindowIcon class
 		 */
-		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size, bool ignore_cache = false)
+		public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int size, int scale = 1, bool ignore_cache = false)
 		{
-			return get_icon_for_xid ((uint32)window.get_xwindow (), size, ignore_cache);
+			return get_icon_for_xid ((uint32)window.get_xwindow (), size, scale, ignore_cache);
 		}
 
 		/**
@@ -100,7 +101,7 @@ namespace Gala
 		 *
 		 * @see get_icon_for_window
 		 */
-		public static Gdk.Pixbuf get_icon_for_xid (uint32 xid, int size, bool ignore_cache = false)
+		public static Gdk.Pixbuf get_icon_for_xid (uint32 xid, int size, int scale = 1, bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? result = null;
 			var xid_key = "%u::%i".printf (xid, size);
@@ -109,7 +110,7 @@ namespace Gala
 				return result;
 
 			var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-			result = get_icon_for_application (app, size, ignore_cache);
+			result = get_icon_for_application (app, size, scale, ignore_cache);
 
 			xid_pixbuf_cache.set (xid_key, result);
 
@@ -121,7 +122,7 @@ namespace Gala
 		 *
 		 * @see get_icon_for_window
 		 */
-		static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size,
+		static Gdk.Pixbuf get_icon_for_application (Bamf.Application? app, int size, int scale = 1,
 			bool ignore_cache = false)
 		{
 			Gdk.Pixbuf? image = null;
@@ -134,9 +135,11 @@ namespace Gala
 				var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
 				if (appinfo != null) {
 					icon = Plank.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-					icon_key = "%s::%i".printf (icon, size);
+					icon_key = "%s::%i::%i".printf (icon, size, scale);
 					if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-						image = Plank.DrawingService.load_icon (icon, size, size);
+						var scaled_size = size * scale;
+						var surface = Plank.DrawingService.load_icon_for_scale (icon, scaled_size, scaled_size, scale);
+						image = Gdk.pixbuf_get_from_surface (surface, 0, 0, scaled_size, scaled_size);
 						not_cached = true;
 					}
 				}
@@ -146,9 +149,9 @@ namespace Gala
 				try {
 					unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
 					icon = "application-default-icon";
-					icon_key = "%s::%i".printf (icon, size);
+					icon_key = "%s::%i::%i".printf (icon, size, scale);
 					if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
-						image = icon_theme.load_icon (icon, size, 0);
+						image = icon_theme.load_icon_for_scale (icon, size, scale, 0);
 						not_cached = true;
 					}
 				} catch (Error e) {
@@ -166,8 +169,8 @@ namespace Gala
 				}
 			}
 
-			if (size != image.width || size != image.height)
-				image = Plank.DrawingService.ar_scale (image, size, size);
+			if (size * scale != image.width || size * scale != image.height)
+				image = Plank.DrawingService.ar_scale (image, size * scale, size * scale);
 
 			if (not_cached)
 				icon_pixbuf_cache.set (icon_key, image);
