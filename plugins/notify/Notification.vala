@@ -170,13 +170,13 @@ namespace Gala.Plugins.Notify
 			slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale ());
 			slide_in_transition.set_to_value (0);
 
-			if (urgency != NotificationUrgency.LOW) {
+			if (urgency == NotificationUrgency.LOW) {
+				entry.duration = 100;
+				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUAD;
+			} else {
 				entry.duration = 300;
 				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUINT;
 				entry.add_transition (slide_in_transition);
-			} else {
-				entry.duration = 100;
-				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUAD;
 			}
 			entry.add_transition (opacity_transition);
 
@@ -224,13 +224,14 @@ namespace Gala.Plugins.Notify
 
 		public void close ()
 		{
-			set_easing_duration (200);
-
 			set_easing_mode (AnimationMode.EASE_IN_CUBIC);
-			opacity = 0;
-			if (urgency != NotificationUrgency.LOW) {
+			if (urgency == NotificationUrgency.LOW) {
+				set_easing_duration (100);
+			} else {
+				set_easing_duration (200);
 				translation_y = -20 * style_context.get_scale ();
 			}
+			opacity = 0;
 
 			being_destroyed = true;
 			var transition = get_transition ("opacity");
