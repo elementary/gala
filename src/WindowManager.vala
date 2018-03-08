@@ -364,9 +364,12 @@ namespace Gala
 		{
 			var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
 			var index = screen.get_active_workspace_index () + direction;
+
+			int dynamic_offset = Prefs.get_dynamic_workspaces () ? 1 : 0;
+
 			if (index < 0)
-				index = screen.get_n_workspaces () - 1;
-			else if (index > screen.get_n_workspaces () - 1)
+				index = screen.get_n_workspaces () - 1 - dynamic_offset;
+			else if (index > screen.get_n_workspaces () - 1 - dynamic_offset)
 				index = 0;
 
 			screen.get_workspace_by_index (index).activate (display.get_current_time ());
