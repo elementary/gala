@@ -8,14 +8,17 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2017-02-23 16:48+0000\n"
-"Last-Translator: Fabio Zaramella <FFabio.96.X@Gmail.com>\n"
-"Language-Team: Italian <it@li.org>\n"
+"PO-Revision-Date: 2018-03-10 00:03+0000\n"
+"Last-Translator: Fabio Zaramella <fabiozaramella@hotmail.it>\n"
+"Language-Team: Italian "
+"<https://weblate.elementary.io/projects/desktop/gala/it/>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18\n"
 "X-Launchpad-Export-Date: 2017-02-25 05:56+0000\n"
-"X-Generator: Launchpad (build 18328)\n"
 
 #: src/WindowManager.vala:1636
 msgid "Does the display look OK?"
@@ -72,7 +75,7 @@ msgstr "Massimizza"
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "Vista multitasking"
+msgstr "Panoramica degli spazi di lavoro"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
@@ -100,7 +103,7 @@ msgstr "Azione per l'angolo in alto a sinistra"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:26
 msgid "Algorithm for window overview layout"
-msgstr "Algoritmo per il layout della panoramica delle finestre"
+msgstr "Algoritmo per la disposizione della panoramica delle finestre"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:27
 msgid "Choose the algorithm used for exposing the windows"
@@ -123,8 +126,8 @@ msgid ""
 "The command that will be executed for the hotcorner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Il comando che verrà eseguito per l'azione hotcorner 'custom-command' o "
-"multipla"
+"Il comando verrà eseguito per l'azione 'custom-command' o multipla "
+"dell'angolo attivo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
 msgid ""
@@ -135,10 +138,10 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
-"Se hai appena messo un singolo comando, verrà utilizzato per ogni hotcorner "
-"assegnato a 'custom-comando'. Se invece si utilizza il modello 'hotcorner-"
-"topleft: Comando;; hotcorner-bottomright: comando' i comandi specifici "
-"saranno utilizzati per hotcorner. Possibili identificatori sono 'hotcorner- "
+"Se hai appena messo un singolo comando, verrà utilizzato per ogni angolo "
+"attivo assegnato a 'custom-comand'. Se invece utilizzi il modello 'hotcorner-"
+"topleft: comand;; hotcorner-bottomright: comand' i comandi specifici saranno "
+"utilizzati per gli angoli attivi. Possibili identificatori sono 'hotcorner- "
 "[topleft; topright; bottomleft; bottomright] 'seguito da un': 'e quindi il "
 "comando. ';;' viene utilizzato come delimitatore tra le definizioni dei "
 "comandi."
@@ -146,7 +149,7 @@ msgstr ""
 #: data/org.pantheon.desktop.gala.gschema.xml.in:56
 msgid "Enable edge tiling when dropping windows on screen edges"
 msgstr ""
-"Abilita il ingrandimento quando le finestre vengono posizionate ai margini "
+"Abilita l'affiancamento quando le finestre vengono posizionate ai margini "
 "dello schermo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
@@ -155,10 +158,10 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
-"Se abilitato, trascinare le finestre sui bordi dello laterali dello schermo "
-"massimizza in verticale e ridimensiona in orizzontale per coprire metà della "
-"superficie disponibile. Trascinare le finestre sul bordo superiore dello "
-"schermo le massimizza completamente."
+"Se abilitato, trascinando le finestre sui bordi laterali dello schermo la "
+"finestra verrà massimizza in verticale e ridimensiona in orizzontale per "
+"coprire metà della superficie disponibile. Trascinare le finestre sul bordo "
+"superiore dello schermo le massimizza completamente."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:61
 msgid "Panel main menu action"
@@ -168,8 +171,8 @@ msgstr "Azione menu principale del pannello"
 msgid ""
 "Sets the command to run when the panel-main-menu keybinding is pressed"
 msgstr ""
-"Imposta il comando da eseguire quando si preme la scorciatoia pannello-menu-"
-"principale"
+"Imposta il comando da eseguire quando si preme la scorciatoia pannel-main-"
+"menu"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:76
 msgid "Enable dynamic workspace instead of static ones"
@@ -186,7 +189,7 @@ msgstr ""
 #: data/org.pantheon.desktop.gala.gschema.xml.in:81
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
-"I nomi che sono riconosciuti come finestre dock per lo switcher delle "
+"Nomi che sono riconosciuti come finestre di tipo dock per lo switcher delle "
 "finestre"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
@@ -220,11 +223,11 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:109
 msgid "Zoom in"
-msgstr "Ingrandisci"
+msgstr "Aumenta zoom"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:114
 msgid "Zoom out"
-msgstr "Riduci"
+msgstr "Riduci zoom"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:118
 msgid "Shortcut to open the window overview"
@@ -263,9 +266,9 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
-"Se vero, invece di avere delle barre dei titoli indipendenti, le finestre di "
-"dialogo modali appaiono attaccate alla barra del titolo della finestra padre "
-"e vengono spostate insieme alla finestra padre."
+"Se attivo, invece di avere delle barre dei titoli indipendenti, le finestre "
+"di dialogo modali appaiono attaccate alla barra del titolo della finestra "
+"principale e vengono spostate insieme alla finestra principale."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:154
 msgid "Arrangement of buttons on the titlebar"
@@ -297,8 +300,7 @@ msgstr "Scurisci la finestra principale quando genera altre finestre"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:164
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
-"L'opacità delle finestre situate in background nello switcher alt-tab."
+msgstr "L'opacità delle finestre situate sullo sfondo nello switcher alt-tab."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:168
 msgid "Background-image used in the workspace-switcher"
@@ -319,13 +321,11 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:183
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
-"Durata dell'animazione scatto come quello usato da "
-"massimizzare/demassimizzare"
+msgstr "Durata dell'animazione usato da massimizzare/demassimizzare"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:187
 msgid "Duration of the close animation"
-msgstr "Durata dell'animazione chiudi"
+msgstr "Durata dell'animazione di chiusura"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:191
 msgid "Duration of the minimize animation"
@@ -333,7 +333,7 @@ msgstr "Durata dell'animazione minimizzare"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:195
 msgid "Duration of the workspace switch animation"
-msgstr "Durata dell'animazione switcher area di lavoro"
+msgstr "Durata dell'animazione durante lo spostamento tra aree di lavoro"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:199
 msgid "Duration of the menu mapping animation"
