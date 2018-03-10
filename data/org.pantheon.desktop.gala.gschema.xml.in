@@ -189,7 +189,7 @@
 			<summary>Duration of the snap animation as used by maximize/unmaximize</summary>
 		</key>
 		<key type="i" name="close-duration">
-			<default>300</default>
+			<default>195</default>
 			<summary>Duration of the close animation</summary>
 		</key>
 		<key type="i" name="minimize-duration">
