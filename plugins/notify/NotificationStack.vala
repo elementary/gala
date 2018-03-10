@@ -25,7 +25,7 @@ namespace Gala.Plugins.Notify
 		// we need to keep a small offset to the top, because we clip the container to
 		// its allocations and the close button would be off for the first notification
 		const int TOP_OFFSET = 2;
-		const int ADDITIONAL_MARGIN = 12;
+		const int ADDITIONAL_MARGIN = 48; // to leave room for animation
 
 		public signal void animations_changed (bool running);
 
