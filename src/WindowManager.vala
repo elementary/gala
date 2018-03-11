@@ -1031,7 +1031,7 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.minimize_duration;
-
+			
 			if (!animation_settings.enable_animations
 				|| duration == 0
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
@@ -1269,7 +1269,7 @@ namespace Gala
 						var outer_rect = window.get_frame_rect ();
 						actor.set_position (outer_rect.x, outer_rect.y);
 					}
-
+					
 					actor.set_pivot_point (0.5f, 1.0f);
 					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0;

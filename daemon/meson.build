@@ -1,11 +1,11 @@
 install_data(
-	'io.elementary.gala.daemon.desktop',
-	install_dir: join_paths(data_dir, 'applications')
+    'io.elementary.gala.daemon.desktop',
+    install_dir: join_paths(data_dir, 'applications')
 )
 
 daemon_sources = files (
     'main.vala',
-	'MenuDaemon.vala'
+    'MenuDaemon.vala'
 )
 
 executable('io.elementary.gala.daemon',
