@@ -205,7 +205,7 @@ if mutter326_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
-mutter328_dep = dependency('libmutter-1', version: ['>= 3.27', '< 3.29'], required: false)
+mutter328_dep = dependency('libmutter-2', version: ['>= 3.27', '< 3.29'], required: false)
 if mutter328_dep.found()
 	mutter_packages_command = [
 		'--pkg', 'libmutter-2',
@@ -214,8 +214,8 @@ if mutter328_dep.found()
 		'--pkg', 'mutter-cogl-path-2',
 		'--pkg', 'mutter-clutter-2'
 	]
-	libmutter_dep = dependency('libmutter-2', version: '>= 3.27.91')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-2 >= 3.27.91')
+	libmutter_dep = dependency('libmutter-2', version: '>= 3.27.92')
+	pkgconf.set('MUTTER_PKGS', 'libmutter-2 >= 3.27.92')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-2'), dependency('mutter-cogl-pango-2'),
