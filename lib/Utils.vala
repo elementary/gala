@@ -223,7 +223,7 @@ namespace Gala
 		/**
 		 * Creates an actor showing the current contents of the given WindowActor.
 		 *
-		 * @param actor 	 The actor from which to create a shnapshot
+		 * @param actor      The actor from which to create a shnapshot
 		 * @param inner_rect The inner (actually visible) rectangle of the window
 		 * @param outer_rect The outer (input region) rectangle of the window
 		 *
