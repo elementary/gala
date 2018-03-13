@@ -165,17 +165,17 @@ namespace Gala.Plugins.Notify
 			opacity_transition.set_from_value (0);
 			opacity_transition.set_to_value (255);
 
-			var slide_in_transition = new PropertyTransition ("anchor-x");
-			slide_in_transition.progress_mode = AnimationMode.EASE_OUT_BACK;
-			slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale ());
-			slide_in_transition.set_to_value (0);
-
 			if (urgency == NotificationUrgency.LOW) {
 				entry.duration = 100;
 				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUAD;
 			} else {
 				entry.duration = 300;
 				opacity_transition.progress_mode = AnimationMode.EASE_OUT_QUINT;
+
+				var slide_in_transition = new PropertyTransition ("anchor-x");
+				slide_in_transition.progress_mode = AnimationMode.EASE_OUT_BACK;
+				slide_in_transition.set_from_value (-1 * (WIDTH + MARGIN * 2) * style_context.get_scale ());
+				slide_in_transition.set_to_value (0);
 				entry.add_transition (slide_in_transition);
 			}
 			entry.add_transition (opacity_transition);
