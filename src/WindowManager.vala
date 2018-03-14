@@ -491,7 +491,7 @@ namespace Gala
 				animate_bottom_window_scale (bottom_actor);
 			}
 
-			uint fade_out_duration = 1700U;
+			uint fade_out_duration = 900U;
 			double[] op_keyframes = { 0.1, 0.9 };
 			GLib.Value[] opacity = { 20U, 20U };
 
@@ -534,11 +534,11 @@ namespace Gala
 			const string[] props = { "scale-x", "scale-y" };
 
 			foreach (string prop in props) {
-				double[] scale_keyframes = { 0.2, 0.3, 0.9 };
-				GLib.Value[] scale = { 1.0f, 1.1f, 1.1f };
+				double[] scale_keyframes = { 0.2, 0.3, 0.8 };
+				GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
 
 				var scale_trans = new Clutter.KeyframeTransition (prop);
-				scale_trans.duration = 1400;
+				scale_trans.duration = 500;
 				scale_trans.remove_on_complete = true;
 				scale_trans.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
 				scale_trans.set_from_value (1.0f);
