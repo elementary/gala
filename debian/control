@@ -26,8 +26,8 @@ Homepage: https://launchpad.net/gala
 
 Package: gala
 Architecture: any
-Depends: gsettings-desktop-schemas,
-         gnome-settings-daemon (>= 3.15.2),
+Depends: gnome-settings-daemon (>= 3.15.2),
+         gsettings-desktop-schemas,
          libgala0 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
