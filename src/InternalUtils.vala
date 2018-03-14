@@ -142,24 +142,24 @@ namespace Gala
 		 */
 		public static void insert_workspace_with_window (int index, Window new_window)
 		{
-			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
-
-			var workspace_manager = WorkspaceManager.get_default ();
+			unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
 			workspace_manager.freeze_remove ();
 
 			new_window.change_workspace_by_index (index, false);
 
+			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
 			foreach (unowned Meta.WindowActor actor in actors) {
-				unowned Meta.Window window = actor.get_meta_window ();
 				if (actor.is_destroyed ())
 					continue;
 
-				var window_index = window.get_workspace ().index ();
+				unowned Meta.Window window = actor.get_meta_window ();
+				if (window == new_window)
+					continue;
 
-				if (!window.on_all_workspaces
-					&& window != new_window
-					&& window_index >= index) {
-					window.change_workspace_by_index (window_index + 1, true);
+				var current_index = window.get_workspace ().index ();
+				if (current_index >= index
+					&& !window.on_all_workspaces) {
+					window.change_workspace_by_index (current_index + 1, true);
 				}
 			}
 
