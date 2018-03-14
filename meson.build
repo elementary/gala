@@ -230,9 +230,10 @@ if mutter_dep.length() == 0
 	error ('No supported mutter library found!')
 endif
 
+mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 
 add_project_arguments(vala_flags, language: 'vala')
-add_project_link_arguments(['-Wl,-rpath,@0@'.format(libmutter_dep.get_pkgconfig_variable('typelibdir'))], language: 'c')
+add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
 gala_base_dep = [glib_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep]
 
