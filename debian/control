@@ -1,11 +1,9 @@
 Source: gala
 Section: x11
 Priority: optional
-Maintainer: Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
-Build-Depends: debhelper (>= 9),
-               dh-autoreconf,
+Maintainer: elementary OS Team <builds@elementary.io>
+Build-Depends: debhelper (>= 10.5.1),
                gettext (>= 0.19.6),
-               gnome-common,
                gnome-settings-daemon-dev (>= 3.15.2),
                gsettings-desktop-schemas-dev,
                libbamf3-dev,
@@ -20,9 +18,10 @@ Build-Depends: debhelper (>= 9),
                libmutter-2-dev (>= 3.27.91) | libmutter-1-dev (>= 3.25.90) | libmutter-0-dev (>= 3.24.0) | libmutter-dev (>= 3.18.3),
                libplank-dev (>= 0.11.0),
                libxml2-utils,
+               meson,
                valac (>= 0.28.0)
-Standards-Version: 3.9.5
-Homepage: https://launchpad.net/gala
+Standards-Version: 4.1.1
+Homepage: https://github.com/elementary/gala
 
 Package: gala
 Architecture: any
@@ -38,22 +37,6 @@ Description: Pantheon Window Manager
  It takes care of behaviors such as moving windows around, window switching,
  window overview, animating windows, maximization, multiple workspaces,
  providing accessibility features like zoom, and more.
-
-Package: gala-dbg
-Architecture: any
-Section: debug
-Priority: extra
-Depends: gala (= ${binary:Version}),
-         libgala0 (= ${binary:Version}),
-         ${misc:Depends}
-Description: Pantheon Window Manager (debugging symbols)
- gala is a window & compositing manager based on libmutter. It manages the
- various windows a user has open.
- It takes care of behaviors such as moving windows around, window switching,
- window overview, animating windows, maximization, multiple workspaces,
- providing accessibility features like zoom, and more.
- .
- This package contains debugging symbols for gala.
 
 Package: libgala0
 Architecture: any
