@@ -37,14 +37,14 @@ namespace Gala
     }    
 
     const string DOWNSAMPLE_FRAG_SHADER = """
-        uniform float halfwidth;
-        uniform float halfheight;
         uniform sampler2D tex;
+        uniform float half_width;
+        uniform float half_height;
         uniform float offset;
 
         void main () {
             vec2 uv = cogl_tex_coord0_in.xy;
-            vec2 halfpixel = vec2(halfwidth, halfheight);
+            vec2 halfpixel = vec2(half_width, half_height);
 
             vec4 sum = texture2D (tex, uv) * 4.0;
             sum += texture2D (tex, uv - halfpixel.xy * offset);
@@ -56,14 +56,14 @@ namespace Gala
     """;
 
     const string UPSAMPLE_FRAG_SHADER = """
-        uniform float halfwidth;
-        uniform float halfheight;
         uniform sampler2D tex;
+        uniform float half_width;
+        uniform float half_height;
         uniform float offset;
 
         void main () {
             vec2 uv = cogl_tex_coord0_in.xy;
-            vec2 halfpixel = vec2(halfwidth, halfheight);
+            vec2 halfpixel = vec2(half_width, half_height);
 
             vec4 sum = texture2D (tex, uv + vec2(-halfpixel.x * 2.0, 0.0) * offset);
             sum += texture2D (tex, uv + vec2(-halfpixel.x, halfpixel.y) * offset) * 2.0;
@@ -78,8 +78,26 @@ namespace Gala
         }
     """;
 
+    const string COPYSAMPLE_FRAG_SHADER = """
+        uniform sampler2D tex;
+        uniform float tex_x1;
+        uniform float tex_y1;
+        uniform float tex_x2;
+        uniform float tex_y2;
+
+        void main () {
+            vec2 uv = cogl_tex_coord0_in.xy;
+            vec2 min = vec2(tex_x1, tex_y1);
+            vec2 max = vec2(tex_x2, tex_y2);
+            cogl_color_out = texture2D(tex, clamp (uv, min, max));
+        }
+    """;
+
     public class BlurActor : Clutter.Actor
     {
+        const int DOCK_SHRINK_AREA = 1;
+        const uint GL_TEXTURE_2D = 0x0DE1;
+
         static int down_width_location;
         static int down_height_location;
     
@@ -88,20 +106,28 @@ namespace Gala
     
         static Cogl.Program down_program;
         static Cogl.Program up_program;
+        static Cogl.Program copysample_program;
 
         static Cogl.Material down_material;
         static Cogl.Material up_material;
+        static Cogl.Material copysample_material;
 
         static int down_offset_location;
         static int up_offset_location;
 
+        static int copysample_tex_x_location;
+        static int copysample_tex_y_location;
+        static int copysample_tex_width_location;
+        static int copysample_tex_height_location;
+
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
 
+        static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
 
         static uint handle; 
-        static uint target;
+        static uint copysample_handle;
 
         static int iterations;
         static int expand_size;
@@ -121,11 +147,12 @@ namespace Gala
 
         Meta.Window? window;
 
-        int tex_width;
-        int tex_height;
+        Meta.Rectangle actor_rect;
+        Meta.Rectangle tex_rect;
 
         bool is_dock = false;
-        int tex_expand_size;
+
+        uint current_handle;
 
         public static void init (int _iterations, float offset, int _expand_size, Clutter.Actor _ui_group)
         {
@@ -147,6 +174,13 @@ namespace Gala
             up_program.attach_shader (fragment);
             up_program.link ();
 
+            fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
+            fragment.source (COPYSAMPLE_FRAG_SHADER);
+
+            copysample_program = new Cogl.Program ();
+            copysample_program.attach_shader (fragment);
+            copysample_program.link ();
+
             down_material = new Cogl.Material ();
             down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
             CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
@@ -157,19 +191,31 @@ namespace Gala
             CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
             CoglFixes.set_user_program (up_material, up_program);
 
+            copysample_material = new Cogl.Material ();
+            copysample_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+            CoglFixes.set_user_program (copysample_material, copysample_program);
+
             int tex_location = down_program.get_uniform_location ("tex");
             CoglFixes.set_uniform_1i (down_program, tex_location, 0);
     
             tex_location = up_program.get_uniform_location ("tex");
             CoglFixes.set_uniform_1i (up_program, tex_location, 0);
     
-            down_width_location = down_program.get_uniform_location ("halfwidth");     
-            down_height_location = down_program.get_uniform_location ("halfheight");
+            tex_location = copysample_program.get_uniform_location ("tex");
+            CoglFixes.set_uniform_1i (copysample_program, tex_location, 0);
+    
+            down_width_location = down_program.get_uniform_location ("half_width");     
+            down_height_location = down_program.get_uniform_location ("half_height");
             down_offset_location = down_program.get_uniform_location ("offset");
     
-            up_width_location = up_program.get_uniform_location ("halfwidth");     
-            up_height_location = up_program.get_uniform_location ("halfheight");
+            up_width_location = up_program.get_uniform_location ("half_width");     
+            up_height_location = up_program.get_uniform_location ("half_height");
             up_offset_location = up_program.get_uniform_location ("offset");
+
+            copysample_tex_x_location = copysample_program.get_uniform_location ("tex_x1");
+            copysample_tex_y_location = copysample_program.get_uniform_location ("tex_y1");
+            copysample_tex_width_location = copysample_program.get_uniform_location ("tex_x2");
+            copysample_tex_height_location = copysample_program.get_uniform_location ("tex_y2");
 
             CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
             CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
@@ -222,10 +268,9 @@ namespace Gala
             if (window_actor != null) {
                 window = window_actor.get_meta_window ();
                 window.notify["window-type"].connect (update_window_type);
-                update_window_type ();
-            } else {
-                tex_expand_size = expand_size;
             }
+
+            update_window_type ();
         }
 
         public BlurActor (Meta.WindowActor? window_actor)
@@ -239,6 +284,12 @@ namespace Gala
 
             var stage = ui_group.get_stage ();
             stage.get_size (out stage_width, out stage_height);
+
+            copysample_texture = new Cogl.Texture.with_size ((int)stage_width, (int)stage_height,
+                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
+            copysample_material.set_layer (0, copysample_texture);
+
+            CoglFixes.texture_get_gl_texture ((Cogl.Handle)copysample_texture, out copysample_handle, null);
 
             for (int i = 0; i <= iterations; i++) {
                 int downscale = 1 << i;
@@ -262,7 +313,7 @@ namespace Gala
                 textures.add (new FramebufferContainer (texture, downscale));
             }
 
-            CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, out target);
+            CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, null);
         }
 
         public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags)
@@ -290,22 +341,29 @@ namespace Gala
             get_size (out width, out height);
             get_transformed_position (out x, out y);
 
-            float actor_x = x;
-            float actor_y = y;
-
             double sx, sy;
             ui_group.get_scale (out sx, out sy);
 
-            x = float.max (0, x - tex_expand_size);
-            y = float.max (0, y - tex_expand_size);
+            actor_rect = {
+                (int)x, (int)y,
+                (int)(width * (float)sx), (int)(height * (float)sy)
+            };
 
-            tex_width = int.min ((int)((width * sx + tex_expand_size * 2)), (int)stage_width);
-            tex_height = int.min ((int)((height * sy + tex_expand_size * 2)), (int)stage_height);
+            x = float.max (0, x - expand_size);
+            y = float.max (0, y - expand_size);
+
+            int tex_width = int.min ((int)((actor_rect.width + expand_size * 2)), (int)stage_width);
+            int tex_height = int.min ((int)((actor_rect.height + expand_size * 2)), (int)stage_height);
 
             int tex_x = int.min ((int)x, (int)stage_width);
             int tex_y = int.min ((int)(stage_height - y - tex_height), (int)stage_height);
 
-            copy_target_texture (tex_x, tex_y, tex_width, tex_height);
+            tex_rect = {
+                tex_x, tex_y,
+                tex_width, tex_height
+            };
+
+            copy_target_texture ();
 
             downsample ();
             upsample ();
@@ -322,11 +380,11 @@ namespace Gala
             unowned Cogl.Framebuffer draw_fbo = Cogl.get_draw_framebuffer ();
             CoglFixes.framebuffer_push_rectangle_clip (draw_fbo, 0, 0, width, height);
 
-            if (x >= tex_expand_size && y >= tex_expand_size && !is_dock) {
-                CoglFixes.framebuffer_translate (draw_fbo, -tex_expand_size / (float)sx, -tex_expand_size / (float)sy, 0);
+            if (x >= expand_size && y >= expand_size && !is_dock) {
+                CoglFixes.framebuffer_translate (draw_fbo, -expand_size / (float)sx, -expand_size / (float)sy, 0);
             } else {
-                float tx = actor_x < tex_expand_size ? -actor_x / (float)sx : -tex_expand_size / (float)sx;
-                float ty = actor_y < tex_expand_size ? -actor_y / (float)sy : -tex_expand_size / (float)sy;
+                float tx = actor_rect.x < expand_size ? -actor_rect.x / (float)sx : -expand_size / (float)sx;
+                float ty = actor_rect.y < expand_size ? -actor_rect.y / (float)sy : -expand_size / (float)sy;
                 CoglFixes.framebuffer_translate (draw_fbo, tx, ty, 0);
             }
 
@@ -339,16 +397,38 @@ namespace Gala
         void update_window_type ()
         {
             is_dock = window.get_window_type () == Meta.WindowType.DOCK;
-            tex_expand_size = is_dock ? 0 : expand_size;
+            current_handle = is_dock ? copysample_handle : handle;
         }
 
-        void copy_target_texture (int x, int y, int width, int height)
+        void copy_target_texture ()
         {
             Cogl.begin_gl ();
-            bind_texture (target, handle);
-            copy_tex_sub_image (target, 0, 0, 0, x, y, width, height);
-            bind_texture (target, 1);
+            bind_texture (GL_TEXTURE_2D, current_handle);
+            copy_tex_sub_image (GL_TEXTURE_2D, 0, 0, 0, tex_rect.x, tex_rect.y, tex_rect.width, tex_rect.height);
+            bind_texture (GL_TEXTURE_2D, 1);
             Cogl.end_gl ();
+
+            if (is_dock) {
+                float x1 = DOCK_SHRINK_AREA / stage_width;
+                float x2 = (actor_rect.width - DOCK_SHRINK_AREA) / stage_width;
+
+                float y_target = float.min (actor_rect.y, expand_size);
+                float y1 = (tex_rect.height - actor_rect.height - y_target + DOCK_SHRINK_AREA) / stage_height;
+                float y2 = (tex_rect.height - y_target - DOCK_SHRINK_AREA) / stage_height;
+
+                CoglFixes.set_uniform_1f (copysample_program, copysample_tex_x_location, x1);
+                CoglFixes.set_uniform_1f (copysample_program, copysample_tex_y_location, y1);
+                CoglFixes.set_uniform_1f (copysample_program, copysample_tex_width_location, x2);
+                CoglFixes.set_uniform_1f (copysample_program, copysample_tex_height_location, y2);
+
+                unowned Cogl.Framebuffer target = (Cogl.Framebuffer)textures[0].fbo;
+
+                CoglFixes.framebuffer_push_matrix (target);
+                CoglFixes.framebuffer_scale (target, 1.0f, -1.0f, 1.0f);
+                CoglFixes.framebuffer_draw_textured_rectangle (target, copysample_material, 
+                    -1, -1, 1, 1, 0, 0, 1, 1);
+                CoglFixes.framebuffer_pop_matrix (target);
+            }
         }
 
         void downsample ()
@@ -395,19 +475,19 @@ namespace Gala
             int source_downscale = source.downscale;
             int dest_downscale = dest.downscale;
 
-            float src_rect_width = (float)tex_width / source_downscale;
-            float src_rect_height = (float)tex_height / source_downscale;
+            float src_rect_width = (float)tex_rect.width / source_downscale;
+            float src_rect_height = (float)tex_rect.height / source_downscale;
 
-            float target_rect_width = (float)tex_width / dest_downscale;
-            float target_rect_height = (float)tex_height / dest_downscale;
+            float target_rect_width = (float)tex_rect.width / dest_downscale;
+            float target_rect_height = (float)tex_rect.height / dest_downscale;
             map_screen_area_to_gl (target_width, target_height, 
                                 ref target_rect_width, ref target_rect_height);
 
             float texcoord_width = src_rect_width / source_width;
             float texcoord_height = src_rect_height / source_height;
-                    
+        
             CoglFixes.framebuffer_draw_textured_rectangle (target, material,
-                                                        -1, target_rect_height, target_rect_width, 1, 0, 0, texcoord_width, texcoord_height);
+                -1, target_rect_height, target_rect_width, 1, 0, 0, texcoord_width, texcoord_height);
         }
     }    
 }
