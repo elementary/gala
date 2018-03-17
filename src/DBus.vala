@@ -241,7 +241,36 @@ namespace Gala
 			return { rTotal, gTotal, bTotal, mean, variance };
 		}
 
-		public void enable_blur_behind (uint32 xid) throws DBusError
+		/**
+		 * Adds a blur behind effect to a specific window.
+		 * 
+		 * Makes the contents displayed behind the window blurred.
+		 * This effect can be only seeen when the window's background is transparent.
+		 * The added blur effect is applied and redrawn real time to always represent
+		 * what's behind the window.
+		 * 
+		 * If your window is not always transparent, you should consider disabling
+		 * the blur effect with disable_blur_behind at the time of disabling transparency for the target window so
+		 * that the effect is not drawn unnecessarily.
+		 * 
+		 * The x, y, width and height parameters can be used for setting a clip which the blur actor
+		 * covers behind the window. The clip is relative to the window coordinates.
+		 * If you want to exclusively constrain only the position or size of the blur effect you can pass 0's
+		 * for all other values you do not want to constrain, e.g: making the blur effect appear with an always
+		 * fixed height can be achieved by passing 0's to x, y and width parameters and the
+		 * requested value for the height parameter.
+		 * 
+		 * Further calls to this method on the same window will update the properties of the
+		 * current blur effect to the new ones.
+		 * 
+		 * @param xid the X window ID of the target window to enable the blur effect
+		 * @param x the X value in pixels of the clip, relative to the requested window
+		 * @param y the Y value in pixels of the clip, relative to the requested window
+		 * @param width the width value in pixels of the clip, relative to the requested window
+		 * @param height the height value in pixels of the clip, relative to the requested window
+		 * @return true if the blur was successfully added to the target window, false otherwise
+		 */
+		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height) throws DBusError
 		{
 			if (!BlurActor.get_supported ()) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
@@ -251,18 +280,28 @@ namespace Gala
 				BlurActor.init (4, 3.8f, 150, wm.ui_group);
 			}
 
+			var blur_actor = blur_actors[xid];
+			if (blur_actor != null) {
+				blur_actor.blur_clip_rect = { x, y, width, height };
+				blur_actor.queue_relayout ();
+				return true;
+			}
+
 			var screen = wm.get_screen ();
 			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
 				var window = window_actor.get_meta_window ();
 				if (window.get_xwindow () == xid) {
 					var actor = new BlurActor (window_actor);
 					actor.destroy.connect (on_blur_actor_destroyed);
+					actor.blur_clip_rect = { x, y, width, height };
 
 					window_actor.insert_child_below (actor, null);
 					blur_actors[xid] = actor;
-					break;
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 		void on_blur_actor_destroyed (Clutter.Actor actor)
@@ -285,7 +324,18 @@ namespace Gala
 				BlurActor.deinit ();
 			}
 		}
-
+		
+		/**
+		 * Disables the blur effect behind the specified window.
+		 * 
+		 * Finds and removes the blur actor added behind the specified
+		 * window.
+		 *
+		 * This method will throw an error when the specified X window ID
+		 * does not have an associated blur actor with it.
+		 * 
+		 * @param xid the X window ID of the target window to disable the blur effect
+		 */
 		public void disable_blur_behind (uint32 xid) throws DBusError
 		{
 			var actor = blur_actors[xid];

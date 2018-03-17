@@ -144,6 +144,7 @@ namespace Gala
         delegate void GlBindTextureFunc (uint target, uint texture);
 
         public Meta.WindowActor? window_actor { get; construct; }
+        public Meta.Rectangle blur_clip_rect { get; set; }
 
         Meta.Window? window;
 
@@ -325,9 +326,17 @@ namespace Gala
                 var rect = window.get_frame_rect ();
                 float width = rect.width;
                 float height = rect.height;
+                
+                if (blur_clip_rect.width > 0) {
+                    width = blur_clip_rect.width;
+                }
+
+                if (blur_clip_rect.height > 0) {
+                    height = blur_clip_rect.height;
+                }
 
                 box.set_size (width, height);
-                box.set_origin (rect.x - x, rect.y - y);
+                box.set_origin (rect.x - x + blur_clip_rect.x, rect.y - y + blur_clip_rect.y);
             }
 
             base.allocate (box, flags);
