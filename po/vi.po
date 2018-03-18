@@ -174,7 +174,7 @@ msgstr "Bật không gian làm việc động thay vì các trang tĩnh"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
+"Use a dynamically increasing or decreasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
 "Sử dụng một số tự động tăng hoặc giảm, nếu cần thiết, các không gian làm "
