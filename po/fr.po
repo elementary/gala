@@ -182,7 +182,7 @@ msgstr "Activer les espaces de travail dynamiques au lieu des statiques"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
+"Use a dynamically increasing or decreasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr ""
 "Utiliser un nombre variable d'espaces de travail au lieu d'un nombre fixe"
