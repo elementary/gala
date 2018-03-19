@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-02-15 00:00+0000\n"
+"PO-Revision-Date: 2018-03-20 00:11+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock@gmail.com>\n"
 "Language-Team: Japanese "
 "<https://weblate.elementary.io/projects/desktop/gala/ja/>\n"
@@ -75,7 +75,7 @@ msgstr "最大化"
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "マルチタスクビュー"
+msgstr "マルチタスキングビュー"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
@@ -274,7 +274,7 @@ msgstr "モーダル表示のダイアログを持つ親ウィンドウを薄暗
 #: data/org.pantheon.desktop.gala.gschema.xml.in:164
 msgid ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
-msgstr ""
+msgstr "Alt-Tab スイッチャーのバックグラウンドに位置するウィンドウの透明度です。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:168
 msgid "Background-image used in the workspace-switcher"
