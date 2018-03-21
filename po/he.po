@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-03-20 00:11+0000\n"
+"PO-Revision-Date: 2018-03-22 00:05+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew "
 "<https://weblate.elementary.io/projects/desktop/gala/he/>\n"
@@ -250,9 +250,8 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
+"כשמוגדר לאמת, במקום סרגלי כותרת עצמאיים, יוצמדו תיבות דו־שיח בלתי מטרידות "
+"לשורת הכותרת של חלון ההורה והן תזוזנה יחד עם חלון ההורה."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:154
 msgid "Arrangement of buttons on the titlebar"
@@ -271,7 +270,7 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:159
 msgid "Make parent windows that spawn a modal attached dialog being dimmed"
-msgstr ""
+msgstr "להפוך חלונות הורה שהקפיצו חלונית בלתי טורדנית מוצמדת למעומעמים"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:164
 msgid ""
@@ -325,17 +324,20 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]"
 msgstr ""
+"הערך הראשון הוא הרדיוס של טשטוש הצל, השני הוא של העמעום העליון (בדרך כלל "
+"פשוט ‎-1), השני והשלישי הם ההיסט בצירים x ו־y בהתאמה והאחרון זאת שקיפות. "
+"לפיכך [רדיוס טשטוש, עמעום מלמעלה, היסט x, היסט y, אטימות]"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:211
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "הגדרת ההצללה של חלון רגיל שאינו במיקוד"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:212
 #: data/org.pantheon.desktop.gala.gschema.xml.in:217
 #: data/org.pantheon.desktop.gala.gschema.xml.in:222
 #: data/org.pantheon.desktop.gala.gschema.xml.in:227
 msgid "See normal-focused"
-msgstr ""
+msgstr "הצגת רגיל במיקוד"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:216
 msgid "Defines the shadow of a menu"
