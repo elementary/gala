@@ -294,7 +294,7 @@ namespace Gala
 					var actor = new BlurActor (window_actor);
 					actor.destroy.connect (on_blur_actor_destroyed);
 					actor.blur_clip_rect = { x, y, width, height };
-
+					
 					window_actor.insert_child_below (actor, null);
 					blur_actors[xid] = actor;
 					return true;
