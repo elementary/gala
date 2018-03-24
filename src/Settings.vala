@@ -177,4 +177,24 @@ namespace Gala
 			return instance;
 		}
 	}
+
+	public class ScreenshotSettings : Granite.Services.Settings
+	{
+		public string folder_dir { get; set; }
+
+		static ScreenshotSettings? instance = null;
+
+		private ScreenshotSettings ()
+		{
+			base (Config.SCHEMA + ".screenshot");
+		}
+
+		public static unowned ScreenshotSettings get_default ()
+		{
+			if (instance == null)
+				instance = new ScreenshotSettings ();
+
+			return instance;
+		}
+	}
 }

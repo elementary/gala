@@ -277,4 +277,11 @@
 			<summary>Only show corner masks on primary monitor</summary>
 		</key>
 	</schema>
+
+	<schema path="/org/pantheon/desktop/gala/screenshot/" id="org.pantheon.desktop.gala.screenshot" gettext-domain="@GETTEXT_PACKAGE@">
+		<key name="folder-dir" type="s">
+            <default>""</default>
+			<summary>Folder to save screenshots</summary>
+        </key>
+	</schema>
 </schemalist>

@@ -104,7 +104,12 @@ namespace Gala
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
 			if (!Path.is_absolute (filename)) {
-				string path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+				string path = ScreenshotSettings.get_default ().folder_dir;
+
+				if (path == "") {
+					path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+				}
+
 				if (!FileUtils.test (path, FileTest.EXISTS)) {
 					path = Environment.get_home_dir ();
 				}
