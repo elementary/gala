@@ -167,7 +167,7 @@ msgstr "啟用動態工作區而非靜態工作區"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
+"Use a dynamically increasing or decreasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr "根據需要而動態增減工作區，而非靜態、固定的工作區數目"
 
