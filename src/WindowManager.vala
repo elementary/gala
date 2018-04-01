@@ -132,24 +132,24 @@ namespace Gala
 				}
 			}
 
-			Bus.watch_name (BusType.SESSION, MENU_DBUS_NAME, BusNameWatcherFlags.NONE, has_menu, lost_menu);
+			Bus.watch_name (BusType.SESSION, MENU_DBUS_NAME, BusNameWatcherFlags.NONE, menu_daemon_appeared, lost_menu_daemon);
 		}
 
-		void on_menu_get(GLib.Object? o, GLib.AsyncResult? res)
+		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
 		{
 			try {
-				menu_proxy = Bus.get_proxy.end(res);
+				menu_proxy = Bus.get_proxy.end (res);
 			} catch (Error e) {
-				warning("Failed to get Menu proxy: %s", e.message);
+				warning ("Failed to get Menu proxy: %s", e.message);
 			}
 		}
 
-		void lost_menu()
+		void lost_menu_daemon ()
 		{
 			menu_proxy = null;
 		}
 
-		void has_menu()
+		void menu_daemon_appeared ()
 		{
 			if (menu_proxy == null) {
 				Bus.get_proxy.begin<MenuDaemon> (BusType.SESSION, MENU_DBUS_NAME, MENU_DBUS_OBJECT_PATH, 0, null, on_menu_get);

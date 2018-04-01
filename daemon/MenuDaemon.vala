@@ -50,7 +50,7 @@ namespace GalaDaemon {
 			var flags = BusNameOwnerFlags.ALLOW_REPLACEMENT | BusNameOwnerFlags.REPLACE;
 			Bus.own_name (BusType.SESSION, MENU_DBUS_NAME, flags, on_bus_acquired, () => {}, null);
 
-			Bus.watch_name (BusType.SESSION, GALA_DBUS_NAME, BusNameWatcherFlags.NONE, has_gala, lost_gala);
+			Bus.watch_name (BusType.SESSION, GALA_DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
 		}
 
 		void on_gala_get (GLib.Object? o, GLib.AsyncResult? res)
@@ -67,7 +67,7 @@ namespace GalaDaemon {
 			gala_proxy = null;
 		}
 
-		void has_gala ()
+		void gala_appeared ()
 		{
 			if (gala_proxy == null) {
 				Bus.get_proxy.begin<GalaInterface> (BusType.SESSION,

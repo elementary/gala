@@ -97,17 +97,9 @@ namespace GalaDaemon
 		{
 			sclient = yield register_with_session ("io.elementary.gala.daemon");
 
-			sclient.QueryEndSession.connect (()=> {
-				end_session (false);
-			});
-
-			sclient.EndSession.connect (()=> {
-				end_session (false);
-			});
-
-			sclient.Stop.connect (()=> {
-				end_session (true);
-			});
+			sclient.QueryEndSession.connect (() => end_session (false));
+			sclient.EndSession.connect (() => end_session (false));
+			sclient.Stop.connect (() => end_session (true));
 
 			return true;
 		}
@@ -118,6 +110,7 @@ namespace GalaDaemon
 				Gtk.main_quit ();
 				return;
 			}
+
 			try {
 				sclient.EndSessionResponse (true, "");
 			} catch (Error e) {
