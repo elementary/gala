@@ -54,10 +54,12 @@ namespace Gala
 			success = save_image (image, filename, out filename_used);
 		}
 
-		public void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
+		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
 		{
 			debug ("Taking area screenshot");
 			
+			yield wait_stage_repaint ();
+
 			var image = take_screenshot (x, y, width, height, false);
 			success = save_image (image, filename, out filename_used);
 			if (!success)
