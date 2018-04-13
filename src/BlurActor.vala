@@ -149,7 +149,6 @@ namespace Gala
         Meta.Rectangle tex_rect;
 
         bool is_dock = false;
-
         uint current_handle;
 
         public static void init (int _iterations, float offset, int _expand_size, Clutter.Actor _ui_group)
@@ -291,8 +290,8 @@ namespace Gala
             for (int i = 0; i <= iterations; i++) {
                 int downscale = 1 << i;
     
-                int width = (int)(stage_width / downscale);
-                int height = (int)(stage_height / downscale);
+                uint width = (int)(stage_width / downscale);
+                uint height = (int)(stage_height / downscale);
 
                 var texture = new Cogl.Texture.with_size (width, height,
                     Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
@@ -300,10 +299,8 @@ namespace Gala
             }
 
             for (int i = iterations - 1; i >= 1; i--) {
-                int downscale = 1 << i;
-
-                int width = (int)(stage_width / downscale);
-                int height = (int)(stage_height / downscale);
+                uint width = textures[i].texture.get_width ();
+                uint height = textures[i].texture.get_height ();
 
                 var texture = new Cogl.Texture.with_size (width, height,
                     Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
