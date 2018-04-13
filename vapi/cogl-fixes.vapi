@@ -36,5 +36,5 @@ namespace CoglFixes
 	public void material_set_layer_wrap_mode (Cogl.Material material, int layer_index, Cogl.MaterialWrapMode mode);
 
 	[CCode (cname = "cogl_texture_get_gl_texture")]
-	public void texture_get_gl_texture (unowned Cogl.Handle texture, out uint gl_handle, out uint gl_target);
+	public void texture_get_gl_texture (Cogl.Handle texture, out uint gl_handle, out uint gl_target);
 }

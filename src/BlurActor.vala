@@ -250,15 +250,6 @@ namespace Gala
                                             Cogl.FeatureFlags.TEXTURE_NPOT);
         }
 
-        // Maps x and y coordinates within a screen to GL coordinates (-1 to 1)
-        static void map_screen_area_to_gl (float screen_width, float screen_height,
-                                        ref float x, ref float y)
-        {
-
-            x = (2.0f / screen_width * x) - 1.0f;
-            y = (2.0f / screen_height * (screen_height - y)) - 1.0f;
-        }
-
         construct
         {
             if (window_actor != null) {

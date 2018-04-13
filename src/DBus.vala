@@ -270,7 +270,7 @@ namespace Gala
 		 * @param height the height value in pixels of the clip, relative to the requested window
 		 * @return true if the blur was successfully added to the target window, false otherwise
 		 */
-		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height) throws DBusError
+		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height) throws Error
 		{
 			if (!BlurActor.get_supported ()) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
@@ -336,7 +336,7 @@ namespace Gala
 		 * 
 		 * @param xid the X window ID of the target window to disable the blur effect
 		 */
-		public void disable_blur_behind (uint32 xid) throws DBusError
+		public void disable_blur_behind (uint32 xid) throws Error
 		{
 			var actor = blur_actors[xid];
 			if (actor != null) {
