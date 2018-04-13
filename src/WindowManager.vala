@@ -78,6 +78,8 @@ namespace Gala
 		Clutter.Actor? last_hotcorner;
 		ScreenSaver? screensaver;
 
+		Clutter.Actor? tile_preview;
+
 		Window? moving; //place for the window that is being moved over
 
 		LoginDRemote? logind_proxy = null;
@@ -364,9 +366,12 @@ namespace Gala
 		{
 			var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
 			var index = screen.get_active_workspace_index () + direction;
+
+			int dynamic_offset = Prefs.get_dynamic_workspaces () ? 1 : 0;
+
 			if (index < 0)
-				index = screen.get_n_workspaces () - 1;
-			else if (index > screen.get_n_workspaces () - 1)
+				index = screen.get_n_workspaces () - 1 - dynamic_offset;
+			else if (index > screen.get_n_workspaces () - 1 - dynamic_offset)
 				index = 0;
 
 			screen.get_workspace_by_index (index).activate (display.get_current_time ());
@@ -709,6 +714,58 @@ namespace Gala
 			}
 		}
 
+		public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number)
+		{
+			if (tile_preview == null) {
+				tile_preview = new Clutter.Actor ();
+				tile_preview.background_color = { 100, 186, 255, 100 };
+				tile_preview.opacity = 0U;
+
+				window_group.add_child (tile_preview);
+			} else if (tile_preview.is_visible ()) {
+				float width, height, x, y;
+				tile_preview.get_position (out x, out y);
+				tile_preview.get_size (out width, out height);
+
+				if ((tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y)
+					|| tile_preview.get_transition ("size") != null)  {
+					return;
+				}
+			}
+
+			unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
+			window_group.set_child_below_sibling (tile_preview, window_actor);
+
+			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			var duration = animation_settings.snap_duration / 2U;
+
+			var rect = window.get_frame_rect ();
+			tile_preview.set_position (rect.x, rect.y);
+			tile_preview.set_size (rect.width, rect.height);
+			tile_preview.show ();
+
+			if (animation_settings.enable_animations) {
+				tile_preview.save_easing_state ();
+				tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				tile_preview.set_easing_duration (duration);
+				tile_preview.opacity = 255U;
+				tile_preview.set_position (tile_rect.x, tile_rect.y);
+				tile_preview.set_size (tile_rect.width, tile_rect.height);
+				tile_preview.restore_easing_state ();
+			} else {
+				tile_preview.opacity = 255U;
+			}
+		}
+
+		public override void hide_tile_preview ()
+		{
+			if (tile_preview != null) {
+				tile_preview.remove_all_transitions ();
+				tile_preview.opacity = 0U;
+				tile_preview.hide ();
+			}
+		}
+
 		public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect)
 		{
 			show_window_menu (window, menu, rect.x, rect.y);
@@ -739,8 +796,10 @@ namespace Gala
 				if (Utils.get_n_windows (win_ws) <= 1)
 					return;
 
-				var new_ws_index = screen.get_n_workspaces () - 1;
 				var old_ws_index = win_ws.index ();
+				var new_ws_index = old_ws_index + 1;
+				InternalUtils.insert_workspace_with_window (new_ws_index, window);
+
 				var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
 				window.change_workspace (new_ws_obj);
 				new_ws_obj.activate_with_focus (window, time);
