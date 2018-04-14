@@ -268,9 +268,10 @@ namespace Gala
 		 * @param y the Y value in pixels of the clip, relative to the requested window
 		 * @param width the width value in pixels of the clip, relative to the requested window
 		 * @param height the height value in pixels of the clip, relative to the requested window
+		 * @param opacity the opacity of the blur effect, where 0 is invisible and 255 is opaque, can be used for effect animation
 		 * @return true if the blur was successfully added to the target window, false otherwise
 		 */
-		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height) throws Error
+		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height, uint8 opacity) throws Error
 		{
 			if (!BlurActor.get_supported ()) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
@@ -283,6 +284,7 @@ namespace Gala
 			var blur_actor = blur_actors[xid];
 			if (blur_actor != null) {
 				blur_actor.blur_clip_rect = { x, y, width, height };
+				blur_actor.opacity = opacity;
 				blur_actor.queue_relayout ();
 				return true;
 			}
@@ -294,6 +296,7 @@ namespace Gala
 					var actor = new BlurActor (window_actor);
 					actor.destroy.connect (on_blur_actor_destroyed);
 					actor.blur_clip_rect = { x, y, width, height };
+					actor.opacity = opacity;
 					
 					window_actor.insert_child_below (actor, null);
 					blur_actors[xid] = actor;

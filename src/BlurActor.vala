@@ -21,7 +21,11 @@
 // Reference implementation by Alex Nemeth for KDE: https://phabricator.kde.org/D9848
 
 namespace Gala
-{ 
+{
+    /**
+     * Contains the offscreen framebuffer and the target texture that's
+     * attached to it.
+     */
     class FramebufferContainer
     {
         public Cogl.Offscreen fbo;
@@ -31,7 +35,15 @@ namespace Gala
             this.texture = texture;
             fbo = new Cogl.Offscreen.to_texture (texture);
         }
-    }    
+    }
+
+    /**
+     * Workaround for Vala not supporting static signals.
+     */
+    class HandleNotifier
+    {
+        public signal void updated ();
+    }
 
     const string DOWNSAMPLE_FRAG_SHADER = """
         uniform sampler2D tex;
@@ -123,6 +135,7 @@ namespace Gala
         static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
 
+        static HandleNotifier handle_notifier;
         static uint handle; 
         static uint copysample_handle;
 
@@ -156,6 +169,8 @@ namespace Gala
             iterations = _iterations;
             ui_group = _ui_group;
             expand_size = _expand_size;
+
+            handle_notifier = new HandleNotifier ();
 
             var fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
             fragment.source (DOWNSAMPLE_FRAG_SHADER);
@@ -257,6 +272,7 @@ namespace Gala
                 window.notify["window-type"].connect (update_window_type);
             }
 
+            handle_notifier.updated.connect (update_current_handle);
             update_window_type ();
         }
 
@@ -299,6 +315,8 @@ namespace Gala
             }
 
             CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, null);
+
+            handle_notifier.updated ();
         }
 
         public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags)
@@ -382,6 +400,11 @@ namespace Gala
         void update_window_type ()
         {
             is_dock = window != null && window.get_window_type () == Meta.WindowType.DOCK;
+            update_current_handle ();
+        }
+
+        inline void update_current_handle ()
+        {
             current_handle = is_dock ? copysample_handle : handle;
         }
 
@@ -394,7 +417,7 @@ namespace Gala
             bind_texture (GL_TEXTURE_2D, current_handle);
 
             copy_tex_sub_image (GL_TEXTURE_2D, 0, xoff, yoff,
-                (int)tex_rect.x, (int)tex_rect.y, (int)tex_rect.width, (int)tex_rect.height);
+                xoff, yoff, (int)tex_rect.width, (int)tex_rect.height);
 
             bind_texture (GL_TEXTURE_2D, 1);
             Cogl.end_gl ();
