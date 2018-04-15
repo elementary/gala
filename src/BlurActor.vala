@@ -305,15 +305,6 @@ namespace Gala
                 textures.add (new FramebufferContainer (texture));
             }
 
-            for (int i = iterations - 1; i >= 1; i--) {
-                uint width = textures[i].texture.get_width ();
-                uint height = textures[i].texture.get_height ();
-
-                var texture = new Cogl.Texture.with_size (width, height,
-                    Cogl.TextureFlags.NO_AUTO_MIPMAP, Cogl.PixelFormat.RGBA_8888);
-                textures.add (new FramebufferContainer (texture));
-            }
-
             CoglFixes.texture_get_gl_texture ((Cogl.Handle)textures[0].texture, out handle, null);
 
             handle_notifier.updated ();
@@ -377,6 +368,7 @@ namespace Gala
             copy_target_texture ();
 
             downsample ();
+            Cogl.flush ();
             upsample ();
 
             CoglFixes.set_uniform_1f (up_program, up_width_location, 0.5f / stage_width);
@@ -384,7 +376,7 @@ namespace Gala
 
             uint8 paint_opacity = get_paint_opacity ();
 
-            var texture = textures.last ().texture;
+            var texture = textures[1].texture;
             up_material.set_layer (0, texture);
             up_material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
 
@@ -458,9 +450,9 @@ namespace Gala
     
         void upsample ()
         {
-            for (int i = iterations; i < textures.size - 1; i++) {
+            for (int i = textures.size - 1; i > 1; i--) {
                 var source_cont = textures[i];
-                var dest_cont = textures[i + 1];
+                var dest_cont = textures[i - 1];
 
                 render_to_fbo (source_cont, dest_cont, up_material,
                             up_program, up_width_location, up_height_location);
