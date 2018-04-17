@@ -19,7 +19,7 @@ namespace GalaDaemon {
 	[DBus (name = "org.pantheon.gala")]
 	public interface GalaInterface : GLib.Object
 	{
-		public abstract void perform_action (Gala.ActionType type) throws GLib.DBusError, GLib.IOError;
+		public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
 	}
 
 	[DBus (name = "io.elementary.gala.daemon")]
@@ -160,7 +160,7 @@ namespace GalaDaemon {
 			window_menu.show_all ();
 		}
 
-		public void show_window_menu (Gala.WindowFlags flags, int x, int y) throws GLib.DBusError, GLib.IOError
+		public void show_window_menu (Gala.WindowFlags flags, int x, int y) throws DBusError, IOError
 		{
 			if (window_menu == null) {
 				init_window_menu ();
