@@ -20,13 +20,13 @@ namespace GalaDaemon
 	[DBus (name = "org.gnome.SessionManager")]
 	public interface SessionManager : Object
 	{
-		public abstract async ObjectPath RegisterClient (string app_id, string client_start_id) throws IOError;
+		public abstract async ObjectPath RegisterClient (string app_id, string client_start_id) throws GLib.DBusError, GLib.IOError;
 	}
 
 	[DBus (name = "org.gnome.SessionManager.ClientPrivate")]
 	public interface SessionClient : Object
 	{
-		public abstract void EndSessionResponse (bool is_ok, string reason) throws IOError;
+		public abstract void EndSessionResponse (bool is_ok, string reason) throws GLib.DBusError, GLib.IOError;
 
 		public signal void Stop () ;
 		public signal void QueryEndSession (uint flags);
@@ -49,6 +49,10 @@ namespace GalaDaemon
 
 			var menu_daemon = new MenuDaemon ();
 			menu_daemon.setup_dbus ();
+		}
+
+		public void run () {
+			Gtk.main ();
 		}
 
 		public static async SessionClient? register_with_session (string app_id)
@@ -135,8 +139,7 @@ namespace GalaDaemon
 		}
 
 		var daemon = new Daemon ();
-
-		Gtk.main ();
+		daemon.run ();
 
 		return 0;
 	}

@@ -19,7 +19,7 @@ namespace GalaDaemon {
 	[DBus (name = "org.pantheon.gala")]
 	public interface GalaInterface : GLib.Object
 	{
-		public abstract void perform_action (Gala.ActionType type);
+		public abstract void perform_action (Gala.ActionType type) throws GLib.DBusError, GLib.IOError;
 	}
 
 	[DBus (name = "io.elementary.gala.daemon")]
@@ -87,86 +87,80 @@ namespace GalaDaemon {
 		}
 
 		[DBus (visible = false)]
+		private void perform_action (Gala.ActionType type)
+		{
+			if (gala_proxy != null) {
+				try {
+					gala_proxy.perform_action (type);
+				} catch (Error e) {
+					warning ("Failed to perform Gala action over DBus: %s", e.message);
+				}
+			}
+		}
+
+		[DBus (visible = false)]
 		private void init_window_menu ()
 		{
 			window_menu = new Gtk.Menu ();
 
 			minimize = new Gtk.MenuItem.with_label (_("Minimize"));
 			minimize.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.MINIMIZE_CURRENT);
-				}
+				perform_action (Gala.ActionType.MINIMIZE_CURRENT);
 			});
 			window_menu.append (minimize);
 
 			maximize = new Gtk.MenuItem.with_label ("");
 			maximize.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
-				}
+				perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
 			});
 			window_menu.append (maximize);
 
 			move = new Gtk.MenuItem.with_label (_("Move"));
 			move.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.START_MOVE_CURRENT);
-				}
+				perform_action (Gala.ActionType.START_MOVE_CURRENT);
 			});
 			window_menu.append (move);
 
 			resize = new Gtk.MenuItem.with_label (_("Resize"));
 			resize.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.START_RESIZE_CURRENT);
-				}
+				perform_action (Gala.ActionType.START_RESIZE_CURRENT);
 			});
 			window_menu.append (resize);
 
 			always_on_top = new Gtk.CheckMenuItem.with_label (_("Always on Top"));
 			always_on_top.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
-				}
+				perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
 			});
 			window_menu.append (always_on_top);
 
 			on_visible_workspace = new Gtk.CheckMenuItem.with_label (_("Always on Visible Workspace"));
 			on_visible_workspace.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
-				}
+				perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
 			});
 			window_menu.append (on_visible_workspace);
 
 			move_left = new Gtk.MenuItem.with_label (_("Move to Workspace Left"));
 			move_left.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_LEFT);
-				}
+				perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_LEFT);
 			});
 			window_menu.append (move_left);
 
 			move_right = new Gtk.MenuItem.with_label (_("Move to Workspace Right"));
 			move_right.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
-				}
+				perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
 			});
 			window_menu.append (move_right);
 
 			close = new Gtk.MenuItem.with_label (_("Close"));
 			close.activate.connect (() => {
-				if (gala_proxy != null) {
-					gala_proxy.perform_action (Gala.ActionType.CLOSE_CURRENT);
-				}
+				perform_action (Gala.ActionType.CLOSE_CURRENT);
 			});
 			window_menu.append (close);
 
 			window_menu.show_all ();
 		}
 
-		public void show_window_menu (Gala.WindowFlags flags, int x, int y)
+		public void show_window_menu (Gala.WindowFlags flags, int x, int y) throws GLib.DBusError, GLib.IOError
 		{
 			if (window_menu == null) {
 				init_window_menu ();
