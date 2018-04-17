@@ -20,13 +20,13 @@ namespace GalaDaemon
 	[DBus (name = "org.gnome.SessionManager")]
 	public interface SessionManager : Object
 	{
-		public abstract async ObjectPath RegisterClient (string app_id, string client_start_id) throws GLib.DBusError, GLib.IOError;
+		public abstract async ObjectPath RegisterClient (string app_id, string client_start_id) throws DBusError, IOError;
 	}
 
 	[DBus (name = "org.gnome.SessionManager.ClientPrivate")]
 	public interface SessionClient : Object
 	{
-		public abstract void EndSessionResponse (bool is_ok, string reason) throws GLib.DBusError, GLib.IOError;
+		public abstract void EndSessionResponse (bool is_ok, string reason) throws DBusError, IOError;
 
 		public signal void Stop () ;
 		public signal void QueryEndSession (uint flags);
