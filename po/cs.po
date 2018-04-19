@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-04-19 16:35+0000\n"
-"Last-Translator: Jan Marek <janmarek28@gmail.com>\n"
+"PO-Revision-Date: 2018-04-20 00:11+0000\n"
+"Last-Translator: Lukáš Kucharczyk <kucharczyk.lukas@gmail.com>\n"
 "Language-Team: Czech "
 "<https://weblate.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -95,7 +95,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:21
 msgid "Action for the top left corner"
@@ -242,7 +242,7 @@ msgstr "Přepnout na další rozložení klávesnice"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:137
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+msgstr "Zastaralé: Tento klíč se již nepoužívá a je ignorován."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:141
 msgid "Cycle to previous keyboard layout"
@@ -394,7 +394,7 @@ msgstr "Poloměr rohu"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:266
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Vypnout masku rohu v režimu celé obrazovky"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:267
 msgid ""
@@ -404,7 +404,7 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:271
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Zobrazovat masky rohů pouze na primárním monitoru"
 
 #~ msgid "Cancel"
 #~ msgstr "Zrušit"
