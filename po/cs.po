@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-04-20 20:04+0000\n"
+"PO-Revision-Date: 2018-04-21 00:10+0000\n"
 "Last-Translator: Jan Marek <janmarek28@gmail.com>\n"
 "Language-Team: Czech "
 "<https://weblate.elementary.io/projects/desktop/gala/cs/>\n"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:81
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Názvy, které jsou přepínačem oken rozpoznávány jako dokovací okna."
+msgstr "Názvy, které jsou přepínačem oken rozpoznávány jako doková okna"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid ""
@@ -402,7 +402,7 @@ msgid ""
 "corner masks will be disabled on that monitor."
 msgstr ""
 "Když je aktivní, bude rohová maska deaktivována na monitoru, kde je aplikace "
-"na celé obrazovce."
+"roztažena na celé obrazovce."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:271
 msgid "Only show corner masks on primary monitor"
