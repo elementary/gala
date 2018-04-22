@@ -44,6 +44,9 @@ namespace GalaDaemon {
 
 		private GalaInterface? gala_proxy = null;
 
+		private int menu_x = 0;
+		private int menu_y = 0;
+
 		[DBus (visible = false)]
 		public void setup_dbus ()
 		{
@@ -160,8 +163,20 @@ namespace GalaDaemon {
 			window_menu.show_all ();
 		}
 
+		private void position_delegate (Gtk.Menu menu, ref int x, ref int y, out bool push_in)
+		{
+			x = menu_x / menu.scale_factor;
+			// Move the menu 1 pixel outside of the pointer or else it closes instantly
+			// on the mouse up event
+			y = (menu_y / menu.scale_factor) + 1;
+			push_in = true;
+		}
+
 		public void show_window_menu (Gala.WindowFlags flags, int x, int y) throws DBusError, IOError
 		{
+			menu_x = x;
+			menu_y = y;
+
 			if (window_menu == null) {
 				init_window_menu ();
 			}
@@ -177,7 +192,7 @@ namespace GalaDaemon {
 			move_left.visible = !on_visible_workspace.active;
 			close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
 
-			window_menu.popup (null, null, null, 3, Gdk.CURRENT_TIME);
+			window_menu.popup (null, null, position_delegate, 3, Gdk.CURRENT_TIME);
 		}
 	}
 }

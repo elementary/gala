@@ -877,18 +877,11 @@ namespace Gala
 					if (window.can_close ())
 						flags |= WindowFlags.CAN_CLOSE;
 
-					// A timeout is necessary to prevent the mouse event reaching the new menu window
-					// and defocusing and closing it instantly after opening
-					Timeout.add (100, () => {
-						try {
-							menu_proxy.show_window_menu.begin (flags, x, y);
-						} catch (Error e) {
-							message ("Error invoking MenuManager: %s", e.message);
-						}
-
-						return false;
-					});
-
+					try {
+						menu_proxy.show_window_menu.begin (flags, x, y);
+					} catch (Error e) {
+						message ("Error invoking MenuManager: %s", e.message);
+					}
 					break;
 				case WindowMenuType.APP:
 					// FIXME we don't have any sort of app menus
