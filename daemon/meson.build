@@ -1,5 +1,5 @@
 daemon_sources = files (
-    'main.vala',
+    'Main.vala',
     'MenuDaemon.vala'
 )
 

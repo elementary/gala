@@ -15,9 +15,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace GalaDaemon {
+namespace Gala
+{
+	const string DBUS_NAME = "org.pantheon.gala";
+	const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
+
+	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+	const string DAEMON_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
+
 	[DBus (name = "org.pantheon.gala")]
-	public interface GalaInterface : GLib.Object
+	public interface WMDBus : GLib.Object
 	{
 		public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
 	}
@@ -25,38 +32,32 @@ namespace GalaDaemon {
 	[DBus (name = "org.pantheon.gala.daemon")]
 	public class MenuDaemon : Object
 	{
-		private const string MENU_DBUS_NAME = "org.pantheon.gala.daemon";
-		private const string MENU_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
+		Gtk.Menu? window_menu = null;
+		Gtk.MenuItem minimize;
+		Gtk.MenuItem maximize;
+		Gtk.MenuItem move;
+		Gtk.MenuItem resize;
+		Gtk.CheckMenuItem always_on_top;
+		Gtk.CheckMenuItem on_visible_workspace;
+		Gtk.MenuItem move_left;
+		Gtk.MenuItem move_right;
+		Gtk.MenuItem close;
 
-		private const string GALA_DBUS_NAME = "org.pantheon.gala";
-		private const string GALA_DBUS_OBJECT_PATH = "/org/pantheon/gala";
-
-		private Gtk.Menu? window_menu = null;
-		private Gtk.MenuItem minimize;
-		private Gtk.MenuItem maximize;
-		private Gtk.MenuItem move;
-		private Gtk.MenuItem resize;
-		private Gtk.CheckMenuItem always_on_top;
-		private Gtk.CheckMenuItem on_visible_workspace;
-		private Gtk.MenuItem move_left;
-		private Gtk.MenuItem move_right;
-		private Gtk.MenuItem close;
-
-		private GalaInterface? gala_proxy = null;
+		WMDBus? wm_proxy = null;
 
 		[DBus (visible = false)]
 		public void setup_dbus ()
 		{
 			var flags = BusNameOwnerFlags.ALLOW_REPLACEMENT | BusNameOwnerFlags.REPLACE;
-			Bus.own_name (BusType.SESSION, MENU_DBUS_NAME, flags, on_bus_acquired, () => {}, null);
+			Bus.own_name (BusType.SESSION, DAEMON_DBUS_NAME, flags, on_bus_acquired, () => {}, null);
 
-			Bus.watch_name (BusType.SESSION, GALA_DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
+			Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
 		}
 
 		void on_gala_get (GLib.Object? o, GLib.AsyncResult? res)
 		{
 			try {
-				gala_proxy = Bus.get_proxy.end (res);
+				wm_proxy = Bus.get_proxy.end (res);
 			} catch (Error e) {
 				warning ("Failed to get Gala proxy: %s", e.message);
 			}
@@ -64,42 +65,37 @@ namespace GalaDaemon {
 
 		void lost_gala ()
 		{
-			gala_proxy = null;
+			wm_proxy = null;
 		}
 
 		void gala_appeared ()
 		{
-			if (gala_proxy == null) {
-				Bus.get_proxy.begin<GalaInterface> (BusType.SESSION,
-													GALA_DBUS_NAME,
-													GALA_DBUS_OBJECT_PATH,
-													0, null, on_gala_get);
+			if (wm_proxy == null) {
+				Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
 			}
 		}
 
-		private void on_bus_acquired (DBusConnection conn)
+		void on_bus_acquired (DBusConnection conn)
 		{
 			try {
-				conn.register_object (MENU_DBUS_OBJECT_PATH, this);
+				conn.register_object (DAEMON_DBUS_OBJECT_PATH, this);
 			} catch (Error e) {
 				stderr.printf ("Error registering MenuDaemon: %s\n", e.message);
 			}
 		}
 
-		[DBus (visible = false)]
-		private void perform_action (Gala.ActionType type)
+		void perform_action (Gala.ActionType type)
 		{
-			if (gala_proxy != null) {
+			if (wm_proxy != null) {
 				try {
-					gala_proxy.perform_action (type);
+					wm_proxy.perform_action (type);
 				} catch (Error e) {
 					warning ("Failed to perform Gala action over DBus: %s", e.message);
 				}
 			}
 		}
 
-		[DBus (visible = false)]
-		private void init_window_menu ()
+		void init_window_menu ()
 		{
 			window_menu = new Gtk.Menu ();
 

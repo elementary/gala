@@ -19,16 +19,19 @@ using Meta;
 
 namespace Gala
 {
+	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+	const string DAEMON_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
+
+	[DBus (name = "org.pantheon.gala.daemon")]
+	public interface Daemon: GLib.Object
+	{
+		public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+	}
+
 	[DBus (name = "org.freedesktop.login1.Manager")]
 	public interface LoginDRemote : GLib.Object
 	{
 		public signal void prepare_for_sleep (bool suspending);
-	}
-
-	[DBus (name = "org.pantheon.gala.daemon")]
-	public interface MenuDaemon: GLib.Object
-	{
-		public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
 	}
 
 	public class WindowManagerGala : Meta.Plugin, WindowManager
@@ -36,9 +39,6 @@ namespace Gala
 		const uint GL_VENDOR = 0x1F00;
 		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
 		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
-
-		const string MENU_DBUS_NAME = "org.pantheon.gala.daemon";
-		const string MENU_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
 
 		delegate unowned string? GlQueryFunc (uint id);
 
@@ -92,7 +92,7 @@ namespace Gala
 		Window? moving; //place for the window that is being moved over
 
 		LoginDRemote? logind_proxy = null;
-		MenuDaemon? menu_proxy = null;
+		Daemon? daemon_proxy = null;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -132,27 +132,27 @@ namespace Gala
 				}
 			}
 
-			Bus.watch_name (BusType.SESSION, MENU_DBUS_NAME, BusNameWatcherFlags.NONE, menu_daemon_appeared, lost_menu_daemon);
+			Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 		}
 
 		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
 		{
 			try {
-				menu_proxy = Bus.get_proxy.end (res);
+				daemon_proxy = Bus.get_proxy.end (res);
 			} catch (Error e) {
 				warning ("Failed to get Menu proxy: %s", e.message);
 			}
 		}
 
-		void lost_menu_daemon ()
+		void lost_daemon ()
 		{
-			menu_proxy = null;
+			daemon_proxy = null;
 		}
 
-		void menu_daemon_appeared ()
+		void daemon_appeared ()
 		{
-			if (menu_proxy == null) {
-				Bus.get_proxy.begin<MenuDaemon> (BusType.SESSION, MENU_DBUS_NAME, MENU_DBUS_OBJECT_PATH, 0, null, on_menu_get);
+			if (daemon_proxy == null) {
+				Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
 			}
 		}
 
@@ -848,7 +848,7 @@ namespace Gala
 		{
 			switch (menu) {
 				case WindowMenuType.WM:
-					if (menu_proxy == null) {
+					if (daemon_proxy == null) {
 						return;
 					}
 
@@ -878,7 +878,7 @@ namespace Gala
 						flags |= WindowFlags.CAN_CLOSE;
 
 					try {
-						menu_proxy.show_window_menu.begin (flags, x, y);
+						daemon_proxy.show_window_menu.begin (flags, x, y);
 					} catch (Error e) {
 						message ("Error invoking MenuManager: %s", e.message);
 					}

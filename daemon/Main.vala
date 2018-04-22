@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace GalaDaemon
+namespace Gala
 {
 	[DBus (name = "org.gnome.SessionManager")]
 	public interface SessionManager : Object
@@ -97,7 +97,7 @@ namespace GalaDaemon
 			return session_client;
 		}
 
-		private async bool register ()
+		async bool register ()
 		{
 			sclient = yield register_with_session ("org.pantheon.gala.daemon");
 
@@ -108,7 +108,7 @@ namespace GalaDaemon
 			return true;
 		}
 
-		private void end_session (bool quit)
+		void end_session (bool quit)
 		{
 			if (quit) {
 				Gtk.main_quit ();
