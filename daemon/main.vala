@@ -99,7 +99,7 @@ namespace GalaDaemon
 
 		private async bool register ()
 		{
-			sclient = yield register_with_session ("io.elementary.gala.daemon");
+			sclient = yield register_with_session ("org.pantheon.gala.daemon");
 
 			sclient.QueryEndSession.connect (() => end_session (false));
 			sclient.EndSession.connect (() => end_session (false));

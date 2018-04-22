@@ -25,7 +25,7 @@ namespace Gala
 		public signal void prepare_for_sleep (bool suspending);
 	}
 
-	[DBus (name = "io.elementary.gala.daemon")]
+	[DBus (name = "org.pantheon.gala.daemon")]
 	public interface MenuDaemon: GLib.Object
 	{
 		public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
@@ -37,8 +37,8 @@ namespace Gala
 		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
 		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
 
-		const string MENU_DBUS_NAME = "io.elementary.gala.daemon";
-		const string MENU_DBUS_OBJECT_PATH = "/io/elementary/gala/daemon";
+		const string MENU_DBUS_NAME = "org.pantheon.gala.daemon";
+		const string MENU_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
 
 		delegate unowned string? GlQueryFunc (uint id);
 

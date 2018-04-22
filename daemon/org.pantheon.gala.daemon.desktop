@@ -2,7 +2,7 @@
 Type=Application
 Name=Gala Background Services
 Comment=Gala Background Services
-Exec=io.elementary.gala.daemon
+Exec=org.pantheon.gala.daemon
 Terminal=false
 Categories=GNOME;GTK;System;Core;
 NoDisplay=true

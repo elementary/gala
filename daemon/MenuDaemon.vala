@@ -22,11 +22,11 @@ namespace GalaDaemon {
 		public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
 	}
 
-	[DBus (name = "io.elementary.gala.daemon")]
+	[DBus (name = "org.pantheon.gala.daemon")]
 	public class MenuDaemon : Object
 	{
-		private const string MENU_DBUS_NAME = "io.elementary.gala.daemon";
-		private const string MENU_DBUS_OBJECT_PATH = "/io/elementary/gala/daemon";
+		private const string MENU_DBUS_NAME = "org.pantheon.gala.daemon";
+		private const string MENU_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
 
 		private const string GALA_DBUS_NAME = "org.pantheon.gala";
 		private const string GALA_DBUS_OBJECT_PATH = "/org/pantheon/gala";
