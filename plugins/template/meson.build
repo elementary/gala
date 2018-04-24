@@ -9,4 +9,5 @@ gala_template_lib = shared_library(
 	include_directories: config_inc_dir,
 	install: false,
 	install_dir: plugins_dir,
+	install_rpath: mutter_typelib_dir,
 )

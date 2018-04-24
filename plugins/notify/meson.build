@@ -17,6 +17,7 @@ gala_notify_lib = shared_library(
 	include_directories: config_inc_dir,
 	install: true,
 	install_dir: plugins_dir,
+	install_rpath: mutter_typelib_dir,
 )
 
 install_data(

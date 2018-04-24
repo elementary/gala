@@ -168,7 +168,7 @@ msgstr "고정된 작업 공간 대신 동적 작업 공간 실행하기"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid ""
-"Use a dynamically increasing or decreseasing number, as needed, of "
+"Use a dynamically increasing or decreasing number, as needed, of "
 "workspaces instead of a static, fixed number"
 msgstr "고정된, 작업 공간 수 대신, 필요에 따라, 유동적으로 개수를 늘리거나 줄여 사용하기"
 
