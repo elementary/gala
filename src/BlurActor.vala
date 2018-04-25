@@ -368,6 +368,10 @@ namespace Gala
 
         public override void paint ()
         {
+            if (textures.size == 0) {
+                return;
+            }
+
             ui_group.get_stage ().ensure_viewport ();
 
             float width, height, x, y;
