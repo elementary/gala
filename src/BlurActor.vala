@@ -72,11 +72,11 @@ namespace Gala
         uniform float saturation;
 		uniform float brightness;
 
-		vec3 saturate (vec3 rgb, float adjustment) {
-			const vec3 W = vec3(0.2125, 0.7154, 0.0721);
-			vec3 intensity = vec3(dot(rgb, W));
-			return mix (intensity, rgb, adjustment);
-		}
+        vec3 saturate (vec3 rgb, float adjustment) {
+            const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+            vec3 intensity = vec3(dot(rgb, W));
+            return mix (intensity, rgb, adjustment);
+        }
 
         void main () {
             vec2 uv = cogl_tex_coord0_in.xy;
@@ -270,6 +270,7 @@ namespace Gala
                 return;
             }
 
+            actors.clear ();
             textures.clear ();
         }
 

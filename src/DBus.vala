@@ -341,8 +341,7 @@ namespace Gala
 		 */
 		public void disable_blur_behind (uint32 xid) throws Error
 		{
-			var blur_actors = BlurActor.get_actors ();
-			var actor = blur_actors[xid];
+			var actor = BlurActor.get_actors ()[xid];
 			if (actor != null) {
 				actor.destroy ();
 			} else {
