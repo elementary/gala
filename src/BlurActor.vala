@@ -69,6 +69,14 @@ namespace Gala
         uniform float half_width;
         uniform float half_height;
         uniform float offset;
+        uniform float saturation;
+		uniform float brightness;
+
+		vec3 saturate (vec3 rgb, float adjustment) {
+			const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+			vec3 intensity = vec3(dot(rgb, W));
+			return mix (intensity, rgb, adjustment);
+		}
 
         void main () {
             vec2 uv = cogl_tex_coord0_in.xy;
@@ -82,8 +90,10 @@ namespace Gala
             sum += texture2D (tex, uv + vec2(halfpixel.x, -halfpixel.y) * offset) * 2.0;
             sum += texture2D (tex, uv + vec2(0.0, -halfpixel.y * 2.0) * offset);
             sum += texture2D (tex, uv + vec2(-halfpixel.x, -halfpixel.y) * offset) * 2.0;
+            sum /= 12.0;
 
-            cogl_color_out = (sum * cogl_color_in) / 12.0;
+            vec3 mixed = saturate (sum.rgb, saturation) + vec3 (brightness, brightness, brightness);
+            cogl_color_out = vec4 (mixed, sum.a) * cogl_color_in;
         }
     """;
 
@@ -124,6 +134,9 @@ namespace Gala
         static int down_offset_location;
         static int up_offset_location;
 
+        static int saturation_location;
+        static int brightness_location;
+
         static int copysample_tex_x_location;
         static int copysample_tex_y_location;
         static int copysample_tex_width_location;
@@ -134,6 +147,7 @@ namespace Gala
 
         static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
+        static Gee.HashMap<uint32, BlurActor> actors;
 
         static HandleNotifier handle_notifier;
         static uint handle; 
@@ -224,6 +238,10 @@ namespace Gala
             up_height_location = up_program.get_uniform_location ("half_height");
             up_offset_location = up_program.get_uniform_location ("offset");
 
+            saturation_location = up_program.get_uniform_location ("saturation");     
+            brightness_location = up_program.get_uniform_location ("brightness");
+            up_offset_location = up_program.get_uniform_location ("offset");
+
             copysample_tex_x_location = copysample_program.get_uniform_location ("tex_x1");
             copysample_tex_y_location = copysample_program.get_uniform_location ("tex_y1");
             copysample_tex_width_location = copysample_program.get_uniform_location ("tex_x2");
@@ -231,6 +249,9 @@ namespace Gala
 
             CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
             CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
+
+            CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
+            CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
 
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
@@ -250,6 +271,15 @@ namespace Gala
             }
 
             textures.clear ();
+        }
+
+        public static unowned Gee.HashMap<uint32, BlurActor> get_actors ()
+        {
+            if (actors == null) {
+                actors = new Gee.HashMap<uint32, BlurActor> ();
+            }
+
+            return actors;
         }
 
         public static bool is_initted ()
@@ -380,11 +410,17 @@ namespace Gala
             up_material.set_layer (0, texture);
             up_material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
 
+            CoglFixes.set_uniform_1f (up_program, saturation_location, 1.4f);
+            CoglFixes.set_uniform_1f (up_program, brightness_location, 1.3f);
+
             unowned Cogl.Framebuffer draw_fbo = Cogl.get_draw_framebuffer ();
             CoglFixes.framebuffer_push_rectangle_clip (draw_fbo, 0, 0, width, height);
             CoglFixes.framebuffer_translate (draw_fbo, (float)(-actor_rect.x / sx), (float)(-actor_rect.y / sy), 0);
             CoglFixes.framebuffer_draw_textured_rectangle (draw_fbo, up_material, 0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
             CoglFixes.framebuffer_pop_clip (draw_fbo);
+
+            CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
+            CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
 
             up_material.set_color4ub (255, 255, 255, 255);
         }

@@ -123,6 +123,7 @@ namespace Gala
 		Actor close_button;
 		Actor active_shape;
 		Actor window_icon;
+		Actor? blur_actor;
 
 		public WindowClone (Meta.Window window, bool overview_mode = false)
 		{
@@ -213,6 +214,13 @@ namespace Gala
 				actor.hide ();
 
 			clone = new Clone (actor.get_texture ());
+			
+			uint32 xid = (uint32)window.get_xwindow ();
+			if (BlurActor.get_actors ().contains (xid)) {
+				blur_actor = new BlurActor (null);
+				add_child (blur_actor);
+			}
+			
 			add_child (clone);
 
 			set_child_below_sibling (active_shape, clone);
@@ -352,6 +360,13 @@ namespace Gala
 			alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
 			                  (input_rect.y - outer_rect.y) * scale_factor);
 			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
+
+			if (blur_actor != null) {
+				ActorBox blur_alloc = {};
+				blur_alloc.set_size (outer_rect.width * scale_factor * (float)clone.scale_x,
+									outer_rect.height * scale_factor * (float)clone.scale_y);	
+				blur_actor.allocate (blur_alloc, flags);
+			}
 
 			clone.allocate (alloc, flags);
 		}

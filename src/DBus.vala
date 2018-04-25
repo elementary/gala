@@ -23,8 +23,6 @@ namespace Gala
 		static DBus? instance;
 		static WindowManager wm;
 
-		Gee.HashMap<uint32, BlurActor> blur_actors;
-
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
 		{
@@ -60,8 +58,6 @@ namespace Gala
 
 		private DBus ()
 		{
-			blur_actors = new Gee.HashMap<uint32, BlurActor> ();
-
 			if (wm.background_group != null)
 				(wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
 			else
@@ -281,6 +277,8 @@ namespace Gala
 				BlurActor.init (4, 3.8f, 150, wm.ui_group);
 			}
 
+			var blur_actors = BlurActor.get_actors ();
+
 			var blur_actor = blur_actors[xid];
 			if (blur_actor != null) {
 				blur_actor.blur_clip_rect = { x, y, width, height };
@@ -311,6 +309,8 @@ namespace Gala
 		{
 			bool found = false;
 			uint32 xid = 0;
+
+			var blur_actors = BlurActor.get_actors ();
 			foreach (var entry in blur_actors.entries) {
 				if (entry.value == actor) {
 					xid = entry.key;
@@ -341,6 +341,7 @@ namespace Gala
 		 */
 		public void disable_blur_behind (uint32 xid) throws Error
 		{
+			var blur_actors = BlurActor.get_actors ();
 			var actor = blur_actors[xid];
 			if (actor != null) {
 				actor.destroy ();
