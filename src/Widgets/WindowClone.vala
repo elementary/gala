@@ -214,14 +214,17 @@ namespace Gala
 				actor.hide ();
 
 			clone = new Clone (actor.get_texture ());
-			
-			uint32 xid = (uint32)window.get_xwindow ();
-			if (BlurActor.get_actors ().contains (xid)) {
-				blur_actor = new BlurActor (null);
-				add_child (blur_actor);
-			}
-			
 			add_child (clone);
+
+			unowned Meta.WindowActor window_actor = (Meta.WindowActor)window.get_compositor_private ();
+			if (window_actor != null) {
+				window_actor.actor_added.connect (actor_added_compositor);
+				window_actor.actor_removed.connect (actor_removed_compositor);
+				unowned Clutter.Actor? existing = window_actor.find_child_by_name ("blur-actor");
+				if (existing != null) {
+					actor_added_compositor (existing);
+				}
+			}
 
 			set_child_below_sibling (active_shape, clone);
 			set_child_above_sibling (close_button, clone);
@@ -504,6 +507,26 @@ namespace Gala
 					close_window ();
 					break;
 			}
+		}
+
+		void actor_added_compositor (Clutter.Actor added)
+		{
+			if (blur_actor != null || added.get_name () != "blur-actor") {
+				return;
+			}
+
+			blur_actor = new BlurActor (null);
+			insert_child_at_index (blur_actor, 0);
+		}
+
+		void actor_removed_compositor (Clutter.Actor removed)
+		{
+			if (blur_actor == null || removed.get_name () != "blur-actor") {
+				return;
+			}
+
+			blur_actor.destroy ();
+			blur_actor = null;
 		}
 
 		/**

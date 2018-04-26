@@ -147,7 +147,6 @@ namespace Gala
 
         static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
-        static Gee.HashMap<uint32, BlurActor> actors;
 
         static HandleNotifier handle_notifier;
         static uint handle; 
@@ -270,17 +269,7 @@ namespace Gala
                 return;
             }
 
-            actors.clear ();
             textures.clear ();
-        }
-
-        public static unowned Gee.HashMap<uint32, BlurActor> get_actors ()
-        {
-            if (actors == null) {
-                actors = new Gee.HashMap<uint32, BlurActor> ();
-            }
-
-            return actors;
         }
 
         public static bool is_initted ()
@@ -368,7 +357,7 @@ namespace Gala
 
         public override void paint ()
         {
-            if (textures.size == 0) {
+            if (!is_visible () || textures.size == 0) {
                 return;
             }
 
