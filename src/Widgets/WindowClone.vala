@@ -123,7 +123,7 @@ namespace Gala
 		Actor close_button;
 		Actor active_shape;
 		Actor window_icon;
-		Actor? blur_actor;
+		BlurActor? blur_actor;
 
 		public WindowClone (Meta.Window window, bool overview_mode = false)
 		{
@@ -365,9 +365,18 @@ namespace Gala
 			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
 			if (blur_actor != null) {
+				var blur_rect = blur_actor.blur_clip_rect;
+
+				float blur_width = blur_rect.width > 0 ? blur_rect.width : outer_rect.width;
+				float blur_height = blur_rect.height > 0 ? blur_rect.height : outer_rect.height;
+
+				blur_width = blur_width.clamp (0, blur_width - blur_rect.x);
+				blur_height = blur_height.clamp (0, blur_height - blur_rect.y);
+
 				ActorBox blur_alloc = {};
-				blur_alloc.set_size (outer_rect.width * scale_factor * (float)clone.scale_x,
-									outer_rect.height * scale_factor * (float)clone.scale_y);	
+				blur_alloc.set_origin (blur_rect.x * scale_factor, blur_rect.y * scale_factor);
+				blur_alloc.set_size (blur_width * scale_factor * (float)clone.scale_x,
+									blur_height * scale_factor * (float)clone.scale_y);	
 				blur_actor.allocate (blur_alloc, flags);
 			}
 
@@ -515,7 +524,18 @@ namespace Gala
 				return;
 			}
 
+			var source = (BlurActor)added;
+
 			blur_actor = new BlurActor (null);
+			blur_actor.opacity = source.opacity;
+			blur_actor.blur_clip_rect = source.blur_clip_rect;
+
+			source.notify["opacity"].connect (() => blur_actor.opacity = source.opacity);
+			source.clip_updated.connect (() => { 
+				blur_actor.blur_clip_rect = source.blur_clip_rect;
+				queue_relayout ();
+			});
+
 			insert_child_at_index (blur_actor, 0);
 		}
 

@@ -284,6 +284,7 @@ namespace Gala
 			var blur_actor = blur_actors[xid];
 			if (blur_actor != null) {
 				blur_actor.blur_clip_rect = { x, y, width, height };
+				blur_actor.clip_updated ();
 				blur_actor.opacity = opacity;
 				blur_actor.queue_relayout ();
 				return true;
