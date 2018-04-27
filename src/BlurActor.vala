@@ -144,6 +144,18 @@ namespace Gala
 
         static GlCopyTexSubFunc? copy_tex_sub_image;
         static GlBindTextureFunc? bind_texture;
+        static GlGenQueries? gen_queries;
+        static GlQueryCounter? query_counter;
+        static GlGetQueryObjectui64v? get_query_object;
+
+        static uint* queries;
+        
+        static float min_cpu;
+        static float min_gpu;
+
+        static float max_cpu;
+        static float max_gpu;
+        static bool first_paint = true;
 
         static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
@@ -165,6 +177,10 @@ namespace Gala
                                         int x, int y,
                                         int width, int height);
         delegate void GlBindTextureFunc (uint target, uint texture);
+
+        delegate void GlGenQueries (uint n, uint* ids);
+        delegate void GlQueryCounter (uint id, uint target);
+        delegate void GlGetQueryObjectui64v (uint id, uint pname, uint* params);
 
         public signal void clip_updated ();
 
@@ -256,6 +272,18 @@ namespace Gala
 
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
+            gen_queries = (GlGenQueries)Cogl.get_proc_address ("glGenQueries");
+            query_counter = (GlQueryCounter)Cogl.get_proc_address ("glQueryCounter");
+            get_query_object = (GlGetQueryObjectui64v)Cogl.get_proc_address ("glGetQueryObjectui64v");
+
+            queries = new uint[2];
+            gen_queries (2, queries);
+
+            min_cpu = float.MAX;
+            min_gpu = float.MAX;
+
+            max_cpu = float.MIN;
+            max_gpu = float.MIN;
 
             textures = new Gee.ArrayList<FramebufferContainer> ();
 
@@ -354,6 +382,11 @@ namespace Gala
 
         public override void paint ()
         {
+            query_counter (queries[0], 0x8E28);
+            
+            var t = new Timer ();
+            t.start ();
+
             if (!is_visible () || textures.size == 0) {
                 return;
             }
@@ -414,6 +447,43 @@ namespace Gala
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
 
             up_material.set_color4ub (255, 255, 255, 255);
+
+            float cpu_time = (float)(t.elapsed () * 1000);
+            query_counter (queries[1], 0x8E28);
+
+            uint start_time = 0, stop_time = 0;
+
+            get_query_object (queries[0], 0x8866, &start_time);
+            get_query_object (queries[1], 0x8866, &stop_time);
+
+            float gpu_time = (stop_time - start_time) / 1000000.0f;
+
+            if (!first_paint) {
+                if (cpu_time > max_cpu) {
+                    max_cpu = cpu_time;
+                }
+
+                if (cpu_time < min_cpu) {
+                    min_cpu = cpu_time;
+                }
+
+                if (gpu_time > max_gpu) {
+                    max_gpu = gpu_time;
+                }
+
+                if (gpu_time < min_gpu) {
+                    min_gpu = gpu_time;
+                }
+
+                print ("\nPaint cycle:\n");
+                print ("CPU Min. time: %f\n", min_cpu);
+                print ("CPU Max. time: %f\n", max_cpu);
+                print ("\n");
+                print ("GPU Min. time: %f\n", min_gpu);
+                print ("GPU Max. time: %f\n", max_gpu);
+            } else {
+                first_paint = false;
+            }
         }
 
         void update_window_type ()
