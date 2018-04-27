@@ -150,12 +150,8 @@ namespace Gala
 
         static uint* queries;
         
-        static float min_cpu;
-        static float min_gpu;
-
-        static float max_cpu;
-        static float max_gpu;
-        static bool first_paint = true;
+        static float[] cpu_vals;
+        static float[] gpu_vals;
 
         static Cogl.Texture copysample_texture;
         static Gee.ArrayList<FramebufferContainer> textures;
@@ -279,12 +275,6 @@ namespace Gala
             queries = new uint[2];
             gen_queries (2, queries);
 
-            min_cpu = float.MAX;
-            min_gpu = float.MAX;
-
-            max_cpu = float.MIN;
-            max_gpu = float.MIN;
-
             textures = new Gee.ArrayList<FramebufferContainer> ();
 
             var stage = ui_group.get_stage ();
@@ -382,10 +372,6 @@ namespace Gala
 
         public override void paint ()
         {
-            query_counter (queries[0], 0x8E28);
-            
-            var t = new Timer ();
-            t.start ();
 
             if (!is_visible () || textures.size == 0) {
                 return;
@@ -421,6 +407,10 @@ namespace Gala
 
             copy_target_texture ();
 
+            var t = new Timer ();
+            t.start ();
+
+            query_counter (queries[0], 0x8E28);
             downsample ();
             Cogl.flush ();
             upsample ();
@@ -445,11 +435,11 @@ namespace Gala
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
+            query_counter (queries[1], 0x8E28);
 
             up_material.set_color4ub (255, 255, 255, 255);
 
             float cpu_time = (float)(t.elapsed () * 1000);
-            query_counter (queries[1], 0x8E28);
 
             uint start_time = 0, stop_time = 0;
 
@@ -458,32 +448,43 @@ namespace Gala
 
             float gpu_time = (stop_time - start_time) / 1000000.0f;
 
-            if (!first_paint) {
-                if (cpu_time > max_cpu) {
-                    max_cpu = cpu_time;
-                }
-
-                if (cpu_time < min_cpu) {
-                    min_cpu = cpu_time;
-                }
-
-                if (gpu_time > max_gpu) {
-                    max_gpu = gpu_time;
-                }
-
-                if (gpu_time < min_gpu) {
-                    min_gpu = gpu_time;
-                }
-
-                print ("\nPaint cycle:\n");
-                print ("CPU Min. time: %f\n", min_cpu);
-                print ("CPU Max. time: %f\n", max_cpu);
-                print ("\n");
-                print ("GPU Min. time: %f\n", min_gpu);
-                print ("GPU Max. time: %f\n", max_gpu);
+            if (cpu_vals.length < 60) {
+                cpu_vals += cpu_time;
             } else {
-                first_paint = false;
+                cpu_vals = {};
             }
+
+            if (gpu_vals.length < 60) {
+                gpu_vals += gpu_time;
+            } else {
+                gpu_vals = {};
+            }
+
+            float cpu_avg = 0, cpu_min = float.MAX, cpu_max = float.MIN, gpu_avg = 0, gpu_min = float.MAX, gpu_max = float.MIN;
+
+            foreach (float val in cpu_vals) {
+                cpu_avg += val;
+                cpu_min = float.min (cpu_min, val);
+                cpu_max = float.max (cpu_max, val);
+            }
+
+            foreach (float val in gpu_vals) {
+                gpu_avg += val;
+                gpu_min = float.min (gpu_min, val);
+                gpu_max = float.max (gpu_max, val);
+            }
+
+            cpu_avg /= cpu_vals.length;
+            gpu_avg /= gpu_vals.length;
+
+            print ("\nPaint cycle:\n");
+            print ("CPU Avg. time: %f\n", cpu_avg);
+            print ("CPU Min. time: %f\n", cpu_min);
+            print ("CPU Max. time: %f\n", cpu_max);
+            print ("\n");
+            print ("GPU Avg. time: %f\n", gpu_avg);
+            print ("GPU Min. time: %f\n", gpu_min);
+            print ("GPU Max. time: %f\n", gpu_max);
         }
 
         void update_window_type ()
@@ -504,7 +505,6 @@ namespace Gala
 
             Cogl.begin_gl ();
             bind_texture (GL_TEXTURE_2D, current_handle);
-
             copy_tex_sub_image (GL_TEXTURE_2D, 0, xoff, yoff,
                 xoff, yoff, (int)tex_rect.width, (int)tex_rect.height);
 
