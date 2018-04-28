@@ -821,8 +821,11 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			Idle.add (() => {
-				var new_rect = actor.get_meta_window ().get_frame_rect ();
+			var window = actor.get_meta_window ();
+			ulong signal_id = 0U;
+			signal_id = window.size_changed.connect (() => {
+				window.disconnect (signal_id);
+				var new_rect = window.get_frame_rect ();
 				
 				switch (which_change) {
 					case Meta.SizeChange.MAXIMIZE:
@@ -838,7 +841,6 @@ namespace Gala
 				}
 
 				size_change_completed (actor);
-				return false;
 			});
 		}
 
