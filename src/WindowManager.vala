@@ -821,22 +821,25 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			var new_rect = actor.get_meta_window ().get_frame_rect ();
-			
-			switch (which_change) {
-				case Meta.SizeChange.MAXIMIZE:
-					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-					break;
-				case Meta.SizeChange.UNMAXIMIZE:
-					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-					break;
-				case Meta.SizeChange.FULLSCREEN:
-				case Meta.SizeChange.UNFULLSCREEN:
-					handle_fullscreen_window (actor.get_meta_window (), which_change);
-					break;
-			}
+			Idle.add (() => {
+				var new_rect = actor.get_meta_window ().get_frame_rect ();
+				
+				switch (which_change) {
+					case Meta.SizeChange.MAXIMIZE:
+						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+						break;
+					case Meta.SizeChange.UNMAXIMIZE:
+						unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+						break;
+					case Meta.SizeChange.FULLSCREEN:
+					case Meta.SizeChange.UNFULLSCREEN:
+						handle_fullscreen_window (actor.get_meta_window (), which_change);
+						break;
+				}
 
-			size_change_completed (actor);
+				size_change_completed (actor);
+				return false;
+			});
 		}
 
 		public override void minimize (WindowActor actor)
