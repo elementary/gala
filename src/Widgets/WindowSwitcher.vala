@@ -440,11 +440,11 @@ namespace Gala
 			};
 
 			this.animate_dock_width_timeout = GLib.Timeout.add(151, ()=>{
-				animate_dock_width (); return false;
+				animate_dock_width (); show_background (); return false;
 			}, 1);
-			show_background ();
 
 			dim_windows ();
+
 			grab_key_focus ();
 
 			if ((get_current_modifiers () & modifier_mask) == 0)
