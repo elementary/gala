@@ -821,7 +821,7 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			var window = actor.get_meta_window ();
+			unowned Meta.Window window = actor.get_meta_window ();
 			ulong signal_id = 0U;
 			signal_id = window.size_changed.connect (() => {
 				window.disconnect (signal_id);
