@@ -158,6 +158,8 @@ namespace Gala
         static float stage_width;
         static float stage_height;
 
+        static ulong allocation_watch_id = 0U;
+
         static unowned Clutter.Actor ui_group;
 
         delegate void GlCopyTexSubFunc (uint target, int level,
@@ -187,81 +189,97 @@ namespace Gala
 
             handle_notifier = new HandleNotifier ();
 
-            var fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
-            fragment.source (DOWNSAMPLE_FRAG_SHADER);
-    
-            down_program = new Cogl.Program ();
-            down_program.attach_shader (fragment);
-            down_program.link ();
-    
-            fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
-            fragment.source (UPSAMPLE_FRAG_SHADER);
-    
-            up_program = new Cogl.Program ();
-            up_program.attach_shader (fragment);
-            up_program.link ();
+            Cogl.Shader fragment;
+            int tex_location;
+            if (down_program == null) {
+                fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
+                fragment.source (DOWNSAMPLE_FRAG_SHADER);
+        
+                down_program = new Cogl.Program ();
+                down_program.attach_shader (fragment);
+                down_program.link ();
 
-            fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
-            fragment.source (COPYSAMPLE_FRAG_SHADER);
+                tex_location = down_program.get_uniform_location ("tex");
+                down_width_location = down_program.get_uniform_location ("half_width");     
+                down_height_location = down_program.get_uniform_location ("half_height");
+                down_offset_location = down_program.get_uniform_location ("offset");   
 
-            copysample_program = new Cogl.Program ();
-            copysample_program.attach_shader (fragment);
-            copysample_program.link ();
-
-            down_material = new Cogl.Material ();
-            down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
-            CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
-            CoglFixes.set_user_program (down_material, down_program);
+                CoglFixes.set_uniform_1i (down_program, tex_location, 0);
+            }
     
-            up_material = new Cogl.Material ();
-            up_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
-            CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
-            CoglFixes.set_user_program (up_material, up_program);
+            if (up_program == null) {
+                fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
+                fragment.source (UPSAMPLE_FRAG_SHADER);
+        
+                up_program = new Cogl.Program ();
+                up_program.attach_shader (fragment);
+                up_program.link ();
 
-            copysample_material = new Cogl.Material ();
-            copysample_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
-            CoglFixes.set_user_program (copysample_material, copysample_program);
+                tex_location = up_program.get_uniform_location ("tex");
+                up_width_location = up_program.get_uniform_location ("half_width");     
+                up_height_location = up_program.get_uniform_location ("half_height");
+                up_offset_location = up_program.get_uniform_location ("offset");
+                saturation_location = up_program.get_uniform_location ("saturation");     
+                brightness_location = up_program.get_uniform_location ("brightness");
+                up_offset_location = up_program.get_uniform_location ("offset");
 
-            int tex_location = down_program.get_uniform_location ("tex");
-            CoglFixes.set_uniform_1i (down_program, tex_location, 0);
-    
-            tex_location = up_program.get_uniform_location ("tex");
-            CoglFixes.set_uniform_1i (up_program, tex_location, 0);
-    
-            tex_location = copysample_program.get_uniform_location ("tex");
-            CoglFixes.set_uniform_1i (copysample_program, tex_location, 0);
-    
-            down_width_location = down_program.get_uniform_location ("half_width");     
-            down_height_location = down_program.get_uniform_location ("half_height");
-            down_offset_location = down_program.get_uniform_location ("offset");
-    
-            up_width_location = up_program.get_uniform_location ("half_width");     
-            up_height_location = up_program.get_uniform_location ("half_height");
-            up_offset_location = up_program.get_uniform_location ("offset");
+                CoglFixes.set_uniform_1i (up_program, tex_location, 0);
+                CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
+                CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
+            }
 
-            saturation_location = up_program.get_uniform_location ("saturation");     
-            brightness_location = up_program.get_uniform_location ("brightness");
-            up_offset_location = up_program.get_uniform_location ("offset");
+            if (copysample_program == null) {
+                fragment = new Cogl.Shader (Cogl.ShaderType.FRAGMENT);
+                fragment.source (COPYSAMPLE_FRAG_SHADER);
 
-            copysample_tex_x_location = copysample_program.get_uniform_location ("tex_x1");
-            copysample_tex_y_location = copysample_program.get_uniform_location ("tex_y1");
-            copysample_tex_width_location = copysample_program.get_uniform_location ("tex_x2");
-            copysample_tex_height_location = copysample_program.get_uniform_location ("tex_y2");
+                copysample_program = new Cogl.Program ();
+                copysample_program.attach_shader (fragment);
+                copysample_program.link ();
+
+                tex_location = copysample_program.get_uniform_location ("tex");
+                copysample_tex_x_location = copysample_program.get_uniform_location ("tex_x1");
+                copysample_tex_y_location = copysample_program.get_uniform_location ("tex_y1");
+                copysample_tex_width_location = copysample_program.get_uniform_location ("tex_x2");
+                copysample_tex_height_location = copysample_program.get_uniform_location ("tex_y2");
+
+                CoglFixes.set_uniform_1i (copysample_program, tex_location, 0);    
+            }
+
+            if (down_material == null) {
+                down_material = new Cogl.Material ();
+                down_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+                CoglFixes.material_set_layer_wrap_mode (down_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
+                CoglFixes.set_user_program (down_material, down_program);
+            }
+
+            if (up_material == null) {
+                up_material = new Cogl.Material ();
+                up_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+                CoglFixes.material_set_layer_wrap_mode (up_material, 0, Cogl.MaterialWrapMode.CLAMP_TO_EDGE);
+                CoglFixes.set_user_program (up_material, up_program);
+            }
+
+            if (copysample_material == null) {
+                copysample_material = new Cogl.Material ();
+                copysample_material.set_layer_filters (0, Cogl.MaterialFilter.LINEAR, Cogl.MaterialFilter.LINEAR);
+                CoglFixes.set_user_program (copysample_material, copysample_program);
+            }
 
             CoglFixes.set_uniform_1f (down_program, down_offset_location, offset);
             CoglFixes.set_uniform_1f (up_program, up_offset_location, offset);
 
-            CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
-            CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
-
             copy_tex_sub_image = (GlCopyTexSubFunc)Cogl.get_proc_address ("glCopyTexSubImage2D");
             bind_texture = (GlBindTextureFunc)Cogl.get_proc_address ("glBindTexture");
 
-            textures = new Gee.ArrayList<FramebufferContainer> ();
+            if (textures == null) {
+                textures = new Gee.ArrayList<FramebufferContainer> ();
+            }
 
-            var stage = ui_group.get_stage ();
-            stage.notify["allocation"].connect (() => init_fbo_textures ());
-
+            if (allocation_watch_id == 0U) {
+                var stage = ui_group.get_stage ();
+                allocation_watch_id = stage.notify["allocation"].connect (() => init_fbo_textures ());        
+            }
+            
             init_fbo_textures ();
         }
 
@@ -269,6 +287,11 @@ namespace Gala
         {
             if (!is_initted ()) {
                 return;
+            }
+
+            if (allocation_watch_id != 0U) {
+                ui_group.get_stage ().disconnect (allocation_watch_id);
+                allocation_watch_id = 0U;
             }
 
             textures.clear ();
