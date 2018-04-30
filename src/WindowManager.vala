@@ -684,7 +684,7 @@ namespace Gala
 						window_overview.open (hints);
 					}
 					break;
-				case ActionType.SWITCH_NEW_WORKSPACE:
+				case ActionType.SWITCH_TO_WORKSPACE_LAST:
 					var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
 					workspace.activate (display.get_current_time ());
 					break;
