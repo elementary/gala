@@ -20,7 +20,7 @@ using Meta;
 namespace Gala
 {
 	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-	const string DAEMON_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
+	const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
 	[DBus (name = "org.pantheon.gala.daemon")]
 	public interface Daemon: GLib.Object

@@ -21,7 +21,7 @@ namespace Gala
 	const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
 	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-	const string DAEMON_DBUS_OBJECT_PATH = "/org.pantheon.gala/daemon";
+	const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
 	[DBus (name = "org.pantheon.gala")]
 	public interface WMDBus : GLib.Object
