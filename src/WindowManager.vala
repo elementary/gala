@@ -577,7 +577,7 @@ namespace Gala
 			var next = active.get_neighbor (direction);
 
 			//dont allow empty workspaces to be created by moving, if we have dynamic workspaces
-			if (Prefs.get_dynamic_workspaces () && active.n_windows == 1 && next.index () ==  screen.n_workspaces - 1) {
+			if (Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () ==  screen.n_workspaces - 1) {
 				Utils.bell (screen);
 				return;
 			}
@@ -757,6 +757,10 @@ namespace Gala
 						window_overview.open (hints);
 					}
 					break;
+				case ActionType.SWITCH_TO_WORKSPACE_LAST:
+					var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
+					workspace.activate (display.get_current_time ());
+					break;
 				default:
 					warning ("Trying to run unknown action");
 					break;
@@ -894,22 +898,32 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			var new_rect = actor.get_meta_window ().get_frame_rect ();
-			
-			switch (which_change) {
-				case Meta.SizeChange.MAXIMIZE:
-					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-					break;
-				case Meta.SizeChange.UNMAXIMIZE:
-					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-					break;
-				case Meta.SizeChange.FULLSCREEN:
-				case Meta.SizeChange.UNFULLSCREEN:
-					handle_fullscreen_window (actor.get_meta_window (), which_change);
-					break;
-			}
+			unowned Meta.Window window = actor.get_meta_window ();
+			if (window.get_tile_match () != null) {
+				size_change_completed (actor);
+				return;
+			}	
 
-			size_change_completed (actor);
+			ulong signal_id = 0U;
+			signal_id = window.size_changed.connect (() => {
+				window.disconnect (signal_id);
+				var new_rect = window.get_frame_rect ();
+				
+				switch (which_change) {
+					case Meta.SizeChange.MAXIMIZE:
+						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+						break;
+					case Meta.SizeChange.UNMAXIMIZE:
+						unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+						break;
+					case Meta.SizeChange.FULLSCREEN:
+					case Meta.SizeChange.UNFULLSCREEN:
+						handle_fullscreen_window (actor.get_meta_window (), which_change);
+						break;
+				}
+
+				size_change_completed (actor);
+			});
 		}
 
 		public override void minimize (WindowActor actor)
