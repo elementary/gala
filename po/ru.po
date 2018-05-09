@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2017-02-20 08:08+0100\n"
-"PO-Revision-Date: 2018-01-05 08:56+0000\n"
-"Last-Translator: Kirill Romanov <djaler1@gmail.com>\n"
+"PO-Revision-Date: 2018-05-10 00:08+0000\n"
+"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Russian "
 "<https://weblate.elementary.io/projects/desktop/gala/ru/>\n"
 "Language: ru\n"
@@ -84,7 +84,7 @@ msgstr "Просмотр всех открытых окон и рабочих с
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "Многозадачный вид"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
