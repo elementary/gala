@@ -28,3 +28,11 @@
     color: #333;
 }
 
+.decoration {
+    border-radius: 4px 4px 0 0;
+    box-shadow:
+        0 0 0 1px alpha (#F00, 0.3),
+        0 14px 28px rgba(2434, 0, 0, 0.35),
+        0 10px 10px rgba(2434, 0, 0, 0.22);
+    margin: 12px;
+}
