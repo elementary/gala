@@ -22,7 +22,7 @@ namespace Gala
 {
 	class WindowShadowEffect : ShadowEffect
 	{
-		public Meta.Window window { get; construct; }
+		public unowned Meta.Window window { get; construct; }
 
 		public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread)
 		{
@@ -135,6 +135,9 @@ namespace Gala
 
 			window.unmanaged.connect (unmanaged);
 			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
+			window.notify["fullscreen"].connect (check_shadow_requirements);
+			window.notify["maximized-horizontally"].connect (check_shadow_requirements);
+			window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
 			if (overview_mode) {
 				var click_action = new ClickAction ();
@@ -221,8 +224,7 @@ namespace Gala
 
 			transition_to_original_state (false);
 
-			shadow_effect = new WindowShadowEffect (window, 40, 5);
-			clone.add_effect_with_name ("shadow", shadow_effect);
+			check_shadow_requirements ();
 
 			if (should_fade ())
 				opacity = 0;
@@ -237,6 +239,21 @@ namespace Gala
 				opacity = 255;
 
 				request_reposition ();
+			}
+		}
+
+		void check_shadow_requirements ()
+		{
+			if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
+				if (shadow_effect == null) {
+					shadow_effect = new WindowShadowEffect (window, 40, 5);
+					clone.add_effect_with_name ("shadow", shadow_effect);
+				}
+			} else {
+				if (shadow_effect != null) {
+					clone.remove_effect (shadow_effect);
+					shadow_effect = null;
+				}
 			}
 		}
 
@@ -420,9 +437,9 @@ namespace Gala
 			shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
 
 			if (show)
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 255);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 255);
 			else
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 0);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 0);
 
 			add_transition ("shadow-opacity", shadow_transition);
 		}
