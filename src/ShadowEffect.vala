@@ -62,6 +62,7 @@ namespace Gala
 
 		public float scale_factor { get; set; default = 1; }
 		public uint8 shadow_opacity { get; set; default = 255; }
+		public string? css_class { get; set; default = null; }
 
 		Cogl.Material material;
 		string? current_key = null;
@@ -107,6 +108,10 @@ namespace Gala
 			cr.save ();
 			cr.scale (scale_factor, scale_factor);
 			style_context.save ();
+			if (css_class != null) {
+				style_context.add_class (css_class);
+			}
+
 			style_context.set_scale ((int)scale_factor);
 			style_context.render_background (cr, shadow_size, shadow_size, width - shadow_size * 2, height - shadow_size * 2);
 			style_context.restore ();
