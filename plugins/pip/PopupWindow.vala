@@ -299,7 +299,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 	private void update_window_focus ()
 	{
-		unowned Meta.Window focus_window = wm.get_screen ().get_display ().get_focus_window ();
+		unowned Meta.Screen screen = wm.get_screen ();
+		unowned Meta.Window focus_window = screen.get_display ().get_focus_window ();
 		if ((focus_window != null && !get_window_is_normal (focus_window))
 			|| (previous_focus != null && !get_window_is_normal (previous_focus))) {
 			previous_focus = focus_window;
@@ -307,7 +308,17 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		}
 
 		var window = window_actor.get_meta_window ();
-		if (window.appears_focused) {
+
+		var monitor_rect = screen.get_monitor_geometry (window.get_monitor ());
+		var actor_box = container.get_content_box ();
+		Meta.Rectangle container_rect = {
+			(int)actor_box.get_x (),
+			(int)actor_box.get_y (),
+			(int)actor_box.get_width (),
+			(int)actor_box.get_height ()
+		};
+
+		if (window.appears_focused && monitor_rect.intersect (container_rect, out container_rect)) {
 			hide ();
 		} else {
 			show ();
