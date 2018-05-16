@@ -119,7 +119,7 @@ namespace Gala
 					logind_proxy.prepare_for_sleep.connect (prepare_for_sleep);
 				} catch (Error e) {
 					warning ("Failed to get LoginD proxy: %s", e.message);
-				}				
+				}
 			}
 		}
 
@@ -684,6 +684,10 @@ namespace Gala
 						window_overview.open (hints);
 					}
 					break;
+				case ActionType.SWITCH_TO_WORKSPACE_LAST:
+					var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
+					workspace.activate (display.get_current_time ());
+					break;
 				default:
 					warning ("Trying to run unknown action");
 					break;
@@ -853,7 +857,7 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.minimize_duration;
-			
+
 			if (!animation_settings.enable_animations
 				|| duration == 0
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
@@ -925,6 +929,8 @@ namespace Gala
 				return;
 			}
 
+			kill_window_effects (actor);
+
 			var window = actor.get_meta_window ();
 
 			if (window.window_type == WindowType.NORMAL) {
@@ -938,6 +944,7 @@ namespace Gala
 					return;
 				}
 
+				maximizing.add (actor);
 				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
 
 				ui_group.add_child (old_actor);
@@ -993,6 +1000,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong handler_id = 0UL;
+				handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (handler_id);
+					maximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1075,7 +1088,7 @@ namespace Gala
 						var outer_rect = window.get_frame_rect ();
 						actor.set_position (outer_rect.x, outer_rect.y);
 					}
-					
+
 					actor.set_pivot_point (0.5f, 1.0f);
 					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0;
@@ -1268,6 +1281,7 @@ namespace Gala
 				return;
 			}
 
+			kill_window_effects (actor);
 			var window = actor.get_meta_window ();
 
 			if (window.window_type == WindowType.NORMAL) {
@@ -1292,6 +1306,8 @@ namespace Gala
 				if (old_actor == null) {
 					return;
 				}
+
+				unmaximizing.add (actor);
 
 				old_actor.set_position (old_rect.x, old_rect.y);
 
@@ -1327,6 +1343,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong handler_id = 0UL;
+				handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (handler_id);
+					unmaximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1359,12 +1381,11 @@ namespace Gala
 				unminimize_completed (actor);
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
-			if (end_animation (ref maximizing, actor))
-				size_change_completed (actor);
-			if (end_animation (ref unmaximizing, actor))
-				size_change_completed (actor);
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
+
+			end_animation (ref unmaximizing, actor);
+			end_animation (ref maximizing, actor);
 		}
 
 		/*workspace switcher*/
@@ -1606,6 +1627,8 @@ namespace Gala
 
 				if (window == null || window.is_destroyed ())
 					continue;
+
+				kill_window_effects (window);
 
 				var meta_window = window.get_meta_window ();
 				if (meta_window.get_workspace () != active_workspace
