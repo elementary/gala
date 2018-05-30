@@ -30,11 +30,20 @@ namespace Gala
     {
         public Cogl.Offscreen fbo;
         public Cogl.Texture texture;
+        public Geometry geometry;
         public FramebufferContainer (Cogl.Texture texture)
         {
             this.texture = texture;
             fbo = new Cogl.Offscreen.to_texture (texture);
         }
+    }
+
+    struct Geometry 
+    {
+        float x1;
+        float y1;
+        float x2;
+        float y2;
     }
 
     /**
@@ -421,17 +430,20 @@ namespace Gala
             uint8 paint_opacity = get_paint_opacity ();
 
             var texture = textures[1].texture;
+            float source_width = (float)texture.get_width ();
+            float source_height = (float)texture.get_height ();
+
             up_material.set_layer (0, texture);
             up_material.set_color4ub (paint_opacity, paint_opacity, paint_opacity, paint_opacity);
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.4f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 1.3f);
 
-            unowned Cogl.Framebuffer draw_fbo = Cogl.get_draw_framebuffer ();
-            CoglFixes.framebuffer_push_rectangle_clip (draw_fbo, 0, 0, width, height);
-            CoglFixes.framebuffer_translate (draw_fbo, (float)(-actor_rect.x / sx), (float)(-actor_rect.y / sy), 0);
-            CoglFixes.framebuffer_draw_textured_rectangle (draw_fbo, up_material, 0, 0, stage_width / (float)sx, stage_height / (float)sy, 0, 0, 1, 1);
-            CoglFixes.framebuffer_pop_clip (draw_fbo);
+            CoglFixes.framebuffer_draw_textured_rectangle (Cogl.get_draw_framebuffer (), up_material,
+                0, 0, actor_rect.width / (float)sx, actor_rect.height / (float)sy,
+                (actor_rect.x / 2) / source_width, (actor_rect.y / 2) / source_height,
+                ((actor_rect.x + actor_rect.width) / 2) / source_width,
+                ((actor_rect.y + actor_rect.height) / 2) / source_height);
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
@@ -477,7 +489,7 @@ namespace Gala
                 CoglFixes.set_uniform_1f (copysample_program, copysample_tex_width_location, x2);
                 CoglFixes.set_uniform_1f (copysample_program, copysample_tex_height_location, y2);
 
-                unowned Cogl.Framebuffer target = (Cogl.Framebuffer)textures[0].fbo;
+                unowned Cogl.Framebuffer target = (Cogl.Framebuffer)textures.first ().fbo;
                 
                 CoglFixes.framebuffer_push_matrix (target); 
                 CoglFixes.framebuffer_scale (target, 1.0f, -1.0f, 1.0f);
@@ -487,14 +499,27 @@ namespace Gala
             }
         }
 
+        void update_container_geometry (FramebufferContainer cont, int division_ratio)
+        {
+            cont.geometry = {
+                (float)tex_rect.x / division_ratio,
+                (float)tex_rect.y / division_ratio,
+                (float)(tex_rect.x + tex_rect.width) / division_ratio,
+                (float)(tex_rect.y + tex_rect.height) / division_ratio
+            };
+        }
+
         void downsample ()
         {
+            update_container_geometry (textures.first (), 1);
+
             for (int i = 1; i <= iterations; i++) {
                 var source_cont = textures[i - 1];
                 var dest_cont = textures[i];
+                update_container_geometry (dest_cont, 1 << i);
 
                 render_to_fbo (source_cont, dest_cont, down_material,
-                            down_program, down_width_location, down_height_location);
+                            down_program, down_width_location, down_height_location, i % 2 == 0);
             }
         }
     
@@ -505,13 +530,18 @@ namespace Gala
                 var dest_cont = textures[i - 1];
 
                 render_to_fbo (source_cont, dest_cont, up_material,
-                            up_program, up_width_location, up_height_location);
+                            up_program, up_width_location, up_height_location, i % 2 != 0);
     
             }
         }
 
+        static inline float map_coord_to_gl (float target_size, float pos)
+        {
+            return 2.0f / target_size * pos - 1.0f;
+        }
+
         void render_to_fbo (FramebufferContainer source, FramebufferContainer dest, Cogl.Material material,
-                            Cogl.Program program, int width_location, int height_location)
+                            Cogl.Program program, int width_location, int height_location, bool flip)
         {
             var source_texture = source.texture;
             material.set_layer (0, source_texture);
@@ -523,10 +553,33 @@ namespace Gala
             uint target_height = target_texture.get_height ();
 
             CoglFixes.set_uniform_1f (program, width_location, 0.5f / target_width);
-            CoglFixes.set_uniform_1f (program, height_location, 0.5f / target_height);    
+            CoglFixes.set_uniform_1f (program, height_location, 0.5f / target_height);
+
+            float source_width = (float)source_texture.get_width ();
+            float source_height = (float)source_texture.get_height ();
+
+            float screen_y1, screen_y2, tex_y1, tex_y2;
+            if (flip) {
+                screen_y1 = target_height - dest.geometry.y2;
+                screen_y2 = target_height - dest.geometry.y1;
+                tex_y1 = source_height - source.geometry.y2;
+                tex_y2 = source_height - source.geometry.y1;
+            } else {
+                screen_y1 = dest.geometry.y1;
+                screen_y2 = dest.geometry.y2;
+                tex_y1 = source.geometry.y1;
+                tex_y2 = source.geometry.y2;
+            }
 
             CoglFixes.framebuffer_draw_textured_rectangle (target, material,
-                -1, -1, 1, 1, 0, 0, 1, 1);
+                map_coord_to_gl (target_width, dest.geometry.x1),
+                map_coord_to_gl (target_height, screen_y1),
+                map_coord_to_gl (target_width, dest.geometry.x2),
+                map_coord_to_gl (target_height, screen_y2),
+                source.geometry.x1 / source_width,
+                tex_y1 / source_height,
+                source.geometry.x2 / source_width,
+                tex_y2 / source_height);
         }
     }    
 }
