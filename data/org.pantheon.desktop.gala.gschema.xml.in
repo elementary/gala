@@ -79,7 +79,7 @@
 		<key type="as" name="dock-names">
 			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
 			<summary>Names that are recognized as dock windows for the window switcher</summary>
-			<description>When launching the window-switcher, gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
+			<description>When launching the window-switcher, Gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
 		</key>
 	</schema>
 	
