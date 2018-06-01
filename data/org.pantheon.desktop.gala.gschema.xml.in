@@ -161,7 +161,7 @@
 		</key>
 		<key type="b" name="dim-parents">
 			<default>false</default>
-			<summary>Make parent windows that spawn a modal attached dialog being dimmed</summary>
+			<summary>Dims parent windows when spawning modal dialogs</summary>
 		</key>
 		<key type="d" name="alt-tab-window-opacity">
 			<range min="0.0" max="1.0"/>
