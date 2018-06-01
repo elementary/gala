@@ -43,8 +43,8 @@
 		</key>
 		<key type="s" name="hotcorner-custom-command">
 			<default>''</default>
-			<summary>The command that will be executed for the hotcorner action 'custom-command' or multiple</summary>
-			<description>If you just put a single command, it will be used for every hotcorner assigned to 
+			<summary>The command that will be executed for the hot corner action 'custom-command' or multiple</summary>
+			<description>If you just put a single command, it will be used for every hot corner assigned to 
 				'custom-command'. If you instead use the pattern
 				'hotcorner-topleft:command;;hotcorner-bottomright:command' the specific commands will be used
 				per hotcorner. Possible identifiers are 'hotcorner-[topleft; topright; bottomleft; bottomright]'
