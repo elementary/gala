@@ -44,8 +44,8 @@
 		</key>
 		<key type="s" name="hotcorner-custom-command">
 			<default>''</default>
-			<summary>The command that will be executed for the hotcorner action 'custom-command' or multiple</summary>
-			<description>If you just put a single command, it will be used for every hotcorner assigned to 
+			<summary>The command that will be executed for the hot corner action 'custom-command' or multiple</summary>
+			<description>If you just put a single command, it will be used for every hot corner assigned to
 				'custom-command'. If you instead use the pattern
 				'hotcorner-topleft:command;;hotcorner-bottomright:command' the specific commands will be used
 				per hotcorner. Possible identifiers are 'hotcorner-[topleft; topright; bottomleft; bottomright]'
@@ -80,7 +80,7 @@
 		<key type="as" name="dock-names">
 			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
 			<summary>Names that are recognized as dock windows for the window switcher</summary>
-			<description>When launching the window-switcher, gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
+			<description>When launching the window-switcher, Gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
 		</key>
 	</schema>
 	
@@ -162,12 +162,12 @@
 		</key>
 		<key type="b" name="dim-parents">
 			<default>false</default>
-			<summary>Make parent windows that spawn a modal attached dialog being dimmed</summary>
+			<summary>Dims parent windows when spawning modal dialogs</summary>
 		</key>
 		<key type="d" name="alt-tab-window-opacity">
 			<range min="0.0" max="1.0"/>
 			<default>0.0</default>
-			<summary>The opacity of the windows located in the background in the alt-tab-switcher.</summary>
+			<summary>The opacity of windows behind the window switcher.</summary>
 			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="s" name="workspace-switcher-background">
