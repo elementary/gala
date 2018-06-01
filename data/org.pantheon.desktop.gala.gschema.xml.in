@@ -166,7 +166,7 @@
 		<key type="d" name="alt-tab-window-opacity">
 			<range min="0.0" max="1.0"/>
 			<default>0.0</default>
-			<summary>The opacity of the windows located in the background in the alt-tab-switcher.</summary>
+			<summary>The opacity of windows behind the window switcher.</summary>
 			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="s" name="workspace-switcher-background">
