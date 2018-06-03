@@ -984,10 +984,13 @@ namespace Gala
 				old_actor.opacity = 0;
 				old_actor.restore_easing_state ();
 
-				old_actor.get_transition ("x").stopped.connect (() => {
+				ulong maximize_old_handler_id = 0UL;
+				maximize_old_handler_id = old_actor.transitions_completed.connect (() => {
+					old_actor.disconnect (maximize_old_handler_id);
 					old_actor.destroy ();
 					actor.set_translation (0.0f, 0.0f, 0.0f);
 				});
+
 				old_actor.restore_easing_state ();
 
 				actor.set_pivot_point (0.0f, 0.0f);
