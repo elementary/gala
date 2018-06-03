@@ -843,6 +843,9 @@ namespace Meta {
 		public string shadow_class { owned get; set; }
 		[NoAccessorMethod]
 		public Meta.ShadowMode shadow_mode { get; set; }
+#if HAS_MUTTER330
+		public signal void effects_completed ();
+#endif
 		public signal void first_frame ();
 	}
 #if HAS_MUTTER328
