@@ -54,10 +54,12 @@ namespace Gala
 			success = save_image (image, filename, out filename_used);
 		}
 
-		public void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
+		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
 		{
 			debug ("Taking area screenshot");
 			
+			yield wait_stage_repaint ();
+
 			var image = take_screenshot (x, y, width, height, false);
 			success = save_image (image, filename, out filename_used);
 			if (!success)
@@ -97,8 +99,10 @@ namespace Gala
 			selection_area.start_selection ();
 
 			yield;
+			selection_area.destroy ();
+			
+			yield wait_stage_repaint ();
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
-			wm.ui_group.remove (selection_area);
 		}
 
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
@@ -217,6 +221,18 @@ namespace Gala
 			cr.paint ();
 
 			return (Cairo.ImageSurface)cr.get_target ();
+		}
+
+		async void wait_stage_repaint ()
+		{
+			ulong signal_id = 0UL;
+			signal_id = wm.stage.paint.connect_after (() => {
+				wm.stage.disconnect (signal_id);
+				Idle.add (wait_stage_repaint.callback);
+			});
+
+			wm.stage.queue_redraw ();
+			yield;
 		}
 	}
 }

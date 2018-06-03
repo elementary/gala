@@ -33,9 +33,10 @@ namespace Gala
 		{
 			Object (workspace_index: workspace_index);
 
-			width = IconGroupContainer.SPACING;
-			height = IconGroupContainer.GROUP_WIDTH;
-			y = (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING) / 2;
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			width = IconGroupContainer.SPACING * scale;
+			height = IconGroupContainer.GROUP_WIDTH * scale;
+			y = (IconGroupContainer.GROUP_WIDTH * scale - IconGroupContainer.SPACING * scale) / 2;
 			opacity = 0;
 			set_pivot_point (0.5f, 0.5f);
 			reactive = true;
@@ -64,7 +65,8 @@ namespace Gala
 		{
 			destroy_all_children ();
 
-			var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH);
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale);
 			icon.x = IconGroupContainer.SPACING;
 			icon.x_align = ActorAlign.CENTER;
 			add_child (icon);
@@ -85,15 +87,16 @@ namespace Gala
 			set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 			set_easing_duration (200);
 
+			var scale = InternalUtils.get_ui_scaling_factor ();
 			if (!expand) {
 				remove_transition ("pulse");
 				opacity = 0;
-				width = IconGroupContainer.SPACING;
+				width = IconGroupContainer.SPACING * scale;
 				expanded = false;
 			} else {
 				add_pulse_animation ();
 				opacity = 200;
-				width = IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2;
+				width = IconGroupContainer.GROUP_WIDTH * scale + IconGroupContainer.SPACING * 2;
 				expanded = true;
 			}
 
@@ -125,4 +128,3 @@ namespace Gala
 		}
 	}
 }
-
