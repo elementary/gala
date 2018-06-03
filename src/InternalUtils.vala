@@ -334,6 +334,18 @@ namespace Gala
 			return result;
 		}
 
+		public static inline bool get_window_is_normal (Meta.Window window)
+		{
+			switch (window.get_window_type ()) {
+				case Meta.WindowType.NORMAL:
+				case Meta.WindowType.DIALOG:
+				case Meta.WindowType.MODAL_DIALOG:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 		/* TODO needs porting
 		public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
 		{

@@ -119,7 +119,7 @@ namespace Gala
 					logind_proxy.prepare_for_sleep.connect (prepare_for_sleep);
 				} catch (Error e) {
 					warning ("Failed to get LoginD proxy: %s", e.message);
-				}				
+				}
 			}
 		}
 
@@ -475,6 +475,79 @@ namespace Gala
 				InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
 			else
 				InternalUtils.set_input_area (screen, InputArea.DEFAULT);
+		}
+
+		void show_bottom_stack_window (Meta.Window bottom_window)
+		{
+			unowned Meta.Workspace workspace = bottom_window.get_workspace ();
+			if (Utils.get_n_windows (workspace) == 0) {
+				return;
+			}
+
+			bool enable_animations = AnimationSettings.get_default ().enable_animations;
+
+			var bottom_actor = bottom_window.get_compositor_private () as Meta.WindowActor;
+			if (enable_animations) {
+				animate_bottom_window_scale (bottom_actor);
+			}
+
+			uint fade_out_duration = 900U;
+			double[] op_keyframes = { 0.1, 0.9 };
+			GLib.Value[] opacity = { 20U, 20U };
+
+			var top_stack = new Gee.ArrayList<unowned Meta.Window> ();
+			workspace.list_windows ().@foreach ((window) => {
+				if (window.get_xwindow () == bottom_window.get_xwindow ()
+					|| !InternalUtils.get_window_is_normal (window)
+					|| window.minimized) {
+					return;
+				}
+	
+				var actor = window.get_compositor_private () as Clutter.Actor;
+				if (enable_animations) {
+					var op_trans = new Clutter.KeyframeTransition ("opacity");
+					op_trans.duration = fade_out_duration;
+					op_trans.remove_on_complete = true;
+					op_trans.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
+					op_trans.set_from_value (255.0f);
+					op_trans.set_to_value (255.0f);
+					op_trans.set_key_frames (op_keyframes);
+					op_trans.set_values (opacity);
+	
+					actor.add_transition ("opacity-hide", op_trans);
+				} else {
+					Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
+						actor.opacity = (uint)opacity[0];
+						return false;
+					});
+
+					Timeout.add ((uint)(fade_out_duration * op_keyframes[1]), () => {
+						actor.opacity = 255U;
+						return false;
+					});
+				}
+			});
+		}
+
+		void animate_bottom_window_scale (Meta.WindowActor actor)
+		{
+			const string[] props = { "scale-x", "scale-y" };
+
+			foreach (string prop in props) {
+				double[] scale_keyframes = { 0.2, 0.3, 0.8 };
+				GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
+
+				var scale_trans = new Clutter.KeyframeTransition (prop);
+				scale_trans.duration = 500;
+				scale_trans.remove_on_complete = true;
+				scale_trans.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
+				scale_trans.set_from_value (1.0f);
+				scale_trans.set_to_value (1.0f);
+				scale_trans.set_key_frames (scale_keyframes);
+				scale_trans.set_values (scale);
+
+				actor.add_transition ("magnify-%s".printf (prop), scale_trans);
+			}
 		}
 
 		public uint32[] get_all_xids ()
@@ -857,7 +930,7 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.minimize_duration;
-			
+
 			if (!animation_settings.enable_animations
 				|| duration == 0
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
@@ -929,6 +1002,8 @@ namespace Gala
 				return;
 			}
 
+			kill_window_effects (actor);
+
 			var window = actor.get_meta_window ();
 
 			if (window.window_type == WindowType.NORMAL) {
@@ -942,6 +1017,7 @@ namespace Gala
 					return;
 				}
 
+				maximizing.add (actor);
 				old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
 
 				ui_group.add_child (old_actor);
@@ -981,10 +1057,13 @@ namespace Gala
 				old_actor.opacity = 0;
 				old_actor.restore_easing_state ();
 
-				old_actor.get_transition ("x").stopped.connect (() => {
+				ulong maximize_old_handler_id = 0UL;
+				maximize_old_handler_id = old_actor.transitions_completed.connect (() => {
+					old_actor.disconnect (maximize_old_handler_id);
 					old_actor.destroy ();
 					actor.set_translation (0.0f, 0.0f, 0.0f);
 				});
+
 				old_actor.restore_easing_state ();
 
 				actor.set_pivot_point (0.0f, 0.0f);
@@ -997,6 +1076,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong handler_id = 0UL;
+				handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (handler_id);
+					maximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1054,13 +1139,17 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 
+			var window = actor.get_meta_window ();
 			if (!animation_settings.enable_animations) {
 				actor.show ();
 				map_completed (actor);
+
+				if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
+					show_bottom_stack_window (window);
+				}
+
 				return;
 			}
-
-			var window = actor.get_meta_window ();
 
 			actor.remove_all_transitions ();
 			actor.show ();
@@ -1079,7 +1168,7 @@ namespace Gala
 						var outer_rect = window.get_frame_rect ();
 						actor.set_position (outer_rect.x, outer_rect.y);
 					}
-					
+
 					actor.set_pivot_point (0.5f, 1.0f);
 					actor.set_scale (0.01f, 0.1f);
 					actor.opacity = 0;
@@ -1096,6 +1185,10 @@ namespace Gala
 						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
+
+						if (window.get_layer () == Meta.StackLayer.BOTTOM) {
+							show_bottom_stack_window (window);
+						}
 					});
 					break;
 				case WindowType.MENU:
@@ -1149,6 +1242,10 @@ namespace Gala
 						actor.disconnect (map_handler_id);
 						mapping.remove (actor);
 						map_completed (actor);
+
+						if (window.get_layer () == Meta.StackLayer.BOTTOM) {
+							show_bottom_stack_window (window);
+						}
 					});
 
 					if (AppearanceSettings.get_default ().dim_parents &&
@@ -1272,6 +1369,7 @@ namespace Gala
 				return;
 			}
 
+			kill_window_effects (actor);
 			var window = actor.get_meta_window ();
 
 			if (window.window_type == WindowType.NORMAL) {
@@ -1296,6 +1394,8 @@ namespace Gala
 				if (old_actor == null) {
 					return;
 				}
+
+				unmaximizing.add (actor);
 
 				old_actor.set_position (old_rect.x, old_rect.y);
 
@@ -1331,6 +1431,12 @@ namespace Gala
 				actor.set_scale (1.0f, 1.0f);
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 				actor.restore_easing_state ();
+
+				ulong handler_id = 0UL;
+				handler_id = actor.transitions_completed.connect (() => {
+					actor.disconnect (handler_id);
+					unmaximizing.remove (actor);
+				});
 			}
 		}
 
@@ -1363,12 +1469,11 @@ namespace Gala
 				unminimize_completed (actor);
 			if (end_animation (ref minimizing, actor))
 				minimize_completed (actor);
-			if (end_animation (ref maximizing, actor))
-				size_change_completed (actor);
-			if (end_animation (ref unmaximizing, actor))
-				size_change_completed (actor);
 			if (end_animation (ref destroying, actor))
 				destroy_completed (actor);
+
+			end_animation (ref unmaximizing, actor);
+			end_animation (ref maximizing, actor);
 		}
 
 		/*workspace switcher*/
@@ -1610,6 +1715,8 @@ namespace Gala
 
 				if (window == null || window.is_destroyed ())
 					continue;
+
+				kill_window_effects (window);
 
 				var meta_window = window.get_meta_window ();
 				if (meta_window.get_workspace () != active_workspace

@@ -223,13 +223,14 @@ namespace Gala
 		 */
 		void update_positions (bool animate)
 		{
+			var scale = InternalUtils.get_ui_scaling_factor ();
 			var active_index = screen.get_active_workspace ().index ();
 			var active_x = 0.0f;
 
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
 				var index = workspace_clone.workspace.index ();
-				var dest_x = index * (workspace_clone.width - 150);
+				var dest_x = index * (workspace_clone.width - (150 * scale));
 
 				if (index == active_index) {
 					active_x = dest_x;
@@ -261,11 +262,12 @@ namespace Gala
 				icon_groups.set_easing_duration (200);
 			}
 
+			var scale = InternalUtils.get_ui_scaling_factor ();
 			// make sure the active workspace's icongroup is always visible
 			var icon_groups_width = icon_groups.calculate_total_width ();
 			if (icon_groups_width > width) {
-				icon_groups.x = (-active_index * (IconGroupContainer.SPACING + IconGroup.SIZE) + width / 2)
-					.clamp (width - icon_groups_width - 64, 64);
+				icon_groups.x = (-active_index * (IconGroupContainer.SPACING * scale + IconGroup.SIZE * scale) + width / 2)
+					.clamp (width - icon_groups_width - 64 * scale, 64 * scale);
 			} else
 				icon_groups.x = width / 2 - icon_groups_width / 2;
 
@@ -472,7 +474,8 @@ namespace Gala
 				show ();
 				grab_key_focus ();
 
-				icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET + 20;
+				var scale = InternalUtils.get_ui_scaling_factor ();
+				icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
 			} else {
 				DragDropAction.cancel_all_by_id ("multitaskingview-window");
 			}
@@ -594,4 +597,3 @@ namespace Gala
 		}
 	}
 }
-
