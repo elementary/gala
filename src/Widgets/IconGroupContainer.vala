@@ -76,18 +76,22 @@ namespace Gala
 		 */
 		public float calculate_total_width ()
 		{
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			var spacing = SPACING * scale;
+			var group_width = GROUP_WIDTH * scale;
+
 			var width = 0.0f;
 			foreach (var child in get_children ()) {
 				if (child is WorkspaceInsertThumb) {
 					if (((WorkspaceInsertThumb) child).expanded)
-						width += GROUP_WIDTH + SPACING * 2;
+						width += group_width + spacing * 2;
 					else
-						width += SPACING;
+						width += spacing;
 				} else
-					width += GROUP_WIDTH;
+					width += group_width;
 			}
 
-			width += SPACING;
+			width += spacing;
 
 			return width;
 		}
@@ -105,4 +109,3 @@ namespace Gala
 		}
 	}
 }
-
