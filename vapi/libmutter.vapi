@@ -320,8 +320,10 @@ namespace Meta {
 		public void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y);
 		public void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect);
 		public void size_change_window (Meta.Window window, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect);
+#if !HAS_MUTTER328
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_stage_is_focused")]
 		public static bool stage_is_focused (Meta.Screen screen);
+#endif
 		public void switch_workspace (Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_stack (GLib.List<Meta.WindowActor> stack);
 		public void sync_updates_frozen (Meta.Window window);
@@ -342,6 +344,13 @@ namespace Meta {
 		public void set_pointer_visible (bool visible);
 		public signal void cursor_changed ();
 	}
+#if HAS_MUTTER328
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_dbus_display_config_skeleton_get_type ()")]
+	public class DBusDisplayConfigSkeleton : GLib.DBusInterfaceSkeleton, GLib.DBusInterface {
+		[CCode (has_construct_function = false)]
+		protected DBusDisplayConfigSkeleton ();
+	}
+#endif
 	[CCode (cheader_filename = "meta/display.h", type_id = "meta_display_get_type ()")]
 	public class Display : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -459,7 +468,11 @@ namespace Meta {
 		public static bool set_custom_handler (string name, owned Meta.KeyHandlerFunc? handler);
 	}
 	[CCode (cheader_filename = "meta/meta-monitor-manager.h", type_id = "meta_monitor_manager_get_type ()")]
+#if HAS_MUTTER328
+	public abstract class MonitorManager : Meta.DBusDisplayConfigSkeleton, GLib.DBusInterface {
+#else
 	public abstract class MonitorManager : GLib.DBusInterfaceSkeleton, GLib.DBusInterface {
+#endif
 		[CCode (has_construct_function = false)]
 		protected MonitorManager ();
 #if HAS_MUTTER326
@@ -632,6 +645,14 @@ namespace Meta {
 		public bool update_area (int x, int y, int width, int height);
 		public signal void size_changed ();
 	}
+#if HAS_MUTTER328
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_stage_get_type ()")]
+	public class Stage : Clutter.Stage, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+		[CCode (has_construct_function = false)]
+		protected Stage ();
+		public static bool is_focused (Meta.Screen screen);
+	}
+#endif
 	[CCode (cheader_filename = "meta/theme.h", has_type_id = false)]
 	[Compact]
 	public class Theme {
@@ -824,6 +845,13 @@ namespace Meta {
 		public Meta.ShadowMode shadow_mode { get; set; }
 		public signal void first_frame ();
 	}
+#if HAS_MUTTER328
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_window_group_get_type ()")]
+	public class WindowGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
+		[CCode (has_construct_function = false)]
+		protected WindowGroup ();
+	}
+#endif
 	[CCode (cheader_filename = "meta/meta_window_shape.h", ref_function = "meta_window_shape_ref", type_id = "meta_window_shape_get_type ()", unref_function = "meta_window_shape_unref")]
 	[Compact]
 	public class WindowShape {
