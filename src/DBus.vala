@@ -273,7 +273,7 @@ namespace Gala
 		 */
 		public bool enable_blur_behind (uint32 xid, int x, int y, int width, int height, uint8 opacity) throws Error
 		{
-			if (!BlurActor.get_supported ()) {
+			if (!BlurActor.get_supported (wm)) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
 			}
 

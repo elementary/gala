@@ -124,6 +124,7 @@ namespace Gala
     {
         const int DOCK_SHRINK_AREA = 1;
         const uint GL_TEXTURE_2D = 0x0DE1;
+        const uint GL_MAX_TEXTURE_SIZE = 0x0D33;
 
         static int down_width_location;
         static int down_height_location;
@@ -180,6 +181,7 @@ namespace Gala
                                         int x, int y,
                                         int width, int height);
         delegate void GlBindTextureFunc (uint target, uint texture);
+        delegate void GlGetIntegervFunc (uint pname, out int params);
 
         public signal void clip_updated ();
 
@@ -319,8 +321,20 @@ namespace Gala
             return textures != null && textures.size > 0;
         }
 
-        public static bool get_supported ()
+        public static bool get_supported (WindowManager wm)
         {
+            var gl_get_integer = (GlGetIntegervFunc) Cogl.get_proc_address ("glGetIntegerv");
+
+            int max_texture_size;
+            gl_get_integer (GL_MAX_TEXTURE_SIZE, out max_texture_size);
+
+            int screen_width, screen_height;
+            wm.get_screen ().get_size (out screen_width, out screen_height);
+
+            if (screen_width > max_texture_size || screen_height > max_texture_size) {
+                return false;
+            }
+
             return Cogl.features_available (Cogl.FeatureFlags.OFFSCREEN |
                                             Cogl.FeatureFlags.SHADERS_GLSL |
                                             Cogl.FeatureFlags.TEXTURE_RECTANGLE |
