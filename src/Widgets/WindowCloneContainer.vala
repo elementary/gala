@@ -333,7 +333,10 @@ namespace Gala
 						break;
 					}
 				}
-				current_window.active = false;
+
+				if (current_window != null) {
+					current_window.active = false;
+				}
 			} else {
 				current_window = null;
 			}
