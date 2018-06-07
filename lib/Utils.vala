@@ -208,14 +208,14 @@ namespace Gala
 		public static uint get_n_windows (Meta.Workspace workspace)
 		{
 			var n = 0;
-			foreach (var window in workspace.list_windows ()) {
+			workspace.list_windows ().foreach ((window) => {
 				if (window.is_on_all_workspaces ())
-					continue;
+					return;
 				if (window.window_type == Meta.WindowType.NORMAL ||
 					window.window_type == Meta.WindowType.DIALOG ||
 					window.window_type == Meta.WindowType.MODAL_DIALOG)
 					n ++;
-			}
+			});
 
 			return n;
 		}
