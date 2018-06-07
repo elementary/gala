@@ -54,7 +54,7 @@ namespace Gala
 			if (Prefs.get_dynamic_workspaces ())
 				screen.override_workspace_layout (ScreenCorner.TOPLEFT, false, 1, -1);
 
-			for (var i = 0; i < screen.get_n_workspaces (); i++)
+			for (var i = 0; i < screen.n_workspaces; i++)
 				workspace_added (screen, i);
 
 			Prefs.add_listener (prefs_listener);
@@ -67,8 +67,11 @@ namespace Gala
 
 			// make sure the last workspace has no windows on it
 			if (Prefs.get_dynamic_workspaces ()
-				&& Utils.get_n_windows (screen.get_workspace_by_index (screen.get_n_workspaces () - 1)) > 0)
+				&& Utils.get_n_windows (screen.get_workspace_by_index (screen.n_workspaces - 1)) > 0)
 				append_workspace ();
+
+			// There are some empty workspace at startup
+			cleanup ();
 		}
 
 		~WorkspaceManager ()
