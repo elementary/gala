@@ -321,6 +321,20 @@ namespace Gala
             return textures != null && textures.size > 0;
         }
 
+        public static bool get_enabled_by_default ()
+        {
+            unowned RendererInfo info = RendererInfo.get_default ();
+            if (info.vendor == Vendor.VIRTUAL) {
+                return false;
+            }
+
+            if (info.vendor == Vendor.INTEL && info.intel_chipset < IntelChipset.SandyBridge) {
+                return false;
+            }
+            
+            return true;
+        }
+
         public static bool get_supported (WindowManager wm)
         {
             var gl_get_integer = (GlGetIntegervFunc) Cogl.get_proc_address ("glGetIntegerv");

@@ -263,6 +263,10 @@ namespace Gala
 		 * Further calls to this method on the same window will update the properties of the
 		 * current blur effect to the new ones.
 		 * 
+		 * If the effect is not supported on a system, then a DBusError.NOT_SUPPORTED error is thrown and
+		 * the effect is not added. Also, if the effect is technically supported but there is no suitable
+		 * renderer, the method will return false.
+		 * 
 		 * @param xid the X window ID of the target window to enable the blur effect
 		 * @param x the X value in pixels of the clip, relative to the requested window
 		 * @param y the Y value in pixels of the clip, relative to the requested window
@@ -275,6 +279,10 @@ namespace Gala
 		{
 			if (!BlurActor.get_supported (wm)) {
 				throw new DBusError.NOT_SUPPORTED ("Blur effect is not supported on this system");
+			}
+
+			if (!BlurActor.get_enabled_by_default ()) {
+				return false;
 			}
 
 			if (!BlurActor.is_initted ()) {
