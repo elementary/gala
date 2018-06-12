@@ -69,6 +69,9 @@ namespace Gala
 			if (Prefs.get_dynamic_workspaces ()
 				&& Utils.get_n_windows (screen.get_workspace_by_index (screen.get_n_workspaces () - 1)) > 0)
 				append_workspace ();
+
+			// There are some empty workspace at startup
+			cleanup ();
 		}
 
 		~WorkspaceManager ()
