@@ -119,6 +119,7 @@ namespace Gala
 		int prev_index = -1;
 		ulong check_confirm_dialog_cb = 0;
 		uint shadow_update_timeout = 0;
+		int scale_factor = 0;
 
 		Actor close_button;
 		Actor active_shape;
@@ -163,7 +164,9 @@ namespace Gala
 				return true;
 			});
 
-			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE);
+			scale_factor = InternalUtils.get_ui_scaling_factor ();
+
+			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
 			window_icon.opacity = 0;
 			window_icon.set_pivot_point (0.5f, 0.5f);
 
@@ -430,7 +433,7 @@ namespace Gala
 				window_icon.save_easing_state ();
 				window_icon.set_easing_duration (0);
 
-				window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - WINDOW_ICON_SIZE * 0.75f);
+				window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
 
 				window_icon.restore_easing_state ();
 			}

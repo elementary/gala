@@ -124,6 +124,7 @@ namespace Gala
     {
         const int DOCK_SHRINK_AREA = 1;
         const uint GL_TEXTURE_2D = 0x0DE1;
+        const uint GL_MAX_TEXTURE_SIZE = 0x0D33;
 
         static int down_width_location;
         static int down_height_location;
@@ -188,6 +189,7 @@ namespace Gala
                                         int x, int y,
                                         int width, int height);
         delegate void GlBindTextureFunc (uint target, uint texture);
+        delegate void GlGetIntegervFunc (uint pname, out int params);
 
         delegate void GlGenQueries (uint n, uint* ids);
         delegate void GlQueryCounter (uint id, uint target);
@@ -337,8 +339,34 @@ namespace Gala
             return textures != null && textures.size > 0;
         }
 
-        public static bool get_supported ()
+        public static bool get_enabled_by_default ()
         {
+            unowned RendererInfo info = RendererInfo.get_default ();
+            if (info.vendor == Vendor.VIRTUAL) {
+                return false;
+            }
+
+            if (info.vendor == Vendor.INTEL && info.intel_chipset < IntelChipset.SandyBridge) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        public static bool get_supported (WindowManager wm)
+        {
+            var gl_get_integer = (GlGetIntegervFunc) Cogl.get_proc_address ("glGetIntegerv");
+
+            int max_texture_size;
+            gl_get_integer (GL_MAX_TEXTURE_SIZE, out max_texture_size);
+
+            int screen_width, screen_height;
+            wm.get_screen ().get_size (out screen_width, out screen_height);
+
+            if (screen_width > max_texture_size || screen_height > max_texture_size) {
+                return false;
+            }
+
             return Cogl.features_available (Cogl.FeatureFlags.OFFSCREEN |
                                             Cogl.FeatureFlags.SHADERS_GLSL |
                                             Cogl.FeatureFlags.TEXTURE_RECTANGLE |
@@ -423,6 +451,9 @@ namespace Gala
             get_size (out width, out height);
             get_transformed_position (out x, out y);
 
+            float transformed_width, transformed_height;
+            get_transformed_size (out transformed_width, out transformed_height);
+            
             double sx, sy;
             ui_group.get_scale (out sx, out sy);
 
@@ -474,8 +505,8 @@ namespace Gala
             Cogl.rectangle_with_texture_coords (
                 0, 0, actor_rect.width / (float)sx, actor_rect.height / (float)sy,
                 (actor_rect.x / 2) / source_width, (actor_rect.y / 2) / source_height,
-                ((actor_rect.x + actor_rect.width) / 2) / source_width,
-                ((actor_rect.y + actor_rect.height) / 2) / source_height);
+                ((actor_rect.x + transformed_width) / 2) / source_width,
+                ((actor_rect.y + transformed_height) / 2) / source_height);
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
