@@ -432,6 +432,9 @@ namespace Gala
             get_size (out width, out height);
             get_transformed_position (out x, out y);
 
+            float transformed_width, transformed_height;
+            get_transformed_size (out transformed_width, out transformed_height);
+            
             double sx, sy;
             ui_group.get_scale (out sx, out sy);
 
@@ -479,8 +482,8 @@ namespace Gala
             Cogl.rectangle_with_texture_coords (
                 0, 0, actor_rect.width / (float)sx, actor_rect.height / (float)sy,
                 (actor_rect.x / 2) / source_width, (actor_rect.y / 2) / source_height,
-                ((actor_rect.x + actor_rect.width) / 2) / source_width,
-                ((actor_rect.y + actor_rect.height) / 2) / source_height);
+                ((actor_rect.x + transformed_width) / 2) / source_width,
+                ((actor_rect.y + transformed_height) / 2) / source_height);
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);
