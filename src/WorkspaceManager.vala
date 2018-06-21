@@ -110,7 +110,7 @@ namespace Gala
 
 		void workspace_switched (Screen screen, int from, int to, MotionDirection direction)
 		{
-			if (!Prefs.get_dynamic_workspaces ())
+			if (!Prefs.get_dynamic_workspaces () || remove_freeze_count > 0)
 				return;
 
 			// remove empty workspaces after we switched away from them unless it's the last one

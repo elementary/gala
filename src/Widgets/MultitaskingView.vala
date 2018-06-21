@@ -427,6 +427,7 @@ namespace Gala
 			if (opened)
 				return;
 
+			WorkspaceManager.get_default ().freeze_remove ();
 			toggle ();
 		}
 
@@ -438,6 +439,7 @@ namespace Gala
 			if (!opened)
 				return;
 
+			WorkspaceManager.get_default ().thaw_remove ();
 			toggle ();
 		}
 
