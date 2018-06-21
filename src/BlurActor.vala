@@ -122,7 +122,7 @@ namespace Gala
 
     public class BlurActor : Clutter.Actor
     {
-        const int DOCK_SHRINK_AREA = 1;
+        const int DOCK_SHRINK_AREA = 2;
         const uint GL_TEXTURE_2D = 0x0DE1;
         const uint GL_MAX_TEXTURE_SIZE = 0x0D33;
 
@@ -443,14 +443,14 @@ namespace Gala
                 (int)(width * (float)sx), (int)(height * (float)sy)
             };
 
-            x = float.max (0, x - expand_size);
-            y = float.max (0, y - expand_size);
+            float cx = float.max (0, x - expand_size);
+            float cy = float.max (0, y - expand_size);
 
-            int tex_width = int.min ((int)(actor_rect.width + expand_size * 2), (int)(stage_width - x));
-            int tex_height = int.min ((int)(actor_rect.height + expand_size * 2), (int)(stage_height - y));
+            int tex_width = int.min ((actor_rect.width + expand_size * 2), (int)(stage_width - cx));
+            int tex_height = int.min ((actor_rect.height + expand_size * 2), (int)(stage_height - cy));
 
-            int tex_x = int.min ((int)x, (int)stage_width);
-            int tex_y = int.min ((int)(stage_height - y - tex_height), (int)stage_height);
+            int tex_x = int.min ((int)cx, (int)stage_width);
+            int tex_y = int.min ((int)(stage_height - cy - tex_height), (int)stage_height);
 
             tex_rect = {
                 tex_x, tex_y,
@@ -480,10 +480,10 @@ namespace Gala
             CoglFixes.set_uniform_1f (up_program, brightness_location, 1.3f);
 
             Cogl.rectangle_with_texture_coords (
-                0, 0, actor_rect.width / (float)sx, actor_rect.height / (float)sy,
-                (actor_rect.x / 2) / source_width, (actor_rect.y / 2) / source_height,
-                ((actor_rect.x + transformed_width) / 2) / source_width,
-                ((actor_rect.y + transformed_height) / 2) / source_height);
+                0, 0, width, height,
+                (x / 2) / source_width, (y / 2) / source_height,
+                ((x + transformed_width) / 2) / source_width,
+                ((y + transformed_height) / 2) / source_height);
 
             CoglFixes.set_uniform_1f (up_program, saturation_location, 1.0f);
             CoglFixes.set_uniform_1f (up_program, brightness_location, 0.0f);

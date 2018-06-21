@@ -286,7 +286,7 @@ namespace Gala
 			}
 
 			if (!BlurActor.is_initted ()) {
-				BlurActor.init (4, 3.8f, 150, wm.ui_group);
+				BlurActor.init (4, 5.5f, 150, wm.ui_group);
 			}
 
 			var blur_actor = blur_actors[xid];
