@@ -504,25 +504,22 @@ namespace Gala
 
         void copy_target_texture ()
         {
-            int xoff = tex_rect.x;
-            int yoff = tex_rect.y;
-
             Cogl.begin_gl ();
             bind_texture (GL_TEXTURE_2D, current_handle);
 
-            copy_tex_sub_image (GL_TEXTURE_2D, 0, xoff, yoff,
-                xoff, yoff, (int)tex_rect.width, (int)tex_rect.height);
+            copy_tex_sub_image (GL_TEXTURE_2D, 0, tex_rect.x, tex_rect.y,
+                tex_rect.x, tex_rect.y, (int)tex_rect.width, (int)tex_rect.height);
 
             bind_texture (GL_TEXTURE_2D, 1);
             Cogl.end_gl ();
 
             if (is_dock) {
-                float x1 = (xoff + DOCK_SHRINK_AREA) / stage_width;
-                float x2 = (xoff + actor_rect.width - DOCK_SHRINK_AREA) / stage_width;
+                float x1 = (actor_rect.x + DOCK_SHRINK_AREA) / stage_width;
+                float x2 = (actor_rect.x + actor_rect.width - DOCK_SHRINK_AREA) / stage_width;
 
-                float y_target = float.min (actor_rect.y, expand_size);
-                float y1 = (yoff + tex_rect.height - actor_rect.height - y_target + DOCK_SHRINK_AREA) / stage_height;
-                float y2 = (yoff + tex_rect.height - y_target - DOCK_SHRINK_AREA) / stage_height;
+                // Flip texture coordinates due to Cogl bug
+                float y1 = (stage_height - (actor_rect.y + actor_rect.height) + DOCK_SHRINK_AREA) / stage_height;
+                float y2 = (stage_height - actor_rect.y  - DOCK_SHRINK_AREA) / stage_height;
 
                 CoglFixes.set_uniform_1f (copysample_program, copysample_tex_x_location, x1);
                 CoglFixes.set_uniform_1f (copysample_program, copysample_tex_y_location, y1);
