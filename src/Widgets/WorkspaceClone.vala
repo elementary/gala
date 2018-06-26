@@ -297,9 +297,11 @@ namespace Gala
 			var screen = workspace.get_screen ();
 			var display = screen.get_display ();
 
+			var scale_factor = InternalUtils.get_ui_scaling_factor ();
+
 			var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
-			var scale = (float)(monitor.height - TOP_OFFSET - BOTTOM_OFFSET) / monitor.height;
-			var pivotY = TOP_OFFSET / (monitor.height - monitor.height * scale);
+			var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
+			var pivotY = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
 
 			update_size (monitor);
 
@@ -313,16 +315,16 @@ namespace Gala
 
 			Meta.Rectangle area = {
 				(int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
-				(int)Math.floorf (monitor.y + TOP_OFFSET),
+				(int)Math.floorf (monitor.y + TOP_OFFSET * scale_factor),
 				(int)Math.floorf (monitor.width * scale),
 				(int)Math.floorf (monitor.height * scale)
 			};
 			shrink_rectangle (ref area, 32);
 
-			window_container.padding_top = TOP_OFFSET;
+			window_container.padding_top = TOP_OFFSET * scale_factor;
 			window_container.padding_left =
 				window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-			window_container.padding_bottom = BOTTOM_OFFSET;
+			window_container.padding_bottom = BOTTOM_OFFSET * scale_factor;
 
 			icon_group.redraw ();
 
@@ -337,7 +339,7 @@ namespace Gala
 		{
 			if (!opened)
 				return;
-			
+
 			opened = false;
 
 			background.save_easing_state ();
@@ -350,4 +352,3 @@ namespace Gala
 		}
 	}
 }
-

@@ -96,12 +96,15 @@ namespace Gala
 
 		construct
 		{
-			width = SIZE;
-			height = SIZE;
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			var size = SIZE * scale;
+
+			width = size;
+			height = size;
 			reactive = true;
 
 			var canvas = new Canvas ();
-			canvas.set_size (SIZE, SIZE);
+			canvas.set_size (size, size);
 			canvas.draw.connect (draw);
 			content = canvas;
 
@@ -215,10 +218,11 @@ namespace Gala
 				return;
 			}
 
-			var width = 100;
-			var x = (SIZE - width) / 2;
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			var width = 100 * scale;
+			var x = ((SIZE * scale) - width) / 2;
 			var y = -10;
-			var height = WorkspaceClone.BOTTOM_OFFSET;
+			var height = WorkspaceClone.BOTTOM_OFFSET * scale;
 
 			var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
 			var color_bottom = Cogl.Color.from_4ub (255, 255, 255, backdrop_opacity);
@@ -335,6 +339,8 @@ namespace Gala
 		 */
 		bool draw (Cairo.Context cr)
 		{
+			var scale = InternalUtils.get_ui_scaling_factor ();
+
 			cr.set_operator (Cairo.Operator.CLEAR);
 			cr.paint ();
 			cr.set_operator (Cairo.Operator.OVER);
@@ -350,12 +356,19 @@ namespace Gala
 			}
 
 			// more than one => we need a folder
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0.5, 0.5, (int) width - 1, (int) height - 1, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (
+				cr,
+				0.5 * scale,
+				0.5 * scale,
+				(int) width - (1 * scale),
+				(int) height - (1 * scale),
+				5 * scale
+			);
 
 			cr.set_source_rgba (0, 0, 0, 0.1);
 			cr.fill_preserve ();
 
-			cr.set_line_width (1);
+			cr.set_line_width (1 * scale);
 
 			var grad = new Cairo.Pattern.linear (0, 0, 0, height);
 			grad.add_color_stop_rgba (0.8, 0, 0, 0, 0);
@@ -364,7 +377,14 @@ namespace Gala
 			cr.set_source (grad);
 			cr.stroke ();
 
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 1.5, 1.5, (int) width - 3, (int) height - 3, 5);
+			Granite.Drawing.Utilities.cairo_rounded_rectangle (
+				cr,
+				1.5 * scale,
+				1.5 * scale,
+				(int) width - (3 * scale),
+				(int) height - (3 * scale),
+				5 * scale
+			);
 
 			cr.set_source_rgba (0, 0, 0, 0.3);
 			cr.stroke ();
@@ -379,18 +399,18 @@ namespace Gala
 					|| workspace_index != screen.get_n_workspaces () - 1)
 					return false;
 
-				var buffer = new Granite.Drawing.BufferSurface (SIZE, SIZE);
-				var offset = SIZE / 2 - PLUS_WIDTH / 2;
+				var buffer = new Granite.Drawing.BufferSurface (SIZE * scale, SIZE * scale);
+				var offset = (SIZE * scale) / 2 - (PLUS_WIDTH * scale) / 2;
 
-				buffer.context.rectangle (PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + offset,
+				buffer.context.rectangle (PLUS_WIDTH / 2 * scale - PLUS_SIZE / 2 * scale + 0.5 + offset,
 					0.5 + offset,
-					PLUS_SIZE - 1,
-					PLUS_WIDTH - 1);
+					PLUS_SIZE * scale - 1,
+					PLUS_WIDTH * scale - 1);
 
 				buffer.context.rectangle (0.5 + offset,
-					PLUS_WIDTH / 2 - PLUS_SIZE / 2 + 0.5 + offset,
-					PLUS_WIDTH - 1,
-					PLUS_SIZE - 1);
+					PLUS_WIDTH / 2 * scale - PLUS_SIZE / 2 * scale + 0.5 + offset,
+					PLUS_WIDTH * scale - 1,
+					PLUS_SIZE * scale - 1);
 
 				buffer.context.set_source_rgb (0, 0, 0);
 				buffer.context.fill_preserve ();
@@ -419,12 +439,12 @@ namespace Gala
 			var columns = (int) Math.ceil (Math.sqrt (n_tiled_windows));
 			var rows = (int) Math.ceil (n_tiled_windows / (double) columns);
 
-			const int spacing = 6;
+			int spacing = 6 * scale;
 
-			var width = columns * size + (columns - 1) * spacing;
-			var height = rows * size + (rows - 1) * spacing;
-			var x_offset = SIZE / 2 - width / 2;
-			var y_offset = SIZE / 2 - height / 2;
+			var width = columns * (size * scale) + (columns - 1) * spacing;
+			var height = rows * (size * scale) + (rows - 1) * spacing;
+			var x_offset = SIZE * scale / 2 - width / 2;
+			var y_offset = SIZE * scale / 2 - height / 2;
 
 			var show_ellipsis = false;
 			var n_shown_windows = n_windows;
@@ -441,13 +461,13 @@ namespace Gala
 
 				// draw an ellipsis at the 9th position if we need one
 				if (show_ellipsis && i == 8) {
-					const int top_offset = 10;
-					const int left_offset = 2;
-					const int radius = 2;
-					const int spacing = 3;
+					int top_offset = 10 * scale;
+					int left_offset = 2 * scale;
+					int radius = 2 * scale;
+					int dot_spacing = 3 * scale;
 					cr.arc (left_offset + x, y + top_offset, radius, 0, 2 * Math.PI);
-					cr.arc (left_offset + x + radius + spacing, y + top_offset, radius, 0, 2 * Math.PI);
-					cr.arc (left_offset + x + radius * 2 + spacing * 2, y + top_offset, radius, 0, 2 * Math.PI);
+					cr.arc (left_offset + x + radius + dot_spacing, y + top_offset, radius, 0, 2 * Math.PI);
+					cr.arc (left_offset + x + radius * 2 + dot_spacing * 2, y + top_offset, radius, 0, 2 * Math.PI);
 
 					cr.set_source_rgb (0.3, 0.3, 0.3);
 					cr.fill ();
@@ -460,10 +480,10 @@ namespace Gala
 
 				window.place (x, y, size);
 
-				x += size + spacing;
-				if (x + size >= SIZE) {
+				x += (size * scale) + spacing;
+				if (x + (size * scale) >= SIZE * scale) {
 					x = x_offset;
-					y += size + spacing;
+					y += (size * scale) + spacing;
 				}
 			}
 
@@ -471,4 +491,3 @@ namespace Gala
 		}
 	}
 }
-
