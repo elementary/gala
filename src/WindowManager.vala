@@ -1249,6 +1249,18 @@ namespace Gala
 				default:
 					map_completed (actor);
 					break;
+
+				case WindowType.TOOLTIP:
+					bool hardcode_clip = false;
+					if (hardcode_clip) {
+						var rect = window.get_frame_rect ();
+						DBus.get_instance ().enable_blur_behind ((uint32)window.get_xwindow (), 8, 8, rect.width - 9, rect.height - 9, 255);
+					} else {
+						DBus.get_instance ().enable_blur_behind ((uint32)window.get_xwindow (), 0, 0, 0, 0, 255);
+					}
+
+					map_completed (actor);
+					break;
 			}
 		}
 

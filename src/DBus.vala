@@ -58,6 +58,10 @@ namespace Gala
 				() => critical ("Could not acquire name") );
 		}
 
+		public static unowned DBus get_instance () {
+			return instance;
+		}
+
 		private DBus ()
 		{
 			blur_actors = new Gee.HashMap<uint32, BlurActor> ();
