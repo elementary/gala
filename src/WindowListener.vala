@@ -99,10 +99,6 @@ namespace Gala
 
 		void window_maximized_changed (Window window)
 		{
-			// we only need to save when we were unmaximized and now go maximized
-			if (!window.maximized_vertically || !window.maximized_horizontally)
-				return;
-
 			WindowGeometry window_geometry = {};
 			window_geometry.inner = window.get_frame_rect ();
 			window_geometry.outer = window.get_buffer_rect ();
