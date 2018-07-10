@@ -284,7 +284,7 @@ namespace Gala
 			workspaces.insert_child_at_index (workspace, num);
 			icon_groups.add_group (workspace.icon_group);
 
-			update_positions (opened);
+			update_positions (false);
 
 			if (opened)
 				workspace.open ();
