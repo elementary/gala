@@ -187,6 +187,9 @@ namespace Gala
 		{
 			window.unmanaged.disconnect (unmanaged);
 			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
+			window.notify["fullscreen"].disconnect (check_shadow_requirements);
+			window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
+			window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
 
 			if (shadow_update_timeout != 0)
 				Source.remove (shadow_update_timeout);
