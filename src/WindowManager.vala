@@ -413,7 +413,7 @@ namespace Gala
 		void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
 			Clutter.KeyEvent event, Meta.KeyBinding binding)
 		{
-			var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
+			var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.get_n_workspaces () - 1);
 			screen.get_workspace_by_index (index).activate (display.get_current_time ());
 		}
 
