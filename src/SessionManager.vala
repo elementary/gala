@@ -17,7 +17,7 @@
 
 // Reference code by the Solus Project: https://github.com/solus-project/budgie-desktop/blob/master/src/wm/shim.vala
 namespace Gala {
-    [DBus (name = "io.elementary.wingpanel.session.enddialog")]
+    [DBus (name = "io.elementary.wingpanel.session.EndSessionDialog")]
     public interface WingpanelEndSessionDialog : Object
     {
         public signal void confirmed_logout ();
