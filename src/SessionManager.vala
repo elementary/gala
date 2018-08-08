@@ -31,16 +31,16 @@ namespace Gala {
     
     [DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
     public class SessionManager : Object {
-		static SessionManager? instance;
+        static SessionManager? instance;
 
-		[DBus (visible = false)]
-		public static unowned SessionManager init ()
-		{
-			if (instance == null) {
+        [DBus (visible = false)]
+        public static unowned SessionManager init ()
+        {
+            if (instance == null) {
                 instance = new SessionManager ();
             }
 
-			return instance;
+            return instance;
         }
         
         public signal void confirmed_logout ();
