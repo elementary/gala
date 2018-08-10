@@ -127,7 +127,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		close_action.clicked.connect (on_close_click_clicked);
 
 		close_button = Gala.Utils.create_close_button ();
-		close_button.set_size (BUTTON_SIZE, BUTTON_SIZE);
 		close_button.opacity = 0;
 		close_button.reactive = true;
 		close_button.set_easing_duration (300);

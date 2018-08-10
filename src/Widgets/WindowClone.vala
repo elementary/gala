@@ -22,7 +22,7 @@ namespace Gala
 {
 	class WindowShadowEffect : ShadowEffect
 	{
-		public Meta.Window window { get; construct; }
+		public unowned Meta.Window window { get; construct; }
 
 		public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread)
 		{
@@ -119,6 +119,7 @@ namespace Gala
 		int prev_index = -1;
 		ulong check_confirm_dialog_cb = 0;
 		uint shadow_update_timeout = 0;
+		int scale_factor = 0;
 
 		Actor close_button;
 		Actor active_shape;
@@ -135,6 +136,9 @@ namespace Gala
 
 			window.unmanaged.connect (unmanaged);
 			window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
+			window.notify["fullscreen"].connect (check_shadow_requirements);
+			window.notify["maximized-horizontally"].connect (check_shadow_requirements);
+			window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
 			if (overview_mode) {
 				var click_action = new ClickAction ();
@@ -162,7 +166,9 @@ namespace Gala
 				return true;
 			});
 
-			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE);
+			scale_factor = InternalUtils.get_ui_scaling_factor ();
+
+			window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
 			window_icon.opacity = 0;
 			window_icon.set_pivot_point (0.5f, 0.5f);
 
@@ -181,6 +187,9 @@ namespace Gala
 		{
 			window.unmanaged.disconnect (unmanaged);
 			window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
+			window.notify["fullscreen"].disconnect (check_shadow_requirements);
+			window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
+			window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
 
 			if (shadow_update_timeout != 0)
 				Source.remove (shadow_update_timeout);
@@ -221,8 +230,7 @@ namespace Gala
 
 			transition_to_original_state (false);
 
-			shadow_effect = new WindowShadowEffect (window, 40, 5);
-			clone.add_effect_with_name ("shadow", shadow_effect);
+			check_shadow_requirements ();
 
 			if (should_fade ())
 				opacity = 0;
@@ -237,6 +245,21 @@ namespace Gala
 				opacity = 255;
 
 				request_reposition ();
+			}
+		}
+
+		void check_shadow_requirements ()
+		{
+			if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
+				if (shadow_effect == null) {
+					shadow_effect = new WindowShadowEffect (window, 40, 5);
+					clone.add_effect_with_name ("shadow", shadow_effect);
+				}
+			} else {
+				if (shadow_effect != null) {
+					clone.remove_effect (shadow_effect);
+					shadow_effect = null;
+				}
 			}
 		}
 
@@ -403,7 +426,7 @@ namespace Gala
 				window_icon.save_easing_state ();
 				window_icon.set_easing_duration (0);
 
-				window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - WINDOW_ICON_SIZE * 0.75f);
+				window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
 
 				window_icon.restore_easing_state ();
 			}
@@ -420,9 +443,9 @@ namespace Gala
 			shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
 
 			if (show)
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 255);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 255);
 			else
-				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_effect.shadow_opacity, 0);
+				shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 0);
 
 			add_transition ("shadow-opacity", shadow_transition);
 		}

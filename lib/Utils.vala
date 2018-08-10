@@ -208,8 +208,8 @@ namespace Gala
 		public static uint get_n_windows (Meta.Workspace workspace)
 		{
 			var n = 0;
-			foreach (var window in workspace.list_windows ()) {
-				if (window.is_on_all_workspaces ())
+			foreach (weak Meta.Window window in workspace.list_windows ()) {
+				if (window.is_always_on_all_workspaces ())
 					continue;
 				if (window.window_type == Meta.WindowType.NORMAL ||
 					window.window_type == Meta.WindowType.DIALOG ||
