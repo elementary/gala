@@ -1526,6 +1526,7 @@ namespace Gala
 			if (move_primary_only) {
 				wallpaper = background_group.get_child_at_index (primary);
 				wallpaper.set_data<int> ("prev-x", (int) wallpaper.x);
+				wallpaper.set_data<int> ("prev-y", (int) wallpaper.y);
 			} else
 				wallpaper = background_group;
 
@@ -1649,6 +1650,13 @@ namespace Gala
 			in_group.x = -x2;
 			wallpaper_clone.x = -x2;
 
+			// The wallpapers need to move upwards inside the container to match their 
+			// original position before/after the transition.
+			if (move_primary_only) {
+				wallpaper.y = -monitor_geom.y;
+				wallpaper_clone.y = -monitor_geom.y;
+			}
+
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
 			in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
 			in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
@@ -1700,6 +1708,7 @@ namespace Gala
 					background.get_parent ().remove_child (background);
 					background_group.insert_child_at_index (background, background.monitor_index);
 					background.x = background.steal_data<int> ("prev-x");
+					background.y = background.steal_data<int> ("prev-y");
 					continue;
 				} else if (actor is Meta.BackgroundGroup) {
 					actor.x = 0;
