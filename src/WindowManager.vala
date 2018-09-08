@@ -19,29 +19,11 @@ using Meta;
 
 namespace Gala
 {
-	[DBus (name = "org.freedesktop.login1.Manager")]
-	public interface LoginDRemote : GLib.Object
-	{
-		public signal void prepare_for_sleep (bool suspending);
-	}
-
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
 		const uint GL_VENDOR = 0x1F00;
 		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
 		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
-
-		delegate unowned string? GlQueryFunc (uint id);
-
-		static bool is_nvidia ()
-		{
-			var gl_get_string = (GlQueryFunc) Cogl.get_proc_address ("glGetString");
-			if (gl_get_string == null)
-				return false;
-
-			unowned string? vendor = gl_get_string (GL_VENDOR);
-			return (vendor != null && vendor.contains ("NVIDIA Corporation"));
-		}
 
 		/**
 		 * {@inheritDoc}
@@ -82,8 +64,6 @@ namespace Gala
 
 		Window? moving; //place for the window that is being moved over
 
-		LoginDRemote? logind_proxy = null;
-
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
 		Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -111,24 +91,15 @@ namespace Gala
 		{
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
-			// Handle FBO issue with nvidia blob
-			if (logind_proxy == null
-				&& is_nvidia ()) {
-				try {
-					logind_proxy = Bus.get_proxy_sync (BusType.SYSTEM, LOGIND_DBUS_NAME, LOGIND_DBUS_OBJECT_PATH);
-					logind_proxy.prepare_for_sleep.connect (prepare_for_sleep);
-				} catch (Error e) {
-					warning ("Failed to get LoginD proxy: %s", e.message);
-				}
-			}
+#if HAS_MUTTER322
+			get_screen ().get_display ().gl_video_memory_purged.connect (refresh_backgrounds);
+#endif
 		}
 
-		void prepare_for_sleep (bool suspending)
+		void refresh_backgrounds ()
 		{
-			if (suspending)
-				return;
-
 			Meta.Background.refresh_all ();
+			SystemBackground.refresh ();
 		}
 
 		bool show_stage ()
