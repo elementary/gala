@@ -33,7 +33,6 @@ gala_bin_sources = files(
 	'Widgets/WindowClone.vala',
 	'Widgets/WindowCloneContainer.vala',
 	'Widgets/WindowIconActor.vala',
-	'Widgets/WindowMenu.vala',
 	'Widgets/WindowOverview.vala',
 	'Widgets/WindowSwitcher.vala',
 	'Widgets/WorkspaceClone.vala',
