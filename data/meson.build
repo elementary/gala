@@ -24,7 +24,12 @@ i18n.merge_file(
 	install: true,
 	install_dir: join_paths(data_dir, 'applications')
 )
-install_data(['gala.desktop', 'gala-daemon.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
+install_data(['gala.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
+
+install_data(
+	'gala-daemon.desktop',
+	install_dir: join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
+)
 
 icons_dir = join_paths(get_option('datadir'), 'icons', 'hicolor')
 install_data('icons/32x32/multitasking-view.svg', install_dir: join_paths(icons_dir, '32x32', 'apps'))
