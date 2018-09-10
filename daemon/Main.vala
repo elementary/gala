@@ -20,18 +20,18 @@ namespace Gala
 	[DBus (name = "org.gnome.SessionManager")]
 	public interface SessionManager : Object
 	{
-		public abstract async ObjectPath RegisterClient (string app_id, string client_start_id) throws DBusError, IOError;
+		public abstract async ObjectPath register_client (string app_id, string client_start_id) throws DBusError, IOError;
 	}
 
 	[DBus (name = "org.gnome.SessionManager.ClientPrivate")]
 	public interface SessionClient : Object
 	{
-		public abstract void EndSessionResponse (bool is_ok, string reason) throws DBusError, IOError;
+		public abstract void end_session_response (bool is_ok, string reason) throws DBusError, IOError;
 
-		public signal void Stop () ;
-		public signal void QueryEndSession (uint flags);
-		public signal void EndSession (uint flags);
-		public signal void CancelEndSession ();
+		public signal void stop () ;
+		public signal void query_end_session (uint flags);
+		public signal void end_session (uint flags);
+		public signal void cancel_end_session ();
 	}
 
 	public class Daemon
@@ -80,7 +80,7 @@ namespace Gala
 			}
 
 			try {
-				path = yield session.RegisterClient (app_id, start_id);
+				path = yield session.register_client (app_id, start_id);
 			} catch (Error e) {
 				msg = e.message;
 				warning ("Error registering with session manager: %s", e.message);
@@ -101,9 +101,9 @@ namespace Gala
 		{
 			sclient = yield register_with_session ("org.pantheon.gala.daemon");
 
-			sclient.QueryEndSession.connect (() => end_session (false));
-			sclient.EndSession.connect (() => end_session (false));
-			sclient.Stop.connect (() => end_session (true));
+			sclient.query_end_session.connect (() => end_session (false));
+			sclient.end_session.connect (() => end_session (false));
+			sclient.stop.connect (() => end_session (true));
 
 			return true;
 		}
@@ -116,7 +116,7 @@ namespace Gala
 			}
 
 			try {
-				sclient.EndSessionResponse (true, "");
+				sclient.end_session_response (true, "");
 			} catch (Error e) {
 				warning ("Unable to respond to session manager: %s", e.message);
 			}
