@@ -134,12 +134,6 @@ namespace Gala
 			}
 		}
 
-		void refresh_backgrounds ()
-		{
-			Meta.Background.refresh_all ();
-			SystemBackground.refresh ();
-		}
-
 		bool show_stage ()
 		{
 			var screen = get_screen ();
