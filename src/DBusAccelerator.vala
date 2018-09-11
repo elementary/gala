@@ -63,7 +63,7 @@ namespace Gala
 			}
 		}
 
-		public uint grab_accelerator (string accelerator, uint flags)
+		public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError
 		{
 			uint? action = grabbed_accelerators[accelerator];
 
@@ -77,7 +77,7 @@ namespace Gala
 			return action;
 		}
 
-		public uint[] grab_accelerators (Accelerator[] accelerators)
+		public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError
 		{
 			uint[] actions = {};
 
@@ -88,7 +88,7 @@ namespace Gala
 			return actions;
 		}
 
-		public bool ungrab_accelerator (uint action)
+		public bool ungrab_accelerator (uint action) throws DBusError, IOError
 		{
 			bool ret = false;
 
@@ -104,7 +104,7 @@ namespace Gala
 		}
 
 		[DBus (name = "ShowOSD")]
-		public void show_osd (GLib.HashTable<string, Variant> parameters)
+		public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError
 		{
 			int32 monitor_index = -1;
 			if (parameters.contains ("monitor"))
