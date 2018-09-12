@@ -21,7 +21,7 @@ namespace Gala
 	interface DBusNotifications : GLib.Object
 	{
 		public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
-			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws IOError;
+			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
 	}
 
 	public class MediaFeedback : GLib.Object
@@ -121,7 +121,7 @@ namespace Gala
 
 			try {
 				notification_id = notifications.notify ("gala-feedback", notification_id, feedback.icon, "", "", {}, hints, 2000);
-			} catch (IOError e) {
+			} catch (Error e) {
 				critical ("%s", e.message);
 			}
 		}
