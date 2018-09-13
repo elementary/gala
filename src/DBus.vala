@@ -56,6 +56,15 @@ namespace Gala
 				() => {},
 				() => {},
 				() => critical ("Could not acquire name") );
+
+			Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
+				(connection) => {
+					try {
+						connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
+					} catch (Error e) { warning (e.message); }
+				},
+				() => {},
+				() => critical ("Could not acquire name") );
 		}
 
 		private DBus ()
@@ -68,7 +77,7 @@ namespace Gala
 				assert_not_reached ();
 		}
 
-		public void perform_action (ActionType type)
+		public void perform_action (ActionType type) throws DBusError, IOError
 		{
 			wm.perform_action (type);
 		}
@@ -118,7 +127,7 @@ namespace Gala
 		 */
 		public async ColorInformation get_background_color_information (int monitor,
 			int reference_x, int reference_y, int reference_width, int reference_height)
-			throws DBusError
+			throws DBusError, IOError
 		{
 			var background = wm.background_group.get_child_at_index (monitor);
 			if (background == null)
