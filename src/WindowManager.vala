@@ -30,9 +30,6 @@ namespace Gala
 
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
-		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
-		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
-
 		/**
 		 * {@inheritDoc}
 		 */
