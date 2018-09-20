@@ -877,11 +877,21 @@ namespace Gala
 					if (window.can_close ())
 						flags |= WindowFlags.CAN_CLOSE;
 
-					try {
-						daemon_proxy.show_window_menu.begin (flags, x, y);
-					} catch (Error e) {
-						message ("Error invoking MenuManager: %s", e.message);
-					}
+					Idle.add (() => {
+						unowned Screen screen = get_screen ();
+						var time = screen.get_display ().get_current_time ();
+			
+						begin_modal (0, time);
+						try {
+							daemon_proxy.show_window_menu.begin (flags, x, y);
+						} catch (Error e) {
+							message ("Error invoking MenuManager: %s", e.message);
+						}
+
+						end_modal (time);
+						return false;
+					});
+
 					break;
 				case WindowMenuType.APP:
 					// FIXME we don't have any sort of app menus
