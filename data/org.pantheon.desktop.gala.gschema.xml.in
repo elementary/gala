@@ -258,7 +258,7 @@
 		</key>
 	</schema>
 
-	<schema path="/org/pantheon/desktop/gala/notifications/applications/gala-other" id="org.pantheon.desktop.gala.notifications.applications.gala-other" gettext-domain="@GETTEXT_PACKAGE@">
+	<schema path="/org/pantheon/desktop/gala/notifications/applications/gala-other/" id="org.pantheon.desktop.gala.notifications.applications.gala-other" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="bubbles">
 			<default>false</default>
 			<summary>Enable bubbles</summary>
