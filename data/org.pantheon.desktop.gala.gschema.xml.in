@@ -257,6 +257,21 @@
 			<summary>Show missed notifications in notification center</summary>
 		</key>
 	</schema>
+
+	<schema id="org.pantheon.desktop.gala.notifications.application.gala-other" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="b" name="bubbles">
+			<default>false</default>
+			<summary>Enable bubbles</summary>
+		</key>
+		<key type="b" name="sounds">
+			<default>false</default>
+			<summary>Enable sounds</summary>
+		</key>
+		<key type="b" name="remember">
+			<default>false</default>
+			<summary>Show missed notifications in notification center</summary>
+		</key>
+	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="enable">
