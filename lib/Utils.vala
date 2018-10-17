@@ -209,7 +209,7 @@ namespace Gala
 		{
 			var n = 0;
 			foreach (weak Meta.Window window in workspace.list_windows ()) {
-				if (window.is_always_on_all_workspaces ())
+				if (window.on_all_workspaces)
 					continue;
 				if (window.window_type == Meta.WindowType.NORMAL ||
 					window.window_type == Meta.WindowType.DIALOG ||
