@@ -81,7 +81,7 @@ msgstr "Pokaż wszystkie otwarte okna i obszary robocze"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "podglad-wielozadaniowy"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
