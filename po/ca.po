@@ -81,7 +81,7 @@ msgstr "Visualitza totes les finestres obertes i totes les àrees de treball"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "Vista de multitasca"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
