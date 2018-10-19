@@ -83,7 +83,7 @@ msgstr "Ver todas las ventanas y áreas de trabajo"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "vista-multitarea"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
