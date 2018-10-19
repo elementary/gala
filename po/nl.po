@@ -83,7 +83,7 @@ msgstr "Toon alle open vensters en werkbladen"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "multitasking-weergave"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
