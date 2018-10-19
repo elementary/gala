@@ -83,7 +83,7 @@ msgstr "모든 창과 작업 공간 보기"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "멀티태스킹 뷰"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
