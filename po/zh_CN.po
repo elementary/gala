@@ -83,7 +83,7 @@ msgstr "查看所有打开的窗口和工作区"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "多任务视图"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
