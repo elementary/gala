@@ -99,14 +99,11 @@ namespace Gala
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
 #if HAS_MUTTER322
-			get_screen ().get_display ().gl_video_memory_purged.connect (refresh_backgrounds);
+			get_screen ().get_display ().gl_video_memory_purged.connect (() => {
+				Meta.Background.refresh_all ();
+				SystemBackground.refresh ();
+			});
 #endif
-		}
-
-		void refresh_backgrounds ()
-		{
-			Meta.Background.refresh_all ();
-			SystemBackground.refresh ();
 		}
 
 		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
