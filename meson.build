@@ -261,6 +261,7 @@ gala_base_dep = [glib_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, gr
 subdir('data')
 subdir('lib')
 subdir('src')
+subdir('daemon')
 subdir('plugins/maskcorners')
 subdir('plugins/notify')
 subdir('plugins/pip')
