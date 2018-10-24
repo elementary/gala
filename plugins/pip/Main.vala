@@ -148,7 +148,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 
 			var window = actor.get_meta_window ();
 			var rect = window.get_frame_rect ();
-			if (!window.is_hidden () && !window.is_skip_taskbar () && meta_rectangle_contains (rect, x, y)) {
+
+			if (!actor.is_destroyed () && !window.is_hidden () && !window.is_skip_taskbar () && meta_rectangle_contains (rect, x, y)) {
 				selected = actor;
 			}
 		});
@@ -171,7 +172,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 			}
 
 			var window = actor.get_meta_window ();
-			if (!window.is_hidden () && !window.is_skip_taskbar () && window.has_focus ()) {
+			if (!actor.is_destroyed () && !window.is_hidden () && !window.is_skip_taskbar () && window.has_focus ()) {
 				active = actor;
 			}
 		});
