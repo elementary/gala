@@ -500,7 +500,7 @@ namespace Gala
 					|| window.minimized) {
 					return;
 				}
-	
+
 				var actor = window.get_compositor_private () as Clutter.Actor;
 				if (enable_animations) {
 					var op_trans = new Clutter.KeyframeTransition ("opacity");
@@ -511,7 +511,7 @@ namespace Gala
 					op_trans.set_to_value (255.0f);
 					op_trans.set_key_frames (op_keyframes);
 					op_trans.set_values (opacity);
-	
+
 					actor.add_transition ("opacity-hide", op_trans);
 				} else {
 					Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
@@ -965,28 +965,36 @@ namespace Gala
 			if (window.get_tile_match () != null) {
 				size_change_completed (actor);
 				return;
-			}	
+			}
 
-			ulong signal_id = 0U;
-			signal_id = window.size_changed.connect (() => {
-				window.disconnect (signal_id);
-				var new_rect = window.get_frame_rect ();
-				
-				switch (which_change) {
-					case Meta.SizeChange.MAXIMIZE:
-						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-						break;
-					case Meta.SizeChange.UNMAXIMIZE:
-						unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-						break;
-					case Meta.SizeChange.FULLSCREEN:
-					case Meta.SizeChange.UNFULLSCREEN:
-						handle_fullscreen_window (actor.get_meta_window (), which_change);
-						break;
-				}
+			ulong size_signal_id = 0U;
+			ulong position_signal_id = 0U;
+			size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+			position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+		}
 
-				size_change_completed (actor);
-			});
+		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
+			unowned Meta.Window window = actor.get_meta_window ();
+
+			window.disconnect (size_signal_id);
+			window.disconnect (position_signal_id);
+
+			var new_rect = window.get_frame_rect ();
+
+			switch (which_change) {
+				case Meta.SizeChange.MAXIMIZE:
+					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.UNMAXIMIZE:
+					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (window, which_change);
+					break;
+			}
+
+			size_change_completed (actor);
 		}
 
 		public override void minimize (WindowActor actor)
@@ -1713,7 +1721,7 @@ namespace Gala
 			in_group.x = -x2;
 			wallpaper_clone.x = -x2;
 
-			// The wallpapers need to move upwards inside the container to match their 
+			// The wallpapers need to move upwards inside the container to match their
 			// original position before/after the transition.
 			if (move_primary_only) {
 				wallpaper.y = -monitor_geom.y;
