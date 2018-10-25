@@ -97,7 +97,7 @@ namespace Gala.Plugins.Notify
 			app_info_cache = new Gee.HashMap<string, AppInfo> ();
 		}
 
-		public string [] get_capabilities ()
+		public string [] get_capabilities () throws DBusError, IOError
 		{
 			return {
 				"body",
@@ -114,7 +114,7 @@ namespace Gala.Plugins.Notify
 		}
 
 		public void get_server_information (out string name, out string vendor,
-			out string version, out string spec_version)
+			out string version, out string spec_version) throws DBusError, IOError
 		{
 			name = "pantheon-notify";
 			vendor = "elementaryOS";
@@ -127,7 +127,7 @@ namespace Gala.Plugins.Notify
 		 *
 		 * @param id The id of the notification to be closed.
 		 */
-		public void close_notification (uint32 id) throws DBusError
+		public void close_notification (uint32 id) throws DBusError, IOError
 		{
 			foreach (var child in stack.get_children ()) {
 				unowned Notification notification = (Notification) child;
@@ -148,6 +148,7 @@ namespace Gala.Plugins.Notify
 
 		public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
 			string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
+			throws DBusError, IOError
 		{
 			unowned Variant? variant = null;
 
