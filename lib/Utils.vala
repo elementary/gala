@@ -276,6 +276,15 @@ namespace Gala
 				screen.get_display ().get_compositor ().flash_screen (screen);
 		}
 
+		public static int get_ui_scaling_factor ()
+		{
+#if HAS_MUTTER326
+			return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+			return 1;
+#endif
+		}
+
 		/**
 		 * Returns the pixbuf that is used for close buttons throughout gala at a
 		 * size of 36px
@@ -285,11 +294,7 @@ namespace Gala
 		public static Gdk.Pixbuf? get_close_button_pixbuf ()
 		{
 			if (close_pixbuf == null) {
-#if HAS_MUTTER326
-				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-				var scale = 1;
-#endif
+				var scale = Utils.get_ui_scaling_factor ();
 				try {
 					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36 * scale, true);
 				} catch (Error e) {
@@ -320,14 +325,10 @@ namespace Gala
 						pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
 				} catch (Error e) {}
 			} else {
-				// we'll just make this red so there's at least something as an 
+				// we'll just make this red so there's at least something as an
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
-#if HAS_MUTTER326
-				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-				var scale = 1;
-#endif
+				var scale = Utils.get_ui_scaling_factor ();
 				texture.set_size (36 * scale, 36 * scale);
 				texture.background_color = { 255, 0, 0, 255 };
 			}
@@ -343,11 +344,7 @@ namespace Gala
 		public static Gdk.Pixbuf? get_resize_button_pixbuf ()
 		{
 			if (resize_pixbuf == null) {
-#if HAS_MUTTER326
-				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-				var scale = 1;
-#endif
+				var scale = Utils.get_ui_scaling_factor ();
 				try {
 					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36 * scale, true);
 				} catch (Error e) {
@@ -381,11 +378,7 @@ namespace Gala
 				// we'll just make this red so there's at least something as an
 				// indicator that loading failed. Should never happen and this
 				// works as good as some weird fallback-image-failed-to-load pixbuf
-#if HAS_MUTTER326
-				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-				var scale = 1;
-#endif
+				var scale = Utils.get_ui_scaling_factor ();
 				texture.set_size (36 * scale, 36 * scale);
 				texture.background_color = { 255, 0, 0, 255 };
 			}
