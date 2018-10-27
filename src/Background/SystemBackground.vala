@@ -60,6 +60,16 @@ namespace Gala
 				});
 			}
 		}
+
+		public static void refresh () 
+		{
+			// Meta.Background.refresh_all does not refresh backgrounds with the WALLPAPER style.
+			// (Last tested with mutter 3.28)
+			// As a workaround, re-apply the current color again to force the wallpaper texture
+			// to be rendered from scratch.
+			if (system_background != null)
+				system_background.set_color (DEFAULT_BACKGROUND_COLOR);
+		}
 	}
 }
 
