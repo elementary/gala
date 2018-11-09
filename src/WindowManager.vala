@@ -999,7 +999,6 @@ namespace Gala
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
 				window.change_workspace_by_index (next_index, true);
 				minimize_completed (actor);
-				window.unminimize ();
 				return;
 			}
 
@@ -1023,7 +1022,6 @@ namespace Gala
 				actor.disconnect (minimize_handler_id);
 				actor.x = prev_x;
 				minimize_completed (actor);
-				window.unminimize ();
 				minimizing.remove (actor);
 			});
 		}
@@ -1519,9 +1517,18 @@ namespace Gala
 
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
+			var screen = get_screen ();
+			unowned Meta.Workspace workspace_to = screen.get_workspace_by_index (to);
+
+			GLib.List<weak Meta.Window> to_windows = workspace_to.list_windows ();
+			to_windows.@foreach ((window) => {
+				if (window.minimized) {
+					window.unminimize ();
+				}
+			});
+
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var animation_duration = animation_settings.workspace_switch_duration;
-
 			if (!animation_settings.enable_animations
 				|| animation_duration == 0
 				|| (direction != MotionDirection.LEFT && direction != MotionDirection.RIGHT)) {
@@ -1530,7 +1537,6 @@ namespace Gala
 			}
 
 			float screen_width, screen_height;
-			var screen = get_screen ();
 			var primary = screen.get_primary_monitor ();
 			var move_primary_only = InternalUtils.workspaces_only_on_primary ();
 			var monitor_geom = screen.get_monitor_geometry (primary);
@@ -1540,7 +1546,6 @@ namespace Gala
 			screen.get_size (out screen_width, out screen_height);
 
 			unowned Meta.Workspace workspace_from = screen.get_workspace_by_index (from);
-			unowned Meta.Workspace workspace_to = screen.get_workspace_by_index (to);
 
 			var main_container = new Clutter.Actor ();
 			var static_windows = new Clutter.Actor ();
