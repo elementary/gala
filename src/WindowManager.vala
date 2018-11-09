@@ -990,67 +990,42 @@ namespace Gala
 		public override void minimize (WindowActor actor)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
+			unowned Meta.Window window = actor.get_meta_window ();			
 			var duration = animation_settings.minimize_duration;
 
+			int next_index = get_screen ().get_n_workspaces () - 1;
 			if (!animation_settings.enable_animations
 				|| duration == 0
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
+				window.change_workspace_by_index (next_index, true);
 				minimize_completed (actor);
+				window.unminimize ();
 				return;
 			}
 
 			kill_window_effects (actor);
 			minimizing.add (actor);
 
-			int width, height;
-			get_screen ().get_size (out width, out height);
+			int width;
+			get_screen ().get_size (out width, null);
 
-			Rectangle icon = {};
-			if (actor.get_meta_window ().get_icon_geometry (out icon)) {
+			window.change_workspace_by_index (next_index, true);
 
-				float scale_x  = (float)icon.width  / actor.width;
-				float scale_y  = (float)icon.height / actor.height;
-				float anchor_x = (float)(actor.x - icon.x) / (icon.width  - actor.width);
-				float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
-				actor.set_pivot_point (anchor_x, anchor_y);
+			float prev_x = actor.x;
+			actor.save_easing_state ();
+			actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
+			actor.set_easing_duration (duration);
+			actor.set_position (width, actor.y);
+			actor.restore_easing_state ();
 
-				actor.save_easing_state ();
-				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-				actor.set_easing_duration (duration);
-				actor.set_scale (scale_x, scale_y);
-				actor.opacity = 0U;
-				actor.restore_easing_state ();
-
-				ulong minimize_handler_id = 0UL;
-				minimize_handler_id = actor.transitions_completed.connect (() => {
-					actor.disconnect (minimize_handler_id);
-					actor.set_pivot_point (0.0f, 0.0f);
-					actor.set_scale (1.0f, 1.0f);
-					actor.opacity = 255U;
-					minimize_completed (actor);
-					minimizing.remove (actor);
-				});
-
-			} else {
-				actor.set_pivot_point (0.5f, 1.0f);
-
-				actor.save_easing_state ();
-				actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-				actor.set_easing_duration (duration);
-				actor.set_scale (0.0f, 0.0f);
-				actor.opacity = 0U;
-				actor.restore_easing_state ();
-
-				ulong minimize_handler_id = 0UL;
-				minimize_handler_id = actor.transitions_completed.connect (() => {
-					actor.disconnect (minimize_handler_id);
-					actor.set_pivot_point (0.0f, 0.0f);
-					actor.set_scale (1.0f, 1.0f);
-					actor.opacity = 255U;
-					minimize_completed (actor);
-					minimizing.remove (actor);
-				});
-			}
+			ulong minimize_handler_id = 0UL;
+			minimize_handler_id = actor.transitions_completed.connect (() => {
+				actor.disconnect (minimize_handler_id);
+				actor.x = prev_x;
+				minimize_completed (actor);
+				window.unminimize ();
+				minimizing.remove (actor);
+			});
 		}
 
 		void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
