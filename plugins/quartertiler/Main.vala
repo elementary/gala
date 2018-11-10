@@ -22,13 +22,9 @@ namespace Gala.Plugins.QuarterTiler
 {
 	public class Main : Gala.Plugin
 	{
-		Gala.WindowManager? wm = null;
-		Screen screen;
-
 		public override void initialize (Gala.WindowManager wm)
 		{
-			this.wm = wm;
-			screen = wm.get_screen ();
+			Screen screen = wm.get_screen ();
 			Display display = screen.get_display ();
 			var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 			display.add_keybinding ("tile-topleft", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
@@ -68,12 +64,12 @@ namespace Gala.Plugins.QuarterTiler
 					y += height;
 					break;
 			}
+
 			focused_window.move_resize_frame (true, x, y, width, height);
 		}
 
 		public override void destroy ()
 		{
-
 		}
 	}
 }
