@@ -45,6 +45,11 @@ namespace Gala.Plugins.QuarterTiler
 			if (!focused_window.allows_move () || !focused_window.allows_resize ()){
 				return;
 			}
+
+			if (focused_window.maximized_vertically || focused_window.maximized_horizontally) {
+				focused_window.unmaximize (MaximizeFlags.BOTH);
+			}
+
 			Meta.Rectangle wa = focused_window.get_work_area_current_monitor ();
 
 			int x = wa.x;
