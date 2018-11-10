@@ -15,7 +15,7 @@
 		<value nick='grid' value='0'/>
 		<value nick='natural' value='1'/>
 	</enum>
-	
+
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior" gettext-domain="@GETTEXT_PACKAGE@">
 		<key enum="GalaActionType" name="hotcorner-topleft">
 			<default>'none'</default>
@@ -83,7 +83,7 @@
 			<description>When launching the window-switcher, Gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
 		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="as" name="switch-to-workspace-first">
 			<default><![CDATA[['<Super>Home']]]></default>
@@ -147,8 +147,28 @@
 			<summary>The shortcut to enable picture-in-picture window</summary>
 			<description>The shortcut to show the selection area to choose a window.</description>
 		</key>
+		<key type="as" name="tile-topleft">
+			<default><![CDATA[['<Super><Ctrl>1']]]></default>
+			<summary>Tile window to top left</summary>
+			<description>The shortcut to quarter tile window to top left.</description>
+		</key>
+		<key type="as" name="tile-topright">
+			<default><![CDATA[['<Super><Ctrl>2']]]></default>
+			<summary>Tile window to top right</summary>
+			<description>The shortcut to quarter tile window to top right.</description>
+		</key>
+		<key type="as" name="tile-bottomleft">
+			<default><![CDATA[['<Super><Ctrl>3']]]></default>
+			<summary>Tile window to bottom left</summary>
+			<description>The shortcut to quarter tile window to bottom left.</description>
+		</key>
+		<key type="as" name="tile-bottomright">
+			<default><![CDATA[['<Super><Ctrl>4']]]></default>
+			<summary>Tile window to bottom right</summary>
+			<description>The shortcut to quarter tile window to bottom right.</description>
+		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="attach-modal-dialogs">
 			<default>false</default>
@@ -175,7 +195,7 @@
 			<summary>Background-image used in the workspace-switcher</summary>
 		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="enable-animations">
 			<default>true</default>
@@ -206,7 +226,7 @@
 			<summary>Duration of the menu mapping animation</summary>
 		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/shadows/" id="org.pantheon.desktop.gala.shadows" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="as" name="normal-focused">
 			<default>['20', '-1', '0', '15', '220']</default>
@@ -234,7 +254,7 @@
 			<description>See normal-focused.</description>
 		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="do-not-disturb">
 			<default>false</default>
@@ -257,7 +277,7 @@
 			<summary>Show missed notifications in notification center</summary>
 		</key>
 	</schema>
-	
+
 	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="b" name="enable">
 			<default>true</default>
