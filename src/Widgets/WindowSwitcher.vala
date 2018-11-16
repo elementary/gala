@@ -34,7 +34,7 @@ namespace Gala
 		WindowIcon? current_window = null;
 
 		Actor window_clones;
-		List<Actor> clone_sort_order;
+		List<unowned Actor> clone_sort_order;
 
 		WindowActor? dock_window;
 		Actor dock;

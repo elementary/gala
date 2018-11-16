@@ -25,7 +25,7 @@
 		<key enum="GalaWindowOverviewType" name="window-overview-type">
 			<default>'grid'</default>
 			<summary>Algorithm for window overview layout</summary>
-			<description>Choose the algorithm used for exposing the windows</description>
+			<description>Choose the algorithm used for exposing the windows.</description>
 		</key>
 		<key enum="GalaActionType" name="hotcorner-topright">
 			<default>'none'</default>
@@ -60,7 +60,7 @@
 		<key type="s" name="panel-main-menu-action">
 			<default>''</default>
 			<summary>Panel main menu action</summary>
-			<description>Sets the command to run when the panel-main-menu keybinding is pressed</description>
+			<description>Sets the command to run when the panel-main-menu keybinding is pressed.</description>
 		</key>
 		<key type="s" name="toggle-recording-action">
 			<default>''</default>
@@ -75,7 +75,7 @@
 		<key type="b" name="dynamic-workspaces">
 			<default>true</default>
 			<summary>Enable dynamic workspace instead of static ones</summary>
-			<description>Use a dynamically increasing or decreasing number, as needed, of workspaces instead of a static, fixed number</description>
+			<description>Use a dynamically increasing or decreasing number, as needed, of workspaces instead of a static, fixed number.</description>
 		</key>
 		<key type="as" name="dock-names">
 			<default><![CDATA[['docky', 'Docky', 'plank']]]></default>
@@ -145,7 +145,7 @@
 		<key type="as" name="pip">
 			<default><![CDATA[['<Super>f']]]></default>
 			<summary>The shortcut to enable picture-in-picture window</summary>
-			<description>The shortcut to show the selection area to choose a window</description>
+			<description>The shortcut to show the selection area to choose a window.</description>
 		</key>
 	</schema>
 	
@@ -211,27 +211,27 @@
 		<key type="as" name="normal-focused">
 			<default>['20', '-1', '0', '15', '220']</default>
 			<summary>Defines the shadow of normal focused windows</summary>
-			<description>The first value is the radius of the blur of the shadow, the second one the top fade (which is usually just -1), the third and fourth the x- and y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-offset, opacity]</description>
+			<description>The first value is the radius of the blur of the shadow, the second one the top fade (which is usually just -1), the third and fourth the x- and y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-offset, opacity].</description>
 		</key>
 		<key type="as" name="normal-unfocused">
 			<default>['8', '-1', '0', '6', '150']</default>
 			<summary>Defines the shadow of a normal unfocused window</summary>
-			<description>See normal-focused</description>
+			<description>See normal-focused.</description>
 		</key>
 		<key type="as" name="menu">
 			<default>['7', '-1', '0', '5', '130']</default>
 			<summary>Defines the shadow of a menu</summary>
-			<description>See normal-focused</description>
+			<description>See normal-focused.</description>
 		</key>
 		<key type="as" name="dialog-focused">
 			<default>['12', '-1', '0', '7', '190']</default>
 			<summary>Defines the shadow of a focused dialog</summary>
-			<description>See normal-focused</description>
+			<description>See normal-focused.</description>
 		</key>
 		<key type="as" name="dialog-unfocused">
 			<default>['7', '-1', '0', '4', '130']</default>
 			<summary>Defines the shadow of an unfocused dialog</summary>
-			<description>See normal-focused</description>
+			<description>See normal-focused.</description>
 		</key>
 	</schema>
 	
