@@ -53,19 +53,17 @@ namespace Gala
 			transition.set_values (values);
 			transition.set_to_value (0.0f);
 
-			var top_window_group = wm.top_window_group;
-
 			var flash_actor = new Clutter.Actor ();
 			flash_actor.set_size (width, height);
 			flash_actor.set_position (x, y);
 			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
 			flash_actor.set_opacity (0);
-			flash_actor.transitions_completed.connect (() => {
-				top_window_group.remove_child (flash_actor);
-				flash_actor.destroy ();
+			flash_actor.transitions_completed.connect ((actor) => {
+				wm.top_window_group.remove_child (actor);
+				actor.destroy ();
 			});
 
-			top_window_group.add (flash_actor);
+			wm.top_window_group.add_child (flash_actor);
 			flash_actor.add_transition ("flash", transition);
 		}
 
