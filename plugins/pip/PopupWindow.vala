@@ -312,7 +312,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		var window = window_actor.get_meta_window ();
 		if (window.appears_focused) {
 			hide ();
-		} else {
+		} else if (!window_actor.is_destroyed ()) {
 			show ();
 		}
 
