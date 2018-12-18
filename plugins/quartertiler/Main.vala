@@ -27,6 +27,11 @@ namespace Gala.Plugins.QuarterTiler
 			Screen screen = wm.get_screen ();
 			Display display = screen.get_display ();
 			var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+			if (!("tile-topleft" in settings.list_keys ())) {
+					warning ("Quarter tiling key bindings not found");
+					return;
+			}
+
 			display.add_keybinding ("tile-topleft", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 			display.add_keybinding ("tile-topright", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 			display.add_keybinding ("tile-bottomleft", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
