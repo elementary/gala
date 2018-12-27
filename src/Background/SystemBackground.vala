@@ -32,19 +32,22 @@ namespace Gala
 
 		construct
 		{
-			var path = InternalUtils.get_system_background_path ();
+			var background_file = GLib.File.new_for_uri ("resource:///io/elementary/desktop/gala/texture.png");
+			unowned string custom_path = AppearanceSettings.get_default ().workspace_switcher_background;
+			if (custom_path != "" && FileUtils.test (custom_path, FileTest.IS_REGULAR)) {
+				background_file = GLib.File.new_for_path (custom_path);
+			}
 
 			if (system_background == null) {
 				system_background = new Meta.Background (meta_screen);
 				system_background.set_color (DEFAULT_BACKGROUND_COLOR);
-
-				system_background.set_file (File.new_for_path (path), GDesktop.BackgroundStyle.WALLPAPER);
+				system_background.set_file (background_file, GDesktop.BackgroundStyle.WALLPAPER);
 			}
 
 			background = system_background;
 
 			var cache = Meta.BackgroundImageCache.get_default ();
-			var image = cache.load (File.new_for_path (path));
+			var image = cache.load (background_file);
 			if (image.is_loaded ()) {
 				image = null;
 				Idle.add(() => {
