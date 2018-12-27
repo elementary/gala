@@ -118,21 +118,6 @@ namespace Gala
 			Util.set_stage_input_region (screen, xregion);
 		}
 
-		public static string get_system_background_path ()
-		{
-			var filename = AppearanceSettings.get_default ().workspace_switcher_background;
-			var default_file = Config.PKGDATADIR + "/texture.png";
-
-			if (filename == "") {
-				filename = default_file;
-			} else if (!FileUtils.test (filename, FileTest.IS_REGULAR)) {
-				warning ("Failed to load %s", filename);
-				filename = default_file;
-			}
-
-			return filename;
-		}
-
 		/**
 		 * Inserts a workspace at the given index. To ensure the workspace is not immediately
 		 * removed again when in dynamic workspaces, the window is first placed on it.
