@@ -33,7 +33,7 @@ namespace Gala.Plugins.Notify
 		static construct
 		{
 			try {
-				entity_regex = new Regex ("&(?!amp;|quot;|apos;|lt;|gt;)");
+				entity_regex = new Regex ("&(?!amp;|quot;|apos;|lt;|gt;|nbsp;|#39;)");
 				tag_regex = new Regex ("<(?!\\/?[biu]>)");
 			} catch (Error e) {}
 		}
