@@ -125,7 +125,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		Meta.Rectangle monitor_rect;
 		get_current_monitor_rect (out monitor_rect);
 
-		set_position (SCREEN_MARGIN + monitor_rect.x, monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height);
+		float x_position, y_position;
+		if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
+			x_position = SCREEN_MARGIN + monitor_rect.x;
+		} else {
+			x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
+		}
+		y_position = monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height;
+
+		set_position (x_position, y_position);
 
 		close_action = new Clutter.ClickAction ();
 		close_action.clicked.connect (on_close_click_clicked);
