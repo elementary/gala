@@ -128,7 +128,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		var x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
 		var y_position = monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height;
 
-		if (Clutter.get_default_text_direction() == Clutter.TextDirection.RTL) {
+		if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
 			x_position = SCREEN_MARGIN + monitor_rect.x;
 		}
 
