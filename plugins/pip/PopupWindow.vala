@@ -132,7 +132,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 			x_position = SCREEN_MARGIN + monitor_rect.x;
 		}
 
-		set_position(x_position, y_position);
+		set_position (x_position, y_position);
 
 		close_action = new Clutter.ClickAction ();
 		close_action.clicked.connect (on_close_click_clicked);
