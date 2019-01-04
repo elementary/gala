@@ -125,11 +125,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		Meta.Rectangle monitor_rect;
 		get_current_monitor_rect (out monitor_rect);
 
-		var x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
+		var x_position = 0.0f;
 		var y_position = monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height;
 
 		if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
 			x_position = SCREEN_MARGIN + monitor_rect.x;
+		}
+		else {
+			x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
 		}
 
 		set_position (x_position, y_position);
