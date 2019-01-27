@@ -385,5 +385,16 @@ namespace Gala
 
 			return texture;
 		}
+
+		static Gtk.CssProvider gala_css = null;
+		public static unowned Gtk.CssProvider? get_gala_css ()
+		{
+			if (gala_css == null) {
+				gala_css = new Gtk.CssProvider ();
+				gala_css.load_from_resource ("/io/elementary/desktop/gala/gala.css");
+			}
+
+			return gala_css;
+		}
 	}
 }

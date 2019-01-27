@@ -98,6 +98,8 @@ namespace Gala
 		{
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
+			Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+
 #if HAS_MUTTER322
 			get_screen ().get_display ().gl_video_memory_purged.connect (() => {
 				Meta.Background.refresh_all ();

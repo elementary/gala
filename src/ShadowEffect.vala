@@ -41,18 +41,12 @@ namespace Gala
 		class construct
 		{
 			shadow_cache = new Gee.HashMap<string,Shadow> ();
-			var default_css = new Gtk.CssProvider ();
-			try {
-				default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
-			} catch (Error e) {
-				warning ("Loading default styles failed: %s", e.message);
-			}
 
 			var style_path = new Gtk.WidgetPath ();
 			var id = style_path.append_type (typeof (Gtk.Window));
 
 			style_context = new Gtk.StyleContext ();
-			style_context.add_provider (default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			style_context.add_class ("decoration");
 			style_context.set_path (style_path);
 		}
