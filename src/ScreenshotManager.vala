@@ -40,7 +40,31 @@ namespace Gala
 
 		public void flash_area (int x, int y, int width, int height) throws DBusError, IOError
 		{
-			warning ("FlashArea not implemented");
+			debug ("Flashing area");
+
+			double[] keyframes = { 0.3f, 0.8f };
+			GLib.Value[] values = { 180U, 0U };
+
+			var transition = new Clutter.KeyframeTransition ("opacity");
+			transition.duration = 200;
+			transition.remove_on_complete = true;
+			transition.progress_mode = Clutter.AnimationMode.LINEAR;
+			transition.set_key_frames (keyframes);
+			transition.set_values (values);
+			transition.set_to_value (0.0f);
+
+			var flash_actor = new Clutter.Actor ();
+			flash_actor.set_size (width, height);
+			flash_actor.set_position (x, y);
+			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
+			flash_actor.set_opacity (0);
+			flash_actor.transitions_completed.connect ((actor) => {
+				wm.top_window_group.remove_child (actor);
+				actor.destroy ();
+			});
+
+			wm.top_window_group.add_child (flash_actor);
+			flash_actor.add_transition ("flash", transition);
 		}
 
 		public void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
@@ -51,6 +75,11 @@ namespace Gala
 			wm.get_screen ().get_size (out width, out height);
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
+
+			if (flash) {
+				flash_area (0, 0, width, height);
+			}
+
 			success = save_image (image, filename, out filename_used);
 		}
 
@@ -61,6 +90,11 @@ namespace Gala
 			yield wait_stage_repaint ();
 
 			var image = take_screenshot (x, y, width, height, false);
+
+			if (flash) {
+				flash_area (x, y, width, height);
+			}
+
 			success = save_image (image, filename, out filename_used);
 			if (!success)
 				throw new DBusError.FAILED ("Failed to save image");
@@ -86,6 +120,10 @@ namespace Gala
 			var image = (Cairo.ImageSurface) window_texture.get_image (clip);
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
+			}
+
+			if (flash) {
+				flash_area (rect.x, rect.y, rect.width, rect.height);
 			}
 
 			success = save_image (image, filename, out filename_used);
