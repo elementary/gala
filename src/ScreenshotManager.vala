@@ -86,7 +86,7 @@ namespace Gala
 		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
 			debug ("Taking area screenshot");
-			
+
 			yield wait_stage_repaint ();
 
 			var image = take_screenshot (x, y, width, height, false);
@@ -138,19 +138,38 @@ namespace Gala
 
 			yield;
 			selection_area.destroy ();
-			
+
 			yield wait_stage_repaint ();
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
+		}
+
+		public static void create_dir_if_missing (string path) {
+			File file = File.new_for_path (path);
+			if (!file.query_exists ()) {
+				try {
+					file.make_directory ();
+				} catch (Error e) {
+					debug (e.message);
+				}
+			}
+		}
+
+		static string find_target_path ()
+		{
+			var pictures_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			var screenshot_folder = _("Screenshots");
+			return Path.build_path (
+				Path.DIR_SEPARATOR_S,
+				pictures_path,
+				screenshot_folder
+			);
 		}
 
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
 			if (!Path.is_absolute (filename)) {
-				string path = Environment.get_user_special_dir (UserDirectory.PICTURES);
-				if (!FileUtils.test (path, FileTest.EXISTS)) {
-					path = Environment.get_home_dir ();
-				}
-
+				var path = find_target_path ();
+				create_dir_if_missing (path);
 				if (!filename.has_suffix (".png")) {
 					used_filename = Path.build_filename (path, filename.concat (".png"), null);
 				} else {
