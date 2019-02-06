@@ -143,10 +143,14 @@ namespace Gala
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
-		public static void create_dir_if_missing (string path) {
+		public static void create_dir_if_missing (string path) throws Error {
 			File file = File.new_for_path (path);
 			if (!file.query_exists ()) {
-				file.make_directory_with_parents ();
+				try {
+					file.make_directory_with_parents ();
+				} catch (Error e) {
+					throw e;
+				}
 			}
 		}
 
