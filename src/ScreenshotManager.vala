@@ -147,7 +147,7 @@ namespace Gala
 			File file = File.new_for_path (path);
 			if (!file.query_exists ()) {
 				try {
-					file.make_directory_with_parents ();
+					file.make_directory ();
 				} catch (Error e) {
 					throw e;
 				}
@@ -156,11 +156,18 @@ namespace Gala
 
 		static string find_target_path ()
 		{
-			var pictures_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			var base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			if (base_path == null) {
+				base_path	 = Environment.get_home_dir ();
+			}
+			if (!FileUtils.test (base_path, FileTest.EXISTS)) {
+				warning ("No pictures or home directory was found");
+				return null;
+			}
 			var screenshot_folder = _("Screenshots");
 			var path = Path.build_path (
 				Path.DIR_SEPARATOR_S,
-				pictures_path,
+				base_path,
 				screenshot_folder
 			);
 			try {
@@ -168,7 +175,7 @@ namespace Gala
 				return path;
 			} catch (Error e) {
 				warning (e.message);
-				return pictures_path;
+				return base_path;
 			}
 		}
 
@@ -176,6 +183,10 @@ namespace Gala
 		{
 			if (!Path.is_absolute (filename)) {
 				var path = find_target_path ();
+				if (path == null) {
+					warning ("Could not find target path for screenshot");
+					return false;
+				}
 				if (!filename.has_suffix (".png")) {
 					used_filename = Path.build_filename (path, filename.concat (".png"), null);
 				} else {
