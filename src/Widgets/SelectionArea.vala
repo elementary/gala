@@ -19,8 +19,7 @@ namespace Gala
 {
     public class SelectionArea : Clutter.Actor
     {
-        public signal void captured ();
-        public signal void cancelled ();
+        public signal void closed (bool captured);
 
         public WindowManager wm { get; construct; }
 
@@ -59,7 +58,7 @@ namespace Gala
         {
             if (e.keyval == Clutter.Key.Escape) {
                 close ();
-                cancelled ();
+                closed (false);
                 return true;
             }
 
@@ -88,7 +87,7 @@ namespace Gala
 
             if (!dragging) {
                 close ();
-                cancelled ();
+                closed (false);
                 return true;
             }
 
@@ -99,7 +98,7 @@ namespace Gala
             this.hide ();
             content.invalidate ();
 
-            captured ();
+            closed (true);
             return true;
         }
 
