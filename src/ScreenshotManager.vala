@@ -87,11 +87,6 @@ namespace Gala
 		{
 			debug ("Taking area screenshot");
 
-			if (width == 0 && height == 0) {
-				success = false;
-				return;
-			}
-
 			yield wait_stage_repaint ();
 
 			var image = take_screenshot (x, y, width, height, false);
@@ -136,10 +131,11 @@ namespace Gala
 
 		public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError
 		{
-			var selection_captured = false;
+			bool cancelled = false;
 			var selection_area = new SelectionArea (wm);
-			selection_area.closed.connect ((captured) => {
-				selection_captured = captured;
+			selection_area.captured.connect (() => Idle.add (select_area.callback));
+			selection_area.cancelled.connect (() => {
+				cancelled = true;
 				Idle.add (select_area.callback);
 			});
 			wm.ui_group.add (selection_area);
@@ -148,12 +144,12 @@ namespace Gala
 			yield;
 			selection_area.destroy ();
 
-			if (!selection_captured) {
-				return;
+			if (cancelled) {
+				x = y = width = height = -1;
+			} else {
+				yield wait_stage_repaint ();
+				selection_area.get_selection_rectangle (out x, out y, out width, out height);
 			}
-
-			yield wait_stage_repaint ();
-			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
 		static string find_target_path ()
