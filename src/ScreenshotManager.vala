@@ -143,33 +143,22 @@ namespace Gala
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
-		public static void create_dir_if_missing (string path) throws Error {
-			File file = File.new_for_path (path);
-			if (!file.query_exists ()) {
-				try {
-					file.make_directory_with_parents ();
-				} catch (Error e) {
-					throw e;
-				}
-			}
-		}
-
 		static string find_target_path ()
 		{
-			var pictures_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
-			var screenshot_folder = _("Screenshots");
-			var path = Path.build_path (
-				Path.DIR_SEPARATOR_S,
-				pictures_path,
-				screenshot_folder
-			);
-			try {
-				create_dir_if_missing (path);
-				return path;
-			} catch (Error e) {
-				warning (e.message);
-				return pictures_path;
+			// Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
+			unowned string? base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			if (base_path != null && FileUtils.test (base_path, FileTest.EXISTS)) {
+				var path = Path.build_path (Path.DIR_SEPARATOR_S, base_path, _("Screenshots"));
+				if (FileUtils.test (path, FileTest.EXISTS)) {
+					return path;
+				} else if (DirUtils.create (path, 0755) == 0) {
+					return path;
+				} else {
+					return base_path;
+				}
 			}
+
+			return Environment.get_home_dir ();
 		}
 
 		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
