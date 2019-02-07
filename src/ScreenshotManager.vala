@@ -139,6 +139,10 @@ namespace Gala
 			yield;
 			selection_area.destroy ();
 
+			if (selection_area.cancelled) {
+				throw new GLib.IOError.CANCELLED ("Operation was cancelled");
+			}
+
 			yield wait_stage_repaint ();
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
