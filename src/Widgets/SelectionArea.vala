@@ -16,12 +16,14 @@
 //
 
 namespace Gala
-{ 
+{
     public class SelectionArea : Clutter.Actor
     {
         public signal void closed ();
 
         public WindowManager wm { get; construct; }
+
+        public bool cancelled { get; private set; }
 
         private ModalProxy? modal_proxy;
         private Gdk.Point start_point;
@@ -58,6 +60,7 @@ namespace Gala
         {
             if (e.keyval == Clutter.Key.Escape) {
                 close ();
+                cancelled = true;
                 closed ();
                 return true;
             }
@@ -87,6 +90,7 @@ namespace Gala
 
             if (!dragging) {
                 close ();
+                cancelled = true;
                 closed ();
                 return true;
             }
