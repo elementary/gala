@@ -86,11 +86,6 @@ namespace Gala
 		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
 			debug ("Taking area screenshot");
-			if (width == -1 && height == -1) {
-				success = false;
-				filename_used = "";
-				return;
-			}
 
 			yield wait_stage_repaint ();
 
@@ -145,8 +140,7 @@ namespace Gala
 			selection_area.destroy ();
 
 			if (selection_area.cancelled) {
-				x = y = width = height = -1;
-				return;
+				throw new GLib.IOError.CANCELLED ("Operation was cancelled");
 			}
 
 			yield wait_stage_repaint ();
