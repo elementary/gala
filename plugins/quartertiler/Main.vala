@@ -15,22 +15,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala.Plugins.QuarterTiler
 {
 	public class Main : Gala.Plugin
 	{
 		public override void initialize (Gala.WindowManager wm)
 		{
-			Screen screen = wm.get_screen ();
-			Display display = screen.get_display ();
+			unowned Meta.Display display = wm.get_screen ().get_display ();
+
 			var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
-			if (!("tile-topleft" in settings.list_keys ())) {
-					warning ("Quarter tiling key bindings not found");
-					return;
-			}
 
 			display.add_keybinding ("tile-topleft", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 			display.add_keybinding ("tile-topright", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
@@ -42,22 +35,25 @@ namespace Gala.Plugins.QuarterTiler
 		void on_initiate (Meta.Display display, Meta.Screen screen,
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
 		{
-			Window focused_window = display.get_focus_window ();
-			if (!focused_window.allows_move () || !focused_window.allows_resize ()){
+			unowned Meta.Window focused_window = display.get_focus_window ();
+			if (!focused_window.allows_move () || !focused_window.allows_resize ()) {
 				return;
 			}
 
 			if (focused_window.maximized_vertically || focused_window.maximized_horizontally) {
-				focused_window.unmaximize (MaximizeFlags.BOTH);
+				focused_window.unmaximize (Meta.MaximizeFlags.BOTH);
 			}
 
 			Meta.Rectangle wa = focused_window.get_work_area_current_monitor ();
 
 			int x = wa.x;
 			int y = wa.y;
-			var width = wa.width / 2;
-			var height = wa.height / 2;
+			int width = wa.width / 2;
+			int height = wa.height / 2;
 			switch (binding.get_name ()) {
+				case "tile-topleft":
+				default:
+					break;
 				case "tile-topright":
 					x += width;
 					break;
@@ -81,8 +77,7 @@ namespace Gala.Plugins.QuarterTiler
 
 public Gala.PluginInfo register_plugin ()
 {
-	return
-	{
+	return {
 		"Quarter tiler",
 		"Peter Uithoven <peter@peteruithoven.com>",
 		typeof (Gala.Plugins.QuarterTiler.Main),
