@@ -304,13 +304,6 @@ namespace Gala.Plugins.Notify
 			if (icon_fg_color != null)
 				return icon_fg_color;
 
-			var default_css = new Gtk.CssProvider ();
-			try {
-				default_css.load_from_path (Config.PKGDATADIR + "/gala.css");
-			} catch (Error e) {
-				warning ("Loading default styles failed: %s", e.message);
-			}
-
 			var style_path = new Gtk.WidgetPath ();
 			style_path.append_type (typeof (Gtk.Window));
 			style_path.append_type (typeof (Gtk.EventBox));
@@ -318,7 +311,7 @@ namespace Gala.Plugins.Notify
 			style_path.append_type (typeof (Gtk.Label));
 
 			var label_style_context = new Gtk.StyleContext ();
-			label_style_context.add_provider (default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			label_style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			label_style_context.set_path (style_path);
 			label_style_context.add_class ("label");
 			label_style_context.set_state (Gtk.StateFlags.NORMAL);
