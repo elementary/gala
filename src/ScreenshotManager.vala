@@ -136,25 +136,21 @@ namespace Gala
 
 		public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError
 		{
-			bool cancelled = false;
 			var selection_area = new SelectionArea (wm);
-			selection_area.captured.connect (() => Idle.add (select_area.callback));
-			selection_area.cancelled.connect (() => {
-				cancelled = true;
-				Idle.add (select_area.callback);
-			});
+			selection_area.closed.connect (() => Idle.add (select_area.callback));
 			wm.ui_group.add (selection_area);
 			selection_area.start_selection ();
 
 			yield;
 			selection_area.destroy ();
 
-			if (cancelled) {
+			if (selection_area.cancelled) {
 				x = y = width = height = -1;
-			} else {
-				yield wait_stage_repaint ();
-				selection_area.get_selection_rectangle (out x, out y, out width, out height);
+				return;
 			}
+
+			yield wait_stage_repaint ();
+			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
 		static string find_target_path ()
