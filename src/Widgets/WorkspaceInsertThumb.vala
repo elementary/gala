@@ -44,8 +44,8 @@ namespace Gala
 			x_align = Clutter.ActorAlign.CENTER;
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-			drop.crossed.connect ((hovered) => {
-				if (!Prefs.get_dynamic_workspaces ())
+			drop.crossed.connect ((target, hovered) => {
+				if (!Prefs.get_dynamic_workspaces () && (target != null && target is WindowClone))
 					return;
 
 				if (!hovered) {

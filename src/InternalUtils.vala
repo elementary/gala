@@ -169,12 +169,14 @@ namespace Gala
 			int old_index = workspace.index ();
 			unowned Screen screen = workspace.get_screen ();
 
-			var new_windows = workspace.list_windows ();
+			var new_windows = workspace.list_windows ().copy ();
 			foreach (var new_window in new_windows) {
-				new_window.change_workspace_by_index (index, false);
+				if (get_window_is_normal (new_window) && !new_window.on_all_workspaces) {
+					new_window.change_workspace_by_index (index, false);
+				}
 			}
 
-			var active = screen.get_active_workspace ();
+			unowned Meta.Workspace? active = screen.get_active_workspace ();
 			if (old_index > index) {
 				for (int i = old_index - 1; i >= index; i--) {
 					unowned Meta.Workspace? other = screen.get_workspace_by_index (i);
@@ -227,7 +229,9 @@ namespace Gala
 					continue;
 				}
 
-				window.change_workspace_by_index (window.get_workspace ().index () + offset, true);
+				if (get_window_is_normal (window) && !window.on_all_workspaces) {
+					window.change_workspace_by_index (window.get_workspace ().index () + offset, true);
+				}
 			}
 		}
 

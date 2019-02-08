@@ -57,9 +57,10 @@ namespace Gala
 		/**
 		 * The destination has been crossed
 		 *
+		 * @param target the target actor that is crossing the destination
 		 * @param hovered indicates whether the actor is now hovered or not
 		 */
-		public signal void crossed (bool hovered);
+		public signal void crossed (Actor? target, bool hovered);
 
 		/**
 		 * Emitted on the source when a destination is crossed.
@@ -183,10 +184,10 @@ namespace Gala
 			}
 		}
 
-		void emit_crossed (Actor destination, bool hovered)
+		void emit_crossed (Actor destination, bool is_hovered)
 		{
-			get_drag_drop_action (destination).crossed (hovered);
-			destination_crossed (destination, hovered);
+			get_drag_drop_action (destination).crossed (actor, is_hovered);
+			destination_crossed (destination, is_hovered);
 		}
 
 		bool source_clicked (ButtonEvent event)

@@ -329,7 +329,9 @@ namespace Gala
 			workspace.window_selected.disconnect (window_selected);
 			workspace.selected.disconnect (activate_workspace);
 
-			icon_groups.remove_group (workspace.icon_group);
+			if (icon_groups.contains (workspace.icon_group)) {
+				icon_groups.remove_group (workspace.icon_group);
+			}
 
 			workspace.destroy ();
 
