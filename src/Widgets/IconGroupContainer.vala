@@ -65,6 +65,27 @@ namespace Gala
 			update_inserter_indices ();
 		}
 
+		public void remove_group_in_place (IconGroup group)
+		{
+			var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
+			float thumb_width = thumb.get_width ();
+			float group_width = group.get_width ();
+			remove_group (group);
+			
+			x += thumb_width + group_width;
+		}
+
+		public void reset_thumbs (int delay)
+		{
+			foreach (var child in get_children ()) {
+				unowned WorkspaceInsertThumb thumb = child as WorkspaceInsertThumb;
+				if (thumb != null) {
+					thumb.delay = delay;
+					thumb.destroy_all_children ();
+				}
+			}
+		}
+
 		void expanded_changed (ParamSpec param)
 		{
 			request_reposition ();

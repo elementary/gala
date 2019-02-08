@@ -319,25 +319,34 @@ namespace Gala
 		{
 			slot = rect;
 
-			save_easing_state ();
-			set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-			set_easing_mode (MultitaskingView.ANIMATION_MODE);
+			bool animate = MultitaskingView.should_animate ();
+			if (animate) {
+				save_easing_state ();
+				set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+				set_easing_mode (MultitaskingView.ANIMATION_MODE);
+			}
 
 			set_size (rect.width, rect.height);
 			set_position (rect.x, rect.y);
 
 			window_icon.opacity = 255;
-			restore_easing_state ();
+			if (animate) {
+				restore_easing_state ();
+			}
 
 			toggle_shadow (true);
 
 			if (opacity < 255) {
-				save_easing_state ();
-				set_easing_mode (AnimationMode.EASE_OUT_QUAD);
-				set_easing_duration (300);
+				if (animate) {
+					save_easing_state ();
+					set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+					set_easing_duration (300);
+				}
 
 				opacity = 255;
-				restore_easing_state ();
+				if (animate) {
+					restore_easing_state ();
+				}
 			}
 		}
 

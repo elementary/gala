@@ -19,15 +19,17 @@ using Clutter;
 
 namespace Gala
 {
+	[Flags]
 	public enum DragDropActionType
 	{
-		SOURCE = 0,
+		SOURCE,
 		DESTINATION
 	}
 
 	public class DragDropAction : Clutter.Action
 	{
 		static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
+		static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
 
 		/**
 		 * A drag has been started. You have to connect to this signal and
@@ -116,6 +118,10 @@ namespace Gala
 
 			if (sources == null)
 				sources = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+
+			if (destinations == null)
+				destinations = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+
 		}
 
 		~DragDropAction ()
@@ -139,17 +145,22 @@ namespace Gala
 
 		void release_actor (Actor actor)
 		{
-			if (drag_type == DragDropActionType.SOURCE) {
+			if (DragDropActionType.SOURCE in drag_type) {
 				actor.button_press_event.disconnect (source_clicked);
 
 				var source_list = sources.@get (drag_id);
 				source_list.remove (actor);
+			} 
+			
+			if (DragDropActionType.DESTINATION in drag_type) {
+				var dest_list = destinations[drag_id];
+				dest_list.remove (actor);
 			}
 		}
 
 		void connect_actor (Actor actor)
 		{
-			if (drag_type == DragDropActionType.SOURCE) {
+			if (DragDropActionType.SOURCE in drag_type) {
 				actor.button_press_event.connect (source_clicked);
 
 				var source_list = sources.@get (drag_id);
@@ -159,6 +170,16 @@ namespace Gala
 				}
 
 				source_list.add (actor);
+			}
+
+			if (DragDropActionType.DESTINATION in drag_type) {
+				var dest_list = destinations[drag_id];
+				if (dest_list == null) {
+					dest_list = new Gee.LinkedList<Actor> ();
+					destinations[drag_id] = dest_list;
+				}
+
+				dest_list.add (actor);
 			}
 		}
 
@@ -208,7 +229,13 @@ namespace Gala
 
 							var source_list = sources.@get (drag_id);
 							if (source_list != null) {
+								var dest_list = destinations[drag_id];
 								foreach (var actor in source_list) {
+									// Do not unset reactivity on destinations
+									if (actor in dest_list) {
+										continue;
+									}
+
 									actor.reactive = false;
 								}
 							}
@@ -310,7 +337,7 @@ namespace Gala
 			foreach (var action in actor.get_actions ()) {
 				drop_action = action as DragDropAction;
 				if (drop_action == null
-					|| drop_action.drag_type != DragDropActionType.DESTINATION
+					|| !(DragDropActionType.DESTINATION in drop_action.drag_type)
 					|| drop_action.drag_id != drag_id)
 					continue;
 

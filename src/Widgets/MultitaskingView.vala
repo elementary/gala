@@ -46,6 +46,24 @@ namespace Gala
 		Actor workspaces;
 		Actor dock_clones;
 
+		static int animation_freeze_count = 0;
+		public static void freeze_animations ()
+		{
+			animation_freeze_count++;
+		}
+
+		public static void thaw_animations ()
+		{
+			animation_freeze_count--;
+
+			assert (animation_freeze_count >= 0);
+		}
+
+		public static bool should_animate ()
+		{
+			return animation_freeze_count < 1;
+		}
+
 		public MultitaskingView (WindowManager wm)
 		{
 			Object (wm: wm);
@@ -64,7 +82,7 @@ namespace Gala
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new IconGroupContainer (screen);
-			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
+			icon_groups.request_reposition.connect (() => reposition_icon_groups (should_animate ()));
 
 			dock_clones = new Actor ();
 
@@ -78,7 +96,7 @@ namespace Gala
 			screen.workspace_added.connect (add_workspace);
 			screen.workspace_removed.connect (remove_workspace);
 			screen.workspace_switched.connect_after ((from, to, direction) => {
-				update_positions (opened);
+				update_positions (opened && should_animate ());
 			});
 
 			window_containers_monitors = new List<MonitorClone> ();
@@ -315,7 +333,7 @@ namespace Gala
 
 			workspace.destroy ();
 
-			update_positions (opened);
+			update_positions (opened && should_animate ());
 		}
 
 		/**

@@ -26,6 +26,7 @@ namespace Gala
 
 		public int workspace_index { get; construct set; }
 		public bool expanded { get; private set; default = false; }
+		public int delay { get; set; default = EXPAND_DELAY; }
 
 		uint expand_timeout = 0;
 
@@ -55,7 +56,7 @@ namespace Gala
 
 					transform (false);
 				} else
-					expand_timeout = Timeout.add (EXPAND_DELAY, expand);
+					expand_timeout = Timeout.add (delay, expand);
 			});
 
 			add_action (drop);

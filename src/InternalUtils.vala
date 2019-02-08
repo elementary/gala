@@ -152,6 +152,85 @@ namespace Gala
 			workspace_manager.cleanup ();
 		}
 
+		/**
+		 * Moves all windows of a workspace to a specified index and reorders
+		 * all other workspaces so that all windows stay on their workspaces.
+		 * 
+		 * @param index the index which windows are moved to
+		 * @param workspace from which workspace windows are moved
+		 * 
+		 * @return: which workspace should be active after the reorder
+		 */
+		public static Workspace? move_workspace_to_index (int index, Workspace workspace)
+		{
+			unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
+			workspace_manager.freeze_remove ();
+
+			int old_index = workspace.index ();
+			unowned Screen screen = workspace.get_screen ();
+
+			var new_windows = workspace.list_windows ();
+			foreach (var new_window in new_windows) {
+				new_window.change_workspace_by_index (index, false);
+			}
+
+			var active = screen.get_active_workspace ();
+			if (old_index > index) {
+				for (int i = old_index - 1; i >= index; i--) {
+					unowned Meta.Workspace? other = screen.get_workspace_by_index (i);
+					if (other == null) {
+						continue;
+					}
+
+					move_workspace_windows_by_offset (other, 1, i == index ? new_windows : null);
+				}
+
+				if (workspace == screen.get_active_workspace ()) {
+					active = screen.get_workspace_by_index (index);
+				} else if (active.index () <= old_index - 1 && active.index () >= index) {
+					active = active.get_neighbor (MotionDirection.RIGHT);
+				}
+			} else if (index > old_index) {
+				for (int i = old_index + 1; i <= index; i++) {
+					unowned Meta.Workspace? other = screen.get_workspace_by_index (i);
+					if (other == null) {
+						continue;
+					}
+
+					move_workspace_windows_by_offset (other, -1, i == index ? new_windows : null);
+				}
+
+				if (workspace == screen.get_active_workspace ()) {
+					active = screen.get_workspace_by_index (index);
+				} else if (active.index () >= old_index + 1 && active.index () <= index) {
+					active = active.get_neighbor (MotionDirection.LEFT);
+				}
+			}
+
+			workspace_manager.thaw_remove ();
+			return active;
+		}
+
+		/**
+		 * Moves all windows from a workspace by the specified offset e.g:
+		 * offset = -1 will move them to the left adjacent workspace
+		 * offset = 1 will move them to the right adjacent workspace.
+		 * 
+		 * @param workspace from which workspace windows are moved
+		 * @param offset by what offset to move all windows
+		 * @blacklist a list containing all windows which should not be moved
+		 */
+		private static void move_workspace_windows_by_offset (Workspace workspace, int offset, List<weak Window>? blacklist)
+		{
+			foreach (var window in workspace.list_windows ()) {
+				if (blacklist != null && blacklist.find (window) != null) {
+					continue;
+				}
+
+				window.change_workspace_by_index (window.get_workspace ().index () + offset, true);
+			}
+		}
+
 		// Code ported from KWin present windows effect
 		// https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
