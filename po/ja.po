@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2018-01-23 00:06+0000\n"
-"Last-Translator: Ryo Nakano <ryonakaknock@gmail.com>\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-12-02 06:20+0000\n"
+"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://weblate.elementary.io/projects/desktop/gala/"
 "ja/>\n"
 "Language: ja\n"
@@ -17,69 +17,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "ディスプレイの設定に問題はありませんか？"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "この設定を保つ"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "前の設定へ戻す"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "最小化"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "移動"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "サイズの変更"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
-msgstr "常に手前へ表示する"
+msgstr "最前面に維持"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
-msgstr "全てのワークスペースに表示する"
+msgstr "すべてのワークスペースに表示"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "左のワークスペースへ移動"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "閉じる"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "元のサイズに戻す"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "最大化"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "マルチタスクビュー"
+msgstr "マルチタスキングビュー"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "すべての開いているウィンドウとワークスペースを見ます"
+msgstr "すべての開いているウィンドウとワークスペースを参照します"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
@@ -96,7 +96,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr "アプリケーション - その他"
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
@@ -104,11 +104,11 @@ msgstr "左上端の動作"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:27
 msgid "Algorithm for window overview layout"
-msgstr "ウィンドウをオーバービューのレイアウトにするアルゴリズム"
+msgstr "ウィンドウオーバービューレイアウトのアルゴリズム"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "ウィンドウの表示に使うアルゴリズムを選択"
+msgid "Choose the algorithm used for exposing the windows."
+msgstr "ウィンドウの表示に使うアルゴリズムを選択してください。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -123,16 +123,12 @@ msgid "Action for the bottom right corner"
 msgstr "右下端の動作"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
-msgstr ""
-"ホットコーナーアクションの「カスタムコマンド」または複数のコマンドに対して実"
-"行されるコマンド"
+msgstr "1 つまたは複数の 'カスタムコマンド' ホットコーナーアクションに対して実行されるコマンド"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -141,16 +137,15 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
-"ひとつのコマンドのみを入力した場合、「カスタムコマンド」に割り当てられたすべ"
-"てのホットコーナーで使用されます。代わりに \"hotcorner-topleft： コマンド"
-"名 ;;hotcorner-bottomright： コマンド名 \" というパターンを使用すると、ホット"
-"コーナーごとに特定のコマンドが使用されます。使用可能な識別子は \"hotcorner- "
-"[topleft/topright/bottomleft/bottomright]\"、続けて \"：\" を付けてコマンドを"
-"記述します。\";;\" は、コマンドの記述の間の区切り文字として使用されます。"
+"ひとつのコマンドのみを入力した場合、'カスタムコマンド' に割り当てられたすべてのホットコーナーで使用されます。代わりに \"hotcorner-"
+"topleft: コマンド名;;hotcorner-bottomright: コマンド名\" "
+"というパターンを使用すると、ホットコーナーごとに指定されたコマンドが使用されます。使用可能な識別子は \"hotcorner- [topleft/"
+"topright/bottomleft/bottomright]\"、続けて \":\" を付けてコマンドを記述します。\";;\" "
+"は、コマンドの記述の間の区切り文字として使用されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr "ウィンドウをスクリーンの端にドロップしたときに整列させる"
+msgstr "ウィンドウを画面の端にドロップしたときの整列を有効にする"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:58
 msgid ""
@@ -158,19 +153,18 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
-"この機能を有効にした場合、スクリーンの横端にウィンドウをドロップした時にウィ"
-"ンドウを垂直方向に最大化し、利用可能な場所の半分を埋めるように水平方向にリサ"
-"イズします。ウィンドウをスクリーンの上端にドロップしたときにウィンドウを最大"
-"化します。"
+"この機能を有効にした場合、画面の横端にウィンドウをドロップした時にウィンドウ"
+"を垂直方向に最大化し、利用可能な場所の半分を埋めるように水平方向にサイズを変"
+"更します。ウィンドウを画面の上端にドロップしたときにウィンドウを最大化しま"
+"す。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:62
 msgid "Panel main menu action"
 msgstr "パネルにあるメインメニューの動作"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr ""
-"パネルメインメニューの割り当てキーが押されたときに実行するコマンドを設定する"
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
+msgstr "パネルメインメニューの割り当てキーが押されたときに実行するコマンドを設定します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
@@ -179,10 +173,8 @@ msgstr "静的なワークスペースの代わりに動的なワークスペー
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
-msgstr ""
-"静的で固定された数ではなく、必要に応じて動的に増加または減少する番号をワーク"
-"スペースに使用する"
+"instead of a static, fixed number."
+msgstr "静的で固定された数ではなく、必要に応じて動的に増減する数のワークスペースを使用します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -194,6 +186,8 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"window-switcher の起動時に、Gala "
+"はこのリストを反復し名前と一致するウィンドウを探します。見つかった場合、スイッチャーが閉じられた際に、このウィンドウは最小化されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:90
 msgid "Shortcut to move to first workspace"
@@ -213,11 +207,11 @@ msgstr "現在のウィンドウを最後のワークスペースに移動する
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:110
 msgid "Zoom in"
-msgstr "拡大する"
+msgstr "ズームイン"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:115
 msgid "Zoom out"
-msgstr "縮小する"
+msgstr "ズームアウト"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:119
 msgid "Shortcut to open the window overview"
@@ -225,35 +219,34 @@ msgstr "ウィンドウのオーバービューを開くショートカット"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:124
 msgid "Shortcut to open the window overview for all windows"
-msgstr "全てのウィンドウのオーバービューを開くショートカット"
+msgstr "すべてのウィンドウのオーバービューを開くショートカット"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:129
 #: data/org.pantheon.desktop.gala.gschema.xml.in:133
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "右隣のワークスペースや最初のワークスペースに切り替え"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:137
 msgid "Cycle to next keyboard layout"
-msgstr "次のキーボードレイアウトに変更する"
+msgstr "次のキーボードレイアウトに変更"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:138
 #: data/org.pantheon.desktop.gala.gschema.xml.in:143
 #: data/org.pantheon.desktop.gala.gschema.xml.in:171
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "廃止: このキーは廃止されたため、入力は無視されます。"
+msgstr "非推奨: このキーは廃止予定であり、無視されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "Cycle to previous keyboard layout"
-msgstr "前のキーボードレイアウトに変更する"
+msgstr "前のキーボードレイアウトに変更"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+msgstr "ピクチャーインピクチャーウィンドウを有効にするためのショートカット"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "全てのウィンドウのオーバービューを開くショートカット"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr "ウィンドウを選択するための選択領域を表示するショートカットです。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -291,14 +284,12 @@ msgstr ""
 "意味します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:165
-#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
-msgstr "モーダル表示のダイアログを持つ親ウィンドウを薄暗くさせる"
+msgstr "モーダル表示のダイアログを表示する際に親ウィンドウを薄暗くする"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
 msgid "The opacity of windows behind the window switcher."
-msgstr "ウィンドウスイッチャーのドックウィンドウとして認識される名前"
+msgstr "ウィンドウスイッチャーの背後に位置するウィンドウの透明度です。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "Background-image used in the workspace-switcher"
@@ -312,13 +303,11 @@ msgstr "アニメーションを有効にする"
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"アニメーションを有効にするかどうかを設定します。注意: これはグローバルな設定"
-"なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
+msgstr "アニメーションを有効にするかどうかを設定します。注意: これはグローバルな設定なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:190
 msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr "最大化・最大化からの復元時に使われるスナップ アニメーションの長さ"
+msgstr "最大化・最大化からの復元時に使われるスナップアニメーションの長さ"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:194
 msgid "Duration of the close animation"
@@ -345,8 +334,10 @@ msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
+"1 番目の値は影のぼかし効果の半径で、2 番目が上部のフェードの値 (ほとんどの場合 -1 です)、3 番目と 4 番目の値は x オフセットと y "
+"オフセット、5 番目は透明度です。つまり、[影の半径, 上部のフェード, x オフセット, y オフセット, 透明度] です。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
@@ -356,8 +347,8 @@ msgstr "通常のフォーカスされていないダイアログの影の定義
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
-msgstr ""
+msgid "See normal-focused."
+msgstr "normal-focused を参照してください。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
 msgid "Defines the shadow of a menu"
@@ -385,7 +376,7 @@ msgstr "サウンドを有効にする"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:257
 msgid "Show missed notifications in notification center"
-msgstr "見逃した通知を通知センターに表示する"
+msgstr "見逃した通知を通知センターに表示"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:264
 msgid "Enable rounded corner mask"
@@ -397,19 +388,19 @@ msgstr "四隅の丸み付け"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:273
 msgid "Disable corner mask on fullscreen"
-msgstr "フルスクリーン時にコーナーマスクを無効にする"
+msgstr "全画面表示時にコーナーマスクを無効にする"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:274
 msgid ""
 "If enabled, when an application is fullscreen (fills the monitor), the "
 "corner masks will be disabled on that monitor."
 msgstr ""
-"有効にすると、アプリケーションがフルスクリーンの時 (モニターいっぱいの時)、"
+"有効にすると、アプリケーションが全画面表示のとき (モニターいっぱいのとき)、"
 "コーナーマスクがそのモニターで無効になります。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:278
 msgid "Only show corner masks on primary monitor"
-msgstr "現在のモニターのみでコーナーマスクを表示する"
+msgstr "現在のモニターのみでコーナーマスクを表示"
 
 #~ msgid "Cancel"
 #~ msgstr "キャンセル"
