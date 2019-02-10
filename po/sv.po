@@ -7,67 +7,69 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2016-08-08 15:53+0000\n"
-"Last-Translator: fsavje <fred_ubuntu@savje.com>\n"
-"Language-Team: Swedish\n"
-"Language: \n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-10-21 11:05+0000\n"
+"Last-Translator: Fredrik B <frbo9002@gmail.com>\n"
+"Language-Team: Swedish <https://weblate.elementary.io/projects/desktop/gala/"
+"sv/>\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 "X-Poedit-Language: Swedish\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Ser bildskärmen bra ut?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Behåll dessa inställningar"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Återställ tidigare inställningar"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Minimera"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Flytta"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Ändra storlek"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Alltid överst"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Alltid på aktiv arbetsyta"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Flytta till arbetsytan till vänster"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Flytta till arbetsytan till höger"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Stäng"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Avmaximera"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Maximera"
 
@@ -82,19 +84,19 @@ msgstr "Visa alla öppna fönster och arbetsytor"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Annat"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Reservskrivbordsfil för notifikationer från utdaterade program."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
@@ -105,7 +107,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algoritm för layout av fönsteröversikt"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
+#, fuzzy
+msgid "Choose the algorithm used for exposing the windows."
 msgstr "Välj algoritm som ska användas för att visa fönsterna"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
@@ -161,10 +164,11 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:62
 msgid "Panel main menu action"
-msgstr "Händelse för panelhuvudmeny"
+msgstr "Åtgärd för panelhuvudmeny"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Anger kommandot som körs när 'panel-main-menu'-tangentkombinationen trycks"
 
@@ -173,16 +177,17 @@ msgid "Enable dynamic workspace instead of static ones"
 msgstr "Aktivera dynamiska arbetsytor istället för statiska"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
+#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "Använd ett, efter behov, dynamiskt ökande eller minskande antal arbetsytor "
 "istället för ett fast antal"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
-msgstr ""
+msgstr "Namn som har känts igen som dockningsfönster för fönsterskiftaren"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
 #, fuzzy
@@ -230,34 +235,33 @@ msgstr "Genväg för att öppna fönsteröversikten för alla fönster"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:129
 #: data/org.pantheon.desktop.gala.gschema.xml.in:133
 msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
+msgstr "Skifta till nästa arbetsyta till höger eller tillbaka till den första"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:137
 msgid "Cycle to next keyboard layout"
-msgstr ""
+msgstr "Skifta till nästa tangentbordsuppsättning"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:138
 #: data/org.pantheon.desktop.gala.gschema.xml.in:143
 #: data/org.pantheon.desktop.gala.gschema.xml.in:171
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+msgstr "FÖRÅLDRAT: Den här tangenten är föråldrad och ignoreras."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "Cycle to previous keyboard layout"
-msgstr "Byt till föregående tangentbordslayout"
+msgstr "Byt till föregående tangentbordsuppsättning"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "The shortcut to enable picture-in-picture window"
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Genväg för att öppna fönsteröversikten för alla fönster"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
-msgstr ""
+msgstr "Fäst modala dialoger"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:156
 msgid ""
@@ -265,10 +269,13 @@ msgid ""
 "attached to the titlebar of the parent window and are moved together with "
 "the parent window."
 msgstr ""
+"När den är aktiv kommer modala dialoger se ut att vara fästa vid "
+"titelpanelen för förälderfönstret och flyttas samman med förälderfönstret, "
+"istället för att ha sina självständiga titelpaneler."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:160
 msgid "Arrangement of buttons on the titlebar"
-msgstr "Ordning på knappar i namnlisten"
+msgstr "Placering av knappar i namnlisten"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:161
 msgid ""
@@ -280,18 +287,27 @@ msgid ""
 "without breaking older versions. A special spacer tag can be used to insert "
 "some space between two adjacent buttons."
 msgstr ""
+"Placering av knappar på namnlisten. Värdet ska vara en sträng, såsom \"menu:"
+"minimize,maximize,spacer,close\"; kolon skiljer vänstra hörnet av fönstret "
+"från högra hörnet, och knappnamnen är kommaseparerade. Duplicering av "
+"knappar är inte tillåtet. Okända knappnamn ignoreras utan återkoppling så "
+"att knappar kan läggas till i framtida versioner utan att förstöra för gamla "
+"versioner. En speciell mellanrumstagg kan användas för att sätta in "
+"mellanrum mellan två intilliggande knappar."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:165
+#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
-msgstr ""
+msgstr "Tonar ned förälderfönster som skapar en modalfäst dialog"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
+#, fuzzy
 msgid "The opacity of windows behind the window switcher."
-msgstr ""
+msgstr "Opaciteten på fönsterna placerade i bakgrunden i alt+tab-skiftaren."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "Background-image used in the workspace-switcher"
-msgstr ""
+msgstr "Bakgrundsbild som används i arbetsyteskiftaren"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:182
 msgid "Enable Animations"
@@ -302,99 +318,110 @@ msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
 msgstr ""
+"Ifall animationer ska visas. Notera: Detta är en global nyckel, den ändrar "
+"beteendet på fönsterhanteraren, panelen, osv."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:190
 msgid "Duration of the snap animation as used by maximize/unmaximize"
 msgstr ""
+"Varaktighet på fastsättningsanimationer som används av maximera/avmaximera"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:194
 msgid "Duration of the close animation"
-msgstr ""
+msgstr "Varaktighet för stängningsanimation"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:198
 msgid "Duration of the minimize animation"
-msgstr ""
+msgstr "Varaktighet för minimeringsanimation"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:202
 msgid "Duration of the workspace switch animation"
-msgstr ""
+msgstr "Varaktighet för animation vid byte av arbetsyta"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:206
 msgid "Duration of the menu mapping animation"
-msgstr ""
+msgstr "Varaktighet för menymappningsanimation"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:213
 msgid "Defines the shadow of normal focused windows"
-msgstr ""
+msgstr "Definiera skuggan för vanliga fönster i fokus"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:214
+#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
+"Det första värdet är radien av skuggans suddighet, det andra är topptoning "
+"(vilket vanligtvis är -1), det tredje och fjärde är x- och y-förskjutning "
+"och det sista är opaciteten. Det vill säga [suddighetsradie, topptoning, x-"
+"förskjutning, y-förskjutning, opacitet]"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
-msgstr ""
+msgstr "Definiera skuggan för vanliga fönster utom fokus"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:219
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
-msgstr ""
+#, fuzzy
+msgid "See normal-focused."
+msgstr "Se normalfokuserat"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
 msgid "Defines the shadow of a menu"
-msgstr "Anger skuggan av en meny"
+msgstr "Definierar skuggan för en meny"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:228
 msgid "Defines the shadow of a focused dialog"
-msgstr ""
+msgstr "Definierar skuggan för en fokuserad dialog"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:233
 msgid "Defines the shadow of an unfocused dialog"
-msgstr ""
+msgstr "Definierar skuggan för en dialog utom fokus"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:241
 msgid "Disable all notifications"
-msgstr ""
+msgstr "Avaktiverar alla notifikationer"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:249
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Aktivera bubblor"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:253
 msgid "Enable sounds"
-msgstr ""
+msgstr "Aktivera ljud"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:257
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Visa missade notifikationer i notifikationscentret"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:264
 msgid "Enable rounded corner mask"
-msgstr ""
+msgstr "Aktivera maskning för rundande hörn"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:269
 msgid "Corner radius"
-msgstr ""
+msgstr "Hörnradie"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:273
 msgid "Disable corner mask on fullscreen"
-msgstr ""
+msgstr "Avaktivera hörnmaskning i fullskärm"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:274
 msgid ""
 "If enabled, when an application is fullscreen (fills the monitor), the "
 "corner masks will be disabled on that monitor."
 msgstr ""
+"Om aktiverat, när ett program är i fullskärmsläge, kommer hörnmaskning "
+"avaktiveras för den skärmen."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:278
 msgid "Only show corner masks on primary monitor"
-msgstr ""
+msgstr "Visa enbart hörnmaskning på primär skärm"
 
 #~ msgid "Cancel"
 #~ msgstr "Avbryt"
