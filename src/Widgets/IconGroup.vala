@@ -115,6 +115,9 @@ namespace Gala
 
 			drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
 			drag_action.actor_clicked.connect (() => selected ());
+			drag_action.drag_begin.connect (drag_begin);
+			drag_action.drag_end.connect (drag_end);
+			drag_action.drag_canceled.connect (drag_canceled);
 			add_action (drag_action);
 
 			icon_container = new Actor ();
@@ -273,12 +276,6 @@ namespace Gala
 
 			if (!no_redraw)
 				redraw ();
-
-			if (prev_n_windows < 1) {
-				drag_action.drag_begin.connect (drag_begin);
-				drag_action.drag_end.connect (drag_end);
-				drag_action.drag_canceled.connect (drag_canceled);
-			}
 		}
 
 		/**
@@ -311,13 +308,6 @@ namespace Gala
 					// don't break here! If people spam hover events and we animate
 					// removal, we can actually multiple instances of the same window icon
 				}
-			}
-
-			var n_windows = icon_container.get_n_children ();
-			if (n_windows < 1) {
-				drag_action.drag_begin.disconnect (drag_begin);
-				drag_action.drag_end.disconnect (drag_end);
-				drag_action.drag_canceled.disconnect (drag_canceled);
 			}
 		}
 
@@ -502,9 +492,15 @@ namespace Gala
 			return false;
 		}
 
-
 		Actor drag_begin (float click_x, float click_y)
 		{
+			unowned Screen screen = workspace.get_screen ();
+			if (icon_container.get_n_children () < 1 &&
+				Prefs.get_dynamic_workspaces () &&
+				workspace.index () == screen.get_n_workspaces () - 1) {
+				return null;
+			}
+
 			float abs_x, abs_y;
 			float prev_parent_x, prev_parent_y;
 
@@ -517,7 +513,6 @@ namespace Gala
 				container.remove_group_in_place (this);
 				container.request_reposition ();
 				container.reset_thumbs (0);
-
 			} else {
 				prev_parent.remove_child (this);
 			}
