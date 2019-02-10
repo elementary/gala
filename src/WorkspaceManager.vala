@@ -115,8 +115,7 @@ namespace Gala
 
 			// remove empty workspaces after we switched away from them unless it's the last one
 			var prev_workspace = screen.get_workspace_by_index (from);
-			if (remove_freeze_count < 1
-				&& Utils.get_n_windows (prev_workspace) < 1
+			if (Utils.get_n_windows (prev_workspace) < 1
 				&& from != screen.get_n_workspaces () - 1) {
 				remove_workspace (prev_workspace);
 			}
