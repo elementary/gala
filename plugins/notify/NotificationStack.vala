@@ -31,6 +31,19 @@ namespace Gala.Plugins.Notify
 
 		public Screen screen { get; construct; }
 
+		public int width
+		{
+			get
+			{
+#if HAS_MUTTER326
+				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#else
+				var scale = 1;
+#endif
+				return (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
+			 }
+		}
+
 		public NotificationStack (Screen screen)
 		{
 			Object (screen: screen);
@@ -38,12 +51,6 @@ namespace Gala.Plugins.Notify
 
 		construct
 		{
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
-			width = (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
 			clip_to_allocation = true;
 		}
 
