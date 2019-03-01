@@ -17,8 +17,8 @@
 
 public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 {
-	private const int BUTTON_SIZE = 36;
-	private const int CONTAINER_MARGIN = BUTTON_SIZE / 2;
+	private int button_size;
+	private int container_margin;
 	private const int SHADOW_SIZE = 100;
 	private const uint FADE_OUT_TIMEOUT = 200;
 	private const float MINIMUM_SCALE = 0.1f;
@@ -80,6 +80,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 	construct
 	{
+		var scale = Utils.get_ui_scaling_factor ();
+		button_size = 36 * scale;
+		container_margin = button_size / 2;
+		
 		reactive = true;
 
 		set_pivot_point (0.5f, 0.5f);
@@ -111,7 +115,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 		if (container_clip == null) {
 			window_actor.notify["allocation"].connect (on_allocation_changed);
-			container.set_position (CONTAINER_MARGIN, CONTAINER_MARGIN);
+			container.set_position (container_margin, container_margin);
 			update_clone_clip ();
 		}
 
@@ -121,13 +125,20 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		Meta.Rectangle monitor_rect;
 		get_current_monitor_rect (out monitor_rect);
 
-		set_position (SCREEN_MARGIN + monitor_rect.x, monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height);
+		float x_position, y_position;
+		if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
+			x_position = SCREEN_MARGIN + monitor_rect.x;
+		} else {
+			x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
+		}
+		y_position = monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height;
+
+		set_position (x_position, y_position);
 
 		close_action = new Clutter.ClickAction ();
 		close_action.clicked.connect (on_close_click_clicked);
 
 		close_button = Gala.Utils.create_close_button ();
-		close_button.set_size (BUTTON_SIZE, BUTTON_SIZE);
 		close_button.opacity = 0;
 		close_button.reactive = true;
 		close_button.set_easing_duration (300);
@@ -139,15 +150,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		resize_action.drag_motion.connect (on_resize_drag_motion);
 
 		resize_handle = new Clutter.Actor ();
-		resize_handle.set_size (BUTTON_SIZE, BUTTON_SIZE);
+		resize_handle.set_size (button_size, button_size);
 		resize_handle.set_pivot_point (0.5f, 0.5f);
-		resize_handle.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
+		resize_handle.set_position (width - button_size, height - button_size);
 		resize_handle.reactive = true;
 		resize_handle.add_action (resize_action);
 
 		resize_button = Utils.create_resize_button ();
 		resize_button.set_pivot_point (0.5f, 0.5f);
-		resize_button.set_position (width - resize_button.width, height - resize_button.height);
+		resize_button.set_position (width - button_size, height - button_size);
 		resize_button.opacity = 0;
 		resize_button.reactive = true;
 
@@ -309,7 +320,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		var window = window_actor.get_meta_window ();
 		if (window.appears_focused) {
 			hide ();
-		} else {
+		} else if (!window_actor.is_destroyed ()) {
 			show ();
 		}
 
@@ -319,11 +330,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private void update_size ()
 	{
 		if (container_clip != null) {
-			width = (int)(container_clip.get_width () * container.scale_x + BUTTON_SIZE);
-			height = (int)(container_clip.get_height () * container.scale_y + BUTTON_SIZE);
+			width = (int)(container_clip.get_width () * container.scale_x + button_size);
+			height = (int)(container_clip.get_height () * container.scale_y + button_size);
 		} else {
-			width = (int)(container.width * container.scale_x + BUTTON_SIZE);
-			height = (int)(container.height * container.scale_y + BUTTON_SIZE);
+			width = (int)(container.width * container.scale_x + button_size);
+			height = (int)(container.height * container.scale_y + button_size);
 		}
 	}
 
@@ -350,9 +361,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 			src_width = container.width;
 			src_height = container.height;
 		}
-
-		float max_width = width - BUTTON_SIZE;
-		float max_height = height - BUTTON_SIZE;
+		
+		float max_width = width - button_size;
+		float max_height = height - button_size;
 
 		float new_width, new_height;
 		calculate_aspect_ratio_size_fit (
@@ -376,8 +387,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private void update_container_position ()
 	{
 		if (container_clip != null) {
-			container.x = (float)(-container_clip.get_x () * container.scale_x + CONTAINER_MARGIN);
-			container.y = (float)(-container_clip.get_y () * container.scale_y + CONTAINER_MARGIN);
+			container.x = (float)(-container_clip.get_x () * container.scale_x + container_margin);
+			container.y = (float)(-container_clip.get_y () * container.scale_y + container_margin);
 		}
 	}
 
@@ -410,12 +421,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 	private void reposition_resize_button ()
 	{
-		resize_button.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
+		resize_button.set_position (width - button_size, height - button_size);
 	}
 
 	private void reposition_resize_handle ()
 	{
-		resize_handle.set_position (width - BUTTON_SIZE, height - BUTTON_SIZE);
+		resize_handle.set_position (width - button_size, height - button_size);
 	}
 
 	private void get_current_monitor_rect (out Meta.Rectangle rect)

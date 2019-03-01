@@ -38,12 +38,36 @@ namespace Gala
 			wm = _wm;
 		}
 
-		public void flash_area (int x, int y, int width, int height)
+		public void flash_area (int x, int y, int width, int height) throws DBusError, IOError
 		{
-			warning ("FlashArea not implemented");
+			debug ("Flashing area");
+
+			double[] keyframes = { 0.3f, 0.8f };
+			GLib.Value[] values = { 180U, 0U };
+
+			var transition = new Clutter.KeyframeTransition ("opacity");
+			transition.duration = 200;
+			transition.remove_on_complete = true;
+			transition.progress_mode = Clutter.AnimationMode.LINEAR;
+			transition.set_key_frames (keyframes);
+			transition.set_values (values);
+			transition.set_to_value (0.0f);
+
+			var flash_actor = new Clutter.Actor ();
+			flash_actor.set_size (width, height);
+			flash_actor.set_position (x, y);
+			flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
+			flash_actor.set_opacity (0);
+			flash_actor.transitions_completed.connect ((actor) => {
+				wm.top_window_group.remove_child (actor);
+				actor.destroy ();
+			});
+
+			wm.top_window_group.add_child (flash_actor);
+			flash_actor.add_transition ("flash", transition);
 		}
 
-		public void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
+		public async void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
 			debug ("Taking screenshot");
 
@@ -51,22 +75,32 @@ namespace Gala
 			wm.get_screen ().get_size (out width, out height);
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
-			success = save_image (image, filename, out filename_used);
+
+			if (flash) {
+				flash_area (0, 0, width, height);
+			}
+
+			success = yield save_image (image, filename, out filename_used);
 		}
 
-		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError
+		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
 			debug ("Taking area screenshot");
-			
+
 			yield wait_stage_repaint ();
 
 			var image = take_screenshot (x, y, width, height, false);
-			success = save_image (image, filename, out filename_used);
+
+			if (flash) {
+				flash_area (x, y, width, height);
+			}
+
+			success = yield save_image (image, filename, out filename_used);
 			if (!success)
 				throw new DBusError.FAILED ("Failed to save image");
 		}
 
-		public void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used)
+		public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
 			debug ("Taking window screenshot");
 
@@ -88,10 +122,14 @@ namespace Gala
 				image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
 			}
 
-			success = save_image (image, filename, out filename_used);
+			if (flash) {
+				flash_area (rect.x, rect.y, rect.width, rect.height);
+			}
+
+			success = yield save_image (image, filename, out filename_used);
 		}
 
-		public async void select_area (out int x, out int y, out int width, out int height)
+		public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError
 		{
 			var selection_area = new SelectionArea (wm);
 			selection_area.closed.connect (() => Idle.add (select_area.callback));
@@ -100,19 +138,37 @@ namespace Gala
 
 			yield;
 			selection_area.destroy ();
-			
+
+			if (selection_area.cancelled) {
+				throw new GLib.IOError.CANCELLED ("Operation was cancelled");
+			}
+
 			yield wait_stage_repaint ();
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
-		static bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
+		static string find_target_path ()
+		{
+			// Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
+			unowned string? base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
+			if (base_path != null && FileUtils.test (base_path, FileTest.EXISTS)) {
+				var path = Path.build_path (Path.DIR_SEPARATOR_S, base_path, _("Screenshots"));
+				if (FileUtils.test (path, FileTest.EXISTS)) {
+					return path;
+				} else if (DirUtils.create (path, 0755) == 0) {
+					return path;
+				} else {
+					return base_path;
+				}
+			}
+
+			return Environment.get_home_dir ();
+		}
+
+		static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
 			if (!Path.is_absolute (filename)) {
-				string path = Environment.get_user_special_dir (UserDirectory.PICTURES);
-				if (!FileUtils.test (path, FileTest.EXISTS)) {
-					path = Environment.get_home_dir ();
-				}
-
+				var path = find_target_path ();
 				if (!filename.has_suffix (".png")) {
 					used_filename = Path.build_filename (path, filename.concat (".png"), null);
 				} else {
@@ -124,7 +180,9 @@ namespace Gala
 
 			try {
 				var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
-				screenshot.save (used_filename, "png");
+				var file = File.new_for_path (used_filename);
+				var stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				yield screenshot.save_to_stream_async (stream.output_stream, "png");
 				return true;
 			} catch (GLib.Error e) {
 				return false;

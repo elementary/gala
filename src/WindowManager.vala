@@ -19,30 +19,17 @@ using Meta;
 
 namespace Gala
 {
-	[DBus (name = "org.freedesktop.login1.Manager")]
-	public interface LoginDRemote : GLib.Object
+	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+	const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+
+	[DBus (name = "org.pantheon.gala.daemon")]
+	public interface Daemon: GLib.Object
 	{
-		public signal void prepare_for_sleep (bool suspending);
+		public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
 	}
 
 	public class WindowManagerGala : Meta.Plugin, WindowManager
 	{
-		const uint GL_VENDOR = 0x1F00;
-		const string LOGIND_DBUS_NAME = "org.freedesktop.login1";
-		const string LOGIND_DBUS_OBJECT_PATH = "/org/freedesktop/login1";
-
-		delegate unowned string? GlQueryFunc (uint id);
-
-		static bool is_nvidia ()
-		{
-			var gl_get_string = (GlQueryFunc) Cogl.get_proc_address ("glGetString");
-			if (gl_get_string == null)
-				return false;
-
-			unowned string? vendor = gl_get_string (GL_VENDOR);
-			return (vendor != null && vendor.contains ("NVIDIA Corporation"));
-		}
-
 		/**
 		 * {@inheritDoc}
 		 */
@@ -82,7 +69,7 @@ namespace Gala
 
 		Window? moving; //place for the window that is being moved over
 
-		LoginDRemote? logind_proxy = null;
+		Daemon? daemon_proxy = null;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -111,24 +98,35 @@ namespace Gala
 		{
 			Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
-			// Handle FBO issue with nvidia blob
-			if (logind_proxy == null
-				&& is_nvidia ()) {
-				try {
-					logind_proxy = Bus.get_proxy_sync (BusType.SYSTEM, LOGIND_DBUS_NAME, LOGIND_DBUS_OBJECT_PATH);
-					logind_proxy.prepare_for_sleep.connect (prepare_for_sleep);
-				} catch (Error e) {
-					warning ("Failed to get LoginD proxy: %s", e.message);
-				}
+			Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+
+#if HAS_MUTTER322
+			get_screen ().get_display ().gl_video_memory_purged.connect (() => {
+				Meta.Background.refresh_all ();
+				SystemBackground.refresh ();
+			});
+#endif
+		}
+
+		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
+		{
+			try {
+				daemon_proxy = Bus.get_proxy.end (res);
+			} catch (Error e) {
+				warning ("Failed to get Menu proxy: %s", e.message);
 			}
 		}
 
-		void prepare_for_sleep (bool suspending)
+		void lost_daemon ()
 		{
-			if (suspending)
-				return;
+			daemon_proxy = null;
+		}
 
-			Meta.Background.refresh_all ();
+		void daemon_appeared ()
+		{
+			if (daemon_proxy == null) {
+				Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
+			}
 		}
 
 		bool show_stage ()
@@ -502,7 +500,7 @@ namespace Gala
 					|| window.minimized) {
 					return;
 				}
-	
+
 				var actor = window.get_compositor_private () as Clutter.Actor;
 				if (enable_animations) {
 					var op_trans = new Clutter.KeyframeTransition ("opacity");
@@ -513,7 +511,7 @@ namespace Gala
 					op_trans.set_to_value (255.0f);
 					op_trans.set_key_frames (op_keyframes);
 					op_trans.set_values (opacity);
-	
+
 					actor.add_transition ("opacity-hide", op_trans);
 				} else {
 					Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
@@ -701,6 +699,50 @@ namespace Gala
 					if (current != null && current.window_type == WindowType.NORMAL)
 						current.minimize ();
 					break;
+				case ActionType.START_MOVE_CURRENT:
+					if (current != null && current.allows_move ())
+						current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
+					break;
+				case ActionType.START_RESIZE_CURRENT:
+					if (current != null && current.allows_resize ())
+						current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
+					break;
+				case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
+					if (current == null)
+						break;
+
+					if (current.is_above ())
+						current.unmake_above ();
+					else
+						current.make_above ();
+					break;
+				case ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT:
+					if (current == null)
+						break;
+
+					if (current.on_all_workspaces)
+						current.unstick ();
+					else
+						current.stick ();
+					break;
+				case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
+					if (current != null) {
+						var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.LEFT);
+						if (wp != null)
+							current.change_workspace (wp);
+					}
+					break;
+				case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
+					if (current != null) {
+						var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.RIGHT);
+						if (wp != null)
+							current.change_workspace (wp);
+					}
+					break;
+				case ActionType.CLOSE_CURRENT:
+					if (current != null && current.can_close ())
+						current.@delete (Gtk.get_current_event_time ());
+					break;
 				case ActionType.OPEN_LAUNCHER:
 					try {
 						Process.spawn_command_line_async (BehaviorSettings.get_default ().panel_main_menu_action);
@@ -767,23 +809,44 @@ namespace Gala
 			}
 		}
 
-		WindowMenu? window_menu = null;
-
 		public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
 		{
-			var time = get_screen ().get_display ().get_current_time_roundtrip ();
-
 			switch (menu) {
 				case WindowMenuType.WM:
-					if (window_menu == null)
-						window_menu = new WindowMenu ();
+					if (daemon_proxy == null) {
+						return;
+					}
 
-					window_menu.current_window = window;
-					window_menu.show_all ();
-					window_menu.popup (null, null, (menu, ref menu_x, ref menu_y, out push_in) => {
-						menu_x = x;
-						menu_y = y;
-					}, Gdk.BUTTON_SECONDARY, time);
+					WindowFlags flags = WindowFlags.NONE;
+					if (window.can_minimize ())
+						flags |= WindowFlags.CAN_MINIMIZE;
+
+					if (window.can_maximize ())
+						flags |= WindowFlags.CAN_MAXIMIZE;
+
+					if (window.get_maximized () > 0)
+						flags |= WindowFlags.IS_MAXIMIZED;
+
+					if (window.allows_move ())
+						flags |= WindowFlags.ALLOWS_MOVE;
+
+					if (window.allows_resize ())
+						flags |= WindowFlags.ALLOWS_RESIZE;
+
+					if (window.is_above ())
+						flags |= WindowFlags.ALWAYS_ON_TOP;
+
+					if (window.on_all_workspaces)
+						flags |= WindowFlags.ON_ALL_WORKSPACES;
+
+					if (window.can_close ())
+						flags |= WindowFlags.CAN_CLOSE;
+
+					try {
+						daemon_proxy.show_window_menu.begin (flags, x, y);
+					} catch (Error e) {
+						message ("Error invoking MenuManager: %s", e.message);
+					}
 					break;
 				case WindowMenuType.APP:
 					// FIXME we don't have any sort of app menus
@@ -902,28 +965,36 @@ namespace Gala
 			if (window.get_tile_match () != null) {
 				size_change_completed (actor);
 				return;
-			}	
+			}
 
-			ulong signal_id = 0U;
-			signal_id = window.size_changed.connect (() => {
-				window.disconnect (signal_id);
-				var new_rect = window.get_frame_rect ();
-				
-				switch (which_change) {
-					case Meta.SizeChange.MAXIMIZE:
-						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-						break;
-					case Meta.SizeChange.UNMAXIMIZE:
-						unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-						break;
-					case Meta.SizeChange.FULLSCREEN:
-					case Meta.SizeChange.UNFULLSCREEN:
-						handle_fullscreen_window (actor.get_meta_window (), which_change);
-						break;
-				}
+			ulong size_signal_id = 0U;
+			ulong position_signal_id = 0U;
+			size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+			position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+		}
 
-				size_change_completed (actor);
-			});
+		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
+			unowned Meta.Window window = actor.get_meta_window ();
+
+			window.disconnect (size_signal_id);
+			window.disconnect (position_signal_id);
+
+			var new_rect = window.get_frame_rect ();
+
+			switch (which_change) {
+				case Meta.SizeChange.MAXIMIZE:
+					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.UNMAXIMIZE:
+					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (window, which_change);
+					break;
+			}
+
+			size_change_completed (actor);
 		}
 
 		public override void minimize (WindowActor actor)
@@ -1526,6 +1597,7 @@ namespace Gala
 			if (move_primary_only) {
 				wallpaper = background_group.get_child_at_index (primary);
 				wallpaper.set_data<int> ("prev-x", (int) wallpaper.x);
+				wallpaper.set_data<int> ("prev-y", (int) wallpaper.y);
 			} else
 				wallpaper = background_group;
 
@@ -1649,6 +1721,13 @@ namespace Gala
 			in_group.x = -x2;
 			wallpaper_clone.x = -x2;
 
+			// The wallpapers need to move upwards inside the container to match their
+			// original position before/after the transition.
+			if (move_primary_only) {
+				wallpaper.y = -monitor_geom.y;
+				wallpaper_clone.y = -monitor_geom.y;
+			}
+
 			in_group.clip_to_allocation = out_group.clip_to_allocation = true;
 			in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
 			in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
@@ -1700,6 +1779,7 @@ namespace Gala
 					background.get_parent ().remove_child (background);
 					background_group.insert_child_at_index (background, background.monitor_index);
 					background.x = background.steal_data<int> ("prev-x");
+					background.y = background.steal_data<int> ("prev-y");
 					continue;
 				} else if (actor is Meta.BackgroundGroup) {
 					actor.x = 0;

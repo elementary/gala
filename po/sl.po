@@ -7,66 +7,69 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2016-07-24 15:23+0000\n"
-"Last-Translator: Jernej Virag <Unknown>\n"
-"Language-Team: Slovenian <sl@li.org>\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-08-22 00:08+0000\n"
+"Last-Translator: Jernej Virag <jernej@virag.si>\n"
+"Language-Team: Slovenian <https://weblate.elementary.io/projects/desktop/"
+"gala/sl/>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Ali je slika na zaslonu videti v redu?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Ohrani to konfiguracijo"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Obnovi prejšnjo konfiguracijo"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Minimiraj"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Premakni"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Spremeni velikost"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Vendno na vrhu"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Vedno na vidni delovni površini"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Premakni na levo delovno površino"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Premakni na desno delovno površino"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Zapri"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Obnovi"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Maksimiraj"
 
@@ -85,7 +88,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Drugo"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -104,7 +107,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algoritem za razporeditev predogleda oken"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
+#, fuzzy
+msgid "Choose the algorithm used for exposing the windows."
 msgstr "Izberite algoritem za razporejanje oken"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
@@ -160,7 +164,8 @@ msgid "Panel main menu action"
 msgstr "Akcija odpiranja glavnega menija"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Nastavi ukaz, ki se naj izvede pri pritisku bližnjice 'panel-main-menu'"
 
@@ -169,9 +174,10 @@ msgid "Enable dynamic workspace instead of static ones"
 msgstr "Vklopi dinamična namizja namesto statičnih"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
+#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "Številko namizij se bo dinamično povečevalo in zmanjševalo glede na potrebo."
 
@@ -243,9 +249,8 @@ msgid "The shortcut to enable picture-in-picture window"
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Bližnjica za pregled vseh oken"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -328,11 +333,12 @@ msgid "Defines the shadow of normal focused windows"
 msgstr "Definira senco fokusiranih oken"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:214
+#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Prva vrednost je radij \"blur\" efekta sence, druga je \"fade\" efekt na "
 "vrhu (in je tipično -1), tretja in četrta vrednost pa sta x- in y- "
@@ -347,7 +353,8 @@ msgstr "Definira senco nefokusiranega okna"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
+#, fuzzy
+msgid "See normal-focused."
 msgstr "Glej zgoraj"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223

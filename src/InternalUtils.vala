@@ -118,21 +118,6 @@ namespace Gala
 			Util.set_stage_input_region (screen, xregion);
 		}
 
-		public static string get_system_background_path ()
-		{
-			var filename = AppearanceSettings.get_default ().workspace_switcher_background;
-			var default_file = Config.PKGDATADIR + "/texture.png";
-
-			if (filename == "") {
-				filename = default_file;
-			} else if (!FileUtils.test (filename, FileTest.IS_REGULAR)) {
-				warning ("Failed to load %s", filename);
-				filename = default_file;
-			}
-
-			return filename;
-		}
-
 		/**
 		 * Inserts a workspace at the given index. To ensure the workspace is not immediately
 		 * removed again when in dynamic workspaces, the window is first placed on it.
@@ -147,7 +132,7 @@ namespace Gala
 
 			new_window.change_workspace_by_index (index, false);
 
-			unowned List<WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
 			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())
 					continue;
@@ -242,7 +227,7 @@ namespace Gala
 			// Assign each window to the closest available slot
 			var tmplist = windows.copy ();
 			while (tmplist.length () > 0) {
-				unowned List<TilableWindow?> link = tmplist.nth (0);
+				unowned List<unowned TilableWindow?> link = tmplist.nth (0);
 				var window = link.data;
 				var rect = window.rect;
 

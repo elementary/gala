@@ -31,7 +31,7 @@ namespace Gala
 		WindowIcon? current_window = null;
 
 		Actor window_clones;
-		List<Actor> clone_sort_order;
+		List<unowned Actor> clone_sort_order;
 
 		WindowActor? dock_window;
 		Actor dock;
@@ -134,6 +134,8 @@ namespace Gala
 		 */
 		void update_dock ()
 		{
+			ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
+
 			var screen = wm.get_screen ();
 			var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
 			var layout = (BoxLayout) dock.layout_manager;

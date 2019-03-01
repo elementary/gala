@@ -36,10 +36,19 @@ namespace Gala
 		// the sizes of the textures often repeat, especially for the background actor
 		// so we keep a cache to avoid creating the same texture all over again.
 		static Gee.HashMap<string,Shadow> shadow_cache;
+		static Gtk.StyleContext style_context;
 
-		static construct
+		class construct
 		{
 			shadow_cache = new Gee.HashMap<string,Shadow> ();
+
+			var style_path = new Gtk.WidgetPath ();
+			var id = style_path.append_type (typeof (Gtk.Window));
+
+			style_context = new Gtk.StyleContext ();
+			style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			style_context.add_class ("decoration");
+			style_context.set_path (style_path);
 		}
 
 		public int shadow_size { get; construct; }
@@ -47,6 +56,7 @@ namespace Gala
 
 		public float scale_factor { get; set; default = 1; }
 		public uint8 shadow_opacity { get; set; default = 255; }
+		public string? css_class { get; set; default = null; }
 
 		Cogl.Material material;
 		string? current_key = null;
@@ -70,7 +80,6 @@ namespace Gala
 		Cogl.Texture? get_shadow (int width, int height, int shadow_size, int shadow_spread)
 		{
 			var old_key = current_key;
-
 			current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
 			if (old_key == current_key)
 				return null;
@@ -84,19 +93,24 @@ namespace Gala
 				return shadow.texture;
 			}
 
-			// fill a new texture for this size
-			var buffer = new Granite.Drawing.BufferSurface (width, height);
-			buffer.context.rectangle (shadow_size - shadow_spread, shadow_size - shadow_spread,
-				width - shadow_size * 2 + shadow_spread * 2, height - shadow_size * 2 + shadow_spread * 2);
-			buffer.context.set_source_rgba (0, 0, 0, 0.7);
-			buffer.context.fill ();
-
-			buffer.exponential_blur (shadow_size / 2);
-
 			var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
 			var cr = new Cairo.Context (surface);
+			cr.set_source_rgba (0, 0, 0, 0);
+			cr.fill ();
 
-			cr.set_source_surface (buffer.surface, 0, 0);
+			cr.set_operator (Cairo.Operator.OVER);
+			cr.save ();
+			cr.scale (scale_factor, scale_factor);
+			style_context.save ();
+			if (css_class != null) {
+				style_context.add_class (css_class);
+			}
+
+			style_context.set_scale ((int)scale_factor);
+			style_context.render_background (cr, shadow_size, shadow_size, width - shadow_size * 2, height - shadow_size * 2);
+			style_context.restore ();
+			cr.restore ();
+
 			cr.paint ();
 
 			var texture = new Cogl.Texture.from_data (width, height, 0, Cogl.PixelFormat.BGRA_8888_PRE,
@@ -121,9 +135,10 @@ namespace Gala
 		public override void paint (EffectPaintFlags flags)
 		{
 			var bounding_box = get_bounding_box ();
-			var shadow = get_shadow ((int) (bounding_box.x2 - bounding_box.x1), (int) (bounding_box.y2 - bounding_box.y1),
-				shadow_size, shadow_spread);
+			var width = (int) (bounding_box.x2 - bounding_box.x1);
+			var height = (int) (bounding_box.y2 - bounding_box.y1);
 
+			var shadow = get_shadow (width, height, shadow_size, shadow_spread);
 			if (shadow != null)
 				material.set_layer (0, shadow);
 

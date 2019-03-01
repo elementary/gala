@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
 "PO-Revision-Date: 2016-12-27 02:14+0000\n"
 "Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
@@ -18,55 +18,55 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Baikah kelihatan paparan?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Kekalkan Konfigurasi Ini"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Pulihkan Konfigurasi Tadi"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Kecilkan"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Alih"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Saiz Semula"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Sentiasa di Atas"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Sentiasa di Ruang Kerja Tampak"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Alih ke Ruang Kerja Kiri"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Alih ke Ruang Kerja Kanan"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Tutup"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Nyahmaksimumkan"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Maksimumkan"
 
@@ -104,7 +104,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algoritma untuk bentangan selayang pandang tetingkap"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
+#, fuzzy
+msgid "Choose the algorithm used for exposing the windows."
 msgstr "Pilih algoritma untuk mempamerkan tetingkap"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
@@ -167,7 +168,8 @@ msgid "Panel main menu action"
 msgstr "Tindakan menu utama panel"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Tetapkan perintah yang dijalankan bila pengikatan kekunci panel-main-menu "
 "ditekan"
@@ -177,9 +179,10 @@ msgid "Enable dynamic workspace instead of static ones"
 msgstr "Benarkan ruang kerja dinamik selain dari yang statik"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
+#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "Guna nombor meningkat atau menurun secara dinamik, yang diperlukan bagi "
 "ruang kerja selain dari nombor tetap yang statik"
@@ -255,9 +258,8 @@ msgid "The shortcut to enable picture-in-picture window"
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Pintasan untuk buka selayang pandang tetingkap untuk semua tetingkap"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -348,11 +350,12 @@ msgid "Defines the shadow of normal focused windows"
 msgstr "Takrif bayang tetingkap terfokus biasa"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:214
+#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Nilai pertama jejari bayang kabur, yang kedua resap atas (biasanya hanya "
 "-1), ketiga dan keempat ofset x- dan y dan terakhir adalah kelegapan. Maka "
@@ -366,7 +369,8 @@ msgstr "Takrif bayang bagi tetingkap tidak fokus biasa"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
+#, fuzzy
+msgid "See normal-focused."
 msgstr "Lihat normal-terfokus"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223

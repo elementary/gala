@@ -7,66 +7,69 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2017-04-19 09:34+0000\n"
-"Last-Translator: Piotr Strębski <strebski@gmail.com>\n"
-"Language-Team: Polish <pl@li.org>\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-12-13 00:06+0000\n"
+"Last-Translator: Piotr Strebski <strebski@gmail.com>\n"
+"Language-Team: Polish <https://weblate.elementary.io/projects/desktop/gala/"
+"pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
-"X-Generator: Launchpad (build 18354)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Czy wyświetlany obraz wygląda poprawnie?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
-msgstr "Zachowaj bieżące ustawienia"
+msgstr "Zachowaj tę konfigurację"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Przywróć poprzednie ustawienia"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Zminimalizuj"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Przenieś"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Zmień rozmiar"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Zawsze na wierzchu"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Zawsze na aktywnym obszarze roboczym"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Przesuń do lewej części obszaru roboczego"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Przesuń do prawej części obszaru roboczego"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Zamknij"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Cofnij maksymalizację"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Zmaksymalizuj"
 
@@ -81,7 +84,7 @@ msgstr "Pokaż wszystkie otwarte okna i obszary robocze"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "podglad-wielozadaniowy"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -93,7 +96,7 @@ msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr "programy-inne"
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
@@ -104,8 +107,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algorytm dla wyglądu listy okien"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Wybierz algorytm używany dla ekspozycji okien"
+msgid "Choose the algorithm used for exposing the windows."
+msgstr "Wybierz algorytm używany dla ekspozycji okien."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -120,7 +123,6 @@ msgid "Action for the bottom right corner"
 msgstr "Działanie prawego lewego rogu"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
@@ -129,7 +131,6 @@ msgstr ""
 "własne\" gorących narożników"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -166,10 +167,10 @@ msgid "Panel main menu action"
 msgstr "Działanie głównego menu panelu"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Ustawia polecenie do uruchomienia, gdy wciśnięta jest kombinacja klawiszy "
-"głównego menu panelu"
+"głównego menu panelu."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
@@ -178,23 +179,22 @@ msgstr "Włącz dynamiczne obszary robocze zamiast statycznych"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "Używaj dynamicznie zwiększającej lub zmniejszającej się w miarę potrzeb "
-"liczby obszarów roboczych, zamiast ustalonej liczby"
+"liczby obszarów roboczych, zamiast ustalonej ich liczby."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr "Nazwy, które są rozpoznawane, jako dok okna dla przełącznika okien"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
-#, fuzzy
 msgid ""
 "When launching the window-switcher, Gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
-"Po uruchomieniu przełącznika okien, gala wykonuje powtórzenie tej listy i "
+"Po uruchomieniu przełącznika okien, Gala wykonuje powtórzenie tej listy i "
 "próbuje dopasować okna do nazw. Następnie odnalezione okno zostaje ukryte; "
 "pojawia się ponownie wraz z zamknięciem przełącznika."
 
@@ -234,7 +234,7 @@ msgstr "Skrót do otwierania podglądu okna dla wszystich okien"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:133
 msgid "Cycle to the next workspace to the right or to back to the first"
 msgstr ""
-"Przejdź do następnego obszaru roboczego po prawej lub wróć do pierwszego."
+"Przejdź do następnego obszaru roboczego po prawej lub wróć do pierwszego"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:137
 msgid "Cycle to next keyboard layout"
@@ -244,7 +244,7 @@ msgstr "Przełącz do nastęnego układu klawiatury"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:143
 #: data/org.pantheon.desktop.gala.gschema.xml.in:171
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "PRZESTARZAŁE: Ten klucz jest przestarzały i ignorowany"
+msgstr "PRZESTARZAŁE: Ten klucz jest przestarzały i ignorowany."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "Cycle to previous keyboard layout"
@@ -252,12 +252,11 @@ msgstr "Przełącz do poprzedniego układu klawiatury"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+msgstr "Skrót do włączenia okna obrazu-w-obrazie"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Skrót do otwierania podglądu okna dla wszystich okien"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr "Skrót do wyświetlenia obszaru zaznaczenia do wyboru okna."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -296,14 +295,12 @@ msgstr ""
 "przyciski, można użyć specjalnego znacznika rozdzielenia."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:165
-#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
 msgstr "Wygaś okna nadrzędne, które pojawiły się jako modalne okna dialogowe"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
 msgid "The opacity of windows behind the window switcher."
-msgstr "Przezroczystość okien znajdujących się w tle, w przełączniku alt-tab."
+msgstr "Przezroczystość okien znajdujących się w tle, w przełączniku okien."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "Background-image used in the workspace-switcher"
@@ -350,12 +347,12 @@ msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Pierwsza wartość to promień rozmycia cienia, druga to współczynnik "
-"blaknięcia, trzecia i czwarta to przesunięcie na osi X i Y, a ostatnia - to "
-"przezroczystość. Tak więc [blur-radius, top-fade, x-offset, y-offset, "
-"opacity]"
+"blaknięcia (którym jest zwykle po prostu -1), trzecia i czwarta to "
+"przesunięcie na osi X i Y, a ostatnia - to przezroczystość. Tak więc [blur-"
+"radius, top-fade, x-offset, y-offset, opacity]."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
@@ -365,8 +362,8 @@ msgstr "Określa cień zwykłego nieaktywnego okna"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
-msgstr "Zobacz zwykłe aktywne okno"
+msgid "See normal-focused."
+msgstr "Zobacz zwykłe aktywne okno."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
 msgid "Defines the shadow of a menu"

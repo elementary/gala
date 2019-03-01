@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
 "PO-Revision-Date: 2015-11-28 20:54+0000\n"
 "Last-Translator: Beqa Arabuli <arabulibeqa@yahoo.com>\n"
 "Language-Team: Georgian <ka@li.org>\n"
@@ -18,55 +18,55 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "ეს დისპლეი კარგად გამოიყურება?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "ამ კონფიგურაციის დატოვება"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "წინა კონფიგურაციის აღდგენა"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "ჩაკეცვა"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "გადატანა"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "ზომის შეცვლა"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "ყოველთვის წინა პლანზე"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "ყოველთვის ხილულ სამუშაო გარემოში"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "მარცხენა სამუშაო გარემოში გადატანა"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "მარჯვენა სამუშაო გარემოში გადატანა"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "დახურვა"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "გაშლის დაბრუნება"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "გაშლა"
 
@@ -104,7 +104,8 @@ msgid "Algorithm for window overview layout"
 msgstr "ალგორითმი ფანჯრის მიმოხილვის გეგმისთვის"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
+#, fuzzy
+msgid "Choose the algorithm used for exposing the windows."
 msgstr "ფანჯრების ექსპონირებისთვის გამოყენებული ალგორითმის არჩევა"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
@@ -166,7 +167,8 @@ msgid "Panel main menu action"
 msgstr "პანელის მთავარი მენიუს მოქმედება"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "ბრძანების მითითება, რომელიც panel-main-menu კლავიატურის მაკავშირებელზე "
 "დაჭერისას გაეშვება"
@@ -176,9 +178,10 @@ msgid "Enable dynamic workspace instead of static ones"
 msgstr "სტატიკური სამუშაო გარემოს ნაცვლად დინამიკურის გააქტიურება"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
+#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "სამუშაო მაგიდების სტატიკური, დადგენილი ციფრის ნაცვლად დინამიკურად გაზრდადი "
 "ან შემცირებადი ციფრის გამოყენება"
@@ -255,9 +258,8 @@ msgid "The shortcut to enable picture-in-picture window"
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "ყველა ფანჯრისთვის ფანჯრების მიმოხილვის გასახსნელი მალსახმობი"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -339,7 +341,7 @@ msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
@@ -350,7 +352,7 @@ msgstr ""
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
+msgid "See normal-focused."
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223

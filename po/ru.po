@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2018-01-05 08:56+0000\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-11-24 00:10+0000\n"
 "Last-Translator: Kirill Romanov <djaler1@gmail.com>\n"
 "Language-Team: Russian <https://weblate.elementary.io/projects/desktop/gala/"
 "ru/>\n"
@@ -16,60 +16,60 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 2.18\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Монитор настроен правильно?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Сохранить текущие настройки"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Восстановить предыдущие настройки"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Свернуть"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Переместить"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Изменить размер"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Поверх всех окон"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Всегда на видимом рабочем столе"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Переместить на рабочий стол слева"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Переместить на рабочий стол справа"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Восстановить"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Развернуть"
 
@@ -84,7 +84,7 @@ msgstr "Просмотр всех открытых окон и рабочих с
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "Многозадачный вид"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -107,8 +107,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Алгоритм просмотра окон"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Выбрать алгоритм, используемый для раскрытия окна"
+msgid "Choose the algorithm used for exposing the windows."
+msgstr "Выберите алгоритм, используемый для раскрытия окна."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -123,7 +123,6 @@ msgid "Action for the bottom right corner"
 msgstr "Действие в правом нижнем углу"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
@@ -132,7 +131,6 @@ msgstr ""
 "действии «Выполнить команду»"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -143,8 +141,8 @@ msgid ""
 msgstr ""
 "Если указана только одна команда, то она будет выполняться для любого "
 "активного угла с соответствующим действием. Чтобы указать отдельную команду "
-"для определённого угла необходимо использовать шаблон 'hotcorner-topleft:"
-"command;;hotcorner-bottomright:command'. Возможные идентификаторы — "
+"для определённого угла необходимо использовать шаблон 'hotcorner-"
+"topleft:command;;hotcorner-bottomright:command'. Возможные идентификаторы — "
 "'hotcorner-[topleft; topright; bottomleft; bottomright]', после которых идёт "
 "':' и затем команда. ';;' используется как разделитель."
 
@@ -168,7 +166,8 @@ msgid "Panel main menu action"
 msgstr "Панель меню «Основные действия»"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Команда, которая выполняется при нажатии соответствующих горячих клавиш"
 
@@ -177,9 +176,10 @@ msgid "Enable dynamic workspace instead of static ones"
 msgstr "Включить динамические рабочие места вместо статичных"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
+#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
 "Использовать переменное количество рабочих столов, изменяющееся по мере "
 "необходимости"
@@ -255,9 +255,8 @@ msgid "The shortcut to enable picture-in-picture window"
 msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Ярлык для открытия обзора всех окон"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -344,11 +343,12 @@ msgid "Defines the shadow of normal focused windows"
 msgstr "Определяет тень активного окна"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:214
+#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Первое значение определяет размытие тени, второе — угасание тени (обычно "
 "-1), третье и четвёртое значения — смещение по x и y, последнее значение "
@@ -363,7 +363,8 @@ msgstr "Тень неактивного окна"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
+#, fuzzy
+msgid "See normal-focused."
 msgstr "Смотри normal-focused"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
