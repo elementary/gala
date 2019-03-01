@@ -7,66 +7,69 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2017-04-03 09:20+0000\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2018-11-20 00:03+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
-"Language-Team: Lithuanian <lt@li.org>\n"
+"Language-Team: Lithuanian <https://weblate.elementary.io/projects/desktop/"
+"gala/lt/>\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n%10>=2 && (n%100<10 || "
+"n%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
-"X-Generator: Launchpad (build 18335)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
-msgstr "Ar vaizdas ekrane atrodo gerai?"
+msgstr "Ar ekranas gerai atrodo?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Palikti šią konfigūraciją"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Atkurti ankstesnę konfigūraciją"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Suskleisti"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Perkelti"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Keisti dydį"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Visada viršuje"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Visada matomoje darbo srityje"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
 msgstr "Perkelti į darbo sritį kairėje"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
 msgstr "Perkelti į darbo sritį dešinėje"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Užverti"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Atkurti dydį"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Išskleisti"
 
@@ -105,8 +108,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Langų apžvalgos išdėstymo algoritmas"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Pasirinkti algoritmą, skirtą langų parodymui"
+msgid "Choose the algorithm used for exposing the windows."
+msgstr "Pasirinkti algoritmą, skirtą langų parodymui."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -121,16 +124,14 @@ msgid "Action for the bottom right corner"
 msgstr "Apatinio dešiniojo kampo veiksmas"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Komanda ar kelios komandos, kurios bus vykdomos karštojo kampo veiksmui "
-"\"tinkinta komanda\" (angl. custom-command)"
+"Komanda ar kelios komandos, kurios bus vykdomos karštojo kampo veiksmui \""
+"tinkinta komanda\" (angl. custom-command)"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -141,8 +142,8 @@ msgid ""
 msgstr ""
 "Jeigu nurodysite vieną komandą, ji bus naudojama kiekvienam karštajam "
 "kampui, kuriam priskirta tinkinta komanda (angl. custom-command). Jeigu "
-"vietoj to naudosite šabloną 'hotcorner-topleft:command;;hotcorner-"
-"bottomright:command', tuomet kiekvienam kampui bus naudojama tam tikra "
+"vietoj to naudosite šabloną 'hotcorner-topleft:komanda;;hotcorner-"
+"bottomright:komanda', tuomet kiekvienam kampui bus naudojama tam tikra "
 "komanda. Galimi identifikatoriai yra 'hotcorner-[topleft; topright; "
 "bottomleft; bottomright]' po kurių seka \":\", o tuomet komanda. ';;' yra "
 "naudojamas kaip skirtukas tarp komandų apibrėžimų."
@@ -167,10 +168,10 @@ msgid "Panel main menu action"
 msgstr "Skydelio pagrindinio meniu veiksmas"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Nustato komandą, kurią vykdyti, kai nuspaudžiamas skydelio pagrindinio meniu "
-"klavišų susiejimas"
+"klavišų susiejimas."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
@@ -179,10 +180,10 @@ msgstr "Vietoj statinių darbo sričių, įjungti dinamines darbo sritis"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
-"Vietoj statinio pastovaus darbo sričių skaičiaus, pagal poreikį naudoti "
-"dinamiškai didėjantį ar mažėjantį skaičių"
+"Vietoj statinio, pastovaus darbo sričių skaičiaus, pagal poreikį naudoti "
+"dinamiškai didėjantį ar mažėjantį skaičių."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -190,13 +191,12 @@ msgstr ""
 "Pavadinimai, kurie langų perjungiklyje yra atpažįstami kaip skydelio langai"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
-#, fuzzy
 msgid ""
 "When launching the window-switcher, Gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
-"Paleidžiant langų perjungiklį, gala pereina per šį sąrašą ir bando rasti "
+"Paleidžiant langų perjungiklį, Gala pereina per šį sąrašą ir bando rasti "
 "langus, kurie atitiktų pavadinimus. Juos radusi, ji juos paslepia, o užvėrus "
 "perjungiklį, vėl juos parodo."
 
@@ -253,12 +253,12 @@ msgstr "Perjungti į ankstesnį klaviatūros išdėstymą"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+msgstr "Susiejimas skirtas įjungti paveikslo paveiksle langą"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Susiejimas skirtas atverti visų langų apžvalgą"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
+"Susiejimas skirtas rodyti pasirinkimo sritį kuri skirta pasirinkti langą."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -297,14 +297,12 @@ msgstr ""
 "įterpimui tarp dviejų gretimų mygtukų."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:165
-#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
-msgstr "Užtemdyti tėvinius langus, sukuriančius pridėtą modalinį dialogą"
+msgstr "Užtemdo tėvinius langus, sukuriančius modalinį dialogą"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
 msgid "The opacity of windows behind the window switcher."
-msgstr "Foninių langų nepermatomumas langų perjungiklyje"
+msgstr "Foninių langų nepermatomumas langų perjungiklyje."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "Background-image used in the workspace-switcher"
@@ -351,13 +349,13 @@ msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Pirmoji reikšmė yra šešėlio suliejimo spindulys, antroji reikšmė - "
 "viršutinis išblukimas (kuri, dažniausiai, yra -1), trečioji ir ketvirtoji "
 "yra x- ir y-poslinkis, o paskutinė - nepermatomumas. Taigi, [suliejimo-"
-"spindulys, viršutinis-išblukimas, x-poslinkis, y-poslinkis, nepermatomumas] "
-"(angl. [blur-radius, top-fade, x-offset, y-offset, opacity])"
+"spindulys, viršutinis-išblukimas, x-poslinkis, y-poslinkis, nepermatomumas] ("
+"angl. [blur-radius, top-fade, x-offset, y-offset, opacity])."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
@@ -367,8 +365,8 @@ msgstr "Apibrėžia nesufokusuoto normalaus lango šėšėlį"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
-msgstr "Žiūrėkite normalus sufokusuotas (angl. normal-focused)"
+msgid "See normal-focused."
+msgstr "Žiūrėti įprastą sufokusuotą (angl. normal-focused)."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
 msgid "Defines the shadow of a menu"
@@ -420,7 +418,7 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:278
 msgid "Only show corner masks on primary monitor"
-msgstr "Rodyti kampų kaukes tik pirminiame vaizduoklyje"
+msgstr "Rodyti kampų kaukes tik pirminiame monitoriuje"
 
 #~ msgid "Cancel"
 #~ msgstr "Atsisakyti"

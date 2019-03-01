@@ -7,66 +7,68 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2016-08-31 14:41+0000\n"
-"Last-Translator: UweS <Unknown>\n"
-"Language-Team: German <de@li.org>\n"
+"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"PO-Revision-Date: 2019-02-04 00:08+0000\n"
+"Last-Translator: Jörg Arnold <j.ar@mailbox.org>\n"
+"Language-Team: German <https://weblate.elementary.io/projects/desktop/gala/"
+"de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1769
+#: src/WindowManager.vala:1839
 msgid "Does the display look OK?"
 msgstr "Ist die Bildschirmanzeige korrekt?"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:1842
 msgid "Keep This Configuration"
 msgstr "Diese Einstellung speichern"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1843
 msgid "Restore Previous Configuration"
 msgstr "Vorherige Einstellung wiederherstellen"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:102
 msgid "Minimize"
 msgstr "Minimieren"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:114
 msgid "Move"
 msgstr "Verschieben"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:120
 msgid "Resize"
 msgstr "Größe ändern"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:126
 msgid "Always on Top"
 msgstr "Immer im Vordergrund"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:132
 msgid "Always on Visible Workspace"
 msgstr "Immer auf der sichtbaren Arbeitsfläche"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:138
 msgid "Move to Workspace Left"
-msgstr "Zur linken Arbeitsfläche verschieben"
+msgstr "Auf die linke Arbeitsfläche verschieben"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:144
 msgid "Move to Workspace Right"
-msgstr "Zur rechten Arbeitsfläche verschieben"
+msgstr "Auf die rechte Arbeitsfläche verschieben"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:150
 msgid "Close"
 msgstr "Schließen"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Unmaximize"
 msgstr "Maximierung aufheben"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:167
 msgid "Maximize"
 msgstr "Maximieren"
 
@@ -77,23 +79,24 @@ msgstr "Übersicht der Arbeitsflächen"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "Alle offenen Fenster und alle Arbeitsflächen anzeigen"
+msgstr "Alle offenen Fenster und Arbeitsflächen anzeigen"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Andere"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+"Fallback-Desktop-Datei für Benachrichtigungen aus veralteten Anwendungen."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
@@ -104,8 +107,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Verfahren für das Gestalten der Fensterübersicht"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "Verfahren wählen, nach dem die Fensterübersicht dargestellt wird"
+msgid "Choose the algorithm used for exposing the windows."
+msgstr "Wählen Sie das Verfahren zur Darstellung der Fenster."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -125,11 +128,10 @@ msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Dieser Befehl wird als Aktive-Ecken-Aktion ›custom-command‹ ausgeführt. Es "
-"sind mehrere möglich."
+"Dieser Befehl wird als Aktive-Ecken-Aktion 'custom-command' ausgeführt. "
+"Mehrere Aktionen sind möglich."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -139,18 +141,18 @@ msgid ""
 "';;' is used as delimiter between command defintions."
 msgstr ""
 "Wenn Sie nur einen einzigen Befehl festlegen, wird dieser für jede aktive "
-"Ecke verwendet, die auf ›custom-command‹ gesetzt ist. Wenn Sie aber das "
+"Ecke verwendet, die auf ›custom-command‹ eingestellt wird. Wenn Sie aber das "
 "Muster ›hotcorner-topleft:command;;hotcorner-bottomright:command› verwerden, "
 "wird der der jeweiligen aktiven Ecke zugewiesene Befehl ausgeführt. Mögliche "
-"Bezeichner sind 'hotcorner-[topleft; topright; bottomleft; bottomright]' "
-"gefolgt von einem ›:‹ sowie dem Befehl. ›;;‹ dient als Trennzeichen zwischen "
-"einzelnen Befehlen."
+"Bezeichnungen der Ecken sind 'hotcorner-[topleft; topright; bottomleft; "
+"bottomright]' gefolgt von einem ›:‹ sowie nachfolgend dem Befehl. ›;;‹ dient "
+"als Trennzeichen zwischen einzelnen Befehlen."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
 msgstr ""
 "Kacheldarstellung von Fenstern aktiveren, sobald diese an den Bildschirmrand "
-"gezogen werden."
+"gezogen werden"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:58
 msgid ""
@@ -158,8 +160,8 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
-"Ist diese Option eingeschaltet, werden Fenster, die an einen seitlichen "
-"Bildschirmrand gezogen werden, in der Höhe maximiert; außerdem wird die "
+"Ist diese Option eingeschaltet werden Fenster, die an einen seitlichen "
+"Bildschirmrand gezogen werden, in der Höhe maximiert. Außerdem wird die "
 "Fensterbreite auf die Hälfte der freien Bildschirmfläche festgelegt. "
 "Fenster, die an den oberen Bildschirmrand gezogen werden, werden auf die "
 "gesamte Bildschirmfläche maximiert."
@@ -169,29 +171,29 @@ msgid "Panel main menu action"
 msgstr "Leisten-Hauptmenü-Aktion"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
+#, fuzzy
+msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Legt den Befehl fest, der ausgeführt wird, sobald das Tastenkürzel für das "
 "Leisten-Hauptmenü gedrückt wird"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
-msgstr "Dynamische Arbeitsflächenanzahl anstelle einer festen aktivieren"
+msgstr "Dynamische Arbeitsflächenanzahl aktivieren"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
+"instead of a static, fixed number."
 msgstr ""
-"Je nach Bedarf wird eine veränderliche Anzahl von Arbeitsflächen verwendet "
-"anstelle einer festen Anzahl"
+"Verwenden Sie eine dynamisch steigende oder abnehmende Anzahl von "
+"Arbeitsflächen anstelle einer statischen, festen Anzahl."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr "Namen, die der Fensterumschalter als Dock-Fenster erkennt"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
-#, fuzzy
 msgid ""
 "When launching the window-switcher, Gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
@@ -200,7 +202,7 @@ msgstr ""
 "Wenn der Fensterumschalter gestartet wird, liest Gala diese Liste ein und "
 "sucht dann Fenster, die den Namen in dieser Liste entsprechen. Werden solche "
 "Fenster gefunden, blendet Gala diese Fenster aus und zeigt sie wieder an, "
-"sobald der Umschalter geschlossen wird."
+"sobald der Fensterumschalter geschlossen wird."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:90
 msgid "Shortcut to move to first workspace"
@@ -213,14 +215,14 @@ msgstr "Tastenkürzel zum Aufrufen der letzten Arbeitsfläche"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:100
 msgid "Shortcut to move the current window to first workspace"
 msgstr ""
-"Tastenkürzel, mit dem das aktive Fenster auf die erste Arbeitsfläche bewegt "
-"wird"
+"Tastenkürzel, mit dem das aktive Fenster auf die erste Arbeitsfläche "
+"verschoben wird"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:105
 msgid "Shortcut to move the current window to last workspace"
 msgstr ""
-"Tastenkürzel, mit dem das aktive Fenster auf die letzte Arbeitsfläche bewegt "
-"wird"
+"Tastenkürzel, mit dem das aktive Fenster auf die letzte Arbeitsfläche "
+"verschoben wird"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:110
 msgid "Zoom in"
@@ -251,7 +253,7 @@ msgstr "Zum nächsten Tastaturlayout wechseln"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:143
 #: data/org.pantheon.desktop.gala.gschema.xml.in:171
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+msgstr "VERALTET: Diese Taste ist veraltet und wird ignoriert."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "Cycle to previous keyboard layout"
@@ -259,12 +261,13 @@ msgstr "Zum vorherhigen Tastaturlayout wechseln"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+msgstr "Das Tastenkürzel zum Aktivieren des Bild-in-Bild-Fensters"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "Tastenkürzel, mit dem eine Übersicht mit allen Fenstern angezeigt wird"
+msgid "The shortcut to show the selection area to choose a window."
+msgstr ""
+"Das Tastenkürzel, um den Auswahlbereich anzugeben, welcher in einem Fenster "
+"dargestellt werden soll."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:155
 msgid "Attach modal dialogs"
@@ -306,16 +309,12 @@ msgstr ""
 "eingefügt werden."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:165
-#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
-msgstr ""
-"Übergeordnete Fenster mit angehängtem modalen Dialog werden abgeblendet "
-"angezeigt"
+msgstr "Dunkelt übergeordnete Fenster ab, wenn modale Dialoge erzeugt werden"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
 msgid "The opacity of windows behind the window switcher."
-msgstr "Deckkraft der im Hintergrund angezeigten Fenster im Alt-Tab-Umschalter"
+msgstr "Deckkraft der im Hintergrund angezeigten Fenster im Alt-Tab-Umschalter."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "Background-image used in the workspace-switcher"
@@ -363,12 +362,12 @@ msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
+"offset, opacity]."
 msgstr ""
 "Der erste Wert legt den Radius der Schattenweichzeichnung fest, der zweite "
 "den oberen Verlauf (üblicherweise −1), der dritte und vierte den x- und y-"
 "Versatz und der letzte die Deckkraft, also: [Weichzeichnungsradius, oberer "
-"Verlauf, x-Versatz, y-Versatz, Deckkraft]"
+"Verlauf, x-Versatz, y-Versatz, Deckkraft]."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
@@ -378,7 +377,8 @@ msgstr "Legt den Schattenwurf von normalen Hintergrundfenstern fest"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:224
 #: data/org.pantheon.desktop.gala.gschema.xml.in:229
 #: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
+#, fuzzy
+msgid "See normal-focused."
 msgstr "Siehe normale Vordergrundfenster"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:223
@@ -425,7 +425,7 @@ msgstr "Eckmaske im Vollbildmodus deaktivieren"
 msgid ""
 "If enabled, when an application is fullscreen (fills the monitor), the "
 "corner masks will be disabled on that monitor."
-msgstr ""
+msgstr "Wenn eingeschaltet, werden die Ränder im Vollbildmodus ignoriert."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:278
 msgid "Only show corner masks on primary monitor"
