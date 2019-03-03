@@ -314,7 +314,16 @@ namespace Gala
 		 */
 		public void redraw ()
 		{
-			content.invalidate ();
+			var scale = InternalUtils.get_ui_scaling_factor ();
+			var size = SIZE * scale;
+			width = size;
+			height = size;
+
+			var invalidated = ((Canvas)content).set_size (size, size);
+			if (!invalidated)
+			{
+				content.invalidate ();
+			}
 		}
 
 		/**
