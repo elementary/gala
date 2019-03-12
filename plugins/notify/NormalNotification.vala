@@ -62,7 +62,7 @@ namespace Gala.Plugins.Notify
 			style_path.append_type (typeof (Gtk.Label));
 
 			var label_style_context = new Gtk.StyleContext ();
-			label_style_context.add_provider (Notification.default_css, Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+			label_style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
 			label_style_context.set_path (style_path);
 
 			Gdk.RGBA color;
