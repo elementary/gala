@@ -191,10 +191,16 @@ namespace Gala
 			try {
 				var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
 				var file = File.new_for_path (used_filename);
-				var stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				FileIOStream stream;
+				if (file.query_exists ()) {
+					stream = yield file.open_readwrite_async (FileCreateFlags.NONE);
+				} else {
+					stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				}
 				yield screenshot.save_to_stream_async (stream.output_stream, "png");
 				return true;
 			} catch (GLib.Error e) {
+				warning ("could not save file: %s", e.message);
 				return false;
 			}
 		}
