@@ -17,6 +17,8 @@
 
 namespace Gala
 {
+	const string EXTENSION = ".png";
+
 	[DBus (name="org.gnome.Shell.Screenshot")]
 	public class ScreenshotManager : Object
 	{
@@ -172,13 +174,14 @@ namespace Gala
 			// We only alter non absolute filename because absolute
 			// filename is used for temp clipboard file and shouldn't be changed
 			if (!Path.is_absolute (used_filename)) {
-				if (!used_filename.has_suffix (".png")) {
-					used_filename = used_filename.concat (".png");
+				if (!used_filename.has_suffix (EXTENSION)) {
+					used_filename = used_filename.concat (EXTENSION);
 				}
 
 				var scale_factor = InternalUtils.get_ui_scaling_factor ();
 				if (scale_factor > 1) {
-					used_filename = used_filename.splice (-4, -4, "@%ix".printf (scale_factor));
+					var scale_pos = -EXTENSION.length;
+					used_filename = used_filename.splice (scale_pos, scale_pos, "@%ix".printf (scale_factor));
 				}
 
 				var path = find_target_path ();
