@@ -49,7 +49,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private float begin_resize_width = 0.0f;
 	private float begin_resize_height = 0.0f;
 
-	static Settings animation_settings;
+	static Settings? animation_settings;
 	static unowned Meta.Window? previous_focus = null;
 
 	// From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
