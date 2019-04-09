@@ -49,6 +49,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private float begin_resize_width = 0.0f;
 	private float begin_resize_height = 0.0f;
 
+	static Settings animation_settings;
 	static unowned Meta.Window? previous_focus = null;
 
 	// From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
@@ -76,6 +77,25 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor, Clutter.Rect? container_clip)
 	{
 		Object (wm: wm, window_actor: window_actor, container_clip: container_clip);
+	}
+
+	static bool get_animations_enabled ()
+	{
+		if (animation_settings == null) {
+			animation_settings = new Settings (Config.SCHEMA + ".animations");
+		}
+
+		return animation_settings.get_boolean ("enable-animations");
+	}
+
+	static bool set_animation_easing_duration (Clutter.Actor actor, uint msecs)
+	{
+		if (get_animations_enabled ()) {
+			actor.set_easing_duration (msecs);
+			return true;
+		}
+
+		return false;
 	}
 
 	construct
@@ -141,7 +161,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		close_button = Gala.Utils.create_close_button ();
 		close_button.opacity = 0;
 		close_button.reactive = true;
-		close_button.set_easing_duration (300);
 		close_button.add_action (close_action);
 
 		resize_action = new Clutter.DragAction ();
@@ -174,45 +193,49 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 		opacity = 0;
 
-		set_easing_duration (200);
+		set_animation_easing_duration (this, 200);
 		opacity = 255;
 
-		set_easing_duration (0);
+		set_animation_easing_duration (this, 0);
 	}
 
 	public override void hide ()
 	{
 		opacity = 255;
 		
-		set_easing_duration (200);
+		set_animation_easing_duration (this, 200);
 		opacity = 0;
 
-		set_easing_duration (0);
-
-		ulong completed_id = 0UL;
-		completed_id = transitions_completed.connect (() => {
-			disconnect (completed_id);
-			base.hide ();
-		});
+		if (set_animation_easing_duration (this, 0)) {
+			ulong completed_id = 0UL;
+			completed_id = transitions_completed.connect (() => {
+				disconnect (completed_id);
+				base.hide ();
+			});
+		}
 	}
 
 	public override bool enter_event (Clutter.CrossingEvent event)
 	{
+		set_animation_easing_duration (close_button, 300);
 		close_button.opacity = 255;
+		set_animation_easing_duration (close_button, 0);
 
-		resize_button.set_easing_duration (300);
+		set_animation_easing_duration (resize_button, 300);
 		resize_button.opacity = 255;
-		resize_button.set_easing_duration (0);
+		set_animation_easing_duration (resize_button, 0);
 		return true;
 	}
 
 	public override bool leave_event (Clutter.CrossingEvent event)
 	{
+		set_animation_easing_duration (close_button, 300);
 		close_button.opacity = 0;
+		set_animation_easing_duration (close_button, 0);
 
-		resize_button.set_easing_duration (300);
+		set_animation_easing_duration (resize_button, 300);
 		resize_button.opacity = 0;
-		resize_button.set_easing_duration (0);
+		set_animation_easing_duration (resize_button, 0);
 		return true;
 	}
 
@@ -298,7 +321,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
 	private void on_close_click_clicked ()
 	{
-		set_easing_duration (FADE_OUT_TIMEOUT);
+		set_animation_easing_duration (this, FADE_OUT_TIMEOUT);
 
 		opacity = 0;
 
@@ -402,7 +425,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		int monitor_width = monitor_rect.width;
 		int monitor_height = monitor_rect.height;
 
-		set_easing_duration (300);
+		set_animation_easing_duration (this, 300);
 		set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
 
 		var screen_limit_start = SCREEN_MARGIN + monitor_x;
@@ -416,7 +439,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		y = y.clamp (screen_limit_start, screen_limit_end);
 
 		set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-		set_easing_duration (0);
+		set_animation_easing_duration (this, 0);
 	}
 
 	private void reposition_resize_button ()
