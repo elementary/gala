@@ -49,7 +49,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private float begin_resize_width = 0.0f;
 	private float begin_resize_height = 0.0f;
 
-	static Settings? animation_settings;
 	static unowned Meta.Window? previous_focus = null;
 
 	// From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
@@ -77,25 +76,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor, Clutter.Rect? container_clip)
 	{
 		Object (wm: wm, window_actor: window_actor, container_clip: container_clip);
-	}
-
-	static bool get_animations_enabled ()
-	{
-		if (animation_settings == null) {
-			animation_settings = new Settings (Config.SCHEMA + ".animations");
-		}
-
-		return animation_settings.get_boolean ("enable-animations");
-	}
-
-	static bool set_animation_easing_duration (Clutter.Actor actor, uint msecs)
-	{
-		if (get_animations_enabled ()) {
-			actor.set_easing_duration (msecs);
-			return true;
-		}
-
-		return false;
 	}
 
 	construct
@@ -237,6 +217,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		resize_button.opacity = 0;
 		set_animation_easing_duration (resize_button, 0);
 		return true;
+	}
+
+	private	bool set_animation_easing_duration (Clutter.Actor actor, uint msecs)
+	{
+		if (wm.enable_animations) {
+			actor.set_easing_duration (msecs);
+			return true;
+		}
+
+		return false;
 	}
 
 	private void on_move_begin ()
