@@ -206,7 +206,7 @@ namespace Gala.Plugins.Notify
 
 					GLib.Settings? app_settings = app_settings_cache.get (app_id);
 					if (app_settings == null) {
-						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", false);
+						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", true);
 						if (schema != null) {
 							app_settings = new GLib.Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_id));
 							app_settings_cache.set (app_id, app_settings);
