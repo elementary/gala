@@ -24,6 +24,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 	private const float MINIMUM_SCALE = 0.1f;
 	private const float MAXIMUM_SCALE = 1.0f;
 	private const int SCREEN_MARGIN = 0;
+	private const int PANEL_HEIGHT = 30;
 
 	public signal void closed ();
 
@@ -392,6 +393,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		}
 	}
 
+    enum EdgeType {
+        TOP,
+        BOTTOM,
+        LEFT,
+        RIGHT
+    }
+
 	private void update_screen_position ()
 	{
 		Meta.Rectangle monitor_rect;
@@ -403,17 +411,44 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 		int monitor_height = monitor_rect.height;
 
 		set_easing_duration (300);
-		set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
+		set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
 
-		var screen_limit_start = SCREEN_MARGIN + monitor_x;
-		var screen_limit_end = monitor_width + monitor_x - SCREEN_MARGIN - width;
+        var x_start = SCREEN_MARGIN + monitor_x;
+        var x_end = monitor_width + monitor_x - SCREEN_MARGIN - width;
 
-		x = x.clamp (screen_limit_start, screen_limit_end);
+        var y_start = int.max (SCREEN_MARGIN, PANEL_HEIGHT) + monitor_y;
+        var y_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
 
-		screen_limit_start = SCREEN_MARGIN + monitor_y;
-		screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
+        var distances = new Gee.HashMap<EdgeType, float?> ();
+        distances[EdgeType.LEFT] = ((x - x_start).abs ());
+        distances[EdgeType.RIGHT] = ((x - x_end).abs ());
+        distances[EdgeType.TOP] = ((y - y_start).abs ());
+        distances[EdgeType.BOTTOM] = ((y - y_end).abs ());
 
-		y = y.clamp (screen_limit_start, screen_limit_end);
+        var item = distances.min ((a, b) => {
+            return (int) (a.value < b.value) - (int) (a.value > b.value);
+        });
+
+        switch (item.key) {
+            case EdgeType.LEFT:
+                x = x_start;
+                y = y.clamp (y_start, y_end);
+                break;
+            case EdgeType.RIGHT:
+                x = x_end;
+                y = y.clamp (y_start, y_end);
+                break;
+            case EdgeType.TOP:
+                y = y_start;
+                x = x.clamp (x_start, x_end);
+                break;
+            case EdgeType.BOTTOM:
+                y = y_end;
+                x = x.clamp (x_start, x_end);
+                break;
+            default:
+                break;
+        }
 
 		set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 		set_easing_duration (0);
