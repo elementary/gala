@@ -86,11 +86,7 @@ namespace Gala.Plugins.Notify
 
 		construct
 		{
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			relevancy_time = new DateTime.now_local ().to_unix ();
 			width = (WIDTH + MARGIN * 2) * scale;
 			reactive = true;

@@ -332,11 +332,7 @@ namespace Gala.Plugins.Notify
 
 			Gdk.Pixbuf? pixbuf = null;
 			Variant? variant = null;
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			var size = Notification.ICON_SIZE * scale;
 			var mask_offset = 4 * scale;
 			var mask_size_offset = mask_offset * 2;
@@ -632,7 +628,7 @@ namespace Gala.Plugins.Notify
 			} catch (ShellError e) {
 				warning ("%s", e.message);
  			}
- 
+
 			return (app_name.down () == token
 				|| token_executable == app_executable
 				|| (args.length > 0 && args[0] == token)
