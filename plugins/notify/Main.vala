@@ -25,6 +25,7 @@ namespace Gala.Plugins.Notify
 		Gala.WindowManager? wm = null;
 
 		NotifyServer server;
+		PluginServer plugin_server;
 		NotificationStack stack;
 
 		public override void initialize (Gala.WindowManager wm)
@@ -60,6 +61,24 @@ namespace Gala.Plugins.Notify
 					warning ("Could not aquire bus %s", name);
 					destroy ();
 				});
+			
+			plugin_server = new PluginServer ();
+			plugin_server.notify["offset"].connect (update_position);
+			
+			Bus.own_name (BusType.SESSION, "org.pantheon.gala.plugins.notify", BusNameOwnerFlags.NONE,
+				(connection) => {
+					try {
+						connection.register_object ("/org/pantheon/gala/plugins/notify", plugin_server);
+					} catch (Error e) {
+						warning ("Registring notification server failed: %s", e.message);
+						destroy ();
+					}
+				},
+				() => {},
+				(con, name) => {
+					warning ("Could not aquire bus %s", name);
+					destroy ();
+			});
 		}
 
 		void update_position ()
@@ -69,7 +88,7 @@ namespace Gala.Plugins.Notify
 			var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
 
 			stack.x = area.x + area.width - stack.width;
-			stack.y = area.y;
+			stack.y = area.y + plugin_server.offset;
 		}
 
 		public override void destroy ()

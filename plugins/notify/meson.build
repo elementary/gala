@@ -5,6 +5,7 @@ gala_notify_sources = [
 	'Notification.vala',
 	'NotificationStack.vala',
 	'NotifyServer.vala',
+	'PluginServer.vala',
 	'NotifySettings.vala',
 ]
 
