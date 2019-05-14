@@ -575,7 +575,8 @@ namespace Gala
 			var next = active.get_neighbor (direction);
 
 			//dont allow empty workspaces to be created by moving, if we have dynamic workspaces
-			if (Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () ==  screen.n_workspaces - 1) {
+			if ((Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == screen.n_workspaces - 1)
+				|| (active == next)) {
 				Utils.bell (screen);
 				return;
 			}
