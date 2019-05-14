@@ -78,7 +78,7 @@ namespace Gala.Plugins.Notify
 				(con, name) => {
 					warning ("Could not aquire bus %s", name);
 					destroy ();
-			});
+				});
 		}
 
 		void update_position ()
