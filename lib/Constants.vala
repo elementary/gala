@@ -17,15 +17,19 @@
 
 namespace Gala
 {
-	public const int OPEN_DURATION = 350;
-	// Duration of the snap animation as used by maximize/unmaximize
-	public const int SNAP_DURATION = 250;
-	// Duration of the close animation
-	public const int CLOSE_DURATION = 195;
-	// Duration of the minimize animation
-	public const int MINIMIZE_DURATION = 200;
-	// Duration of the workspace switch animation
-	public const int WORKSPACE_SWITCH_DURATION = 300;
-	// Duration of the menu mapping animation
-	public const int MENU_DURATION = 150;
+	[CCode (has_type_id = false)]
+	public enum AnimationDuration {
+		// Duration of the open animation
+		OPEN = 350,
+		// Duration of the close animation
+		CLOSE = 195,
+		// Duration of the minimize animation
+		MINIMIZE = 200,
+		// Duration of the menu mapping animation
+		MENU_MAP = 150,
+		// Duration of the snap animation as used by maximize/unmaximize
+		SNAP = 250,
+		// Duration of the workspace switch animation
+		WORKSPACE_SWITCH = 300,
+	}
 }

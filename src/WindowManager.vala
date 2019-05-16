@@ -888,7 +888,7 @@ namespace Gala
 			unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
 			window_group.set_child_below_sibling (tile_preview, window_actor);
 
-			var duration = SNAP_DURATION / 2U;
+			var duration = AnimationDuration.SNAP / 2U;
 
 			var rect = window.get_frame_rect ();
 			tile_preview.set_position (rect.x, rect.y);
@@ -1010,7 +1010,7 @@ namespace Gala
 
 		public override void minimize (WindowActor actor)
 		{
-			const int duration = MINIMIZE_DURATION;
+			const int duration = AnimationDuration.MINIMIZE;
 
 			if (!enable_animations
 				|| duration == 0
@@ -1075,7 +1075,7 @@ namespace Gala
 
 		void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			const int duration = SNAP_DURATION;
+			const int duration = AnimationDuration.SNAP;
 
 			if (!enable_animations
 				|| duration == 0) {
@@ -1180,7 +1180,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					var duration = MINIMIZE_DURATION;
+					var duration = AnimationDuration.MINIMIZE;
 					if (duration == 0) {
 						unminimize_completed (actor);
 						return;
@@ -1232,7 +1232,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					var duration = MINIMIZE_DURATION;
+					var duration = AnimationDuration.MINIMIZE;
 					if (duration == 0) {
 						map_completed (actor);
 						return;
@@ -1270,7 +1270,7 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					var duration = MENU_DURATION;
+					var duration = AnimationDuration.MENU_MAP;
 					if (duration == 0) {
 						map_completed (actor);
 						return;
@@ -1356,7 +1356,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					const int duration = CLOSE_DURATION;
+					const int duration = AnimationDuration.CLOSE;
 					if (duration == 0) {
 						destroy_completed (actor);
 						return;
@@ -1407,7 +1407,7 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					var duration = MENU_DURATION;
+					var duration = AnimationDuration.MENU_MAP;
 					if (duration == 0) {
 						destroy_completed (actor);
 						return;
@@ -1436,7 +1436,7 @@ namespace Gala
 
 		void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			const int duration = SNAP_DURATION;
+			const int duration = AnimationDuration.SNAP;
 			if (!enable_animations
 				|| duration == 0) {
 				return;
@@ -1556,7 +1556,7 @@ namespace Gala
 
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			const int animation_duration = WORKSPACE_SWITCH_DURATION;
+			const int animation_duration = AnimationDuration.WORKSPACE_SWITCH;
 
 			if (!enable_animations
 				|| animation_duration == 0

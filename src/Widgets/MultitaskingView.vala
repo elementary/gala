@@ -245,7 +245,7 @@ namespace Gala
 				workspace_clone.restore_easing_state ();
 			}
 
-			workspaces.set_easing_duration (animate ? WORKSPACE_SWITCH_DURATION : 0);
+			workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH : 0);
 			workspaces.x = -active_x;
 
 			reposition_icon_groups (animate);
