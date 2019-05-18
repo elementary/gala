@@ -144,7 +144,7 @@ namespace Gala
 				throw new DBusError.INVALID_ARGS ("Invalid rectangle specified");
 
 			double variance = 0, mean = 0,
-				   rTotal = 0, gTotal = 0, bTotal = 0;
+				rTotal = 0, gTotal = 0, bTotal = 0;
 
 			ulong paint_signal_handler = 0;
 			paint_signal_handler = effect.done_painting.connect (() => {
@@ -161,7 +161,7 @@ namespace Gala
 				double pixel = 0;
 
 				double max, min, score, delta, scoreTotal = 0,
-					   rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
+					rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
 
 				// code to calculate weighted average color is copied from
 				// plank's lib/Drawing/DrawingService.vala average_color()
