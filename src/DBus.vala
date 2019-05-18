@@ -144,7 +144,7 @@ namespace Gala
 				throw new DBusError.INVALID_ARGS ("Invalid rectangle specified");
 
 			double variance = 0, mean = 0,
-			       rTotal = 0, gTotal = 0, bTotal = 0;
+				   rTotal = 0, gTotal = 0, bTotal = 0;
 
 			ulong paint_signal_handler = 0;
 			paint_signal_handler = effect.done_painting.connect (() => {
@@ -161,7 +161,7 @@ namespace Gala
 				double pixel = 0;
 
 				double max, min, score, delta, scoreTotal = 0,
-				       rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
+					   rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
 
 				// code to calculate weighted average color is copied from
 				// plank's lib/Drawing/DrawingService.vala average_color()
@@ -244,6 +244,111 @@ namespace Gala
 			yield;
 
 			return { rTotal, gTotal, bTotal, mean, variance };
+		}
+		
+		/**
+		 * Creates a window snapshot and transitions from it to the real state.
+		 * 
+		 * Calling this method will create a static temporary snapshot from a target window
+		 * and will transition from it to the real window surface. This is useful if
+		 * e.g you want to change the Gtk stylesheet used by your application.
+		 * It can be used to create a smooth transition effect when switching to the new
+		 * stylesheet. If that's your intention, call this function just before actually changing
+		 * the stylesheet for the best effect.
+		 * 
+		 * The function will create a transition animation only when animations are enabled.
+		 * If they are not, the animation will not be visible but the snapshot will be still created and added.
+		 * 
+		 * The xids parameter takes an array of X window id's to apply effect to.
+		 * If your application contains multiple windows, you can apply the effect
+		 * on all of them calling this function with their respective window ID's.
+		 * 
+		 * If the parameter is an empty array, all windows visible on the current workspace
+		 * will have the effect applied. This should be only used in the global context and not
+		 * used by applications.
+		 * 
+		 * @param xids the list of X window ID's to apply the effect to
+		 */
+		public async void transition_from_snapshot (uint32[] xids)
+		{
+			bool animate = AnimationSettings.get_default ().enable_animations;
+
+			if (xids.length == 0) {
+				unowned Meta.Workspace workspace = wm.get_screen ().get_active_workspace ();
+				var windows = workspace.list_windows ();
+				foreach (unowned Meta.Window window in windows) {
+					if (!window.minimized && window.get_window_type () != Meta.WindowType.DESKTOP) {
+						yield transition_window (window, animate);
+					}
+				}
+			} else {
+				foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (wm.get_screen ())) {
+					unowned Meta.Window window = actor.get_meta_window ();
+					if ((uint32)window.get_xwindow () in xids) {
+						yield transition_window (actor.get_meta_window (), animate);
+					}
+				}
+			}
+		}
+
+		static async void transition_window (Meta.Window window, bool animate)
+		{
+			const uint TRANSITION_DURATION = 200;
+
+			unowned Meta.WindowActor actor = (Meta.WindowActor)window.get_compositor_private ();
+
+			var rect = window.get_frame_rect ();
+			int x_offset = rect.x - (int) actor.x;
+			int y_offset = rect.y - (int) actor.y;
+			
+			var texture = ((Meta.ShapedTexture)actor.get_texture ()).get_texture ();
+			texture = fast_copy_texture (texture, x_offset, y_offset, rect.width, rect.height, Cogl.PixelFormat.BGRA_8888_PRE);
+
+			var snapshot = new Clutter.Texture ();
+			snapshot.set_cogl_texture ((Cogl.Handle)texture);
+
+			snapshot.set_position (x_offset, y_offset);
+			snapshot.set_size (rect.width, rect.height);
+			actor.insert_child_above (snapshot, null);
+
+			if (animate) {
+				snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+				snapshot.set_easing_duration (TRANSITION_DURATION);
+				snapshot.opacity = 0;
+
+				ulong signal_id = 0U;
+				signal_id = snapshot.transitions_completed.connect (() => {
+					snapshot.disconnect (signal_id);
+					snapshot.destroy ();
+				});
+			} else {
+				snapshot.opacity = 0;
+				Timeout.add (TRANSITION_DURATION, () => {
+					snapshot.destroy ();
+					return Source.REMOVE;
+				});
+			}
+		}
+
+		static Cogl.Texture fast_copy_texture (Cogl.Texture texture, int xoff, int yoff, int width, int height, Cogl.PixelFormat format)
+		{
+			var copy = new Cogl.Texture.with_size (width, height, Cogl.TextureFlags.NONE, format);
+
+			var fbo = new Cogl.Offscreen.to_texture (copy);
+			Cogl.push_framebuffer ((Cogl.Framebuffer)fbo);
+			Cogl.set_source_texture (texture);
+
+			// Invert y coordinates due to Cogl bug with inverting the texture vertically
+			Cogl.rectangle_with_texture_coords (
+				-1, -1, 1, 1, 
+				xoff / (float)texture.get_width (),
+				(yoff + height) / (float)texture.get_height (), 
+				(xoff + width) / (float)texture.get_width (),
+				yoff / (float)texture.get_height ()
+			);
+
+			Cogl.pop_framebuffer ();
+			return copy;
 		}
 	}
 }
