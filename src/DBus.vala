@@ -17,11 +17,19 @@
 
 namespace Gala
 {
+	[DBus (name = "org.freedesktop.DBus")]
+	private interface FreedesktopDBus : Object
+	{
+		[DBus (name = "GetConnectionUnixProcessID")]
+		public abstract uint32 get_connection_unix_process_id (string name) throws Error;
+	}
+
 	[DBus (name="org.pantheon.gala")]
 	public class DBus
 	{
 		static DBus? instance;
-		static WindowManager wm;
+        static WindowManager wm;
+        static FreedesktopDBus? bus_proxy;
 
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
@@ -62,7 +70,14 @@ namespace Gala
 					} catch (Error e) { warning (e.message); }
 				},
 				() => {},
-				() => critical ("Could not acquire name") );
+                () => critical ("Could not acquire name") );
+            
+			try {
+				bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
+			} catch (Error e) {
+				warning (e.message);
+				bus_proxy = null;
+			}
 		}
 
 		private DBus ()
@@ -260,33 +275,50 @@ namespace Gala
 		 * If they are not, the animation will not be visible but the snapshot will be still created and added.
 		 * 
 		 * The xids parameter takes an array of X window id's to apply effect to.
-		 * If your application contains multiple windows, you can apply the effect
-		 * on all of them calling this function with their respective window ID's.
+		 * By default, if the array is empty, gala will apply the effect to all windows
+		 * that belong to your process ID. If you would like to create the transition 
+		 * only for some windows of your application, you can pass their
+		 * respective X window ID's to prevent this behaviour.
 		 * 
-		 * If the parameter is an empty array, all windows visible on the current workspace
-		 * will have the effect applied. This should be only used in the global context and not
-		 * used by applications.
+		 * Note that you will not be able to affect any windows that do
+		 * not belong to your PID, this is reserved for system components.
 		 * 
-		 * @param xids the list of X window ID's to apply the effect to
+		 * @param xids the list of X window ID's to apply the effect to, empty
+		 * if the effect should be applied to all windows belonging to your PID
 		 */
-		public async void transition_from_snapshot (uint32[] xids)
+		public async void transition_from_snapshot (uint32[] xids, BusName sender) throws IOError
+		{
+			if (bus_proxy == null) {
+				throw new IOError.FAILED ("Could not connect to org.freedesktop.DBus");
+			}
+
+			uint32 pid = bus_proxy.get_connection_unix_process_id (sender);
+			bool animate = AnimationSettings.get_default ().enable_animations;
+			
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (wm.get_screen ())) {
+				unowned Meta.Window window = actor.get_meta_window ();
+				if ((xids.length == 0 || (uint32)window.get_xwindow () in xids) && window.get_pid () == pid) {
+					yield transition_window (actor.get_meta_window (), animate);
+				}
+			}
+		}
+
+		/**
+		 * Creates a window snapshot and transitions from it to the real state
+		 * for all windows on the visible workspace. See transition_from_snapshot.
+		 * 
+		 * This function is reserved for system components and must not be
+		 * accessed by applications.
+		 */
+		public async void global_transition_from_snapshot () throws IOError
 		{
 			bool animate = AnimationSettings.get_default ().enable_animations;
 
-			if (xids.length == 0) {
-				unowned Meta.Workspace workspace = wm.get_screen ().get_active_workspace ();
-				var windows = workspace.list_windows ();
-				foreach (unowned Meta.Window window in windows) {
-					if (!window.minimized && window.get_window_type () != Meta.WindowType.DESKTOP) {
-						yield transition_window (window, animate);
-					}
-				}
-			} else {
-				foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (wm.get_screen ())) {
-					unowned Meta.Window window = actor.get_meta_window ();
-					if ((uint32)window.get_xwindow () in xids) {
-						yield transition_window (actor.get_meta_window (), animate);
-					}
+			unowned Meta.Workspace workspace = wm.get_screen ().get_active_workspace ();
+			var windows = workspace.list_windows ();
+			foreach (unowned Meta.Window window in windows) {
+				if (!window.minimized && window.get_window_type () != Meta.WindowType.DESKTOP) {
+					yield transition_window (window, animate);
 				}
 			}
 		}
