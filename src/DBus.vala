@@ -28,8 +28,8 @@ namespace Gala
 	public class DBus
 	{
 		static DBus? instance;
-        static WindowManager wm;
-        static FreedesktopDBus? bus_proxy;
+		static WindowManager wm;
+		static FreedesktopDBus? bus_proxy;
 
 		[DBus (visible = false)]
 		public static void init (WindowManager _wm)
@@ -70,8 +70,8 @@ namespace Gala
 					} catch (Error e) { warning (e.message); }
 				},
 				() => {},
-                () => critical ("Could not acquire name") );
-            
+				() => critical ("Could not acquire name") );
+			
 			try {
 				bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
 			} catch (Error e) {
