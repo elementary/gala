@@ -370,7 +370,7 @@ namespace Gala
 			Cogl.push_framebuffer ((Cogl.Framebuffer)fbo);
 			Cogl.set_source_texture (texture);
 
-			// Invert y coordinates due to Cogl bug with inverting the texture vertically
+			// Invert y coordinates due to GL having y axis from bottom to top
 			Cogl.rectangle_with_texture_coords (
 				-1, -1, 1, 1, 
 				xoff / (float)texture.get_width (),
