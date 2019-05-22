@@ -1018,7 +1018,7 @@ namespace Gala
 
 			Rectangle icon = {};
 			if (actor.get_meta_window ().get_icon_geometry (out icon)) {
-                // Fix icon position and size according to ui scaling factor.
+				// Fix icon position and size according to ui scaling factor.
 				int ui_scale = InternalUtils.get_ui_scaling_factor ();
 				icon.x *= ui_scale;
 				icon.y *= ui_scale;
