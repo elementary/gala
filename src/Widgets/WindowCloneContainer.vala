@@ -308,10 +308,14 @@ namespace Gala
 		/**
 		 * Emit the selected signal for the current_window.
 		 */
-		public void activate_selected_window ()
+		public bool activate_selected_window ()
 		{
-			if (current_window != null)
+			if (current_window != null) {
 				current_window.selected ();
+				return true;
+			}
+
+			return false;
 		}
 
 		/**
