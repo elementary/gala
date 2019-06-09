@@ -69,7 +69,9 @@ namespace Gala
 
 		Window? moving; //place for the window that is being moved over
 
-		Daemon? daemon_proxy = null;
+        Daemon? daemon_proxy = null;
+        
+        NotificationStack notification_stack;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -139,6 +141,8 @@ namespace Gala
 			MediaFeedback.init ();
 			WindowListener.init (screen);
 			KeyboardManager.init (display);
+
+            notification_stack = new NotificationStack (screen);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -1331,7 +1335,10 @@ namespace Gala
 						window.is_attached_dialog ())
 						dim_window (window.find_root_ancestor (), true);
 
-					break;
+                    break;
+                case WindowType.NOTIFICATION:
+                    notification_stack.show_notification (actor);
+                    break;
 				default:
 					map_completed (actor);
 					break;
@@ -1430,7 +1437,15 @@ namespace Gala
 						destroying.remove (actor);
 						destroy_completed (actor);
 					});
-					break;
+                    break;
+                case WindowType.NOTIFICATION:
+                    notification_stack.destroy_notification (actor);
+                    //  Meta.Rectangle rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
+                    //  var snapshot = Utils.get_window_actor_snapshot (actor, rect, rect);
+                    //  snapshot.set_position (actor.get_x (), actor.get_y ());
+
+                    //  window_group.add (snapshot);
+                    break;
 				default:
 					destroy_completed (actor);
 					break;
