@@ -64,8 +64,6 @@ namespace Gala
 
 		public void show_notification (WindowActor notification)
 		{
-            notifications.add (notification);
-			
             notification.set_pivot_point (0.5f, 0.5f);
 
 			animations_changed (true);
@@ -89,20 +87,24 @@ namespace Gala
 			entry.add_transition (flip_transition);
 			notification.add_transition ("entry", entry);
 
-			// raise ourselves when we got something to show
-			//  get_parent ().set_child_above_sibling (this, null);
-
 			// we have a shoot-over on the start of the close animation, which gets clipped
 			// unless we make our container a bit wider and move the notifications over
 			notification.margin_left = ADDITIONAL_MARGIN * scale;
 
 			float height;
-			notification.get_preferred_height (WIDTH * scale, out height, null);
-            update_stack_position ();
+            notification.get_preferred_height (WIDTH * scale, out height, null);
+            
+            /**
+             * We will make space for the incomming notification
+             * by shifting all current notifications by height
+             * and then add it to the notifications list.
+             */
 			update_positions (height);
 
             notification.y = stack_y + TOP_OFFSET * scale;
             notification.x = stack_x;
+            notification.get_meta_window ().move_frame (false, (int)notification.x, (int)notification.y);
+            notifications.add (notification);
 		}
 
         void update_stack_position ()
@@ -120,30 +122,33 @@ namespace Gala
 			var y = stack_y + add_y + TOP_OFFSET * scale;
 			var i = notifications.size;
 			var delay_step = i > 0 ? 150 / i : 0;
-			foreach (var child in notifications) {
-				child.save_easing_state ();
-				child.set_easing_mode (AnimationMode.EASE_OUT_BACK);
-				child.set_easing_duration (200);
-				child.set_easing_delay ((i--) * delay_step);
+			foreach (var actor in notifications) {
+				actor.save_easing_state ();
+				actor.set_easing_mode (AnimationMode.EASE_OUT_BACK);
+				actor.set_easing_duration (200);
+				actor.set_easing_delay ((i--) * delay_step);
 
-				child.y = y;
-				child.restore_easing_state ();
+				actor.y = y;
+				actor.restore_easing_state ();
+                actor.get_meta_window ().move_frame (false, (int)actor.x, (int)y);
 
-				y += child.height;
+				y += actor.height;
 			}
         }
         
         public void destroy_notification (WindowActor notification)
         {
+            float new_x = stack_x + (WIDTH + MARGIN * 2) * Utils.get_ui_scaling_factor ();
             notification.save_easing_state ();
 			notification.set_easing_duration (100);
 			notification.set_easing_mode (AnimationMode.EASE_IN_QUAD);
 			notification.opacity = 0;
 
-			notification.x = stack_x + (WIDTH + MARGIN * 2) * Utils.get_ui_scaling_factor ();
+			notification.x = new_x;
             notification.restore_easing_state ();
 
             notifications.remove (notification);
+            notification.get_meta_window ().move_frame (false, (int)new_x, (int)notification.y);
             update_positions ();       
         }
 	}
