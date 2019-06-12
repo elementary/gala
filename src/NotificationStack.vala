@@ -96,8 +96,6 @@ namespace Gala
 			// unless we make our container a bit wider and move the notifications over
 			notification.margin_left = ADDITIONAL_MARGIN * scale;
 
-			//  notification.destroy.connect (on_notification_destroyed);
-
 			float height;
 			notification.get_preferred_height (WIDTH * scale, out height, null);
             update_stack_position ();
@@ -105,7 +103,6 @@ namespace Gala
 
             notification.y = stack_y + TOP_OFFSET * scale;
             notification.x = stack_x;
-			//  insert_child_at_index (notification, 0);
 		}
 
         void update_stack_position ()
@@ -115,13 +112,6 @@ namespace Gala
 
             stack_x = area.x + area.width - stack_width;
             stack_y = area.y;
-
-            //  foreach (var notification in notifications) {
-            //      notification.set_translation (area.x + area.width - width, area.y, 0);
-            //      //  notification.x = ;
-            //      //  notification.y = area.y;
-            //  }
-
         }
 
 		void update_positions (float add_y = 0.0f)
@@ -145,26 +135,16 @@ namespace Gala
         
         public void destroy_notification (WindowActor notification)
         {
-            notification.show();
             notification.save_easing_state ();
 			notification.set_easing_duration (100);
-
 			notification.set_easing_mode (AnimationMode.EASE_IN_QUAD);
 			notification.opacity = 0;
 
-			//  notification.x = (WIDTH + MARGIN * 2) * Utils.get_ui_scaling_factor ();
+			notification.x = stack_x + (WIDTH + MARGIN * 2) * Utils.get_ui_scaling_factor ();
             notification.restore_easing_state ();
 
-			//  being_destroyed = true;
-			//  var transition = notification.get_transition ("x");
-			//  if (notification.transition != null)
-            //  notification.transition.completed.connect (() => destroy ());
-                
             notifications.remove (notification);
-            //  animations_changed (false);
-            //  update_positions ();                
-			//  else
-			//  	destroy ();            
+            update_positions ();       
         }
 	}
 }

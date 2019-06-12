@@ -1439,12 +1439,15 @@ namespace Gala
 					});
                     break;
                 case WindowType.NOTIFICATION:
+					destroying.add (actor);
                     notification_stack.destroy_notification (actor);
-                    //  Meta.Rectangle rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
-                    //  var snapshot = Utils.get_window_actor_snapshot (actor, rect, rect);
-                    //  snapshot.set_position (actor.get_x (), actor.get_y ());
 
-                    //  window_group.add (snapshot);
+					ulong destroy_handler_id = 0UL;
+					destroy_handler_id = actor.transitions_completed.connect (() => {
+						actor.disconnect (destroy_handler_id);
+						destroying.remove (actor);
+						destroy_completed (actor);
+					});                    
                     break;
 				default:
 					destroy_completed (actor);
