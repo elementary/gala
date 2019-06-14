@@ -1338,6 +1338,7 @@ namespace Gala
                     break;
                 case WindowType.NOTIFICATION:
                     notification_stack.show_notification (actor);
+                    map_completed (actor);
                     break;
 				default:
 					map_completed (actor);
@@ -1442,12 +1443,12 @@ namespace Gala
 					destroying.add (actor);
                     notification_stack.destroy_notification (actor);
 
-					ulong destroy_handler_id = 0UL;
+                    ulong destroy_handler_id = 0UL;
 					destroy_handler_id = actor.transitions_completed.connect (() => {
 						actor.disconnect (destroy_handler_id);
 						destroying.remove (actor);
 						destroy_completed (actor);
-					});                    
+					});
                     break;
 				default:
 					destroy_completed (actor);

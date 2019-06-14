@@ -22,12 +22,6 @@ namespace Gala
 
 	const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
 	const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
-	
-	const string CHECK_ITEM_STYLE = """
-		menuitem check {
-			transition: none;
-		}
-	""";
 
 	[DBus (name = "org.pantheon.gala")]
 	public interface WMDBus : GLib.Object
@@ -53,13 +47,6 @@ namespace Gala
 		
 		ulong always_on_top_sid = 0U;
 		ulong on_visible_workspace_sid = 0U;
-
-		static construct
-		{
-			var css_provider = new Gtk.CssProvider ();
-			css_provider.load_from_data (CHECK_ITEM_STYLE);
-			Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-		}
 
 		[DBus (visible = false)]
 		public void setup_dbus ()
