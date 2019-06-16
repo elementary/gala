@@ -155,7 +155,15 @@ namespace Gala
          * actor.
          */
         static void move_window (Meta.WindowActor actor, int x, int y) {
+            if (actor.is_destroyed ()) {
+                return;
+            }
+
             unowned Meta.Window window = actor.get_meta_window ();
+            if (window == null) {
+                return;
+            }
+
             var rect = window.get_frame_rect ();
                         
             window.move_frame (false, x != -1 ? x : rect.x, y != -1 ? y : rect.y);
