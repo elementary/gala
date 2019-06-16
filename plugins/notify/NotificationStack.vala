@@ -35,11 +35,7 @@ namespace Gala.Plugins.Notify
 		{
 			get
 			{
-#if HAS_MUTTER326
-				var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-				var scale = 1;
-#endif
+				var scale = Utils.get_ui_scaling_factor ();
 				return (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
 			 }
 		}
@@ -57,11 +53,7 @@ namespace Gala.Plugins.Notify
 		public void show_notification (Notification notification)
 		{
 			animations_changed (true);
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 
 			// raise ourselves when we got something to show
 			get_parent ().set_child_above_sibling (this, null);
@@ -93,11 +85,7 @@ namespace Gala.Plugins.Notify
 
 		void update_positions (float add_y = 0.0f)
 		{
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			var y = add_y + TOP_OFFSET * scale;
 			var i = get_n_children ();
 			var delay_step = i > 0 ? 150 / i : 0;
