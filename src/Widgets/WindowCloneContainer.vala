@@ -40,7 +40,7 @@ namespace Gala
 		 * The window that is currently selected via keyboard shortcuts. It is not
 		 * necessarily the same as the active window.
 		 */
-		WindowClone? current_window;
+		public WindowClone? current_window;
 
 		public WindowCloneContainer (bool overview_mode = false)
 		{

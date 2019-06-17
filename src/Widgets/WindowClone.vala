@@ -52,6 +52,7 @@ namespace Gala
 	public class WindowClone : Actor
 	{
 		const int WINDOW_ICON_SIZE = 64;
+    const int WINDOW_TITLE_SIZE = 16;
 		const int ACTIVE_SHAPE_SIZE = 12;
 
 		/**
@@ -124,6 +125,7 @@ namespace Gala
 		Actor close_button;
 		Actor active_shape;
 		Actor window_icon;
+    Actor window_title;
 
 		public WindowClone (Meta.Window window, bool overview_mode = false)
 		{
@@ -172,12 +174,23 @@ namespace Gala
 			window_icon.opacity = 0;
 			window_icon.set_pivot_point (0.5f, 0.5f);
 
+      window_title = new Clutter.Text.full(
+        @"Sans $(WINDOW_TITLE_SIZE*scale_factor)px", 
+        window.title, 
+        Color.from_string("black")
+      );
+      window_title.background_color = { 255, 255, 255, 200 };
+			window_title.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+			window_title.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+      window_title.opacity = 0;
+
 			active_shape = new Clutter.Actor ();
 			active_shape.background_color = { 255, 255, 255, 200 };
 			active_shape.opacity = 0;
 
 			add_child (active_shape);
 			add_child (window_icon);
+			add_child (window_title);
 			add_child (close_button);
 
 			load_clone ();
@@ -227,6 +240,7 @@ namespace Gala
 			set_child_below_sibling (active_shape, clone);
 			set_child_above_sibling (close_button, clone);
 			set_child_above_sibling (window_icon, clone);
+			set_child_above_sibling (window_title, clone);
 
 			transition_to_original_state (false);
 
@@ -309,6 +323,7 @@ namespace Gala
 				toggle_shadow (false);
 
 			window_icon.opacity = 0;
+      window_title.opacity = 0;
 			close_button.opacity = 0;
 		}
 
@@ -327,6 +342,7 @@ namespace Gala
 			set_position (rect.x, rect.y);
 
 			window_icon.opacity = 255;
+      window_title.opacity = 255;
 			restore_easing_state ();
 
 			toggle_shadow (true);
@@ -560,6 +576,8 @@ namespace Gala
 				click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
 			window_icon.restore_easing_state ();
 
+      window_title.opacity = 0;
+
 			close_button.opacity = 0;
 
 			dragging = true;
@@ -711,6 +729,8 @@ namespace Gala
 			window_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 			window_icon.set_position ((slot.width - WINDOW_ICON_SIZE) / 2, slot.height - WINDOW_ICON_SIZE * 0.75f);
 			window_icon.restore_easing_state ();
+
+      window_title.opacity = 255;
 
 			dragging = false;
 		}

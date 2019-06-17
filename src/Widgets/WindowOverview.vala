@@ -36,6 +36,8 @@ namespace Gala
 		const int BOTTOM_GAP = 100;
 
 		public WindowManager wm { get; construct; }
+    public Clutter.Text input_text;
+    public WindowCloneContainer container;
 
 		Meta.Screen screen;
 
@@ -56,6 +58,33 @@ namespace Gala
 
 			screen.workspace_switched.connect (close);
 			screen.restacked.connect (restack_windows);
+      
+      input_text = new Clutter.Text.full("Sans 50px","",Color.from_string("black"));
+      input_text.editable = true;
+      input_text.fixed_x = 50;
+      input_text.fixed_y = 50;
+      input_text.background_color = Color.from_string("white");
+      input_text.opacity = 0U;
+      input_text.set_easing_duration(300);
+      input_text.text_changed.connect(() => {
+        var query = input_text.text.strip().casefold();
+        if (query == "") {
+          grab_key_focus();
+          input_text.opacity = 0;
+        }
+        container.current_window = null;
+        foreach (var child in container.get_children()) {
+          var window_clone = (WindowClone) child;
+          window_clone.active = false;
+          if (container.current_window == null &&
+              query != "" && 
+              window_clone.window.title.casefold().contains(query)) {
+            container.current_window = window_clone;
+            window_clone.active = true;
+          }
+        }
+      });
+      wm.stage.add_child(input_text);
 
 			visible = false;
 			ready = true;
@@ -69,11 +98,20 @@ namespace Gala
 
 		public override bool key_press_event (Clutter.KeyEvent event)
 		{
-			if (event.keyval == Clutter.Key.Escape) {
-				close ();
-
-				return true;
-			}
+      switch (event.keyval) {
+        case Clutter.Key.Escape:
+          close();
+          return true;
+        case Clutter.Key.Return:
+        case Clutter.Key.KP_Enter:
+          container.current_window.selected();
+          return true;
+        default:
+          //forward first key press
+          input_text.key_press_event(event);
+          input_text.opacity = 255;
+          return true;
+      }
 
 			return false;
 		}
@@ -176,7 +214,7 @@ namespace Gala
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				var geometry = screen.get_monitor_geometry (i);
 
-				var container = new WindowCloneContainer (true);
+				container = new WindowCloneContainer (true);
 				container.padding_top = TOP_GAP;
 				container.padding_left = container.padding_right = BORDER;
 				container.padding_bottom = BOTTOM_GAP;
@@ -280,6 +318,9 @@ namespace Gala
 		{
 			if (!visible || !ready)
 				return;
+
+      input_text.opacity = 0;
+      input_text.text = "";
 
 			foreach (var workspace in workspaces) {
 				workspace.window_added.disconnect (add_window);
