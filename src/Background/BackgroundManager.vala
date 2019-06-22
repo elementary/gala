@@ -46,6 +46,11 @@ namespace Gala
 
 		public override void destroy ()
 		{
+			// when already detroyed, abort
+			if (background_source == null) {
+				return;
+			}
+
 			BackgroundCache.get_default ().release_background_source (BACKGROUND_SCHEMA);
 			background_source = null;
 
