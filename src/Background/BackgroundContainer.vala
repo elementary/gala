@@ -21,6 +21,26 @@ namespace Gala
 	{
 		public signal void changed ();
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+
+		public BackgroundContainer (Meta.Display display)
+		{
+			Object (display: display);
+		}
+
+		construct
+		{
+			Meta.MonitorManager.@get ().monitors_changed.connect (update);
+
+			update ();
+		}
+
+		~BackgroundContainer ()
+		{
+			Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
+		}
+#else
 		public Meta.Screen screen { get; construct; }
 
 		public BackgroundContainer (Meta.Screen screen)
@@ -39,6 +59,7 @@ namespace Gala
 		{
 			screen.monitors_changed.disconnect (update);
 		}
+#endif
 
 		void update ()
 		{
@@ -48,8 +69,13 @@ namespace Gala
 
 			destroy_all_children ();
 
+#if HAS_MUTTER330
+			for (var i = 0; i < display.get_n_monitors (); i++) {
+				var background = new BackgroundManager (display, i);
+#else
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				var background = new BackgroundManager (screen, i);
+#endif
 
 				add_child (background);
 

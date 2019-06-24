@@ -71,6 +71,63 @@ namespace Gala
 		/**
 		 * set the area where clutter can receive events
 		 **/
+#if HAS_MUTTER330
+		public static void set_input_area (Display display, InputArea area)
+		{
+			X.Xrectangle[] rects = {};
+			int width, height;
+			display.get_size (out width, out height);
+			var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
+
+			switch (area) {
+				case InputArea.FULLSCREEN:
+					X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
+					rects = {rect};
+					break;
+				case InputArea.DEFAULT:
+					var schema = BehaviorSettings.get_default ().schema;
+
+					// if ActionType is NONE make it 0 sized
+					ushort tl_size = (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
+					ushort tr_size = (schema.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
+					ushort bl_size = (schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
+					ushort br_size = (schema.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
+
+					X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
+					X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
+					X.Xrectangle bottomleft = {(short)geometry.x, (short)(geometry.y + geometry.height - 1), bl_size, bl_size};
+					X.Xrectangle bottomright = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), br_size, br_size};
+
+					rects = {topleft, topright, bottomleft, bottomright};
+
+					// add plugin's requested areas
+					if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
+						foreach (var rect in PluginManager.get_default ().regions) {
+							rects += rect;
+						}
+					}
+					break;
+				case InputArea.NONE:
+				default:
+#if HAS_MUTTER334
+					unowned Meta.X11Display x11display = display.get_x11_display ();
+					x11display.clear_stage_input_region ();
+#else
+					Util.empty_stage_input_region (display);
+#endif
+					return;
+			}
+
+#if HAS_MUTTER334
+			unowned Meta.X11Display x11display = display.get_x11_display ();
+			var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
+			x11display.set_stage_input_region (xregion);
+#else
+			var xregion = X.Fixes.create_region (display.get_x11_display ().get_xdisplay (), rects);
+			Util.set_stage_input_region (display, xregion);
+#endif
+		}
+#else
 		public static void set_input_area (Screen screen, InputArea area)
 		{
 			var display = screen.get_display ();
@@ -117,6 +174,7 @@ namespace Gala
 			var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
 			Util.set_stage_input_region (screen, xregion);
 		}
+#endif
 
 		/**
 		 * Inserts a workspace at the given index. To ensure the workspace is not immediately
@@ -132,7 +190,11 @@ namespace Gala
 
 			new_window.change_workspace_by_index (index, false);
 
+#if HAS_MUTTER330
+			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_display ());
+#else
 			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+#endif
 			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())
 					continue;

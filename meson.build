@@ -247,7 +247,7 @@ if mutter330_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
-mutter332_dep = dependency('libmutter-4', version: ['>= 3.31.2', '< 3.33'], required: false)
+mutter332_dep = dependency('libmutter-4', version: ['>= 3.31.2', '< 3.34'], required: false)
 if mutter332_dep.found()
 	mutter_packages_command = [
 		'--pkg', 'libmutter-4',
@@ -264,6 +264,27 @@ if mutter332_dep.found()
 		dependency('mutter-cogl-path-4'), dependency('mutter-clutter-4')
 	]
 	vala_flags += ['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322', '--define', 'HAS_MUTTER324', '--define', 'HAS_MUTTER326', '--define', 'HAS_MUTTER328', '--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
+mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.36'], required: false)
+if mutter334_dep.found()
+	mutter_packages_command = [
+		'--pkg', 'libmutter-5',
+		'--pkg', 'mutter-cogl-5',
+		'--pkg', 'mutter-cogl-pango-5',
+		'--pkg', 'mutter-cogl-path-5',
+		'--pkg', 'mutter-clutter-5'
+	]
+	libmutter_dep = dependency('libmutter-5', version: '>= 3.34')
+	pkgconf.set('MUTTER_PKGS', 'libmutter-5 >= 3.34')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-5'), dependency('mutter-cogl-pango-5'),
+		dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5')
+	]
+	vala_flags += ['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322', '--define', 'HAS_MUTTER324', '--define', 'HAS_MUTTER326', '--define', 'HAS_MUTTER328', '--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
