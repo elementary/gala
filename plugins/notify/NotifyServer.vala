@@ -206,7 +206,7 @@ namespace Gala.Plugins.Notify
 
 					GLib.Settings? app_settings = app_settings_cache.get (app_id);
 					if (app_settings == null) {
-						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", false);
+						var schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.notifications.application", true);
 						if (schema != null) {
 							app_settings = new GLib.Settings.full (schema, null, "/org/pantheon/desktop/gala/notifications/applications/%s/".printf (app_id));
 							app_settings_cache.set (app_id, app_settings);
@@ -332,11 +332,7 @@ namespace Gala.Plugins.Notify
 
 			Gdk.Pixbuf? pixbuf = null;
 			Variant? variant = null;
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			var size = Notification.ICON_SIZE * scale;
 			var mask_offset = 4 * scale;
 			var mask_size_offset = mask_offset * 2;
@@ -632,7 +628,7 @@ namespace Gala.Plugins.Notify
 			} catch (ShellError e) {
 				warning ("%s", e.message);
  			}
- 
+
 			return (app_name.down () == token
 				|| token_executable == app_executable
 				|| (args.length > 0 && args[0] == token)

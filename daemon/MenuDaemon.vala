@@ -44,6 +44,9 @@ namespace Gala
 		Gtk.MenuItem close;
 
 		WMDBus? wm_proxy = null;
+		
+		ulong always_on_top_sid = 0U;
+		ulong on_visible_workspace_sid = 0U;
 
 		[DBus (visible = false)]
 		public void setup_dbus ()
@@ -124,13 +127,13 @@ namespace Gala
 			window_menu.append (resize);
 
 			always_on_top = new Gtk.CheckMenuItem.with_label (_("Always on Top"));
-			always_on_top.activate.connect (() => {
+			always_on_top_sid = always_on_top.activate.connect (() => {
 				perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
 			});
 			window_menu.append (always_on_top);
 
 			on_visible_workspace = new Gtk.CheckMenuItem.with_label (_("Always on Visible Workspace"));
-			on_visible_workspace.activate.connect (() => {
+			on_visible_workspace_sid = on_visible_workspace.activate.connect (() => {
 				perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
 			});
 			window_menu.append (on_visible_workspace);
@@ -167,8 +170,18 @@ namespace Gala
 			maximize.label = Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize");
 			move.visible = Gala.WindowFlags.ALLOWS_MOVE in flags;
 			resize.visible = Gala.WindowFlags.ALLOWS_RESIZE in flags;
+			
+			// Setting active causes signal fires on activate so
+			// we temporarily block those signals from emissions
+			SignalHandler.block (always_on_top, always_on_top_sid);
+			SignalHandler.block (on_visible_workspace, on_visible_workspace_sid);
+
 			always_on_top.active = Gala.WindowFlags.ALWAYS_ON_TOP in flags;
 			on_visible_workspace.active = Gala.WindowFlags.ON_ALL_WORKSPACES in flags;
+			
+			SignalHandler.unblock (always_on_top, always_on_top_sid);
+			SignalHandler.unblock (on_visible_workspace, on_visible_workspace_sid);
+
 			move_right.visible = !on_visible_workspace.active;
 			move_left.visible = !on_visible_workspace.active;
 			close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
