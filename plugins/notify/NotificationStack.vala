@@ -31,6 +31,15 @@ namespace Gala.Plugins.Notify
 
 		public Screen screen { get; construct; }
 
+		public int width
+		{
+			get
+			{
+				var scale = Utils.get_ui_scaling_factor ();
+				return (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
+			 }
+		}
+
 		public NotificationStack (Screen screen)
 		{
 			Object (screen: screen);
@@ -38,8 +47,6 @@ namespace Gala.Plugins.Notify
 
 		construct
 		{
-			var scale = Utils.get_ui_scaling_factor ();
-			width = (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
 			clip_to_allocation = true;
 		}
 
