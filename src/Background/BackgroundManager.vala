@@ -46,7 +46,7 @@ namespace Gala
 			destroy.connect (on_destroy);
 		}
 
-		void destroy ()
+		void on_destroy ()
 		{
 			BackgroundCache.get_default ().release_background_source (BACKGROUND_SCHEMA);
 			background_source = null;
