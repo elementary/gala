@@ -1080,7 +1080,10 @@ namespace Gala
 			kill_window_effects (actor);
 
             var window = actor.get_meta_window ();
-            move_window_to_next_ws (window);
+            
+            if (window.maximized_horizontally) {
+                move_window_to_next_ws (window);
+            }
 
 			if (window.window_type == WindowType.NORMAL) {
 				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
