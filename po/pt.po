@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2019-01-09 00:05+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://weblate.elementary.io/projects/desktop/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "O ecrã parece-lhe estar bem?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Manter Esta Configuração"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Restaurar as Configuração Anteriores"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Minimizar"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Mover"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Redimensionar"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Sempre no Topo"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Sempre na Área de trabalho Visível"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Mover para a Área de trabalho à Esquerda"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Mover para a Área de trabalho à Direita"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Fechar"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Restaurar"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Maximizar"
 
@@ -140,10 +140,10 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
-"Se colocar apenas um comando, será usado para todos os cantos associados a \""
-"custom-command\". Se em vez disso usar o padrão  'hotcorner-topleft:comando"
-";;hotcorner-bottomright:comando' os comandos específicos serão usados por "
-"cada canto. Identificadores de canto possíveis são 'hotcorner-[topleft; "
+"Se colocar apenas um comando, será usado para todos os cantos associados a "
+"\"custom-command\". Se em vez disso usar o padrão  'hotcorner-topleft:"
+"comando;;hotcorner-bottomright:comando' os comandos específicos serão usados "
+"por cada canto. Identificadores de canto possíveis são 'hotcorner-[topleft; "
 "topright; bottomleft; bottomright]' seguidos de ':' e o comando pretendido. "
 "';;' é o separador usado entre definições de comandos."
 

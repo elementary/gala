@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2016-12-13 14:59+0000\n"
 "Last-Translator: Marius Albina <marius.albina@gmail.com>\n"
 "Language-Team: Romanian <ro@li.org>\n"
@@ -18,55 +18,55 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "Ecranul arată bine?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Păstrează această configurație"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Restaurează configurația precedentă"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Minimizează"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Mută"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Redimensionează"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Mereu deasupra"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Întotdeauna în spațiul de lucru vizibil"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Mută în spațiul de lucru din stânga"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Mută în spațiul de lucru din dreapta"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Închide"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Anulează maximizarea"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Maximizează"
 
