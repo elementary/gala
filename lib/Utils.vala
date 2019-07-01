@@ -293,10 +293,10 @@ namespace Gala
 		 */
 		public static Gdk.Pixbuf? get_close_button_pixbuf ()
 		{
-			if (close_pixbuf == null) {
-				var scale = Utils.get_ui_scaling_factor ();
+			var height = 36 * Utils.get_ui_scaling_factor ();
+			if (close_pixbuf == null || close_pixbuf.height != height) {
 				try {
-					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, 36 * scale, true);
+					close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/close.svg", -1, height, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;
@@ -343,10 +343,11 @@ namespace Gala
 		 */
 		public static Gdk.Pixbuf? get_resize_button_pixbuf ()
 		{
-			if (resize_pixbuf == null) {
+			var height = 36 * Utils.get_ui_scaling_factor ();
+			if (resize_pixbuf == null || resize_pixbuf.height != height) {
 				var scale = Utils.get_ui_scaling_factor ();
 				try {
-					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, 36 * scale, true);
+					resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (Config.RESOURCEPATH + "/buttons/resize.svg", -1, height, true);
 				} catch (Error e) {
 					warning (e.message);
 					return null;

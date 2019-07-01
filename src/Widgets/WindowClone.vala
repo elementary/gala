@@ -541,6 +541,8 @@ namespace Gala
 			prev_parent.remove_child (this);
 			stage.add_child (this);
 
+			active_shape.hide ();
+
 			var scale = window_icon.width / clone.width;
 
 			clone.get_transformed_position (out abs_x, out abs_y);
@@ -629,6 +631,8 @@ namespace Gala
 		{
 			Meta.Workspace workspace = null;
 			var primary = window.get_screen ().get_primary_monitor ();
+
+			active_shape.show ();
 
 			if (destination is IconGroup) {
 				workspace = ((IconGroup) destination).workspace;

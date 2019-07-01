@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2018-12-02 06:20+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://weblate.elementary.io/projects/desktop/gala/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "ディスプレイの設定に問題はありませんか？"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "この設定を保つ"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "前の設定へ戻す"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "最小化"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "移動"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "サイズの変更"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "最前面に維持"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "すべてのワークスペースに表示"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "左のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "閉じる"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "元のサイズに戻す"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "最大化"
 
@@ -126,7 +126,9 @@ msgstr "右下端の動作"
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
-msgstr "1 つまたは複数の 'カスタムコマンド' ホットコーナーアクションに対して実行されるコマンド"
+msgstr ""
+"1 つまたは複数の 'カスタムコマンド' ホットコーナーアクションに対して実行され"
+"るコマンド"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
 msgid ""
@@ -137,11 +139,12 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
-"ひとつのコマンドのみを入力した場合、'カスタムコマンド' に割り当てられたすべてのホットコーナーで使用されます。代わりに \"hotcorner-"
-"topleft: コマンド名;;hotcorner-bottomright: コマンド名\" "
-"というパターンを使用すると、ホットコーナーごとに指定されたコマンドが使用されます。使用可能な識別子は \"hotcorner- [topleft/"
-"topright/bottomleft/bottomright]\"、続けて \":\" を付けてコマンドを記述します。\";;\" "
-"は、コマンドの記述の間の区切り文字として使用されます。"
+"ひとつのコマンドのみを入力した場合、'カスタムコマンド' に割り当てられたすべて"
+"のホットコーナーで使用されます。代わりに \"hotcorner-topleft: コマンド名;;"
+"hotcorner-bottomright: コマンド名\" というパターンを使用すると、ホットコー"
+"ナーごとに指定されたコマンドが使用されます。使用可能な識別子は \"hotcorner- "
+"[topleft/topright/bottomleft/bottomright]\"、続けて \":\" を付けてコマンドを"
+"記述します。\";;\" は、コマンドの記述の間の区切り文字として使用されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -164,7 +167,9 @@ msgstr "パネルにあるメインメニューの動作"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
 msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr "パネルメインメニューの割り当てキーが押されたときに実行するコマンドを設定します。"
+msgstr ""
+"パネルメインメニューの割り当てキーが押されたときに実行するコマンドを設定しま"
+"す。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
@@ -174,7 +179,9 @@ msgstr "静的なワークスペースの代わりに動的なワークスペー
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
 "instead of a static, fixed number."
-msgstr "静的で固定された数ではなく、必要に応じて動的に増減する数のワークスペースを使用します。"
+msgstr ""
+"静的で固定された数ではなく、必要に応じて動的に増減する数のワークスペースを使"
+"用します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
@@ -186,8 +193,9 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
-"window-switcher の起動時に、Gala "
-"はこのリストを反復し名前と一致するウィンドウを探します。見つかった場合、スイッチャーが閉じられた際に、このウィンドウは最小化されます。"
+"window-switcher の起動時に、Gala はこのリストを反復し名前と一致するウィンドウ"
+"を探します。見つかった場合、スイッチャーが閉じられた際に、このウィンドウは最"
+"小化されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:90
 msgid "Shortcut to move to first workspace"
@@ -303,7 +311,9 @@ msgstr "アニメーションを有効にする"
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
-msgstr "アニメーションを有効にするかどうかを設定します。注意: これはグローバルな設定なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
+msgstr ""
+"アニメーションを有効にするかどうかを設定します。注意: これはグローバルな設定"
+"なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:190
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -336,8 +346,10 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"1 番目の値は影のぼかし効果の半径で、2 番目が上部のフェードの値 (ほとんどの場合 -1 です)、3 番目と 4 番目の値は x オフセットと y "
-"オフセット、5 番目は透明度です。つまり、[影の半径, 上部のフェード, x オフセット, y オフセット, 透明度] です。"
+"1 番目の値は影のぼかし効果の半径で、2 番目が上部のフェードの値 (ほとんどの場"
+"合 -1 です)、3 番目と 4 番目の値は x オフセットと y オフセット、5 番目は透明"
+"度です。つまり、[影の半径, 上部のフェード, x オフセット, y オフセット, 透明"
+"度] です。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"

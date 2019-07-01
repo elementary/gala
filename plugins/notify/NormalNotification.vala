@@ -101,11 +101,7 @@ namespace Gala.Plugins.Notify
 
 		public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
 		{
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			float label_height;
 			get_allocation_values (null, null, null, null, out label_height, null, scale);
 
@@ -114,11 +110,7 @@ namespace Gala.Plugins.Notify
 
 		public override void allocate (ActorBox box, AllocationFlags flags)
 		{
-#if HAS_MUTTER326
-			var scale = Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			var scale = 1;
-#endif
+			var scale = Utils.get_ui_scaling_factor ();
 			float label_x, label_width, summary_height, body_height, label_height, label_y;
 			get_allocation_values (out label_x, out label_width, out summary_height,
 				out body_height, out label_height, out label_y, scale);
