@@ -149,6 +149,36 @@ namespace Gala
 			set_size (primary_geometry.width, primary_geometry.height);
 		}
 
+        public void start_drag_window (Window window, int x, int y)
+        {
+            Idle.add (() => {
+                bool found = false;
+                foreach (unowned Clutter.Actor child in workspaces.get_children ()) {
+                    unowned WorkspaceClone workspace_clone = (WorkspaceClone)child;
+                    if (workspace_clone.workspace != window.get_workspace ()) {
+                        continue;
+                    }
+
+                    foreach (unowned Clutter.Actor window_child in workspace_clone.window_container.get_children ()) {
+                        unowned WindowClone window_clone = (WindowClone)window_child;
+                        if (window_clone.window != window) {
+                            continue;
+                        }
+
+                        window_clone.start_drag (x, y);
+                        found = true;
+                        break;
+                    }
+
+                    if (found) {
+                        break;
+                    }
+                }
+
+                return false;
+            });
+        }
+
 		/**
 		 * We generally assume that when the key-focus-out signal is emitted
 		 * a different component was opened, so we close in that case.

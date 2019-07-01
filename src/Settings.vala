@@ -17,6 +17,11 @@
 
 namespace Gala
 {
+    public struct AppWorkspaceConfig {
+        string id;
+        int workspace;
+    }
+
 	public class BehaviorSettings : Granite.Services.Settings
 	{
 		public bool dynamic_workspaces { get; set; }
@@ -25,7 +30,7 @@ namespace Gala
 		public string toggle_recording_action { get; set; }
 		public string overlay_action { get; set; }
 		public string hotcorner_custom_command { get; set; }
-		public string[] dock_names { get; set; }
+        public string[] dock_names { get; set; }
 
 		public WindowOverviewType window_overview_type { get; set; }
 

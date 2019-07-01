@@ -69,7 +69,10 @@ namespace Gala
 
 		Window? moving; //place for the window that is being moved over
 
-		Daemon? daemon_proxy = null;
+        Daemon? daemon_proxy = null;
+        
+        WindowMovementTracker window_movement_tracker;
+        WorkspaceWindowRestore ws_window_restore;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -138,7 +141,13 @@ namespace Gala
 			DBusAccelerator.init (this);
 			MediaFeedback.init ();
 			WindowListener.init (screen);
-			KeyboardManager.init (display);
+            KeyboardManager.init (display);
+
+            window_movement_tracker = new WindowMovementTracker (display);
+            window_movement_tracker.watch ();
+            window_movement_tracker.open.connect (on_wmt_open);
+
+            ws_window_restore = new WorkspaceWindowRestore (this);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -933,19 +942,7 @@ namespace Gala
 			unowned Meta.Workspace win_ws = window.get_workspace ();
 
 			if (which_change == Meta.SizeChange.FULLSCREEN) {
-				// Do nothing if the current workspace would be empty
-				if (Utils.get_n_windows (win_ws) <= 1)
-					return;
-
-				var old_ws_index = win_ws.index ();
-				var new_ws_index = old_ws_index + 1;
-				InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-				var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
-				window.change_workspace (new_ws_obj);
-				new_ws_obj.activate_with_focus (window, time);
-
-				ws_assoc.insert (window, old_ws_index);
+                move_window_to_next_ws (window);
 			} else if (ws_assoc.contains (window)) {
 				var old_ws_index = ws_assoc.get (window);
 				var new_ws_index = win_ws.index ();
@@ -1082,7 +1079,8 @@ namespace Gala
 
 			kill_window_effects (actor);
 
-			var window = actor.get_meta_window ();
+            var window = actor.get_meta_window ();
+            move_window_to_next_ws (window);
 
 			if (window.window_type == WindowType.NORMAL) {
 				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
@@ -1217,7 +1215,9 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 
-			var window = actor.get_meta_window ();
+            var window = actor.get_meta_window ();
+            //  ws_window_restore.restore_window_config (window);
+
 			if (!animation_settings.enable_animations) {
 				actor.show ();
 				map_completed (actor);
@@ -1341,9 +1341,15 @@ namespace Gala
 		public override void destroy (WindowActor actor)
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var window = actor.get_meta_window ();
+            var window = actor.get_meta_window ();
 
-			ws_assoc.remove (window);
+            if (!move_window_to_old_ws (window, true)) {
+                ws_assoc.remove (window);
+            }
+
+            //  if (InternalUtils.get_window_is_normal (window)) {
+            //      ws_window_restore.save_window_config (window);
+            //  }
 
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
@@ -1448,7 +1454,8 @@ namespace Gala
 			}
 
 			kill_window_effects (actor);
-			var window = actor.get_meta_window ();
+            var window = actor.get_meta_window ();
+            move_window_to_old_ws (window);
 
 			if (window.window_type == WindowType.NORMAL) {
 				float offset_x, offset_y, offset_width, offset_height;
@@ -1516,7 +1523,72 @@ namespace Gala
 					unmaximizing.remove (actor);
 				});
 			}
-		}
+        }
+        
+        void move_window_to_next_ws (Window window)
+        {
+			unowned Screen screen = get_screen ();
+            unowned Workspace win_ws = window.get_workspace ();
+
+            // Do nothing if the current workspace would be empty
+            if (Utils.get_n_windows (win_ws) <= 1)
+                return;
+
+            var old_ws_index = win_ws.index ();
+            var new_ws_index = old_ws_index + 1;
+            InternalUtils.insert_workspace_with_window (new_ws_index, window);
+
+            var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
+            window.change_workspace (new_ws_obj);
+            new_ws_obj.activate_with_focus (window, screen.get_display ().get_current_time ());
+
+            ws_assoc.insert (window, old_ws_index);
+        }
+
+        bool move_window_to_old_ws (Window window, bool destroying = false)
+        {
+			unowned Screen screen = get_screen ();
+            unowned Workspace win_ws = window.get_workspace ();
+
+            // Do nothing if the current workspace is populated with other windows
+            if (Utils.get_n_windows (win_ws) > 1)
+                return false;
+
+            if (ws_assoc.contains (window)) {
+                var old_ws_index = ws_assoc.get (window);
+				var new_ws_index = win_ws.index ();
+
+				if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
+                    uint time = screen.get_display ().get_current_time ();
+                    var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
+                    if (destroying) {
+                        old_ws_obj.activate (time);
+                    } else {
+                        window.change_workspace (old_ws_obj);
+					    old_ws_obj.activate_with_focus (window, time);
+                    }
+				}
+
+                ws_assoc.remove (window);
+                return true;
+            }
+
+            return false;
+        }
+
+        void on_wmt_open (Window window, int x, int y)
+        {
+            unowned Meta.Display display = get_screen ().get_display ();
+            display.end_grab_op (display.get_current_time ());
+
+            workspace_view.open (null);
+            ((MultitaskingView)workspace_view).start_drag_window (window, x, y);
+
+            Idle.add (() => {
+                window_movement_tracker.restore_window_state ();
+                return false;
+            });
+        }
 
 		// Cancel attached animation of an actor and reset it
 		bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
