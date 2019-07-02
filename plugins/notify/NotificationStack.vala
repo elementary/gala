@@ -31,7 +31,7 @@ namespace Gala.Plugins.Notify
 
 		public Screen screen { get; construct; }
 
-		public int width
+		public new float width
 		{
 			get
 			{
