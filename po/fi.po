@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2018-12-08 00:04+0000\n"
 "Last-Translator: Veli-Pekka Samuli Finnilä <vpf@tuta.io>\n"
 "Language-Team: Finnish <https://weblate.elementary.io/projects/desktop/gala/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-23 06:29+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "Näyttääkö kaikki kelvolliselta?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Säilytä nämä asetukset"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Palauta aiemmat asetukset"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Pienennä"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Siirrä"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Muuta kokoa"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Aina päällimmäisenä"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Aina näkyvissä olevassa työtilassa"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Siirrä vasemalla olevaan työtilaan"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Siirrä oikealla olevaan työtilaan"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Sulje"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Palauta koko"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Suurenna"
 
@@ -141,10 +141,10 @@ msgstr ""
 "Jos laitat vain yhden komennon, sitä käytetään jokaiselle hotcornerille, "
 "joka on määrätty kohteeseen 'custom-command'. Jos käytät sen sijaan kaavaa "
 "'hotcorner-topleft:command;;hotcorner-bottomright:command', tietyt komennot "
-"menevät tiettyihin hotcornereihin. Mahdollisia tunnisteita ovat "
-"'hotcorner-[topleft; topright; bottomleft; bottomright]', jonka jälkeen "
-"laitetaan ':', ja sitten vielä lopuksi komento. ';;'-merkintää käytetään "
-"erottimena komentomääritelmille."
+"menevät tiettyihin hotcornereihin. Mahdollisia tunnisteita ovat 'hotcorner-"
+"[topleft; topright; bottomleft; bottomright]', jonka jälkeen laitetaan ':', "
+"ja sitten vielä lopuksi komento. ';;'-merkintää käytetään erottimena "
+"komentomääritelmille."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -347,8 +347,8 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"Ensimmäinen arvo on varjon sumennuksen säde, toinen yläosan häivytys ("
-"tavallisesti -1), kolmas ja neljäs x- ja y-siirtymä, ja viimeinen "
+"Ensimmäinen arvo on varjon sumennuksen säde, toinen yläosan häivytys "
+"(tavallisesti -1), kolmas ja neljäs x- ja y-siirtymä, ja viimeinen "
 "läpinäkymättömyys. Eli [sumennuksen säde, yläosan häivytys, x-siirtymä, y-"
 "siirtymä, läpinäkymättömyys]."
 
