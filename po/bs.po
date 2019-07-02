@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2018-11-22 00:02+0000\n"
 "Last-Translator: Elvis Mujanović <elvis.mujanovic@gmail.com>\n"
 "Language-Team: Bosnian <https://weblate.elementary.io/projects/desktop/gala/"
@@ -16,60 +16,60 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "Da li ekran izgleda dobro?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Zadrži ovu konfiguraciju"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Vrati na prethodnu konfiguraciju"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Minimiziraj"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Pomjeri"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Promijeni veličinu"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Uvijek na vrhu"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Uvijek na vidljivoj radnoj površini"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Pomjeri na lijevu radnu površinu"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Pomjeri na desnu radnu površinu"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Zatvori"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Poništi uvećanje"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Uvećaj"
 
@@ -143,9 +143,9 @@ msgstr ""
 "Ako unesete jednu naredbu, ona će biti korištena za svaki aktivni ugao kojem "
 "je dodijeljena 'custom-command'. Ako umjesto toga koristite šablon "
 "'hotcorner-topleft:command;;hotcorner-bottomright:command', specifične "
-"naredbe će biti korištene za svaki ugao. Mogući identifikatoru su "
-"'hotcorner-[topleft; topright; bottomleft; bottomright]', pa ':' i onda "
-"naredba. ';;' se koristi za razdvajanje između definicija naredbi."
+"naredbe će biti korištene za svaki ugao. Mogući identifikatoru su 'hotcorner-"
+"[topleft; topright; bottomleft; bottomright]', pa ':' i onda naredba. ';;' "
+"se koristi za razdvajanje između definicija naredbi."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -349,8 +349,8 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"Prva vrijednost je radijus zamagljenja sjenke, druga je gornje iščezavanje ("
-"fade, koji je obično samo -1), treća i četvrta su x i y pomak a posljednja "
+"Prva vrijednost je radijus zamagljenja sjenke, druga je gornje iščezavanje "
+"(fade, koji je obično samo -1), treća i četvrta su x i y pomak a posljednja "
 "je prozirnost. Dakle, [blur-radius, top-fade, x-offset, y-offset, opacity]."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218

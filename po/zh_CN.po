@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2019-01-16 00:03+0000\n"
 "Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.elementary.io/projects/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "显示看起来正常吗？"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "保持当前配置"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "恢复上次配置"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "最小化"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "移动"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "更改大小"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "总在最前"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "总在可见工作区"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "移至左侧工作区"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "移至右侧工作区"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "关闭"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "还原"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "最大化"
 
@@ -136,9 +136,11 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
-"若您只输入一条指令，该指令将会被所有设置为“自定义指令”的热角使用。如果您使用如下模式 “hotcorner-topleft:command"
-";;hotcorner-bottomright:command”，则指令将会按代码分配到热角。可用的标识符有 “hotcorner-[topleft; "
-"topright; bottomleft; bottomright]” 加英文冒号“:”，并用英文分号“;;”充当不同定义指令间的分隔符。"
+"若您只输入一条指令，该指令将会被所有设置为“自定义指令”的热角使用。如果您使用"
+"如下模式 “hotcorner-topleft:command;;hotcorner-bottomright:command”，则指令将"
+"会按代码分配到热角。可用的标识符有 “hotcorner-[topleft; topright; "
+"bottomleft; bottomright]” 加英文冒号“:”，并用英文分号“;;”充当不同定义指令间的"
+"分隔符。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -180,7 +182,9 @@ msgid ""
 "When launching the window-switcher, Gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
-msgstr "窗口切换器启动时，Gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏此窗口，并在窗口切换器关闭后恢复显示。"
+msgstr ""
+"窗口切换器启动时，Gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏"
+"此窗口，并在窗口切换器关闭后恢复显示。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:90
 msgid "Shortcut to move to first workspace"
@@ -325,7 +329,8 @@ msgid ""
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
-msgstr "四项数值分别为阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明度。"
+msgstr ""
+"四项数值分别为阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明度。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"
