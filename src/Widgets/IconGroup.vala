@@ -367,7 +367,13 @@ namespace Gala
 				5 * scale
 			);
 
-			cr.set_source_rgba (0, 0, 0, 0.1);
+            if (drag_action.dragging) {
+    			cr.set_source_rgba (0, 0, 0, 0.1);
+            } else {
+                const double BG_COLOR = 53.0 / 255.0;
+    			cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.7);
+            }
+
 			cr.fill_preserve ();
 
 			cr.set_line_width (1 * scale);
@@ -518,6 +524,7 @@ namespace Gala
 			}
 
 			stage.add_child (this);
+            redraw ();
 
 			get_transformed_position (out abs_x, out abs_y);
 			set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
@@ -530,7 +537,8 @@ namespace Gala
 		void drag_end (Actor destination)
 		{
 			if (destination is WorkspaceInsertThumb) {
-				get_parent ().remove_child (this);
+                get_parent ().remove_child (this);
+                redraw ();
 	
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 
