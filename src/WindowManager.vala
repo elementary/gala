@@ -970,10 +970,14 @@ namespace Gala
 
 			ulong size_signal_id = 0U;
 			ulong position_signal_id = 0U;
-			size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-			position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+
 			//  TEMPORARY FIX: Issue 404
-			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) window_change_complete (actor, which_change, size_signal_id, position_signal_id);
+			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
+				window_change_complete (actor, which_change, size_signal_id, position_signal_id);
+			} else {
+				size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+			}
 		}
 
 		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
