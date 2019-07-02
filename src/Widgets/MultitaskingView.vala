@@ -363,7 +363,10 @@ namespace Gala
 					break;
 				case Clutter.Key.Return:
 				case Clutter.Key.KP_Enter:
-					get_active_workspace_clone ().window_container.activate_selected_window ();
+					if (!get_active_workspace_clone ().window_container.activate_selected_window ()) {
+						toggle ();
+					}
+
 					break;
 			}
 

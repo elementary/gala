@@ -267,7 +267,7 @@ namespace Gala
 			var line_width = dock_theme.LineWidth * ui_scale_factor;
 			var horiz_padding = dock_theme.HorizPadding * scaled_icon_size;
 			var item_padding = (float) dock_theme.ItemPadding * scaled_icon_size;
-			var items_offset = (int) (2 * line_width + (horiz_padding > 0 ? horiz_padding : 0));
+			var items_offset = (int) (2 * line_width + (horiz_padding > 0 ? horiz_padding : 0) + item_padding / 2);
 
 			if (n_dock_items > 0)
 				dock_width = n_dock_items * (item_padding + icon_size) + items_offset * 2;

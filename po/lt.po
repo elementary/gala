@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2018-11-20 00:03+0000\n"
 "Last-Translator: Moo <hazap@hotmail.com>\n"
 "Language-Team: Lithuanian <https://weblate.elementary.io/projects/desktop/"
@@ -16,60 +16,60 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n%10>=2 && (n%100<10 || "
-"n%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 0 : n%10>=2 && (n%100<10 || n"
+"%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3;\n"
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "Ar ekranas gerai atrodo?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Palikti šią konfigūraciją"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Atkurti ankstesnę konfigūraciją"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Suskleisti"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Perkelti"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Keisti dydį"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Visada viršuje"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Visada matomoje darbo srityje"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Perkelti į darbo sritį kairėje"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Perkelti į darbo sritį dešinėje"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Užverti"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Atkurti dydį"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Išskleisti"
 
@@ -128,8 +128,8 @@ msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Komanda ar kelios komandos, kurios bus vykdomos karštojo kampo veiksmui \""
-"tinkinta komanda\" (angl. custom-command)"
+"Komanda ar kelios komandos, kurios bus vykdomos karštojo kampo veiksmui "
+"\"tinkinta komanda\" (angl. custom-command)"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
 msgid ""
@@ -354,8 +354,8 @@ msgstr ""
 "Pirmoji reikšmė yra šešėlio suliejimo spindulys, antroji reikšmė - "
 "viršutinis išblukimas (kuri, dažniausiai, yra -1), trečioji ir ketvirtoji "
 "yra x- ir y-poslinkis, o paskutinė - nepermatomumas. Taigi, [suliejimo-"
-"spindulys, viršutinis-išblukimas, x-poslinkis, y-poslinkis, nepermatomumas] ("
-"angl. [blur-radius, top-fade, x-offset, y-offset, opacity])."
+"spindulys, viršutinis-išblukimas, x-poslinkis, y-poslinkis, nepermatomumas] "
+"(angl. [blur-radius, top-fade, x-offset, y-offset, opacity])."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "Defines the shadow of a normal unfocused window"

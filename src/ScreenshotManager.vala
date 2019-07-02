@@ -17,6 +17,8 @@
 
 namespace Gala
 {
+	const string EXTENSION = ".png";
+
 	[DBus (name="org.gnome.Shell.Screenshot")]
 	public class ScreenshotManager : Object
 	{
@@ -167,24 +169,38 @@ namespace Gala
 
 		static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
-			if (!Path.is_absolute (filename)) {
-				var path = find_target_path ();
-				if (!filename.has_suffix (".png")) {
-					used_filename = Path.build_filename (path, filename.concat (".png"), null);
-				} else {
-					used_filename = Path.build_filename (path, filename, null);
+			used_filename = filename;
+
+			// We only alter non absolute filename because absolute
+			// filename is used for temp clipboard file and shouldn't be changed
+			if (!Path.is_absolute (used_filename)) {
+				if (!used_filename.has_suffix (EXTENSION)) {
+					used_filename = used_filename.concat (EXTENSION);
 				}
-			} else {
-				used_filename = filename;
+
+				var scale_factor = InternalUtils.get_ui_scaling_factor ();
+				if (scale_factor > 1) {
+					var scale_pos = -EXTENSION.length;
+					used_filename = used_filename.splice (scale_pos, scale_pos, "@%ix".printf (scale_factor));
+				}
+
+				var path = find_target_path ();
+				used_filename = Path.build_filename (path, used_filename, null);
 			}
 
 			try {
 				var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
 				var file = File.new_for_path (used_filename);
-				var stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				FileIOStream stream;
+				if (file.query_exists ()) {
+					stream = yield file.open_readwrite_async (FileCreateFlags.NONE);
+				} else {
+					stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				}
 				yield screenshot.save_to_stream_async (stream.output_stream, "png");
 				return true;
 			} catch (GLib.Error e) {
+				warning ("could not save file: %s", e.message);
 				return false;
 			}
 		}
