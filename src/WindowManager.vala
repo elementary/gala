@@ -75,6 +75,8 @@ namespace Gala
 		Window? moving; //place for the window that is being moved over
 
 		Daemon? daemon_proxy = null;
+		
+		WindowMovementTracker window_movement_tracker;
 
 		Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -171,6 +173,10 @@ namespace Gala
 			WindowListener.init (screen);
 #endif
 			KeyboardManager.init (display);
+			
+			window_movement_tracker = new WindowMovementTracker (display);
+			window_movement_tracker.watch ();
+			window_movement_tracker.open.connect (on_wmt_open);
 
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -1827,6 +1833,20 @@ namespace Gala
 			}
 
 			ws_assoc.remove (window);
+		}
+
+		void on_wmt_open (Window window, int x, int y)
+		{
+			unowned Meta.Display display = get_screen ().get_display ();
+			display.end_grab_op (display.get_current_time ());
+
+			workspace_view.open (null);
+
+			Idle.add (() => {
+				((MultitaskingView)workspace_view).start_drag_window (window, x, y);
+				window_movement_tracker.restore_window_state ();
+				return false;
+			});
 		}
 
 		// Cancel attached animation of an actor and reset it
