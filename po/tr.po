@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2019-01-04 00:07+0000\n"
 "Last-Translator: Emre Balasar <balasare@gmail.com>\n"
 "Language-Team: Turkish <https://weblate.elementary.io/projects/desktop/gala/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "Ekran iyi görünüyor mu?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Bu Yapılandırmayı Koru"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Önceki Yapılandırmayı Geri Yükle"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Simge Durumuna Küçült"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Taşı"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Yeniden Boyutlandır"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Her Zaman Üstte"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Her Zaman Görünür Çalışma Alanında"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Soldaki Çalışma Alanına Taşı"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Sağdaki Çalışma Alanına Taşı"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Kapat"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Tam Ekrandan Çık"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Ekranı Kapla"
 
@@ -140,10 +140,9 @@ msgstr ""
 "Sadece bir komut girerseniz, bu 'custom-command'a atanmış tüm etkin-köşeler "
 "için kullanılır. Bunun yerine 'hotcorner-topleft:command;;hotcorner-"
 "bottomright:command' kalıbını kullanırsanız, her bir etkin-köşe için "
-"belirlediğiniz komutlar kullanılacaktır. Olası tanımlayıcılar "
-"'hotcorner-[topleft; topright; bottomleft; bottomright]' ardından ':' "
-"koyulur ve sonrasında komut gelir. ';;' komut tanımları arasında ayraç "
-"işlevi görür."
+"belirlediğiniz komutlar kullanılacaktır. Olası tanımlayıcılar 'hotcorner-"
+"[topleft; topright; bottomleft; bottomright]' ardından ':' koyulur ve "
+"sonrasında komut gelir. ';;' komut tanımları arasında ayraç işlevi görür."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -166,7 +165,8 @@ msgstr "Panel ana menüsü eylemi"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
 msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr "panel-main-menu tuş kombinasyonu basıldığında çalışacak komutu ayarlar."
+msgstr ""
+"panel-main-menu tuş kombinasyonu basıldığında çalışacak komutu ayarlar."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"

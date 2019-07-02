@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-11-14 17:57+0100\n"
+"POT-Creation-Date: 2019-06-26 22:43+0200\n"
 "PO-Revision-Date: 2018-12-12 00:07+0000\n"
 "Last-Translator: Cristian Molina <megatux@gmail.com>\n"
 "Language-Team: Spanish <https://weblate.elementary.io/projects/desktop/gala/"
@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
-#: src/WindowManager.vala:1839
+#: src/WindowManager.vala:1856
 msgid "Does the display look OK?"
 msgstr "¿Se ve bien la pantalla?"
 
-#: src/WindowManager.vala:1842
+#: src/WindowManager.vala:1859
 msgid "Keep This Configuration"
 msgstr "Mantener esta configuración"
 
-#: src/WindowManager.vala:1843
+#: src/WindowManager.vala:1860
 msgid "Restore Previous Configuration"
 msgstr "Restablecer configuración anterior"
 
-#: daemon/MenuDaemon.vala:102
+#: daemon/MenuDaemon.vala:105
 msgid "Minimize"
 msgstr "Minimizar"
 
-#: daemon/MenuDaemon.vala:114
+#: daemon/MenuDaemon.vala:117
 msgid "Move"
 msgstr "Mover"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:123
 msgid "Resize"
 msgstr "Redimensionar"
 
-#: daemon/MenuDaemon.vala:126
+#: daemon/MenuDaemon.vala:129
 msgid "Always on Top"
 msgstr "Siempre visible"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:135
 msgid "Always on Visible Workspace"
 msgstr "Siempre en el área de trabajo visible"
 
-#: daemon/MenuDaemon.vala:138
+#: daemon/MenuDaemon.vala:141
 msgid "Move to Workspace Left"
 msgstr "Mover al área de trabajo izquierdo"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:147
 msgid "Move to Workspace Right"
 msgstr "Mover al área de trabajo derecho"
 
-#: daemon/MenuDaemon.vala:150
+#: daemon/MenuDaemon.vala:153
 msgid "Close"
 msgstr "Cerrar"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Unmaximize"
 msgstr "Restaurar"
 
-#: daemon/MenuDaemon.vala:167
+#: daemon/MenuDaemon.vala:170
 msgid "Maximize"
 msgstr "Maximizar"
 
