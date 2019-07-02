@@ -384,7 +384,7 @@ namespace Gala
 
 			ActorBox alloc = {};
 			alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
-							  (input_rect.y - outer_rect.y) * scale_factor);
+			                  (input_rect.y - outer_rect.y) * scale_factor);
 			alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
 			clone.allocate (alloc, flags);
