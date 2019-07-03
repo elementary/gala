@@ -36,10 +36,6 @@ namespace Gala.Plugins.QuarterTiler
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
 		{
 			unowned Meta.Window focused_window = display.get_focus_window ();
-			if (!focused_window.allows_move () || !focused_window.allows_resize ()) {
-				return;
-			}
-
 			if (focused_window.maximized_vertically || focused_window.maximized_horizontally) {
 				focused_window.unmaximize (Meta.MaximizeFlags.BOTH);
 			}
