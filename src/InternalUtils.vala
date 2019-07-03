@@ -161,7 +161,7 @@ namespace Gala
 		 * 
 		 * @return: which workspace should be active after the reorder
 		 */
-		public static Workspace? move_workspace_to_index (int index, Workspace workspace)
+		public static unowned Workspace? move_workspace_to_index (int index, Workspace workspace)
 		{
 			unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
 			workspace_manager.freeze_remove ();

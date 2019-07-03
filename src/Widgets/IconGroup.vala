@@ -117,7 +117,8 @@ namespace Gala
 			drag_action.actor_clicked.connect (() => selected ());
 			drag_action.drag_begin.connect (drag_begin);
 			drag_action.drag_end.connect (drag_end);
-			drag_action.drag_canceled.connect (drag_canceled);
+            drag_action.drag_canceled.connect (drag_canceled);
+            drag_action.notify["dragging"].connect (redraw);
 			add_action (drag_action);
 
 			icon_container = new Actor ();
@@ -262,8 +263,6 @@ namespace Gala
 		 */
 		public void add_window (Window window, bool no_redraw = false, bool temporary = false)
 		{
-			var prev_n_windows = icon_container.get_n_children ();
-
 			var new_window = new WindowIconActor (window);
 
 			new_window.save_easing_state ();
@@ -368,10 +367,10 @@ namespace Gala
 			);
 
 			if (drag_action.dragging) {
-				cr.set_source_rgba (0, 0, 0, 0.1);
-			} else {
 				const double BG_COLOR = 53.0 / 255.0;
 				cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.7);
+			} else {
+                cr.set_source_rgba (0, 0, 0, 0.1);
 			}
 
 			cr.fill_preserve ();
@@ -524,7 +523,6 @@ namespace Gala
 			}
 
 			stage.add_child (this);
-			redraw ();
 
 			get_transformed_position (out abs_x, out abs_y);
 			set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
@@ -538,7 +536,6 @@ namespace Gala
 		{
 			if (destination is WorkspaceInsertThumb) {
 				get_parent ().remove_child (this);
-				redraw ();
 	
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 
