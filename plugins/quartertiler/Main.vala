@@ -29,6 +29,8 @@ namespace Gala.Plugins.QuarterTiler
 			display.add_keybinding ("tile-topright", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 			display.add_keybinding ("tile-bottomleft", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 			display.add_keybinding ("tile-bottomright", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+			display.add_keybinding ("tile-top", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+			display.add_keybinding ("tile-bottom", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
 		}
 
 		[CCode (instance_pos = -1)]
@@ -36,15 +38,18 @@ namespace Gala.Plugins.QuarterTiler
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
 		{
 			unowned Meta.Window focused_window = display.get_focus_window ();
+			bool was_maximized_vertically = focused_window.maximized_vertically;
+			Meta.Rectangle prev_rect = focused_window.get_frame_rect ();
+
 			if (focused_window.maximized_vertically || focused_window.maximized_horizontally) {
 				focused_window.unmaximize (Meta.MaximizeFlags.BOTH);
 			}
+
 			if (focused_window.fullscreen) {
 				focused_window.unmake_fullscreen ();
 			}
 
 			Meta.Rectangle wa = focused_window.get_work_area_current_monitor ();
-
 			int x = wa.x;
 			int y = wa.y;
 			int width = wa.width / 2;
@@ -62,6 +67,27 @@ namespace Gala.Plugins.QuarterTiler
 				case "tile-bottomright":
 					x += width;
 					y += height;
+					break;
+				case "tile-top":
+					if (!was_maximized_vertically) {
+						return;
+					}
+
+					if (prev_rect.x != 0) { // right side
+						x += width;
+					}
+					break;
+				case "tile-bottom":
+					if (!was_maximized_vertically) {
+						return;
+					}
+
+					if (prev_rect.x == 0) { // left side
+						y += height;
+					} else { // right side
+						x += width;
+						y += height;
+					}
 					break;
 			}
 

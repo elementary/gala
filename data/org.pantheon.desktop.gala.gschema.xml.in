@@ -167,6 +167,16 @@
 			<summary>Tile window to bottom right</summary>
 			<description>The shortcut to quarter tile window to bottom right.</description>
 		</key>
+		<key type="as" name="tile-top">
+			<default><![CDATA[['<Super><Ctrl>Up']]]></default>
+			<summary>Tile window to top of tile side</summary>
+			<description>The shortcut to quarter tile window to top of the tile side.</description>
+		</key>
+		<key type="as" name="tile-bottom">
+			<default><![CDATA[['<Super><Ctrl>Down']]]></default>
+			<summary>Tile window to bottom of tile side</summary>
+			<description>The shortcut to quarter tile window to bottom of the tile side.</description>
+		</key>
 	</schema>
 
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
