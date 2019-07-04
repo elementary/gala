@@ -100,8 +100,8 @@ namespace Gala
 		 */
 		public bool allow_bubbling { get; set; default = true; }
 
-        public Actor? hovered { private get; set; default = null; }
-        
+		public Actor? hovered { private get; set; default = null; }
+		
 		bool clicked = false;
 		float last_x;
 		float last_y;
