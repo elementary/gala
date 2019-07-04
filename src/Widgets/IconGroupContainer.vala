@@ -65,14 +65,34 @@ namespace Gala
 			update_inserter_indices ();
 		}
 
+		/**
+		 * Removes an icon group "in place".
+		 * When initially dragging an icon group we remove
+		 * it and it's previous WokrspaceInsertThumb. This would make
+		 * the container immediately reallocate and fill the empty space
+		 * with right-most IconGroups.
+		 * 
+		 * We don't want that until the IconGroup 
+		 * leaves the expanded WorkspaceInsertThumb.
+		 */
 		public void remove_group_in_place (IconGroup group)
 		{
-			var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
-			float thumb_width = thumb.get_width ();
-			float group_width = group.get_width ();
+			var deleted_thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
+			var deleted_placeholder_thumb = (WorkspaceInsertThumb) group.get_next_sibling ();
+
 			remove_group (group);
-			
-			x += thumb_width + group_width;
+
+			/**
+			 * We will account for that empty space
+			 * by manually expanding the next WorkspaceInsertThumb with the
+			 * width we deleted. Because the IconGroup is still hovering over
+			 * the expanded thumb, we will also update the drag & drop action
+			 * of IconGroup on that.
+			 */
+			float deleted_width = deleted_thumb.get_width () + group.get_width ();
+			deleted_placeholder_thumb.expanded = true;
+			deleted_placeholder_thumb.width += deleted_width;
+			group.set_hovered_actor (deleted_placeholder_thumb);
 		}
 
 		public void reset_thumbs (int delay)

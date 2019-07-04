@@ -25,7 +25,7 @@ namespace Gala
 		public const int EXPAND_DELAY = 300;
 
 		public int workspace_index { get; construct set; }
-		public bool expanded { get; private set; default = false; }
+		public bool expanded { get; set; default = false; }
 		public int delay { get; set; default = EXPAND_DELAY; }
 
 		uint expand_timeout = 0;

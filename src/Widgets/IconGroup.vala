@@ -311,6 +311,14 @@ namespace Gala
 		}
 
 		/**
+		 * Sets a hovered actor for the drag action.
+		 */
+		public void set_hovered_actor (Actor actor)
+		{
+			drag_action.hovered = actor;
+		}
+
+		/**
 		 * Trigger a redraw
 		 */
 		public void redraw ()
@@ -516,7 +524,6 @@ namespace Gala
 			var container = prev_parent as IconGroupContainer;
 			if (container != null) {
 				container.remove_group_in_place (this);
-				container.request_reposition ();
 				container.reset_thumbs (0);
 			} else {
 				prev_parent.remove_child (this);
