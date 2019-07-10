@@ -73,7 +73,7 @@ namespace Gala.Plugins.QuarterTiler
 						return;
 					}
 
-					if (prev_rect.x != 0) { // right side
+					if (prev_rect.x != wa.x) { // right side
 						x += width;
 					}
 					break;
@@ -82,7 +82,7 @@ namespace Gala.Plugins.QuarterTiler
 						return;
 					}
 
-					if (prev_rect.x == 0) { // left side
+					if (prev_rect.x == wa.x) { // left side
 						y += height;
 					} else { // right side
 						x += width;
