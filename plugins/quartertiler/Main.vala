@@ -39,6 +39,7 @@ namespace Gala.Plugins.QuarterTiler
 		{
 			unowned Meta.Window focused_window = display.get_focus_window ();
 			bool was_maximized_vertically = focused_window.maximized_vertically;
+			bool was_maximized_horizontally = focused_window.maximized_horizontally;
 			Meta.Rectangle prev_rect = focused_window.get_frame_rect ();
 
 			if (focused_window.maximized_vertically || focused_window.maximized_horizontally) {
@@ -54,6 +55,7 @@ namespace Gala.Plugins.QuarterTiler
 			int y = wa.y;
 			int width = wa.width / 2;
 			int height = wa.height / 2;
+			bool leftSide = prev_rect.x == wa.x;
 			switch (binding.get_name ()) {
 				case "tile-topleft":
 				default:
@@ -69,25 +71,19 @@ namespace Gala.Plugins.QuarterTiler
 					y += height;
 					break;
 				case "tile-top":
-					if (!was_maximized_vertically) {
-						return;
-					}
-
-					if (prev_rect.x != wa.x) { // right side
-						x += width;
-					}
-					break;
 				case "tile-bottom":
 					if (!was_maximized_vertically) {
 						return;
+					} else if (was_maximized_horizontally) {
+						width = wa.width;
+					} else if (prev_rect.x != wa.x) { // right side
+						x += width;
 					}
 
-					if (prev_rect.x == wa.x) { // left side
-						y += height;
-					} else { // right side
-						x += width;
+					if (binding.get_name () == "tile-bottom") {
 						y += height;
 					}
+
 					break;
 			}
 
