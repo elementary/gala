@@ -965,7 +965,7 @@ namespace Gala
 			unowned Meta.Window window = actor.get_meta_window ();
 
 			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
-					handle_fullscreen_window (window, which_change);
+				handle_fullscreen_window (window, which_change);
 			} else if (window.get_tile_match () == null) { // don't animate windows with tiled match
 				ulong size_signal_id = 0U;
 				ulong position_signal_id = 0U;
