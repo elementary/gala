@@ -46,12 +46,12 @@ If applicable, add screenshots or screen recordings to help explain your problem
 
 ### Logs
 <!--
-If applicable, share logs.
+If applicable, please share logs.
 
-If you notice erroneous behavior share logs, how:
+Notice erroneous behavior? Get and share debug logs by following:
 https://elementary.io/docs/code/os-dev#debug-logs
 
-For example when an application crashes please share crash logs, how:
+The application crashes? Get and share crash logs by following:
 https://elementary.io/docs/code/os-dev#inspecting-crashes
 -->
 
