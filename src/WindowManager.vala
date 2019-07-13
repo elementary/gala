@@ -982,7 +982,9 @@ namespace Gala
 		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
 			unowned Meta.Window window = actor.get_meta_window ();
 
+			if (size_signal_id != 0U) { // only disconnect if signal was connected
 			window.disconnect (size_signal_id);
+			}
 			window.disconnect (position_signal_id);
 
 			var new_rect = window.get_frame_rect ();
