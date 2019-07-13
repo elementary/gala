@@ -545,16 +545,9 @@ namespace Gala
 				get_parent ().remove_child (this);
 	
 				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
-
-				MultitaskingView.freeze_animations ();
-
-				var active = InternalUtils.move_workspace_to_index (inserter.workspace_index, workspace);
-				if (active != null) {
-					active.activate (active.get_screen ().get_display ().get_current_time ());
-				}
+				workspace.get_screen ().reorder_workspace (workspace, inserter.workspace_index);
 
 				restore_group ();
-				MultitaskingView.thaw_animations ();
 			} else {
 				drag_canceled ();
 			}
