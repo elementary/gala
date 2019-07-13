@@ -962,14 +962,30 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
+			debug("size_change");
 			unowned Meta.Window window = actor.get_meta_window ();
+			switch (which_change) {
+				case Meta.SizeChange.MAXIMIZE:
+					debug("maximize");
+					break;
+				case Meta.SizeChange.UNMAXIMIZE:
+					debug("minimize");
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					debug("fullscreen/unfullscreen");
+					handle_fullscreen_window (actor.get_meta_window (), which_change);
+					break;
+			}
 
 			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
 				handle_fullscreen_window (window, which_change);
-			} else if (window.get_tile_match () == null) { // don't animate windows with tiled match
+			} else (window.get_tile_match () == null) { 
 				ulong size_signal_id = 0U;
 				ulong position_signal_id = 0U;
-				size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+				//  if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
+					size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
+				//  }
 				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
 				return; // must wait for size/position-changed-signal to get updated rect_frame
 			}
