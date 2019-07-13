@@ -564,7 +564,7 @@ namespace Gala
 			var container = prev_parent as IconGroupContainer;
 			if (container != null) {
 				container.add_group (this);
-				container.request_reposition ();
+				container.request_reposition (false);
 				container.reset_thumbs (WorkspaceInsertThumb.EXPAND_DELAY);
 			}
 		}

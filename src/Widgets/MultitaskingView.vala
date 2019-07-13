@@ -64,7 +64,7 @@ namespace Gala
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new IconGroupContainer (screen);
-			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
+			icon_groups.request_reposition.connect ((animate) => reposition_icon_groups (animate));
 
 			dock_clones = new Actor ();
 

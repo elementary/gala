@@ -30,7 +30,7 @@ namespace Gala
 		public const int SPACING = 48;
 		public const int GROUP_WIDTH = 64;
 
-		public signal void request_reposition ();
+		public signal void request_reposition (bool animate);
 
 		public Screen screen { get; construct; }
 
@@ -68,7 +68,7 @@ namespace Gala
 		/**
 		 * Removes an icon group "in place".
 		 * When initially dragging an icon group we remove
-		 * it and it's previous WokrspaceInsertThumb. This would make
+		 * it and it's previous WorkspaceInsertThumb. This would make
 		 * the container immediately reallocate and fill the empty space
 		 * with right-most IconGroups.
 		 * 
@@ -108,7 +108,7 @@ namespace Gala
 
 		void expanded_changed (ParamSpec param)
 		{
-			request_reposition ();
+			request_reposition (true);
 		}
 
 		/**
