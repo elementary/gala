@@ -962,21 +962,7 @@ namespace Gala
 
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			debug("size_change");
 			unowned Meta.Window window = actor.get_meta_window ();
-			switch (which_change) {
-				case Meta.SizeChange.MAXIMIZE:
-					debug("maximize");
-					break;
-				case Meta.SizeChange.UNMAXIMIZE:
-					debug("minimize");
-					break;
-				case Meta.SizeChange.FULLSCREEN:
-				case Meta.SizeChange.UNFULLSCREEN:
-					debug("fullscreen/unfullscreen");
-					handle_fullscreen_window (actor.get_meta_window (), which_change);
-					break;
-			}
 
 			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
 				handle_fullscreen_window (window, which_change);
