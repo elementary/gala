@@ -117,8 +117,8 @@ namespace Gala
 			drag_action.actor_clicked.connect (() => selected ());
 			drag_action.drag_begin.connect (drag_begin);
 			drag_action.drag_end.connect (drag_end);
-            drag_action.drag_canceled.connect (drag_canceled);
-            drag_action.notify["dragging"].connect (redraw);
+			drag_action.drag_canceled.connect (drag_canceled);
+			drag_action.notify["dragging"].connect (redraw);
 			add_action (drag_action);
 
 			icon_container = new Actor ();
@@ -378,7 +378,7 @@ namespace Gala
 				const double BG_COLOR = 53.0 / 255.0;
 				cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.7);
 			} else {
-                cr.set_source_rgba (0, 0, 0, 0.1);
+				cr.set_source_rgba (0, 0, 0, 0.1);
 			}
 
 			cr.fill_preserve ();
