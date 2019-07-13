@@ -980,12 +980,12 @@ namespace Gala
 
 			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
 				handle_fullscreen_window (window, which_change);
-			} else (window.get_tile_match () == null) { 
+			} else { 
 				ulong size_signal_id = 0U;
 				ulong position_signal_id = 0U;
-				//  if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
+				if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
 					size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				//  }
+				}
 				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
 				return; // must wait for size/position-changed-signal to get updated rect_frame
 			}
