@@ -55,7 +55,6 @@ namespace Gala.Plugins.QuarterTiler
 			int y = wa.y;
 			int width = wa.width / 2;
 			int height = wa.height / 2;
-			bool leftSide = prev_rect.x == wa.x;
 			switch (binding.get_name ()) {
 				case "tile-topleft":
 				default:
