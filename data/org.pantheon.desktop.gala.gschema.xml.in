@@ -147,6 +147,31 @@
 			<summary>The shortcut to enable picture-in-picture window</summary>
 			<description>The shortcut to show the selection area to choose a window.</description>
 		</key>
+		<key type="as" name="quickswitch-editor">
+			<default><![CDATA[['<Super>e']]]></default>
+			<summary>Focus default text editor</summary>
+			<description>Shortcut to quickly switch focus.</description>
+		</key>
+		<key type="as" name="quickswitch-files">
+			<default><![CDATA[['<Super>m']]]></default>
+			<summary>Focus default file manager</summary>
+			<description>Shortcut to quickly switch focus.</description>
+		</key>
+		<key type="as" name="quickswitch-terminal">
+			<default><![CDATA[['<Super>t']]]></default>
+			<summary>Focus default terminal</summary>
+			<description>Shortcut to quickly switch focus.</description>
+		</key>
+		<key type="as" name="quickswitch-webbrowser">
+			<default><![CDATA[['<Super>b']]]></default>
+			<summary>Focus default webbrowser</summary>
+			<description>Shortcut to quickly switch focus.</description>
+		</key>
+		<key type="as" name="quickswitch-debug"> <!-- used for debugging, will be deleted-->
+			<default><![CDATA[['<Super>z']]]></default>
+			<summary>List all windows with wm_classes</summary>
+			<description>This entry is only needed for debugging!</description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
