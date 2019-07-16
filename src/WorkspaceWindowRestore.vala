@@ -96,126 +96,227 @@ namespace Gala
             }
         }
 
+        //  void assign_window (Gee.HashMap<int, Gee.ArrayList<string>> configs, Window window, AppWorkspaceConfig target)
+        //  {
+        //      //  if (bindings.size == 0) {
+        //      //      bindings[config_index] = window.get_workspace ();
+        //      //      return;
+        //      //  }
+
+        //      /**
+        //       * If there's only one workspace and no windows on it
+        //       * we will bail out.
+        //       */
+        //      unowned Screen screen = wm.get_screen ();
+        //      if (screen.get_n_workspaces () == 1 && 
+        //          Utils.get_n_windows (screen.get_workspace_by_index (0)) == 0) {
+        //          return;
+        //      }
+
+        //      var ids = configs[target.workspace];
+        //      ids.remove (target.id);
+
+        //      foreach (var id in ids) {
+        //          print (id.to_string () + "\n");
+        //      }
+
+        //      /**
+        //       * We will first check if the window shouldn't belong
+        //       * to an already existing workspace that contains apps
+        //       * that should be grouped with it.
+        //       */
+        //      unowned Workspace? candidate = null;
+        //      int max_apps_found = 0;
+            
+        //      int n = screen.get_n_workspaces ();
+        //      for (int i = 0; i < n; i++) {
+        //          unowned Workspace workspace = screen.get_workspace_by_index (i);
+        //          int count = get_app_count (workspace, ids);
+        //          if (count > max_apps_found) {
+        //              max_apps_found = count;
+        //              candidate = workspace;
+        //          }
+        //      }
+
+        //      if (candidate != null) {
+        //          window.change_workspace (candidate);
+        //          candidate.activate_with_focus (window, screen.get_display ().get_current_time ());
+        //          return;
+        //      }
+
+            
+
+        //      //  int closest_left = 0;
+        //      //  int closest_right = n - 1;
+
+        //      //  if (target_index in bindings.keys) {
+        //      //      window.change_workspace (bindings[target_index]);
+        //      //      return;
+        //      //  }
+
+        //      //  foreach (int _config_index in bindings.keys) {
+        //      //      if (_config_index > closest_left && _config_index < target_index) {
+        //      //          closest_left = _config_index;
+        //      //      }
+
+
+        //      //      if (_config_index < closest_right && _config_index > target_index) {
+        //      //          closest_right = _config_index;
+        //      //      }
+        //      //  }
+
+        //      //  print ("LEFT: " + closest_left.to_string () + "\n");
+        //      //  print ("RIGHT: " + closest_right.to_string () + "\n");
+
+        //      //  for (int i = 1; i < n; i++) {
+        //      //      unowned Workspace workspace = screen.get_workspace_by_index (i);
+        //      //      if ()
+        //      //  }
+
+
+
+        //      //  print ("TARGET: " + target_index.to_string () + "\n");
+        //  }
+
         void assign_window (Gee.HashMap<int, Gee.ArrayList<string>> configs, Window window, AppWorkspaceConfig target)
         {
-            //  if (bindings.size == 0) {
-            //      bindings[config_index] = window.get_workspace ();
-            //      return;
-            //  }
-
-            /**
-             * If there's only one workspace and no windows on it
-             * we will bail out.
-             */
             unowned Screen screen = wm.get_screen ();
-            if (screen.get_n_workspaces () == 1 && 
-                Utils.get_n_windows (screen.get_workspace_by_index (0)) == 0) {
-                return;
-            }
 
-            var ids = configs[target.workspace];
-            ids.remove (target.id);
-
-            foreach (var id in ids) {
-                print (id.to_string () + "\n");
-            }
-
-            /**
-             * We will first check if the window shouldn't belong
-             * to an already existing workspace that contains apps
-             * that should be grouped with it.
-             */
-            unowned Workspace? candidate = null;
-            int max_apps_found = 0;
-            
-            int n = screen.get_n_workspaces ();
-            for (int i = 0; i < n; i++) {
-                unowned Workspace workspace = screen.get_workspace_by_index (i);
-                int count = get_app_count (workspace, ids);
-                if (count > max_apps_found) {
-                    max_apps_found = count;
-                    candidate = workspace;
+            print ("ASSIGN".to_string () + "\n");
+            var search_list = new Gee.ArrayList<Gee.ArrayList<string>> ();
+            int offset = 0;
+            if (target.workspace == 0) {
+                int n_workspaces = screen.get_n_workspaces () - (Prefs.get_dynamic_workspaces () ? 1 : 0);
+                if (n_workspaces > 1) {
+                    search_list.add (configs[target.workspace]);
+                    if (configs.size > target.workspace + 1) {
+                        search_list.add (configs[target.workspace + 1]);
+                    }
+                } else {
+                    unowned Workspace ws = screen.get_workspace_by_index (0);
+                    window.change_workspace (ws);
+                    ws.activate_with_focus (window, screen.get_display ().get_current_time ());
+                    return;
+                }
+            } else {
+                offset = 1;
+                if (configs.size > target.workspace + 1) {
+                    search_list.add (configs[target.workspace - 1]);
+                    search_list.add (configs[target.workspace]);
+                    search_list.add (configs[target.workspace + 1]);
+                } else {
+                    search_list.add (configs[target.workspace - 1]);
+                    search_list.add (configs[target.workspace]);
                 }
             }
 
-            if (candidate != null) {
-                window.change_workspace (candidate);
-                candidate.activate_with_focus (window, screen.get_display ().get_current_time ());
-                return;
+            print ("COMPUTE SCORES".to_string () + "\n");
+            print ("OFFSET: ".to_string () + offset.to_string () + "\n");
+            print ("SEARCH FOR:\n");
+            foreach (var ws_c in search_list) {
+                foreach (var app_id in ws_c) {
+                    print (app_id.replace ("/usr/share/applications/", "") + " ");
+                }
+
+                print ("\n");
+            }
+            WorkspaceRevelanceScore[] scores = compute_scores (search_list, offset);
+            for (int i = 0; i < scores.length; i++) {
+                print (scores[i].score.to_string () + " " + scores[i].should_add_workspace.to_string () + "\n");
             }
 
-            
-
-            //  int closest_left = 0;
-            //  int closest_right = n - 1;
-
-            //  if (target_index in bindings.keys) {
-            //      window.change_workspace (bindings[target_index]);
-            //      return;
-            //  }
-
-            //  foreach (int _config_index in bindings.keys) {
-            //      if (_config_index > closest_left && _config_index < target_index) {
-            //          closest_left = _config_index;
-            //      }
-
-
-            //      if (_config_index < closest_right && _config_index > target_index) {
-            //          closest_right = _config_index;
-            //      }
-            //  }
-
-            //  print ("LEFT: " + closest_left.to_string () + "\n");
-            //  print ("RIGHT: " + closest_right.to_string () + "\n");
-
-            //  for (int i = 1; i < n; i++) {
-            //      unowned Workspace workspace = screen.get_workspace_by_index (i);
-            //      if ()
-            //  }
-
-
-
-            //  print ("TARGET: " + target_index.to_string () + "\n");
-        }
-    }
-    
-    static int get_app_count (Workspace workspace, Gee.ArrayList<string> app_ids)
-    {
-        int count = 0;
-        foreach (unowned Window window in workspace.list_windows ()) {
-            string? id = get_app_id_from_window (window);
-            if (id == null) {
-                continue;
+            //  print (scores[0].to_string () + " ");
+            int max_index = 0;
+            for (int i = 1; i < scores.length; i++) {
+                if (scores[i].score > scores[max_index].score) {
+                    max_index = i;
+                }
             }
 
-            if (id in app_ids) {
-                count++;
+            unowned Meta.Workspace? ws = null;
+            if (scores[max_index].should_add_workspace) {
+                ws = screen.append_new_workspace (false, screen.get_display ().get_current_time ());
+                screen.reorder_workspace (ws, max_index + offset);
+            } else {
+                ws = screen.get_workspace_by_index (max_index + offset);
             }
+
+            window.change_workspace (ws);
+            ws.activate_with_focus (window, screen.get_display ().get_current_time ());
         }
 
-        return count;
-    }
-
-    static string? get_app_id_from_window (Window window)
-    {
-        unowned Bamf.Application app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
-        if (app == null) {
-            return null;
+        struct WorkspaceRevelanceScore {
+            int score;
+            bool should_add_workspace;
         }
 
-        unowned string id = app.get_desktop_file ();
-        return id;
-    }
+        WorkspaceRevelanceScore[] compute_scores (Gee.ArrayList<Gee.ArrayList<string>> search_list, int target_index)
+        {
+            unowned Screen screen = wm.get_screen ();
+            int n_workspaces = screen.get_n_workspaces ();
+            WorkspaceRevelanceScore[] scores = new WorkspaceRevelanceScore[n_workspaces];
+            for (int i = 0; i < n_workspaces; i++) {
+                int ws_score = 0;
+                bool should_add_workspace = false;
+                for (int j = 0; j < search_list.size; j++) {
+                    unowned Workspace ws = screen.get_workspace_by_index (i + j);
+                    if (ws == null) {
+                        continue;
+                    }
 
-    static AppWorkspaceConfig[] filter_by_similar_config (AppWorkspaceConfig[] configs, AppWorkspaceConfig target)
-    {
-        AppWorkspaceConfig[] filtered = {};
-        foreach (var config in configs) {
-            if (config.workspace == target.workspace && config.id != target.id) {
-                filtered += config;
+                    uint score = get_app_count (ws, search_list[j]);
+                    if (score == 0 && j == target_index && (j + 1 < search_list.size)) {
+                        score = get_app_count (ws, search_list[j + 1]);
+                        should_add_workspace = true;
+                    }
+
+                    ws_score += (int)score;
+                }
+
+                scores[i] = { ws_score, should_add_workspace };
             }
+
+            return scores;
         }
 
-        return filtered;
+        static uint get_app_count (Workspace workspace, Gee.ArrayList<string> app_ids)
+        {
+            uint count = 0;
+            foreach (unowned Window window in workspace.list_windows ()) {
+                string? id = get_app_id_from_window (window);
+                if (id == null) {
+                    continue;
+                }
+
+                if (id in app_ids) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        static string? get_app_id_from_window (Window window)
+        {
+            unowned Bamf.Application app = Bamf.Matcher.get_default ().get_application_for_xid ((uint32)window.get_xwindow ());
+            if (app == null) {
+                return null;
+            }
+
+            unowned string id = app.get_desktop_file ();
+            return id;
+        }
+
+    //  static AppWorkspaceConfig[] filter_by_similar_config (AppWorkspaceConfig[] configs, AppWorkspaceConfig target)
+    //  {
+    //      AppWorkspaceConfig[] filtered = {};
+    //      foreach (var config in configs) {
+    //          if (config.workspace == target.workspace && config.id != target.id) {
+    //              filtered += config;
+    //          }
+    //      }
+
+    //      return filtered;
+    //  }
     }
 }

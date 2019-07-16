@@ -1079,7 +1079,10 @@ namespace Gala
 
 			kill_window_effects (actor);
 
-            var window = actor.get_meta_window ();
+            //  var window = actor.get_meta_window ();
+            //  if (window.get_data<bool> ("internal-resize")) {
+            //      return;
+            //  }
             
             if (window.maximized_horizontally) {
                 move_window_to_next_ws (window);
@@ -1218,8 +1221,10 @@ namespace Gala
 		{
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 
-            var window = actor.get_meta_window ();
-            //  ws_window_restore.restore_window_config (window);
+			var window = actor.get_meta_window ();
+            if (InternalUtils.get_window_is_normal (window)) {
+				ws_window_restore.restore_window_config (window);
+			}
 
 			if (!animation_settings.enable_animations) {
 				actor.show ();
@@ -1350,9 +1355,9 @@ namespace Gala
                 ws_assoc.remove (window);
             }
 
-            //  if (InternalUtils.get_window_is_normal (window)) {
-            //      ws_window_restore.save_window_config (window);
-            //  }
+            if (InternalUtils.get_window_is_normal (window)) {
+                ws_window_restore.save_window_config (window);
+            }
 
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
@@ -1458,6 +1463,10 @@ namespace Gala
 
 			kill_window_effects (actor);
             var window = actor.get_meta_window ();
+            //  if (window.get_data<bool> ("internal-resize")) {
+            //      return;
+            //  }
+
             move_window_to_old_ws (window);
 
 			if (window.window_type == WindowType.NORMAL) {
