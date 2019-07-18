@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-
 public class Gala.Plugins.QuickSwitch : Gala.Plugin
 {
   HashTable<string, string> keybindings_to_types;
@@ -26,7 +25,6 @@ public class Gala.Plugins.QuickSwitch : Gala.Plugin
     keybindings_to_types.insert ("quickswitch-files", "inode/directory");
     keybindings_to_types.insert ("quickswitch-terminal", "io.elementary.terminal");
     keybindings_to_types.insert ("quickswitch-webbrowser", "x-scheme-handler/http");
-    keybindings_to_types.insert ("quickswitch-debug", "quickswitch_debug"); // only for debugging, will be deleted
   }
 
   public override void initialize (Gala.WindowManager wm)
@@ -44,39 +42,35 @@ public class Gala.Plugins.QuickSwitch : Gala.Plugin
   void on_initiate (Meta.Display display, Meta.Screen screen,
     Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
   {
-
     var keybinding = binding.get_name ();
-    string type = keybindings_to_types.get (keybinding);
-    string app_id;
-    DesktopAppInfo appinfo;
+    string? app_type = keybindings_to_types.get (keybinding);
+    DesktopAppInfo? info;
 
     // get app_id of application
     if (keybinding == "quickswitch-terminal") { // can't set default application for terminal
-      app_id = "io.elementary.terminal";
-      appinfo = new DesktopAppInfo ("io.elementary.terminal.desktop");
-    } else {
-      app_id = AppInfo.get_default_for_type (type, false).get_id ();
-      appinfo = new DesktopAppInfo (app_id);
-      if (app_id.has_suffix (".desktop")) {
-        app_id = app_id.substring (0, app_id.length + app_id.index_of_nth_char (-8)); // TODO: rename to app_id (maybe use BAMf)
-      }
+      info = new DesktopAppInfo ("io.elementary.terminal.desktop");
+    } else { 
+      info = new DesktopAppInfo (AppInfo.get_default_for_type (app_type, false).get_id ());
     }
 
-    if (app_id == null) {
-      warning("Failed quick switch for %s.", type);
+    if (info == null) {
+      warning("Failed to get DesktopAppInfo for %s.", app_type);
       return;
     }
-      
-    debug("app_id is : %s", app_id);
 
-    unowned Meta.Window active_window = display.get_focus_window ();
-    var workspaces = new List<Meta.Workspace> ();
-    var all_windows = new SList<Meta.Window> ();
+    // get xids for application
+    var xids = Bamf.Matcher.get_default ().get_xids_for_application (info.filename);
 
-    foreach (var workspace in screen.get_workspaces ())
-      workspaces.append (workspace);
+    // launch application if not running
+    if (xids.length == 0) {
+      launch_application (info);
+      return;
+    }
 
-    foreach (var workspace in workspaces) {
+    // filter all windows by xid
+    var app_windows = new SList<Meta.Window> ();
+
+    foreach (var workspace in screen.get_workspaces ()) {
       foreach (var win in workspace.list_windows ()) {
         if (win.window_type != Meta.WindowType.NORMAL && 
           win.window_type != Meta.WindowType.DOCK && 
@@ -90,38 +84,53 @@ public class Gala.Plugins.QuickSwitch : Gala.Plugin
         if (win.window_type == Meta.WindowType.DOCK)
           continue;
 
-        if (app_id[-4:-1] == win.get_wm_class_instance ()[-4:-1]) { // workaround:
-          all_windows.append (win);                                 // compare last for characters 
-        }                                                           // of app_id with wm_class
+        // skip windows that are on all workspace except we're currently
+        // processing the workspace it actually belongs to
+        if (win.is_on_all_workspaces () && win.get_workspace () != workspace)
+          continue;
+
+        for (var i = 0; i < xids.length; i++) {
+          if (xids.index (i) == (uint32) win.get_xwindow ()) {
+            app_windows.append (win);
+            break;
+          }
+        }
       }
     }
 
-    if (all_windows.length () == 0) {
-      debug("no windows of this wm_class!, start application!");
-      try {
-        appinfo.launch (null, null);
-      } catch {
-        warning("Failed to launch %s.", type);
-      }
+    // launch application if no window found
+    if (app_windows.length () == 0) {
+      launch_application (info);
       return;
     }
 
-    var sorted_windows = display.sort_windows_by_stacking (all_windows);
+    //  focus highest window of application if no window of application has focus
+    //  focus lowest window of application if highest window has focus
+    var sorted_windows = display.sort_windows_by_stacking (app_windows);
+    var active_window = display.get_focus_window ();
     var last_window = sorted_windows.data;
     var first_window = sorted_windows.last ().data;
     var time = display.get_current_time ();
 
     if (active_window != first_window) { // activate highest window
-      debug("focus highest %s", app_id);
+      debug("focus highest %s", info.get_display_name ());
       first_window.activate (time);
     } else { // activate lowest window
-      debug("focus lowest %s", app_id);
+      debug("focus lowest %s", info.get_display_name ());
       last_window.activate (time);
     }
   }
 
   public override void destroy ()
   {
+  }
+}
+
+private void launch_application (DesktopAppInfo info) {
+  try {
+    info.launch (null, null);
+  } catch {
+    warning("Failed to launch %s.", info.get_display_name ());
   }
 }
 
@@ -134,4 +143,4 @@ public Gala.PluginInfo register_plugin ()
 		Gala.PluginFunction.ADDITION,
 		Gala.LoadPriority.IMMEDIATE
 	};
-}
+} 
