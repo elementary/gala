@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: Priority: Wishlist
+labels: 'Priority: Wishlist, Needs Design'
 assignees: ''
 
 ---
