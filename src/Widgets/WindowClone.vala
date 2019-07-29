@@ -612,7 +612,7 @@ namespace Gala
 
 			var scale = hovered ? 0.4 : 1.0;
 			var opacity = hovered ? 0 : 255;
-			var duration = hovered && insert_thumb != null ? WorkspaceInsertThumb.EXPAND_DELAY : 100;
+			var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
 
 			window_icon.save_easing_state ();
 
@@ -666,7 +666,10 @@ namespace Gala
 					will_move = true;
 				}
 
+				int old_index = window.get_workspace ().index ();
+
 				InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
+				WorkspaceWindowRestore.get_default ().update_window_move_to_new_workspace.begin (window, old_index, inserter.workspace_index);
 
 				// if we don't actually change workspaces, the window-added/removed signals won't
 				// be emitted so we can just keep our window here
@@ -695,8 +698,11 @@ namespace Gala
 			}
 
 			if (workspace != null && workspace != window.get_workspace ()) {
-                //  retile_windows (workspace, window);
+				//  retile_windows (workspace, window);
+				int old_index = window.get_workspace ().index ();
+
 				window.change_workspace (workspace);
+				WorkspaceWindowRestore.get_default ().update_window_move_to_workspace (window, old_index, workspace.index ());
 				did_move = true;
 			}
 
