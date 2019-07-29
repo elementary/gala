@@ -87,7 +87,30 @@
             <summary>App configuration for each workspace</summary>
 			<description></description>
         </key>
+
+		<key type="ai" name="workspace-configs-order">
+			<default><![CDATA[[]]]></default>
+			<summary>The order of the workspace layout</summary>
+			<description></description>
+		</key>
+
+		<child name="applications" schema="org.pantheon.desktop.gala.behavior.application" />
 	</schema>
+
+	<schema id="org.pantheon.desktop.gala.behavior.application" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="aas" name="left-config">
+			<default>[]</default>
+			<summary>Left config</summary>
+		</key>
+		<key type="aas" name="right-config">
+			<default>[]</default>
+			<summary>Right config</summary>
+		</key>
+		<key type="as" name="target-config">
+			<default>[]</default>
+			<summary>Target config</summary>
+		</key>
+	</schema>	
 	
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings" gettext-domain="@GETTEXT_PACKAGE@">
 		<key type="as" name="switch-to-workspace-first">
