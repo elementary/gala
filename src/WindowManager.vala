@@ -1351,10 +1351,6 @@ namespace Gala
                 ws_assoc.remove (window);
             }
 
-            if (window.get_window_type () == NORMAL) {
-				WorkspaceWindowRestore.get_default ().deregister_window (window);
-            }
-
 			if (!animation_settings.enable_animations) {
 				destroy_completed (actor);
 

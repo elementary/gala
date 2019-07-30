@@ -1,13 +1,68 @@
 
 using Meta;
 namespace Gala
-{ 
+{
+    /**
+     * Implements a custom algorithm to restore windows
+     * to their previous workspace in a dynamic setting.
+     * 
+     * Because workspaces can be created, moved around, deleted on demand
+     * we need to be thoughtful about how we save and restore their configuration.
+     * 
+     * Instead of saving each app ID with it's current workspace index, we will
+     * save the entire workspace configuration in relation to that app ID:
+     * we will divide the workspaces into three categories: left, right and target.
+     * The left / right configs describe what apps were on the left and right of the app ID.
+     * The target config is an array of app ID's that were on the same workspace as the
+     * target app ID to match. 
+     * 
+     * Given this information we can calculate a score for each workspace.
+     * The workspace that has the maximum score will be choosen as the target workspace
+     * to put the window on.
+     * 
+     * First, we will iterate through all workspaces and calculate the three scores 
+     * for them based on the logical config: left, right and target.
+     * These represent their relevance as if they were logically placed to
+     * the left / right to the target workspace. Because a logical config 
+     * consists of many workspace configs, everytime we calculate a score for
+     * a config that's further in the logical arrangement we will apply a
+     * fixed relevance multiplier that's decrasing with each offset.
+     * The score is calculated as:
+     *     count of apps that match a workspace config * relevance based on config offset
+     * These scores are saved into the WorkspaceScore structure for an individual workspace.
+     * 
+     * After we obtain the scores for each workspace, we can calculate a final score for a workspace.
+     * We will again reiterate on all workspaces, this time calculating the final score.
+     * For the first workspace we will take all workspaces to the right and sum up all their right scores.
+     * If the workspace happens to contain apps that were on the same workspace as the target app ID,
+     * we will add that score too multiplied with TARGET_RELEVANCE.
+     * 
+     * For the second workspace we will take the first workspace to the left and add it's left score.
+     * We will do the same for workspaces to the right and add their right score. The process continues
+     * when we calculated the score for the last workspace.
+     * The final scores are saved into the WorkspaceSolution structure per workspace.
+     * See compute_solutions.
+     * 
+     * Given the final scores, we select the workspace with the maximum score and put the window
+     * on it. WorkspaceSolution also contains an `add` boolean to indicate if we should create
+     * a new workspace at the target index.
+     */
     public class WorkspaceWindowRestore : Object 
     { 
         const int[] RELEVANCE_TABLE = { 10, 6, 4, 2, 1 };
-        const int TARGET_REVELANCE = 16;
+        const int TARGET_RELEVANCE = 16;
         const int GET_APP_ID_TIMEOUT = 100;
 
+        /**
+         * WorkspaceConfig and LogicalConfig are wrapper classes
+         * that just subclass an ArrayList.
+         * 
+         * WorkspaceConfig represents an array of unique application IDs
+         * that are currently open on a workspace.
+         * 
+         * LogicalConfig is a container for WorkspaceConfig's. It can represent
+         * the config for multiple workspaces.
+         */
         class WorkspaceConfig : Gee.ArrayList<string> {}
         class LogicalConfig : Gee.ArrayList<WorkspaceConfig> {}
 
@@ -54,8 +109,8 @@ namespace Gala
         construct
         {
             bindings = new Gee.HashMap<int, Meta.Workspace> ();
-            app_ids_cache = new Gee.HashMap<Window, string> ();
-            app_settings_cache = new Gee.HashMap<string, GLib.Settings> ();
+            app_ids_cache = new Gee.HashMap<Window, string> (window_hash);
+            app_settings_cache = new Gee.HashMap<string, GLib.Settings> (str_hash);
             matcher.view_opened.connect ((view) => matcher_updated ());
 
             schema = SettingsSchemaSource.get_default ().lookup ("org.pantheon.desktop.gala.behavior.application", true);
@@ -82,46 +137,36 @@ namespace Gala
 
         public void update_workspace_reordered (int old_index, int new_index)
         {
-            save_window_config (null);
+            save_window_config ();
         }
 
         public void update_window_move_to_workspace (Window window, int old_index, int new_index)
         {
-            save_window_config (null);
-
+            save_window_config ();
         }
 
         public async void update_window_move_to_new_workspace (Window window, int old_index, int new_index)
         {
-            save_window_config (null);
+            save_window_config ();
         }
 
         public async void register_window (Window window)
         {
             if (!yield restore_window_config (window)) {
-                yield save_window_config (window);
+                yield save_window_config ();
             }
         }
-
-        public void deregister_window (Window window)
-        {
-            //  window.workspace_changed.disconnect (on_window_workspace_changed);
-
-            // We will explicitly get the workspace index now in sync because
-            // the workspace may not exist anymore when doing this asynchronously
-            //  save_window_config.begin (window, window.get_workspace ().index ());
-        }
-
-        //  void on_window_workspace_changed (Window window)
-        //  {
-        //      save_window_config.begin (window);
-        //  }
 
         GLib.Settings get_settings_for_id (string id)
         {
             var app_settings = app_settings_cache[id];
             if (app_settings == null) {
                 app_settings = new GLib.Settings.full (schema, null, "/org/pantheon/desktop/gala/behavior/applications/%s/".printf (id));
+
+                /**
+                 * We will delay saving to disk by default so we don't need to save
+                 * everytime set_* is called
+                 */
                 app_settings.delay ();
                 app_settings_cache[id] = app_settings;
             }
@@ -129,7 +174,7 @@ namespace Gala
             return app_settings;
         }
 
-        public async void save_window_config (Window? __window, int workspace_index = -1)
+        public async void save_window_config ()
         {
             foreach (Workspace workspace in wm.get_screen ().get_workspaces ()) {
                 foreach (unowned Window window in workspace.list_windows ()) {
@@ -182,8 +227,8 @@ namespace Gala
             app_settings.set_value ("right-config", logical_config_to_variant (right_config, target_id));
 
             var ws_config = yield create_config_from_workspace (target);
-            var v = ws_config_to_variant (ws_config, target_id);
-            app_settings.set_value ("target-config", v);
+            var variant = ws_config_to_variant (ws_config, target_id);
+            app_settings.set_value ("target-config", variant);
             app_settings.apply ();
         }
 
@@ -195,6 +240,7 @@ namespace Gala
                 return false;
             }
 
+            // If nothing is set we will bail out and save the config for the window
             var app_settings = get_settings_for_id (id);
             if (app_settings.get_value ("left-config").n_children () == 0 && 
                 app_settings.get_value ("right-config").n_children () == 0 && 
@@ -202,7 +248,7 @@ namespace Gala
                 return false;
             }
 
-            yield assign_window (app_settings, window);
+            yield assign_window (app_settings, window, id);
             return true;
         }
 
@@ -223,13 +269,20 @@ namespace Gala
             return list;
         }
 
-        async void assign_window (GLib.Settings settings, Window window)
+        /**
+         * Converts all the settings values into LogicalConfig objects,
+         * computes the scores for each workspace and chooses
+         * the best place to put the window on.
+         */
+        async void assign_window (GLib.Settings settings, Window window, string target_id)
         {
             unowned Screen screen = wm.get_screen ();
 
             LogicalConfig left, right;
             WorkspaceConfig target;
             extract_configs (settings, out left, out right, out target);
+
+            target.add (target_id);
 
             print ("Relevance left:\n");
             foreach (var c in left) {
@@ -251,7 +304,7 @@ namespace Gala
             }
             print ("End\n");
 
-            WorkspaceSolution[] scores = yield compute_solutions (left, right, target);
+            WorkspaceSolution[] scores = yield compute_solutions (left, right, target, window);
             int max_index = 0;
             
             print (scores[0].score.to_string () + " " + scores[0].add.to_string () + "\n");
@@ -283,10 +336,21 @@ namespace Gala
             }
         }
 
+        /**
+         * compute_solutions implements the main matching algorithm.
+         * We will first iterate through all workspaces and calculate three
+         * scores for each one: "left", "right" and "target" score.
+         * 
+         * Calculating a score consists of taking a LogicalConfig which
+         * holds information about apps to the left or to the right and
+         * counting how many apps match with a single
+         * WorkspaceConfig in the LogicalConfig. See get_score_for_workspace.
+         */
         async WorkspaceSolution[] compute_solutions (
             LogicalConfig left,
             LogicalConfig right,
-            WorkspaceConfig target)
+            WorkspaceConfig target,
+            Window target_window)
         {
             unowned Screen screen = wm.get_screen ();
             int n_workspaces = screen.get_n_workspaces ();
@@ -297,9 +361,9 @@ namespace Gala
             print ("Workspace scores:\n");
             for (; workspaces != null; workspaces = workspaces.next) {
                 Workspace ws = workspaces.data;
-                int left_score = get_score_for_workspace (ws, left);
-                int right_score = get_score_for_workspace (ws, right);
-                int target_score = get_app_count (ws, target) * TARGET_REVELANCE;
+                int left_score = get_score_for_workspace (ws, left, target_window);
+                int right_score = get_score_for_workspace (ws, right, target_window);
+                int target_score = get_app_count (ws, target, target_window) * TARGET_RELEVANCE;
 
                 print ("%i: left: %i right: %i target: %i\n", i, left_score, right_score, target_score);
 
@@ -346,16 +410,45 @@ namespace Gala
             return scores;
         }
 
-        static int get_score_for_workspace (Workspace ws, LogicalConfig logical_config)
+        /**
+         * Iterates through the configs in a LogicalConfig and counts how many
+         * apps exist on the workspace that match a config. To favour the nearest
+         * configs more, we will multiply the count by an index from the RELEVANCE_TABLE.
+         * The further configs are from the target config, we will get the next multiplier
+         * from that table which is decreasing.
+         */
+        static int get_score_for_workspace (Workspace ws, LogicalConfig logical_config, Window target_window)
         {
             int relevance_index = 0;
             int ws_score = 0;
             foreach (var ws_config in logical_config) {
-                ws_score += get_app_count (ws, ws_config) * RELEVANCE_TABLE[relevance_index];
+                ws_score += get_app_count (ws, ws_config, target_window) * RELEVANCE_TABLE[relevance_index];
                 relevance_index = int.min (relevance_index + 1, RELEVANCE_TABLE.length - 1);
             }
 
             return ws_score;
+        }
+
+        static int get_app_count (Workspace workspace, WorkspaceConfig ws_config, Window target_window)
+        {
+            int count = 0;
+            foreach (unowned Window window in workspace.list_windows ()) {
+                // Ignore the window that just appeared
+                if (window == target_window) {
+                    continue;
+                }
+
+                string? id = get_app_id_from_window (window);
+                if (id == null) {
+                    continue;
+                }
+
+                if (id in ws_config) {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         static void extract_configs (
@@ -417,23 +510,12 @@ namespace Gala
             return builder.end ();
         }
 
-        static int get_app_count (Workspace workspace, WorkspaceConfig ws_config)
-        {
-            int count = 0;
-            foreach (unowned Window window in workspace.list_windows ()) {
-                string? id = get_app_id_from_window (window);
-                if (id == null) {
-                    continue;
-                }
-
-                if (id in ws_config) {
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
+        /**
+         * Because an app ID may not be immediately present
+         * when a window opens, we will listen
+         * for matcher updates and wait for GET_APP_ID_TIMEOUT,
+         * if we exceed that, we will just return null.
+         */
         async string? wait_for_app_id (Window window)
         {
             string? id = app_ids_cache[window];
@@ -478,7 +560,22 @@ namespace Gala
             }
 
             unowned string id = app.get_desktop_file ();
+
+            /**
+             * Get the basename and avoid slashes which cannot
+             * be present in schema settings.
+             */
             return Path.get_basename (id);
+        }
+
+        static uint window_hash (Window window)
+        {
+            return int64_hash ((int64)window.get_xwindow ());
+        }
+        
+        static uint str_hash (string str)
+        {
+            return str.hash ();
         }
     }
 }
