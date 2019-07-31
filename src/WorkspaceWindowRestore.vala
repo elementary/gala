@@ -560,6 +560,9 @@ namespace Gala
             }
 
             unowned string id = app.get_desktop_file ();
+            if (id == null) {
+                return null;
+            }
 
             /**
              * Get the basename and avoid slashes which cannot
