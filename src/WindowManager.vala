@@ -1218,7 +1218,7 @@ namespace Gala
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 
 			var window = actor.get_meta_window ();
-            if (window.get_window_type () == NORMAL) {
+            if (window.get_window_type () == NORMAL && window.maximized_horizontally) {
 				WorkspaceWindowRestore.get_default ().register_window (window);
 			}
 
@@ -1455,9 +1455,6 @@ namespace Gala
 
 			kill_window_effects (actor);
             var window = actor.get_meta_window ();
-            //  if (window.get_data<bool> ("internal-resize")) {
-            //      return;
-            //  }
 
             move_window_to_old_ws (window);
 
@@ -1544,7 +1541,8 @@ namespace Gala
 
             var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
             window.change_workspace (new_ws_obj);
-            new_ws_obj.activate_with_focus (window, screen.get_display ().get_current_time ());
+			new_ws_obj.activate_with_focus (window, screen.get_display ().get_current_time ());
+			WorkspaceWindowRestore.get_default ().save_window_config ();
 
             ws_assoc.insert (window, old_ws_index);
         }
@@ -1570,7 +1568,9 @@ namespace Gala
                     } else {
                         window.change_workspace (old_ws_obj);
 					    old_ws_obj.activate_with_focus (window, time);
-                    }
+					}
+					
+					WorkspaceWindowRestore.get_default ().save_window_config ();
 				}
 
                 ws_assoc.remove (window);
