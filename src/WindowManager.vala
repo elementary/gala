@@ -145,6 +145,8 @@ namespace Gala
 			window_movement_tracker = new WindowMovementTracker (display);
 			window_movement_tracker.watch ();
 			window_movement_tracker.open.connect (on_wmt_open);
+			window_movement_tracker.show_tile_preview.connect ((win, rect, screen) => show_tile_preview (win, rect, screen));
+			window_movement_tracker.hide_tile_preview.connect (() => hide_tile_preview ());
 
 			// Due to a bug which enables access to the stage when using multiple monitors
 			// in the screensaver, we have to listen for changes and make sure the input area
@@ -863,6 +865,13 @@ namespace Gala
 
 		public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number)
 		{
+			float width, height, x, y;
+			var rect = window.get_frame_rect ();
+			width = rect.width;
+			height = rect.height;
+			x = rect.x;
+			y = rect.y;
+
 			if (tile_preview == null) {
 				tile_preview = new Clutter.Actor ();
 				tile_preview.background_color = { 100, 186, 255, 100 };
@@ -870,7 +879,6 @@ namespace Gala
 
 				window_group.add_child (tile_preview);
 			} else if (tile_preview.is_visible ()) {
-				float width, height, x, y;
 				tile_preview.get_position (out x, out y);
 				tile_preview.get_size (out width, out height);
 
@@ -886,9 +894,8 @@ namespace Gala
 			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var duration = animation_settings.snap_duration / 2U;
 
-			var rect = window.get_frame_rect ();
-			tile_preview.set_position (rect.x, rect.y);
-			tile_preview.set_size (rect.width, rect.height);
+			tile_preview.set_position (x, y);
+			tile_preview.set_size (width, height);
 			tile_preview.show ();
 
 			if (animation_settings.enable_animations) {
@@ -906,7 +913,7 @@ namespace Gala
 
 		public override void hide_tile_preview ()
 		{
-			if (tile_preview != null) {
+			if (tile_preview != null && window_movement_tracker.hide_tile_preview_when_window_moves) {
 				tile_preview.remove_all_transitions ();
 				tile_preview.opacity = 0U;
 				tile_preview.hide ();

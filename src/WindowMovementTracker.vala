@@ -22,7 +22,11 @@ namespace Gala
 	public class WindowMovementTracker : Object {
 		public weak Meta.Display display { get; construct; }
 		public signal void open (Meta.Window window, int x, int y);
+		public signal void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
+		public signal void hide_tile_preview ();
+		public bool hide_tile_preview_when_window_moves = false;
 		private Meta.Window? current_window;
+		private Meta.Rectangle tile_rect = new Meta.Rectangle ();
 		private const float TRIGGER_RATIO = 0.98f;
 
 		private float start_x;
@@ -87,7 +91,12 @@ namespace Gala
 
 		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) 
 		{
+			if (!hide_tile_preview_when_window_moves) {
+				window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
+			}
 			current_window.position_changed.disconnect (on_position_changed);
+			hide_tile_preview_when_window_moves = true;
+			hide_tile_preview ();
 		}
 
 		private void on_position_changed (Meta.Window window)
@@ -99,7 +108,51 @@ namespace Gala
 			ct.get_pointer (out x, out y, out type);
 
 			int height;
-			screen.get_size (null, out height);
+			int width;
+			screen.get_size (out width, out height);
+
+			if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
+				hide_tile_preview_when_window_moves = false;
+				Meta.Rectangle wa = window.get_work_area_current_monitor ();
+				int new_x, new_y, new_width, new_height;
+				new_x = wa.x;
+				new_y = wa.y;
+				int monitor_width = wa.width;
+				int monitor_height = wa.height;
+				int monitor_x = x - wa.x;
+				int monitor_y = y - wa.y;
+
+				if (monitor_x < (float) monitor_width * 3 / 7) {
+						new_width = monitor_width / 2;
+				} else if (monitor_x < (float) monitor_width * 4 / 7) {
+						new_width = monitor_width;
+				} else {
+						new_width = monitor_width / 2;
+						new_x += monitor_width / 2;
+				}
+				  
+				if (monitor_y < (float) monitor_height * 3 / 7) {
+						new_height = monitor_height / 2;
+				} else if (monitor_y < (float) monitor_height * 4 / 7) {
+						if (new_width == monitor_width) {
+							new_width = (int) (monitor_width * 0.8);
+							new_height = (int) (monitor_height * 0.8);
+							new_x += (int) (monitor_width * 0.1);
+							new_y += (int) (monitor_height * 0.1);
+						} else {
+							new_height = monitor_height;
+						}
+				} else {
+						new_height = monitor_height / 2;
+						new_y += monitor_height / 2;
+				}
+
+				tile_rect = {new_x, new_y, new_width, new_height};
+				show_tile_preview (window, tile_rect, screen.get_current_monitor ());
+				return;
+			}
+
+			hide_tile_preview_when_window_moves = true;
 
 			if (y > (float)height * TRIGGER_RATIO) {
 				window.position_changed.disconnect (on_position_changed);
