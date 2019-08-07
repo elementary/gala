@@ -80,6 +80,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
+		Meta.SizeChange? which_change = null;
 
 		public WindowManagerGala ()
 		{
@@ -960,41 +961,35 @@ namespace Gala
 			}
 		}
 
-		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
+		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			unowned Meta.Window window = actor.get_meta_window ();
-
-			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
-				handle_fullscreen_window (window, which_change);
-			} else { 
-				ulong size_signal_id = 0U;
-				ulong position_signal_id = 0U;
-				if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
-					size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				}
-				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				return; // must wait for size/position-changed-signal to get updated rect_frame
-			}
-
-			size_change_completed (actor);
+			which_change = which_change_local;
 		}
 
-		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
+		public override void size_changed (Meta.WindowActor actor)
+		{
+			Meta.SizeChange? which_change_local = which_change;
+			if (which_change == null) {
+				return;
+			} 
+
+			which_change = null;
+
 			unowned Meta.Window window = actor.get_meta_window ();
-
-			if (size_signal_id != 0U) { // only disconnect if signal was connected
-			window.disconnect (size_signal_id);
-			}
-			window.disconnect (position_signal_id);
-
 			var new_rect = window.get_frame_rect ();
 
-			switch (which_change) {
+			switch (which_change_local) {
 				case Meta.SizeChange.MAXIMIZE:
-					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					if (window.get_tile_match () == null) {
+						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					}
 					break;
 				case Meta.SizeChange.UNMAXIMIZE:
 					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (actor.get_meta_window (), which_change_local);
 					break;
 			}
 
