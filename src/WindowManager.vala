@@ -971,12 +971,15 @@ namespace Gala
 			}
 		}
 
+		// must wait for size_changed to get updated frame_rect
+		// as which_change is not passed to size_changed, save it as instance variable
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
 			which_change = which_change_local;
 		}
 
-		public override void size_changed (Meta.WindowActor actor)
+		// size_changed gets called after frame_rect has updated
+		public override void size_changed (Meta.WindowActor actor) 
 		{
 			Meta.SizeChange? which_change_local = which_change;
 			if (which_change == null) {
@@ -990,7 +993,7 @@ namespace Gala
 
 			switch (which_change_local) {
 				case Meta.SizeChange.MAXIMIZE:
-					if (window.get_tile_match () == null) {
+					if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
 						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
 					}
 					break;
