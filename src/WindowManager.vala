@@ -55,6 +55,11 @@ namespace Gala
 		 */
 		public Meta.BackgroundGroup background_group { get; protected set; }
 
+		/**
+		 * {@inheritDoc}
+		 */
+		public bool enable_animations { get; protected set; }
+
 		Meta.PluginInfo info;
 
 		WindowSwitcher? winswitcher = null;
@@ -82,6 +87,8 @@ namespace Gala
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
 		Meta.SizeChange? which_change = null;
 
+		GLib.Settings animations_settings;
+
 		public WindowManagerGala ()
 		{
 			info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
@@ -93,6 +100,12 @@ namespace Gala
 			Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
 			Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
 			Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
+		}
+
+		construct {
+			animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
+			animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
+			enable_animations = animations_settings.get_boolean ("enable-animations");
 		}
 
 		public override void start ()
@@ -482,8 +495,6 @@ namespace Gala
 			if (Utils.get_n_windows (workspace) == 0) {
 				return;
 			}
-
-			bool enable_animations = AnimationSettings.get_default ().enable_animations;
 
 			var bottom_actor = bottom_window.get_compositor_private () as Meta.WindowActor;
 			if (enable_animations) {
@@ -878,15 +889,14 @@ namespace Gala
 			unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
 			window_group.set_child_below_sibling (tile_preview, window_actor);
 
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var duration = animation_settings.snap_duration / 2U;
+			var duration = AnimationDuration.SNAP / 2U;
 
 			var rect = window.get_frame_rect ();
 			tile_preview.set_position (rect.x, rect.y);
 			tile_preview.set_size (rect.width, rect.height);
 			tile_preview.show ();
 
-			if (animation_settings.enable_animations) {
+			if (enable_animations) {
 				tile_preview.save_easing_state ();
 				tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
 				tile_preview.set_easing_duration (duration);
@@ -998,10 +1008,9 @@ namespace Gala
 
 		public override void minimize (WindowActor actor)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var duration = animation_settings.minimize_duration;
+			const int duration = AnimationDuration.MINIMIZE;
 
-			if (!animation_settings.enable_animations
+			if (!enable_animations
 				|| duration == 0
 				|| actor.get_meta_window ().window_type != WindowType.NORMAL) {
 				minimize_completed (actor);
@@ -1070,10 +1079,9 @@ namespace Gala
 
 		void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var duration = animation_settings.snap_duration;
+			const int duration = AnimationDuration.SNAP;
 
-			if (!animation_settings.enable_animations
+			if (!enable_animations
 				|| duration == 0) {
 				return;
 			}
@@ -1163,9 +1171,7 @@ namespace Gala
 
 		public override void unminimize (WindowActor actor)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-
-			if (!animation_settings.enable_animations) {
+			if (!enable_animations) {
 				actor.show ();
 				unminimize_completed (actor);
 				return;
@@ -1178,7 +1184,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					var duration = animation_settings.minimize_duration;
+					var duration = AnimationDuration.MINIMIZE;
 					if (duration == 0) {
 						unminimize_completed (actor);
 						return;
@@ -1213,10 +1219,8 @@ namespace Gala
 
 		public override void map (WindowActor actor)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-
 			var window = actor.get_meta_window ();
-			if (!animation_settings.enable_animations) {
+			if (!enable_animations) {
 				actor.show ();
 				map_completed (actor);
 
@@ -1232,7 +1236,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					var duration = animation_settings.open_duration;
+					var duration = AnimationDuration.MINIMIZE;
 					if (duration == 0) {
 						map_completed (actor);
 						return;
@@ -1270,7 +1274,7 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					var duration = animation_settings.menu_duration;
+					var duration = AnimationDuration.MENU_MAP;
 					if (duration == 0) {
 						map_completed (actor);
 						return;
@@ -1338,12 +1342,11 @@ namespace Gala
 
 		public override void destroy (WindowActor actor)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
 			var window = actor.get_meta_window ();
 
 			ws_assoc.remove (window);
 
-			if (!animation_settings.enable_animations) {
+			if (!enable_animations) {
 				destroy_completed (actor);
 
 				// only NORMAL windows have icons
@@ -1357,7 +1360,7 @@ namespace Gala
 
 			switch (window.window_type) {
 				case WindowType.NORMAL:
-					var duration = animation_settings.close_duration;
+					const int duration = AnimationDuration.CLOSE;
 					if (duration == 0) {
 						destroy_completed (actor);
 						return;
@@ -1408,7 +1411,7 @@ namespace Gala
 				case WindowType.MENU:
 				case WindowType.DROPDOWN_MENU:
 				case WindowType.POPUP_MENU:
-					var duration = animation_settings.menu_duration;
+					var duration = AnimationDuration.MENU_MAP;
 					if (duration == 0) {
 						destroy_completed (actor);
 						return;
@@ -1437,10 +1440,8 @@ namespace Gala
 
 		void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var duration = animation_settings.snap_duration;
-
-			if (!animation_settings.enable_animations
+			const int duration = AnimationDuration.SNAP;
+			if (!enable_animations
 				|| duration == 0) {
 				return;
 			}
@@ -1559,10 +1560,9 @@ namespace Gala
 
 		public override void switch_workspace (int from, int to, MotionDirection direction)
 		{
-			unowned AnimationSettings animation_settings = AnimationSettings.get_default ();
-			var animation_duration = animation_settings.workspace_switch_duration;
+			const int animation_duration = AnimationDuration.WORKSPACE_SWITCH;
 
-			if (!animation_settings.enable_animations
+			if (!enable_animations
 				|| animation_duration == 0
 				|| (direction != MotionDirection.LEFT && direction != MotionDirection.RIGHT)) {
 				switch_workspace_completed ();
