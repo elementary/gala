@@ -86,6 +86,7 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
 		Meta.SizeChange? which_change = null;
+		Meta.Rectangle old_rect_size_change;
 
 		GLib.Settings animations_settings;
 
@@ -976,6 +977,7 @@ namespace Gala
 		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
 			which_change = which_change_local;
+			old_rect_size_change = old_frame_rect;
 		}
 
 		// size_changed gets called after frame_rect has updated
@@ -993,16 +995,23 @@ namespace Gala
 
 			switch (which_change_local) {
 				case Meta.SizeChange.MAXIMIZE:
-					if (window.get_tile_match () == null) { // don't animate resizing of two tiled windows
-						maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					// don't animate resizing of two tiled windows with mouse drag
+					if (window.get_tile_match () != null && !window.maximized_horizontally) {
+						var old_end = old_rect_size_change.x + old_rect_size_change.width;
+						var new_end = new_rect.x + new_rect.width;
+						// a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
+						if (old_rect_size_change.x == new_rect.x || old_end == new_end) { 
+							break;
+						}
 					}
+					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
 					break;
 				case Meta.SizeChange.UNMAXIMIZE:
 					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
 					break;
 				case Meta.SizeChange.FULLSCREEN:
 				case Meta.SizeChange.UNFULLSCREEN:
-					handle_fullscreen_window (actor.get_meta_window (), which_change_local);
+					handle_fullscreen_window (window, which_change_local);
 					break;
 			}
 
