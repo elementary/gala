@@ -167,6 +167,11 @@
 			<summary>Focus default webbrowser</summary>
 			<description>Shortcut to quickly switch focus.</description>
 		</key>
+		<key type="as" name="custom-application-keybindings">
+      <default>[]</default>
+      <summary>Custom application keybindings</summary>
+      <description>List of custom application keybindings</description>
+    </key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">
@@ -298,4 +303,22 @@
 			<summary>Only show corner masks on primary monitor</summary>
 		</key>
 	</schema>
+
+	<schema gettext-domain="@GETTEXT_PACKAGE@" id="org.pantheon.desktop.gala.keybindings.custom-application-keybindings">
+    <key name="name" type="s">
+      <default>''</default>
+      <summary>Name</summary>
+      <description>Name of the custom binding</description>
+    </key>
+    <key name="binding" type="s">
+      <default>''</default>
+      <summary>Binding</summary>
+      <description>Binding for the custom binding</description>
+    </key>
+    <key name="desktop_id" type="s">
+      <default>''</default>
+      <summary>DesktopId</summary>
+      <description>DesktopId of the application.</description>
+    </key>
+  </schema>
 </schemalist>
