@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.QuickSwitch : Gala.Plugin
+public class Gala.Plugins.AppShortcuts : Gala.Plugin
 {
   HashTable<string, string> keybindings_to_types;
   GLib.Settings settings_custom;
@@ -166,9 +166,9 @@ private void launch_application (DesktopAppInfo info) {
 public Gala.PluginInfo register_plugin ()
 {
 	return {
-		"Quick Switch",
+		"Application Shortcuts",
 		"Felix Andreas",
-		typeof (Gala.Plugins.QuickSwitch),
+		typeof (Gala.Plugins.AppShortcuts),
 		Gala.PluginFunction.ADDITION,
 		Gala.LoadPriority.IMMEDIATE
 	};
