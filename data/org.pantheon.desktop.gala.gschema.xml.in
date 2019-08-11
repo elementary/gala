@@ -147,31 +147,92 @@
 			<summary>The shortcut to enable picture-in-picture window</summary>
 			<description>The shortcut to show the selection area to choose a window.</description>
 		</key>
-		<key type="as" name="quickswitch-editor">
-			<default><![CDATA[['<Super>e']]]></default>
-			<summary>Focus default text editor</summary>
-			<description>Shortcut to quickly switch focus.</description>
-		</key>
-		<key type="as" name="quickswitch-files">
-			<default><![CDATA[['<Super>m']]]></default>
-			<summary>Focus default file manager</summary>
-			<description>Shortcut to quickly switch focus.</description>
-		</key>
-		<key type="as" name="quickswitch-terminal">
-			<default><![CDATA[['<Super>t']]]></default>
-			<summary>Focus default terminal</summary>
-			<description>Shortcut to quickly switch focus.</description>
-		</key>
-		<key type="as" name="quickswitch-webbrowser">
+	</schema>
+
+	<schema path="/org/pantheon/desktop/gala/keybindings/applications/" id="org.pantheon.desktop.gala.keybindings.applications" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="as" name="applications-webbrowser">
 			<default><![CDATA[['<Super>b']]]></default>
 			<summary>Focus default webbrowser</summary>
-			<description>Shortcut to quickly switch focus.</description>
 		</key>
-		<key type="as" name="custom-application-keybindings">
-      <default>[]</default>
-      <summary>Custom application keybindings</summary>
-      <description>List of custom application keybindings</description>
-    </key>
+		<key type="as" name="applications-emailclient">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default email client</summary>
+		</key>
+		<key type="as" name="applications-calendar">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default calendar</summary>
+		</key>
+		<key type="as" name="applications-videoplayer">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default videoplayer</summary>
+		</key>
+		<key type="as" name="applications-musicplayer">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default musicplayer</summary>
+		</key>
+		<key type="as" name="applications-imageviewer">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default imageviewer</summary>
+		</key>
+		<key type="as" name="applications-texteditor">
+			<default><![CDATA[['<Super>e']]]></default>
+			<summary>Focus default texteditor</summary>
+		</key>
+		<key type="as" name="applications-filebrowser">
+			<default><![CDATA[['<Super>m']]]></default>
+			<summary>Focus default filebrowser</summary>
+		</key>
+		<key type="as" name="applications-terminal">
+			<default><![CDATA[['<Super>t']]]></default>
+			<summary>Focus elementary terminal</summary>
+		</key>
+	</schema>
+
+	<schema path="/org/pantheon/desktop/gala/keybindings/applications/custom/" id="org.pantheon.desktop.gala.keybindings.applications.custom" gettext-domain="@GETTEXT_PACKAGE@">
+		<key type="as" name="desktop-ids">
+			<default>['', '', '', '', '', '', '', '', '', '']</default>
+			<summary>Desktop Ids of custom applications</summary>
+		</key>
+		<key type="as" name="applications-custom0">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 0</summary>
+		</key>
+		<key type="as" name="applications-custom1">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 1</summary>
+		</key>
+		<key type="as" name="applications-custom2">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 2</summary>
+		</key>
+		<key type="as" name="applications-custom3">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 3</summary>
+		</key>
+		<key type="as" name="applications-custom4">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application </summary>
+		</key>
+		<key type="as" name="applications-custom5">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 5</summary>
+		</key>
+		<key type="as" name="applications-custom6">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 6</summary>
+		</key>
+		<key type="as" name="applications-custom7">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 7</summary>
+		</key>
+		<key type="as" name="applications-custom8">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 8</summary>
+		</key>
+		<key type="as" name="applications-custom9">
+			<default><![CDATA[['']]]></default>
+			<summary>Focus default custom application 9</summary>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance" gettext-domain="@GETTEXT_PACKAGE@">

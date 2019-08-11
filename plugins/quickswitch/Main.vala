@@ -17,59 +17,75 @@
 
 public class Gala.Plugins.QuickSwitch : Gala.Plugin
 {
-  const string SCHEMA = "org.pantheon.desktop.gala.keybindings";
-  const string KEY = "custom-application-keybinding";
   HashTable<string, string> keybindings_to_types;
+  GLib.Settings settings_custom;
+  const int MAX_CUSTOM_SHORTCUTS = 10;
 
   construct {
     keybindings_to_types = new HashTable<string, string> (str_hash, str_equal);
-    keybindings_to_types.insert ("quickswitch-editor", "text/plain");
-    keybindings_to_types.insert ("quickswitch-files", "inode/directory");
-    keybindings_to_types.insert ("quickswitch-terminal", "io.elementary.terminal");
-    keybindings_to_types.insert ("quickswitch-webbrowser", "x-scheme-handler/http");
+    keybindings_to_types.insert ("applications-webbrowser", "x-scheme-handler/http");
+    keybindings_to_types.insert ("applications-emailclient", "x-scheme-handler/mailto");
+    keybindings_to_types.insert ("applications-calendar", "text/calendar");
+    keybindings_to_types.insert ("applications-videoplayer", "video/x-ogm+ogg");
+    keybindings_to_types.insert ("applications-musicplayer", "audio/x-vorbis+ogg");
+    keybindings_to_types.insert ("applications-imageviewer", "image/jpeg");
+    keybindings_to_types.insert ("applications-texteditor", "text/plain");
+    keybindings_to_types.insert ("applications-filebrowser", "inode/directory");
+    keybindings_to_types.insert ("applications-terminal", "");
   }
 
   public override void initialize (Gala.WindowManager wm)
   {
     unowned Meta.Display display = wm.get_screen ().get_display ();
-
-    var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+    
+    var settings = new GLib.Settings (Config.SCHEMA + ".keybindings.applications");
 
     keybindings_to_types.foreach ((keybinding, _) => {
-      display.add_keybinding (keybinding, settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+      display.add_keybinding (keybinding, settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_default_applications);
     });
+  
 
-    var relocatable_schemas = settings.get_strv (KEY + "s");
+    settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.applications.custom");
 
-    foreach (var relocatable_schema in relocatable_schemas) {
-      var relocatable_settings = new GLib.Settings.with_path (Config.SCHEMA + ".keybindings.custom-application-keybinding", relocatable_schema);
-      debug ("GALA schema: %s, %s", relocatable_schema, relocatable_settings.get_string ("name"));
-      display.add_keybinding ("binding", relocatable_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+    for (var i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
+      display.add_keybinding ("applications-custom" + i.to_string (), settings_custom,
+        Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_custom_applications);
     }
+  }
+  
+
+  [CCode (instance_pos = -1)]
+  void handler_default_applications (Meta.Display display, Meta.Screen screen,
+  Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+  {
+    DesktopAppInfo info;
+    string keybinding = binding.get_name ();
+
+    if (keybinding == "applications-terminal") { // can't set default application for terminal
+      info = new DesktopAppInfo ("io.elementary.terminal.desktop");
+    } else { 
+      var desktop_id = AppInfo.get_default_for_type (keybindings_to_types.get (keybinding), false).get_id ();
+      info = new DesktopAppInfo (desktop_id);
+    }
+    focus_by_desktop_appinfo (display, screen, window, info);
   }
 
   [CCode (instance_pos = -1)]
-  void on_initiate (Meta.Display display, Meta.Screen screen,
-    Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding, GLib.pointer user_data)
+  void handler_custom_applications (Meta.Display display, Meta.Screen screen,
+  Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
   {
-    var keybinding = binding.get_name ();
-    if (keybinding == "binding") {
-      debug ("CUSTOM KEYBINDING!");
-      return;
-    }
-    string? app_type = keybindings_to_types.get (keybinding);
-    DesktopAppInfo? info;
-    debug ("GALA KEYBINDING: %s", keybinding);
+    DesktopAppInfo info;
+    string keybinding = binding.get_name ();
 
-    // get app_id of application
-    if (keybinding == "quickswitch-terminal") { // can't set default application for terminal
-      info = new DesktopAppInfo ("io.elementary.terminal.desktop");
-    } else { 
-      info = new DesktopAppInfo (AppInfo.get_default_for_type (app_type, false).get_id ());
-    }
+    var index = int.parse(keybinding.substring (-1));
+    var desktop_id = settings_custom.get_strv ("desktop-ids") [index];
+    focus_by_desktop_appinfo (display, screen, window, new DesktopAppInfo (desktop_id));
+  }
 
+  void focus_by_desktop_appinfo (Meta.Display display, Meta.Screen screen, Meta.Window? window, DesktopAppInfo info)
+  {
     if (info == null) {
-      warning("Failed to get DesktopAppInfo for %s.", app_type);
+      warning("Failed to get DesktopAppInfo");
       return;
     }
 
@@ -128,10 +144,8 @@ public class Gala.Plugins.QuickSwitch : Gala.Plugin
     var time = display.get_current_time ();
 
     if (active_window != first_window) { // activate highest window
-      debug("focus highest %s", info.get_display_name ());
       first_window.activate (time);
     } else { // activate lowest window
-      debug("focus lowest %s", info.get_display_name ());
       last_window.activate (time);
     }
   }
