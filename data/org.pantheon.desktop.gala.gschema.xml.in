@@ -211,7 +211,7 @@
 		</key>
 		<key type="as" name="applications-custom4">
 			<default><![CDATA[['']]]></default>
-			<summary>Focus default custom application </summary>
+			<summary>Focus default custom application 4</summary>
 		</key>
 		<key type="as" name="applications-custom5">
 			<default><![CDATA[['']]]></default>
@@ -371,22 +371,4 @@
 			<summary>Only show corner masks on primary monitor</summary>
 		</key>
 	</schema>
-
-	<schema gettext-domain="@GETTEXT_PACKAGE@" id="org.pantheon.desktop.gala.keybindings.custom-application-keybinding">
-    <key name="name" type="s">
-      <default>''</default>
-      <summary>Name</summary>
-      <description>Name of the custom binding</description>
-    </key>
-    <key name="binding" type="as">
-      <default><![CDATA[['']]]></default>
-      <summary>Binding</summary>
-      <description>Binding for the custom binding</description>
-    </key>
-    <key name="desktop-id" type="s">
-      <default>''</default>
-      <summary>DesktopId</summary>
-      <description>DesktopId of the application.</description>
-    </key>
-  </schema>
 </schemalist>
