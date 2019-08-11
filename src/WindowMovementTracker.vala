@@ -134,14 +134,7 @@ namespace Gala
 				if (monitor_y < (float) monitor_height * 3 / 7) {
 						new_height = monitor_height / 2;
 				} else if (monitor_y < (float) monitor_height * 4 / 7) {
-						if (new_width == monitor_width) {
-							new_width = (int) (monitor_width * 0.8);
-							new_height = (int) (monitor_height * 0.8);
-							new_x += (int) (monitor_width * 0.1);
-							new_y += (int) (monitor_height * 0.1);
-						} else {
 							new_height = monitor_height;
-						}
 				} else {
 						new_height = monitor_height / 2;
 						new_y += monitor_height / 2;
