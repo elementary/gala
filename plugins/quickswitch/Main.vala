@@ -17,6 +17,8 @@
 
 public class Gala.Plugins.QuickSwitch : Gala.Plugin
 {
+  const string SCHEMA = "org.pantheon.desktop.gala.keybindings";
+  const string KEY = "custom-application-keybinding";
   HashTable<string, string> keybindings_to_types;
 
   construct {
@@ -36,15 +38,28 @@ public class Gala.Plugins.QuickSwitch : Gala.Plugin
     keybindings_to_types.foreach ((keybinding, _) => {
       display.add_keybinding (keybinding, settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
     });
+
+    var relocatable_schemas = settings.get_strv (KEY + "s");
+
+    foreach (var relocatable_schema in relocatable_schemas) {
+      var relocatable_settings = new GLib.Settings.with_path (Config.SCHEMA + ".keybindings.custom-application-keybinding", relocatable_schema);
+      debug ("GALA schema: %s, %s", relocatable_schema, relocatable_settings.get_string ("name"));
+      display.add_keybinding ("binding", relocatable_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+    }
   }
 
   [CCode (instance_pos = -1)]
   void on_initiate (Meta.Display display, Meta.Screen screen,
-    Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+    Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding, GLib.pointer user_data)
   {
     var keybinding = binding.get_name ();
+    if (keybinding == "binding") {
+      debug ("CUSTOM KEYBINDING!");
+      return;
+    }
     string? app_type = keybindings_to_types.get (keybinding);
     DesktopAppInfo? info;
+    debug ("GALA KEYBINDING: %s", keybinding);
 
     // get app_id of application
     if (keybinding == "quickswitch-terminal") { // can't set default application for terminal
