@@ -58,32 +58,33 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
   void handler_default_applications (Meta.Display display, Meta.Screen screen,
   Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
   {
-    DesktopAppInfo info;
     string keybinding = binding.get_name ();
+    string desktop_id;
 
     if (keybinding == "applications-terminal") { // can't set default application for terminal
-      info = new DesktopAppInfo ("io.elementary.terminal.desktop");
+      desktop_id = "io.elementary.terminal.desktop";
     } else { 
-      var desktop_id = AppInfo.get_default_for_type (keybindings_to_types.get (keybinding), false).get_id ();
-      info = new DesktopAppInfo (desktop_id);
+      desktop_id = AppInfo.get_default_for_type (keybindings_to_types.get (keybinding), false).get_id ();
     }
-    focus_by_desktop_appinfo (display, screen, window, info);
+
+    focus_by_desktop_id (display, screen, window, desktop_id);
   }
 
   [CCode (instance_pos = -1)]
   void handler_custom_applications (Meta.Display display, Meta.Screen screen,
   Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
   {
-    DesktopAppInfo info;
     string keybinding = binding.get_name ();
-
     var index = int.parse(keybinding.substring (-1));
     var desktop_id = settings_custom.get_strv ("desktop-ids") [index];
-    focus_by_desktop_appinfo (display, screen, window, new DesktopAppInfo (desktop_id));
+
+    focus_by_desktop_id (display, screen, window, desktop_id);
   }
 
-  void focus_by_desktop_appinfo (Meta.Display display, Meta.Screen screen, Meta.Window? window, DesktopAppInfo info)
+  void focus_by_desktop_id (Meta.Display display, Meta.Screen screen, Meta.Window? window, string desktop_id)
   {
+    DesktopAppInfo info = new DesktopAppInfo (desktop_id);
+
     if (info == null) {
       warning("Failed to get DesktopAppInfo");
       return;
