@@ -983,11 +983,11 @@ namespace Gala
 		// size_changed gets called after frame_rect has updated
 		public override void size_changed (Meta.WindowActor actor) 
 		{
-			Meta.SizeChange? which_change_local = which_change;
 			if (which_change == null) {
 				return;
 			} 
 
+			Meta.SizeChange? which_change_local = which_change;
 			which_change = null;
 
 			unowned Meta.Window window = actor.get_meta_window ();
@@ -999,6 +999,7 @@ namespace Gala
 					if (window.get_tile_match () != null && !window.maximized_horizontally) {
 						var old_end = old_rect_size_change.x + old_rect_size_change.width;
 						var new_end = new_rect.x + new_rect.width;
+
 						// a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
 						if (old_rect_size_change.x == new_rect.x || old_end == new_end) { 
 							break;
