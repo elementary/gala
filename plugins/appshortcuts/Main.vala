@@ -37,13 +37,13 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
   public override void initialize (Gala.WindowManager wm)
   {
     unowned Meta.Display display = wm.get_screen ().get_display ();
-    
     var settings = new GLib.Settings (Config.SCHEMA + ".keybindings.applications");
 
     keybindings_to_types.foreach ((keybinding, _) => {
       display.add_keybinding (keybinding, settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_default_applications);
     });
-  
+
+    display.add_keybinding ("applications-same", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_same_applications);
 
     settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.applications.custom");
 
@@ -52,7 +52,6 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
         Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_custom_applications);
     }
   }
-  
 
   [CCode (instance_pos = -1)]
   void handler_default_applications (Meta.Display display, Meta.Screen screen,
@@ -63,7 +62,7 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
 
     if (keybinding == "applications-terminal") { // can't set default application for terminal
       desktop_id = "io.elementary.terminal.desktop";
-    } else { 
+    } else {
       desktop_id = AppInfo.get_default_for_type (keybindings_to_types.get (keybinding), false).get_id ();
     }
 
@@ -79,6 +78,12 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
     var desktop_id = settings_custom.get_strv ("desktop-ids") [index];
 
     focus_by_desktop_id (display, screen, window, desktop_id);
+  }
+
+  [CCode (instance_pos = -1)]
+  void handler_same_applications (Meta.Display display, Meta.Screen screen,
+  Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
+    debug ("test");
   }
 
   void focus_by_desktop_id (Meta.Display display, Meta.Screen screen, Meta.Window? window, string desktop_id)
@@ -104,22 +109,25 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin
 
     foreach (var workspace in screen.get_workspaces ()) {
       foreach (var win in workspace.list_windows ()) {
-        if (win.window_type != Meta.WindowType.NORMAL && 
-          win.window_type != Meta.WindowType.DOCK && 
-          win.window_type != Meta.WindowType.DIALOG || 
+        if (win.window_type != Meta.WindowType.NORMAL &&
+          win.window_type != Meta.WindowType.DOCK &&
+          win.window_type != Meta.WindowType.DIALOG ||
           win.is_attached_dialog ()) {
           var actor = win.get_compositor_private () as Meta.WindowActor;
           if (actor != null)
             actor.hide ();
           continue;
         }
-        if (win.window_type == Meta.WindowType.DOCK)
+
+        if (win.window_type == Meta.WindowType.DOCK) {
           continue;
+        }
 
         // skip windows that are on all workspace except we're currently
         // processing the workspace it actually belongs to
-        if (win.is_on_all_workspaces () && win.get_workspace () != workspace)
+        if (win.is_on_all_workspaces () && win.get_workspace () != workspace) {
           continue;
+        }
 
         for (var i = 0; i < xids.length; i++) {
           if (xids.index (i) == (uint32) win.get_xwindow ()) {
@@ -173,4 +181,4 @@ public Gala.PluginInfo register_plugin ()
 		Gala.PluginFunction.ADDITION,
 		Gala.LoadPriority.IMMEDIATE
 	};
-} 
+}
