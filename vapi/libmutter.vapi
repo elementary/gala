@@ -573,6 +573,7 @@ namespace Meta {
 		public unowned Meta.Workspace? append_new_workspace (bool activate, uint32 timestamp);
 		public void focus_default_window (uint32 timestamp);
 		public unowned Meta.Workspace get_active_workspace ();
+		public void reorder_workspace (Meta.Workspace workspace, int new_index);
 		public int get_active_workspace_index ();
 		public int get_current_monitor ();
 #if !HAS_MUTTER324
@@ -606,6 +607,7 @@ namespace Meta {
 		public signal void workspace_added (int object);
 		public signal void workspace_removed (int object);
 		public signal void workspace_switched (int object, int p0, Meta.MotionDirection p1);
+		public signal void workspaces_reordered ();
 	}
 #if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/meta-settings.h", has_type_id = false)]

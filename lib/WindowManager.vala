@@ -114,6 +114,11 @@ namespace Gala
 		public abstract Meta.BackgroundGroup background_group { get; protected set; }
 
 		/**
+		 * Whether animations should be displayed.
+		 */
+		public abstract bool enable_animations { get; protected set; }
+
+		/**
 		 * Enters the modal mode, which means that all events are directed to the stage instead
 		 * of the windows. This is the only way to receive keyboard events besides shortcut listeners.
 		 *
