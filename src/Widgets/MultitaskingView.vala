@@ -64,7 +64,7 @@ namespace Gala
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
 			icon_groups = new IconGroupContainer (screen);
-			icon_groups.request_reposition.connect (() => reposition_icon_groups (true));
+			icon_groups.request_reposition.connect ((animate) => reposition_icon_groups (animate));
 
 			dock_clones = new Actor ();
 
@@ -77,6 +77,7 @@ namespace Gala
 
 			screen.workspace_added.connect (add_workspace);
 			screen.workspace_removed.connect (remove_workspace);
+			screen.workspaces_reordered.connect (() => update_positions (false));
 			screen.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
@@ -245,8 +246,7 @@ namespace Gala
 				workspace_clone.restore_easing_state ();
 			}
 
-			workspaces.set_easing_duration (animate ?
-				AnimationSettings.get_default ().workspace_switch_duration : 0);
+			workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH : 0);
 			workspaces.x = -active_x;
 
 			reposition_icon_groups (animate);
@@ -311,7 +311,9 @@ namespace Gala
 			workspace.window_selected.disconnect (window_selected);
 			workspace.selected.disconnect (activate_workspace);
 
-			icon_groups.remove_group (workspace.icon_group);
+			if (icon_groups.contains (workspace.icon_group)) {
+				icon_groups.remove_group (workspace.icon_group);
+			}
 
 			workspace.destroy ();
 
