@@ -165,7 +165,7 @@ namespace Gala
 
 			var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
 			background.add_action (background_drop_action);
-			background_drop_action.crossed.connect ((hovered) => {
+			background_drop_action.crossed.connect ((target, hovered) => {
 				if (!hovered && hover_activate_timeout != 0) {
 					Source.remove (hover_activate_timeout);
 					hover_activate_timeout = 0;

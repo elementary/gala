@@ -184,26 +184,33 @@
 		</key>
 		<key type="i" name="open-duration">
 			<default>350</default>
+			<summary>Duration of the open animation</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="i" name="snap-duration">
 			<default>250</default>
 			<summary>Duration of the snap animation as used by maximize/unmaximize</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="i" name="close-duration">
 			<default>195</default>
 			<summary>Duration of the close animation</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="i" name="minimize-duration">
 			<default>200</default>
 			<summary>Duration of the minimize animation</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="i" name="workspace-switch-duration">
 			<default>300</default>
 			<summary>Duration of the workspace switch animation</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 		<key type="i" name="menu-duration">
 			<default>150</default>
 			<summary>Duration of the menu mapping animation</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
 		</key>
 	</schema>
 	
