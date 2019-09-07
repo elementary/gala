@@ -590,7 +590,7 @@ namespace Gala
 
 			var scale = hovered ? 0.4 : 1.0;
 			var opacity = hovered ? 0 : 255;
-			var duration = hovered && insert_thumb != null ? WorkspaceInsertThumb.EXPAND_DELAY : 100;
+			var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
 
 			window_icon.save_easing_state ();
 
