@@ -1074,7 +1074,7 @@ namespace Gala
 			kill_window_effects (actor);
 
 			var window = actor.get_meta_window ();
-			if (window.maximized_horizontally) {
+			if (window.maximized_horizontally && BehaviorSettings.get_default ().move_maximized_workspace) {
 				move_window_to_next_ws (window);
 			}
 
@@ -1443,7 +1443,10 @@ namespace Gala
 
 			kill_window_effects (actor);
 			var window = actor.get_meta_window ();
-			move_window_to_old_ws (window);
+
+			if (BehaviorSettings.get_default ().move_maximized_workspace) {
+				move_window_to_old_ws (window);
+			}
 
 			if (window.window_type == WindowType.NORMAL) {
 				float offset_x, offset_y, offset_width, offset_height;
