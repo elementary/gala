@@ -128,32 +128,6 @@ namespace Gala
 		}
 	}
 
-	public class AnimationSettings : Granite.Services.Settings
-	{
-		public bool enable_animations { get; set; }
-		public int open_duration { get; set; }
-		public int snap_duration { get; set; }
-		public int close_duration { get; set; }
-		public int minimize_duration { get; set; }
-		public int workspace_switch_duration { get; set; }
-		public int menu_duration { get; set; }
-
-		static AnimationSettings? instance = null;
-
-		private AnimationSettings ()
-		{
-			base (Config.SCHEMA + ".animations");
-		}
-
-		public static unowned AnimationSettings get_default ()
-		{
-			if (instance == null)
-				instance = new AnimationSettings ();
-
-			return instance;
-		}
-	}
-
 	public class BackgroundSettings : Granite.Services.Settings
 	{
 		public string picture_options { get; set; }
