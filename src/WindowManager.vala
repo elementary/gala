@@ -958,17 +958,8 @@ namespace Gala
 				new_ws_obj.activate_with_focus (window, time);
 
 				ws_assoc.insert (window, old_ws_index);
-			} else if (ws_assoc.contains (window)) {
-				var old_ws_index = ws_assoc.get (window);
-				var new_ws_index = win_ws.index ();
-
-				if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
-					var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
-					window.change_workspace (old_ws_obj);
-					old_ws_obj.activate_with_focus (window, time);
-				}
-
-				ws_assoc.remove (window);
+			} else {
+				move_window_to_old_ws (window);
 			}
 		}
 
@@ -1102,6 +1093,9 @@ namespace Gala
 			kill_window_effects (actor);
 
 			var window = actor.get_meta_window ();
+			if (window.maximized_horizontally && BehaviorSettings.get_default ().move_maximized_workspace) {
+				move_window_to_next_ws (window);
+			}
 
 			if (window.window_type == WindowType.NORMAL) {
 				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
@@ -1462,6 +1456,10 @@ namespace Gala
 			kill_window_effects (actor);
 			var window = actor.get_meta_window ();
 
+			if (BehaviorSettings.get_default ().move_maximized_workspace) {
+				move_window_to_old_ws (window);
+			}
+
 			if (window.window_type == WindowType.NORMAL) {
 				float offset_x, offset_y, offset_width, offset_height;
 				var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
@@ -1528,6 +1526,55 @@ namespace Gala
 					unmaximizing.remove (actor);
 				});
 			}
+		}
+
+		void move_window_to_next_ws (Window window)
+		{
+			unowned Screen screen = get_screen ();
+			unowned Workspace win_ws = window.get_workspace ();
+
+			// Do nothing if the current workspace would be empty
+			if (Utils.get_n_windows (win_ws) <= 1) {
+				return;
+			}
+
+			var old_ws_index = win_ws.index ();
+			var new_ws_index = old_ws_index + 1;
+			InternalUtils.insert_workspace_with_window (new_ws_index, window);
+
+			var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
+			window.change_workspace (new_ws_obj);
+			new_ws_obj.activate_with_focus (window, screen.get_display ().get_current_time ());
+
+			ws_assoc.insert (window, old_ws_index);
+		}
+
+		void move_window_to_old_ws (Window window)
+		{
+			unowned Screen screen = get_screen ();
+			unowned Workspace win_ws = window.get_workspace ();
+
+			// Do nothing if the current workspace is populated with other windows
+			if (Utils.get_n_windows (win_ws) > 1) {
+				return;
+			}
+
+			if (!ws_assoc.contains (window)) {
+				return;
+			}
+			
+			var old_ws_index = ws_assoc.get (window);
+			var new_ws_index = win_ws.index ();
+
+			if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
+				uint time = screen.get_display ().get_current_time ();
+				var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
+
+				window.change_workspace (old_ws_obj);
+				old_ws_obj.activate_with_focus (window, time);
+			}
+
+			ws_assoc.remove (window);
 		}
 
 		// Cancel attached animation of an actor and reset it
