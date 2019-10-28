@@ -268,7 +268,7 @@ if mutter332_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
-mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.36'], required: false)
+mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.35.1'], required: false)
 if mutter334_dep.found()
 	mutter_packages_command = [
 		'--pkg', 'libmutter-5',
@@ -285,6 +285,27 @@ if mutter334_dep.found()
 		dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5')
 	]
 	vala_flags += ['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322', '--define', 'HAS_MUTTER324', '--define', 'HAS_MUTTER326', '--define', 'HAS_MUTTER328', '--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
+mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.38'], required: false)
+if mutter336_dep.found()
+	mutter_packages_command = [
+		'--pkg', 'libmutter-6',
+		'--pkg', 'mutter-cogl-6',
+		'--pkg', 'mutter-cogl-pango-6',
+		'--pkg', 'mutter-cogl-path-6',
+		'--pkg', 'mutter-clutter-6'
+	]
+	libmutter_dep = dependency('libmutter-6', version: '>= 3.35.1')
+	pkgconf.set('MUTTER_PKGS', 'libmutter-6 >= 3.35.1')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-6'), dependency('mutter-cogl-pango-6'),
+		dependency('mutter-cogl-path-6'), dependency('mutter-clutter-6')
+	]
+	vala_flags += ['--define', 'HAS_MUTTER320', '--define', 'HAS_MUTTER322', '--define', 'HAS_MUTTER324', '--define', 'HAS_MUTTER326', '--define', 'HAS_MUTTER328', '--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
