@@ -85,6 +85,8 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
+		Meta.SizeChange? which_change = null;
+		Meta.Rectangle old_rect_size_change;
 
 		GLib.Settings animations_settings;
 
@@ -961,37 +963,47 @@ namespace Gala
 			}
 		}
 
-		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
+		// must wait for size_changed to get updated frame_rect
+		// as which_change is not passed to size_changed, save it as instance variable
+		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			unowned Meta.Window window = actor.get_meta_window ();
-
-			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
-				handle_fullscreen_window (window, which_change);
-			} else if (window.get_tile_match () == null) { // don't animate windows with tiled match
-				ulong size_signal_id = 0U;
-				ulong position_signal_id = 0U;
-				size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				return; // must wait for size/position-changed-signal to get updated rect_frame
-			}
-
-			size_change_completed (actor);
+			which_change = which_change_local;
+			old_rect_size_change = old_frame_rect;
 		}
 
-		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
+		// size_changed gets called after frame_rect has updated
+		public override void size_changed (Meta.WindowActor actor) 
+		{
+			if (which_change == null) {
+				return;
+			} 
+
+			Meta.SizeChange? which_change_local = which_change;
+			which_change = null;
+
 			unowned Meta.Window window = actor.get_meta_window ();
-
-			window.disconnect (size_signal_id);
-			window.disconnect (position_signal_id);
-
 			var new_rect = window.get_frame_rect ();
 
-			switch (which_change) {
+			switch (which_change_local) {
 				case Meta.SizeChange.MAXIMIZE:
+					// don't animate resizing of two tiled windows with mouse drag
+					if (window.get_tile_match () != null && !window.maximized_horizontally) {
+						var old_end = old_rect_size_change.x + old_rect_size_change.width;
+						var new_end = new_rect.x + new_rect.width;
+
+						// a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
+						if (old_rect_size_change.x == new_rect.x || old_end == new_end) { 
+							break;
+						}
+					}
 					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
 					break;
 				case Meta.SizeChange.UNMAXIMIZE:
 					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (window, which_change_local);
 					break;
 			}
 
