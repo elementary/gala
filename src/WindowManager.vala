@@ -1844,7 +1844,11 @@ namespace Gala
 
 			Idle.add (() => {
 				((MultitaskingView)workspace_view).start_drag_window (window, x, y);
+
+				bool previous_enable_animations = enable_animations;
+				enable_animations = false;
 				window_movement_tracker.restore_window_state ();
+				enable_animations = previous_enable_animations;
 				return false;
 			});
 		}

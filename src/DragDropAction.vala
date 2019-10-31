@@ -227,7 +227,7 @@ namespace Gala
 
 						var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
 						if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-							start_motion (x, y);
+							return start_motion (x, y);
 						}
 						return true;
 					case EventType.BUTTON_RELEASE:
@@ -313,7 +313,7 @@ namespace Gala
 			return false;
 		}
 
-		void start_motion (float x, float y)
+		bool start_motion (float x, float y)
 		{
 			handle = drag_begin (x, y);
 			if (handle == null) {
@@ -339,6 +339,8 @@ namespace Gala
 					actor.reactive = false;
 				}
 			}
+
+			return true;
 		}
 
 		/**
