@@ -44,10 +44,10 @@ namespace Gala
 			display.grab_op_end.connect (on_grab_op_end);
 		}
 
-		public void unwatch () 
+		public void unwatch ()
 		{
 			display.grab_op_begin.disconnect (on_grab_op_begin);
-			display.grab_op_end.disconnect (on_grab_op_end); 
+			display.grab_op_end.disconnect (on_grab_op_end);
 
 			if (current_window != null) {
 				current_window.position_changed.disconnect (on_position_changed);
@@ -85,11 +85,12 @@ namespace Gala
 			current_window.position_changed.connect (on_position_changed);
 		}
 
-		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) 
+		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op)
 		{
 			if (!hide_tile_preview_when_window_moves) {
 				window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
 			}
+
 			current_window.position_changed.disconnect (on_position_changed);
 			hide_tile_preview_when_window_moves = true;
 			hide_tile_preview ();
