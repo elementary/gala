@@ -286,8 +286,13 @@ namespace Gala.Plugins.Notify
 						progress ? hints.@get ("value").get_int32 () : -1,
 						hints.@get (X_CANONICAL_PRIVATE_SYNCHRONOUS).get_string ());
 				else
+#if HAS_MUTTER330
+					notification = new NormalNotification (stack.display, id, summary, body, pixbuf,
+						urgency, timeout, pid, actions);
+#else
 					notification = new NormalNotification (stack.screen, id, summary, body, pixbuf,
 						urgency, timeout, pid, actions);
+#endif
 
 				notification.action_invoked.connect (notification_action_invoked_callback);
 				notification.closed.connect (notification_closed_callback);

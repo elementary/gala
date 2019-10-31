@@ -29,6 +29,29 @@ namespace Gala
 	{
 		static WindowListener? instance = null;
 
+#if HAS_MUTTER330
+		public static void init (Meta.Display display)
+		{
+			if (instance != null)
+				return;
+
+			instance = new WindowListener ();
+
+			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (display)) {
+				if (actor.is_destroyed ())
+					continue;
+
+				unowned Meta.Window window = actor.get_meta_window ();
+				if (window.window_type == WindowType.NORMAL)
+					instance.monitor_window (window);
+			}
+
+			display.window_created.connect ((window) => {
+				if (window.window_type == WindowType.NORMAL)
+					instance.monitor_window (window);
+			});
+		}
+#else
 		public static void init (Screen screen)
 		{
 			if (instance != null)
@@ -50,6 +73,7 @@ namespace Gala
 					instance.monitor_window (window);
 			});
 		}
+#endif
 
 		public static unowned WindowListener get_default ()
 			requires (instance != null)

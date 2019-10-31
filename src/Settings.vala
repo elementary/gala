@@ -26,6 +26,7 @@ namespace Gala
 		public string overlay_action { get; set; }
 		public string hotcorner_custom_command { get; set; }
 		public string[] dock_names { get; set; }
+		public bool move_maximized_workspace { get; set; }
 
 		public WindowOverviewType window_overview_type { get; set; }
 
@@ -124,32 +125,6 @@ namespace Gala
 
 			return Meta.ShadowParams () {radius = int.parse (val[0]), top_fade = int.parse (val[1]),
 				x_offset = int.parse (val[2]), y_offset = int.parse (val[3]), opacity = (uint8)int.parse (val[4])};
-		}
-	}
-
-	public class AnimationSettings : Granite.Services.Settings
-	{
-		public bool enable_animations { get; set; }
-		public int open_duration { get; set; }
-		public int snap_duration { get; set; }
-		public int close_duration { get; set; }
-		public int minimize_duration { get; set; }
-		public int workspace_switch_duration { get; set; }
-		public int menu_duration { get; set; }
-
-		static AnimationSettings? instance = null;
-
-		private AnimationSettings ()
-		{
-			base (Config.SCHEMA + ".animations");
-		}
-
-		public static unowned AnimationSettings get_default ()
-		{
-			if (instance == null)
-				instance = new AnimationSettings ();
-
-			return instance;
 		}
 	}
 

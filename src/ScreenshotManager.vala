@@ -74,7 +74,11 @@ namespace Gala
 			debug ("Taking screenshot");
 
 			int width, height;
+#if HAS_MUTTER330
+			wm.get_display ().get_size (out width, out height);
+#else
 			wm.get_screen ().get_size (out width, out height);
+#endif
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
 
@@ -106,7 +110,11 @@ namespace Gala
 		{
 			debug ("Taking window screenshot");
 
+#if HAS_MUTTER330
+			var window = wm.get_display ().get_focus_window ();
+#else
 			var window = wm.get_screen ().get_display ().get_focus_window ();
+#endif
 			var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 			unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
@@ -261,7 +269,11 @@ namespace Gala
 
 		Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
 		{
+#if HAS_MUTTER330
+			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_display (wm.get_display ());
+#else
 			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_screen (wm.get_screen ());
+#endif
 
 			int x, y;
 			cursor_tracker.get_pointer (out x, out y, null);

@@ -48,7 +48,7 @@ namespace Gala
 		{
 			display.grab_op_begin.disconnect (on_grab_op_begin);
 			display.grab_op_end.disconnect (on_grab_op_end); 
-			
+
 			if (current_window != null) {
 				current_window.position_changed.disconnect (on_position_changed);
 			}
@@ -59,16 +59,12 @@ namespace Gala
 			var actor = (Meta.WindowActor)current_window.get_compositor_private ();
 			current_window.move_frame (false, (int)start_x, (int)start_y);
 			if (maximize_flags != 0) {
-				unowned AnimationSettings settings = AnimationSettings.get_default ();
-				int previous = settings.snap_duration;
-				settings.snap_duration = 0;
 				current_window.maximize (maximize_flags);
-				settings.snap_duration = previous;
 
 				/**
 				 * kill_window_effects does not reset the translation
 				 * and that's the only thing we want to do
-				 */  
+				 */
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 			}
 		}
@@ -127,7 +123,7 @@ namespace Gala
 					new_width = monitor_width / 2;
 					new_x += monitor_width / 2;
 				}
-				  
+
 				if (monitor_y < (float) monitor_height * 3 / 7) {
 					new_height = monitor_height / 2;
 				} else if (monitor_y < (float) monitor_height * 4 / 7) {

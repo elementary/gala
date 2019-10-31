@@ -19,15 +19,17 @@ using Clutter;
 
 namespace Gala
 {
+	[Flags]
 	public enum DragDropActionType
 	{
-		SOURCE = 0,
+		SOURCE,
 		DESTINATION
 	}
 
 	public class DragDropAction : Clutter.Action
 	{
 		static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
+		static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
 
 		/**
 		 * A drag has been started. You have to connect to this signal and
@@ -55,9 +57,10 @@ namespace Gala
 		/**
 		 * The destination has been crossed
 		 *
+		 * @param target the target actor that is crossing the destination
 		 * @param hovered indicates whether the actor is now hovered or not
 		 */
-		public signal void crossed (bool hovered);
+		public signal void crossed (Actor? target, bool hovered);
 
 		/**
 		 * Emitted on the source when a destination is crossed.
@@ -97,7 +100,8 @@ namespace Gala
 		 */
 		public bool allow_bubbling { get; set; default = true; }
 
-		Actor? hovered = null;
+		public Actor? hovered { private get; set; default = null; }
+		
 		bool clicked = false;
 		float last_x;
 		float last_y;
@@ -116,6 +120,10 @@ namespace Gala
 
 			if (sources == null)
 				sources = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+
+			if (destinations == null)
+				destinations = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+
 		}
 
 		~DragDropAction ()
@@ -149,17 +157,22 @@ namespace Gala
 
 		void release_actor (Actor actor)
 		{
-			if (drag_type == DragDropActionType.SOURCE) {
+			if (DragDropActionType.SOURCE in drag_type) {
 				actor.button_press_event.disconnect (source_clicked);
 
 				var source_list = sources.@get (drag_id);
 				source_list.remove (actor);
+			} 
+			
+			if (DragDropActionType.DESTINATION in drag_type) {
+				var dest_list = destinations[drag_id];
+				dest_list.remove (actor);
 			}
 		}
 
 		void connect_actor (Actor actor)
 		{
-			if (drag_type == DragDropActionType.SOURCE) {
+			if (DragDropActionType.SOURCE in drag_type) {
 				actor.button_press_event.connect (source_clicked);
 
 				var source_list = sources.@get (drag_id);
@@ -170,12 +183,22 @@ namespace Gala
 
 				source_list.add (actor);
 			}
+
+			if (DragDropActionType.DESTINATION in drag_type) {
+				var dest_list = destinations[drag_id];
+				if (dest_list == null) {
+					dest_list = new Gee.LinkedList<Actor> ();
+					destinations[drag_id] = dest_list;
+				}
+
+				dest_list.add (actor);
+			}
 		}
 
-		void emit_crossed (Actor destination, bool hovered)
+		void emit_crossed (Actor destination, bool is_hovered)
 		{
-			get_drag_drop_action (destination).crossed (hovered);
-			destination_crossed (destination, hovered);
+			get_drag_drop_action (destination).crossed (actor, is_hovered);
+			destination_crossed (destination, is_hovered);
 		}
 
 		bool source_clicked (ButtonEvent event)
@@ -204,7 +227,7 @@ namespace Gala
 
 						var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
 						if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-							start_motion (x, y);
+							return start_motion (x, y);
 						}
 						return true;
 					case EventType.BUTTON_RELEASE:
@@ -290,12 +313,13 @@ namespace Gala
 			return false;
 		}
 
-		void start_motion (float x, float y)
+		bool start_motion (float x, float y)
 		{
 			handle = drag_begin (x, y);
 			if (handle == null) {
 				actor.get_stage ().captured_event.disconnect (follow_move);
 				critical ("No handle has been returned by the started signal, aborting drag.");
+				return false;
 			}
 
 			handle.reactive = false;
@@ -305,10 +329,18 @@ namespace Gala
 
 			var source_list = sources.@get (drag_id);
 			if (source_list != null) {
+				var dest_list = destinations[drag_id];
 				foreach (var actor in source_list) {
+					// Do not unset reactivity on destinations
+					if (actor in dest_list) {
+						continue;
+					}
+
 					actor.reactive = false;
 				}
 			}
+
+			return true;
 		}
 
 		/**
@@ -324,7 +356,7 @@ namespace Gala
 			foreach (var action in actor.get_actions ()) {
 				drop_action = action as DragDropAction;
 				if (drop_action == null
-					|| drop_action.drag_type != DragDropActionType.DESTINATION
+					|| !(DragDropActionType.DESTINATION in drop_action.drag_type)
 					|| drop_action.drag_id != drag_id)
 					continue;
 

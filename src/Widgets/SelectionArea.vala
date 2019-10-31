@@ -44,7 +44,11 @@ namespace Gala
             reactive = true;
 
             int screen_width, screen_height;
+#if HAS_MUTTER330
+            wm.get_display ().get_size (out screen_width, out screen_height);
+#else
             wm.get_screen ().get_size (out screen_width, out screen_height);
+#endif
             width = screen_width;
             height = screen_height;
 
@@ -125,7 +129,11 @@ namespace Gala
 
         public void close ()
         {
+#if HAS_MUTTER330
+            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#else
             wm.get_screen ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
 
             if (modal_proxy != null) {
                 wm.pop_modal (modal_proxy);
@@ -134,7 +142,11 @@ namespace Gala
 
         public void start_selection ()
         {
+#if HAS_MUTTER330
+            wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
+#else
             wm.get_screen ().set_cursor (Meta.Cursor.CROSSHAIR);
+#endif
             grab_key_focus ();
 
             modal_proxy = wm.push_modal ();
