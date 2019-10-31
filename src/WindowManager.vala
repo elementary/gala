@@ -85,6 +85,8 @@ namespace Gala
 		Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
 		Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
 		GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
+		Meta.SizeChange? which_change = null;
+		Meta.Rectangle old_rect_size_change;
 
 		GLib.Settings animations_settings;
 
@@ -956,51 +958,52 @@ namespace Gala
 				new_ws_obj.activate_with_focus (window, time);
 
 				ws_assoc.insert (window, old_ws_index);
-			} else if (ws_assoc.contains (window)) {
-				var old_ws_index = ws_assoc.get (window);
-				var new_ws_index = win_ws.index ();
-
-				if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
-					var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
-					window.change_workspace (old_ws_obj);
-					old_ws_obj.activate_with_focus (window, time);
-				}
-
-				ws_assoc.remove (window);
+			} else {
+				move_window_to_old_ws (window);
 			}
 		}
 
-		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
+		// must wait for size_changed to get updated frame_rect
+		// as which_change is not passed to size_changed, save it as instance variable
+		public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
 		{
-			unowned Meta.Window window = actor.get_meta_window ();
-
-			if (which_change == Meta.SizeChange.UNFULLSCREEN || which_change == Meta.SizeChange.FULLSCREEN) {
-				handle_fullscreen_window (window, which_change);
-			} else if (window.get_tile_match () == null) { // don't animate windows with tiled match
-				ulong size_signal_id = 0U;
-				ulong position_signal_id = 0U;
-				size_signal_id = window.size_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				position_signal_id = window.position_changed.connect (() => window_change_complete (actor, which_change, size_signal_id, position_signal_id));
-				return; // must wait for size/position-changed-signal to get updated rect_frame
-			}
-
-			size_change_completed (actor);
+			which_change = which_change_local;
+			old_rect_size_change = old_frame_rect;
 		}
 
-		void window_change_complete (Meta.WindowActor actor, Meta.SizeChange which_change, ulong size_signal_id, ulong position_signal_id) {
+		// size_changed gets called after frame_rect has updated
+		public override void size_changed (Meta.WindowActor actor) 
+		{
+			if (which_change == null) {
+				return;
+			} 
+
+			Meta.SizeChange? which_change_local = which_change;
+			which_change = null;
+
 			unowned Meta.Window window = actor.get_meta_window ();
-
-			window.disconnect (size_signal_id);
-			window.disconnect (position_signal_id);
-
 			var new_rect = window.get_frame_rect ();
 
-			switch (which_change) {
+			switch (which_change_local) {
 				case Meta.SizeChange.MAXIMIZE:
+					// don't animate resizing of two tiled windows with mouse drag
+					if (window.get_tile_match () != null && !window.maximized_horizontally) {
+						var old_end = old_rect_size_change.x + old_rect_size_change.width;
+						var new_end = new_rect.x + new_rect.width;
+
+						// a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
+						if (old_rect_size_change.x == new_rect.x || old_end == new_end) { 
+							break;
+						}
+					}
 					maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
 					break;
 				case Meta.SizeChange.UNMAXIMIZE:
 					unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+					break;
+				case Meta.SizeChange.FULLSCREEN:
+				case Meta.SizeChange.UNFULLSCREEN:
+					handle_fullscreen_window (window, which_change_local);
 					break;
 			}
 
@@ -1090,6 +1093,9 @@ namespace Gala
 			kill_window_effects (actor);
 
 			var window = actor.get_meta_window ();
+			if (window.maximized_horizontally && BehaviorSettings.get_default ().move_maximized_workspace) {
+				move_window_to_next_ws (window);
+			}
 
 			if (window.window_type == WindowType.NORMAL) {
 				Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
@@ -1450,6 +1456,10 @@ namespace Gala
 			kill_window_effects (actor);
 			var window = actor.get_meta_window ();
 
+			if (BehaviorSettings.get_default ().move_maximized_workspace) {
+				move_window_to_old_ws (window);
+			}
+
 			if (window.window_type == WindowType.NORMAL) {
 				float offset_x, offset_y, offset_width, offset_height;
 				var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
@@ -1516,6 +1526,55 @@ namespace Gala
 					unmaximizing.remove (actor);
 				});
 			}
+		}
+
+		void move_window_to_next_ws (Window window)
+		{
+			unowned Screen screen = get_screen ();
+			unowned Workspace win_ws = window.get_workspace ();
+
+			// Do nothing if the current workspace would be empty
+			if (Utils.get_n_windows (win_ws) <= 1) {
+				return;
+			}
+
+			var old_ws_index = win_ws.index ();
+			var new_ws_index = old_ws_index + 1;
+			InternalUtils.insert_workspace_with_window (new_ws_index, window);
+
+			var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
+			window.change_workspace (new_ws_obj);
+			new_ws_obj.activate_with_focus (window, screen.get_display ().get_current_time ());
+
+			ws_assoc.insert (window, old_ws_index);
+		}
+
+		void move_window_to_old_ws (Window window)
+		{
+			unowned Screen screen = get_screen ();
+			unowned Workspace win_ws = window.get_workspace ();
+
+			// Do nothing if the current workspace is populated with other windows
+			if (Utils.get_n_windows (win_ws) > 1) {
+				return;
+			}
+
+			if (!ws_assoc.contains (window)) {
+				return;
+			}
+			
+			var old_ws_index = ws_assoc.get (window);
+			var new_ws_index = win_ws.index ();
+
+			if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
+				uint time = screen.get_display ().get_current_time ();
+				var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
+
+				window.change_workspace (old_ws_obj);
+				old_ws_obj.activate_with_focus (window, time);
+			}
+
+			ws_assoc.remove (window);
 		}
 
 		// Cancel attached animation of an actor and reset it
