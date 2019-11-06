@@ -63,7 +63,7 @@ namespace Gala
 			factory.set_params ("modal_dialog", false, shadow);
 
 			//dialog unfocused
-			shadow = settings.get_shadowparams ("normal_unfocused");
+			shadow = settings.get_shadowparams ("dialog_unfocused");
 			factory.set_params ("dialog", false, shadow);
 			factory.set_params ("modal_dialog", false, shadow);
 		}

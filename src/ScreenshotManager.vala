@@ -115,6 +115,11 @@ namespace Gala
 #else
 			var window = wm.get_screen ().get_display ().get_focus_window ();
 #endif
+
+			if (window == null) {
+				throw new DBusError.FAILED ("Cannot find active window");
+			}
+
 			var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 			unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
