@@ -91,11 +91,16 @@ namespace Gala
 
 		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
+			yield screenshot_area_with_cursor (x, y, width, height, false, flash, filename, out success, out filename_used);
+		}
+
+		public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
+		{
 			debug ("Taking area screenshot");
 
 			yield wait_stage_repaint ();
 
-			var image = take_screenshot (x, y, width, height, false);
+			var image = take_screenshot (x, y, width, height, include_cursor);
 
 			if (flash) {
 				flash_area (x, y, width, height);
