@@ -132,10 +132,16 @@ namespace Gala
 
 		void workspace_removed (Meta.WorkspaceManager manager, int index)
 		{
+			unowned List<Workspace> existing_workspaces = null;
+			for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				existing_workspaces.append (manager.get_workspace_by_index (i));
+			}
+
 			var it = workspaces_marked_removed.iterator ();
 			while (it.next ()) {
 			    var workspace = it.@get ();
-				if (workspace.index () < 0)
+
+				if (existing_workspaces.index (workspace) < 0)
 					it.remove ();
 			}
 		}
