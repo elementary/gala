@@ -211,7 +211,7 @@ namespace Gala
 			var system_background = new SystemBackground (screen);
 #endif
 
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 			system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.insert_child_below (system_background.background_actor, null);
