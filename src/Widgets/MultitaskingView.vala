@@ -92,6 +92,9 @@ namespace Gala
 
 			manager.workspace_added.connect (add_workspace);
 			manager.workspace_removed.connect (remove_workspace);
+#if HAS_MUTTER334
+			manager.workspaces_reordered.connect (() => update_positions (false));
+#endif
 			manager.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
