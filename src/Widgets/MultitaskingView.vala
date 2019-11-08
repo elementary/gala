@@ -389,29 +389,20 @@ namespace Gala
 			// FIXME is there a better way to get the removed workspace?
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			unowned List<Workspace> existing_workspaces = null;
+			for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				existing_workspaces.append (manager.get_workspace_by_index (i));
+			}
 #else
 			unowned List<Meta.Workspace> existing_workspaces = screen.get_workspaces ();
 #endif
 
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone clone = (WorkspaceClone) child;
-#if HAS_MUTTER330
-                for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                    if (manager.get_workspace_by_index (i) == clone.workspace) {
-					    workspace = clone;
-					    break;
-                    }
-                }
-
-                if (workspace != null) {
-                    break;
-                }
-#else
 				if (existing_workspaces.index (clone.workspace) < 0) {
 					workspace = clone;
 					break;
 				}
-#endif
 			}
 
 			if (workspace == null)
