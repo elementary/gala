@@ -396,8 +396,12 @@ namespace Gala
             unowned Meta.Display display = wm.get_display ();
 			unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 			var last_index = manager.get_n_workspaces () - 1;
+			unowned List<Meta.Workspace> workspaces = null;
 			for (int i = 0; i < manager.get_n_workspaces (); i++) {
-			    unowned Meta.Workspace workspace = manager.get_workspace_by_index (i);
+				workspaces.append (manager.get_workspace_by_index (i));
+			}
+
+			foreach (var workspace in workspaces) {
 				if (Utils.get_n_windows (workspace) < 1
 					&& workspace.index () != last_index) {
 					remove_workspace (workspace);
