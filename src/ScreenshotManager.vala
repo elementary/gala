@@ -18,6 +18,7 @@
 namespace Gala
 {
 	const string EXTENSION = ".png";
+	const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
 	[DBus (name="org.gnome.Shell.Screenshot")]
 	public class ScreenshotManager : Object
@@ -34,6 +35,16 @@ namespace Gala
 		}
 
 		WindowManager wm;
+		Settings desktop_settings;
+
+		string prev_font_regular;
+		string prev_font_document;
+		string prev_font_mono;
+		uint conceal_timeout;
+
+		construct {
+			desktop_settings = new Settings ("org.gnome.desktop.interface");
+		}
 
 		ScreenshotManager (WindowManager _wm)
 		{
@@ -81,6 +92,7 @@ namespace Gala
 #endif
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (0, 0, width, height);
@@ -101,6 +113,7 @@ namespace Gala
 			yield wait_stage_repaint ();
 
 			var image = take_screenshot (x, y, width, height, include_cursor);
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (x, y, width, height);
@@ -122,6 +135,7 @@ namespace Gala
 #endif
 
 			if (window == null) {
+				unconceal_text ();
 				throw new DBusError.FAILED ("Cannot find active window");
 			}
 
@@ -141,6 +155,8 @@ namespace Gala
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
 			}
+
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (rect.x, rect.y, rect.width, rect.height);
@@ -165,6 +181,40 @@ namespace Gala
 
 			yield wait_stage_repaint ();
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
+		}
+
+		private void unconceal_text ()
+		{
+			if (conceal_timeout == 0) {
+				return;
+			}
+
+			desktop_settings.set_string ("font-name", prev_font_regular);
+			desktop_settings.set_string ("monospace-font-name", prev_font_mono);
+			desktop_settings.set_string ("document-font-name", prev_font_document);
+
+			Source.remove (conceal_timeout);
+			conceal_timeout = 0;
+		}
+
+		public async void conceal_text () throws DBusError, IOError
+		{
+			if (conceal_timeout > 0) {
+				Source.remove (conceal_timeout);
+			} else {
+				prev_font_regular = desktop_settings.get_string ("font-name");
+				prev_font_mono = desktop_settings.get_string ("monospace-font-name");
+				prev_font_document = desktop_settings.get_string ("document-font-name");
+
+				desktop_settings.set_string ("font-name", "Redacted Script Regular 9");
+				desktop_settings.set_string ("monospace-font-name", "Redacted Script Light 10");
+				desktop_settings.set_string ("document-font-name", "Redacted Script Regular 10");
+			}
+
+			conceal_timeout = Timeout.add (UNCONCEAL_TEXT_TIMEOUT, () => {
+				unconceal_text ();
+				return Source.REMOVE;
+			});
 		}
 
 		static string find_target_path ()
