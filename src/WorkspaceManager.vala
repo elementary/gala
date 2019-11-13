@@ -132,7 +132,7 @@ namespace Gala
 
 		void workspace_removed (Meta.WorkspaceManager manager, int index)
 		{
-			unowned List<Workspace> existing_workspaces = null;
+			List<Workspace> existing_workspaces = null;
 			for (int i = 0; i < manager.get_n_workspaces (); i++) {
 				existing_workspaces.append (manager.get_workspace_by_index (i));
 			}
@@ -395,7 +395,7 @@ namespace Gala
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
 			unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-			unowned List<Meta.Workspace> workspaces = null;
+			List<Meta.Workspace> workspaces = null;
 			for (int i = 0; i < manager.get_n_workspaces (); i++) {
 				workspaces.append (manager.get_workspace_by_index (i));
 			}
