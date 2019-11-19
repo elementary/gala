@@ -200,30 +200,20 @@ namespace Meta {
 #endif
 	}
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_backend_get_type ()")]
-#if HAS_MUTTER322
 	public abstract class Backend : GLib.Object, GLib.Initable {
-#else
-	public abstract class Backend : GLib.Object {
-#endif
 		[CCode (has_construct_function = false)]
 		protected Backend ();
 		[CCode (cheader_filename = "meta/meta-backend.h", cname = "meta_get_backend")]
 		public static unowned Meta.Backend get_backend ();
-#if HAS_MUTTER324
 		public unowned Meta.Dnd get_dnd ();
-#endif
 #if HAS_MUTTER330
 		public unowned Meta.RemoteAccessController get_remote_access_controller ();
 #endif
-#if HAS_MUTTER326
 		public unowned Meta.Settings get_settings ();
-#endif
 		public unowned Clutter.Actor get_stage ();
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
-#if HAS_MUTTER322
 		public void set_numlock (bool numlock_state);
-#endif
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (int object);
@@ -261,23 +251,19 @@ namespace Meta {
 		public BackgroundActor (Meta.Screen screen, int monitor);
 #endif
 		public void set_background (Meta.Background background);
-#if HAS_MUTTER326
 		public void set_gradient (bool enabled, int height, double tone_start);
 		public void set_monitor (int monitor);
-#endif
 		public void set_vignette (bool enabled, double brightness, double sharpness);
 		[NoAccessorMethod]
 		public Meta.Background background { owned get; set; }
 		[NoAccessorMethod]
 		public double brightness { get; set; }
-#if HAS_MUTTER326
 		[NoAccessorMethod]
 		public bool gradient { get; set; }
 		[NoAccessorMethod]
 		public int gradient_height { get; set; }
 		[NoAccessorMethod]
 		public double gradient_max_darkness { get; set; }
-#endif
 		[NoAccessorMethod]
 #if HAS_MUTTER330
 		public Meta.Display meta_display { owned get; construct; }
@@ -395,10 +381,6 @@ namespace Meta {
 		public void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y);
 		public void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect);
 		public void size_change_window (Meta.Window window, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect);
-#if !HAS_MUTTER328
-		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_stage_is_focused")]
-		public static bool stage_is_focused (Meta.Screen screen);
-#endif
 		public void switch_workspace (Meta.Workspace from, Meta.Workspace to, Meta.MotionDirection direction);
 		public void sync_stack (GLib.List<Meta.WindowActor> stack);
 		public void sync_updates_frozen (Meta.Window window);
@@ -432,7 +414,7 @@ namespace Meta {
 		public signal void visibility_changed ();
 #endif
 	}
-#if HAS_MUTTER328 && !HAS_MUTTER332
+#if !HAS_MUTTER332
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_dbus_display_config_skeleton_get_type ()")]
 	public class DBusDisplayConfigSkeleton : GLib.DBusInterfaceSkeleton, GLib.DBusInterface {
 		[CCode (has_construct_function = false)]
@@ -484,9 +466,7 @@ namespace Meta {
 #endif
 		public int get_n_monitors ();
 #endif
-#if HAS_MUTTER322
 		public string get_pad_action_label (Clutter.InputDevice pad, Meta.PadActionType action_type, uint action_number);
-#endif
 #if HAS_MUTTER330
 		public int get_primary_monitor ();
 		public void get_size (out int width, out int height);
@@ -522,9 +502,7 @@ namespace Meta {
 		public unowned Meta.Group lookup_group (X.Window group_leader);
 #endif
 		public bool remove_keybinding (string name);
-#if HAS_MUTTER322
 		public void request_pad_osd (Clutter.InputDevice pad, bool edition_mode);
-#endif
 #if HAS_MUTTER330
 		public void set_cursor (Meta.Cursor cursor);
 #else
@@ -546,9 +524,7 @@ namespace Meta {
 #if HAS_MUTTER330
 		public signal void cursor_updated ();
 #endif
-#if HAS_MUTTER322
 		public signal void gl_video_memory_purged ();
-#endif
 #if HAS_MUTTER330
 		public signal void grab_op_begin (Meta.Display object, Meta.Window p0, Meta.GrabOp p1);
 		public signal void grab_op_end (Meta.Display object, Meta.Window p0, Meta.GrabOp p1);
@@ -559,19 +535,13 @@ namespace Meta {
 #endif
 		public signal bool modifiers_accelerator_activated ();
 		public signal void overlay_key ();
-#if HAS_MUTTER324
 		public signal void pad_mode_switch (Clutter.InputDevice object, uint p0, uint p1);
-#endif
 #if HAS_MUTTER330
 		public signal void restacked ();
 #endif
 		public signal bool restart ();
-#if HAS_MUTTER324
 		public signal void show_osd (int object, string p0, string p1);
-#endif
-#if HAS_MUTTER322
 		public signal unowned Clutter.Actor? show_pad_osd (Clutter.InputDevice pad, GLib.Settings settings, string layout_path, bool edition_mode, int monitor_idx);
-#endif
 		public signal bool show_resize_popup (bool object, Meta.Rectangle p0, int p1, int p2);
 		public signal bool show_restart_message (string? message);
 #if HAS_MUTTER330
@@ -593,7 +563,6 @@ namespace Meta {
 		public signal void x11_display_opened ();
 #endif
 	}
-#if HAS_MUTTER324
 	[CCode (cheader_filename = "meta/meta-dnd.h", type_id = "meta_dnd_get_type ()")]
 	public class Dnd : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -602,7 +571,6 @@ namespace Meta {
 		public signal void dnd_leave ();
 		public signal void dnd_position_change (int object, int p0);
 	}
-#endif
 	[CCode (cheader_filename = "meta/common.h", has_type_id = false)]
 	[Compact]
 	public class Frame {
@@ -658,35 +626,19 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/meta-monitor-manager.h", type_id = "meta_monitor_manager_get_type ()")]
 #if HAS_MUTTER332
 	public class MonitorManager : GLib.Object {
-#elif HAS_MUTTER328
-	public abstract class MonitorManager : Meta.DBusDisplayConfigSkeleton, GLib.DBusInterface {
 #else
-	public abstract class MonitorManager : GLib.DBusInterfaceSkeleton, GLib.DBusInterface {
+	public abstract class MonitorManager : Meta.DBusDisplayConfigSkeleton, GLib.DBusInterface {
 #endif
 		[CCode (has_construct_function = false)]
 		protected MonitorManager ();
-#if HAS_MUTTER326
 		public bool can_switch_config ();
-#endif
 		public static unowned Meta.MonitorManager @get ();
-#if HAS_MUTTER326
 		public static int get_display_configuration_timeout ();
-#endif
-#if HAS_MUTTER322
 		public bool get_is_builtin_display_on ();
-#endif
-#if HAS_MUTTER326
 		public int get_monitor_for_connector (string connector);
-#endif
-#if !HAS_MUTTER328
-		public int get_monitor_for_output (uint id);
-#endif
 		public signal void confirm_display_change ();
-#if HAS_MUTTER326
 		public Meta.MonitorSwitchConfigType get_switch_config ();
 		public void switch_config (Meta.MonitorSwitchConfigType config_type);
-#endif
-#if HAS_MUTTER328
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
 #if HAS_MUTTER332
@@ -695,10 +647,6 @@ namespace Meta {
 		public signal void monitors_changed_internal ();
 #if HAS_MUTTER332
 		public signal void power_save_mode_changed ();
-#endif
-#endif
-#if HAS_MUTTER324 && !HAS_MUTTER326
-		public signal void lid_is_closed_changed ();
 #endif
 	}
 	[CCode (cheader_filename = "meta/meta-plugin.h", type_id = "meta_plugin_get_type ()")]
@@ -709,12 +657,10 @@ namespace Meta {
 		public void complete_display_change (bool ok);
 		[NoWrapper]
 		public virtual void confirm_display_change ();
-#if HAS_MUTTER326
 		[NoWrapper]
 		public virtual unowned Meta.CloseDialog create_close_dialog (Meta.Window window);
 		[NoWrapper]
 		public virtual unowned Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window);
-#endif
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
@@ -751,10 +697,8 @@ namespace Meta {
 		[NoWrapper]
 		public virtual void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect);
 		public void size_change_completed (Meta.WindowActor actor);
-#if HAS_MUTTER324
 		[NoWrapper]
 		public virtual void size_changed (Meta.WindowActor actor);
-#endif
 		[NoWrapper]
 		public virtual void start ();
 		[NoWrapper]
@@ -791,9 +735,6 @@ namespace Meta {
 		public void reorder_workspace (Meta.Workspace workspace, int new_index);
 		public int get_active_workspace_index ();
 		public int get_current_monitor ();
-#if !HAS_MUTTER324
-		public int get_current_monitor_for_pos (int x, int y);
-#endif
 		public unowned Meta.Display get_display ();
 		public Meta.Rectangle get_monitor_geometry (int monitor);
 		public bool get_monitor_in_fullscreen (int monitor);
@@ -825,14 +766,12 @@ namespace Meta {
 		public signal void workspaces_reordered ();
 	}
 #endif
-#if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/meta-settings.h", has_type_id = false)]
 	[Compact]
 	public class Settings {
 		public int get_font_dpi ();
 		public int get_ui_scaling_factor ();
 	}
-#endif
 	[CCode (cheader_filename = "meta/meta-shadow-factory.h", ref_function = "meta_shadow_ref", type_id = "meta_shadow_get_type ()", unref_function = "meta_shadow_unref")]
 	[Compact]
 	public class Shadow {
@@ -876,7 +815,6 @@ namespace Meta {
 		public void play_from_theme (string name, string description, GLib.Cancellable? cancellable = null);
 	}
 #endif
-#if HAS_MUTTER328
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_stage_get_type ()")]
 	public class Stage : Clutter.Stage, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false)]
@@ -890,7 +828,6 @@ namespace Meta {
 		public signal void actors_painted ();
 #endif
 	}
-#endif
 #if HAS_MUTTER332
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_startup_notification_get_type ()")]
 	public class StartupNotification : GLib.Object {
@@ -957,10 +894,6 @@ namespace Meta {
 		public void foreach_ancestor (Meta.WindowForeachFunc func);
 		public void foreach_transient (Meta.WindowForeachFunc func);
 		public Meta.Rectangle frame_rect_to_client_rect (Meta.Rectangle frame_rect);
-#if !HAS_MUTTER324
-		[CCode (array_length_pos = 0.1, array_length_type = "gsize")]
-		public int[] get_all_monitors ();
-#endif
 		public Meta.Rectangle get_buffer_rect ();
 		public unowned string get_client_machine ();
 #if HAS_MUTTER332
@@ -969,9 +902,6 @@ namespace Meta {
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
 		public unowned Meta.Display get_display ();
-#if HAS_MUTTER322 && !HAS_MUTTER328
-		public unowned string get_flatpak_id ();
-#endif
 		public unowned Meta.Frame get_frame ();
 		public unowned Cairo.Region? get_frame_bounds ();
 		public Meta.Rectangle get_frame_rect ();
@@ -994,9 +924,7 @@ namespace Meta {
 		public unowned string get_mutter_hints ();
 		public int get_pid ();
 		public unowned string get_role ();
-#if HAS_MUTTER328
 		public unowned string get_sandboxed_app_id ();
-#endif
 #if !HAS_MUTTER330
 		public unowned Meta.Screen get_screen ();
 #endif
@@ -1124,9 +1052,7 @@ namespace Meta {
 		public X.Window get_x_window ();
 #endif
 		public bool is_destroyed ();
-#if HAS_MUTTER322
 		public void sync_visibility ();
-#endif
 		[NoAccessorMethod]
 		public string shadow_class { owned get; set; }
 		[NoAccessorMethod]
@@ -1136,13 +1062,11 @@ namespace Meta {
 #endif
 		public signal void first_frame ();
 	}
-#if HAS_MUTTER328
 	[CCode (cheader_filename = "meta/main.h", type_id = "meta_window_group_get_type ()")]
 	public class WindowGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false)]
 		protected WindowGroup ();
 	}
-#endif
 	[CCode (cheader_filename = "meta/meta_window_shape.h", ref_function = "meta_window_shape_ref", type_id = "meta_window_shape_get_type ()", unref_function = "meta_window_shape_unref")]
 	[Compact]
 	public class WindowShape {
@@ -1228,7 +1152,6 @@ namespace Meta {
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
 	}
 #endif
-#if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/main.h", type_cname = "MetaInhibitShortcutsDialogInterface", type_id = "meta_inhibit_shortcuts_dialog_get_type ()")]
 	public interface InhibitShortcutsDialog : GLib.Object {
 		public abstract void hide ();
@@ -1249,7 +1172,6 @@ namespace Meta {
 		[HasEmitter]
 		public signal void response (Meta.CloseDialogResponse response);
 	}
-#endif
 	[CCode (cheader_filename = "meta/common.h", has_type_id = false)]
 	public struct ButtonLayout {
 #if HAS_MUTTER332
@@ -1343,26 +1265,16 @@ namespace Meta {
 		MINIMIZE,
 		MAXIMIZE,
 		CLOSE,
-#if !HAS_MUTTER320
-		SHADE,
-		ABOVE,
-		STICK,
-		UNSHADE,
-		UNABOVE,
-		UNSTICK,
-#endif
 #if !HAS_MUTTER332
 		APPMENU,
 #endif
 		LAST
 	}
-#if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_CLOSE_DIALOG_RESPONSE_", type_id = "meta_close_dialog_response_get_type ()")]
 	public enum CloseDialogResponse {
 		WAIT,
 		FORCE_CLOSE
 	}
-#endif
 	[CCode (cheader_filename = "meta/compositor.h", cprefix = "META_COMP_EFFECT_", type_id = "meta_comp_effect_get_type ()")]
 	public enum CompEffect {
 		CREATE,
@@ -1527,13 +1439,11 @@ namespace Meta {
 		KEYBOARD_RESIZING_SE,
 		KEYBOARD_RESIZING_W
 	}
-#if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_INHIBIT_SHORTCUTS_DIALOG_RESPONSE_", type_id = "meta_inhibit_shortcuts_dialog_response_get_type ()")]
 	public enum InhibitShortcutsDialogResponse {
 		ALLOW,
 		DENY
 	}
-#endif
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEYBINDING_ACTION_", type_id = "meta_key_binding_action_get_type ()")]
 	public enum KeyBindingAction {
 		NONE,
@@ -1625,10 +1535,8 @@ namespace Meta {
 		OVERLAY_KEY,
 		ISO_NEXT_GROUP,
 		ALWAYS_ON_TOP,
-#if HAS_MUTTER326
 		SWITCH_MONITOR,
 		ROTATE_MONITOR,
-#endif
 		LAST
 	}
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_KEY_BINDING_", type_id = "meta_key_binding_flags_get_type ()")]
@@ -1637,9 +1545,7 @@ namespace Meta {
 		NONE,
 		PER_WINDOW,
 		BUILTIN,
-#if HAS_MUTTER326
 		NON_MASKABLE,
-#endif
 #if HAS_MUTTER330
 		IGNORE_AUTOREPEAT,
 #endif
@@ -1672,7 +1578,6 @@ namespace Meta {
 		POINTER_ALREADY_GRABBED,
 		KEYBOARD_ALREADY_GRABBED
 	}
-#if HAS_MUTTER326
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_MONITOR_SWITCH_CONFIG_", type_id = "meta_monitor_switch_config_type_get_type ()")]
 	public enum MonitorSwitchConfigType {
 		ALL_MIRROR,
@@ -1681,7 +1586,6 @@ namespace Meta {
 		BUILTIN,
 		UNKNOWN
 	}
-#endif
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_MOTION_", type_id = "meta_motion_direction_get_type ()")]
 	public enum MotionDirection {
 		UP,
@@ -1693,14 +1597,12 @@ namespace Meta {
 		DOWN_LEFT,
 		DOWN_RIGHT
 	}
-#if HAS_MUTTER322
 	[CCode (cheader_filename = "meta/display.h", cprefix = "META_PAD_ACTION_", type_id = "meta_pad_action_type_get_type ()")]
 	public enum PadActionType {
 		BUTTON,
 		RING,
 		STRIP
 	}
-#endif
 	[CCode (cheader_filename = "meta/prefs.h", cprefix = "META_PREF_", type_id = "meta_preference_get_type ()")]
 	public enum Preference {
 		MOUSE_BUTTON_MODS,
@@ -1782,12 +1684,6 @@ namespace Meta {
 		NORMAL,
 		TOP,
 		DOCK,
-#if !HAS_MUTTER322
-		FULLSCREEN,
-#endif
-#if !HAS_MUTTER320
-		FOCUSED_WINDOW,
-#endif
 		OVERRIDE_REDIRECT,
 		LAST
 	}

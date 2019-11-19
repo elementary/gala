@@ -380,11 +380,7 @@ namespace Gala
 
 		public static int get_ui_scaling_factor ()
 		{
-#if HAS_MUTTER326
 			return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			return 1;
-#endif
 		}
 	}
 }
