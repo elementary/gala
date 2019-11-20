@@ -221,7 +221,6 @@ namespace Gala
 		Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor)
 		{
 			Cairo.ImageSurface image;
-#if HAS_MUTTER322
 			Clutter.Capture[] captures;
 			wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -231,14 +230,6 @@ namespace Gala
 				image = captures[0].image;
 			else
 				image = composite_capture_images (captures, x, y, width, height);
-#else
-			unowned Clutter.Backend backend = Clutter.get_default_backend ();
-			unowned Cogl.Context context = Clutter.backend_get_cogl_context (backend);
-
-			image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-			var bitmap = Cogl.bitmap_new_for_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE, image.get_stride (), image.get_data ());
-			Cogl.framebuffer_read_pixels_into_bitmap (Cogl.get_draw_framebuffer (), x, y, Cogl.ReadPixelsFlags.BUFFER, bitmap);
-#endif
 
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { x, y, width, height});
@@ -248,7 +239,6 @@ namespace Gala
 			return image;
 		}
 
-#if HAS_MUTTER322
 		Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height)
 		{
 			var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
@@ -270,7 +260,6 @@ namespace Gala
 
 			return image;
 		}
-#endif
 
 		Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
 		{

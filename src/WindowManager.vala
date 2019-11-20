@@ -121,15 +121,13 @@ namespace Gala
 
 #if HAS_MUTTER330
 			unowned Meta.Display display = get_display ();
-#elif HAS_MUTTER322
+#else
 			unowned Meta.Display display = get_screen ().get_display ();
 #endif
-#if HAS_MUTTER322
 			display.gl_video_memory_purged.connect (() => {
 				Meta.Background.refresh_all ();
 				SystemBackground.refresh ();
 			});
-#endif
 		}
 
 		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
