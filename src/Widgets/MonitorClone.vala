@@ -31,32 +31,59 @@ namespace Gala
 	{
 		public signal void window_selected (Window window);
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+#else
 		public Screen screen { get; construct; }
+#endif
 		public int monitor { get; construct; }
 
 		WindowCloneContainer window_container;
 		BackgroundManager background;
 
+#if HAS_MUTTER330
+		public MonitorClone (Meta.Display display, int monitor)
+		{
+			Object (display: display, monitor: monitor);
+		}
+#else
 		public MonitorClone (Screen screen, int monitor)
 		{
 			Object (screen: screen, monitor: monitor);
 		}
+#endif
 
 		construct
 		{
 			reactive = true;
 
+#if HAS_MUTTER330
+			background = new BackgroundManager (display, monitor, false);
+#else
 			background = new BackgroundManager (screen, monitor, false);
+#endif
 			background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
 			window_container = new WindowCloneContainer ();
 			window_container.window_selected.connect ((w) => { window_selected (w); });
+#if HAS_MUTTER330
+			display.restacked.connect (window_container.restack_windows);
+
+			display.window_entered_monitor.connect (window_entered);
+			display.window_left_monitor.connect (window_left);
+#else
 			screen.restacked.connect (window_container.restack_windows);
 
 			screen.window_entered_monitor.connect (window_entered);
 			screen.window_left_monitor.connect (window_left);
+#endif
 
-			foreach (unowned Meta.WindowActor window_actor in Meta.Compositor.get_window_actors (screen)) {
+#if HAS_MUTTER330
+			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (display);
+#else
+			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+#endif
+			foreach (unowned Meta.WindowActor window_actor in window_actors) {
 				if (window_actor.is_destroyed ())
 					continue;
 
@@ -77,9 +104,15 @@ namespace Gala
 
 		~MonitorClone ()
 		{
+#if HAS_MUTTER330
+			display.window_entered_monitor.disconnect (window_entered);
+			display.window_left_monitor.disconnect (window_left);
+			display.restacked.disconnect (window_container.restack_windows);
+#else
 			screen.window_entered_monitor.disconnect (window_entered);
 			screen.window_left_monitor.disconnect (window_left);
 			screen.restacked.disconnect (window_container.restack_windows);
+#endif
 		}
 
 		/**
@@ -87,7 +120,11 @@ namespace Gala
 		 */
 		public void update_allocation ()
 		{
+#if HAS_MUTTER330
+			var monitor_geometry = display.get_monitor_geometry (monitor);
+#else
 			var monitor_geometry = screen.get_monitor_geometry (monitor);
+#endif
 
 			set_position (monitor_geometry.x, monitor_geometry.y);
 			set_size (monitor_geometry.width, monitor_geometry.height);
