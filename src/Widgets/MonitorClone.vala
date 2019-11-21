@@ -79,9 +79,9 @@ namespace Gala
 #endif
 
 #if HAS_MUTTER330
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (display);
+			unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
 #else
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+			unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor window_actor in window_actors) {
 				if (window_actor.is_destroyed ())

@@ -264,9 +264,9 @@ namespace Gala
 		Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
 		{
 #if HAS_MUTTER330
-			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_display (wm.get_display ());
+			unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
 #else
-			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_screen (wm.get_screen ());
+			unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
 #endif
 
 			int x, y;

@@ -510,9 +510,9 @@ namespace Gala
 
 			// need to go through all the windows because of hidden dialogs
 #if HAS_MUTTER330
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (display);
+			unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
 #else
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+			unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor actor in window_actors) {
 				if (actor.is_destroyed ())
@@ -721,9 +721,9 @@ namespace Gala
 
 			// hide the others
 #if HAS_MUTTER330
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (display);
+			unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
 #else
-			unowned GLib.List<weak Meta.WindowActor>? window_actors = Meta.Compositor.get_window_actors (screen);
+			unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor actor in window_actors) {
 				if (actor.is_destroyed ())

@@ -145,10 +145,10 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 	{
 #if HAS_MUTTER330
 		unowned Meta.Display display = wm.get_display ();
-		unowned List<weak Meta.WindowActor> actors = Meta.Compositor.get_window_actors (display);
+		unowned List<Meta.WindowActor> actors = display.get_window_actors ();
 #else
 		var screen = wm.get_screen ();
-		unowned List<weak Meta.WindowActor> actors = Meta.Compositor.get_window_actors (screen);
+		unowned List<Meta.WindowActor> actors = screen.get_window_actors ();
 #endif
 
 		var copy = actors.copy ();
@@ -175,10 +175,10 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
 	{
 #if HAS_MUTTER330
 		unowned Meta.Display display = wm.get_display ();
-		unowned List<weak Meta.WindowActor> actors = Meta.Compositor.get_window_actors (display);
+		unowned List<Meta.WindowActor> actors = display.get_window_actors ();
 #else
 		var screen = wm.get_screen ();
-		unowned List<weak Meta.WindowActor> actors = Meta.Compositor.get_window_actors (screen);
+		unowned List<Meta.WindowActor> actors = screen.get_window_actors ();
 #endif
 
 		var copy = actors.copy ();
