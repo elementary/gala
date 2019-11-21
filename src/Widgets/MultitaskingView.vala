@@ -92,6 +92,9 @@ namespace Gala
 
 			manager.workspace_added.connect (add_workspace);
 			manager.workspace_removed.connect (remove_workspace);
+#if HAS_MUTTER334
+			manager.workspaces_reordered.connect (() => update_positions (false));
+#endif
 			manager.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
@@ -415,29 +418,20 @@ namespace Gala
 			// FIXME is there a better way to get the removed workspace?
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			List<Workspace> existing_workspaces = null;
+			for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				existing_workspaces.append (manager.get_workspace_by_index (i));
+			}
 #else
 			unowned List<Meta.Workspace> existing_workspaces = screen.get_workspaces ();
 #endif
 
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone clone = (WorkspaceClone) child;
-#if HAS_MUTTER330
-                for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                    if (manager.get_workspace_by_index (i) == clone.workspace) {
-					    workspace = clone;
-					    break;
-                    }
-                }
-
-                if (workspace != null) {
-                    break;
-                }
-#else
 				if (existing_workspaces.index (clone.workspace) < 0) {
 					workspace = clone;
 					break;
 				}
-#endif
 			}
 
 			if (workspace == null)

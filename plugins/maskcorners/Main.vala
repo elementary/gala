@@ -93,9 +93,7 @@ namespace Gala.Plugins.MaskCorners
 
 			screen.monitors_changed.connect (resetup_cornermasks);
 
-#if HAS_MUTTER322
 			screen.get_display ().gl_video_memory_purged.connect (resetup_cornermasks);
-#endif
 #endif
 		}
 
@@ -103,7 +101,7 @@ namespace Gala.Plugins.MaskCorners
 		{
 #if HAS_MUTTER330
 			display.gl_video_memory_purged.disconnect (resetup_cornermasks);
-#elif HAS_MUTTER322
+#else
 			screen.get_display ().gl_video_memory_purged.disconnect (resetup_cornermasks);
 #endif
 

@@ -123,15 +123,13 @@ namespace Gala
 
 #if HAS_MUTTER330
 			unowned Meta.Display display = get_display ();
-#elif HAS_MUTTER322
+#else
 			unowned Meta.Display display = get_screen ().get_display ();
 #endif
-#if HAS_MUTTER322
 			display.gl_video_memory_purged.connect (() => {
 				Meta.Background.refresh_all ();
 				SystemBackground.refresh ();
 			});
-#endif
 		}
 
 		void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
@@ -219,7 +217,7 @@ namespace Gala
 			var system_background = new SystemBackground (screen);
 #endif
 
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 			system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
 				Clutter.BindCoordinate.ALL, 0));
 			stage.insert_child_below (system_background.background_actor, null);

@@ -58,23 +58,13 @@ namespace Gala
 			base.paint ();
 
 			Cogl.set_source_color4ub (0, 0, 0, 100);
-#if HAS_MUTTER322
 			var path = new Cogl.Path ();
 			path.rectangle (0, 0, width, height);
 			path.stroke ();
-#else
-			Cogl.Path.rectangle (0, 0, width, height);
-			Cogl.Path.stroke ();
-#endif
 
 			Cogl.set_source_color4ub (255, 255, 255, 25);
-#if HAS_MUTTER322
 			path.rectangle (0.5f, 0.5f, width - 1, height - 1);
 			path.stroke ();
-#else
-			Cogl.Path.rectangle (0.5f, 0.5f, width - 1, height - 1);
-			Cogl.Path.stroke ();
-#endif
 		}
 	}
 

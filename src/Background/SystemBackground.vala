@@ -17,7 +17,7 @@
 
 namespace Gala
 {
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 	public class SystemBackground : GLib.Object
 #else
 	public class SystemBackground : Meta.BackgroundActor
@@ -26,7 +26,7 @@ namespace Gala
 		const Clutter.Color DEFAULT_BACKGROUND_COLOR = { 0x2e, 0x34, 0x36, 0xff };
 
 		static Meta.Background? system_background = null;
-#if HAS_MUTTER334
+#if HAS_MUTTER332
     public Meta.BackgroundActor background_actor { get; construct; }
 #endif
 
@@ -35,7 +35,7 @@ namespace Gala
 #if HAS_MUTTER330
 		public SystemBackground (Meta.Display display)
 		{
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 			Object (background_actor: new Meta.BackgroundActor (display, 0));
 #else
 			Object (meta_display: display, monitor: 0);
@@ -57,7 +57,7 @@ namespace Gala
 			}
 
 			if (system_background == null) {
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 				system_background = new Meta.Background (background_actor.meta_display);
 #elif HAS_MUTTER330
 				system_background = new Meta.Background (meta_display);
@@ -68,7 +68,7 @@ namespace Gala
 				system_background.set_file (background_file, GDesktop.BackgroundStyle.WALLPAPER);
 			}
 
-#if HAS_MUTTER334
+#if HAS_MUTTER332
 			background_actor.background = system_background;
 #else
 			background = system_background;
