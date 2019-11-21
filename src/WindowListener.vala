@@ -37,7 +37,7 @@ namespace Gala
 
 			instance = new WindowListener ();
 
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (display)) {
+			foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
 				if (actor.is_destroyed ())
 					continue;
 
@@ -59,7 +59,7 @@ namespace Gala
 
 			instance = new WindowListener ();
 
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+			foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
 				if (actor.is_destroyed ())
 					continue;
 

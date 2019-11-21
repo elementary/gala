@@ -113,7 +113,7 @@ namespace Gala
 					unowned Meta.X11Display x11display = display.get_x11_display ();
 					x11display.clear_stage_input_region ();
 #else
-					Util.empty_stage_input_region (display);
+					display.empty_stage_input_region ();
 #endif
 					return;
 			}
@@ -167,12 +167,12 @@ namespace Gala
 					break;
 				case InputArea.NONE:
 				default:
-					Util.empty_stage_input_region (screen);
+					screen.empty_stage_input_region ();
 					return;
 			}
 
 			var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
-			Util.set_stage_input_region (screen, xregion);
+			screen.set_stage_input_region (xregion);
 		}
 #endif
 
@@ -191,9 +191,9 @@ namespace Gala
 			new_window.change_workspace_by_index (index, false);
 
 #if HAS_MUTTER330
-			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_display ());
+			unowned List<WindowActor> actors = new_window.get_display ().get_window_actors ();
 #else
-			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+			unowned List<WindowActor> actors = new_window.get_screen ().get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())
