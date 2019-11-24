@@ -54,12 +54,20 @@ namespace Gala
 #endif
 		}
 
+#if HAS_MUTTER334
+		void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp)
+#else
 		void on_accelerator_activated (uint action, uint device_id, uint timestamp)
+#endif
 		{
 			foreach (string accelerator in grabbed_accelerators.get_keys ()) {
 				if (grabbed_accelerators[accelerator] == action) {
 					var parameters = new GLib.HashTable<string, Variant> (null, null);
+#if HAS_MUTTER334
+					parameters.set ("device-id", new Variant.uint32 (device.id));
+#else
 					parameters.set ("device-id", new Variant.uint32 (device_id));
+#endif
 					parameters.set ("timestamp", new Variant.uint32 (timestamp));
 
 					accelerator_activated (action, parameters);

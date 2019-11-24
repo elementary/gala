@@ -1,9 +1,11 @@
 * skip=false
+*.* skip=false
 * cheader_filename="meta/main.h"
 
 Backend cheader_filename="meta/meta-backend.h"
 get_backend parent="Meta.Backend" cheader_filename="meta/meta-backend.h"
 Background cheader_filename="meta/meta-background.h"
+Background.set_file.file nullable
 BackgroundActor cheader_filename="meta/meta-background-actor.h"
 BackgroundGroup cheader_filename="meta/meta-background-group.h"
 BackgroundImage cheader_filename="meta/meta-background-image.h"
@@ -14,6 +16,7 @@ BarrierEvent cheader_filename="meta/barrier.h"
 ButtonFunction cheader_filename="meta/common.h"
 ButtonLayout cheader_filename="meta/common.h"
 Compositor cheader_filename="meta/compositor.h"
+Compositor.process_event.event type="X.Event" ref
 Compositor.sync_stack.stack type_arguments="Meta.Window"
 compositor_new cheader_filename="meta/compositor.h"
 get_feedback_group_for_display parent="Meta.Display" symbol_type="method" name="get_feedback_group" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
@@ -23,7 +26,7 @@ get_window_group_for_display parent="Meta.Display" symbol_type="method" name="ge
 disable_unredirect_for_display parent="Meta.Display" symbol_type="method" name="disable_unredirect" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
 enable_unredirect_for_display parent="Meta.Display" symbol_type="method" name="enable_unredirect" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
 
-get_window_actors parent="Meta.Display" symbol_type="method" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
+get_window_actors parent="Meta.Display" symbol_type="method" instance_idx=0 cheader_filename="meta/compositor-mutter.h" type_arguments="Meta.WindowActor"
 get_overlay_window parent="Meta.Display" symbol_type="method" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
 set_stage_input_region parent="Meta.Display" symbol_type="method" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
 empty_stage_input_region parent="Meta.Display" symbol_type="method" instance_idx=0 cheader_filename="meta/compositor-mutter.h"
@@ -34,6 +37,10 @@ CloseDialog cheader_filename="meta/meta-close-dialog.h"
 CloseDialogResponse cheader_filename="meta/meta-close-dialog.h"
 Cursor cheader_filename="meta/common.h"
 CursorTracker cheader_filename="meta/meta-cursor-tracker.h"
+CursorTracker.get_for_display parent="Meta.Display" symbol_type="method" instance_idx=0 name="get_cursor_tracker"
+CursorTracker.get_pointer.x out
+CursorTracker.get_pointer.y out
+CursorTracker.get_pointer.mods out
 DebugTopic cheader_filename="meta/util.h"
 Direction cheader_filename="meta/common.h"
 Display cheader_filename="meta/display.h"
@@ -48,6 +55,7 @@ FrameFlags cheader_filename="meta/common.h"
 FrameType cheader_filename="meta/common.h"
 GrabOp cheader_filename="meta/common.h"
 Group cheader_filename="meta/group.h"
+Group.property_notify.event type="X.Event" ref
 IdleMonitor cheader_filename="meta/meta-idle-monitor.h"
 IdleMonitorWatchFunc cheader_filename="meta/meta-idle-monitor.h"
 InhibitShortcutsDialog cheader_filename="meta/meta-inhibit-shortcuts-dialog.h"
@@ -68,11 +76,12 @@ MonitorSwitchConfigType cheader_filename="meta/meta-monitor-manager.h"
 MotionDirection cheader_filename="meta/common.h"
 PadActionType cheader_filename="meta/display.h"
 Plugin cheader_filename="meta/meta-plugin.h"
+Plugin.xevent_filter.event type="X.Event" ref
 PluginInfo cheader_filename="meta/meta-plugin.h"
 PluginVersion cheader_filename="meta/meta-plugin.h"
 Preference cheader_filename="meta/prefs.h"
 PrefsChangedFunc cheader_filename="meta/prefs.h"
-Rectangle cheader_filename="meta/boxes.h"
+Rectangle cheader_filename="meta/boxes.h" struct
 RemoteAccessController cheader_filename="meta/meta-remote-access-controller.h"
 RemoteAccessHandle cheader_filename="meta/meta-remote-access-controller.h"
 Settings cheader_filename="meta/meta-settings.h"
@@ -86,6 +95,7 @@ SizeChange cheader_filename="meta/compositor.h"
 SoundPlayer cheader_filename="meta/meta-sound-player.h"
 StartupNotification cheader_filename="meta/meta-startup-notification.h"
 StartupNotification.changed.object type="Meta.StartupSequence"
+StartupNotification.get_sequences type_arguments="Meta.StartupSequence"
 StartupSequence cheader_filename="meta/meta-startup-notification.h"
 StackLayer cheader_filename="meta/common.h"
 Stage cheader_filename="meta/meta-stage.h"
@@ -112,7 +122,7 @@ WindowShape cheader_filename="meta/meta-window-shape.h"
 WindowType cheader_filename="meta/window.h"
 X11Display cheader_filename="meta/meta-x11-display.h"
 
-rect parent="Meta.Rectangle" cheader_filename="meta/boxes.h" symbol_type="constructor" name="new"
+rect skip
 prefs_* parent="Meta.Prefs" name="prefs_(.+)" cheader_filename="meta/prefs.h"
 
 g_utf8_strndup skip
@@ -156,6 +166,14 @@ pop_no_msg_prefix parent="Meta.Util" cheader_filename="meta/util.h"
 push_no_msg_prefix parent="Meta.Util" cheader_filename="meta/util.h"
 remove_verbose_topic parent="Meta.Util" cheader_filename="meta/util.h"
 show_dialog parent="Meta.Util" cheader_filename="meta/util.h"
+show_dialog.columns type_arguments="string" nullable default=null
+show_dialog.entries type_arguments="string" nullable default=null
+show_dialog.transient_for default=0
+show_dialog.icon_name nullable default=null
+show_dialog.cancel_text nullable default=null
+show_dialog.ok_text nullable default=null
+show_dialog.display nullable default=null
+show_dialog.timeout nullable default=null
 topic_real parent="Meta.Util" cheader_filename="meta/util.h"
 unsigned_long_equal parent="Meta.Util" name="ulong_equal" cheader_filename="meta/util.h"
 unsigned_long_equal.v1 type="ulong?"
@@ -164,8 +182,6 @@ unsigned_long_hash parent="Meta.Util" name="ulong_hash" cheader_filename="meta/u
 unsigned_long_hash.v type="ulong?"
 verbose_real parent="Meta.Util" cheader_filename="meta/util.h"
 warning parent="Meta.Util" cheader_filename="meta/util.h"
-show_dialog.columns type_arguments="string"
-show_dialog.entries type_arguments="string"
 set_gnome_wm_keybindings parent="Meta.Util"
 set_wm_name parent="Meta.Util"
 

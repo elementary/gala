@@ -98,7 +98,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 			});
 		});
 
-		clone = new Clutter.Clone (window_actor.get_texture ());
+		clone = new Clutter.Clone (window_actor);
 
 		move_action = new MoveAction ();
 		move_action.drag_begin.connect (on_move_begin);
