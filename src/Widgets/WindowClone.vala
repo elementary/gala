@@ -223,7 +223,7 @@ namespace Gala
 			if (overview_mode)
 				actor.hide ();
 
-			clone = new Clone (actor.get_texture ());
+			clone = new Clone (actor);
 			add_child (clone);
 
 			set_child_below_sibling (active_shape, clone);

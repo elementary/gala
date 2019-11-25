@@ -343,9 +343,9 @@ namespace Gala.Plugins.Notify
 				return null;
 
 #if HAS_MUTTER330
-		    unowned GLib.List<weak Meta.WindowActor>? actors = Meta.Compositor.get_window_actors (display);
+		    unowned GLib.List<Meta.WindowActor> actors = display.get_window_actors ();
 #else
-		    unowned GLib.List<weak Meta.WindowActor>? actors = Meta.Compositor.get_window_actors (screen);
+		    unowned GLib.List<Meta.WindowActor> actors = screen.get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())

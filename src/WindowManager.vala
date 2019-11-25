@@ -191,9 +191,9 @@ namespace Gala
 			}
 
 #if HAS_MUTTER330
-			stage = Compositor.get_stage_for_display (display) as Clutter.Stage;
+			stage = display.get_stage () as Clutter.Stage;
 #else
-			stage = Compositor.get_stage_for_screen (screen) as Clutter.Stage;
+			stage = screen.get_stage () as Clutter.Stage;
 #endif
 
 			var color = BackgroundSettings.get_default ().primary_color;
@@ -232,9 +232,9 @@ namespace Gala
 			stage.add_child (ui_group);
 
 #if HAS_MUTTER330
-			window_group = Compositor.get_window_group_for_display (display);
+			window_group = display.get_window_group ();
 #else
-			window_group = Compositor.get_window_group_for_screen (screen);
+			window_group = screen.get_window_group ();
 #endif
 			stage.remove_child (window_group);
 			ui_group.add_child (window_group);
@@ -248,9 +248,9 @@ namespace Gala
 			window_group.set_child_below_sibling (background_group, null);
 
 #if HAS_MUTTER330
-			top_window_group = Compositor.get_top_window_group_for_display (display);
+			top_window_group = display.get_top_window_group ();
 #else
-			top_window_group = Compositor.get_top_window_group_for_screen (screen);
+			top_window_group = screen.get_top_window_group ();
 #endif
 			stage.remove_child (top_window_group);
 			ui_group.add_child (top_window_group);
@@ -399,9 +399,9 @@ namespace Gala
 		void add_hotcorner (float x, float y, string key)
 		{
 #if HAS_MUTTER330
-			unowned Clutter.Actor? stage = Compositor.get_stage_for_display (get_display ());
+			unowned Clutter.Actor? stage = get_display ().get_stage ();
 #else
-			unowned Clutter.Actor? stage = Compositor.get_stage_for_screen (get_screen ());
+			unowned Clutter.Actor? stage = get_screen ().get_stage ();
 #endif
 			return_if_fail (stage != null);
 
@@ -807,9 +807,9 @@ namespace Gala
 			begin_modal (0, time);
 
 #if HAS_MUTTER330
-			Meta.Util.disable_unredirect_for_display (display);
+			display.disable_unredirect ();
 #else
-			Meta.Util.disable_unredirect_for_screen (screen);
+			screen.disable_unredirect ();
 #endif
 
 			return proxy;
@@ -834,12 +834,12 @@ namespace Gala
 			unowned Meta.Display display = get_display ();
 			end_modal (display.get_current_time ());
 
-			Meta.Util.enable_unredirect_for_display (display);
+			display.enable_unredirect ();
 #else
 			var screen = get_screen ();
 			end_modal (screen.get_display ().get_current_time ());
 
-			Meta.Util.enable_unredirect_for_screen (screen);
+			screen.enable_unredirect ();
 #endif
 		}
 
@@ -1991,9 +1991,9 @@ namespace Gala
 
 			// collect all windows and put them in the appropriate containers
 #if HAS_MUTTER330
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (display)) {
+			foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
 #else
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+			foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
 #endif
 				if (actor.is_destroyed ())
 					continue;
