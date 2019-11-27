@@ -74,7 +74,11 @@ namespace Gala
 			debug ("Taking screenshot");
 
 			int width, height;
+#if HAS_MUTTER330
+			wm.get_display ().get_size (out width, out height);
+#else
 			wm.get_screen ().get_size (out width, out height);
+#endif
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
 
@@ -106,7 +110,16 @@ namespace Gala
 		{
 			debug ("Taking window screenshot");
 
+#if HAS_MUTTER330
+			var window = wm.get_display ().get_focus_window ();
+#else
 			var window = wm.get_screen ().get_display ().get_focus_window ();
+#endif
+
+			if (window == null) {
+				throw new DBusError.FAILED ("Cannot find active window");
+			}
+
 			var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 			unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
@@ -208,7 +221,6 @@ namespace Gala
 		Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor)
 		{
 			Cairo.ImageSurface image;
-#if HAS_MUTTER322
 			Clutter.Capture[] captures;
 			wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -218,14 +230,6 @@ namespace Gala
 				image = captures[0].image;
 			else
 				image = composite_capture_images (captures, x, y, width, height);
-#else
-			unowned Clutter.Backend backend = Clutter.get_default_backend ();
-			unowned Cogl.Context context = Clutter.backend_get_cogl_context (backend);
-
-			image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-			var bitmap = Cogl.bitmap_new_for_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE, image.get_stride (), image.get_data ());
-			Cogl.framebuffer_read_pixels_into_bitmap (Cogl.get_draw_framebuffer (), x, y, Cogl.ReadPixelsFlags.BUFFER, bitmap);
-#endif
 
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { x, y, width, height});
@@ -235,7 +239,6 @@ namespace Gala
 			return image;
 		}
 
-#if HAS_MUTTER322
 		Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height)
 		{
 			var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
@@ -257,11 +260,14 @@ namespace Gala
 
 			return image;
 		}
-#endif
 
 		Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
 		{
-			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_screen (wm.get_screen ());
+#if HAS_MUTTER330
+			unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
+#else
+			unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
+#endif
 
 			int x, y;
 			cursor_tracker.get_pointer (out x, out y, null);

@@ -37,7 +37,11 @@ namespace Gala
 
 		public WindowManager wm { get; construct; }
 
+#if HAS_MUTTER330
+		Meta.Display display;
+#else
 		Meta.Screen screen;
+#endif
 
 		ModalProxy modal_proxy;
 		bool ready;
@@ -52,10 +56,17 @@ namespace Gala
 
 		construct
 		{
+#if HAS_MUTTER330
+			display = wm.get_display ();
+
+			display.get_workspace_manager ().workspace_switched.connect (close);
+			display.restacked.connect (restack_windows);
+#else
 			screen = wm.get_screen ();
 
 			screen.workspace_switched.connect (close);
 			screen.restacked.connect (restack_windows);
+#endif
 
 			visible = false;
 			ready = true;
@@ -64,7 +75,11 @@ namespace Gala
 
 		~WindowOverview ()
 		{
+#if HAS_MUTTER330
+			display.restacked.disconnect (restack_windows);
+#else
 			screen.restacked.disconnect (restack_windows);
+#endif
 		}
 
 		public override bool key_press_event (Clutter.KeyEvent event)
@@ -120,12 +135,23 @@ namespace Gala
 
 			workspaces = new List<Workspace> ();
 
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			if (all_windows) {
+			    for (int i = 0; i < manager.get_n_workspaces (); i++) {
+					workspaces.append (manager.get_workspace_by_index (i));
+				}
+			} else {
+				workspaces.append (manager.get_active_workspace ());
+			}
+#else
 			if (all_windows) {
 				foreach (var workspace in screen.get_workspaces ())
 					workspaces.append (workspace);
 			} else {
 				workspaces.append (screen.get_active_workspace ());
 			}
+#endif
 
 			foreach (var workspace in workspaces) {
 				foreach (var window in workspace.list_windows ()) {
@@ -161,10 +187,17 @@ namespace Gala
 				workspace.window_removed.connect (remove_window);
 			}
 
+#if HAS_MUTTER330
+			display.window_left_monitor.connect (window_left_monitor);
+
+			// sort windows by stacking order
+			var windows = display.sort_windows_by_stacking (used_windows);
+#else
 			screen.window_left_monitor.connect (window_left_monitor);
 
 			// sort windows by stacking order
 			var windows = screen.get_display ().sort_windows_by_stacking (used_windows);
+#endif
 
 			grab_key_focus ();
 
@@ -173,8 +206,13 @@ namespace Gala
 
 			visible = true;
 
+#if HAS_MUTTER330
+			for (var i = 0; i < display.get_n_monitors (); i++) {
+				var geometry = display.get_monitor_geometry (i);
+#else
 			for (var i = 0; i < screen.get_n_monitors (); i++) {
 				var geometry = screen.get_monitor_geometry (i);
+#endif
 
 				var container = new WindowCloneContainer (true);
 				container.padding_top = TOP_GAP;
@@ -211,11 +249,19 @@ namespace Gala
 			return (name != "expose-windows" && name != "expose-all-windows");
 		}
 
+#if HAS_MUTTER330
+		void restack_windows (Display display)
+		{
+			foreach (var child in get_children ())
+				((WindowCloneContainer) child).restack_windows (display);
+		}
+#else
 		void restack_windows (Screen screen)
 		{
 			foreach (var child in get_children ())
 				((WindowCloneContainer) child).restack_windows (screen);
 		}
+#endif
 
 		void window_left_monitor (int num, Window window)
 		{
@@ -258,6 +304,22 @@ namespace Gala
 			container.remove_window (window);
 		}
 
+#if HAS_MUTTER330
+		void thumb_selected (Window window)
+		{
+			if (window.get_workspace () == display.get_workspace_manager ().get_active_workspace ()) {
+				window.activate (display.get_current_time ());
+				close ();
+			} else {
+				close ();
+				//wait for the animation to finish before switching
+				Timeout.add (400, () => {
+					window.get_workspace ().activate_with_focus (window, display.get_current_time ());
+					return false;
+				});
+			}
+		}
+#else
 		void thumb_selected (Window window)
 		{
 			if (window.get_workspace () == screen.get_active_workspace ()) {
@@ -272,6 +334,7 @@ namespace Gala
 				});
 			}
 		}
+#endif
 
 		/**
 		 * {@inheritDoc}
@@ -285,7 +348,11 @@ namespace Gala
 				workspace.window_added.disconnect (add_window);
 				workspace.window_removed.disconnect (remove_window);
 			}
+#if HAS_MUTTER330
+			display.window_left_monitor.disconnect (window_left_monitor);
+#else
 			screen.window_left_monitor.disconnect (window_left_monitor);
+#endif
 
 			ready = false;
 
@@ -307,7 +374,11 @@ namespace Gala
 			ready = true;
 			visible = false;
 
+#if HAS_MUTTER330
+			foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ())
+#else
 			foreach (var window in screen.get_active_workspace ().list_windows ())
+#endif
 				if (window.showing_on_its_workspace ())
 					((Actor) window.get_compositor_private ()).show ();
 

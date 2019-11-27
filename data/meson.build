@@ -25,6 +25,7 @@ i18n.merge_file(
 	install_dir: join_paths(data_dir, 'applications')
 )
 install_data(['gala.desktop', 'gala-daemon.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
+install_data(files('20_elementary.pantheon.wm.gschema.override'), install_dir: join_paths(data_dir, 'glib-2.0', 'schemas'))
 
 icons_dir = join_paths(get_option('datadir'), 'icons', 'hicolor')
 install_data('icons/32x32/multitasking-view.svg', install_dir: join_paths(icons_dir, '32x32', 'apps'))

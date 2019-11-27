@@ -30,7 +30,11 @@ namespace Gala.Plugins.Zoom
 		public override void initialize (Gala.WindowManager wm)
 		{
 			this.wm = wm;
+#if HAS_MUTTER330
+			var display = wm.get_display ();
+#else
 			var display = wm.get_screen ().get_display ();
+#endif
 			var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
 			display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
@@ -42,7 +46,11 @@ namespace Gala.Plugins.Zoom
 			if (wm == null)
 				return;
 
+#if HAS_MUTTER330
+			var display = wm.get_display ();
+#else
 			var display = wm.get_screen ().get_display ();
+#endif
 
 			display.remove_keybinding ("zoom-in");
 			display.remove_keybinding ("zoom-out");
@@ -53,15 +61,25 @@ namespace Gala.Plugins.Zoom
 		}
 
 		[CCode (instance_pos = -1)]
+#if HAS_MUTTER330
+		void zoom_in (Meta.Display display, Meta.Window? window,
+		    Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 		void zoom_in (Meta.Display display, Meta.Screen screen,
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+#endif
 		{
 			zoom (true);
 		}
 
 		[CCode (instance_pos = -1)]
+#if HAS_MUTTER330
+		void zoom_out (Meta.Display display, Meta.Window? window,
+		    Clutter.KeyEvent event, Meta.KeyBinding binding)
+#else
 		void zoom_out (Meta.Display display, Meta.Screen screen,
 			Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+#endif
 		{
 			zoom (false);
 		}
