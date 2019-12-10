@@ -63,7 +63,7 @@ namespace Gala
 			factory.set_params ("modal_dialog", false, shadow);
 
 			//dialog unfocused
-			shadow = settings.get_shadowparams ("normal_unfocused");
+			shadow = settings.get_shadowparams ("dialog_unfocused");
 			factory.set_params ("dialog", false, shadow);
 			factory.set_params ("modal_dialog", false, shadow);
 		}
@@ -113,7 +113,7 @@ namespace Gala
 					unowned Meta.X11Display x11display = display.get_x11_display ();
 					x11display.clear_stage_input_region ();
 #else
-					Util.empty_stage_input_region (display);
+					display.empty_stage_input_region ();
 #endif
 					return;
 			}
@@ -167,12 +167,12 @@ namespace Gala
 					break;
 				case InputArea.NONE:
 				default:
-					Util.empty_stage_input_region (screen);
+					screen.empty_stage_input_region ();
 					return;
 			}
 
 			var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
-			Util.set_stage_input_region (screen, xregion);
+			screen.set_stage_input_region (xregion);
 		}
 #endif
 
@@ -191,9 +191,9 @@ namespace Gala
 			new_window.change_workspace_by_index (index, false);
 
 #if HAS_MUTTER330
-			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_display ());
+			unowned List<WindowActor> actors = new_window.get_display ().get_window_actors ();
 #else
-			unowned List<unowned WindowActor> actors = Compositor.get_window_actors (new_window.get_screen ());
+			unowned List<WindowActor> actors = new_window.get_screen ().get_window_actors ();
 #endif
 			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())
@@ -229,21 +229,6 @@ namespace Gala
 			var k2 = b.y - a.y;
 
 			return k1*k1 + k2*k2;
-		}
-
-		static bool rect_is_overlapping_any (Meta.Rectangle rect, Meta.Rectangle[] rects, Meta.Rectangle border)
-		{
-			if (!border.contains_rect (rect))
-				return true;
-			foreach (var comp in rects) {
-				if (comp == rect)
-					continue;
-
-				if (rect.overlap (comp))
-					return true;
-			}
-
-			return false;
 		}
 
 		static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
@@ -393,230 +378,9 @@ namespace Gala
 			}
 		}
 
-		/* TODO needs porting
-		public List<Meta.Rectangle?> natural_placement (Meta.Rectangle area, List<Meta.Rectangle?> windows)
-		{
-			Meta.Rectangle bounds = {area.x, area.y, area.width, area.height};
-
-			var window_count = windows.length ();
-
-			var direction = 0;
-			int[] directions = new int[window_count];
-			Meta.Rectangle[] rects = new Meta.Rectangle[window_count];
-
-			for (int i = 0; i < window_count; i++) {
-				// save rectangles into 4-dimensional arrays representing two corners of the rectangular: [left_x, top_y, right_x, bottom_y]
-				var rect = clones.nth_data (i);
-				rect = rect_adjusted(rect, -GAPS, -GAPS, GAPS, GAPS);
-				rects[i] = rect;
-				bounds = bounds.union (rect);
-
-				// This is used when the window is on the edge of the screen to try to use as much screen real estate as possible.
-				directions[i] = direction;
-				direction++;
-				if (direction == 4)
-					direction = 0;
-			}
-
-			var loop_counter = 0;
-			var overlap = false;
-			do {
-				overlap = false;
-				for (var i = 0; i < rects.length; i++) {
-					for (var j = 0; j < rects.length; j++) {
-						if (i == j)
-							continue;
-
-						var rect = rects[i];
-						var comp = rects[j];
-
-						if (!rect.overlap (comp))
-							continue;
-
-						loop_counter ++;
-						overlap = true;
-
-						// Determine pushing direction
-						Gdk.Point i_center = rect_center (rect);
-						Gdk.Point j_center = rect_center (comp);
-						Gdk.Point diff = {j_center.x - i_center.x, j_center.y - i_center.y};
-
-						// Prevent dividing by zero and non-movement
-						if (diff.x == 0 && diff.y == 0)
-							diff.x = 1;
-
-						// Approximate a vector of between 10px and 20px in magnitude in the same direction
-						var length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
-						diff.x = (int)Math.floorf (diff.x * ACCURACY / length);
-						diff.y = (int)Math.floorf (diff.y * ACCURACY / length);
-						// Move both windows apart
-						rect.x += -diff.x;
-						rect.y += -diff.y;
-						comp.x += diff.x;
-						comp.y += diff.y;
-
-						// Try to keep the bounding rect the same aspect as the screen so that more
-						// screen real estate is utilised. We do this by splitting the screen into nine
-						// equal sections, if the window center is in any of the corner sections pull the
-						// window towards the outer corner. If it is in any of the other edge sections
-						// alternate between each corner on that edge. We don't want to determine it
-						// randomly as it will not produce consistant locations when using the filter.
-						// Only move one window so we don't cause large amounts of unnecessary zooming
-						// in some situations. We need to do this even when expanding later just in case
-						// all windows are the same size.
-						// (We are using an old bounding rect for this, hopefully it doesn't matter)
-						var x_section = (int)Math.roundf ((rect.x - bounds.x) / (bounds.width / 3.0f));
-						var y_section = (int)Math.roundf ((comp.y - bounds.y) / (bounds.height / 3.0f));
-
-						i_center = rect_center (rect);
-						diff.x = 0;
-						diff.y = 0;
-						if (x_section != 1 || y_section != 1) { // Remove this if you want the center to pull as well
-							if (x_section == 1)
-								x_section = (directions[i] / 2 == 1 ? 2 : 0);
-							if (y_section == 1)
-								y_section = (directions[i] % 2 == 1 ? 2 : 0);
-						}
-						if (x_section == 0 && y_section == 0) {
-							diff.x = bounds.x - i_center.x;
-							diff.y = bounds.y - i_center.y;
-						}
-						if (x_section == 2 && y_section == 0) {
-							diff.x = bounds.x + bounds.width - i_center.x;
-							diff.y = bounds.y - i_center.y;
-						}
-						if (x_section == 2 && y_section == 2) {
-							diff.x = bounds.x + bounds.width - i_center.x;
-							diff.y = bounds.y + bounds.height - i_center.y;
-						}
-						if (x_section == 0 && y_section == 2) {
-							diff.x = bounds.x - i_center.x;
-							diff.y = bounds.y + bounds.height - i_center.y;
-						}
-						if (diff.x != 0 || diff.y != 0) {
-							length = Math.sqrtf (diff.x * diff.x + diff.y * diff.y);
-							diff.x *= (int)Math.floorf (ACCURACY / length / 2.0f);
-							diff.y *= (int)Math.floorf (ACCURACY / length / 2.0f);
-							rect.x += diff.x;
-							rect.y += diff.y;
-						}
-
-						// Update bounding rect
-						bounds = bounds.union(rect);
-						bounds = bounds.union(comp);
-
-						//we took copies from the rects from our list so we need to reassign them
-						rects[i] = rect;
-						rects[j] = comp;
-					}
-				}
-			} while (overlap && loop_counter < MAX_TRANSLATIONS);
-
-			// Work out scaling by getting the most top-left and most bottom-right window coords.
-			float scale = Math.fminf (Math.fminf (area.width / (float)bounds.width, area.height / (float)bounds.height), 1.0f);
-
-			// Make bounding rect fill the screen size for later steps
-			bounds.x = (int)Math.floorf (bounds.x - (area.width - bounds.width * scale) / 2);
-			bounds.y = (int)Math.floorf (bounds.y - (area.height - bounds.height * scale) / 2);
-			bounds.width = (int)Math.floorf (area.width / scale);
-			bounds.height = (int)Math.floorf (area.height / scale);
-
-			// Move all windows back onto the screen and set their scale
-			var index = 0;
-			foreach (var rect in rects) {
-				rect = {(int)Math.floorf ((rect.x - bounds.x) * scale + area.x),
-				        (int)Math.floorf ((rect.y - bounds.y) * scale + area.y),
-				        (int)Math.floorf (rect.width * scale),
-				        (int)Math.floorf (rect.height * scale)};
-
-				rects[index] = rect;
-				index++;
-			}
-
-			// fill gaps by enlarging windows
-			bool moved = false;
-			Meta.Rectangle border = area;
-			do {
-				moved = false;
-
-				index = 0;
-				foreach (var rect in rects) {
-
-					int width_diff = ACCURACY;
-					int height_diff = (int)Math.floorf ((((rect.width + width_diff) - rect.height) / 
-					    (float)rect.width) * rect.height);
-					int x_diff = width_diff / 2;
-					int y_diff = height_diff / 2;
-
-					//top right
-					Meta.Rectangle old = rect;
-					rect = {rect.x + x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
-					if (rect_is_overlapping_any (rect, rects, border))
-						rect = old;
-					else
-						moved = true;
-
-					//bottom right
-					old = rect;
-					rect = {rect.x + x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
-					if (rect_is_overlapping_any (rect, rects, border))
-						rect = old;
-					else
-						moved = true;
-
-					//bottom left
-					old = rect;
-					rect = {rect.x - x_diff, rect.y + y_diff, rect.width + width_diff, rect.height + width_diff};
-					if (rect_is_overlapping_any (rect, rects, border))
-						rect = old;
-					else
-						moved = true;
-
-					//top left
-					old = rect;
-					rect = {rect.x - x_diff, rect.y - y_diff - height_diff, rect.width + width_diff, rect.height + width_diff};
-					if (rect_is_overlapping_any (rect, rects, border))
-						rect = old;
-					else
-						moved = true;
-
-					rects[index] = rect;
-					index++;
-				}
-			} while (moved);
-
-			var result = new List<Meta.Rectangle?> ();
-
-			index = 0;
-			foreach (var rect in rects) {
-				var window_rect = clones.nth_data (index);
-
-				rect = rect_adjusted (rect, GAPS, GAPS, -GAPS, -GAPS);
-				scale = rect.width / (float)window_rect.width;
-
-				if (scale > 2.0 || (scale > 1.0 && (window_rect.width > 300 || window_rect.height > 300))) {
-					scale = (window_rect.width > 300 || window_rect.height > 300) ? 1.0f : 2.0f;
-					rect = {rect_center (rect).x - (int)Math.floorf (window_rect.width * scale) / 2,
-					        rect_center (rect).y - (int)Math.floorf (window_rect.height * scale) / 2,
-					        (int)Math.floorf (window_rect.width * scale),
-					        (int)Math.floorf (window_rect.height * scale)};
-				}
-
-				result.prepend (rect);
-				index++;
-			}
-
-			result.reverse ();
-			return result;
-		}*/
-
 		public static int get_ui_scaling_factor ()
 		{
-#if HAS_MUTTER326
 			return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#else
-			return 1;
-#endif
 		}
 	}
 }

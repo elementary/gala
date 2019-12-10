@@ -168,6 +168,8 @@ namespace Gala
                 return true;
             }
 
+            ctx.translate (0.5, 0.5);
+
             int x, y, w, h;
             get_selection_rectangle (out x, out y, out w, out h);
 
