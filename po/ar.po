@@ -8,43 +8,46 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2014-04-17 10:53+0000\n"
-"Last-Translator: Mohammed  Shammout <fdsmohammed@gmail.com>\n"
-"Language-Team: Arabic <ar@li.org>\n"
+"PO-Revision-Date: 2019-12-10 19:01+0000\n"
+"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
+"\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Weblate 3.7.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
-msgstr ""
+msgstr "هل الواجهة تبدو جيدة؟"
 
 #: src/WindowManager.vala:2191
 msgid "Keep This Configuration"
-msgstr ""
+msgstr "إحتفظ بهذه الإعدادات"
 
 #: src/WindowManager.vala:2192
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "إسترجع الإعدادات السابقة"
 
 #: daemon/MenuDaemon.vala:95
 msgid "Minimize"
-msgstr ""
+msgstr "صغر"
 
 #: daemon/MenuDaemon.vala:107
 msgid "Move"
-msgstr ""
+msgstr "حرك"
 
 #: daemon/MenuDaemon.vala:113
 msgid "Resize"
-msgstr ""
+msgstr "تغيير الحجم"
 
 #: daemon/MenuDaemon.vala:119
 msgid "Always on Top"
-msgstr ""
+msgstr "دائماً في المقدمة"
 
 #: daemon/MenuDaemon.vala:125
 msgid "Always on Visible Workspace"
@@ -60,7 +63,7 @@ msgstr ""
 
 #: daemon/MenuDaemon.vala:143
 msgid "Close"
-msgstr ""
+msgstr "اغلاق"
 
 #: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"
@@ -68,7 +71,7 @@ msgstr ""
 
 #: daemon/MenuDaemon.vala:159
 msgid "Maximize"
-msgstr ""
+msgstr "تكبير"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -111,19 +114,19 @@ msgstr ""
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr ""
+msgstr "واجهة تعدد المهام"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "إعرض كل النوافذ المفتوحة و مساحات العمال"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "أخرى"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -235,7 +238,7 @@ msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:115
 msgid "Zoom in"
-msgstr ""
+msgstr "تقرب"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:120
 msgid "Zoom out"
