@@ -12,12 +12,12 @@
   <releases>
     <release version="3.2.0" date="2019-12-09" urgency="medium">
       <description>
+        <p>Improvements:</p>
         <ul>
           <li>Improve window shadows for legacy apps</li>
           <li>Fix potential crash when taking screenshots</li>
           <li>Fix notification position after changing DPI</li>
-          <li>Fix animatins for moving and maximizing tiled windows</li>
-          <li>Add option to move maximized windows to their own workspace</li>
+          <li>Fix animations for moving and maximizing tiled windows</li>
         </ul>
       </description>
     </release>
@@ -26,4 +26,4 @@
   <developer_name>elementary, Inc.</developer_name>
   <url type="homepage">https://elementary.io</url>
   <url type="bugtracker">https://github.com/elementary/gala/issues</url>
-​</component>
+</component>
