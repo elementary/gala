@@ -4,13 +4,13 @@
   <id>io.elementary.gala</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
-  <name>Multitasking & Window Management</name>
-  <summary>A window & compositing manager for Pantheon</summary>
+  <name>Multitasking &amp; Window Management</name>
+  <summary>A window &amp; compositing manager for Pantheon</summary>
   <description>
-    <p>A window & compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
+    <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="5.0.0" date="2019-12-09" urgency="medium">
+    <release version="3.2.0" date="2019-12-09" urgency="medium">
       <description>
         <ul>
           <li>Improve window shadows for legacy apps</li>
