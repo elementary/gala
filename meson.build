@@ -1,6 +1,6 @@
 project('gala',
 	'c', 'vala',
-	version: '0.3.1',
+	version: '3.2.0',
 	meson_version: '>= 0.42.0',
 	license: 'GPL3',
 )
