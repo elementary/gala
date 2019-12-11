@@ -1,54 +1,52 @@
-# Lojban translation for gala
-# Copyright (c) 2016 Rosetta Contributors and Canonical Ltd 2016
+# Javanese translations for gala package.
+# Copyright (C) 2019 The Gala Developers
 # This file is distributed under the same license as the gala package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+# Automatically generated, 2019.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gala\n"
+"Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2016-08-04 03:46+0000\n"
-"Last-Translator: Benjamin Carlisle <murph@bgcarlisle.com>\n"
-"Language-Team: Lojban <jbo@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2019-12-10 17:16-0800\n"
+"PO-Revision-Date: 2019-12-10 17:16-0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: jv\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ASCII\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
-msgstr ".i xu lo vidni cu drani"
+msgstr ""
 
 #: src/WindowManager.vala:2191
 msgid "Keep This Configuration"
-msgstr "rejgau ti poi nelcu'a"
+msgstr ""
 
 #: src/WindowManager.vala:2192
 msgid "Restore Previous Configuration"
-msgstr "xruti lo prula'i nelcu'a"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:95
 msgid "Minimize"
-msgstr "cmagau"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:107
 msgid "Move"
-msgstr "muvdu"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:113
 msgid "Resize"
-msgstr "nilbra gafygau"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:119
 msgid "Always on Top"
-msgstr "roroi galrai"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:125
 msgid "Always on Visible Workspace"
-msgstr "roroi zvati lo vidni poi visycu'i"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:131
 msgid "Move to Workspace Left"
@@ -60,15 +58,15 @@ msgstr ""
 
 #: daemon/MenuDaemon.vala:143
 msgid "Close"
-msgstr "ga'orgau"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"
-msgstr "tolbraraigau"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:159
 msgid "Maximize"
-msgstr "braraigau"
+msgstr ""
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
