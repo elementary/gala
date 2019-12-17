@@ -9,15 +9,17 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2016-12-12 20:18+0000\n"
-"Last-Translator: Martin Korpala <Unknown>\n"
-"Language-Team: Slovak <>\n"
+"PO-Revision-Date: 2019-12-16 18:35+0000\n"
+"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
+"\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -61,7 +63,7 @@ msgstr "Presun na pracovný priestor v pravo"
 
 #: daemon/MenuDaemon.vala:143
 msgid "Close"
-msgstr "Zavrieť"
+msgstr "Zatvoriť"
 
 #: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"
@@ -124,7 +126,7 @@ msgstr ""
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Ostatné"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
