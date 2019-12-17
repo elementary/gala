@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
 "PO-Revision-Date: 2019-12-17 23:13+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr ""
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -85,7 +89,8 @@ msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
-"libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コンポジット型ウィンドウマネージャーです。"
+"libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
+"ンポジット型ウィンドウマネージャーです。"
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
@@ -105,7 +110,9 @@ msgstr "DPI を変更すると通知が間違った位置に表示される問�
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修正"
+msgstr ""
+"タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
+"正"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
