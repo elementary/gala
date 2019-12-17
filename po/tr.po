@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-17 15:07-0800\n"
-"PO-Revision-Date: 2019-12-17 00:25+0000\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:225
 msgid "Screenshots"
-msgstr ""
+msgstr "Ekran Görüntüleri"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -94,23 +94,23 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
