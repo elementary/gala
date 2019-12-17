@@ -7,16 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2014-04-17 10:58+0000\n"
-"Last-Translator: Corentin Noël <corentin@elementaryos.org>\n"
-"Language-Team: Basque <eu@li.org>\n"
+"POT-Creation-Date: 2019-12-10 17:16-0800\n"
+"PO-Revision-Date: 2019-12-16 18:35+0000\n"
+"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"Language-Team: Basque <https://l10n.elementary.io/projects/desktop/gala/eu/>"
+"\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -60,7 +62,7 @@ msgstr ""
 
 #: daemon/MenuDaemon.vala:143
 msgid "Close"
-msgstr ""
+msgstr "Itxi"
 
 #: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"

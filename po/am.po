@@ -1,22 +1,20 @@
-# Amharic translation for gala
-# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR The Gala Developers
 # This file is distributed under the same license as the gala package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gala\n"
+"Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2014-06-08 21:04+0000\n"
-"Last-Translator: samson <Unknown>\n"
-"Language-Team: Amharic <am@li.org>\n"
+"POT-Creation-Date: 2019-12-10 17:16-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
 "Language: am\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -426,24 +424,3 @@ msgstr ""
 #: data/org.pantheon.desktop.gala.gschema.xml.in:290
 msgid "Only show corner masks on primary monitor"
 msgstr ""
-
-#~ msgid "Cancel"
-#~ msgstr "መሰረዣ"
-
-#~ msgid "Restart"
-#~ msgstr "እንደገና ማስጀመሪያ"
-
-#~ msgid "Are you sure you want to Shut Down?"
-#~ msgstr "በእርግጥ ማጥፋት ይፈልጋሉ?"
-
-#~ msgid "Shut Down"
-#~ msgstr "ማጥፊያ"
-
-#~ msgid "Are you sure you want to Log Out?"
-#~ msgstr "በእርግጥ መውጣት ይፈልጋሉ?"
-
-#~ msgid "Log Out"
-#~ msgstr "መውጫ"
-
-#~ msgid "This will close any open app and turn off your device."
-#~ msgstr "ይህ የተከፈቱ መተግበሪያዎች ይዘጋ እና ኮምፒዩተሩን ያጠፋል"
