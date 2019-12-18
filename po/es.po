@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-12-13 20:07+0000\n"
-"Last-Translator: Daniel R. <riesp@pm.me>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
-"\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-16 18:35+0000\n"
+"Last-Translator: Rafael Bautista Martínez <iuninefrendor@gmail.com>\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr ""
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -74,17 +78,19 @@ msgstr "Maximizar"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitarea y gestión de ventanas"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Un administrador y compositor de ventanas para Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Un administrador y compositor de ventanas basado en libmutter y diseñado por "
+"elementary para su uso con Pantheon."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
@@ -92,19 +98,20 @@ msgstr "Mejoras:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Mejora en las sombras de las ventanas para aplicaciones heredadas"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Se corrigió la posición de notificaciones después de cambiar el DPI"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Se corrigieron las animaciones para mover y maximizar ventanas en mosaico"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."

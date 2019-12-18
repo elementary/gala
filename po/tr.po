@@ -7,18 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-01-04 00:07+0000\n"
-"Last-Translator: Emre Balasar <balasare@gmail.com>\n"
-"Language-Team: Turkish <https://weblate.elementary.io/projects/desktop/gala/"
-"tr/>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
+"Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Ekran Görüntüleri"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -74,41 +78,43 @@ msgstr "Ekranı Kapla"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Çoklu Görev ve Pencere Yönetimi"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Pantheon için bir pencere yöneticisi"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Pantheon ile kullanılmak üzere libmutter temel alınan ve elementary "
+"tarafından tasarlanmış bir pencere yöneticisi."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -235,9 +241,10 @@ msgstr ""
 "değiştirici kapatıldığında geriye gönderir."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "Tüm açık pencereleri ve çalışma alanlarını göster"
+msgstr ""
+"Ekranı kaplamak için büyütülmüş pencereleri otomatik olarak yeni bir çalışma "
+"alanına taşı"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -364,9 +371,8 @@ msgstr ""
 "pencere yöneticisi, panel vb. işleyişlerini değiştirir."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "Kapanış animasyonu süresi"
+msgstr "Açılış animasyonu süresi"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -394,17 +400,16 @@ msgid "Defines the shadow of normal focused windows"
 msgstr "Odaklanılmış penceredeki gölge miktarını tanımlar"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:226
-#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"Birinci değer gölge bulanıklığının yarıçapı, ikinci değer üst "
-"solgunluk( genelde sadece -1), ve üçüncü ve dördüncü x- ve y-kaydırması ve "
-"sonuncu da opaklık. Yani [bulanıklık-yarıçapı, üst solgunluk, x-kaydırma, y-"
-"kaydırma, opaklık]"
+"Birinci değer gölge bulanıklığının yarıçapı, ikinci değer üst solgunluk "
+"(genelde sadece -1), ve üçüncü ve dördüncü x- ve y-kaydırması ve sonuncu da "
+"opaklık. Yani [bulanıklık-yarıçapı, üst solgunluk, x-kaydırma, y-kaydırma, "
+"opaklık]."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:230
 msgid "Defines the shadow of a normal unfocused window"
@@ -414,9 +419,8 @@ msgstr "Odaklanılmamış penceredeki gölge miktarını tanımlar"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:236
 #: data/org.pantheon.desktop.gala.gschema.xml.in:241
 #: data/org.pantheon.desktop.gala.gschema.xml.in:246
-#, fuzzy
 msgid "See normal-focused."
-msgstr "Normal-odaklanmış gör"
+msgstr "Normal odaklı görün."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:235
 msgid "Defines the shadow of a menu"
