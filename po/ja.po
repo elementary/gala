@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-12-16 18:35+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
+"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
 "Language: ja\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "スクリーンショット"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -74,17 +78,19 @@ msgstr "最大化"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "マルチタスクとウィンドウ管理"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Pantheon 向けのコンポジット型ウィンドウマネージャー"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
+"ンポジット型ウィンドウマネージャーです。"
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
@@ -92,19 +98,21 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "レガシーなアプリのウィンドウの影を改善"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI を変更すると通知が間違った位置に表示される問題を修正"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
+"正"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
@@ -236,9 +244,8 @@ msgstr ""
 "小化されます。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "すべての開いているウィンドウとワークスペースを参照します"
+msgstr "最大化したウィンドウを新しいワークスペースに自動的に移動させます"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -365,9 +372,8 @@ msgstr ""
 "なので、ウィンドウマネージャーやパネルなどの挙動に影響します。"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "閉じる時のアニメーションの長さ"
+msgstr "開く時のアニメーションの長さ"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
