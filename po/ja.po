@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-17 15:07-0800\n"
-"PO-Revision-Date: 2019-12-17 23:13+0000\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:225
 msgid "Screenshots"
-msgstr ""
+msgstr "スクリーンショット"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
