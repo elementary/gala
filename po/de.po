@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-17 15:07-0800\n"
-"PO-Revision-Date: 2019-02-04 00:08+0000\n"
+"PO-Revision-Date: 2019-12-26 03:51+0000\n"
 "Last-Translator: Jörg Arnold <j.ar@mailbox.org>\n"
-"Language-Team: German <https://weblate.elementary.io/projects/desktop/gala/"
-"de/>\n"
+"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:225
 msgid "Screenshots"
-msgstr ""
+msgstr "Bildschirmfotos"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -92,27 +92,29 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Verbesserungen:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Verbesserung der Fensterschatten für ältere Anwendungen"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Mögliche Abstürze beim Erstellen von Screenshots behoben"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Korrektur der Benachrichtigungsposition nach Änderung des DPI"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Animationen zum Verschieben und Maximieren von gekachelten Fenstern "
+"korrigiert"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -165,13 +167,12 @@ msgid "Action for the bottom right corner"
 msgstr "Aktion für die untere rechte Ecke"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
 msgstr ""
 "Dieser Befehl wird als Aktive-Ecken-Aktion 'custom-command' ausgeführt. "
-"Mehrere Aktionen sind möglich."
+"Mehrere Aktionen sind möglich"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
 msgid ""
@@ -213,11 +214,10 @@ msgid "Panel main menu action"
 msgstr "Leisten-Hauptmenü-Aktion"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-#, fuzzy
 msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Legt den Befehl fest, der ausgeführt wird, sobald das Tastenkürzel für das "
-"Leisten-Hauptmenü gedrückt wird"
+"Leisten-Hauptmenü gedrückt wird."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
@@ -247,9 +247,9 @@ msgstr ""
 "sobald der Fensterumschalter geschlossen wird."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "Alle offenen Fenster und Arbeitsflächen anzeigen"
+msgstr ""
+"Automatisches Verschieben maximierter Fenster in einen neuen Arbeitsbereich"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -387,9 +387,8 @@ msgstr ""
 "Schlüssel. Er ändert das Verhalten des Fenstermanagers, des Panels usw."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "Dauer der Animation beim Schließen"
+msgstr "Animationsdauer beim Öffnen"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -436,9 +435,8 @@ msgstr "Legt den Schattenwurf von normalen Hintergrundfenstern fest"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:236
 #: data/org.pantheon.desktop.gala.gschema.xml.in:241
 #: data/org.pantheon.desktop.gala.gschema.xml.in:246
-#, fuzzy
 msgid "See normal-focused."
-msgstr "Siehe normale Vordergrundfenster"
+msgstr ""
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:235
 msgid "Defines the shadow of a menu"
