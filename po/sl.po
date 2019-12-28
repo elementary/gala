@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2019-12-17 15:07-0800\n"
-"PO-Revision-Date: 2019-12-20 00:44+0000\n"
+"PO-Revision-Date: 2019-12-29 05:21+0000\n"
 "Last-Translator: Marko <marko.dolar@gmail.com>\n"
 "Language-Team: Slovenian <https://l10n.elementary.io/projects/desktop/gala/"
 "sl/>\n"
@@ -112,8 +112,9 @@ msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
 #: data/gala.appdata.xml.in:26
+#, fuzzy
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
