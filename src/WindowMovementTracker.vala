@@ -21,13 +21,11 @@ namespace Gala
 {
 	public class WindowMovementTracker : Object {
 		public weak Meta.Display display { get; construct; }
-		public signal void open (Meta.Window window, int x, int y);
 		public signal void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
 		public signal void hide_tile_preview ();
 		public bool hide_tile_preview_when_window_moves = true;
 		private Meta.Window? current_window;
 		private Meta.Rectangle tile_rect = new Meta.Rectangle ();
-		private const float TRIGGER_RATIO = 0.98f;
 
 		private float start_x;
 		private float start_y;
@@ -99,14 +97,10 @@ namespace Gala
 		private void on_position_changed (Meta.Window window)
 		{
 			unowned Meta.Screen screen = window.get_screen ();
-			unowned Meta.CursorTracker ct = Meta.CursorTracker.get_for_screen (screen);
+			unowned Meta.CursorTracker ct = screen.get_cursor_tracker ();
 			int x, y;
 			Clutter.ModifierType type;
 			ct.get_pointer (out x, out y, out type);
-
-			int height;
-			int width;
-			screen.get_size (out width, out height);
 
 			if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
 				Meta.Rectangle wa = window.get_work_area_for_monitor (screen.get_current_monitor ());
@@ -116,28 +110,19 @@ namespace Gala
 				int new_width, new_height;
 				int new_x = wa.x, new_y = wa.y;
 
-				if (monitor_x < (float) monitor_width * 3 / 7) {
+				if (monitor_x < (float) monitor_width * 2 / 5) {
 					new_width = monitor_width / 2;
-				} else if (monitor_x < (float) monitor_width * 4 / 7) {
+				} else if (monitor_x < (float) monitor_width * 3 / 5) {
 					new_width = monitor_width;
 				} else {
 					new_width = monitor_width / 2;
 					new_x += monitor_width / 2;
 				}
 
-				if (monitor_y < (float) monitor_height * 3 / 7) {
+				if (monitor_y < (float) monitor_height * 2 / 5) {
 					new_height = monitor_height / 2;
-				} else if (monitor_y < (float) monitor_height * 4 / 7) {
-						if (new_width == monitor_width) {
-							var tmp_x = (int) (monitor_width * 0.1);
-							var tmp_y = (int) (monitor_height * 0.1);
-							new_width = monitor_width - 2 * tmp_x;
-							new_height = monitor_height - 2 * tmp_y;
-							new_x += tmp_x;
-							new_y += tmp_y;
-						} else {
-							new_height = monitor_height;
-						}
+				} else if (monitor_y < (float) monitor_height * 3 / 5) {
+					new_height = monitor_height;
 				} else {
 					new_height = monitor_height / 2;
 					new_y += monitor_height / 2;
@@ -150,11 +135,6 @@ namespace Gala
 			}
 
 			hide_tile_preview_when_window_moves = true;
-
-			if (y > (float)height * TRIGGER_RATIO) {
-				window.position_changed.disconnect (on_position_changed);
-				open (window, x, y);
-			}
 		}
 	}
 }
