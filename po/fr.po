@@ -7,18 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-01-14 00:08+0000\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-20 00:44+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://weblate.elementary.io/projects/desktop/gala/"
-"fr/>\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-28 05:04+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Captures d'écran"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -74,41 +78,47 @@ msgstr "Maximiser"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitâche et gestion des fenêtres"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Un gestionnaire de fenêtres et de positionnement pour Panthéon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
+"par elementary pour être utilisé avec Panthéon."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Améliorations :"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Amélioration des ombres des fenêtres pour les applications officielles"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
+"Correction de plantages potentiels lors de la prise de captures d'écran"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
 msgstr ""
+"Correction de la position des notifications après la modification du DPI"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Correction des animations de déplacement et d'agrandissement des fenêtres "
+"tuilées"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -239,9 +249,10 @@ msgstr ""
 "cachée et reprendra le focus à la fin du basculement."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "Afficher toutes les fenêtres ouvertes et les espaces de travail"
+msgstr ""
+"Déplacer automatiquement les fenêtres agrandies dans un nouvel espace de "
+"travail"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -380,9 +391,8 @@ msgstr ""
 "de bord, etc."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "Durée de l'animation de fermeture"
+msgstr "Durée de l'animation d'ouverture"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
