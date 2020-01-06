@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-12-17 00:25+0000\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Ekran Görüntüleri"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -90,23 +94,23 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
@@ -402,8 +406,8 @@ msgid ""
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"Birinci değer gölge bulanıklığının yarıçapı, ikinci değer üst solgunluk ("
-"genelde sadece -1), ve üçüncü ve dördüncü x- ve y-kaydırması ve sonuncu da "
+"Birinci değer gölge bulanıklığının yarıçapı, ikinci değer üst solgunluk "
+"(genelde sadece -1), ve üçüncü ve dördüncü x- ve y-kaydırması ve sonuncu da "
 "opaklık. Yani [bulanıklık-yarıçapı, üst solgunluk, x-kaydırma, y-kaydırma, "
 "opaklık]."
 

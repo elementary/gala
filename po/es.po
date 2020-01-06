@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2019-12-16 18:35+0000\n"
-"Last-Translator: Rafael Bautista Martínez <iuninefrendor@gmail.com>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2020-01-06 18:07+0000\n"
+"Last-Translator: Daniel R. <riesp@pm.me>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
 "Language: es\n"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Capturas de pantalla"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"

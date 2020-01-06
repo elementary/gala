@@ -7,19 +7,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 17:16-0800\n"
-"PO-Revision-Date: 2018-08-22 00:08+0000\n"
-"Last-Translator: Jernej Virag <jernej@virag.si>\n"
-"Language-Team: Slovenian <https://weblate.elementary.io/projects/desktop/"
-"gala/sl/>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-29 05:21+0000\n"
+"Last-Translator: Marko <marko.dolar@gmail.com>\n"
+"Language-Team: Slovenian <https://l10n.elementary.io/projects/desktop/gala/"
+"sl/>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
-"%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 3.0.1\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Posnetki zaslona"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -89,7 +93,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Izboljšave:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
@@ -108,8 +112,9 @@ msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
 #: data/gala.appdata.xml.in:26
+#, fuzzy
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -145,9 +150,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algoritem za razporeditev predogleda oken"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-#, fuzzy
 msgid "Choose the algorithm used for exposing the windows."
-msgstr "Izberite algoritem za razporejanje oken"
+msgstr "Izberite algoritem za razporejanje oken."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
