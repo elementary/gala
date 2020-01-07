@@ -1,5 +1,293 @@
-gala (0.3.2-1) UNRELEASED; urgency=low
+gala (3.2.0) unstable; urgency=low
 
+  [ Rico Tzschichholz ]
   * Initial release.
 
- -- Rico Tzschichholz <ricotz@ubuntu.com>  Mon, 30 Mar 2015 22:42:30 +0200
+  [ elementary OS Team ]
+  * Release 3.2.0 (#676)
+  * Update translation files
+  * Update translation template
+  * Don't localize gsettings strings (#663)
+  * Use GitHub Actions for CI (#661)
+  * Update translation files
+  * Add ScreenshotManager to POTFILES
+  * ScreenshotManager: Add ScreenshotAreaWithCursor() and ConcealText()
+    (#633)
+  * Update LINGUAS
+  * Update translation template
+  * Add Gettext Action
+  * Add AppData (#654)
+  * Delete NEWS
+  * Add Release to Actions
+  * Use the .metadata to regenerate the .vapi files (#642)
+  * Add .metadata files to generate the .vapi files (#641)
+  * Make Mutter 3.28 the minimum libmutter version (#640)
+  * InternalUtils: Remove unused stuff (#639)
+  * Fix mutter 3.3x crashes (#635)
+  * Make legacy shadows more subtle (#629)
+  * ScreenshotManager: Null-check the window in screenshot_window()
+    (#627)
+  * SelectionArea: Align the rectangle to pixel grid (#628)
+  * Adapt to mutter 3.33 (#566)
+  * Fix notifications position after DPI switch (#564)
+  * Fix: Animations for two tiled windows (#583)
+  * Move maximized windows to their own workspace (#578)
+  * Delete CODE_OF_CONDUCT.md
+  * Lint the daemon directory via vala-lint (#606)
+  * :shirt: Lint lib directory with vala-lint (#607)
+  * Remove duration settings and use constants (#513)
+  * Add ability to reorder workspaces (#464)
+  * Fix fullscreen a maximized chromium window on secondary screen
+    (#540)
+  * Add scale factor to screenshot file (#489)
+  * Prevent double BackgroundManager destroy (#562)
+  * Add Silesian and update translation template
+  * Only use cached buttons when height matches, fixing dpi switch issue
+    (#480)
+  * Fix minimize animation in HiDPI monitor (#164) (#541)
+  * Fix app notification schema not being found (#524)
+  * More usage of Utils.get_ui_scaling_factor() (#477)
+  * Hide selection while dragging window clone in workspace-view (#526)
+  * Allow <Enter> to leave workspace-view without selecting window
+    (#525)
+  * Do not try to move window to workspace which it is already on (#527)
+  * Fix window menu sync (#532)
+  * Constructors of abstract classes should not be public
+  * Fix app switcher left and right padding (#479)
+  * Fixed saving screenshot to clipboard (#481)
+  * windowswitcher: Update scale factor when updating dock (#471)
+  * po: Update translations
+  * pip: Change popup location to bottom right (#438)
+  * Tile switching fix for position only changes (#387)
+  * Allow to cancel screenshot when pressing ESC (#463)
+  * Do not block stage drawing when saving the screenshots (#460)
+  * screenshotmanager: Only create non-existing "Screenshots" subfolder
+    in PICTURES (#462)
+  * Save screenshots to (self created) screenshots folder (#459)
+  * ScreenshotManager: implement flash_area and handle flash parameter
+    (#147)
+  * data: Add gala.css and texture.png to GResource
+  * Restore daemon watch (#429)
+  * pip: Don't try to show for destroyed actor (#427)
+  * pip: Adjust button size and margin for screen dpi scale (#396)
+  * po: Update translation template
+  * Update travis to juno unstable
+  * Fix type-argument mismatches of GLib.(S)List variables found by
+    newer valac
+  * gschema.xml: remove trailing period from key description (#265)
+  * Nvidia drivers: Refresh background and screen corners (#21) (#330)
+  * Fix Multimonitor windows preventing workspaces from closing (#357)
+  * Fixed: closed windows being selectable with PIP (#355)
+  * Update multitasking-view icons to latest elementary palette (#336)
+  * Make close and resize buttons darker (#337)
+  * Use separate daemon to display GTK window menus (#179)
+  * Implement org.gnome.SessionManager.EndSessionManager (#314)
+  * Silence a few valac warnings regarding error-handling of DBus
+    methods
+  * Adjust y position of wallpapers during workspace transition (#327)
+  * Don't remove workspaces for sticky windows (#331)
+  * Render shadows using Gtk (#250)
+  * PiP: Fix wrong size close button on HiDPI (#294)
+  * multitaskingview: Fix adding last workspace animation (#281)
+  * windowlistener: Don't bail out of window_maximized_changed (#288)
+  * Update POT and PO files
+  * Ensure that the correct workspaces are removed (#269)
+  * Fix selection area appearing in screenshots (#214)
+  * Fix some grammar and spelling issues
+  * Add support for mutter 3.29
+  * vapi: Update mutter bindings to 3.28.2
+  * Add HiDPI support for Workspace Switcher (#242)
+  * Expose keep-below windows (#162)
+  * Fix old maximize not being destroyed
+  * Prevent the use of a null current_window
+  * Fix switching workspaces and maximizing a window distorts it (#58)
+  * Provide action to switch to the last workspace (#229)
+  * Dont move single window from last workspace to a new one (#240)
+  * Wait for Window.size_changed signal to fix maximize/minimize
+    animations (#239)
+  * lib: Add missing datarootdir in pkg-config file
+  * po: Patch 'decreseasing' typo
+  * po: Regenerated gala.pot
+  * meson: Add some gettext args to prettify generated pot
+  * Bump version to 0.3.1
+  * Drop autotools buildsystem
+  * Update HACKING file
+  * utils: Optimize insert_workspace_with_window() a bit
+  * windowsmanager: Insert new workspace for fullscreen windows next to
+    current one
+  * windowmanager: Show a tile preview when tiling a window
+  * meson: Use install_rpath as needed (#200)
+  * meson: Fix build with libmutter-2
+  * meson: Ensure RPATH is set after install
+  * Make Documentation optional and disable it by default
+  * meson: Support mutter 3.27.92
+  * travis: Move to meson
+  * Update the README.md file
+  * meson: Add support for valadoc
+  * vapi: Add libcanberra-gtk3 which is "actually not available"
+  * Initial meson support
+  * Do not cycle through the empty, new workspace in dynamic workspaces
+    (#190)
+  * gsettings: make window close duration shorter (#176)
+  * Add support for mutter 3.27.92
+  * screenshotmanager: Add support to handle include_cursor (#149)
+  * pip: only update focus changes when switching from a normal window
+    (#170)
+  * Make window-switcher compatible with HiDPI (#154)
+  * pip: Hide the preview when the target window is focused (#166)
+  * Add support for mutter 3.27 (#163)
+  * build: Fix typo in configure.ac to populate NOTIFICATION_PLUGIN_*
+    variables (#160)
+  * screenshotmanager: Implement SelectArea (#136)
+  * screenshotmanager: Implement ScreenshotArea
+  * Update autogen command (#112)
+  * readme: Add libxml2-utils as dependency (#102)
+  * multitaskingview: Ignore key/scroll-events while closing (#97)
+  * notify: Fix stroke width and border radius on HiDPI (#92)
+  * workspacethumb: Fix offset of inserted window-icons (#96)
+  * maskcorners: Fix size of radius in HiDPI (#93)
+  * build: Don't squash VALAFLAGS from the environment (#94)
+  * notify: Make notifications to be HiDPI compatible
+  * vapi: Update mutter bindings to 3.26.0
+  * windowclone: Fade-out minimized windows when closing
+    MultitaskingView
+  * pip: Check cursor's coords against window's frame-rect
+  * Don't use return_*if_fail() if it leads to leaks or doesn't match
+    signature
+  * pip: Don't include shadows by using window's frame-rect (#74)
+  * build: Add missing defines for libmutter-1 >= 3.25.90 (#66)
+  * vapi: Fix make distcheck (#60)
+  * Update to support mutter 3.25.90
+  * windowswitcher: Dim background while alt-tabbing (#53)
+  * Add OnlyShowIn=Pantheon to multitasking .desktop (#48)
+  * pip: Change the default shortcut to Super+F (#43)
+  * vapi: Update gnome-desktop-3.0 to 3.24.2
+  * vapi: Update gdesktopenums-3.0 to 3.24.0
+  * notify: Avoid ambiguous reference to GLib.Settings
+  * Add support for mutter 3.25
+  * build: Update and fix mutter 3.24 dependency check
+  * vapi: Upate mutter bindings to 3.24.3
+  * travis: Add libxml2-utils for xmllint
+  * lib: Add GResource support and load close/resize button images from
+    it
+  * utils: Add resize button methods and make use of them in pip
+  * docs: Consider it sufficient if valadoc is available
+  * Drop support for plank < 0.11.0
+  * Drop support for g-s-d < 3.15.2
+  * Drop support for mutter < 3.18.3
+  * pip: Change the shortcut to Super+P (#37)
+  * pip: Fix ShadowEffect namespace
+  * pip: Add Picture In Picture plugin (#32)
+  * data: Add resize.svg
+  * vapi: Fix Cogl.clip_push_from_path()
+  * Update .gitignore
+  * windowmenu: Avoid applying previous settings to new window (#20)
+  * Create CODE_OF_CONDUCT.md (#22)
+  * Fix typo (#15)
+  * Add Travis CI (#4)
+  * More adaptions for git (#5)
+  * Add README.md (#2)
+  * po: Update translations
+  * notify: Check array-length before accessing it
+  * data: Do not translate Icon key of desktop-file
+  * data: Fix translation of gala-other.desktop
+  * screenshotmanager: Propagate errors for not implemented methods
+  * background: Avoid dangling reference to Background instances
+  * vapi: Add missing vapi/deps to dist
+  * Include gettext scripts way earlier
+  * Require glib2.0 >= 2.44
+  * Drop intltool requirement and use gettext >= 0.19.6 only
+  * po: Update translations
+  * Add support for mutter 3.23.90
+  * dbus: Acquire "org.gnome.Shell.Screenshot" bus-name
+  * screenshotmanager: Add support for mutter 3.22+
+  * screenshotmanager: Implement Screenshot and ScreenshotArea
+  * Add org.gnome.Shell.Screenshot dummy interface
+  * maskcorners: Add missing license header
+  * po: Update translations
+  * vapi: Update gdesktopenums-3.0 and gnome-desktop-3.0
+  * data: Replace png with svg files
+  * Make dialog animations simpler
+  * lib: Drop stray clutter-gtk-1.0 reference
+  * Add support for mutter 3.22
+  * vapi: Upate mutter bindings to 3.22.2
+  * po: Update translations
+  * WorkspaceClone: Fixed changing resolution breaking Multitasking View
+  * utils: Guard actors retrieved from Compositor.get_window_actors()
+  * po: Update translations
+  * vapi: Update mutter bindings to 3.22.0
+  * build: Bump conditional mutter requirement to latest corresponding
+    release
+  * notify: Check type of "desktop-entry" hint before retrieving it
+  * po: Update translations
+  * Drop obsolete VALA_0_26 conditionals
+  * Guard usage of actors retrieved from
+    Meta.Compositor.get_window_actors()
+  * po: Update translations
+  * Provide ShowOSD() on org.gnome.Shell to handle media-keys
+    notifications
+  * notify: freeze track of notifications area only when a notification
+    animation is happening
+  * po: Update translations
+  * Update bzrignore
+  * po: Add gala-other.desktop.in to POTFILES.in
+  * NotifyServer: use app_id as key for notification settings with gala-
+    other as the fallback
+  * keyboardmanager: Switch input-source on modifiers-accelerator-
+    activated
+  * keyboardmanager: Avoid out-of-bounds access if no input-sources are
+    set
+  * Don't classify constants with "static" which is misleading and not
+    supported
+  * Applying xkb configuraion on startup.
+  * po: Update translations
+  * windowmanager: Don't add hotcorner-actor if it doesn't own an action
+  * keyboardmanager: Apply desired backend's keymap accordingly
+  * background: Guard against new_background_actor being null
+  * background: Disconnect from the correct "changed" signal
+  * po: Update translations
+  * Multitaskingview: Adapt to changed Clutter.Event bindings
+  * vapi: Update mutter bindings to 3.20.1
+  * vapi: Update bamf bindings to 0.5.3+
+  * build: Drop dependency on gnome-common and some minor updates
+  * windowmanager: Make minimize and (un)maximize animations work again
+  * windowmanager: fix animation of mapping an maximized window
+  * po: Update translations
+  * windowmanager: Fix build with mutter < 3.18
+  * fix buiding against mutter 3.16
+  * windowmanager: fix animation of mapping an maximized window
+  * Reimplement "shadow-effect" used by Window- and WorkspaceClone
+  * windowclone: Fix animation when dragging window from neighboor
+    workspace
+  * windowclone: Hide close-button immediately when transitioning back
+  * gschema: Drop deprecated reference to "slingshot-launcher" binary
+  * windowmanager: fixed maximize and unmaximize animations
+  * po: Update translations
+  * windowmanager: fixed minimize animation
+  * windowmanager: Put fullscreen windows in their own workspace
+  * Fix Nvidia FBO issue with suspend/resume
+  * add x-appstream-ignore=true to .desktop
+  * tell appstream to ignore the .desktop
+  * windowmanager: Don't explicitly pass xevents to clutter
+  * windowmanager: Enable window-menus which are working now
+  * Forward the Media Keys to the Gnome Settings Daemon
+  * po: Update translations
+  * Require clutter-1.0 >= 1.12.0
+  * Remove obsolete transitions when needed
+  * Use remove_all_transitions() instead of detach_animation()
+  * Use clutter methods instead of properties if useful
+  * Remove a lot of clutter deprecation warnings
+  * notify: don't force symbolic icons
+  * Drop support for mutter < 3.14.4
+  * vapi: Update mutter bindings to 3.19.1
+  * vapi: Update mutter bindings to 3.18.1
+  * po: Update translations
+  * dbus: Fix annotation typo
+  * Add support for plank 0.11 api
+  * zoom: Remove deprecation warnings
+  * Use built-in Clutter methods.
+  * Removed deprecation warnings.
+  * notify: Color the symbolic icons using the text foreground color.
+  * data: Use valid "Categories" in gala-multitaskingview.desktop
+
+ -- elementary OS Team <builds@elementary.io>  Tue, 07 Jan 2020 18:00:32 +0000
