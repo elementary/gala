@@ -178,10 +178,7 @@ namespace Gala
 		void toggle_close_button (bool show)
 		{
 			// don't display the close button when we don't have dynamic workspaces
-			// or when there are no windows on us. For one, our method for closing
-			// wouldn't work anyway without windows and it's also the last workspace
-			// which we don't want to have closed if everything went correct
-			if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
+			if (!Prefs.get_dynamic_workspaces ())
 				return;
 
 			if (show_close_button_timeout != 0) {
@@ -344,6 +341,12 @@ namespace Gala
 					|| type == WindowType.DIALOG || type == WindowType.MODAL_DIALOG))
 					window.@delete (time);
 			}
+#if HAS_MUTTER330
+			workspace.get_display ().get_workspace_manager ().remove_workspace (workspace, time);
+#else
+			workspace.get_screen ().remove_workspace (workspace, time);
+#endif
+
 		}
 
 		/**
