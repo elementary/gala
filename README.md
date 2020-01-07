@@ -1,5 +1,5 @@
 # Gala
-[![l10n](https://l10n.elementary.io/widgets/desktop/gala/svg-badge.svg)](https://l10n.elementary.io/projects/desktop/gala)
+[![Translation status](https://l10n.elementary.io/widgets/desktop/-/gala/svg-badge.svg)](https://l10n.elementary.io/engage/desktop/?utm_source=widget)
 
 A window & compositing manager based on libmutter and designed by elementary for use with Pantheon.
 

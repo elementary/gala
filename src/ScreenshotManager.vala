@@ -17,6 +17,9 @@
 
 namespace Gala
 {
+	const string EXTENSION = ".png";
+	const int UNCONCEAL_TEXT_TIMEOUT = 2000;
+
 	[DBus (name="org.gnome.Shell.Screenshot")]
 	public class ScreenshotManager : Object
 	{
@@ -32,6 +35,16 @@ namespace Gala
 		}
 
 		WindowManager wm;
+		Settings desktop_settings;
+
+		string prev_font_regular;
+		string prev_font_document;
+		string prev_font_mono;
+		uint conceal_timeout;
+
+		construct {
+			desktop_settings = new Settings ("org.gnome.desktop.interface");
+		}
 
 		ScreenshotManager (WindowManager _wm)
 		{
@@ -72,9 +85,14 @@ namespace Gala
 			debug ("Taking screenshot");
 
 			int width, height;
+#if HAS_MUTTER330
+			wm.get_display ().get_size (out width, out height);
+#else
 			wm.get_screen ().get_size (out width, out height);
+#endif
 
 			var image = take_screenshot (0, 0, width, height, include_cursor);
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (0, 0, width, height);
@@ -85,11 +103,17 @@ namespace Gala
 
 		public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
 		{
+			yield screenshot_area_with_cursor (x, y, width, height, false, flash, filename, out success, out filename_used);
+		}
+
+		public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
+		{
 			debug ("Taking area screenshot");
 
 			yield wait_stage_repaint ();
 
-			var image = take_screenshot (x, y, width, height, false);
+			var image = take_screenshot (x, y, width, height, include_cursor);
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (x, y, width, height);
@@ -104,7 +128,17 @@ namespace Gala
 		{
 			debug ("Taking window screenshot");
 
+#if HAS_MUTTER330
+			var window = wm.get_display ().get_focus_window ();
+#else
 			var window = wm.get_screen ().get_display ().get_focus_window ();
+#endif
+
+			if (window == null) {
+				unconceal_text ();
+				throw new DBusError.FAILED ("Cannot find active window");
+			}
+
 			var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 			unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
@@ -121,6 +155,8 @@ namespace Gala
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
 			}
+
+			unconceal_text ();
 
 			if (flash) {
 				flash_area (rect.x, rect.y, rect.width, rect.height);
@@ -147,6 +183,40 @@ namespace Gala
 			selection_area.get_selection_rectangle (out x, out y, out width, out height);
 		}
 
+		private void unconceal_text ()
+		{
+			if (conceal_timeout == 0) {
+				return;
+			}
+
+			desktop_settings.set_string ("font-name", prev_font_regular);
+			desktop_settings.set_string ("monospace-font-name", prev_font_mono);
+			desktop_settings.set_string ("document-font-name", prev_font_document);
+
+			Source.remove (conceal_timeout);
+			conceal_timeout = 0;
+		}
+
+		public async void conceal_text () throws DBusError, IOError
+		{
+			if (conceal_timeout > 0) {
+				Source.remove (conceal_timeout);
+			} else {
+				prev_font_regular = desktop_settings.get_string ("font-name");
+				prev_font_mono = desktop_settings.get_string ("monospace-font-name");
+				prev_font_document = desktop_settings.get_string ("document-font-name");
+
+				desktop_settings.set_string ("font-name", "Redacted Script Regular 9");
+				desktop_settings.set_string ("monospace-font-name", "Redacted Script Light 10");
+				desktop_settings.set_string ("document-font-name", "Redacted Script Regular 10");
+			}
+
+			conceal_timeout = Timeout.add (UNCONCEAL_TEXT_TIMEOUT, () => {
+				unconceal_text ();
+				return Source.REMOVE;
+			});
+		}
+
 		static string find_target_path ()
 		{
 			// Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
@@ -167,24 +237,38 @@ namespace Gala
 
 		static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
 		{
-			if (!Path.is_absolute (filename)) {
-				var path = find_target_path ();
-				if (!filename.has_suffix (".png")) {
-					used_filename = Path.build_filename (path, filename.concat (".png"), null);
-				} else {
-					used_filename = Path.build_filename (path, filename, null);
+			used_filename = filename;
+
+			// We only alter non absolute filename because absolute
+			// filename is used for temp clipboard file and shouldn't be changed
+			if (!Path.is_absolute (used_filename)) {
+				if (!used_filename.has_suffix (EXTENSION)) {
+					used_filename = used_filename.concat (EXTENSION);
 				}
-			} else {
-				used_filename = filename;
+
+				var scale_factor = InternalUtils.get_ui_scaling_factor ();
+				if (scale_factor > 1) {
+					var scale_pos = -EXTENSION.length;
+					used_filename = used_filename.splice (scale_pos, scale_pos, "@%ix".printf (scale_factor));
+				}
+
+				var path = find_target_path ();
+				used_filename = Path.build_filename (path, used_filename, null);
 			}
 
 			try {
 				var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
 				var file = File.new_for_path (used_filename);
-				var stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				FileIOStream stream;
+				if (file.query_exists ()) {
+					stream = yield file.open_readwrite_async (FileCreateFlags.NONE);
+				} else {
+					stream = yield file.create_readwrite_async (FileCreateFlags.NONE);
+				}
 				yield screenshot.save_to_stream_async (stream.output_stream, "png");
 				return true;
 			} catch (GLib.Error e) {
+				warning ("could not save file: %s", e.message);
 				return false;
 			}
 		}
@@ -192,7 +276,6 @@ namespace Gala
 		Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor)
 		{
 			Cairo.ImageSurface image;
-#if HAS_MUTTER322
 			Clutter.Capture[] captures;
 			wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -202,14 +285,6 @@ namespace Gala
 				image = captures[0].image;
 			else
 				image = composite_capture_images (captures, x, y, width, height);
-#else
-			unowned Clutter.Backend backend = Clutter.get_default_backend ();
-			unowned Cogl.Context context = Clutter.backend_get_cogl_context (backend);
-
-			image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-			var bitmap = Cogl.bitmap_new_for_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE, image.get_stride (), image.get_data ());
-			Cogl.framebuffer_read_pixels_into_bitmap (Cogl.get_draw_framebuffer (), x, y, Cogl.ReadPixelsFlags.BUFFER, bitmap);
-#endif
 
 			if (include_cursor) {
 				image = composite_stage_cursor (image, { x, y, width, height});
@@ -219,7 +294,6 @@ namespace Gala
 			return image;
 		}
 
-#if HAS_MUTTER322
 		Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height)
 		{
 			var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
@@ -241,11 +315,14 @@ namespace Gala
 
 			return image;
 		}
-#endif
 
 		Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
 		{
-			unowned Meta.CursorTracker cursor_tracker = Meta.CursorTracker.get_for_screen (wm.get_screen ());
+#if HAS_MUTTER330
+			unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
+#else
+			unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
+#endif
 
 			int x, y;
 			cursor_tracker.get_pointer (out x, out y, null);

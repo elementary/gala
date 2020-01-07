@@ -24,7 +24,11 @@ namespace Gala
 
 		public signal void changed ();
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+#else
 		public Meta.Screen screen { get; construct; }
+#endif
 		public int monitor_index { get; construct; }
 		public bool control_position { get; construct; }
 
@@ -32,19 +36,32 @@ namespace Gala
 		Meta.BackgroundActor background_actor;
 		Meta.BackgroundActor? new_background_actor = null;
 
+#if HAS_MUTTER330
+		public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true)
+		{
+			Object (display: display, monitor_index: monitor_index, control_position: control_position);
+		}
+#else
 		public BackgroundManager (Meta.Screen screen, int monitor_index, bool control_position = true)
 		{
 			Object (screen: screen, monitor_index: monitor_index, control_position: control_position);
 		}
+#endif
 
 		construct
 		{
+#if HAS_MUTTER330
+			background_source = BackgroundCache.get_default ().get_background_source (display, BACKGROUND_SCHEMA);
+#else
 			background_source = BackgroundCache.get_default ().get_background_source (screen, BACKGROUND_SCHEMA);
+#endif
 
 			background_actor = create_background_actor ();
+
+			destroy.connect (on_destroy);
 		}
 
-		public override void destroy ()
+		void on_destroy ()
 		{
 			BackgroundCache.get_default ().release_background_source (BACKGROUND_SCHEMA);
 			background_source = null;
@@ -58,8 +75,6 @@ namespace Gala
 				background_actor.destroy ();
 				background_actor = null;
 			}
-
-			base.destroy ();
 		}
 
 		void swap_background_actor ()
@@ -125,13 +140,21 @@ namespace Gala
 		Meta.BackgroundActor create_background_actor ()
 		{
 			var background = background_source.get_background (monitor_index);
+#if HAS_MUTTER330
+			var background_actor = new Meta.BackgroundActor (display, monitor_index);
+#else
 			var background_actor = new Meta.BackgroundActor (screen, monitor_index);
+#endif
 
 			background_actor.background = background.background;
 
 			insert_child_below (background_actor, null);
 
+#if HAS_MUTTER330
+			var monitor = display.get_monitor_geometry (monitor_index);
+#else
 			var monitor = screen.get_monitor_geometry (monitor_index);
+#endif
 
 			background_actor.set_size (monitor.width, monitor.height);
 
