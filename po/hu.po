@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"POT-Creation-Date: 2020-01-07 17:42+0000\n"
 "PO-Revision-Date: 2018-06-23 00:11+0000\n"
 "Last-Translator: Majer Tamás <mtamas@disroot.org>\n"
 "Language-Team: Hungarian <https://weblate.elementary.io/projects/desktop/"
@@ -140,354 +140,278 @@ msgstr ""
 msgid "applications-other"
 msgstr "applications-other"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:22
-msgid "Action for the top left corner"
-msgstr "Művelet a bal felső sarokban"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Művelet a bal felső sarokban"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Algorithm for window overview layout"
-msgstr "Az ablak áttekintés nézet algoritmusa"
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Az ablak áttekintés nézet algoritmusa"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:28
 #, fuzzy
-msgid "Choose the algorithm used for exposing the windows."
-msgstr "Válassza ki az ablakok megjelenítéséhez használt algoritmust"
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "Válassza ki az ablakok megjelenítéséhez használt algoritmust"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:32
-msgid "Action for the top right corner"
-msgstr "Művelet a jobb felső sarokban"
+#~ msgid "Action for the top right corner"
+#~ msgstr "Művelet a jobb felső sarokban"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:37
-msgid "Action for the bottom left corner"
-msgstr "Művelet a bal alsó sarokban"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Művelet a bal alsó sarokban"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:42
-msgid "Action for the bottom right corner"
-msgstr "Művelet a jobb alsó sarokban"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Művelet a jobb alsó sarokban"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
 #, fuzzy
-msgid ""
-"The command that will be executed for the hot corner action 'custom-command' "
-"or multiple"
-msgstr ""
-"A parancs, amelyet az érzékeny sarok művelet végrehajt 'egyedi-parancs' "
-"beállítás esetén"
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr ""
+#~ "A parancs, amelyet az érzékeny sarok művelet végrehajt 'egyedi-parancs' "
+#~ "beállítás esetén"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:48
 #, fuzzy
-msgid ""
-"If you just put a single command, it will be used for every hot corner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"Ha csak egy egyszerű parancsot ad meg, akkor ez a parancs fog lefutni minden "
-"'egyedi-parancs' beállítás esetén. Ha az egyes érzékeny sarkokban különböző "
-"parancsot szeretne futtatni, használja következő formátumot: 'hotcorner-"
-"topleft:parancs;;hotcorner-bottomright:parancs'. Lehetséges azonosítók: "
-"'hotcorner-[topleft; topright; bottomleft; bottomright]', majd egy ':' és "
-"utána a parancs. A ';;' határolójelként funkcionál."
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "Ha csak egy egyszerű parancsot ad meg, akkor ez a parancs fog lefutni "
+#~ "minden 'egyedi-parancs' beállítás esetén. Ha az egyes érzékeny sarkokban "
+#~ "különböző parancsot szeretne futtatni, használja következő formátumot: "
+#~ "'hotcorner-topleft:parancs;;hotcorner-bottomright:parancs'. Lehetséges "
+#~ "azonosítók: 'hotcorner-[topleft; topright; bottomleft; bottomright]', "
+#~ "majd egy ':' és utána a parancs. A ';;' határolójelként funkcionál."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
-"Engedélyezi az ablak mozaik funkciót, mikor ablakokat húz a képernyő szélére"
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr ""
+#~ "Engedélyezi az ablak mozaik funkciót, mikor ablakokat húz a képernyő "
+#~ "szélére"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:58
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Ha engedélyezve van, az ablakok függőleges szélekre történő húzása, az ablak "
-"méretét függőleges irányban maximalizálja, vízszintes irányban pedig a "
-"rendelkezésre álló terület felére méretezi. A képernyő felső szélére történő "
-"húzással az ablak teljes méretű lesz."
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Ha engedélyezve van, az ablakok függőleges szélekre történő húzása, az "
+#~ "ablak méretét függőleges irányban maximalizálja, vízszintes irányban "
+#~ "pedig a rendelkezésre álló terület felére méretezi. A képernyő felső "
+#~ "szélére történő húzással az ablak teljes méretű lesz."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid "Panel main menu action"
-msgstr "Panel főmenü művelet"
+#~ msgid "Panel main menu action"
+#~ msgstr "Panel főmenü művelet"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:63
 #, fuzzy
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr ""
-"Ez a parancs fut le, mikor megnyomja a 'panel-főmenü-művelet' "
-"billentyűkombinációt"
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr ""
+#~ "Ez a parancs fut le, mikor megnyomja a 'panel-főmenü-művelet' "
+#~ "billentyűkombinációt"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Dinamikus munkaterületek engedélyezése statikus helyett"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Dinamikus munkaterületek engedélyezése statikus helyett"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:78
 #, fuzzy
-msgid ""
-"Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number."
-msgstr ""
-"Egy állandó érték helyett, a munkaterületek száma dinamikusan nő vagy "
-"csökken, attól függően mennyire van szükség"
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr ""
+#~ "Egy állandó érték helyett, a munkaterületek száma dinamikusan nő vagy "
+#~ "csökken, attól függően mennyire van szükség"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Nevek, amelyeket dokkoló ablakként ismer fel az ablakváltó"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Nevek, amelyeket dokkoló ablakként ismer fel az ablakváltó"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:83
 #, fuzzy
-msgid ""
-"When launching the window-switcher, Gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
-"Mikor az ablakváltó elindul, a gala végignézi ezt a listát és a nevekkel "
-"egyező ablakot keres. Ha talál, elrejti az adott ablakot, de előhozza, mikor "
-"az ablakváltó bezárul."
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "Mikor az ablakváltó elindul, a gala végignézi ezt a listát és a nevekkel "
+#~ "egyező ablakot keres. Ha talál, elrejti az adott ablakot, de előhozza, "
+#~ "mikor az ablakváltó bezárul."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:87
 #, fuzzy
-msgid "Automatically move maximized windows to a new workspace"
-msgstr "Az összes nyitott ablak és munkaterület mutatása"
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr "Az összes nyitott ablak és munkaterület mutatása"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
-msgid "Shortcut to move to first workspace"
-msgstr "Billentyűparancs az első munkaterületre való áthelyezéshez"
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Billentyűparancs az első munkaterületre való áthelyezéshez"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
-msgid "Shortcut to move to last workspace"
-msgstr "Billentyűparancs az utolsó munkaterületre való áthelyezéshez"
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Billentyűparancs az utolsó munkaterületre való áthelyezéshez"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
-msgid "Shortcut to move the current window to first workspace"
-msgstr ""
-"Billentyűparancs az aktuális ablak első munkaterületre történő áthelyezéséhez"
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr ""
+#~ "Billentyűparancs az aktuális ablak első munkaterületre történő "
+#~ "áthelyezéséhez"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
-msgid "Shortcut to move the current window to last workspace"
-msgstr ""
-"Billentyűparancs az aktuális ablak utolsó munkaterületre történő "
-"áthelyezéséhez"
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr ""
+#~ "Billentyűparancs az aktuális ablak utolsó munkaterületre történő "
+#~ "áthelyezéséhez"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
-msgid "Zoom in"
-msgstr "Nagyítás"
+#~ msgid "Zoom in"
+#~ msgstr "Nagyítás"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:120
-msgid "Zoom out"
-msgstr "Kicsinyítés"
+#~ msgid "Zoom out"
+#~ msgstr "Kicsinyítés"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
-msgid "Shortcut to open the window overview"
-msgstr "Billentyűparancs az ablak áttekintés megnyitásához"
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Billentyűparancs az ablak áttekintés megnyitásához"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Billentyűparancs az ablak áttekintés megnyitásához minden ablakhoz"
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Billentyűparancs az ablak áttekintés megnyitásához minden ablakhoz"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:134
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr "Munkaterületek végigjárása jobbról, vagy hátulról az első felé"
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr "Munkaterületek végigjárása jobbról, vagy hátulról az első felé"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "Cycle to next keyboard layout"
-msgstr "Léptetés a következő billentyűzetkiosztásra"
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Léptetés a következő billentyűzetkiosztásra"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#: data/org.pantheon.desktop.gala.gschema.xml.in:176
-#: data/org.pantheon.desktop.gala.gschema.xml.in:193
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
-#: data/org.pantheon.desktop.gala.gschema.xml.in:203
-#: data/org.pantheon.desktop.gala.gschema.xml.in:208
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "ELAVULT: Ez a billentyű elavult és mellőzve van."
+#~ msgid "DEPRECATED: This key is deprecated and ignored."
+#~ msgstr "ELAVULT: Ez a billentyű elavult és mellőzve van."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
-msgid "Cycle to previous keyboard layout"
-msgstr "Léptetés az előző billentyűzetkiosztásra"
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Léptetés az előző billentyűzetkiosztásra"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:152
-msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Körülményektől függő párbeszédablakok csatolása"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:153
-msgid "The shortcut to show the selection area to choose a window."
-msgstr ""
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "Ha igaz, a független címsorok helyett, a körülményektől függő "
+#~ "párbeszédablakok jelennek meg a szülőablak címsorához csatolva, és a "
+#~ "szülőablakkal együtt mozognak."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
-msgid "Attach modal dialogs"
-msgstr "Körülményektől függő párbeszédablakok csatolása"
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "A címsoron lévő gombok elrendezése"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"Ha igaz, a független címsorok helyett, a körülményektől függő "
-"párbeszédablakok jelennek meg a szülőablak címsorához csatolva, és a "
-"szülőablakkal együtt mozognak."
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "A címsoron lévő gombok elrendezése. Ennek az értéknek egy karakterláncnak "
+#~ "kell lennie, például \"menu:minimize,maximize,spacer,close\"; kettőspont "
+#~ "választja el az ablak bal és jobb sarkát, a gombnevek pedig vesszővel "
+#~ "vannak elválasztva. Kettőzött gombok nem engedélyezettek. Az ismeretlen "
+#~ "gombnevek figyelmen kívül lesznek hagyva, így a jövőbeli metacity "
+#~ "verziókban hozzáadhatók lesznek a gombok, anélkül, hogy a régebbi verziók "
+#~ "elromlanának."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
-msgid "Arrangement of buttons on the titlebar"
-msgstr "A címsoron lévő gombok elrendezése"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:166
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"A címsoron lévő gombok elrendezése. Ennek az értéknek egy karakterláncnak "
-"kell lennie, például \"menu:minimize,maximize,spacer,close\"; kettőspont "
-"választja el az ablak bal és jobb sarkát, a gombnevek pedig vesszővel vannak "
-"elválasztva. Kettőzött gombok nem engedélyezettek. Az ismeretlen gombnevek "
-"figyelmen kívül lesznek hagyva, így a jövőbeli metacity verziókban "
-"hozzáadhatók lesznek a gombok, anélkül, hogy a régebbi verziók elromlanának."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
 #, fuzzy
-msgid "Dims parent windows when spawning modal dialogs"
-msgstr ""
-"Halványítsa el a szülő ablakokat, amelyek környezetfüggő párbeszédablakot "
-"nyitnak meg"
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr ""
+#~ "Halványítsa el a szülő ablakokat, amelyek környezetfüggő párbeszédablakot "
+#~ "nyitnak meg"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
 #, fuzzy
-msgid "The opacity of windows behind the window switcher."
-msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:180
-msgid "Background-image used in the workspace-switcher"
-msgstr "A munkaterület-váltóban használt háttérkép"
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "A munkaterület-váltóban használt háttérkép"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:187
-msgid "Enable Animations"
-msgstr "Animációk engedélyezése"
+#~ msgid "Enable Animations"
+#~ msgstr "Animációk engedélyezése"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:188
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"Animációk megjelenítésének engedélyezése. Ez egy globális kapcsoló, az "
-"ablakkezelő, a panel, stb. viselkedését is megváltoztatja."
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Animációk megjelenítésének engedélyezése. Ez egy globális kapcsoló, az "
+#~ "ablakkezelő, a panel, stb. viselkedését is megváltoztatja."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:192
 #, fuzzy
-msgid "Duration of the open animation"
-msgstr "A bezárási animáció időtartama"
+#~ msgid "Duration of the open animation"
+#~ msgstr "A bezárási animáció időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:197
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
-"A maximalizálási és az eredeti méretre visszaállítási animációk időtartama"
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr ""
+#~ "A maximalizálási és az eredeti méretre visszaállítási animációk időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
-msgid "Duration of the close animation"
-msgstr "A bezárási animáció időtartama"
+#~ msgid "Duration of the close animation"
+#~ msgstr "A bezárási animáció időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:207
-msgid "Duration of the minimize animation"
-msgstr "A minimalizálási animáció időtartama"
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "A minimalizálási animáció időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:212
-msgid "Duration of the workspace switch animation"
-msgstr "A munkaterület-váltó animáció időtartama"
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "A munkaterület-váltó animáció időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:217
-msgid "Duration of the menu mapping animation"
-msgstr "Menü leképezési animáció időtartama"
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Menü leképezési animáció időtartama"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:225
-msgid "Defines the shadow of normal focused windows"
-msgstr "Meghatározza a normál fókuszban lévő ablakok árnyékát"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Meghatározza a normál fókuszban lévő ablakok árnyékát"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:226
 #, fuzzy
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]."
-msgstr ""
-"Az első érték az árnyék elmosódásának sugara, a második a felső "
-"elhalványulás (ez általában -1), a harmadik és a negyedik az x- és y-eltolás "
-"és az utolsó a homályosság. Tehát [elmosódási sugár, felső elhalványulás, x-"
-"eltolás, y-eltolás, homályosság]"
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "Az első érték az árnyék elmosódásának sugara, a második a felső "
+#~ "elhalványulás (ez általában -1), a harmadik és a negyedik az x- és y-"
+#~ "eltolás és az utolsó a homályosság. Tehát [elmosódási sugár, felső "
+#~ "elhalványulás, x-eltolás, y-eltolás, homályosság]"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:230
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Meghatározza a nem normál fókuszban lévő ablakok árnyékát"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Meghatározza a nem normál fókuszban lévő ablakok árnyékát"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:231
-#: data/org.pantheon.desktop.gala.gschema.xml.in:236
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
-#: data/org.pantheon.desktop.gala.gschema.xml.in:246
 #, fuzzy
-msgid "See normal-focused."
-msgstr "Mutasd a normál fókuszt"
+#~ msgid "See normal-focused."
+#~ msgstr "Mutasd a normál fókuszt"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:235
-msgid "Defines the shadow of a menu"
-msgstr "Meghatározza a menü árnyékát"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Meghatározza a menü árnyékát"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:240
-msgid "Defines the shadow of a focused dialog"
-msgstr "Meghatározza a fókuszban lévő párbeszédablak árnyékát"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Meghatározza a fókuszban lévő párbeszédablak árnyékát"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:245
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Meghatározza a nem fókuszban lévő párbeszédablak árnyékát"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Meghatározza a nem fókuszban lévő párbeszédablak árnyékát"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
-msgid "Disable all notifications"
-msgstr "Kikapcsolja az összes értesítést"
+#~ msgid "Disable all notifications"
+#~ msgstr "Kikapcsolja az összes értesítést"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:261
-msgid "Enable bubbles"
-msgstr "Buborék értesítések engedélyezése"
+#~ msgid "Enable bubbles"
+#~ msgstr "Buborék értesítések engedélyezése"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:265
-msgid "Enable sounds"
-msgstr "Hang értesítések engedélyezése"
+#~ msgid "Enable sounds"
+#~ msgstr "Hang értesítések engedélyezése"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
-msgid "Show missed notifications in notification center"
-msgstr "Az elmulasztott értesítések megjelenítése az értesítési központban"
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Az elmulasztott értesítések megjelenítése az értesítési központban"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:276
-msgid "Enable rounded corner mask"
-msgstr "Kerekített sarkok engedélyezése"
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Kerekített sarkok engedélyezése"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:281
-msgid "Corner radius"
-msgstr "Kerekítés sugara"
+#~ msgid "Corner radius"
+#~ msgstr "Kerekítés sugara"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:285
-msgid "Disable corner mask on fullscreen"
-msgstr "Kerekítés kikapcsolása teljes képernyőn"
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Kerekítés kikapcsolása teljes képernyőn"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:286
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
-"Ha be van kapcsolva, a teljes képernyőn megjelenő (a képernyőt kitöltő) "
-"alkalmazások sarkainak kerekítése ki lesz kapcsolva azon a monitoron."
+#~ msgid ""
+#~ "If enabled, when an application is fullscreen (fills the monitor), the "
+#~ "corner masks will be disabled on that monitor."
+#~ msgstr ""
+#~ "Ha be van kapcsolva, a teljes képernyőn megjelenő (a képernyőt kitöltő) "
+#~ "alkalmazások sarkainak kerekítése ki lesz kapcsolva azon a monitoron."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:290
-msgid "Only show corner masks on primary monitor"
-msgstr "Csak az elsődleges kijelzőn kerekítse a sarkokat"
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Csak az elsődleges kijelzőn kerekítse a sarkokat"
 
 #~ msgid "Cancel"
 #~ msgstr "Mégsem"
