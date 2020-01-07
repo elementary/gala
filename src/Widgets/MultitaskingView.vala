@@ -445,7 +445,7 @@ namespace Gala
 #endif
 
 			if (close_view)
-				toggle ();
+				close ();
 		}
 
 		/**
@@ -544,7 +544,7 @@ namespace Gala
 				workspace.activate (time);
 			else {
 				window.activate (time);
-				toggle ();
+				close ();
 			}
 #endif
 		}
@@ -565,6 +565,7 @@ namespace Gala
 			if (opened)
 				return;
 
+			WorkspaceManager.get_default ().freeze_remove ();
 			toggle ();
 		}
 
@@ -576,6 +577,7 @@ namespace Gala
 			if (!opened)
 				return;
 
+			WorkspaceManager.get_default ().thaw_remove ();
 			toggle ();
 		}
 
@@ -728,6 +730,7 @@ namespace Gala
 
 					animating = false;
 
+					WorkspaceManager.get_default ().cleanup ();
 					return false;
 				});
 			} else {

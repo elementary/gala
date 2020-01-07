@@ -182,7 +182,7 @@ namespace Gala
 
 		void workspace_switched (Screen screen, int from, int to, MotionDirection direction)
 		{
-			if (!Prefs.get_dynamic_workspaces ())
+			if (!Prefs.get_dynamic_workspaces () || remove_freeze_count > 0)
 				return;
 
 			// remove empty workspaces after we switched away from them unless it's the last one
@@ -395,27 +395,32 @@ namespace Gala
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
 			unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			unowned Workspace active = manager.get_active_workspace ();
+
 			List<Meta.Workspace> workspaces = null;
 			for (int i = 0; i < manager.get_n_workspaces (); i++) {
 				workspaces.append (manager.get_workspace_by_index (i));
 			}
 
+			var last_index = manager.get_n_workspaces () - 1;
 			foreach (var workspace in workspaces) {
-				var last_index = manager.get_n_workspaces () - 1;
-				if (Utils.get_n_windows (workspace) < 1
+				if (workspace != active && Utils.get_n_windows (workspace) < 1
 					&& workspace.index () != last_index) {
 					remove_workspace (workspace);
+					last_index = manager.get_n_workspaces () - 1;
 				}
 			}
 #else
 			var screen = wm.get_screen ();
 			var last_index = screen.get_n_workspaces () - 1;
-			unowned GLib.List<Meta.Workspace> workspaces = screen.get_workspaces ();
+			unowned Workspace active = screen.get_active_workspace ();
 
-			foreach (var workspace in workspaces) {
-				if (Utils.get_n_windows (workspace) < 1
+			foreach (var workspace in screen.get_workspaces ()) {
+				if (workspace != active
+					&& Utils.get_n_windows (workspace) < 1
 					&& workspace.index () != last_index) {
 					remove_workspace (workspace);
+					last_index = screen.get_n_workspaces () - 1;
 				}
 			}
 #endif
