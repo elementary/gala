@@ -7,30 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2018-08-24 00:01+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
-"Language-Team: Dutch <https://weblate.elementary.io/projects/desktop/gala/nl/"
-">\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-27 13:07+0000\n"
+"Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
+"Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Screenshots"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
-msgstr "Ziet het beeldscherm er goed uit?"
+msgstr "Ziet het beeld er goed uit?"
 
 #: src/WindowManager.vala:2191
 msgid "Keep This Configuration"
-msgstr "Behoud deze configuratie"
+msgstr "Behoud deze instellingen"
 
 #: src/WindowManager.vala:2192
 msgid "Restore Previous Configuration"
-msgstr "Herstel vorige configuratie"
+msgstr "Vorige instellingen terugzetten"
 
 #: daemon/MenuDaemon.vala:95
 msgid "Minimize"
@@ -74,41 +77,45 @@ msgstr "Maximaliseren"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitasken &amp; Venster Management"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Een venster &amp; schermindeling manager voor Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"A venster &amp; schermindeling manager gebaseerd op libmutter and en "
+"ontwikkeld door elementary voor gebruik met Pantheon."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Verbeterde venster schaduwen voor oudere apps"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "De positie van notificaties is verbeterd na het veranderen van DPI"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Verbeterde animaties voor bewegende en gemaximaliseerde maar niet "
+"schermvullende vensters"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -130,10 +137,11 @@ msgstr "Andere"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+"Een reserve desktopbestand voor notificaties van verouderde applicaties."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applicaties-overige"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
@@ -144,9 +152,8 @@ msgid "Algorithm for window overview layout"
 msgstr "Algoritme voor venster overzicht layout"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
-#, fuzzy
 msgid "Choose the algorithm used for exposing the windows."
-msgstr "Bepaal hoe vensters in vogelvlucht getoond worden"
+msgstr "Bepaal hoe vensters in vogelvlucht getoond worden."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
@@ -161,16 +168,14 @@ msgid "Action for the bottom right corner"
 msgstr "Actie voor de rechteronderhoek"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
-#, fuzzy
 msgid ""
 "The command that will be executed for the hot corner action 'custom-command' "
 "or multiple"
 msgstr ""
-"Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-"
-"command' (meerdere mogelijk)"
+"Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-command' ("
+"meerdere mogelijk)"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:48
-#, fuzzy
 msgid ""
 "If you just put a single command, it will be used for every hot corner "
 "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
@@ -181,11 +186,10 @@ msgid ""
 msgstr ""
 "Als u een enkele opdracht ingeeft, is deze van toepassing op elke actieve "
 "hoek met 'custom-command'. U kunt per actieve hoek een andere opdracht "
-"ingeven, door de opdrachten in te geven in de vorm 'hotcorner-topleft:"
-"command;;hotcorner-bottomright:command'. Dat is: een reeks ingaven "
-"(gescheiden door ';;') met elke ingave van de vorm 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]', een dubbele punt (':') en de "
-"daadwerkelijke opdracht."
+"ingeven, door de opdrachten in te geven in de vorm 'hotcorner-topleft:command"
+";;hotcorner-bottomright:command'. Dat is: een reeks ingaven (gescheiden door "
+"';;') met elke ingave van de vorm 'hotcorner-[topleft; topright; bottomleft; "
+"bottomright]', een dubbele punt (':') en de daadwerkelijke opdracht."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
@@ -208,31 +212,29 @@ msgid "Panel main menu action"
 msgstr "Actie voor paneelhoofdmenu"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
-#, fuzzy
 msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
 "Hiermee stelt u de opdracht in die bij het indrukken van de paneelhoofdmenu-"
-"sneltoets wordt uitgevoerd"
+"sneltoets wordt uitgevoerd."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
 msgstr "Gebruik zelfaanpassende werkbladen in plaats van statische werkbladen"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
-#, fuzzy
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
 "instead of a static, fixed number."
 msgstr ""
 "Maak automatisch nieuwe bureaubladen aan wanneer nodig en verwijder "
-"ongebruikte in plaats van een vast aantal bureaubladen"
+"automatisch ongebruikte bureaubladen in plaats van een vast aantal "
+"bureaubladen."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr "Namen die de vensterwisselaar herkent als dokvensters"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
-#, fuzzy
 msgid ""
 "When launching the window-switcher, Gala iterates over this list and "
 "attempts to find a window matching the names. If it does, it will hide this "
@@ -242,9 +244,8 @@ msgstr ""
 "overeenkomen met deze lijst tijdelijk wordt verborgen."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "Toon alle open vensters en werkbladen"
+msgstr "verplaats gemaximaliseerde vensters automatisch naar een nieuw werkblad"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -299,7 +300,7 @@ msgstr "Omschakelen naar volgende toetsenbordindeling"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:213
 #: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+msgstr "VEROUDERD: deze toets is verouderd en werkt niet."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "Cycle to previous keyboard layout"
@@ -307,11 +308,11 @@ msgstr "Omschakelen naar vorige toetsenbordindeling"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:152
 msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+msgstr "De sneltoets om het beeld-in-beeld venster in te schakelen"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:153
 msgid "The shortcut to show the selection area to choose a window."
-msgstr ""
+msgstr "De sneltoets om het selectiegebied te tonen en een venster te kiezen."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:160
 msgid "Attach modal dialogs"
@@ -351,17 +352,14 @@ msgstr ""
 "creëren."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
 msgid "Dims parent windows when spawning modal dialogs"
 msgstr ""
-"Dim hoofdvensters als een daaraan gehecht modaal dialoogvenster is geopend"
+"Dim de hoofdvensters als een daaraan gehecht dialoogvenster wordt geopend"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:175
-#, fuzzy
 msgid "The opacity of windows behind the window switcher."
 msgstr ""
-"De ondoorschijnendheid van vensters in de achtergrond van de alt-tab-"
-"vensterwisselaar."
+"De ondoorzichtigheid van vensters in de achtergrond van de vensterwisselaar."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:180
 msgid "Background-image used in the workspace-switcher"
@@ -381,9 +379,8 @@ msgstr ""
 "vensterbeheerder enz..."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "Tijdsduur van de sluitanimatie"
+msgstr "Tijdsduur van de animatie tijdens het openen"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
@@ -412,17 +409,16 @@ msgid "Defines the shadow of normal focused windows"
 msgstr "Definieert de schaduw van de normale gefocuste vensters"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:226
-#, fuzzy
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
 "offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
 "offset, opacity]."
 msgstr ""
-"De eerste waarde van de vervaging van de schaduw, de tweede top vervaagd "
-"(dat is gewoonlijk alleen -1), de derde en vierde x - en y-verschuiving en "
-"de laatste de dekking. Dus [blur-radius, top-fade, x-offset, y-offset, "
-"dekking]"
+"De eerste waarde is de mate van vervaging van de schaduw, de tweede waarde "
+"is de mate waarin de top vervaagt (dat is gewoonlijk alleen -1), de derde en "
+"vierde waarde de x - en y-verschuivingen en de laatste de dekking. Dus [blur-"
+"radius, top-fade, x-offset, y-offset, dekking]."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:230
 msgid "Defines the shadow of a normal unfocused window"
@@ -432,9 +428,8 @@ msgstr "Definieert de schaduw van de normale niet gefocuste vensters"
 #: data/org.pantheon.desktop.gala.gschema.xml.in:236
 #: data/org.pantheon.desktop.gala.gschema.xml.in:241
 #: data/org.pantheon.desktop.gala.gschema.xml.in:246
-#, fuzzy
 msgid "See normal-focused."
-msgstr "Zie normaal-gefocust"
+msgstr "Zie normaal-gefocust."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:235
 msgid "Defines the shadow of a menu"
@@ -454,15 +449,15 @@ msgstr "Schakel alle meldingen uit"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:261
 msgid "Enable bubbles"
-msgstr ""
+msgstr "Schakel bubbels in"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:265
 msgid "Enable sounds"
-msgstr ""
+msgstr "Schakel geluid in"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:269
 msgid "Show missed notifications in notification center"
-msgstr ""
+msgstr "Toon gemiste notificaties in het notificatie centrum"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:276
 msgid "Enable rounded corner mask"
@@ -481,6 +476,8 @@ msgid ""
 "If enabled, when an application is fullscreen (fills the monitor), the "
 "corner masks will be disabled on that monitor."
 msgstr ""
+"Als dit is ingeschakeld, worden afgeronde hoeken op de desbetreffende "
+"monitor uitgeschakeld als daarop een programma in volledig scherm draait."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:290
 msgid "Only show corner masks on primary monitor"

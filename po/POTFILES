@@ -1,3 +1,4 @@
+src/ScreenshotManager.vala
 src/WindowManager.vala
 daemon/MenuDaemon.vala
 data/gala.appdata.xml.in

@@ -7,18 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2018-11-20 00:03+0000\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-18 19:12+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://weblate.elementary.io/projects/desktop/gala/"
-"ca/>\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr "Captures de pantalla"
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -74,41 +78,45 @@ msgstr "Maximitza"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitasca i gestió de finestres"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Un gestor de finestres i de composició per al Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Un gestor de finestres i de composició basat en libmutter i dissenyat per "
+"l'elementary per usar amb el Pantheon."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Millores:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Millora de les ombres de les finestres per a les aplicacions de llegat"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Correcció de la fallada potencial en fer captures de pantalla"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
 msgstr ""
+"Correcció de la posició de les notificacions després de canviar els DPI"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Correcció de les animacions per moure i maximitzar les finestres en mosaic"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -240,9 +248,9 @@ msgstr ""
 "finestra i la tornarà a fer aparèixer quan el commutador estigui tancat."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
-#, fuzzy
 msgid "Automatically move maximized windows to a new workspace"
-msgstr "Visualitza totes les finestres obertes i totes les àrees de treball"
+msgstr ""
+"Les finestres maximitzades es mouen automàticament a un espai de treball nou."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
@@ -374,9 +382,8 @@ msgstr ""
 "comportament del gestor de finestres, el plafó, etc."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:192
-#, fuzzy
 msgid "Duration of the open animation"
-msgstr "Durada de l'animació de tancament"
+msgstr "Durada de l'animació d'obertura"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"

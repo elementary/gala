@@ -7,16 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
-"PO-Revision-Date: 2016-01-29 20:14+0000\n"
-"Last-Translator: Félix Brezo <felixbrezo@gmail.com>\n"
-"Language-Team: Esperanto <eo@li.org>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-13 20:07+0000\n"
+"Last-Translator: Augusto Fornitani <augusto.fornitani@outlook.com>\n"
+"Language-Team: Esperanto <https://l10n.elementary.io/projects/desktop/gala/"
+"eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr ""
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
@@ -24,11 +30,11 @@ msgstr "Ĉu la ekrano aspektas bone?"
 
 #: src/WindowManager.vala:2191
 msgid "Keep This Configuration"
-msgstr ""
+msgstr "Konservi la Agordojn"
 
 #: src/WindowManager.vala:2192
 msgid "Restore Previous Configuration"
-msgstr ""
+msgstr "Restaŭri la Antaŭajn Agordojn"
 
 #: daemon/MenuDaemon.vala:95
 msgid "Minimize"
@@ -40,7 +46,7 @@ msgstr "Movi"
 
 #: daemon/MenuDaemon.vala:113
 msgid "Resize"
-msgstr ""
+msgstr "Ŝanĝi grandecon"
 
 #: daemon/MenuDaemon.vala:119
 msgid "Always on Top"
@@ -48,15 +54,15 @@ msgstr "Ĉiam supre"
 
 #: daemon/MenuDaemon.vala:125
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Ĉiam je vidata laborspaco"
 
 #: daemon/MenuDaemon.vala:131
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Movu maldekstren de laborspaco"
 
 #: daemon/MenuDaemon.vala:137
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Movu dekstren de laborspaco"
 
 #: daemon/MenuDaemon.vala:143
 msgid "Close"
@@ -64,15 +70,15 @@ msgstr "Fermi"
 
 #: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"
-msgstr ""
+msgstr "Malmaksimumigi"
 
 #: daemon/MenuDaemon.vala:159
 msgid "Maximize"
-msgstr ""
+msgstr "Maksimumigi"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Plurtaskado kaj Fenestromastrumado"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
@@ -83,79 +89,81 @@ msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Mastrumilo fenestra kaj kunmeta bazita sur libmutter kaj projektita de "
+"elementary por uzado kun Panteono."
 
 #: data/gala.appdata.xml.in:15
 msgid "Improvements:"
-msgstr ""
+msgstr "Plibonigoj:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Plibonigi fenestro-ombrojn por malnovaj aplikaĵoj"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Ripari eblan kolapson post ekrankopii"
 
 #: data/gala.appdata.xml.in:19
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Ripari pozicion de atentigo post ŝanĝi punktan skaladon (DPI)"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Ripari movbildojn por movo kaj maksimumigo de kaheligitaj fenestroj"
 
 #: data/gala.appdata.xml.in:26
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr ""
+msgstr "Panoramo de plurtaskado"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "Rigardi ĉiujn malfermitajn fenestrojn kaj laborspacojn"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Aliaj"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Retrodefaŭlta dosiero “.desktop”  por atentigoj el eksdataj aplikaĵoj."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:22
 msgid "Action for the top left corner"
-msgstr ""
+msgstr "Ago por la supra-maldekstra angulo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:27
 msgid "Algorithm for window overview layout"
-msgstr ""
+msgstr "Algoritmo por ekrana aranĝo de fenestra super-rigardo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:28
 msgid "Choose the algorithm used for exposing the windows."
-msgstr ""
+msgstr "Elektu la algoritmon uzitan por videbligi fenestrojn."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:32
 msgid "Action for the top right corner"
-msgstr ""
+msgstr "Ago por la supra-dekstra angulo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:37
 msgid "Action for the bottom left corner"
-msgstr ""
+msgstr "Ago por la malsupra-maldekstra angulo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:42
 msgid "Action for the bottom right corner"
-msgstr ""
+msgstr "Ago por la malsupra-dekstra angulo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:47
 msgid ""
@@ -172,10 +180,17 @@ msgid ""
 "topright; bottomleft; bottomright]' followed by a ':' and then the command. "
 "';;' is used as delimiter between command defintions."
 msgstr ""
+"Se oni enigas ununuran instrukcion, tiu estos uzita por ĉiu fulmoangula ago "
+"atribuita al “custom-command”. Se oni, anstataŭe, uzas la ŝablonon "
+"'hotcorner-topleft:instrukcio;;hotcorner-bottomright:instrukcio', la "
+"specifaj instrukcioj estos uzita por ĉiu koresponda fulmoangulo. Eblaj "
+"identigiloj estas 'hotcorner-[topleft; topright; bottomleft; bottomright]' "
+"sekve de unu ':' kaj tuj post la dezirata instrukcio. Oni uzas ';;' kiel "
+"apartigilon inter instrukcio-difinoj."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:57
 msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
+msgstr "Ŝalti ĉe-randan kaheligon post demeto de fenestroj al ekrano-randoj"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:58
 msgid ""
@@ -183,28 +198,37 @@ msgid ""
 "vertically and resizes them horizontally to cover half of the available "
 "area. Dropping windows on the top screen edge maximizes them completely."
 msgstr ""
+"Se ŝaltita, demeto de fenestroj al flanko de la ekrano maksimumigas ilin "
+"vertikale, kaj ŝanĝas ilian grandecon horizontale, tiel ke ili kovras duonon "
+"de disponebla areo. Demeti fenestron al supra parto de la ekrano "
+"maksimumigas ĝin, tiel ke ĝi kovras tuton de la disponebla areo."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:62
 msgid "Panel main menu action"
-msgstr ""
+msgstr "Ago por ĉefa menuo de Panelo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:63
+#, fuzzy
 msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
 msgstr ""
+"Agordas la instrukcion lanĉotan post premo de klavkombino “panelo-ĉef-menuo”."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:77
 msgid "Enable dynamic workspace instead of static ones"
-msgstr ""
+msgstr "Ŝalti movantan laborspacaron anstataŭ fiksan"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:78
 msgid ""
 "Use a dynamically increasing or decreasing number, as needed, of workspaces "
 "instead of a static, fixed number."
 msgstr ""
+"Laŭnecese uzi mem-obligantan aŭ mem-onigantan nombron de laborspacoj, "
+"anstataŭ fiksan nombron."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:82
 msgid "Names that are recognized as dock windows for the window switcher"
 msgstr ""
+"Nomoj kiuj estas rekonitaj kiel doko-fenestrojn por la fenestro-ŝaltilo"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:83
 msgid ""
@@ -212,42 +236,45 @@ msgid ""
 "attempts to find a window matching the names. If it does, it will hide this "
 "window and fade it back in, once the the switcher is closed."
 msgstr ""
+"Post lanĉo de fenestro-ŝaltilo, Gala trairas ĉi tiun liston kaj provas trovi "
+"fenestron kun samaj nomoj. Se sukcese, ĝi kaŝas ĉi tiun fenestron, kaj nur "
+"montros ĝin denove post kiam ŝaltilo estos fermita."
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:87
 msgid "Automatically move maximized windows to a new workspace"
-msgstr ""
+msgstr "Aŭtomate movi maksimumigitajn fenestrojn al nova laborspaco"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
-msgstr ""
+msgstr "Fulmoklavo por movi al unua laborspaco"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:100
 msgid "Shortcut to move to last workspace"
-msgstr ""
+msgstr "Fulmoklavo por movi al lasta laborspaco"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:105
 msgid "Shortcut to move the current window to first workspace"
-msgstr ""
+msgstr "Fulmoklavo por movi nunan fenestron al unua laborspaco"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:110
 msgid "Shortcut to move the current window to last workspace"
-msgstr ""
+msgstr "Fulmoklavo por movi nunan fenestron al lasta laborspaco"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:115
 msgid "Zoom in"
-msgstr ""
+msgstr "Zomi"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:120
 msgid "Zoom out"
-msgstr ""
+msgstr "Malzomi"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:124
 msgid "Shortcut to open the window overview"
-msgstr ""
+msgstr "Fulmoklavo por malfermi fenestran super-rigardon"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:129
 msgid "Shortcut to open the window overview for all windows"
-msgstr ""
+msgstr "Fulmoklavo por malfermi fenestran super-rigardon por ĉiuj fenestroj"
 
 #: data/org.pantheon.desktop.gala.gschema.xml.in:134
 #: data/org.pantheon.desktop.gala.gschema.xml.in:138

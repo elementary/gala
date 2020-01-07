@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-10 18:01+0000\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
 "PO-Revision-Date: 2018-12-14 00:07+0000\n"
 "Last-Translator: Daniel Zvir <zvir.daniel@seznam.cz>\n"
 "Language-Team: Czech <https://weblate.elementary.io/projects/desktop/gala/cs/"
@@ -19,6 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr ""
 
 #: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
