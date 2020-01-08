@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"POT-Creation-Date: 2020-01-07 17:42+0000\n"
 "PO-Revision-Date: 2019-12-27 13:07+0000\n"
 "Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -143,345 +143,279 @@ msgstr ""
 msgid "applications-other"
 msgstr "applicaties-overige"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:22
-msgid "Action for the top left corner"
-msgstr "Actie voor de linkerbovenhoek"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Actie voor de linkerbovenhoek"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Algorithm for window overview layout"
-msgstr "Algoritme voor venster overzicht layout"
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Algoritme voor venster overzicht layout"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows."
-msgstr "Bepaal hoe vensters in vogelvlucht getoond worden."
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "Bepaal hoe vensters in vogelvlucht getoond worden."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:32
-msgid "Action for the top right corner"
-msgstr "Actie voor de rechterbovenhoek"
+#~ msgid "Action for the top right corner"
+#~ msgstr "Actie voor de rechterbovenhoek"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:37
-msgid "Action for the bottom left corner"
-msgstr "Actie voor de linkeronderhoek"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Actie voor de linkeronderhoek"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:42
-msgid "Action for the bottom right corner"
-msgstr "Actie voor de rechteronderhoek"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Actie voor de rechteronderhoek"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
-msgid ""
-"The command that will be executed for the hot corner action 'custom-command' "
-"or multiple"
-msgstr ""
-"Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-command' ("
-"meerdere mogelijk)"
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr ""
+#~ "Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-"
+#~ "command' (meerdere mogelijk)"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:48
-msgid ""
-"If you just put a single command, it will be used for every hot corner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"Als u een enkele opdracht ingeeft, is deze van toepassing op elke actieve "
-"hoek met 'custom-command'. U kunt per actieve hoek een andere opdracht "
-"ingeven, door de opdrachten in te geven in de vorm 'hotcorner-topleft:command"
-";;hotcorner-bottomright:command'. Dat is: een reeks ingaven (gescheiden door "
-"';;') met elke ingave van de vorm 'hotcorner-[topleft; topright; bottomleft; "
-"bottomright]', een dubbele punt (':') en de daadwerkelijke opdracht."
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "Als u een enkele opdracht ingeeft, is deze van toepassing op elke actieve "
+#~ "hoek met 'custom-command'. U kunt per actieve hoek een andere opdracht "
+#~ "ingeven, door de opdrachten in te geven in de vorm 'hotcorner-topleft:"
+#~ "command;;hotcorner-bottomright:command'. Dat is: een reeks ingaven "
+#~ "(gescheiden door ';;') met elke ingave van de vorm 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]', een dubbele punt (':') en de "
+#~ "daadwerkelijke opdracht."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr "Schakel randtegelen in bij het plaatsen van vensters op schermranden"
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr ""
+#~ "Schakel randtegelen in bij het plaatsen van vensters op schermranden"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:58
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Indien ingeschakeld, zullen vensters die tegen de verticale schermranden "
-"geplaatst worden horizontaal gemaximaliseerd worden en verticaal vergoot of "
-"verkleind worden totdat ze de helft van de beschikbare ruimte innemen. "
-"Vensters die tegen de bovenste schermrand geplaatst worden zullen volledig "
-"gemaximaliseerd worden."
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Indien ingeschakeld, zullen vensters die tegen de verticale schermranden "
+#~ "geplaatst worden horizontaal gemaximaliseerd worden en verticaal vergoot "
+#~ "of verkleind worden totdat ze de helft van de beschikbare ruimte innemen. "
+#~ "Vensters die tegen de bovenste schermrand geplaatst worden zullen "
+#~ "volledig gemaximaliseerd worden."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid "Panel main menu action"
-msgstr "Actie voor paneelhoofdmenu"
+#~ msgid "Panel main menu action"
+#~ msgstr "Actie voor paneelhoofdmenu"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr ""
-"Hiermee stelt u de opdracht in die bij het indrukken van de paneelhoofdmenu-"
-"sneltoets wordt uitgevoerd."
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr ""
+#~ "Hiermee stelt u de opdracht in die bij het indrukken van de "
+#~ "paneelhoofdmenu-sneltoets wordt uitgevoerd."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Gebruik zelfaanpassende werkbladen in plaats van statische werkbladen"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr ""
+#~ "Gebruik zelfaanpassende werkbladen in plaats van statische werkbladen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:78
-msgid ""
-"Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number."
-msgstr ""
-"Maak automatisch nieuwe bureaubladen aan wanneer nodig en verwijder "
-"automatisch ongebruikte bureaubladen in plaats van een vast aantal "
-"bureaubladen."
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr ""
+#~ "Maak automatisch nieuwe bureaubladen aan wanneer nodig en verwijder "
+#~ "automatisch ongebruikte bureaubladen in plaats van een vast aantal "
+#~ "bureaubladen."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Namen die de vensterwisselaar herkent als dokvensters"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Namen die de vensterwisselaar herkent als dokvensters"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:83
-msgid ""
-"When launching the window-switcher, Gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
-"Zolang de vensterwisselaar geopend is, zullen vensters met namen die "
-"overeenkomen met deze lijst tijdelijk wordt verborgen."
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "Zolang de vensterwisselaar geopend is, zullen vensters met namen die "
+#~ "overeenkomen met deze lijst tijdelijk wordt verborgen."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:87
-msgid "Automatically move maximized windows to a new workspace"
-msgstr "verplaats gemaximaliseerde vensters automatisch naar een nieuw werkblad"
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr ""
+#~ "verplaats gemaximaliseerde vensters automatisch naar een nieuw werkblad"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
-msgid "Shortcut to move to first workspace"
-msgstr "Sneltoets om naar het eerste werkblad te gaan"
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Sneltoets om naar het eerste werkblad te gaan"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
-msgid "Shortcut to move to last workspace"
-msgstr "Sneltoets om naar het laatste werkblad te gaan"
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Sneltoets om naar het laatste werkblad te gaan"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
-msgid "Shortcut to move the current window to first workspace"
-msgstr ""
-"Sneltoets om het huidige venster naar het eerste werkblad te verplaatsen"
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr ""
+#~ "Sneltoets om het huidige venster naar het eerste werkblad te verplaatsen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
-msgid "Shortcut to move the current window to last workspace"
-msgstr ""
-"Sneltoets om het huidige venster naar het laatste werkblad te verplaatsen"
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr ""
+#~ "Sneltoets om het huidige venster naar het laatste werkblad te verplaatsen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
-msgid "Zoom in"
-msgstr "Vergroten"
+#~ msgid "Zoom in"
+#~ msgstr "Vergroten"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:120
-msgid "Zoom out"
-msgstr "Verkleinen"
+#~ msgid "Zoom out"
+#~ msgstr "Verkleinen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
-msgid "Shortcut to open the window overview"
-msgstr "Sneltoets om het vensteroverzicht te openen"
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Sneltoets om het vensteroverzicht te openen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Sneltoets om het werkbladoverstijgende vensteroverzicht te openen"
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Sneltoets om het werkbladoverstijgende vensteroverzicht te openen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:134
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr "Ga naar de volgende werkruimte (naar rechts of terug naar de eerste)"
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr ""
+#~ "Ga naar de volgende werkruimte (naar rechts of terug naar de eerste)"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "Cycle to next keyboard layout"
-msgstr "Omschakelen naar volgende toetsenbordindeling"
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Omschakelen naar volgende toetsenbordindeling"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#: data/org.pantheon.desktop.gala.gschema.xml.in:176
-#: data/org.pantheon.desktop.gala.gschema.xml.in:193
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
-#: data/org.pantheon.desktop.gala.gschema.xml.in:203
-#: data/org.pantheon.desktop.gala.gschema.xml.in:208
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "VEROUDERD: deze toets is verouderd en werkt niet."
+#~ msgid "DEPRECATED: This key is deprecated and ignored."
+#~ msgstr "VEROUDERD: deze toets is verouderd en werkt niet."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
-msgid "Cycle to previous keyboard layout"
-msgstr "Omschakelen naar vorige toetsenbordindeling"
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Omschakelen naar vorige toetsenbordindeling"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:152
-msgid "The shortcut to enable picture-in-picture window"
-msgstr "De sneltoets om het beeld-in-beeld venster in te schakelen"
+#~ msgid "The shortcut to enable picture-in-picture window"
+#~ msgstr "De sneltoets om het beeld-in-beeld venster in te schakelen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:153
-msgid "The shortcut to show the selection area to choose a window."
-msgstr "De sneltoets om het selectiegebied te tonen en een venster te kiezen."
+#~ msgid "The shortcut to show the selection area to choose a window."
+#~ msgstr ""
+#~ "De sneltoets om het selectiegebied te tonen en een venster te kiezen."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
-msgid "Attach modal dialogs"
-msgstr "Modale dialoogvensters toevoegen"
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Modale dialoogvensters toevoegen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"Indien ingeschakeld zullen dialoogvensters bij vertoning worden gehecht aan "
-"de titelbalk van het hoofdvenster en tezamen met het hoofdvenster verplaatst "
-"worden, in plaats van als losse vensters getoond worden."
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "Indien ingeschakeld zullen dialoogvensters bij vertoning worden gehecht "
+#~ "aan de titelbalk van het hoofdvenster en tezamen met het hoofdvenster "
+#~ "verplaatst worden, in plaats van als losse vensters getoond worden."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
-msgid "Arrangement of buttons on the titlebar"
-msgstr "Schikking van de knoppen op de titelbalk"
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Schikking van de knoppen op de titelbalk"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:166
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"Schikking van de knoppen op de titelbalk. De waarde moet een tekenreeks zijn "
-"zoals: ‘menu:minimize,maximize,spacer,close’; de puntkomma scheidt de "
-"linkerhoek van het venster van de rechterhoek, de knopnamen zijn gescheiden "
-"door komma's. Dubbele knoppen zijn niet toegestaan. Onbekende knopnamen "
-"worden stilzwijgend genegeerd zodat in toekomstige versies van Metacity, "
-"knoppen kunnen worden toegevoegd zonder oudere versies te breken. De waarde "
-"‘spacer’ kan gebruikt worden om ruimte tussen twee aangrenzende knoppen te "
-"creëren."
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Schikking van de knoppen op de titelbalk. De waarde moet een tekenreeks "
+#~ "zijn zoals: ‘menu:minimize,maximize,spacer,close’; de puntkomma scheidt "
+#~ "de linkerhoek van het venster van de rechterhoek, de knopnamen zijn "
+#~ "gescheiden door komma's. Dubbele knoppen zijn niet toegestaan. Onbekende "
+#~ "knopnamen worden stilzwijgend genegeerd zodat in toekomstige versies van "
+#~ "Metacity, knoppen kunnen worden toegevoegd zonder oudere versies te "
+#~ "breken. De waarde ‘spacer’ kan gebruikt worden om ruimte tussen twee "
+#~ "aangrenzende knoppen te creëren."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
-msgid "Dims parent windows when spawning modal dialogs"
-msgstr ""
-"Dim de hoofdvensters als een daaraan gehecht dialoogvenster wordt geopend"
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr ""
+#~ "Dim de hoofdvensters als een daaraan gehecht dialoogvenster wordt geopend"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "The opacity of windows behind the window switcher."
-msgstr ""
-"De ondoorzichtigheid van vensters in de achtergrond van de vensterwisselaar."
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr ""
+#~ "De ondoorzichtigheid van vensters in de achtergrond van de "
+#~ "vensterwisselaar."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:180
-msgid "Background-image used in the workspace-switcher"
-msgstr "Achtergrondafbeelding van de werkbladwisselaar"
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Achtergrondafbeelding van de werkbladwisselaar"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:187
-msgid "Enable Animations"
-msgstr "Animaties inschakelen"
+#~ msgid "Enable Animations"
+#~ msgstr "Animaties inschakelen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:188
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"Of animaties weergegeven moeten worden. Let op: dit is een "
-"systeeminstelling; ze heeft invloed op de werking van het paneel, de "
-"vensterbeheerder enz..."
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Of animaties weergegeven moeten worden. Let op: dit is een "
+#~ "systeeminstelling; ze heeft invloed op de werking van het paneel, de "
+#~ "vensterbeheerder enz..."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:192
-msgid "Duration of the open animation"
-msgstr "Tijdsduur van de animatie tijdens het openen"
+#~ msgid "Duration of the open animation"
+#~ msgstr "Tijdsduur van de animatie tijdens het openen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:197
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr ""
-"Duur van de snap animatie zoals gebruikt door maximaliseren/maximaliseren "
-"ongedaan maken"
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr ""
+#~ "Duur van de snap animatie zoals gebruikt door maximaliseren/maximaliseren "
+#~ "ongedaan maken"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
-msgid "Duration of the close animation"
-msgstr "Tijdsduur van de sluitanimatie"
+#~ msgid "Duration of the close animation"
+#~ msgstr "Tijdsduur van de sluitanimatie"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:207
-msgid "Duration of the minimize animation"
-msgstr "Duur van de minimaliseeranimatie"
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Duur van de minimaliseeranimatie"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:212
-msgid "Duration of the workspace switch animation"
-msgstr "Duur van de werkbladwisselingsanimatie"
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Duur van de werkbladwisselingsanimatie"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:217
-msgid "Duration of the menu mapping animation"
-msgstr "Duur van de menu-indeling animatie"
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Duur van de menu-indeling animatie"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:225
-msgid "Defines the shadow of normal focused windows"
-msgstr "Definieert de schaduw van de normale gefocuste vensters"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Definieert de schaduw van de normale gefocuste vensters"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:226
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]."
-msgstr ""
-"De eerste waarde is de mate van vervaging van de schaduw, de tweede waarde "
-"is de mate waarin de top vervaagt (dat is gewoonlijk alleen -1), de derde en "
-"vierde waarde de x - en y-verschuivingen en de laatste de dekking. Dus [blur-"
-"radius, top-fade, x-offset, y-offset, dekking]."
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "De eerste waarde is de mate van vervaging van de schaduw, de tweede "
+#~ "waarde is de mate waarin de top vervaagt (dat is gewoonlijk alleen -1), "
+#~ "de derde en vierde waarde de x - en y-verschuivingen en de laatste de "
+#~ "dekking. Dus [blur-radius, top-fade, x-offset, y-offset, dekking]."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:230
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Definieert de schaduw van de normale niet gefocuste vensters"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Definieert de schaduw van de normale niet gefocuste vensters"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:231
-#: data/org.pantheon.desktop.gala.gschema.xml.in:236
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
-#: data/org.pantheon.desktop.gala.gschema.xml.in:246
-msgid "See normal-focused."
-msgstr "Zie normaal-gefocust."
+#~ msgid "See normal-focused."
+#~ msgstr "Zie normaal-gefocust."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:235
-msgid "Defines the shadow of a menu"
-msgstr "Definieert de schaduw van de menu"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Definieert de schaduw van de menu"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:240
-msgid "Defines the shadow of a focused dialog"
-msgstr "Definieert de schaduw van de gefocuste dialoogvenster"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Definieert de schaduw van de gefocuste dialoogvenster"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:245
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Definieert de schaduw van de niet gefocuste dialoogvenster"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Definieert de schaduw van de niet gefocuste dialoogvenster"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
-msgid "Disable all notifications"
-msgstr "Schakel alle meldingen uit"
+#~ msgid "Disable all notifications"
+#~ msgstr "Schakel alle meldingen uit"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:261
-msgid "Enable bubbles"
-msgstr "Schakel bubbels in"
+#~ msgid "Enable bubbles"
+#~ msgstr "Schakel bubbels in"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:265
-msgid "Enable sounds"
-msgstr "Schakel geluid in"
+#~ msgid "Enable sounds"
+#~ msgstr "Schakel geluid in"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
-msgid "Show missed notifications in notification center"
-msgstr "Toon gemiste notificaties in het notificatie centrum"
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Toon gemiste notificaties in het notificatie centrum"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:276
-msgid "Enable rounded corner mask"
-msgstr "Zet afgeronde vensterhoeken aan"
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Zet afgeronde vensterhoeken aan"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:281
-msgid "Corner radius"
-msgstr "Hoekafrondingen"
+#~ msgid "Corner radius"
+#~ msgstr "Hoekafrondingen"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:285
-msgid "Disable corner mask on fullscreen"
-msgstr "Zet afgeronden hoeken op het volledige scherm uit"
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Zet afgeronden hoeken op het volledige scherm uit"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:286
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
-"Als dit is ingeschakeld, worden afgeronde hoeken op de desbetreffende "
-"monitor uitgeschakeld als daarop een programma in volledig scherm draait."
+#~ msgid ""
+#~ "If enabled, when an application is fullscreen (fills the monitor), the "
+#~ "corner masks will be disabled on that monitor."
+#~ msgstr ""
+#~ "Als dit is ingeschakeld, worden afgeronde hoeken op de desbetreffende "
+#~ "monitor uitgeschakeld als daarop een programma in volledig scherm draait."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:290
-msgid "Only show corner masks on primary monitor"
-msgstr "Alleen afgeronde hoeken op primaire monitor"
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Alleen afgeronde hoeken op primaire monitor"
 
 #~ msgid "Cancel"
 #~ msgstr "Annuleren"
