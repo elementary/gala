@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2018 elementary LLC. (https://elementary.io)
+//  Copyright (c) 2018-2020 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,12 @@ namespace Gala {
         ulong always_on_top_sid = 0U;
         ulong on_visible_workspace_sid = 0U;
 
+        private static GLib.Settings keybind_settings;
+
+        static construct {
+            keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
+        }
+
         [DBus (visible = false)]
         public void setup_dbus () {
             var flags = BusNameOwnerFlags.ALLOW_REPLACEMENT | BusNameOwnerFlags.REPLACE;
@@ -89,63 +95,110 @@ namespace Gala {
             }
         }
 
-        void init_window_menu () {
-            window_menu = new Gtk.Menu ();
-
-            minimize = new Gtk.MenuItem.with_label (_("Minimize"));
+        private void init_window_menu () {
+            minimize = new Gtk.MenuItem ();
+            minimize.add (
+                new Granite.AccelLabel (
+                    _("Minimize"),
+                    keybind_settings.get_strv ("minimize")[0]
+                )
+            );
             minimize.activate.connect (() => {
                 perform_action (Gala.ActionType.MINIMIZE_CURRENT);
             });
-            window_menu.append (minimize);
 
-            maximize = new Gtk.MenuItem.with_label ("");
+            maximize = new Gtk.MenuItem ();
             maximize.activate.connect (() => {
                 perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
             });
-            window_menu.append (maximize);
 
-            move = new Gtk.MenuItem.with_label (_("Move"));
+            move = new Gtk.MenuItem ();
+            move.add (
+                new Granite.AccelLabel (
+                    _("Move"),
+                    keybind_settings.get_strv ("begin-move")[0]
+                )
+            );
             move.activate.connect (() => {
                 perform_action (Gala.ActionType.START_MOVE_CURRENT);
             });
-            window_menu.append (move);
 
-            resize = new Gtk.MenuItem.with_label (_("Resize"));
+            resize = new Gtk.MenuItem ();
+            resize.add (
+                new Granite.AccelLabel (
+                    _("Resize"),
+                    keybind_settings.get_strv ("begin-resize")[0]
+                )
+            );
             resize.activate.connect (() => {
                 perform_action (Gala.ActionType.START_RESIZE_CURRENT);
             });
-            window_menu.append (resize);
 
-            always_on_top = new Gtk.CheckMenuItem.with_label (_("Always on Top"));
+            always_on_top = new Gtk.CheckMenuItem ();
+            always_on_top.add (
+                new Granite.AccelLabel (
+                    _("Always on Top"),
+                    keybind_settings.get_strv ("always-on-top")[0]
+                )
+            );
             always_on_top_sid = always_on_top.activate.connect (() => {
                 perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
             });
-            window_menu.append (always_on_top);
 
-            on_visible_workspace = new Gtk.CheckMenuItem.with_label (_("Always on Visible Workspace"));
+            on_visible_workspace = new Gtk.CheckMenuItem ();
+            on_visible_workspace.add (
+                new Granite.AccelLabel (
+                    _("Always on Visible Workspace"),
+                    keybind_settings.get_strv ("toggle-on-all-workspaces")[0]
+                )
+            );
             on_visible_workspace_sid = on_visible_workspace.activate.connect (() => {
                 perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
             });
-            window_menu.append (on_visible_workspace);
 
-            move_left = new Gtk.MenuItem.with_label (_("Move to Workspace Left"));
+            move_left = new Gtk.MenuItem ();
+            move_left.add (
+                new Granite.AccelLabel (
+                    _("Move to Workspace Left"),
+                    keybind_settings.get_strv ("move-to-workspace-left")[0]
+                )
+            );
             move_left.activate.connect (() => {
                 perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_LEFT);
             });
-            window_menu.append (move_left);
 
-            move_right = new Gtk.MenuItem.with_label (_("Move to Workspace Right"));
+            move_right = new Gtk.MenuItem ();
+            move_right.add (
+                new Granite.AccelLabel (
+                    _("Move to Workspace Right"),
+                    keybind_settings.get_strv ("move-to-workspace-right")[0]
+                )
+            );
             move_right.activate.connect (() => {
                 perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
             });
-            window_menu.append (move_right);
 
-            close = new Gtk.MenuItem.with_label (_("Close"));
+            close = new Gtk.MenuItem ();
+            close.add (
+                new Granite.AccelLabel (
+                    _("Close"),
+                    keybind_settings.get_strv ("close")[0]
+                )
+            );
             close.activate.connect (() => {
                 perform_action (Gala.ActionType.CLOSE_CURRENT);
             });
-            window_menu.append (close);
 
+            window_menu = new Gtk.Menu ();
+            window_menu.append (minimize);
+            window_menu.append (maximize);
+            window_menu.append (move);
+            window_menu.append (resize);
+            window_menu.append (always_on_top);
+            window_menu.append (on_visible_workspace);
+            window_menu.append (move_left);
+            window_menu.append (move_right);
+            window_menu.append (close);
             window_menu.show_all ();
         }
 
@@ -156,9 +209,18 @@ namespace Gala {
 
             minimize.visible = Gala.WindowFlags.CAN_MINIMIZE in flags;
             maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;
-            maximize.label = Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize");
             move.visible = Gala.WindowFlags.ALLOWS_MOVE in flags;
             resize.visible = Gala.WindowFlags.ALLOWS_RESIZE in flags;
+
+            var maximize_label = Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize");
+
+            maximize.get_child ().destroy ();
+            maximize.add (
+                new Granite.AccelLabel (
+                    maximize_label,
+                    keybind_settings.get_strv ("toggle-maximized")[0]
+                )
+            );
 
             // Setting active causes signal fires on activate so
             // we temporarily block those signals from emissions
