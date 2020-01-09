@@ -73,7 +73,7 @@ namespace Gala {
             var image = cache.load (background_file);
             if (image.is_loaded ()) {
                 image = null;
-                Idle.add(() => {
+                Idle.add (() => {
                     loaded ();
                     return false;
                 });
@@ -97,4 +97,3 @@ namespace Gala {
         }
     }
 }
-
