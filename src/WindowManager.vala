@@ -1336,9 +1336,12 @@ namespace Gala
 						dim_window (window.find_root_ancestor (), true);
 
                     break;
-                case WindowType.NOTIFICATION:
-                    notification_stack.show_notification (actor);
-                    map_completed (actor);
+				case WindowType.NOTIFICATION:
+					if (BehaviorSettings.get_default ().use_new_notifications) {
+						notification_stack.show_notification (actor);
+						map_completed (actor);
+					}
+					
                     break;
 				default:
 					map_completed (actor);
