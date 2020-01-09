@@ -17,134 +17,134 @@
 
 namespace Gala
 {
-	public struct Accelerator
-	{
-		public string name;
-		public Meta.KeyBindingFlags flags;
-	}
+    public struct Accelerator
+    {
+        public string name;
+        public Meta.KeyBindingFlags flags;
+    }
 
-	[DBus (name="org.gnome.Shell")]
-	public class DBusAccelerator
-	{
-		static DBusAccelerator? instance;
-		
-		[DBus (visible = false)]
-		public static unowned DBusAccelerator init (WindowManager wm)
-		{
-			if (instance == null)
-				instance = new DBusAccelerator (wm);
+    [DBus (name="org.gnome.Shell")]
+    public class DBusAccelerator
+    {
+        static DBusAccelerator? instance;
+        
+        [DBus (visible = false)]
+        public static unowned DBusAccelerator init (WindowManager wm)
+        {
+            if (instance == null)
+                instance = new DBusAccelerator (wm);
 
-			return instance;
-		}
+            return instance;
+        }
 
-		public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
+        public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
-		WindowManager wm;
-		HashTable<string, uint?> grabbed_accelerators;
+        WindowManager wm;
+        HashTable<string, uint?> grabbed_accelerators;
 
-		DBusAccelerator (WindowManager _wm)
-		{
-			wm = _wm;
-			grabbed_accelerators = new HashTable<string, uint?> (str_hash, str_equal);
+        DBusAccelerator (WindowManager _wm)
+        {
+            wm = _wm;
+            grabbed_accelerators = new HashTable<string, uint?> (str_hash, str_equal);
 
 #if HAS_MUTTER330
-			wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
+            wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
 #else
-			wm.get_screen ().get_display ().accelerator_activated.connect (on_accelerator_activated);
+            wm.get_screen ().get_display ().accelerator_activated.connect (on_accelerator_activated);
 #endif
-		}
+        }
 
 #if HAS_MUTTER334
-		void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp)
+        void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp)
 #else
-		void on_accelerator_activated (uint action, uint device_id, uint timestamp)
+        void on_accelerator_activated (uint action, uint device_id, uint timestamp)
 #endif
-		{
-			foreach (string accelerator in grabbed_accelerators.get_keys ()) {
-				if (grabbed_accelerators[accelerator] == action) {
-					var parameters = new GLib.HashTable<string, Variant> (null, null);
+        {
+            foreach (string accelerator in grabbed_accelerators.get_keys ()) {
+                if (grabbed_accelerators[accelerator] == action) {
+                    var parameters = new GLib.HashTable<string, Variant> (null, null);
 #if HAS_MUTTER334
-					parameters.set ("device-id", new Variant.uint32 (device.id));
+                    parameters.set ("device-id", new Variant.uint32 (device.id));
 #else
-					parameters.set ("device-id", new Variant.uint32 (device_id));
+                    parameters.set ("device-id", new Variant.uint32 (device_id));
 #endif
-					parameters.set ("timestamp", new Variant.uint32 (timestamp));
+                    parameters.set ("timestamp", new Variant.uint32 (timestamp));
 
-					accelerator_activated (action, parameters);
-				}
-			}
-		}
+                    accelerator_activated (action, parameters);
+                }
+            }
+        }
 
-		public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError
-		{
-			uint? action = grabbed_accelerators[accelerator];
+        public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError
+        {
+            uint? action = grabbed_accelerators[accelerator];
 
-			if (action == null) {
+            if (action == null) {
 #if HAS_MUTTER332
-				action = wm.get_display ().grab_accelerator (accelerator, (Meta.KeyBindingFlags)flags);
+                action = wm.get_display ().grab_accelerator (accelerator, (Meta.KeyBindingFlags)flags);
 #elif HAS_MUTTER330
-				action = wm.get_display ().grab_accelerator (accelerator);
+                action = wm.get_display ().grab_accelerator (accelerator);
 #else
-				action = wm.get_screen ().get_display ().grab_accelerator (accelerator);
+                action = wm.get_screen ().get_display ().grab_accelerator (accelerator);
 #endif
-				if (action > 0) {
-					grabbed_accelerators[accelerator] = action;
-				}
-			}
+                if (action > 0) {
+                    grabbed_accelerators[accelerator] = action;
+                }
+            }
 
-			return action;
-		}
+            return action;
+        }
 
-		public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError
-		{
-			uint[] actions = {};
+        public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError
+        {
+            uint[] actions = {};
 
-			foreach (unowned Accelerator? accelerator in accelerators) {
-				actions += grab_accelerator (accelerator.name, accelerator.flags);
-			}
+            foreach (unowned Accelerator? accelerator in accelerators) {
+                actions += grab_accelerator (accelerator.name, accelerator.flags);
+            }
 
-			return actions;
-		}
+            return actions;
+        }
 
-		public bool ungrab_accelerator (uint action) throws DBusError, IOError
-		{
-			bool ret = false;
+        public bool ungrab_accelerator (uint action) throws DBusError, IOError
+        {
+            bool ret = false;
 
-			foreach (unowned string accelerator in grabbed_accelerators.get_keys ()) {
-				if (grabbed_accelerators[accelerator] == action) {
+            foreach (unowned string accelerator in grabbed_accelerators.get_keys ()) {
+                if (grabbed_accelerators[accelerator] == action) {
 #if HAS_MUTTER330
-					ret = wm.get_display ().ungrab_accelerator (action);
+                    ret = wm.get_display ().ungrab_accelerator (action);
 #else
-					ret = wm.get_screen ().get_display ().ungrab_accelerator (action);
+                    ret = wm.get_screen ().get_display ().ungrab_accelerator (action);
 #endif
-					grabbed_accelerators.remove (accelerator);
-					break;
-				}
-			}
+                    grabbed_accelerators.remove (accelerator);
+                    break;
+                }
+            }
 
-			return ret;
-		}
+            return ret;
+        }
 
-		[DBus (name = "ShowOSD")]
-		public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError
-		{
-			int32 monitor_index = -1;
-			if (parameters.contains ("monitor"))
-				monitor_index = parameters["monitor"].get_int32 ();
-			string icon = "";
-			if (parameters.contains ("icon"))
-				icon = parameters["icon"].get_string ();
-			string label = "";
-			if (parameters.contains ("label"))
-				label = parameters["label"].get_string ();
-			int32 level = 0;
-			if (parameters.contains ("level"))
-				level = parameters["level"].get_int32 ();
-			
-			//if (monitor_index > -1)
-			//	message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
-			
-			MediaFeedback.send (icon, level);
-		}
-	}
+        [DBus (name = "ShowOSD")]
+        public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError
+        {
+            int32 monitor_index = -1;
+            if (parameters.contains ("monitor"))
+                monitor_index = parameters["monitor"].get_int32 ();
+            string icon = "";
+            if (parameters.contains ("icon"))
+                icon = parameters["icon"].get_string ();
+            string label = "";
+            if (parameters.contains ("label"))
+                label = parameters["label"].get_string ();
+            int32 level = 0;
+            if (parameters.contains ("level"))
+                level = parameters["level"].get_int32 ();
+            
+            //if (monitor_index > -1)
+            //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
+            
+            MediaFeedback.send (icon, level);
+        }
+    }
 }
