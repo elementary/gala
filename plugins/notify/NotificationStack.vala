@@ -29,17 +29,33 @@ namespace Gala.Plugins.Notify
 
 		public signal void animations_changed (bool running);
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+
+		public NotificationStack (Meta.Display display)
+		{
+			Object (display: display);
+		}
+#else
 		public Screen screen { get; construct; }
+
+		public new float width
+		{
+			get
+			{
+				var scale = Utils.get_ui_scaling_factor ();
+				return (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
+			 }
+		}
 
 		public NotificationStack (Screen screen)
 		{
 			Object (screen: screen);
 		}
+#endif
 
 		construct
 		{
-			var scale = Utils.get_ui_scaling_factor ();
-			width = (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
 			clip_to_allocation = true;
 		}
 

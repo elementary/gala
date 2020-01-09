@@ -221,7 +221,7 @@ namespace Gala
 			if (overview_mode)
 				actor.hide ();
 
-			clone = new Clone (actor.get_texture ());
+			clone = new Clone (actor);
 			add_child (clone);
 
 			set_child_below_sibling (active_shape, clone);
@@ -269,8 +269,13 @@ namespace Gala
 		 */
 		bool should_fade ()
 		{
+#if HAS_MUTTER330
+			return (overview_mode
+				&& window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
+#else
 			return (overview_mode
 				&& window.get_workspace () != window.get_screen ().get_active_workspace ()) || window.minimized;
+#endif
 		}
 
 		void on_all_workspaces_changed ()
@@ -289,7 +294,11 @@ namespace Gala
 		{
 			var outer_rect = window.get_frame_rect ();
 
+#if HAS_MUTTER330
+			var monitor_geom = window.get_display ().get_monitor_geometry (window.get_monitor ());
+#else
 			var monitor_geom = window.get_screen ().get_monitor_geometry (window.get_monitor ());
+#endif
 			var offset_x = monitor_geom.x;
 			var offset_y = monitor_geom.y;
 
@@ -458,10 +467,17 @@ namespace Gala
 		 */
 		void close_window ()
 		{
+#if HAS_MUTTER330
+			unowned Meta.Display display = window.get_display ();
+			check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
+
+			window.@delete (display.get_current_time ());
+#else
 			var screen = window.get_screen ();
 			check_confirm_dialog_cb = screen.window_entered_monitor.connect (check_confirm_dialog);
 
 			window.@delete (screen.get_display ().get_current_time ());
+#endif
 		}
 
 		void check_confirm_dialog (int monitor, Meta.Window new_window)
@@ -472,7 +488,11 @@ namespace Gala
 					return false;
 				});
 
+#if HAS_MUTTER330
+				SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
+#else
 				SignalHandler.disconnect (window.get_screen (), check_confirm_dialog_cb);
+#endif
 				check_confirm_dialog_cb = 0;
 			}
 		}
@@ -491,7 +511,11 @@ namespace Gala
 				clone.destroy ();
 
 			if (check_confirm_dialog_cb != 0) {
+#if HAS_MUTTER330
+				SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
+#else
 				SignalHandler.disconnect (window.get_screen (), check_confirm_dialog_cb);
+#endif
 				check_confirm_dialog_cb = 0;
 			}
 
@@ -583,14 +607,21 @@ namespace Gala
 				return;
 
 			// for an icon group, we only do animations if there is an actual movement possible
+#if HAS_MUTTER330
+			if (icon_group != null
+				&& icon_group.workspace == window.get_workspace ()
+				&& window.get_monitor () == window.get_display ().get_primary_monitor ())
+				return;
+#else
 			if (icon_group != null
 				&& icon_group.workspace == window.get_workspace ()
 				&& window.get_monitor () == window.get_screen ().get_primary_monitor ())
 				return;
+#endif
 
 			var scale = hovered ? 0.4 : 1.0;
 			var opacity = hovered ? 0 : 255;
-			var duration = hovered && insert_thumb != null ? WorkspaceInsertThumb.EXPAND_DELAY : 100;
+			var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
 
 			window_icon.save_easing_state ();
 
@@ -621,7 +652,11 @@ namespace Gala
 		void drag_end (Actor destination)
 		{
 			Meta.Workspace workspace = null;
+#if HAS_MUTTER330
+			var primary = window.get_display ().get_primary_monitor ();
+#else
 			var primary = window.get_screen ().get_primary_monitor ();
+#endif
 
 			active_shape.show ();
 

@@ -35,13 +35,21 @@ namespace Gala.Plugins.Notify
 			behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
 
 			this.wm = wm;
+#if HAS_MUTTER330
+			unowned Meta.Display display = wm.get_display ();
+#else
+			var screen = wm.get_screen ();
+#endif
 
-			stack = new NotificationStack (wm.get_screen ());
+#if HAS_MUTTER330
+			stack = new NotificationStack (display);
+#else
+			stack = new NotificationStack (screen);
+#endif
 			stack.animations_changed.connect ((running) => {
 				freeze_track = running;
 			});
 
-			var screen = wm.get_screen ();
 			screen.monitors_changed.connect (update_position);
 			screen.workareas_changed.connect (update_position);
 
@@ -68,7 +76,6 @@ namespace Gala.Plugins.Notify
 				return;
 			}
 
-			print ("ENABLE".to_string () + "\n");
 			wm.ui_group.add_child (stack);
 			track_actor (stack);
 
@@ -106,9 +113,15 @@ namespace Gala.Plugins.Notify
 
 		void update_position ()
 		{
+#if HAS_MUTTER330
+			unowned Meta.Display display = wm.get_display ();
+			var primary = display.get_primary_monitor ();
+			var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+#else
 			var screen = wm.get_screen ();
 			var primary = screen.get_primary_monitor ();
 			var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
+#endif
 
 			stack.x = area.x + area.width - stack.width;
 			stack.y = area.y;
