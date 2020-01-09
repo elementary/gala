@@ -38,7 +38,7 @@ namespace Gala {
         public TextShadowEffect (int offset_x, int offset_y, uint8 opacity) {
             _offset_x = offset_x;
             _offset_y = offset_y;
-            _opacity  = opacity;
+            _opacity = opacity;
         }
 
         public override bool pre_paint () {
@@ -54,4 +54,3 @@ namespace Gala {
         }
     }
 }
-

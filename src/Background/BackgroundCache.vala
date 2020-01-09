@@ -50,7 +50,7 @@ namespace Gala {
             var file = File.new_for_path (filename);
             try {
                 var monitor = file.monitor (FileMonitorFlags.NONE, null);
-                monitor.changed.connect(() => {
+                monitor.changed.connect (() => {
                     file_changed (filename);
                 });
 

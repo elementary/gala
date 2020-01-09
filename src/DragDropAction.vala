@@ -82,7 +82,7 @@ namespace Gala {
 
         /**
          * The unique id given to this drag-drop-group
-         */         
+         */
         public string drag_id { get; construct; }
 
         public Actor handle { get; private set; }
@@ -145,7 +145,7 @@ namespace Gala {
 
                 var source_list = sources.@get (drag_id);
                 source_list.remove (actor);
-            } 
+            }
 
             if (DragDropActionType.DESTINATION in drag_type) {
                 var dest_list = destinations[drag_id];

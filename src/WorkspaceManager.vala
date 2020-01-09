@@ -395,4 +395,3 @@ namespace Gala {
         }
     }
 }
-

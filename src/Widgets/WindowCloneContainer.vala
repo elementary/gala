@@ -382,4 +382,3 @@ namespace Gala {
         }
     }
 }
-

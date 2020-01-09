@@ -219,7 +219,7 @@ namespace Gala {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
-            return k1*k1 + k2*k2;
+            return k1 * k1 + k2 * k2;
         }
 
         static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
@@ -252,8 +252,10 @@ namespace Gala {
             slot_centers.resize (rows * columns);
             for (int x = 0; x < columns; x++) {
                 for (int y = 0; y < rows; y++) {
-                    slot_centers[x + y * columns] = {area.x + slot_width  * x + slot_width  / 2,
-                                                     area.y + slot_height * y + slot_height / 2};
+                    slot_centers[x + y * columns] = {
+                        area.x + slot_width * x + slot_width / 2,
+                        area.y + slot_height * y + slot_height / 2
+                    };
                 }
             }
 
@@ -315,7 +317,7 @@ namespace Gala {
                 // Work out where the slot is
                 Meta.Rectangle target = {area.x + (slot % columns) * slot_width,
                                          area.y + (slot / columns) * slot_height,
-                                         slot_width, 
+                                         slot_width,
                                          slot_height};
                 target = rect_adjusted (target, 10, 10, -10, -10);
 
@@ -337,7 +339,7 @@ namespace Gala {
                     scale = 1.0f;
                     target = {rect_center (target).x - (int)Math.floorf (rect.width * scale) / 2,
                               rect_center (target).y - (int)Math.floorf (rect.height * scale) / 2,
-                              (int)Math.floorf (scale * rect.width), 
+                              (int)Math.floorf (scale * rect.width),
                               (int)Math.floorf (scale * rect.height)};
                 }
 
