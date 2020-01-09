@@ -18,19 +18,15 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
-    class WindowShadowEffect : ShadowEffect
-    {
+namespace Gala {
+    class WindowShadowEffect : ShadowEffect {
         public unowned Meta.Window window { get; construct; }
 
-        public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread)
-        {
+        public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread) {
             Object (window: window, shadow_size: shadow_size, shadow_spread: shadow_spread, shadow_opacity: 255);
         }
 
-        public override ActorBox get_bounding_box ()
-        {
+        public override ActorBox get_bounding_box () {
             var size = shadow_size * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
@@ -49,8 +45,7 @@ namespace Gala
      * A container for a clone of the texture of a MetaWindow, a WindowIcon,
      * a close button and a shadow. Used together with the WindowCloneContainer.
      */
-    public class WindowClone : Actor
-    {
+    public class WindowClone : Actor {
         const int WINDOW_ICON_SIZE = 64;
         const int ACTIVE_SHAPE_SIZE = 12;
 
@@ -125,13 +120,11 @@ namespace Gala
         Actor active_shape;
         Actor window_icon;
 
-        public WindowClone (Meta.Window window, bool overview_mode = false)
-        {
+        public WindowClone (Meta.Window window, bool overview_mode = false) {
             Object (window: window, overview_mode: overview_mode);
         }
 
-        construct
-        {
+        construct {
             reactive = true;
 
             window.unmanaged.connect (unmanaged);
@@ -183,8 +176,7 @@ namespace Gala
             load_clone ();
         }
 
-        ~WindowClone ()
-        {
+        ~WindowClone () {
             window.unmanaged.disconnect (unmanaged);
             window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
             window.notify["fullscreen"].disconnect (check_shadow_requirements);
@@ -205,8 +197,7 @@ namespace Gala
          * @param was_waiting Internal argument used to indicate that we had to 
          *                    wait before the window's texture became available.
          */
-        void load_clone (bool was_waiting = false)
-        {
+        void load_clone (bool was_waiting = false) {
             var actor = window.get_compositor_private () as WindowActor;
             if (actor == null) {
                 Idle.add (() => {
@@ -248,8 +239,7 @@ namespace Gala
             }
         }
 
-        void check_shadow_requirements ()
-        {
+        void check_shadow_requirements () {
             if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
                 if (shadow_effect == null) {
                     shadow_effect = new WindowShadowEffect (window, 40, 5);
@@ -267,8 +257,7 @@ namespace Gala
          * If we are in overview mode, we may display windows from workspaces other than
          * the current one. To ease their appearance we have to fade them in.
          */
-        bool should_fade ()
-        {
+        bool should_fade () {
 #if HAS_MUTTER330
             return (overview_mode
                 && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
@@ -278,8 +267,7 @@ namespace Gala
 #endif
         }
 
-        void on_all_workspaces_changed ()
-        {
+        void on_all_workspaces_changed () {
             // we don't display windows that are on all workspaces
             if (window.on_all_workspaces)
                 unmanaged ();
@@ -290,8 +278,7 @@ namespace Gala
          *
          * @param animate Animate the transformation of the placement
          */
-        public void transition_to_original_state (bool animate)
-        {
+        public void transition_to_original_state (bool animate) {
             var outer_rect = window.get_frame_rect ();
 
 #if HAS_MUTTER330
@@ -324,8 +311,7 @@ namespace Gala
         /**
          * Animate the window to the given slot
          */
-        public void take_slot (Meta.Rectangle rect)
-        {
+        public void take_slot (Meta.Rectangle rect) {
             slot = rect;
 
             save_easing_state ();
@@ -355,8 +341,7 @@ namespace Gala
          * according to their given allocations. The first two are placed in a way
          * that compensates for invisible borders of the texture.
          */
-        public override void allocate (ActorBox box, AllocationFlags flags)
-        {
+        public override void allocate (ActorBox box, AllocationFlags flags) {
             base.allocate (box, flags);
 
             foreach (var child in get_children ()) {
@@ -388,20 +373,17 @@ namespace Gala
             clone.allocate (alloc, flags);
         }
 
-        public override bool button_press_event (Clutter.ButtonEvent event)
-        {
+        public override bool button_press_event (Clutter.ButtonEvent event) {
             return true;
         }
 
-        public override    bool enter_event (Clutter.CrossingEvent event)
-        {
+        public override bool enter_event (Clutter.CrossingEvent event) {
             close_button.opacity = 255;
 
             return false;
         }
-        
-        public override    bool leave_event (Clutter.CrossingEvent event)
-        {
+
+        public override bool leave_event (Clutter.CrossingEvent event) {
             close_button.opacity = 0;
 
             return false;
@@ -411,8 +393,7 @@ namespace Gala
          * Place the widgets, that is the close button and the WindowIcon of the window,
          * at their positions inside the actor for a given width and height.
          */
-        public void place_widgets (int dest_width, int dest_height)
-        {
+        public void place_widgets (int dest_width, int dest_height) {
             Granite.CloseButtonPosition pos;
             Granite.Widgets.Utils.get_default_close_button_position (out pos);
 
@@ -441,8 +422,7 @@ namespace Gala
             }
         }
 
-        void toggle_shadow (bool show)
-        {
+        void toggle_shadow (bool show) {
             if (get_transition ("shadow-opacity") != null)
                 remove_transition ("shadow-opacity");
 
@@ -465,8 +445,7 @@ namespace Gala
          * dialog of the window we were going to delete. If that's the case, we request
          * to select our window.
          */
-        void close_window ()
-        {
+        void close_window () {
 #if HAS_MUTTER330
             unowned Meta.Display display = window.get_display ();
             check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
@@ -480,8 +459,7 @@ namespace Gala
 #endif
         }
 
-        void check_confirm_dialog (int monitor, Meta.Window new_window)
-        {
+        void check_confirm_dialog (int monitor, Meta.Window new_window) {
             if (new_window.get_transient_for () == window) {
                 Idle.add (() => {
                     selected ();
@@ -500,8 +478,7 @@ namespace Gala
         /**
          * The window unmanaged by the compositor, so we need to destroy ourselves too.
          */
-        void unmanaged ()
-        {
+        void unmanaged () {
             remove_all_transitions ();
 
             if (drag_action != null && drag_action.dragging)
@@ -543,8 +520,7 @@ namespace Gala
          * we can move freely, scale ourselves to a smaller scale and request that the
          * position we just freed is immediately filled by the WindowCloneContainer.
          */
-        Actor drag_begin (float click_x, float click_y)
-        {
+        Actor drag_begin (float click_x, float click_y) {
             float abs_x, abs_y;
             float prev_parent_x, prev_parent_y;
 
@@ -596,8 +572,7 @@ namespace Gala
          * less opacity and add ourselves as temporary window to the group. When left, 
          * we reverse those steps.
          */
-        void drag_destination_crossed (Actor destination, bool hovered)
-        {
+        void drag_destination_crossed (Actor destination, bool hovered) {
             IconGroup? icon_group = destination as IconGroup;
             WorkspaceInsertThumb? insert_thumb = destination as WorkspaceInsertThumb;
 
@@ -649,8 +624,7 @@ namespace Gala
          * After we found one we destroy ourselves so the dragged clone immediately disappears,
          * otherwise we cancel the drag and animate back to our old place.
          */
-        void drag_end (Actor destination)
-        {
+        void drag_end (Actor destination) {
             Meta.Workspace workspace = null;
 #if HAS_MUTTER330
             var primary = window.get_display ().get_primary_monitor ();
@@ -722,8 +696,7 @@ namespace Gala
         /**
          * Animate back to our previous position with a bouncing animation.
          */
-        void drag_canceled ()
-        {
+        void drag_canceled () {
             get_parent ().remove_child (this);
             prev_parent.insert_child_at_index (this, prev_index);
 

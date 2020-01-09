@@ -15,25 +15,20 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
     [DBus (name = "org.freedesktop.Notifications")]
-    interface DBusNotifications : GLib.Object
-    {
+    interface DBusNotifications : GLib.Object {
         public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
     }
 
-    public class MediaFeedback : GLib.Object
-    {
+    public class MediaFeedback : GLib.Object {
         [Compact]
-        class Feedback
-        {
+        class Feedback {
             public string icon;
             public int32 level;
 
-            public Feedback (string _icon, int32 _level)
-            {
+            public Feedback (string _icon, int32 _level) {
                 icon = _icon;
                 level = _level;
             }
@@ -42,15 +37,13 @@ namespace Gala
         static MediaFeedback? instance = null;
         static ThreadPool<Feedback>? pool = null;
 
-        public static void init ()
-        {
+        public static void init () {
             if (instance == null)
                 instance = new MediaFeedback ();
         }
 
         public static void send (string icon, int val)
-            requires (instance != null && pool != null)
-        {
+            requires (instance != null && pool != null) {
             try {
                 pool.add (new Feedback (icon, val));
             } catch (ThreadError e) {
@@ -62,13 +55,11 @@ namespace Gala
         uint dbus_name_owner_changed_signal_id = 0;
         uint32 notification_id = 0;
 
-        MediaFeedback ()
-        {
+        MediaFeedback () {
             Object ();
         }
 
-        construct
-        {
+        construct {
             try {
                 pool = new ThreadPool<Feedback>.with_owned_data ((ThreadPoolFunc<Feedback>) send_feedback, 1, false);
             } catch (ThreadError e) {
@@ -86,8 +77,7 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_name_owner_changed (DBusConnection connection, string sender_name, string object_path,
-            string interface_name, string signal_name, Variant parameters)
-        {
+            string interface_name, string signal_name, Variant parameters) {
             string name, before, after;
             parameters.get ("(sss)", out name, out before, out after);
 
@@ -113,8 +103,7 @@ namespace Gala
         }
 
         [CCode (instance_pos = -1)]
-        void send_feedback (owned Feedback feedback)
-        {
+        void send_feedback (owned Feedback feedback) {
             var hints = new GLib.HashTable<string, Variant> (null, null);
             hints.set ("x-canonical-private-synchronous", new Variant.string ("gala-feedback"));
             hints.set ("value", new Variant.int32 (feedback.level));

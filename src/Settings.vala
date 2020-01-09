@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class BehaviorSettings : Granite.Services.Settings
-    {
+namespace Gala {
+    public class BehaviorSettings : Granite.Services.Settings {
         public bool dynamic_workspaces { get; set; }
         public bool edge_tiling { get; set; }
         public string panel_main_menu_action { get; set; }
@@ -37,13 +35,11 @@ namespace Gala
 
         static BehaviorSettings? instance = null;
 
-        private BehaviorSettings ()
-        {
+        private BehaviorSettings () {
             base (Config.SCHEMA + ".behavior");
         }
 
-        public static unowned BehaviorSettings get_default ()
-        {
+        public static unowned BehaviorSettings get_default () {
             if (instance == null)
                 instance = new BehaviorSettings ();
 
@@ -51,17 +47,14 @@ namespace Gala
         }
     }
 
-    public class KeybindingSettings : Granite.Services.Settings
-    {
+    public class KeybindingSettings : Granite.Services.Settings {
         static KeybindingSettings? instance = null;
 
-        private KeybindingSettings ()
-        {
+        private KeybindingSettings () {
             base (Config.SCHEMA + ".keybindings");
         }
 
-        public static unowned KeybindingSettings get_default ()
-        {
+        public static unowned KeybindingSettings get_default () {
             if (instance == null)
                 instance = new KeybindingSettings ();
 
@@ -69,8 +62,7 @@ namespace Gala
         }
     }
 
-    public class AppearanceSettings : Granite.Services.Settings
-    {
+    public class AppearanceSettings : Granite.Services.Settings {
         public string button_layout { get; set; }
         public bool attach_modal_dialogs { get; set; }
         public bool dim_parents { get; set; }
@@ -78,13 +70,11 @@ namespace Gala
 
         static AppearanceSettings? instance = null;
 
-        private AppearanceSettings ()
-        {
+        private AppearanceSettings () {
             base (Config.SCHEMA + ".appearance");
         }
 
-        public static unowned AppearanceSettings get_default ()
-        {
+        public static unowned AppearanceSettings get_default () {
             if (instance == null)
                 instance = new AppearanceSettings ();
 
@@ -92,8 +82,7 @@ namespace Gala
         }
     }
 
-    public class ShadowSettings : Granite.Services.Settings
-    {
+    public class ShadowSettings : Granite.Services.Settings {
         public string[] menu { get; set; }
         public string[] normal_focused { get; set; }
         public string[] normal_unfocused { get; set; }
@@ -102,21 +91,18 @@ namespace Gala
 
         static ShadowSettings? instance = null;
 
-        private ShadowSettings ()
-        {
+        private ShadowSettings () {
             base (Config.SCHEMA + ".shadows");
         }
 
-        public static unowned ShadowSettings get_default ()
-        {
+        public static unowned ShadowSettings get_default () {
             if (instance == null)
                 instance = new ShadowSettings ();
 
             return instance;
         }
 
-        public Meta.ShadowParams get_shadowparams (string class_name)
-        {
+        public Meta.ShadowParams get_shadowparams (string class_name) {
             string[] val;
             get (class_name, out val);
 
@@ -128,8 +114,7 @@ namespace Gala
         }
     }
 
-    public class BackgroundSettings : Granite.Services.Settings
-    {
+    public class BackgroundSettings : Granite.Services.Settings {
         public string picture_options { get; set; }
         public string picture_uri { get; set; }
         public int picture_opacity { get; set; }
@@ -139,13 +124,11 @@ namespace Gala
 
         static BackgroundSettings? instance = null;
 
-        private BackgroundSettings ()
-        {
+        private BackgroundSettings () {
             base ("org.gnome.desktop.background");
         }
 
-        public static unowned BackgroundSettings get_default ()
-        {
+        public static unowned BackgroundSettings get_default () {
             if (instance == null)
                 instance = new BackgroundSettings ();
 

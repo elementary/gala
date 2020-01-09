@@ -15,8 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
     const OptionEntry[] OPTIONS = {
         { "version", 0, OptionFlags.NO_ARG, OptionArg.CALLBACK, (void*) print_version, "Print version", null },
         { null }
@@ -27,8 +26,7 @@ namespace Gala
         Meta.exit (Meta.ExitCode.SUCCESS);
     }
 
-    public static int main (string[] args)
-    {
+    public static int main (string[] args) {
         unowned OptionContext ctx = Meta.get_option_context ();
         ctx.add_main_entries (Gala.OPTIONS, null);
         try {

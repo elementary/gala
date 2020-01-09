@@ -17,19 +17,15 @@
 
 using Meta;
 
-namespace Gala
-{
-    public enum InputArea
-    {
+namespace Gala {
+    public enum InputArea {
         NONE,
         FULLSCREEN,
         DEFAULT
     }
 
-    public class InternalUtils
-    {
-        public static bool workspaces_only_on_primary ()
-        {
+    public class InternalUtils {
+        public static bool workspaces_only_on_primary () {
             return Prefs.get_dynamic_workspaces ()
                 && Prefs.get_workspaces_only_on_primary ();
         }
@@ -37,8 +33,7 @@ namespace Gala
         /*
          * Reload shadow settings
          */
-        public static void reload_shadow ()
-        {
+        public static void reload_shadow () {
             var factory = ShadowFactory.get_default ();
             var settings = ShadowSettings.get_default ();
             Meta.ShadowParams shadow;
@@ -72,8 +67,7 @@ namespace Gala
          * set the area where clutter can receive events
          **/
 #if HAS_MUTTER330
-        public static void set_input_area (Display display, InputArea area)
-        {
+        public static void set_input_area (Display display, InputArea area) {
             X.Xrectangle[] rects = {};
             int width, height;
             display.get_size (out width, out height);
@@ -128,8 +122,7 @@ namespace Gala
 #endif
         }
 #else
-        public static void set_input_area (Screen screen, InputArea area)
-        {
+        public static void set_input_area (Screen screen, InputArea area) {
             var display = screen.get_display ();
 
             X.Xrectangle[] rects = {};
@@ -183,8 +176,7 @@ namespace Gala
          * @param index  The index at which to insert the workspace
          * @param new_window A window that should be moved to the new workspace
          */
-        public static void insert_workspace_with_window (int index, Window new_window)
-        {
+        public static void insert_workspace_with_window (int index, Window new_window) {
             unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
             workspace_manager.freeze_remove ();
 
@@ -223,33 +215,27 @@ namespace Gala
         const int ACCURACY = 20;
 
         // some math utilities
-        static int squared_distance (Gdk.Point a, Gdk.Point b)
-        {
+        static int squared_distance (Gdk.Point a, Gdk.Point b) {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
             return k1*k1 + k2*k2;
         }
 
-        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2)
-        {
+        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-        static Gdk.Point rect_center (Meta.Rectangle rect)
-        {
+        static Gdk.Point rect_center (Meta.Rectangle rect) {
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
-        public struct TilableWindow
-        {
+        public struct TilableWindow {
             Meta.Rectangle rect;
             void *id;
         }
 
-        public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area,
-            List<TilableWindow?> windows)
-        {
+        public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area, List<TilableWindow?> windows) {
             uint window_count = windows.length ();
             int columns = (int)Math.ceil (Math.sqrt (window_count));
             int rows = (int)Math.ceil (window_count / (double)columns);
@@ -366,8 +352,7 @@ namespace Gala
             return result;
         }
 
-        public static inline bool get_window_is_normal (Meta.Window window)
-        {
+        public static inline bool get_window_is_normal (Meta.Window window) {
             switch (window.get_window_type ()) {
                 case Meta.WindowType.NORMAL:
                 case Meta.WindowType.DIALOG:
@@ -378,8 +363,7 @@ namespace Gala
             }
         }
 
-        public static int get_ui_scaling_factor ()
-        {
+        public static int get_ui_scaling_factor () {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
     }

@@ -15,17 +15,14 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
     [DBus (name="org.pantheon.gala")]
-    public class DBus
-    {
+    public class DBus {
         static DBus? instance;
         static WindowManager wm;
 
         [DBus (visible = false)]
-        public static void init (WindowManager _wm)
-        {
+        public static void init (WindowManager _wm) {
             wm = _wm;
 
             Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -65,16 +62,14 @@ namespace Gala
                 () => critical ("Could not acquire name") );
         }
 
-        private DBus ()
-        {
+        private DBus () {
             if (wm.background_group != null)
                 (wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
             else
                 assert_not_reached ();
         }
 
-        public void perform_action (ActionType type) throws DBusError, IOError
-        {
+        public void perform_action (ActionType type) throws DBusError, IOError {
             wm.perform_action (type);
         }
 
@@ -83,15 +78,13 @@ namespace Gala
 
         class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
-            public override void post_paint ()
-            {
+            public override void post_paint () {
                 base.post_paint ();
                 done_painting ();
             }
         }
 
-        public struct ColorInformation
-        {
+        public struct ColorInformation {
             double average_red;
             double average_green;
             double average_blue;
@@ -123,8 +116,7 @@ namespace Gala
          */
         public async ColorInformation get_background_color_information (int monitor,
             int reference_x, int reference_y, int reference_width, int reference_height)
-            throws DBusError, IOError
-        {
+            throws DBusError, IOError {
             var background = wm.background_group.get_child_at_index (monitor);
             if (background == null)
                 throw new DBusError.INVALID_ARGS ("Invalid monitor requested");

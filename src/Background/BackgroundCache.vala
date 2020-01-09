@@ -15,14 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class BackgroundCache : Object
-    {
+namespace Gala {
+    public class BackgroundCache : Object {
         static BackgroundCache? instance = null;
 
-        public static unowned BackgroundCache get_default ()
-        {
+        public static unowned BackgroundCache get_default () {
             if (instance == null)
                 instance = new BackgroundCache ();
 
@@ -37,19 +34,16 @@ namespace Gala
         Animation animation;
         string animation_filename;
 
-        public BackgroundCache ()
-        {
+        public BackgroundCache () {
             Object ();
         }
 
-        construct
-        {
+        construct {
             file_monitors = new Gee.HashMap<string,FileMonitor> ();
             background_sources = new Gee.HashMap<string,BackgroundSource> ();
         }
 
-        public void monitor_file (string filename)
-        {
+        public void monitor_file (string filename) {
             if (file_monitors.has_key (filename))
                 return;
 
@@ -66,8 +60,7 @@ namespace Gala
             }
         }
 
-        public async Animation get_animation (string filename)
-        {
+        public async Animation get_animation (string filename) {
             if (animation_filename == filename) {
                 Idle.add (() => {
                     get_animation.callback ();
@@ -92,11 +85,10 @@ namespace Gala
         }
 
 #if HAS_MUTTER330
-        public BackgroundSource get_background_source (Meta.Display display, string settings_schema)
+        public BackgroundSource get_background_source (Meta.Display display, string settings_schema) {
 #else
-        public BackgroundSource get_background_source (Meta.Screen screen, string settings_schema)
+        public BackgroundSource get_background_source (Meta.Screen screen, string settings_schema) {
 #endif
-        {
             var background_source = background_sources[settings_schema];
             if (background_source == null) {
 #if HAS_MUTTER330
@@ -112,8 +104,7 @@ namespace Gala
             return background_source;
         }
 
-        public void release_background_source (string settings_schema)
-        {
+        public void release_background_source (string settings_schema) {
             if (background_sources.has_key (settings_schema)) {
                 var source = background_sources[settings_schema];
                 if (--source.use_count == 0) {

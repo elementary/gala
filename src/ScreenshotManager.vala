@@ -15,19 +15,16 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
     const string EXTENSION = ".png";
     const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
     [DBus (name="org.gnome.Shell.Screenshot")]
-    public class ScreenshotManager : Object
-    {
+    public class ScreenshotManager : Object {
         static ScreenshotManager? instance;
 
         [DBus (visible = false)]
-        public static unowned ScreenshotManager init (WindowManager wm)
-        {
+        public static unowned ScreenshotManager init (WindowManager wm) {
             if (instance == null)
                 instance = new ScreenshotManager (wm);
 
@@ -46,13 +43,11 @@ namespace Gala
             desktop_settings = new Settings ("org.gnome.desktop.interface");
         }
 
-        ScreenshotManager (WindowManager _wm)
-        {
+        ScreenshotManager (WindowManager _wm) {
             wm = _wm;
         }
 
-        public void flash_area (int x, int y, int width, int height) throws DBusError, IOError
-        {
+        public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {
             debug ("Flashing area");
 
             double[] keyframes = { 0.3f, 0.8f };
@@ -80,8 +75,7 @@ namespace Gala
             flash_actor.add_transition ("flash", transition);
         }
 
-        public async void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
-        {
+        public async void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking screenshot");
 
             int width, height;
@@ -101,13 +95,11 @@ namespace Gala
             success = yield save_image (image, filename, out filename_used);
         }
 
-        public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
-        {
+        public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             yield screenshot_area_with_cursor (x, y, width, height, false, flash, filename, out success, out filename_used);
         }
 
-        public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
-        {
+        public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking area screenshot");
 
             yield wait_stage_repaint ();
@@ -124,8 +116,7 @@ namespace Gala
                 throw new DBusError.FAILED ("Failed to save image");
         }
 
-        public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError
-        {
+        public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking window screenshot");
 
 #if HAS_MUTTER330
@@ -165,8 +156,7 @@ namespace Gala
             success = yield save_image (image, filename, out filename_used);
         }
 
-        public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError
-        {
+        public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError {
             var selection_area = new SelectionArea (wm);
             selection_area.closed.connect (() => Idle.add (select_area.callback));
             wm.ui_group.add (selection_area);
@@ -183,8 +173,7 @@ namespace Gala
             selection_area.get_selection_rectangle (out x, out y, out width, out height);
         }
 
-        private void unconceal_text ()
-        {
+        private void unconceal_text () {
             if (conceal_timeout == 0) {
                 return;
             }
@@ -197,8 +186,7 @@ namespace Gala
             conceal_timeout = 0;
         }
 
-        public async void conceal_text () throws DBusError, IOError
-        {
+        public async void conceal_text () throws DBusError, IOError {
             if (conceal_timeout > 0) {
                 Source.remove (conceal_timeout);
             } else {
@@ -217,8 +205,7 @@ namespace Gala
             });
         }
 
-        static string find_target_path ()
-        {
+        static string find_target_path () {
             // Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
             unowned string? base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
             if (base_path != null && FileUtils.test (base_path, FileTest.EXISTS)) {
@@ -235,8 +222,7 @@ namespace Gala
             return Environment.get_home_dir ();
         }
 
-        static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename)
-        {
+        static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
@@ -273,8 +259,7 @@ namespace Gala
             }
         }
 
-        Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor)
-        {
+        Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
@@ -294,8 +279,7 @@ namespace Gala
             return image;
         }
 
-        Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height)
-        {
+        Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height) {
             var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
             var cr = new Cairo.Context (image);
 
@@ -316,8 +300,7 @@ namespace Gala
             return image;
         }
 
-        Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect)
-        {
+        Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
 #if HAS_MUTTER330
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
 #else
@@ -358,8 +341,7 @@ namespace Gala
             return (Cairo.ImageSurface)cr.get_target ();
         }
 
-        async void wait_stage_repaint ()
-        {
+        async void wait_stage_repaint () {
             ulong signal_id = 0UL;
             signal_id = wm.stage.paint.connect_after (() => {
                 wm.stage.disconnect (signal_id);

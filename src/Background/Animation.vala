@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class Animation : Object
-    {
+namespace Gala {
+    public class Animation : Object {
         public string filename { get; construct; }
         public string[] key_frame_files { get; private set; default = {}; }
         public double transition_progress { get; private set; default = 0.0; }
@@ -27,13 +25,11 @@ namespace Gala
 
         Gnome.BGSlideShow? show = null;
 
-        public Animation (string filename)
-        {
+        public Animation (string filename) {
             Object (filename: filename);
         }
 
-        public async void load ()
-        {
+        public async void load () {
             show = new Gnome.BGSlideShow (filename);
 
             show.load_async (null, (obj, res) => {
@@ -45,8 +41,7 @@ namespace Gala
             yield;
         }
 
-        public void update (Meta.Rectangle monitor)
-        {
+        public void update (Meta.Rectangle monitor) {
             string[] key_frame_files = {};
 
             if (show == null)

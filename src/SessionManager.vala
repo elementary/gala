@@ -18,11 +18,9 @@
 // Reference code by the Solus Project:
 // https://github.com/solus-project/budgie-desktop/blob/master/src/wm/shim.vala
 
-namespace Gala
-{
+namespace Gala {
     [DBus (name = "io.elementary.wingpanel.session.EndSessionDialog")]
-    public interface WingpanelEndSessionDialog : Object
-    {
+    public interface WingpanelEndSessionDialog : Object {
         public signal void confirmed_logout ();
         public signal void confirmed_reboot ();
         public signal void confirmed_shutdown ();
@@ -33,13 +31,11 @@ namespace Gala
     }
 
     [DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
-    public class SessionManager : Object
-    {
+    public class SessionManager : Object {
         static SessionManager? instance;
 
         [DBus (visible = false)]
-        public static unowned SessionManager init ()
-        {
+        public static unowned SessionManager init () {
             if (instance == null) {
                 instance = new SessionManager ();
             }
@@ -55,14 +51,12 @@ namespace Gala
 
         WingpanelEndSessionDialog? proxy = null;
 
-        SessionManager ()
-        {
+        SessionManager () {
             Bus.watch_name (BusType.SESSION, "io.elementary.wingpanel.session.EndSessionDialog",
                 BusNameWatcherFlags.NONE, proxy_appeared, proxy_vanished);
         }
 
-        void get_proxy_cb (Object? o, AsyncResult? res)
-        {
+        void get_proxy_cb (Object? o, AsyncResult? res) {
             try {
                 proxy = Bus.get_proxy.end (res);
             } catch (Error e) {
@@ -77,20 +71,17 @@ namespace Gala
             proxy.closed.connect (() => closed ());
         }
 
-        void proxy_appeared ()
-        {
+        void proxy_appeared () {
             Bus.get_proxy.begin<WingpanelEndSessionDialog> (BusType.SESSION,
                 "io.elementary.wingpanel.session.EndSessionDialog", "/io/elementary/wingpanel/session/EndSessionDialog",
                 0, null, get_proxy_cb);
         }
 
-        void proxy_vanished ()
-        {
+        void proxy_vanished () {
             proxy = null;
         }
 
-        public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError
-        {
+        public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
             if (proxy == null) {
                 throw new DBusError.FAILED ("io.elementary.wingpanel.session.EndSessionDialog DBus interface is not registered.");
             }

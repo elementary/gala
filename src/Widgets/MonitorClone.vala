@@ -18,8 +18,7 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * More or less utility class to contain a WindowCloneContainer for each
      * non-primary monitor. It's the pendant to the WorkspaceClone which is
@@ -27,8 +26,7 @@ namespace Gala
      * as the WindowGroup is hidden while the view is active. Only used when
      * workspaces-only-on-primary is set to true.
      */
-    public class MonitorClone : Actor
-    {
+    public class MonitorClone : Actor {
         public signal void window_selected (Window window);
 
 #if HAS_MUTTER330
@@ -42,19 +40,16 @@ namespace Gala
         BackgroundManager background;
 
 #if HAS_MUTTER330
-        public MonitorClone (Meta.Display display, int monitor)
-        {
+        public MonitorClone (Meta.Display display, int monitor) {
             Object (display: display, monitor: monitor);
         }
 #else
-        public MonitorClone (Screen screen, int monitor)
-        {
+        public MonitorClone (Screen screen, int monitor) {
             Object (screen: screen, monitor: monitor);
         }
 #endif
 
-        construct
-        {
+        construct {
             reactive = true;
 
 #if HAS_MUTTER330
@@ -102,8 +97,7 @@ namespace Gala
             update_allocation ();
         }
 
-        ~MonitorClone ()
-        {
+        ~MonitorClone () {
 #if HAS_MUTTER330
             display.window_entered_monitor.disconnect (window_entered);
             display.window_left_monitor.disconnect (window_left);
@@ -118,8 +112,7 @@ namespace Gala
         /**
          * Make sure the MonitorClone is at the location of the monitor on the stage
          */
-        public void update_allocation ()
-        {
+        public void update_allocation () {
 #if HAS_MUTTER330
             var monitor_geometry = display.get_monitor_geometry (monitor);
 #else
@@ -134,8 +127,7 @@ namespace Gala
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open ()
-        {
+        public void open () {
             window_container.open ();
             // background.opacity = 0; TODO consider this option
         }
@@ -143,22 +135,19 @@ namespace Gala
         /**
          * Animate the windows back to their old location
          */
-        public void close ()
-        {
+        public void close () {
             window_container.close ();
             background.opacity = 255;
         }
 
-        void window_left (int window_monitor, Window window)
-        {
+        void window_left (int window_monitor, Window window) {
             if (window_monitor != monitor)
                 return;
 
             window_container.remove_window (window);
         }
 
-        void window_entered (int window_monitor, Window window)
-        {
+        void window_entered (int window_monitor, Window window) {
             if (window_monitor != monitor || window.window_type != WindowType.NORMAL)
                 return;
 

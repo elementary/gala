@@ -18,15 +18,13 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * This class contains the icon groups at the bottom and will take
      * care of displaying actors for inserting windows between the groups
      * once implemented
      */
-    public class IconGroupContainer : Actor
-    {
+    public class IconGroupContainer : Actor {
         public const int SPACING = 48;
         public const int GROUP_WIDTH = 64;
 
@@ -39,23 +37,20 @@ namespace Gala
 #endif
 
 #if HAS_MUTTER330
-        public IconGroupContainer (Meta.Display display)
-        {
+        public IconGroupContainer (Meta.Display display) {
             Object (display: display);
 
             layout_manager = new BoxLayout ();
         }
 #else
-        public IconGroupContainer (Screen screen)
-        {
+        public IconGroupContainer (Screen screen) {
             Object (screen: screen);
 
             layout_manager = new BoxLayout ();
         }
 #endif
 
-        public void add_group (IconGroup group)
-        {
+        public void add_group (IconGroup group) {
             var index = group.workspace.index ();
 
             insert_child_at_index (group, index * 2);
@@ -67,8 +62,7 @@ namespace Gala
             update_inserter_indices ();
         }
 
-        public void remove_group (IconGroup group)
-        {
+        public void remove_group (IconGroup group) {
             var thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
             thumb.notify["expanded"].disconnect (expanded_changed);
             remove_child (thumb);
@@ -88,8 +82,7 @@ namespace Gala
          * We don't want that until the IconGroup 
          * leaves the expanded WorkspaceInsertThumb.
          */
-        public void remove_group_in_place (IconGroup group)
-        {
+        public void remove_group_in_place (IconGroup group) {
             var deleted_thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
             var deleted_placeholder_thumb = (WorkspaceInsertThumb) group.get_next_sibling ();
 
@@ -108,8 +101,7 @@ namespace Gala
             group.set_hovered_actor (deleted_placeholder_thumb);
         }
 
-        public void reset_thumbs (int delay)
-        {
+        public void reset_thumbs (int delay) {
             foreach (var child in get_children ()) {
                 unowned WorkspaceInsertThumb thumb = child as WorkspaceInsertThumb;
                 if (thumb != null) {
@@ -119,8 +111,7 @@ namespace Gala
             }
         }
 
-        void expanded_changed (ParamSpec param)
-        {
+        void expanded_changed (ParamSpec param) {
             request_reposition (true);
         }
 
@@ -128,8 +119,7 @@ namespace Gala
          * Calculates the width that will be occupied taking currently running animations
          * end states into account
          */
-        public float calculate_total_width ()
-        {
+        public float calculate_total_width () {
             var scale = InternalUtils.get_ui_scaling_factor ();
             var spacing = SPACING * scale;
             var group_width = GROUP_WIDTH * scale;
@@ -150,8 +140,7 @@ namespace Gala
             return width;
         }
 
-        void update_inserter_indices ()
-        {
+        void update_inserter_indices () {
             var current_index = 0;
 
             foreach (var child in get_children ()) {

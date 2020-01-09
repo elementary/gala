@@ -18,28 +18,23 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * Utility class which adds a border and a shadow to a Background
      */
-    class FramedBackground : BackgroundManager
-    {
+    class FramedBackground : BackgroundManager {
 
 #if HAS_MUTTER330
-        public FramedBackground (Display display)
-        {
+        public FramedBackground (Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
         }
 #else
-        public FramedBackground (Screen screen)
-        {
+        public FramedBackground (Screen screen) {
             Object (screen: screen, monitor_index: screen.get_primary_monitor (), control_position: false);
         }
 #endif
 
-        construct
-        {
+        construct {
 #if HAS_MUTTER330
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
@@ -53,8 +48,7 @@ namespace Gala
             add_effect (effect);
         }
 
-        public override void paint ()
-        {
+        public override void paint () {
             base.paint ();
 
             Cogl.set_source_color4ub (0, 0, 0, 100);
@@ -75,8 +69,7 @@ namespace Gala
      * The latter is not added to the WorkspaceClone itself though but to a container
      * of the MultitaskingView.
      */
-    public class WorkspaceClone : Actor
-    {
+    public class WorkspaceClone : Actor {
         /**
          * The offset of the scaled background to the bottom of the monitor bounds
          */
@@ -131,13 +124,11 @@ namespace Gala
 
         uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Workspace workspace)
-        {
+        public WorkspaceClone (Workspace workspace) {
             Object (workspace: workspace);
         }
 
-        construct
-        {
+        construct {
             opened = false;
 
 #if HAS_MUTTER330
@@ -241,8 +232,7 @@ namespace Gala
             listener.window_no_longer_on_all_workspaces.connect (add_window);
         }
 
-        ~WorkspaceClone ()
-        {
+        ~WorkspaceClone () {
 #if HAS_MUTTER330
             unowned Meta.Display display = workspace.get_display ();
 
@@ -271,8 +261,7 @@ namespace Gala
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
-        void add_window (Window window)
-        {
+        void add_window (Window window) {
 #if HAS_MUTTER330
             if (window.window_type != WindowType.NORMAL
                 || window.get_workspace () != workspace
@@ -298,38 +287,32 @@ namespace Gala
         /**
          * Remove a window from the WindowCloneContainer and the IconGroup
          */
-        void remove_window (Window window)
-        {
+        void remove_window (Window window) {
             window_container.remove_window (window);
             icon_group.remove_window (window, opened);
         }
 
 #if HAS_MUTTER330
-        void window_entered_monitor (Display display, int monitor, Window window)
-        {
+        void window_entered_monitor (Display display, int monitor, Window window) {
             add_window (window);
         }
 
-        void window_left_monitor (Display display, int monitor, Window window)
-        {
+        void window_left_monitor (Display display, int monitor, Window window) {
             if (monitor == display.get_primary_monitor ())
                 remove_window (window);
         }
 #else
-        void window_entered_monitor (Screen screen, int monitor, Window window)
-        {
+        void window_entered_monitor (Screen screen, int monitor, Window window) {
             add_window (window);
         }
 
-        void window_left_monitor (Screen screen, int monitor, Window window)
-        {
+        void window_left_monitor (Screen screen, int monitor, Window window) {
             if (monitor == screen.get_primary_monitor ())
                 remove_window (window);
         }
 #endif
 
-        void update_size (Meta.Rectangle monitor_geometry)
-        {
+        void update_size (Meta.Rectangle monitor_geometry) {
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
@@ -342,8 +325,7 @@ namespace Gala
          *
          * @param amount The amount in px to shrink.
          */
-        static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount)
-        {
+        static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
             rect.x += amount;
             rect.y += amount;
             rect.width -= amount * 2;
@@ -356,8 +338,7 @@ namespace Gala
          * Also sets the current_window of the WindowCloneContainer to the active window
          * if it belongs to this workspace.
          */
-        public void open ()
-        {
+        public void open () {
             if (opened)
                 return;
 
@@ -413,8 +394,7 @@ namespace Gala
          * Close the view again by animating the background back to its scale and
          * the windows back to their old locations.
          */
-        public void close ()
-        {
+        public void close () {
             if (!opened)
                 return;
 

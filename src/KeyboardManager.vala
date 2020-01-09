@@ -15,15 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class KeyboardManager : Object
-    {
+namespace Gala {
+    public class KeyboardManager : Object {
         static KeyboardManager? instance;
         static VariantType sources_variant_type;
 
-        public static void init (Meta.Display display)
-        {
+        public static void init (Meta.Display display) {
             if (instance != null)
                 return;
 
@@ -32,20 +29,17 @@ namespace Gala
             display.modifiers_accelerator_activated.connect (instance.handle_modifiers_accelerator_activated);
         }
 
-        static construct
-        {
+        static construct {
             sources_variant_type = new VariantType ("a(ss)");
         }
 
         GLib.Settings settings;
 
-        KeyboardManager ()
-        {
+        KeyboardManager () {
             Object ();
         }
-        
-        construct
-        {
+
+        construct {
             var schema = GLib.SettingsSchemaSource.get_default ().lookup ("org.gnome.desktop.input-sources", true);
             if (schema == null)
                 return;
@@ -57,8 +51,7 @@ namespace Gala
         }
 
         [CCode (instance_pos = -1)]
-        bool handle_modifiers_accelerator_activated (Meta.Display display)
-        {
+        bool handle_modifiers_accelerator_activated (Meta.Display display) {
             display.ungrab_keyboard (display.get_current_time ());
 
             var sources = settings.get_value ("sources");
@@ -76,8 +69,7 @@ namespace Gala
         }
 
         [CCode (instance_pos = -1)]
-        void set_keyboard_layout (GLib.Settings settings, string key)
-        {
+        void set_keyboard_layout (GLib.Settings settings, string key) {
             if (!(key == "current" || key == "source" || key == "xkb-options"))
                 return;
 

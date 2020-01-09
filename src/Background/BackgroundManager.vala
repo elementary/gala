@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class BackgroundManager : Meta.BackgroundGroup
-    {
+namespace Gala {
+    public class BackgroundManager : Meta.BackgroundGroup {
         const string BACKGROUND_SCHEMA = "org.gnome.desktop.background";
         const int FADE_ANIMATION_TIME = 1000;
 
@@ -37,19 +35,16 @@ namespace Gala
         Meta.BackgroundActor? new_background_actor = null;
 
 #if HAS_MUTTER330
-        public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true)
-        {
+        public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true) {
             Object (display: display, monitor_index: monitor_index, control_position: control_position);
         }
 #else
-        public BackgroundManager (Meta.Screen screen, int monitor_index, bool control_position = true)
-        {
+        public BackgroundManager (Meta.Screen screen, int monitor_index, bool control_position = true) {
             Object (screen: screen, monitor_index: monitor_index, control_position: control_position);
         }
 #endif
 
-        construct
-        {
+        construct {
 #if HAS_MUTTER330
             background_source = BackgroundCache.get_default ().get_background_source (display, BACKGROUND_SCHEMA);
 #else
@@ -61,8 +56,7 @@ namespace Gala
             destroy.connect (on_destroy);
         }
 
-        void on_destroy ()
-        {
+        void on_destroy () {
             BackgroundCache.get_default ().release_background_source (BACKGROUND_SCHEMA);
             background_source = null;
 
@@ -77,8 +71,7 @@ namespace Gala
             }
         }
 
-        void swap_background_actor ()
-        {
+        void swap_background_actor () {
             return_if_fail (new_background_actor != null);
 
             var old_background_actor = background_actor;
@@ -103,8 +96,7 @@ namespace Gala
             old_background_actor.add_transition ("fade-out", transition);
         }
 
-        void update_background_actor ()
-        {
+        void update_background_actor () {
             if (new_background_actor != null) {
                 // Skip displaying existing background queued for load
                 new_background_actor.destroy ();
@@ -137,8 +129,7 @@ namespace Gala
             background_actor.set_size (width, height);
         }
 
-        Meta.BackgroundActor create_background_actor ()
-        {
+        Meta.BackgroundActor create_background_actor () {
             var background = background_source.get_background (monitor_index);
 #if HAS_MUTTER330
             var background_actor = new Meta.BackgroundActor (display, monitor_index);

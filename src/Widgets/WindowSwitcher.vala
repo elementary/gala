@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
-    public class WindowSwitcher : Clutter.Actor
-    {
+namespace Gala {
+    public class WindowSwitcher : Clutter.Actor {
         const int MIN_DELTA = 100;
         const float BACKGROUND_OPACITY = 155.0f;
         const float DIM_WINDOW_BRIGHTNESS = -BACKGROUND_OPACITY / 255.0f;
@@ -54,13 +52,11 @@ namespace Gala
         float dock_width = 0.0f;
         int n_dock_items = 0;
 
-        public WindowSwitcher (WindowManager wm)
-        {
+        public WindowSwitcher (WindowManager wm) {
             Object (wm: wm);
         }
 
-        construct
-        {
+        construct {
             // pull drawing methods from libplank
             dock_settings = new Plank.DockPreferences ("dock1");
             dock_settings.notify.connect (update_dock);
@@ -113,8 +109,7 @@ namespace Gala
             visible = false;
         }
 
-        ~WindowSwitcher ()
-        {
+        ~WindowSwitcher () {
             if (monitor != null)
                 monitor.cancel ();
 
@@ -126,8 +121,7 @@ namespace Gala
 #endif
         }
 
-        void load_dock_theme ()
-        {
+        void load_dock_theme () {
             if (dock_theme != null)
                 dock_theme.notify.disconnect (update_dock);
 
@@ -141,8 +135,7 @@ namespace Gala
         /**
          * set the values which don't get set every time and need to be updated when the theme changes
          */
-        void update_dock ()
-        {
+        void update_dock () {
             ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
 
 #if HAS_MUTTER330
@@ -201,8 +194,7 @@ namespace Gala
             dock_surface = null;
         }
 
-        void update_background ()
-        {
+        void update_background () {
             int width = 0, height = 0;
 #if HAS_MUTTER330
             wm.get_display ().get_size (out width, out height);
@@ -213,14 +205,12 @@ namespace Gala
             background.set_size (width, height);
         }
 
-        void update_actors ()
-        {
+        void update_actors () {
             update_dock ();
             update_background ();
         }
 
-        bool draw_dock_background (Cairo.Context cr)
-        {
+        bool draw_dock_background (Cairo.Context cr) {
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
             cr.set_operator (Cairo.Operator.OVER);
@@ -276,8 +266,7 @@ namespace Gala
             return false;
         }
 
-        void place_dock ()
-        {
+        void place_dock () {
             ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             var icon_size = dock_settings.IconSize * ui_scale_factor;
@@ -307,8 +296,7 @@ namespace Gala
             dock.opacity = 255;
         }
 
-        void animate_dock_width ()
-        {
+        void animate_dock_width () {
             dock.save_easing_state ();
             dock.set_easing_duration (250);
             dock.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
@@ -327,8 +315,7 @@ namespace Gala
             dock.restore_easing_state ();
         }
 
-        void show_background ()
-        {
+        void show_background () {
             background.save_easing_state ();
             background.set_easing_duration (250);
             background.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
@@ -336,8 +323,7 @@ namespace Gala
             background.restore_easing_state ();
         }
 
-        void hide_background ()
-        {
+        void hide_background () {
             background.save_easing_state ();
             background.set_easing_duration (250);
             background.set_easing_mode (AnimationMode.EASE_OUT_CUBIC);
@@ -367,13 +353,11 @@ namespace Gala
             return true;
         }
 
-        void window_removed (Actor actor)
-        {
+        void window_removed (Actor actor) {
             clone_sort_order.remove (actor);
         }
 
-        void icon_removed (Actor actor)
-        {
+        void icon_removed (Actor actor) {
             if (dock.get_n_children () == 1) {
 #if HAS_MUTTER330
                 close (wm.get_display ().get_current_time ());
@@ -394,16 +378,14 @@ namespace Gala
             animate_dock_width ();
         }
 
-        public override bool key_release_event (Clutter.KeyEvent event)
-        {
+        public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0)
                 close (event.time);
 
             return true;
         }
 
-        public override void key_focus_out ()
-        {
+        public override void key_focus_out () {
 #if HAS_MUTTER330
             close (wm.get_display ().get_current_time ());
 #else
@@ -414,12 +396,11 @@ namespace Gala
         [CCode (instance_pos = -1)]
 #if HAS_MUTTER330
         public void handle_switch_windows (Display display, Window? window, Clutter.KeyEvent event,
-            KeyBinding binding)
+            KeyBinding binding) {
 #else
         public void handle_switch_windows (Display display, Screen screen, Window? window,
-            Clutter.KeyEvent event, KeyBinding binding)
+            Clutter.KeyEvent event, KeyBinding binding) {
 #endif
-        {
             var now = get_monotonic_time () / 1000;
             if (now - last_switch < MIN_DELTA)
                 return;
@@ -490,8 +471,7 @@ namespace Gala
 #endif
         }
 
-        void close_cleanup ()
-        {
+        void close_cleanup () {
 #if HAS_MUTTER330
             var display = wm.get_display ();
             var workspace = display.get_workspace_manager ().get_active_workspace ();
@@ -525,8 +505,7 @@ namespace Gala
             }
         }
 
-        void close (uint time)
-        {
+        void close (uint time) {
             if (closing)
                 return;
 
@@ -602,8 +581,7 @@ namespace Gala
                 close_cleanup ();
         }
 
-        WindowIcon? add_window (Window window)
-        {
+        WindowIcon? add_window (Window window) {
             var actor = window.get_compositor_private () as WindowActor;
             if (actor == null)
                 return null;
@@ -630,8 +608,7 @@ namespace Gala
             return icon;
         }
 
-        void dim_windows ()
-        {
+        void dim_windows () {
             foreach (var actor in window_clones.get_children ()) {
                 unowned SafeWindowClone clone = (SafeWindowClone) actor;
 
@@ -677,8 +654,7 @@ namespace Gala
          * @return whether the switcher should actually be started or if there are
          *         not enough windows
          */
-        bool collect_windows (Workspace workspace)
-        {
+        bool collect_windows (Workspace workspace) {
 #if HAS_MUTTER330
             var display = workspace.get_display ();
 #else
@@ -747,8 +723,7 @@ namespace Gala
             return true;
         }
 
-        WindowIcon next_window (Workspace workspace, bool backward)
-        {
+        WindowIcon next_window (Workspace workspace, bool backward) {
             Actor actor;
             if (!backward) {
                 actor = current_window.get_next_sibling ();
@@ -769,8 +744,7 @@ namespace Gala
          *
          * @param mask The modifier mask to extract the primary one from
          */
-        void set_primary_modifier (uint mask)
-        {
+        void set_primary_modifier (uint mask) {
             if (mask == 0)
                 modifier_mask = 0;
             else {
@@ -785,8 +759,7 @@ namespace Gala
         /**
          * Counts the launcher items to get an estimate of the window size
          */
-        void update_n_dock_items (File folder, File? other_file, FileMonitorEvent event)
-        {
+        void update_n_dock_items (File folder, File? other_file, FileMonitorEvent event) {
             if (event != FileMonitorEvent.CREATED && event != FileMonitorEvent.DELETED)
                 return;
 
@@ -802,8 +775,7 @@ namespace Gala
             n_dock_items = count;
         }
 
-        Gdk.ModifierType get_current_modifiers ()
-        {
+        Gdk.ModifierType get_current_modifiers () {
             Gdk.ModifierType modifiers;
             double[] axes = {};
             Gdk.Display.get_default ().get_device_manager ().get_client_pointer ()
