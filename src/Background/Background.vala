@@ -115,7 +115,7 @@ namespace Gala {
             color_string = settings.get_string ("primary-color");
             var color = Clutter.Color.from_string (color_string);
 
-            color_string = settings.get_string("secondary-color");
+            color_string = settings.get_string ("secondary-color");
             var second_color = Clutter.Color.from_string (color_string);
 
             var shading_type = settings.get_enum ("color-shading-type");
@@ -224,7 +224,7 @@ namespace Gala {
             animation = yield BackgroundCache.get_default ().get_animation (filename);
 
             if (animation == null || cancellable.is_cancelled ()) {
-                set_loaded();
+                set_loaded ();
                 return;
             }
 
@@ -239,7 +239,7 @@ namespace Gala {
             var cache = Meta.BackgroundImageCache.get_default ();
             var image = cache.load (File.new_for_path (filename));
             if (image.is_loaded ())
-                set_loaded();
+                set_loaded ();
             else {
                 ulong handler = 0;
                 handler = image.loaded.connect (() => {
@@ -270,4 +270,3 @@ namespace Gala {
         }
     }
 }
-
