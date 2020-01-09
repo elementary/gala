@@ -275,8 +275,7 @@ namespace Gala {
         *
         * @param display The display to flash, if necessary
         */
-        public static void bell (Meta.Display display)
-        {
+        public static void bell (Meta.Display display) {
             if (Meta.Prefs.bell_is_audible ())
                 Gdk.beep ();
             else
