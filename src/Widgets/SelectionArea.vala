@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class SelectionArea : Clutter.Actor
-    {
+namespace Gala {
+    public class SelectionArea : Clutter.Actor {
         public signal void closed ();
 
         public WindowManager wm { get; construct; }
@@ -31,13 +29,11 @@ namespace Gala
         private bool dragging = false;
         private bool clicked = false;
 
-        public SelectionArea (WindowManager wm)
-        {
+        public SelectionArea (WindowManager wm) {
             Object (wm: wm);
         }
 
-        construct
-        {
+        construct {
             start_point = { 0, 0 };
             end_point = { 0, 0 };
             visible = true;
@@ -60,8 +56,7 @@ namespace Gala
             canvas.invalidate ();
         }
 
-        public override bool key_press_event (Clutter.KeyEvent e)
-        {
+        public override bool key_press_event (Clutter.KeyEvent e) {
             if (e.keyval == Clutter.Key.Escape) {
                 close ();
                 cancelled = true;
@@ -72,8 +67,7 @@ namespace Gala
             return false;
         }
 
-        public override bool button_press_event (Clutter.ButtonEvent e)
-        {
+        public override bool button_press_event (Clutter.ButtonEvent e) {
             if (dragging || e.button != 1) {
                 return true;
             }
@@ -86,8 +80,7 @@ namespace Gala
             return true;
         }
 
-        public override bool button_release_event (Clutter.ButtonEvent e)
-        {
+        public override bool button_release_event (Clutter.ButtonEvent e) {
             if (e.button != 1) {
                 return true;
             }
@@ -110,8 +103,7 @@ namespace Gala
             return true;
         }
 
-        public override bool motion_event (Clutter.MotionEvent e)
-        {
+        public override bool motion_event (Clutter.MotionEvent e) {
             if (!clicked) {
                 return true;
             }
@@ -127,8 +119,7 @@ namespace Gala
             return true;
         }
 
-        public void close ()
-        {
+        public void close () {
 #if HAS_MUTTER330
             wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 #else
@@ -140,8 +131,7 @@ namespace Gala
             }
         }
 
-        public void start_selection ()
-        {
+        public void start_selection () {
 #if HAS_MUTTER330
             wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
 #else
@@ -152,16 +142,14 @@ namespace Gala
             modal_proxy = wm.push_modal ();
         }
 
-        public void get_selection_rectangle (out int x, out int y, out int width, out int height)
-        {
+        public void get_selection_rectangle (out int x, out int y, out int width, out int height) {
             x = int.min (start_point.x, end_point.x);
             y = int.min (start_point.y, end_point.y);
             width = (start_point.x - end_point.x).abs ();
             height = (start_point.y - end_point.y).abs ();
         }
 
-        private bool draw_area (Cairo.Context ctx)
-        {
+        private bool draw_area (Cairo.Context ctx) {
             Clutter.cairo_clear (ctx);
 
             if (!dragging) {

@@ -18,15 +18,13 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * Container for WindowIconActors which takes care of the scaling and positioning.
      * It also decides whether to draw the container shape, a plus sign or an ellipsis.
      * Lastly it also includes the drawing code for the active highlight.
      */
-    public class IconGroup : Actor
-    {
+    public class IconGroup : Actor {
         public const int SIZE = 64;
 
         const int PLUS_SIZE = 8;
@@ -92,13 +90,11 @@ namespace Gala
 
         uint show_close_button_timeout = 0;
 
-        public IconGroup (Workspace workspace)
-        {
+        public IconGroup (Workspace workspace) {
             Object (workspace: workspace);
         }
 
-        construct
-        {
+        construct {
             var scale = InternalUtils.get_ui_scaling_factor ();
             var size = SIZE * scale;
 
@@ -148,19 +144,16 @@ namespace Gala
             icon_container.actor_removed.connect_after (redraw);
         }
 
-        ~IconGroup ()
-        {
+        ~IconGroup () {
             icon_container.actor_removed.disconnect (redraw);
         }
 
-        public override bool enter_event (CrossingEvent event)
-        {
+        public override bool enter_event (CrossingEvent event) {
             toggle_close_button (true);
             return false;
         }
 
-        public override bool leave_event (CrossingEvent event)
-        {
+        public override bool leave_event (CrossingEvent event) {
             if (!contains (event.related))
                 toggle_close_button (false);
 
@@ -175,8 +168,7 @@ namespace Gala
          *
          * @param show Whether to show the close button
          */
-        void toggle_close_button (bool show)
-        {
+        void toggle_close_button (bool show) {
             // don't display the close button when we don't have dynamic workspaces
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
@@ -212,8 +204,7 @@ namespace Gala
         /**
          * Override the paint handler to draw our backdrop if necessary
          */
-        public override void paint ()
-        {
+        public override void paint () {
             if (backdrop_opacity < 1 || drag_action.dragging) {
                 base.paint ();
                 return;
@@ -247,8 +238,7 @@ namespace Gala
         /**
          * Remove all currently added WindowIconActors
          */
-        public void clear ()
-        {
+        public void clear () {
             icon_container.destroy_all_children ();
         }
 
@@ -261,8 +251,7 @@ namespace Gala
          * @param temporary Mark the WindowIconActor as temporary. Used for windows dragged over
          *                  the group.
          */
-        public void add_window (Window window, bool no_redraw = false, bool temporary = false)
-        {
+        public void add_window (Window window, bool no_redraw = false, bool temporary = false) {
             var new_window = new WindowIconActor (window);
 
             new_window.save_easing_state ();
@@ -282,8 +271,7 @@ namespace Gala
          *
          * @param animate Whether to fade the icon out before removing it
          */
-        public void remove_window (Window window, bool animate = true)
-        {
+        public void remove_window (Window window, bool animate = true) {
             foreach (var child in icon_container.get_children ()) {
                 unowned WindowIconActor w = (WindowIconActor) child;
                 if (w.window == window) {
@@ -313,16 +301,14 @@ namespace Gala
         /**
          * Sets a hovered actor for the drag action.
          */
-        public void set_hovered_actor (Actor actor)
-        {
+        public void set_hovered_actor (Actor actor) {
             drag_action.hovered = actor;
         }
 
         /**
          * Trigger a redraw
          */
-        public void redraw ()
-        {
+        public void redraw () {
             content.invalidate ();
         }
 
@@ -331,8 +317,7 @@ namespace Gala
          * That way the workspace won't be deleted if windows decide to ignore the
          * delete signal
          */
-        void close ()
-        {
+        void close () {
 #if HAS_MUTTER330
             var time = workspace.get_display ().get_current_time ();
 #else
@@ -350,8 +335,7 @@ namespace Gala
          * Draw the background or plus sign and do layouting. We won't lose performance here
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
-        bool draw (Cairo.Context cr)
-        {
+        bool draw (Cairo.Context cr) {
             var scale = InternalUtils.get_ui_scaling_factor ();
 
             cr.set_operator (Cairo.Operator.CLEAR);
@@ -526,8 +510,7 @@ namespace Gala
             return false;
         }
 
-        Actor drag_begin (float click_x, float click_y)
-        {
+        Actor drag_begin (float click_x, float click_y) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
@@ -569,11 +552,10 @@ namespace Gala
             return this;
         }
 
-        void drag_end (Actor destination)
-        {
+        void drag_end (Actor destination) {
             if (destination is WorkspaceInsertThumb) {
                 get_parent ().remove_child (this);
-    
+
                 unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 #if HAS_MUTTER330
                 unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
@@ -588,14 +570,12 @@ namespace Gala
             }
         }
 
-        void drag_canceled ()
-        {
+        void drag_canceled () {
             get_parent ().remove_child (this);
             restore_group ();
         }
 
-        void restore_group ()
-        {
+        void restore_group () {
             var container = prev_parent as IconGroupContainer;
             if (container != null) {
                 container.add_group (this);

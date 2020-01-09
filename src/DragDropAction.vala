@@ -17,17 +17,14 @@
 
 using Clutter;
 
-namespace Gala
-{
+namespace Gala {
     [Flags]
-    public enum DragDropActionType
-    {
+    public enum DragDropActionType {
         SOURCE,
         DESTINATION
     }
 
-    public class DragDropAction : Clutter.Action
-    {
+    public class DragDropAction : Clutter.Action {
         static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
         static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
 
@@ -101,7 +98,7 @@ namespace Gala
         public bool allow_bubbling { get; set; default = true; }
 
         public Actor? hovered { private get; set; default = null; }
-        
+
         bool clicked = false;
         float last_x;
         float last_y;
@@ -114,8 +111,7 @@ namespace Gala
          *             which destinations. It has to be the same for all actors that
          *             should be compatible with each other.
          */
-        public DragDropAction (DragDropActionType type, string id)
-        {
+        public DragDropAction (DragDropActionType type, string id) {
             Object (drag_type : type, drag_id : id);
 
             if (sources == null)
@@ -126,14 +122,12 @@ namespace Gala
 
         }
 
-        ~DragDropAction ()
-        {
+        ~DragDropAction () {
             if (actor != null)
                 release_actor (actor);
         }
 
-        public override void set_actor (Actor? new_actor)
-        {
+        public override void set_actor (Actor? new_actor) {
             if (actor != null) {
                 release_actor (actor);
             }
@@ -145,23 +139,21 @@ namespace Gala
             base.set_actor (new_actor);
         }
 
-        void release_actor (Actor actor)
-        {
+        void release_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
                 actor.button_press_event.disconnect (source_clicked);
 
                 var source_list = sources.@get (drag_id);
                 source_list.remove (actor);
             } 
-            
+
             if (DragDropActionType.DESTINATION in drag_type) {
                 var dest_list = destinations[drag_id];
                 dest_list.remove (actor);
             }
         }
 
-        void connect_actor (Actor actor)
-        {
+        void connect_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
                 actor.button_press_event.connect (source_clicked);
 
@@ -185,14 +177,12 @@ namespace Gala
             }
         }
 
-        void emit_crossed (Actor destination, bool is_hovered)
-        {
+        void emit_crossed (Actor destination, bool is_hovered) {
             get_drag_drop_action (destination).crossed (actor, is_hovered);
             destination_crossed (destination, is_hovered);
         }
 
-        bool source_clicked (ButtonEvent event)
-        {
+        bool source_clicked (ButtonEvent event) {
             if (event.button != 1) {
                 actor_clicked (event.button);
                 return false;
@@ -206,8 +196,7 @@ namespace Gala
             return true;
         }
 
-        bool follow_move (Event event)
-        {
+        bool follow_move (Event event) {
             // still determining if we actually want to start a drag action
             if (!dragging) {
                 switch (event.get_type ()) {
@@ -332,8 +321,7 @@ namespace Gala
          *
          * @return the DragDropAction instance on this actor or NULL
          */
-        DragDropAction? get_drag_drop_action (Actor actor)
-        {
+        DragDropAction? get_drag_drop_action (Actor actor) {
             DragDropAction? drop_action = null;
 
             foreach (var action in actor.get_actions ()) {
@@ -352,8 +340,7 @@ namespace Gala
         /**
          * Abort the drag
          */
-        public void cancel ()
-        {
+        public void cancel () {
             cleanup ();
 
             drag_canceled ();
@@ -362,8 +349,7 @@ namespace Gala
         /**
          * Allows you to abort all drags currently running for a given drag-id
          */
-        public static void cancel_all_by_id (string id)
-        {
+        public static void cancel_all_by_id (string id) {
             var actors = sources.@get (id);
             if (actors == null)
                 return;
@@ -379,8 +365,7 @@ namespace Gala
             }
         }
 
-        void finish ()
-        {
+        void finish () {
             // make sure they reset the style or whatever they changed when hovered
             emit_crossed (hovered, false);
 
@@ -389,8 +374,7 @@ namespace Gala
             drag_end (hovered);
         }
 
-        void cleanup ()
-        {
+        void cleanup () {
             var source_list = sources.@get (drag_id);
             if (source_list != null) {
                 foreach (var actor in source_list) {

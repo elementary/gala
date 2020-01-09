@@ -17,19 +17,16 @@
 
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
     [DBus (name = "org.pantheon.gala.daemon")]
-    public interface Daemon: GLib.Object
-    {
+    public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
     }
 
-    public class WindowManagerGala : Meta.Plugin, WindowManager
-    {
+    public class WindowManagerGala : Meta.Plugin, WindowManager {
         /**
          * {@inheritDoc}
          */
@@ -90,8 +87,7 @@ namespace Gala
 
         GLib.Settings animations_settings;
 
-        public WindowManagerGala ()
-        {
+        public WindowManagerGala () {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -113,8 +109,7 @@ namespace Gala
             enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
-        public override void start ()
-        {
+        public override void start () {
             Util.later_add (LaterType.BEFORE_REDRAW, show_stage);
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
@@ -130,8 +125,7 @@ namespace Gala
             });
         }
 
-        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res)
-        {
+        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
             try {
                 daemon_proxy = Bus.get_proxy.end (res);
             } catch (Error e) {
@@ -139,20 +133,17 @@ namespace Gala
             }
         }
 
-        void lost_daemon ()
-        {
+        void lost_daemon () {
             daemon_proxy = null;
         }
 
-        void daemon_appeared ()
-        {
+        void daemon_appeared () {
             if (daemon_proxy == null) {
                 Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
             }
         }
 
-        bool show_stage ()
-        {
+        bool show_stage () {
 #if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
 #else
@@ -371,8 +362,7 @@ namespace Gala
             return false;
         }
 
-        void configure_hotcorners ()
-        {
+        void configure_hotcorners () {
 #if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
@@ -388,8 +378,7 @@ namespace Gala
             update_input_area ();
         }
 
-        void add_hotcorner (float x, float y, string key)
-        {
+        void add_hotcorner (float x, float y, string key) {
 #if HAS_MUTTER330
             unowned Clutter.Actor? stage = get_display ().get_stage ();
 #else
@@ -431,8 +420,7 @@ namespace Gala
 #if HAS_MUTTER330
         [CCode (instance_pos = -1)]
         void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
-            Meta.KeyBinding binding)
-        {
+            Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = manager.get_active_workspace_index () + direction;
@@ -449,8 +437,7 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_move_to_workspace (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
 
@@ -460,8 +447,7 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_move_to_workspace_end (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
 
@@ -474,16 +460,14 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
             switch_to_next_workspace (direction);
         }
 
         [CCode (instance_pos = -1)]
         void handle_switch_to_workspace_end (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
@@ -491,8 +475,7 @@ namespace Gala
 #else
         [CCode (instance_pos = -1)]
         void handle_cycle_workspaces (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
             var index = screen.get_active_workspace_index () + direction;
 
@@ -508,8 +491,7 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_move_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
 
@@ -519,8 +501,7 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_move_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
 
@@ -532,16 +513,14 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? MotionDirection.LEFT : MotionDirection.RIGHT);
             switch_to_next_workspace (direction);
         }
 
         [CCode (instance_pos = -1)]
         void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
             screen.get_workspace_by_index (index).activate (display.get_current_time ());
         }
@@ -550,8 +529,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void switch_to_next_workspace (MotionDirection direction)
-        {
+        public void switch_to_next_workspace (MotionDirection direction) {
 #if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
@@ -589,8 +567,7 @@ namespace Gala
         }
 
 #if HAS_MUTTER330
-        void update_input_area ()
-        {
+        void update_input_area () {
             unowned Meta.Display display = get_display ();
 
             if (screensaver != null) {
@@ -613,8 +590,7 @@ namespace Gala
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
         }
 #else
-        void update_input_area ()
-        {
+        void update_input_area () {
             var screen = get_screen ();
 
             if (screensaver != null) {
@@ -638,8 +614,7 @@ namespace Gala
         }
 #endif
 
-        void show_bottom_stack_window (Meta.Window bottom_window)
-        {
+        void show_bottom_stack_window (Meta.Window bottom_window) {
             unowned Meta.Workspace workspace = bottom_window.get_workspace ();
             if (Utils.get_n_windows (workspace) == 0) {
                 return;
@@ -688,8 +663,7 @@ namespace Gala
             });
         }
 
-        void animate_bottom_window_scale (Meta.WindowActor actor)
-        {
+        void animate_bottom_window_scale (Meta.WindowActor actor) {
             const string[] props = { "scale-x", "scale-y" };
 
             foreach (string prop in props) {
@@ -709,8 +683,7 @@ namespace Gala
             }
         }
 
-        public uint32[] get_all_xids ()
-        {
+        public uint32[] get_all_xids () {
             var list = new Gee.ArrayList<uint32> ();
 
 #if HAS_MUTTER330
@@ -734,8 +707,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void move_window (Window? window, MotionDirection direction)
-        {
+        public void move_window (Window? window, MotionDirection direction) {
             if (window == null)
                 return;
 
@@ -777,8 +749,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal ()
-        {
+        public ModalProxy push_modal () {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
@@ -810,8 +781,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void pop_modal (ModalProxy proxy)
-        {
+        public void pop_modal (ModalProxy proxy) {
             if (!modal_stack.remove (proxy)) {
                 warning ("Attempted to remove a modal proxy that was not in the stack");
                 return;
@@ -838,27 +808,23 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public bool is_modal ()
-        {
+        public bool is_modal () {
             return (modal_stack.size > 0);
         }
 
         /**
          * {@inheritDoc}
          */
-        public bool modal_proxy_valid (ModalProxy proxy)
-        {
+        public bool modal_proxy_valid (ModalProxy proxy) {
             return (proxy in modal_stack);
         }
 
-        public void get_current_cursor_position (out int x, out int y)
-        {
+        public void get_current_cursor_position (out int x, out int y) {
             Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null,
                 out x, out y);
         }
 
-        public void dim_window (Window window, bool dim)
-        {
+        public void dim_window (Window window, bool dim) {
             /*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
             var win = window.get_compositor_private () as WindowActor;
             if (dim) {
@@ -872,8 +838,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void perform_action (ActionType type)
-        {
+        public void perform_action (ActionType type) {
 #if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var current = display.get_focus_window ();
@@ -1021,8 +986,7 @@ namespace Gala
             }
         }
 
-        public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y)
-        {
+        public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case WindowMenuType.WM:
                     if (daemon_proxy == null) {
@@ -1066,8 +1030,7 @@ namespace Gala
             }
         }
 
-        public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number)
-        {
+        public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
                 tile_preview.background_color = { 100, 186, 255, 100 };
@@ -1108,8 +1071,7 @@ namespace Gala
             }
         }
 
-        public override void hide_tile_preview ()
-        {
+        public override void hide_tile_preview () {
             if (tile_preview != null) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
@@ -1117,8 +1079,7 @@ namespace Gala
             }
         }
 
-        public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect)
-        {
+        public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect) {
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
@@ -1126,8 +1087,7 @@ namespace Gala
          * effects
          */
 
-        void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change)
-        {
+        void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
             if (!window.is_on_primary_monitor ())
                 return;
@@ -1197,8 +1157,7 @@ namespace Gala
 
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
-        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect)
-        {
+        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
         }
@@ -1242,8 +1201,7 @@ namespace Gala
             size_change_completed (actor);
         }
 
-        public override void minimize (WindowActor actor)
-        {
+        public override void minimize (WindowActor actor) {
             const int duration = AnimationDuration.MINIMIZE;
 
             if (!enable_animations
@@ -1317,8 +1275,7 @@ namespace Gala
             }
         }
 
-        void maximize (WindowActor actor, int ex, int ey, int ew, int eh)
-        {
+        void maximize (WindowActor actor, int ex, int ey, int ew, int eh) {
             const int duration = AnimationDuration.SNAP;
 
             if (!enable_animations
@@ -1412,8 +1369,7 @@ namespace Gala
             }
         }
 
-        public override void unminimize (WindowActor actor)
-        {
+        public override void unminimize (WindowActor actor) {
             if (!enable_animations) {
                 actor.show ();
                 unminimize_completed (actor);
@@ -1460,8 +1416,7 @@ namespace Gala
             }
         }
 
-        public override void map (WindowActor actor)
-        {
+        public override void map (WindowActor actor) {
             var window = actor.get_meta_window ();
             if (!enable_animations) {
                 actor.show ();
@@ -1583,8 +1538,7 @@ namespace Gala
             }
         }
 
-        public override void destroy (WindowActor actor)
-        {
+        public override void destroy (WindowActor actor) {
             var window = actor.get_meta_window ();
 
             ws_assoc.remove (window);
@@ -1681,8 +1635,7 @@ namespace Gala
             }
         }
 
-        void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh)
-        {
+        void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             const int duration = AnimationDuration.SNAP;
             if (!enable_animations
                 || duration == 0) {
@@ -1764,8 +1717,7 @@ namespace Gala
             }
         }
 
-        void move_window_to_next_ws (Window window)
-        {
+        void move_window_to_next_ws (Window window) {
             unowned Workspace win_ws = window.get_workspace ();
 
             // Do nothing if the current workspace would be empty
@@ -1792,8 +1744,7 @@ namespace Gala
             ws_assoc.insert (window, old_ws_index);
         }
 
-        void move_window_to_old_ws (Window window)
-        {
+        void move_window_to_old_ws (Window window) {
             unowned Workspace win_ws = window.get_workspace ();
 
             // Do nothing if the current workspace is populated with other windows
@@ -1804,7 +1755,7 @@ namespace Gala
             if (!ws_assoc.contains (window)) {
                 return;
             }
-            
+
             var old_ws_index = ws_assoc.get (window);
             var new_ws_index = win_ws.index ();
 
@@ -1828,8 +1779,7 @@ namespace Gala
         }
 
         // Cancel attached animation of an actor and reset it
-        bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor)
-        {
+        bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, WindowActor actor) {
             if (!list.contains (actor))
                 return false;
 
@@ -1848,8 +1798,7 @@ namespace Gala
             return true;
         }
 
-        public override void kill_window_effects (WindowActor actor)
-        {
+        public override void kill_window_effects (WindowActor actor) {
             if (end_animation (ref mapping, actor))
                 map_completed (actor);
             if (end_animation (ref unminimizing, actor))
@@ -1868,8 +1817,7 @@ namespace Gala
         List<Clutter.Actor>? parents;
         List<Clutter.Actor>? tmp_actors;
 
-        public override void switch_workspace (int from, int to, MotionDirection direction)
-        {
+        public override void switch_workspace (int from, int to, MotionDirection direction) {
             const int animation_duration = AnimationDuration.WORKSPACE_SWITCH;
 
             if (!enable_animations
@@ -2093,8 +2041,7 @@ namespace Gala
                 end_switch_workspace ();
         }
 
-        void end_switch_workspace ()
-        {
+        void end_switch_workspace () {
             if (windows == null || parents == null)
                 return;
 
@@ -2165,13 +2112,11 @@ namespace Gala
             switch_workspace_completed ();
         }
 
-        public override void kill_switch_workspace ()
-        {
+        public override void kill_switch_workspace () {
             end_switch_workspace ();
         }
 
-        public override bool keybinding_filter (Meta.KeyBinding binding)
-        {
+        public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())
                 return false;
 
@@ -2182,8 +2127,7 @@ namespace Gala
                 && modal_proxy.keybinding_filter (binding));
         }
 
-        public override void confirm_display_change ()
-        {
+        public override void confirm_display_change () {
             var pid = Util.show_dialog ("--question",
                 _("Does the display look OK?"),
                 "30",
@@ -2204,13 +2148,11 @@ namespace Gala
             });
         }
 
-        public override unowned Meta.PluginInfo? plugin_info ()
-        {
+        public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
 
-        static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent)
-        {
+        static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
             if (actor == new_parent)
                 return;
 

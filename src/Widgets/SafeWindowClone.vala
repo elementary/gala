@@ -17,15 +17,13 @@
 
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * A clone for a MetaWindowActor that will guard against the
      * meta_window_appears_focused crash by disabling painting the clone
      * as soon as it gets unavailable.
      */
-    public class SafeWindowClone : Clutter.Clone
-    {
+    public class SafeWindowClone : Clutter.Clone {
         public Window window { get; construct; }
 
         /**
@@ -40,8 +38,7 @@ namespace Gala
          * @param window               The window to clone from
          * @param destroy_on_unmanaged see destroy_on_unmanaged property
          */
-        public SafeWindowClone (Window window, bool destroy_on_unmanaged = false)
-        {
+        public SafeWindowClone (Window window, bool destroy_on_unmanaged = false) {
             var actor = (WindowActor) window.get_compositor_private ();
 
             Object (window: window,
@@ -49,19 +46,16 @@ namespace Gala
                     destroy_on_unmanaged: destroy_on_unmanaged);
         }
 
-        construct
-        {
+        construct {
             if (source != null)
                 window.unmanaged.connect (reset_source);
         }
 
-        ~SafeWindowClone ()
-        {
+        ~SafeWindowClone () {
             window.unmanaged.disconnect (reset_source);
         }
 
-        void reset_source ()
-        {
+        void reset_source () {
             // actually destroying the clone will be handled somewhere else (unless we were
             // requested to destroy it), we just need to make sure the clone doesn't attempt
             // to draw a clone of a window that has been destroyed

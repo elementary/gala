@@ -15,54 +15,45 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class BackgroundContainer : Meta.BackgroundGroup
-    {
+namespace Gala {
+    public class BackgroundContainer : Meta.BackgroundGroup {
         public signal void changed ();
 
 #if HAS_MUTTER330
         public Meta.Display display { get; construct; }
 
-        public BackgroundContainer (Meta.Display display)
-        {
+        public BackgroundContainer (Meta.Display display) {
             Object (display: display);
         }
 
-        construct
-        {
+        construct {
             Meta.MonitorManager.@get ().monitors_changed.connect (update);
 
             update ();
         }
 
-        ~BackgroundContainer ()
-        {
+        ~BackgroundContainer () {
             Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
         }
 #else
         public Meta.Screen screen { get; construct; }
 
-        public BackgroundContainer (Meta.Screen screen)
-        {
+        public BackgroundContainer (Meta.Screen screen) {
             Object (screen: screen);
         }
 
-        construct
-        {
+        construct {
             screen.monitors_changed.connect (update);
 
             update ();
         }
 
-        ~BackgroundContainer ()
-        {
+        ~BackgroundContainer () {
             screen.monitors_changed.disconnect (update);
         }
 #endif
 
-        void update ()
-        {
+        void update () {
             var reference_child = (get_child_at_index (0) as BackgroundManager);
             if (reference_child != null)
                 reference_child.changed.disconnect (background_changed);
@@ -84,8 +75,7 @@ namespace Gala
             }
         }
 
-        void background_changed ()
-        {
+        void background_changed () {
             changed ();
         }
     }

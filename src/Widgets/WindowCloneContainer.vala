@@ -18,13 +18,11 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * Container which controls the layout of a set of WindowClones.
      */
-    public class WindowCloneContainer : Actor
-    {
+    public class WindowCloneContainer : Actor {
         public signal void window_selected (Window window);
 
         public int padding_top { get; set; default = 12; }
@@ -42,13 +40,11 @@ namespace Gala
          */
         WindowClone? current_window;
 
-        public WindowCloneContainer (bool overview_mode = false)
-        {
+        public WindowCloneContainer (bool overview_mode = false) {
             Object (overview_mode: overview_mode);
         }
 
-        construct
-        {
+        construct {
             opened = false;
             current_window = null;
         }
@@ -58,11 +54,10 @@ namespace Gala
          *
          * @param window The window for which to create the WindowClone for
          */
-        public void add_window (Window window)
-        {
+        public void add_window (Window window) {
             unowned Meta.Display display = window.get_display ();
             var children = get_children ();
-            
+
             GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
             foreach (unowned Actor child in children) {
                 unowned WindowClone tw = (WindowClone) child;
@@ -70,9 +65,9 @@ namespace Gala
             }
             windows.prepend (window);
             windows.reverse ();
-            
+
             var windows_ordered = display.sort_windows_by_stacking (windows);
-            
+
             var new_window = new WindowClone (window, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
@@ -108,8 +103,7 @@ namespace Gala
         /**
          * Find and remove the WindowClone for a MetaWindow
          */
-        public void remove_window (Window window)
-        {
+        public void remove_window (Window window) {
             foreach (var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
                     remove_child (child);
@@ -120,13 +114,11 @@ namespace Gala
             reflow ();
         }
 
-        void window_selected_cb (WindowClone tiled)
-        {
+        void window_selected_cb (WindowClone tiled) {
             window_selected (tiled.window);
         }
 
-        void window_destroyed (Actor actor)
-        {
+        void window_destroyed (Actor actor) {
             var window = actor as WindowClone;
             if (window == null)
                 return;
@@ -145,8 +137,7 @@ namespace Gala
          * during animations correct.
          */
 #if HAS_MUTTER330
-        public void restack_windows (Meta.Display display)
-        {
+        public void restack_windows (Meta.Display display) {
             var children = get_children ();
 
             GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
@@ -171,8 +162,7 @@ namespace Gala
             }
         }
 #else
-        public void restack_windows (Screen screen)
-        {
+        public void restack_windows (Screen screen) {
             unowned Meta.Display display = screen.get_display ();
             var children = get_children ();
 
@@ -203,8 +193,7 @@ namespace Gala
          * Recalculate the tiling positions of the windows and animate them to
          * the resulting spots.
          */
-        public void reflow ()
-        {
+        public void reflow () {
             if (!opened)
                 return;
 
@@ -248,8 +237,7 @@ namespace Gala
          *
          * @param direction The MetaMotionDirection in which to search for windows for.
          */
-        public void select_next_window (MotionDirection direction)
-        {
+        public void select_next_window (MotionDirection direction) {
             if (get_n_children () < 1)
                 return;
 
@@ -336,8 +324,7 @@ namespace Gala
         /**
          * Emit the selected signal for the current_window.
          */
-        public bool activate_selected_window ()
-        {
+        public bool activate_selected_window () {
             if (current_window != null) {
                 current_window.selected ();
                 return true;
@@ -349,13 +336,12 @@ namespace Gala
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null)
-        {
+        public void open (Window? selected_window = null) {
             if (opened)
                 return;
-            
+
             opened = true;
-            
+
             // hide the highlight when opened
             if (selected_window != null) {
                 foreach (var child in get_children ()) {
@@ -385,11 +371,10 @@ namespace Gala
          * Calls the transition_to_original_state() function on each child
          * to make them take their original locations again.
          */
-        public void close ()
-        {
+        public void close () {
             if (!opened)
                 return;
-            
+
             opened = false;
 
             foreach (var window in get_children ())

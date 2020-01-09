@@ -15,14 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
 #if HAS_MUTTER332
-    public class SystemBackground : GLib.Object
+    public class SystemBackground : GLib.Object {
 #else
-    public class SystemBackground : Meta.BackgroundActor
+    public class SystemBackground : Meta.BackgroundActor {
 #endif
-    {
         const Clutter.Color DEFAULT_BACKGROUND_COLOR = { 0x2e, 0x34, 0x36, 0xff };
 
         static Meta.Background? system_background = null;
@@ -33,8 +31,7 @@ namespace Gala
         public signal void loaded ();
 
 #if HAS_MUTTER330
-        public SystemBackground (Meta.Display display)
-        {
+        public SystemBackground (Meta.Display display) {
 #if HAS_MUTTER332
             Object (background_actor: new Meta.BackgroundActor (display, 0));
 #else
@@ -42,14 +39,12 @@ namespace Gala
 #endif
         }
 #else
-        public SystemBackground (Meta.Screen screen)
-        {
+        public SystemBackground (Meta.Screen screen) {
             Object (meta_screen: screen, monitor: 0);
         }
 #endif
 
-        construct
-        {
+        construct {
             var background_file = GLib.File.new_for_uri ("resource:///io/elementary/desktop/gala/texture.png");
             unowned string custom_path = AppearanceSettings.get_default ().workspace_switcher_background;
             if (custom_path != "" && FileUtils.test (custom_path, FileTest.IS_REGULAR)) {
@@ -92,8 +87,7 @@ namespace Gala
             }
         }
 
-        public static void refresh () 
-        {
+        public static void refresh () {
             // Meta.Background.refresh_all does not refresh backgrounds with the WALLPAPER style.
             // (Last tested with mutter 3.28)
             // As a workaround, re-apply the current color again to force the wallpaper texture

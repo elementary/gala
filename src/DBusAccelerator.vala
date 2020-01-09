@@ -15,22 +15,18 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public struct Accelerator
-    {
+namespace Gala {
+    public struct Accelerator {
         public string name;
         public Meta.KeyBindingFlags flags;
     }
 
     [DBus (name="org.gnome.Shell")]
-    public class DBusAccelerator
-    {
+    public class DBusAccelerator {
         static DBusAccelerator? instance;
-        
+
         [DBus (visible = false)]
-        public static unowned DBusAccelerator init (WindowManager wm)
-        {
+        public static unowned DBusAccelerator init (WindowManager wm) {
             if (instance == null)
                 instance = new DBusAccelerator (wm);
 
@@ -42,8 +38,7 @@ namespace Gala
         WindowManager wm;
         HashTable<string, uint?> grabbed_accelerators;
 
-        DBusAccelerator (WindowManager _wm)
-        {
+        DBusAccelerator (WindowManager _wm) {
             wm = _wm;
             grabbed_accelerators = new HashTable<string, uint?> (str_hash, str_equal);
 
@@ -55,11 +50,10 @@ namespace Gala
         }
 
 #if HAS_MUTTER334
-        void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp)
+        void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp) {
 #else
-        void on_accelerator_activated (uint action, uint device_id, uint timestamp)
+        void on_accelerator_activated (uint action, uint device_id, uint timestamp) {
 #endif
-        {
             foreach (string accelerator in grabbed_accelerators.get_keys ()) {
                 if (grabbed_accelerators[accelerator] == action) {
                     var parameters = new GLib.HashTable<string, Variant> (null, null);
@@ -75,8 +69,7 @@ namespace Gala
             }
         }
 
-        public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError
-        {
+        public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
             uint? action = grabbed_accelerators[accelerator];
 
             if (action == null) {
@@ -95,8 +88,7 @@ namespace Gala
             return action;
         }
 
-        public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError
-        {
+        public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError {
             uint[] actions = {};
 
             foreach (unowned Accelerator? accelerator in accelerators) {
@@ -106,8 +98,7 @@ namespace Gala
             return actions;
         }
 
-        public bool ungrab_accelerator (uint action) throws DBusError, IOError
-        {
+        public bool ungrab_accelerator (uint action) throws DBusError, IOError {
             bool ret = false;
 
             foreach (unowned string accelerator in grabbed_accelerators.get_keys ()) {
@@ -126,8 +117,7 @@ namespace Gala
         }
 
         [DBus (name = "ShowOSD")]
-        public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError
-        {
+        public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
             int32 monitor_index = -1;
             if (parameters.contains ("monitor"))
                 monitor_index = parameters["monitor"].get_int32 ();
@@ -140,10 +130,10 @@ namespace Gala
             int32 level = 0;
             if (parameters.contains ("level"))
                 level = parameters["level"].get_int32 ();
-            
+
             //if (monitor_index > -1)
             //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
-            
+
             MediaFeedback.send (icon, level);
         }
     }

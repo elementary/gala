@@ -18,20 +18,17 @@
 using Gala;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     public struct WindowGeometry {
         Meta.Rectangle inner;
         Meta.Rectangle outer;
     }
 
-    public class WindowListener : Object
-    {
+    public class WindowListener : Object {
         static WindowListener? instance = null;
 
 #if HAS_MUTTER330
-        public static void init (Meta.Display display)
-        {
+        public static void init (Meta.Display display) {
             if (instance != null)
                 return;
 
@@ -52,8 +49,7 @@ namespace Gala
             });
         }
 #else
-        public static void init (Screen screen)
-        {
+        public static void init (Screen screen) {
             if (instance != null)
                 return;
 
@@ -75,9 +71,7 @@ namespace Gala
         }
 #endif
 
-        public static unowned WindowListener get_default ()
-            requires (instance != null)
-        {
+        public static unowned WindowListener get_default () requires (instance != null) {
             return instance;
         }
 
@@ -85,21 +79,18 @@ namespace Gala
 
         Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
-        WindowListener ()
-        {
+        WindowListener () {
             unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
         }
 
-        void monitor_window (Window window)
-        {
+        void monitor_window (Window window) {
             window.notify.connect (window_notify);
             window.unmanaged.connect (window_removed);
 
             window_maximized_changed (window);
         }
 
-        void window_notify (Object object, ParamSpec pspec)
-        {
+        void window_notify (Object object, ParamSpec pspec) {
             var window = (Window) object;
 
             switch (pspec.name) {
@@ -113,16 +104,14 @@ namespace Gala
             }
         }
 
-        void window_on_all_workspaces_changed (Window window)
-        {
+        void window_on_all_workspaces_changed (Window window) {
             if (window.on_all_workspaces)
                 return;
 
             window_no_longer_on_all_workspaces (window);
         }
 
-        void window_maximized_changed (Window window)
-        {
+        void window_maximized_changed (Window window) {
             WindowGeometry window_geometry = {};
             window_geometry.inner = window.get_frame_rect ();
             window_geometry.outer = window.get_buffer_rect ();
@@ -130,13 +119,11 @@ namespace Gala
             unmaximized_state_geometry.@set (window, window_geometry);
         }
 
-        public WindowGeometry? get_unmaximized_state_geometry (Window window)
-        {
+        public WindowGeometry? get_unmaximized_state_geometry (Window window) {
             return unmaximized_state_geometry.@get (window);
         }
 
-        void window_removed (Window window)
-        {
+        void window_removed (Window window) {
             window.notify.disconnect (window_notify);
             window.unmanaged.disconnect (window_removed);
         }

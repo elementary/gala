@@ -15,15 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
+namespace Gala {
     delegate PluginInfo RegisterPluginFunction ();
 
-    public class PluginManager : Object
-    {
+    public class PluginManager : Object {
         static PluginManager? instance = null;
-        public static unowned PluginManager get_default ()
-        {
+        public static unowned PluginManager get_default () {
             if (instance == null)
                 instance = new PluginManager ();
 
@@ -48,8 +45,7 @@ namespace Gala
 
         Gee.LinkedList<PluginInfo?> load_later_plugins;
 
-        PluginManager ()
-        {
+        PluginManager () {
             plugins = new HashTable<string,Plugin> (str_hash, str_equal);
             load_later_plugins = new Gee.LinkedList<PluginInfo?> ();
 
@@ -85,8 +81,7 @@ namespace Gala
             }
         }
 
-        bool load_module (string plugin_name)
-        {
+        bool load_module (string plugin_name) {
             var path = Module.build_path (plugin_dir.get_path (), plugin_name);
             var module = Module.open (path, ModuleFlags.BIND_LOCAL);
             if (module == null) {
@@ -124,8 +119,7 @@ namespace Gala
             return true;
         }
 
-        void load_plugin_class (PluginInfo info)
-        {
+        void load_plugin_class (PluginInfo info) {
             var plugin = (Plugin)Object.@new (info.plugin_type);
             plugins.set (info.module_name, plugin);
 
@@ -137,14 +131,12 @@ namespace Gala
             }
         }
 
-        void initialize_plugin (string plugin_name, Plugin plugin)
-        {
+        void initialize_plugin (string plugin_name, Plugin plugin) {
             plugin.initialize (wm);
             plugin.region_changed.connect (recalculate_regions);
         }
 
-        bool check_provides (string name, PluginFunction provides)
-        {
+        bool check_provides (string name, PluginFunction provides) {
             var message = "Plugins %s and %s both provide %s functionality, using first one only";
             switch (provides) {
                 case PluginFunction.WORKSPACE_VIEW:
@@ -180,8 +172,7 @@ namespace Gala
             return true;
         }
 
-        public void initialize (WindowManager _wm)
-        {
+        public void initialize (WindowManager _wm) {
             wm = _wm;
 
             plugins.@foreach (initialize_plugin);
@@ -190,8 +181,7 @@ namespace Gala
             initialized = true;
         }
 
-        public void load_waiting_plugins ()
-        {
+        public void load_waiting_plugins () {
             foreach (var info in load_later_plugins) {
                 load_plugin_class (info);
             }
@@ -199,8 +189,7 @@ namespace Gala
             load_later_plugins.clear ();
         }
 
-        public Plugin? get_plugin (string id)
-        {
+        public Plugin? get_plugin (string id) {
             return plugins.lookup (id);
         }
 
@@ -208,8 +197,7 @@ namespace Gala
          * Iterate over all plugins and grab their regions, update the regions
          * array accordingly and emit the regions_changed signal.
          */
-        void recalculate_regions ()
-        {
+        void recalculate_regions () {
             X.Xrectangle[] regions = {};
 
             plugins.@foreach ((name, plugin) => {

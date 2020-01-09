@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class Background : Object
-    {
+namespace Gala {
+    public class Background : Object {
         const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
         const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
 
@@ -44,8 +42,7 @@ namespace Gala
 
 #if HAS_MUTTER330
         public Background (Meta.Display display, int monitor_index, string? filename,
-                BackgroundSource background_source, GDesktop.BackgroundStyle style)
-        {
+                BackgroundSource background_source, GDesktop.BackgroundStyle style) {
             Object (display: display,
                     monitor_index: monitor_index,
                     background_source: background_source,
@@ -54,8 +51,7 @@ namespace Gala
         }
 #else
         public Background (Meta.Screen screen, int monitor_index, string? filename,
-                BackgroundSource background_source, GDesktop.BackgroundStyle style)
-        {
+                BackgroundSource background_source, GDesktop.BackgroundStyle style) {
             Object (screen: screen,
                     monitor_index: monitor_index,
                     background_source: background_source,
@@ -64,8 +60,7 @@ namespace Gala
         }
 #endif
 
-        construct
-        {
+        construct {
 #if HAS_MUTTER330
             background = new Meta.Background (display);
 #else
@@ -81,8 +76,7 @@ namespace Gala
             load ();
         }
 
-        public void destroy ()
-        {
+        public void destroy () {
             cancellable.cancel ();
             remove_animation_timeout ();
 
@@ -95,16 +89,14 @@ namespace Gala
             background_source.changed.disconnect (settings_changed);
         }
 
-        public void update_resolution ()
-        {
+        public void update_resolution () {
             if (animation != null) {
                 remove_animation_timeout ();
                 update_animation ();
             }
         }
 
-        void set_loaded ()
-        {
+        void set_loaded () {
             if (is_loaded)
                 return;
 
@@ -116,8 +108,7 @@ namespace Gala
             });
         }
 
-        void load_pattern ()
-        {
+        void load_pattern () {
             string color_string;
             var settings = background_source.settings;
 
@@ -135,8 +126,7 @@ namespace Gala
                 background.set_gradient ((GDesktop.BackgroundShading) shading_type, color, second_color);
         }
 
-        void watch_file (string filename)
-        {
+        void watch_file (string filename) {
             if (file_watches.has_key (filename))
                 return;
 
@@ -153,16 +143,14 @@ namespace Gala
             });
         }
 
-        void remove_animation_timeout ()
-        {
+        void remove_animation_timeout () {
             if (update_animation_timeout_id != 0) {
                 Source.remove (update_animation_timeout_id);
                 update_animation_timeout_id = 0;
             }
         }
 
-        void update_animation ()
-        {
+        void update_animation () {
             update_animation_timeout_id = 0;
 
 #if HAS_MUTTER330
@@ -232,8 +220,7 @@ namespace Gala
             });
         }
 
-        async void load_animation (string filename)
-        {
+        async void load_animation (string filename) {
             animation = yield BackgroundCache.get_default ().get_animation (filename);
 
             if (animation == null || cancellable.is_cancelled ()) {
@@ -245,8 +232,7 @@ namespace Gala
             watch_file (filename);
         }
 
-        void load_image (string filename)
-        {
+        void load_image (string filename) {
             background.set_file (File.new_for_path (filename), style);
             watch_file (filename);
 
@@ -263,16 +249,14 @@ namespace Gala
             }
         }
 
-        void load_file (string filename)
-        {
+        void load_file (string filename) {
             if (filename.has_suffix (".xml"))
                 load_animation.begin (filename);
             else
                 load_image (filename);
         }
 
-        void load ()
-        {
+        void load () {
             load_pattern ();
 
             if (filename == null)
@@ -281,8 +265,7 @@ namespace Gala
                 load_file (filename);
         }
 
-        void settings_changed ()
-        {
+        void settings_changed () {
             changed ();
         }
     }

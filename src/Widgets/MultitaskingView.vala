@@ -18,15 +18,13 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
     /**
      * The central class for the MultitaskingView which takes care of
      * preparing the wm, opening the components and holds containers for
      * the icon groups, the WorkspaceClones and the MonitorClones.
      */
-    public class MultitaskingView : Actor, ActivatableComponent
-    {
+    public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
         const int SMOOTH_SCROLL_DELAY = 500;
@@ -50,13 +48,11 @@ namespace Gala
         Actor workspaces;
         Actor dock_clones;
 
-        public MultitaskingView (WindowManager wm)
-        {
+        public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
 
-        construct
-        {
+        construct {
             visible = false;
             reactive = true;
             clip_to_allocation = true;
@@ -174,8 +170,7 @@ namespace Gala
          * Places the primary container for the WorkspaceClones and the
          * MonitorClones at the right positions
          */
-        void update_monitors ()
-        {
+        void update_monitors () {
             foreach (var monitor_clone in window_containers_monitors)
                 monitor_clone.destroy ();
 
@@ -225,8 +220,7 @@ namespace Gala
          * We generally assume that when the key-focus-out signal is emitted
          * a different component was opened, so we close in that case.
          */
-        public override void key_focus_out ()
-        {
+        public override void key_focus_out () {
             if (opened && !contains (get_stage ().key_focus))
                 toggle ();
         }
@@ -234,8 +228,7 @@ namespace Gala
         /**
          * Scroll through workspaces
          */
-        public override bool scroll_event (ScrollEvent scroll_event)
-        {
+        public override bool scroll_event (ScrollEvent scroll_event) {
             if (!opened)
                 return true;
 
@@ -302,8 +295,7 @@ namespace Gala
          * @param animate Whether to animate the movement or have all elements take their
          *                positions immediately.
          */
-        void update_positions (bool animate)
-        {
+        void update_positions (bool animate) {
             var scale = InternalUtils.get_ui_scaling_factor ();
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -337,8 +329,7 @@ namespace Gala
             reposition_icon_groups (animate);
         }
 
-        void reposition_icon_groups (bool animate)
-        {
+        void reposition_icon_groups (bool animate) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
@@ -365,8 +356,7 @@ namespace Gala
                 icon_groups.restore_easing_state ();
         }
 
-        void add_workspace (int num)
-        {
+        void add_workspace (int num) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var workspace = new WorkspaceClone (manager.get_workspace_by_index (num));
@@ -385,8 +375,7 @@ namespace Gala
                 workspace.open ();
         }
 
-        void remove_workspace (int num)
-        {
+        void remove_workspace (int num) {
             WorkspaceClone? workspace = null;
 
             // FIXME is there a better way to get the removed workspace?
@@ -431,8 +420,7 @@ namespace Gala
          *                   Otherwise it will only be made active, but the view won't be
          *                   closed.
          */
-        void activate_workspace (WorkspaceClone clone, bool close_view)
-        {
+        void activate_workspace (WorkspaceClone clone, bool close_view) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             close_view = close_view && manager.get_active_workspace () == clone.workspace;
@@ -452,8 +440,7 @@ namespace Gala
          * Collect key events, mainly for redirecting them to the WindowCloneContainers to
          * select the active window.
          */
-        public override bool key_press_event (Clutter.KeyEvent event)
-        {
+        public override bool key_press_event (Clutter.KeyEvent event) {
             if (!opened)
                 return true;
 
@@ -491,8 +478,7 @@ namespace Gala
          *
          * @param direction The direction in which to move the focus to
          */
-        void select_window (MotionDirection direction)
-        {
+        void select_window (MotionDirection direction) {
             get_active_workspace_clone ().window_container.select_next_window (direction);
         }
 
@@ -501,8 +487,7 @@ namespace Gala
          *
          * @return The active WorkspaceClone
          */
-        WorkspaceClone get_active_workspace_clone ()
-        {
+        WorkspaceClone get_active_workspace_clone () {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             foreach (var child in workspaces.get_children ()) {
@@ -523,8 +508,7 @@ namespace Gala
             assert_not_reached ();
         }
 
-        void window_selected (Meta.Window window)
-        {
+        void window_selected (Meta.Window window) {
 #if HAS_MUTTER330
             var time = display.get_current_time ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -552,16 +536,14 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public bool is_opened ()
-        {
+        public bool is_opened () {
             return opened;
         }
 
         /**
          * {@inheritDoc}
          */
-        public void open (HashTable<string,Variant>? hints = null)
-        {
+        public void open (HashTable<string,Variant>? hints = null) {
             if (opened)
                 return;
 
@@ -571,8 +553,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void close ()
-        {
+        public void close () {
             if (!opened)
                 return;
 
@@ -584,8 +565,7 @@ namespace Gala
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        void toggle ()
-        {
+        void toggle () {
             if (animating)
                 return;
 
@@ -738,8 +718,7 @@ namespace Gala
             }
         }
 
-        bool keybinding_filter (KeyBinding binding)
-        {
+        bool keybinding_filter (KeyBinding binding) {
             var action = Prefs.get_keybinding_action (binding.get_name ());
             switch (action) {
                 case KeyBindingAction.WORKSPACE_LEFT:

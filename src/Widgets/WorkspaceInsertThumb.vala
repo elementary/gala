@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala
-{
-    public class WorkspaceInsertThumb : Actor
-    {
+namespace Gala {
+    public class WorkspaceInsertThumb : Actor {
         public const int EXPAND_DELAY = 300;
 
         public int workspace_index { get; construct set; }
@@ -30,8 +28,7 @@ namespace Gala
 
         uint expand_timeout = 0;
 
-        public WorkspaceInsertThumb (int workspace_index)
-        {
+        public WorkspaceInsertThumb (int workspace_index) {
             Object (workspace_index: workspace_index);
 
             var scale = InternalUtils.get_ui_scaling_factor ();
@@ -62,8 +59,7 @@ namespace Gala
             add_action (drop);
         }
 
-        public void set_window_thumb (Window window)
-        {
+        public void set_window_thumb (Window window) {
             destroy_all_children ();
 
             var scale = InternalUtils.get_ui_scaling_factor ();
@@ -73,8 +69,7 @@ namespace Gala
             add_child (icon);
         }
 
-        bool expand ()
-        {
+        bool expand () {
             expand_timeout = 0;
 
             transform (true);
@@ -82,8 +77,7 @@ namespace Gala
             return false;
         }
 
-        void transform (bool expand)
-        {
+        void transform (bool expand) {
             save_easing_state ();
             set_easing_mode (AnimationMode.EASE_OUT_QUAD);
             set_easing_duration (200);
@@ -104,8 +98,7 @@ namespace Gala
             restore_easing_state ();
         }
 
-        void add_pulse_animation ()
-        {
+        void add_pulse_animation () {
             var transition = new TransitionGroup ();
             transition.duration = 800;
             transition.auto_reverse = true;

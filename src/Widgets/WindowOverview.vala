@@ -18,19 +18,16 @@
 using Meta;
 using Clutter;
 
-namespace Gala
-{
+namespace Gala {
 
-    public enum WindowOverviewType
-    {
+    public enum WindowOverviewType {
         GRID = 0,
         NATURAL
     }
 
     public delegate void WindowPlacer (Actor window, Meta.Rectangle rect);
 
-    public class WindowOverview : Actor, ActivatableComponent
-    {
+    public class WindowOverview : Actor, ActivatableComponent {
         const int BORDER = 10;
         const int TOP_GAP = 30;
         const int BOTTOM_GAP = 100;
@@ -49,13 +46,11 @@ namespace Gala
         // the workspaces which we expose right now
         List<Workspace> workspaces;
 
-        public WindowOverview (WindowManager wm)
-        {
+        public WindowOverview (WindowManager wm) {
             Object (wm : wm);
         }
 
-        construct
-        {
+        construct {
 #if HAS_MUTTER330
             display = wm.get_display ();
 
@@ -73,8 +68,7 @@ namespace Gala
             reactive = true;
         }
 
-        ~WindowOverview ()
-        {
+        ~WindowOverview () {
 #if HAS_MUTTER330
             display.restacked.disconnect (restack_windows);
 #else
@@ -82,8 +76,7 @@ namespace Gala
 #endif
         }
 
-        public override bool key_press_event (Clutter.KeyEvent event)
-        {
+        public override bool key_press_event (Clutter.KeyEvent event) {
             if (event.keyval == Clutter.Key.Escape) {
                 close ();
 
@@ -93,14 +86,12 @@ namespace Gala
             return false;
         }
 
-        public override void key_focus_out ()
-        {
+        public override void key_focus_out () {
             if (!contains (get_stage ().key_focus))
                 close ();
         }
 
-        public override bool button_press_event (Clutter.ButtonEvent event)
-        {
+        public override bool button_press_event (Clutter.ButtonEvent event) {
             if (event.button == 1)
                 close ();
 
@@ -110,8 +101,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public bool is_opened ()
-        {
+        public bool is_opened () {
             return visible;
         }
 
@@ -119,8 +109,7 @@ namespace Gala
          * {@inheritDoc}
          * You may specify 'all-windows' in hints to expose all windows
          */
-        public void open (HashTable<string,Variant>? hints = null)
-        {
+        public void open (HashTable<string,Variant>? hints = null) {
             if (!ready)
                 return;
 
@@ -243,28 +232,24 @@ namespace Gala
             ready = true;
         }
 
-        bool keybinding_filter (KeyBinding binding)
-        {
+        bool keybinding_filter (KeyBinding binding) {
             var name = binding.get_name ();
             return (name != "expose-windows" && name != "expose-all-windows");
         }
 
 #if HAS_MUTTER330
-        void restack_windows (Display display)
-        {
+        void restack_windows (Display display) {
             foreach (var child in get_children ())
                 ((WindowCloneContainer) child).restack_windows (display);
         }
 #else
-        void restack_windows (Screen screen)
-        {
+        void restack_windows (Screen screen) {
             foreach (var child in get_children ())
                 ((WindowCloneContainer) child).restack_windows (screen);
         }
 #endif
 
-        void window_left_monitor (int num, Window window)
-        {
+        void window_left_monitor (int num, Window window) {
             unowned WindowCloneContainer container = get_child_at_index (num) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -277,8 +262,7 @@ namespace Gala
                 }
         }
 
-        void add_window (Window window)
-        {
+        void add_window (Window window) {
             if (!visible
                 || (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DIALOG))
                 return;
@@ -295,8 +279,7 @@ namespace Gala
                 }
         }
 
-        void remove_window (Window window)
-        {
+        void remove_window (Window window) {
             unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -305,8 +288,7 @@ namespace Gala
         }
 
 #if HAS_MUTTER330
-        void thumb_selected (Window window)
-        {
+        void thumb_selected (Window window) {
             if (window.get_workspace () == display.get_workspace_manager ().get_active_workspace ()) {
                 window.activate (display.get_current_time ());
                 close ();
@@ -320,8 +302,7 @@ namespace Gala
             }
         }
 #else
-        void thumb_selected (Window window)
-        {
+        void thumb_selected (Window window) {
             if (window.get_workspace () == screen.get_active_workspace ()) {
                 window.activate (screen.get_display ().get_current_time ());
                 close ();
@@ -339,8 +320,7 @@ namespace Gala
         /**
          * {@inheritDoc}
          */
-        public void close ()
-        {
+        public void close () {
             if (!visible || !ready)
                 return;
 
@@ -369,8 +349,7 @@ namespace Gala
             });
         }
 
-        void cleanup ()
-        {
+        void cleanup () {
             ready = true;
             visible = false;
 
