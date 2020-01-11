@@ -15,80 +15,68 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-	public class BackgroundContainer : Meta.BackgroundGroup
-	{
-		public signal void changed ();
+namespace Gala {
+    public class BackgroundContainer : Meta.BackgroundGroup {
+        public signal void changed ();
 
 #if HAS_MUTTER330
-		public Meta.Display display { get; construct; }
+        public Meta.Display display { get; construct; }
 
-		public BackgroundContainer (Meta.Display display)
-		{
-			Object (display: display);
-		}
+        public BackgroundContainer (Meta.Display display) {
+            Object (display: display);
+        }
 
-		construct
-		{
-			Meta.MonitorManager.@get ().monitors_changed.connect (update);
+        construct {
+            Meta.MonitorManager.@get ().monitors_changed.connect (update);
 
-			update ();
-		}
+            update ();
+        }
 
-		~BackgroundContainer ()
-		{
-			Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
-		}
+        ~BackgroundContainer () {
+            Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
+        }
 #else
-		public Meta.Screen screen { get; construct; }
+        public Meta.Screen screen { get; construct; }
 
-		public BackgroundContainer (Meta.Screen screen)
-		{
-			Object (screen: screen);
-		}
+        public BackgroundContainer (Meta.Screen screen) {
+            Object (screen: screen);
+        }
 
-		construct
-		{
-			screen.monitors_changed.connect (update);
+        construct {
+            screen.monitors_changed.connect (update);
 
-			update ();
-		}
+            update ();
+        }
 
-		~BackgroundContainer ()
-		{
-			screen.monitors_changed.disconnect (update);
-		}
+        ~BackgroundContainer () {
+            screen.monitors_changed.disconnect (update);
+        }
 #endif
 
-		void update ()
-		{
-			var reference_child = (get_child_at_index (0) as BackgroundManager);
-			if (reference_child != null)
-				reference_child.changed.disconnect (background_changed);
+        void update () {
+            var reference_child = (get_child_at_index (0) as BackgroundManager);
+            if (reference_child != null)
+                reference_child.changed.disconnect (background_changed);
 
-			destroy_all_children ();
+            destroy_all_children ();
 
 #if HAS_MUTTER330
-			for (var i = 0; i < display.get_n_monitors (); i++) {
-				var background = new BackgroundManager (display, i);
+            for (var i = 0; i < display.get_n_monitors (); i++) {
+                var background = new BackgroundManager (display, i);
 #else
-			for (var i = 0; i < screen.get_n_monitors (); i++) {
-				var background = new BackgroundManager (screen, i);
+            for (var i = 0; i < screen.get_n_monitors (); i++) {
+                var background = new BackgroundManager (screen, i);
 #endif
 
-				add_child (background);
+                add_child (background);
 
-				if (i == 0)
-					background.changed.connect (background_changed);
-			}
-		}
+                if (i == 0)
+                    background.changed.connect (background_changed);
+            }
+        }
 
-		void background_changed ()
-		{
-			changed ();
-		}
-	}
+        void background_changed () {
+            changed ();
+        }
+    }
 }
-
-
