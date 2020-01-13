@@ -22,7 +22,7 @@ namespace Gala.Plugins.Notify
 {
     public class Main : Gala.Plugin
     {
-        GLib.Settings behavior_settings;
+        GLib.Settings notification_settings;
         Gala.WindowManager? wm = null;
 
         NotifyServer server;
@@ -32,7 +32,7 @@ namespace Gala.Plugins.Notify
 
         public override void initialize (Gala.WindowManager wm)
         {
-            behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            notification_settings = new GLib.Settings ("org.pantheon.desktop.gala.notifications");
 
             this.wm = wm;
 #if HAS_MUTTER330
@@ -55,13 +55,13 @@ namespace Gala.Plugins.Notify
 
             server = new NotifyServer (stack);
 
-            if (!behavior_settings.get_boolean ("use-new-notifications")) {
+            if (!notification_settings.get_boolean ("use-new-notifications")) {
                 enable ();
             }
 
-            behavior_settings.changed.connect ((key) => {
+            notification_settings.changed.connect ((key) => {
                 if (key == "use-new-notifications") {
-                    if (!behavior_settings.get_boolean ("use-new-notifications")) {
+                    if (!notification_settings.get_boolean ("use-new-notifications")) {
                         enable ();
                     } else {
                         disable ();
