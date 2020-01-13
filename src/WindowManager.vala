@@ -723,7 +723,7 @@ namespace Gala {
             var next = active.get_neighbor (direction);
 
             //dont allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if (Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () ==  manager.n_workspaces - 1) {
+            if (Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
                 Utils.bell (display);
                 return;
             }
@@ -1047,7 +1047,7 @@ namespace Gala {
                 tile_preview.get_size (out width, out height);
 
                 if ((tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y)
-                    || tile_preview.get_transition ("size") != null)  {
+                    || tile_preview.get_transition ("size") != null) {
                     return;
                 }
             }
@@ -1170,7 +1170,7 @@ namespace Gala {
         public override void size_changed (Meta.WindowActor actor) {
             if (which_change == null) {
                 return;
-            } 
+            }
 
             Meta.SizeChange? which_change_local = which_change;
             which_change = null;
@@ -1186,7 +1186,7 @@ namespace Gala {
                         var new_end = new_rect.x + new_rect.width;
 
                         // a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
-                        if (old_rect_size_change.x == new_rect.x || old_end == new_end) { 
+                        if (old_rect_size_change.x == new_rect.x || old_end == new_end) {
                             break;
                         }
                     }
@@ -1233,9 +1233,9 @@ namespace Gala {
                 icon.width *= ui_scale;
                 icon.height *= ui_scale;
 
-                float scale_x  = (float)icon.width  / actor.width;
-                float scale_y  = (float)icon.height / actor.height;
-                float anchor_x = (float)(actor.x - icon.x) / (icon.width  - actor.width);
+                float scale_x = (float)icon.width / actor.width;
+                float scale_y = (float)icon.height / actor.height;
+                float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
                 float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
                 actor.set_pivot_point (anchor_x, anchor_y);
 
@@ -1776,7 +1776,7 @@ namespace Gala {
             if (!ws_assoc.contains (window)) {
                 return;
             }
-            
+
             var old_ws_index = ws_assoc.get (window);
             var new_ws_index = win_ws.index ();
 
@@ -1878,7 +1878,7 @@ namespace Gala {
 
             var main_container = new Clutter.Actor ();
             var static_windows = new Clutter.Actor ();
-            var in_group  = new Clutter.Actor ();
+            var in_group = new Clutter.Actor ();
             var out_group = new Clutter.Actor ();
             windows = new List<WindowActor> ();
             parents = new List<Clutter.Actor> ();
