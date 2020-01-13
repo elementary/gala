@@ -20,10 +20,8 @@
   with a gala plugin and how to do them.
 */
 
-namespace Gala.Plugins.Template
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.Template {
+    public class Main : Gala.Plugin {
         const int PADDING = 50;
 
         Gala.WindowManager? wm = null;
@@ -31,8 +29,7 @@ namespace Gala.Plugins.Template
 
         // This function is called as soon as Gala has started and gives you
         // an instance of the GalaWindowManager class.
-        public override void initialize (Gala.WindowManager wm)
-        {
+        public override void initialize (Gala.WindowManager wm) {
             // we will save the instance to our wm property so we can use it later again
             // especially helpful when you have larger plugins with more functions,
             // we won't need it here
@@ -77,8 +74,7 @@ namespace Gala.Plugins.Template
             wm.ui_group.add_child (red_box);
         }
 
-        bool turn_green (Clutter.ButtonEvent event)
-        {
+        bool turn_green (Clutter.ButtonEvent event) {
             red_box.background_color = { 0, 255, 0, 255 };
             return true;
         }
@@ -87,8 +83,7 @@ namespace Gala.Plugins.Template
         // still it might be a good idea to implement it anyway to make sure
         // your plugin is compatible in case we'd add disabling specific plugins
         // in the future
-        public override void destroy ()
-        {
+        public override void destroy () {
             // here you would destroy actors you added to the stage or remove
             // keybindings
 
@@ -102,8 +97,7 @@ namespace Gala.Plugins.Template
 // details about your plugin. It also gives you the option to choose a specific
 // function which your plugin fulfils. Gala will then make sure that there is
 // no duplicate functionality.
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return {
         "template-plugin",                    // the plugin's name
         "Tom Beckmann <tomjonabc@gmail.com>", // you, the author
@@ -120,4 +114,3 @@ public Gala.PluginInfo register_plugin ()
                                               // right away. False means wait.
     };
 }
-

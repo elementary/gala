@@ -18,17 +18,14 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.Notify {
+    public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
 
         NotifyServer server;
         NotificationStack stack;
 
-        public override void initialize (Gala.WindowManager wm)
-        {
+        public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
@@ -76,8 +73,7 @@ namespace Gala.Plugins.Notify
                 });
         }
 
-        void update_position ()
-        {
+        void update_position () {
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
             var primary = display.get_primary_monitor ();
@@ -92,8 +88,7 @@ namespace Gala.Plugins.Notify
             stack.y = area.y;
         }
 
-        public override void destroy ()
-        {
+        public override void destroy () {
             if (wm == null)
                 return;
 
@@ -103,8 +98,7 @@ namespace Gala.Plugins.Notify
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return Gala.PluginInfo () {
         name = "Notify",
         author = "Gala Developers",
@@ -113,4 +107,3 @@ public Gala.PluginInfo register_plugin ()
         load_priority = Gala.LoadPriority.IMMEDIATE
     };
 }
-

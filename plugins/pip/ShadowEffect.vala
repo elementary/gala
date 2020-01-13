@@ -17,17 +17,13 @@
 
 using Clutter;
 
-namespace Gala.Plugins.PIP
-{
-    public class ShadowEffect : Effect
-    {
-        private class Shadow
-        {
+namespace Gala.Plugins.PIP {
+    public class ShadowEffect : Effect {
+        private class Shadow {
             public int users;
             public Cogl.Texture texture;
 
-            public Shadow (Cogl.Texture _texture)
-            {
+            public Shadow (Cogl.Texture _texture) {
                 texture = _texture;
                 users = 1;
             }
@@ -37,8 +33,7 @@ namespace Gala.Plugins.PIP
         // so we keep a cache to avoid creating the same texture all over again.
         static Gee.HashMap<string,Shadow> shadow_cache;
 
-        static construct
-        {
+        static construct {
             shadow_cache = new Gee.HashMap<string,Shadow> ();
         }
 
@@ -51,24 +46,20 @@ namespace Gala.Plugins.PIP
         Cogl.Material material;
         string? current_key = null;
 
-        public ShadowEffect (int shadow_size, int shadow_spread)
-        {
+        public ShadowEffect (int shadow_size, int shadow_spread) {
             Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
         }
 
-        construct
-        {
+        construct {
             material = new Cogl.Material ();
         }
 
-        ~ShadowEffect ()
-        {
+        ~ShadowEffect () {
             if (current_key != null)
                 decrement_shadow_users (current_key);
         }
 
-        Cogl.Texture? get_shadow (int width, int height, int shadow_size, int shadow_spread)
-        {
+        Cogl.Texture? get_shadow (int width, int height, int shadow_size, int shadow_spread) {
             var old_key = current_key;
 
             current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
@@ -107,8 +98,7 @@ namespace Gala.Plugins.PIP
             return texture;
         }
 
-        void decrement_shadow_users (string key)
-        {
+        void decrement_shadow_users (string key) {
             var shadow = shadow_cache.@get (key);
 
             if (shadow == null)
@@ -118,8 +108,7 @@ namespace Gala.Plugins.PIP
                 shadow_cache.unset (key);
         }
 
-        public override void paint (EffectPaintFlags flags)
-        {
+        public override void paint (EffectPaintFlags flags) {
             var bounding_box = get_bounding_box ();
             var shadow = get_shadow ((int) (bounding_box.x2 - bounding_box.x1), (int) (bounding_box.y2 - bounding_box.y1),
                 shadow_size, shadow_spread);
@@ -139,8 +128,7 @@ namespace Gala.Plugins.PIP
             actor.continue_paint ();
         }
 
-        public virtual ActorBox get_bounding_box ()
-        {
+        public virtual ActorBox get_bounding_box () {
             var size = shadow_size * scale_factor;
             var bounding_box = ActorBox ();
 
