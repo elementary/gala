@@ -20,13 +20,13 @@ using Meta;
 
 namespace Gala
 {
-	public class NotificationStack : Object
-	{
-		// we need to keep a small offset to the top, because we clip the container to
-		// its allocations and the close button would be off for the first notification
-		const int TOP_OFFSET = 2;
-		const int ADDITIONAL_MARGIN = 12;
-		const int MARGIN = 12;
+    public class NotificationStack : Object
+    {
+        // we need to keep a small offset to the top, because we clip the container to
+        // its allocations and the close button would be off for the first notification
+        const int TOP_OFFSET = 2;
+        const int ADDITIONAL_MARGIN = 12;
+        const int MARGIN = 12;
 
         const int WIDTH = 300;
 
@@ -34,35 +34,35 @@ namespace Gala
         int stack_y;
         int stack_width;
 
-		public Screen screen { get; construct; }
+        public Screen screen { get; construct; }
 
         private Gee.ArrayList<unowned WindowActor> notifications;
 
-		public NotificationStack (Screen screen)
-		{
-			Object (screen: screen);
-		}
+        public NotificationStack (Screen screen)
+        {
+            Object (screen: screen);
+        }
 
-		construct
-		{
+        construct
+        {
             notifications = new Gee.ArrayList<WindowActor> ();
 
             screen.monitors_changed.connect (update_stack_allocation);
             screen.workareas_changed.connect (update_stack_allocation);
-			update_stack_allocation ();
-		}
+            update_stack_allocation ();
+        }
 
-		public void show_notification (WindowActor notification)
-		{
+        public void show_notification (WindowActor notification)
+        {
             notification.set_pivot_point (0.5f, 0.5f);
 
             //  var close_button = Utils.create_close_button ();
-			//  close_button.opacity = 0;
-			//  close_button.reactive = true;
-			//  close_button.set_easing_duration (300);
+            //  close_button.opacity = 0;
+            //  close_button.reactive = true;
+            //  close_button.set_easing_duration (300);
 
-			//  var close_click = new ClickAction ();
-			//  close_click.clicked.connect (() => {
+            //  var close_click = new ClickAction ();
+            //  close_click.clicked.connect (() => {
             //      notification.destroy ();
             //  });
 
@@ -70,25 +70,25 @@ namespace Gala
             //  notification.insert_child_above (close_button, null);
 
 
-			var scale = Utils.get_ui_scaling_factor ();
+            var scale = Utils.get_ui_scaling_factor ();
 
             var entry = new TransitionGroup ();
-			entry.remove_on_complete = true;
-			entry.duration = 400;
+            entry.remove_on_complete = true;
+            entry.duration = 400;
 
-			var opacity_transition = new PropertyTransition ("opacity");
-			opacity_transition.set_from_value (0);
-			opacity_transition.set_to_value (255);
+            var opacity_transition = new PropertyTransition ("opacity");
+            opacity_transition.set_from_value (0);
+            opacity_transition.set_to_value (255);
 
-			var flip_transition = new KeyframeTransition ("rotation-angle-x");
-			flip_transition.set_from_value (90.0);
-			flip_transition.set_to_value (0.0);
-			flip_transition.set_key_frames ({ 0.6 });
-			flip_transition.set_values ({ -10.0 });
+            var flip_transition = new KeyframeTransition ("rotation-angle-x");
+            flip_transition.set_from_value (90.0);
+            flip_transition.set_to_value (0.0);
+            flip_transition.set_key_frames ({ 0.6 });
+            flip_transition.set_values ({ -10.0 });
 
-			entry.add_transition (opacity_transition);
-			entry.add_transition (flip_transition);
-			notification.add_transition ("entry", entry);
+            entry.add_transition (opacity_transition);
+            entry.add_transition (flip_transition);
+            notification.add_transition ("entry", entry);
 
             /**
              * We will make space for the incomming notification
@@ -99,45 +99,45 @@ namespace Gala
 
             move_window (notification, stack_x, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
             notifications.insert (0, notification);
-		}
+        }
 
         void update_stack_allocation ()
         {
-			var primary = screen.get_primary_monitor ();
-			var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
+            var primary = screen.get_primary_monitor ();
+            var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
 
-			var scale = Utils.get_ui_scaling_factor ();
+            var scale = Utils.get_ui_scaling_factor ();
             stack_width = (WIDTH + MARGIN) * scale;
 
             stack_x = area.x + area.width - stack_width;
             stack_y = area.y;
         }
 
-		void update_positions (float add_y = 0.0f)
-		{
-			var scale = Utils.get_ui_scaling_factor ();
+        void update_positions (float add_y = 0.0f)
+        {
+            var scale = Utils.get_ui_scaling_factor ();
             var y = stack_y + TOP_OFFSET + add_y + ADDITIONAL_MARGIN * scale;
-			var i = notifications.size;
+            var i = notifications.size;
             var delay_step = i > 0 ? 150 / i : 0;
-			foreach (var actor in notifications) {
-				actor.save_easing_state ();
-				actor.set_easing_mode (AnimationMode.EASE_OUT_BACK);
-				actor.set_easing_duration (200);
-				actor.set_easing_delay ((i--) * delay_step);
+            foreach (var actor in notifications) {
+                actor.save_easing_state ();
+                actor.set_easing_mode (AnimationMode.EASE_OUT_BACK);
+                actor.set_easing_duration (200);
+                actor.set_easing_delay ((i--) * delay_step);
 
                 move_window (actor, -1, (int)y);
                 actor.restore_easing_state ();
 
                 y += actor.height;
-			}
+            }
         }
         
         public void destroy_notification (WindowActor notification)
         {
             notification.save_easing_state ();
-			notification.set_easing_duration (100);
-			notification.set_easing_mode (AnimationMode.EASE_IN_QUAD);
-			notification.opacity = 0;
+            notification.set_easing_duration (100);
+            notification.set_easing_mode (AnimationMode.EASE_IN_QUAD);
+            notification.opacity = 0;
 
             notification.x += stack_width;
             notification.restore_easing_state ();
@@ -176,6 +176,6 @@ namespace Gala
             actor.x = rect.x - ((actor.width - rect.width) / 2);
             actor.y = rect.y - ((actor.height - rect.height) / 2);
         }
-	}
+    }
 }
 
