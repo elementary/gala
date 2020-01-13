@@ -1,22 +1,20 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-
-using Clutter;
-using Meta;
+/*
+ * Copyright 2020 elementary, Inc (https://elementary.io)
+ *           2014 Tom Beckmann
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 public class Gala.NotificationStack : Object {
     // we need to keep a small offset to the top, because we clip the container to
@@ -31,36 +29,36 @@ public class Gala.NotificationStack : Object {
     private int stack_y;
     private int stack_width;
 
-    public Screen screen { get; construct; }
+    public Meta.Screen screen { get; construct; }
 
-    private Gee.ArrayList<unowned WindowActor> notifications;
+    private Gee.ArrayList<unowned Meta.WindowActor> notifications;
 
-    public NotificationStack (Screen screen) {
+    public NotificationStack (Meta.Screen screen) {
         Object (screen: screen);
     }
 
     construct {
-        notifications = new Gee.ArrayList<WindowActor> ();
+        notifications = new Gee.ArrayList<Meta.WindowActor> ();
 
         screen.monitors_changed.connect (update_stack_allocation);
         screen.workareas_changed.connect (update_stack_allocation);
         update_stack_allocation ();
     }
 
-    public void show_notification (WindowActor notification) {
+    public void show_notification (Meta.WindowActor notification) {
         notification.set_pivot_point (0.5f, 0.5f);
 
         var scale = Utils.get_ui_scaling_factor ();
 
-        var entry = new TransitionGroup ();
+        var entry = new Clutter.TransitionGroup ();
         entry.remove_on_complete = true;
         entry.duration = 400;
 
-        var opacity_transition = new PropertyTransition ("opacity");
+        var opacity_transition = new Clutter.PropertyTransition ("opacity");
         opacity_transition.set_from_value (0);
         opacity_transition.set_to_value (255);
 
-        var flip_transition = new KeyframeTransition ("rotation-angle-x");
+        var flip_transition = new Clutter.KeyframeTransition ("rotation-angle-x");
         flip_transition.set_from_value (90.0);
         flip_transition.set_to_value (0.0);
         flip_transition.set_key_frames ({ 0.6 });
@@ -99,7 +97,7 @@ public class Gala.NotificationStack : Object {
         var delay_step = i > 0 ? 150 / i : 0;
         foreach (var actor in notifications) {
             actor.save_easing_state ();
-            actor.set_easing_mode (AnimationMode.EASE_OUT_BACK);
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
             actor.set_easing_duration (200);
             actor.set_easing_delay ((i--) * delay_step);
 
@@ -110,10 +108,10 @@ public class Gala.NotificationStack : Object {
         }
     }
 
-    public void destroy_notification (WindowActor notification) {
+    public void destroy_notification (Meta.WindowActor notification) {
         notification.save_easing_state ();
         notification.set_easing_duration (100);
-        notification.set_easing_mode (AnimationMode.EASE_IN_QUAD);
+        notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
         notification.opacity = 0;
 
         notification.x += stack_width;
