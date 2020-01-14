@@ -1029,7 +1029,7 @@ namespace Gala
 		{
 			switch (menu) {
 				case WindowMenuType.WM:
-					if (daemon_proxy == null) {
+					if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
 						return;
 					}
 
@@ -2009,10 +2009,12 @@ namespace Gala
 						clutter_actor_reparent (actor, static_windows);
 
 						actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-						actor.save_easing_state ();
-						actor.set_easing_duration (300);
-						actor.opacity = 0;
-						actor.restore_easing_state ();
+						if (window.get_window_type () != WindowType.NOTIFICATION) {
+							actor.save_easing_state ();
+							actor.set_easing_duration (300);
+							actor.opacity = 0;
+							actor.restore_easing_state ();
+						}
 					}
 
 					continue;

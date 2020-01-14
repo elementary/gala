@@ -56,6 +56,9 @@ namespace Gala
 		{
             notification.set_pivot_point (0.5f, 0.5f);
 
+            unowned Meta.Window window = notification.get_meta_window ();
+            window.stick ();
+
             //  var close_button = Utils.create_close_button ();
 			//  close_button.opacity = 0;
 			//  close_button.reactive = true;
