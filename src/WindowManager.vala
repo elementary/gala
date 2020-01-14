@@ -627,7 +627,6 @@ namespace Gala {
             double[] op_keyframes = { 0.1, 0.9 };
             GLib.Value[] opacity = { 20U, 20U };
 
-            var top_stack = new Gee.ArrayList<unowned Meta.Window> ();
             workspace.list_windows ().@foreach ((window) => {
                 if (window.get_xwindow () == bottom_window.get_xwindow ()
                     || !InternalUtils.get_window_is_normal (window)
