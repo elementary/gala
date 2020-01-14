@@ -1532,12 +1532,12 @@ namespace Gala {
                         dim_window (window.find_root_ancestor (), true);
 
                     break;
-                case WindowType.NOTIFICATION:
+                case Meta.WindowType.NOTIFICATION:
                     if (BehaviorSettings.get_default ().use_new_notifications) {
                         notification_stack.show_notification (actor);
                         map_completed (actor);
                     }
-                    
+
                     break;
                 default:
                     map_completed (actor);
@@ -1636,7 +1636,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
                     break;
-                case WindowType.NOTIFICATION:
+                case Meta.WindowType.NOTIFICATION:
                     destroying.add (actor);
                     notification_stack.destroy_notification (actor);
 
