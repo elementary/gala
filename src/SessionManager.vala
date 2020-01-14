@@ -18,84 +18,75 @@
 // Reference code by the Solus Project:
 // https://github.com/solus-project/budgie-desktop/blob/master/src/wm/shim.vala
 
-namespace Gala
-{
-	[DBus (name = "io.elementary.wingpanel.session.EndSessionDialog")]
-	public interface WingpanelEndSessionDialog : Object
-	{
-		public signal void confirmed_logout ();
-		public signal void confirmed_reboot ();
-		public signal void confirmed_shutdown ();
-		public signal void canceled ();
-		public signal void closed ();
+namespace Gala {
+    [DBus (name = "io.elementary.wingpanel.session.EndSessionDialog")]
+    public interface WingpanelEndSessionDialog : Object {
+        public signal void confirmed_logout ();
+        public signal void confirmed_reboot ();
+        public signal void confirmed_shutdown ();
+        public signal void canceled ();
+        public signal void closed ();
 
-		public abstract void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError;
-	}
+        public abstract void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError;
+    }
 
-	[DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
-	public class SessionManager : Object
-	{
-		static SessionManager? instance;
+    [DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
+    public class SessionManager : Object {
+        static SessionManager? instance;
 
-		[DBus (visible = false)]
-		public static unowned SessionManager init ()
-		{
-			if (instance == null) {
-				instance = new SessionManager ();
-			}
+        [DBus (visible = false)]
+        public static unowned SessionManager init () {
+            if (instance == null) {
+                instance = new SessionManager ();
+            }
 
-			return instance;
-		}
+            return instance;
+        }
 
-		public signal void confirmed_logout ();
-		public signal void confirmed_reboot ();
-		public signal void confirmed_shutdown ();
-		public signal void canceled ();
-		public signal void closed ();
+        public signal void confirmed_logout ();
+        public signal void confirmed_reboot ();
+        public signal void confirmed_shutdown ();
+        public signal void canceled ();
+        public signal void closed ();
 
-		WingpanelEndSessionDialog? proxy = null;
+        WingpanelEndSessionDialog? proxy = null;
 
-		SessionManager ()
-		{
-			Bus.watch_name (BusType.SESSION, "io.elementary.wingpanel.session.EndSessionDialog",
-				BusNameWatcherFlags.NONE, proxy_appeared, proxy_vanished);
-		}
+        SessionManager () {
+            Bus.watch_name (BusType.SESSION, "io.elementary.wingpanel.session.EndSessionDialog",
+                BusNameWatcherFlags.NONE, proxy_appeared, proxy_vanished);
+        }
 
-		void get_proxy_cb (Object? o, AsyncResult? res)
-		{
-			try {
-				proxy = Bus.get_proxy.end (res);
-			} catch (Error e) {
-				warning ("Could not connect to io.elementary.wingpanel.session.EndSessionDialog proxy: %s", e.message);
-				return;
-			}
+        void get_proxy_cb (Object? o, AsyncResult? res) {
+            try {
+                proxy = Bus.get_proxy.end (res);
+            } catch (Error e) {
+                warning ("Could not connect to io.elementary.wingpanel.session.EndSessionDialog proxy: %s", e.message);
+                return;
+            }
 
-			proxy.confirmed_logout.connect (() => confirmed_logout ());
-			proxy.confirmed_reboot.connect (() => confirmed_reboot ());
-			proxy.confirmed_shutdown.connect (() => confirmed_shutdown ());
-			proxy.canceled.connect (() => canceled ());
-			proxy.closed.connect (() => closed ());
-		}
+            proxy.confirmed_logout.connect (() => confirmed_logout ());
+            proxy.confirmed_reboot.connect (() => confirmed_reboot ());
+            proxy.confirmed_shutdown.connect (() => confirmed_shutdown ());
+            proxy.canceled.connect (() => canceled ());
+            proxy.closed.connect (() => closed ());
+        }
 
-		void proxy_appeared ()
-		{
-			Bus.get_proxy.begin<WingpanelEndSessionDialog> (BusType.SESSION,
-				"io.elementary.wingpanel.session.EndSessionDialog", "/io/elementary/wingpanel/session/EndSessionDialog",
-				0, null, get_proxy_cb);
-		}
+        void proxy_appeared () {
+            Bus.get_proxy.begin<WingpanelEndSessionDialog> (BusType.SESSION,
+                "io.elementary.wingpanel.session.EndSessionDialog", "/io/elementary/wingpanel/session/EndSessionDialog",
+                0, null, get_proxy_cb);
+        }
 
-		void proxy_vanished ()
-		{
-			proxy = null;
-		}
+        void proxy_vanished () {
+            proxy = null;
+        }
 
-		public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError
-		{
-			if (proxy == null) {
-				throw new DBusError.FAILED ("io.elementary.wingpanel.session.EndSessionDialog DBus interface is not registered.");
-			}
+        public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
+            if (proxy == null) {
+                throw new DBusError.FAILED ("io.elementary.wingpanel.session.EndSessionDialog DBus interface is not registered.");
+            }
 
-			proxy.open (type, timestamp, open_length, inhibiters);
-		}
-	}
+            proxy.open (type, timestamp, open_length, inhibiters);
+        }
+    }
 }

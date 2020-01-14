@@ -15,13 +15,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-	[DBus (name = "org.gnome.ScreenSaver")]
-	public interface ScreenSaver : GLib.Object
-	{
-		public abstract bool get_active () throws DBusError, IOError;
-		public signal void active_changed (bool active);
-	}
-
+namespace Gala {
+    [DBus (name = "org.gnome.ScreenSaver")]
+    public interface ScreenSaver : GLib.Object {
+        public abstract bool get_active () throws DBusError, IOError;
+        public signal void active_changed (bool active);
+    }
 }
