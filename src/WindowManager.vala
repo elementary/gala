@@ -70,6 +70,8 @@ namespace Gala {
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
+        
+        NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -158,6 +160,8 @@ namespace Gala {
             WindowListener.init (screen);
 #endif
             KeyboardManager.init (display);
+
+            notification_stack = new NotificationStack (screen);
 
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
@@ -986,7 +990,7 @@ namespace Gala {
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
-                    if (daemon_proxy == null) {
+                    if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         return;
                     }
 
@@ -1528,6 +1532,13 @@ namespace Gala {
                         dim_window (window.find_root_ancestor (), true);
 
                     break;
+                case Meta.WindowType.NOTIFICATION:
+                    if (BehaviorSettings.get_default ().use_new_notifications) {
+                        notification_stack.show_notification (actor);
+                        map_completed (actor);
+                    }
+
+                    break;
                 default:
                     map_completed (actor);
                     break;
@@ -1617,6 +1628,17 @@ namespace Gala {
                     actor.set_scale (0.8f, 0.8f);
                     actor.opacity = 0U;
                     actor.restore_easing_state ();
+
+                    ulong destroy_handler_id = 0UL;
+                    destroy_handler_id = actor.transitions_completed.connect (() => {
+                        actor.disconnect (destroy_handler_id);
+                        destroying.remove (actor);
+                        destroy_completed (actor);
+                    });
+                    break;
+                case Meta.WindowType.NOTIFICATION:
+                    destroying.add (actor);
+                    notification_stack.destroy_notification (actor);
 
                     ulong destroy_handler_id = 0UL;
                     destroy_handler_id = actor.transitions_completed.connect (() => {
@@ -1930,11 +1952,13 @@ namespace Gala {
                         parents.prepend (actor.get_parent ());
                         clutter_actor_reparent (actor, static_windows);
 
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                        actor.save_easing_state ();
-                        actor.set_easing_duration (300);
-                        actor.opacity = 0;
-                        actor.restore_easing_state ();
+						if (window.window_type != Meta.WindowType.NOTIFICATION) {
+							actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+							actor.save_easing_state ();
+							actor.set_easing_duration (300);
+							actor.opacity = 0;
+							actor.restore_easing_state ();
+						}
                     }
 
                     continue;
