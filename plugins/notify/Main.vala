@@ -47,8 +47,13 @@ namespace Gala.Plugins.Notify {
                 freeze_track = running;
             });
 
+#if HAS_MUTTER330
+            Meta.MonitorManager.@get ().monitors_changed_internal.connect (update_position);
+            display.workareas_changed.connect (update_position);
+#else
             screen.monitors_changed.connect (update_position);
             screen.workareas_changed.connect (update_position);
+#endif
 
             server = new NotifyServer (stack);
 
