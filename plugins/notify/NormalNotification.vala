@@ -18,20 +18,17 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
+namespace Gala.Plugins.Notify {
     /**
      * Wrapper class only containing the summary and body label. Allows us to
      * instantiate the content very easily for when we need to slide the old
      * and new content down.
      */
-    class NormalNotificationContent : Actor
-    {
+    class NormalNotificationContent : Actor {
         static Regex entity_regex;
         static Regex tag_regex;
 
-        static construct
-        {
+        static construct {
             try {
                 entity_regex = new Regex ("&(?!amp;|quot;|apos;|lt;|gt;)");
                 tag_regex = new Regex ("<(?!\\/?[biu]>)");
@@ -43,8 +40,7 @@ namespace Gala.Plugins.Notify
         Text summary_label;
         Text body_label;
 
-        construct
-        {
+        construct {
             summary_label = new Text.with_text (null, "");
             summary_label.line_wrap = true;
             summary_label.use_markup = true;
@@ -93,14 +89,12 @@ namespace Gala.Plugins.Notify
             add_child (body_label);
         }
 
-        public void set_values (string summary, string body)
-        {
+        public void set_values (string summary, string body) {
             summary_label.set_markup ("<b>%s</b>".printf (fix_markup (summary)));
             body_label.set_markup (fix_markup (body));
         }
 
-        public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
-        {
+        public override void get_preferred_height (float for_width, out float min_height, out float nat_height) {
             var scale = Utils.get_ui_scaling_factor ();
             float label_height;
             get_allocation_values (null, null, null, null, out label_height, null, scale);
@@ -108,8 +102,7 @@ namespace Gala.Plugins.Notify
             min_height = nat_height = label_height;
         }
 
-        public override void allocate (ActorBox box, AllocationFlags flags)
-        {
+        public override void allocate (ActorBox box, AllocationFlags flags) {
             var scale = Utils.get_ui_scaling_factor ();
             float label_x, label_width, summary_height, body_height, label_height, label_y;
             get_allocation_values (out label_x, out label_width, out summary_height,
@@ -129,8 +122,7 @@ namespace Gala.Plugins.Notify
         }
 
         void get_allocation_values (out float label_x, out float label_width, out float summary_height,
-            out float body_height, out float label_height, out float label_y, int scale)
-        {
+            out float body_height, out float label_height, out float label_y, int scale) {
             var height = Notification.ICON_SIZE * scale;
             var margin = Notification.MARGIN * scale;
             var padding = Notification.PADDING * scale;
@@ -154,8 +146,7 @@ namespace Gala.Plugins.Notify
         /**
          * Copied from gnome-shell, fixes the mess of markup that is sent to us
          */
-        string fix_markup (string markup)
-        {
+        string fix_markup (string markup) {
             var text = markup;
 
             try {
@@ -167,8 +158,7 @@ namespace Gala.Plugins.Notify
         }
     }
 
-    public class NormalNotification : Notification
-    {
+    public class NormalNotification : Notification {
         public string summary { get; construct set; }
         public string body { get; construct set; }
         public uint32 sender_pid { get; construct; }
@@ -185,8 +175,7 @@ namespace Gala.Plugins.Notify
 
 #if HAS_MUTTER330
         public NormalNotification (Meta.Display display, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-            NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
-        {
+            NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions) {
             Object (
                 id: id,
                 icon: icon,
@@ -201,8 +190,7 @@ namespace Gala.Plugins.Notify
         }
 #else
         public NormalNotification (Screen screen, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
-            NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
-        {
+            NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions) {
             Object (
                 id: id,
                 icon: icon,
@@ -217,8 +205,7 @@ namespace Gala.Plugins.Notify
         }
 #endif
 
-        construct
-        {
+        construct {
             content_container = new Actor ();
 
             notification_content = new NormalNotificationContent ();
@@ -229,8 +216,7 @@ namespace Gala.Plugins.Notify
         }
 
         public void update (string summary, string body, Gdk.Pixbuf? icon, int32 expire_timeout,
-            string[] actions)
-        {
+            string[] actions) {
             var visible_change = this.summary != summary || this.body != body;
 
             if (visible_change) {
@@ -265,16 +251,14 @@ namespace Gala.Plugins.Notify
             update_base (icon, expire_timeout);
         }
 
-        protected override void update_slide_animation ()
-        {
+        protected override void update_slide_animation () {
             if (old_notification_content != null)
                 old_notification_content.y = animation_slide_y_offset;
 
             notification_content.y = animation_slide_y_offset - animation_slide_height;
         }
 
-        public override void update_allocation (out float content_height, AllocationFlags flags)
-        {
+        public override void update_allocation (out float content_height, AllocationFlags flags) {
             var box = ActorBox ();
             box.set_origin (0, 0);
             box.set_size (width, height);
@@ -291,16 +275,14 @@ namespace Gala.Plugins.Notify
             content_container.set_clip (scaled_margin, scaled_margin, scaled_margin * 2 + WIDTH * scale, content_height + PADDING * 2 * scale);
         }
 
-        public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
-        {
+        public override void get_preferred_height (float for_width, out float min_height, out float nat_height) {
             float content_height;
             notification_content.get_preferred_height (for_width, null, out content_height);
 
             min_height = nat_height = content_height + (MARGIN + PADDING) * 2 * style_context.get_scale ();
         }
 
-        public override void activate ()
-        {
+        public override void activate () {
             // we currently only support the default action, which can be triggered by clicking
             // on the notification according to spec
             for (var i = 0; i < notification_actions.length; i += 2) {
@@ -337,8 +319,7 @@ namespace Gala.Plugins.Notify
             }
         }
 
-        unowned Meta.Window? get_window ()
-        {
+        unowned Meta.Window? get_window () {
             if (sender_pid == 0)
                 return null;
 
@@ -363,11 +344,9 @@ namespace Gala.Plugins.Notify
             return null;
         }
 
-        void dismiss ()
-        {
+        void dismiss () {
             closed (id, NotificationClosedReason.DISMISSED);
             close ();
         }
     }
 }
-
