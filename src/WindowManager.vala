@@ -161,7 +161,11 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
+#if HAS_MUTTER330
+            notification_stack = new NotificationStack (display);
+#else
             notification_stack = new NotificationStack (screen);
+#endif
 
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area

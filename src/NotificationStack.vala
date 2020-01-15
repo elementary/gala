@@ -29,19 +29,34 @@ public class Gala.NotificationStack : Object {
     private int stack_y;
     private int stack_width;
 
+#if HAS_MUTTER330
+    public Meta.Display display { get; construct; }
+#else
     public Meta.Screen screen { get; construct; }
+#endif
 
     private Gee.ArrayList<unowned Meta.WindowActor> notifications;
 
+#if HAS_MUTTER330
+    public NotificationStack (Meta.Display display) {
+        Object (display: display);
+    }
+#else
     public NotificationStack (Meta.Screen screen) {
         Object (screen: screen);
     }
+#endif
 
     construct {
-        notifications = new Gee.ArrayList<Meta.WindowActor> ();
+        notifications = new Gee.ArrayList<unowned Meta.WindowActor> ();
 
+#if HAS_MUTTER330
+        Meta.MonitorManager.@get ().monitors_changed_internal.connect (update_stack_allocation);
+        display.workareas_changed.connect (update_stack_allocation);
+#else
         screen.monitors_changed.connect (update_stack_allocation);
         screen.workareas_changed.connect (update_stack_allocation);
+#endif
         update_stack_allocation ();
     }
 
@@ -83,8 +98,13 @@ public class Gala.NotificationStack : Object {
     }
 
     private void update_stack_allocation () {
+#if HAS_MUTTER330
+        var primary = display.get_primary_monitor ();
+        var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+#else
         var primary = screen.get_primary_monitor ();
         var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
+#endif
 
         var scale = Utils.get_ui_scaling_factor ();
         stack_width = (WIDTH + MARGIN) * scale;
