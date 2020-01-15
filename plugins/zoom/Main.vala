@@ -15,10 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala.Plugins.Zoom
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.Zoom {
+    public class Main : Gala.Plugin {
         const uint MOUSE_POLL_TIME = 50;
 
         Gala.WindowManager? wm = null;
@@ -27,8 +25,7 @@ namespace Gala.Plugins.Zoom
         float current_zoom = 1.0f;
         ulong wins_handler_id = 0UL;
 
-        public override void initialize (Gala.WindowManager wm)
-        {
+        public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
 #if HAS_MUTTER330
             var display = wm.get_display ();
@@ -41,8 +38,7 @@ namespace Gala.Plugins.Zoom
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
         }
 
-        public override void destroy ()
-        {
+        public override void destroy () {
             if (wm == null)
                 return;
 
@@ -63,29 +59,26 @@ namespace Gala.Plugins.Zoom
         [CCode (instance_pos = -1)]
 #if HAS_MUTTER330
         void zoom_in (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
 #else
         void zoom_in (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
 #endif
-        {
             zoom (true);
         }
 
         [CCode (instance_pos = -1)]
 #if HAS_MUTTER330
         void zoom_out (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
 #else
         void zoom_out (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
 #endif
-        {
             zoom (false);
         }
 
-        void zoom (bool @in)
-        {
+        void zoom (bool @in) {
             // Nothing to do if zooming out of our bounds is requested
             if (current_zoom <= 1.0f && !@in)
                 return;
@@ -150,8 +143,7 @@ namespace Gala.Plugins.Zoom
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return Gala.PluginInfo () {
         name = "Zoom",
         author = "Gala Developers",
@@ -160,4 +152,3 @@ public Gala.PluginInfo register_plugin ()
         load_priority = Gala.LoadPriority.IMMEDIATE
     };
 }
-

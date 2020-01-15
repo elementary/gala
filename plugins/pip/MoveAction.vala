@@ -15,12 +15,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.MoveAction : Clutter.DragAction
-{
+public class Gala.Plugins.PIP.MoveAction : Clutter.DragAction {
     public signal void move ();
 
-    public override bool drag_progress (Clutter.Actor actor, float delta_x, float delta_y)
-    {
+    public override bool drag_progress (Clutter.Actor actor, float delta_x, float delta_y) {
         move ();
         return false;
     }

@@ -15,27 +15,23 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.Plugin : Gala.Plugin
-{
+public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private const int MIN_SELECTION_SIZE = 30;
 
     private Gee.ArrayList<PopupWindow> windows;
     private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
-    static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y)
-    {
+    static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
         return x >= rect.x && x < rect.x + rect.width
             && y >= rect.y && y < rect.y + rect.height;
     }
 
-    construct
-    {
+    construct {
         windows = new Gee.ArrayList<PopupWindow> ();
     }
 
-    public override void initialize (Gala.WindowManager wm)
-    {
+    public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
 #if HAS_MUTTER330
         var display = wm.get_display ();
@@ -47,8 +43,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
     }
 
-    public override void destroy ()
-    {
+    public override void destroy () {
         clear_selection_area ();
 
         foreach (var popup_window in windows) {
@@ -61,12 +56,11 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
     [CCode (instance_pos = -1)]
 #if HAS_MUTTER330
     void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
-        Meta.KeyBinding binding)
+        Meta.KeyBinding binding) {
 #else
     void on_initiate (Meta.Display display, Meta.Screen screen,
-        Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding)
+        Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
 #endif
-    {
         selection_area = new SelectionArea (wm);
         selection_area.selected.connect (on_selection_actor_selected);
         selection_area.captured.connect (on_selection_actor_captured);
@@ -78,14 +72,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         selection_area.start_selection ();
     }
 
-    private void on_selection_actor_selected (int x, int y)
-    {
+    private void on_selection_actor_selected (int x, int y) {
         clear_selection_area ();
         select_window_at (x, y);
     }
 
-    private void on_selection_actor_captured (int x, int y, int width, int height)
-    {
+    private void on_selection_actor_captured (int x, int y, int width, int height) {
         clear_selection_area ();
 
         if (width < MIN_SELECTION_SIZE || height < MIN_SELECTION_SIZE) {
@@ -107,20 +99,17 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         }
     }
 
-    private void on_popup_window_show (Clutter.Actor popup_window)
-    {
+    private void on_popup_window_show (Clutter.Actor popup_window) {
         track_actor (popup_window);
         update_region ();
     }
 
-    private void on_popup_window_hide (Clutter.Actor popup_window)
-    {
+    private void on_popup_window_hide (Clutter.Actor popup_window) {
         untrack_actor (popup_window);
         update_region ();
     }
 
-    private void select_window_at (int x, int y)
-    {
+    private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
             var popup_window = new PopupWindow (wm, selected, null);
@@ -130,8 +119,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         }
     }
 
-    private void clear_selection_area ()
-    {
+    private void clear_selection_area () {
         if (selection_area != null) {
             untrack_actor (selection_area);
             update_region ();
@@ -141,8 +129,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         }
     }
 
-    private Meta.WindowActor? get_window_actor_at (int x, int y)
-    {
+    private Meta.WindowActor? get_window_actor_at (int x, int y) {
 #if HAS_MUTTER330
         unowned Meta.Display display = wm.get_display ();
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
@@ -171,8 +158,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         return selected;
     }
 
-    private Meta.WindowActor? get_active_window_actor ()
-    {
+    private Meta.WindowActor? get_active_window_actor () {
 #if HAS_MUTTER330
         unowned Meta.Display display = wm.get_display ();
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
@@ -199,29 +185,25 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin
         return active;
     }
 
-    private void add_window (PopupWindow popup_window)
-    {
+    private void add_window (PopupWindow popup_window) {
         popup_window.closed.connect (() => remove_window (popup_window));
         windows.add (popup_window);
         wm.ui_group.add_child (popup_window);
     }
 
-    private void remove_window (PopupWindow popup_window)
-    {
+    private void remove_window (PopupWindow popup_window) {
         windows.remove (popup_window);
         untrack_window (popup_window);
     }
 
-    private void untrack_window (PopupWindow popup_window)
-    {
+    private void untrack_window (PopupWindow popup_window) {
         untrack_actor (popup_window);
         update_region ();
         popup_window.destroy ();
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return Gala.PluginInfo () {
         name = "Popup Window",
         author = "Adam Bieńkowski <donadigos159@gmail.com>",

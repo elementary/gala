@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.Notify {
+    public class Main : Gala.Plugin {
         private GLib.Settings behavior_settings;
         Gala.WindowManager? wm = null;
 
@@ -30,8 +28,7 @@ namespace Gala.Plugins.Notify
 
         uint owner_id = 0U;
 
-        public override void initialize (Gala.WindowManager wm)
-        {
+        public override void initialize (Gala.WindowManager wm) {
             behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
 
             this.wm = wm;
@@ -95,8 +92,7 @@ namespace Gala.Plugins.Notify
                 });
         }
 
-        void disable ()
-        {
+        void disable () {
             if (owner_id == 0U) {
                 return;
             }
@@ -109,8 +105,7 @@ namespace Gala.Plugins.Notify
             owner_id = 0U;
         }
 
-        void update_position ()
-        {
+        void update_position () {
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
             var primary = display.get_primary_monitor ();
@@ -125,8 +120,7 @@ namespace Gala.Plugins.Notify
             stack.y = area.y;
         }
 
-        public override void destroy ()
-        {
+        public override void destroy () {
             if (wm == null)
                 return;
 
@@ -136,8 +130,7 @@ namespace Gala.Plugins.Notify
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return Gala.PluginInfo () {
         name = "Notify",
         author = "Gala Developers",
@@ -146,4 +139,3 @@ public Gala.PluginInfo register_plugin ()
         load_priority = Gala.LoadPriority.IMMEDIATE
     };
 }
-

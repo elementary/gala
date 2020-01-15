@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public class ConfirmationNotification : Notification
-    {
+namespace Gala.Plugins.Notify {
+    public class ConfirmationNotification : Notification {
         const int DURATION = 2000;
         const int PROGRESS_HEIGHT = 6;
 
@@ -43,8 +41,7 @@ namespace Gala.Plugins.Notify
         int old_progress;
 
         public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, bool icon_only,
-            int progress, string confirmation_type)
-        {
+            int progress, string confirmation_type) {
             Object (id: id, icon: icon, urgency: NotificationUrgency.LOW, expire_timeout: DURATION);
 
             this.icon_only = icon_only;
@@ -53,13 +50,11 @@ namespace Gala.Plugins.Notify
             this.confirmation_type = confirmation_type;
         }
 
-        public override void update_allocation (out float content_height, AllocationFlags flags)
-        {
+        public override void update_allocation (out float content_height, AllocationFlags flags) {
             content_height = ICON_SIZE * style_context.get_scale ();
         }
 
-        public override void draw_content (Cairo.Context cr)
-        {
+        public override void draw_content (Cairo.Context cr) {
             if (!has_progress)
                 return;
 
@@ -83,8 +78,7 @@ namespace Gala.Plugins.Notify
             }
         }
 
-        void draw_progress_bar (Cairo.Context cr, int x, float y, int width, int progress)
-        {
+        void draw_progress_bar (Cairo.Context cr, int x, float y, int width, int progress) {
             var fraction = (int) Math.floor (progress.clamp (0, 100) / 100.0 * width);
 
             var scale = style_context.get_scale ();
@@ -102,15 +96,13 @@ namespace Gala.Plugins.Notify
             }
         }
 
-        protected override void update_slide_animation ()
-        {
+        protected override void update_slide_animation () {
             // just trigger the draw function, which will move our progress bar down
             content.invalidate ();
         }
 
         public void update (Gdk.Pixbuf? icon, int progress, string confirmation_type,
-            bool icon_only)
-        {
+            bool icon_only) {
             if (this.confirmation_type != confirmation_type) {
                 this.confirmation_type = confirmation_type;
 
