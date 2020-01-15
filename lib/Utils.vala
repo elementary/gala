@@ -77,24 +77,6 @@ namespace Gala {
         }
 
         /**
-         * Returns a pixbuf for the application of this window or a default icon
-         *
-         * @param window       The window to get an icon for
-         * @param size         The size of the icon
-         * @param scale        The desired scale of the icon
-         * @param ignore_cache Should not be necessary in most cases, if you care about the icon
-         *                     being loaded correctly, you should consider using the WindowIcon class
-         */
-        public static Gdk.Pixbuf get_icon_for_window (
-            Meta.Window window,
-            int size,
-            int scale = 1,
-            bool ignore_cache = false
-        ) {
-            return get_icon_for_xid ((uint32)window.get_xwindow (), size, scale, ignore_cache);
-        }
-
-        /**
          * Returns a pixbuf for a given xid or a default icon
          *
          * @see get_icon_for_window
@@ -176,30 +158,6 @@ namespace Gala {
                 icon_pixbuf_cache.set (icon_key, image);
 
             return image;
-        }
-
-        /**
-         * Get the next window that should be active on a workspace right now. Based on
-         * stacking order
-         *
-         * @param workspace The workspace on which to find the window
-         * @param backward  Whether to get the previous one instead
-         */
-        public static Meta.Window get_next_window (Meta.Workspace workspace, bool backward = false) {
-#if HAS_MUTTER330
-            var display = workspace.get_display ();
-#else
-            var screen = workspace.get_screen ();
-            var display = screen.get_display ();
-#endif
-
-            var window = display.get_tab_next (Meta.TabList.NORMAL,
-                workspace, null, backward);
-
-            if (window == null)
-                window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
-
-            return window;
         }
 
         /**
