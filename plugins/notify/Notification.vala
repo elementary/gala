@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public abstract class Notification : Actor
-    {
+namespace Gala.Plugins.Notify {
+    public abstract class Notification : Actor {
         public const int WIDTH = 300;
         public const int ICON_SIZE = 48;
         public const int MARGIN = 12;
@@ -74,8 +72,7 @@ namespace Gala.Plugins.Notify
         }
 
         protected Notification (uint32 id, Gdk.Pixbuf? icon, NotificationUrgency urgency,
-            int32 expire_timeout)
-        {
+            int32 expire_timeout) {
             Object (
                 id: id,
                 icon: icon,
@@ -84,8 +81,7 @@ namespace Gala.Plugins.Notify
             );
         }
 
-        construct
-        {
+        construct {
             var scale = Utils.get_ui_scaling_factor ();
             relevancy_time = new DateTime.now_local ().to_unix ();
             width = (WIDTH + MARGIN * 2) * scale;
@@ -201,8 +197,7 @@ namespace Gala.Plugins.Notify
             }
         }
 
-        public void close ()
-        {
+        public void close () {
             set_easing_duration (100);
 
             set_easing_mode (AnimationMode.EASE_IN_QUAD);
@@ -218,8 +213,7 @@ namespace Gala.Plugins.Notify
                 destroy ();
         }
 
-        protected void update_base (Gdk.Pixbuf? icon, int32 expire_timeout)
-        {
+        protected void update_base (Gdk.Pixbuf? icon, int32 expire_timeout) {
             this.icon = icon;
             this.expire_timeout = expire_timeout;
             this.relevancy_time = new DateTime.now_local ().to_unix ();
@@ -227,8 +221,7 @@ namespace Gala.Plugins.Notify
             set_values ();
         }
 
-        void set_values ()
-        {
+        void set_values () {
             if (icon != null) {
                 try {
                     icon_texture.set_from_rgb_data (icon.get_pixels (), icon.get_has_alpha (),
@@ -240,8 +233,7 @@ namespace Gala.Plugins.Notify
             set_timeout ();
         }
 
-        void set_timeout ()
-        {
+        void set_timeout () {
             // crtitical notifications have to be dismissed manually
             if (expire_timeout <= 0 || urgency == NotificationUrgency.CRITICAL)
                 return;
@@ -256,16 +248,14 @@ namespace Gala.Plugins.Notify
             });
         }
 
-        void clear_timeout ()
-        {
+        void clear_timeout () {
             if (remove_timeout != 0) {
                 Source.remove (remove_timeout);
                 remove_timeout = 0;
             }
         }
 
-        public override bool enter_event (CrossingEvent event)
-        {
+        public override bool enter_event (CrossingEvent event) {
             close_button.opacity = 255;
 
             clear_timeout ();
@@ -273,8 +263,7 @@ namespace Gala.Plugins.Notify
             return true;
         }
 
-        public override bool leave_event (CrossingEvent event)
-        {
+        public override bool leave_event (CrossingEvent event) {
             close_button.opacity = 0;
 
             // TODO consider decreasing the timeout now or calculating the remaining
@@ -283,18 +272,13 @@ namespace Gala.Plugins.Notify
             return true;
         }
 
-        public virtual void activate ()
-        {
-        }
+        public virtual void activate () {}
 
-        public virtual void draw_content (Cairo.Context cr)
-        {
-        }
+        public virtual void draw_content (Cairo.Context cr) {}
 
         public abstract void update_allocation (out float content_height, AllocationFlags flags);
 
-        public override void allocate (ActorBox box, AllocationFlags flags)
-        {
+        public override void allocate (ActorBox box, AllocationFlags flags) {
             var icon_alloc = ActorBox ();
 
             var scale = style_context.get_scale ();
@@ -324,13 +308,11 @@ namespace Gala.Plugins.Notify
                 canvas.set_size (canvas_width, canvas_height);
         }
 
-        public override void get_preferred_height (float for_width, out float min_height, out float nat_height)
-        {
+        public override void get_preferred_height (float for_width, out float min_height, out float nat_height) {
             min_height = nat_height = (ICON_SIZE + (MARGIN + PADDING) * 2) * style_context.get_scale ();
         }
 
-        protected void play_update_transition (float slide_height)
-        {
+        protected void play_update_transition (float slide_height) {
             Transition transition;
             if ((transition = get_transition ("switch")) != null) {
                 transition.completed ();
@@ -372,12 +354,9 @@ namespace Gala.Plugins.Notify
             transitioning = true;
         }
 
-        protected virtual void update_slide_animation ()
-        {
-        }
+        protected virtual void update_slide_animation () {}
 
-        bool draw (Cairo.Context cr)
-        {
+        bool draw (Cairo.Context cr) {
             var canvas = (Canvas) content;
 
             var scale = style_context.get_scale ();

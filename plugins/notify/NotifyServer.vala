@@ -17,20 +17,17 @@
 
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
+namespace Gala.Plugins.Notify {
     const string X_CANONICAL_PRIVATE_SYNCHRONOUS = "x-canonical-private-synchronous";
     const string X_CANONICAL_PRIVATE_ICON_ONLY = "x-canonical-private-icon-only";
 
-    public enum NotificationUrgency
-    {
+    public enum NotificationUrgency {
         LOW = 0,
         NORMAL = 1,
         CRITICAL = 2
     }
 
-    public enum NotificationClosedReason
-    {
+    public enum NotificationClosedReason {
         EXPIRED = 1,
         DISMISSED = 2,
         CLOSE_NOTIFICATION_CALL = 3,
@@ -38,15 +35,13 @@ namespace Gala.Plugins.Notify
     }
 
     [DBus (name = "org.freedesktop.DBus")]
-    private interface DBus : Object
-    {
+    private interface DBus : Object {
         [DBus (name = "GetConnectionUnixProcessID")]
         public abstract uint32 get_connection_unix_process_id (string name) throws Error;
     }
 
     [DBus (name = "org.freedesktop.Notifications")]
-    public class NotifyServer : Object
-    {
+    public class NotifyServer : Object {
         const int DEFAULT_TMEOUT = 4000;
         const string FALLBACK_ICON = "dialog-information";
         const string FALLBACK_APP_ID = "gala-other";
@@ -70,13 +65,11 @@ namespace Gala.Plugins.Notify
         Gee.HashMap<string, GLib.Settings> app_settings_cache;
         Gee.HashMap<string, AppInfo> app_info_cache;
 
-        public NotifyServer (NotificationStack stack)
-        {
+        public NotifyServer (NotificationStack stack) {
             Object (stack: stack);
         }
 
-        construct
-        {
+        construct {
             try {
                 bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
             } catch (Error e) {
@@ -97,8 +90,7 @@ namespace Gala.Plugins.Notify
             app_info_cache = new Gee.HashMap<string, AppInfo> ();
         }
 
-        public string [] get_capabilities () throws DBusError, IOError
-        {
+        public string [] get_capabilities () throws DBusError, IOError {
             return {
                 "body",
                 "body-markup",
@@ -114,8 +106,7 @@ namespace Gala.Plugins.Notify
         }
 
         public void get_server_information (out string name, out string vendor,
-            out string version, out string spec_version) throws DBusError, IOError
-        {
+            out string version, out string spec_version) throws DBusError, IOError {
             name = "pantheon-notify";
             vendor = "elementaryOS";
             version = "0.1";
@@ -127,8 +118,7 @@ namespace Gala.Plugins.Notify
          *
          * @param id The id of the notification to be closed.
          */
-        public void close_notification (uint32 id) throws DBusError, IOError
-        {
+        public void close_notification (uint32 id) throws DBusError, IOError {
             foreach (var child in stack.get_children ()) {
                 unowned Notification notification = (Notification) child;
                 if (notification.id != id)
@@ -148,8 +138,7 @@ namespace Gala.Plugins.Notify
 
         public new uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout, BusName sender)
-            throws DBusError, IOError
-        {
+            throws DBusError, IOError {
             unowned Variant? variant = null;
 
             AppInfo? app_info = null;
@@ -304,8 +293,7 @@ namespace Gala.Plugins.Notify
             return id;
         }
 
-        static Gdk.RGBA? get_icon_fg_color ()
-        {
+        static Gdk.RGBA? get_icon_fg_color () {
             if (icon_fg_color != null)
                 return icon_fg_color;
 
@@ -325,8 +313,7 @@ namespace Gala.Plugins.Notify
             return icon_fg_color;
         }
 
-        static Gdk.Pixbuf? get_pixbuf (string app_name, string app_icon, HashTable<string, Variant> hints)
-        {
+        static Gdk.Pixbuf? get_pixbuf (string app_name, string app_icon, HashTable<string, Variant> hints) {
             // decide on the icon, order:
             // - image-data
             // - image-path
@@ -435,8 +422,7 @@ namespace Gala.Plugins.Notify
             return pixbuf;
         }
 
-        static Gdk.Pixbuf? load_from_variant_at_size (Variant variant, int size)
-        {
+        static Gdk.Pixbuf? load_from_variant_at_size (Variant variant, int size) {
             if (!variant.is_of_type (new VariantType ("(iiibiiay)"))) {
                 critical ("notify icon/image-data format invalid");
                 return null;
@@ -457,8 +443,7 @@ namespace Gala.Plugins.Notify
             return pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
         }
 
-        void handle_sounds (HashTable<string,Variant> hints)
-        {
+        void handle_sounds (HashTable<string,Variant> hints) {
             if (ca_context == null)
                 return;
 
@@ -518,8 +503,7 @@ namespace Gala.Plugins.Notify
                 ca_context.play_full (0, props);
         }
 
-        static unowned string? category_to_sound (string category)
-        {
+        static unowned string? category_to_sound (string category) {
             unowned string? sound = null;
 
             switch (category) {
@@ -574,21 +558,18 @@ namespace Gala.Plugins.Notify
             return sound;
         }
 
-        void notification_closed_callback (Notification notification, uint32 id, uint32 reason)
-        {
+        void notification_closed_callback (Notification notification, uint32 id, uint32 reason) {
             notification.action_invoked.disconnect (notification_action_invoked_callback);
             notification.closed.disconnect (notification_closed_callback);
 
             notification_closed (id, reason);
         }
 
-        void notification_action_invoked_callback (Notification notification, uint32 id, string action)
-        {
+        void notification_action_invoked_callback (Notification notification, uint32 id, string action) {
             action_invoked (id, action);
         }
 
-        AppInfo? get_appinfo_from_app_name (string app_name)
-        {
+        AppInfo? get_appinfo_from_app_name (string app_name) {
             if (app_name.strip () == "")
                 return null;
 
@@ -609,8 +590,7 @@ namespace Gala.Plugins.Notify
             return app_info;
         }
 
-        static bool validate (AppInfo appinfo, string name)
-        {
+        static bool validate (AppInfo appinfo, string name) {
             string? app_executable = appinfo.get_executable ();
             string? app_name = appinfo.get_name ();
             string? app_display_name = appinfo.get_display_name ();

@@ -18,17 +18,19 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.Notify {
+    public class Main : Gala.Plugin {
+        private GLib.Settings behavior_settings;
         Gala.WindowManager? wm = null;
 
         NotifyServer server;
         NotificationStack stack;
 
-        public override void initialize (Gala.WindowManager wm)
-        {
+        uint owner_id = 0U;
+
+        public override void initialize (Gala.WindowManager wm) {
+            behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+
             this.wm = wm;
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
@@ -41,26 +43,40 @@ namespace Gala.Plugins.Notify
 #else
             stack = new NotificationStack (screen);
 #endif
-            wm.ui_group.add_child (stack);
-            track_actor (stack);
-
             stack.animations_changed.connect ((running) => {
                 freeze_track = running;
             });
 
-            server = new NotifyServer (stack);
-
-            update_position ();
-#if HAS_MUTTER330
-            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
-            monitor_manager.monitors_changed.connect (update_position);
-            display.workareas_changed.connect (update_position);
-#else
             screen.monitors_changed.connect (update_position);
             screen.workareas_changed.connect (update_position);
-#endif
 
-            Bus.own_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameOwnerFlags.NONE,
+            server = new NotifyServer (stack);
+
+            if (!behavior_settings.get_boolean ("use-new-notifications")) {
+                enable ();
+            }
+
+            behavior_settings.changed["use-new-notifications"].connect (() => {
+                if (!behavior_settings.get_boolean ("use-new-notifications")) {
+                    enable ();
+                } else {
+                    disable ();
+                }
+            });
+        }
+
+        void enable ()
+        {
+            if (owner_id != 0U) {
+                return;
+            }
+
+            wm.ui_group.add_child (stack);
+            track_actor (stack);
+
+            update_position ();
+
+            owner_id = Bus.own_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameOwnerFlags.REPLACE,
                 (connection) => {
                     try {
                         connection.register_object ("/org/freedesktop/Notifications", server);
@@ -76,8 +92,20 @@ namespace Gala.Plugins.Notify
                 });
         }
 
-        void update_position ()
-        {
+        void disable () {
+            if (owner_id == 0U) {
+                return;
+            }
+
+            Bus.unown_name (owner_id);
+
+            untrack_actor (stack);
+            wm.ui_group.remove_child (stack);
+
+            owner_id = 0U;
+        }
+
+        void update_position () {
 #if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
             var primary = display.get_primary_monitor ();
@@ -92,8 +120,7 @@ namespace Gala.Plugins.Notify
             stack.y = area.y;
         }
 
-        public override void destroy ()
-        {
+        public override void destroy () {
             if (wm == null)
                 return;
 
@@ -103,8 +130,7 @@ namespace Gala.Plugins.Notify
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
+public Gala.PluginInfo register_plugin () {
     return Gala.PluginInfo () {
         name = "Notify",
         author = "Gala Developers",
@@ -113,4 +139,3 @@ public Gala.PluginInfo register_plugin ()
         load_priority = Gala.LoadPriority.IMMEDIATE
     };
 }
-

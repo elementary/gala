@@ -15,8 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
-{
+public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private int button_size;
     private int container_margin;
     private const int SHADOW_SIZE = 100;
@@ -53,37 +52,32 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
     static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
-        out float width, out float height)
-    {
+        out float width, out float height) {
         float ratio = float.min (max_width / src_width, max_height / src_height);
         width = src_width * ratio;
         height = src_height * ratio;
     }
 
-    static bool get_window_is_normal (Meta.Window window)
-    {
+    static bool get_window_is_normal (Meta.Window window) {
         var window_type = window.get_window_type ();
         return window_type == Meta.WindowType.NORMAL
             || window_type == Meta.WindowType.DIALOG
             || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
-    static void get_current_cursor_position (out int x, out int y)
-    {
+    static void get_current_cursor_position (out int x, out int y) {
         Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null, out x, out y);
     }
 
-    public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor, Clutter.Rect? container_clip)
-    {
+    public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor, Clutter.Rect? container_clip) {
         Object (wm: wm, window_actor: window_actor, container_clip: container_clip);
     }
 
-    construct
-    {
+    construct {
         var scale = Utils.get_ui_scaling_factor ();
         button_size = 36 * scale;
         container_margin = button_size / 2;
-        
+
         reactive = true;
 
         set_pivot_point (0.5f, 0.5f);
@@ -168,8 +162,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         add_child (resize_handle);
     }
 
-    public override void show ()
-    {
+    public override void show () {
         base.show ();
 
         opacity = 0;
@@ -180,10 +173,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         set_easing_duration (0);
     }
 
-    public override void hide ()
-    {
+    public override void hide () {
         opacity = 255;
-        
+
         set_easing_duration (200);
         opacity = 0;
 
@@ -196,8 +188,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         });
     }
 
-    public override bool enter_event (Clutter.CrossingEvent event)
-    {
+    public override bool enter_event (Clutter.CrossingEvent event) {
         close_button.opacity = 255;
 
         resize_button.set_easing_duration (300);
@@ -206,8 +197,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         return true;
     }
 
-    public override bool leave_event (Clutter.CrossingEvent event)
-    {
+    public override bool leave_event (Clutter.CrossingEvent event) {
         close_button.opacity = 0;
 
         resize_button.set_easing_duration (300);
@@ -216,8 +206,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         return true;
     }
 
-    private void on_move_begin ()
-    {
+    private void on_move_begin () {
         int px, py;
         get_current_cursor_position (out px, out py);
 
@@ -228,8 +217,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         dragging = false;
     }
 
-    private void on_move_end ()
-    {
+    private void on_move_end () {
         clicked = false;
 
         if (dragging) {
@@ -240,8 +228,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         }
     }
 
-    private void on_move ()
-    {
+    private void on_move () {
         if (!clicked) {
             return;
         }
@@ -257,20 +244,17 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         }
     }
 
-    private void on_resize_drag_begin (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type)
-    {
+    private void on_resize_drag_begin (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
         begin_resize_width = width;
         begin_resize_height = height;
     }
 
-    private void on_resize_drag_end (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type)
-    {
+    private void on_resize_drag_end (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
         reposition_resize_handle ();
         update_screen_position ();
     }
 
-    private void on_resize_drag_motion (Clutter.Actor actor, float delta_x, float delta_y)
-    {
+    private void on_resize_drag_motion (Clutter.Actor actor, float delta_x, float delta_y) {
         float press_x, press_y;
         resize_action.get_press_coords (out press_x, out press_y);
 
@@ -288,16 +272,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         reposition_resize_button ();
     }
 
-    private void on_allocation_changed ()
-    {
+    private void on_allocation_changed () {
         update_clone_clip ();
         update_size ();
         reposition_resize_button ();
         reposition_resize_handle ();
     }
 
-    private void on_close_click_clicked ()
-    {
+    private void on_close_click_clicked () {
         set_easing_duration (FADE_OUT_TIMEOUT);
 
         opacity = 0;
@@ -308,8 +290,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         });
     }
 
-    private void update_window_focus ()
-    {
+    private void update_window_focus () {
 #if HAS_MUTTER330
         unowned Meta.Window focus_window = wm.get_display ().get_focus_window ();
 #else
@@ -331,8 +312,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         previous_focus = focus_window;
     }
 
-    private void update_size ()
-    {
+    private void update_size () {
         if (container_clip != null) {
             width = (int)(container_clip.get_width () * container.scale_x + button_size);
             height = (int)(container_clip.get_height () * container.scale_y + button_size);
@@ -342,8 +322,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         }
     }
 
-    private void update_clone_clip ()
-    {
+    private void update_clone_clip () {
         var rect = window_actor.get_meta_window ().get_frame_rect ();
 
         float x_offset = rect.x - window_actor.x;
@@ -354,8 +333,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         container.set_size (rect.width, rect.height);
     }
 
-    private void update_container_scale ()
-    {
+    private void update_container_scale () {
         float src_width;
         float src_height;
         if (container_clip != null) {
@@ -365,7 +343,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
             src_width = container.width;
             src_height = container.height;
         }
-        
+
         float max_width = width - button_size;
         float max_height = height - button_size;
 
@@ -388,16 +366,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         update_container_position ();
     }
 
-    private void update_container_position ()
-    {
+    private void update_container_position () {
         if (container_clip != null) {
             container.x = (float)(-container_clip.get_x () * container.scale_x + container_margin);
             container.y = (float)(-container_clip.get_y () * container.scale_y + container_margin);
         }
     }
 
-    private void update_screen_position ()
-    {
+    private void update_screen_position () {
         Meta.Rectangle monitor_rect;
         get_current_monitor_rect (out monitor_rect);
 
@@ -423,18 +399,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         set_easing_duration (0);
     }
 
-    private void reposition_resize_button ()
-    {
+    private void reposition_resize_button () {
         resize_button.set_position (width - button_size, height - button_size);
     }
 
-    private void reposition_resize_handle ()
-    {
+    private void reposition_resize_handle () {
         resize_handle.set_position (width - button_size, height - button_size);
     }
 
-    private void get_current_monitor_rect (out Meta.Rectangle rect)
-    {
+    private void get_current_monitor_rect (out Meta.Rectangle rect) {
 #if HAS_MUTTER330
         var display = wm.get_display ();
         rect = display.get_monitor_geometry (display.get_current_monitor ());
@@ -444,8 +417,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
 #endif
     }
 
-    private void get_target_window_size (out float width, out float height)
-    {
+    private void get_target_window_size (out float width, out float height) {
         if (container_clip != null) {
             width = container_clip.get_width ();
             height = container_clip.get_height ();
@@ -460,8 +432,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor
         }
     }
 
-    private void activate ()
-    {
+    private void activate () {
         var window = window_actor.get_meta_window ();
         window.activate (Clutter.get_current_event_time ());
     }

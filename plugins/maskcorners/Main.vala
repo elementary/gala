@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.MaskCorners
-{
-    public class Main : Gala.Plugin
-    {
+namespace Gala.Plugins.MaskCorners {
+    public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
 #if HAS_MUTTER330
         Display display;
@@ -33,8 +31,7 @@ namespace Gala.Plugins.MaskCorners
         List<Actor>[] cornermasks;
         int corner_radius = 4;
 
-        public override void initialize (Gala.WindowManager wm)
-        {
+        public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
 #if HAS_MUTTER330
             display = wm.get_display ();
@@ -48,13 +45,11 @@ namespace Gala.Plugins.MaskCorners
             settings.changed.connect (resetup_cornermasks);
         }
 
-        public override void destroy ()
-        {
+        public override void destroy () {
             destroy_cornermasks ();
         }
 
-        void setup_cornermasks ()
-        {
+        void setup_cornermasks () {
             if (!settings.enable)
                 return;
 
@@ -97,8 +92,7 @@ namespace Gala.Plugins.MaskCorners
 #endif
         }
 
-        void destroy_cornermasks ()
-        {
+        void destroy_cornermasks () {
 #if HAS_MUTTER330
             display.gl_video_memory_purged.disconnect (resetup_cornermasks);
 #else
@@ -120,14 +114,12 @@ namespace Gala.Plugins.MaskCorners
             }
         }
 
-        void resetup_cornermasks ()
-        {
+        void resetup_cornermasks () {
             destroy_cornermasks ();
             setup_cornermasks ();
         }
 
-        void fullscreen_changed ()
-        {
+        void fullscreen_changed () {
 #if HAS_MUTTER330
             for (int i = 0; i < display.get_n_monitors (); i++) {
                 foreach (Actor actor in cornermasks[i]) {
@@ -149,8 +141,7 @@ namespace Gala.Plugins.MaskCorners
 #endif
         }
 
-        void add_cornermasks (int monitor_no)
-        {
+        void add_cornermasks (int monitor_no) {
 #if HAS_MUTTER330
             var monitor_geometry = display.get_monitor_geometry (monitor_no);
 #else
@@ -192,8 +183,7 @@ namespace Gala.Plugins.MaskCorners
             }
         }
 
-        bool draw_cornermask (Cairo.Context context)
-        {
+        bool draw_cornermask (Cairo.Context context) {
             var buffer = new Granite.Drawing.BufferSurface (corner_radius, corner_radius);
             var buffer_context = buffer.context;
 
@@ -214,10 +204,8 @@ namespace Gala.Plugins.MaskCorners
     }
 }
 
-public Gala.PluginInfo register_plugin ()
-{
-    return
-    {
+public Gala.PluginInfo register_plugin () {
+    return {
         "Mask Corners",
         "Gala Developers",
         typeof (Gala.Plugins.MaskCorners.Main),
@@ -225,4 +213,3 @@ public Gala.PluginInfo register_plugin ()
         Gala.LoadPriority.IMMEDIATE
     };
 }
-
