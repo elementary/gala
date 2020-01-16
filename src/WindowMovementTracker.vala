@@ -17,8 +17,7 @@
 
 using Meta;
 
-namespace Gala
-{
+namespace Gala {
 	public class WindowMovementTracker : Object {
 		public weak Meta.Display display { get; construct; }
 		public signal void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number);
@@ -31,19 +30,16 @@ namespace Gala
 		private float start_y;
 		private Meta.MaximizeFlags maximize_flags;
 
-		public WindowMovementTracker (Meta.Display display)
-		{
+		public WindowMovementTracker (Meta.Display display) {
 			Object (display: display);
 		}
 
-		public void watch ()
-		{
+		public void watch () {
 			display.grab_op_begin.connect (on_grab_op_begin);
 			display.grab_op_end.connect (on_grab_op_end);
 		}
 
-		public void unwatch ()
-		{
+		public void unwatch () {
 			display.grab_op_begin.disconnect (on_grab_op_begin);
 			display.grab_op_end.disconnect (on_grab_op_end);
 
@@ -52,8 +48,7 @@ namespace Gala
 			}
 		}
 
-		public void restore_window_state ()
-		{
+		public void restore_window_state () {
 			var actor = (Meta.WindowActor)current_window.get_compositor_private ();
 			current_window.move_frame (false, (int)start_x, (int)start_y);
 			if (maximize_flags != 0) {
@@ -67,8 +62,7 @@ namespace Gala
 			}
 		}
 
-		private void on_grab_op_begin (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op)
-		{
+		private void on_grab_op_begin (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
 			if (window == null) {
 				return;
 			}
@@ -83,8 +77,7 @@ namespace Gala
 			current_window.position_changed.connect (on_position_changed);
 		}
 
-		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op)
-		{
+		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
 			if (!hide_tile_preview_when_window_moves) {
 				window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
 			}
@@ -94,8 +87,7 @@ namespace Gala
 			hide_tile_preview ();
 		}
 
-		private void on_position_changed (Meta.Window window)
-		{
+		private void on_position_changed (Meta.Window window) {
 			unowned Meta.Screen screen = window.get_screen ();
 			unowned Meta.CursorTracker ct = screen.get_cursor_tracker ();
 			int x, y;

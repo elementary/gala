@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
+"POT-Creation-Date: 2020-01-15 15:08+0000\n"
 "PO-Revision-Date: 2019-12-18 19:12+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -20,59 +20,59 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
 msgstr "スクリーンショット"
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2152
 msgid "Does the display look OK?"
 msgstr "ディスプレイの設定に問題はありませんか？"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2155
 msgid "Keep This Configuration"
 msgstr "この設定を保つ"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2156
 msgid "Restore Previous Configuration"
 msgstr "前の設定へ戻す"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "最小化"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "移動"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "サイズの変更"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
 msgstr "最前面に維持"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "すべてのワークスペースに表示"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "左のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "閉じる"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr "元のサイズに戻す"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "最大化"
 
@@ -92,29 +92,37 @@ msgstr ""
 "libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
 "ンポジット型ウィンドウマネージャーです。"
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Updated translations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:26
 msgid "Improve window shadows for legacy apps"
 msgstr "レガシーなアプリのウィンドウの影を改善"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:27
 msgid "Fix potential crash when taking screenshots"
 msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:28
 msgid "Fix notification position after changing DPI"
 msgstr "DPI を変更すると通知が間違った位置に表示される問題を修正"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:29
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
 "正"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:35
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
