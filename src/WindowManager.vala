@@ -164,9 +164,9 @@ namespace Gala {
             KeyboardManager.init (display);
 
             window_movement_tracker = new WindowMovementTracker (display);
-			window_movement_tracker.watch ();
+            window_movement_tracker.watch ();
             window_movement_tracker.show_tile_preview.connect ((win, rect, screen) => show_tile_preview (win, rect, screen));
-			window_movement_tracker.hide_tile_preview.connect (() => hide_tile_preview ());
+            window_movement_tracker.hide_tile_preview.connect (() => hide_tile_preview ());
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -1044,10 +1044,10 @@ namespace Gala {
 
         public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
             float width, height, x, y;
-			var rect = window.get_frame_rect ();
-			width = rect.width;
-			height = rect.height;
-			x = rect.x;
+            var rect = window.get_frame_rect ();
+            width = rect.width;
+            height = rect.height;
+            x = rect.x;
             y = rect.y;
 
             if (tile_preview == null) {
@@ -1072,7 +1072,7 @@ namespace Gala {
             var duration = AnimationDuration.SNAP / 2U;
 
             tile_preview.set_position (x, y);
-			tile_preview.set_position (rect.x, rect.y);
+            tile_preview.set_position (rect.x, rect.y);
             tile_preview.show ();
 
             if (enable_animations) {
