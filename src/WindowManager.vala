@@ -1072,7 +1072,7 @@ namespace Gala {
             var duration = AnimationDuration.SNAP / 2U;
 
             tile_preview.set_position (x, y);
-            tile_preview.set_position (rect.x, rect.y);
+            tile_preview.set_size (width, height);
             tile_preview.show ();
 
             if (enable_animations) {
