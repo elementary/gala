@@ -18,10 +18,8 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-    public class NotificationStack : Actor
-    {
+namespace Gala.Plugins.Notify {
+    public class NotificationStack : Actor {
         // we need to keep a small offset to the top, because we clip the container to
         // its allocations and the close button would be off for the first notification
         const int TOP_OFFSET = 2;
@@ -32,35 +30,29 @@ namespace Gala.Plugins.Notify
 #if HAS_MUTTER330
         public Meta.Display display { get; construct; }
 
-        public NotificationStack (Meta.Display display)
-        {
+        public NotificationStack (Meta.Display display) {
             Object (display: display);
         }
 #else
         public Screen screen { get; construct; }
 
-        public new float width
-        {
-            get
-            {
+        public new float width {
+            get {
                 var scale = Utils.get_ui_scaling_factor ();
                 return (Notification.WIDTH + 2 * Notification.MARGIN + ADDITIONAL_MARGIN) * scale;
              }
         }
 
-        public NotificationStack (Screen screen)
-        {
+        public NotificationStack (Screen screen) {
             Object (screen: screen);
         }
 #endif
 
-        construct
-        {
+        construct {
             clip_to_allocation = true;
         }
 
-        public void show_notification (Notification notification)
-        {
+        public void show_notification (Notification notification) {
             animations_changed (true);
             var scale = Utils.get_ui_scaling_factor ();
 
@@ -92,8 +84,7 @@ namespace Gala.Plugins.Notify
             insert_child_at_index (notification, 0);
         }
 
-        void update_positions (float add_y = 0.0f)
-        {
+        void update_positions (float add_y = 0.0f) {
             var scale = Utils.get_ui_scaling_factor ();
             var y = add_y + TOP_OFFSET * scale;
             var i = get_n_children ();
@@ -115,4 +106,3 @@ namespace Gala.Plugins.Notify
         }
     }
 }
-

@@ -15,14 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala.Plugins.MaskCorners
-{
-    class Settings : Granite.Services.Settings
-    {
+namespace Gala.Plugins.MaskCorners {
+    class Settings : Granite.Services.Settings {
         static Settings? instance = null;
 
-        public static unowned Settings get_default ()
-        {
+        public static unowned Settings get_default () {
             if (instance == null)
                 instance = new Settings ();
 
@@ -34,8 +31,7 @@ namespace Gala.Plugins.MaskCorners
         public bool disable_on_fullscreen { get; set; default = true; }
         public bool only_on_primary { get; set; default = false; }
 
-        Settings ()
-        {
+        Settings () {
             base (Config.SCHEMA + ".mask-corners");
         }
     }

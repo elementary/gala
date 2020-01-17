@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
+"POT-Creation-Date: 2020-01-15 15:08+0000\n"
 "PO-Revision-Date: 2016-07-31 19:09+0000\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -18,59 +18,59 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2152
 msgid "Does the display look OK?"
 msgstr "Izgleda li zaslon u redu?"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2155
 msgid "Keep This Configuration"
 msgstr "Zadržati ove postavke"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2156
 msgid "Restore Previous Configuration"
 msgstr "Vrati prijašnje postavke"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "Smanji"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "Premjesti"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "Promijeni veličinu"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
 msgstr "Uvijek na vrhu"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "Uvijek na vidljivom radnom prostoru"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "Premjesti na lijevi radni prostor"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "Premjesti na desni radni prostor"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "Zatvori"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr "Prikaži u prozoru"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "Uvećaj"
 
@@ -88,27 +88,35 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:17
-msgid "Improve window shadows for legacy apps"
+msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr ""
 
 #: data/gala.appdata.xml.in:18
-msgid "Fix potential crash when taking screenshots"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19
-msgid "Fix notification position after changing DPI"
-msgstr ""
-
-#: data/gala.appdata.xml.in:20
-msgid "Fix animations for moving and maximizing tiled windows"
+msgid "Updated translations"
 msgstr ""
 
 #: data/gala.appdata.xml.in:26
+msgid "Improve window shadows for legacy apps"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Fix potential crash when taking screenshots"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28
+msgid "Fix notification position after changing DPI"
+msgstr ""
+
+#: data/gala.appdata.xml.in:29
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:35
 msgid "elementary, Inc."
 msgstr ""
 
