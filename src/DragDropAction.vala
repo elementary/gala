@@ -127,14 +127,14 @@ namespace Gala {
                 release_actor (actor);
         }
 
-				public void start_drag_action (int x, int y) {
-					actor.get_stage ().captured_event.connect (follow_move);
-					clicked = true;
-					last_x = x;
-					last_y = y;
+        public void start_drag_action (int x, int y) {
+            actor.get_stage ().captured_event.connect (follow_move);
+            clicked = true;
+            last_x = x;
+            last_y = y;
 
-					start_motion (x, y);
-				}
+            start_motion (x, y);
+        }
 
         public override void set_actor (Actor? new_actor) {
             if (actor != null) {
@@ -215,8 +215,9 @@ namespace Gala {
 
                         var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
                         if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-													return start_motion (x, y);
-												}
+                            return start_motion (x, y);
+                        }
+
                         return true;
                     case EventType.BUTTON_RELEASE:
                         float x, y, ex, ey;
