@@ -1954,15 +1954,15 @@ namespace Gala {
                         windows.prepend (actor);
                         parents.prepend (actor.get_parent ());
 
-						if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                        if (window.window_type == Meta.WindowType.NOTIFICATION) {
                             reparent_notification_window (actor, static_windows);
-						} else {
+                        } else {
                             clutter_actor_reparent (actor, static_windows);
-							actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-							actor.save_easing_state ();
-							actor.set_easing_duration (300);
-							actor.opacity = 0;
-							actor.restore_easing_state ();                            
+                            actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                            actor.save_easing_state ();
+                            actor.set_easing_duration (300);
+                            actor.opacity = 0;
+                            actor.restore_easing_state ();
                         }
                     }
 
