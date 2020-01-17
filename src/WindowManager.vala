@@ -1541,6 +1541,7 @@ namespace Gala {
                         notification_stack.show_notification (actor);
                         map_completed (actor);
                     }
+                    
                     break;
                 default:
                     map_completed (actor);
