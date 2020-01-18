@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2019-12-18 19:12+0000\n"
+"PO-Revision-Date: 2020-01-19 13:07+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -98,11 +98,11 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
 
 #: data/gala.appdata.xml.in:18
 msgid "Updated translations"
-msgstr ""
+msgstr "翻訳の更新"
 
 #: data/gala.appdata.xml.in:26
 msgid "Improve window shadows for legacy apps"
