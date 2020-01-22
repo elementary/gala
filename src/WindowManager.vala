@@ -2100,19 +2100,22 @@ namespace Gala {
                     continue;
                 }
 
-                var window = actor as Meta.WindowActor;
-                var meta_window = window.get_meta_window ();
+                unowned Meta.WindowActor? window = actor as Meta.WindowActor;
+                if (window == null) {
+                    clutter_actor_reparent (actor, parents.nth_data (i));
+                    continue;
+                }
 
-                if (window == null || !window.is_destroyed ()) {
+                unowned Meta.Window meta_window = window.get_meta_window ();
+                if (!window.is_destroyed ()) {
                     if (meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         reparent_notification_window (actor, parents.nth_data (i));
                     } else {
                         clutter_actor_reparent (actor, parents.nth_data (i));
                     }
-                }
 
-                if (window == null || window.is_destroyed ())
                     continue;
+                }
 
                 kill_window_effects (window);
 
