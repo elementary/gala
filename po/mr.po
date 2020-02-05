@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2019-12-24 20:07+0000\n"
+"PO-Revision-Date: 2020-02-06 20:08+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
-"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
-">\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/>"
+"\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,31 +37,31 @@ msgstr "मागील कॉन्फिगरेशन पुनर्सं�
 
 #: daemon/MenuDaemon.vala:107
 msgid "Minimize"
-msgstr ""
+msgstr "कमीतकमी करा"
 
 #: daemon/MenuDaemon.vala:120
 msgid "Move"
-msgstr ""
+msgstr "हलवा"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Resize"
-msgstr ""
+msgstr "आकार बदला"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
-msgstr ""
+msgstr "नेहमी वरच्या बाजूला"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "नेहमीच दृश्यमान कार्यक्षेत्रात"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "डावीकडील वर्कस्पेस मध्ये हलवा"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "उजवीकडील वर्कस्पेस मध्ये हलवा"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Close"
@@ -69,53 +69,57 @@ msgstr "बंद करा"
 
 #: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
-msgstr ""
+msgstr "अनमॅक्सिमाइझ करा"
 
 #: daemon/MenuDaemon.vala:201
 msgid "Maximize"
-msgstr ""
+msgstr "वाढवा"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "मल्टीटास्किंग आणि विंडो व्यवस्थापन"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "पँथिओनसाठी एक विंडो आणि कम्पोझिटिंग व्यवस्थापक"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"लिंबमुटरवर आधारीत एक विंडो आणि कम्पोझिटिंग मॅनेजर पॅन्थिओन सह वापरासाठी "
+"प्राथमिक द्वारे डिझाइन केलेले."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 msgid "Improvements:"
-msgstr ""
+msgstr "सुधारणा:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
 
 #: data/gala.appdata.xml.in:18
 msgid "Updated translations"
-msgstr ""
+msgstr "अद्ययावत भाषांतर"
 
 #: data/gala.appdata.xml.in:26
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "लेगसी अॅप्ससाठी विंडो सावली सुधारित करा"
 
 #: data/gala.appdata.xml.in:27
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
 #: data/gala.appdata.xml.in:28
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "डीपीआय बदलल्यानंतर सूचना स्थितीशी संबंधित समस्यांचे निराकरण करा"
 
 #: data/gala.appdata.xml.in:29
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"टाइल केलेल्या विंडो हलविण्यासाठी आणि जास्तीत जास्त करण्यासाठी अ‍ॅनिमेशनचे "
+"निराकरण करा"
 
 #: data/gala.appdata.xml.in:35
 msgid "elementary, Inc."
@@ -124,15 +128,15 @@ msgstr "एलिमेंटरी, Inc."
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr ""
+msgstr "मल्टीटास्किंग व्ह्यू"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "सर्व खुल्या विंडो आणि कार्यक्षेत्र पहा"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "मल्टीटास्किंग-व्ह्यू"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -140,8 +144,8 @@ msgstr "इतर"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "कालबाह्य अनुप्रयोगांकडील सूचनांसाठी फॉलबॅक डेस्कटॉप फाइल."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "अनुप्रयोग-इतर"
