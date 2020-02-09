@@ -68,9 +68,9 @@ namespace Gala {
          */
         public Meta.Rectangle? slot { get; private set; default = null; }
 
-		public bool dragging { get; private set; default = false; }
-		
-		bool animate_clone_transformation = true;
+        public bool dragging { get; private set; default = false; }
+        
+        bool animate_clone_transformation = true;
 
         bool _active = false;
         /**
@@ -424,11 +424,11 @@ namespace Gala {
             }
         }
 
-		public void start_drag (int x, int y) {
-			animate_clone_transformation = false;
-			drag_action.start_drag_action (x, y);
-			animate_clone_transformation = true;
-		}
+        public void start_drag (int x, int y) {
+            animate_clone_transformation = false;
+            drag_action.start_drag_action (x, y);
+            animate_clone_transformation = true;
+        }
 
         void toggle_shadow (bool show) {
             if (get_transition ("shadow-opacity") != null)
@@ -544,19 +544,19 @@ namespace Gala {
 
             var scale = window_icon.width / clone.width;
 
-			clone.get_transformed_position (out abs_x, out abs_y);
-			if (animate_clone_transformation) {
-				clone.save_easing_state ();
-				clone.set_easing_duration (200);
-				clone.set_easing_mode (AnimationMode.EASE_IN_CUBIC);
-			}
+            clone.get_transformed_position (out abs_x, out abs_y);
+            if (animate_clone_transformation) {
+                clone.save_easing_state ();
+                clone.set_easing_duration (200);
+                clone.set_easing_mode (AnimationMode.EASE_IN_CUBIC);
+            }
 
             clone.set_scale (scale, scale);
             clone.opacity = 0;
             clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
-			if (animate_clone_transformation) {
-				clone.restore_easing_state ();
-			}
+            if (animate_clone_transformation) {
+                clone.restore_easing_state ();
+            }
 
             request_reposition ();
 
@@ -566,18 +566,18 @@ namespace Gala {
             set_easing_duration (0);
             set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
-			if (animate_clone_transformation) {
-				window_icon.save_easing_state ();
-				window_icon.set_easing_duration (200);
-				window_icon.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
-			}
+            if (animate_clone_transformation) {
+                window_icon.save_easing_state ();
+                window_icon.set_easing_duration (200);
+                window_icon.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
+            }
 
             window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
-				click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
-				
+                click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
+                
             if (animate_clone_transformation) {
-				window_icon.restore_easing_state ();
-			}
+                window_icon.restore_easing_state ();
+            }
 
             close_button.opacity = 0;
 

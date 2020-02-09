@@ -191,13 +191,13 @@ namespace Gala {
             }
         }
 
-		/**
-		 * Places the primary container for the WorkspaceClones and the
-		 * MonitorClones at the right positions
-		 */
-		void update_monitors () {
-			foreach (var monitor_clone in window_containers_monitors)
-				monitor_clone.destroy ();
+        /**
+         * Places the primary container for the WorkspaceClones and the
+         * MonitorClones at the right positions
+         */
+        void update_monitors () {
+            foreach (var monitor_clone in window_containers_monitors)
+                monitor_clone.destroy ();
 
 #if HAS_MUTTER330
             var primary = display.get_primary_monitor ();

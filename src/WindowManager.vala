@@ -70,8 +70,8 @@ namespace Gala {
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
-		
-		WindowMovementTracker window_movement_tracker;
+        
+        WindowMovementTracker window_movement_tracker;
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -160,11 +160,11 @@ namespace Gala {
 #else
             WindowListener.init (screen);
 #endif
-			KeyboardManager.init (display);
-			
-			window_movement_tracker = new WindowMovementTracker (display);
-			window_movement_tracker.watch ();
-			window_movement_tracker.open.connect (on_wmt_open);
+            KeyboardManager.init (display);
+            
+            window_movement_tracker = new WindowMovementTracker (display);
+            window_movement_tracker.watch ();
+            window_movement_tracker.open.connect (on_wmt_open);
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -1805,22 +1805,22 @@ namespace Gala {
             ws_assoc.remove (window);
         }
 
-		void on_wmt_open (Meta.Window window, int x, int y) {
-			unowned Meta.Display display = get_screen ().get_display ();
-			display.end_grab_op (display.get_current_time ());
+        void on_wmt_open (Meta.Window window, int x, int y) {
+            unowned Meta.Display display = get_screen ().get_display ();
+            display.end_grab_op (display.get_current_time ());
 
-			workspace_view.open (null);
+            workspace_view.open (null);
 
-			Idle.add (() => {
-				((MultitaskingView)workspace_view).start_drag_window (window, x, y);
+            Idle.add (() => {
+                ((MultitaskingView)workspace_view).start_drag_window (window, x, y);
 
-				bool previous_enable_animations = enable_animations;
-				enable_animations = false;
-				window_movement_tracker.restore_window_state ();
-				enable_animations = previous_enable_animations;
-				return false;
-			});
-		}
+                bool previous_enable_animations = enable_animations;
+                enable_animations = false;
+                window_movement_tracker.restore_window_state ();
+                enable_animations = previous_enable_animations;
+                return false;
+            });
+        }
 
         // Cancel attached animation of an actor and reset it
         bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
