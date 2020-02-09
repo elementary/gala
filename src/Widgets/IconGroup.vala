@@ -81,8 +81,11 @@ namespace Gala
 			}
 		}
 
+		DragDropAction drag_action;
+
 		public Workspace workspace { get; construct; }
 
+		Actor? prev_parent = null;
 		Actor close_button;
 		Actor icon_container;
 		Cogl.Material dummy_material;
@@ -110,15 +113,13 @@ namespace Gala
 
 			dummy_material = new Cogl.Material ();
 
-			var click = new ClickAction ();
-			click.clicked.connect (() => selected ());
-			// when the actor is pressed, the ClickAction grabs all events, so we won't be
-			// notified when the cursor leaves the actor, which makes our close button stay
-			// forever. To fix this we hide the button for as long as the actor is pressed.
-			click.notify["pressed"].connect (() => {
-				toggle_close_button (!click.pressed && get_has_pointer ());
-			});
-			add_action (click);
+			drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
+			drag_action.actor_clicked.connect (() => selected ());
+			drag_action.drag_begin.connect (drag_begin);
+			drag_action.drag_end.connect (drag_end);
+			drag_action.drag_canceled.connect (drag_canceled);
+			drag_action.notify["dragging"].connect (redraw);
+			add_action (drag_action);
 
 			icon_container = new Actor ();
 			icon_container.width = width;
@@ -213,7 +214,7 @@ namespace Gala
 		 */
 		public override void paint ()
 		{
-			if (backdrop_opacity < 1) {
+			if (backdrop_opacity < 1 || drag_action.dragging) {
 				base.paint ();
 				return;
 			}
@@ -310,6 +311,14 @@ namespace Gala
 		}
 
 		/**
+		 * Sets a hovered actor for the drag action.
+		 */
+		public void set_hovered_actor (Actor actor)
+		{
+			drag_action.hovered = actor;
+		}
+
+		/**
 		 * Trigger a redraw
 		 */
 		public void redraw ()
@@ -324,7 +333,11 @@ namespace Gala
 		 */
 		void close ()
 		{
+#if HAS_MUTTER330
+			var time = workspace.get_display ().get_current_time ();
+#else
 			var time = workspace.get_screen ().get_display ().get_current_time ();
+#endif
 			foreach (var window in workspace.list_windows ()) {
 				var type = window.window_type;
 				if (!window.is_on_all_workspaces () && (type == WindowType.NORMAL
@@ -365,7 +378,13 @@ namespace Gala
 				5 * scale
 			);
 
-			cr.set_source_rgba (0, 0, 0, 0.1);
+			if (drag_action.dragging) {
+				const double BG_COLOR = 53.0 / 255.0;
+				cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.7);
+			} else {
+				cr.set_source_rgba (0, 0, 0, 0.1);
+			}
+
 			cr.fill_preserve ();
 
 			cr.set_line_width (1 * scale);
@@ -391,13 +410,30 @@ namespace Gala
 
 			// it's not safe to to call meta_workspace_index() here, we may be still animating something
 			// while the workspace is already gone, which would result in a crash.
+#if HAS_MUTTER330
+			unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
+			int workspace_index = 0;
+			for (int i = 0; i < manager.get_n_workspaces (); i++) {
+			    if (manager.get_workspace_by_index (i) == workspace) {
+			        workspace_index = i;
+			        break;
+			    }
+			}
+#else
 			var screen = workspace.get_screen ();
 			var workspace_index = screen.get_workspaces ().index (workspace);
+#endif
 
 			if (n_windows < 1) {
+#if HAS_MUTTER330
+				if (!Prefs.get_dynamic_workspaces ()
+					|| workspace_index != manager.get_n_workspaces () - 1)
+					return false;
+#else
 				if (!Prefs.get_dynamic_workspaces ()
 					|| workspace_index != screen.get_n_workspaces () - 1)
 					return false;
+#endif
 
 				var buffer = new Granite.Drawing.BufferSurface (SIZE * scale, SIZE * scale);
 				var offset = (SIZE * scale) / 2 - (PLUS_WIDTH * scale) / 2;
@@ -488,6 +524,84 @@ namespace Gala
 			}
 
 			return false;
+		}
+
+		Actor drag_begin (float click_x, float click_y)
+		{
+#if HAS_MUTTER330
+			unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
+			if (icon_container.get_n_children () < 1 &&
+				Prefs.get_dynamic_workspaces () &&
+				workspace.index () == manager.get_n_workspaces () - 1) {
+				return null;
+			}
+#else
+			unowned Screen screen = workspace.get_screen ();
+			if (icon_container.get_n_children () < 1 &&
+				Prefs.get_dynamic_workspaces () &&
+				workspace.index () == screen.get_n_workspaces () - 1) {
+				return null;
+			}
+#endif
+
+			float abs_x, abs_y;
+			float prev_parent_x, prev_parent_y;
+
+			prev_parent = get_parent ();
+			prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
+
+			var stage = get_stage ();
+			var container = prev_parent as IconGroupContainer;
+			if (container != null) {
+				container.remove_group_in_place (this);
+				container.reset_thumbs (0);
+			} else {
+				prev_parent.remove_child (this);
+			}
+
+			stage.add_child (this);
+
+			get_transformed_position (out abs_x, out abs_y);
+			set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
+
+			close_button.opacity = 0;
+
+			return this;
+		}
+
+		void drag_end (Actor destination)
+		{
+			if (destination is WorkspaceInsertThumb) {
+				get_parent ().remove_child (this);
+	
+				unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
+#if HAS_MUTTER330
+				unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
+				manager.reorder_workspace (workspace, inserter.workspace_index);
+#else
+				workspace.get_screen ().reorder_workspace (workspace, inserter.workspace_index);
+#endif
+
+				restore_group ();
+			} else {
+				drag_canceled ();
+			}
+		}
+
+		void drag_canceled ()
+		{
+			get_parent ().remove_child (this);
+			restore_group ();
+		}
+
+		void restore_group ()
+		{
+			var container = prev_parent as IconGroupContainer;
+			if (container != null) {
+				container.add_group (this);
+				container.request_reposition (false);
+				container.reset_thumbs (WorkspaceInsertThumb.EXPAND_DELAY);
+			}
 		}
 	}
 }

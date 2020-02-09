@@ -55,16 +55,12 @@ namespace Gala
 			var actor = (Meta.WindowActor)current_window.get_compositor_private ();
 			current_window.move_frame (false, (int)start_x, (int)start_y);
 			if (maximize_flags != 0) {
-				unowned AnimationSettings settings = AnimationSettings.get_default ();
-				int previous = settings.snap_duration;
-				settings.snap_duration = 0;
 				current_window.maximize (maximize_flags);
-				settings.snap_duration = previous;
 
 				/**
 				 * kill_window_effects does not reset the translation
 				 * and that's the only thing we want to do
-				 */  
+				 */
 				actor.set_translation (0.0f, 0.0f, 0.0f);
 			}
 		}
@@ -93,7 +89,7 @@ namespace Gala
 		private void on_position_changed (Meta.Window window)
 		{
 			unowned Meta.Screen screen = window.get_screen ();
-			unowned Meta.CursorTracker ct = Meta.CursorTracker.get_for_screen (screen);
+			unowned Meta.CursorTracker ct = screen.get_cursor_tracker ();
 			int x, y;
 			Clutter.ModifierType type;
 			ct.get_pointer (out x, out y, out type);

@@ -21,23 +21,38 @@ namespace Gala
 	{
 		public signal void changed ();
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+#else
 		public Meta.Screen screen { get; construct; }
+#endif
 		public Settings settings { get; construct; }
 
 		internal int use_count { get; set; default = 0; }
 
 		Gee.HashMap<int,Background> backgrounds;
 
+#if HAS_MUTTER330
+		public BackgroundSource (Meta.Display display, string settings_schema)
+		{
+			Object (display: display, settings: new Settings (settings_schema));
+		}
+#else
 		public BackgroundSource (Meta.Screen screen, string settings_schema)
 		{
 			Object (screen: screen, settings: new Settings (settings_schema));
 		}
+#endif
 
 		construct
 		{
 			backgrounds = new Gee.HashMap<int,Background> ();
 
+#if HAS_MUTTER330
+			Meta.MonitorManager.@get ().monitors_changed.connect (monitors_changed);
+#else
 			screen.monitors_changed.connect (monitors_changed);
+#endif
 
 			settings_hash_cache = get_current_settings_hash_cache ();
 			settings.changed.connect (settings_changed);
@@ -45,7 +60,11 @@ namespace Gala
 
 		void monitors_changed ()
 		{
+#if HAS_MUTTER330
+			var n = display.get_n_monitors ();
+#else
 			var n = screen.get_n_monitors ();
+#endif
 			var i = 0;
 
 			foreach (var background in backgrounds.values) {
@@ -82,7 +101,11 @@ namespace Gala
 				monitor_index = 0;
 
 			if (!backgrounds.has_key (monitor_index)) {
+#if HAS_MUTTER330
+				var background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
+#else
 				var background = new Background (screen, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
+#endif
 				background.changed.connect (background_changed);
 				backgrounds[monitor_index] = background;
 			}
@@ -99,7 +122,11 @@ namespace Gala
 
 		public void destroy ()
 		{
+#if HAS_MUTTER330
+			Meta.MonitorManager.@get ().monitors_changed.disconnect (monitors_changed);
+#else
 			screen.monitors_changed.disconnect (monitors_changed);
+#endif
 
 			foreach (var background in backgrounds) {
 				background.changed.disconnect (background_changed);

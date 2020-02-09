@@ -25,7 +25,8 @@ namespace Gala
 		public const int EXPAND_DELAY = 300;
 
 		public int workspace_index { get; construct set; }
-		public bool expanded { get; private set; default = false; }
+		public bool expanded { get; set; default = false; }
+		public int delay { get; set; default = EXPAND_DELAY; }
 
 		uint expand_timeout = 0;
 
@@ -43,8 +44,8 @@ namespace Gala
 			x_align = Clutter.ActorAlign.CENTER;
 
 			var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-			drop.crossed.connect ((hovered) => {
-				if (!Prefs.get_dynamic_workspaces ())
+			drop.crossed.connect ((target, hovered) => {
+				if (!Prefs.get_dynamic_workspaces () && (target != null && target is WindowClone))
 					return;
 
 				if (!hovered) {
@@ -55,7 +56,7 @@ namespace Gala
 
 					transform (false);
 				} else
-					expand_timeout = Timeout.add (EXPAND_DELAY, expand);
+					expand_timeout = Timeout.add (delay, expand);
 			});
 
 			add_action (drop);

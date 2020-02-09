@@ -30,9 +30,17 @@ namespace Gala.Plugins.Notify
 		public override void initialize (Gala.WindowManager wm)
 		{
 			this.wm = wm;
+#if HAS_MUTTER330
+			unowned Meta.Display display = wm.get_display ();
+#else
 			var screen = wm.get_screen ();
+#endif
 
-			stack = new NotificationStack (wm.get_screen ());
+#if HAS_MUTTER330
+			stack = new NotificationStack (display);
+#else
+			stack = new NotificationStack (screen);
+#endif
 			wm.ui_group.add_child (stack);
 			track_actor (stack);
 
@@ -43,8 +51,14 @@ namespace Gala.Plugins.Notify
 			server = new NotifyServer (stack);
 
 			update_position ();
+#if HAS_MUTTER330
+            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+			monitor_manager.monitors_changed.connect (update_position);
+			display.workareas_changed.connect (update_position);
+#else
 			screen.monitors_changed.connect (update_position);
 			screen.workareas_changed.connect (update_position);
+#endif
 
 			Bus.own_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameOwnerFlags.NONE,
 				(connection) => {
@@ -64,9 +78,15 @@ namespace Gala.Plugins.Notify
 
 		void update_position ()
 		{
+#if HAS_MUTTER330
+			unowned Meta.Display display = wm.get_display ();
+			var primary = display.get_primary_monitor ();
+			var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+#else
 			var screen = wm.get_screen ();
 			var primary = screen.get_primary_monitor ();
 			var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
+#endif
 
 			stack.x = area.x + area.width - stack.width;
 			stack.y = area.y;

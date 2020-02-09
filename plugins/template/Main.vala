@@ -49,8 +49,13 @@ namespace Gala.Plugins.Template
 			// we want to place it in the lower right of the primary monitor with a bit
 			// of padding. refer to vapi/libmutter.vapi in gala's source for something
 			// remotely similar to a documentation
+#if HAS_MUTTER330
+			var display = wm.get_display ();
+			var rect = display.get_monitor_geometry (display.get_primary_monitor ());
+#else
 			var screen = wm.get_screen ();
 			var rect = screen.get_monitor_geometry (screen.get_primary_monitor ());
+#endif
 
 			red_box.x = rect.x + rect.width - red_box.width - PADDING;
 			red_box.y = rect.y + rect.height - red_box.height - PADDING;

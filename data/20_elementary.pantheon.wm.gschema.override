@@ -1,0 +1,6 @@
+[org.gnome.mutter:Pantheon]
+dynamic-workspaces = true
+attach-modal-dialogs = false
+button-layout = 'close:maximize'
+edge-tiling = true
+enable-animations = true

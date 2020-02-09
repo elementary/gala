@@ -38,9 +38,9 @@ namespace Gala
 		    Meta.exit (Meta.ExitCode.ERROR);
 		}
 
-		Meta.Plugin.manager_set_plugin_type (new WindowManagerGala ().get_type ());
+		Meta.Plugin.manager_set_plugin_type (typeof (WindowManagerGala));
 
-		Meta.set_wm_name ("Mutter(Gala)");
+		Meta.Util.set_wm_name ("Mutter(Gala)");
 
 		/**
 		 * Prevent Meta.init () from causing gtk to load gail and at-bridge
