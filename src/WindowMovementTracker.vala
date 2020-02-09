@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Meta;
-
 namespace Gala
 {
 	public class WindowMovementTracker : Object {
@@ -29,19 +27,16 @@ namespace Gala
 		private float start_y;
 		private Meta.MaximizeFlags maximize_flags;
 
-		public WindowMovementTracker (Meta.Display display)
-		{
+		public WindowMovementTracker (Meta.Display display) {
 			Object (display: display);
 		}
 
-		public void watch ()
-		{
+		public void watch () {
 			display.grab_op_begin.connect (on_grab_op_begin);
 			display.grab_op_end.connect (on_grab_op_end);
 		}
 
-		public void unwatch () 
-		{
+		public void unwatch ()  {
 			display.grab_op_begin.disconnect (on_grab_op_begin);
 			display.grab_op_end.disconnect (on_grab_op_end); 
 			
@@ -50,8 +45,7 @@ namespace Gala
 			}
 		}
 
-		public void restore_window_state ()
-		{
+		public void restore_window_state () {
 			var actor = (Meta.WindowActor)current_window.get_compositor_private ();
 			current_window.move_frame (false, (int)start_x, (int)start_y);
 			if (maximize_flags != 0) {
@@ -65,8 +59,7 @@ namespace Gala
 			}
 		}
 
-		private void on_grab_op_begin (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op)
-		{
+		private void on_grab_op_begin (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
 			if (window == null) {
 				return;
 			}
@@ -81,13 +74,11 @@ namespace Gala
 			current_window.position_changed.connect (on_position_changed);
 		}
 
-		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) 
-		{
+		private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
 			current_window.position_changed.disconnect (on_position_changed);
 		}
 
-		private void on_position_changed (Meta.Window window)
-		{
+		private void on_position_changed (Meta.Window window) {
 			unowned Meta.Screen screen = window.get_screen ();
 			unowned Meta.CursorTracker ct = screen.get_cursor_tracker ();
 			int x, y;
@@ -97,10 +88,33 @@ namespace Gala
 			int height;
 			screen.get_size (null, out height);
 
-			if (y > (float)height * TRIGGER_RATIO) {
+			Meta.Rectangle wa = window.get_work_area_for_monitor (screen.get_current_monitor ());
+			if (y - wa.y > wa.height * TRIGGER_RATIO && !has_monitor_below (window)) {
 				window.position_changed.disconnect (on_position_changed);
 				open (window, x, y);
 			}
+		}
+
+		private static bool has_monitor_below (Meta.Window window) {
+			unowned Meta.Screen screen = window.get_screen ();
+			var current_monitor = screen.get_current_monitor ();
+			var current_rect = window.get_work_area_for_monitor (current_monitor);
+			var current_end_x = current_rect.x + current_rect.width - 1;
+			var current_end_y = current_rect.y + current_rect.height - 1;
+			for (int i = 0; i < screen.get_n_monitors (); i++) {
+				if (i == current_monitor) {
+					continue;
+				}
+
+				var other_rect = window.get_work_area_for_monitor (i);
+				if (current_end_y < other_rect.y) {
+					if (current_rect.x <= other_rect.x + other_rect.width - 1 && current_end_x >= other_rect.x) {
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 }
