@@ -17,7 +17,7 @@ You'll need the following dependencies:
 * libgee-0.8-dev
 * libglib2.0-dev (>= 2.44)
 * libgnome-desktop-3-dev
-* libgranite-dev
+* libgranite-dev (>= 5.3.0)
 * libgtk-3-dev (>= 3.4.0)
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)

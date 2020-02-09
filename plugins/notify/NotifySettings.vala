@@ -18,25 +18,21 @@
 //  Authored by: Marcus Wichelmann <admin@marcusw.de>
 //
 
-namespace Gala.Plugins.Notify
-{
-	public class NotifySettings : Granite.Services.Settings
-	{
-		public bool do_not_disturb { get; set; }
+namespace Gala.Plugins.Notify {
+    public class NotifySettings : Granite.Services.Settings {
+        public bool do_not_disturb { get; set; }
 
-		static NotifySettings? instance = null;
+        static NotifySettings? instance = null;
 
-		private NotifySettings ()
-		{
-			base (Config.SCHEMA + ".notifications");
-		}
+        private NotifySettings () {
+            base (Config.SCHEMA + ".notifications");
+        }
 
-		public static unowned NotifySettings get_default ()
-		{
-			if (instance == null)
-				instance = new NotifySettings ();
+        public static unowned NotifySettings get_default () {
+            if (instance == null)
+                instance = new NotifySettings ();
 
-			return instance;
-		}
-	}
+            return instance;
+        }
+    }
 }

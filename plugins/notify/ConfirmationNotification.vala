@@ -18,117 +18,109 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Notify
-{
-	public class ConfirmationNotification : Notification
-	{
-		const int DURATION = 2000;
-		const int PROGRESS_HEIGHT = 6;
+namespace Gala.Plugins.Notify {
+    public class ConfirmationNotification : Notification {
+        const int DURATION = 2000;
+        const int PROGRESS_HEIGHT = 6;
 
-		public bool has_progress { get; private set; }
+        public bool has_progress { get; private set; }
 
-		int _progress;
-		public int progress {
-			get {
-				return _progress;
-			}
-			private set {
-				_progress = value;
-				content.invalidate ();
-			}
-		}
+        int _progress;
+        public int progress {
+            get {
+                return _progress;
+            }
+            private set {
+                _progress = value;
+                content.invalidate ();
+            }
+        }
 
-		public string confirmation_type { get; private set; }
+        public string confirmation_type { get; private set; }
 
-		int old_progress;
+        int old_progress;
 
-		public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, bool icon_only,
-			int progress, string confirmation_type)
-		{
-			Object (id: id, icon: icon, urgency: NotificationUrgency.LOW, expire_timeout: DURATION);
+        public ConfirmationNotification (uint32 id, Gdk.Pixbuf? icon, bool icon_only,
+            int progress, string confirmation_type) {
+            Object (id: id, icon: icon, urgency: NotificationUrgency.LOW, expire_timeout: DURATION);
 
-			this.icon_only = icon_only;
-			this.has_progress = progress > -1;
-			this.progress = progress;
-			this.confirmation_type = confirmation_type;
-		}
+            this.icon_only = icon_only;
+            this.has_progress = progress > -1;
+            this.progress = progress;
+            this.confirmation_type = confirmation_type;
+        }
 
-		public override void update_allocation (out float content_height, AllocationFlags flags)
-		{
-			content_height = ICON_SIZE * style_context.get_scale ();
-		}
+        public override void update_allocation (out float content_height, AllocationFlags flags) {
+            content_height = ICON_SIZE * style_context.get_scale ();
+        }
 
-		public override void draw_content (Cairo.Context cr)
-		{
-			if (!has_progress)
-				return;
+        public override void draw_content (Cairo.Context cr) {
+            if (!has_progress)
+                return;
 
-			var scale = style_context.get_scale ();
-			var scaled_margin = MARGIN * scale;
-			var scaled_width = WIDTH * scale;
-			var x = (MARGIN + PADDING + ICON_SIZE + SPACING) * scale;
-			var y = (MARGIN + PADDING + (ICON_SIZE - PROGRESS_HEIGHT) / 2) * scale;
-			var width = scaled_width - x - scaled_margin;
+            var scale = style_context.get_scale ();
+            var scaled_margin = MARGIN * scale;
+            var scaled_width = WIDTH * scale;
+            var x = (MARGIN + PADDING + ICON_SIZE + SPACING) * scale;
+            var y = (MARGIN + PADDING + (ICON_SIZE - PROGRESS_HEIGHT) / 2) * scale;
+            var width = scaled_width - x - scaled_margin;
 
-			if (!transitioning)
-				draw_progress_bar (cr, x, y, width, progress);
-			else {
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, scaled_margin, scaled_margin, scaled_width - scaled_margin * 2, ICON_SIZE * scale + PADDING * 2 * scale, 4 * scale);
-				cr.clip ();
+            if (!transitioning)
+                draw_progress_bar (cr, x, y, width, progress);
+            else {
+                Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, scaled_margin, scaled_margin, scaled_width - scaled_margin * 2, ICON_SIZE * scale + PADDING * 2 * scale, 4 * scale);
+                cr.clip ();
 
-				draw_progress_bar (cr, x, y + animation_slide_y_offset, width, old_progress);
-				draw_progress_bar (cr, x, y + animation_slide_y_offset - animation_slide_height, width, progress);
+                draw_progress_bar (cr, x, y + animation_slide_y_offset, width, old_progress);
+                draw_progress_bar (cr, x, y + animation_slide_y_offset - animation_slide_height, width, progress);
 
-				cr.reset_clip ();
-			}
-		}
+                cr.reset_clip ();
+            }
+        }
 
-		void draw_progress_bar (Cairo.Context cr, int x, float y, int width, int progress)
-		{
-			var fraction = (int) Math.floor (progress.clamp (0, 100) / 100.0 * width);
+        void draw_progress_bar (Cairo.Context cr, int x, float y, int width, int progress) {
+            var fraction = (int) Math.floor (progress.clamp (0, 100) / 100.0 * width);
 
-			var scale = style_context.get_scale ();
-			var scaled_progress_height = PROGRESS_HEIGHT * scale;
-			Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width,
-				scaled_progress_height, scaled_progress_height / 2);
-			cr.set_source_rgb (0.8, 0.8, 0.8);
-			cr.fill ();
+            var scale = style_context.get_scale ();
+            var scaled_progress_height = PROGRESS_HEIGHT * scale;
+            Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, width,
+                scaled_progress_height, scaled_progress_height / 2);
+            cr.set_source_rgb (0.8, 0.8, 0.8);
+            cr.fill ();
 
-			if (progress > 0) {
-				Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, fraction,
-					scaled_progress_height, scaled_progress_height / 2);
-				cr.set_source_rgb (0.3, 0.3, 0.3);
-				cr.fill ();
-			}
-		}
+            if (progress > 0) {
+                Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, x, y, fraction,
+                    scaled_progress_height, scaled_progress_height / 2);
+                cr.set_source_rgb (0.3, 0.3, 0.3);
+                cr.fill ();
+            }
+        }
 
-		protected override void update_slide_animation ()
-		{
-			// just trigger the draw function, which will move our progress bar down
-			content.invalidate ();
-		}
+        protected override void update_slide_animation () {
+            // just trigger the draw function, which will move our progress bar down
+            content.invalidate ();
+        }
 
-		public void update (Gdk.Pixbuf? icon, int progress, string confirmation_type,
-			bool icon_only)
-		{
-			if (this.confirmation_type != confirmation_type) {
-				this.confirmation_type = confirmation_type;
+        public void update (Gdk.Pixbuf? icon, int progress, string confirmation_type,
+            bool icon_only) {
+            if (this.confirmation_type != confirmation_type) {
+                this.confirmation_type = confirmation_type;
 
-				old_progress = this.progress;
+                old_progress = this.progress;
 
-				var scale = style_context.get_scale ();
-				play_update_transition ((ICON_SIZE + PADDING * 2) * scale);
-			}
+                var scale = style_context.get_scale ();
+                play_update_transition ((ICON_SIZE + PADDING * 2) * scale);
+            }
 
-			if (this.icon_only != icon_only) {
-				this.icon_only = icon_only;
-				queue_relayout ();
-			}
+            if (this.icon_only != icon_only) {
+                this.icon_only = icon_only;
+                queue_relayout ();
+            }
 
-			this.has_progress = progress > -1;
-			this.progress = progress;
+            this.has_progress = progress > -1;
+            this.progress = progress;
 
-			update_base (icon, DURATION);
-		}
-	}
+            update_base (icon, DURATION);
+        }
+    }
 }
