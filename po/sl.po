@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-02-16 05:32+0000\n"
+"PO-Revision-Date: 2020-02-24 21:15+0000\n"
 "Last-Translator: Marko <marko.dolar@gmail.com>\n"
 "Language-Team: Slovenian <https://l10n.elementary.io/projects/desktop/gala/"
 "sl/>\n"
@@ -107,7 +107,7 @@ msgstr "Posodobljeni prevodi"
 
 #: data/gala.appdata.xml.in:26
 msgid "Improve window shadows for legacy apps"
-msgstr "Izboljšane sence v starejših aplikacijah"
+msgstr "Izboljšane okenske sence v starejših aplikacijah"
 
 #: data/gala.appdata.xml.in:27
 msgid "Fix potential crash when taking screenshots"
@@ -136,7 +136,7 @@ msgstr "Pregled vseh odprtih oken in površin"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -144,11 +144,11 @@ msgstr "Drugo"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Nadomestna desktop datoteka za obvestila iz zastarelih aplikacij."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Akcija za zgornji levi kot"
