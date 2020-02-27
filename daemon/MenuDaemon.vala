@@ -249,14 +249,18 @@ namespace Gala {
                 close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];
             }
 
-            window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
-                var scale = m.scale_factor;
-                px = x / scale;
-                // Move the menu 1 pixel outside of the pointer or else it closes instantly
-                // on the mouse up event
-                py = (y / scale) + 1;
-                push_in = true;
-            }, 3, Gdk.CURRENT_TIME);
+            Timeout.add (100, () => {
+                window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
+                    var scale = m.scale_factor;
+                    px = x / scale;
+                    // Move the menu 1 pixel outside of the pointer or else it closes instantly
+                    // on the mouse up event
+                    py = (y / scale) + 1;
+                    push_in = true;
+                }, 3, Gdk.CURRENT_TIME);
+
+                return false;
+            });
         }
     }
 }
