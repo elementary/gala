@@ -249,6 +249,10 @@ namespace Gala {
                 close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];
             }
 
+            // If we don't have a small timeout before opening the menu, it won't work on non-native
+            // applications (e.g. electron apps) when using a mouse. Touchpads are unaffected. This is
+            // something to do with event ordering with a mouse vs a touchpad, but we don't/can't have
+            // proper event timestamps to help us here
             Timeout.add (100, () => {
                 window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
                     var scale = m.scale_factor;
