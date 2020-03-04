@@ -91,11 +91,19 @@ namespace Gala
 			return animation;
 		}
 
+#if HAS_MUTTER330
+		public BackgroundSource get_background_source (Meta.Display display, string settings_schema)
+#else
 		public BackgroundSource get_background_source (Meta.Screen screen, string settings_schema)
+#endif
 		{
 			var background_source = background_sources[settings_schema];
 			if (background_source == null) {
+#if HAS_MUTTER330
+				background_source = new BackgroundSource (display, settings_schema);
+#else
 				background_source = new BackgroundSource (screen, settings_schema);
+#endif
 				background_source.use_count = 1;
 				background_sources[settings_schema] = background_source;
 			} else

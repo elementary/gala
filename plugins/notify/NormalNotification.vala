@@ -173,12 +173,33 @@ namespace Gala.Plugins.Notify
 		public string body { get; construct set; }
 		public uint32 sender_pid { get; construct; }
 		public string[] notification_actions { get; construct set; }
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+#else
 		public Screen screen { get; construct; }
+#endif
 
 		Actor content_container;
 		NormalNotificationContent notification_content;
 		NormalNotificationContent? old_notification_content = null;
 
+#if HAS_MUTTER330
+		public NormalNotification (Meta.Display display, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
+			NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
+		{
+			Object (
+				id: id,
+				icon: icon,
+				urgency: urgency,
+				expire_timeout: expire_timeout,
+				display: display,
+				summary: summary,
+				body: body,
+				sender_pid: pid,
+				notification_actions: actions
+			);
+		}
+#else
 		public NormalNotification (Screen screen, uint32 id, string summary, string body, Gdk.Pixbuf? icon,
 			NotificationUrgency urgency, int32 expire_timeout, uint32 pid, string[] actions)
 		{
@@ -194,6 +215,7 @@ namespace Gala.Plugins.Notify
 				notification_actions: actions
 			);
 		}
+#endif
 
 		construct
 		{
@@ -295,12 +317,21 @@ namespace Gala.Plugins.Notify
 			unowned Meta.Window? window = get_window ();
 			if (window != null) {
 				unowned Meta.Workspace workspace = window.get_workspace ();
+#if HAS_MUTTER330
+				var time = display.get_current_time ();
+
+				if (workspace != display.get_workspace_manager ().get_active_workspace ())
+					workspace.activate_with_focus (window, time);
+				else
+					window.activate (time);
+#else
 				var time = screen.get_display ().get_current_time ();
 
 				if (workspace != screen.get_active_workspace ())
 					workspace.activate_with_focus (window, time);
 				else
 					window.activate (time);
+#endif
 
 				dismiss ();
 			}
@@ -311,7 +342,12 @@ namespace Gala.Plugins.Notify
 			if (sender_pid == 0)
 				return null;
 
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+#if HAS_MUTTER330
+		    unowned GLib.List<Meta.WindowActor> actors = display.get_window_actors ();
+#else
+		    unowned GLib.List<Meta.WindowActor> actors = screen.get_window_actors ();
+#endif
+			foreach (unowned Meta.WindowActor actor in actors) {
 				if (actor.is_destroyed ())
 					continue;
 

@@ -23,7 +23,11 @@ namespace Gala.Plugins.MaskCorners
 	public class Main : Gala.Plugin
 	{
 		Gala.WindowManager? wm = null;
+#if HAS_MUTTER330
+		Display display;
+#else
 		Screen screen;
+#endif
 		Settings settings;
 
 		List<Actor>[] cornermasks;
@@ -32,7 +36,11 @@ namespace Gala.Plugins.MaskCorners
 		public override void initialize (Gala.WindowManager wm)
 		{
 			this.wm = wm;
+#if HAS_MUTTER330
+			display = wm.get_display ();
+#else
 			screen = wm.get_screen ();
+#endif
 			settings = Settings.get_default ();
 
 			setup_cornermasks ();
@@ -52,35 +60,59 @@ namespace Gala.Plugins.MaskCorners
 
 			var scale = Utils.get_ui_scaling_factor ();
 
+#if HAS_MUTTER330
+			int n_monitors = display.get_n_monitors ();
+#else
 			int n_monitors = screen.get_n_monitors ();
+#endif
 			cornermasks = new List<Actor>[n_monitors];
 			corner_radius = settings.corner_radius * scale;
 
 			if (settings.only_on_primary) {
+#if HAS_MUTTER330
+				add_cornermasks (display.get_primary_monitor ());
+#else
 				add_cornermasks (screen.get_primary_monitor ());
+#endif
 			} else {
 				for (int m = 0; m < n_monitors; m++)
 					add_cornermasks (m);
 			}
 
+#if HAS_MUTTER330
+			if (settings.disable_on_fullscreen)
+				display.in_fullscreen_changed.connect (fullscreen_changed);
+
+            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+			monitor_manager.monitors_changed.connect (resetup_cornermasks);
+
+			display.gl_video_memory_purged.connect (resetup_cornermasks);
+#else
 			if (settings.disable_on_fullscreen)
 				screen.in_fullscreen_changed.connect (fullscreen_changed);
 
 			screen.monitors_changed.connect (resetup_cornermasks);
 
-#if HAS_MUTTER322
 			screen.get_display ().gl_video_memory_purged.connect (resetup_cornermasks);
 #endif
 		}
 
 		void destroy_cornermasks ()
 		{
-#if HAS_MUTTER322
+#if HAS_MUTTER330
+			display.gl_video_memory_purged.disconnect (resetup_cornermasks);
+#else
 			screen.get_display ().gl_video_memory_purged.disconnect (resetup_cornermasks);
 #endif
 
+#if HAS_MUTTER330
+            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+			monitor_manager.monitors_changed.disconnect (resetup_cornermasks);
+			display.in_fullscreen_changed.disconnect (fullscreen_changed);
+#else
 			screen.monitors_changed.disconnect (resetup_cornermasks);
 			screen.in_fullscreen_changed.disconnect (fullscreen_changed);
+#endif
 
 			foreach (unowned List<Actor> list in cornermasks) {
 				foreach (Actor actor in list)
@@ -96,6 +128,16 @@ namespace Gala.Plugins.MaskCorners
 
 		void fullscreen_changed ()
 		{
+#if HAS_MUTTER330
+			for (int i = 0; i < display.get_n_monitors (); i++) {
+				foreach (Actor actor in cornermasks[i]) {
+					if (display.get_monitor_in_fullscreen (i))
+						actor.hide ();
+					else
+						actor.show ();
+				}
+	 		}
+#else
 			for (int i = 0; i < screen.get_n_monitors (); i++) {
 				foreach (Actor actor in cornermasks[i]) {
 					if (screen.get_monitor_in_fullscreen (i))
@@ -104,11 +146,16 @@ namespace Gala.Plugins.MaskCorners
 						actor.show ();
 				}
 	 		}
+#endif
 		}
 
 		void add_cornermasks (int monitor_no)
 		{
+#if HAS_MUTTER330
+			var monitor_geometry = display.get_monitor_geometry (monitor_no);
+#else
 			var monitor_geometry = screen.get_monitor_geometry (monitor_no);
+#endif
 
 			Canvas canvas = new Canvas ();
 			canvas.set_size (corner_radius, corner_radius);

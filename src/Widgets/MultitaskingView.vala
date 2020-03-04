@@ -33,7 +33,11 @@ namespace Gala
 
 		public WindowManager wm { get; construct; }
 
+#if HAS_MUTTER330
+		Meta.Display display;
+#else
 		Meta.Screen screen;
+#endif
 		ModalProxy modal_proxy;
 		bool opened = false;
 		bool animating = false;
@@ -58,13 +62,21 @@ namespace Gala
 			clip_to_allocation = true;
 
 			opened = false;
+#if HAS_MUTTER330
+			display = wm.get_display ();
+#else
 			screen = wm.get_screen ();
+#endif
 
 			workspaces = new Actor ();
 			workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
+#if HAS_MUTTER330
+			icon_groups = new IconGroupContainer (display);
+#else
 			icon_groups = new IconGroupContainer (screen);
 			icon_groups.request_reposition.connect ((animate) => reposition_icon_groups (animate));
+#endif
 
 			dock_clones = new Actor ();
 
@@ -72,6 +84,21 @@ namespace Gala
 			add_child (workspaces);
 			add_child (dock_clones);
 
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				add_workspace (i);
+            }
+
+			manager.workspace_added.connect (add_workspace);
+			manager.workspace_removed.connect (remove_workspace);
+#if HAS_MUTTER334
+			manager.workspaces_reordered.connect (() => update_positions (false));
+#endif
+			manager.workspace_switched.connect_after ((from, to, direction) => {
+				update_positions (opened);
+			});
+#else
 			foreach (var workspace in screen.get_workspaces ())
 				add_workspace (workspace.index ());
 
@@ -81,10 +108,15 @@ namespace Gala
 			screen.workspace_switched.connect_after ((from, to, direction) => {
 				update_positions (opened);
 			});
+#endif
 
 			window_containers_monitors = new List<MonitorClone> ();
 			update_monitors ();
+#if HAS_MUTTER330
+			Meta.MonitorManager.@get ().monitors_changed.connect (update_monitors);
+#else
 			screen.monitors_changed.connect (update_monitors);
+#endif
 
 			Prefs.add_listener ((pref) => {
 				if (pref == Preference.WORKSPACES_ONLY_ON_PRIMARY) {
@@ -97,6 +129,24 @@ namespace Gala
 					return;
 
 				Idle.add (() => {
+#if HAS_MUTTER330
+					unowned List<Workspace> existing_workspaces = null;
+                    for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				        existing_workspaces.append (manager.get_workspace_by_index (i));
+                    }
+
+					foreach (var child in workspaces.get_children ()) {
+						unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+						if (existing_workspaces.index (workspace_clone.workspace) < 0) {
+							workspace_clone.window_selected.disconnect (window_selected);
+							workspace_clone.selected.disconnect (activate_workspace);
+
+							icon_groups.remove_group (workspace_clone.icon_group);
+
+							workspace_clone.destroy ();
+						}
+					}
+#else
 					unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
 
 					foreach (var child in workspaces.get_children ()) {
@@ -110,6 +160,7 @@ namespace Gala
 							workspace_clone.destroy ();
 						}
 					}
+#endif
 
 					update_monitors ();
 					update_positions (false);
@@ -128,6 +179,25 @@ namespace Gala
 			foreach (var monitor_clone in window_containers_monitors)
 				monitor_clone.destroy ();
 
+#if HAS_MUTTER330
+			var primary = display.get_primary_monitor ();
+
+			if (InternalUtils.workspaces_only_on_primary ()) {
+				for (var monitor = 0; monitor < display.get_n_monitors (); monitor++) {
+					if (monitor == primary)
+						continue;
+
+					var monitor_clone = new MonitorClone (display, monitor);
+					monitor_clone.window_selected.connect (window_selected);
+					monitor_clone.visible = opened;
+
+					window_containers_monitors.append (monitor_clone);
+					wm.ui_group.add_child (monitor_clone);
+				}
+			}
+
+			var primary_geometry = display.get_monitor_geometry (primary);
+#else
 			var primary = screen.get_primary_monitor ();
 
 			if (InternalUtils.workspaces_only_on_primary ()) {
@@ -145,6 +215,7 @@ namespace Gala
 			}
 
 			var primary_geometry = screen.get_monitor_geometry (primary);
+#endif
 
 			set_position (primary_geometry.x, primary_geometry.y);
 			set_size (primary_geometry.width, primary_geometry.height);
@@ -206,11 +277,20 @@ namespace Gala
 				// smooth scroll delay still active
 				return false;
 
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var active_workspace = manager.get_active_workspace ();
+			var new_workspace = active_workspace.get_neighbor (direction);
+
+			if (active_workspace != new_workspace)
+				new_workspace.activate (display.get_current_time ());
+#else
 			var active_workspace = screen.get_active_workspace ();
 			var new_workspace = active_workspace.get_neighbor (direction);
 
 			if (active_workspace != new_workspace)
 				new_workspace.activate (screen.get_display ().get_current_time ());
+#endif
 
 			return false;
 		}
@@ -225,7 +305,12 @@ namespace Gala
 		void update_positions (bool animate)
 		{
 			var scale = InternalUtils.get_ui_scaling_factor ();
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var active_index = manager.get_active_workspace ().index ();
+#else
 			var active_index = screen.get_active_workspace ().index ();
+#endif
 			var active_x = 0.0f;
 
 			foreach (var child in workspaces.get_children ()) {
@@ -254,7 +339,12 @@ namespace Gala
 
 		void reposition_icon_groups (bool animate)
 		{
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var active_index = manager.get_active_workspace ().index ();
+#else
 			var active_index = screen.get_active_workspace ().index ();
+#endif
 
 			if (animate) {
 				icon_groups.save_easing_state ();
@@ -277,7 +367,12 @@ namespace Gala
 
 		void add_workspace (int num)
 		{
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var workspace = new WorkspaceClone (manager.get_workspace_by_index (num));
+#else
 			var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
+#endif
 			workspace.window_selected.connect (window_selected);
 			workspace.selected.connect (activate_workspace);
 
@@ -295,7 +390,15 @@ namespace Gala
 			WorkspaceClone? workspace = null;
 
 			// FIXME is there a better way to get the removed workspace?
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			List<Workspace> existing_workspaces = null;
+			for (int i = 0; i < manager.get_n_workspaces (); i++) {
+				existing_workspaces.append (manager.get_workspace_by_index (i));
+			}
+#else
 			unowned List<Meta.Workspace> existing_workspaces = screen.get_workspaces ();
+#endif
 
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone clone = (WorkspaceClone) child;
@@ -330,9 +433,16 @@ namespace Gala
 		 */
 		void activate_workspace (WorkspaceClone clone, bool close_view)
 		{
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			close_view = close_view && manager.get_active_workspace () == clone.workspace;
+
+			clone.workspace.activate (display.get_current_time ());
+#else
 			close_view = close_view && screen.get_active_workspace () == clone.workspace;
 
 			clone.workspace.activate (screen.get_display ().get_current_time ());
+#endif
 
 			if (close_view)
 				toggle ();
@@ -393,18 +503,40 @@ namespace Gala
 		 */
 		WorkspaceClone get_active_workspace_clone ()
 		{
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			foreach (var child in workspaces.get_children ()) {
+				unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+				if (workspace_clone.workspace == manager.get_active_workspace ()) {
+					return workspace_clone;
+				}
+			}
+#else
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
 				if (workspace_clone.workspace == screen.get_active_workspace ()) {
 					return workspace_clone;
 				}
 			}
+#endif
 
 			assert_not_reached ();
 		}
 
 		void window_selected (Meta.Window window)
 		{
+#if HAS_MUTTER330
+			var time = display.get_current_time ();
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var workspace = window.get_workspace ();
+
+			if (workspace != manager.get_active_workspace ())
+				workspace.activate (time);
+			else {
+				window.activate (time);
+				toggle ();
+			}
+#else
 			var time = screen.get_display ().get_current_time ();
 			var workspace = window.get_workspace ();
 
@@ -414,6 +546,7 @@ namespace Gala
 				window.activate (time);
 				toggle ();
 			}
+#endif
 		}
 
 		/**
@@ -487,7 +620,12 @@ namespace Gala
 
 			// find active workspace clone and raise it, so there are no overlaps while transitioning
 			WorkspaceClone? active_workspace = null;
+#if HAS_MUTTER330
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+			var active = manager.get_active_workspace ();
+#else
 			var active = screen.get_active_workspace ();
+#endif
 			foreach (var child in workspaces.get_children ()) {
 				unowned WorkspaceClone workspace = (WorkspaceClone) child;
 				if (workspace.workspace == active) {
@@ -517,7 +655,12 @@ namespace Gala
 			dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
 			if (opening) {
-				foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
+#if HAS_MUTTER330
+			    unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+#else
+			    unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
+#endif
+				foreach (unowned Meta.WindowActor actor in window_actors) {
 					const int MAX_OFFSET = 100;
 
 					if (actor.is_destroyed ())
@@ -529,10 +672,17 @@ namespace Gala
 					if (window.window_type != WindowType.DOCK)
 						continue;
 
+#if HAS_MUTTER330
+					if (display.get_monitor_in_fullscreen (monitor))
+						continue;
+
+					var monitor_geom = display.get_monitor_geometry (monitor);
+#else
 					if (screen.get_monitor_in_fullscreen (monitor))
 						continue;
 
 					var monitor_geom = screen.get_monitor_geometry (monitor);
+#endif
 
 					var window_geom = window.get_frame_rect ();
 					var top = monitor_geom.y + MAX_OFFSET > window_geom.y;

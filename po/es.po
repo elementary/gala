@@ -7,70 +7,115 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-06-26 22:43+0200\n"
-"PO-Revision-Date: 2018-12-12 00:07+0000\n"
-"Last-Translator: Cristian Molina <megatux@gmail.com>\n"
-"Language-Team: Spanish <https://weblate.elementary.io/projects/desktop/gala/"
-"es/>\n"
+"POT-Creation-Date: 2019-12-17 15:07-0800\n"
+"PO-Revision-Date: 2019-12-16 18:35+0000\n"
+"Last-Translator: Rafael Bautista Martínez <iuninefrendor@gmail.com>\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
-#: src/WindowManager.vala:1856
+#: src/ScreenshotManager.vala:225
+msgid "Screenshots"
+msgstr ""
+
+#: src/WindowManager.vala:2188
 msgid "Does the display look OK?"
 msgstr "¿Se ve bien la pantalla?"
 
-#: src/WindowManager.vala:1859
+#: src/WindowManager.vala:2191
 msgid "Keep This Configuration"
 msgstr "Mantener esta configuración"
 
-#: src/WindowManager.vala:1860
+#: src/WindowManager.vala:2192
 msgid "Restore Previous Configuration"
 msgstr "Restablecer configuración anterior"
 
-#: daemon/MenuDaemon.vala:105
+#: daemon/MenuDaemon.vala:95
 msgid "Minimize"
 msgstr "Minimizar"
 
-#: daemon/MenuDaemon.vala:117
+#: daemon/MenuDaemon.vala:107
 msgid "Move"
 msgstr "Mover"
 
-#: daemon/MenuDaemon.vala:123
+#: daemon/MenuDaemon.vala:113
 msgid "Resize"
 msgstr "Redimensionar"
 
-#: daemon/MenuDaemon.vala:129
+#: daemon/MenuDaemon.vala:119
 msgid "Always on Top"
 msgstr "Siempre visible"
 
-#: daemon/MenuDaemon.vala:135
+#: daemon/MenuDaemon.vala:125
 msgid "Always on Visible Workspace"
 msgstr "Siempre en el área de trabajo visible"
 
-#: daemon/MenuDaemon.vala:141
+#: daemon/MenuDaemon.vala:131
 msgid "Move to Workspace Left"
 msgstr "Mover al área de trabajo izquierdo"
 
-#: daemon/MenuDaemon.vala:147
+#: daemon/MenuDaemon.vala:137
 msgid "Move to Workspace Right"
 msgstr "Mover al área de trabajo derecho"
 
-#: daemon/MenuDaemon.vala:153
+#: daemon/MenuDaemon.vala:143
 msgid "Close"
 msgstr "Cerrar"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:159
 msgid "Unmaximize"
 msgstr "Restaurar"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:159
 msgid "Maximize"
 msgstr "Maximizar"
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr "Multitarea y gestión de ventanas"
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "Un administrador y compositor de ventanas para Pantheon"
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"Un administrador y compositor de ventanas basado en libmutter y diseñado por "
+"elementary para su uso con Pantheon."
+
+#: data/gala.appdata.xml.in:15
+msgid "Improvements:"
+msgstr "Mejoras:"
+
+#: data/gala.appdata.xml.in:17
+msgid "Improve window shadows for legacy apps"
+msgstr "Mejora en las sombras de las ventanas para aplicaciones heredadas"
+
+#: data/gala.appdata.xml.in:18
+msgid "Fix potential crash when taking screenshots"
+msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
+
+#: data/gala.appdata.xml.in:19
+msgid "Fix notification position after changing DPI"
+msgstr "Se corrigió la posición de notificaciones después de cambiar el DPI"
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr ""
+"Se corrigieron las animaciones para mover y maximizar ventanas en mosaico"
+
+#: data/gala.appdata.xml.in:26
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -203,73 +248,84 @@ msgstr ""
 "ventana y se desvanecerá de nuevo, una vez que el cambiador de ventanas se "
 "haya cerrado."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:90
+#: data/org.pantheon.desktop.gala.gschema.xml.in:87
+msgid "Automatically move maximized windows to a new workspace"
+msgstr ""
+"Mover automáticamente las ventanas maximizadas a un nuevo espacio de trabajo"
+
+#: data/org.pantheon.desktop.gala.gschema.xml.in:95
 msgid "Shortcut to move to first workspace"
 msgstr "Atajo para ir al primer espacio de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
+#: data/org.pantheon.desktop.gala.gschema.xml.in:100
 msgid "Shortcut to move to last workspace"
 msgstr "Atajo para ir al último espacio de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
+#: data/org.pantheon.desktop.gala.gschema.xml.in:105
 msgid "Shortcut to move the current window to first workspace"
 msgstr "Atajo para mover la ventana actual al primer espacio de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
+#: data/org.pantheon.desktop.gala.gschema.xml.in:110
 msgid "Shortcut to move the current window to last workspace"
 msgstr "Atajo para mover la ventana actual al último espacio de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
+#: data/org.pantheon.desktop.gala.gschema.xml.in:115
 msgid "Zoom in"
 msgstr "Ampliar"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
+#: data/org.pantheon.desktop.gala.gschema.xml.in:120
 msgid "Zoom out"
 msgstr "Reducir"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:119
+#: data/org.pantheon.desktop.gala.gschema.xml.in:124
 msgid "Shortcut to open the window overview"
 msgstr "Atajo para abrir la vista general"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
+#: data/org.pantheon.desktop.gala.gschema.xml.in:129
 msgid "Shortcut to open the window overview for all windows"
 msgstr "Atajo para abrir la ventana de vista general de todas las ventanas"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-#: data/org.pantheon.desktop.gala.gschema.xml.in:133
+#: data/org.pantheon.desktop.gala.gschema.xml.in:134
+#: data/org.pantheon.desktop.gala.gschema.xml.in:138
 msgid "Cycle to the next workspace to the right or to back to the first"
 msgstr ""
 "Cambiar al siguiente espacio de trabajo a la derecha o para volver al primero"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
+#: data/org.pantheon.desktop.gala.gschema.xml.in:142
 msgid "Cycle to next keyboard layout"
 msgstr "Cambiar a la disposición de teclado siguiente"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
 #: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:171
+#: data/org.pantheon.desktop.gala.gschema.xml.in:148
+#: data/org.pantheon.desktop.gala.gschema.xml.in:176
+#: data/org.pantheon.desktop.gala.gschema.xml.in:193
+#: data/org.pantheon.desktop.gala.gschema.xml.in:198
+#: data/org.pantheon.desktop.gala.gschema.xml.in:203
+#: data/org.pantheon.desktop.gala.gschema.xml.in:208
+#: data/org.pantheon.desktop.gala.gschema.xml.in:213
+#: data/org.pantheon.desktop.gala.gschema.xml.in:218
 msgid "DEPRECATED: This key is deprecated and ignored."
 msgstr "OBSOLETA: Esta clave está obsoleta y será ignorada."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
+#: data/org.pantheon.desktop.gala.gschema.xml.in:147
 msgid "Cycle to previous keyboard layout"
 msgstr "Cambiar a la disposición de teclado anterior"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
+#: data/org.pantheon.desktop.gala.gschema.xml.in:152
 msgid "The shortcut to enable picture-in-picture window"
 msgstr "El atajo de teclado para habilitar el modo picture-in-picture"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
+#: data/org.pantheon.desktop.gala.gschema.xml.in:153
 msgid "The shortcut to show the selection area to choose a window."
 msgstr ""
 "El atajo de teclado para mostrar el área de selección para elegir una "
 "ventana."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
+#: data/org.pantheon.desktop.gala.gschema.xml.in:160
 msgid "Attach modal dialogs"
 msgstr "Adjuntar diálogos modales"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:156
+#: data/org.pantheon.desktop.gala.gschema.xml.in:161
 msgid ""
 "When true, instead of having independent titlebars, modal dialogs appear "
 "attached to the titlebar of the parent window and are moved together with "
@@ -279,11 +335,11 @@ msgstr ""
 "independientes, aparecen diálogos modales junto a la barra de título de la "
 "ventana principal de modo que se pueden mover con la venta original."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
+#: data/org.pantheon.desktop.gala.gschema.xml.in:165
 msgid "Arrangement of buttons on the titlebar"
 msgstr "Distribución de botones en la barra de título"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
+#: data/org.pantheon.desktop.gala.gschema.xml.in:166
 msgid ""
 "Arrangement of buttons on the titlebar. The value should be a string, such "
 "as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
@@ -302,23 +358,23 @@ msgstr ""
 "causen problemas con las versiones más antiguas. Se puede usar una etiqueta "
 "espaciadora para insertar algo de espacio entre dos botones adyacentes."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
+#: data/org.pantheon.desktop.gala.gschema.xml.in:170
 msgid "Dims parent windows when spawning modal dialogs"
 msgstr "Atenuar las ventanas padres cuando generan un diálogo modal"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
+#: data/org.pantheon.desktop.gala.gschema.xml.in:175
 msgid "The opacity of windows behind the window switcher."
 msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
+#: data/org.pantheon.desktop.gala.gschema.xml.in:180
 msgid "Background-image used in the workspace-switcher"
 msgstr "Imagen de fondo usada en el gestor de espacios de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:182
+#: data/org.pantheon.desktop.gala.gschema.xml.in:187
 msgid "Enable Animations"
 msgstr "Activar animaciones"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
+#: data/org.pantheon.desktop.gala.gschema.xml.in:188
 msgid ""
 "Whether animations should be displayed. Note: This is a global key, it "
 "changes the behaviour of the window manager, the panel etc."
@@ -326,33 +382,37 @@ msgstr ""
 "Indica si deben mostrarse las animaciones. Nota: esta es una clave global, "
 "cambia el comportamiento del gestor de ventanas, del panel, etc."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:190
+#: data/org.pantheon.desktop.gala.gschema.xml.in:192
+msgid "Duration of the open animation"
+msgstr "Duración de la animación de apertura"
+
+#: data/org.pantheon.desktop.gala.gschema.xml.in:197
 msgid "Duration of the snap animation as used by maximize/unmaximize"
 msgstr ""
 "Duración del complemento de la animación como la usada para maximizar y "
 "minimizar"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:194
+#: data/org.pantheon.desktop.gala.gschema.xml.in:202
 msgid "Duration of the close animation"
 msgstr "Duración de la animación de cierre"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
+#: data/org.pantheon.desktop.gala.gschema.xml.in:207
 msgid "Duration of the minimize animation"
 msgstr "Duración de la animación de minimización"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
+#: data/org.pantheon.desktop.gala.gschema.xml.in:212
 msgid "Duration of the workspace switch animation"
 msgstr "Duración de la animación del cambio de área de trabajo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
+#: data/org.pantheon.desktop.gala.gschema.xml.in:217
 msgid "Duration of the menu mapping animation"
 msgstr "Duración de la animación de mapeo del menú"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
+#: data/org.pantheon.desktop.gala.gschema.xml.in:225
 msgid "Defines the shadow of normal focused windows"
 msgstr "Define la sombra de la ventana activa"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:214
+#: data/org.pantheon.desktop.gala.gschema.xml.in:226
 msgid ""
 "The first value is the radius of the blur of the shadow, the second one the "
 "top fade (which is usually just -1), the third and fourth the x- and y-"
@@ -366,58 +426,58 @@ msgstr ""
 "se corresponde con la opacidad. En resumen: [blur-radius, top-fade, x-"
 "offset, y-offset, opacity]."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
+#: data/org.pantheon.desktop.gala.gschema.xml.in:230
 msgid "Defines the shadow of a normal unfocused window"
 msgstr "Define la sombra de una ventana normal desenfocada"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:219
-#: data/org.pantheon.desktop.gala.gschema.xml.in:224
-#: data/org.pantheon.desktop.gala.gschema.xml.in:229
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
+#: data/org.pantheon.desktop.gala.gschema.xml.in:231
+#: data/org.pantheon.desktop.gala.gschema.xml.in:236
+#: data/org.pantheon.desktop.gala.gschema.xml.in:241
+#: data/org.pantheon.desktop.gala.gschema.xml.in:246
 msgid "See normal-focused."
 msgstr "Ver enfoque normal."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:223
+#: data/org.pantheon.desktop.gala.gschema.xml.in:235
 msgid "Defines the shadow of a menu"
 msgstr "Define la sombra de un menú"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:228
+#: data/org.pantheon.desktop.gala.gschema.xml.in:240
 msgid "Defines the shadow of a focused dialog"
 msgstr "Define la sombra de un diálogo enfocado"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:233
+#: data/org.pantheon.desktop.gala.gschema.xml.in:245
 msgid "Defines the shadow of an unfocused dialog"
 msgstr "Define la sombra de un diálogo fuera de foco"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
+#: data/org.pantheon.desktop.gala.gschema.xml.in:253
 msgid "Disable all notifications"
 msgstr "Desactivar todas las notificaciones"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:249
+#: data/org.pantheon.desktop.gala.gschema.xml.in:261
 msgid "Enable bubbles"
 msgstr "Habilitar burbujas"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
+#: data/org.pantheon.desktop.gala.gschema.xml.in:265
 msgid "Enable sounds"
 msgstr "Habilitar sonidos"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
+#: data/org.pantheon.desktop.gala.gschema.xml.in:269
 msgid "Show missed notifications in notification center"
 msgstr "Mostrar las notificaciones perdidas en el centro de notificaciones"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:264
+#: data/org.pantheon.desktop.gala.gschema.xml.in:276
 msgid "Enable rounded corner mask"
 msgstr "Activar la máscara de bordes redondeados"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
+#: data/org.pantheon.desktop.gala.gschema.xml.in:281
 msgid "Corner radius"
 msgstr "Radio de la esquina"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:273
+#: data/org.pantheon.desktop.gala.gschema.xml.in:285
 msgid "Disable corner mask on fullscreen"
 msgstr "Desactivar la máscara de las esquinas en pantalla completa"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:274
+#: data/org.pantheon.desktop.gala.gschema.xml.in:286
 msgid ""
 "If enabled, when an application is fullscreen (fills the monitor), the "
 "corner masks will be disabled on that monitor."
@@ -426,7 +486,7 @@ msgstr ""
 "decir, usa todo el monitor), las máscaras de uso de las esquinas serán "
 "deshabilitadas en ese monitor."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:278
+#: data/org.pantheon.desktop.gala.gschema.xml.in:290
 msgid "Only show corner masks on primary monitor"
 msgstr "Solo mostrar las máscaras de las esquinas en el monitor primario"
 

@@ -25,7 +25,11 @@ namespace Gala
 		public signal void changed ();
 		public signal void loaded ();
 
+#if HAS_MUTTER330
+		public Meta.Display display { get; construct; }
+#else
 		public Meta.Screen screen { get; construct; }
+#endif
 		public int monitor_index { get; construct; }
 		public BackgroundSource background_source { get; construct; }
 		public bool is_loaded { get; private set; default = false; }
@@ -38,6 +42,17 @@ namespace Gala
 		Cancellable cancellable;
 		uint update_animation_timeout_id = 0;
 
+#if HAS_MUTTER330
+		public Background (Meta.Display display, int monitor_index, string? filename,
+				BackgroundSource background_source, GDesktop.BackgroundStyle style)
+		{
+			Object (display: display,
+					monitor_index: monitor_index,
+					background_source: background_source,
+					style: style,
+					filename: filename);
+		}
+#else
 		public Background (Meta.Screen screen, int monitor_index, string? filename,
 				BackgroundSource background_source, GDesktop.BackgroundStyle style)
 		{
@@ -47,10 +62,15 @@ namespace Gala
 					style: style,
 					filename: filename);
 		}
+#endif
 
 		construct
 		{
+#if HAS_MUTTER330
+			background = new Meta.Background (display);
+#else
 			background = new Meta.Background (screen);
+#endif
 			background.set_data<unowned Background> ("delegate", this);
 
 			file_watches = new Gee.HashMap<string,ulong> ();
@@ -145,7 +165,11 @@ namespace Gala
 		{
 			update_animation_timeout_id = 0;
 
+#if HAS_MUTTER330
+			animation.update (display.get_monitor_geometry (monitor_index));
+#else
 			animation.update (screen.get_monitor_geometry (monitor_index));
+#endif
 			var files = animation.key_frame_files;
 
 			Clutter.Callback finish = () => {
