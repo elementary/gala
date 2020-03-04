@@ -343,7 +343,7 @@ namespace Gala {
          * @return The resize button actor
          */
         public static Clutter.Actor create_resize_button () {
-            var texture = new Clutter.Texture ();
+            var texture = new Clutter.Actor ();
             var pixbuf = get_resize_button_pixbuf ();
 
             texture.reactive = true;

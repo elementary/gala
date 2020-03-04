@@ -67,7 +67,6 @@ add_project_arguments([
 		'--vapidir=' + join_paths(meson.source_root(), 'vapi'),
 		'--pkg', 'config',
 		'--pkg', 'cogl-fixes',
-		'--pkg', 'compat',
 	],
 	language: 'vala',
 )
@@ -124,14 +123,16 @@ if mutter328_dep.found()
 		'--pkg', 'mutter-cogl-2',
 		'--pkg', 'mutter-cogl-pango-2',
 		'--pkg', 'mutter-cogl-path-2',
-		'--pkg', 'mutter-clutter-2'
+		'--pkg', 'mutter-clutter-2',
+		'--pkg', 'compat'
 	]
 	libmutter_dep = dependency('libmutter-2', version: '>= 3.27.92')
 	pkgconf.set('MUTTER_PKGS', 'libmutter-2 >= 3.27.92')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-2'), dependency('mutter-cogl-pango-2'),
-		dependency('mutter-cogl-path-2'), dependency('mutter-clutter-2')
+		dependency('mutter-cogl-path-2'), dependency('mutter-clutter-2'),
+		meson.get_compiler('vala').find_library('compat', dirs: join_paths(meson.source_root(), 'vapi'))
 	]
 	vala_flags += []
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
@@ -145,14 +146,16 @@ if mutter330_dep.found()
 		'--pkg', 'mutter-cogl-3',
 		'--pkg', 'mutter-cogl-pango-3',
 		'--pkg', 'mutter-cogl-path-3',
-		'--pkg', 'mutter-clutter-3'
+		'--pkg', 'mutter-clutter-3',
+		'--pkg', 'compat'
 	]
 	libmutter_dep = dependency('libmutter-3', version: '>= 3.29.4')
 	pkgconf.set('MUTTER_PKGS', 'libmutter-3 >= 3.29.4')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-3'), dependency('mutter-cogl-pango-3'),
-		dependency('mutter-cogl-path-3'), dependency('mutter-clutter-3')
+		dependency('mutter-cogl-path-3'), dependency('mutter-clutter-3'),
+		meson.get_compiler('vala').find_library('compat', dirs: join_paths(meson.source_root(), 'vapi'))
 	]
 	vala_flags += ['--define', 'HAS_MUTTER330']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
@@ -166,14 +169,16 @@ if mutter332_dep.found()
 		'--pkg', 'mutter-cogl-4',
 		'--pkg', 'mutter-cogl-pango-4',
 		'--pkg', 'mutter-cogl-path-4',
-		'--pkg', 'mutter-clutter-4'
+		'--pkg', 'mutter-clutter-4',
+		'--pkg', 'compat'
 	]
 	libmutter_dep = dependency('libmutter-4', version: '>= 3.31.2')
 	pkgconf.set('MUTTER_PKGS', 'libmutter-4 >= 3.31.2')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-4'), dependency('mutter-cogl-pango-4'),
-		dependency('mutter-cogl-path-4'), dependency('mutter-clutter-4')
+		dependency('mutter-cogl-path-4'), dependency('mutter-clutter-4'),
+		meson.get_compiler('vala').find_library('compat', dirs: join_paths(meson.source_root(), 'vapi'))
 	]
 	vala_flags += ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
@@ -187,14 +192,16 @@ if mutter334_dep.found()
 		'--pkg', 'mutter-cogl-5',
 		'--pkg', 'mutter-cogl-pango-5',
 		'--pkg', 'mutter-cogl-path-5',
-		'--pkg', 'mutter-clutter-5'
+		'--pkg', 'mutter-clutter-5',
+		'--pkg', 'compat'
 	]
 	libmutter_dep = dependency('libmutter-5', version: '>= 3.34')
 	pkgconf.set('MUTTER_PKGS', 'libmutter-5 >= 3.34')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-5'), dependency('mutter-cogl-pango-5'),
-		dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5')
+		dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5'),
+		meson.get_compiler('vala').find_library('compat', dirs: join_paths(meson.source_root(), 'vapi'))
 	]
 	vala_flags += ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',

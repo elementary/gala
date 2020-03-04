@@ -26,7 +26,6 @@ gala_lib = shared_library(
 	version : '0.0.0',
 	vala_args: [
 		'--pkg', 'config',
-		'--pkg', 'compat',
 	],
 )
 

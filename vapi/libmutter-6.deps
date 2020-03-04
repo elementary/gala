@@ -1,1 +1,9 @@
-libmutter-5.deps
+cairo
+gdesktopenums-3.0
+gdk-3.0
+gdk-pixbuf-2.0
+gtk+-3.0
+x11
+xfixes-4.0
+json-glib-1.0
+mutter-clutter-6

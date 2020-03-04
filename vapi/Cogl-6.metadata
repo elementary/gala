@@ -1,0 +1,107 @@
+* cheader_filename="cogl/cogl.h"
+
+_ColorSizeCheck skip
+_MatrixSizeCheck skip
+_TextureVertexSizeCheck skip
+
+is_bitmap parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_context parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_framebuffer parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_offscreen parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_onscreen parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_pipeline parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_texture parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_texture_2d parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_texture_2d_sliced parent="Cogl.Object" symbol_type="method" instance_idx=0
+
+foreach_feature parent="Cogl.Context" symbol_type="method" instance_idx=0
+get_clock_time parent="Cogl.Context" symbol_type="method" instance_idx=0
+get_graphics_reset_status parent="Cogl.Context" symbol_type="method" instance_idx=0
+has_feature parent="Cogl.Context" symbol_type="method" instance_idx=0
+
+color_init_from_hsl.color out=false
+color_equal.v1 type="Cogl.Color"
+color_equal.v2 type="Cogl.Color"
+color_equal symbol_type=method
+
+texture_new_* skip
+Texture
+  .get_data.data type="uint8[]"
+  .new_from_data.data type="uint8[]"
+  .set_data.data type="uint8[]"
+  .set_region.data type="uint8[]"
+
+Matrix
+  .transform_points.points_in type="uint8[]"
+  .transform_points.stride_out out
+  .transform_points.points_out out type="uint8[]"
+  .project_points.points_in type="uint8[]"
+  .project_points.stride_out out
+  .project_points.points_out out type="uint8[]"
+
+matrix_equal.v1 type="Cogl.Matrix"
+matrix_equal.v2 type="Cogl.Matrix"
+matrix_equal symbol_type=method
+
+shader_* name="shader_(.+)" parent="Cogl.Shader"
+create_shader parent="Cogl.Shader" name="new" symbol_type="constructor"
+is_shader parent="Cogl.Object" symbol_type="method" instance_idx=0
+shader_get_type symbol_type="method" instance_idx=0
+shader_source symbol_type="method" instance_idx=0
+
+program_* name="program_(.+)" parent="Cogl.Program"
+create_program parent="Cogl.Program" name="new" symbol_type="constructor"
+is_program parent="Cogl.Object" symbol_type="method" instance_idx=0
+
+program_attach_shader.shader_handle type="Cogl.Shader"
+program_attach_shader symbol_type="method" instance_idx=0
+program_get_uniform_location symbol_type="method" instance_idx=0
+program_link symbol_type="method" instance_idx=0
+program_set_uniform_1f symbol_type="method" instance_idx=0
+program_set_uniform_1i symbol_type="method" instance_idx=0
+program_set_uniform_float symbol_type="method" instance_idx=0
+program_set_uniform_int symbol_type="method" instance_idx=0
+program_set_uniform_matrix symbol_type="method" instance_idx=0
+
+Pipeline
+  .set_user_program.program type="Cogl.Program"
+  .get_user_program type="Cogl.Program"
+Material
+  .set_user_program.program type="Cogl.Program"
+  .set_layer.texture type="Cogl.Texture"
+
+Material
+  .new replacement="Cogl.Pipeline"
+  .set_user_program replacement="Cogl.Pipeline.set_user_program"
+  .set_alpha_test_function replacement="Cogl.Pipeline.set_alpha_test_function"
+  .set_blend replacement="Cogl.Pipeline.set_blend"
+  .set_blend_constant replacement="Cogl.Pipeline.set_blend_constant"
+  .set_color replacement="Cogl.Pipeline.set_color"
+  .set_color4ub replacement="Cogl.Pipeline.set_color4ub"
+  .set_layer replacement="Cogl.Pipeline.set_layer"
+  .set_layer_combine replacement="Cogl.Pipeline.set_layer_combine"
+  .set_layer_combine_constant replacement="Cogl.Pipeline.set_layer_combine_constant"
+  .set_layer_filters replacement="Cogl.Pipeline.set_layer_filters"
+  .set_layer_matrix replacement="Cogl.Pipeline.set_layer_matrix"
+  .set_layer_point_sprite_coords_enabled replacement="Cogl.Pipeline.set_layer_point_sprite_coords_enabled"
+  .set_point_size replacement="Cogl.Pipeline.set_point_size"
+
+x11_onscreen_get_window_xid name="get_window_xid" parent="Cogl.Onscreen" symbol_type="method" instance_idx=0
+
+gtype_matrix_get_type skip
+
+Handle skip
+handle_get_type skip
+
+Bitmap.error_quark parent="Cogl.BitmapError" name="quark"
+Texture.error_quark parent="Cogl.TextureError" name="quark"
+Framebuffer.error_quark parent="Cogl.FramebufferError" name="quark"
+texture_error_quark skip
+framebuffer_error_quark skip
+
+BitmapError errordomain
+BlendStringError errordomain
+FramebufferError errordomain
+RendererError errordomain
+SystemError errordomain
+TextureError errordomain
