@@ -92,6 +92,11 @@
 			<summary>Automatically move maximized windows to a new workspace</summary>
 			<description></description>
 		</key>
+		<key type="b" name="move-fullscreened-workspace">
+			<default>true</default>
+			<summary>Automatically move fullscreened windows to a new workspace</summary>
+			<description></description>
+		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">

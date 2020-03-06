@@ -26,6 +26,7 @@ namespace Gala {
         public string hotcorner_custom_command { get; set; }
         public string[] dock_names { get; set; }
         public bool move_maximized_workspace { get; set; }
+        public bool move_fullscreened_workspace { get; set; }
 
         public WindowOverviewType window_overview_type { get; set; }
 

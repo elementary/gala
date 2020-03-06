@@ -1094,7 +1094,7 @@ namespace Gala {
 
         void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor ())
+            if (!window.is_on_primary_monitor () || !BehaviorSettings.get_default ().move_fullscreened_workspace)
                 return;
 
             // Due to how this is implemented, by relying on the functionality
