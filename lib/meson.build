@@ -25,7 +25,6 @@ gala_lib = shared_library(
 	install_rpath: mutter_typelib_dir,
 	version : '0.0.0',
 	vala_args: [
-		'--pkg', 'config',
 		'--pkg', 'compat',
 	],
 )

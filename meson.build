@@ -26,25 +26,24 @@ plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.proje
 pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
-config_inc_dir = include_directories('.')
-
 conf = configuration_data()
-conf.set_quoted('PACKAGE', meson.project_name())
-conf.set_quoted('PACKAGE_BUGREPORT', 'https://github.com/elementary/gala/issues')
-conf.set_quoted('PACKAGE_NAME', meson.project_name())
-conf.set_quoted('PACKAGE_STRING', 'Gala')
-conf.set_quoted('PACKAGE_TARNAME', meson.project_name())
-conf.set_quoted('PACKAGE_URL', 'https://github.com/elementary/gala')
-conf.set_quoted('PACKAGE_VERSION', gala_version)
 conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
-conf.set_quoted('PKGLIBDIR', pkglib_dir)
-conf.set_quoted('PLUGINSDIR', plugins_dir)
-conf.set_quoted('RELEASE_NAME', 'Window Manager.')
+conf.set_quoted('PLUGINDIR', plugins_dir)
+conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', gala_version)
-conf.set_quoted('VERSION_INFO', (is_release ? 'Release' : 'Development'))
-conf.set_quoted('BUILD_VERSION', gala_version)
-configure_file(input: 'config.h.meson', output: 'config.h', configuration: conf)
+conf.set_quoted('SCHEMA', 'org.pantheon.desktop.gala')
+config_h = configure_file(
+	output: 'config.h',
+	configuration: conf
+)
+
+config_dep = declare_dependency(
+	dependencies: vala.find_library('config', dirs: meson.current_source_dir() / 'vapi'),
+	sources: config_h
+)
+
+config_inc_dir = include_directories('.')
 
 customconf = configuration_data()
 customconf.set('GETTEXT_PACKAGE', meson.project_name())
@@ -54,7 +53,6 @@ add_project_arguments([
 		'--hide-internal',
 		'--enable-deprecated',
 		'--vapidir=' + join_paths(meson.source_root(), 'vapi'),
-		'--pkg', 'config',
 		'--pkg', 'cogl-fixes',
 		'--pkg', 'compat',
 	],
@@ -68,13 +66,6 @@ add_project_arguments([
 
 		'-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
 		'-DGNOME_DESKTOP_USE_UNSTABLE_API',
-
-		'-DDATADIR="@0@"'.format(data_dir),
-		'-DPKGDATADIR="@0@"'.format(pkgdata_dir),
-		'-DPKGLIBDIR="@0@"'.format(pkglib_dir),
-		'-DPLUGINDIR="@0@"'.format(plugins_dir),
-		'-DSCHEMA="org.pantheon.desktop.gala"',
-		'-DRESOURCEPATH="/org/pantheon/desktop/gala"',
 
 		'-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
 		'-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_44',
@@ -218,7 +209,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
 
 subdir('data')
 subdir('lib')
