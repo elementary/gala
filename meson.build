@@ -1,7 +1,7 @@
 project('gala',
 	'c', 'vala',
 	version: '3.2.0',
-	meson_version: '>= 0.46.0',
+	meson_version: '>= 0.48.0',
 	license: 'GPL3',
 )
 
@@ -103,13 +103,6 @@ vala_flags = []
 
 mutter328_dep = dependency('libmutter-2', version: ['>= 3.27', '< 3.29'], required: false)
 if mutter328_dep.found()
-	mutter_packages_command = [
-		'--pkg', 'libmutter-2',
-		'--pkg', 'mutter-cogl-2',
-		'--pkg', 'mutter-cogl-pango-2',
-		'--pkg', 'mutter-cogl-path-2',
-		'--pkg', 'mutter-clutter-2'
-	]
 	libmutter_dep = dependency('libmutter-2', version: '>= 3.27.92')
 	mutter_dep = [
 		libmutter_dep,
@@ -123,13 +116,6 @@ endif
 
 mutter330_dep = dependency('libmutter-3', version: ['>= 3.29.4', '< 3.31'], required: false)
 if mutter330_dep.found()
-	mutter_packages_command = [
-		'--pkg', 'libmutter-3',
-		'--pkg', 'mutter-cogl-3',
-		'--pkg', 'mutter-cogl-pango-3',
-		'--pkg', 'mutter-cogl-path-3',
-		'--pkg', 'mutter-clutter-3'
-	]
 	libmutter_dep = dependency('libmutter-3', version: '>= 3.29.4')
 	mutter_dep = [
 		libmutter_dep,
@@ -143,13 +129,6 @@ endif
 
 mutter332_dep = dependency('libmutter-4', version: ['>= 3.31.2', '< 3.34'], required: false)
 if mutter332_dep.found()
-	mutter_packages_command = [
-		'--pkg', 'libmutter-4',
-		'--pkg', 'mutter-cogl-4',
-		'--pkg', 'mutter-cogl-pango-4',
-		'--pkg', 'mutter-cogl-path-4',
-		'--pkg', 'mutter-clutter-4'
-	]
 	libmutter_dep = dependency('libmutter-4', version: '>= 3.31.2')
 	mutter_dep = [
 		libmutter_dep,
@@ -163,13 +142,6 @@ endif
 
 mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.35.1'], required: false)
 if mutter334_dep.found()
-	mutter_packages_command = [
-		'--pkg', 'libmutter-5',
-		'--pkg', 'mutter-cogl-5',
-		'--pkg', 'mutter-cogl-pango-5',
-		'--pkg', 'mutter-cogl-path-5',
-		'--pkg', 'mutter-clutter-5'
-	]
 	libmutter_dep = dependency('libmutter-5', version: '>= 3.34')
 	mutter_dep = [
 		libmutter_dep,
@@ -183,13 +155,6 @@ endif
 
 mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.38'], required: false)
 if mutter336_dep.found()
-	mutter_packages_command = [
-		'--pkg', 'libmutter-6',
-		'--pkg', 'mutter-cogl-6',
-		'--pkg', 'mutter-cogl-pango-6',
-		'--pkg', 'mutter-cogl-path-6',
-		'--pkg', 'mutter-clutter-6'
-	]
 	libmutter_dep = dependency('libmutter-6', version: '>= 3.35.1')
 	mutter_dep = [
 		libmutter_dep,
