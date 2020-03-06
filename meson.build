@@ -9,6 +9,7 @@ is_release = false
 
 gnome = import('gnome')
 i18n = import('i18n')
+pkg = import('pkgconfig')
 cc = meson.get_compiler('c')
 
 gala_version = meson.project_version()
@@ -47,18 +48,6 @@ configure_file(input: 'config.h.meson', output: 'config.h', configuration: conf)
 
 customconf = configuration_data()
 customconf.set('GETTEXT_PACKAGE', meson.project_name())
-
-pkgconf = configuration_data()
-pkgconf.set('PACKAGE_VERSION', gala_version)
-pkgconf.set('MUTTER_CFLAGS', '')
-pkgconf.set('prefix', get_option('prefix'))
-pkgconf.set('exec_prefix', '${prefix}')
-pkgconf.set('libdir', '${prefix}/@0@'.format(get_option('libdir')))
-pkgconf.set('bindir', '${exec_prefix}/@0@'.format(get_option('bindir')))
-pkgconf.set('datarootdir', '${prefix}/@0@'.format(get_option('datadir')))
-pkgconf.set('datadir', '${datarootdir}')
-pkgconf.set('includedir', '${prefix}/@0@'.format(get_option('includedir')))
-
 
 add_project_arguments([
 		'--target-glib=2.44',
@@ -102,7 +91,10 @@ gtk_version_required = '3.10.0'
 plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
-glib_dep = [dependency('gio-2.0', version: '>= @0@'.format(glib_version_required)), dependency('gio-unix-2.0'), dependency('gmodule-2.0')]
+glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
+gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
+gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
+gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
 bamf_dep = dependency('libbamf3')
@@ -127,7 +119,6 @@ if mutter328_dep.found()
 		'--pkg', 'mutter-clutter-2'
 	]
 	libmutter_dep = dependency('libmutter-2', version: '>= 3.27.92')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-2 >= 3.27.92')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-2'), dependency('mutter-cogl-pango-2'),
@@ -148,7 +139,6 @@ if mutter330_dep.found()
 		'--pkg', 'mutter-clutter-3'
 	]
 	libmutter_dep = dependency('libmutter-3', version: '>= 3.29.4')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-3 >= 3.29.4')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-3'), dependency('mutter-cogl-pango-3'),
@@ -169,7 +159,6 @@ if mutter332_dep.found()
 		'--pkg', 'mutter-clutter-4'
 	]
 	libmutter_dep = dependency('libmutter-4', version: '>= 3.31.2')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-4 >= 3.31.2')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-4'), dependency('mutter-cogl-pango-4'),
@@ -190,7 +179,6 @@ if mutter334_dep.found()
 		'--pkg', 'mutter-clutter-5'
 	]
 	libmutter_dep = dependency('libmutter-5', version: '>= 3.34')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-5 >= 3.34')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-5'), dependency('mutter-cogl-pango-5'),
@@ -211,7 +199,6 @@ if mutter336_dep.found()
 		'--pkg', 'mutter-clutter-6'
 	]
 	libmutter_dep = dependency('libmutter-6', version: '>= 3.35.1')
-	pkgconf.set('MUTTER_PKGS', 'libmutter-6 >= 3.35.1')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-6'), dependency('mutter-cogl-pango-6'),
@@ -231,7 +218,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep]
 
 subdir('data')
 subdir('lib')

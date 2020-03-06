@@ -34,9 +34,15 @@ install_data('gala.deps', install_dir: join_paths(get_option('datadir'), 'vala',
 
 gala_dep = declare_dependency(link_with: [gala_lib], include_directories: include_directories('.'))
 
-configure_file(
-	input: 'gala.pc.in',
-	output: 'gala.pc',
-	configuration: pkgconf,
-	install_dir: join_paths(get_option('libdir'), 'pkgconfig'),
+pkg.generate(
+	gala_lib,
+	filebase: 'gala',
+	name: 'Gala',
+	description: 'Library to develop plugins for Gala',
+	subdirs: 'gala',
+	requires: [glib_dep, gobject_dep, libmutter_dep],
+	variables: [
+		'datarootdir=${prefix}/@0@'.format(get_option('datadir')),
+		'pkgdatadir=${datarootdir}/gala'
+	]
 )
