@@ -1,12 +1,17 @@
 valadoc = find_program('valadoc')
 
+mutter_packages_command = []
+foreach dep : mutter_dep
+    mutter_packages_command += [ '--pkg', dep.name() ]
+endforeach
+
 basic_command = [
     valadoc,
     '--force',
     '--verbose',
     '--package-name','gala',
     '--package-version', '0.0.0',
-    '--driver', meson.get_compiler('vala').version(),
+    '--driver', vala.version(),
     mutter_packages_command,
     '--pkg', 'libbamf3',
     '--pkg', 'plank',
