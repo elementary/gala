@@ -23,10 +23,7 @@ gala_lib = shared_library(
 	install: true,
 	install_dir: [true, join_paths(get_option('includedir'), 'gala'), true],
 	install_rpath: mutter_typelib_dir,
-	version : '0.0.0',
-	vala_args: [
-		'--pkg', 'compat',
-	],
+	version : '0.0.0'
 )
 
 install_data('gala.deps', install_dir: join_paths(get_option('datadir'), 'vala', 'vapi'))

@@ -20,6 +20,7 @@ if not vala.version().version_compare('>= @0@'.format(vala_version_required))
 	error('Valac >= @0@ required!'.format(vala_version_required))
 endif
 
+vapi_dir = meson.current_source_dir() / 'vapi'
 
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
@@ -39,7 +40,7 @@ config_h = configure_file(
 )
 
 config_dep = declare_dependency(
-	dependencies: vala.find_library('config', dirs: meson.current_source_dir() / 'vapi'),
+	dependencies: vala.find_library('config', dirs: vapi_dir),
 	sources: config_h
 )
 
@@ -52,9 +53,7 @@ add_project_arguments([
 		'--target-glib=2.44',
 		'--hide-internal',
 		'--enable-deprecated',
-		'--vapidir=' + join_paths(meson.source_root(), 'vapi'),
-		'--pkg', 'cogl-fixes',
-		'--pkg', 'compat',
+		'--vapidir=' + vapi_dir,
 	],
 	language: 'vala',
 )
@@ -94,6 +93,8 @@ granite_dep = dependency('granite', version: '>= 5.3.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
+cogl_fixes_dep = vala.find_library('cogl-fixes', dirs: vapi_dir)
+compat_dep = vala.find_library('compat', dirs: vapi_dir)
 
 mutter_dep = []
 libmutter_dep = []
@@ -209,7 +210,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep, cogl_fixes_dep, compat_dep]
 
 subdir('data')
 subdir('lib')
