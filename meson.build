@@ -222,5 +222,6 @@ if get_option('documentation')
 	subdir('docs')
 endif
 subdir('po')
+subdir('vapi')
 
 meson.add_install_script('build-aux/meson/post_install.py')
