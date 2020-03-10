@@ -171,7 +171,11 @@ namespace Meta {
 		public void set_numlock (bool numlock_state);
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
+#if HAS_MUTTER336
+		public signal void last_device_changed (Clutter.InputDevice object);
+#else
 		public signal void last_device_changed (int object);
+#endif
 #if HAS_MUTTER330
 		public signal void lid_is_closed_changed (bool object);
 #endif
@@ -506,6 +510,9 @@ namespace Meta {
 #if !HAS_MUTTER330
 		public void unmanage_screen (Meta.Screen screen, uint32 timestamp);
 #endif
+#if HAS_MUTTER336
+		public void unset_input_focus (uint32 timestamp);
+#endif
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 #if !HAS_MUTTER330
 		public bool xwindow_is_a_no_focus_window (X.Window xwindow);
@@ -590,11 +597,17 @@ namespace Meta {
 		public uint add_idle_watch (uint64 interval_msec, owned Meta.IdleMonitorWatchFunc? callback);
 		public uint add_user_active_watch (owned Meta.IdleMonitorWatchFunc? callback);
 		public static unowned Meta.IdleMonitor get_core ();
+#if !HAS_MUTTER336
 		public static unowned Meta.IdleMonitor get_for_device (int device_id);
+#endif
 		public int64 get_idletime ();
 		public void remove_watch (uint id);
 		[NoAccessorMethod]
+#if HAS_MUTTER336
+		public Clutter.InputDevice device { owned get; construct; }
+#else
 		public int device_id { get; construct; }
+#endif
 	}
 	[CCode (cheader_filename = "meta/keybindings.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_key_binding_get_type ()")]
 	[Compact]
@@ -1124,10 +1137,12 @@ namespace Meta {
 		public bool is_destroyed ();
 		public void sync_visibility ();
 		public Meta.Window meta_window { get; construct; }
+#if !HAS_MUTTER336
 		[NoAccessorMethod]
 		public string shadow_class { owned get; set; }
 		[NoAccessorMethod]
 		public Meta.ShadowMode shadow_mode { get; set; }
+#endif
 #if HAS_MUTTER334
 		public signal void damaged ();
 #endif
@@ -1135,6 +1150,9 @@ namespace Meta {
 		public signal void effects_completed ();
 #endif
 		public signal void first_frame ();
+#if HAS_MUTTER336
+		public signal void thawed ();
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-window-group.h", type_id = "meta_window_group_get_type ()")]
 	public class WindowGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
@@ -1186,7 +1204,7 @@ namespace Meta {
 		public unowned Meta.Workspace get_active_workspace ();
 		public int get_active_workspace_index ();
 		public int get_n_workspaces ();
-		public unowned Meta.Workspace get_workspace_by_index (int index);
+		public unowned Meta.Workspace? get_workspace_by_index (int index);
 		public unowned GLib.List<Meta.Workspace> get_workspaces ();
 		public void override_workspace_layout (Meta.DisplayCorner starting_corner, bool vertical_layout, int n_rows, int n_columns);
 		public void remove_workspace (Meta.Workspace workspace, uint32 timestamp);
@@ -1901,6 +1919,10 @@ namespace Meta {
 	public const int VIRTUAL_CORE_POINTER_ID;
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool activate_session ();
+#if HAS_MUTTER336
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void add_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void clutter_init ();
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1917,6 +1939,10 @@ namespace Meta {
 	public static void quit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void register_with_session ();
+#if HAS_MUTTER336
+	[CCode (cheader_filename = "meta/main.h")]
+	public static void remove_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void restart (string? message);
 	[CCode (cheader_filename = "meta/main.h")]

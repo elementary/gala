@@ -298,6 +298,7 @@ elif mutter336_dep.found()
 			'--pkg=gio-2.0',
 			'--pkg=json-glib-1.0',
 			'--pkg=pangocairo',
+			'--pkg=graphene-gobject-1.0',
 			vapigen_args,
 			files('Clutter-6-custom.vala')
 		],

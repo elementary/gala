@@ -156,6 +156,10 @@ StageStateEvent struct=false base_type="Clutter.Event"
 TouchEvent struct=false base_type="Clutter.Event"
 TouchpadPinchEvent struct=false base_type="Clutter.Event"
 TouchpadSwipeEvent struct=false base_type="Clutter.Event"
+PadButtonEvent struct=false base_type="Clutter.Event"
+PadRingEvent struct=false base_type="Clutter.Event"
+PadStripEvent struct=false base_type="Clutter.Event"
+ProximityEvent struct=false base_type="Clutter.Event"
 
 // Keysyms used to be CLUTTER_X instead of CLUTTER_KEY_X
 *#constant skip

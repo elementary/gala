@@ -11,7 +11,6 @@ namespace Clutter {
 		public static uint add_full (int priority, uint fps, owned GLib.SourceFunc func);
 	}
 	namespace Key {
-
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_0")]
 		public const uint @0;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_1")]
@@ -4562,6 +4561,7 @@ namespace Clutter {
 		public const uint zstroke;
 	}
 	namespace Threads {
+#if !HAS_MUTTER336
 		namespace FrameSource {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_frame_source")]
 			[Version (deprecated = true, deprecated_since = "1.6", since = "0.8")]
@@ -4570,6 +4570,7 @@ namespace Clutter {
 			[Version (deprecated = true, deprecated_since = "1.6", since = "0.8")]
 			public static uint add_full (int priority, uint fps, owned GLib.SourceFunc func);
 		}
+#endif
 		namespace Idle {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_idle")]
 			[Version (since = "0.4")]
@@ -4592,6 +4593,7 @@ namespace Clutter {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.10")]
 		public static uint add_repaint_func_full (Clutter.RepaintFlags flags, owned GLib.SourceFunc func);
+#if !HAS_MUTTER336
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.4")]
 		public static void enter ();
@@ -4601,6 +4603,7 @@ namespace Clutter {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.4")]
 		public static void leave ();
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.0")]
 		public static void remove_repaint_func (uint handle_id);
@@ -4608,11 +4611,13 @@ namespace Clutter {
 		[Version (since = "0.4")]
 		public static void set_lock_functions (GLib.Callback enter_fn, GLib.Callback leave_fn);
 	}
+#if !HAS_MUTTER336
 	namespace Util {
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_util_next_p2")]
 		[Version (deprecated = true, deprecated_since = "1.2")]
 		public static int next_power_of_2 (int a);
 	}
+#endif
 	namespace Value {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.10")]
@@ -4695,22 +4700,35 @@ namespace Clutter {
 		public void allocate_preferred_size (Clutter.AllocationFlags flags);
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation animate (ulong mode, uint duration, ...);
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.10", since = "1.0")]
 		public unowned Clutter.Animation animate_with_alpha (Clutter.Alpha alpha, ...);
 		[Version (deprecated = true, deprecated_since = "1.10", since = "1.0")]
 		public unowned Clutter.Animation animate_with_alphav (Clutter.Alpha alpha, [CCode (array_length_cname = "n_properties", array_length_pos = 1.5)] string[] properties, [CCode (array_length_cname = "n_properties", array_length_pos = 1.5)] GLib.Value[] values);
+#endif
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation animate_with_timeline (ulong mode, Clutter.Timeline timeline, ...);
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation animate_with_timelinev (ulong mode, Clutter.Timeline timeline, [CCode (array_length_cname = "n_properties", array_length_pos = 2.5)] string[] properties, [CCode (array_length_cname = "n_properties", array_length_pos = 2.5)] GLib.Value[] values);
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation animatev (ulong mode, uint duration, [CCode (array_length_cname = "n_properties", array_length_pos = 2.5)] string[] properties, [CCode (array_length_cname = "n_properties", array_length_pos = 2.5)] GLib.Value[] values);
+#endif
+#if HAS_MUTTER336
+		[Version (since = "0.6")]
+		public void apply_relative_transform_to_point (Clutter.Actor? ancestor, Graphene.Point3D point, out unowned Graphene.Point3D vertex);
+		[NoWrapper]
+		public virtual void apply_transform (ref unowned Clutter.Matrix matrix);
+		[Version (since = "0.4")]
+		public void apply_transform_to_point (Graphene.Point3D point, out unowned Graphene.Point3D vertex);
+#else
 		[Version (since = "0.6")]
 		public Clutter.Vertex apply_relative_transform_to_point (Clutter.Actor? ancestor, Clutter.Vertex point);
 		[NoWrapper]
 		public virtual void apply_transform (ref Clutter.Matrix matrix);
 		[Version (since = "0.4")]
 		public Clutter.Vertex apply_transform_to_point (Clutter.Vertex point);
+#endif
 		[Version (since = "1.24")]
 		public void bind_model (GLib.ListModel? model, owned Clutter.ActorCreateChildFunc create_child_func);
 		[Version (since = "1.4")]
@@ -4721,21 +4739,33 @@ namespace Clutter {
 		public void clear_effects ();
 		[Version (since = "1.4")]
 		public bool contains (Clutter.Actor descendant);
+#if HAS_MUTTER336
+		[Version (since = "1.8")]
+		public void continue_paint (Clutter.PaintContext paint_context);
+		public void continue_pick (Clutter.PickContext pick_context);
+#else
 		[Version (since = "1.8")]
 		public void continue_paint ();
+#endif
 		[Version (since = "1.0")]
 		public Pango.Context create_pango_context ();
 		[Version (since = "1.0")]
 		public Pango.Layout create_pango_layout (string? text);
 		[Version (since = "1.10")]
 		public void destroy_all_children ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.4")]
 		public void detach_animation ();
+#endif
 		[CCode (cname = "clutter_actor_event")]
 		[Version (since = "0.6")]
 		public bool emit_event (Clutter.Event event, bool capture);
 		[Version (since = "0.4")]
+#if HAS_MUTTER336
+		public void get_abs_allocation_vertices ([CCode (array_length = false)] Graphene.Point3D verts[4]);
+#else
 		public void get_abs_allocation_vertices ([CCode (array_length = false)] Clutter.Vertex verts[4]);
+#endif
 		public virtual unowned Atk.Object get_accessible ();
 		[Version (since = "1.4")]
 		public unowned Clutter.Action get_action (string name);
@@ -4743,16 +4773,27 @@ namespace Clutter {
 		public GLib.List<weak Clutter.Action> get_actions ();
 		[Version (since = "0.8")]
 		public Clutter.ActorBox get_allocation_box ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.8")]
 		public Clutter.Geometry get_allocation_geometry ();
+#endif
+#if HAS_MUTTER336
+		[Version (since = "0.6")]
+		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Graphene.Point3D verts[4]);
+#else
 		[Version (since = "0.6")]
 		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Clutter.Vertex verts[4]);
+#endif
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.6")]
 		public void get_anchor_point (out float anchor_x, out float anchor_y);
+#endif
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public Clutter.Gravity get_anchor_point_gravity ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation get_animation ();
+#endif
 		[Version (since = "1.10")]
 		public Clutter.Color get_background_color ();
 		[CCode (cname = "clutter_get_actor_by_gid")]

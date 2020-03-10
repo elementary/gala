@@ -1,4 +1,5 @@
 Color struct
+Matrix struct
 Quaternion skip=false
 
 Material base_type="Cogl.Handle"
