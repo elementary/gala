@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"PO-Revision-Date: 2020-03-11 18:09+0000\n"
+"Last-Translator: nasserbinlaboun <nasser1990com@gmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
 "\n"
 "Language: ar\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "صور الشاشة الملتقطة"
 
 #: src/WindowManager.vala:2152
 msgid "Does the display look OK?"
@@ -35,7 +35,7 @@ msgstr "إحتفظ بهذه الإعدادات"
 
 #: src/WindowManager.vala:2156
 msgid "Restore Previous Configuration"
-msgstr "إسترجع الإعدادات السابقة"
+msgstr "إسترجع إعدادات الضبط السابقة"
 
 #: daemon/MenuDaemon.vala:107
 msgid "Minimize"
