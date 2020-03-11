@@ -94,7 +94,6 @@ gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
 cogl_fixes_dep = vala.find_library('cogl-fixes', dirs: vapi_dir)
-compat_dep = vala.find_library('compat', dirs: vapi_dir)
 
 mutter_dep = []
 libmutter_dep = []
@@ -205,8 +204,7 @@ gala_base_dep = [
 	gnome_desktop_dep,
 	m_dep,
 	config_dep,
-	cogl_fixes_dep,
-	compat_dep
+	cogl_fixes_dep
 ]
 
 subdir('data')

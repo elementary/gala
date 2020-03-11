@@ -20,6 +20,10 @@ namespace Cogl {
 		public Color.from_hsl (float hue, float saturation, float luminance);
 	}
 
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public class Context : Cogl.Handle {
+	}
+
 	[Compact]
 	public class Bitmap : Cogl.Handle {
 	}
