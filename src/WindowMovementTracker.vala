@@ -145,7 +145,7 @@ namespace Gala {
             Clutter.ModifierType type;
             ct.get_pointer (out x, out y, out type);
 
-            if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
+            //  if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
                 Meta.Rectangle wa = window.get_work_area_for_monitor (screen.get_current_monitor ());
 
                 int monitor_width = wa.width, monitor_height = wa.height;
@@ -180,14 +180,14 @@ namespace Gala {
                 hide_tile_preview_when_window_moves = false;
                 tile_rect = {new_x, new_y, new_width, new_height};
                 show_tile_preview (window, tile_rect, screen.get_current_monitor ());
-                return;
-            }
+                //  return;
+            //  }
 
-            if (is_shrinked) {
-                unshrink_window(window);
-            }
+            //  if (is_shrinked) {
+            //      unshrink_window(window);
+            //  }
 
-            hide_tile_preview_when_window_moves = true;
+            //  hide_tile_preview_when_window_moves = true;
         }
     }
 }
