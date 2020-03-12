@@ -188,4 +188,9 @@ if get_option('documentation')
 endif
 subdir('po')
 
+vapigen = find_program('vapigen', required: false)
+if vapigen.found()
+	subdir('vapi')
+endif
+
 meson.add_install_script('build-aux/meson/post_install.py')
