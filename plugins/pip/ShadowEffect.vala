@@ -43,7 +43,12 @@ namespace Gala.Plugins.PIP {
         public float scale_factor { get; set; default = 1; }
         public uint8 shadow_opacity { get; set; default = 255; }
 
+#if HAS_MUTTER336
+        Cogl.Pipeline pipeline;
+#else
         Cogl.Material material;
+#endif
+
         string? current_key = null;
 
         public ShadowEffect (int shadow_size, int shadow_spread) {
@@ -51,7 +56,12 @@ namespace Gala.Plugins.PIP {
         }
 
         construct {
+#if HAS_MUTTER336
+            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#else
             material = new Cogl.Material ();
+#endif
+
         }
 
         ~ShadowEffect () {
@@ -59,7 +69,11 @@ namespace Gala.Plugins.PIP {
                 decrement_shadow_users (current_key);
         }
 
+#if HAS_MUTTER336
+        Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread) {
+#else
         Cogl.Texture? get_shadow (int width, int height, int shadow_size, int shadow_spread) {
+#endif
             var old_key = current_key;
 
             current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
@@ -90,8 +104,13 @@ namespace Gala.Plugins.PIP {
             cr.set_source_surface (buffer.surface, 0, 0);
             cr.paint ();
 
+#if HAS_MUTTER336
+            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                surface.get_stride (), surface.get_data ());
+#else
             var texture = new Cogl.Texture.from_data (width, height, 0, Cogl.PixelFormat.BGRA_8888_PRE,
                 Cogl.PixelFormat.ANY, surface.get_stride (), surface.get_data ());
+#endif
 
             shadow_cache.@set (current_key, new Shadow (texture));
 
@@ -108,6 +127,27 @@ namespace Gala.Plugins.PIP {
                 shadow_cache.unset (key);
         }
 
+#if HAS_MUTTER336
+        public override void paint (Clutter.PaintContext context, EffectPaintFlags flags) {
+            var bounding_box = get_bounding_box ();
+
+            var shadow = get_shadow (context.get_framebuffer ().get_context (), (int) (bounding_box.x2 - bounding_box.x1),
+            (int) (bounding_box.y2 - bounding_box.y1), shadow_size, shadow_spread);
+
+            if (shadow != null)
+                pipeline.set_layer_texture (0, shadow);
+
+            var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
+            var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
+            alpha.premultiply ();
+
+            pipeline.set_color (alpha);
+
+            context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
+
+            actor.continue_paint (context);
+        }
+#else
         public override void paint (EffectPaintFlags flags) {
             var bounding_box = get_bounding_box ();
             var shadow = get_shadow ((int) (bounding_box.x2 - bounding_box.x1), (int) (bounding_box.y2 - bounding_box.y1),
@@ -127,6 +167,7 @@ namespace Gala.Plugins.PIP {
 
             actor.continue_paint ();
         }
+#endif
 
         public virtual ActorBox get_bounding_box () {
             var size = shadow_size * scale_factor;

@@ -97,11 +97,21 @@ namespace Gala.Plugins.Zoom {
 
                 mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
                     client_pointer.get_position (null, out mx, out my);
+#if HAS_MUTTER336
+                    var new_pivot = new Graphene.Point ();
+#else
                     var new_pivot = Clutter.Point.alloc ();
-                    new_pivot.init (mx / wins.width, my / wins.height);
-                    if (wins.pivot_point.equals (new_pivot))
-                        return true;
+#endif
 
+                    new_pivot.init (mx / wins.width, my / wins.height);
+#if HAS_MUTTER336
+                    if (wins.pivot_point.equal (new_pivot)) {
+#else
+                    if (wins.pivot_point.equals (new_pivot)) {
+#endif
+
+                        return true;
+}
                     wins.save_easing_state ();
                     wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
                     wins.set_easing_duration (MOUSE_POLL_TIME);

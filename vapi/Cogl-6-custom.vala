@@ -14,14 +14,15 @@ namespace Cogl {
 		public Color.from_hsl (float hue, float saturation, float luminance);
 	}
 
-	[Compact]
-	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_shader_ref", unref_function = "cogl_shader_unref")]
-	public class Shader : Cogl.Handle {
-	}
-
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_framebuffer_get_gtype ()")]
 	public interface Framebuffer {
 		[CCode (cheader_filename = "cogl-path/cogl-path.h")]
 		public void stroke_path (Cogl.Pipeline pipeline, Cogl.Path path);
+	}
+
+	[Compact]
+	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_shader_ref", unref_function = "cogl_shader_unref")]
+	public class Shader : Cogl.Handle {
 	}
 
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_primitive_get_gtype ()")]
@@ -72,7 +73,7 @@ namespace Cogl {
 	}
 
 	[Compact]
-	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_handle_ref", unref_function = "cogl_handle_unref")]
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_object_ref", unref_function = "cogl_object_unref")]
 	public class Handle {
 		[CCode (cheader_filename = "cogl/cogl.h", cname="cogl_is_material")]
 		[Version (deprecated = true, deprecated_since = "1.16")]
