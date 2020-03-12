@@ -41,7 +41,7 @@ namespace Cogl {
 	[Version (since = "1.14")]
 	public class FrameClosure {
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_handle_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_handle_unref")]
+	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_object_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_object_unref")]
 	[Compact]
 	public class Handle {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_material")]
@@ -364,6 +364,9 @@ namespace Cogl {
 		[CCode (has_construct_function = false)]
 		[Version (since = "2.0")]
 		public Texture2D.from_bitmap (Cogl.Bitmap bitmap);
+		[CCode (has_construct_function = false)]
+		[Version (since = "2.0")]
+		public Texture2D.from_data (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false, type = "const uint8_t*")] uint8[] data) throws GLib.Error;
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", lower_case_csuffix = "texture_2d_sliced", type_id = "cogl_texture_2d_sliced_get_gtype ()")]
 	public class Texture2DSliced : Cogl.Object, Cogl.Texture {

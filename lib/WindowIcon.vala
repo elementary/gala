@@ -21,7 +21,11 @@ namespace Gala {
      * This is recommended way to grab an icon for a window as this method will make
      * sure the icon is updated if it becomes available at a later point.
      */
+#if HAS_MUTTER336
+    public class WindowIcon : Clutter.Actor {
+#else
     public class WindowIcon : Clutter.Texture {
+#endif
         static Bamf.Matcher matcher;
 
         static construct {
@@ -110,9 +114,16 @@ namespace Gala {
             var pixbuf = Gala.Utils.get_icon_for_xid (xid, icon_size, scale, !initial);
 
             try {
+#if HAS_MUTTER336
+                var image = new Clutter.Image ();
+                Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.ARGB_8888 : Cogl.PixelFormat.RGB_888);
+                image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                set_content (image);
+#else
                 set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
                 pixbuf.get_width (), pixbuf.get_height (),
                 pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+#endif
             } catch (Error e) {}
         }
 

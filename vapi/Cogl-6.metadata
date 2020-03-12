@@ -24,6 +24,10 @@ Texture
   .set_data.data type="uint8[]"
   .set_region.data type="uint8[]"
 
+Texture2D
+  .new_from_data skip=false
+  .new_from_data.data array=true
+
 Matrix
   .transform_points.points_in type="uint8[]"
   .transform_points.stride_out out

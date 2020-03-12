@@ -39,7 +39,11 @@ namespace Gala.Plugins.Notify {
         public bool being_destroyed { get; private set; default = false; }
 
         protected bool icon_only { get; protected set; default = false; }
+#if HAS_MUTTER336
+        protected Clutter.Actor icon_texture { get; private set; }
+#else
         protected Clutter.Texture icon_texture { get; private set; }
+#endif
         protected Actor icon_container { get; private set; }
 
         /**
@@ -55,7 +59,11 @@ namespace Gala.Plugins.Notify {
 
         // temporary things needed for the slide transition
         protected float animation_slide_height { get; private set; }
+#if HAS_MUTTER336
+        Clutter.Actor old_texture;
+#else
         Clutter.Texture old_texture;
+#endif
         float _animation_slide_y_offset = 0.0f;
         public float animation_slide_y_offset {
             get {
@@ -88,7 +96,11 @@ namespace Gala.Plugins.Notify {
             reactive = true;
             set_pivot_point (0.5f, 0.5f);
 
+#if HAS_MUTTER336
+            icon_texture = new Clutter.Actor ();
+#else
             icon_texture = new Clutter.Texture ();
+#endif
             icon_texture.set_pivot_point (0.5f, 0.5f);
 
             icon_container = new Actor ();
@@ -224,9 +236,16 @@ namespace Gala.Plugins.Notify {
         void set_values () {
             if (icon != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (icon.get_has_alpha () ? Cogl.PixelFormat.ARGB_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (icon.get_pixels (), pixel_format, icon.width, icon.height, icon.rowstride);
+                    icon_texture.set_content (image);
+#else
                     icon_texture.set_from_rgb_data (icon.get_pixels (), icon.get_has_alpha (),
                         icon.get_width (), icon.get_height (),
                         icon.get_rowstride (), (icon.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             }
 
@@ -324,15 +343,26 @@ namespace Gala.Plugins.Notify {
             var scale = style_context.get_scale ();
             var scaled_padding = PADDING * scale;
             var scaled_icon_size = ICON_SIZE * scale;
+#if HAS_MUTTER336
+            old_texture = new Clutter.Actor ();
+#else
             old_texture = new Clutter.Texture ();
+#endif
             icon_container.add_child (old_texture);
             icon_container.set_clip (0, -scaled_padding, scaled_icon_size, scaled_icon_size + scaled_padding * 2);
 
             if (icon != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (icon.get_has_alpha () ? Cogl.PixelFormat.ARGB_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (icon.get_pixels (), pixel_format, icon.width, icon.height, icon.rowstride);
+                    old_texture.set_content (image);
+#else
                     old_texture.set_from_rgb_data (icon.get_pixels (), icon.get_has_alpha (),
                         icon.get_width (), icon.get_height (),
                         icon.get_rowstride (), (icon.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             }
 

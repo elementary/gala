@@ -204,7 +204,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return true;
     }
 
+#if HAS_MUTTER336
+    public void set_container_clip (Graphene.Rect? container_clip) {
+#else
     public void set_container_clip (Clutter.Rect? container_clip) {
+#endif
         container.clip_rect = container_clip;
         dynamic_container = true;
         update_container_scale ();

@@ -78,6 +78,8 @@ LayoutManager
 Actor
 	.animate skip=false
 	.animate_with_timeline skip=false
+Backend
+	.get_cogl_context skip=false
 Box
 	.pack skip=false
 	.pack_after skip=false
@@ -134,12 +136,10 @@ color_get_static nullable
 Event
 	.get_position.position out
 
-Texture2D
-	.new_from_data skip=false
-	.new_from_data.data array=true
-
 // Remove for clutter-2.0
 /////////////////////////
+
+StageView.layout skip
 
 Stage
  	.event name="emit_event"

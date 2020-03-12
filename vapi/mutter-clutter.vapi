@@ -5689,6 +5689,10 @@ namespace Clutter {
 	public abstract class Backend : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Backend ();
+#if HAS_MUTTER336
+		[Version (since = "1.8")]
+		public unowned Cogl.Context get_cogl_context ();
+#endif
 #if !HAS_MUTTER336
 		public void bell_notify ();
 		[Version (deprecated = true, deprecated_since = "1.4", since = "0.4")]
