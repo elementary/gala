@@ -4564,6 +4564,7 @@ namespace Clutter {
 		public const uint zstroke;
 	}
 	namespace Threads {
+#if !HAS_MUTTER336
 		namespace FrameSource {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_frame_source")]
 			[Version (deprecated = true, deprecated_since = "1.6", since = "0.8")]
@@ -4572,6 +4573,7 @@ namespace Clutter {
 			[Version (deprecated = true, deprecated_since = "1.6", since = "0.8")]
 			public static uint add_full (int priority, uint fps, owned GLib.SourceFunc func);
 		}
+#endif
 		namespace Idle {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_idle")]
 			[Version (since = "0.4")]
@@ -4594,6 +4596,7 @@ namespace Clutter {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.10")]
 		public static uint add_repaint_func_full (Clutter.RepaintFlags flags, owned GLib.SourceFunc func);
+#if !HAS_MUTTER336
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.4")]
 		public static void enter ();
@@ -4603,6 +4606,7 @@ namespace Clutter {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.4")]
 		public static void leave ();
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.0")]
 		public static void remove_repaint_func (uint handle_id);
@@ -4612,11 +4616,13 @@ namespace Clutter {
 		public static void set_lock_functions (GLib.Callback enter_fn, GLib.Callback leave_fn);
 #endif
 	}
+#if !HAS_MUTTER336
 	namespace Util {
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_util_next_p2")]
 		[Version (deprecated = true, deprecated_since = "1.2")]
 		public static int next_power_of_2 (int a);
 	}
+#endif
 	namespace Value {
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		[Version (since = "1.10")]
@@ -4739,15 +4745,22 @@ namespace Clutter {
 		[Version (since = "1.4")]
 		public bool contains (Clutter.Actor descendant);
 		[Version (since = "1.8")]
+#if HAS_MUTTER336
+		public void continue_paint (Clutter.PaintContext paint_context);
+		public void continue_pick (Clutter.PickContext pick_context);
+#else
 		public void continue_paint ();
+#endif
 		[Version (since = "1.0")]
 		public Pango.Context create_pango_context ();
 		[Version (since = "1.0")]
 		public Pango.Layout create_pango_layout (string? text);
 		[Version (since = "1.10")]
 		public void destroy_all_children ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.4")]
 		public void detach_animation ();
+#endif
 		[CCode (cname = "clutter_actor_event")]
 		[Version (since = "0.6")]
 		public bool emit_event (Clutter.Event event, bool capture);
@@ -6738,7 +6751,7 @@ namespace Clutter {
 		public void update_from_event (Clutter.Event event, bool update_stage);
 #if HAS_MUTTER336
 		[NoWrapper]
-		public virtual void update_from_tool (Clutter.InputDeviceTool tool); 
+		public virtual void update_from_tool (Clutter.InputDeviceTool tool);
 #endif
 		[NoAccessorMethod]
 		[Version (since = "1.6")]
