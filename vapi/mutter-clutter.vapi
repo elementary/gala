@@ -4727,6 +4727,7 @@ namespace Clutter {
 		public virtual void apply_transform (ref unowned Clutter.Matrix matrix);
 		[Version (since = "0.4")]
 		public Clutter.Vertex apply_transform_to_point (Clutter.Vertex point);
+#endif
 		[Version (since = "1.24")]
 		public void bind_model (GLib.ListModel? model, owned Clutter.ActorCreateChildFunc create_child_func);
 		[Version (since = "1.4")]
@@ -4751,7 +4752,11 @@ namespace Clutter {
 		[Version (since = "0.6")]
 		public bool emit_event (Clutter.Event event, bool capture);
 		[Version (since = "0.4")]
+#if HAS_MUTTER336
+		public void get_abs_allocation_vertices ([CCode (array_length = false)] Graphene.Point3D verts[4]);
+#else
 		public void get_abs_allocation_vertices ([CCode (array_length = false)] Clutter.Vertex verts[4]);
+#endif
 		public virtual unowned Atk.Object get_accessible ();
 		[Version (since = "1.4")]
 		public unowned Clutter.Action get_action (string name);
@@ -4759,10 +4764,16 @@ namespace Clutter {
 		public GLib.List<weak Clutter.Action> get_actions ();
 		[Version (since = "0.8")]
 		public Clutter.ActorBox get_allocation_box ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.8")]
 		public Clutter.Geometry get_allocation_geometry ();
+#endif
 		[Version (since = "0.6")]
+#if HAS_MUTTER336
+		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Graphene.Point3D verts[4]);
+#else
 		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Clutter.Vertex verts[4]);
+#endif
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.6")]
 		public void get_anchor_point (out float anchor_x, out float anchor_y);
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
