@@ -165,7 +165,7 @@ namespace Gala {
             var width = (int) (bounding_box.x2 - bounding_box.x1);
             var height = (int) (bounding_box.y2 - bounding_box.y1);
 
-            var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size, shadow_spread);
+            var shadow = get_shadow (width, height, shadow_size, shadow_spread);
             if (shadow != null)
                 material.set_layer (0, shadow);
 
