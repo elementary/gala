@@ -1,6 +1,7 @@
 * cheader_filename="cogl/cogl.h"
 
 Color struct
+Matrix struct
 
 Material base_type="Cogl.Handle"
 MaterialLayer base_type="Cogl.Handle"
