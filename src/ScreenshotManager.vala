@@ -324,7 +324,7 @@ namespace Gala {
             int height = (int)texture.get_height ();
 
             uint8[] data = new uint8[width * height * 4];
-            CoglFixes.texture_get_data (texture, Cogl.PixelFormat.RGBA_8888, 0, data);
+            texture.get_data (Cogl.PixelFormat.RGBA_8888, 0, data);
 
             var cursor_image = new Cairo.ImageSurface.for_data (data, Cairo.Format.ARGB32, width, height, width * 4);
             var target = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_rect.width, image_rect.height);
