@@ -93,7 +93,6 @@ granite_dep = dependency('granite', version: '>= 5.3.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
-compat_dep = vala.find_library('compat', dirs: vapi_dir)
 
 mutter_dep = []
 libmutter_dep = []
@@ -174,7 +173,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep, compat_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
 
 subdir('data')
 subdir('lib')
