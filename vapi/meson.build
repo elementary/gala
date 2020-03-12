@@ -50,7 +50,7 @@ if mutter328_dep.found()
 		output: 'mutter-clutter-2.vapi'
 	)
 
-	libmutter_target = custom_target('libmutter',
+	libmutter_target = custom_target('libmutter-2',
 		command: [
 			vapigen,
 			mutter_typelib_dir / 'Meta-2.gir',
@@ -69,8 +69,8 @@ if mutter328_dep.found()
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],
 		output: 'libmutter-2.vapi'
 	)
-
-elif mutter330_dep.found()
+endif
+if mutter330_dep.found()
 	cogl_target = custom_target('mutter-cogl-3',
 		command: [
 			vapigen,
@@ -114,7 +114,7 @@ elif mutter330_dep.found()
 		output: 'mutter-clutter-3.vapi'
 	)
 
-	libmutter_target = custom_target('libmutter',
+	libmutter_target = custom_target('libmutter-3',
 		command: [
 			vapigen,
 			mutter_typelib_dir / 'Meta-3.gir',
@@ -133,7 +133,8 @@ elif mutter330_dep.found()
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],
 		output: 'libmutter-3.vapi'
 	)
-elif mutter332_dep.found()
+endif
+if mutter332_dep.found()
 	cogl_target = custom_target('mutter-cogl-4',
 		command: [
 			vapigen,
@@ -177,7 +178,7 @@ elif mutter332_dep.found()
 		output: 'mutter-clutter-4.vapi'
 	)
 
-	libmutter_target = custom_target('libmutter',
+	libmutter_target = custom_target('libmutter-4',
 		command: [
 			vapigen,
 			mutter_typelib_dir / 'Meta-4.gir',
@@ -196,7 +197,8 @@ elif mutter332_dep.found()
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],
 		output: 'libmutter-4.vapi'
 	)
-elif mutter334_dep.found()
+endif
+if mutter334_dep.found()
 	cogl_target = custom_target('mutter-cogl-5',
 		command: [
 			vapigen,
@@ -240,7 +242,7 @@ elif mutter334_dep.found()
 		output: 'mutter-clutter-5.vapi'
 	)
 
-	libmutter_target = custom_target('libmutter',
+	libmutter_target = custom_target('libmutter-5',
 		command: [
 			vapigen,
 			mutter_typelib_dir / 'Meta-5.gir',
@@ -259,7 +261,8 @@ elif mutter334_dep.found()
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],
 		output: 'libmutter-5.vapi'
 	)
-elif mutter336_dep.found()
+endif
+if mutter336_dep.found()
 	cogl_target = custom_target('mutter-cogl-6',
 		command: [
 			vapigen,
@@ -306,7 +309,7 @@ elif mutter336_dep.found()
 		output: 'mutter-clutter-6.vapi'
 	)
 
-	libmutter_target = custom_target('libmutter',
+	libmutter_target = custom_target('libmutter-6',
 		command: [
 			vapigen,
 			mutter_typelib_dir / 'Meta-6.gir',
@@ -325,6 +328,7 @@ elif mutter336_dep.found()
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],
 		output: 'libmutter-6.vapi'
 	)
-else
+endif
+if mutter_found == false
 	error ('No supported mutter library found!')
 endif

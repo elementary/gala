@@ -97,6 +97,7 @@ cogl_fixes_dep = vala.find_library('cogl-fixes', dirs: vapi_dir)
 
 mutter_dep = []
 libmutter_dep = []
+mutter_found = false
 
 vala_flags = []
 
@@ -107,6 +108,7 @@ mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.35.1'], requ
 mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.37'], required: false)
 
 if mutter328_dep.found()
+	mutter_found = true
 	libmutter_dep = mutter328_dep
 	mutter_dep = [
 		libmutter_dep,
@@ -120,8 +122,9 @@ if mutter328_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'
 	], language: 'c')
-
-elif mutter330_dep.found()
+endif
+if mutter330_dep.found()
+	mutter_found = true
 	libmutter_dep = mutter330_dep
 	mutter_dep = [
 		libmutter_dep,
@@ -135,8 +138,9 @@ elif mutter330_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'
 	], language: 'c')
-
-elif mutter332_dep.found()
+endif
+if mutter332_dep.found()
+	mutter_found = true
 	libmutter_dep = mutter332_dep
 	mutter_dep = [
 		libmutter_dep,
@@ -150,8 +154,9 @@ elif mutter332_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'
 	], language: 'c')
-
-elif mutter334_dep.found()
+endif
+if mutter334_dep.found()
+	mutter_found = true
 	libmutter_dep = mutter334_dep
 	mutter_dep = [
 		libmutter_dep,
@@ -165,8 +170,9 @@ elif mutter334_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'
 	], language: 'c')
-
-elif mutter336_dep.found()
+endif
+if mutter336_dep.found()
+	mutter_found = true
 	libmutter_dep = mutter336_dep
 	mutter_dep = [
 		libmutter_dep,
@@ -180,8 +186,8 @@ elif mutter336_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'
 	], language: 'c')
-
-else
+endif
+if mutter_found == false
 	error ('No supported mutter library found!')
 endif
 
