@@ -145,7 +145,7 @@ namespace Gala {
 
                 var texture = (Cogl.Texture)effect.get_texture ();
                 var pixels = new uint8[texture.get_width () * texture.get_height () * 4];
-                CoglFixes.texture_get_data (texture, Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
+                texture.get_data (Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
 
                 int size = width * height;
 
