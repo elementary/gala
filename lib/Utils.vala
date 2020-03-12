@@ -302,7 +302,7 @@ namespace Gala {
                 try {
 #if HAS_MUTTER336
                     var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.ARGB_8888 : Cogl.PixelFormat.RGB_888);
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
                     image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
                     texture.set_content (image);
 #else
@@ -367,7 +367,7 @@ namespace Gala {
                 try {
 #if HAS_MUTTER336
                     var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.ARGB_8888 : Cogl.PixelFormat.RGB_888);
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
                     image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
                     texture.set_content (image);
 #else
