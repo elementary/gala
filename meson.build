@@ -107,7 +107,6 @@ if mutter328_dep.found()
 		dependency('mutter-cogl-2'), dependency('mutter-cogl-pango-2'),
 		dependency('mutter-cogl-path-2'), dependency('mutter-clutter-2')
 	]
-	vala_flags += []
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -120,7 +119,7 @@ if mutter330_dep.found()
 		dependency('mutter-cogl-3'), dependency('mutter-cogl-pango-3'),
 		dependency('mutter-cogl-path-3'), dependency('mutter-clutter-3')
 	]
-	vala_flags += ['--define', 'HAS_MUTTER330']
+	vala_flags = ['--define', 'HAS_MUTTER330']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -133,7 +132,7 @@ if mutter332_dep.found()
 		dependency('mutter-cogl-4'), dependency('mutter-cogl-pango-4'),
 		dependency('mutter-cogl-path-4'), dependency('mutter-clutter-4')
 	]
-	vala_flags += ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332']
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -146,7 +145,7 @@ if mutter334_dep.found()
 		dependency('mutter-cogl-5'), dependency('mutter-cogl-pango-5'),
 		dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5')
 	]
-	vala_flags += ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -159,7 +158,7 @@ if mutter336_dep.found()
 		dependency('mutter-cogl-6'), dependency('mutter-cogl-pango-6'),
 		dependency('mutter-cogl-path-6'), dependency('mutter-clutter-6')
 	]
-	vala_flags += ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336']
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
