@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2019-12-13 20:07+0000\n"
-"Last-Translator: Augusto Fornitani <augusto.fornitani@outlook.com>\n"
+"PO-Revision-Date: 2020-03-14 21:09+0000\n"
+"Last-Translator: Shtonchjo <shtonchjo@gmail.com>\n"
 "Language-Team: Esperanto <https://l10n.elementary.io/projects/desktop/gala/"
 "eo/>\n"
 "Language: eo\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "Ekrankopioj"
 
 #: src/WindowManager.vala:2152
 msgid "Does the display look OK?"
@@ -82,7 +82,7 @@ msgstr "Plurtaskado kaj Fenestromastrumado"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Fenestra &amp; komposta mastrumilo por Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
@@ -98,11 +98,11 @@ msgstr "Plibonigoj:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "Montri fulmklavjn en la supraj menuoj"
 
 #: data/gala.appdata.xml.in:18
 msgid "Updated translations"
-msgstr ""
+msgstr "Ĝisdatigitaj tradukoj"
 
 #: data/gala.appdata.xml.in:26
 msgid "Improve window shadows for legacy apps"
