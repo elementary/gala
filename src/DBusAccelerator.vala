@@ -18,7 +18,7 @@
 namespace Gala {
     public struct Accelerator {
         public string name;
-#if HAS_MUTTER336
+#if HAS_MUTTER332
         public uint grab_flags;
 #endif
         public Meta.KeyBindingFlags flags;
@@ -72,7 +72,7 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER336
+#if HAS_MUTTER332
         public uint grab_accelerator (string accelerator, uint grab_flags, uint flags) throws DBusError, IOError {
 #else
         public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
@@ -99,7 +99,7 @@ namespace Gala {
             uint[] actions = {};
 
             foreach (unowned Accelerator? accelerator in accelerators) {
-#if HAS_MUTTER336
+#if HAS_MUTTER332
                 actions += grab_accelerator (accelerator.name, accelerator.grab_flags, accelerator.flags);
 #else
                 actions += grab_accelerator (accelerator.name, accelerator.flags);
@@ -139,7 +139,7 @@ namespace Gala {
             if (parameters.contains ("label"))
                 label = parameters["label"].get_string ();
             int32 level = 0;
-#if HAS_MUTTER336
+#if HAS_MUTTER334
             if (parameters.contains ("level")) {
                 var double_level = parameters["level"].get_double ();
                 level = (int)(double_level * 100);
