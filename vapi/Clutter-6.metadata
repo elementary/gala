@@ -78,6 +78,8 @@ LayoutManager
 Actor
 	.animate skip=false
 	.animate_with_timeline skip=false
+Backend
+	.get_cogl_context skip=false
 Box
 	.pack skip=false
 	.pack_after skip=false
@@ -137,6 +139,8 @@ Event
 // Remove for clutter-2.0
 /////////////////////////
 
+StageView.layout skip
+
 Stage
  	.event name="emit_event"
  	.capture.captures out array_length_idx=3 type="Clutter.Capture[]"
@@ -156,6 +160,10 @@ StageStateEvent struct=false base_type="Clutter.Event"
 TouchEvent struct=false base_type="Clutter.Event"
 TouchpadPinchEvent struct=false base_type="Clutter.Event"
 TouchpadSwipeEvent struct=false base_type="Clutter.Event"
+ProximityEvent struct=false base_type="Clutter.Event"
+PadButtonEvent struct=false base_type="Clutter.Event"
+PadRingEvent struct=false base_type="Clutter.Event"
+PadStripEvent struct=false base_type="Clutter.Event"
 
 // Keysyms used to be CLUTTER_X instead of CLUTTER_KEY_X
 *#constant skip

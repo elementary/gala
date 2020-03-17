@@ -3,6 +3,7 @@ vapigen_args = [
 	'--metadatadir=@0@'.format(meson.current_source_dir()),
 	'--girdir=@0@'.format(mutter_typelib_dir),
 	'--vapidir=@0@'.format(meson.current_build_dir()),
+	'--vapidir=@0@'.format(meson.current_source_dir()),
 ]
 
 if mutter328_dep.found()
@@ -267,6 +268,7 @@ if mutter336_dep.found()
 			vapigen,
 			mutter_typelib_dir / 'Cogl-6.gir',
 			'--library=mutter-cogl-6',
+			'--pkg=mutter-cogl-path-6',
 			'--pkg=gobject-2.0',
 			'--pkg=cairo',
 			'--pkg=graphene-gobject-1.0',
@@ -281,6 +283,7 @@ if mutter336_dep.found()
 			vapigen,
 			mutter_typelib_dir / 'CoglPango-6.gir',
 			'--library=mutter-cogl-pango-6',
+			'--pkg=mutter-cogl-path-6',
 			'--pkg=mutter-cogl-6',
 			'--pkg=pangocairo',
 			vapigen_args
@@ -294,8 +297,10 @@ if mutter336_dep.found()
 			vapigen,
 			mutter_typelib_dir / 'Clutter-6.gir',
 			'--library=mutter-clutter-6',
+			'--pkg=graphene-gobject-1.0',
 			'--pkg=mutter-cogl-6',
 			'--pkg=mutter-cogl-pango-6',
+			'--pkg=mutter-cogl-path-6',
 			'--pkg=atk',
 			'--pkg=gio-2.0',
 			'--pkg=json-glib-1.0',
@@ -312,8 +317,10 @@ if mutter336_dep.found()
 			vapigen,
 			mutter_typelib_dir / 'Meta-6.gir',
 			'--library=libmutter-6',
+			'--pkg=graphene-gobject-1.0',
 			'--pkg=mutter-cogl-6',
 			'--pkg=mutter-cogl-pango-6',
+			'--pkg=mutter-cogl-path-6',
 			'--pkg=mutter-clutter-6',
 			'--pkg=atk',
 			'--pkg=gio-2.0',
@@ -321,6 +328,7 @@ if mutter336_dep.found()
 			'--pkg=pangocairo',
 			'--pkg=gtk+-3.0',
 			'--pkg=x11',
+			'--pkg=xfixes-4.0',
 			vapigen_args
 		],
 		depends: [ cogl_target, cogl_pango_target, clutter_target ],

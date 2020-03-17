@@ -41,7 +41,7 @@ namespace Cogl {
 	[Version (since = "1.14")]
 	public class FrameClosure {
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_handle_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_handle_unref")]
+	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_object_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_object_unref")]
 	[Compact]
 	public class Handle {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_material")]
@@ -270,6 +270,47 @@ namespace Cogl {
 		[Version (since = "2.0")]
 		public void set_user_program (Cogl.Handle program);
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_primitive_get_gtype ()")]
+	public class Primitive : Cogl.Object {
+		[CCode (has_construct_function = false)]
+		protected Primitive ();
+		[Version (since = "1.10")]
+		public Cogl.Primitive copy ();
+		[Version (since = "1.16")]
+		public void draw (Cogl.Framebuffer framebuffer, Cogl.Pipeline pipeline);
+		public int get_first_vertex ();
+		public Cogl.VerticesMode get_mode ();
+		[Version (since = "1.8")]
+		public int get_n_vertices ();
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2C4[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p2t2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2T2[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p2t2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2T2C4[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p3 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p3c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3C4[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p3t2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3T2[] data);
+		[CCode (has_construct_function = false)]
+		[Version (since = "1.6")]
+		public Primitive.p3t2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3T2C4[] data);
+		public void set_first_vertex (int first_vertex);
+		public void set_mode (Cogl.VerticesMode mode);
+		[Version (since = "1.8")]
+		public void set_n_vertices (int n_vertices);
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", cname = "CoglHandle", ref_function = "cogl_program_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_program_unref")]
 	[Compact]
 	public class Program : Cogl.Handle {
@@ -323,6 +364,9 @@ namespace Cogl {
 		[CCode (has_construct_function = false)]
 		[Version (since = "2.0")]
 		public Texture2D.from_bitmap (Cogl.Bitmap bitmap);
+		[CCode (has_construct_function = false)]
+		[Version (since = "2.0")]
+		public Texture2D.from_data (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false, type = "const uint8_t*")] uint8[] data) throws GLib.Error;
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", lower_case_csuffix = "texture_2d_sliced", type_id = "cogl_texture_2d_sliced_get_gtype ()")]
 	public class Texture2DSliced : Cogl.Object, Cogl.Texture {
@@ -441,6 +485,8 @@ namespace Cogl {
 		public void set_stereo_mode (Cogl.StereoMode stereo_mode);
 		[Version (since = "1.8")]
 		public void set_viewport (float x, float y, float width, float height);
+		[CCode (cheader_filename = "cogl-path/cogl-path.h")]
+		public void stroke_path (Cogl.Pipeline pipeline, Cogl.Path path);
 		[Version (since = "1.10")]
 		public void transform (Cogl.Matrix matrix);
 		[Version (since = "1.10")]
@@ -641,6 +687,82 @@ namespace Cogl {
 	[Version (since = "1.4")]
 	public struct UserDataKey {
 		public int unused;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP2 {
+		public float x;
+		public float y;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP2C4 {
+		public float x;
+		public float y;
+		public uint8 r;
+		public uint8 g;
+		public uint8 b;
+		public uint8 a;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP2T2 {
+		public float x;
+		public float y;
+		public float s;
+		public float t;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP2T2C4 {
+		public float x;
+		public float y;
+		public float s;
+		public float t;
+		public uint8 r;
+		public uint8 g;
+		public uint8 b;
+		public uint8 a;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP3 {
+		public float x;
+		public float y;
+		public float z;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP3C4 {
+		public float x;
+		public float y;
+		public float z;
+		public uint8 r;
+		public uint8 g;
+		public uint8 b;
+		public uint8 a;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP3T2 {
+		public float x;
+		public float y;
+		public float z;
+		public float s;
+		public float t;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Version (since = "1.6")]
+	public struct VertexP3T2C4 {
+		public float x;
+		public float y;
+		public float z;
+		public float s;
+		public float t;
+		public uint8 r;
+		public uint8 g;
+		public uint8 b;
+		public uint8 a;
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_ATTRIBUTE_TYPE_", has_type_id = false)]
 	[Version (since = "1.0")]

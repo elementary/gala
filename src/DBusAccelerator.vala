@@ -18,6 +18,9 @@
 namespace Gala {
     public struct Accelerator {
         public string name;
+#if HAS_MUTTER332
+        public uint grab_flags;
+#endif
         public Meta.KeyBindingFlags flags;
     }
 
@@ -69,7 +72,11 @@ namespace Gala {
             }
         }
 
+#if HAS_MUTTER332
+        public uint grab_accelerator (string accelerator, uint grab_flags, uint flags) throws DBusError, IOError {
+#else
         public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
+#endif
             uint? action = grabbed_accelerators[accelerator];
 
             if (action == null) {
@@ -92,7 +99,11 @@ namespace Gala {
             uint[] actions = {};
 
             foreach (unowned Accelerator? accelerator in accelerators) {
+#if HAS_MUTTER332
+                actions += grab_accelerator (accelerator.name, accelerator.grab_flags, accelerator.flags);
+#else
                 actions += grab_accelerator (accelerator.name, accelerator.flags);
+#endif
             }
 
             return actions;
@@ -128,8 +139,15 @@ namespace Gala {
             if (parameters.contains ("label"))
                 label = parameters["label"].get_string ();
             int32 level = 0;
+#if HAS_MUTTER334
+            if (parameters.contains ("level")) {
+                var double_level = parameters["level"].get_double ();
+                level = (int)(double_level * 100);
+            }
+#else
             if (parameters.contains ("level"))
                 level = parameters["level"].get_int32 ();
+#endif
 
             //if (monitor_index > -1)
             //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
