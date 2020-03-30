@@ -106,16 +106,16 @@ namespace Gala {
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
             actor.set_easing_duration (animation_duration);
-            actor.set_scale (0.0f, 0.0f);
-            actor.opacity = 0U;
+            actor.set_scale (0.3f, 0.3f);
+            //  actor.opacity = 0U;
             actor.restore_easing_state ();
 
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            window_icon = new WindowIcon (window, 64, scale_factor);
-            window_icon.opacity = 255;
-            window_icon.set_pivot_point (0.5f, 0.5f);
-            var stage = actor.get_stage ();
-            stage.add_child (window_icon);
+            //  var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            //  window_icon = new WindowIcon (window, 64, scale_factor);
+            //  window_icon.opacity = 255;
+            //  window_icon.set_pivot_point (0.5f, 0.5f);
+            //  var stage = actor.get_stage ();
+            //  stage.add_child (window_icon);
         }
 
         private void unshrink_window (Meta.Window? window) {
