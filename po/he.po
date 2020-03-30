@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-03-01 15:09+0000\n"
+"PO-Revision-Date: 2020-03-26 22:09+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "צילומי מסך"
 
 #: src/WindowManager.vala:2152
 msgid "Does the display look OK?"
@@ -73,17 +73,19 @@ msgstr "הגדלה"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "ניהול ריבוי משימות וחלונות"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "מנהל הרכבת חלונות עבור Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"מנהל הרכבת חלונות שמבוסס על libmutter ותוכנן על ידי elementary לעבוד עם "
+"Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 msgid "Improvements:"
@@ -91,7 +93,7 @@ msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "הצגת קיצורי מקלדת בתפריטי כותרת"
 
 #: data/gala.appdata.xml.in:18
 msgid "Updated translations"
@@ -103,15 +105,15 @@ msgstr "שיפור צלליות חלונות ליישומים מיושנים"
 
 #: data/gala.appdata.xml.in:27
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
 
 #: data/gala.appdata.xml.in:28
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "תיקון מיקום ההתראה לאחר החלפת DPI"
 
 #: data/gala.appdata.xml.in:29
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "תיקון הנפשות להזזה ולהגדלה של חלונות מרוצפים"
 
 #: data/gala.appdata.xml.in:35
 msgid "elementary, Inc."
