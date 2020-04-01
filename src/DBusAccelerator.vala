@@ -127,6 +127,15 @@ namespace Gala {
             return ret;
         }
 
+#if HAS_MUTTER334
+        public bool ungrab_accelerators (uint[] actions) throws DBusError, IOError {
+            foreach (uint action in actions) {
+                ungrab_accelerator (action);
+            }
+            return true;
+        }
+#endif
+
         [DBus (name = "ShowOSD")]
         public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
             int32 monitor_index = -1;
