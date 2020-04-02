@@ -73,7 +73,7 @@ namespace Gala {
         }
 
 #if HAS_MUTTER332
-        public uint grab_accelerator (string accelerator, uint flags, uint grab_flags) throws DBusError, IOError {
+        public uint grab_accelerator (string accelerator, uint flags, Meta.KeyBindingFlags grab_flags) throws DBusError, IOError {
 #else
         public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
 #endif
