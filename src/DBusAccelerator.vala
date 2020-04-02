@@ -81,7 +81,7 @@ namespace Gala {
 
             if (action == null) {
 #if HAS_MUTTER332
-                action = wm.get_display ().grab_accelerator (accelerator, (Meta.KeyBindingFlags)grab_flags);
+                action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
 #elif HAS_MUTTER330
                 action = wm.get_display ().grab_accelerator (accelerator);
 #else
