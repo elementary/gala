@@ -1,3 +1,59 @@
+gala (3.3.0) unstable; urgency=medium
+
+  * Release 3.3.0 (#762)
+  * Update translation files
+  * Update translation template
+  * Update gala.appdata.xml.in
+  * DBusAccelerator: Fix grab_accelerator argument order (#761)
+  * Support g-s-d UngrabAccelerators API (#760)
+  * Backport media keys fixes to earlier GSD versions (#754)
+  * Update DBus API for Mutter 3.36 media keys (#753)
+  * Mutter 3.36 support (#751)
+  * vapi: Be more specific with Clutter and Cogl
+  * docs: Also remove compat and cogl-fixes
+  * meson: Add build target to regenerate the .vapi files
+  * cogl-2: Add custom.vala and metadata files
+  * cogl-3: Add custom.vala and metadata files
+  * cogl-4: Add custom.vala and metadata files
+  * cogl-5: Add custom.vala and metadata files
+  * cogl-6: Add custom.vala and metadata files
+  * meta-6: Add .metadata file
+  * clutter-6: Add custom.vala and metadata files
+  * clutter-5: Add custom.vala and metadata files
+  * clutter-4: Add custom.vala and metadata files
+  * clutter-3: Add custom.vala and metadata files
+  * clutter-2: Add custom.vala and metadata files
+  * mutter-clutter: Fix missing endif after rebase (#748)
+  * cogl: Sanitize the .vapi dependencies (#746)
+  * meson: overrite mutter defines instead of append
+  * pip: Avoid to keep the Rect as a property
+  * mutter-cogl-6: Make it a real file instead of a symlink
+  * mutter-clutter: Add the changes for Mutter 3.36
+  * mutter-clutter: Make it based on Mutter 3.28
+  * mutter-cogl-path: Put CoglPath element into its own .vapi
+  * meson: Make the build system more compact and resilient (#739)
+  * mutter-clutter: make all KEY constants unsigned integers (#735)
+  * Install gala daemon desktop to autostart, not apps (#726)
+  * WindowManager: Ensure that we have a valid WindowActor before using
+    it (#714)
+  * Fix broken state of notification windows when switching workspaces
+    (#711)
+  * notify: Make it build with Mutter >= 3.30 (#708)
+  * Update translation files
+  * Update translation template
+  * MenuDaemon: Add accel labels to menuitems (#679)
+  * Remove unused TextShadowEffect (#690)
+  * lint brackets in plugins directory (#699)
+  * Optionally support native notification windows (#552)
+  * Utils: Remove unused get_next_window and get_icon_for_window (#691)
+  * WindowManager: Explicitly namespace Meta (#687)
+  * WindowManager: Remove unused top_stack (#688)
+  * Misc whitespace clean ups in src (#686)
+  * Use one true brace style in src (#685)
+  * Convert all tabs to spaces (#684)
+
+ -- elementary OS Team <builds@elementary.io>  Fri, 03 Apr 2020 18:46:42 +0000
+
 gala (3.2.0) unstable; urgency=low
 
   [ Rico Tzschichholz ]
