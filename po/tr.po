@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
+"POT-Creation-Date: 2020-04-02 18:35+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
-"\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
+">\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Ekran Görüntüleri"
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "Ekran iyi görünüyor mu?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "Bu Yapılandırmayı Koru"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "Önceki Yapılandırmayı Geri Yükle"
 
@@ -92,35 +92,43 @@ msgstr ""
 "Pantheon ile kullanılmak üzere libmutter temel alınan ve elementary "
 "tarafından tasarlanmış bir pencere yöneticisi."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 msgid "Improvements:"
 msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Üst Bilgi Çubuğu menülerinde klavye kısayollarını göster"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:20
 msgid "Updated translations"
 msgstr "Çeviriler güncellendi"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid "Improve window shadows for legacy apps"
 msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid "Fix potential crash when taking screenshots"
 msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:30
 msgid "Fix notification position after changing DPI"
 msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:31
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:37
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

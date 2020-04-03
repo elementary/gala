@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
+"POT-Creation-Date: 2020-04-02 18:35+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Ruben Sibon <rubenjs@webricolage.nl>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -23,15 +23,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Screenshots"
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "Ziet het beeld er goed uit?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "Behoud deze instellingen"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "Vorige instellingen terugzetten"
 
@@ -91,37 +91,45 @@ msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Toon sneltoetsen in titelbalkmenu's"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:20
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid "Improve window shadows for legacy apps"
 msgstr "Verbeterde venster schaduwen voor oudere apps"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid "Fix potential crash when taking screenshots"
 msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:30
 msgid "Fix notification position after changing DPI"
 msgstr "De positie van notificaties is verbeterd na het veranderen van DPI"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:31
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Verbeterde animaties voor bewegende en gemaximaliseerde maar niet "
 "schermvullende vensters"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:37
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
