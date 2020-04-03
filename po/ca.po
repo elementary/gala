@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
-"PO-Revision-Date: 2019-12-18 19:12+0000\n"
+"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"PO-Revision-Date: 2020-01-19 13:07+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
 ">\n"
@@ -20,59 +20,59 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "La pantalla es veu bé?"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "Mantén aquesta configuració"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "Restaura la configuració anterior"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "Minimitza"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "Mou"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "Canvia'n la mida"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
 msgstr "Sempre al davant"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "Sempre a l'espai de treball visible"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "Mou a l'espai de treball de l'esquerra"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "Mou a l'espai de treball de la dreta"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "Tanca"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr "Desmaximitza"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "Maximitza"
 
@@ -92,29 +92,45 @@ msgstr ""
 "Un gestor de finestres i de composició basat en libmutter i dissenyat per "
 "l'elementary per usar amb el Pantheon."
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 msgid "Improvements:"
 msgstr "Millores:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Mostra les dreceres de teclat als menús de la barra de capçalera"
+
+#: data/gala.appdata.xml.in:20
+msgid "Updated translations"
+msgstr "Traduccions actualitzades"
+
+#: data/gala.appdata.xml.in:28
 msgid "Improve window shadows for legacy apps"
 msgstr "Millora de les ombres de les finestres per a les aplicacions de llegat"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:29
 msgid "Fix potential crash when taking screenshots"
 msgstr "Correcció de la fallada potencial en fer captures de pantalla"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:30
 msgid "Fix notification position after changing DPI"
 msgstr ""
 "Correcció de la posició de les notificacions després de canviar els DPI"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:31
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Correcció de les animacions per moure i maximitzar les finestres en mosaic"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:37
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

@@ -88,10 +88,15 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
                 int point_x = x - (int)active.x;
                 int point_y = y - (int)active.y;
 
+#if HAS_MUTTER336
+                var rect = Graphene.Rect.alloc ();
+#else
                 var rect = Clutter.Rect.alloc ();
-                var clip = rect.init (point_x, point_y, width, height);
+#endif
+                rect.init (point_x, point_y, width, height);
 
-                var popup_window = new PopupWindow (wm, active, clip);
+                var popup_window = new PopupWindow (wm, active);
+                popup_window.set_container_clip (rect);
                 popup_window.show.connect (on_popup_window_show);
                 popup_window.hide.connect (on_popup_window_hide);
                 add_window (popup_window);
@@ -112,7 +117,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
-            var popup_window = new PopupWindow (wm, selected, null);
+            var popup_window = new PopupWindow (wm, selected);
             popup_window.show.connect (on_popup_window_show);
             popup_window.hide.connect (on_popup_window_hide);
             add_window (popup_window);

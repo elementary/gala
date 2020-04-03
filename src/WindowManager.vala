@@ -161,7 +161,11 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
+#if HAS_MUTTER330
+            notification_stack = new NotificationStack (display);
+#else
             notification_stack = new NotificationStack (screen);
+#endif
 
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
@@ -1950,15 +1954,17 @@ namespace Gala {
                         // windows that are on all workspaces will be faded out and back in
                         windows.prepend (actor);
                         parents.prepend (actor.get_parent ());
-                        clutter_actor_reparent (actor, static_windows);
 
-						if (window.window_type != Meta.WindowType.NOTIFICATION) {
-							actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-							actor.save_easing_state ();
-							actor.set_easing_duration (300);
-							actor.opacity = 0;
-							actor.restore_easing_state ();
-						}
+                        if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                            reparent_notification_window (actor, static_windows);
+                        } else {
+                            clutter_actor_reparent (actor, static_windows);
+                            actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                            actor.save_easing_state ();
+                            actor.set_easing_duration (300);
+                            actor.opacity = 0;
+                            actor.restore_easing_state ();
+                        }
                     }
 
                     continue;
@@ -2094,17 +2100,25 @@ namespace Gala {
                     continue;
                 }
 
-                var window = actor as Meta.WindowActor;
-
-                if (window == null || !window.is_destroyed ())
+                unowned Meta.WindowActor? window = actor as Meta.WindowActor;
+                if (window == null) {
                     clutter_actor_reparent (actor, parents.nth_data (i));
-
-                if (window == null || window.is_destroyed ())
                     continue;
+                }
+
+                unowned Meta.Window meta_window = window.get_meta_window ();
+                if (!window.is_destroyed ()) {
+                    if (meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                        reparent_notification_window (actor, parents.nth_data (i));
+                    } else {
+                        clutter_actor_reparent (actor, parents.nth_data (i));
+                    }
+
+                    continue;
+                }
 
                 kill_window_effects (window);
 
-                var meta_window = window.get_meta_window ();
                 if (meta_window.get_workspace () != active_workspace
                     && !meta_window.is_on_all_workspaces ())
                     window.hide ();
@@ -2170,6 +2184,41 @@ namespace Gala {
 
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
+        }
+
+        /** 
+         * Notification windows are a special case where the transition state needs
+         * to be preserved when reparenting the actor. Because Clutter doesn't allow specifying
+         * remove_child flags we will save the elapsed time of required transitions and
+         * then advance back to it when we're done reparenting.
+         */
+        static void reparent_notification_window (Clutter.Actor actor, Clutter.Actor new_parent) {
+            unowned Clutter.Transition? entry_transition = actor.get_transition (NotificationStack.TRANSITION_ENTRY_NAME);
+            unowned Clutter.Transition? position_transition = actor.get_data<Clutter.Transition?> (NotificationStack.TRANSITION_MOVE_STACK_ID);
+
+            uint elapsed_entry = 0U, elapsed_position = 0U;
+
+            bool save_entry = entry_transition != null && entry_transition.is_playing ();
+            if (save_entry) {
+                elapsed_entry = entry_transition.get_elapsed_time ();
+            }
+
+            bool save_position = position_transition != null && position_transition.is_playing ();
+            if (save_position) {
+                elapsed_position = position_transition.get_elapsed_time ();
+            }
+
+            clutter_actor_reparent (actor, new_parent);
+
+            if (save_entry) {
+                entry_transition.advance (elapsed_entry);
+                entry_transition.start ();
+            }
+
+            if (save_position) {
+                position_transition.advance (elapsed_position);
+                position_transition.start ();
+            }
         }
 
         static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {

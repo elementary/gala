@@ -17,6 +17,9 @@
  */
 
 public class Gala.NotificationStack : Object {
+    public const string TRANSITION_ENTRY_NAME = "entry";
+    public const string TRANSITION_MOVE_STACK_ID = "move-stack";
+
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
     private const int TOP_OFFSET = 2;
@@ -29,19 +32,34 @@ public class Gala.NotificationStack : Object {
     private int stack_y;
     private int stack_width;
 
+#if HAS_MUTTER330
+    public Meta.Display display { get; construct; }
+#else
     public Meta.Screen screen { get; construct; }
+#endif
 
     private Gee.ArrayList<unowned Meta.WindowActor> notifications;
 
+#if HAS_MUTTER330
+    public NotificationStack (Meta.Display display) {
+        Object (display: display);
+    }
+#else
     public NotificationStack (Meta.Screen screen) {
         Object (screen: screen);
     }
+#endif
 
     construct {
-        notifications = new Gee.ArrayList<Meta.WindowActor> ();
+        notifications = new Gee.ArrayList<unowned Meta.WindowActor> ();
 
+#if HAS_MUTTER330
+        Meta.MonitorManager.@get ().monitors_changed_internal.connect (update_stack_allocation);
+        display.workareas_changed.connect (update_stack_allocation);
+#else
         screen.monitors_changed.connect (update_stack_allocation);
         screen.workareas_changed.connect (update_stack_allocation);
+#endif
         update_stack_allocation ();
     }
 
@@ -53,10 +71,6 @@ public class Gala.NotificationStack : Object {
         
         var scale = Utils.get_ui_scaling_factor ();
 
-        var entry = new Clutter.TransitionGroup ();
-        entry.remove_on_complete = true;
-        entry.duration = 400;
-
         var opacity_transition = new Clutter.PropertyTransition ("opacity");
         opacity_transition.set_from_value (0);
         opacity_transition.set_to_value (255);
@@ -67,9 +81,13 @@ public class Gala.NotificationStack : Object {
         flip_transition.set_key_frames ({ 0.6 });
         flip_transition.set_values ({ -10.0 });
 
+        var entry = new Clutter.TransitionGroup ();
+        entry.duration = 400;
         entry.add_transition (opacity_transition);
         entry.add_transition (flip_transition);
-        notification.add_transition ("entry", entry);
+
+        notification.transitions_completed.connect (() => notification.remove_all_transitions ());
+        notification.add_transition (TRANSITION_ENTRY_NAME, entry);
 
         /**
          * We will make space for the incomming notification
@@ -83,8 +101,13 @@ public class Gala.NotificationStack : Object {
     }
 
     private void update_stack_allocation () {
+#if HAS_MUTTER330
+        var primary = display.get_primary_monitor ();
+        var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+#else
         var primary = screen.get_primary_monitor ();
         var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
+#endif
 
         var scale = Utils.get_ui_scaling_factor ();
         stack_width = (WIDTH + MARGIN) * scale;
@@ -106,6 +129,10 @@ public class Gala.NotificationStack : Object {
 
             move_window (actor, -1, (int)y);
             actor.restore_easing_state ();
+
+            // For some reason get_transition doesn't work later when we need to restore it
+            unowned Clutter.Transition? transition = actor.get_transition ("position");
+            actor.set_data<Clutter.Transition?> (TRANSITION_MOVE_STACK_ID, transition);
 
             y += actor.height;
         }
@@ -151,7 +178,6 @@ public class Gala.NotificationStack : Object {
          * will be updated instantly, get the buffer rectangle.
          */
         rect = window.get_buffer_rect ();
-        actor.x = rect.x - ((actor.width - rect.width) / 2);
-        actor.y = rect.y - ((actor.height - rect.height) / 2);
+        actor.set_position (rect.x - ((actor.width - rect.width) / 2), rect.y - ((actor.height - rect.height) / 2));
     }
 }
