@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
+"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"PO-Revision-Date: 2020-04-03 18:45+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
 "\n"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Captures d'écran"
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "L'affichage semble-t-il correct ?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "Conserver cette configuration"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "Restaurer la configuration précédente"
 
@@ -92,39 +92,47 @@ msgstr ""
 "Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
 "par elementary pour être utilisé avec Panthéon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 msgid "Improvements:"
 msgstr "Améliorations :"
 
 #: data/gala.appdata.xml.in:17
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Les services en arrière-plan de Gala ne sont plus affichés dans le dock"
+
+#: data/gala.appdata.xml.in:18
+msgid "Fixes for media key handling"
+msgstr "Corrections pour la gestion des touches de média"
+
+#: data/gala.appdata.xml.in:19
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Affichage des raccourcis claviers dans les menus d'entête"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:20
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid "Improve window shadows for legacy apps"
 msgstr "Amélioration des ombres des fenêtres pour les applications officielles"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 "Correction de plantages potentiels lors de la prise de captures d'écran"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:30
 msgid "Fix notification position after changing DPI"
 msgstr ""
 "Correction de la position des notifications après la modification du DPI"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:31
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Correction des animations de déplacement et d'agrandissement des fenêtres "
 "tuilées"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:37
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

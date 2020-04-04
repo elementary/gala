@@ -18,10 +18,10 @@
 namespace Gala {
     public struct Accelerator {
         public string name;
+        public uint flags;
 #if HAS_MUTTER332
-        public uint grab_flags;
+        public Meta.KeyBindingFlags grab_flags;
 #endif
-        public Meta.KeyBindingFlags flags;
     }
 
     [DBus (name="org.gnome.Shell")]
@@ -73,7 +73,7 @@ namespace Gala {
         }
 
 #if HAS_MUTTER332
-        public uint grab_accelerator (string accelerator, uint grab_flags, uint flags) throws DBusError, IOError {
+        public uint grab_accelerator (string accelerator, uint flags, Meta.KeyBindingFlags grab_flags) throws DBusError, IOError {
 #else
         public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
 #endif
@@ -81,7 +81,7 @@ namespace Gala {
 
             if (action == null) {
 #if HAS_MUTTER332
-                action = wm.get_display ().grab_accelerator (accelerator, (Meta.KeyBindingFlags)flags);
+                action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
 #elif HAS_MUTTER330
                 action = wm.get_display ().grab_accelerator (accelerator);
 #else
@@ -100,7 +100,7 @@ namespace Gala {
 
             foreach (unowned Accelerator? accelerator in accelerators) {
 #if HAS_MUTTER332
-                actions += grab_accelerator (accelerator.name, accelerator.grab_flags, accelerator.flags);
+                actions += grab_accelerator (accelerator.name, accelerator.flags, accelerator.grab_flags);
 #else
                 actions += grab_accelerator (accelerator.name, accelerator.flags);
 #endif
@@ -126,6 +126,16 @@ namespace Gala {
 
             return ret;
         }
+
+#if HAS_MUTTER334
+        public bool ungrab_accelerators (uint[] actions) throws DBusError, IOError {
+            foreach (uint action in actions) {
+                ungrab_accelerator (action);
+            }
+
+            return true;
+        }
+#endif
 
         [DBus (name = "ShowOSD")]
         public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
