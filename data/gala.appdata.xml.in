@@ -10,10 +10,12 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="3.3.0" date="2020-01-08" urgency="medium">
+    <release version="3.3.0" date="2020-04-02" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Don't show Gala Background Services in the dock</li>
+          <li>Fixes for media key handling</li>
           <li>Show keyboard shortcuts in HeaderBar menus</li>
           <li>Updated translations</li>
         </ul>
