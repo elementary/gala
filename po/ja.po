@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-02 18:35+0000\n"
-"PO-Revision-Date: 2020-01-25 15:08+0000\n"
+"PO-Revision-Date: 2020-04-06 15:10+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -98,11 +98,11 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "ドックに Gala Background Services というアイコンが表示される問題を修正"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "メディアキーの処理に関する修正"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show keyboard shortcuts in HeaderBar menus"
