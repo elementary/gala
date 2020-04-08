@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-02 18:35+0000\n"
-"PO-Revision-Date: 2020-02-01 02:08+0000\n"
+"PO-Revision-Date: 2020-04-09 14:10+0000\n"
 "Last-Translator: Rodrigo Oliveira <rod.oliveira@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
@@ -98,11 +98,11 @@ msgstr "Melhorias:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Não mostrar os serviços de segundo plano do Gala na dock"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Correções para manipulação de chaves de mídia"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show keyboard shortcuts in HeaderBar menus"
