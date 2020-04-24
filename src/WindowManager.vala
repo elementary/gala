@@ -2106,9 +2106,10 @@ namespace Gala {
                     continue;
                 }
 
-                unowned Meta.Window meta_window = window.get_meta_window ();
+                unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    if (meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (meta_window != null
+                        && meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         reparent_notification_window (actor, parents.nth_data (i));
                     } else {
                         clutter_actor_reparent (actor, parents.nth_data (i));
@@ -2119,7 +2120,8 @@ namespace Gala {
 
                 kill_window_effects (window);
 
-                if (meta_window.get_workspace () != active_workspace
+                if (meta_window != null
+                    && meta_window.get_workspace () != active_workspace
                     && !meta_window.is_on_all_workspaces ())
                     window.hide ();
 
