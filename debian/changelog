@@ -1,3 +1,10 @@
+gala (3.3.1) unstable; urgency=medium
+
+  * Release 3.3.1
+  * Fix a crash when meta_window is null (#780)
+
+ -- elementary OS Team <builds@elementary.io>  Sat, 25 Apr 2020 17:29:11 +0000
+
 gala (3.3.0) unstable; urgency=medium
 
   * Release 3.3.0 (#762)
