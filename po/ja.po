@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-25 17:29+0000\n"
-"PO-Revision-Date: 2020-04-06 15:10+0000\n"
+"PO-Revision-Date: 2020-04-26 13:13+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -99,7 +99,7 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
+msgstr "一時的なウィンドウが開いている際にワークスペースを切り替えるとクラッシュする問題を修正"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
 msgid "Updated translations"
