@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-25 17:29+0000\n"
-"PO-Revision-Date: 2020-04-23 19:10+0000\n"
+"PO-Revision-Date: 2020-04-26 13:13+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -100,6 +100,8 @@ msgstr "Melhorias:"
 #: data/gala.appdata.xml.in:17
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"Corrige falha ao alterar áreas de trabalho enquanto uma janela transitória "
+"está a ser aberta"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
 msgid "Updated translations"
