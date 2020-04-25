@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
 "PO-Revision-Date: 2020-04-14 14:10+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/>"
-"\n"
+"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
+">\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Kuvakaappaukset"
 
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "Näyttääkö kaikki kelvolliselta?"
 
-#: src/WindowManager.vala:2169
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "Säilytä nämä asetukset"
 
-#: src/WindowManager.vala:2170
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "Palauta aiemmat asetukset"
 
@@ -92,43 +92,48 @@ msgstr ""
 "Ikkuna- ja kompositointihallinta pohjautuen libmutteriin, suunniteltu "
 "Pantheoniin elementaryn toimesta."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
 msgstr "Parannukset:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
-msgstr "Älä näytä Galan taustakuvapalveluita telakassa"
-
-#: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
+msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Näytä pikanäppäimet otsikkopalkin valikoissa"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
 msgid "Updated translations"
 msgstr "Päivitetyt käännökset"
 
+#: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Älä näytä Galan taustakuvapalveluita telakassa"
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr ""
+
 #: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Näytä pikanäppäimet otsikkopalkin valikoissa"
+
+#: data/gala.appdata.xml.in:37
 msgid "Improve window shadows for legacy apps"
 msgstr ""
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:38
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39
 msgid "Fix notification position after changing DPI"
 msgstr ""
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:40
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
 "PO-Revision-Date: 2020-04-06 15:10+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "スクリーンショット"
 
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "ディスプレイの設定に問題はありませんか？"
 
-#: src/WindowManager.vala:2169
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "この設定を保つ"
 
-#: src/WindowManager.vala:2170
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "前の設定へ戻す"
 
@@ -92,45 +92,50 @@ msgstr ""
 "libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
 "ンポジット型ウィンドウマネージャーです。"
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
-msgstr "ドックに Gala Background Services というアイコンが表示される問題を修正"
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
 
-#: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
-msgstr "メディアキーの処理に関する修正"
-
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
+#: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr "ドックに Gala Background Services というアイコンが表示される問題を修正"
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr "メディアキーの処理に関する修正"
+
 #: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
+
+#: data/gala.appdata.xml.in:37
 msgid "Improve window shadows for legacy apps"
 msgstr "レガシーなアプリのウィンドウの影を改善"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:38
 msgid "Fix potential crash when taking screenshots"
 msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39
 msgid "Fix notification position after changing DPI"
 msgstr "DPI を変更すると通知が間違った位置に表示される問題を修正"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:40
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
 "正"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
