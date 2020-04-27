@@ -3,3 +3,4 @@ cairo
 pango
 json-glib-1.0
 mutter-cogl-6
+graphene-gobject-1.0

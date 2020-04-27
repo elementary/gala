@@ -289,16 +289,28 @@ namespace Gala {
          * @return The close button actor
          */
         public static Clutter.Actor create_close_button () {
+#if HAS_MUTTER336
+            var texture = new Clutter.Actor ();
+#else
             var texture = new Clutter.Texture ();
+#endif
             var pixbuf = get_close_button_pixbuf ();
 
             texture.reactive = true;
 
             if (pixbuf != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                    texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
+#else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
                     pixbuf.get_width (), pixbuf.get_height (),
                     pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             } else {
                 // we'll just make this red so there's at least something as an
@@ -343,16 +355,28 @@ namespace Gala {
          * @return The resize button actor
          */
         public static Clutter.Actor create_resize_button () {
+#if HAS_MUTTER336
+            var texture = new Clutter.Actor ();
+#else
             var texture = new Clutter.Texture ();
+#endif
             var pixbuf = get_resize_button_pixbuf ();
 
             texture.reactive = true;
 
             if (pixbuf != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                    texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
+#else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
-                        pixbuf.get_width (), pixbuf.get_height (),
-                        pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+                    pixbuf.get_width (), pixbuf.get_height (),
+                    pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             } else {
                 // we'll just make this red so there's at least something as an

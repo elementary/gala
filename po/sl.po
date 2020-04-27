@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
-"PO-Revision-Date: 2020-01-07 17:40+0000\n"
-"Last-Translator: Jernej Virag <jernej@virag.si>\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
+"PO-Revision-Date: 2020-02-24 21:15+0000\n"
+"Last-Translator: Marko <marko.dolar@gmail.com>\n"
 "Language-Team: Slovenian <https://l10n.elementary.io/projects/desktop/gala/"
 "sl/>\n"
 "Language: sl\n"
@@ -21,59 +21,59 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
 msgstr "Posnetki zaslona"
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "Ali je slika na zaslonu videti v redu?"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "Ohrani to konfiguracijo"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "Obnovi prejšnjo konfiguracijo"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "Minimiraj"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "Premakni"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "Spremeni velikost"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
-msgstr "Vendno na vrhu"
+msgstr "Vedno na vrhu"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "Vedno na vidni delovni površini"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "Premakni na levo delovno površino"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "Premakni na desno delovno površino"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "Zapri"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr "Obnovi"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "Maksimiraj"
 
@@ -93,27 +93,48 @@ msgstr ""
 "Upravljalnik z okni osnovan na libmutter in oblikovan s strani elementary za "
 "uporabo s Pantheonom."
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
 msgstr "Izboljšave:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Improve window shadows for legacy apps"
-msgstr "Izboljšane sence v starejših aplikacijah"
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
+msgid "Updated translations"
+msgstr "Posodobljeni prevodi"
+
+#: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Pokaži bližnjice za tipkovnico v menijih glavne vrstice"
+
+#: data/gala.appdata.xml.in:37
+msgid "Improve window shadows for legacy apps"
+msgstr "Izboljšane okenske sence v starejših aplikacijah"
+
+#: data/gala.appdata.xml.in:38
 msgid "Fix potential crash when taking screenshots"
 msgstr "Popravljeno morebitno sesutje pri zajemanju slik zaslona"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:39
 msgid "Fix notification position after changing DPI"
 msgstr "Popravljen položaj obvestil po spremembi DPI"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:40
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Popravljene animacije pri premikanju oken"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -128,7 +149,7 @@ msgstr "Pregled vseh odprtih oken in površin"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -136,11 +157,11 @@ msgstr "Drugo"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Nadomestna desktop datoteka za obvestila iz zastarelih aplikacij."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Akcija za zgornji levi kot"

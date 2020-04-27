@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
-"PO-Revision-Date: 2019-12-16 18:35+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
+"PO-Revision-Date: 2020-04-26 13:13+0000\n"
+"Last-Translator: Rodrigo Oliveira <rod.oliveira@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -20,97 +20,122 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "Capturas de tela"
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "O vídeo está bom?"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "Manter essa configuração"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "Restaurar a configuração anterior"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "Minimizar"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "Mover"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "Redimensionar"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
 msgstr "Sempre no topo"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "Sempre na área de trabalho visível"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "Mover para área de trabalho à esquerda"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "Mover para área de trabalho à direita"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "Fechar"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr "Restaurar"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "Maximizar"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitarefa  &amp; Gerenciamento de janela"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Um gerenciador de janelas &amp; e composição para o Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Um gerenciador de janelas &amp; e composição baseado no libmutter e "
+"projetado pelo elementary para uso com o Pantheon."
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
-msgstr ""
+msgstr "Melhorias:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Improve window shadows for legacy apps"
+msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"Corrigir falha ao alterar áreas de trabalho enquanto uma janela transitória "
+"está sendo aberta"
 
-#: data/gala.appdata.xml.in:18
-msgid "Fix potential crash when taking screenshots"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19
-msgid "Fix notification position after changing DPI"
-msgstr ""
-
-#: data/gala.appdata.xml.in:20
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
+msgid "Updated translations"
+msgstr "Traduções atualizadas"
 
 #: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Não mostrar os serviços de segundo plano do Gala na dock"
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr "Correções para manipulação de chaves de mídia"
+
+#: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Mostrar atalhos do teclado nos menus da barra de título"
+
+#: data/gala.appdata.xml.in:37
+msgid "Improve window shadows for legacy apps"
+msgstr "Melhorar as sombras nas janelas para aplicações antigas"
+
+#: data/gala.appdata.xml.in:38
+msgid "Fix potential crash when taking screenshots"
+msgstr "Corrigir possíveis falhas ao capturar telas"
+
+#: data/gala.appdata.xml.in:39
+msgid "Fix notification position after changing DPI"
+msgstr "Corrigir a posição das notificações depois de modificar o DPI"
+
+#: data/gala.appdata.xml.in:40
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "Corrige as animações para mover e maximizar janelas lado a lado"
+
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

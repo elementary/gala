@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-07 17:42+0000\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Albanian <https://l10n.elementary.io/projects/desktop/gala/sq/"
@@ -20,59 +20,59 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:225
+#: src/ScreenshotManager.vala:212
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2188
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "A duket ekrani OK?"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "Mbaj këtë konfigurim"
 
-#: src/WindowManager.vala:2192
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "Rivendos konfigurimin e mëparshëm"
 
-#: daemon/MenuDaemon.vala:95
+#: daemon/MenuDaemon.vala:107
 msgid "Minimize"
 msgstr "Minimizo"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:120
 msgid "Move"
 msgstr "Lëviz"
 
-#: daemon/MenuDaemon.vala:113
+#: daemon/MenuDaemon.vala:128
 msgid "Resize"
 msgstr "Ripërmaso"
 
-#: daemon/MenuDaemon.vala:119
+#: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
 msgstr "Gjithmonë sipër"
 
-#: daemon/MenuDaemon.vala:125
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
 msgstr "Gjithmonë në hapësirën e dukshme të punës"
 
-#: daemon/MenuDaemon.vala:131
+#: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
 msgstr "Lëvize në hapësirën e punës majtas"
 
-#: daemon/MenuDaemon.vala:137
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
 msgstr "Lëvize në hapësirën e punës djathtas"
 
-#: daemon/MenuDaemon.vala:143
+#: daemon/MenuDaemon.vala:168
 msgid "Close"
 msgstr "Mbyll"
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:159
+#: daemon/MenuDaemon.vala:201
 msgid "Maximize"
 msgstr "Maksimizo"
 
@@ -90,27 +90,48 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:15
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:17
-msgid "Improve window shadows for legacy apps"
+msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18
-msgid "Fix potential crash when taking screenshots"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19
-msgid "Fix notification position after changing DPI"
-msgstr ""
-
-#: data/gala.appdata.xml.in:20
-msgid "Fix animations for moving and maximizing tiled windows"
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
+msgid "Updated translations"
 msgstr ""
 
 #: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr ""
+
+#: data/gala.appdata.xml.in:37
+msgid "Improve window shadows for legacy apps"
+msgstr ""
+
+#: data/gala.appdata.xml.in:38
+msgid "Fix potential crash when taking screenshots"
+msgstr ""
+
+#: data/gala.appdata.xml.in:39
+msgid "Fix notification position after changing DPI"
+msgstr ""
+
+#: data/gala.appdata.xml.in:40
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr ""
 
