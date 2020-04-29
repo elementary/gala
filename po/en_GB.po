@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"POT-Creation-Date: 2020-04-25 17:29+0000\n"
 "PO-Revision-Date: 2020-04-06 15:10+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@posteo.net>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Screenshots"
 
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2168
 msgid "Does the display look OK?"
 msgstr "Does the display look OK?"
 
-#: src/WindowManager.vala:2169
+#: src/WindowManager.vala:2171
 msgid "Keep This Configuration"
 msgstr "Keep This Configuration"
 
-#: src/WindowManager.vala:2170
+#: src/WindowManager.vala:2172
 msgid "Restore Previous Configuration"
 msgstr "Restore Previous Configuration"
 
@@ -92,43 +92,48 @@ msgstr ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:35
 msgid "Improvements:"
 msgstr "Improvements:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
-msgstr "Don't show Gala Background Services in the dock"
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
 
-#: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
-msgstr "Fixes for media key handling"
-
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Show keyboard shortcuts in HeaderBar menus"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
 msgid "Updated translations"
 msgstr "Updated translations"
 
+#: data/gala.appdata.xml.in:26
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Don't show Gala Background Services in the dock"
+
+#: data/gala.appdata.xml.in:27
+msgid "Fixes for media key handling"
+msgstr "Fixes for media key handling"
+
 #: data/gala.appdata.xml.in:28
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Show keyboard shortcuts in HeaderBar menus"
+
+#: data/gala.appdata.xml.in:37
 msgid "Improve window shadows for legacy apps"
 msgstr "Improve window shadows for legacy apps"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:38
 msgid "Fix potential crash when taking screenshots"
 msgstr "Fix potential crash when taking screenshots"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39
 msgid "Fix notification position after changing DPI"
 msgstr "Fix notification position after changing DPI"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:40
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Fix animations for moving and maximising tiled windows"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
