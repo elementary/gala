@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-25 17:29+0000\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
 "PO-Revision-Date: 2020-04-06 15:10+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
 "Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
@@ -23,15 +23,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "स्क्रीनशॉट"
 
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "डिस्प्ले ठीक दिसत आहे का?"
 
-#: src/WindowManager.vala:2171
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "हे कॉन्फिगरेशन ठेवा"
 
-#: src/WindowManager.vala:2172
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
 
@@ -91,49 +91,61 @@ msgstr ""
 "लिंबमुटरवर आधारीत एक विंडो आणि कम्पोझिटिंग मॅनेजर पॅन्थिओन सह वापरासाठी प्राथमिक द्वारे "
 "डिझाइन केलेले."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "सुधारणा:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Fix crash when changing workspaces while a transient window is opening"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:18
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "अद्ययावत भाषांतर"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
 msgstr "डॉकमध्ये गाला पार्श्वभूमी सेवा दर्शवू नका"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:37
 msgid "Fixes for media key handling"
 msgstr "मीडिया की हाताळणीशी संबंधित समस्यांसाठी निराकरणे"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:38
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "लेगसी अॅप्ससाठी विंडो सावली सुधारित करा"
 
-#: data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:39
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "डीपीआय बदलल्यानंतर सूचना स्थितीशी संबंधित समस्यांचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:40
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "टाइल केलेल्या विंडो हलविण्यासाठी आणि जास्तीत जास्त करण्यासाठी अ‍ॅनिमेशनचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
 msgstr "एलिमेंटरी,Inc."
 
