@@ -1,3 +1,15 @@
+gala (3.3.2) unstable; urgency=medium
+
+  * Release 3.3.2 (#787)
+  * Fix "Always on Visible Workspace" windows are remaining invisible
+    after changing workspace (#785)
+  * fix Gala.Utils.create_close_button and
+    Gala.Utils.create_refresh_button (texture.set_size) (#784)
+  * Update translation files
+  * Update translation template
+
+ -- elementary OS Team <builds@elementary.io>  Thu, 30 Apr 2020 22:25:02 +0000
+
 gala (3.3.1) unstable; urgency=medium
 
   * Release 3.3.1
