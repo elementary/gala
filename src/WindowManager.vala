@@ -2114,8 +2114,6 @@ namespace Gala {
                     } else {
                         clutter_actor_reparent (actor, parents.nth_data (i));
                     }
-
-                    continue;
                 }
 
                 kill_window_effects (window);
