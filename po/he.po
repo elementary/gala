@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-25 17:29+0000\n"
-"PO-Revision-Date: 2020-04-09 14:10+0000\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
+"PO-Revision-Date: 2020-04-30 21:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
 ">\n"
@@ -19,15 +19,15 @@ msgstr ""
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
 msgstr "התצוגה נראית בסדר?"
 
-#: src/WindowManager.vala:2171
+#: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
 msgstr "להשאיר את התצורה הזאת"
 
-#: src/WindowManager.vala:2172
+#: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
 msgstr "שחזור התצורה הקודמת"
 
@@ -87,48 +87,60 @@ msgstr ""
 "מנהל הרכבת חלונות שמבוסס על libmutter ותוכנן על ידי elementary לעבוד עם "
 "Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Fix crash when changing workspaces while a transient window is opening"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:18
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "תרגומים עודכנו"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr "תיקון קריסה בעת החלפת מרחבי עבודה עם פתיחת חלון חולף"
+
+#: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
 msgstr "לא להציג את שירותי הרקע של Gala במעגן"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:37
 msgid "Fixes for media key handling"
 msgstr "תיקונים בטיפול במקשי מדיה"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:38
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "הצגת קיצורי מקלדת בתפריטי כותרת"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "שיפור צלליות חלונות ליישומים מיושנים"
 
-#: data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
 
-#: data/gala.appdata.xml.in:39
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "תיקון מיקום ההתראה לאחר החלפת DPI"
 
-#: data/gala.appdata.xml.in:40
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "תיקון הנפשות להזזה ולהגדלה של חלונות מרוצפים"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
 msgstr "elementary בע״מ"
 
