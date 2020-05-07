@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
-"Last-Translator: Daniel R. <riesp@pm.me>\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
+"PO-Revision-Date: 2020-04-30 21:16+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
 ">\n"
 "Language: es\n"
@@ -50,7 +50,7 @@ msgstr "Redimensionar"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
-msgstr "Siempre visible"
+msgstr "Siempre encima"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
@@ -58,11 +58,11 @@ msgstr "Siempre en el área de trabajo visible"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
-msgstr "Mover al área de trabajo izquierdo"
+msgstr "Mover al área de trabajo izquierda"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Right"
-msgstr "Mover al área de trabajo derecho"
+msgstr "Mover al área de trabajo derecha"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Close"
@@ -70,7 +70,7 @@ msgstr "Cerrar"
 
 #: daemon/MenuDaemon.vala:201
 msgid "Unmaximize"
-msgstr "Restaurar"
+msgstr "Desmaximizar"
 
 #: daemon/MenuDaemon.vala:201
 msgid "Maximize"
@@ -82,54 +82,73 @@ msgstr "Multitarea y gestión de ventanas"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr "Un administrador y compositor de ventanas para Pantheon"
+msgstr "Un gestor y compositor de ventanas para Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
-"Un administrador y compositor de ventanas basado en libmutter y diseñado por "
+"Un gestor y compositor de ventanas basado en libmutter y diseñado por "
 "elementary para su uso con Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "Mejoras:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
 
 #: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Mostrar atajos de teclado en los menús de la barra de encabezado"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "Traducciones actualizadas"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"Se solucionó un cierre inesperado que tenía lugar al cambiar de áreas de "
+"trabajo mientras se abría una ventana temporal"
+
+#: data/gala.appdata.xml.in:36
+msgid "Don't show Gala Background Services in the dock"
+msgstr "En el dock ya no figura Servicios en segundo plano de Gala"
+
+#: data/gala.appdata.xml.in:37
+msgid "Fixes for media key handling"
+msgstr "Correcciones para el tratamiento de las teclas multimedia"
+
+#: data/gala.appdata.xml.in:38
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Mostrar atajos de teclado en los menús de la barra de encabezado"
+
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "Mejora en las sombras de las ventanas para aplicaciones heredadas"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "Se corrigió la posición de notificaciones después de cambiar el DPI"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Se corrigieron las animaciones para mover y maximizar ventanas en mosaico"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -153,7 +172,7 @@ msgstr "Otro"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
-"Archivo de restauración para notificaciones de aplicaciones desactualizadas."
+"Archivo .desktop auxiliar para notificaciones de aplicaciones anticuadas."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
