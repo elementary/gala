@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-04-14 14:10+0000\n"
+"PO-Revision-Date: 2020-05-10 12:10+0000\n"
 "Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -101,11 +101,15 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"Probleem opgelost met \"Altijd op Zichtbare Werkruimte\" vensters die "
+"verdwijnen na het veranderen van werkruimte"
 
 #: data/gala.appdata.xml.in:18
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"Probleem opgelost voor vensters op niet-primaire beeldschermen die "
+"verdwijnen bij het veranderen van werkruimte"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
@@ -115,6 +119,8 @@ msgstr "Bijgewerkte vertalingen"
 #: data/gala.appdata.xml.in:27
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"Probleem opgelost wat een crash veroorzaakte bij het veranderen van "
+"werkruimtes tijdens het openen van een tijdelijk venster"
 
 #: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
