@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"PO-Revision-Date: 2020-05-12 14:10+0000\n"
+"Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "Snímky obrazovky"
 
 #: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
@@ -29,11 +29,11 @@ msgstr "Vypadá displej dobře?"
 
 #: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
-msgstr "Ponechat Tuto Konfiguraci"
+msgstr "Ponechat toto uspořádání"
 
 #: src/WindowManager.vala:2170
 msgid "Restore Previous Configuration"
-msgstr "Obnovit Předchozí Konfiguraci"
+msgstr "Vrátit se zpět k předchozímu uspořádání"
 
 #: daemon/MenuDaemon.vala:107
 msgid "Minimize"
@@ -77,22 +77,24 @@ msgstr "Maximalizovat"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Víceúlohové a správa oken"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Správce kompozice a oken pro Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Správce oken a kompozice založený na libmutter a navržený elementary pro "
+"použití s Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
 #: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
-msgstr ""
+msgstr "Vylepšení:"
 
 #: data/gala.appdata.xml.in:17
 msgid ""
@@ -108,7 +110,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
 msgid "Updated translations"
-msgstr ""
+msgstr "Aktualizovány překlady"
 
 #: data/gala.appdata.xml.in:27
 msgid "Fix crash when changing workspaces while a transient window is opening"
