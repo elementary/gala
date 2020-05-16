@@ -25,7 +25,6 @@ namespace Gala {
 
         private ModalProxy? modal_proxy;
         private Gdk.Point point;
-        private bool clicked = false;
 
         public PixelPicker (WindowManager wm) {
             Object (wm: wm);
