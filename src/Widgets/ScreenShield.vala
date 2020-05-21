@@ -64,6 +64,9 @@ namespace Gala {
     }
 
     public class ScreenShield : Clutter.Actor {
+        public const string LOCK_ENABLED_KEY = "lock-enabled";
+        public const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
+
         public signal void active_changed ();
         public signal void wake_up_screen ();
 
@@ -87,6 +90,9 @@ namespace Gala {
         private uint became_active_id = 0;
 
         private UnixInputStream? inhibitor;
+
+        private GLib.Settings screensaver_settings;
+        private GLib.Settings lockdown_settings;
 
         public ScreenShield (WindowManager wm) {
             Object (wm: wm);
@@ -138,6 +144,9 @@ namespace Gala {
             if (seat_path != null) {
                 display_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
             }
+
+            screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
+            lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
         }
 
         public void expand_to_screen_size () {
@@ -153,9 +162,10 @@ namespace Gala {
 
         private void prepare_for_sleep (bool about_to_suspend) {
             if (about_to_suspend) {
-                // TODO: Check if we're suppose to lock in GSettings
-                debug ("about to sleep, locking screen");
-                this.@lock (true);
+                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                    debug ("about to sleep, locking screen");
+                    this.@lock (true);
+                }
             } else {
                 debug ("resumed from suspend, waking screen");
                 trigger_wake_up_screen ();
@@ -170,19 +180,24 @@ namespace Gala {
             debug ("session became idle, activating screensaver");
 
             activate (true);
+
+            if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                debug ("locking enabled, also locking screen");
+                this.@lock (true);
+            }
         }
 
         private void trigger_wake_up_screen () {
             on_user_became_active ();
             wake_up_screen ();
+            expand_to_screen_size ();
         }
 
         private void sync_inhibitor () {
-            // TODO: Replace these with GSettings
-            var lock_enabled = true;
-            var lock_locked = false;
+            var lock_enabled = screensaver_settings.get_boolean (LOCK_ENABLED_KEY);
+            var lock_prohibited = lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY);
 
-            var inhibit = login_session != null && login_session.active && !active && lock_enabled && !lock_locked;
+            var inhibit = login_session != null && login_session.active && !active && lock_enabled && !lock_prohibited;
             if (inhibit) {
                 var new_inhibitor = login_manager.inhibit ("sleep", "Pantheon", "Pantheon needs to lock the screen", "delay");
                 if (inhibitor != null) {
@@ -236,8 +251,13 @@ namespace Gala {
             return session;
         }
 
-        public void lock (bool animate) {
+        public void @lock (bool animate) {
             if (is_locked) {
+                return;
+            }
+
+            if (lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY)) {
+                debug ("Lock prohibited, ignoring lock request");
                 return;
             }
 
@@ -268,6 +288,10 @@ namespace Gala {
             modal_proxy = wm.push_modal ();
 
             _set_active (true);
+
+            if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                @lock (false);
+            }
 
             // if (became_active_id == 0) {
             //     became_active_id = idle_monitor.add_user_active_watch (() => on_user_became_active ());
