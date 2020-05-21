@@ -19,10 +19,10 @@ namespace Gala {
     [DBus (name="org.pantheon.gala")]
     public class DBus {
         static DBus? instance;
-        static WindowManager wm;
+        static WindowManagerGala wm;
 
         [DBus (visible = false)]
-        public static void init (WindowManager _wm) {
+        public static void init (WindowManagerGala _wm) {
             wm = _wm;
 
             Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -41,14 +41,17 @@ namespace Gala {
                 (connection) => {
                     try {
                         connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm));
-                        connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
                     } catch (Error e) { warning (e.message); }
                 },
                 () => {},
                 () => critical ("Could not acquire name") );
 
             Bus.own_name (BusType.SESSION, "org.gnome.Shell.Screenshot", BusNameOwnerFlags.REPLACE,
-                () => {},
+                (connection) => {
+                    try {
+                        connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
+                    } catch (Error e) { warning (e.message); }
+                },
                 () => {},
                 () => critical ("Could not acquire name") );
 
@@ -60,6 +63,24 @@ namespace Gala {
                 },
                 () => {},
                 () => critical ("Could not acquire name") );
+
+            Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                (connection) => {
+                    try {
+                        connection.register_object ("/org/gnome/ScreenSaver", GNOMEScreenSaverManager.init (wm.screen_shield));
+                    } catch (Error e) { warning (e.message); }
+                },
+                () => {},
+                () => critical ("Could not acquire ScreenSaver bus") );
+
+            Bus.own_name (BusType.SESSION, "org.freedesktop.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                (connection) => {
+                    try {
+                        connection.register_object ("/org/freedesktop/ScreenSaver", ScreenSaverManager.init (wm.screen_shield));
+                    } catch (Error e) { warning (e.message); }
+                },
+                () => {},
+                () => critical ("Could not acquire freedesktop ScreenSaver bus") );
         }
 
         private DBus () {
