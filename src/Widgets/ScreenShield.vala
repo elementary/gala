@@ -118,7 +118,11 @@ namespace Gala {
                 login_session = get_current_session_manager ();
                 if (login_session != null) {
                     login_session.lock.connect (() => @lock (false));
-                    login_session.unlock.connect (() => deactivate (false));
+                    login_session.unlock.connect (() => {
+                        deactivate (false);
+                        in_greeter = false;
+                    });
+
                     login_session.notify.connect (sync_inhibitor);
                     sync_inhibitor ();
                 }
@@ -150,8 +154,10 @@ namespace Gala {
         private void prepare_for_sleep (bool about_to_suspend) {
             if (about_to_suspend) {
                 // TODO: Check if we're suppose to lock in GSettings
+                debug ("about to sleep, locking screen");
                 this.@lock (true);
             } else {
+                debug ("resumed from suspend, waking screen");
                 trigger_wake_up_screen ();
             }
         }
@@ -161,7 +167,7 @@ namespace Gala {
                 return;
             }
 
-            warning ("activating due to idle");
+            debug ("session became idle, activating screensaver");
 
             activate (true);
         }
@@ -200,11 +206,12 @@ namespace Gala {
             }
 
             if (is_locked && !in_greeter) {
+                debug ("user became active, switching to greeter");
                 display_manager.switch_to_greeter ();
                 in_greeter = true;
-            } else {
+            } else if (!is_locked) {
+                debug ("user became active in unlocked session, closing screensaver");
                 deactivate (false);
-                in_greeter = false;
             }
         }
 
@@ -237,8 +244,6 @@ namespace Gala {
             is_locked = true;
 
             activate (animate);
-
-            _set_active (true);
         }
 
         public void activate (bool animate) {
