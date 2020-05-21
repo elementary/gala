@@ -64,8 +64,11 @@ namespace Gala {
     }
 
     public class ScreenShield : Clutter.Actor {
-        public const string LOCK_ENABLED_KEY = "lock-enabled";
-        public const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
+        public const uint LONG_ANIMATION_TIME = 3000;
+        public const uint SHORT_ANIMATION_TIME = 300;
+
+        private const string LOCK_ENABLED_KEY = "lock-enabled";
+        private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
 
         public signal void active_changed ();
         public signal void wake_up_screen ();
@@ -88,6 +91,7 @@ namespace Gala {
 
         private Meta.IdleMonitor idle_monitor;
         private uint became_active_id = 0;
+        private uint animate_id = 0;
 
         private UnixInputStream? inhibitor;
 
@@ -99,6 +103,9 @@ namespace Gala {
         }
 
         construct {
+            screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
+            lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
+
             visible = false;
             reactive = true;
 
@@ -144,9 +151,6 @@ namespace Gala {
             if (seat_path != null) {
                 display_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
             }
-
-            screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
-            lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
         }
 
         public void expand_to_screen_size () {
@@ -164,7 +168,7 @@ namespace Gala {
             if (about_to_suspend) {
                 if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     debug ("about to sleep, locking screen");
-                    this.@lock (true);
+                    this.@lock (false);
                 }
             } else {
                 debug ("resumed from suspend, waking screen");
@@ -180,11 +184,6 @@ namespace Gala {
             debug ("session became idle, activating screensaver");
 
             activate (true);
-
-            if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
-                debug ("locking enabled, also locking screen");
-                this.@lock (true);
-            }
         }
 
         private void trigger_wake_up_screen () {
@@ -222,6 +221,7 @@ namespace Gala {
 
             if (is_locked && !in_greeter) {
                 debug ("user became active, switching to greeter");
+                cancel_animation ();
                 display_manager.switch_to_greeter ();
                 in_greeter = true;
             } else if (!is_locked) {
@@ -263,10 +263,10 @@ namespace Gala {
 
             is_locked = true;
 
-            activate (animate);
+            activate (animate, SHORT_ANIMATION_TIME);
         }
 
-        public void activate (bool animate) {
+        public void activate (bool animate, uint animation_time = LONG_ANIMATION_TIME) {
             if (visible) {
                 return;
             }
@@ -280,25 +280,59 @@ namespace Gala {
 #if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
 #else
-            wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
+            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (false);
 #endif
 
+            opacity = 0;
             visible = true;
             grab_key_focus ();
             modal_proxy = wm.push_modal ();
 
-            _set_active (true);
+            if (animate) {
+                animate_and_lock (animation_time);
+            } else {
+                _set_active (true);
 
-            if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
-                @lock (false);
+                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                    @lock (false);
+                }
             }
+        }
 
-            // if (became_active_id == 0) {
-            //     became_active_id = idle_monitor.add_user_active_watch (() => on_user_became_active ());
-            // }
+        private void animate_and_lock (uint animation_time) {
+            save_easing_state ();
+            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+            set_easing_duration (animation_time);
+            opacity = 255;
+
+            animate_id = Timeout.add (animation_time, () => {
+                animate_id = 0;
+
+                restore_easing_state ();
+
+                _set_active (true);
+
+                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                    @lock (false);
+                }
+
+                return false;
+            });
+        }
+
+        private void cancel_animation () {
+           if (animate_id != 0) {
+                warning ("cancelling animation");
+                GLib.Source.remove (animate_id);
+                animate_id = 0;
+
+                restore_easing_state ();
+            }
         }
 
         public void deactivate (bool animate) {
+            cancel_animation ();
+
             is_locked = false;
 
             if (modal_proxy != null) {
@@ -309,7 +343,7 @@ namespace Gala {
 #if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
 #else
-            wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
+            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (true);
 #endif
 
             visible = false;
