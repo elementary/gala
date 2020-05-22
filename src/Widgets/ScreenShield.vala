@@ -64,7 +64,10 @@ namespace Gala {
     }
 
     public class ScreenShield : Clutter.Actor {
+        // Animation length for when computer has been sitting idle and display
+        // is about to turn off
         public const uint LONG_ANIMATION_TIME = 3000;
+        // Animation length used for manual lock action (i.e. Super+L or GUI action)
         public const uint SHORT_ANIMATION_TIME = 300;
 
         private const string LOCK_ENABLED_KEY = "lock-enabled";
@@ -74,7 +77,9 @@ namespace Gala {
         public signal void active_changed ();
         public signal void wake_up_screen ();
 
+        // Screensaver active but not necessarily locked
         public bool active { get; private set; default = false; }
+
         public bool is_locked { get; private set; default = false; }
         public bool in_greeter { get; private set; default = false; }
         public int64 activation_time  { get; private set; default = 0; }
@@ -90,8 +95,6 @@ namespace Gala {
 
         private DisplayManagerSeat? display_manager;
 
-        private Meta.IdleMonitor idle_monitor;
-        private uint became_active_id = 0;
         private uint animate_id = 0;
 
         private UnixInputStream? inhibitor;
@@ -110,6 +113,7 @@ namespace Gala {
             visible = false;
             reactive = true;
 
+            // Listen for keypresses or mouse movement
             key_press_event.connect ((event) => {
                 on_user_became_active ();
             });
@@ -122,15 +126,15 @@ namespace Gala {
 
             expand_to_screen_size ();
 
-            idle_monitor = Meta.IdleMonitor.get_core ();
-
             login_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
             login_user_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1/user/self");
 
             if (login_manager != null) {
+                // Listen for sleep/resume events from logind
                 login_manager.prepare_for_sleep.connect (prepare_for_sleep);
                 login_session = get_current_session_manager ();
                 if (login_session != null) {
+                    // Listen for lock unlock events from logind
                     login_session.lock.connect (() => @lock (false));
                     login_session.unlock.connect (() => {
                         deactivate (false);
@@ -177,6 +181,7 @@ namespace Gala {
             }
         }
 
+        // status becomes idle after interval defined at /org/gnome/desktop/session/idle-delay
         private void on_status_changed (PresenceStatus status) {
             if (status != PresenceStatus.IDLE) {
                 return;
@@ -193,6 +198,7 @@ namespace Gala {
             expand_to_screen_size ();
         }
 
+        // We briefly inhibit sleep so that we can try and lock before sleep occurs if necessary
         private void sync_inhibitor () {
             var lock_enabled = screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY);
             var lock_prohibited = lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY);
@@ -215,16 +221,13 @@ namespace Gala {
         }
 
         private void on_user_became_active () {
-            if (became_active_id != 0) {
-                idle_monitor.remove_watch (became_active_id);
-                became_active_id = 0;
-            }
-
+            // User became active in some way, switch to the greeter if we're not there already
             if (is_locked && !in_greeter) {
                 debug ("user became active, switching to greeter");
                 cancel_animation ();
                 display_manager.switch_to_greeter ();
                 in_greeter = true;
+            // Otherwise, we're in screensaver mode, just deactivate
             } else if (!is_locked) {
                 debug ("user became active in unlocked session, closing screensaver");
                 deactivate (false);
@@ -284,7 +287,6 @@ namespace Gala {
             wm.get_screen ().get_cursor_tracker ().set_pointer_visible (false);
 #endif
 
-            opacity = 0;
             visible = true;
             grab_key_focus ();
             modal_proxy = wm.push_modal ();
@@ -301,6 +303,7 @@ namespace Gala {
         }
 
         private void animate_and_lock (uint animation_time) {
+            opacity = 0;
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             set_easing_duration (animation_time);
@@ -323,7 +326,6 @@ namespace Gala {
 
         private void cancel_animation () {
            if (animate_id != 0) {
-                warning ("cancelling animation");
                 GLib.Source.remove (animate_id);
                 animate_id = 0;
 

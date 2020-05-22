@@ -296,9 +296,9 @@ namespace Gala {
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
 #if HAS_MUTTER330
-            Meta.MonitorManager.@get ().monitors_changed.connect (configure_hotcorners);
+            Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 #else
-            screen.monitors_changed.connect (configure_hotcorners);
+            screen.monitors_changed.connect (on_monitors_changed);
 #endif
 
             BehaviorSettings.get_default ().schema.changed.connect (configure_hotcorners);
