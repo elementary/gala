@@ -69,6 +69,7 @@ namespace Gala {
 
         private const string LOCK_ENABLED_KEY = "lock-enabled";
         private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
+        private const string LOCK_ON_SUSPEND_KEY = "ubuntu-lock-on-suspend";
 
         public signal void active_changed ();
         public signal void wake_up_screen ();
@@ -166,7 +167,7 @@ namespace Gala {
 
         private void prepare_for_sleep (bool about_to_suspend) {
             if (about_to_suspend) {
-                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                if (screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY)) {
                     debug ("about to sleep, locking screen");
                     this.@lock (false);
                 }
@@ -193,7 +194,7 @@ namespace Gala {
         }
 
         private void sync_inhibitor () {
-            var lock_enabled = screensaver_settings.get_boolean (LOCK_ENABLED_KEY);
+            var lock_enabled = screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY);
             var lock_prohibited = lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY);
 
             var inhibit = login_session != null && login_session.active && !active && lock_enabled && !lock_prohibited;
