@@ -64,6 +64,8 @@ namespace Gala {
     }
 
     public class ScreenShield : Clutter.Actor {
+        static ScreenShield? instance;
+
         // Animation length for when computer has been sitting idle and display
         // is about to turn off
         public const uint LONG_ANIMATION_TIME = 3000;
@@ -84,7 +86,7 @@ namespace Gala {
         public bool in_greeter { get; private set; default = false; }
         public int64 activation_time  { get; private set; default = 0; }
 
-        public weak WindowManager wm { get; construct; }
+        public WindowManager wm { get; construct; }
 
         private ModalProxy? modal_proxy;
 
@@ -105,14 +107,22 @@ namespace Gala {
 
         private bool connected_to_buses = false;
 
-        public ScreenShield (WindowManager wm) {
+        ScreenShield (WindowManager wm) {
             Object (wm: wm);
+        }
+
+        public static unowned ScreenShield init (WindowManager wm) {
+            if (instance == null) {
+                instance = new ScreenShield (wm);
+            }
+
+            return instance;
         }
 
         construct {
             screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
             lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
-            gala_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            gala_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
 
             visible = false;
             reactive = true;
@@ -198,7 +208,7 @@ namespace Gala {
             }
 
             if (about_to_suspend) {
-                if (screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY)) {
+                if (gala_settings.get_boolean (LOCK_ON_SUSPEND_KEY)) {
                     debug ("about to sleep, locking screen");
                     this.@lock (false);
                 }
@@ -227,7 +237,7 @@ namespace Gala {
                 return;
             }
 
-            var lock_enabled = screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY);
+            var lock_enabled = gala_settings.get_boolean (LOCK_ON_SUSPEND_KEY);
             var lock_prohibited = lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY);
 
             var inhibit = login_session != null && login_session.active && !active && lock_enabled && !lock_prohibited;

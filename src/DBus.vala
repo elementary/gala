@@ -19,10 +19,10 @@ namespace Gala {
     [DBus (name="org.pantheon.gala")]
     public class DBus {
         static DBus? instance;
-        static WindowManagerGala wm;
+        static WindowManager wm;
 
         [DBus (visible = false)]
-        public static void init (WindowManagerGala _wm) {
+        public static void init (WindowManager _wm) {
             wm = _wm;
 
             Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -61,10 +61,11 @@ namespace Gala {
                 () => {},
                 () => critical ("Could not acquire name") );
 
+            unowned ScreenShield shield = ScreenShield.init (wm);
             Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
                 (connection) => {
                     try {
-                        connection.register_object ("/org/gnome/ScreenSaver", GNOMEScreenSaverManager.init (wm.screen_shield));
+                        connection.register_object ("/org/gnome/ScreenSaver", GNOMEScreenSaverManager.init (shield));
                     } catch (Error e) { warning (e.message); }
                 },
                 () => {},
@@ -73,7 +74,7 @@ namespace Gala {
             Bus.own_name (BusType.SESSION, "org.freedesktop.ScreenSaver", BusNameOwnerFlags.REPLACE,
                 (connection) => {
                     try {
-                        connection.register_object ("/org/freedesktop/ScreenSaver", ScreenSaverManager.init (wm.screen_shield));
+                        connection.register_object ("/org/freedesktop/ScreenSaver", ScreenSaverManager.init (shield));
                     } catch (Error e) { warning (e.message); }
                 },
                 () => {},

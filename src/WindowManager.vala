@@ -153,8 +153,6 @@ namespace Gala {
             var display = screen.get_display ();
 #endif
 
-            screen_shield = new ScreenShield (this);
-
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
@@ -174,6 +172,7 @@ namespace Gala {
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
+            screen_shield = ScreenShield.init (this);
             screensaver = ScreenSaverManager.init (screen_shield);
             screensaver.active_changed.connect (update_input_area);
 
