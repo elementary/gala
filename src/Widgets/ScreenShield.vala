@@ -35,7 +35,7 @@ namespace Gala {
         public abstract void set_locked_hint (bool locked) throws GLib.Error;
     }
 
-    struct LoginDisplay {
+    public struct LoginDisplay {
         string session;
         GLib.ObjectPath objectpath;
     }
@@ -102,6 +102,8 @@ namespace Gala {
         private GLib.Settings screensaver_settings;
         private GLib.Settings lockdown_settings;
 
+        private bool connected_to_buses = false;
+
         public ScreenShield (WindowManager wm) {
             Object (wm: wm);
         }
@@ -126,10 +128,12 @@ namespace Gala {
 
             expand_to_screen_size ();
 
-            login_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
-            login_user_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1/user/self");
+            bool success = true;
 
-            if (login_manager != null) {
+            try {
+                login_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
+                login_user_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1/user/self");
+
                 // Listen for sleep/resume events from logind
                 login_manager.prepare_for_sleep.connect (prepare_for_sleep);
                 login_session = get_current_session_manager ();
@@ -144,18 +148,35 @@ namespace Gala {
                     login_session.notify.connect (sync_inhibitor);
                     sync_inhibitor ();
                 }
+            } catch (Error e) {
+                success = false;
+                critical ("Unable to connect to logind bus, screen locking disabled: %s", e.message);
             }
 
-            session_presence = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager/Presence");
-            if (session_presence != null) {
+            try {
+                session_presence = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager/Presence");
                 on_status_changed ((PresenceStatus)session_presence.status);
                 session_presence.status_changed.connect ((status) => on_status_changed ((PresenceStatus)status));
+            } catch (Error e) {
+                success = false;
+                critical ("Unable to connect to session presence bus, screen locking disabled: %s", e.message);
             }
+
 
             string? seat_path = GLib.Environment.get_variable ("XDG_SEAT_PATH");
             if (seat_path != null) {
-                display_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
+                try {
+                    display_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
+                } catch (Error e) {
+                    success = false;
+                    critical ("Unable to connect to display manager bus, screen locking disabled");
+                }
+            } else {
+                success = false;
+                critical ("XDG_SEAT_PATH unset, screen locking disabled");
             }
+
+            connected_to_buses = success;
         }
 
         public void expand_to_screen_size () {
@@ -170,6 +191,10 @@ namespace Gala {
         }
 
         private void prepare_for_sleep (bool about_to_suspend) {
+            if (!connected_to_buses) {
+                return;
+            }
+
             if (about_to_suspend) {
                 if (screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY)) {
                     debug ("about to sleep, locking screen");
@@ -177,13 +202,15 @@ namespace Gala {
                 }
             } else {
                 debug ("resumed from suspend, waking screen");
-                trigger_wake_up_screen ();
+                on_user_became_active ();
+                wake_up_screen ();
+                expand_to_screen_size ();
             }
         }
 
         // status becomes idle after interval defined at /org/gnome/desktop/session/idle-delay
         private void on_status_changed (PresenceStatus status) {
-            if (status != PresenceStatus.IDLE) {
+            if (status != PresenceStatus.IDLE || !connected_to_buses) {
                 return;
             }
 
@@ -192,14 +219,12 @@ namespace Gala {
             activate (true);
         }
 
-        private void trigger_wake_up_screen () {
-            on_user_became_active ();
-            wake_up_screen ();
-            expand_to_screen_size ();
-        }
-
         // We briefly inhibit sleep so that we can try and lock before sleep occurs if necessary
         private void sync_inhibitor () {
+            if (!connected_to_buses) {
+                return;
+            }
+
             var lock_enabled = screensaver_settings.get_boolean (LOCK_ON_SUSPEND_KEY);
             var lock_prohibited = lockdown_settings.get_boolean (LOCK_PROHIBITED_KEY);
 
@@ -230,6 +255,10 @@ namespace Gala {
         }
 
         private void on_user_became_active () {
+            if (!connected_to_buses) {
+                return;
+            }
+
             // User became active in some way, switch to the greeter if we're not there already
             if (is_locked && !in_greeter) {
                 debug ("user became active, switching to greeter");
@@ -247,7 +276,7 @@ namespace Gala {
             }
         }
 
-        private LoginSessionManager? get_current_session_manager () {
+        private LoginSessionManager? get_current_session_manager () throws GLib.Error {
             string? session_id = GLib.Environment.get_variable ("XDG_SESSION_ID");
             if (session_id == null) {
                 debug ("Unset XDG_SESSION_ID, asking logind");
@@ -269,7 +298,7 @@ namespace Gala {
         }
 
         public void @lock (bool animate) {
-            if (is_locked) {
+            if (is_locked || !connected_to_buses) {
                 return;
             }
 
@@ -284,7 +313,7 @@ namespace Gala {
         }
 
         public void activate (bool animate, uint animation_time = LONG_ANIMATION_TIME) {
-            if (visible) {
+            if (visible || !connected_to_buses) {
                 return;
             }
 
@@ -347,6 +376,10 @@ namespace Gala {
         }
 
         public void deactivate (bool animate) {
+            if (!connected_to_buses) {
+                return;
+            }
+
             cancel_animation ();
 
             is_locked = false;
@@ -371,6 +404,10 @@ namespace Gala {
         }
 
         private void _set_active (bool new_active) {
+            if (!connected_to_buses) {
+                return;
+            }
+
             var prev_is_active = active;
             active = new_active;
 
