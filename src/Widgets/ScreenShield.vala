@@ -72,7 +72,7 @@ namespace Gala {
 
         private const string LOCK_ENABLED_KEY = "lock-enabled";
         private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
-        private const string LOCK_ON_SUSPEND_KEY = "ubuntu-lock-on-suspend";
+        private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
         public signal void active_changed ();
         public signal void wake_up_screen ();
@@ -101,6 +101,7 @@ namespace Gala {
 
         private GLib.Settings screensaver_settings;
         private GLib.Settings lockdown_settings;
+        private GLib.Settings gala_settings;
 
         private bool connected_to_buses = false;
 
@@ -111,6 +112,7 @@ namespace Gala {
         construct {
             screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
             lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
+            gala_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
 
             visible = false;
             reactive = true;
