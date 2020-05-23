@@ -60,7 +60,7 @@ namespace Gala {
 
     [DBus (name = "org.freedesktop.DisplayManager.Seat")]
     interface DisplayManagerSeat : Object {
-        public abstract void switch_to_greeter ();
+        public abstract void switch_to_greeter () throws GLib.Error;
     }
 
     public class ScreenShield : Clutter.Actor {
@@ -205,16 +205,25 @@ namespace Gala {
 
             var inhibit = login_session != null && login_session.active && !active && lock_enabled && !lock_prohibited;
             if (inhibit) {
-                var new_inhibitor = login_manager.inhibit ("sleep", "Pantheon", "Pantheon needs to lock the screen", "delay");
-                if (inhibitor != null) {
-                    inhibitor.close ();
-                    inhibitor = null;
-                }
+                try {
+                    var new_inhibitor = login_manager.inhibit ("sleep", "Pantheon", "Pantheon needs to lock the screen", "delay");
+                    if (inhibitor != null) {
+                        inhibitor.close ();
+                        inhibitor = null;
+                    }
 
-                inhibitor = new_inhibitor;
+                    inhibitor = new_inhibitor;
+                } catch (Error e) {
+                    warning ("Unable to inhibit sleep, may be unable to lock before sleep starts: %s", e.message);
+                }
             } else {
                 if (inhibitor != null) {
-                    inhibitor.close ();
+                    try {
+                        inhibitor.close ();
+                    } catch (Error e) {
+                        warning ("Unable to remove sleep inhibitor: %s", e.message);
+                    }
+
                     inhibitor = null;
                 }
             }
@@ -225,7 +234,11 @@ namespace Gala {
             if (is_locked && !in_greeter) {
                 debug ("user became active, switching to greeter");
                 cancel_animation ();
-                display_manager.switch_to_greeter ();
+                try {
+                    display_manager.switch_to_greeter ();
+                } catch (Error e) {
+                    critical ("Unable to switch to greeter to unlock: %s", e.message);
+                }
                 in_greeter = true;
             // Otherwise, we're in screensaver mode, just deactivate
             } else if (!is_locked) {

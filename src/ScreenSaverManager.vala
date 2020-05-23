@@ -43,15 +43,15 @@ namespace Gala {
             });
         }
 
-        public void @lock () {
+        public void @lock () throws GLib.Error {
             screen_shield.@lock (true);
         }
 
-        public bool get_active () {
+        public bool get_active () throws GLib.Error {
             return screen_shield.active;
         }
 
-        public void set_active (bool active) {
+        public void set_active (bool active) throws GLib.Error {
             if (active) {
                 screen_shield.activate (true);
             } else {
@@ -59,7 +59,7 @@ namespace Gala {
             }
         }
 
-        public uint get_active_time () {
+        public uint get_active_time () throws GLib.Error {
             var started = screen_shield.activation_time;
             if (started > 0) {
                 return (uint)Math.floor ((GLib.get_monotonic_time () - started) / 1000000);
@@ -100,19 +100,19 @@ namespace Gala {
             });
         }
 
-        public void @lock () {
+        public new void @lock () throws GLib.Error {
             base.@lock ();
         }
 
-        public bool get_active () {
+        public new bool get_active () throws GLib.Error {
             return base.get_active ();
         }
 
-        public void set_active (bool active) {
+        public new void set_active (bool active) throws GLib.Error {
             base.set_active (active);
         }
 
-        public uint get_active_time () {
+        public new uint get_active_time () throws GLib.Error {
             return base.get_active_time ();
         }
     }
