@@ -84,7 +84,7 @@ namespace Gala {
         public bool in_greeter { get; private set; default = false; }
         public int64 activation_time  { get; private set; default = 0; }
 
-        public WindowManager wm { get; construct; }
+        public weak WindowManager wm { get; construct; }
 
         private ModalProxy? modal_proxy;
 
