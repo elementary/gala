@@ -41,17 +41,14 @@ namespace Gala {
                 (connection) => {
                     try {
                         connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm));
+                        connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
                     } catch (Error e) { warning (e.message); }
                 },
                 () => {},
                 () => critical ("Could not acquire name") );
 
             Bus.own_name (BusType.SESSION, "org.gnome.Shell.Screenshot", BusNameOwnerFlags.REPLACE,
-                (connection) => {
-                    try {
-                        connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
-                    } catch (Error e) { warning (e.message); }
-                },
+                () => {},
                 () => {},
                 () => critical ("Could not acquire name") );
 
