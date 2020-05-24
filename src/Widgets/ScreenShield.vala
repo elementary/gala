@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2020 elementary, Inc. (https://elementary.io)
+//  Copyright 2020 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ namespace Gala {
         public abstract LoginDisplay? display { owned get; }
     }
 
+    [CCode (type_signature = "u")]
     enum PresenceStatus {
         AVAILABLE = 0,
         INVISIBLE = 1,
@@ -54,8 +55,8 @@ namespace Gala {
 
     [DBus (name = "org.gnome.SessionManager.Presence")]
     interface SessionPresence : Object {
-        public abstract uint status { get; }
-        public signal void status_changed (uint new_status);
+        public abstract PresenceStatus status { get; }
+        public signal void status_changed (PresenceStatus new_status);
     }
 
     [DBus (name = "org.freedesktop.DisplayManager.Seat")]
@@ -64,8 +65,6 @@ namespace Gala {
     }
 
     public class ScreenShield : Clutter.Actor {
-        static ScreenShield? instance;
-
         // Animation length for when computer has been sitting idle and display
         // is about to turn off
         public const uint LONG_ANIMATION_TIME = 3000;
@@ -107,16 +106,8 @@ namespace Gala {
 
         private bool connected_to_buses = false;
 
-        ScreenShield (WindowManager wm) {
+        public ScreenShield (WindowManager wm) {
             Object (wm: wm);
-        }
-
-        public static unowned ScreenShield init (WindowManager wm) {
-            if (instance == null) {
-                instance = new ScreenShield (wm);
-            }
-
-            return instance;
         }
 
         construct {
@@ -167,8 +158,8 @@ namespace Gala {
 
             try {
                 session_presence = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager/Presence");
-                on_status_changed ((PresenceStatus)session_presence.status);
-                session_presence.status_changed.connect ((status) => on_status_changed ((PresenceStatus)status));
+                on_status_changed (session_presence.status);
+                session_presence.status_changed.connect ((status) => on_status_changed (status));
             } catch (Error e) {
                 success = false;
                 critical ("Unable to connect to session presence bus, screen locking disabled: %s", e.message);
@@ -374,7 +365,7 @@ namespace Gala {
                     @lock (false);
                 }
 
-                return false;
+                return GLib.Source.REMOVE;
             });
         }
 

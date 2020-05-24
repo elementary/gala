@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2020 elementary, Inc. (https://elementary.io)
+//  Copyright 2020 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,28 +18,23 @@
 namespace Gala {
     [DBus (name="org.freedesktop.ScreenSaver")]
     public class ScreenSaverManager : Object {
-        static ScreenSaverManager? instance;
-
         public signal void active_changed (bool new_value);
 
         [DBus (visible = false)]
-        public ScreenShield screen_shield { protected get; construct; }
+        public GNOMEScreenSaverManager gnome_manager { get; construct; }
 
         [DBus (visible = false)]
-        public static unowned ScreenSaverManager init (ScreenShield shield) {
-            if (instance == null)
-                instance = new ScreenSaverManager (shield);
+        public ScreenShield screen_shield { get; construct; }
 
-            return instance;
-        }
-
-        protected ScreenSaverManager (ScreenShield shield) {
+        public ScreenSaverManager (ScreenShield shield) {
             Object (screen_shield: shield);
         }
 
         construct {
+            gnome_manager = new GNOMEScreenSaverManager (this);
             screen_shield.active_changed.connect (() => {
                 active_changed (screen_shield.active);
+                gnome_manager.active_changed (screen_shield.active);
             });
         }
 
@@ -70,50 +65,38 @@ namespace Gala {
     }
 
     [DBus (name="org.gnome.ScreenSaver")]
-    public class GNOMEScreenSaverManager : ScreenSaverManager {
-        static GNOMEScreenSaverManager? instance;
+    public class GNOMEScreenSaverManager : GLib.Object {
+        [DBus (visible = false)]
+        public weak ScreenSaverManager manager { get; construct; }
 
-        [DBus (name = "ActiveChanged")]
-        public signal void gnome_active_changed (bool new_value);
+        public signal void active_changed (bool new_value);
 
         public signal void wake_up_screen ();
 
-        [DBus (visible = false)]
-        public static new unowned GNOMEScreenSaverManager init (ScreenShield shield) {
-            if (instance == null)
-                instance = new GNOMEScreenSaverManager (shield);
-
-            return instance;
-        }
-
-        public GNOMEScreenSaverManager (ScreenShield shield) {
-            Object (screen_shield: shield);
+        public GNOMEScreenSaverManager (ScreenSaverManager manager) {
+            Object (manager: manager);
         }
 
         construct {
-            base.active_changed.connect ((active) => {
-                gnome_active_changed (active);
-            });
-
-            screen_shield.wake_up_screen.connect (() => {
+            manager.screen_shield.wake_up_screen.connect (() => {
                 wake_up_screen ();
             });
         }
 
         public new void @lock () throws GLib.Error {
-            base.@lock ();
+            manager.@lock ();
         }
 
         public new bool get_active () throws GLib.Error {
-            return base.get_active ();
+            return manager.get_active ();
         }
 
         public new void set_active (bool active) throws GLib.Error {
-            base.set_active (active);
+            manager.set_active (active);
         }
 
         public new uint get_active_time () throws GLib.Error {
-            return base.get_active_time ();
+            return manager.get_active_time ();
         }
     }
 }

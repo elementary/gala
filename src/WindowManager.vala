@@ -65,7 +65,7 @@ namespace Gala {
 
         // used to detect which corner was used to trigger an action
         Clutter.Actor? last_hotcorner;
-        unowned ScreenSaverManager? screensaver;
+        public ScreenSaverManager? screensaver { get; private set; }
 
         Clutter.Actor? tile_preview;
 
@@ -153,6 +153,9 @@ namespace Gala {
             var display = screen.get_display ();
 #endif
 
+            screen_shield = new ScreenShield (this);
+            screensaver = new ScreenSaverManager (screen_shield);
+
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
@@ -172,8 +175,6 @@ namespace Gala {
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
-            screen_shield = ScreenShield.init (this);
-            screensaver = ScreenSaverManager.init (screen_shield);
             screensaver.active_changed.connect (update_input_area);
 
 #if HAS_MUTTER330
