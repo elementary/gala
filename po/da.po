@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-05-25 15:26+0000\n"
+"PO-Revision-Date: 2020-05-25 21:23+0000\n"
 "Last-Translator: Rantyrant <diseasemonger@gmail.com>\n"
 "Language-Team: Danish <https://l10n.elementary.io/projects/desktop/gala/da/>"
 "\n"
@@ -151,7 +151,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
-msgstr "elementary, Inc."
+msgstr "elementary, Incorporated."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
