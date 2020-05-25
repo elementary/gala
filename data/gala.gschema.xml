@@ -16,7 +16,7 @@
 		<value nick='natural' value='1'/>
 	</enum>
 
-	<schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver/">
+	<schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
 		<key type="b" name="lock-on-screen-off">
 		    <default>true</default>
 		    <summary>Automatically lock the screen when the display turns off due to inactivity</summary>
