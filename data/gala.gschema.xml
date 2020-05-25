@@ -92,6 +92,11 @@
 			<summary>Automatically move maximized windows to a new workspace</summary>
 			<description></description>
 		</key>
+		<key type="b" name="lock-on-screen-off">
+		    <default>true</default>
+		    <summary>Automatically lock the screen when the display turns off due to inactivity</summary>
+		    <description></description>
+		</key>
 	    <key type="b" name="lock-on-suspend">
 		    <default>true</default>
 		    <summary>Automatically lock the screen when the computer suspends</summary>

@@ -71,7 +71,7 @@ namespace Gala {
         // Animation length used for manual lock action (i.e. Super+L or GUI action)
         public const uint SHORT_ANIMATION_TIME = 300;
 
-        private const string LOCK_ENABLED_KEY = "lock-enabled";
+        private const string LOCK_ENABLED_KEY = "lock-on-screen-off";
         private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
         private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
@@ -100,7 +100,6 @@ namespace Gala {
 
         private UnixInputStream? inhibitor;
 
-        private GLib.Settings screensaver_settings;
         private GLib.Settings lockdown_settings;
         private GLib.Settings gala_settings;
 
@@ -111,7 +110,6 @@ namespace Gala {
         }
 
         construct {
-            screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
             lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
             gala_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
 
@@ -341,7 +339,7 @@ namespace Gala {
             } else {
                 _set_active (true);
 
-                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                if (gala_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);
                 }
             }
@@ -361,7 +359,7 @@ namespace Gala {
 
                 _set_active (true);
 
-                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                if (gala_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);
                 }
 
