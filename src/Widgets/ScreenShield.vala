@@ -111,7 +111,7 @@ namespace Gala {
 
         construct {
             lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
-            gala_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            gala_settings = new GLib.Settings ("io.elementary.desktop.screensaver");
 
             visible = false;
             reactive = true;
