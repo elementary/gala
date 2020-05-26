@@ -60,6 +60,28 @@ namespace Gala {
                 },
                 () => {},
                 () => critical ("Could not acquire name") );
+
+            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            if (gala_wm != null) {
+                var screensaver_manager = gala_wm.screensaver;
+                Bus.own_name (BusType.SESSION, "org.freedesktop.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                    (connection) => {
+                        try {
+                            connection.register_object ("/org/freedesktop/ScreenSaver", screensaver_manager);
+                        } catch (Error e) { warning (e.message); }
+                    },
+                    () => {},
+                    () => critical ("Could not acquire freedesktop ScreenSaver bus") );
+
+                Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                    (connection) => {
+                        try {
+                            connection.register_object ("/org/gnome/ScreenSaver", screensaver_manager.gnome_manager);
+                        } catch (Error e) { warning (e.message); }
+                    },
+                    () => {},
+                    () => critical ("Could not acquire ScreenSaver bus") );
+            }
         }
 
         private DBus () {
