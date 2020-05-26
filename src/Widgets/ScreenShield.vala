@@ -416,6 +416,12 @@ namespace Gala {
                 active_changed ();
             }
 
+            try {
+                login_session.set_locked_hint (active);
+            } catch (Error e) {
+                warning ("Unable to set locked hint on login session: %s", e.message);
+            }
+
             sync_inhibitor ();
         }
     }
