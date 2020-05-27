@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-04-06 15:10+0000\n"
+"PO-Revision-Date: 2020-05-27 22:10+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
-"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
-">\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/>"
+"\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -101,11 +101,15 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"कार्यक्षेत्र बदलताना “नेहमीच दृश्यमान कार्यक्षेत्र” विंडो अदृश्य होण्याशी "
+"संबंधित अडचणी दूर करा"
 
 #: data/gala.appdata.xml.in:18
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"कार्यक्षेत्र बदलत असताना प्राथमिक नसलेल्या डिस्पलेवर विंडो अदृश्य होण्याशी "
+"संबंधित समस्या सोडवा"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
@@ -115,6 +119,7 @@ msgstr "अद्ययावत भाषांतर"
 #: data/gala.appdata.xml.in:27
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"क्षणिक विंडो उघडत असताना कार्यक्षेत्र बदलताना होणाऱ्या क्रॅशचे निराकरण करा"
 
 #: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
