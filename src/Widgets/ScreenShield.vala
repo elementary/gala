@@ -71,7 +71,7 @@ namespace Gala {
         // Animation length used for manual lock action (i.e. Super+L or GUI action)
         public const uint SHORT_ANIMATION_TIME = 300;
 
-        private const string LOCK_ENABLED_KEY = "lock-on-screen-off";
+        private const string LOCK_ENABLED_KEY = "lock-enabled";
         private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
         private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
@@ -100,6 +100,7 @@ namespace Gala {
 
         private UnixInputStream? inhibitor;
 
+        private GLib.Settings screensaver_settings;
         private GLib.Settings lockdown_settings;
         private GLib.Settings gala_settings;
 
@@ -110,8 +111,14 @@ namespace Gala {
         }
 
         construct {
-            lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
+            // We use the lock-enabled key in the GNOME namespace instead of our own
+            // because it's also used by gsd-power
+            screensaver_settings = new GLib.Settings ("org.gnome.desktop.screensaver");
+
+            // Vanilla GNOME doesn't have a key that separately enables/disables locking on
+            // suspend, so we have a key in our own namespace for this
             gala_settings = new GLib.Settings ("io.elementary.desktop.screensaver");
+            lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
 
             visible = false;
             reactive = true;
@@ -339,7 +346,7 @@ namespace Gala {
             } else {
                 _set_active (true);
 
-                if (gala_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);
                 }
             }
@@ -359,7 +366,7 @@ namespace Gala {
 
                 _set_active (true);
 
-                if (gala_settings.get_boolean (LOCK_ENABLED_KEY)) {
+                if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);
                 }
 
