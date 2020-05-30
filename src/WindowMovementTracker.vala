@@ -65,7 +65,7 @@ namespace Gala {
             }
         }
 
-        private void on_grab_op_begin (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
+        private void on_grab_op_begin (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
             if (window == null) {
                 return;
             }
@@ -80,7 +80,7 @@ namespace Gala {
             current_window.position_changed.connect (on_position_changed);
         }
 
-        private void on_grab_op_end (Meta.Screen screen, Meta.Window? window, Meta.GrabOp op) {
+        private void on_grab_op_end (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
             if (!hide_tile_preview_when_window_moves) {
                 window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
             }
@@ -94,14 +94,11 @@ namespace Gala {
         }
 
         private void shrink_window (Meta.Window? window, float x, float y) {
-            is_shrinked = true;
             debug("shrink window!");
+            is_shrinked = true;
             float abs_x, abs_y;
             var actor = (Meta.WindowActor)window.get_compositor_private ();
             actor.get_transformed_position (out abs_x, out abs_y);
-
-            int width, height;
-            window.get_screen ().get_size (out width, out height);
             actor.set_pivot_point ((x - abs_x) / actor.width, (y - abs_y) / actor.height);
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
@@ -123,12 +120,9 @@ namespace Gala {
             is_shrinked = false;
             var actor = (Meta.WindowActor)window.get_compositor_private ();
 
-            int width, height;
-            window.get_screen ().get_size (out width, out height);
             actor.set_pivot_point (0.5f, 1.0f);
             actor.set_scale (0.01f, 0.1f);
             actor.opacity = 0U;
-
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
             actor.set_easing_duration (animation_duration);
@@ -139,14 +133,13 @@ namespace Gala {
         }
 
         private void on_position_changed (Meta.Window window) {
-            unowned Meta.Screen screen = window.get_screen ();
-            unowned Meta.CursorTracker ct = screen.get_cursor_tracker ();
+            unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
             int x, y;
             Clutter.ModifierType type;
             ct.get_pointer (out x, out y, out type);
 
             if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                Meta.Rectangle wa = window.get_work_area_for_monitor (screen.get_current_monitor ());
+                Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
 
                 int monitor_width = wa.width, monitor_height = wa.height;
                 int monitor_x = x - wa.x, monitor_y = y - wa.y;
@@ -179,7 +172,7 @@ namespace Gala {
 
                 hide_tile_preview_when_window_moves = false;
                 tile_rect = {new_x, new_y, new_width, new_height};
-                show_tile_preview (window, tile_rect, screen.get_current_monitor ());
+                show_tile_preview (window, tile_rect, display.get_current_monitor ());
                 return;
             }
 
