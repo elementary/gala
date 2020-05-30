@@ -31,14 +31,14 @@ public class Gala.AreaTiling : Object {
         Object (wm : wm, display : display);
     }
 
-    public void tile(Meta.Window window, int x, int y) {
+    public void tile (Meta.Window window, int x, int y) {
         Meta.Rectangle tile_rect;
         calculate_tile_rect (out tile_rect, window, x, y);
         window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
         wm.hide_tile_preview ();
     }
 
-    public void show_preview(Meta.Window window, int x, int y) {
+    public void show_preview (Meta.Window window, int x, int y) {
         if (is_active){
             window_icon.set_position((float) x - 48.0f, (float) y - 48.0f);
         } else {
@@ -59,7 +59,7 @@ public class Gala.AreaTiling : Object {
         }
     }
 
-    private void calculate_tile_rect(out Meta.Rectangle rect, Meta.Window window, int x, int y) {
+    private void calculate_tile_rect (out Meta.Rectangle rect, Meta.Window window, int x, int y) {
         Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
         int monitor_width = wa.width, monitor_height = wa.height;
         int monitor_x = x - wa.x, monitor_y = y - wa.y;
