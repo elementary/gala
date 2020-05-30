@@ -22,7 +22,7 @@ namespace Gala {
     public class WindowMovementTracker : Object {
         public weak Meta.Display display { get; construct; }
         public AreaTiling area_tiling { get; construct; }
-        private Meta.Window? current_window;
+        private Meta.Window current_window;
 
         public WindowMovementTracker (Meta.Display display, AreaTiling area_tiling) {
             Object (display: display, area_tiling: area_tiling);
@@ -36,22 +36,15 @@ namespace Gala {
         public void unwatch () {
             display.grab_op_begin.disconnect (on_grab_op_begin);
             display.grab_op_end.disconnect (on_grab_op_end);
-
-            if (current_window != null) {
-                current_window.position_changed.disconnect (on_position_changed);
-            }
+            current_window.position_changed.disconnect (on_position_changed);
         }
 
-        private void on_grab_op_begin (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
-            if (window == null) {
-                return;
-            }
-
+        private void on_grab_op_begin (Meta.Display display, Meta.Window window) {
             current_window = window;
             current_window.position_changed.connect (on_position_changed);
         }
 
-        private void on_grab_op_end (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
+        private void on_grab_op_end (Meta.Display display, Meta.Window window) {
             current_window.position_changed.disconnect (on_position_changed);
             if (area_tiling.is_active) {
                 unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
