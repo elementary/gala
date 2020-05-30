@@ -25,7 +25,7 @@ namespace Gala {
         public signal void hide_tile_preview ();
         public bool hide_tile_preview_when_window_moves = true;
         private Meta.Window? current_window;
-        private Meta.Rectangle tile_rect = new Meta.Rectangle ();
+        private Meta.Rectangle tile_rect;
 
         Clutter.Actor window_icon;
         private float start_x;
