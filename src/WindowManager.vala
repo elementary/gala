@@ -73,6 +73,7 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
         
+        AreaTiling area_tiling;
         WindowMovementTracker window_movement_tracker;
 
         NotificationStack notification_stack;
@@ -168,10 +169,9 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            window_movement_tracker = new WindowMovementTracker (display);
+            area_tiling = new AreaTiling (this, display);
+            window_movement_tracker = new WindowMovementTracker (display, area_tiling);
             window_movement_tracker.watch ();
-            window_movement_tracker.show_tile_preview.connect ((win, rect, screen) => show_tile_preview (win, rect, screen));
-            window_movement_tracker.hide_tile_preview.connect (() => hide_tile_preview ());
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -1094,7 +1094,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null && window_movement_tracker.hide_tile_preview_when_window_moves) {
+            if (tile_preview != null && !area_tiling.is_active) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
