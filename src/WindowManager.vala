@@ -1048,20 +1048,16 @@ namespace Gala {
         }
 
         public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
-            float width, height, x, y;
-            var rect = window.get_frame_rect ();
-            width = rect.width;
-            height = rect.height;
-            x = rect.x;
-            y = rect.y;
-
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
                 tile_preview.background_color = { 100, 186, 255, 100 };
                 tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
-            } else if (tile_preview.is_visible ()) {
+            }
+
+            float width, height, x, y;
+            if (tile_preview.is_visible ()) {
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
 
@@ -1069,6 +1065,12 @@ namespace Gala {
                     || tile_preview.get_transition ("size") != null) {
                     return;
                 }
+            } else {
+                var rect = window.get_frame_rect ();
+                width = rect.width;
+                height = rect.height;
+                x = rect.x;
+                y = rect.y;
             }
 
             unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
