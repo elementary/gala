@@ -20,6 +20,7 @@ namespace Gala {
     public class DBus {
         static DBus? instance;
         static WindowManager wm;
+        ulong preview_handler_id = 0UL;
 
         [DBus (visible = false)]
         public static void init (WindowManager _wm) {
@@ -117,6 +118,62 @@ namespace Gala {
             double average_blue;
             double mean;
             double variance;
+        }
+
+        public void show_preview () throws Error {
+            debug("show launch preview!");
+            unowned Meta.Display display = wm.get_display ();
+
+            unowned Meta.Window? dock_window = null;
+            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
+                dock_window = actor.get_meta_window ();
+                if (dock_window.title == "plank") {
+                    break;
+                }
+            }
+
+            if (dock_window == null) {
+                return;
+            }
+
+            unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
+            int x, y;
+            Clutter.ModifierType type;
+            ct.get_pointer (out x, out y, out type);
+            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            gala_wm.area_tiling.is_active = true;
+            Meta.Rectangle tile_rect;
+            gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, x, y);
+            wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
+
+            //  var icon = wm.stage.get_actor_at_pos (Clutter.PickMode.REACTIVE, x, y);
+            //  debug(@"icon has width: $(icon.width)");
+
+            //  preview_handler_id = dock_window.get_actor () .captured_event.connect (event => {
+            //      debug("capture evenet");
+            //      if (event.get_type () == Clutter.EventType.MOTION) {
+            //          debug("motion");
+            //          return true;
+            //      }
+            //      return false;
+            //  });
+            //  preview_handler_id = icon.motion_event.connect (event => {
+            //      debug("motion!");
+            //      return false;
+            //  });
+            //  preview_handler_id = ct.cursor_moved.connect ((fx, fy) => {
+            //      debug("cursor move!");
+            //      gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, (int)fx, (int)fy);
+            //      wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
+            //  });
+        }
+
+        public void hide_preview () throws Error {
+            debug("hide launch preview!");
+            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            gala_wm.area_tiling.is_active = false;
+            //  wm.stage.disconnect (preview_handler_id);
+            wm.hide_tile_preview ();
         }
 
         /**

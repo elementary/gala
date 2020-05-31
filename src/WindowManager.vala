@@ -73,7 +73,7 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
         
-        AreaTiling area_tiling;
+        public AreaTiling area_tiling;
         WindowMovementTracker window_movement_tracker;
 
         NotificationStack notification_stack;
