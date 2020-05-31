@@ -59,7 +59,7 @@ public class Gala.AreaTiling : Object {
         }
     }
 
-    private void calculate_tile_rect (out Meta.Rectangle rect, Meta.Window window, int x, int y) {
+    public void calculate_tile_rect (out Meta.Rectangle rect, Meta.Window window, int x, int y) {
         Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
         int monitor_width = wa.width, monitor_height = wa.height;
         int monitor_x = x - wa.x, monitor_y = y - wa.y;
