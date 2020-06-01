@@ -20,6 +20,8 @@ namespace Gala {
     public class DBus {
         static DBus? instance;
         static WindowManager wm;
+        Clutter.DragAction drag_action;
+        Clutter.Actor icon;
         ulong preview_handler_id = 0UL;
 
         [DBus (visible = false)]
@@ -146,8 +148,19 @@ namespace Gala {
             gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, x, y);
             wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
 
-            //  var icon = wm.stage.get_actor_at_pos (Clutter.PickMode.REACTIVE, x, y);
-            //  debug(@"icon has width: $(icon.width)");
+            drag_action = new Clutter.DragAction ();
+            drag_action.drag_motion.connect (() => debug("drag_motion!"));
+            drag_action.drag_begin.connect (() => debug("begin this drag aciton!!!!"));
+            drag_action.drag_end.connect (() => debug("end this drag aciton!!!!"));
+            icon = wm.stage.get_actor_at_pos (Clutter.PickMode.REACTIVE, x, y);
+            icon.reactive = true;
+            icon.add_action (drag_action);
+
+            drag_action.drag_begin (icon, (float)x, (float)y, type);
+
+            //  resize_handle.set_size (button_size, button_size);
+            //  resize_handle.set_pivot_point (0.5f, 0.5f);
+            //  resize_handle.set_position (width - button_size, height - button_size);
 
             //  preview_handler_id = dock_window.get_actor () .captured_event.connect (event => {
             //      debug("capture evenet");
@@ -174,6 +187,11 @@ namespace Gala {
             gala_wm.area_tiling.is_active = false;
             //  wm.stage.disconnect (preview_handler_id);
             wm.hide_tile_preview ();
+
+            int x, y;
+            Clutter.ModifierType type;
+            wm.get_display ().get_cursor_tracker ().get_pointer (out x, out y, out type);
+            drag_action.drag_end (icon, (float)x, (float)y, type);
         }
 
         /**

@@ -372,6 +372,18 @@ namespace Gala {
                 return false;
             });
 
+
+            display.get_cursor_tracker ().cursor_moved.connect(() => {
+                debug("cursor moved!");
+            });
+            //  stage.captured_event.connect(event => {
+            //      debug("capture!");
+            //      if (event.get_type () == Clutter.EventType.MOTION) {
+            //          debug("WM: motion!!");
+            //      }
+            //      return false;
+            //  });
+
             return false;
         }
 
