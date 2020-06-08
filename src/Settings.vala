@@ -17,21 +17,7 @@
 
 namespace Gala {
     public class BehaviorSettings : Granite.Services.Settings {
-        public bool dynamic_workspaces { get; set; }
-        public bool edge_tiling { get; set; }
-        public string panel_main_menu_action { get; set; }
-        public string toggle_recording_action { get; set; }
-        public string overlay_action { get; set; }
-        public string hotcorner_custom_command { get; set; }
         public string[] dock_names { get; set; }
-        public bool move_maximized_workspace { get; set; }
-
-        public WindowOverviewType window_overview_type { get; set; }
-
-        public ActionType hotcorner_topleft { get; set; }
-        public ActionType hotcorner_topright { get; set; }
-        public ActionType hotcorner_bottomleft { get; set; }
-        public ActionType hotcorner_bottomright { get; set; }
 
         static BehaviorSettings? instance = null;
 
