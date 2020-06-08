@@ -113,26 +113,4 @@ namespace Gala {
                 x_offset = int.parse (val[2]), y_offset = int.parse (val[3]), opacity = (uint8)int.parse (val[4])};
         }
     }
-
-    public class BackgroundSettings : Granite.Services.Settings {
-        public string picture_options { get; set; }
-        public string picture_uri { get; set; }
-        public int picture_opacity { get; set; }
-        public string primary_color { get; set; }
-        public string secondary_color { get; set; }
-        public string color_shading_type { get; set; }
-
-        static BackgroundSettings? instance = null;
-
-        private BackgroundSettings () {
-            base ("org.gnome.desktop.background");
-        }
-
-        public static unowned BackgroundSettings get_default () {
-            if (instance == null)
-                instance = new BackgroundSettings ();
-
-            return instance;
-        }
-    }
 }
