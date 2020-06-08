@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-05-29 13:11+0000\n"
+"PO-Revision-Date: 2020-06-07 20:11+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -53,7 +53,7 @@ msgstr "Vždy navrchu"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
-msgstr "Vždy na viditelné ploše"
+msgstr "Vždy na viditelné pracovní ploše"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
@@ -77,7 +77,7 @@ msgstr "Maximalizovat"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "Víceúlohové a správa oken"
+msgstr "Víceúlohové zobrazení a správa oken"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
@@ -101,7 +101,7 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
-"Opraveno mizení oken, které mají nastaveno „Vždy na zobrazené pracovní ploše“"
+"Opraveno mizení oken, které mají nastaveno „Vždy na viditelné pracovní ploše“"
 " při přepínání mezi pracovními plochami"
 
 #: data/gala.appdata.xml.in:18
@@ -163,7 +163,7 @@ msgstr "Víceúlohové zobrazení"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "Zobrazte všechna okna a pracovní plochy"
+msgstr "Zobrazení všech oken a pracovních ploch"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
