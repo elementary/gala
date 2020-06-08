@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
-"PO-Revision-Date: 2020-02-06 20:08+0000\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
+"PO-Revision-Date: 2020-05-27 22:10+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
-"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
-">\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/>"
+"\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,46 +91,68 @@ msgstr ""
 "लिंबमुटरवर आधारीत एक विंडो आणि कम्पोझिटिंग मॅनेजर पॅन्थिओन सह वापरासाठी प्राथमिक द्वारे "
 "डिझाइन केलेले."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "सुधारणा:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
+"कार्यक्षेत्र बदलताना “नेहमीच दृश्यमान कार्यक्षेत्र” विंडो अदृश्य होण्याशी "
+"संबंधित अडचणी दूर करा"
 
 #: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"कार्यक्षेत्र बदलत असताना प्राथमिक नसलेल्या डिस्पलेवर विंडो अदृश्य होण्याशी "
+"संबंधित समस्या सोडवा"
 
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "अद्ययावत भाषांतर"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"क्षणिक विंडो उघडत असताना कार्यक्षेत्र बदलताना होणाऱ्या क्रॅशचे निराकरण करा"
+
+#: data/gala.appdata.xml.in:36
+msgid "Don't show Gala Background Services in the dock"
+msgstr "डॉकमध्ये गाला पार्श्वभूमी सेवा दर्शवू नका"
+
+#: data/gala.appdata.xml.in:37
+msgid "Fixes for media key handling"
+msgstr "मीडिया की हाताळणीशी संबंधित समस्यांसाठी निराकरणे"
+
+#: data/gala.appdata.xml.in:38
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
+
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "लेगसी अॅप्ससाठी विंडो सावली सुधारित करा"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "डीपीआय बदलल्यानंतर सूचना स्थितीशी संबंधित समस्यांचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "टाइल केलेल्या विंडो हलविण्यासाठी आणि जास्तीत जास्त करण्यासाठी अ‍ॅनिमेशनचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
-msgstr "एलिमेंटरी, Inc."
+msgstr "एलिमेंटरी,Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6

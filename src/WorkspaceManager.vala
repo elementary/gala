@@ -143,6 +143,11 @@ namespace Gala {
             var prev_workspace = manager.get_workspace_by_index (from);
             if (Utils.get_n_windows (prev_workspace) < 1
                 && from != manager.get_n_workspaces () - 1) {
+
+                // If we're about to remove a workspace, cancel any DnD going on in the multitasking view
+                // or else things might get broke
+                DragDropAction.cancel_all_by_id ("multitaskingview-window");
+
                 remove_workspace (prev_workspace);
             }
         }

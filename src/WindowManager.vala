@@ -55,6 +55,8 @@ namespace Gala {
          */
         public bool enable_animations { get; protected set; }
 
+        public ScreenShield? screen_shield { get; private set; }
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -63,14 +65,14 @@ namespace Gala {
 
         // used to detect which corner was used to trigger an action
         Clutter.Actor? last_hotcorner;
-        ScreenSaver? screensaver;
+        public ScreenSaverManager? screensaver { get; private set; }
 
         Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
-        
+
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -151,6 +153,9 @@ namespace Gala {
             var display = screen.get_display ();
 #endif
 
+            screen_shield = new ScreenShield (this);
+            screensaver = new ScreenSaverManager (screen_shield);
+
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
@@ -170,14 +175,7 @@ namespace Gala {
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
-            try {
-                screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
-                    "/org/gnome/ScreenSaver");
-                screensaver.active_changed.connect (update_input_area);
-            } catch (Error e) {
-                screensaver = null;
-                warning (e.message);
-            }
+            screensaver.active_changed.connect (update_input_area);
 
 #if HAS_MUTTER330
             stage = display.get_stage () as Clutter.Stage;
@@ -241,6 +239,8 @@ namespace Gala {
 #else
             top_window_group = screen.get_top_window_group ();
 #endif
+            ui_group.add_child (screen_shield);
+
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
@@ -296,9 +296,9 @@ namespace Gala {
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
 #if HAS_MUTTER330
-            Meta.MonitorManager.@get ().monitors_changed.connect (configure_hotcorners);
+            Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 #else
-            screen.monitors_changed.connect (configure_hotcorners);
+            screen.monitors_changed.connect (on_monitors_changed);
 #endif
 
             BehaviorSettings.get_default ().schema.changed.connect (configure_hotcorners);
@@ -366,6 +366,11 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        void on_monitors_changed () {
+            configure_hotcorners ();
+            screen_shield.expand_to_screen_size ();
         }
 
         void configure_hotcorners () {
@@ -1537,10 +1542,8 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    if (BehaviorSettings.get_default ().use_new_notifications) {
-                        notification_stack.show_notification (actor);
-                        map_completed (actor);
-                    }
+                    notification_stack.show_notification (actor);
+                    map_completed (actor);
 
                     break;
                 default:
@@ -2106,20 +2109,20 @@ namespace Gala {
                     continue;
                 }
 
-                unowned Meta.Window meta_window = window.get_meta_window ();
+                unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    if (meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (meta_window != null
+                        && meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         reparent_notification_window (actor, parents.nth_data (i));
                     } else {
                         clutter_actor_reparent (actor, parents.nth_data (i));
                     }
-
-                    continue;
                 }
 
                 kill_window_effects (window);
 
-                if (meta_window.get_workspace () != active_workspace
+                if (meta_window != null
+                    && meta_window.get_workspace () != active_workspace
                     && !meta_window.is_on_all_workspaces ())
                     window.hide ();
 
@@ -2186,7 +2189,7 @@ namespace Gala {
             return info;
         }
 
-        /** 
+        /**
          * Notification windows are a special case where the transition state needs
          * to be preserved when reparenting the actor. Because Clutter doesn't allow specifying
          * remove_child flags we will save the elapsed time of required transitions and

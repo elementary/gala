@@ -1,6 +1,6 @@
 project('gala',
 	'c', 'vala',
-	version: '3.2.0',
+	version: '3.3.2',
 	meson_version: '>= 0.48.0',
 	license: 'GPL3',
 )
@@ -179,7 +179,6 @@ subdir('lib')
 subdir('src')
 subdir('daemon')
 subdir('plugins/maskcorners')
-subdir('plugins/notify')
 subdir('plugins/pip')
 subdir('plugins/template')
 subdir('plugins/zoom')

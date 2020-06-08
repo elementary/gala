@@ -305,6 +305,7 @@ namespace Gala {
                     Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
                     image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
                     texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
 #else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
                     pixbuf.get_width (), pixbuf.get_height (),
@@ -370,6 +371,7 @@ namespace Gala {
                     Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
                     image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
                     texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
 #else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
                     pixbuf.get_width (), pixbuf.get_height (),

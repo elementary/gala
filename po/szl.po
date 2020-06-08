@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
 "PO-Revision-Date: 2020-02-24 21:15+0000\n"
 "Last-Translator: gkkulik <g.kulik@o2.pl>\n"
 "Language-Team: Silesian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -86,43 +86,60 @@ msgstr ""
 "Mynedżer ôkyn i kōmpozytingu ôparty ô libmutter i zbudowany ôd elementary do "
 "używanio ze Pantheonym."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "Ulepszynia:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
 
 #: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Pokoż skrōty tastatury we myni wiyrchnigo poska"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "Zaktualizowane przekłady"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:36
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:37
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:38
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Pokoż skrōty tastatury we myni wiyrchnigo poska"
+
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "Ulepsz ciynie ôkna we starszych programach"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "Spraw możliwy feler przi robiyniu przechytōw ekranu"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "Spraw pozycyjo powiadōmiynio po umianie DPI"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Spraw animacyje przi przenoszyniu i maksymalizowaniu ôkyn"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-04-02 18:35+0000\n"
-"PO-Revision-Date: 2020-01-19 13:08+0000\n"
-"Last-Translator: Ruben Sibon <rubenjs@webricolage.nl>\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
+"PO-Revision-Date: 2020-05-10 12:10+0000\n"
+"Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -91,45 +91,68 @@ msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Don't show Gala Background Services in the dock"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
+"Probleem opgelost met \"Altijd op Zichtbare Werkruimte\" vensters die "
+"verdwijnen na het veranderen van werkruimte"
 
 #: data/gala.appdata.xml.in:18
-msgid "Fixes for media key handling"
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"Probleem opgelost voor vensters op niet-primaire beeldschermen die "
+"verdwijnen bij het veranderen van werkruimte"
 
-#: data/gala.appdata.xml.in:19
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Toon sneltoetsen in titelbalkmenu's"
-
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"Probleem opgelost wat een crash veroorzaakte bij het veranderen van "
+"werkruimtes tijdens het openen van een tijdelijk venster"
+
+#: data/gala.appdata.xml.in:36
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Toon Gala Background Services niet in het dock"
+
+#: data/gala.appdata.xml.in:37
+msgid "Fixes for media key handling"
+msgstr "Het gebruik van de media toets is verbeterd"
+
+#: data/gala.appdata.xml.in:38
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Toon sneltoetsen in titelbalkmenu's"
+
+#: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
 msgstr "Verbeterde venster schaduwen voor oudere apps"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
 msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
 msgstr "De positie van notificaties is verbeterd na het veranderen van DPI"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Verbeterde animaties voor bewegende en gemaximaliseerde maar niet "
 "schermvullende vensters"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

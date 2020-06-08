@@ -10,7 +10,26 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="3.3.0" date="2020-04-01" urgency="medium">
+    <release version="3.3.2" date="2020-04-30" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fix “Always on Visible Workspace” windows disappearing when changing workspaces</li>
+          <li>Fix windows on non-primary displays disappearing when changing workspaces</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
+    <release version="3.3.1" date="2020-04-25" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fix crash when changing workspaces while a transient window is opening</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
+    <release version="3.3.0" date="2020-04-02" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
