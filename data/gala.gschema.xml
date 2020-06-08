@@ -15,7 +15,15 @@
 		<value nick='grid' value='0'/>
 		<value nick='natural' value='1'/>
 	</enum>
-	
+
+	<schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
+	    <key type="b" name="lock-on-suspend">
+		    <default>true</default>
+		    <summary>Automatically lock the screen when the computer suspends</summary>
+		    <description></description>
+		</key>
+	</schema>
+
 	<schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
 		<key enum="GalaActionType" name="hotcorner-topleft">
 			<default>'none'</default>
@@ -56,11 +64,6 @@
 			<default>true</default>
 			<summary>Enable edge tiling when dropping windows on screen edges</summary>
 			<description>If enabled, dropping windows on vertical screen edges maximizes them vertically and resizes them horizontally to cover half of the available area. Dropping windows on the top screen edge maximizes them completely.</description>
-		</key>
-		<key type="b" name="use-new-notifications">
-			<default>false</default>
-			<summary>If new notifications should be used</summary>
-			<description>If new notifications UI should be used, requires io.elemenetary.notifications to be present and running</description>
 		</key>
 		<key type="s" name="panel-main-menu-action">
 			<default>''</default>
@@ -251,30 +254,7 @@
 			<description>See normal-focused.</description>
 		</key>
 	</schema>
-	
-	<schema path="/org/pantheon/desktop/gala/notifications/" id="org.pantheon.desktop.gala.notifications">
-		<key type="b" name="do-not-disturb">
-			<default>false</default>
-			<summary>Disable all notifications</summary>
-		</key>
-		<child name="applications" schema="org.pantheon.desktop.gala.notifications.application" />
-	</schema>
 
-	<schema id="org.pantheon.desktop.gala.notifications.application">
-		<key type="b" name="bubbles">
-			<default>true</default>
-			<summary>Enable bubbles</summary>
-		</key>
-		<key type="b" name="sounds">
-			<default>true</default>
-			<summary>Enable sounds</summary>
-		</key>
-		<key type="b" name="remember">
-			<default>true</default>
-			<summary>Show missed notifications in notification center</summary>
-		</key>
-	</schema>
-	
 	<schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners">
 		<key type="b" name="enable">
 			<default>true</default>
