@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-05-12 14:10+0000\n"
+"PO-Revision-Date: 2020-06-07 20:11+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -25,7 +25,7 @@ msgstr "Snímky obrazovky"
 
 #: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
-msgstr "Vypadá displej dobře?"
+msgstr "Je zobrazení v pořádku?"
 
 #: src/WindowManager.vala:2169
 msgid "Keep This Configuration"
@@ -49,11 +49,11 @@ msgstr "Změnit velikost"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Always on Top"
-msgstr "Vždy nahoře"
+msgstr "Vždy navrchu"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Visible Workspace"
-msgstr "Vždy na viditelné ploše"
+msgstr "Vždy na viditelné pracovní ploše"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Move to Workspace Left"
@@ -77,7 +77,7 @@ msgstr "Maximalizovat"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "Víceúlohové a správa oken"
+msgstr "Víceúlohové zobrazení a správa oken"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
@@ -101,11 +101,15 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"Opraveno mizení oken, které mají nastaveno „Vždy na viditelné pracovní ploše“"
+" při přepínání mezi pracovními plochami"
 
 #: data/gala.appdata.xml.in:18
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"Opraveno mizení oken na vedlejších displejích při přepínání mezi pracovními "
+"plochami"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
@@ -115,34 +119,38 @@ msgstr "Aktualizovány překlady"
 #: data/gala.appdata.xml.in:27
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"Opraveno padání při přepínání mezi pracovními plochami v průběhu otevírání "
+"přechodných oken"
 
 #: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Opraveno nechtěné zobrazování služeb Gala, spuštěných na pozadí, v doku"
 
 #: data/gala.appdata.xml.in:37
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Opravena obsluha multimediálních kláves"
 
 #: data/gala.appdata.xml.in:38
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "Zobrazovány klávesové zkratky v nabídkách titulní lišty okna"
 
 #: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Vylepšení stínování oken pro starší aplikace"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
 
 #: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Opravena pozice zobrazování upozorňování pro změně nastavení DPI"
 
 #: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"Opraveny animace pro přesouvání a maximalizaci oken, uspořádaných jako "
+"dlaždice"
 
 #: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
@@ -151,11 +159,11 @@ msgstr "elementary, Inc."
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "Zobrazení multitaskingu"
+msgstr "Víceúlohové zobrazení"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "Zobrazte všechna okna a pracovní plochy"
+msgstr "Zobrazení všech oken a pracovních ploch"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
@@ -167,7 +175,7 @@ msgstr "Ostatní"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Záložní soubor desktop pro upozornění ze zastaralých aplikací."
+msgstr "Náhradní spouštěč pro upozorňování ze zastaralých aplikací."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
