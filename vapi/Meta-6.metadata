@@ -154,7 +154,7 @@ debug_spew_real parent="Meta.Util" cheader_filename="meta/util.h"
 external_binding_name_for_action parent="Meta.Util" cheader_filename="meta/util.h"
 fatal parent="Meta.Util" cheader_filename="meta/util.h"
 get_locale_direction parent="Meta.Util" cheader_filename="meta/util.h"
-gravity_to_string parent="Meta.Util" cheader_filename="meta/util.h"
+gravity_to_string parent="Meta.Gravity" name="to_string" cheader_filename="meta/util.h" symbol_type="method" instance_idx=0
 is_debugging parent="Meta.Util" cheader_filename="meta/util.h"
 is_syncing parent="Meta.Util" cheader_filename="meta/util.h"
 is_verbose parent="Meta.Util" cheader_filename="meta/util.h"
