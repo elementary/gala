@@ -161,9 +161,15 @@ namespace Gala {
 
             scale_factor = InternalUtils.get_ui_scaling_factor ();
 
+            var window_frame_rect = window.get_frame_rect ();
             window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
             window_icon.opacity = 0;
             window_icon.set_pivot_point (0.5f, 0.5f);
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+            window_icon.set_position (
+                (window_frame_rect.width - WINDOW_ICON_SIZE) / 2,
+                window_frame_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
 
             active_shape = new Clutter.Actor ();
             active_shape.background_color = { 255, 255, 255, 200 };
@@ -304,6 +310,7 @@ namespace Gala {
             if (animate)
                 toggle_shadow (false);
 
+            window_icon.set_position ((outer_rect.width - WINDOW_ICON_SIZE) / 2, outer_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
             window_icon.opacity = 0;
             close_button.opacity = 0;
         }
@@ -322,6 +329,8 @@ namespace Gala {
             set_position (rect.x, rect.y);
 
             window_icon.opacity = 255;
+            window_icon.set_position ((rect.width - WINDOW_ICON_SIZE) / 2, rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+
             restore_easing_state ();
 
             toggle_shadow (true);
@@ -411,15 +420,6 @@ namespace Gala {
                     break;
             }
             close_button.restore_easing_state ();
-
-            if (!dragging) {
-                window_icon.save_easing_state ();
-                window_icon.set_easing_duration (0);
-
-                window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
-
-                window_icon.restore_easing_state ();
-            }
         }
 
         void toggle_shadow (bool show) {
