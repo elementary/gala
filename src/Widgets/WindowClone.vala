@@ -700,9 +700,8 @@ namespace Gala {
             get_parent ().remove_child (this);
             prev_parent.insert_child_at_index (this, prev_index);
 
-            clone.set_pivot_point (0, 0);
-
             clone.save_easing_state ();
+            clone.set_pivot_point (0.5f, 0.5f);
             clone.set_easing_duration (250);
             clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
             clone.set_scale (1, 1);
