@@ -184,7 +184,7 @@ namespace Gala {
             icon_group = new IconGroup (workspace);
             icon_group.selected.connect (() => {
                 if (active) {
-                    close();
+                    close ();
                 } else {
                     selected (false);
                 }
