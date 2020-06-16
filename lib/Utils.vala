@@ -332,7 +332,6 @@ namespace Gala {
         public static Gdk.Pixbuf? get_resize_button_pixbuf () {
             var height = 36 * Utils.get_ui_scaling_factor ();
             if (resize_pixbuf == null || resize_pixbuf.height != height) {
-                var scale = Utils.get_ui_scaling_factor ();
                 try {
                     resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
                         Config.RESOURCEPATH + "/buttons/resize.svg",
