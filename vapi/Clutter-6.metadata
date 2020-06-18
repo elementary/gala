@@ -143,7 +143,7 @@ StageView.layout skip
 
 Stage
  	.event name="emit_event"
- 	.capture.captures out array_length_idx=3 type="Clutter.Capture[]"
+	.paint_view.redraw_clip type="Cairo.Region"
 
 Capture
   .image type="Cairo.ImageSurface"
