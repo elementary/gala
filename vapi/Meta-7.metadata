@@ -7,6 +7,7 @@ Backend.gpu_added skip
 get_backend parent="Meta.Backend" cheader_filename="meta/meta-backend.h"
 Background cheader_filename="meta/meta-background.h"
 Background.set_file.file nullable
+BackgroundContent.new symbol_type="constructor"
 BackgroundActor cheader_filename="meta/meta-background-actor.h"
 BackgroundGroup cheader_filename="meta/meta-background-group.h"
 BackgroundImage cheader_filename="meta/meta-background-image.h"

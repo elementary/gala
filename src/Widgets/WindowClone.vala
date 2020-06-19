@@ -350,12 +350,21 @@ namespace Gala {
          * according to their given allocations. The first two are placed in a way
          * that compensates for invisible borders of the texture.
          */
+#if HAS_MUTTER338
+        public override void allocate (ActorBox box) {
+            base.allocate (box);
+#else
         public override void allocate (ActorBox box, AllocationFlags flags) {
             base.allocate (box, flags);
+#endif
 
             foreach (var child in get_children ()) {
                 if (child != clone && child != active_shape)
+#if HAS_MUTTER338
+                    child.allocate_preferred_size ();
+#else
                     child.allocate_preferred_size (flags);
+#endif
             }
 
             ActorBox shape_alloc = {
@@ -364,7 +373,11 @@ namespace Gala {
                 box.get_width () + ACTIVE_SHAPE_SIZE,
                 box.get_height () + ACTIVE_SHAPE_SIZE
             };
+#if HAS_MUTTER338
+            active_shape.allocate (shape_alloc);
+#else
             active_shape.allocate (shape_alloc, flags);
+#endif
 
             if (clone == null || dragging)
                 return;
@@ -379,7 +392,11 @@ namespace Gala {
                               (input_rect.y - outer_rect.y) * scale_factor);
             alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
+#if HAS_MUTTER338
+            clone.allocate (alloc);
+#else
             clone.allocate (alloc, flags);
+#endif
         }
 
         public override bool button_press_event (Clutter.ButtonEvent event) {

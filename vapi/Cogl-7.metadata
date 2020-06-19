@@ -60,6 +60,7 @@ is_shader parent="Cogl.Handle"
 is_texture parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_context parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_framebuffer parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_frame_info parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_onscreen parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_pipeline parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_texture_2d parent="Cogl.Object" symbol_type="method" instance_idx=0

@@ -76,11 +76,6 @@ LayoutManager
 // Variadic arguments
 Backend
 	.get_cogl_context skip=false
-Box
-	.pack skip=false
-	.pack_after skip=false
-	.pack_at skip=false
-	.pack_before skip=false
 Container
 	.child_get skip=false
 	.child_set skip=false
@@ -121,7 +116,6 @@ container_class_find_child_property skip
 container_class_list_child_properties skip
 
 // Move symbols
-get_actor_by_gid parent="Clutter.Actor" name="get_by_gid"
 color_from_* skip
 units_from_* skip
 
@@ -131,6 +125,9 @@ color_get_static nullable
 // Upstream
 Event
 	.get_position.position out
+
+FrameListenerIface skip
+FrameClock.new skip
 
 // Remove for clutter-2.0
 /////////////////////////
@@ -149,6 +146,8 @@ Event.type skip=false
 AnyEvent struct=false base_type="Clutter.Event"
 ButtonEvent struct=false base_type="Clutter.Event"
 CrossingEvent struct=false base_type="Clutter.Event"
+DeviceEvent struct=false base_type="Clutter.Event"
+IMEvent struct=false base_type="Clutter.Event"
 KeyEvent struct=false base_type="Clutter.Event"
 MotionEvent struct=false base_type="Clutter.Event"
 ScrollEvent struct=false base_type="Clutter.Event"
