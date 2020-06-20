@@ -87,7 +87,8 @@ namespace Gala {
         Meta.SizeChange? which_change = null;
         Meta.Rectangle old_rect_size_change;
 
-        GLib.Settings animations_settings;
+        private GLib.Settings animations_settings;
+        private GLib.Settings behavior_settings;
 
         public WindowManagerGala () {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
@@ -108,6 +109,7 @@ namespace Gala {
         construct {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
+            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
@@ -257,21 +259,24 @@ namespace Gala {
             display.overlay_key.connect (() => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().overlay_action);
+                        behavior_settings.get_string ("overlay-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().panel_main_menu_action);
+                        behavior_settings.get_string ("panel-main-menu-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().toggle_recording_action);
+                        behavior_settings.get_string ("toggle-recording-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
@@ -926,14 +931,16 @@ namespace Gala {
                     break;
                 case ActionType.OPEN_LAUNCHER:
                     try {
-                        Process.spawn_command_line_async (BehaviorSettings.get_default ().panel_main_menu_action);
+                        Process.spawn_command_line_async (
+                            behavior_settings.get_string ("panel-main-menu-action")
+                        );
                     } catch (Error e) {
                         warning (e.message);
                     }
                     break;
                 case ActionType.CUSTOM_COMMAND:
                     string command = "";
-                    var line = BehaviorSettings.get_default ().hotcorner_custom_command;
+                    var line = behavior_settings.get_string ("hotcorner-custom-command");
                     if (line == "")
                         return;
 
@@ -1294,7 +1301,7 @@ namespace Gala {
             kill_window_effects (actor);
 
             var window = actor.get_meta_window ();
-            if (window.maximized_horizontally && BehaviorSettings.get_default ().move_maximized_workspace) {
+            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_next_ws (window);
             }
 
@@ -1669,7 +1676,7 @@ namespace Gala {
             kill_window_effects (actor);
             var window = actor.get_meta_window ();
 
-            if (BehaviorSettings.get_default ().move_maximized_workspace) {
+            if (behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_old_ws (window);
             }
 
