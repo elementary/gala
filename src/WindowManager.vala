@@ -184,8 +184,8 @@ namespace Gala {
 #else
             stage = screen.get_stage () as Clutter.Stage;
 #endif
-
-            var color = BackgroundSettings.get_default ().primary_color;
+            var background_settings = new GLib.Settings ("org.gnome.desktop.background");
+            var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
             WorkspaceManager.init (this);
