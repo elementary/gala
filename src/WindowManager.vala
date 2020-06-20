@@ -1541,7 +1541,8 @@ namespace Gala {
                         }
                     });
 
-                    if (AppearanceSettings.get_default ().dim_parents &&
+                    var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
+                    if (appearance_settings.get_boolean ("dim-parents") &&
                         window.window_type == Meta.WindowType.MODAL_DIALOG &&
                         window.is_attached_dialog ())
                         dim_window (window.find_root_ancestor (), true);

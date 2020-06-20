@@ -33,26 +33,6 @@ namespace Gala {
         }
     }
 
-    public class AppearanceSettings : Granite.Services.Settings {
-        public string button_layout { get; set; }
-        public bool attach_modal_dialogs { get; set; }
-        public bool dim_parents { get; set; }
-        public string workspace_switcher_background { get; set; }
-
-        static AppearanceSettings? instance = null;
-
-        private AppearanceSettings () {
-            base (Config.SCHEMA + ".appearance");
-        }
-
-        public static unowned AppearanceSettings get_default () {
-            if (instance == null)
-                instance = new AppearanceSettings ();
-
-            return instance;
-        }
-    }
-
     public class ShadowSettings : Granite.Services.Settings {
         public string[] menu { get; set; }
         public string[] normal_focused { get; set; }
