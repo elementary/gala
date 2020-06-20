@@ -33,21 +33,6 @@ namespace Gala {
         }
     }
 
-    public class KeybindingSettings : Granite.Services.Settings {
-        static KeybindingSettings? instance = null;
-
-        private KeybindingSettings () {
-            base (Config.SCHEMA + ".keybindings");
-        }
-
-        public static unowned KeybindingSettings get_default () {
-            if (instance == null)
-                instance = new KeybindingSettings ();
-
-            return instance;
-        }
-    }
-
     public class AppearanceSettings : Granite.Services.Settings {
         public string button_layout { get; set; }
         public bool attach_modal_dialogs { get; set; }
