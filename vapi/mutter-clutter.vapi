@@ -4786,13 +4786,15 @@ namespace Clutter {
 		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Graphene.Point3D verts[4]);
 #else
 		public void get_allocation_vertices (Clutter.Actor? ancestor, [CCode (array_length = false)] Clutter.Vertex verts[4]);
-#endif
 		[Version (deprecated = true, deprecated_since = "1.12", since = "0.6")]
 		public void get_anchor_point (out float anchor_x, out float anchor_y);
+#endif
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public Clutter.Gravity get_anchor_point_gravity ();
+#if !HAS_MUTTER336
 		[Version (deprecated = true, deprecated_since = "1.12", since = "1.0")]
 		public unowned Clutter.Animation get_animation ();
+#endif
 		[Version (since = "1.10")]
 		public Clutter.Color get_background_color ();
 		[CCode (cname = "clutter_get_actor_by_gid")]
@@ -4966,6 +4968,9 @@ namespace Clutter {
 		public Clutter.Gravity get_z_rotation_gravity ();
 		[Version (since = "1.0")]
 		public void grab_key_focus ();
+#if HAS_MUTTER336
+		public virtual bool has_accessible ();
+#endif
 		[Version (since = "1.10")]
 		public bool has_actions ();
 		[Version (since = "1.4")]
@@ -4989,6 +4994,9 @@ namespace Clutter {
 		[Version (deprecated = true, deprecated_since = "1.10", since = "0.2")]
 #endif
 		public virtual void hide_all ();
+#if HAS_MUTTER336
+		public void inhibit_culling ();
+#endif
 		[Version (since = "1.10")]
 		public void insert_child_above (Clutter.Actor child, Clutter.Actor? sibling);
 		[Version (since = "1.10")]
@@ -5203,6 +5211,9 @@ namespace Clutter {
 		public virtual void show_all ();
 		[Version (since = "0.6")]
 		public bool transform_stage_point (float x, float y, out float x_out, out float y_out);
+#if HAS_MUTTER336
+		public void uninhibit_culling ();
+#endif
 		[Version (since = "1.0")]
 		public virtual void unmap ();
 		[Version (deprecated = true, deprecated_since = "1.10", since = "0.2")]
@@ -6208,7 +6219,7 @@ namespace Clutter {
 		[NoWrapper]
 		public virtual void update_allocation (Clutter.Actor actor, Clutter.ActorBox allocation);
 		[NoWrapper]
-		public virtual void update_preferred_size (Clutter.Actor actor, Clutter.Orientation direction, float for_size, float minimum_size, float natural_size);
+		public virtual void update_preferred_size (Clutter.Actor actor, Clutter.Orientation direction, float for_size, ref float minimum_size, ref float natural_size);
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	[Compact]
@@ -6814,7 +6825,7 @@ namespace Clutter {
 		[NoWrapper]
 		public virtual void commit_text (string text);
 		[NoWrapper]
-		public virtual void delete_surrounding (uint offset, uint len);
+		public virtual void delete_surrounding (int offset, uint len);
 		public bool filter_key_event (Clutter.KeyEvent key);
 		[NoWrapper]
 		public virtual void focus_in (Clutter.InputMethod input_method);
@@ -6886,7 +6897,7 @@ namespace Clutter {
 		public signal void cursor_location_changed (Clutter.Rect object);
 #endif
 		[HasEmitter]
-		public signal void delete_surrounding (uint offset, uint len);
+		public signal void delete_surrounding (int offset, uint len);
 		public signal void input_panel_state (Clutter.InputPanelState object);
 		[HasEmitter]
 		public signal void request_surrounding ();
@@ -7197,6 +7208,7 @@ namespace Clutter {
 	public class PaintContext {
 		public void destroy ();
 		public unowned Cogl.Framebuffer get_framebuffer ();
+		public unowned Cairo.Region get_redraw_clip ();
 		public void pop_framebuffer ();
 		public void push_framebuffer (Cogl.Framebuffer framebuffer);
 		public unowned Clutter.PaintContext @ref ();
@@ -7517,16 +7529,20 @@ namespace Clutter {
 		public void get_pointer_a11y_settings (Clutter.PointerA11ySettings settings);
 		public virtual Clutter.VirtualDeviceType get_supported_virtual_device_types ();
 		public bool get_touch_mode ();
+		public void inhibit_unfocus ();
+		public bool is_unfocus_inhibited ();
 		public virtual GLib.List<weak Clutter.InputDevice> list_devices ();
 		public void set_kbd_a11y_settings (Clutter.KbdA11ySettings settings);
 		public void set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType click_type);
 		public void set_pointer_a11y_settings (Clutter.PointerA11ySettings settings);
+		public void uninhibit_unfocus ();
 		public virtual void warp_pointer (int x, int y);
 		[NoAccessorMethod]
 		public Clutter.Backend backend { owned get; construct; }
 		public bool touch_mode { get; }
 		public signal void device_added (Clutter.InputDevice object);
 		public signal void device_removed (Clutter.InputDevice object);
+		public signal void is_unfocus_inhibited_changed ();
 		public signal void kbd_a11y_flags_changed (uint settings_flags, uint changed_mask);
 		public signal void kbd_a11y_mods_state_changed (uint latched_mask, uint locked_mask);
 		public signal void ptr_a11y_dwell_click_type_changed (Clutter.PointerA11yDwellClickType click_type);
@@ -7668,7 +7684,7 @@ namespace Clutter {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		[Version (since = "0.8")]
 		public Stage ();
-		public bool capture (bool paint, Cairo.RectangleInt rect, [CCode (array_length_cname = "n_captures", array_length_pos = 3.1, type = "ClutterCapture**")] out Clutter.Capture[] captures);
+		public bool capture (bool paint, Cairo.RectangleInt rect, [CCode (array_length_cname = "out_n_captures", array_length_pos = 3.1)] out Clutter.Capture[] out_captures);
 		public void capture_into (bool paint, Cairo.RectangleInt rect, uint8 data);
 		[CCode (cname = "clutter_stage_event")]
 		[Version (since = "0.4")]
@@ -7818,7 +7834,7 @@ namespace Clutter {
 		[Version (since = "1.2")]
 		public virtual signal bool delete_event (Clutter.Event event);
 #if HAS_MUTTER336
-		public virtual signal void paint_view (Clutter.StageView view);
+		public virtual signal void paint_view (Clutter.StageView view, Cairo.Region redraw_clip);
 #endif
 #if !HAS_MUTTER336
 		[Version (since = "0.6")]
@@ -7876,8 +7892,6 @@ namespace Clutter {
 		[NoWrapper]
 		public virtual void setup_offscreen_blit_pipeline (Cogl.Pipeline pipeline);
 		public void transform_to_onscreen (float x, float y);
-		[NoAccessorMethod]
-		public Cairo.RectangleInt layout { owned get; set construct; }
 		[NoAccessorMethod]
 		public float scale { get; set construct; }
 	}
@@ -9249,11 +9263,11 @@ namespace Clutter {
 		PAINT_DEFORM_TILES,
 		PAINT_DAMAGE_REGION
 	}
-	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EFFECT_PAINT_ACTOR_", type_id = "clutter_effect_paint_flags_get_type ()")]
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EFFECT_PAINT_", type_id = "clutter_effect_paint_flags_get_type ()")]
 	[Flags]
 	public enum EffectPaintFlags {
-		[CCode (cname = "CLUTTER_EFFECT_PAINT_ACTOR_DIRTY")]
-		ACTOR_DIRTY
+		ACTOR_DIRTY,
+		BYPASS_EFFECT
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EVENT_", type_id = "clutter_event_flags_get_type ()")]
 	[Flags]
@@ -9545,6 +9559,9 @@ namespace Clutter {
 	[Version (since = "1.8")]
 	public enum OffscreenRedirect {
 		AUTOMATIC_FOR_OPACITY,
+#if HAS_MUTTER336
+		ON_IDLE,
+#endif
 		ALWAYS
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_ORIENTATION_", type_id = "clutter_orientation_get_type ()")]

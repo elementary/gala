@@ -245,15 +245,14 @@ namespace Gala {
             ui_group.add_child (top_window_group);
 
             /*keybindings*/
+            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-            var keybinding_schema = KeybindingSettings.get_default ().schema;
-
-            display.add_keybinding ("switch-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("switch-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("cycle-workspaces-next", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("cycle-workspaces-previous", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 
             display.overlay_key.connect (() => {
                 try {
@@ -337,13 +336,13 @@ namespace Gala {
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
-            display.add_keybinding ("expose-windows", keybinding_schema, 0, () => {
+            display.add_keybinding ("expose-windows", keybinding_settings, 0, () => {
                 if (window_overview.is_opened ())
                     window_overview.close ();
                 else
                     window_overview.open ();
             });
-            display.add_keybinding ("expose-all-windows", keybinding_schema, 0, () => {
+            display.add_keybinding ("expose-all-windows", keybinding_settings, 0, () => {
                 if (window_overview.is_opened ())
                     window_overview.close ();
                 else {
