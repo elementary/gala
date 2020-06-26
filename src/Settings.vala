@@ -16,23 +16,6 @@
 //
 
 namespace Gala {
-    public class BehaviorSettings : Granite.Services.Settings {
-        public string[] dock_names { get; set; }
-
-        static BehaviorSettings? instance = null;
-
-        private BehaviorSettings () {
-            base (Config.SCHEMA + ".behavior");
-        }
-
-        public static unowned BehaviorSettings get_default () {
-            if (instance == null)
-                instance = new BehaviorSettings ();
-
-            return instance;
-        }
-    }
-
     public class ShadowSettings : Granite.Services.Settings {
         public string[] menu { get; set; }
         public string[] normal_focused { get; set; }
