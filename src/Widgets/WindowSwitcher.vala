@@ -712,8 +712,8 @@ namespace Gala {
                     && type != WindowType.DESKTOP
                     && type != WindowType.NOTIFICATION)
                     actor.hide ();
-
-                if (window.title in BehaviorSettings.get_default ().dock_names
+                var behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+                if (window.title in behavior_settings.get_strv ("dock-names")
                     && type == WindowType.DOCK) {
                     dock_window = actor;
                     dock_window.hide ();
