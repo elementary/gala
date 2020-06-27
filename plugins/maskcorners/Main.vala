@@ -29,7 +29,7 @@ namespace Gala.Plugins.MaskCorners {
         Settings settings;
 
         List<Actor>[] cornermasks;
-        int corner_radius = 4;
+        private int corner_radius = 6;
 
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
@@ -61,7 +61,7 @@ namespace Gala.Plugins.MaskCorners {
             int n_monitors = screen.get_n_monitors ();
 #endif
             cornermasks = new List<Actor>[n_monitors];
-            corner_radius = settings.corner_radius * scale;
+            corner_radius = corner_radius * scale;
 
             if (settings.only_on_primary) {
 #if HAS_MUTTER330
