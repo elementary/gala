@@ -176,7 +176,6 @@ gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, 
 
 subdir('data')
 subdir('lib')
-subdir('src')
 subdir('daemon')
 subdir('plugins/maskcorners')
 subdir('plugins/pip')
