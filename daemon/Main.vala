@@ -172,7 +172,6 @@ namespace Gala {
 
         var time = new TimeoutSource (1000);
 
-        var state = State.UNKNOWN;
         var settings = new GLib.Settings ("io.elementary.settings-daemon.plugins.color");
 
         PantheonShell.Pantheon.AccountsService? pantheon_act = null;
@@ -218,20 +217,11 @@ namespace Gala {
 
             var now = new DateTime.now_local ();
 
-            var new_state = get_state (date_time_double (now), from, to);
-            if (new_state != state) {
-                switch (new_state) {
-                    case State.IN:
-                        pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.DARK;
-                        break;
-                    case State.OUT:
-                        pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.NO_PREFERENCE;
-                        break;
-                    default:
-                        break;
-                }
-
-                state = new_state;
+            var state = get_state (date_time_double (now), from, to);
+            if (state == State.IN && pantheon_act.prefers_color_scheme != Granite.Settings.ColorScheme.DARK) {
+                pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.DARK;
+            } else if (state == State.IN && pantheon_act.prefers_color_scheme != Granite.Settings.ColorScheme.NO_PREFERENCE) {
+                pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.NO_PREFERENCE;
             }
 
             return true;
