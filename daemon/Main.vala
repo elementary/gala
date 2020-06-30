@@ -34,6 +34,11 @@ namespace Gala {
         public signal void cancel_end_session ();
     }
 
+    [DBus (name = "io.elementary.pantheon.AccountsService")]
+    private interface PantheonShell.Pantheon.AccountsService : Object {
+        public abstract int prefers_color_scheme { get; set; }
+    }
+
     public class Daemon {
         SessionClient? sclient = null;
 
@@ -165,6 +170,33 @@ namespace Gala {
         var state = State.UNKNOWN;
         var settings = new GLib.Settings ("io.elementary.settings-daemon.plugins.color");
 
+        PantheonShell.Pantheon.AccountsService? pantheon_act = null;
+        string? user_path = null;
+        try {
+            FDO.Accounts? accounts_service = GLib.Bus.get_proxy_sync (
+                GLib.BusType.SYSTEM,
+               "org.freedesktop.Accounts",
+               "/org/freedesktop/Accounts"
+            );
+
+            user_path = accounts_service.find_user_by_name (GLib.Environment.get_user_name ());
+        } catch (Error e) {
+            critical (e.message);
+        }
+
+        if (user_path != null) {
+            try {
+                pantheon_act = GLib.Bus.get_proxy_sync (
+                    GLib.BusType.SYSTEM,
+                    "org.freedesktop.Accounts",
+                    user_path,
+                    GLib.DBusProxyFlags.GET_INVALIDATED_PROPERTIES
+                );
+            } catch (Error e) {
+                warning ("Unable to get AccountsService proxy, color scheme preference may be incorrect");
+            }
+        }
+
         time.set_callback (() => {
             var schedule = settings.get_string ("prefer-dark-schedule");
 
@@ -185,10 +217,10 @@ namespace Gala {
             if (new_state != state) {
                 switch (new_state) {
                     case State.IN:
-                        print ("Enable dark theme\n");
+                        pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.DARK;
                         break;
                     case State.OUT:
-                        print ("Enable light theme\n");
+                        pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.NO_PREFERENCE;
                         break;
                     default:
                         break;
