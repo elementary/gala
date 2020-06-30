@@ -16,6 +16,24 @@
 		<value nick='natural' value='1'/>
 	</enum>
 
+    <schema path="/io/elementary/settings-daemon/plugins/color" id="io.elementary.settings-daemon.plugins.color">
+        <key type="d" name="prefer-dark-schedule">
+            <default>0</default>
+            <summary>0 - disabled, 1 - automatic, 2 - use from and to</summary>
+            <description></description>
+        </key>
+	    <key type="d" name="prefer-dark-schedule-from">
+            <default>20.0</default>
+            <summary>The start time</summary>
+            <description></description>
+        </key>
+        <key type="d" name="prefer-dark-schedule-to">
+            <default>6.0</default>
+            <summary>The stop time</summary>
+            <description></description>
+        </key>
+    </schema>
+
 	<schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
 	    <key type="b" name="lock-on-suspend">
 		    <default>true</default>
