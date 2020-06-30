@@ -124,6 +124,28 @@ namespace Gala {
         }
     }
 
+    public enum State {
+        UNKNOWN,
+        IN,
+        OUT
+    }
+
+    public State get_state (double time_double, from, to) {
+        if (from >= 0.0 && time_double >= from || time_double >= 0.0 && time_double < to) {
+            return State.IN;
+        }
+
+        return State.OUT;
+    }
+
+    public double date_time_double (DateTime date_time) {
+        double time_double = 0;
+        time_double += date_time.get_hour ();
+        time_double += (double) date_time.get_minute () / 60;
+
+        return time_double;
+    }
+
     public static int main (string[] args) {
         Gtk.init (ref args);
 
@@ -137,6 +159,48 @@ namespace Gala {
             stderr.printf ("Error: %s\n", e.message);
             return 0;
         }
+
+        var time = new TimeoutSource (1000);
+
+        var state = State.UNKNOWN;
+        var settings = new GLib.Settings ("io.elementary.settings-daemon.plugins.color");
+
+        time.set_callback (() => {
+            var schedule = settings.get_string ("prefer-dark-schedule");
+
+            double from, to;
+            if (schedule == "sunset-to-sunrise") {
+                from = 20.0;
+                to = 6.0;
+            } else if (schedule == "manual") {
+                from = settings.get_double ("prefer-dark-schedule-from");
+                to = settings.get_double ("prefer-dark-schedule-to");
+            } else {
+                return true;
+            }
+
+            var now = new DateTime.now_local ();
+
+            var new_state = get_state (date_time_double (now, from, to));
+            if (new_state != state) {
+                switch (new_state) {
+                    case State.IN:
+                        print ("Enable dark theme\n");
+                        break;
+                    case State.OUT:
+                        print ("Enable light theme\n");
+                        break;
+                    default:
+                        break;
+                }
+
+                state = new_state;
+            }
+
+            return true;
+        });
+
+        time.attach (null);
 
         var daemon = new Daemon ();
         daemon.run ();
