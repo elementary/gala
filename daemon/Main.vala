@@ -39,6 +39,11 @@ namespace Gala {
         public abstract int prefers_color_scheme { get; set; }
     }
 
+    [DBus (name = "org.freedesktop.Accounts")]
+    interface PantheonShell.FDO.Accounts : Object {
+        public abstract string find_user_by_name (string username) throws GLib.Error;
+    }
+
     public class Daemon {
         SessionClient? sclient = null;
 
@@ -173,7 +178,7 @@ namespace Gala {
         PantheonShell.Pantheon.AccountsService? pantheon_act = null;
         string? user_path = null;
         try {
-            FDO.Accounts? accounts_service = GLib.Bus.get_proxy_sync (
+            PantheonShell.FDO.Accounts? accounts_service = GLib.Bus.get_proxy_sync (
                 GLib.BusType.SYSTEM,
                "org.freedesktop.Accounts",
                "/org/freedesktop/Accounts"
@@ -213,7 +218,7 @@ namespace Gala {
 
             var now = new DateTime.now_local ();
 
-            var new_state = get_state (date_time_double (now, from, to));
+            var new_state = get_state (date_time_double (now), from, to);
             if (new_state != state) {
                 switch (new_state) {
                     case State.IN:
