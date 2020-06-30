@@ -135,7 +135,7 @@ namespace Gala {
         OUT
     }
 
-    public State get_state (double time_double, from, to) {
+    public State get_state (double time_double, double from, double to) {
         if (from >= 0.0 && time_double >= from || time_double >= 0.0 && time_double < to) {
             return State.IN;
         }
