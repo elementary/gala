@@ -15,13 +15,18 @@
 		<value nick='grid' value='0'/>
 		<value nick='natural' value='1'/>
 	</enum>
+    <enum id="PreferDarkScheduleType">
+        <value nick='disabled' value='0'/>
+        <value nick='sunset-to-sunrise' value='1'/>
+        <value nick='manual' value='2'/>
+    </enum>
 
     <schema path="/io/elementary/settings-daemon/plugins/color" id="io.elementary.settings-daemon.plugins.color">
-        <key type="d" name="prefer-dark-schedule">
-            <default>0</default>
-            <summary>0 - disabled, 1 - automatic, 2 - use from and to</summary>
-            <description></description>
-        </key>
+        <key enum="PreferDarkScheduleType" name="prefer-dark-schedule">
+			<default>'disabled'</default>
+			<summary>Algorithm for prefer dark schedule</summary>
+			<description>Choose the algorithm used for prefer dark schedule.</description>
+		</key>
 	    <key type="d" name="prefer-dark-schedule-from">
             <default>20.0</default>
             <summary>The start time</summary>
