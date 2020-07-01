@@ -218,11 +218,16 @@ namespace Gala {
             var now = new DateTime.now_local ();
 
             var state = get_state (date_time_double (now), from, to);
-            if (state == State.IN && pantheon_act.prefers_color_scheme != Granite.Settings.ColorScheme.DARK) {
-                pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.DARK;
-            } else if (state == State.IN && pantheon_act.prefers_color_scheme != Granite.Settings.ColorScheme.NO_PREFERENCE) {
-                pantheon_act.prefers_color_scheme = Granite.Settings.ColorScheme.NO_PREFERENCE;
+            var new_color_scheme = Granite.Settings.ColorScheme.NO_PREFERENCE;
+            if (state == State.IN) {
+                new_color_scheme = Granite.Settings.ColorScheme.DARK;
             }
+
+            if (new_color_scheme == pantheon_act.prefers_color_scheme) {
+                return true;
+            }
+
+            pantheon_act.prefers_color_scheme = new_color_scheme;
 
             return true;
         });
