@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2019-12-16 18:35+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
+"PO-Revision-Date: 2020-07-04 10:12+0000\n"
+"Last-Translator: Martin Myrvold <myrvold.martin@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <https://l10n.elementary.io/projects/"
 "desktop/gala/nn/>\n"
 "Language: nn\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:212
 msgid "Screenshots"
-msgstr ""
+msgstr "Skjermbilete"
 
 #: src/WindowManager.vala:2166
 msgid "Does the display look OK?"
@@ -78,70 +78,78 @@ msgstr "Maksimer"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitasking og handsaming av vindauge"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Eit program for samansetning av vindauge i Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Eit program for samansetning av vindauge basert på libmutter, og designa av "
+"elementary for bruk saman med Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
 #: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
 msgid "Improvements:"
-msgstr ""
+msgstr "Forbetringar:"
 
 #: data/gala.appdata.xml.in:17
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"Fiksa feilen når vindauge forsvinn ved bytte av arbeidsområde, sjølv om  \""
+"Alltid på noverande arbeidsområde\" er slått på"
 
 #: data/gala.appdata.xml.in:18
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"Fiksa feilen når vindauge på andre skjermar enn hovudskjermen forsvinn, ved "
+"bytte av arbeidsområde"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
 msgid "Updated translations"
-msgstr ""
+msgstr "Oppdaterte oversettingar"
 
 #: data/gala.appdata.xml.in:27
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
+"Fiksa feilen med ein kræsj når ein byttar arbeidsområde, samstundes som eit "
+"midlertidig vindauge er opent"
 
 #: data/gala.appdata.xml.in:36
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Ikkje vis Gala Background Services i dokken"
 
 #: data/gala.appdata.xml.in:37
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Fleire fiksar for mediahåndtering"
 
 #: data/gala.appdata.xml.in:38
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "Vis tastatursnarvegar i menyen i toppfeltet"
 
 #: data/gala.appdata.xml.in:47
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Forbetra skuggar rundt vindauge for gamle appar"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Fiksa feilen der nokon opplevde ein kræsj når eit tok skjermbilete"
 
 #: data/gala.appdata.xml.in:49
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Fiksa feilen med plassering av varslingar etter endring av DPI"
 
 #: data/gala.appdata.xml.in:50
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Fiksa animasjonane for flytting og maksimering av fleire vindauge"
 
 #: data/gala.appdata.xml.in:56
 msgid "elementary, Inc."
