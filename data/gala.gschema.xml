@@ -264,6 +264,7 @@
 			<default>4</default>
 			<range min="1" max="32"/>
 			<summary>Corner radius</summary>
+			<description>DEPRECATED: This setting is no longer used</description>
 		</key>
 		<key type="b" name="disable-on-fullscreen">
 			<default>true</default>
