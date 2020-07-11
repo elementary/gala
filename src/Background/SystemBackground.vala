@@ -46,7 +46,8 @@ namespace Gala {
 
         construct {
             var background_file = GLib.File.new_for_uri ("resource:///io/elementary/desktop/gala/texture.png");
-            unowned string custom_path = AppearanceSettings.get_default ().workspace_switcher_background;
+            var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
+            var custom_path = appearance_settings.get_string ("workspace-switcher-background");
             if (custom_path != "" && FileUtils.test (custom_path, FileTest.IS_REGULAR)) {
                 background_file = GLib.File.new_for_path (custom_path);
             }
