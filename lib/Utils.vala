@@ -77,24 +77,6 @@ namespace Gala {
         }
 
         /**
-         * Returns a pixbuf for the application of this window or a default icon
-         *
-         * @param window       The window to get an icon for
-         * @param size         The size of the icon
-         * @param scale        The desired scale of the icon
-         * @param ignore_cache Should not be necessary in most cases, if you care about the icon
-         *                     being loaded correctly, you should consider using the WindowIcon class
-         */
-        public static Gdk.Pixbuf get_icon_for_window (
-            Meta.Window window,
-            int size,
-            int scale = 1,
-            bool ignore_cache = false
-        ) {
-            return get_icon_for_xid ((uint32)window.get_xwindow (), size, scale, ignore_cache);
-        }
-
-        /**
          * Returns a pixbuf for a given xid or a default icon
          *
          * @see get_icon_for_window
@@ -179,30 +161,6 @@ namespace Gala {
         }
 
         /**
-         * Get the next window that should be active on a workspace right now. Based on
-         * stacking order
-         *
-         * @param workspace The workspace on which to find the window
-         * @param backward  Whether to get the previous one instead
-         */
-        public static Meta.Window get_next_window (Meta.Workspace workspace, bool backward = false) {
-#if HAS_MUTTER330
-            var display = workspace.get_display ();
-#else
-            var screen = workspace.get_screen ();
-            var display = screen.get_display ();
-#endif
-
-            var window = display.get_tab_next (Meta.TabList.NORMAL,
-                workspace, null, backward);
-
-            if (window == null)
-                window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
-
-            return window;
-        }
-
-        /**
          * Get the number of toplevel windows on a workspace excluding those that are
          * on all workspaces
          *
@@ -275,8 +233,7 @@ namespace Gala {
         *
         * @param display The display to flash, if necessary
         */
-        public static void bell (Meta.Display display)
-        {
+        public static void bell (Meta.Display display) {
             if (Meta.Prefs.bell_is_audible ())
                 Gdk.beep ();
             else
@@ -332,16 +289,28 @@ namespace Gala {
          * @return The close button actor
          */
         public static Clutter.Actor create_close_button () {
+#if HAS_MUTTER336
+            var texture = new Clutter.Actor ();
+#else
             var texture = new Clutter.Texture ();
+#endif
             var pixbuf = get_close_button_pixbuf ();
 
             texture.reactive = true;
 
             if (pixbuf != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                    texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
+#else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
                     pixbuf.get_width (), pixbuf.get_height (),
                     pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             } else {
                 // we'll just make this red so there's at least something as an
@@ -363,7 +332,6 @@ namespace Gala {
         public static Gdk.Pixbuf? get_resize_button_pixbuf () {
             var height = 36 * Utils.get_ui_scaling_factor ();
             if (resize_pixbuf == null || resize_pixbuf.height != height) {
-                var scale = Utils.get_ui_scaling_factor ();
                 try {
                     resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
                         Config.RESOURCEPATH + "/buttons/resize.svg",
@@ -386,16 +354,28 @@ namespace Gala {
          * @return The resize button actor
          */
         public static Clutter.Actor create_resize_button () {
+#if HAS_MUTTER336
+            var texture = new Clutter.Actor ();
+#else
             var texture = new Clutter.Texture ();
+#endif
             var pixbuf = get_resize_button_pixbuf ();
 
             texture.reactive = true;
 
             if (pixbuf != null) {
                 try {
+#if HAS_MUTTER336
+                    var image = new Clutter.Image ();
+                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                    texture.set_content (image);
+                    texture.set_size (pixbuf.width, pixbuf.height);
+#else
                     texture.set_from_rgb_data (pixbuf.get_pixels (), pixbuf.get_has_alpha (),
-                        pixbuf.get_width (), pixbuf.get_height (),
-                        pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+                    pixbuf.get_width (), pixbuf.get_height (),
+                    pixbuf.get_rowstride (), (pixbuf.get_has_alpha () ? 4 : 3), 0);
+#endif
                 } catch (Error e) {}
             } else {
                 // we'll just make this red so there's at least something as an

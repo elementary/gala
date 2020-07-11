@@ -1,12 +1,13 @@
-gala_gschema = configure_file(
-	input: 'org.pantheon.desktop.gala.gschema.xml.in',
-	output: 'org.pantheon.desktop.gala.gschema.xml',
-	configuration: customconf,
-	install: true,
-	install_dir: join_paths(data_dir, 'glib-2.0', 'schemas')
+install_data(
+    'gala.gschema.xml',
+    install_dir: join_paths(data_dir, 'glib-2.0', 'schemas'),
+    rename: 'org.pantheon.desktop.gala.gschema.xml'
 )
 
-gala_gschema_compile = gnome.compile_schemas()
+install_data(
+    'gala-daemon.desktop',
+    install_dir: join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
+)
 
 i18n.merge_file(
     input: 'gala.appdata.xml.in',
@@ -33,7 +34,7 @@ i18n.merge_file(
 	install: true,
 	install_dir: join_paths(data_dir, 'applications')
 )
-install_data(['gala.desktop', 'gala-daemon.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
+install_data(['gala.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
 install_data(files('20_elementary.pantheon.wm.gschema.override'), install_dir: join_paths(data_dir, 'glib-2.0', 'schemas'))
 
 icons_dir = join_paths(get_option('datadir'), 'icons', 'hicolor')
