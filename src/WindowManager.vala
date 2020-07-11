@@ -312,7 +312,7 @@ namespace Gala {
             screen.monitors_changed.connect (on_monitors_changed);
 #endif
 
-            BehaviorSettings.get_default ().schema.changed.connect (configure_hotcorners);
+            behavior_settings.changed.connect (configure_hotcorners);
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
@@ -408,7 +408,7 @@ namespace Gala {
 #endif
             return_if_fail (stage != null);
 
-            var action = (ActionType) BehaviorSettings.get_default ().schema.get_enum (key);
+            var action = (ActionType) behavior_settings.get_enum (key);
             Clutter.Actor? hot_corner = stage.find_child_by_name (key);
 
             if (action == ActionType.NONE) {
@@ -430,7 +430,7 @@ namespace Gala {
 
                 hot_corner.enter_event.connect ((actor, event) => {
                     last_hotcorner = actor;
-                    perform_action ((ActionType) BehaviorSettings.get_default ().schema.get_enum (actor.name));
+                    perform_action ((ActionType) behavior_settings.get_enum (actor.name));
                     return false;
                 });
             }
