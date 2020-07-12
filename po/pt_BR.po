@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-04-30 22:25+0000\n"
-"PO-Revision-Date: 2020-04-26 13:13+0000\n"
+"PO-Revision-Date: 2020-05-21 13:11+0000\n"
 "Last-Translator: Rodrigo Oliveira <rod.oliveira@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
@@ -102,11 +102,15 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"Corrige as janelas \"Sempre no espaço de trabalho visível\" desaparecendo ao "
+"alterar os espaços de trabalho"
 
 #: data/gala.appdata.xml.in:18
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"Corrige as janelas em telas não principais que desaparecem ao alterar áreas "
+"de trabalho"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:39
