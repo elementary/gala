@@ -23,15 +23,15 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
 
     construct {
         keybindings_to_types = new HashTable<string, string> (str_hash, str_equal);
-        keybindings_to_types.insert ("applications-webbrowser", "x-scheme-handler/http");
-        keybindings_to_types.insert ("applications-emailclient", "x-scheme-handler/mailto");
-        keybindings_to_types.insert ("applications-calendar", "text/calendar");
-        keybindings_to_types.insert ("applications-videoplayer", "video/x-ogm+ogg");
-        keybindings_to_types.insert ("applications-musicplayer", "audio/x-vorbis+ogg");
-        keybindings_to_types.insert ("applications-imageviewer", "image/jpeg");
-        keybindings_to_types.insert ("applications-texteditor", "text/plain");
-        keybindings_to_types.insert ("applications-filemanager", "inode/directory");
-        keybindings_to_types.insert ("applications-terminal", "");
+        keybindings_to_types.insert ("application-webbrowser", "x-scheme-handler/http");
+        keybindings_to_types.insert ("application-emailclient", "x-scheme-handler/mailto");
+        keybindings_to_types.insert ("application-calendar", "text/calendar");
+        keybindings_to_types.insert ("application-videoplayer", "video/x-ogm+ogg");
+        keybindings_to_types.insert ("application-musicplayer", "audio/x-vorbis+ogg");
+        keybindings_to_types.insert ("application-imageviewer", "image/jpeg");
+        keybindings_to_types.insert ("application-texteditor", "text/plain");
+        keybindings_to_types.insert ("application-filemanager", "inode/directory");
+        keybindings_to_types.insert ("application-terminal", "");
     }
 
     public override void initialize (Gala.WindowManager wm) {
@@ -44,12 +44,12 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
                 (Meta.KeyHandlerFunc) handler_default_application);
         });
 
-        display.add_keybinding ("applications-same", settings, Meta.KeyBindingFlags.NONE,
+        display.add_keybinding ("application-same", settings, Meta.KeyBindingFlags.NONE,
             (Meta.KeyHandlerFunc) handler_same_application);
 
         settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.applications.custom");
         for (var i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
-            display.add_keybinding ("applications-custom" + i.to_string (), settings_custom,
+            display.add_keybinding ("application-custom" + i.to_string (), settings_custom,
                 Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_custom_application);
         }
     }
@@ -62,7 +62,7 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
         string keybinding = binding.get_name ();
         string desktop_id;
-        if (keybinding == "applications-terminal") { // can't set default application for terminal
+        if (keybinding == "application-terminal") { // can't set default application for terminal
             desktop_id = "io.elementary.terminal.desktop";
         } else {
             desktop_id = AppInfo.get_default_for_type (keybindings_to_types.get (keybinding), false).get_id ();

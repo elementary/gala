@@ -200,7 +200,7 @@
 			<summary>Focus elementary terminal</summary>
 		</key>
 		<key type="as" name="application-same">
-			<default><![CDATA[['<Alt>grave', '<Alt>asciitilde']]]></default>
+			<default><![CDATA[['<Alt>Above_Tab']]]></default>
 			<summary>Switch focus between windows of the same application.</summary>
 		</key>
 	</schema>
