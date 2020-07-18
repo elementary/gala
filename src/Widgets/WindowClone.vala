@@ -118,8 +118,8 @@ namespace Gala {
 
         Actor close_button;
         Actor active_shape;
-		Actor window_icon;
-		BlurActor? blur_actor;
+        Actor window_icon;
+        BlurActor? blur_actor;
 
         public WindowClone (Meta.Window window, bool overview_mode = false) {
             Object (window: window, overview_mode: overview_mode);
@@ -220,17 +220,17 @@ namespace Gala {
                 actor.hide ();
 
             clone = new Clone (actor);
-			add_child (clone);
-			
-			unowned Meta.WindowActor window_actor = (Meta.WindowActor)window.get_compositor_private ();
-			if (window_actor != null) {
-				window_actor.actor_added.connect (actor_added_compositor);
-				window_actor.actor_removed.connect (actor_removed_compositor);
-				unowned Clutter.Actor? existing = window_actor.find_child_by_name ("blur-actor");
-				if (existing != null) {
-					actor_added_compositor (existing);
-				}
-			}
+            add_child (clone);
+            
+            unowned Meta.WindowActor window_actor = (Meta.WindowActor)window.get_compositor_private ();
+            if (window_actor != null) {
+                window_actor.actor_added.connect (actor_added_compositor);
+                window_actor.actor_removed.connect (actor_removed_compositor);
+                unowned Clutter.Actor? existing = window_actor.find_child_by_name ("blur-actor");
+                if (existing != null) {
+                    actor_added_compositor (existing);
+                }
+            }
 
             set_child_below_sibling (active_shape, clone);
             set_child_above_sibling (close_button, clone);
@@ -390,21 +390,21 @@ namespace Gala {
                               (input_rect.y - outer_rect.y) * scale_factor);
             alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
-			if (blur_actor != null) {
-				var blur_rect = blur_actor.blur_clip_rect;
+            if (blur_actor != null) {
+                var blur_rect = blur_actor.blur_clip_rect;
 
-				float blur_width = blur_rect.width > 0 ? blur_rect.width : outer_rect.width;
-				float blur_height = blur_rect.height > 0 ? blur_rect.height : outer_rect.height;
+                float blur_width = blur_rect.width > 0 ? blur_rect.width : outer_rect.width;
+                float blur_height = blur_rect.height > 0 ? blur_rect.height : outer_rect.height;
 
-				blur_width = blur_width.clamp (0, blur_width - blur_rect.x);
-				blur_height = blur_height.clamp (0, blur_height - blur_rect.y);
+                blur_width = blur_width.clamp (0, blur_width - blur_rect.x);
+                blur_height = blur_height.clamp (0, blur_height - blur_rect.y);
 
-				ActorBox blur_alloc = {};
-				blur_alloc.set_origin (blur_rect.x * scale_factor, blur_rect.y * scale_factor);
-				blur_alloc.set_size (blur_width * scale_factor * (float)clone.scale_x,
-									blur_height * scale_factor * (float)clone.scale_y);	
-				blur_actor.allocate (blur_alloc, flags);
-			}
+                ActorBox blur_alloc = {};
+                blur_alloc.set_origin (blur_rect.x * scale_factor, blur_rect.y * scale_factor);
+                blur_alloc.set_size (blur_width * scale_factor * (float)clone.scale_x,
+                                    blur_height * scale_factor * (float)clone.scale_y);	
+                blur_actor.allocate (blur_alloc, flags);
+            }
 
             clone.allocate (alloc, flags);
         }
@@ -542,36 +542,36 @@ namespace Gala {
             }
         }
 
-		void actor_added_compositor (Clutter.Actor added)
-		{
-			if (blur_actor != null || added.get_name () != "blur-actor") {
-				return;
-			}
+        void actor_added_compositor (Clutter.Actor added)
+        {
+            if (blur_actor != null || added.get_name () != "blur-actor") {
+                return;
+            }
 
-			var source = (BlurActor)added;
+            var source = (BlurActor)added;
 
-			blur_actor = new BlurActor (null);
-			blur_actor.opacity = source.opacity;
-			blur_actor.blur_clip_rect = source.blur_clip_rect;
+            blur_actor = new BlurActor (null);
+            blur_actor.opacity = source.opacity;
+            blur_actor.blur_clip_rect = source.blur_clip_rect;
 
-			source.notify["opacity"].connect (() => blur_actor.opacity = source.opacity);
-			source.clip_updated.connect (() => { 
-				blur_actor.blur_clip_rect = source.blur_clip_rect;
-				queue_relayout ();
-			});
+            source.notify["opacity"].connect (() => blur_actor.opacity = source.opacity);
+            source.clip_updated.connect (() => { 
+                blur_actor.blur_clip_rect = source.blur_clip_rect;
+                queue_relayout ();
+            });
 
-			insert_child_at_index (blur_actor, 0);
-		}
+            insert_child_at_index (blur_actor, 0);
+        }
 
-		void actor_removed_compositor (Clutter.Actor removed)
-		{
-			if (blur_actor == null || removed.get_name () != "blur-actor") {
-				return;
-			}
+        void actor_removed_compositor (Clutter.Actor removed)
+        {
+            if (blur_actor == null || removed.get_name () != "blur-actor") {
+                return;
+            }
 
-			blur_actor.destroy ();
-			blur_actor = null;
-		}
+            blur_actor.destroy ();
+            blur_actor = null;
+        }
 
         /**
          * A drag action has been initiated on us, we reparent ourselves to the stage so

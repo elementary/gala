@@ -78,7 +78,7 @@ namespace Gala
         uniform float half_height;
         uniform float offset;
         uniform float saturation;
-		uniform float brightness;
+        uniform float brightness;
 
         vec3 saturate (vec3 rgb, float adjustment) {
             const vec3 W = vec3(0.2125, 0.7154, 0.0721);
