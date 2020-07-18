@@ -1,0 +1,428 @@
+# English translations for gala package.
+# Copyright (C) 2019 The Gala Developers
+# This file is distributed under the same license as the gala package.
+# Automatically generated, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gala 3.2.0\n"
+"Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
+"POT-Creation-Date: 2020-04-30 22:25+0000\n"
+"PO-Revision-Date: 2019-12-10 17:16-0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en_AU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/ScreenshotManager.vala:212
+msgid "Screenshots"
+msgstr ""
+
+#: src/WindowManager.vala:2166
+msgid "Does the display look OK?"
+msgstr "Does the display look OK?"
+
+#: src/WindowManager.vala:2169
+msgid "Keep This Configuration"
+msgstr "Keep This Configuration"
+
+#: src/WindowManager.vala:2170
+msgid "Restore Previous Configuration"
+msgstr "Restore Previous Configuration"
+
+#: daemon/MenuDaemon.vala:107
+msgid "Minimize"
+msgstr "Minimize"
+
+#: daemon/MenuDaemon.vala:120
+msgid "Move"
+msgstr "Move"
+
+#: daemon/MenuDaemon.vala:128
+msgid "Resize"
+msgstr "Resize"
+
+#: daemon/MenuDaemon.vala:136
+msgid "Always on Top"
+msgstr "Always on Top"
+
+#: daemon/MenuDaemon.vala:144
+msgid "Always on Visible Workspace"
+msgstr "Always on Visible Workspace"
+
+#: daemon/MenuDaemon.vala:152
+msgid "Move to Workspace Left"
+msgstr "Move to Workspace Left"
+
+#: daemon/MenuDaemon.vala:160
+msgid "Move to Workspace Right"
+msgstr "Move to Workspace Right"
+
+#: daemon/MenuDaemon.vala:168
+msgid "Close"
+msgstr "Close"
+
+#: daemon/MenuDaemon.vala:201
+msgid "Unmaximize"
+msgstr "Unmaximize"
+
+#: daemon/MenuDaemon.vala:201
+msgid "Maximize"
+msgstr "Maximize"
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr "Multitasking &amp; Window Management"
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "A window &amp; compositing manager for Pantheon"
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:45
+msgid "Improvements:"
+msgstr "Improvements:"
+
+#: data/gala.appdata.xml.in:17
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:39
+msgid "Updated translations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:36
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:37
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:38
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr ""
+
+#: data/gala.appdata.xml.in:47
+msgid "Improve window shadows for legacy apps"
+msgstr "Improve window shadows for legacy apps"
+
+#: data/gala.appdata.xml.in:48
+msgid "Fix potential crash when taking screenshots"
+msgstr "Fix potential crash when taking screenshots"
+
+#: data/gala.appdata.xml.in:49
+msgid "Fix notification position after changing DPI"
+msgstr "Fix notification position after changing DPI"
+
+#: data/gala.appdata.xml.in:50
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "Fix animations for moving and maximizing tiled windows"
+
+#: data/gala.appdata.xml.in:56
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr "Multitasking View"
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr "View all open windows and workspaces"
+
+#: data/gala-multitaskingview.desktop.in:7
+msgid "multitasking-view"
+msgstr "multitasking-view"
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr "Other"
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "Fallback desktop file for notifications from outdated applications."
+
+#: data/gala-other.desktop.in:6
+msgid "applications-other"
+msgstr "applications-other"
+
+#~ msgid "Action for the top left corner"
+#~ msgstr "Action for the top left corner"
+
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Algorithm for window overview layout"
+
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "Choose the algorithm used for exposing the windows."
+
+#~ msgid "Action for the top right corner"
+#~ msgstr "Action for the top right corner"
+
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Action for the bottom left corner"
+
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Action for the bottom right corner"
+
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr "Enable edge tiling when dropping windows on screen edges"
+
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+
+#~ msgid "Panel main menu action"
+#~ msgstr "Panel main menu action"
+
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Enable dynamic workspace instead of static ones"
+
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Names that are recognized as dock windows for the window switcher"
+
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr "Automatically move maximized windows to a new workspace"
+
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Shortcut to move to first workspace"
+
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Shortcut to move to last workspace"
+
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr "Shortcut to move the current window to first workspace"
+
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr "Shortcut to move the current window to last workspace"
+
+#~ msgid "Zoom in"
+#~ msgstr "Zoom in"
+
+#~ msgid "Zoom out"
+#~ msgstr "Zoom out"
+
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Shortcut to open the window overview"
+
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Shortcut to open the window overview for all windows"
+
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr "Cycle to the next workspace to the right or to back to the first"
+
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Cycle to next keyboard layout"
+
+#~ msgid "DEPRECATED: This key is deprecated and ignored."
+#~ msgstr "DEPRECATED: This key is deprecated and ignored."
+
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Cycle to previous keyboard layout"
+
+#~ msgid "The shortcut to enable picture-in-picture window"
+#~ msgstr "The shortcut to enable picture-in-picture window"
+
+#~ msgid "The shortcut to show the selection area to choose a window."
+#~ msgstr "The shortcut to show the selection area to choose a window."
+
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Attach modal dialogs"
+
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Arrangement of buttons on the titlebar"
+
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr "Dims parent windows when spawning modal dialogs"
+
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr "The opacity of windows behind the window switcher."
+
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Background-image used in the workspace-switcher"
+
+#~ msgid "Enable Animations"
+#~ msgstr "Enable Animations"
+
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+
+#~ msgid "Duration of the open animation"
+#~ msgstr "Duration of the open animation"
+
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr "Duration of the snap animation as used by maximize/unmaximize"
+
+#~ msgid "Duration of the close animation"
+#~ msgstr "Duration of the close animation"
+
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Duration of the minimize animation"
+
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Duration of the workspace switch animation"
+
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Duration of the menu mapping animation"
+
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Defines the shadow of normal focused windows"
+
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Defines the shadow of a normal unfocused window"
+
+#~ msgid "See normal-focused."
+#~ msgstr "See normal-focused."
+
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Defines the shadow of a menu"
+
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Defines the shadow of a focused dialog"
+
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Defines the shadow of an unfocused dialog"
+
+#~ msgid "Disable all notifications"
+#~ msgstr "Disable all notifications"
+
+#~ msgid "Enable bubbles"
+#~ msgstr "Enable bubbles"
+
+#~ msgid "Enable sounds"
+#~ msgstr "Enable sounds"
+
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Show missed notifications in notification center"
+
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Enable rounded corner mask"
+
+#~ msgid "Corner radius"
+#~ msgstr "Corner radius"
+
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Disable corner mask on fullscreen"
+
+#~ msgid ""
+#~ "If enabled, when an application is fullscreen (fills the monitor), the "
+#~ "corner masks will be disabled on that monitor."
+#~ msgstr ""
+#~ "If enabled, when an application is fullscreen (fills the monitor), the "
+#~ "corner masks will be disabled on that monitor."
+
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Only show corner masks on primary monitor"

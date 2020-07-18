@@ -1,8 +1,5 @@
 namespace CoglFixes
 {
-	[CCode (cname = "cogl_texture_get_data")]
-	public int texture_get_data (Cogl.Texture texture, Cogl.PixelFormat format, uint rowstride, [CCode (array_length = false)] uint8[] pixels);
-
 	[CCode (cname = "cogl_material_set_user_program")]
 	public void set_user_program (Cogl.Material material, Cogl.Handle program);
 

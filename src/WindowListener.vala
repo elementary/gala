@@ -15,107 +15,112 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Gala;
-using Meta;
+public class Gala.WindowListener : Object {
+    public struct WindowGeometry {
+        Meta.Rectangle inner;
+        Meta.Rectangle outer;
+    }
 
-namespace Gala
-{
-	public struct WindowGeometry {
-		Meta.Rectangle inner;
-		Meta.Rectangle outer;
-	}
+    static WindowListener? instance = null;
 
-	public class WindowListener : Object
-	{
-		static WindowListener? instance = null;
+#if HAS_MUTTER330
+    public static void init (Meta.Display display) {
+        if (instance != null)
+            return;
 
-		public static void init (Screen screen)
-		{
-			if (instance != null)
-				return;
+        instance = new WindowListener ();
 
-			instance = new WindowListener ();
+        foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
+            if (actor.is_destroyed ())
+                continue;
 
-			foreach (unowned Meta.WindowActor actor in Meta.Compositor.get_window_actors (screen)) {
-				if (actor.is_destroyed ())
-					continue;
+            unowned Meta.Window window = actor.get_meta_window ();
+            if (window.window_type == Meta.WindowType.NORMAL)
+                instance.monitor_window (window);
+        }
 
-				unowned Meta.Window window = actor.get_meta_window ();
-				if (window.window_type == WindowType.NORMAL)
-					instance.monitor_window (window);
-			}
+        display.window_created.connect ((window) => {
+            if (window.window_type == Meta.WindowType.NORMAL)
+                instance.monitor_window (window);
+        });
+    }
+#else
+    public static void init (Meta.Screen screen) {
+        if (instance != null)
+            return;
 
-			screen.get_display ().window_created.connect ((window) => {
-				if (window.window_type == WindowType.NORMAL)
-					instance.monitor_window (window);
-			});
-		}
+        instance = new WindowListener ();
 
-		public static unowned WindowListener get_default ()
-			requires (instance != null)
-		{
-			return instance;
-		}
+        foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
+            if (actor.is_destroyed ())
+                continue;
 
-		public signal void window_no_longer_on_all_workspaces (Window window);
+            unowned Meta.Window window = actor.get_meta_window ();
+            if (window.window_type == Meta.WindowType.NORMAL)
+                instance.monitor_window (window);
+        }
 
-		Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
+        screen.get_display ().window_created.connect ((window) => {
+            if (window.window_type == Meta.WindowType.NORMAL)
+                instance.monitor_window (window);
+        });
+    }
+#endif
 
-		WindowListener ()
-		{
-			unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
-		}
+    public static unowned WindowListener get_default () requires (instance != null) {
+        return instance;
+    }
 
-		void monitor_window (Window window)
-		{
-			window.notify.connect (window_notify);
-			window.unmanaged.connect (window_removed);
+    public signal void window_no_longer_on_all_workspaces (Meta.Window window);
 
-			window_maximized_changed (window);
-		}
+    Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
-		void window_notify (Object object, ParamSpec pspec)
-		{
-			var window = (Window) object;
+    WindowListener () {
+        unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
+    }
 
-			switch (pspec.name) {
-				case "maximized-horizontally":
-				case "maximized-vertically":
-					window_maximized_changed (window);
-					break;
-				case "on-all-workspaces":
-					window_on_all_workspaces_changed (window);
-					break;
-			}
-		}
+    private void monitor_window (Meta.Window window) {
+        window.notify.connect (window_notify);
+        window.unmanaged.connect (window_removed);
 
-		void window_on_all_workspaces_changed (Window window)
-		{
-			if (window.on_all_workspaces)
-				return;
+        window_maximized_changed (window);
+    }
 
-			window_no_longer_on_all_workspaces (window);
-		}
+    void window_notify (Object object, ParamSpec pspec) {
+        var window = (Meta.Window) object;
 
-		void window_maximized_changed (Window window)
-		{
-			WindowGeometry window_geometry = {};
-			window_geometry.inner = window.get_frame_rect ();
-			window_geometry.outer = window.get_buffer_rect ();
+        switch (pspec.name) {
+            case "maximized-horizontally":
+            case "maximized-vertically":
+                window_maximized_changed (window);
+                break;
+            case "on-all-workspaces":
+                window_on_all_workspaces_changed (window);
+                break;
+        }
+    }
 
-			unmaximized_state_geometry.@set (window, window_geometry);
-		}
+    void window_on_all_workspaces_changed (Meta.Window window) {
+        if (window.on_all_workspaces)
+            return;
 
-		public WindowGeometry? get_unmaximized_state_geometry (Window window)
-		{
-			return unmaximized_state_geometry.@get (window);
-		}
+        window_no_longer_on_all_workspaces (window);
+    }
 
-		void window_removed (Window window)
-		{
-			window.notify.disconnect (window_notify);
-			window.unmanaged.disconnect (window_removed);
-		}
-	}
+    void window_maximized_changed (Meta.Window window) {
+        WindowGeometry window_geometry = {};
+        window_geometry.inner = window.get_frame_rect ();
+        window_geometry.outer = window.get_buffer_rect ();
+
+        unmaximized_state_geometry.@set (window, window_geometry);
+    }
+
+    public WindowGeometry? get_unmaximized_state_geometry (Meta.Window window) {
+        return unmaximized_state_geometry.@get (window);
+    }
+
+    private void window_removed (Meta.Window window) {
+        window.notify.disconnect (window_notify);
+        window.unmanaged.disconnect (window_removed);
+    }
 }
-
