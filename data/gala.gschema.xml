@@ -95,18 +95,6 @@
 			<summary>Automatically move maximized windows to a new workspace</summary>
 			<description></description>
 		</key>
-		<key type="d" name="maximum-zoom-factor">
-			<range min="1.0" max="10.0"/>
-			<default>2.5</default>
-			<summary>The maximum zoom factor</summary>
-			<description>The maximum zoom factor</description>
-		</key>
-		<key type="d" name="zoom-step-size">
-			<range min="0.5" max="2.5"/>
-			<default>0.5</default>
-			<summary>The zoom step size</summary>
-			<description>The zoom step size</description>
-		</key>
 	</schema>
 	
 	<schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">

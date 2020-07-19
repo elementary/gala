@@ -82,7 +82,7 @@ namespace Gala.Plugins.Zoom {
             // Nothing to do if zooming out of our bounds is requested
             if (current_zoom <= 1.0f && !@in)
                 return;
-            else if (current_zoom >= 2.5f && @in)
+            else if (current_zoom >= 10.0f && @in)
                 return;
 
             var wins = wm.ui_group;
