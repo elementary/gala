@@ -277,8 +277,8 @@ namespace Gala {
                             Gtk.ButtonsType.CLOSE
                         );
                         message_dialog.show_error_details (e.message);
-                        message_dialog.run();
-                        message_dialog.destroy();
+                        message_dialog.run ();
+                        message_dialog.destroy ();
                     }
                 });
     
