@@ -306,10 +306,12 @@ namespace Gala {
                 }
             });
 
+            var separator = new Gtk.Separator (Gtk.Orientation.HORIZONTAL);
 
             desktop_menu = new Gtk.Menu ();
             desktop_menu.append (change_wallpaper);
             desktop_menu.append (display_settings);
+            desktop_menu.append ((Gtk.MenuItem) separator);
             desktop_menu.append (system_settings);
             desktop_menu.show_all ();
         }
