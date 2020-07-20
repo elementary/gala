@@ -57,18 +57,18 @@ namespace Gala {
 
         void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
             try {
-                Gala.WindowManagerGala.daemon_proxy = Bus.get_proxy.end (res);
+                WindowManagerGala.get_default ().daemon_proxy = Bus.get_proxy.end (res);
             } catch (Error e) {
                 warning ("Failed to get Menu proxy: %s", e.message);
             }
         }
 
         void lost_daemon () {
-            Gala.WindowManagerGala.daemon_proxy = null;
+            WindowManagerGala.get_default ().daemon_proxy = null;
         }
 
         void daemon_appeared () {
-            if (Gala.WindowManagerGala.daemon_proxy == null) {
+            if (WindowManagerGala.get_default ().daemon_proxy == null) {
                 Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
             }
         }

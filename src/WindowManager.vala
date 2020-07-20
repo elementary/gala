@@ -74,6 +74,15 @@ namespace Gala {
 
         public Daemon? daemon_proxy = null;
 
+        private static WindowManagerGala? wmg = null;
+        public static unowned WindowManagerGala get_default () {
+            if (wmg == null) {
+                wmg = new WindowManagerGala ();
+            }
+    
+            return wmg;
+        }
+
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
