@@ -72,7 +72,7 @@ namespace Gala {
 
         private Meta.Window? moving; //place for the window that is being moved over
 
-        public Daemon? daemon_proxy = null;
+        Daemon? daemon_proxy = null;
 
         NotificationStack notification_stack;
 
