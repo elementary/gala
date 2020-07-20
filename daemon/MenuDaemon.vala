@@ -270,7 +270,6 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
                     } catch (Error e) {
-                        warning ("Failed to open wallpaper settings: %s", e.message);
                         var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Wallpaper Settings",
                             "The error was: Could not launch Switchboard.",
