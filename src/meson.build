@@ -1,5 +1,6 @@
 gala_bin_sources = files(
 	'DBus.vala',
+	'BlurActor.vala',
 	'DBusAccelerator.vala',
 	'DockThemeManager.vala',
 	'DragDropAction.vala',
@@ -17,6 +18,7 @@ gala_bin_sources = files(
 	'WindowListener.vala',
 	'WindowManager.vala',
 	'WorkspaceManager.vala',
+	'RendererInfo.vala',
 	'Background/Animation.vala',
 	'Background/Background.vala',
 	'Background/BackgroundCache.vala',
