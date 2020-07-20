@@ -314,7 +314,7 @@ namespace Gala {
             desktop_menu.show_all ();
         }
 
-        public void show_desktop_menu (Gala.WindowFlags flags, int x, int y) throws DBusError, IOError {
+        public void show_desktop_menu (int x, int y) throws DBusError, IOError {
             if (desktop_menu == null) {
                 init_desktop_menu ();
             }
