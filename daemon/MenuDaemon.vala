@@ -272,7 +272,7 @@ namespace Gala {
                     } catch (Error e) {
                         var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Wallpaper Settings",
-                            "The error was: Could not launch Switchboard.",
+                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-error",
                             Gtk.ButtonsType.CLOSE
                         );
