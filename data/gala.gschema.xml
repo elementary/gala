@@ -65,6 +65,11 @@
 			<summary>Enable edge tiling when dropping windows on screen edges</summary>
 			<description>If enabled, dropping windows on vertical screen edges maximizes them vertically and resizes them horizontally to cover half of the available area. Dropping windows on the top screen edge maximizes them completely.</description>
 		</key>
+		<key type="b" name="use-new-notifications">
+			<default>true</default>
+			<summary>If new notifications should be used</summary>
+			<description>DEPRECATED: This key is deprecated and ignored.</description>
+		</key>
 		<key type="s" name="panel-main-menu-action">
 			<default>''</default>
 			<summary>Panel main menu action</summary>
