@@ -32,7 +32,7 @@ namespace Gala {
 
             reactive = true;
             button_release_event.connect ((event) => {
-                if (event.button == 3) {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
                     show_background_menu ((int)event.x, (int)event.y);
                 }
             });
@@ -55,7 +55,7 @@ namespace Gala {
 
             reactive = true;
             button_press_event.connect ((event) => {
-                if (event.button == 3) {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
                     show_background_menu ((int)event.x, (int)event.y);
                 }
             });
