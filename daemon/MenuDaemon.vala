@@ -276,6 +276,7 @@ namespace Gala {
                             "dialog-error",
                             Gtk.ButtonsType.CLOSE
                         );
+                        message_dialog.show_error_details (e.message);
                         message_dialog.run();
                         message_dialog.destroy();
                     }
