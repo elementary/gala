@@ -271,6 +271,14 @@ namespace Gala {
                         AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
                     } catch (Error e) {
                         warning ("Failed to open wallpaper settings: %s", e.message);
+                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                            "Failed to Open Wallpaper Settings",
+                            "The error was: Could not launch Switchboard.",
+                            "dialog-warning",
+                            Gtk.ButtonsType.CLOSE
+                        );
+                        message_dialog.run();
+                        message_dialog.destroy();
                     }
                 });
     
@@ -280,6 +288,14 @@ namespace Gala {
                         AppInfo.launch_default_for_uri ("settings://display", null);
                     } catch (Error e) {
                         warning ("Failed to open display settings: %s", e.message);
+                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                            "Failed to Open Display Settings",
+                            "The error was: Could not launch Switchboard.",
+                            "dialog-warning",
+                            Gtk.ButtonsType.CLOSE
+                        );
+                        message_dialog.run();
+                        message_dialog.destroy();
                     }
                 });
     
@@ -289,6 +305,14 @@ namespace Gala {
                         AppInfo.launch_default_for_uri ("settings://", null);
                     } catch (Error e) {
                         warning ("Failed to open settings: %s", e.message);
+                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                            "Failed to Open System Settings",
+                            "The error was: Could not launch Switchboard.",
+                            "dialog-warning",
+                            Gtk.ButtonsType.CLOSE
+                        );
+                        message_dialog.run();
+                        message_dialog.destroy();
                     }
                 });
     
