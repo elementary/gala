@@ -16,15 +16,9 @@
 //
 
 namespace Gala {
-    [DBus (name = "org.pantheon.gala.daemon")]
-    public interface MenuDaemon: GLib.Object {
-        public abstract async void show_desktop_menu (WindowFlags flags, int x, int y) throws Error;
-    }
-
     public class BackgroundContainer : Meta.BackgroundGroup {
         public signal void changed ();
-
-        Daemon? daemon_proxy = null;
+        public signal void show_background_menu (int x, int y);
 
 #if HAS_MUTTER330
         public Meta.Display display { get; construct; }
@@ -35,8 +29,6 @@ namespace Gala {
 
         construct {
             Meta.MonitorManager.@get ().monitors_changed.connect (update);
-
-            Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
             update ();
         }
@@ -54,6 +46,13 @@ namespace Gala {
         construct {
             screen.monitors_changed.connect (update);
 
+            reactive = true;
+            button_press_event.connect ((event) => {
+                if (event.button == 3) {
+                    show_background_menu ((int)event.x, (int)event.y);
+                }
+            });
+
             update ();
         }
 
@@ -61,24 +60,6 @@ namespace Gala {
             screen.monitors_changed.disconnect (update);
         }
 #endif
-
-        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
-            try {
-                daemon_proxy = Bus.get_proxy.end (res);
-            } catch (Error e) {
-                warning ("Failed to get Menu proxy: %s", e.message);
-            }
-        }
-
-        void lost_daemon () {
-            daemon_proxy = null;
-        }
-
-        void daemon_appeared () {
-            if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
-            }
-        }
 
         void update () {
             var reference_child = (get_child_at_index (0) as BackgroundManager);

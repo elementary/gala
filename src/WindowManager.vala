@@ -22,6 +22,7 @@ namespace Gala {
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int x, int y) throws Error;
     }
 
     public class WindowManagerGala : Meta.Plugin, WindowManager {
@@ -230,8 +231,10 @@ namespace Gala {
 
 #if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #else
             background_group = new BackgroundContainer (screen);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -370,6 +373,18 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        void on_show_background_menu (int x, int y) {
+            if (daemon_proxy == null) {
+                return;
+            }
+
+            try {
+                daemon_proxy.show_desktop_menu.begin (x, y);
+            } catch (Error e) {
+                message ("Error invoking MenuManager: %s", e.message);
+            }
         }
 
         void on_monitors_changed () {
