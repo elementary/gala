@@ -278,7 +278,7 @@ namespace Gala {
                 try {
                     AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
                 } catch (Error e) {
-                    warning ("Failed to open network settings: %s", e.message);
+                    warning ("Failed to open wallpaper settings: %s", e.message);
                 }
             });
 
@@ -290,7 +290,7 @@ namespace Gala {
                 try {
                     AppInfo.launch_default_for_uri ("settings://display", null);
                 } catch (Error e) {
-                    warning ("Failed to open network settings: %s", e.message);
+                    warning ("Failed to open display settings: %s", e.message);
                 }
             });
 
@@ -302,7 +302,7 @@ namespace Gala {
                 try {
                     AppInfo.launch_default_for_uri ("settings://", null);
                 } catch (Error e) {
-                    warning ("Failed to open network settings: %s", e.message);
+                    warning ("Failed to open settings: %s", e.message);
                 }
             });
 
