@@ -287,15 +287,15 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://display", null);
                     } catch (Error e) {
-                        warning ("Failed to open display settings: %s", e.message);
                         var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Display Settings",
-                            "The error was: Could not launch Switchboard.",
+                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-warning",
                             Gtk.ButtonsType.CLOSE
                         );
-                        message_dialog.run();
-                        message_dialog.destroy();
+                        message_dialog.show_error_details (e.message);
+                        message_dialog.run ();
+                        message_dialog.destroy ();
                     }
                 });
     
@@ -304,15 +304,15 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://", null);
                     } catch (Error e) {
-                        warning ("Failed to open settings: %s", e.message);
                         var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open System Settings",
-                            "The error was: Could not launch Switchboard.",
+                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-warning",
                             Gtk.ButtonsType.CLOSE
                         );
-                        message_dialog.run();
-                        message_dialog.destroy();
+                        message_dialog.show_error_details (e.message);
+                        message_dialog.run ();
+                        message_dialog.destroy ();
                     }
                 });
     
