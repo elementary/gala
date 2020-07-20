@@ -275,7 +275,11 @@ namespace Gala {
             change_wallpaper = new Gtk.MenuItem ();
             change_wallpaper.add (change_wallpaper_accellabel);
             change_wallpaper.activate.connect (() => {
-                // Link to Switchboard Appearance Wallpaper tab
+                try {
+                    AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
+                } catch (Error e) {
+                    warning ("Failed to open network settings: %s", e.message);
+                }
             });
 
             display_settings_accellabel = new Granite.AccelLabel (_("Display Settings…"));
@@ -283,7 +287,11 @@ namespace Gala {
             display_settings = new Gtk.MenuItem ();
             display_settings.add (display_settings_accellabel);
             display_settings.activate.connect (() => {
-                // Link to Switchboard Display plug
+                try {
+                    AppInfo.launch_default_for_uri ("settings://display", null);
+                } catch (Error e) {
+                    warning ("Failed to open network settings: %s", e.message);
+                }
             });
 
             system_settings_accellabel = new Granite.AccelLabel (_("System Settings…"));
@@ -291,7 +299,11 @@ namespace Gala {
             system_settings = new Gtk.MenuItem ();
             system_settings.add (system_settings_accellabel);
             system_settings.activate.connect (() => {
-                // Link to Switchboard itself
+                try {
+                    AppInfo.launch_default_for_uri ("settings://", null);
+                } catch (Error e) {
+                    warning ("Failed to open network settings: %s", e.message);
+                }
             });
 
 

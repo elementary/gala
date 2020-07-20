@@ -16,15 +16,8 @@
 //
 
 namespace Gala {
-    [DBus (name = "org.pantheon.gala.daemon")]
-    public interface MenuDaemon: GLib.Object {
-        public abstract async void show_desktop_menu (WindowFlags flags, int x, int y) throws Error;
-    }
-
     public class BackgroundContainer : Meta.BackgroundGroup {
         public signal void changed ();
-
-        Daemon? daemon_proxy = null;
 
 #if HAS_MUTTER330
         public Meta.Display display { get; construct; }
@@ -64,18 +57,18 @@ namespace Gala {
 
         void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
             try {
-                daemon_proxy = Bus.get_proxy.end (res);
+                Gala.WindowManagerGala.daemon_proxy = Bus.get_proxy.end (res);
             } catch (Error e) {
                 warning ("Failed to get Menu proxy: %s", e.message);
             }
         }
 
         void lost_daemon () {
-            daemon_proxy = null;
+            Gala.WindowManagerGala.daemon_proxy = null;
         }
 
         void daemon_appeared () {
-            if (daemon_proxy == null) {
+            if (Gala.WindowManagerGala.daemon_proxy == null) {
                 Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
             }
         }
