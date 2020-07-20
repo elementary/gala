@@ -31,7 +31,7 @@ namespace Gala {
             Meta.MonitorManager.@get ().monitors_changed.connect (update);
 
             reactive = true;
-            button_press_event.connect ((event) => {
+            button_release_event.connect ((event) => {
                 if (event.button == 3) {
                     show_background_menu ((int)event.x, (int)event.y);
                 }
