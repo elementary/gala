@@ -18,16 +18,16 @@ Vertex struct
 
 init.argv unowned
 init_with_args
-    .argv unowned
+	.argv unowned
 Actor
-    .apply_transform.matrix ref
-    .get_abs_allocation_vertices.verts out=false
-    .get_allocation_vertices.verts out=false
+	.apply_transform.matrix ref
+	.get_abs_allocation_vertices.verts out=false
+	.get_allocation_vertices.verts out=false
 Canvas
-    .new symbol_type="constructor"
+	.new symbol_type="constructor"
 Event.type#method name="get_type"
 Image
-    .new symbol_type="constructor"
+	.new symbol_type="constructor"
 
 // ???
 Actor.has_pointer#method name="get_has_pointer"
@@ -38,40 +38,40 @@ Actor.pick deprecated=false
 
 // Nullable return values
 Actor
-    .get_parent nullable
+	.get_parent nullable
 value_get_color nullable
 
 // method/virtual-method/signal don't match
 Actor
-    .event#method name="emit_event"
-    .get_paint_volume#virtual_method name="get_paint_volume_vfunc"
-    .get_paint_volume#virtual_method.volume out
-    .queue_redraw#signal skip
-    .queue_redraw#virtual_method skip
+	.event#method name="emit_event"
+	.get_paint_volume#virtual_method name="get_paint_volume_vfunc"
+	.get_paint_volume#virtual_method.volume out
+	.queue_redraw#signal skip
+	.queue_redraw#virtual_method skip
 Container
-    .add_actor skip=false
-    .class_* skip
+	.add_actor skip=false
+	.class_* skip
 Text
-    .activate#method name="try_activate"
-    .insert_text#signal skip
+	.activate#method name="try_activate"
+	.insert_text#signal skip
 TextBuffer.get_text#virtual_method name="get_text_with_length"
 
 // virtual/abstract distinction
 Container
-    .lower virtual
-    .raise virtual
-    .*_child_meta#virtual_method virtual
-    .foreach_with_internals#virtual_method virtual
+	.lower virtual
+	.raise virtual
+	.*_child_meta#virtual_method virtual
+	.foreach_with_internals#virtual_method virtual
 
 // Default values
 Container
-    .lower.sibling nullable default=null
-    .raise.sibling nullable default=null
+	.lower.sibling nullable default=null
+	.raise.sibling nullable default=null
 Stage.read_pixels
-    .width default=-1
-    .height default=-1
+	.width default=-1
+	.height default=-1
 Text
-    .position_to_coords.line_height default=null
+	.position_to_coords.line_height default=null
 
 // Reparented funcs methods can't be instance methods
 feature_available skip
@@ -79,39 +79,39 @@ feature_get_all skip
 
 // Skipped by g-i for unknown reasons
 LayoutManager
-    .create_child_meta skip=false
+	.create_child_meta skip=false
 
 // Variadic arguments
 Actor
-    .animate skip=false
-    .animate_with_alpha skip=false
-    .animate_with_timeline skip=false
+	.animate skip=false
+	.animate_with_alpha skip=false
+	.animate_with_timeline skip=false
 Box
-    .pack skip=false
-    .pack_after skip=false
-    .pack_at skip=false
-    .pack_before skip=false
+	.pack skip=false
+	.pack_after skip=false
+	.pack_at skip=false
+	.pack_before skip=false
 Container
-    .add_valist skip=false
-    .child_get skip=false
-    .child_set skip=false
-    .remove skip=false
-    .remove_valist skip=false
+	.add_valist skip=false
+	.child_get skip=false
+	.child_set skip=false
+	.remove skip=false
+	.remove_valist skip=false
 Interval
-    .new skip=false
-    .get_interval skip=false
-    .set_final skip=false
-    .set_initial skip=false
-    .set_interval skip=false
+	.new skip=false
+	.get_interval skip=false
+	.set_final skip=false
+	.set_initial skip=false
+	.set_interval skip=false
 LayoutManager
-    .child_get skip=false
-    .child_set skip=false
+	.child_get skip=false
+	.child_set skip=false
 Script
-    .get_objects skip=false
+	.get_objects skip=false
 
 // Changing error domains
 Texture
-    .new_from_file throws="Clutter.TextureError"
+	.new_from_file throws="Clutter.TextureError"
 
 // Skipped upstream for unknown reasons
 Alpha.register_func skip=false
@@ -125,15 +125,15 @@ threads_add_timeout_full skip=false
 
 // struct/class confusion
 ActorBox
-    .new skip
-    .from_vertices skip
+	.new skip
+	.from_vertices skip
 Units.from_* skip
 Color
-    .new skip
+	.new skip
 Margin
-    .new skip
+	.new skip
 Size
-    .init skip
+	.init skip
 Vertex.new skip
 
 // Class methods
@@ -150,16 +150,16 @@ color_get_static nullable
 
 // Upstream
 Event
-    .get_position.position out
+	.get_position.position out
 Text
-    .cursor_event.geometry out
+	.cursor_event.geometry out
 
 // Remove for clutter-2.0
 /////////////////////////
 
 Stage
-     .event name="emit_event"
-     .capture.captures out array_length_idx=3 type="Clutter.Capture[]"
+ 	.event name="emit_event"
+ 	.capture.captures out array_length_idx=3 type="Clutter.Capture[]"
 
 Capture
   .image type="Cairo.ImageSurface"
