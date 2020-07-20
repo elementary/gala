@@ -274,7 +274,7 @@ namespace Gala {
                         var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Wallpaper Settings",
                             "The error was: Could not launch Switchboard.",
-                            "dialog-warning",
+                            "dialog-error",
                             Gtk.ButtonsType.CLOSE
                         );
                         message_dialog.run();
