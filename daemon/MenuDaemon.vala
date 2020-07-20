@@ -29,6 +29,7 @@ namespace Gala {
 
     [DBus (name = "org.pantheon.gala.daemon")]
     public class MenuDaemon : Object {
+        // Window Menu
         private Granite.AccelLabel always_on_top_accellabel;
         private Granite.AccelLabel close_accellabel;
         private Granite.AccelLabel minimize_accellabel;
@@ -47,6 +48,15 @@ namespace Gala {
         Gtk.MenuItem move_left;
         Gtk.MenuItem move_right;
         Gtk.MenuItem close;
+
+        // Desktop Menu
+        private Granite.AccelLabel change_wallpaper_accellabel;
+        private Granite.AccelLabel display_settings_accellabel;
+        private Granite.AccelLabel system_settings_accellabel;
+        Gtk.Menu? desktop_menu = null;
+        Gtk.MenuItem change_wallpaper;
+        Gtk.MenuItem display_settings;
+        Gtk.MenuItem system_settings;
 
         WMDBus? wm_proxy = null;
 
@@ -250,6 +260,54 @@ namespace Gala {
             }
 
             window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
+                var scale = m.scale_factor;
+                px = x / scale;
+                // Move the menu 1 pixel outside of the pointer or else it closes instantly
+                // on the mouse up event
+                py = (y / scale) + 1;
+                push_in = true;
+            }, 3, Gdk.CURRENT_TIME);
+        }
+
+        private void init_desktop_menu () {
+            change_wallpaper_accellabel = new Granite.AccelLabel (_("Change Wallpaper…"));
+
+            change_wallpaper = new Gtk.MenuItem ();
+            change_wallpaper.add (change_wallpaper_accellabel);
+            change_wallpaper.activate.connect (() => {
+                // Link to Switchboard Appearance Wallpaper tab
+            });
+
+            display_settings_accellabel = new Granite.AccelLabel (_("Display Settings…"));
+
+            display_settings = new Gtk.MenuItem ();
+            display_settings.add (display_settings_accellabel);
+            display_settings.activate.connect (() => {
+                // Link to Switchboard Display plug
+            });
+
+            system_settings_accellabel = new Granite.AccelLabel (_("System Settings…"));
+
+            system_settings = new Gtk.MenuItem ();
+            system_settings.add (system_settings_accellabel);
+            system_settings.activate.connect (() => {
+                // Link to Switchboard itself
+            });
+
+
+            desktop_menu = new Gtk.Menu ();
+            desktop_menu.append (change_wallpaper);
+            desktop_menu.append (display_settings);
+            desktop_menu.append (system_settings);
+            desktop_menu.show_all ();
+        }
+
+        public void show_desktop_menu (Gala.WindowFlags flags, int x, int y) throws DBusError, IOError {
+            if (desktop_menu == null) {
+                init_desktop_menu ();
+            }
+
+            desktop_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
                 var scale = m.scale_factor;
                 px = x / scale;
                 // Move the menu 1 pixel outside of the pointer or else it closes instantly
