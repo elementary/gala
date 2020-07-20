@@ -18,10 +18,10 @@
 [CCode (cprefix = "", lower_case_cprefix = "", cheader_filename = "config.h")]
 namespace Config
 {
-	public const string DATADIR;
-	public const string PKGDATADIR;
-	public const string VERSION;
-	public const string PLUGINDIR;
-	public const string SCHEMA;
-	public const string RESOURCEPATH;
+    public const string DATADIR;
+    public const string PKGDATADIR;
+    public const string VERSION;
+    public const string PLUGINDIR;
+    public const string SCHEMA;
+    public const string RESOURCEPATH;
 }
