@@ -10,6 +10,15 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
+    <release version="4.0.0" date="2020-08-01" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Show a context menu when secondary clicking the background</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
     <release version="3.3.2" date="2020-04-30" urgency="medium">
       <description>
         <p>Improvements:</p>
