@@ -83,6 +83,7 @@ namespace Gala.Plugins.Zoom {
             if (current_zoom <= 1.0f && !@in)
                 return;
             else if (current_zoom >= 10.0f && @in)
+                Gdk.beep ();
                 return;
 
             var wins = wm.ui_group;
