@@ -81,6 +81,7 @@ namespace Gala.Plugins.Zoom {
         void zoom (bool @in) {
             // Nothing to do if zooming out of our bounds is requested
             if (current_zoom <= 1.0f && !@in)
+                Gdk.beep ();
                 return;
             else if (current_zoom >= 10.0f && @in)
                 Gdk.beep ();
