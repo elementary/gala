@@ -96,7 +96,7 @@
       <description>When launching the window-switcher, Gala iterates over this list and attempts to find a window matching the names. If it does, it will hide this window and fade it back in, once the the switcher is closed.</description>
     </key>
     <key type="b" name="move-maximized-workspace">
-      <default>false</default>
+      <default>true</default>
       <summary>Automatically move maximized windows to a new workspace</summary>
       <description></description>
     </key>
