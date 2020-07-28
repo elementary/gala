@@ -24,7 +24,6 @@
     </key>
   </schema>
 
-
   <schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
     <key enum="GalaActionType" name="hotcorner-topleft">
       <default>'none'</default>
