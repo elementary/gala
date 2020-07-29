@@ -80,10 +80,13 @@ namespace Gala.Plugins.Zoom {
 
         void zoom (bool @in) {
             // Nothing to do if zooming out of our bounds is requested
-            if (current_zoom <= 1.0f && !@in)
+            if (current_zoom <= 1.0f && !@in) {
+                Gdk.beep ();
                 return;
-            else if (current_zoom >= 2.5f && @in)
+            } else if (current_zoom >= 10.0f && @in) {
+                Gdk.beep ();
                 return;
+            }
 
             var wins = wm.ui_group;
 
@@ -91,7 +94,7 @@ namespace Gala.Plugins.Zoom {
             // to show requested zoomed area
             if (mouse_poll_timer == 0) {
                 float mx, my;
-                var client_pointer = Gdk.Display.get_default ().get_device_manager ().get_client_pointer ();
+                var client_pointer = Gdk.Display.get_default ().get_default_seat ().get_pointer ();
                 client_pointer.get_position (null, out mx, out my);
                 wins.set_pivot_point (mx / wins.width, my / wins.height);
 

@@ -22,6 +22,7 @@ namespace Gala {
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int x, int y) throws Error;
     }
 
     public class WindowManagerGala : Meta.Plugin, WindowManager {
@@ -237,8 +238,10 @@ namespace Gala {
 
 #if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #else
             background_group = new BackgroundContainer (screen);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -377,6 +380,18 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        void on_show_background_menu (int x, int y) {
+            if (daemon_proxy == null) {
+                return;
+            }
+
+            try {
+                daemon_proxy.show_desktop_menu.begin (x, y);
+            } catch (Error e) {
+                message ("Error invoking MenuManager: %s", e.message);
+            }
         }
 
         void on_monitors_changed () {
@@ -841,7 +856,7 @@ namespace Gala {
         }
 
         public void get_current_cursor_position (out int x, out int y) {
-            Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null,
+            Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null,
                 out x, out y);
         }
 
@@ -1119,7 +1134,7 @@ namespace Gala {
 
         void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor ())
+            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
                 return;
 
             // Due to how this is implemented, by relying on the functionality
