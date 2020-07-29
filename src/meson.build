@@ -17,6 +17,7 @@ gala_bin_sources = files(
     'ShadowEffect.vala',
     'WindowListener.vala',
     'WindowManager.vala',
+    'WindowMovementTracker.vala',
     'WorkspaceManager.vala',
     'Background/Animation.vala',
     'Background/Background.vala',
