@@ -31,6 +31,10 @@ public class Gala.AreaTiling : Object {
         Object (wm : wm, display : display);
     }
 
+    public void show_grid () {
+        debug ("Show grid!");
+    }
+
     public void tile (Meta.Window window, int x, int y) {
         Meta.Rectangle tile_rect;
         calculate_tile_rect (out tile_rect, window, x, y);

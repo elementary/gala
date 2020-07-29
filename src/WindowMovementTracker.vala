@@ -57,10 +57,9 @@ namespace Gala {
         }
 
         private void on_position_changed (Meta.Window window) {
-            unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
             int x, y;
             Clutter.ModifierType type;
-            ct.get_pointer (out x, out y, out type);
+            display.get_cursor_tracker ().get_pointer (out x, out y, out type);
 
             if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
                 area_tiling.show_preview (window, x, y);
