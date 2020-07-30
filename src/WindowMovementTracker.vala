@@ -39,14 +39,18 @@ namespace Gala {
             current_window.position_changed.disconnect (on_position_changed);
         }
 
-        private void on_grab_op_begin (Meta.Display display, Meta.Window window) {
+        private void on_grab_op_begin (Meta.Display display, Meta.Window? window) {
+            if (window == null) {
+                return;
+            }
+
             current_window = window;
             current_window.position_changed.connect (on_position_changed);
         }
 
-        private void on_grab_op_end (Meta.Display display, Meta.Window window) {
+        private void on_grab_op_end (Meta.Display display, Meta.Window? window) {
             current_window.position_changed.disconnect (on_position_changed);
-            if (area_tiling.is_active) {
+            if (area_tiling.is_active && window != null) {
                 unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
                 int x, y;
                 Clutter.ModifierType type;

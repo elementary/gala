@@ -24,15 +24,23 @@ public class Gala.AreaTiling : Object {
     private Clutter.Actor window_icon;
     public bool is_active = false;
     int animation_duration = 250;
-    private int grid_x = 2;
-    private int grid_y = 2;
+    public int grid_x = 2;
+    public int grid_y = 2;
+    public int[] tile_widths;
+    public int[] tile_heights;
 
-    public AreaTiling (WindowManager wm, Meta.Display display) {
-        Object (wm : wm, display : display);
+    public AreaTiling (WindowManager wm) {
+        Object (wm : wm);
     }
 
-    public void show_grid () {
-        debug ("Show grid!");
+    construct {
+        display = wm.get_display ();
+        int screen_width, screen_height;
+        display.get_size (out screen_width, out screen_height);
+        int tile_width = screen_width / grid_x;
+        int tile_height = screen_height / grid_y;
+        tile_widths = {tile_width, tile_width};
+        tile_heights = {tile_height, tile_height};
     }
 
     public void tile (Meta.Window window, int x, int y) {
@@ -111,5 +119,120 @@ public class Gala.AreaTiling : Object {
         actor.opacity = 255U;
         actor.restore_easing_state ();
         window_icon.opacity = 0;
+    }
+}
+
+public class Gala.TilingGrid : Clutter.Actor, ActivatableComponent {
+    public WindowManager wm { get; construct; }
+    public AreaTiling area_tiling { get; construct; }
+    private Meta.Display display;
+    private ModalProxy? modal_proxy;
+    private Gdk.Point start_point;
+    private Clutter.Canvas canvas;
+
+    public TilingGrid (WindowManager wm, AreaTiling area_tiling) {
+        Object (wm: wm, area_tiling: area_tiling);
+    }
+
+    construct {
+        visible = false;
+        reactive = true;
+        display = wm.get_display ();
+
+        int screen_width, screen_height;
+        display.get_size (out screen_width, out screen_height);
+
+        width = screen_width;
+        height = screen_height;
+
+        canvas = new Clutter.Canvas ();
+        canvas.set_size (screen_width, screen_height);
+        canvas.draw.connect (draw_grid);
+        set_content (canvas);
+        canvas.invalidate ();
+    }
+
+    public bool is_opened () {
+        return visible;
+    }
+
+    public void open (HashTable<string,Variant>? hints = null) {
+        debug("open Tiling Grid!");
+        visible = true;
+        wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
+        grab_key_focus ();
+        modal_proxy = wm.push_modal ();
+        modal_proxy.keybinding_filter = binding => binding.get_name () != "show-grid";
+    }
+
+    public void close () {
+        debug("close Tiling Grid!");
+        visible = false;
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+        if (modal_proxy != null) {
+            wm.pop_modal (modal_proxy);
+        }
+    }
+
+    public override bool key_press_event (Clutter.KeyEvent e) {
+        debug("presss key!");
+        if (e.keyval == Clutter.Key.Escape) {
+            close ();
+            return true;
+        }
+        content.invalidate ();
+        return false;
+    }
+
+    public override bool button_press_event (Clutter.ButtonEvent e) {
+        area_tiling.tile_widths[0] = (int) e.x;
+        area_tiling.tile_heights[0] = (int) e.y;
+        content.invalidate ();
+        return true;
+    }
+
+    //  public override bool motion_event (Clutter.MotionEvent e) {
+    //      debug("motion event!!");
+    //      start_point.x = (int) e.x;
+    //      start_point.y = (int) e.y;
+    //      content.invalidate ();
+    //      return true;
+    //  }
+
+    private bool draw_grid (Cairo.Context ctx) {
+        debug("draw grid!");
+        Clutter.cairo_clear (ctx);
+        int line_width = 5;
+        int grid_x = area_tiling.grid_x;
+        int grid_y = area_tiling.grid_y;
+        //  ctx.translate (0.5, 0.5);
+
+
+        for (var monitor = 0; monitor < display.get_n_monitors (); monitor++) {
+            var geometry = display.get_monitor_geometry (monitor);
+            debug (@"x $(geometry.x), y $(geometry.y), width $(geometry.width), height $(geometry.height)");
+
+            
+            int start_x = geometry.x + line_width;
+            for (int i = 0; i < grid_x; i ++) {
+                int width = area_tiling.tile_widths[i];
+                int start_y = geometry.y + line_width;
+                for (int j = 0; j < grid_y; j ++) {
+                    int height = area_tiling.tile_heights[j];
+                    debug(@"hieght: $(height);");
+                    ctx.rectangle (start_x, start_y, width - 2 * line_width, height - 2 * line_width);
+                    ctx.set_source_rgba (0.1, 0.1, 0.1, 0.8);
+                    ctx.fill ();
+                    //  ctx.rectangle (x + i * width, y + j * height, width - 2 * line_width, height - 2 * line_width);
+                    //  ctx.set_source_rgba (1.0, 1.0, 1.0, 0.8);
+                    //  ctx.set_line_width (line_width);
+                    //  ctx.set_dash ({5.0}, 5.0);
+                    //  ctx.stroke ();
+                    start_y += height;
+                }
+                start_x += width;
+            }
+        }
+        return true;
     }
 }

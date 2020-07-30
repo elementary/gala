@@ -73,7 +73,8 @@ namespace Gala {
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
-        
+
+        TilingGrid tiling_grid;
         AreaTiling area_tiling;
         WindowMovementTracker window_movement_tracker;
 
@@ -172,7 +173,8 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            area_tiling = new AreaTiling (this, display);
+            area_tiling = new AreaTiling (this);
+            tiling_grid = new TilingGrid (this, area_tiling);
             window_movement_tracker = new WindowMovementTracker (display, area_tiling);
             window_movement_tracker.watch ();
 
@@ -351,6 +353,8 @@ namespace Gala {
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
+            ui_group.add (tiling_grid);
+
             display.add_keybinding ("expose-windows", keybinding_settings, 0, () => {
                 if (window_overview.is_opened ())
                     window_overview.close ();
@@ -364,6 +368,13 @@ namespace Gala {
                     var hints = new HashTable<string,Variant> (str_hash, str_equal);
                     hints.@set ("all-windows", true);
                     window_overview.open (hints);
+                }
+            });
+            display.add_keybinding("show-grid", keybinding_settings, 0, () => {
+                if (tiling_grid.is_opened ()) {
+                    tiling_grid.close ();
+                } else {
+                    tiling_grid.open ();
                 }
             });
 
