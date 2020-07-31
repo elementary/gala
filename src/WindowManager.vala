@@ -74,6 +74,8 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
 
+        PieMenu pie_menu;
+
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -168,6 +170,8 @@ namespace Gala {
             WindowListener.init (screen);
 #endif
             KeyboardManager.init (display);
+
+            pie_menu = new PieMenu (this);
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -357,6 +361,15 @@ namespace Gala {
                     var hints = new HashTable<string,Variant> (str_hash, str_equal);
                     hints.@set ("all-windows", true);
                     window_overview.open (hints);
+                }
+            });
+
+            ui_group.add_child (pie_menu);
+            display.add_keybinding ("pie-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (pie_menu.is_opened ()) {
+                    pie_menu.close ();
+                } else {
+                    pie_menu.open ();
                 }
             });
 
