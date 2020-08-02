@@ -49,8 +49,7 @@ namespace Gala {
             if (area_tiling.is_active) {
                 unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
                 int x, y;
-                Clutter.ModifierType type;
-                ct.get_pointer (out x, out y, out type);
+                ct.get_pointer (out x, out y, null);
                 area_tiling.tile (window, x, y);
                 area_tiling.hide_preview (window);
             }
