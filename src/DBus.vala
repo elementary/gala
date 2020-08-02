@@ -20,7 +20,8 @@ namespace Gala {
     public class DBus {
         static DBus? instance;
         static WindowManager wm;
-        ulong preview_handler_id = 0UL;
+        const uint MOUSE_POLL_TIME = 50;
+        uint preview_handler_id = 0;
 
         [DBus (visible = false)]
         public static void init (WindowManager _wm) {
@@ -138,18 +139,16 @@ namespace Gala {
             }
 
             unowned Meta.CursorTracker cursor_tracker = gala_wm.get_display ().get_cursor_tracker ();
-            int x, y;
-            cursor_tracker.get_pointer (out x, out y, null);
-            gala_wm.area_tiling.is_active = true;
-            Meta.Rectangle tile_rect;
-            gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, x, y);
-            gala_wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
 
-            if (preview_handler_id == 0UL) {
-                preview_handler_id = cursor_tracker.cursor_moved.connect ((fx, fy) => {
+            if (preview_handler_id == 0) {
+                preview_handler_id = Timeout.add (MOUSE_POLL_TIME, () => {
                     debug("cursor move!");
-                    gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, (int)fx, (int)fy);
+                    int x, y;
+                    cursor_tracker.get_pointer (out x, out y, null);
+                    Meta.Rectangle tile_rect;
+                    gala_wm.area_tiling.calculate_tile_rect (out tile_rect, x, y);
                     gala_wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
+                    return true;
                 });
             }
         }
@@ -157,13 +156,22 @@ namespace Gala {
         public void hide_preview () throws Error {
             debug("hide launch preview!");
             unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
-            unowned Meta.CursorTracker cursor_tracker = gala_wm.get_display ().get_cursor_tracker ();;
             gala_wm.area_tiling.is_active = false;
+            unowned Meta.CursorTracker cursor_tracker = gala_wm.get_display ().get_cursor_tracker ();;
+            int x, y;
+            cursor_tracker.get_pointer (out x, out y, null);
+            Meta.Rectangle tile_rect;
+            gala_wm.area_tiling.calculate_tile_rect (out tile_rect, x, y);
+            ulong handler_id = 0UL;
+            handler_id = gala_wm.get_display ().window_created.connect (window => {
+                gala_wm.get_display ().disconnect (handler_id);
+                gala_wm.area_tiling.tile (window, x, y);
+            });
 
-            if (preview_handler_id != 0UL) {
-                cursor_tracker.disconnect (preview_handler_id);
+            if (preview_handler_id != 0) {
+                Source.remove (preview_handler_id);
+                preview_handler_id = 0;
             }
-
             wm.hide_tile_preview ();
         }
 
