@@ -37,7 +37,7 @@ public class Gala.AreaTiling : Object {
 
     public void tile (Meta.Window window, int x, int y) {
         Meta.Rectangle tile_rect;
-        calculate_tile_rect (out tile_rect, window, x, y);
+        calculate_tile_rect (out tile_rect, x, y);
         window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
         wm.hide_tile_preview ();
     }
@@ -51,7 +51,7 @@ public class Gala.AreaTiling : Object {
         }
 
         Meta.Rectangle tile_rect;
-        calculate_tile_rect (out tile_rect, window, x, y);
+        calculate_tile_rect (out tile_rect, x, y);
         wm.show_tile_preview (window, tile_rect, display.get_current_monitor ());
     }
 
@@ -63,8 +63,8 @@ public class Gala.AreaTiling : Object {
         }
     }
 
-    public void calculate_tile_rect (out Meta.Rectangle rect, Meta.Window window, int x, int y) {
-        Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
+    public void calculate_tile_rect (out Meta.Rectangle rect, int x, int y) {
+        Meta.Rectangle wa = display.get_focus_window ().get_work_area_for_monitor (display.get_current_monitor ());
         int monitor_width = wa.width, monitor_height = wa.height;
         int monitor_x = x - wa.x, monitor_y = y - wa.y;
         int n_cols = 3 * grid_x - 1;
