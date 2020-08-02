@@ -147,8 +147,23 @@
       <summary>Shortcut to open the window overview for all windows</summary>
       <description></description>
     </key>
-    <key type="as" name="pie-menu">
+    <key type="as" name="pie-menu-window-tiling">
       <default><![CDATA[['<Super>z']]]></default>
+      <summary>Show pie menu.</summary>
+      <description></description>
+    </key>
+    <key type="as" name="pie-menu-window-controls">
+      <default><![CDATA[['<Super>x']]]></default>
+      <summary>Show pie menu.</summary>
+      <description></description>
+    </key>
+    <key type="as" name="pie-menu-window-workspaces">
+      <default><![CDATA[['<Super>c']]]></default>
+      <summary>Show pie menu.</summary>
+      <description></description>
+    </key>
+    <key type="as" name="pie-menu-workspaces">
+      <default><![CDATA[['<Super>q']]]></default>
       <summary>Show pie menu.</summary>
       <description></description>
     </key>

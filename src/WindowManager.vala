@@ -365,13 +365,116 @@ namespace Gala {
             });
 
             ui_group.add_child (pie_menu);
-            display.add_keybinding ("pie-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
-                if (pie_menu.is_opened ()) {
-                    pie_menu.close ();
-                } else {
-                    pie_menu.open ();
-                }
+            display.add_keybinding ("pie-menu-window-tiling", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                var window = display.get_focus_window ();
+                ulong signal_id = 0U;
+                signal_id = pie_menu.closed.connect (() => {
+                    pie_menu.disconnect (signal_id);
+                    if (window == null) {
+                        return;
+                    }
+                    if (pie_menu.selected != -1) {
+                        var i = pie_menu.selected;
+                        Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
+                        int width = (i % 4) == 2 ? wa.width : wa.width / 2;
+                        int height = (i % 4) == 0 ? wa.height : wa.height / 2;
+                        int x = (i % 6) < 3 ? wa.x : wa.x + width;
+                        int y = i < 5 ? wa.y : wa.y + height;
+                        window.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+                        window.move_resize_frame (true, x, y, width, height);
+                    }
+                });
+                pie_menu.options = {"Tile Left", "Tile Top Left", "Tile Top", "Tile Top Right",
+                                    "Tile Right", "Tile Bottom Right", "Tile Bottom", "Tile Bottom Left"};
+                pie_menu.open ();
             });
+
+            display.add_keybinding ("pie-menu-window-controls", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                var window = display.get_focus_window ();
+                ulong signal_id = 0U;
+                signal_id = pie_menu.closed.connect (() => {
+                    pie_menu.disconnect (signal_id);
+                    if (window == null) {
+                        return;
+                    }
+
+                    switch (pie_menu.selected) {
+                        case 0:
+                            perform_action (ActionType.START_MOVE_CURRENT);
+                            break;
+                        case 1:
+                            window.move_to_monitor (display.get_current_monitor ());
+                            window.maximize (Meta.MaximizeFlags.BOTH);
+                            break;
+                        case 2:
+                            window.move_to_monitor (display.get_current_monitor ());
+                            if (window.fullscreen) {
+                                window.unmake_fullscreen ();
+                            } else {
+                                window.make_fullscreen ();
+                            }
+                            break;
+                        case 3:
+                            Meta.Rectangle wa = window.get_work_area_for_monitor (display.get_current_monitor ());
+                            window.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+                            window.move_resize_frame (true, wa.x +  wa.width / 16, wa.y + wa.height / 16, 7 * wa.width / 8, 7 * wa.height / 8);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+                pie_menu.options = {"Move", "Maximize", window.fullscreen ? "Un-Fullscreen" : "Fullscreen", "Center"};
+                pie_menu.open ();
+            });
+
+            display.add_keybinding ("pie-menu-window-workspaces", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                var window = display.get_focus_window ();
+                ulong signal_id = 0U;
+                signal_id = pie_menu.closed.connect (() => {
+                    pie_menu.disconnect (signal_id);
+                    switch (pie_menu.selected) {
+                        case 0:
+                            move_window (window, Meta.MotionDirection.LEFT);
+                            break;
+                        case 1:
+                            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+                            var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
+                            window.change_workspace (workspace);
+                            workspace.activate_with_focus (window, display.get_current_time ());
+                            break;
+                        case 2:
+                            move_window (window, Meta.MotionDirection.RIGHT);
+                            break;
+                        case 3:
+                            workspace_view.open (null);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+                pie_menu.options = {"Move Window to Left Workspace", "Move Window to New Workspace",
+                                    "Move Window to Right Workspace", "Multitasking View"};
+                pie_menu.open ();
+            });
+
+            display.add_keybinding ("pie-menu-workspaces", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                ulong signal_id = 0U;
+                signal_id = pie_menu.closed.connect (() => {
+                    pie_menu.disconnect (signal_id);
+                    if (pie_menu.selected != -1) {
+                        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+                        var index = int.min (pie_menu.selected, manager.get_n_workspaces () - 1);
+                        var workspace = manager.get_workspace_by_index (index);
+                        workspace.activate (display.get_current_time ());
+                    }
+                });
+                pie_menu.options = {"Workspace 1", "Workspace 2",
+                                    "Workspace 3", "Workspace 4",
+                                    "Workspace 5", "Workspace 6",
+                                    "Workspace 7", "Workspace 8"};
+                pie_menu.open ();
+            });
+
 
             update_input_area ();
 
