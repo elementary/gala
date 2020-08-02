@@ -20,8 +20,6 @@ namespace Gala {
     public class DBus {
         static DBus? instance;
         static WindowManager wm;
-        Clutter.DragAction drag_action;
-        Clutter.Actor icon;
         ulong preview_handler_id = 0UL;
 
         [DBus (visible = false)]
@@ -124,10 +122,11 @@ namespace Gala {
 
         public void show_preview () throws Error {
             debug("show launch preview!");
-            unowned Meta.Display display = wm.get_display ();
+            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            unowned Meta.Display display =  gala_wm.get_display ();
 
             unowned Meta.Window? dock_window = null;
-            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
+            foreach (unowned Meta.WindowActor actor in gala_wm.get_display ().get_window_actors ()) {
                 dock_window = actor.get_meta_window ();
                 if (dock_window.title == "plank") {
                     break;
@@ -138,60 +137,34 @@ namespace Gala {
                 return;
             }
 
-            unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
+            unowned Meta.CursorTracker cursor_tracker = gala_wm.get_display ().get_cursor_tracker ();
             int x, y;
-            Clutter.ModifierType type;
-            ct.get_pointer (out x, out y, out type);
-            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            cursor_tracker.get_pointer (out x, out y, null);
             gala_wm.area_tiling.is_active = true;
             Meta.Rectangle tile_rect;
             gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, x, y);
-            wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
+            gala_wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
 
-            drag_action = new Clutter.DragAction ();
-            drag_action.drag_motion.connect (() => debug("drag_motion!"));
-            drag_action.drag_begin.connect (() => debug("begin this drag aciton!!!!"));
-            drag_action.drag_end.connect (() => debug("end this drag aciton!!!!"));
-            icon = wm.stage.get_actor_at_pos (Clutter.PickMode.REACTIVE, x, y);
-            icon.reactive = true;
-            icon.add_action (drag_action);
-
-            drag_action.drag_begin (icon, (float)x, (float)y, type);
-
-            //  resize_handle.set_size (button_size, button_size);
-            //  resize_handle.set_pivot_point (0.5f, 0.5f);
-            //  resize_handle.set_position (width - button_size, height - button_size);
-
-            //  preview_handler_id = dock_window.get_actor () .captured_event.connect (event => {
-            //      debug("capture evenet");
-            //      if (event.get_type () == Clutter.EventType.MOTION) {
-            //          debug("motion");
-            //          return true;
-            //      }
-            //      return false;
-            //  });
-            //  preview_handler_id = icon.motion_event.connect (event => {
-            //      debug("motion!");
-            //      return false;
-            //  });
-            //  preview_handler_id = ct.cursor_moved.connect ((fx, fy) => {
-            //      debug("cursor move!");
-            //      gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, (int)fx, (int)fy);
-            //      wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
-            //  });
+            if (preview_handler_id == 0UL) {
+                preview_handler_id = cursor_tracker.cursor_moved.connect ((fx, fy) => {
+                    debug("cursor move!");
+                    gala_wm.area_tiling.calculate_tile_rect (out tile_rect, dock_window, (int)fx, (int)fy);
+                    gala_wm.show_tile_preview (dock_window, tile_rect, display.get_current_monitor ());
+                });
+            }
         }
 
         public void hide_preview () throws Error {
             debug("hide launch preview!");
             unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            unowned Meta.CursorTracker cursor_tracker = gala_wm.get_display ().get_cursor_tracker ();;
             gala_wm.area_tiling.is_active = false;
-            //  wm.stage.disconnect (preview_handler_id);
-            wm.hide_tile_preview ();
 
-            int x, y;
-            Clutter.ModifierType type;
-            wm.get_display ().get_cursor_tracker ().get_pointer (out x, out y, out type);
-            drag_action.drag_end (icon, (float)x, (float)y, type);
+            if (preview_handler_id != 0UL) {
+                cursor_tracker.disconnect (preview_handler_id);
+            }
+
+            wm.hide_tile_preview ();
         }
 
         /**
