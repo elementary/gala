@@ -182,19 +182,7 @@ namespace Gala {
 #endif
 
             icon_group = new IconGroup (workspace);
-            icon_group.selected.connect (() => {
-#if HAS_MUTTER330
-                if (workspace == display.get_workspace_manager ().get_active_workspace ())
-                    Utils.bell (display);
-                else
-                    selected (false);
-#else
-                if (workspace == screen.get_active_workspace ())
-                    Utils.bell (screen);
-                else
-                    selected (false);
-#endif
-            });
+            icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
             icon_group.add_action (icons_drop_action);

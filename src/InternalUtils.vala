@@ -79,13 +79,13 @@ namespace Gala {
                     rects = {rect};
                     break;
                 case InputArea.DEFAULT:
-                    var schema = BehaviorSettings.get_default ().schema;
+                    var settings = new GLib.Settings (Config.SCHEMA + ".behavior");
 
                     // if ActionType is NONE make it 0 sized
-                    ushort tl_size = (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
-                    ushort tr_size = (schema.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
-                    ushort bl_size = (schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
-                    ushort br_size = (schema.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
+                    ushort tl_size = (settings.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
+                    ushort tr_size = (settings.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
+                    ushort bl_size = (settings.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
+                    ushort br_size = (settings.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
 
                     X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
                     X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
@@ -136,13 +136,13 @@ namespace Gala {
                     rects = {rect};
                     break;
                 case InputArea.DEFAULT:
-                    var schema = BehaviorSettings.get_default ().schema;
+                    var settings = new GLib.Settings (Config.SCHEMA + ".behavior");
 
                     // if ActionType is NONE make it 0 sized
-                    ushort tl_size = (schema.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
-                    ushort tr_size = (schema.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
-                    ushort bl_size = (schema.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
-                    ushort br_size = (schema.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
+                    ushort tl_size = (settings.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
+                    ushort tr_size = (settings.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
+                    ushort bl_size = (settings.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
+                    ushort br_size = (settings.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
 
                     X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
                     X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
