@@ -17,42 +17,37 @@
 
 namespace Gala {
     public class KeyboardManager : Object {
-        static KeyboardManager? instance;
-        static VariantType sources_variant_type;
+        private static VariantType sources_variant_type;
 
-        public static void init (Meta.Display display) {
-            if (instance != null)
-                return;
-
-            instance = new KeyboardManager ();
-
-            display.modifiers_accelerator_activated.connect (instance.handle_modifiers_accelerator_activated);
-        }
+        public weak Meta.Display display { get; construct; }
+        private GLib.Settings? settings;
 
         static construct {
             sources_variant_type = new VariantType ("a(ss)");
         }
 
-        GLib.Settings settings;
-
-        KeyboardManager () {
-            Object ();
+        public KeyboardManager (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
+            display.modifiers_accelerator_activated.connect (handle_modifiers_accelerator_activated);
+
             var schema = GLib.SettingsSchemaSource.get_default ().lookup ("org.gnome.desktop.input-sources", true);
-            if (schema == null)
-                return;
+            if (schema != null) {
+                settings = new GLib.Settings.full (schema, null, null);
+                settings.changed.connect (set_keyboard_layout);
 
-            settings = new GLib.Settings.full (schema, null, null);
-            Signal.connect (settings, "changed", (Callback) set_keyboard_layout, this);
-
-            set_keyboard_layout (settings, "current");
+                set_keyboard_layout (settings, "current");
+            }
         }
 
-        [CCode (instance_pos = -1)]
-        bool handle_modifiers_accelerator_activated (Meta.Display display) {
+        private bool handle_modifiers_accelerator_activated (Meta.Display display) {
             display.ungrab_keyboard (display.get_current_time ());
+
+            if (settings == null) {
+                return true;
+            }
 
             var sources = settings.get_value ("sources");
             if (!sources.is_of_type (sources_variant_type))
