@@ -443,7 +443,7 @@ namespace Gala {
 
             this.place_dock_timeout = GLib.Timeout.add (150, () => {
                 place_dock ();
-                 return false;
+                return false;
             }, 1);
 
             visible = true;
