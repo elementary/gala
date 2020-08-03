@@ -441,9 +441,10 @@ namespace Gala {
 
             current_window = next_window (workspace, backward);
 
-            this.place_dock_timeout = GLib.Timeout.add(150, ()=>{
-				place_dock (); return false;
-			}, 1);
+            this.place_dock_timeout = GLib.Timeout.add (150, () => {
+                place_dock ();
+                 return false;
+            }, 1);
 
             visible = true;
             closing = false;
@@ -460,9 +461,11 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             };
 
-			this.animate_dock_width_timeout = GLib.Timeout.add(151, ()=>{
-				animate_dock_width (); show_background (); return false;
-			}, 1);
+            this.animate_dock_width_timeout = GLib.Timeout.add(151, () => {
+                animate_dock_width ();
+                show_background ();
+                return false;
+            }, 1);
 
             dim_windows ();
             grab_key_focus ();
@@ -517,8 +520,8 @@ namespace Gala {
             closing = true;
             last_switch = 0;
 
-            GLib.Source.remove(this.place_dock_timeout);
-			GLib.Source.remove(this.animate_dock_width_timeout);
+            GLib.Source.remove (place_dock_timeout);
+            GLib.Source.remove (animate_dock_width_timeout);
 
             foreach (var actor in clone_sort_order) {
                 unowned SafeWindowClone clone = (SafeWindowClone) actor;
