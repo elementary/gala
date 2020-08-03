@@ -7,70 +7,163 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2018-06-27 10:29-0700\n"
-"PO-Revision-Date: 2018-01-06 00:16+0000\n"
+"POT-Creation-Date: 2020-07-21 16:52+0000\n"
+"PO-Revision-Date: 2020-05-29 13:11+0000\n"
 "Last-Translator: colindemian <colindemian@outlook.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.elementary.io/projects/"
-"desktop/gala/zh_CN/>\n"
+"Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
+"desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
-#: src/WindowManager.vala:1769
+#: src/ScreenshotManager.vala:251
+msgid "Screenshots"
+msgstr "屏幕截图"
+
+#: src/WindowManager.vala:2191
 msgid "Does the display look OK?"
-msgstr "当前显示是否正常？"
+msgstr "显示看起来正常吗？"
 
-#: src/WindowManager.vala:1772
+#: src/WindowManager.vala:2194
 msgid "Keep This Configuration"
-msgstr "保留当前设置"
+msgstr "保持当前配置"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:2195
 msgid "Restore Previous Configuration"
-msgstr "恢复之前设置"
+msgstr "恢复上次配置"
 
-#: src/Widgets/WindowMenu.vala:65
+#: daemon/MenuDaemon.vala:111
 msgid "Minimize"
 msgstr "最小化"
 
-#: src/Widgets/WindowMenu.vala:80
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "移动"
 
-#: src/Widgets/WindowMenu.vala:87
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "更改大小"
 
-#: src/Widgets/WindowMenu.vala:94
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
 msgstr "总在最前"
 
-#: src/Widgets/WindowMenu.vala:103
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
 msgstr "总在可见工作区"
 
-#: src/Widgets/WindowMenu.vala:112
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
 msgstr "移至左侧工作区"
 
-#: src/Widgets/WindowMenu.vala:120
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
 msgstr "移至右侧工作区"
 
-#: src/Widgets/WindowMenu.vala:128
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "关闭"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "还原"
 
-#: src/Widgets/WindowMenu.vala:140
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "最大化"
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr ""
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr "多任务处理 &amp; 窗口管理"
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "基于 Pantheon 桌面环境的窗口&amp;管理器"
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"elementary 为 Pantheon 桌面环境设计的基于 libmutter 的窗口&amp;管理器。"
+
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:54
+msgid "Improvements:"
+msgstr "改进："
+
+#: data/gala.appdata.xml.in:17
+msgid "Show a context menu when secondary clicking the background"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
+msgid "Updated translations"
+msgstr "翻译更新"
+
+#: data/gala.appdata.xml.in:26
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr "修复 “总在可见工作区显示” 的窗口在更换工作区后消失的问题"
+
+#: data/gala.appdata.xml.in:27
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr "修复次要显示器内窗口在更换工作区后消失的问题"
+
+#: data/gala.appdata.xml.in:36
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr "修复窗口在更换工作区后瞬时展开时崩溃的问题"
+
+#: data/gala.appdata.xml.in:45
+msgid "Don't show Gala Background Services in the dock"
+msgstr "不在 Dock 中显示后台 Gala 服务"
+
+#: data/gala.appdata.xml.in:46
+msgid "Fixes for media key handling"
+msgstr "修复媒体键控制"
+
+#: data/gala.appdata.xml.in:47
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "在顶栏菜单中显示键盘快捷键"
+
+#: data/gala.appdata.xml.in:56
+msgid "Improve window shadows for legacy apps"
+msgstr "优化传统应用窗口阴影"
+
+#: data/gala.appdata.xml.in:57
+msgid "Fix potential crash when taking screenshots"
+msgstr "修复截屏时潜在的崩溃问题"
+
+#: data/gala.appdata.xml.in:58
+msgid "Fix notification position after changing DPI"
+msgstr "修复更改 DPI 后通知的显示位置"
+
+#: data/gala.appdata.xml.in:59
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "修复移动和最大化已帖屏窗口时的动画"
+
+#: data/gala.appdata.xml.in:65
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -83,7 +176,7 @@ msgstr "查看所有打开的窗口和工作区"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr "多任务视图"
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -91,313 +184,252 @@ msgstr "其他"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "过期应用通知的备用桌面文件"
+msgstr "过期应用通知的备用桌面文件。"
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr "应用程序-其他"
+msgstr "applications-other"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:22
-msgid "Action for the top left corner"
-msgstr "左上方热角"
+#~ msgid "Action for the top left corner"
+#~ msgstr "左上方热角"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Algorithm for window overview layout"
-msgstr "窗口布局概览方式"
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "窗口布局概览方式"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:28
-msgid "Choose the algorithm used for exposing the windows"
-msgstr "选择窗口排列方式"
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "选择窗口排列方式。"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:32
-msgid "Action for the top right corner"
-msgstr "右上方热角"
+#~ msgid "Action for the top right corner"
+#~ msgstr "右上方热角"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:37
-msgid "Action for the bottom left corner"
-msgstr "左下方热角"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "左下方热角"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:42
-msgid "Action for the bottom right corner"
-msgstr "右下方热角"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "右下方热角"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr "用于执行热角动作的“自定义指令”或多重指令"
+
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "若您只输入一条指令，该指令将会被所有设置为“自定义指令”的热角使用。如果您使"
+#~ "用如下模式 “hotcorner-topleft:command;;hotcorner-bottomright:command”，则"
+#~ "指令将会按代码分配到热角。可用的标识符有 “hotcorner-[topleft; topright; "
+#~ "bottomleft; bottomright]” 加英文冒号“:”，并用英文分号“;;”充当不同定义指令"
+#~ "间的分隔符。"
+
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr "窗口拖放至屏幕边缘时启用贴合"
+
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "启用时，拖放窗口至屏幕左右边缘，窗口将自动铺满半屏；拖放窗口至屏幕顶部边"
+#~ "缘，窗口将自动全屏。"
+
+#~ msgid "Panel main menu action"
+#~ msgstr "面板主菜单行为"
+
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr "设定按下 panel-main-menu 组合键时运行的命令。"
+
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "启用动态工作区而不是静态工作区"
+
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr "在有需要时动态增减工作区的数量，而非固定的静态工作区数量。"
+
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "被窗口切换器识别为 Dock 窗口的名称"
+
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "窗口切换器启动时，Gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会"
+#~ "隐藏此窗口，并在窗口切换器关闭后恢复显示。"
+
 #, fuzzy
-msgid ""
-"The command that will be executed for the hot corner action 'custom-command' "
-"or multiple"
-msgstr "用于执行热角动作的“自定义指令”或多重指令"
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr "查看所有打开的窗口和工作区"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:48
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "移至首个工作区的快捷键"
+
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "移至末尾工作区的快捷键"
+
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr "将当前窗口移至首个工作区的快捷键"
+
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr "将当前窗口移至末尾工作区的快捷键"
+
+#~ msgid "Zoom in"
+#~ msgstr "放大"
+
+#~ msgid "Zoom out"
+#~ msgstr "缩小"
+
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "窗口概览的快捷键"
+
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "所有窗口概览的快捷键"
+
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr "循环至下一工作区或回到首个工作区"
+
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "循环至下一个键盘布局"
+
+#~ msgid "DEPRECATED: This key is deprecated and ignored."
+#~ msgstr "弃用：此密钥已被弃用并忽略。"
+
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "循环至上一个键盘布局"
+
+#~ msgid "The shortcut to enable picture-in-picture window"
+#~ msgstr "启用窗口“画中画”模式的快捷键"
+
+#~ msgid "The shortcut to show the selection area to choose a window."
+#~ msgstr "显示选中区域来选择窗口的快捷键。"
+
+#~ msgid "Attach modal dialogs"
+#~ msgstr "依附模态对话框"
+
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "值为 true 时，模态对话框会依附在父窗口的标题栏出现，并随父窗口移动，而不使"
+#~ "用单独的标题栏。"
+
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "标题栏按钮布局"
+
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "标题栏中按钮的排列方式。值应该为字符串，如“menu:minimize,maximize,spacer,"
+#~ "close”；冒号分隔窗口的左上角和右上角，按钮名以逗号分隔。按钮不允许重复。未"
+#~ "知的按钮名将直接忽略，以便将来的 metacity 版本增加按钮时不会破坏旧版本。可"
+#~ "以使用特别的 spacer 标签在相邻按钮间增加一些空间。"
+
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr "当模式窗口弹出时淡化上级窗口"
+
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr "Alt + Tab 切换时窗口的透明度。"
+
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "工作区切换器使用的背景图片"
+
+#~ msgid "Enable Animations"
+#~ msgstr "启用动画"
+
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "是否显示动画。注意：此键为全局键，它会更改窗口管理器、面板等的行为。"
+
 #, fuzzy
-msgid ""
-"If you just put a single command, it will be used for every hot corner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"若您只输入一条指令，该指令将会被所有设置为“自定义指令”的热角使用。如果您使用"
-"如下模式 “hotcorner-topleft:command;;hotcorner-bottomright:command”，则指令将"
-"会按代码分配到热角。可用的标识符有 “hotcorner-[topleft; topright; "
-"bottomleft; bottomright]” 加英文冒号“:”，并用英文分号“;;”充当不同定义指令间的"
-"分隔符。"
+#~ msgid "Duration of the open animation"
+#~ msgstr "关闭动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr "窗口拖放至屏幕边缘时启用贴合"
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr "最大化/最小化所使用的弹出动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:58
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"启用时，拖放窗口至屏幕左右边缘，窗口将自动铺满半屏；拖放窗口至屏幕顶部边缘，"
-"窗口将自动全屏。"
+#~ msgid "Duration of the close animation"
+#~ msgstr "关闭动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid "Panel main menu action"
-msgstr "面板主菜单行为"
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "最小化动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:63
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed"
-msgstr "设定按下 panel-main-menu 组合键时运行的命令"
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "工作区切换动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "启用动态工作区而不是静态工作区"
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "菜单地图动画时长"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:78
-msgid ""
-"Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number"
-msgstr "在有需要时动态增减工作区的数量，而非固定的静态工作区数量"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "设置普通焦点窗口阴影"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "被窗口切换器识别为 Dock 窗口的名称"
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "四项数值分别为阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明"
+#~ "度。"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:83
-#, fuzzy
-msgid ""
-"When launching the window-switcher, Gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
-"窗口切换器启动时，Gala 会查询此列表，寻找与此名称匹配的窗口。若匹配，将会隐藏"
-"此窗口，并在窗口切换器关闭后恢复显示。"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "定义普通非焦点窗口的阴影"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:90
-msgid "Shortcut to move to first workspace"
-msgstr "移至首个工作区的快捷键"
+#~ msgid "See normal-focused."
+#~ msgstr "参考“普通焦点”。"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
-msgid "Shortcut to move to last workspace"
-msgstr "移至末尾工作区的快捷键"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "定义菜单的阴影"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
-msgid "Shortcut to move the current window to first workspace"
-msgstr "将当前窗口移至首个工作区的快捷键"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "定义焦点对话框的阴影"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
-msgid "Shortcut to move the current window to last workspace"
-msgstr "将当前窗口移至末尾工作区的快捷键"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "定义非焦点对话框的阴影"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
-msgid "Zoom in"
-msgstr "放大"
+#~ msgid "Disable all notifications"
+#~ msgstr "禁用所有通知"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
-msgid "Zoom out"
-msgstr "缩小"
+#~ msgid "Enable bubbles"
+#~ msgstr "启用气泡"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:119
-msgid "Shortcut to open the window overview"
-msgstr "窗口概览的快捷键"
+#~ msgid "Enable sounds"
+#~ msgstr "启用声音"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
-msgid "Shortcut to open the window overview for all windows"
-msgstr "所有窗口概览的快捷键"
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "在通知中心显示未读通知"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-#: data/org.pantheon.desktop.gala.gschema.xml.in:133
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr "循环至下一工作区或回到首个工作区"
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "启用圆角模框"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
-msgid "Cycle to next keyboard layout"
-msgstr "循环至下一个键盘布局"
+#~ msgid "Corner radius"
+#~ msgstr "圆角半径"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
-#: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:171
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr "弃用：此密钥已被弃用并忽略。"
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "全屏时禁用圆角模框"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "Cycle to previous keyboard layout"
-msgstr "循环至上一个键盘布局"
+#~ msgid ""
+#~ "If enabled, when an application is fullscreen (fills the monitor), the "
+#~ "corner masks will be disabled on that monitor."
+#~ msgstr "启用时，若应用处于全屏状态，将禁用此显示器上应用程序的边角遮罩。"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
-msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
-#, fuzzy
-msgid "The shortcut to show the selection area to choose a window"
-msgstr "所有窗口概览的快捷键"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
-msgid "Attach modal dialogs"
-msgstr "依附模态对话框"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:156
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"值为 true 时，模态对话框会依附在父窗口的标题栏出现，并随父窗口移动，而不使用"
-"单独的标题栏。"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
-msgid "Arrangement of buttons on the titlebar"
-msgstr "标题栏按钮布局"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"标题栏中按钮的排列方式。值应该为字符串，如“menu:minimize,maximize,spacer,"
-"close”；冒号分隔窗口的左上角和右上角，按钮名以逗号分隔。按钮不允许重复。未知"
-"的按钮名将直接忽略，以便将来的 metacity 版本增加按钮时不会破坏旧版本。可以使"
-"用特别的 spacer 标签在相邻按钮间增加一些空间。"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
-#, fuzzy
-msgid "Dims parent windows when spawning modal dialogs"
-msgstr "当模式窗口弹出时，淡化上级窗口"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
-#, fuzzy
-msgid "The opacity of windows behind the window switcher."
-msgstr "Alt + Tab 切换时窗口的透明度"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "Background-image used in the workspace-switcher"
-msgstr "工作区切换器使用的背景图片"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:182
-msgid "Enable Animations"
-msgstr "启用动画"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr "是否显示动画。注意：此键为全局键，它会更改窗口管理器、面板等的行为。"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:190
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr "最大化/最小化所使用的弹出动画时长"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:194
-msgid "Duration of the close animation"
-msgstr "关闭动画时长"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
-msgid "Duration of the minimize animation"
-msgstr "最小化动画时长"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
-msgid "Duration of the workspace switch animation"
-msgstr "工作区切换动画时长"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
-msgid "Duration of the menu mapping animation"
-msgstr "菜单地图动画时长"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
-msgid "Defines the shadow of normal focused windows"
-msgstr "设置普通焦点窗口阴影"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:214
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]"
-msgstr ""
-"四项数值分别为阴影的：模糊半径、顶部淡出值、横向偏移、纵向偏移以及不透明度"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "定义普通非焦点窗口的阴影"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:219
-#: data/org.pantheon.desktop.gala.gschema.xml.in:224
-#: data/org.pantheon.desktop.gala.gschema.xml.in:229
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
-msgid "See normal-focused"
-msgstr "参考“普通焦点”"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:223
-msgid "Defines the shadow of a menu"
-msgstr "定义菜单的阴影"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:228
-msgid "Defines the shadow of a focused dialog"
-msgstr "定义焦点对话框的阴影"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:233
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "定义非焦点对话框的阴影"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
-msgid "Disable all notifications"
-msgstr "禁用所有通知"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:249
-msgid "Enable bubbles"
-msgstr "启用气泡"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
-msgid "Enable sounds"
-msgstr "启用声音"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
-msgid "Show missed notifications in notification center"
-msgstr "在通知中心显示未读通知"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:264
-msgid "Enable rounded corner mask"
-msgstr "启用圆角模框"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
-msgid "Corner radius"
-msgstr "圆角半径"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:273
-msgid "Disable corner mask on fullscreen"
-msgstr "全屏时禁用圆角模框"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:274
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr "启用时，若应用处于全屏状态，将禁用此显示器上应用程序的边角遮罩。"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:278
-msgid "Only show corner masks on primary monitor"
-msgstr "只在主显示器显示圆角模框"
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "只在主显示器显示圆角模框"
 
 #~ msgid "Cancel"
 #~ msgstr "取消"
