@@ -73,7 +73,7 @@ namespace Gala {
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
-        
+
         public AreaTiling area_tiling;
         WindowMovementTracker window_movement_tracker;
 
@@ -378,18 +378,6 @@ namespace Gala {
                 plugin_manager.load_waiting_plugins ();
                 return false;
             });
-
-
-            display.get_cursor_tracker ().cursor_moved.connect(() => {
-                debug("cursor moved!");
-            });
-            //  stage.captured_event.connect(event => {
-            //      debug("capture!");
-            //      if (event.get_type () == Clutter.EventType.MOTION) {
-            //          debug("WM: motion!!");
-            //      }
-            //      return false;
-            //  });
 
             return false;
         }
