@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-07-21 16:52+0000\n"
-"PO-Revision-Date: 2020-05-29 13:11+0000\n"
-"Last-Translator: colindemian <colindemian@outlook.com>\n"
+"PO-Revision-Date: 2020-08-09 18:13+0000\n"
+"Last-Translator: imgradeone Yan <imgradeone@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -34,7 +34,7 @@ msgstr "保持当前配置"
 
 #: src/WindowManager.vala:2195
 msgid "Restore Previous Configuration"
-msgstr "恢复上次配置"
+msgstr "恢复上次的配置"
 
 #: daemon/MenuDaemon.vala:111
 msgid "Minimize"
@@ -78,15 +78,15 @@ msgstr "最大化"
 
 #: daemon/MenuDaemon.vala:268
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "更改壁纸…"
 
 #: daemon/MenuDaemon.vala:285
 msgid "Display Settings…"
-msgstr ""
+msgstr "显示设置…"
 
 #: daemon/MenuDaemon.vala:302
 msgid "System Settings…"
-msgstr ""
+msgstr "系统设置…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -111,7 +111,7 @@ msgstr "改进："
 
 #: data/gala.appdata.xml.in:17
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "次要键单击背景时将显示菜单"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
