@@ -22,6 +22,7 @@ namespace Gala {
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int x, int y) throws Error;
     }
 
     public class WindowManagerGala : Meta.Plugin, WindowManager {
@@ -55,6 +56,8 @@ namespace Gala {
          */
         public bool enable_animations { get; protected set; }
 
+        public ScreenShield? screen_shield { get; private set; }
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -63,14 +66,14 @@ namespace Gala {
 
         // used to detect which corner was used to trigger an action
         Clutter.Actor? last_hotcorner;
-        ScreenSaver? screensaver;
+        public ScreenSaverManager? screensaver { get; private set; }
 
         Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
 
         Daemon? daemon_proxy = null;
-        
+
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -85,7 +88,8 @@ namespace Gala {
         Meta.SizeChange? which_change = null;
         Meta.Rectangle old_rect_size_change;
 
-        GLib.Settings animations_settings;
+        private GLib.Settings animations_settings;
+        private GLib.Settings behavior_settings;
 
         public WindowManagerGala () {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
@@ -106,6 +110,7 @@ namespace Gala {
         construct {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
+            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
@@ -151,6 +156,9 @@ namespace Gala {
             var display = screen.get_display ();
 #endif
 
+            screen_shield = new ScreenShield (this);
+            screensaver = new ScreenSaverManager (screen_shield);
+
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
@@ -170,22 +178,15 @@ namespace Gala {
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
-            try {
-                screensaver = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.ScreenSaver",
-                    "/org/gnome/ScreenSaver");
-                screensaver.active_changed.connect (update_input_area);
-            } catch (Error e) {
-                screensaver = null;
-                warning (e.message);
-            }
+            screensaver.active_changed.connect (update_input_area);
 
 #if HAS_MUTTER330
             stage = display.get_stage () as Clutter.Stage;
 #else
             stage = screen.get_stage () as Clutter.Stage;
 #endif
-
-            var color = BackgroundSettings.get_default ().primary_color;
+            var background_settings = new GLib.Settings ("org.gnome.desktop.background");
+            var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
             WorkspaceManager.init (this);
@@ -230,8 +231,10 @@ namespace Gala {
 
 #if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #else
             background_group = new BackgroundContainer (screen);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -241,38 +244,42 @@ namespace Gala {
 #else
             top_window_group = screen.get_top_window_group ();
 #endif
+            ui_group.add_child (screen_shield);
+
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
             /*keybindings*/
+            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-            var keybinding_schema = KeybindingSettings.get_default ().schema;
-
-            display.add_keybinding ("switch-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("switch-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-first", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-last", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("cycle-workspaces-next", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("cycle-workspaces-previous", keybinding_schema, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 
             display.overlay_key.connect (() => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().overlay_action);
+                        behavior_settings.get_string ("overlay-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().panel_main_menu_action);
+                        behavior_settings.get_string ("panel-main-menu-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
                 try {
                     Process.spawn_command_line_async (
-                        BehaviorSettings.get_default ().toggle_recording_action);
+                        behavior_settings.get_string ("toggle-recording-action")
+                    );
                 } catch (Error e) { warning (e.message); }
             });
 
@@ -296,12 +303,12 @@ namespace Gala {
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
 #if HAS_MUTTER330
-            Meta.MonitorManager.@get ().monitors_changed.connect (configure_hotcorners);
+            Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 #else
-            screen.monitors_changed.connect (configure_hotcorners);
+            screen.monitors_changed.connect (on_monitors_changed);
 #endif
 
-            BehaviorSettings.get_default ().schema.changed.connect (configure_hotcorners);
+            behavior_settings.changed.connect (configure_hotcorners);
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
@@ -337,13 +344,13 @@ namespace Gala {
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
-            display.add_keybinding ("expose-windows", keybinding_schema, 0, () => {
+            display.add_keybinding ("expose-windows", keybinding_settings, 0, () => {
                 if (window_overview.is_opened ())
                     window_overview.close ();
                 else
                     window_overview.open ();
             });
-            display.add_keybinding ("expose-all-windows", keybinding_schema, 0, () => {
+            display.add_keybinding ("expose-all-windows", keybinding_settings, 0, () => {
                 if (window_overview.is_opened ())
                     window_overview.close ();
                 else {
@@ -366,6 +373,23 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        void on_show_background_menu (int x, int y) {
+            if (daemon_proxy == null) {
+                return;
+            }
+
+            try {
+                daemon_proxy.show_desktop_menu.begin (x, y);
+            } catch (Error e) {
+                message ("Error invoking MenuManager: %s", e.message);
+            }
+        }
+
+        void on_monitors_changed () {
+            configure_hotcorners ();
+            screen_shield.expand_to_screen_size ();
         }
 
         void configure_hotcorners () {
@@ -392,7 +416,7 @@ namespace Gala {
 #endif
             return_if_fail (stage != null);
 
-            var action = (ActionType) BehaviorSettings.get_default ().schema.get_enum (key);
+            var action = (ActionType) behavior_settings.get_enum (key);
             Clutter.Actor? hot_corner = stage.find_child_by_name (key);
 
             if (action == ActionType.NONE) {
@@ -414,7 +438,7 @@ namespace Gala {
 
                 hot_corner.enter_event.connect ((actor, event) => {
                     last_hotcorner = actor;
-                    perform_action ((ActionType) BehaviorSettings.get_default ().schema.get_enum (actor.name));
+                    perform_action ((ActionType) behavior_settings.get_enum (actor.name));
                     return false;
                 });
             }
@@ -825,7 +849,7 @@ namespace Gala {
         }
 
         public void get_current_cursor_position (out int x, out int y) {
-            Gdk.Display.get_default ().get_device_manager ().get_client_pointer ().get_position (null,
+            Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null,
                 out x, out y);
         }
 
@@ -922,14 +946,16 @@ namespace Gala {
                     break;
                 case ActionType.OPEN_LAUNCHER:
                     try {
-                        Process.spawn_command_line_async (BehaviorSettings.get_default ().panel_main_menu_action);
+                        Process.spawn_command_line_async (
+                            behavior_settings.get_string ("panel-main-menu-action")
+                        );
                     } catch (Error e) {
                         warning (e.message);
                     }
                     break;
                 case ActionType.CUSTOM_COMMAND:
                     string command = "";
-                    var line = BehaviorSettings.get_default ().hotcorner_custom_command;
+                    var line = behavior_settings.get_string ("hotcorner-custom-command");
                     if (line == "")
                         return;
 
@@ -1094,7 +1120,7 @@ namespace Gala {
 
         void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor ())
+            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
                 return;
 
             // Due to how this is implemented, by relying on the functionality
@@ -1290,7 +1316,7 @@ namespace Gala {
             kill_window_effects (actor);
 
             var window = actor.get_meta_window ();
-            if (window.maximized_horizontally && BehaviorSettings.get_default ().move_maximized_workspace) {
+            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_next_ws (window);
             }
 
@@ -1530,17 +1556,16 @@ namespace Gala {
                         }
                     });
 
-                    if (AppearanceSettings.get_default ().dim_parents &&
+                    var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
+                    if (appearance_settings.get_boolean ("dim-parents") &&
                         window.window_type == Meta.WindowType.MODAL_DIALOG &&
                         window.is_attached_dialog ())
                         dim_window (window.find_root_ancestor (), true);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    if (BehaviorSettings.get_default ().use_new_notifications) {
-                        notification_stack.show_notification (actor);
-                        map_completed (actor);
-                    }
+                    notification_stack.show_notification (actor);
+                    map_completed (actor);
 
                     break;
                 default:
@@ -1667,7 +1692,7 @@ namespace Gala {
             kill_window_effects (actor);
             var window = actor.get_meta_window ();
 
-            if (BehaviorSettings.get_default ().move_maximized_workspace) {
+            if (behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_old_ws (window);
             }
 
@@ -2106,20 +2131,20 @@ namespace Gala {
                     continue;
                 }
 
-                unowned Meta.Window meta_window = window.get_meta_window ();
+                unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    if (meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (meta_window != null
+                        && meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         reparent_notification_window (actor, parents.nth_data (i));
                     } else {
                         clutter_actor_reparent (actor, parents.nth_data (i));
                     }
-
-                    continue;
                 }
 
                 kill_window_effects (window);
 
-                if (meta_window.get_workspace () != active_workspace
+                if (meta_window != null
+                    && meta_window.get_workspace () != active_workspace
                     && !meta_window.is_on_all_workspaces ())
                     window.hide ();
 
@@ -2186,7 +2211,7 @@ namespace Gala {
             return info;
         }
 
-        /** 
+        /**
          * Notification windows are a special case where the transition state needs
          * to be preserved when reparenting the actor. Because Clutter doesn't allow specifying
          * remove_child flags we will save the elapsed time of required transitions and

@@ -26,33 +26,33 @@ schema in data/org.pantheon.desktop.gschema.xml for an example. You'll also find
 how to correctly declare shortcut keys in that file. Once you got this file ready
 it's pretty easy. Just enable its installation in cmake, the relevant is commented
 out in this template, and call wm.get_screen().get_display().add_keybinding().
-The keybinding function takes the name of the shortcut key in your 
+The keybinding function takes the name of the shortcut key in your
 schema, then a GSettings instance for that schema, which can be obtained with
 'new GLib.Settings("org.pantheon.gala.plugins.my-plugin")', then some flags, for
 which you can almost always use 0, refer to the vapi for more details, and finally
 your function as arguments. Its delegate is:
 
 public delegate void KeyHandlerFunc (Meta.Display display, Meta.Screen screen,
-	Meta.Window? window, X.Event event, Meta.KeyBinding binding);
+    Meta.Window? window, X.Event event, Meta.KeyBinding binding);
 
 So it'd be something like
 
 void initialize (Gala.WindowManager wm)
 {
-	[...]
-	var display = wm.get_screen ().get_display ();
-	var schema = new GLib.Settings ("org.pantheon.desktop.gala.plugins");
-	display.add_keybinding ("my-shortcut", schema, 0, my_handler);
-	[...]
+    [...]
+    var display = wm.get_screen ().get_display ();
+    var schema = new GLib.Settings ("org.pantheon.desktop.gala.plugins");
+    display.add_keybinding ("my-shortcut", schema, 0, my_handler);
+    [...]
 }
 void my_handler (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-	X.Event event, Meta.KeyBinding binding)
+    X.Event event, Meta.KeyBinding binding)
 {
-	print ("Shortcut hit! D:");
+    print ("Shortcut hit! D:");
 }
 void destroy ()
 {
-	wm.get_screen ().get_display ().remove_keybinding ("my-shortcut");
+    wm.get_screen ().get_display ().remove_keybinding ("my-shortcut");
 }
 
 Overriding default keybindings

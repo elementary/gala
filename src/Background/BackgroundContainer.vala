@@ -18,6 +18,7 @@
 namespace Gala {
     public class BackgroundContainer : Meta.BackgroundGroup {
         public signal void changed ();
+        public signal void show_background_menu (int x, int y);
 
 #if HAS_MUTTER330
         public Meta.Display display { get; construct; }
@@ -28,6 +29,13 @@ namespace Gala {
 
         construct {
             Meta.MonitorManager.@get ().monitors_changed.connect (update);
+
+            reactive = true;
+            button_release_event.connect ((event) => {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
+                    show_background_menu ((int)event.x, (int)event.y);
+                }
+            });
 
             update ();
         }
@@ -44,6 +52,13 @@ namespace Gala {
 
         construct {
             screen.monitors_changed.connect (update);
+
+            reactive = true;
+            button_press_event.connect ((event) => {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
+                    show_background_menu ((int)event.x, (int)event.y);
+                }
+            });
 
             update ();
         }

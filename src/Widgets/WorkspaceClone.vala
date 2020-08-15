@@ -23,6 +23,9 @@ namespace Gala {
      * Utility class which adds a border and a shadow to a Background
      */
     class FramedBackground : BackgroundManager {
+#if HAS_MUTTER336
+        private Cogl.Pipeline pipeline;
+#endif
 
 #if HAS_MUTTER330
         public FramedBackground (Display display) {
@@ -35,6 +38,9 @@ namespace Gala {
 #endif
 
         construct {
+#if HAS_MUTTER336
+            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#endif
 #if HAS_MUTTER330
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
@@ -48,6 +54,22 @@ namespace Gala {
             add_effect (effect);
         }
 
+#if HAS_MUTTER336
+        public override void paint (Clutter.PaintContext context) {
+            base.paint (context);
+
+            pipeline.set_color4ub (0, 0, 0, 100);
+            var path = new Cogl.Path ();
+            path.rectangle (0, 0, width, height);
+            context.get_framebuffer ().stroke_path (pipeline, path);
+
+            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
+            color.premultiply ();
+            pipeline.set_color (color);
+            path.rectangle (0.5f, 0.5f, width - 1, height - 1);
+            context.get_framebuffer ().stroke_path (pipeline, path);
+        }
+#else
         public override void paint () {
             base.paint ();
 
@@ -60,6 +82,7 @@ namespace Gala {
             path.rectangle (0.5f, 0.5f, width - 1, height - 1);
             path.stroke ();
         }
+#endif
     }
 
     /**
@@ -160,19 +183,7 @@ namespace Gala {
 #endif
 
             icon_group = new IconGroup (workspace);
-            icon_group.selected.connect (() => {
-#if HAS_MUTTER330
-                if (workspace == display.get_workspace_manager ().get_active_workspace ())
-                    Utils.bell (display);
-                else
-                    selected (false);
-#else
-                if (workspace == screen.get_active_workspace ())
-                    Utils.bell (screen);
-                else
-                    selected (false);
-#endif
-            });
+            icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
             icon_group.add_action (icons_drop_action);

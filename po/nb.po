@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
+"POT-Creation-Date: 2020-07-21 16:52+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -20,61 +20,73 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:212
+#: src/ScreenshotManager.vala:251
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2191
 msgid "Does the display look OK?"
 msgstr "Ser skjermen OK ut?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2194
 msgid "Keep This Configuration"
 msgstr "Behold dette oppsettet"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2195
 msgid "Restore Previous Configuration"
 msgstr "Gjenopprett tidligere oppsett"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:111
 msgid "Minimize"
 msgstr "Minimér"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "Flytt"
 
-#: daemon/MenuDaemon.vala:128
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "Skaler"
 
-#: daemon/MenuDaemon.vala:136
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
 msgstr "Alltid øverst"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
 msgstr "Alltid på synlig arbeidsområde"
 
-#: daemon/MenuDaemon.vala:152
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
 msgstr "Flytt til arbeidsområdet til venstre"
 
-#: daemon/MenuDaemon.vala:160
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
 msgstr "Flytt til arbeidsområdet til høyre"
 
-#: daemon/MenuDaemon.vala:168
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "Lukk"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "Gjenopprett"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "Maksimér"
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr ""
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -91,34 +103,64 @@ msgid ""
 msgstr ""
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:54
 msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:17
-msgid "Show keyboard shortcuts in HeaderBar menus"
+msgid "Show a context menu when secondary clicking the background"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
 msgid "Updated translations"
 msgstr ""
 
 #: data/gala.appdata.xml.in:26
-msgid "Improve window shadows for legacy apps"
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
 msgstr ""
 
 #: data/gala.appdata.xml.in:27
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:36
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:45
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:46
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:47
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr ""
+
+#: data/gala.appdata.xml.in:56
+msgid "Improve window shadows for legacy apps"
+msgstr ""
+
+#: data/gala.appdata.xml.in:57
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:58
 msgid "Fix notification position after changing DPI"
 msgstr ""
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:59
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:65
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

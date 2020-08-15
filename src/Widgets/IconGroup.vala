@@ -204,9 +204,18 @@ namespace Gala {
         /**
          * Override the paint handler to draw our backdrop if necessary
          */
+#if HAS_MUTTER336
+        public override void paint (Clutter.PaintContext context) {
+#else
         public override void paint () {
+#endif
             if (backdrop_opacity < 1 || drag_action.dragging) {
+#if HAS_MUTTER336
+                base.paint (context);
+#else
                 base.paint ();
+#endif
+
                 return;
             }
 
@@ -216,6 +225,17 @@ namespace Gala {
             var y = -10;
             var height = WorkspaceClone.BOTTOM_OFFSET * scale;
 
+#if HAS_MUTTER336
+            Cogl.VertexP2T2C4 vertices[4];
+            vertices[0] = { x, y + height, 0, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
+            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[3] = { x + width, y, 1, 0, 0, 0, 0, 0 };
+
+            var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
+            var pipeline = new Cogl.Pipeline (context.get_framebuffer ().get_context ());
+            primitive.draw (context.get_framebuffer (), pipeline);
+#else
             var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
             var color_bottom = Cogl.Color.from_4ub (255, 255, 255, backdrop_opacity);
             color_bottom.premultiply ();
@@ -231,8 +251,12 @@ namespace Gala {
             // color by setting a different material with no properties.
             Cogl.set_source (dummy_material);
             Cogl.polygon (vertices, true);
-
-            base.paint ();
+#endif
+#if HAS_MUTTER336
+                base.paint (context);
+#else
+                base.paint ();
+#endif
         }
 
         /**

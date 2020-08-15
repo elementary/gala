@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-01-25 15:08+0000\n"
+"POT-Creation-Date: 2020-07-21 16:52+0000\n"
+"PO-Revision-Date: 2020-07-22 17:07+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -20,61 +20,73 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:212
+#: src/ScreenshotManager.vala:251
 msgid "Screenshots"
 msgstr "スクリーンショット"
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2191
 msgid "Does the display look OK?"
 msgstr "ディスプレイの設定に問題はありませんか？"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2194
 msgid "Keep This Configuration"
 msgstr "この設定を保つ"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2195
 msgid "Restore Previous Configuration"
 msgstr "前の設定へ戻す"
 
-#: daemon/MenuDaemon.vala:107
+#: daemon/MenuDaemon.vala:111
 msgid "Minimize"
 msgstr "最小化"
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "移動"
 
-#: daemon/MenuDaemon.vala:128
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "サイズの変更"
 
-#: daemon/MenuDaemon.vala:136
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
 msgstr "最前面に維持"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
 msgstr "すべてのワークスペースに表示"
 
-#: daemon/MenuDaemon.vala:152
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
 msgstr "左のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:160
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
-#: daemon/MenuDaemon.vala:168
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "閉じる"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "元のサイズに戻す"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "最大化"
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr "壁紙を変更…"
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr "ディスプレイの設定…"
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr "システム設定…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -93,36 +105,73 @@ msgstr ""
 "ンポジット型ウィンドウマネージャーです。"
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:54
 msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
+msgid "Show a context menu when secondary clicking the background"
+msgstr "壁紙の副クリック時にコンテキストメニューを表示するように変更"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
 #: data/gala.appdata.xml.in:26
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr ""
+"ワークスペースの切り替え時に、“すべてのワークスペースに表示” を有効にしたウィ"
+"ンドウが消滅する不具合を修正"
+
+#: data/gala.appdata.xml.in:27
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+"ワークスペースの切り替え時に、外部モニターに表示中のウィンドウが消滅する不具"
+"合を修正"
+
+#: data/gala.appdata.xml.in:36
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"一時的なウィンドウが開いている際にワークスペースを切り替えるとクラッシュする"
+"不具合を修正"
+
+#: data/gala.appdata.xml.in:45
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+"ドックに Gala Background Services というアイコンが表示される不具合を修正"
+
+#: data/gala.appdata.xml.in:46
+msgid "Fixes for media key handling"
+msgstr "メディアキーの処理に関する修正"
+
+#: data/gala.appdata.xml.in:47
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
+
+#: data/gala.appdata.xml.in:56
 msgid "Improve window shadows for legacy apps"
 msgstr "レガシーなアプリのウィンドウの影を改善"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:57
 msgid "Fix potential crash when taking screenshots"
 msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:58
 msgid "Fix notification position after changing DPI"
-msgstr "DPI を変更すると通知が間違った位置に表示される問題を修正"
+msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:59
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
 "正"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:65
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

@@ -378,6 +378,16 @@ namespace Gala {
             animate_dock_width ();
         }
 
+        public override bool key_press_event (Clutter.KeyEvent event) {
+            if (event.keyval == Clutter.Key.Escape) {
+                current_window = null;
+                close (event.time);
+                return true;
+            }
+
+            return false;
+        }
+
         public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0)
                 close (event.time);
@@ -712,8 +722,8 @@ namespace Gala {
                     && type != WindowType.DESKTOP
                     && type != WindowType.NOTIFICATION)
                     actor.hide ();
-
-                if (window.title in BehaviorSettings.get_default ().dock_names
+                var behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+                if (window.title in behavior_settings.get_strv ("dock-names")
                     && type == WindowType.DOCK) {
                     dock_window = actor;
                     dock_window.hide ();
@@ -778,7 +788,7 @@ namespace Gala {
         Gdk.ModifierType get_current_modifiers () {
             Gdk.ModifierType modifiers;
             double[] axes = {};
-            Gdk.Display.get_default ().get_device_manager ().get_client_pointer ()
+            Gdk.Display.get_default ().get_default_seat ().get_pointer ()
                 .get_state (Gdk.get_default_root_window (), axes, out modifiers);
 
             return modifiers;
