@@ -69,10 +69,21 @@ namespace Gala {
         private static Meta.ShadowParams get_shadowparams (string class_name) {
             var val = shadow_settings.get_strv (class_name);
             if (val == null || int.parse (val[0]) < 1)
-                return Meta.ShadowParams () {radius = 1, top_fade = 0, x_offset = 0, y_offset = 0, opacity = 0};
+                return Meta.ShadowParams () {
+                    radius = 1, 
+                    top_fade = 0, 
+                    x_offset = 0, 
+                    y_offset = 0, 
+                    opacity = 0
+                };
 
-            return Meta.ShadowParams () {radius = int.parse (val[0]), top_fade = int.parse (val[1]),
-                x_offset = int.parse (val[2]), y_offset = int.parse (val[3]), opacity = (uint8)int.parse (val[4])};
+            return Meta.ShadowParams () {
+                radius = int.parse (val[0]), 
+                top_fade = int.parse (val[1]),
+                x_offset = int.parse (val[2]), 
+                y_offset = int.parse (val[3]), 
+                opacity = (uint8)int.parse (val[4])
+            };
         }
 
         /**
