@@ -298,7 +298,8 @@ namespace Gala {
 
             /*shadows*/
             InternalUtils.reload_shadow ();
-            ShadowSettings.get_default ().notify.connect (InternalUtils.reload_shadow);
+            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
+            shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
