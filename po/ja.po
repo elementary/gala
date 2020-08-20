@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-07-22 17:07+0000\n"
+"PO-Revision-Date: 2020-08-20 06:56+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -112,11 +112,11 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Alt + Tab でのウィンドウの切り替え時に Alt キーを離さずに Esc キーを押すと、ウィンドウの切り替えを終了できるように変更"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
+msgstr "拡大レベルの上限を大きくし、拡大できない場合はユーザーに知らせるように変更"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
