@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-07-25 17:12+0000\n"
+"PO-Revision-Date: 2020-08-23 18:13+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
-">\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
+"\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -112,11 +112,13 @@ msgstr "Mejoras:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Se puede cerrar el alternador Alt + Tab oprimiendo Esc sin soltar Alt"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"Aumentó la escala máxima posible y se brinda información cuando no es "
+"posible escalar"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
