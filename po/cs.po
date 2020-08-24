@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-07-25 17:12+0000\n"
+"PO-Revision-Date: 2020-08-25 13:13+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -111,11 +111,13 @@ msgstr "Vylepšení:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Zavření přepínače Alt+Tab stisknutím Esc bez uvolnění Alt"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"Zvýšit úroveň maximálního přiblížení a poskytnout zpětnou vazbu, když není "
+"možné přiblížit"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
