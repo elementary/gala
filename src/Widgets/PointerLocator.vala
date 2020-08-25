@@ -33,7 +33,7 @@ namespace Gala {
         private GLib.Settings settings;
         private Cogl.Pipeline pipeline;
         private Cairo.Pattern stroke_color;
-        private Cairo.Pattern background_color;
+        private Cairo.Pattern fill_color;
 
         private uint timeout_id;
 
@@ -54,7 +54,7 @@ namespace Gala {
             var rgba = Gdk.RGBA ();
             rgba.parse (BACKGROUND_COLOR);
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
-            background_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
+            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
         }
 
         public override void paint (Clutter.PaintContext context) {
@@ -74,7 +74,7 @@ namespace Gala {
             cr.close_path ();
 
             cr.set_line_width (0);
-            cr.set_source (background_color);
+            cr.set_source (fill_color);
             cr.fill_preserve ();
 
             cr.set_line_width (BORDER_WIDTH_PX * scaling_factor);
@@ -83,12 +83,14 @@ namespace Gala {
 
             var cogl_context = context.get_framebuffer ().get_context ();
 
-            var texture = new Cogl.Texture2D.from_data (cogl_context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
+            try {
+                var texture = new Cogl.Texture2D.from_data (cogl_context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (), surface.get_data ());
 
-            pipeline.set_layer_texture (0, texture);
+                pipeline.set_layer_texture (0, texture);
 
-            context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, width, height);
+                context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, width, height);
+            } catch (Error e) {}
 
             base.paint (context);
         }
