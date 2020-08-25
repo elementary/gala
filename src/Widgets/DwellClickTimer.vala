@@ -31,6 +31,7 @@ namespace Gala {
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
         private GLib.Settings interface_settings;
+        private Cairo.ImageSurface surface;
 
         public weak WindowManager wm { get; construct; }
 
@@ -94,6 +95,7 @@ namespace Gala {
 
         private void update_cursor_size () {
             cursor_size = (int) (interface_settings.get_int ("cursor-size") * scaling_factor * 1.25);
+            surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, cursor_size, cursor_size);
             set_size (cursor_size, cursor_size);
         }
 
@@ -101,8 +103,15 @@ namespace Gala {
             var radius = int.min (cursor_size / 2, cursor_size / 2);
             var end_angle = START_ANGLE + angle;
 
-            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, cursor_size, cursor_size);
             var cr = new Cairo.Context (surface);
+
+            // Clear the surface
+            cr.save ();
+            cr.set_source_rgba (0, 0, 0, 0);
+            cr.set_operator (Cairo.Operator.SOURCE);
+            cr.paint ();
+            cr.restore ();
+
             cr.set_line_cap (Cairo.LineCap.ROUND);
             cr.set_line_join (Cairo.LineJoin.ROUND);
             cr.translate (cursor_size / 2, cursor_size / 2);
