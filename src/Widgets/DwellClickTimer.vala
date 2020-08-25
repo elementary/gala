@@ -30,6 +30,7 @@ namespace Gala {
         private Clutter.PropertyTransition transition;
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
+        private GLib.Settings interface_settings;
 
         public weak WindowManager wm { get; construct; }
 
@@ -60,12 +61,10 @@ namespace Gala {
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
-            var interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
+            interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
 
-            cursor_size = interface_settings.get_int ("cursor-size") * scaling_factor;
-
-            set_size (cursor_size, cursor_size);
+            update_cursor_size ();
 
             var seat = Clutter.get_default_backend ().get_default_seat ();
             seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
@@ -89,10 +88,13 @@ namespace Gala {
             });
 
             interface_settings.changed["cursor-size"].connect (() => {
-                cursor_size = interface_settings.get_int ("cursor-size") * scaling_factor;
-
-                set_size (cursor_size, cursor_size);
+                update_cursor_size ();
             });
+        }
+
+        private void update_cursor_size () {
+            cursor_size = (int) (interface_settings.get_int ("cursor-size") * scaling_factor * 1.25);
+            set_size (cursor_size, cursor_size);
         }
 
         public override void paint (Clutter.PaintContext context) {
