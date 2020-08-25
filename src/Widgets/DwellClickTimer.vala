@@ -19,7 +19,7 @@ namespace Gala {
     public class DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         private const int WIDTH_PX = 60;
         private const int HEIGHT_PX = 60;
-        private const string BACKGROUND_COLOR = "#478FE6";
+        private const string BACKGROUND_COLOR = "#64baff";
         private const double BACKGROUND_OPACITY = 0.7;
         private const uint BORDER_WIDTH_PX = 3;
 
