@@ -244,6 +244,10 @@ namespace Gala {
 #else
             top_window_group = screen.get_top_window_group ();
 #endif
+
+#if HAS_MUTTER336
+            ui_group.add_child (new DwellClickTimer (this));
+#endif
             ui_group.add_child (screen_shield);
 
             stage.remove_child (top_window_group);
