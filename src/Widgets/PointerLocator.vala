@@ -95,7 +95,7 @@ namespace Gala {
             base.paint (context);
         }
 
-        public void show () {
+        public void show_ripple () {
             if (!settings.get_boolean ("locate-pointer")) {
                 return;
             }

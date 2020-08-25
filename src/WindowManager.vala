@@ -2188,7 +2188,7 @@ namespace Gala {
 
 #if HAS_MUTTER336
         public override void locate_pointer () {
-            pointer_locator.show ();
+            pointer_locator.show_ripple ();
         }
 #endif
 
