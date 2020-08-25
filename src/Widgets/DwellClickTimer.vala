@@ -19,7 +19,8 @@ namespace Gala {
     public class DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         private const int WIDTH_PX = 60;
         private const int HEIGHT_PX = 60;
-
+        private const string BACKGROUND_COLOR = "#478FE6";
+        private const double BACKGROUND_OPACITY = 0.7;
         private const uint BORDER_WIDTH_PX = 3;
 
         private const double START_ANGLE = 3 * Math.PI / 2;
@@ -28,6 +29,8 @@ namespace Gala {
 
         private Cogl.Pipeline pipeline;
         private Clutter.PropertyTransition transition;
+        private Cairo.Pattern stroke_color;
+        private Cairo.Pattern background_color;
 
         public weak WindowManager wm { get; construct; }
 
@@ -52,6 +55,11 @@ namespace Gala {
             transition.new_frame.connect (() => {
                 queue_redraw ();
             });
+
+            var rgba = Gdk.RGBA ();
+            rgba.parse (BACKGROUND_COLOR);
+            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
+            background_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
@@ -97,11 +105,11 @@ namespace Gala {
             cr.close_path ();
 
             cr.set_line_width (0);
-            cr.set_source_rgba (0.278, 0.561, 0.902, 0.7);
+            cr.set_source (background_color);
             cr.fill_preserve ();
 
             cr.set_line_width (BORDER_WIDTH_PX * scaling_factor);
-            cr.set_source_rgb (0.278, 0.561, 0.902);
+            cr.set_source (stroke_color);
             cr.stroke ();
 
             var cogl_context = context.get_framebuffer ().get_context ();
