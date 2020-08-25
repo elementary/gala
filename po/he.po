@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-08-09 18:13+0000\n"
+"PO-Revision-Date: 2020-08-25 13:13+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -107,11 +107,11 @@ msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "ניתן לסגור את מחליף ה־Alt + Tab בלחיצה על Esc מבלי לשחרר את ה־Alt"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
+msgstr "הגדלת רמת התקריב המרבית והצגת משוב כשאי אפשר להתקרב"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
