@@ -58,6 +58,10 @@ namespace Gala {
 
         public ScreenShield? screen_shield { get; private set; }
 
+#if HAS_MUTTER336
+        public PointerLocator pointer_locator { get; private set; }
+#endif
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -246,6 +250,8 @@ namespace Gala {
 #endif
 
 #if HAS_MUTTER336
+            pointer_locator = new PointerLocator (this);
+            ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
 #endif
             ui_group.add_child (screen_shield);
@@ -2179,6 +2185,12 @@ namespace Gala {
         public override void kill_switch_workspace () {
             end_switch_workspace ();
         }
+
+#if HAS_MUTTER336
+        public override void locate_pointer () {
+            pointer_locator.show_ripple ();
+        }
+#endif
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())

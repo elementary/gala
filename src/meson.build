@@ -29,6 +29,7 @@ gala_bin_sources = files(
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
+    'Widgets/PointerLocator.vala',
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
