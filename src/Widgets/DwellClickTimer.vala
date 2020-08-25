@@ -17,20 +17,20 @@
 
 namespace Gala {
     public class DwellClickTimer : Clutter.Actor, Clutter.Animatable {
-        private const int WIDTH_PX = 60;
-        private const int HEIGHT_PX = 60;
         private const string BACKGROUND_COLOR = "#64baff";
         private const double BACKGROUND_OPACITY = 0.7;
-        private const uint BORDER_WIDTH_PX = 3;
+        private const uint BORDER_WIDTH_PX = 1;
 
         private const double START_ANGLE = 3 * Math.PI / 2;
 
         private int scaling_factor = 1;
+        private int cursor_size = 24;
 
         private Cogl.Pipeline pipeline;
         private Clutter.PropertyTransition transition;
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
+        private GLib.Settings interface_settings;
 
         public weak WindowManager wm { get; construct; }
 
@@ -61,8 +61,10 @@ namespace Gala {
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
+            interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
-            set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
+
+            update_cursor_size ();
 
             var seat = Clutter.get_default_backend ().get_default_seat ();
             seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
@@ -84,20 +86,26 @@ namespace Gala {
                 transition.stop ();
                 visible = false;
             });
+
+            interface_settings.changed["cursor-size"].connect (() => {
+                update_cursor_size ();
+            });
+        }
+
+        private void update_cursor_size () {
+            cursor_size = (int) (interface_settings.get_int ("cursor-size") * scaling_factor * 1.25);
+            set_size (cursor_size, cursor_size);
         }
 
         public override void paint (Clutter.PaintContext context) {
-            var width = WIDTH_PX * scaling_factor;
-            var height = HEIGHT_PX * scaling_factor;
-
-            var radius = int.min (width / 2, height / 2);
+            var radius = int.min (cursor_size / 2, cursor_size / 2);
             var end_angle = START_ANGLE + angle;
 
-            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, cursor_size, cursor_size);
             var cr = new Cairo.Context (surface);
             cr.set_line_cap (Cairo.LineCap.ROUND);
             cr.set_line_join (Cairo.LineJoin.ROUND);
-            cr.translate (width / 2, height / 2);
+            cr.translate (cursor_size / 2, cursor_size / 2);
 
             cr.move_to (0, 0);
             cr.arc (0, 0, radius - BORDER_WIDTH_PX * scaling_factor, START_ANGLE, end_angle);
@@ -115,12 +123,12 @@ namespace Gala {
             var cogl_context = context.get_framebuffer ().get_context ();
 
             try {
-                var texture = new Cogl.Texture2D.from_data (cogl_context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                var texture = new Cogl.Texture2D.from_data (cogl_context, cursor_size, cursor_size, Cogl.PixelFormat.BGRA_8888_PRE,
                     surface.get_stride (), surface.get_data ());
 
                 pipeline.set_layer_texture (0, texture);
 
-                context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, width, height);
+                context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, cursor_size, cursor_size);
             } catch (Error e) {}
 
             base.paint (context);
