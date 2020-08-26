@@ -29,9 +29,12 @@ namespace Gala {
         public weak WindowManager wm { get; construct; }
 
         private int scaling_factor = 1;
+        private int surface_width = WIDTH_PX;
+        private int surface_height = HEIGHT_PX;
 
         private GLib.Settings settings;
         private Cogl.Pipeline pipeline;
+        private Cairo.ImageSurface surface;
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
 
@@ -48,26 +51,43 @@ namespace Gala {
             settings = new GLib.Settings ("org.gnome.desktop.interface");
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
 
-            scaling_factor = InternalUtils.get_ui_scaling_factor ();
+            update_surface ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
 
             var rgba = Gdk.RGBA ();
             rgba.parse (BACKGROUND_COLOR);
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
+
+            Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
+        }
+
+        private void update_surface () {
+            var cur_scale = InternalUtils.get_ui_scaling_factor ();
+            if (surface == null || cur_scale != scaling_factor) {
+                scaling_factor = cur_scale;
+                surface_width = WIDTH_PX * scaling_factor;
+                surface_height = HEIGHT_PX * scaling_factor;
+
+                surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, surface_width, surface_height);
+            }
         }
 
         public override void paint (Clutter.PaintContext context) {
-            var width = WIDTH_PX * scaling_factor;
-            var height = HEIGHT_PX * scaling_factor;
+            var radius = int.min (surface_width / 2, surface_height / 2);
 
-            var radius = int.min (width / 2, height / 2);
-
-            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
             var cr = new Cairo.Context (surface);
+
+            // Clear the surface
+            cr.save ();
+            cr.set_source_rgba (0, 0, 0, 0);
+            cr.set_operator (Cairo.Operator.SOURCE);
+            cr.paint ();
+            cr.restore ();
+
             cr.set_line_cap (Cairo.LineCap.ROUND);
             cr.set_line_join (Cairo.LineJoin.ROUND);
-            cr.translate (width / 2, height / 2);
+            cr.translate (surface_width / 2, surface_height / 2);
 
             cr.move_to (radius - BORDER_WIDTH_PX, 0);
             cr.arc (0, 0, radius - BORDER_WIDTH_PX * scaling_factor, 0, 2 * Math.PI);
@@ -84,12 +104,12 @@ namespace Gala {
             var cogl_context = context.get_framebuffer ().get_context ();
 
             try {
-                var texture = new Cogl.Texture2D.from_data (cogl_context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                    surface.get_stride (), surface.get_data ());
+                var texture = new Cogl.Texture2D.from_data (cogl_context, surface_width, surface_height,
+                    Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
 
                 pipeline.set_layer_texture (0, texture);
 
-                context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, width, height);
+                context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, surface_width, surface_height);
             } catch (Error e) {}
 
             base.paint (context);
