@@ -17,7 +17,6 @@
 
 namespace Gala {
     public class DwellClickTimer : Clutter.Actor, Clutter.Animatable {
-        private const string BACKGROUND_COLOR = "#64baff";
         private const double BACKGROUND_OPACITY = 0.7;
         private const uint BORDER_WIDTH_PX = 1;
 
@@ -57,11 +56,6 @@ namespace Gala {
                 queue_redraw ();
             });
 
-            var rgba = Gdk.RGBA ();
-            rgba.parse (BACKGROUND_COLOR);
-            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
-            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
-
             interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
 
@@ -100,6 +94,12 @@ namespace Gala {
         }
 
         public override void paint (Clutter.PaintContext context) {
+            var rgba = InternalUtils.get_theme_accent_color ();
+
+            /* Don't use alpha from the stylesheet to ensure contrast */
+            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
+            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
+
             var radius = int.min (cursor_size / 2, cursor_size / 2);
             var end_angle = START_ANGLE + angle;
 

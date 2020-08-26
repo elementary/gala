@@ -21,9 +21,8 @@ namespace Gala {
         private const int HEIGHT_PX = 300;
         private const int ANIMATION_TIME_MS = 300;
 
-        private const uint BORDER_WIDTH_PX = 3;
+        private const uint BORDER_WIDTH_PX = 1;
 
-        private const string BACKGROUND_COLOR = "#64baff";
         private const double BACKGROUND_OPACITY = 0.7;
 
         public weak WindowManager wm { get; construct; }
@@ -53,11 +52,6 @@ namespace Gala {
 
             update_surface ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
-
-            var rgba = Gdk.RGBA ();
-            rgba.parse (BACKGROUND_COLOR);
-            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
-            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
             Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
         }
@@ -119,6 +113,12 @@ namespace Gala {
             if (!settings.get_boolean ("locate-pointer")) {
                 return;
             }
+
+            var rgba = InternalUtils.get_theme_accent_color ();
+
+            /* Don't use alpha from the stylesheet to ensure contrast */
+            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
+            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
             if (timeout_id != 0) {
                 GLib.Source.remove (timeout_id);
