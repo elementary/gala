@@ -249,10 +249,10 @@ namespace Gala {
             top_window_group = screen.get_top_window_group ();
 #endif
 
-
 #if HAS_MUTTER336
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (this));
 #endif
             ui_group.add_child (screen_shield);
 
