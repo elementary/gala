@@ -36,7 +36,6 @@ namespace Gala {
         private Cairo.ImageSurface surface;
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
-        private Gtk.StyleContext selection_style_context;
 
         private uint timeout_id;
 
@@ -53,19 +52,6 @@ namespace Gala {
 
             update_surface ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
-
-            /* We create a dummy Gtk label to get the stylesheet accent color*/
-            var dummy_label = new Gtk.Label ("");
-
-            unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-            var widget_path = label_style_context.get_path ().copy ();
-            widget_path.iter_set_object_name (-1, "selection");
-
-            selection_style_context = new Gtk.StyleContext ();
-            selection_style_context.set_path (widget_path);
-            selection_style_context.set_parent (label_style_context);
-            selection_style_context.set_state (Gtk.StateFlags.SELECTED);
 
             Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
         }
@@ -128,10 +114,7 @@ namespace Gala {
                 return;
             }
 
-            var rgba = (Gdk.RGBA) selection_style_context.get_property (
-                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-                Gtk.StateFlags.NORMAL
-            );
+            var rgba = InternalUtils.get_theme_accent_color ();
 
             /* Don't use alpha from the stylesheet to ensure contrast */
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);

@@ -393,5 +393,28 @@ namespace Gala {
         public static int get_ui_scaling_factor () {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
+
+        private static Gtk.StyleContext selection_style_context = null;
+        public static Gdk.RGBA get_theme_accent_color () {
+            if (selection_style_context == null) {
+                /* We create a dummy Gtk label to get the stylesheet accent color*/
+                var dummy_label = new Gtk.Label ("");
+
+                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
+
+                var widget_path = label_style_context.get_path ().copy ();
+                widget_path.iter_set_object_name (-1, "selection");
+
+                selection_style_context = new Gtk.StyleContext ();
+                selection_style_context.set_path (widget_path);
+                selection_style_context.set_parent (label_style_context);
+                selection_style_context.set_state (Gtk.StateFlags.SELECTED);
+            }
+
+            return (Gdk.RGBA) selection_style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
+        }
     }
 }
