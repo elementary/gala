@@ -397,7 +397,6 @@ namespace Gala {
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
-                /* We create a dummy Gtk label to get the stylesheet accent color*/
                 var dummy_label = new Gtk.Label ("");
 
                 unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
