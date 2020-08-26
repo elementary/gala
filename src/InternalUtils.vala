@@ -407,7 +407,6 @@ namespace Gala {
                 selection_style_context = new Gtk.StyleContext ();
                 selection_style_context.set_path (widget_path);
                 selection_style_context.set_parent (label_style_context);
-                selection_style_context.set_state (Gtk.StateFlags.SELECTED);
             }
 
             return (Gdk.RGBA) selection_style_context.get_property (
