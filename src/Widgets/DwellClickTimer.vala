@@ -31,6 +31,7 @@ namespace Gala {
         private Cairo.Pattern fill_color;
         private GLib.Settings interface_settings;
         private Cairo.ImageSurface surface;
+        private Gtk.StyleContext selection_style_context;
 
         public weak WindowManager wm { get; construct; }
 
@@ -58,6 +59,19 @@ namespace Gala {
 
             interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
+
+            /* We create a dummy Gtk label to get the stylesheet accent color*/
+            var dummy_label = new Gtk.Label ("");
+
+            unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
+
+            var widget_path = label_style_context.get_path ().copy ();
+            widget_path.iter_set_object_name (-1, "selection");
+
+            selection_style_context = new Gtk.StyleContext ();
+            selection_style_context.set_path (widget_path);
+            selection_style_context.set_parent (label_style_context);
+            selection_style_context.set_state (Gtk.StateFlags.SELECTED);
 
             update_cursor_size ();
 
@@ -94,24 +108,12 @@ namespace Gala {
         }
 
         public override void paint (Clutter.PaintContext context) {
-            /* We create a dummy Gtk label to get the stylesheet accent color*/
-            var dummy_label = new Gtk.Label ("");
-
-            unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-            var widget_path = label_style_context.get_path ().copy ();
-            widget_path.iter_set_object_name (-1, "selection");
-
-            var style_context = new Gtk.StyleContext ();
-            style_context.set_path (widget_path);
-            style_context.set_parent (label_style_context);
-            style_context.set_state (Gtk.StateFlags.SELECTED);
-
-            var rgba = (Gdk.RGBA) style_context.get_property (
+            var rgba = (Gdk.RGBA) selection_style_context.get_property (
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
 
+            /* Don't use alpha from the stylesheet to ensure contrast */
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
