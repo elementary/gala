@@ -21,9 +21,8 @@ namespace Gala {
         private const int HEIGHT_PX = 300;
         private const int ANIMATION_TIME_MS = 300;
 
-        private const uint BORDER_WIDTH_PX = 3;
+        private const uint BORDER_WIDTH_PX = 1;
 
-        private const string BACKGROUND_COLOR = "#64baff";
         private const double BACKGROUND_OPACITY = 0.7;
 
         public weak WindowManager wm { get; construct; }
@@ -53,11 +52,6 @@ namespace Gala {
 
             update_surface ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
-
-            var rgba = Gdk.RGBA ();
-            rgba.parse (BACKGROUND_COLOR);
-            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
-            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
             Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
         }
@@ -119,6 +113,27 @@ namespace Gala {
             if (!settings.get_boolean ("locate-pointer")) {
                 return;
             }
+
+            /* We create a dummy Gtk label to get the stylesheet accent color*/
+            var dummy_label = new Gtk.Label ("");
+
+            unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
+
+            var widget_path = label_style_context.get_path ().copy ();
+            widget_path.iter_set_object_name (-1, "selection");
+
+            var style_context = new Gtk.StyleContext ();
+            style_context.set_path (widget_path);
+            style_context.set_parent (label_style_context);
+            style_context.set_state (Gtk.StateFlags.SELECTED);
+
+            var rgba = (Gdk.RGBA) style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
+
+            stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
+            fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
             if (timeout_id != 0) {
                 GLib.Source.remove (timeout_id);
