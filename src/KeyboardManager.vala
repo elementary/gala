@@ -70,7 +70,7 @@ namespace Gala {
 
         [CCode (instance_pos = -1)]
         void set_keyboard_layout (GLib.Settings settings, string key) {
-            if (!(key == "current" || key == "source" || key == "xkb-options"))
+            if (!(key == "current" || key == "sources" || key == "xkb-options"))
                 return;
 
             string layout = "us", variant = "", options = "";
