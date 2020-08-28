@@ -14,6 +14,7 @@
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Close the Alt + Tab switcher by pressing Esc without releasing Alt</li>
           <li>Increase maximum zoom level and provide feedback when unable to zoom</li>
           <li>Show a context menu when secondary clicking the background</li>
           <li>Updated translations</li>

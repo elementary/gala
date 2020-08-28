@@ -378,6 +378,16 @@ namespace Gala {
             animate_dock_width ();
         }
 
+        public override bool key_press_event (Clutter.KeyEvent event) {
+            if (event.keyval == Clutter.Key.Escape) {
+                current_window = null;
+                close (event.time);
+                return true;
+            }
+
+            return false;
+        }
+
         public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0)
                 close (event.time);

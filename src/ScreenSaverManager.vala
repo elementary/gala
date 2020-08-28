@@ -16,12 +16,9 @@
 //
 
 namespace Gala {
-    [DBus (name="org.freedesktop.ScreenSaver")]
+    [DBus (name="org.gnome.ScreenSaver")]
     public class ScreenSaverManager : Object {
         public signal void active_changed (bool new_value);
-
-        [DBus (visible = false)]
-        public GNOMEScreenSaverManager gnome_manager { get; construct; }
 
         [DBus (visible = false)]
         public ScreenShield screen_shield { get; construct; }
@@ -31,10 +28,8 @@ namespace Gala {
         }
 
         construct {
-            gnome_manager = new GNOMEScreenSaverManager (this);
             screen_shield.active_changed.connect (() => {
                 active_changed (screen_shield.active);
-                gnome_manager.active_changed (screen_shield.active);
             });
         }
 
@@ -61,42 +56,6 @@ namespace Gala {
             } else {
                 return 0;
             }
-        }
-    }
-
-    [DBus (name="org.gnome.ScreenSaver")]
-    public class GNOMEScreenSaverManager : GLib.Object {
-        [DBus (visible = false)]
-        public weak ScreenSaverManager manager { get; construct; }
-
-        public signal void active_changed (bool new_value);
-
-        public signal void wake_up_screen ();
-
-        public GNOMEScreenSaverManager (ScreenSaverManager manager) {
-            Object (manager: manager);
-        }
-
-        construct {
-            manager.screen_shield.wake_up_screen.connect (() => {
-                wake_up_screen ();
-            });
-        }
-
-        public new void @lock () throws GLib.Error {
-            manager.@lock ();
-        }
-
-        public new bool get_active () throws GLib.Error {
-            return manager.get_active ();
-        }
-
-        public new void set_active (bool active) throws GLib.Error {
-            manager.set_active (active);
-        }
-
-        public new uint get_active_time () throws GLib.Error {
-            return manager.get_active_time ();
         }
     }
 }

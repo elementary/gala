@@ -58,6 +58,10 @@ namespace Gala {
 
         public ScreenShield? screen_shield { get; private set; }
 
+#if HAS_MUTTER336
+        public PointerLocator pointer_locator { get; private set; }
+#endif
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -248,6 +252,12 @@ namespace Gala {
 #else
             top_window_group = screen.get_top_window_group ();
 #endif
+
+#if HAS_MUTTER336
+            pointer_locator = new PointerLocator (this);
+            ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (this));
+#endif
             ui_group.add_child (screen_shield);
 
             stage.remove_child (top_window_group);
@@ -302,7 +312,8 @@ namespace Gala {
 
             /*shadows*/
             InternalUtils.reload_shadow ();
-            ShadowSettings.get_default ().notify.connect (InternalUtils.reload_shadow);
+            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
+            shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
@@ -2290,6 +2301,12 @@ namespace Gala {
         public override void kill_switch_workspace () {
             end_switch_workspace ();
         }
+
+#if HAS_MUTTER336
+        public override void locate_pointer () {
+            pointer_locator.show_ripple ();
+        }
+#endif
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())
