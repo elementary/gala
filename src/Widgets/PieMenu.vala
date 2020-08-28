@@ -21,13 +21,16 @@
 public class Gala.PieMenu : Clutter.Actor, ActivatableComponent {
     public signal void closed ();
 
-    const int PIE_SIZE = 20;
-    const int PIE_WIDTH = 8;
-    const double MENU_RADIUS = 4.0 * PIE_SIZE;
-    const double HEIGHT = 24.0;
-    Granite.Drawing.Color accent_100 = new Granite.Drawing.Color.from_string ("#8cd5ff");
-    Granite.Drawing.Color accent_900 = new Granite.Drawing.Color.from_string ("#002e99");
-    Granite.Drawing.Color black_700 = new Granite.Drawing.Color.from_string ("#1a1a1a");
+    private const int PIE_SIZE = 20;
+    private const int PIE_WIDTH = 8;
+    private const double MENU_RADIUS = 4.0 * PIE_SIZE;
+    private const double HEIGHT = 24.0;
+    private const double BACKGROUND_OPACITY = 0.7;
+    private Cairo.Pattern accent_color;
+    private Cairo.Pattern accent_color_light;
+    private Cairo.Pattern white = new Cairo.Pattern.rgb (1.0, 1.0, 1.0);
+    private Cairo.Pattern silver_300 = new Cairo.Pattern.rgb (0.831, 0.831, 0.831);
+    private Cairo.Pattern black_700 = new Cairo.Pattern.rgb (0.102, 0.102, 0.102);
 
     public WindowManager wm { get; construct; }
     private Meta.Display display;
@@ -71,6 +74,10 @@ public class Gala.PieMenu : Clutter.Actor, ActivatableComponent {
             close ();
             return;
         }
+
+        var rgba = InternalUtils.get_theme_accent_color ();
+        accent_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
+        accent_color_light = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
         int x, y;
         display.get_cursor_tracker ().get_pointer (out x, out y, null);
@@ -129,13 +136,13 @@ public class Gala.PieMenu : Clutter.Actor, ActivatableComponent {
         Clutter.cairo_clear (ctx);
 
         ctx.stroke ();
-        ctx.set_source_rgba (1.0, 1.0, 1.0, 1.0);
+        ctx.set_source (white);
         ctx.set_line_width (PIE_WIDTH);
         ctx.arc (start_x, start_y, PIE_SIZE - PIE_WIDTH / 2, 0, 2 * Math.PI);
         ctx.stroke ();
 
-        ctx.set_source_rgb (0.8, 0.8, 0.8);
-        ctx.set_line_width (1);
+        ctx.set_source (silver_300);
+        ctx.set_line_width (1.0);
         ctx.arc (start_x, start_y, PIE_SIZE - PIE_WIDTH / 2 + 4, 0, 2 * Math.PI);
         ctx.stroke ();
         ctx.arc (start_x, start_y, PIE_SIZE - PIE_WIDTH / 2 - 4, 0, 2 * Math.PI);
@@ -156,13 +163,15 @@ public class Gala.PieMenu : Clutter.Actor, ActivatableComponent {
             double x = Math.round(start_x + offset_x * MENU_RADIUS + sign_x * width / 2.0);
             double y = Math.round(start_y + offset_y * MENU_RADIUS + sign_y * HEIGHT / 2.0);
             Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, x, y, width, HEIGHT, 6.0);
-            ctx.set_source_rgb (1.0, 1.0, 1.0);
+            ctx.set_source (white);
             ctx.fill_preserve ();
-            ctx.set_source_rgb (black_700.R, black_700.G, black_700.B);
+            ctx.set_source (black_700);
             ctx.set_line_width (0.25);
             ctx.stroke ();
-            ctx.move_to (x + width / 2 - (extents.width / 2 + extents.x_bearing),
-                         y + HEIGHT / 2 - (extents.height / 2 + extents.y_bearing));
+            ctx.move_to (
+                x + width / 2 - (extents.width / 2 + extents.x_bearing),
+                y + HEIGHT / 2 - (extents.height / 2 + extents.y_bearing)
+            );
             ctx.show_text (options[i]);
         }
         return true;
@@ -191,19 +200,21 @@ public class Gala.PieMenu : Clutter.Actor, ActivatableComponent {
         double x = Math.round(start_x + offset_x * MENU_RADIUS + sign_x * width / 2.0);
         double y = Math.round(start_y + offset_y * MENU_RADIUS + sign_y * HEIGHT / 2.0);
         Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, x, y, width, HEIGHT, 6.0);
-        ctx.set_source_rgb (accent_100.R, accent_100.G, accent_100.B);
+        ctx.set_source (accent_color_light);
         ctx.fill_preserve ();
-        ctx.set_source_rgb (accent_900.R, accent_900.G, accent_900.B);
+        ctx.set_source (accent_color);
         ctx.set_line_width (0.25);
         ctx.stroke ();
-        ctx.set_source_rgb (accent_900.R, accent_900.G, accent_900.B);
-        ctx.move_to (x + width / 2 - (extents.width / 2 + extents.x_bearing),
-                     y + HEIGHT / 2 - (extents.height / 2 + extents.y_bearing));
+        ctx.set_source (black_700);
+        ctx.move_to (
+            x + width / 2 - (extents.width / 2 + extents.x_bearing),
+            y + HEIGHT / 2 - (extents.height / 2 + extents.y_bearing)
+        );
         ctx.show_text (options[selected]);
 
         ctx.stroke ();
         ctx.arc (start_x, start_y, PIE_SIZE - PIE_WIDTH / 2, phi -  Math.PI / 8, phi +  Math.PI / 8);
-        ctx.set_source_rgb (accent_100.R, accent_100.G, accent_100.B);
+        ctx.set_source (accent_color);
         ctx.set_line_width (PIE_WIDTH);
         ctx.stroke ();
 
