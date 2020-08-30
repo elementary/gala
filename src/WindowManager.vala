@@ -22,6 +22,7 @@ namespace Gala {
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int x, int y) throws Error;
     }
 
     public class WindowManagerGala : Meta.Plugin, WindowManager {
@@ -56,6 +57,10 @@ namespace Gala {
         public bool enable_animations { get; protected set; }
 
         public ScreenShield? screen_shield { get; private set; }
+
+#if HAS_MUTTER336
+        public PointerLocator pointer_locator { get; private set; }
+#endif
 
         Meta.PluginInfo info;
 
@@ -230,8 +235,10 @@ namespace Gala {
 
 #if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #else
             background_group = new BackgroundContainer (screen);
+            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
 #endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -240,6 +247,12 @@ namespace Gala {
             top_window_group = display.get_top_window_group ();
 #else
             top_window_group = screen.get_top_window_group ();
+#endif
+
+#if HAS_MUTTER336
+            pointer_locator = new PointerLocator (this);
+            ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (this));
 #endif
             ui_group.add_child (screen_shield);
 
@@ -295,7 +308,8 @@ namespace Gala {
 
             /*shadows*/
             InternalUtils.reload_shadow ();
-            ShadowSettings.get_default ().notify.connect (InternalUtils.reload_shadow);
+            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
+            shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
@@ -370,6 +384,18 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        void on_show_background_menu (int x, int y) {
+            if (daemon_proxy == null) {
+                return;
+            }
+
+            try {
+                daemon_proxy.show_desktop_menu.begin (x, y);
+            } catch (Error e) {
+                message ("Error invoking MenuManager: %s", e.message);
+            }
         }
 
         void on_monitors_changed () {
@@ -1105,7 +1131,7 @@ namespace Gala {
 
         void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor ())
+            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
                 return;
 
             // Due to how this is implemented, by relying on the functionality
@@ -2159,6 +2185,12 @@ namespace Gala {
         public override void kill_switch_workspace () {
             end_switch_workspace ();
         }
+
+#if HAS_MUTTER336
+        public override void locate_pointer () {
+            pointer_locator.show_ripple ();
+        }
+#endif
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())
