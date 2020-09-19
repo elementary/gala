@@ -1459,7 +1459,10 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             var window = actor.get_meta_window ();
-            if (!enable_animations) {
+
+            // Notifications are a special case and have to be always be handled
+            // regardless of the animation setting
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 actor.show ();
                 map_completed (actor);
 
@@ -1575,7 +1578,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    notification_stack.show_notification (actor);
+                    notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
                     break;
@@ -1590,7 +1593,7 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations) {
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
                 // only NORMAL windows have icons
@@ -1677,15 +1680,23 @@ namespace Gala {
                     });
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    destroying.add (actor);
-                    notification_stack.destroy_notification (actor);
+                    if (enable_animations) {
+                        destroying.add (actor);
+                    }
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
+                    notification_stack.destroy_notification (actor, enable_animations);
+
+                    if (enable_animations) {
+                        ulong destroy_handler_id = 0UL;
+                        destroy_handler_id = actor.transitions_completed.connect (() => {
+                            actor.disconnect (destroy_handler_id);
+                            destroying.remove (actor);
+                            destroy_completed (actor);
+                        });
+                    } else {
                         destroy_completed (actor);
-                    });
+                    }
+
                     break;
                 default:
                     destroy_completed (actor);
