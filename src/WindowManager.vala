@@ -592,13 +592,13 @@ namespace Gala {
 
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
-            double[] keyframes = { 0.28, 0.58 };
-            GLib.Value[] x = { dest, dest };
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
 
-            var nudge = new Clutter.KeyframeTransition ("x");
+            var nudge = new Clutter.KeyframeTransition ("translation-x");
             nudge.duration = 360;
             nudge.remove_on_complete = true;
-            nudge.progress_mode = Clutter.AnimationMode.LINEAR;
+            nudge.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
             nudge.set_from_value (0.0f);
             nudge.set_to_value (0.0f);
             nudge.set_key_frames (keyframes);
