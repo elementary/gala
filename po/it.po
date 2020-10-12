@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
-"Language-Team: Italian <https://l10n.elementary.io/projects/desktop/gala/it/"
-">\n"
+"PO-Revision-Date: 2020-10-14 19:14+0000\n"
+"Last-Translator: Fabio Zaramella <fabiozaramella@hotmail.it>\n"
+"Language-Team: Italian <https://l10n.elementary.io/projects/desktop/gala/it/>"
+"\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -123,7 +123,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
 msgid "Updated translations"
-msgstr ""
+msgstr "Traduzioni aggiornate"
 
 #: data/gala.appdata.xml.in:28
 msgid ""
