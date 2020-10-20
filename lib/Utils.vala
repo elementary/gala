@@ -17,147 +17,62 @@
 
 namespace Gala {
     public class Utils {
-        // Cache xid:pixbuf and icon:pixbuf pairs to provide a faster way aquiring icons
-        static HashTable<string, Gdk.Pixbuf> xid_pixbuf_cache;
-        static HashTable<string, Gdk.Pixbuf> icon_pixbuf_cache;
-        static uint cache_clear_timeout = 0;
-
         static Gdk.Pixbuf? close_pixbuf = null;
         static Gdk.Pixbuf? resize_pixbuf = null;
 
-        static construct {
-            xid_pixbuf_cache = new HashTable<string, Gdk.Pixbuf> (str_hash, str_equal);
-            icon_pixbuf_cache = new HashTable<string, Gdk.Pixbuf> (str_hash, str_equal);
-        }
-
-        Utils () {
-        }
-
-        /**
-         * Clean icon caches
-         */
-        static void clean_icon_cache (uint32[] xids) {
-            var list = xid_pixbuf_cache.get_keys ();
-            var pixbuf_list = icon_pixbuf_cache.get_values ();
-            var icon_list = icon_pixbuf_cache.get_keys ();
-
-            foreach (var xid_key in list) {
-                var xid = (uint32)uint64.parse (xid_key.split ("::")[0]);
-                if (!(xid in xids)) {
-                    var pixbuf = xid_pixbuf_cache.get (xid_key);
-                    for (var j = 0; j < pixbuf_list.length (); j++) {
-                        if (pixbuf_list.nth_data (j) == pixbuf) {
-                            xid_pixbuf_cache.remove (icon_list.nth_data (j));
-                        }
-                    }
-
-                    xid_pixbuf_cache.remove (xid_key);
-                }
+        public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int icon_size, int scale) {
+            var transient_for = window.get_transient_for ();
+            if (transient_for != null) {
+                return get_icon_for_window (transient_for, icon_size, scale);
             }
-        }
 
-        /**
-         * Marks the given xids as no longer needed, the corresponding icons
-         * may be freed now. Mainly for internal purposes.
-         *
-         * @param xids The xids of the window that no longer need icons
-         */
-        public static void request_clean_icon_cache (uint32[] xids) {
-            if (cache_clear_timeout > 0)
-                GLib.Source.remove (cache_clear_timeout);
+            GLib.DesktopAppInfo? desktop_app = null;
 
-            cache_clear_timeout = Timeout.add_seconds (30, () => {
-                cache_clear_timeout = 0;
-                Idle.add (() => {
-                    clean_icon_cache (xids);
-                    return false;
-                });
-                return false;
-            });
-        }
+            var wm_instance = window.get_wm_class_instance ();
+            desktop_app = lookup_startup_wmclass (wm_instance);
 
-        /**
-         * Returns a pixbuf for a given xid or a default icon
-         *
-         * @see get_icon_for_window
-         */
-        public static Gdk.Pixbuf get_icon_for_xid (uint32 xid, int size, int scale = 1, bool ignore_cache = false) {
-            Gdk.Pixbuf? result = null;
-            var xid_key = "%u::%i".printf (xid, size);
-
-            if (!ignore_cache && (result = xid_pixbuf_cache.get (xid_key)) != null)
-                return result;
-
-            var app = Bamf.Matcher.get_default ().get_application_for_xid (xid);
-            result = get_icon_for_application (app, size, scale, ignore_cache);
-
-            xid_pixbuf_cache.set (xid_key, result);
-
-            return result;
-        }
-
-        /**
-         * Returns a pixbuf for this application or a default icon
-         *
-         * @see get_icon_for_window
-         */
-        static Gdk.Pixbuf get_icon_for_application (
-            Bamf.Application? app,
-            int size,
-            int scale = 1,
-            bool ignore_cache = false
-        ) {
-            Gdk.Pixbuf? image = null;
-            bool not_cached = false;
-
-            string? icon = null;
-            string? icon_key = null;
-
-            if (app != null && app.get_desktop_file () != null) {
-                var appinfo = new DesktopAppInfo.from_filename (app.get_desktop_file ());
-                if (appinfo != null) {
-                    icon = Plank.DrawingService.get_icon_from_gicon (appinfo.get_icon ());
-                    icon_key = "%s::%i::%i".printf (icon, size, scale);
-                    if (ignore_cache || (image = icon_pixbuf_cache.get (icon_key)) == null) {
-                        var scaled_size = size * scale;
-                        var surface = Plank.DrawingService.load_icon_for_scale (icon, scaled_size, scaled_size, scale);
-                        image = Gdk.pixbuf_get_from_surface (surface, 0, 0, scaled_size, scaled_size);
-                        not_cached = true;
-                    }
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
                 }
             }
 
-            if (image == null) {
-                try {
-                    unowned Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
-                    icon = "application-default-icon";
-                    icon_key = "%s::%i::%i".printf (icon, size, scale);
-                    if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
-                        image = icon_theme.load_icon_for_scale (icon, size, scale, 0);
-                        not_cached = true;
-                    }
-                } catch (Error e) {
-                    warning (e.message);
-                }
+            return Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
+        }
+
+        private static GLib.DesktopAppInfo? lookup_startup_wmclass (string? wm_class) {
+            if (wm_class == null) {
+                return null;
             }
 
-            if (image == null) {
-                icon = "";
-                icon_key = "::%i".printf (size);
-                if ((image = icon_pixbuf_cache.get (icon_key)) == null) {
-                    image = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, size, size);
-                    image.fill (0x00000000);
-                    not_cached = true;
-                }
+            var desktop_file = "%s.desktop".printf (wm_class);
+            var desktop_info = new GLib.DesktopAppInfo (desktop_file);
+
+            if (desktop_info != null) {
+                return desktop_info;
             }
 
-            if (size * scale != image.width || size * scale != image.height)
-                image = Plank.DrawingService.ar_scale (image, size * scale, size * scale);
+            desktop_file = desktop_file.ascii_down ().delimit (" ", '-');
 
-            if (not_cached)
-                icon_pixbuf_cache.set (icon_key, image);
+            return new GLib.DesktopAppInfo (desktop_file);
+        }
 
-            return image;
+        private static Gdk.Pixbuf? get_icon_for_desktop_app_info (GLib.DesktopAppInfo desktop, int icon_size, int scale) {
+            var icon = desktop.get_icon ();
+
+            if (icon is GLib.ThemedIcon) {
+                var icon_names = (icon as GLib.ThemedIcon).get_names ();
+                var icon_info = Gtk.IconTheme.get_default ().choose_icon_for_scale (icon_names, icon_size, scale, 0);
+
+                if (icon_info == null) {
+                    return null;
+                }
+
+                return icon_info.load_icon ();
+            }
+
+            return null;
         }
 
         /**
