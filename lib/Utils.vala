@@ -38,6 +38,18 @@ namespace Gala {
                 }
             }
 
+            var wm_class = window.get_wm_class ();
+            desktop_app = lookup_startup_wmclass (wm_class);
+
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
+                }
+            }
+
+
+
             return Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
         }
 
@@ -62,14 +74,26 @@ namespace Gala {
             var icon = desktop.get_icon ();
 
             if (icon is GLib.ThemedIcon) {
-                var icon_names = (icon as GLib.ThemedIcon).get_names ();
+                var icon_names = ((GLib.ThemedIcon)icon).get_names ();
                 var icon_info = Gtk.IconTheme.get_default ().choose_icon_for_scale (icon_names, icon_size, scale, 0);
 
                 if (icon_info == null) {
                     return null;
                 }
 
-                return icon_info.load_icon ();
+                try {
+                    return icon_info.load_icon ();
+                } catch (Error e) {
+                    return null;
+                }
+            } else if (icon is GLib.FileIcon) {
+                var file = ((GLib.FileIcon)icon).file;
+                var size_with_scale = icon_size * scale;
+                try {
+                    return new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
+                } catch (Error e) {
+                    return null;
+                }
             }
 
             return null;
