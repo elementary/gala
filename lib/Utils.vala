@@ -20,6 +20,12 @@ namespace Gala {
         static Gdk.Pixbuf? close_pixbuf = null;
         static Gdk.Pixbuf? resize_pixbuf = null;
 
+        static AppCache app_cache;
+
+        static construct {
+            app_cache = new AppCache ();
+        }
+
         public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int icon_size, int scale) {
             var transient_for = window.get_transient_for ();
             if (transient_for != null) {
@@ -29,8 +35,7 @@ namespace Gala {
             GLib.DesktopAppInfo? desktop_app = null;
 
             var wm_instance = window.get_wm_class_instance ();
-            desktop_app = lookup_startup_wmclass (wm_instance);
-
+            desktop_app = app_cache.lookup_startup_wmclass (wm_instance);
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
@@ -39,8 +44,7 @@ namespace Gala {
             }
 
             var wm_class = window.get_wm_class ();
-            desktop_app = lookup_startup_wmclass (wm_class);
-
+            desktop_app = app_cache.lookup_startup_wmclass (wm_class);
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
@@ -48,26 +52,56 @@ namespace Gala {
                 }
             }
 
+            desktop_app = lookup_desktop_wmclass (wm_instance);
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
+                }
+            }
 
+            desktop_app = lookup_desktop_wmclass (wm_class);
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
+                }
+            }
+
+            var sandbox_id = window.get_sandboxed_app_id ();
+            desktop_app = get_app_from_id (sandbox_id);
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
+                }
+            }
 
             return Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
         }
 
-        private static GLib.DesktopAppInfo? lookup_startup_wmclass (string? wm_class) {
+        private static GLib.DesktopAppInfo? get_app_from_id (string? id) {
+            if (id == null) {
+                return null;
+            }
+
+            var desktop_file = "%s.desktop".printf (id);
+            return app_cache.lookup_id (desktop_file);
+        }
+
+        private static GLib.DesktopAppInfo? lookup_desktop_wmclass (string? wm_class) {
             if (wm_class == null) {
                 return null;
             }
 
-            var desktop_file = "%s.desktop".printf (wm_class);
-            var desktop_info = new GLib.DesktopAppInfo (desktop_file);
+            var desktop_info = get_app_from_id (wm_class);
 
             if (desktop_info != null) {
                 return desktop_info;
             }
 
-            desktop_file = desktop_file.ascii_down ().delimit (" ", '-');
-
-            return new GLib.DesktopAppInfo (desktop_file);
+            var canonicalized = wm_class.ascii_down ().delimit (" ", '-');
+            return get_app_from_id (canonicalized);
         }
 
         private static Gdk.Pixbuf? get_icon_for_desktop_app_info (GLib.DesktopAppInfo desktop, int icon_size, int scale) {
