@@ -16,19 +16,36 @@
 //
 
 public class Gala.AppCache : GLib.Object {
+    private const int DEFAULT_TIMEOUT_SECONDS = 3;
+
     private Gee.HashMap<string, string> startup_wm_class_to_id;
     private Gee.HashMap<string, GLib.DesktopAppInfo> id_to_app;
 
     private GLib.AppInfoMonitor app_info_monitor;
+
+    private uint queued_update_id = 0;
 
     construct {
         startup_wm_class_to_id = new Gee.HashMap<string, string> ();
         id_to_app = new Gee.HashMap<string, GLib.DesktopAppInfo> ();
 
         app_info_monitor = GLib.AppInfoMonitor.@get ();
-        app_info_monitor.changed.connect (rebuild_cache);
+        app_info_monitor.changed.connect (queue_cache_update);
 
         rebuild_cache ();
+    }
+
+    private void queue_cache_update () {
+        if (queued_update_id != 0) {
+            GLib.Source.remove (queued_update_id);
+        }
+
+        queued_update_id = GLib.Timeout.add_seconds (DEFAULT_TIMEOUT_SECONDS, () => {
+            rebuild_cache ();
+            queued_update_id = 0;
+
+            return GLib.Source.REMOVE;
+        });
     }
 
     private void rebuild_cache () {
