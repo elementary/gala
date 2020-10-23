@@ -1575,6 +1575,10 @@ namespace Gala {
             if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
+                if (window.window_type == Meta.WindowType.NORMAL) {
+                    Utils.clear_window_cache (window);
+                }
+
                 return;
             }
 
@@ -1605,6 +1609,7 @@ namespace Gala {
                         actor.disconnect (destroy_handler_id);
                         destroying.remove (actor);
                         destroy_completed (actor);
+                        Utils.clear_window_cache (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:

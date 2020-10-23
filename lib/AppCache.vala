@@ -16,6 +16,8 @@
 //
 
 public class Gala.AppCache : GLib.Object {
+    public signal void changed ();
+
     private const int DEFAULT_TIMEOUT_SECONDS = 3;
 
     private Gee.HashMap<string, string> startup_wm_class_to_id;
@@ -42,6 +44,8 @@ public class Gala.AppCache : GLib.Object {
 
         queued_update_id = GLib.Timeout.add_seconds (DEFAULT_TIMEOUT_SECONDS, () => {
             rebuild_cache ();
+            changed ();
+
             queued_update_id = 0;
 
             return GLib.Source.REMOVE;

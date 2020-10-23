@@ -17,13 +17,29 @@
 
 namespace Gala {
     public class Utils {
-        static Gdk.Pixbuf? close_pixbuf = null;
+        private class CachedIcon {
+            public Gdk.Pixbuf icon;
+            public int icon_size;
+            public int scale;
+        }
+
         static Gdk.Pixbuf? resize_pixbuf = null;
+        static Gdk.Pixbuf? close_pixbuf = null;
+
+        static Gee.HashMultiMap<DesktopAppInfo, CachedIcon> icon_cache;
+        static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
 
         static AppCache app_cache;
 
         static construct {
+            icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon> ();
+            window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
+
             app_cache = new AppCache ();
+            app_cache.changed.connect (() => {
+                icon_cache.clear ();
+                window_to_desktop_cache.clear ();
+            });
         }
 
         public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int icon_size, int scale) {
@@ -33,12 +49,20 @@ namespace Gala {
             }
 
             GLib.DesktopAppInfo? desktop_app = null;
+            desktop_app = window_to_desktop_cache[window];
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    return icon;
+                }
+            }
 
             var wm_instance = window.get_wm_class_instance ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_instance);
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
                     return icon;
                 }
             }
@@ -48,6 +72,7 @@ namespace Gala {
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
                     return icon;
                 }
             }
@@ -56,6 +81,7 @@ namespace Gala {
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
                     return icon;
                 }
             }
@@ -64,6 +90,7 @@ namespace Gala {
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
                     return icon;
                 }
             }
@@ -73,11 +100,30 @@ namespace Gala {
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
+                    return icon;
+                }
+            }
+
+            var gapplication_id = window.get_gtk_application_id ();
+            desktop_app = get_app_from_id (gapplication_id);
+            if (desktop_app != null) {
+                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                if (icon != null) {
+                    window_to_desktop_cache[window] = desktop_app;
                     return icon;
                 }
             }
 
             return Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
+        }
+
+        public static void clear_window_cache (Meta.Window window) {
+            var desktop = window_to_desktop_cache[window];
+            if (desktop != null) {
+                icon_cache.remove_all (desktop);
+                window_to_desktop_cache.unset (window);
+            }
         }
 
         private static GLib.DesktopAppInfo? get_app_from_id (string? id) {
@@ -105,6 +151,14 @@ namespace Gala {
         }
 
         private static Gdk.Pixbuf? get_icon_for_desktop_app_info (GLib.DesktopAppInfo desktop, int icon_size, int scale) {
+            if (icon_cache.contains (desktop)) {
+                foreach (var icon in icon_cache[desktop]) {
+                    if (icon.icon_size == icon_size && icon.scale == scale) {
+                        return icon.icon;
+                    }
+                }
+            }
+
             var icon = desktop.get_icon ();
 
             if (icon is GLib.ThemedIcon) {
@@ -116,7 +170,9 @@ namespace Gala {
                 }
 
                 try {
-                    return icon_info.load_icon ();
+                    var pixbuf = icon_info.load_icon ();
+                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    return pixbuf;
                 } catch (Error e) {
                     return null;
                 }
@@ -124,7 +180,9 @@ namespace Gala {
                 var file = ((GLib.FileIcon)icon).file;
                 var size_with_scale = icon_size * scale;
                 try {
-                    return new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
+                    var pixbuf = new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
+                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    return pixbuf;
                 } catch (Error e) {
                     return null;
                 }
