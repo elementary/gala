@@ -19,14 +19,22 @@ public class Gala.AppCache : GLib.Object {
     private Gee.HashMap<string, string> startup_wm_class_to_id;
     private Gee.HashMap<string, GLib.DesktopAppInfo> id_to_app;
 
+    private GLib.AppInfoMonitor app_info_monitor;
+
     construct {
         startup_wm_class_to_id = new Gee.HashMap<string, string> ();
         id_to_app = new Gee.HashMap<string, GLib.DesktopAppInfo> ();
+
+        app_info_monitor = GLib.AppInfoMonitor.@get ();
+        app_info_monitor.changed.connect (rebuild_cache);
 
         rebuild_cache ();
     }
 
     private void rebuild_cache () {
+        startup_wm_class_to_id.clear ();
+        id_to_app.clear ();
+
         var app_infos = GLib.AppInfo.get_all ();
 
         foreach (unowned GLib.AppInfo app in app_infos) {
