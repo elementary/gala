@@ -117,6 +117,28 @@ namespace Gala {
                 }
             }
 
+            unowned Meta.Group group = window.get_group ();
+            if (group != null) {
+                var group_windows = group.list_windows ();
+                group_windows.foreach ((window) => {
+                    if (window.get_window_type () != Meta.WindowType.NORMAL) {
+                        return;
+                    }
+
+                    if (window_to_desktop_cache[window] != null) {
+                        desktop_app = window_to_desktop_cache[window];
+                    }
+                });
+
+                if (desktop_app != null) {
+                    var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                    if (icon != null) {
+                        window_to_desktop_cache[window] = desktop_app;
+                        return icon;
+                    }
+                }
+            }
+
             // Haven't been able to get an icon for the window at this point, look to see
             // if we've already cached "application-default-icon" at this size
             foreach (var icon in unknown_icon_cache) {
