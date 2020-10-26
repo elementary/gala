@@ -148,9 +148,15 @@ namespace Gala {
             }
 
             // Construct a new "application-default-icon" and store it in the cache
-            var icon = Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
-            unknown_icon_cache.add (new CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
-            return icon;
+            try {
+                var icon = Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
+                unknown_icon_cache.add (new CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
+                return icon;
+            } catch (Error e) {
+                var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
+                icon.fill (0x00000000);
+                return icon;
+            }
         }
 
         public static void clear_window_cache (Meta.Window window) {
