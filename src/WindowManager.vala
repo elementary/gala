@@ -58,6 +58,10 @@ namespace Gala {
 
         public ScreenShield? screen_shield { get; private set; }
 
+#if HAS_MUTTER336
+        public PointerLocator pointer_locator { get; private set; }
+#endif
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -251,6 +255,12 @@ namespace Gala {
 #else
             top_window_group = screen.get_top_window_group ();
 #endif
+
+#if HAS_MUTTER336
+            pointer_locator = new PointerLocator (this);
+            ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (this));
+#endif
             ui_group.add_child (screen_shield);
 
             stage.remove_child (top_window_group);
@@ -305,7 +315,8 @@ namespace Gala {
 
             /*shadows*/
             InternalUtils.reload_shadow ();
-            ShadowSettings.get_default ().notify.connect (InternalUtils.reload_shadow);
+            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
+            shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
@@ -588,13 +599,13 @@ namespace Gala {
 
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
-            double[] keyframes = { 0.28, 0.58 };
-            GLib.Value[] x = { dest, dest };
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
 
-            var nudge = new Clutter.KeyframeTransition ("x");
+            var nudge = new Clutter.KeyframeTransition ("translation-x");
             nudge.duration = 360;
             nudge.remove_on_complete = true;
-            nudge.progress_mode = Clutter.AnimationMode.LINEAR;
+            nudge.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
             nudge.set_from_value (0.0f);
             nudge.set_to_value (0.0f);
             nudge.set_key_frames (keyframes);
@@ -1462,7 +1473,10 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             var window = actor.get_meta_window ();
-            if (!enable_animations) {
+
+            // Notifications are a special case and have to be always be handled
+            // regardless of the animation setting
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 actor.show ();
                 map_completed (actor);
 
@@ -1578,7 +1592,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    notification_stack.show_notification (actor);
+                    notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
                     break;
@@ -1593,7 +1607,7 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations) {
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
                 // only NORMAL windows have icons
@@ -1680,15 +1694,23 @@ namespace Gala {
                     });
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    destroying.add (actor);
-                    notification_stack.destroy_notification (actor);
+                    if (enable_animations) {
+                        destroying.add (actor);
+                    }
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
+                    notification_stack.destroy_notification (actor, enable_animations);
+
+                    if (enable_animations) {
+                        ulong destroy_handler_id = 0UL;
+                        destroy_handler_id = actor.transitions_completed.connect (() => {
+                            actor.disconnect (destroy_handler_id);
+                            destroying.remove (actor);
+                            destroy_completed (actor);
+                        });
+                    } else {
                         destroy_completed (actor);
-                    });
+                    }
+
                     break;
                 default:
                     destroy_completed (actor);
@@ -2188,6 +2210,12 @@ namespace Gala {
         public override void kill_switch_workspace () {
             end_switch_workspace ();
         }
+
+#if HAS_MUTTER336
+        public override void locate_pointer () {
+            pointer_locator.show_ripple ();
+        }
+#endif
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())

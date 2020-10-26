@@ -13,7 +13,6 @@ gala_bin_sources = files(
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
-    'Settings.vala',
     'ShadowEffect.vala',
     'WindowListener.vala',
     'WindowManager.vala',
@@ -42,6 +41,15 @@ gala_bin_sources = files(
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
+
+gala_bin_sources_336 = [
+    'Widgets/DwellClickTimer.vala',
+    'Widgets/PointerLocator.vala',
+]
+
+if mutter336_dep.found()
+    gala_bin_sources += gala_bin_sources_336
+endif
 
 gala_bin = executable(
     'gala',
