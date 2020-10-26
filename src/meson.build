@@ -23,13 +23,11 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
-    'Widgets/DwellClickTimer.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
-    'Widgets/PointerLocator.vala',
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
@@ -41,6 +39,15 @@ gala_bin_sources = files(
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
+
+gala_bin_sources_336 = [
+    'Widgets/DwellClickTimer.vala',
+    'Widgets/PointerLocator.vala',
+]
+
+if mutter336_dep.found()
+    gala_bin_sources += gala_bin_sources_336
+endif
 
 gala_bin = executable(
     'gala',
