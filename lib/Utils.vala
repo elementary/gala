@@ -59,9 +59,11 @@ namespace Gala {
                 }
             }
 
+            var sandbox_id = window.get_sandboxed_app_id ();
+
             var wm_instance = window.get_wm_class_instance ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_instance);
-            if (desktop_app != null) {
+            if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
@@ -71,7 +73,7 @@ namespace Gala {
 
             var wm_class = window.get_wm_class ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_class);
-            if (desktop_app != null) {
+            if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
@@ -80,7 +82,7 @@ namespace Gala {
             }
 
             desktop_app = lookup_desktop_wmclass (wm_instance);
-            if (desktop_app != null) {
+            if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
@@ -89,7 +91,7 @@ namespace Gala {
             }
 
             desktop_app = lookup_desktop_wmclass (wm_class);
-            if (desktop_app != null) {
+            if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
@@ -97,7 +99,6 @@ namespace Gala {
                 }
             }
 
-            var sandbox_id = window.get_sandboxed_app_id ();
             desktop_app = get_app_from_id (sandbox_id);
             if (desktop_app != null) {
                 var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
@@ -157,6 +158,20 @@ namespace Gala {
                 icon.fill (0x00000000);
                 return icon;
             }
+        }
+
+        private static bool check_app_prefix (GLib.DesktopAppInfo app, string? sandbox_id) {
+            if (sandbox_id == null) {
+                return true;
+            }
+
+            var prefix = "%s.".printf (sandbox_id);
+
+            if (app.get_id ().has_prefix (prefix)) {
+                return true;
+            }
+
+            return false;
         }
 
         public static void clear_window_cache (Meta.Window window) {
