@@ -40,13 +40,11 @@ gala_bin_sources = files(
     'Widgets/WorkspaceInsertThumb.vala',
 )
 
-gala_bin_sources_336 = [
-    'Widgets/DwellClickTimer.vala',
-    'Widgets/PointerLocator.vala',
-]
-
-if mutter336_dep.found()
-    gala_bin_sources += gala_bin_sources_336
+if libmutter_dep.version().version_compare ('>= 3.35.1')
+    gala_bin_sources += files(
+        'Widgets/DwellClickTimer.vala',
+        'Widgets/PointerLocator.vala',
+    )
 endif
 
 gala_bin = executable(
