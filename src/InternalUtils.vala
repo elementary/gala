@@ -93,6 +93,10 @@ namespace Gala {
          **/
 #if HAS_MUTTER330
         public static void set_input_area (Display display, InputArea area) {
+            if (Meta.Util.is_wayland_compositor ()) {
+                return;
+            }
+
             X.Xrectangle[] rects = {};
             int width, height;
             display.get_size (out width, out height);

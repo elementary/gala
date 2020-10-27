@@ -87,7 +87,6 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
-bamf_dep = dependency('libbamf3')
 plank_dep = dependency('plank', version: '>= @0@'.format(plank_version_required))
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
@@ -185,7 +184,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
 
 subdir('data')
 subdir('lib')
