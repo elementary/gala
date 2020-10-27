@@ -17,7 +17,7 @@
 
 namespace Gala {
     public class Utils {
-        private class CachedIcon {
+        private struct CachedIcon {
             public Gdk.Pixbuf icon;
             public int icon_size;
             public int scale;
@@ -26,16 +26,16 @@ namespace Gala {
         static Gdk.Pixbuf? resize_pixbuf = null;
         static Gdk.Pixbuf? close_pixbuf = null;
 
-        static Gee.HashMultiMap<DesktopAppInfo, CachedIcon> icon_cache;
+        static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
-        static Gee.ArrayList<CachedIcon> unknown_icon_cache;
+        static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
 
         static AppCache app_cache;
 
         static construct {
-            icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon> ();
+            icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
-            unknown_icon_cache = new Gee.ArrayList<CachedIcon> ();
+            unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
 
             app_cache = new AppCache ();
             app_cache.changed.connect (() => {
