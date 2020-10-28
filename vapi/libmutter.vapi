@@ -2040,8 +2040,8 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 #if HAS_MUTTER338
-	public static Meta.DebugPaintFlag get_debug_paint_flags ();
 	[CCode (cheader_filename = "meta/main.h")]
+	public static Meta.DebugPaintFlag get_debug_paint_flags ();
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.OptionContext get_option_context ();
