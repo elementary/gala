@@ -886,7 +886,7 @@ namespace Gala {
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     break;
-                case ActionType.MINIMIZE_CURRENT:
+                case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
                         current.minimize ();
                     break;
@@ -1016,7 +1016,7 @@ namespace Gala {
 
                     WindowFlags flags = WindowFlags.NONE;
                     if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_MINIMIZE;
+                        flags |= WindowFlags.CAN_HIDE;
 
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
@@ -1222,7 +1222,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            const int duration = AnimationDuration.MINIMIZE;
+            const int duration = AnimationDuration.HIDE;
 
             if (!enable_animations
                 || duration == 0
@@ -1403,7 +1403,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         unminimize_completed (actor);
                         return;
@@ -1457,7 +1457,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
                         return;
