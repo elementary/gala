@@ -7918,7 +7918,7 @@ namespace Clutter {
 #endif
 #if HAS_MUTTER336
 		public unowned Clutter.Actor get_actor_at_pos (Clutter.PickMode pick_mode, float x, float y);
-		public bool get_capture_final_size (Cairo.RectangleInt rect, int width, int height, float scale);
+		public bool get_capture_final_size (Cairo.RectangleInt rect, out int width, out int height, out float scale);
 #else
 		public unowned Clutter.Actor get_actor_at_pos (Clutter.PickMode pick_mode, int x, int y);
 #endif
@@ -7969,7 +7969,7 @@ namespace Clutter {
 		public bool get_user_resizable ();
 #endif
 #if HAS_MUTTER338
-		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, uint8 data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
+		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, [CCode (array_length = false, type = "uint8_t*")] ref unowned uint8[] data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
 		public void paint_to_framebuffer (Cogl.Framebuffer framebuffer, Cairo.RectangleInt rect, float scale, Clutter.PaintFlag paint_flags);
 #else
 		[Version (since = "0.4")]

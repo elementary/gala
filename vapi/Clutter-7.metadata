@@ -62,6 +62,12 @@ Container
 Stage.read_pixels
 	.width default=-1
 	.height default=-1
+Stage.get_capture_final_size
+	.width out
+	.height out
+	.scale out
+Stage.paint_to_buffer
+    .data type="unowned uint8[]" ref
 Text
 	.position_to_coords.line_height default=null
 

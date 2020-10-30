@@ -361,7 +361,7 @@ namespace Gala {
             foreach (var child in get_children ()) {
                 if (child != clone && child != active_shape)
 #if HAS_MUTTER338
-                    child.allocate_preferred_size ();
+                    child.allocate_preferred_size (child.fixed_x, child.fixed_y);
 #else
                     child.allocate_preferred_size (flags);
 #endif

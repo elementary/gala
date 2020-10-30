@@ -95,7 +95,7 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
-        public WindowManagerGala () {
+        construct {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -109,9 +109,7 @@ namespace Gala {
             Meta.Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
             Meta.Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
 #endif
-        }
 
-        construct {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
@@ -119,7 +117,7 @@ namespace Gala {
         }
 
         public override void start () {
-            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, show_stage);
+            show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
@@ -166,6 +164,7 @@ namespace Gala {
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
+
 #if HAS_MUTTER330
             WindowListener.init (display);
 #else
@@ -193,7 +192,10 @@ namespace Gala {
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
-            WorkspaceManager.init (this);
+            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
+                WorkspaceManager.init (this);
+                return false;
+            });
 
             /* our layer structure, copied from gnome-shell (from bottom to top):
              * stage
@@ -254,6 +256,7 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
 #endif
+
             ui_group.add_child (screen_shield);
 
             stage.remove_child (top_window_group);

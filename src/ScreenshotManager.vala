@@ -300,6 +300,41 @@ namespace Gala {
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
+#if HAS_MUTTER338
+            int image_width, image_height;
+            float scale;
+
+            wm.stage.get_capture_final_size ({x, y, width, height}, out image_width, out image_height, out scale);
+
+            image = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_width, image_height);
+
+            var paint_flags = Clutter.PaintFlag.NO_CURSORS;
+            if (include_cursor) {
+                paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
+            }
+
+            unowned uint8[] image_data = image.get_data ();
+
+            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    ref image_data,
+                    image.get_stride (),
+                    Cogl.PixelFormat.BGRA_8888_PRE,
+                    paint_flags
+                );
+            } else {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    ref image_data,
+                    image.get_stride (),
+                    Cogl.PixelFormat.ARGB_8888_PRE,
+                    paint_flags
+                );
+            }
+#else
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -315,6 +350,7 @@ namespace Gala {
             }
 
             image.mark_dirty ();
+#endif
             return image;
         }
 
