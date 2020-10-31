@@ -26,12 +26,6 @@ namespace Gala {
 #else
     public class WindowIcon : Clutter.Texture {
 #endif
-        static Bamf.Matcher matcher;
-
-        static construct {
-            matcher = Bamf.Matcher.get_default ();
-        }
-
         public Meta.Window window { get; construct; }
         public int icon_size { get; construct; }
         public int scale { get; construct; }
@@ -57,8 +51,6 @@ namespace Gala {
         }
 
         bool _destroy_on_unmanaged = false;
-        bool loaded = false;
-        uint32 xid;
 
         /**
          * Creates a new WindowIcon
@@ -78,41 +70,12 @@ namespace Gala {
         construct {
             width = icon_size * scale;
             height = icon_size * scale;
-            xid = (uint32) window.get_xwindow ();
-
-            // new windows often reach mutter earlier than bamf, that's why
-            // we have to wait until the next window opens and hope that it's
-            // ours so we can get a proper icon instead of the default fallback.
-            var app = matcher.get_application_for_xid (xid);
-            if (app == null)
-                matcher.view_opened.connect (retry_load);
-            else
-                loaded = true;
 
             update_texture (true);
         }
 
-        ~WindowIcon () {
-            if (!loaded)
-                matcher.view_opened.disconnect (retry_load);
-        }
-
-        void retry_load (Bamf.View view) {
-            var app = matcher.get_application_for_xid (xid);
-
-            // retry only once
-            loaded = true;
-            matcher.view_opened.disconnect (retry_load);
-
-            if (app == null)
-                return;
-
-            update_texture (false);
-        }
-
         void update_texture (bool initial) {
-            var pixbuf = Gala.Utils.get_icon_for_xid (xid, icon_size, scale, !initial);
-
+            var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
             try {
 #if HAS_MUTTER336
                 var image = new Clutter.Image ();
