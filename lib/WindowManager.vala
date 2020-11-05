@@ -20,7 +20,7 @@ namespace Gala {
         NONE = 0,
         SHOW_WORKSPACE_VIEW,
         MAXIMIZE_CURRENT,
-        MINIMIZE_CURRENT,
+        HIDE_CURRENT,
         OPEN_LAUNCHER,
         CUSTOM_COMMAND,
         WINDOW_OVERVIEW,
@@ -38,7 +38,7 @@ namespace Gala {
     [Flags]
     public enum WindowFlags {
         NONE = 0,
-        CAN_MINIMIZE,
+        CAN_HIDE,
         CAN_MAXIMIZE,
         IS_MAXIMIZED,
         ALLOWS_MOVE,

@@ -708,13 +708,13 @@ namespace Gala {
 
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
-            double[] keyframes = { 0.28, 0.58 };
-            GLib.Value[] x = { dest, dest };
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
 
-            var nudge = new Clutter.KeyframeTransition ("x");
+            var nudge = new Clutter.KeyframeTransition ("translation-x");
             nudge.duration = 360;
             nudge.remove_on_complete = true;
-            nudge.progress_mode = Clutter.AnimationMode.LINEAR;
+            nudge.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
             nudge.set_from_value (0.0f);
             nudge.set_to_value (0.0f);
             nudge.set_key_frames (keyframes);
@@ -837,27 +837,6 @@ namespace Gala {
 
                 actor.add_transition ("magnify-%s".printf (prop), scale_trans);
             }
-        }
-
-        public uint32[] get_all_xids () {
-            var list = new Gee.ArrayList<uint32> ();
-
-#if HAS_MUTTER330
-            unowned Meta.Display display = get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                foreach (var window in manager.get_workspace_by_index (i).list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#else
-            unowned GLib.List<Meta.Workspace> workspaces = get_screen ().get_workspaces ();
-            foreach (var workspace in workspaces) {
-                foreach (var window in workspace.list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#endif
-
-            return list.to_array ();
         }
 
         /**
@@ -1023,7 +1002,7 @@ namespace Gala {
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     break;
-                case ActionType.MINIMIZE_CURRENT:
+                case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
                         current.minimize ();
                     break;
@@ -1153,7 +1132,7 @@ namespace Gala {
 
                     WindowFlags flags = WindowFlags.NONE;
                     if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_MINIMIZE;
+                        flags |= WindowFlags.CAN_HIDE;
 
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
@@ -1359,7 +1338,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            const int duration = AnimationDuration.MINIMIZE;
+            const int duration = AnimationDuration.HIDE;
 
             if (!enable_animations
                 || duration == 0
@@ -1540,7 +1519,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         unminimize_completed (actor);
                         return;
@@ -1575,7 +1554,10 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             var window = actor.get_meta_window ();
-            if (!enable_animations) {
+
+            // Notifications are a special case and have to be always be handled
+            // regardless of the animation setting
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 actor.show ();
                 map_completed (actor);
 
@@ -1591,7 +1573,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
                         return;
@@ -1691,7 +1673,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    notification_stack.show_notification (actor);
+                    notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
                     break;
@@ -1706,12 +1688,12 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations) {
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
-                // only NORMAL windows have icons
-                if (window.window_type == Meta.WindowType.NORMAL)
-                    Utils.request_clean_icon_cache (get_all_xids ());
+                if (window.window_type == Meta.WindowType.NORMAL) {
+                    Utils.clear_window_cache (window);
+                }
 
                 return;
             }
@@ -1743,7 +1725,7 @@ namespace Gala {
                         actor.disconnect (destroy_handler_id);
                         destroying.remove (actor);
                         destroy_completed (actor);
-                        Utils.request_clean_icon_cache (get_all_xids ());
+                        Utils.clear_window_cache (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:
@@ -1793,15 +1775,23 @@ namespace Gala {
                     });
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    destroying.add (actor);
-                    notification_stack.destroy_notification (actor);
+                    if (enable_animations) {
+                        destroying.add (actor);
+                    }
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
+                    notification_stack.destroy_notification (actor, enable_animations);
+
+                    if (enable_animations) {
+                        ulong destroy_handler_id = 0UL;
+                        destroy_handler_id = actor.transitions_completed.connect (() => {
+                            actor.disconnect (destroy_handler_id);
+                            destroying.remove (actor);
+                            destroy_completed (actor);
+                        });
+                    } else {
                         destroy_completed (actor);
-                    });
+                    }
+
                     break;
                 default:
                     destroy_completed (actor);
