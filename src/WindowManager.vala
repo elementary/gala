@@ -730,27 +730,6 @@ namespace Gala {
             }
         }
 
-        public uint32[] get_all_xids () {
-            var list = new Gee.ArrayList<uint32> ();
-
-#if HAS_MUTTER330
-            unowned Meta.Display display = get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                foreach (var window in manager.get_workspace_by_index (i).list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#else
-            unowned GLib.List<Meta.Workspace> workspaces = get_screen ().get_workspaces ();
-            foreach (var workspace in workspaces) {
-                foreach (var window in workspace.list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#endif
-
-            return list.to_array ();
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -914,7 +893,7 @@ namespace Gala {
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     break;
-                case ActionType.MINIMIZE_CURRENT:
+                case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
                         current.minimize ();
                     break;
@@ -1044,7 +1023,7 @@ namespace Gala {
 
                     WindowFlags flags = WindowFlags.NONE;
                     if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_MINIMIZE;
+                        flags |= WindowFlags.CAN_HIDE;
 
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
@@ -1257,7 +1236,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            const int duration = AnimationDuration.MINIMIZE;
+            const int duration = AnimationDuration.HIDE;
 
             if (!enable_animations
                 || duration == 0
@@ -1438,7 +1417,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         unminimize_completed (actor);
                         return;
@@ -1492,7 +1471,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
                         return;
@@ -1610,9 +1589,9 @@ namespace Gala {
             if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
-                // only NORMAL windows have icons
-                if (window.window_type == Meta.WindowType.NORMAL)
-                    Utils.request_clean_icon_cache (get_all_xids ());
+                if (window.window_type == Meta.WindowType.NORMAL) {
+                    Utils.clear_window_cache (window);
+                }
 
                 return;
             }
@@ -1644,7 +1623,7 @@ namespace Gala {
                         actor.disconnect (destroy_handler_id);
                         destroying.remove (actor);
                         destroy_completed (actor);
-                        Utils.request_clean_icon_cache (get_all_xids ());
+                        Utils.clear_window_cache (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:

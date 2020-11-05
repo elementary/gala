@@ -22,8 +22,8 @@ namespace Gala {
         OPEN = 350,
         // Duration of the close animation
         CLOSE = 195,
-        // Duration of the minimize animation
-        MINIMIZE = 200,
+        // Duration of the hide animation
+        HIDE = 200,
         // Duration of the menu mapping animation
         MENU_MAP = 150,
         // Duration of the snap animation as used by maximize/unmaximize
