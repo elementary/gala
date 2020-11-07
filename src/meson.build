@@ -23,6 +23,8 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
+    'Gestures/Gesture.vala',
+    'Gestures/GestureManager.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',

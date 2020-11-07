@@ -56,6 +56,20 @@ namespace Gala {
         // https://bugzilla.gnome.org/show_bug.cgi?id=543189
         typeof (Gala.Utils).class_ref ();
 
+        var gesture_manager = new GestureManager ();
+        // TODO (José Expósito) For testing purposes, remove this
+        gesture_manager.on_gesture_begin.connect ((gesture) => {
+            debug (@"Gesture begin: $(gesture.type) - $(gesture.direction) - $(gesture.fingers) fingers - $(gesture.percentage)% - $(gesture.elapsed_time)");
+        });
+        gesture_manager.on_gesture_update.connect ((gesture) => {
+            debug (@"Gesture update: $(gesture.type) - $(gesture.direction) - $(gesture.fingers) fingers - $(gesture.percentage)% - $(gesture.elapsed_time)");
+        });
+        gesture_manager.on_gesture_end.connect ((gesture) => { 
+            debug (@"Gesture end: $(gesture.type) - $(gesture.direction) - $(gesture.fingers) fingers - $(gesture.percentage)% - $(gesture.elapsed_time)");
+         });
+        // ----
+        gesture_manager.run ();
+
         return Meta.run ();
     }
 }
