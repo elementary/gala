@@ -26,6 +26,7 @@ public class Gala.AreaTiling : Object {
     int animation_duration = 250;
     private int grid_x = 2;
     private int grid_y = 2;
+    private int gap = 12;
 
     public AreaTiling (WindowManager wm, Meta.Display display) {
         Object (wm : wm, display : display);
@@ -65,17 +66,15 @@ public class Gala.AreaTiling : Object {
 
     public void calculate_tile_rect (out Meta.Rectangle rect, int x, int y) {
         Meta.Rectangle wa = display.get_focus_window ().get_work_area_for_monitor (display.get_current_monitor ());
-        int monitor_width = wa.width, monitor_height = wa.height;
-        int monitor_x = x - wa.x, monitor_y = y - wa.y;
-        int n_cols = 3 * grid_x - 1;
-        int n_rows = 3 * grid_y - 1;
-        int col = (int)((n_cols * monitor_x / monitor_width) / 1.5);
-        int row = (int)((n_rows * monitor_y / monitor_height) / 1.5);
+        int col = int.min((int)(((3 * grid_x - 1) * (x - wa.x) / wa.width) / 1.5), grid_x);
+        int row = int.min((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5), grid_y);
+        int tile_width = (wa.width - (grid_x + 1) * gap) / grid_x;
+        int tile_height = (wa.height - (grid_y + 1) * gap) / grid_y;
         rect = {
-            wa.x + col / 2 * monitor_width / grid_x,
-            wa.y + row / 2 * monitor_height / grid_y,
-            (1 + col % 2) * monitor_width / grid_x,
-            (1 + row % 2) * monitor_height / grid_y,
+            wa.x + gap + (col >> 1) * (tile_width + gap),
+            wa.y + gap + (row >> 1) * (tile_height + gap),
+            tile_width + (col & 1) * (tile_width + gap),
+            tile_height + (row & 1) * (tile_height + gap),
         };
     }
 
