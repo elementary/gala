@@ -16,8 +16,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Meta;
-
 namespace Gala {
     public class WindowMovementTracker : Object {
         public weak Meta.Display display { get; construct; }
