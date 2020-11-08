@@ -105,6 +105,12 @@
 			<summary>Automatically move fullscreened windows to a new workspace</summary>
 			<description></description>
 		</key>
+    <key type="b" name="experimental-tiling-mode">
+      <!-- TODO: disable by default before merging -->
+			<default>true</default> 
+			<summary>Enable experimental tiling mode</summary>
+			<description></description>
+		</key>
   </schema>
 
   <schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">

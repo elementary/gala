@@ -56,7 +56,7 @@ namespace Gala {
             Clutter.ModifierType type;
             display.get_cursor_tracker ().get_pointer (out x, out y, out type);
 
-            if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
+            if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
                 if (!area_tiling.is_opened ()) {
                     display.end_grab_op (display.get_current_time ());
                     area_tiling.pos_x = x;

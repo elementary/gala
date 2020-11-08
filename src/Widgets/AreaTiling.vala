@@ -113,13 +113,19 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
-        close ();
-        return true;
+        if (event.button == 1) {
+            close ();
+            return true;
+        } 
+        return false;
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
-        close ();
-        return true;
+        if (event.button == 1) {
+            close ();
+            return true;
+        } 
+        return false;
     }
 
     public override bool motion_event (Clutter.MotionEvent event) {

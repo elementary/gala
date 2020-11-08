@@ -176,9 +176,11 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            area_tiling = new AreaTiling (this);
-            window_movement_tracker = new WindowMovementTracker (display, area_tiling);
-            window_movement_tracker.watch ();
+            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
+                area_tiling = new AreaTiling (this);
+                window_movement_tracker = new WindowMovementTracker (display, area_tiling);
+                window_movement_tracker.watch ();
+            }
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -260,7 +262,9 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-            ui_group.add_child (area_tiling);
+            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
+                ui_group.add_child (area_tiling);
+            }
 #endif
             ui_group.add_child (screen_shield);
 
@@ -378,12 +382,14 @@ namespace Gala {
                     window_overview.open (hints);
                 }
             });
-            display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
-                if (area_tiling.is_opened ())
-                    area_tiling.close ();
-                else
-                    area_tiling.open ();
-            });
+            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
+                display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
+                    if (area_tiling.is_opened ())
+                        area_tiling.close ();
+                    else
+                        area_tiling.open ();
+                });
+            }
 
             update_input_area ();
 
