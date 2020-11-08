@@ -18,35 +18,35 @@
 *
 */
 
-public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
+public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     const int DEFAULT_GAP = 12;
     const int ICON_SIZE = 64;
 
     public WindowManager wm { get; construct; }
     public bool is_shrinked = false;
-    public int pos_x;
-    public int pos_y;
     private Meta.Display display;
     private ModalProxy? modal_proxy;
     private Clutter.Actor window_icon;
-    private int current_monitor;
-    private Meta.Window? current_window = null;
-    private bool _is_opened = false;
     private int animation_duration = 250;
+    private int scale;
+    private bool _is_opened = false;
+    private Meta.Window? current_window = null;
+    private int current_monitor;
+    private int pos_x;
+    private int pos_y;
     private int _grid[2];
     private int grid_x {
         get { 
             var wa = current_window.get_work_area_for_monitor (current_monitor);
-            return int.min(_grid[0], scale * wa.width / 600);
+            return int.min (_grid[0], scale * wa.width / 600);
         }
     }
     private int grid_y {
         get { 
             var wa = current_window.get_work_area_for_monitor (current_monitor);
-            return int.min(_grid[1], scale * wa.height / 400);
+            return int.min (_grid[1], scale * wa.height / 400);
         }
     }
-
     private Meta.Rectangle tile_rect;
     private int col;
     private int row;
@@ -54,23 +54,21 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     private int max_row { get { return 2 * (grid_y - 1); } }
     private int gap = DEFAULT_GAP;
     private bool order = true;
-    private int scale;
 
-    public AreaTiling (WindowManager wm) {
+    public TilingMode (WindowManager wm) {
         Object (wm : wm);
     }
 
     construct {
-        visible = false;
         reactive = true;
         _grid[0] = 2;
         _grid[1] = 2;
         display = wm.get_display ();
+        scale = InternalUtils.get_ui_scaling_factor ();
         int screen_width, screen_height;
         display.get_size (out screen_width, out screen_height);
         width = screen_width;
         height = screen_height;
-        scale = InternalUtils.get_ui_scaling_factor ();
     }
 
     public void open (HashTable<string,Variant>? hints = null) {
@@ -78,6 +76,10 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
         current_window = display.get_focus_window ();
         if (("mouse" in hints)) {
             current_monitor = display.get_current_monitor ();
+            int pointer_x, pointer_y;
+            display.get_cursor_tracker ().get_pointer (out pointer_x, out pointer_y, null);
+            pos_x = pointer_x;
+            pos_y = pointer_y;
         } else {
             current_monitor = current_window.get_monitor ();
             Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
@@ -220,7 +222,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
                         var old_max_row = max_row;
                         current_monitor = neighbor;
                         col = max_col;
-                        row = (row + (max_row - old_max_row) / 2).clamp(0, max_row);
+                        row = (row + (max_row - old_max_row) / 2).clamp (0, max_row);
                     }
                 }
                 break;
@@ -233,7 +235,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
                         var old_max_row = max_row;
                         current_monitor = neighbor;
                         col = 0;
-                        row = (row + (max_row - old_max_row) / 2).clamp(0, max_row);
+                        row = (row + (max_row - old_max_row) / 2).clamp (0, max_row);
                     }
                 }
                 break;
@@ -245,7 +247,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
                     if (neighbor != -1) {
                         var old_max_col = max_col;
                         current_monitor = neighbor;
-                        col = (col + (max_col - old_max_col) / 2).clamp(0, max_col);
+                        col = (col + (max_col - old_max_col) / 2).clamp (0, max_col);
                         row = max_row;
                     }
                 }
@@ -258,8 +260,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
                     if (neighbor != -1) {
                         var old_max_col = max_col;
                         current_monitor = neighbor;
-                        debug(@"col: $col old_max_col: $old_max_col max_col: $max_col");
-                        col = (col + (max_col - old_max_col) / 2).clamp(0, max_col);
+                        col = (col + (max_col - old_max_col) / 2).clamp (0, max_col);
                         row = 0;
                     }
                 }
@@ -274,8 +275,8 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
         calculate_tile_rect ();
         pos_x = tile_rect.x + tile_rect.width / 2;
         pos_y = tile_rect.y + tile_rect.height / 2;
-        window_icon.set_position((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
-        wm.show_tile_preview (current_window, tile_rect, display.get_current_monitor ());
+        window_icon.set_position ((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
+        wm.show_tile_preview (current_window, tile_rect, current_monitor);
     }
 
     private void update_preview () {
@@ -284,8 +285,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
             shrink_window (current_window, (float) pos_x, (float) pos_y);
         }
 
-        //  window_icon.set_position((float) pos_x - 48.0f, (float) pos_y - 48.0f);
-        window_icon.set_position((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
+        window_icon.set_position ((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
         wm.show_tile_preview (current_window, tile_rect, current_monitor);
     }
 
@@ -312,8 +312,8 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
 
     private void set_col_row_from_x_y (int x, int y) {
         Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
-        col = ((int)(((3 * grid_x - 1) * (x - wa.x) / wa.width) / 1.5)).clamp(0, max_col);
-        row = ((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5)).clamp(0, max_row);
+        col = ((int)(((3 * grid_x - 1) * (x - wa.x) / wa.width) / 1.5)).clamp (0, max_col);
+        row = ((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5)).clamp (0, max_row);
     }
 
     private void shrink_window (Meta.Window? window, float x, float y) {

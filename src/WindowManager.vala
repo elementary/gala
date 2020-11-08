@@ -78,7 +78,7 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
         
-        AreaTiling area_tiling;
+        TilingMode tiling_mode;
         WindowMovementTracker window_movement_tracker;
 
         NotificationStack notification_stack;
@@ -176,7 +176,7 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            area_tiling = new AreaTiling (this);
+            tiling_mode = new TilingMode (this);
             window_movement_tracker = new WindowMovementTracker (this);
             window_movement_tracker.watch ();
             window_movement_tracker.position_changed.connect ((window) => {
@@ -186,13 +186,11 @@ namespace Gala {
                     display.get_cursor_tracker ().get_pointer (out x, out y, out type);
         
                     if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
-                        if (!area_tiling.is_opened ()) {
+                        if (!tiling_mode.is_opened ()) {
                             display.end_grab_op (display.get_current_time ());
-                            area_tiling.pos_x = x;
-                            area_tiling.pos_y = y;
                             var hints = new HashTable<string,Variant> (str_hash, str_equal);
                             hints.@set ("mouse", true);
-                            area_tiling.open ();
+                            tiling_mode.open ();
                         }
                     } 
                 }
@@ -278,7 +276,7 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-            ui_group.add_child (area_tiling);
+            ui_group.add_child (tiling_mode);
 #endif
             ui_group.add_child (screen_shield);
 
@@ -397,8 +395,8 @@ namespace Gala {
                 }
             });
             display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
-                if (behavior_settings.get_boolean ("experimental-tiling-mode") && !area_tiling.is_opened ()) {
-                    area_tiling.open ();
+                if (behavior_settings.get_boolean ("experimental-tiling-mode") && !tiling_mode.is_opened ()) {
+                    tiling_mode.open ();
                 }
             });
 
@@ -1131,7 +1129,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null && !area_tiling.is_shrinked) {
+            if (tile_preview != null && !tiling_mode.is_shrinked) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
