@@ -37,19 +37,17 @@ namespace Gala {
             current_window.position_changed.disconnect (on_position_changed);
         }
 
-        private void on_grab_op_begin (Meta.Display display, Meta.Window window) {
+        private void on_grab_op_begin (Meta.Display display, Meta.Window? window) {
             current_window = window;
-            current_window.position_changed.connect (on_position_changed);
+            if (current_window != null) {
+                current_window.position_changed.connect (on_position_changed);
+                on_position_changed (current_window);
+            }
         }
 
-        private void on_grab_op_end (Meta.Display display, Meta.Window window) {
-            current_window.position_changed.disconnect (on_position_changed);
-            if (area_tiling.is_active) {
-                unowned Meta.CursorTracker ct = display.get_cursor_tracker ();
-                int x, y;
-                ct.get_pointer (out x, out y, null);
-                area_tiling.tile (window, x, y);
-                area_tiling.hide_preview (window);
+        private void on_grab_op_end (Meta.Display display, Meta.Window? window) {
+            if (current_window != null) {
+                current_window.position_changed.disconnect (on_position_changed);
             }
         }
 
@@ -59,10 +57,15 @@ namespace Gala {
             display.get_cursor_tracker ().get_pointer (out x, out y, out type);
 
             if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                area_tiling.show_preview (window, x, y);
-            } else if (area_tiling.is_active) {
-                area_tiling.hide_preview (window);
-            }
+                if (!area_tiling.is_opened ()) {
+                    display.end_grab_op (display.get_current_time ());
+                    area_tiling.pos_x = x;
+                    area_tiling.pos_y = y;
+                    var hints = new HashTable<string,Variant> (str_hash, str_equal);
+                    hints.@set ("mouse", true);
+                    area_tiling.open ();
+                }
+            } 
         }
     }
 }

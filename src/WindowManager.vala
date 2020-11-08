@@ -176,7 +176,7 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            area_tiling = new AreaTiling (this, display);
+            area_tiling = new AreaTiling (this);
             window_movement_tracker = new WindowMovementTracker (display, area_tiling);
             window_movement_tracker.watch ();
 
@@ -260,6 +260,7 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
+            ui_group.add_child (area_tiling);
 #endif
             ui_group.add_child (screen_shield);
 
@@ -376,6 +377,12 @@ namespace Gala {
                     hints.@set ("all-windows", true);
                     window_overview.open (hints);
                 }
+            });
+            display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
+                if (area_tiling.is_opened ())
+                    area_tiling.close ();
+                else
+                    area_tiling.open ();
             });
 
             update_input_area ();
@@ -1107,7 +1114,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null && !area_tiling.is_active) {
+            if (tile_preview != null && !area_tiling.is_shrinked) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();

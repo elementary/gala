@@ -147,6 +147,12 @@
       <summary>Shortcut to open the window overview for all windows</summary>
       <description></description>
     </key>
+    <key type="as" name="tiling-mode">
+      <!-- <default><![CDATA[['<Control><Super>Left', '<Control><Super>Down', '<Control><Super>Up', '<Control><Super>Right']]]></default> -->
+      <default><![CDATA[['<Super>Return']]]></default>
+      <summary>Show pie menu.</summary>
+      <description></description>
+    </key>
     <key type="as" name="cycle-workspaces-next">
       <default><![CDATA[['<Super>Tab']]]></default>
       <summary>Cycle to the next workspace to the right or to back to the first</summary>

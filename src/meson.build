@@ -1,5 +1,4 @@
 gala_bin_sources = files(
-    'AreaTiling.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DockThemeManager.vala',
@@ -25,6 +24,7 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
+    'Widgets/AreaTiling.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
