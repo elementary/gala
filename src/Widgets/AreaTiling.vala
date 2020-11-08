@@ -85,6 +85,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
         }
 
         set_col_row_from_x_y (pos_x, pos_y);
+        calculate_tile_rect ();
         update_preview ();
 
         visible = true;
@@ -122,8 +123,10 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool motion_event (Clutter.MotionEvent event) {
+        pos_x = (int)event.x;
         pos_y = (int)event.y;
         set_col_row_from_x_y (pos_x, pos_y);
+        calculate_tile_rect ();
         update_preview ();
         return true;
     }
@@ -205,7 +208,10 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     private void tile () {
-        calculate_tile_rect ();
+        if (current_window.maximized_horizontally || current_window.maximized_vertically) {
+            current_window.unmaximize (Meta.MaximizeFlags.BOTH);
+        }
+
         current_window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
     }
 
@@ -223,7 +229,6 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
             shrink_window (current_window, (float) pos_x, (float) pos_y);
         }
 
-        calculate_tile_rect ();
         //  window_icon.set_position((float) pos_x - 48.0f, (float) pos_y - 48.0f);
         window_icon.set_position((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
         wm.show_tile_preview (current_window, tile_rect, display.get_current_monitor ());
