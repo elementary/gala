@@ -18,12 +18,18 @@
 
 namespace Gala {
     public class WindowMovementTracker : Object {
-        public weak Meta.Display display { get; construct; }
-        public AreaTiling area_tiling { get; construct; }
+        public signal void position_changed (Meta.Window window);
+
+        public weak WindowManager wm { get; construct; }
+        private weak Meta.Display display;
         private Meta.Window current_window;
 
-        public WindowMovementTracker (Meta.Display display, AreaTiling area_tiling) {
-            Object (display: display, area_tiling: area_tiling);
+        public WindowMovementTracker (WindowManager wm) {
+            Object (wm: wm);
+        }
+
+        construct {
+            display = wm.get_display ();
         }
 
         public void watch () {
@@ -37,35 +43,22 @@ namespace Gala {
             current_window.position_changed.disconnect (on_position_changed);
         }
 
-        private void on_grab_op_begin (Meta.Display display, Meta.Window? window) {
+        private void on_grab_op_begin (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
             current_window = window;
-            if (current_window != null) {
+            if (op == Meta.GrabOp.MOVING && current_window != null) {
                 current_window.position_changed.connect (on_position_changed);
                 on_position_changed (current_window);
             }
         }
 
-        private void on_grab_op_end (Meta.Display display, Meta.Window? window) {
-            if (current_window != null) {
+        private void on_grab_op_end (Meta.Display display, Meta.Window? window, Meta.GrabOp op) {
+            if (op == Meta.GrabOp.MOVING && current_window != null) {
                 current_window.position_changed.disconnect (on_position_changed);
             }
         }
 
         private void on_position_changed (Meta.Window window) {
-            int x, y;
-            Clutter.ModifierType type;
-            display.get_cursor_tracker ().get_pointer (out x, out y, out type);
-
-            if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
-                if (!area_tiling.is_opened ()) {
-                    display.end_grab_op (display.get_current_time ());
-                    area_tiling.pos_x = x;
-                    area_tiling.pos_y = y;
-                    var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                    hints.@set ("mouse", true);
-                    area_tiling.open ();
-                }
-            } 
+            position_changed (window);
         }
     }
 }

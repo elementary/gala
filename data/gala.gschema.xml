@@ -108,7 +108,7 @@
     <key type="b" name="experimental-tiling-mode">
       <!-- TODO: disable by default before merging -->
 			<default>true</default> 
-			<summary>Enable experimental tiling mode</summary>
+			<summary>Enable experimental tiling mode.</summary>
 			<description></description>
 		</key>
   </schema>

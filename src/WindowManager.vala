@@ -176,11 +176,27 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
-                area_tiling = new AreaTiling (this);
-                window_movement_tracker = new WindowMovementTracker (display, area_tiling);
-                window_movement_tracker.watch ();
-            }
+            area_tiling = new AreaTiling (this);
+            window_movement_tracker = new WindowMovementTracker (this);
+            window_movement_tracker.watch ();
+            window_movement_tracker.position_changed.connect ((window) => {
+                if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
+                    int x, y;
+                    Clutter.ModifierType type;
+                    display.get_cursor_tracker ().get_pointer (out x, out y, out type);
+        
+                    if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
+                        if (!area_tiling.is_opened ()) {
+                            display.end_grab_op (display.get_current_time ());
+                            area_tiling.pos_x = x;
+                            area_tiling.pos_y = y;
+                            var hints = new HashTable<string,Variant> (str_hash, str_equal);
+                            hints.@set ("mouse", true);
+                            area_tiling.open ();
+                        }
+                    } 
+                }
+            });
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -262,9 +278,7 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
-                ui_group.add_child (area_tiling);
-            }
+            ui_group.add_child (area_tiling);
 #endif
             ui_group.add_child (screen_shield);
 
@@ -382,14 +396,11 @@ namespace Gala {
                     window_overview.open (hints);
                 }
             });
-            if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
-                display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
-                    if (area_tiling.is_opened ())
-                        area_tiling.close ();
-                    else
-                        area_tiling.open ();
-                });
-            }
+            display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
+                if (behavior_settings.get_boolean ("experimental-tiling-mode") && !area_tiling.is_opened ()) {
+                    area_tiling.open ();
+                }
+            });
 
             update_input_area ();
 

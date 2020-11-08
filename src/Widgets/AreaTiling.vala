@@ -19,30 +19,42 @@
 */
 
 public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
-    const int DEFAULT_GAP = 6;
+    const int DEFAULT_GAP = 12;
     const int ICON_SIZE = 64;
 
     public WindowManager wm { get; construct; }
     public bool is_shrinked = false;
+    public int pos_x;
+    public int pos_y;
     private Meta.Display display;
     private ModalProxy? modal_proxy;
     private Clutter.Actor window_icon;
-    private bool _is_opened = false;
-    public int pos_x;
-    public int pos_y;
+    private int current_monitor;
     private Meta.Window? current_window = null;
+    private bool _is_opened = false;
     private int animation_duration = 250;
-    private int grid_x = 2;
-    private int grid_y = 2;
+    private int _grid[2];
+    private int grid_x {
+        get { 
+            var wa = current_window.get_work_area_for_monitor (current_monitor);
+            return int.min(_grid[0], scale * wa.width / 600);
+        }
+    }
+    private int grid_y {
+        get { 
+            var wa = current_window.get_work_area_for_monitor (current_monitor);
+            return int.min(_grid[1], scale * wa.height / 400);
+        }
+    }
+
     private Meta.Rectangle tile_rect;
-    //  private int start_x;
-    //  private int start_y;
-    //  private Meta.MaximizeFlags maximize_flags;
     private int col;
     private int row;
+    private int max_col { get { return 2 * (grid_x - 1); } }
+    private int max_row { get { return 2 * (grid_y - 1); } }
     private int gap = DEFAULT_GAP;
     private bool order = true;
-    //  private Clutter.Canvas canvas;
+    private int scale;
 
     public AreaTiling (WindowManager wm) {
         Object (wm : wm);
@@ -51,35 +63,24 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     construct {
         visible = false;
         reactive = true;
+        _grid[0] = 2;
+        _grid[1] = 2;
         display = wm.get_display ();
         int screen_width, screen_height;
         display.get_size (out screen_width, out screen_height);
         width = screen_width;
         height = screen_height;
-
-        //  canvas = new Clutter.Canvas ();
-        //  canvas.set_size (screen_width, screen_height);
-        //  set_content (canvas);
-
-        //  display.grab_op_begin.connect ((display, window) => {
-        //      int x, y;
-        //      Clutter.ModifierType type;
-        //      display.get_cursor_tracker ().get_pointer (out x, out y, out type);
-        //      if ((type & Gdk.ModifierType.CONTROL_MASK) != 0) {
-        //          if (!_is_opened) {
-        //              display.end_grab_op (display.get_current_time ());
-        //              open ();
-        //          }
-        //      } 
-        //  });
-        //  display.grab_op_end.connect (on_grab_op_end);
+        scale = InternalUtils.get_ui_scaling_factor ();
     }
 
     public void open (HashTable<string,Variant>? hints = null) {
         order = true;
         current_window = display.get_focus_window ();
-        if (!("mouse" in hints)) {
-            Meta.Rectangle wa = current_window.get_work_area_for_monitor (display.get_current_monitor ());
+        if (("mouse" in hints)) {
+            current_monitor = display.get_current_monitor ();
+        } else {
+            current_monitor = current_window.get_monitor ();
+            Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
             pos_x = wa.x + wa.width / 2;
             pos_y = wa.y + wa.height / 2;
         }
@@ -129,12 +130,17 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool motion_event (Clutter.MotionEvent event) {
-        pos_x = (int)event.x;
-        pos_y = (int)event.y;
+        update_state_from_motion ((int)event.x, (int)event.y);
+        return true;
+    }
+
+    private void update_state_from_motion (int x, int y) {
+        pos_x = x;
+        pos_y = y;
+        current_monitor = display.get_current_monitor ();
         set_col_row_from_x_y (pos_x, pos_y);
         calculate_tile_rect ();
         update_preview ();
-        return true;
     }
 
     public override bool key_press_event (Clutter.KeyEvent event) {
@@ -148,62 +154,44 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
             case Clutter.Key.Left:
             case Clutter.Key.a:
             case Clutter.Key.h:
-                col = int.max(col - 1, 0);
-                update_preview_keyboard ();
+                update_state_from_direction (Meta.MotionDirection.LEFT);
                 break;
             case Clutter.Key.Right:
             case Clutter.Key.d:
             case Clutter.Key.l:
-                col = int.min(col + 1, 2 * (grid_x - 1));
-                update_preview_keyboard ();
+                update_state_from_direction (Meta.MotionDirection.RIGHT);
                 break;
             case Clutter.Key.Up:
             case Clutter.Key.w:
             case Clutter.Key.k:
-                row = int.max(row - 1, 0);
-                update_preview_keyboard ();
+                update_state_from_direction (Meta.MotionDirection.UP);
                 break;
             case Clutter.Key.Down:
             case Clutter.Key.s:
             case Clutter.Key.j:
-                row = int.min(row + 1, 2 * (grid_y - 1));
-                update_preview_keyboard ();
+                update_state_from_direction (Meta.MotionDirection.DOWN);
                 break;
             case Clutter.Key.G:
             case Clutter.Key.g:
                 gap = gap == 0 ? DEFAULT_GAP : 0;
+                calculate_tile_rect ();
                 update_preview ();
                 break;
             case Clutter.Key.@1:
-                if (order) {
-                    grid_x = 1;
-                } else {
-                    grid_y = 1;
-                }
+                _grid[(int)order] = 1;
                 order = !order;
                 break;
             case Clutter.Key.@2:
-                if (order) {
-                    grid_x = 2;
-                } else {
-                    grid_y = 2;
-                }
+                _grid[(int)order] = 2;
                 order = !order;
                 break;
             case Clutter.Key.@3:
-                if (order) {
-                    grid_x = 3;
-                } else {
-                    grid_y = 3;
-                }
+                _grid[(int)order] = 3;
                 order = !order;
+               order = !order;
                 break;
             case Clutter.Key.@4:
-                if (order) {
-                    grid_x = 4;
-                } else {
-                    grid_y = 4;
-                }
+                _grid[(int)order] = 4;
                 order = !order;
                 break;
             default:
@@ -221,7 +209,68 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
         current_window.move_resize_frame (true, tile_rect.x, tile_rect.y, tile_rect.width, tile_rect.height);
     }
 
-    private void update_preview_keyboard () {
+    private void set_col_row_from_direction (Meta.MotionDirection? direction) {
+        switch (direction) {
+            case Meta.MotionDirection.LEFT:
+                if (col > 0) {
+                    col -= 1; 
+                } else {
+                    var neighbor = display.get_monitor_neighbor_index (current_monitor, Meta.DisplayDirection.LEFT);
+                    if (neighbor != -1) {
+                        var old_max_row = max_row;
+                        current_monitor = neighbor;
+                        col = max_col;
+                        row = (row + (max_row - old_max_row) / 2).clamp(0, max_row);
+                    }
+                }
+                break;
+            case Meta.MotionDirection.RIGHT:
+                if (col < max_col) {
+                    col += 1; 
+                } else {
+                    var neighbor = display.get_monitor_neighbor_index (current_monitor, Meta.DisplayDirection.RIGHT);
+                    if (neighbor != -1) {
+                        var old_max_row = max_row;
+                        current_monitor = neighbor;
+                        col = 0;
+                        row = (row + (max_row - old_max_row) / 2).clamp(0, max_row);
+                    }
+                }
+                break;
+            case Meta.MotionDirection.UP:
+                if (row > 0) {
+                    row -= 1; 
+                } else {
+                    var neighbor = display.get_monitor_neighbor_index (current_monitor, Meta.DisplayDirection.UP);
+                    if (neighbor != -1) {
+                        var old_max_col = max_col;
+                        current_monitor = neighbor;
+                        col = (col + (max_col - old_max_col) / 2).clamp(0, max_col);
+                        row = max_row;
+                    }
+                }
+                break;
+            case Meta.MotionDirection.DOWN:
+                if (row < max_row) {
+                    row += 1; 
+                } else {
+                    var neighbor = display.get_monitor_neighbor_index (current_monitor, Meta.DisplayDirection.DOWN);
+                    if (neighbor != -1) {
+                        var old_max_col = max_col;
+                        current_monitor = neighbor;
+                        debug(@"col: $col old_max_col: $old_max_col max_col: $max_col");
+                        col = (col + (max_col - old_max_col) / 2).clamp(0, max_col);
+                        row = 0;
+                    }
+                }
+                break;
+            default:
+                return;
+        }
+    }
+
+    private void update_state_from_direction (Meta.MotionDirection direction) {
+        set_col_row_from_direction (direction);
         calculate_tile_rect ();
         pos_x = tile_rect.x + tile_rect.width / 2;
         pos_y = tile_rect.y + tile_rect.height / 2;
@@ -237,7 +286,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
 
         //  window_icon.set_position((float) pos_x - 48.0f, (float) pos_y - 48.0f);
         window_icon.set_position((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
-        wm.show_tile_preview (current_window, tile_rect, display.get_current_monitor ());
+        wm.show_tile_preview (current_window, tile_rect, current_monitor);
     }
 
     private void hide_preview () {
@@ -249,10 +298,7 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     private void calculate_tile_rect () {
-        Meta.Rectangle wa = current_window.get_work_area_for_monitor (display.get_current_monitor ());
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        int grid_x = int.min(grid_x, scale * wa.width / 600);
-        int grid_y = int.min(grid_y, scale * wa.height / 400);
+        Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
         int gap = gap * scale;
         int tile_width = (wa.width - (grid_x + 1) * gap) / grid_x;
         int tile_height = (wa.height - (grid_y + 1) * gap) / grid_y;
@@ -265,13 +311,9 @@ public class Gala.AreaTiling : Clutter.Actor, ActivatableComponent {
     }
 
     private void set_col_row_from_x_y (int x, int y) {
-        Meta.Rectangle wa = current_window.get_work_area_for_monitor (display.get_current_monitor ());
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        // TODO: make grid_xy property
-        int grid_x = int.min(grid_x, scale * wa.width / 600);
-        int grid_y = int.min(grid_y, scale * wa.height / 400);
-        col = int.min((int)(((3 * grid_x - 1) * (x - wa.x) / wa.width) / 1.5), 2 * (grid_x - 1));
-        row = int.min((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5), 2 * (grid_y - 1));
+        Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
+        col = ((int)(((3 * grid_x - 1) * (x - wa.x) / wa.width) / 1.5)).clamp(0, max_col);
+        row = ((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5)).clamp(0, max_row);
     }
 
     private void shrink_window (Meta.Window? window, float x, float y) {
