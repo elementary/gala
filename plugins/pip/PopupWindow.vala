@@ -38,13 +38,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private Clutter.Actor resize_handle;
     private Clutter.ClickAction close_action;
     private Clutter.DragAction resize_action;
-    private MoveAction move_action;
-
-    private bool dragging = false;
-    private bool clicked = false;
-
-    private int x_offset_press = 0;
-    private int y_offset_press = 0;
+    private DragDropAction move_action;
 
     private float begin_resize_width = 0.0f;
     private float begin_resize_height = 0.0f;
@@ -95,10 +89,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         clone = new Clutter.Clone (window_actor);
 
-        move_action = new MoveAction ();
+        move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
         move_action.drag_begin.connect (on_move_begin);
-        move_action.drag_end.connect (on_move_end);
-        move_action.move.connect (on_move);
+        move_action.drag_canceled.connect (on_move_end);
+        move_action.actor_clicked.connect (activate);
 
         container = new Clutter.Actor ();
         container.reactive = true;
@@ -215,42 +209,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         on_allocation_changed ();
     }
 
-    private void on_move_begin () {
-        int px, py;
-        get_current_cursor_position (out px, out py);
-
-        x_offset_press = (int)(px - x);
-        y_offset_press = (int)(py - y);
-
-        clicked = true;
-        dragging = false;
+    private Clutter.Actor on_move_begin () {
+        return this;
     }
 
     private void on_move_end () {
-        clicked = false;
-
-        if (dragging) {
-            update_screen_position ();
-            dragging = false;
-        } else {
-            activate ();
-        }
-    }
-
-    private void on_move () {
-        if (!clicked) {
-            return;
-        }
-
-        float motion_x, motion_y;
-        move_action.get_motion_coords (out motion_x, out motion_y);
-
-        x = (int)motion_x - x_offset_press;
-        y = (int)motion_y - y_offset_press;
-
-        if (!dragging) {
-            dragging = true;
-        }
+        update_screen_position ();
     }
 
     private void on_resize_drag_begin (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
