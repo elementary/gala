@@ -23,14 +23,15 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     const int ICON_SIZE = 64;
 
     public WindowManager wm { get; construct; }
-    public bool is_shrinked = false;
+    public bool is_preview_active = false;
     private Meta.Display display;
     private ModalProxy? modal_proxy;
-    private Clutter.Actor window_icon;
-    private int animation_duration = 250;
-    private int scale;
-    private bool _is_opened = false;
     private Meta.Window? current_window = null;
+    private Meta.Rectangle tile_rect;
+    private Clutter.Actor window_icon;
+    private int scale;
+    private bool is_canceled = false;
+    private bool _is_opened = false;
     private int current_monitor;
     private int pos_x;
     private int pos_y;
@@ -47,7 +48,6 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
             return int.min (scale * wa.height / 400, _grid[1]);
         }
     }
-    private Meta.Rectangle tile_rect;
     private int col;
     private int row;
     private int max_col { get { return 2 * (grid_x - 1); } }
@@ -78,6 +78,7 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
 
     public void open (HashTable<string,Variant>? hints = null) {
         order = false;
+        is_canceled = false;
         current_window = display.get_focus_window ();
         if (hints != null && ("mouse" in hints)) {
             current_monitor = display.get_current_monitor ();
@@ -94,7 +95,7 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
 
         set_col_row_from_x_y (pos_x, pos_y);
         calculate_tile_rect ();
-        update_preview ();
+        init_preview ((float) pos_x, (float) pos_y);
 
         visible = true;
         _is_opened = true;
@@ -104,8 +105,10 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
 
     public void close () {
         if (current_window != null) {
-            tile ();
-            hide_preview ();
+            if (!is_canceled) {
+                tile ();
+            }
+            end_preview ();
             current_window = null;
         }
 
@@ -158,6 +161,9 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     public override bool key_press_event (Clutter.KeyEvent event) {
         switch (event.keyval) {
             case Clutter.Key.Escape:
+                is_canceled = true;
+                close ();
+                break;
             case Clutter.Key.Return:
             case Clutter.Key.KP_Enter:
             case Clutter.Key.space:
@@ -195,6 +201,8 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
             case Clutter.Key.@4:
                 _grid[(int)order] = (int)(event.keyval - Clutter.Key.@1 + 1);
                 calculate_tile_rect ();
+                pos_x = tile_rect.x + tile_rect.width / 2;
+                pos_y = tile_rect.y + tile_rect.height / 2;
                 update_preview ();
                 order = !order;
                 break;
@@ -272,6 +280,13 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
         }
     }
 
+    private void update_keyboard () {
+        pos_x = tile_rect.x + tile_rect.width / 2;
+        pos_y = tile_rect.y + tile_rect.height / 2;
+        window_icon.set_position ((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
+        wm.show_tile_preview (current_window, tile_rect, current_monitor);
+    }
+
     private void update_state_from_direction (Meta.MotionDirection direction) {
         set_col_row_from_direction (direction);
         calculate_tile_rect ();
@@ -281,23 +296,6 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
         wm.show_tile_preview (current_window, tile_rect, current_monitor);
     }
 
-    private void update_preview () {
-        if (!is_shrinked){
-            is_shrinked = true;
-            shrink_window (current_window, (float) pos_x, (float) pos_y);
-        }
-
-        window_icon.set_position ((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
-        wm.show_tile_preview (current_window, tile_rect, current_monitor);
-    }
-
-    private void hide_preview () {
-        if (is_shrinked) {
-            is_shrinked = false;
-            unshrink_window (current_window);
-            wm.hide_tile_preview ();
-        }
-    }
 
     private void calculate_tile_rect () {
         Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
@@ -318,36 +316,43 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
         row = ((int)(((3 * grid_y - 1) * (y - wa.y) / wa.height) / 1.5)).clamp (0, max_row);
     }
 
-    private void shrink_window (Meta.Window? window, float x, float y) {
+    private void init_preview (float x, float y) {
+        is_preview_active = true;
         if (behavior_settings.get_boolean ("experimental-tiling-mode-shrink")) {
             float abs_x, abs_y;
-            var actor = (Meta.WindowActor)window.get_compositor_private ();
+            var actor = (Meta.WindowActor)current_window.get_compositor_private ();
             actor.get_transformed_position (out abs_x, out abs_y);
             actor.set_pivot_point ((x - abs_x) / actor.width, (y - abs_y) / actor.height);
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-            actor.set_easing_duration (animation_duration);
+            actor.set_easing_duration (AnimationDuration.SNAP);
             actor.set_scale (0.0f, 0.0f);
             actor.opacity = 0U;
             actor.restore_easing_state ();
         }
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        window_icon = new WindowIcon (window, ICON_SIZE, scale);
+        window_icon = new WindowIcon (current_window, ICON_SIZE, scale);
         window_icon.opacity = 255;
         window_icon.set_pivot_point (0.5f, 0.5f);
         add_child (window_icon);
+        update_preview ();
     }
 
-    private void unshrink_window (Meta.Window? window) {
+    private void update_preview () {
+        window_icon.set_position ((float)(pos_x - ICON_SIZE / 2), (float)(pos_y - ICON_SIZE / 2));
+        wm.show_tile_preview (current_window, tile_rect, current_monitor);
+    }
+
+    private void end_preview () {
+        is_preview_active = false;
         if (behavior_settings.get_boolean ("experimental-tiling-mode-shrink")) {
-            var actor = (Meta.WindowActor)window.get_compositor_private ();
+            var actor = (Meta.WindowActor)current_window.get_compositor_private ();
             actor.set_pivot_point (0.5f, 1.0f);
             actor.set_scale (0.01f, 0.1f);
             actor.opacity = 0U;
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-            actor.set_easing_duration (animation_duration);
+            actor.set_easing_duration (AnimationDuration.SNAP);
             actor.set_scale (1.0f, 1.0f);
             actor.opacity = 255U;
             actor.restore_easing_state ();
@@ -355,6 +360,8 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
 
         window_icon.opacity = 0;
         remove_child (window_icon);
+
+        wm.hide_tile_preview ();
     }
 
     //  private void show_grid () {

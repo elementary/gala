@@ -1136,7 +1136,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null && !tiling_mode.is_shrinked) {
+            if (tile_preview != null && !tiling_mode.is_preview_active) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
