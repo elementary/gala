@@ -82,9 +82,9 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
             pos_y = pointer_y;
         } else {
             current_monitor = current_window.get_monitor ();
-            Meta.Rectangle wa = current_window.get_work_area_for_monitor (current_monitor);
-            pos_x = wa.x + wa.width / 2;
-            pos_y = wa.y + wa.height / 2;
+            Meta.Rectangle rect = current_window.get_frame_rect ();
+            pos_x = rect.x + rect.width / 2;
+            pos_y = rect.y + rect.height / 2;
         }
 
         set_col_row_from_x_y (pos_x, pos_y);
