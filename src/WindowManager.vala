@@ -79,7 +79,6 @@ namespace Gala {
         Daemon? daemon_proxy = null;
         
         TilingMode tiling_mode;
-        WindowMovementTracker window_movement_tracker;
 
         NotificationStack notification_stack;
 
@@ -177,22 +176,22 @@ namespace Gala {
             KeyboardManager.init (display);
 
             tiling_mode = new TilingMode (this);
-            window_movement_tracker = new WindowMovementTracker (this);
-            window_movement_tracker.watch ();
-            window_movement_tracker.position_changed.connect ((window) => {
+            display.grab_op_begin.connect ((display, window, op) => {
                 if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
-                    int x, y;
-                    Clutter.ModifierType type;
-                    display.get_cursor_tracker ().get_pointer (out x, out y, out type);
-        
-                    if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
-                        if (!tiling_mode.is_opened ()) {
-                            display.end_grab_op (display.get_current_time ());
-                            var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                            hints.@set ("mouse", true);
-                            tiling_mode.open ();
-                        }
-                    } 
+                    if (op == Meta.GrabOp.MOVING && window != null) {
+                        int x, y;
+                        Clutter.ModifierType type;
+                        display.get_cursor_tracker ().get_pointer (out x, out y, out type);
+            
+                        if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
+                            if (!tiling_mode.is_opened ()) {
+                                display.end_grab_op (display.get_current_time ());
+                                var hints = new HashTable<string,Variant> (str_hash, str_equal);
+                                hints.@set ("mouse", true);
+                                tiling_mode.open ();
+                            }
+                        }  
+                    }
                 }
             });
 
