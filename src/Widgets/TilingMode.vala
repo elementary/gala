@@ -38,13 +38,13 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     private int grid_x {
         get { 
             var wa = current_window.get_work_area_for_monitor (current_monitor);
-            return int.min (_grid[0], scale * wa.width / 600);
+            return int.min (scale * wa.width / 600, _grid[0]);
         }
     }
     private int grid_y {
         get { 
             var wa = current_window.get_work_area_for_monitor (current_monitor);
-            return int.min (_grid[1], scale * wa.height / 400);
+            return int.min (scale * wa.height / 400, _grid[1]);
         }
     }
     private Meta.Rectangle tile_rect;
@@ -53,7 +53,7 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     private int max_col { get { return 2 * (grid_x - 1); } }
     private int max_row { get { return 2 * (grid_y - 1); } }
     private int gap = DEFAULT_GAP;
-    private bool order = true;
+    private bool order = false;
 
     public TilingMode (WindowManager wm) {
         Object (wm : wm);
@@ -72,9 +72,9 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     }
 
     public void open (HashTable<string,Variant>? hints = null) {
-        order = true;
+        order = false;
         current_window = display.get_focus_window ();
-        if (("mouse" in hints)) {
+        if (hints != null && ("mouse" in hints)) {
             current_monitor = display.get_current_monitor ();
             int pointer_x, pointer_y;
             display.get_cursor_tracker ().get_pointer (out pointer_x, out pointer_y, null);
@@ -180,20 +180,12 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
                 update_preview ();
                 break;
             case Clutter.Key.@1:
-                _grid[(int)order] = 1;
-                order = !order;
-                break;
             case Clutter.Key.@2:
-                _grid[(int)order] = 2;
-                order = !order;
-                break;
             case Clutter.Key.@3:
-                _grid[(int)order] = 3;
-                order = !order;
-               order = !order;
-                break;
             case Clutter.Key.@4:
-                _grid[(int)order] = 4;
+                _grid[(int)order] = (int)(event.keyval - Clutter.Key.@1 + 1);
+                calculate_tile_rect ();
+                update_preview ();
                 order = !order;
                 break;
             default:

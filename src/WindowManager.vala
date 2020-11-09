@@ -1090,15 +1090,23 @@ namespace Gala {
             }
 
             float width, height, x, y;
+            Clutter.AnimationMode animation_mode;
             if (tile_preview.is_visible ()) {
+                animation_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
-
-                if ((tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y)
-                    || tile_preview.get_transition ("size") != null) {
+                if (tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y) {
+                    return;
+                } else if (tile_preview.get_transition ("size") != null) {
+                    ulong handler_id = 0UL;
+                    handler_id = tile_preview.transitions_completed.connect(() => {
+                        tile_preview.disconnect (handler_id);
+                        show_tile_preview (window, tile_rect, tile_monitor_number);
+                    });
                     return;
                 }
             } else {
+                animation_mode = Clutter.AnimationMode.LINEAR;
                 var rect = window.get_frame_rect ();
                 width = rect.width;
                 height = rect.height;
