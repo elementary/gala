@@ -223,7 +223,7 @@ namespace Gala {
                                 var dest_list = destinations[drag_id];
                                 foreach (var actor in source_list) {
                                     // Do not unset reactivity on destinations
-                                    if (actor in dest_list) {
+                                    if (dest_list == null || actor in dest_list) {
                                         continue;
                                     }
 
