@@ -54,12 +54,15 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     private int max_row { get { return 2 * (grid_y - 1); } }
     private int gap = DEFAULT_GAP;
     private bool order = false;
+    //  TODO: remove before merging
+    private GLib.Settings behavior_settings;
 
     public TilingMode (WindowManager wm) {
         Object (wm : wm);
     }
 
     construct {
+        visible = false;
         reactive = true;
         _grid[0] = 2;
         _grid[1] = 2;
@@ -69,6 +72,8 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
         display.get_size (out screen_width, out screen_height);
         width = screen_width;
         height = screen_height;
+        //  TODO: remove before merging
+        behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
     }
 
     public void open (HashTable<string,Variant>? hints = null) {
@@ -132,8 +137,13 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool motion_event (Clutter.MotionEvent event) {
-        update_state_from_motion ((int)event.x, (int)event.y);
-        return true;
+        debug("motion event!");
+        if (_is_opened) {
+            update_state_from_motion ((int)event.x, (int)event.y);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void update_state_from_motion (int x, int y) {
@@ -309,16 +319,18 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     }
 
     private void shrink_window (Meta.Window? window, float x, float y) {
-        float abs_x, abs_y;
-        var actor = (Meta.WindowActor)window.get_compositor_private ();
-        actor.get_transformed_position (out abs_x, out abs_y);
-        actor.set_pivot_point ((x - abs_x) / actor.width, (y - abs_y) / actor.height);
-        actor.save_easing_state ();
-        actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-        actor.set_easing_duration (animation_duration);
-        actor.set_scale (0.0f, 0.0f);
-        actor.opacity = 0U;
-        actor.restore_easing_state ();
+        if (behavior_settings.get_boolean ("experimental-tiling-mode-shrink")) {
+            float abs_x, abs_y;
+            var actor = (Meta.WindowActor)window.get_compositor_private ();
+            actor.get_transformed_position (out abs_x, out abs_y);
+            actor.set_pivot_point ((x - abs_x) / actor.width, (y - abs_y) / actor.height);
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
+            actor.set_easing_duration (animation_duration);
+            actor.set_scale (0.0f, 0.0f);
+            actor.opacity = 0U;
+            actor.restore_easing_state ();
+        }
 
         var scale = InternalUtils.get_ui_scaling_factor ();
         window_icon = new WindowIcon (window, ICON_SIZE, scale);
@@ -328,16 +340,19 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
     }
 
     private void unshrink_window (Meta.Window? window) {
-        var actor = (Meta.WindowActor)window.get_compositor_private ();
-        actor.set_pivot_point (0.5f, 1.0f);
-        actor.set_scale (0.01f, 0.1f);
-        actor.opacity = 0U;
-        actor.save_easing_state ();
-        actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-        actor.set_easing_duration (animation_duration);
-        actor.set_scale (1.0f, 1.0f);
-        actor.opacity = 255U;
-        actor.restore_easing_state ();
+        if (behavior_settings.get_boolean ("experimental-tiling-mode-shrink")) {
+            var actor = (Meta.WindowActor)window.get_compositor_private ();
+            actor.set_pivot_point (0.5f, 1.0f);
+            actor.set_scale (0.01f, 0.1f);
+            actor.opacity = 0U;
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
+            actor.set_easing_duration (animation_duration);
+            actor.set_scale (1.0f, 1.0f);
+            actor.opacity = 255U;
+            actor.restore_easing_state ();
+        }
+
         window_icon.opacity = 0;
         remove_child (window_icon);
     }

@@ -106,9 +106,15 @@
 			<description></description>
 		</key>
     <key type="b" name="experimental-tiling-mode">
-      <!-- TODO: disable by default before merging -->
+      <!-- TODO: set to false before merging -->
 			<default>true</default> 
-			<summary>Enable experimental tiling mode.</summary>
+			<summary>Toggle experimental tiling mode.</summary>
+			<description></description>
+		</key>
+    <!-- TODO: remove before merging -->
+    <key type="b" name="experimental-tiling-mode-shrink">
+			<default>false</default> 
+			<summary>Whether or not the window shrunk when entering tiling mode.</summary>
 			<description></description>
 		</key>
   </schema>

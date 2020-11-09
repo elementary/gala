@@ -1113,8 +1113,8 @@ namespace Gala {
                 y = rect.y;
             }
 
-            unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
-            window_group.set_child_below_sibling (tile_preview, window_actor);
+            //  unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
+            //  window_group.set_child_below_sibling (tile_preview, window_actor);
 
             var duration = AnimationDuration.SNAP / 2U;
 
