@@ -30,6 +30,7 @@ gala_bin_sources = files(
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
+    'Widgets/TilingMode.vala',
     'Widgets/WindowClone.vala',
     'Widgets/WindowCloneContainer.vala',
     'Widgets/WindowIconActor.vala',
