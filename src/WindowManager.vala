@@ -78,7 +78,8 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
         
-        TilingMode tiling_mode;
+        AreaTiling area_tiling;
+        WindowMovementTracker window_movement_tracker;
 
         NotificationStack notification_stack;
 
@@ -175,25 +176,9 @@ namespace Gala {
 #endif
             KeyboardManager.init (display);
 
-            tiling_mode = new TilingMode (this);
-            display.grab_op_begin.connect ((display, window, op) => {
-                if (behavior_settings.get_boolean ("experimental-tiling-mode")) {
-                    if (op == Meta.GrabOp.MOVING && window != null) {
-                        int x, y;
-                        Clutter.ModifierType type;
-                        display.get_cursor_tracker ().get_pointer (out x, out y, out type);
-            
-                        if ((type & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK)) != 0) {
-                            if (!tiling_mode.is_opened ()) {
-                                display.end_grab_op (display.get_current_time ());
-                                var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                                hints.@set ("mouse", true);
-                                tiling_mode.open ();
-                            }
-                        }  
-                    }
-                }
-            });
+            area_tiling = new AreaTiling (this, display);
+            window_movement_tracker = new WindowMovementTracker (display, area_tiling);
+            window_movement_tracker.watch ();
 
 #if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
@@ -275,7 +260,6 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-            ui_group.add_child (tiling_mode);
 #endif
             ui_group.add_child (screen_shield);
 
@@ -391,11 +375,6 @@ namespace Gala {
                     var hints = new HashTable<string,Variant> (str_hash, str_equal);
                     hints.@set ("all-windows", true);
                     window_overview.open (hints);
-                }
-            });
-            display.add_keybinding ("tiling-mode", keybinding_settings, 0, () => {
-                if (behavior_settings.get_boolean ("experimental-tiling-mode") && !tiling_mode.is_opened ()) {
-                    tiling_mode.open ();
                 }
             });
 
@@ -1089,23 +1068,15 @@ namespace Gala {
             }
 
             float width, height, x, y;
-            Clutter.AnimationMode animation_mode;
             if (tile_preview.is_visible ()) {
-                animation_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
-                if (tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y) {
-                    return;
-                } else if (tile_preview.get_transition ("size") != null) {
-                    ulong handler_id = 0UL;
-                    handler_id = tile_preview.transitions_completed.connect(() => {
-                        tile_preview.disconnect (handler_id);
-                        show_tile_preview (window, tile_rect, tile_monitor_number);
-                    });
+
+                if ((tile_rect.width == width && tile_rect.height == height && tile_rect.x == x && tile_rect.y == y)
+                    || tile_preview.get_transition ("size") != null) {
                     return;
                 }
             } else {
-                animation_mode = Clutter.AnimationMode.LINEAR;
                 var rect = window.get_frame_rect ();
                 width = rect.width;
                 height = rect.height;
@@ -1113,8 +1084,8 @@ namespace Gala {
                 y = rect.y;
             }
 
-            //  unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
-            //  window_group.set_child_below_sibling (tile_preview, window_actor);
+            unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
+            window_group.set_child_below_sibling (tile_preview, window_actor);
 
             var duration = AnimationDuration.SNAP / 2U;
 
@@ -1136,7 +1107,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null && !tiling_mode.is_preview_active) {
+            if (tile_preview != null && !area_tiling.is_active) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();

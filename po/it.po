@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-11-07 11:15+0000\n"
+"PO-Revision-Date: 2020-10-23 17:15+0000\n"
 "Last-Translator: Fabio Zaramella <fabiozaramella@hotmail.it>\n"
 "Language-Team: Italian <https://l10n.elementary.io/projects/desktop/gala/it/>"
 "\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:251
 msgid "Screenshots"
-msgstr "Catture dello schermo"
+msgstr "Schermate"
 
 #: src/WindowManager.vala:2191
 msgid "Does the display look OK?"
@@ -90,18 +90,18 @@ msgstr "Impostazioni di sistema…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "Multitasking e gestione delle finestre"
+msgstr "Multitasking &amp; Gestione delle finestre"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr "Un gestore finestre e compositing per Pantheon"
+msgstr "Un gestore di finestre &amp; composizione per Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
-"Un gestore di finestre e compositing basato su libmutter e progettato da "
+"Un gestore di finestre &amp; compositing basato su libmutter e progettato da "
 "elementary per essere utilizzato con Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
