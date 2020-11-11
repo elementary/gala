@@ -18,23 +18,23 @@
 
 namespace Gala {
     public enum GestureType {
-        SWIPE,
-        PINCH,
-        NOT_SUPPORTED,
+        NOT_SUPPORTED = 0,
+        SWIPE = 1,
+        PINCH = 2,
     }
 
     public enum GestureDirection {
-        UNKNOWN,
+        UNKNOWN = 0,
       
         // GestureType.SWIPE
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
+        UP = 1,
+        DOWN = 2,
+        LEFT = 3,
+        RIGHT = 4,
       
         // GestureType.PINCH
-        IN,
-        OUT,
+        IN = 5,
+        OUT = 6,
     }
 
     public class Gesture {

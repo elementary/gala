@@ -21,10 +21,10 @@ namespace Gala {
      * Daemon event type.
      */
      private enum GestureEventType {
-        BEGIN,
-        UPDATE,
-        END,
-        UNKNOWN,
+        UNKNOWN = 0,
+        BEGIN = 1,
+        UPDATE = 2,
+        END = 3,
     }
 
     /**
@@ -78,7 +78,7 @@ namespace Gala {
         }
 
         private void* recive_events () {
-            uint8[] event_buffer = new uint8[sizeof (GestureEvent)];
+            uint8[] event_size_buffer = new uint8[sizeof (uint32)];
 
             while (this.reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
                 try {
@@ -100,8 +100,16 @@ namespace Gala {
                         debug ("Connetion to Touchégg daemon stablished");
                     }
 
-                    
-                    ssize_t bytes_received = this.socket.receive (event_buffer);
+                    // Read a uint32 to know the size of the event
+                    ssize_t bytes_received = this.socket.receive (event_size_buffer);
+                    if (bytes_received <= 0) {
+                        throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
+                    }
+                    uint32 event_size = *((uint32 *) event_size_buffer);
+
+                    // Read the event
+                    uint8[] event_buffer = new uint8[event_size];
+                    bytes_received = this.socket.receive (event_buffer);
                     if (bytes_received <= 0) {
                         throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
                     }
