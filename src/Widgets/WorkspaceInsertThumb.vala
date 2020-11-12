@@ -63,9 +63,10 @@ namespace Gala {
             destroy_all_children ();
 
             var scale = InternalUtils.get_ui_scaling_factor ();
-            var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale);
-            icon.x = IconGroupContainer.SPACING;
-            icon.x_align = ActorAlign.CENTER;
+            var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale) {
+                x = IconGroupContainer.SPACING,
+                x_align = ActorAlign.CENTER
+            };
             add_child (icon);
         }
 
@@ -99,11 +100,12 @@ namespace Gala {
         }
 
         void add_pulse_animation () {
-            var transition = new TransitionGroup ();
-            transition.duration = 800;
-            transition.auto_reverse = true;
-            transition.repeat_count = -1;
-            transition.progress_mode = AnimationMode.LINEAR;
+            var transition = new TransitionGroup () {
+                duration = 800,
+                auto_reverse = true,
+                repeat_count = -1,
+                progress_mode = AnimationMode.LINEAR
+            };
 
             var scale_x_transition = new PropertyTransition ("scale-x");
             scale_x_transition.set_from_value (0.8);

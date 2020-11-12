@@ -63,11 +63,12 @@ namespace Gala {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
                 } else if (!_temporary && value) {
-                    var transition = new TransitionGroup ();
-                    transition.duration = 800;
-                    transition.auto_reverse = true;
-                    transition.repeat_count = -1;
-                    transition.progress_mode = AnimationMode.LINEAR;
+                    var transition = new TransitionGroup () {
+                        duration = 800,
+                        auto_reverse = true,
+                        repeat_count = -1,
+                        progress_mode = AnimationMode.LINEAR
+                    };
 
                     var opacity_transition = new PropertyTransition ("opacity");
                     opacity_transition.set_from_value (100);
