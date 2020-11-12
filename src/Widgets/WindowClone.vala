@@ -426,10 +426,11 @@ namespace Gala {
             if (get_transition ("shadow-opacity") != null)
                 remove_transition ("shadow-opacity");
 
-            var shadow_transition = new PropertyTransition ("shadow-opacity");
-            shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
-            shadow_transition.remove_on_complete = true;
-            shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
+            var shadow_transition = new PropertyTransition ("shadow-opacity") {
+                duration = MultitaskingView.ANIMATION_DURATION,
+                remove_on_complete = true,
+                progress_mode = MultitaskingView.ANIMATION_MODE
+            };
 
             if (show)
                 shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 255);
