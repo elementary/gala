@@ -31,12 +31,14 @@ namespace Gala {
      * Daemon event.
      */
     private struct GestureEvent {
+        public uint32 event_size;
         public GestureEventType eventType;
         public GestureType type;
         public GestureDirection direction;
         public int percentage;
         public int fingers;
         public uint64 elapsed_time;
+        public DeviceType performed_on_device_type;
     }
 
     /**
@@ -73,8 +75,7 @@ namespace Gala {
          * Start receiving gestures.
          */
         public void run () throws IOError {
-            var thread = new Thread<void*> (null, this.recive_events);
-            thread.join ();
+            new Thread<void*> (null, this.recive_events);
         }
 
         private void* recive_events () {
@@ -106,15 +107,21 @@ namespace Gala {
                         throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
                     }
                     uint32 event_size = *((uint32 *) event_size_buffer);
+                    uint32 event_data_size = event_size - event_size_buffer.length;
 
-                    // Read the event
-                    uint8[] event_buffer = new uint8[event_size];
-                    bytes_received = this.socket.receive (event_buffer);
+                    // Read the rest of the event
+                    uint8[] event_data_buffer = new uint8[event_data_size];
+                    bytes_received = this.socket.receive (event_data_buffer);
                     if (bytes_received <= 0) {
                         throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
                     }
 
-                    this.event = (GestureEvent *) event_buffer;
+                    // Concatenate both arrays to get the full event
+                    var event_buffer = new Array<uint8> (false, true, event_size);
+                    event_buffer.append_vals (event_size_buffer, event_size_buffer.length);
+                    event_buffer.append_vals (event_data_buffer, event_data_buffer.length);
+
+                    this.event = (GestureEvent *) event_buffer.data;
                     this.emit_event (this.event);
                 } catch (Error e) {
                     warning ("Connection to Touchégg daemon lost: %s", e.message);
@@ -149,7 +156,8 @@ namespace Gala {
                 direction = event.direction,
                 percentage = event.percentage,
                 fingers = event.fingers,
-                elapsed_time = event.elapsed_time
+                elapsed_time = event.elapsed_time,
+                performed_on_device_type = event.performed_on_device_type
             };
 
             switch (event.eventType) {

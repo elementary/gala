@@ -25,16 +25,22 @@ namespace Gala {
 
     public enum GestureDirection {
         UNKNOWN = 0,
-      
+
         // GestureType.SWIPE
         UP = 1,
         DOWN = 2,
         LEFT = 3,
         RIGHT = 4,
-      
+
         // GestureType.PINCH
         IN = 5,
         OUT = 6,
+    }
+
+    public enum DeviceType {
+        UNKNOWN = 0,
+        TOUCHPAD = 1,
+        TOUCHSCREEN = 2,
     }
 
     public class Gesture {
@@ -43,5 +49,6 @@ namespace Gala {
         public int percentage;
         public int fingers;
         public uint64 elapsed_time;
+        public DeviceType performed_on_device_type;
     }
 }
