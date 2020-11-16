@@ -314,13 +314,11 @@ namespace Gala {
                 paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
             }
 
-            unowned uint8[] image_data = image.get_data ();
-
             if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
                 wm.stage.paint_to_buffer (
                     {x, y, width, height},
                     scale,
-                    ref image_data,
+                    image.get_data (),
                     image.get_stride (),
                     Cogl.PixelFormat.BGRA_8888_PRE,
                     paint_flags
@@ -329,7 +327,7 @@ namespace Gala {
                 wm.stage.paint_to_buffer (
                     {x, y, width, height},
                     scale,
-                    ref image_data,
+                    image.get_data (),
                     image.get_stride (),
                     Cogl.PixelFormat.ARGB_8888_PRE,
                     paint_flags
