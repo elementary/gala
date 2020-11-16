@@ -67,7 +67,7 @@ Stage.get_capture_final_size
 	.height out
 	.scale out
 Stage.paint_to_buffer
-    .data type="uchar[]"
+    .data type="uint8[]"
 Text
 	.position_to_coords.line_height default=null
 
