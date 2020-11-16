@@ -203,10 +203,12 @@ namespace Gala {
                 var geometry = screen.get_monitor_geometry (i);
 #endif
 
-                var container = new WindowCloneContainer (true);
-                container.padding_top = TOP_GAP;
-                container.padding_left = container.padding_right = BORDER;
-                container.padding_bottom = BOTTOM_GAP;
+                var container = new WindowCloneContainer (true) {
+                    padding_top = TOP_GAP,
+                    padding_left = BORDER,
+                    padding_right = BORDER,
+                    padding_bottom = BOTTOM_GAP
+                };
                 container.set_position (geometry.x, geometry.y);
                 container.set_size (geometry.width, geometry.height);
                 container.window_selected.connect (thumb_selected);

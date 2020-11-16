@@ -53,10 +53,11 @@ namespace Gala {
             double[] keyframes = { 0.3f, 0.8f };
             GLib.Value[] values = { 180U, 0U };
 
-            var transition = new Clutter.KeyframeTransition ("opacity");
-            transition.duration = 200;
-            transition.remove_on_complete = true;
-            transition.progress_mode = Clutter.AnimationMode.LINEAR;
+            var transition = new Clutter.KeyframeTransition ("opacity") {
+                duration = 200,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.LINEAR
+            };
             transition.set_key_frames (keyframes);
             transition.set_values (values);
             transition.set_to_value (0.0f);

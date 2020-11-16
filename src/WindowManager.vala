@@ -598,10 +598,11 @@ namespace Gala {
             double[] keyframes = { 0.5 };
             GLib.Value[] x = { dest };
 
-            var nudge = new Clutter.KeyframeTransition ("translation-x");
-            nudge.duration = 360;
-            nudge.remove_on_complete = true;
-            nudge.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
+            var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                duration = 360,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            };
             nudge.set_from_value (0.0f);
             nudge.set_to_value (0.0f);
             nudge.set_key_frames (keyframes);
@@ -682,10 +683,11 @@ namespace Gala {
 
                 var actor = window.get_compositor_private () as Clutter.Actor;
                 if (enable_animations) {
-                    var op_trans = new Clutter.KeyframeTransition ("opacity");
-                    op_trans.duration = fade_out_duration;
-                    op_trans.remove_on_complete = true;
-                    op_trans.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
+                    var op_trans = new Clutter.KeyframeTransition ("opacity") {
+                        duration = fade_out_duration,
+                        remove_on_complete = true,
+                        progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD
+                    };
                     op_trans.set_from_value (255.0f);
                     op_trans.set_to_value (255.0f);
                     op_trans.set_key_frames (op_keyframes);
@@ -713,10 +715,11 @@ namespace Gala {
                 double[] scale_keyframes = { 0.2, 0.3, 0.8 };
                 GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
 
-                var scale_trans = new Clutter.KeyframeTransition (prop);
-                scale_trans.duration = 500;
-                scale_trans.remove_on_complete = true;
-                scale_trans.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
+                var scale_trans = new Clutter.KeyframeTransition (prop) {
+                    duration = 500,
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+                };
                 scale_trans.set_from_value (1.0f);
                 scale_trans.set_to_value (1.0f);
                 scale_trans.set_key_frames (scale_keyframes);
@@ -2026,9 +2029,10 @@ namespace Gala {
             // the display stack
             foreach (var window in docks) {
                 if (!to_has_fullscreened) {
-                    var clone = new SafeWindowClone (window.get_meta_window ());
-                    clone.x = window.x - clone_offset_x;
-                    clone.y = window.y - clone_offset_y;
+                    var clone = new SafeWindowClone (window.get_meta_window ()) {
+                        x = window.x - clone_offset_x,
+                        y = window.y - clone_offset_y
+                    };
 
                     in_group.add_child (clone);
                     tmp_actors.prepend (clone);
