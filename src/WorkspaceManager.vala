@@ -44,6 +44,9 @@ namespace Gala {
             unowned Meta.Display display = wm.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
+            // There are some empty workspace at startup
+            cleanup ();
+
             if (Prefs.get_dynamic_workspaces ())
                 manager.override_workspace_layout (DisplayCorner.TOPLEFT, false, 1, -1);
 
@@ -84,9 +87,6 @@ namespace Gala {
                 && Utils.get_n_windows (screen.get_workspace_by_index (screen.get_n_workspaces () - 1)) > 0)
                 append_workspace ();
 #endif
-
-            // There are some empty workspace at startup
-            cleanup ();
         }
 
         ~WorkspaceManager () {

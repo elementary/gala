@@ -14,12 +14,6 @@ namespace Cogl {
 		public Color.from_hsl (float hue, float saturation, float luminance);
 	}
 
-	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_framebuffer_get_gtype ()")]
-	public interface Framebuffer {
-		[CCode (cheader_filename = "cogl-path/cogl-path.h")]
-		public void stroke_path (Cogl.Pipeline pipeline, Cogl.Path path);
-	}
-
 	[Compact]
 	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_object_ref", unref_function = "cogl_object_unref")]
 	public class Shader : Cogl.Handle {

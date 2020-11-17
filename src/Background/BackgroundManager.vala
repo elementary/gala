@@ -104,11 +104,23 @@ namespace Gala {
             }
 
             new_background_actor = create_background_actor ();
+#if HAS_MUTTER338
+            var new_content = (Meta.BackgroundContent)new_background_actor.content;
+            var old_content = (Meta.BackgroundContent)background_actor.content;
+            new_content.vignette_sharpness = old_content.vignette_sharpness;
+            new_content.brightness = old_content.brightness;
+#else
             new_background_actor.vignette_sharpness = background_actor.vignette_sharpness;
             new_background_actor.brightness = background_actor.brightness;
+#endif
             new_background_actor.visible = background_actor.visible;
 
+
+#if HAS_MUTTER338
+            var background = new_content.background.get_data<unowned Background> ("delegate");
+#else
             var background = new_background_actor.background.get_data<unowned Background> ("delegate");
+#endif
 
             if (background.is_loaded) {
                 swap_background_actor ();
@@ -137,7 +149,11 @@ namespace Gala {
             var background_actor = new Meta.BackgroundActor (screen, monitor_index);
 #endif
 
+#if HAS_MUTTER338
+            ((Meta.BackgroundContent)background_actor.content).background = background.background;
+#else
             background_actor.background = background.background;
+#endif
 
             insert_child_below (background_actor, null);
 
