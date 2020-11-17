@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-08-20 06:56+0000\n"
+"PO-Revision-Date: 2020-11-17 11:11+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -38,7 +38,7 @@ msgstr "前の設定へ戻す"
 
 #: daemon/MenuDaemon.vala:111
 msgid "Hide"
-msgstr ""
+msgstr "非表示"
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
