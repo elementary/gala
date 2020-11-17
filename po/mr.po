@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2020-10-14 19:14+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
-"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/>"
-"\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
+">\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,25 +19,25 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "स्क्रीनशॉट"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "डिस्प्ले ठीक दिसत आहे का?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "हे कॉन्फिगरेशन ठेवा"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "कमीतकमी करा"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -201,3 +201,6 @@ msgstr "कालबाह्य अनुप्रयोगांकडील �
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "अनुप्रयोग-इतर"
+
+#~ msgid "Minimize"
+#~ msgstr "कमीतकमी करा"
