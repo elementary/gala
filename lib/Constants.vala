@@ -30,5 +30,7 @@ namespace Gala {
         SNAP = 250,
         // Duration of the workspace switch animation
         WORKSPACE_SWITCH = 300,
+        // Style switch animation
+        STYLE_SWITCH = 500
     }
 }
