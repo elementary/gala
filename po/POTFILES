@@ -1,5 +1,6 @@
+src/ScreenshotManager.vala
 src/WindowManager.vala
 daemon/MenuDaemon.vala
+data/gala.appdata.xml.in
 data/gala-multitaskingview.desktop.in
 data/gala-other.desktop.in
-data/org.pantheon.desktop.gala.gschema.xml.in

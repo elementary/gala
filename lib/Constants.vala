@@ -15,21 +15,20 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-	[CCode (has_type_id = false)]
-	public enum AnimationDuration {
-		// Duration of the open animation
-		OPEN = 350,
-		// Duration of the close animation
-		CLOSE = 195,
-		// Duration of the minimize animation
-		MINIMIZE = 200,
-		// Duration of the menu mapping animation
-		MENU_MAP = 150,
-		// Duration of the snap animation as used by maximize/unmaximize
-		SNAP = 250,
-		// Duration of the workspace switch animation
-		WORKSPACE_SWITCH = 300,
-	}
+namespace Gala {
+    [CCode (has_type_id = false)]
+    public enum AnimationDuration {
+        // Duration of the open animation
+        OPEN = 350,
+        // Duration of the close animation
+        CLOSE = 195,
+        // Duration of the hide animation
+        HIDE = 200,
+        // Duration of the menu mapping animation
+        MENU_MAP = 150,
+        // Duration of the snap animation as used by maximize/unmaximize
+        SNAP = 250,
+        // Duration of the workspace switch animation
+        WORKSPACE_SWITCH = 300,
+    }
 }

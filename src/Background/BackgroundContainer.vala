@@ -15,54 +15,83 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-	public class BackgroundContainer : Meta.BackgroundGroup
-	{
-		public signal void changed ();
+namespace Gala {
+    public class BackgroundContainer : Meta.BackgroundGroup {
+        public signal void changed ();
+        public signal void show_background_menu (int x, int y);
 
-		public Meta.Screen screen { get; construct; }
+#if HAS_MUTTER330
+        public Meta.Display display { get; construct; }
 
-		public BackgroundContainer (Meta.Screen screen)
-		{
-			Object (screen: screen);
-		}
+        public BackgroundContainer (Meta.Display display) {
+            Object (display: display);
+        }
 
-		construct
-		{
-			screen.monitors_changed.connect (update);
+        construct {
+            Meta.MonitorManager.@get ().monitors_changed.connect (update);
 
-			update ();
-		}
+            reactive = true;
+            button_release_event.connect ((event) => {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
+                    show_background_menu ((int)event.x, (int)event.y);
+                }
+            });
 
-		~BackgroundContainer ()
-		{
-			screen.monitors_changed.disconnect (update);
-		}
+            update ();
+        }
 
-		void update ()
-		{
-			var reference_child = (get_child_at_index (0) as BackgroundManager);
-			if (reference_child != null)
-				reference_child.changed.disconnect (background_changed);
+        ~BackgroundContainer () {
+            Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
+        }
+#else
+        public Meta.Screen screen { get; construct; }
 
-			destroy_all_children ();
+        public BackgroundContainer (Meta.Screen screen) {
+            Object (screen: screen);
+        }
 
-			for (var i = 0; i < screen.get_n_monitors (); i++) {
-				var background = new BackgroundManager (screen, i);
+        construct {
+            screen.monitors_changed.connect (update);
 
-				add_child (background);
+            reactive = true;
+            button_press_event.connect ((event) => {
+                if (event.button == Gdk.BUTTON_SECONDARY) {
+                    show_background_menu ((int)event.x, (int)event.y);
+                }
+            });
 
-				if (i == 0)
-					background.changed.connect (background_changed);
-			}
-		}
+            update ();
+        }
 
-		void background_changed ()
-		{
-			changed ();
-		}
-	}
+        ~BackgroundContainer () {
+            screen.monitors_changed.disconnect (update);
+        }
+#endif
+
+        void update () {
+            var reference_child = (get_child_at_index (0) as BackgroundManager);
+            if (reference_child != null)
+                reference_child.changed.disconnect (background_changed);
+
+            destroy_all_children ();
+
+#if HAS_MUTTER330
+            for (var i = 0; i < display.get_n_monitors (); i++) {
+                var background = new BackgroundManager (display, i);
+#else
+            for (var i = 0; i < screen.get_n_monitors (); i++) {
+                var background = new BackgroundManager (screen, i);
+#endif
+
+                add_child (background);
+
+                if (i == 0)
+                    background.changed.connect (background_changed);
+            }
+        }
+
+        void background_changed () {
+            changed ();
+        }
+    }
 }
-
-

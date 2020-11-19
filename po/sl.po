@@ -7,71 +7,173 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-06-26 22:43+0200\n"
-"PO-Revision-Date: 2018-08-22 00:08+0000\n"
-"Last-Translator: Jernej Virag <jernej@virag.si>\n"
-"Language-Team: Slovenian <https://weblate.elementary.io/projects/desktop/"
-"gala/sl/>\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: 2020-02-24 21:15+0000\n"
+"Last-Translator: Marko <marko.dolar@gmail.com>\n"
+"Language-Team: Slovenian <https://l10n.elementary.io/projects/desktop/gala/"
+"sl/>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/WindowManager.vala:1856
+#: src/ScreenshotManager.vala:252
+msgid "Screenshots"
+msgstr "Posnetki zaslona"
+
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Ali je slika na zaslonu videti v redu?"
 
-#: src/WindowManager.vala:1859
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Ohrani to konfiguracijo"
 
-#: src/WindowManager.vala:1860
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Obnovi prejšnjo konfiguracijo"
 
-#: daemon/MenuDaemon.vala:105
-msgid "Minimize"
-msgstr "Minimiraj"
+#: daemon/MenuDaemon.vala:111
+msgid "Hide"
+msgstr ""
 
-#: daemon/MenuDaemon.vala:117
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "Premakni"
 
-#: daemon/MenuDaemon.vala:123
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "Spremeni velikost"
 
-#: daemon/MenuDaemon.vala:129
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
-msgstr "Vendno na vrhu"
+msgstr "Vedno na vrhu"
 
-#: daemon/MenuDaemon.vala:135
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
 msgstr "Vedno na vidni delovni površini"
 
-#: daemon/MenuDaemon.vala:141
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
 msgstr "Premakni na levo delovno površino"
 
-#: daemon/MenuDaemon.vala:147
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
 msgstr "Premakni na desno delovno površino"
 
-#: daemon/MenuDaemon.vala:153
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "Zapri"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "Obnovi"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "Maksimiraj"
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr ""
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr "Večopravilnost in upravljanje z okni"
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "Upravljalnik z okni za Pantheon"
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"Upravljalnik z okni osnovan na libmutter in oblikovan s strani elementary za "
+"uporabo s Pantheonom."
+
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
+msgid "Improvements:"
+msgstr "Izboljšave:"
+
+#: data/gala.appdata.xml.in:17
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
+msgid "Updated translations"
+msgstr "Posodobljeni prevodi"
+
+#: data/gala.appdata.xml.in:28
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:29
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:38
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:47
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:48
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:49
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Pokaži bližnjice za tipkovnico v menijih glavne vrstice"
+
+#: data/gala.appdata.xml.in:58
+msgid "Improve window shadows for legacy apps"
+msgstr "Izboljšane okenske sence v starejših aplikacijah"
+
+#: data/gala.appdata.xml.in:59
+msgid "Fix potential crash when taking screenshots"
+msgstr "Popravljeno morebitno sesutje pri zajemanju slik zaslona"
+
+#: data/gala.appdata.xml.in:60
+msgid "Fix notification position after changing DPI"
+msgstr "Popravljen položaj obvestil po spremembi DPI"
+
+#: data/gala.appdata.xml.in:61
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "Popravljene animacije pri premikanju oken"
+
+#: data/gala.appdata.xml.in:67
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -84,7 +186,7 @@ msgstr "Pregled vseh odprtih oken in površin"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
@@ -92,320 +194,254 @@ msgstr "Drugo"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Nadomestna desktop datoteka za obvestila iz zastarelih aplikacij."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:22
-msgid "Action for the top left corner"
-msgstr "Akcija za zgornji levi kot"
+#~ msgid "Minimize"
+#~ msgstr "Minimiraj"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Algorithm for window overview layout"
-msgstr "Algoritem za razporeditev predogleda oken"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Akcija za zgornji levi kot"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:28
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Algoritem za razporeditev predogleda oken"
+
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "Izberite algoritem za razporejanje oken."
+
+#~ msgid "Action for the top right corner"
+#~ msgstr "Akcija za zgornji desni kot"
+
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Akcija za spodnji levi kot"
+
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Akcija za spodnji desni kot"
+
 #, fuzzy
-msgid "Choose the algorithm used for exposing the windows."
-msgstr "Izberite algoritem za razporejanje oken"
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr "Ta ukaz se bo izvedel v primeru da izberete ukaz po meri kot akcijo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:32
-msgid "Action for the top right corner"
-msgstr "Akcija za zgornji desni kot"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:37
-msgid "Action for the bottom left corner"
-msgstr "Akcija za spodnji levi kot"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:42
-msgid "Action for the bottom right corner"
-msgstr "Akcija za spodnji desni kot"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
 #, fuzzy
-msgid ""
-"The command that will be executed for the hot corner action 'custom-command' "
-"or multiple"
-msgstr "Ta ukaz se bo izvedel v primeru da izberete ukaz po meri kot akcijo"
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "Če vnesete samo en ukaz, se bo izvedel za vsak kot, ki je nastavljen kot "
+#~ "\"po meri\". Če namesto tega uporabite vzorec 'hotcorner-bottomright:"
+#~ "ukaz;;hotcorner-bottomleft:ukaz' se bodo ukazi izvedli glede na omenjen "
+#~ "kot. Možna imena so 'hotcorner-[topleft; topright; bottomleft; "
+#~ "bottomright]' katerim sledi ':' in potem ukaz. Za ločevanje definicij se "
+#~ "uporablja ';;'."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:48
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr "Vklopi avtomatično spreminjanje velikosti oken na robu zaslona"
+
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Če je opcija vklopljena, bo vlečenje okna na rob zaslona le-to "
+#~ "razpotegnilo čez polovico zaslona. Vlečenje okna na vrh bo okno "
+#~ "maksimiralo."
+
+#~ msgid "Panel main menu action"
+#~ msgstr "Akcija odpiranja glavnega menija"
+
 #, fuzzy
-msgid ""
-"If you just put a single command, it will be used for every hot corner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"Če vnesete samo en ukaz, se bo izvedel za vsak kot, ki je nastavljen kot "
-"\"po meri\". Če namesto tega uporabite vzorec 'hotcorner-bottomright:ukaz;;"
-"hotcorner-bottomleft:ukaz' se bodo ukazi izvedli glede na omenjen kot. Možna "
-"imena so 'hotcorner-[topleft; topright; bottomleft; bottomright]' katerim "
-"sledi ':' in potem ukaz. Za ločevanje definicij se uporablja ';;'."
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr ""
+#~ "Nastavi ukaz, ki se naj izvede pri pritisku bližnjice 'panel-main-menu'"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr "Vklopi avtomatično spreminjanje velikosti oken na robu zaslona"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Vklopi dinamična namizja namesto statičnih"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:58
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Če je opcija vklopljena, bo vlečenje okna na rob zaslona le-to razpotegnilo "
-"čez polovico zaslona. Vlečenje okna na vrh bo okno maksimiralo."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid "Panel main menu action"
-msgstr "Akcija odpiranja glavnega menija"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:63
 #, fuzzy
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr ""
-"Nastavi ukaz, ki se naj izvede pri pritisku bližnjice 'panel-main-menu'"
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr ""
+#~ "Številko namizij se bo dinamično povečevalo in zmanjševalo glede na "
+#~ "potrebo."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Vklopi dinamična namizja namesto statičnih"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Imena oken sidrišča"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:78
 #, fuzzy
-msgid ""
-"Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number."
-msgstr ""
-"Številko namizij se bo dinamično povečevalo in zmanjševalo glede na potrebo."
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr "gala bo okna našteta tu skrila ko je aktiven preklopnik aplikacij."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Imena oken sidrišča"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:83
 #, fuzzy
-msgid ""
-"When launching the window-switcher, Gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr "gala bo okna našteta tu skrila ko je aktiven preklopnik aplikacij."
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr "Pregled vseh odprtih oken in površin"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:90
-msgid "Shortcut to move to first workspace"
-msgstr "Bližnjica za premik na prvo namizje"
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Bližnjica za premik na prvo namizje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
-msgid "Shortcut to move to last workspace"
-msgstr "Bližnjica za premik na zadnje namizje"
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Bližnjica za premik na zadnje namizje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
-msgid "Shortcut to move the current window to first workspace"
-msgstr "Bližnjica za premikanje okna na prvo namizje"
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr "Bližnjica za premikanje okna na prvo namizje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
-msgid "Shortcut to move the current window to last workspace"
-msgstr "Bližnjica za premikanje okna na zadnje namizje"
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr "Bližnjica za premikanje okna na zadnje namizje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
-msgid "Zoom in"
-msgstr "Povečaj"
+#~ msgid "Zoom in"
+#~ msgstr "Povečaj"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
-msgid "Zoom out"
-msgstr "Pomanjšaj"
+#~ msgid "Zoom out"
+#~ msgstr "Pomanjšaj"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:119
-msgid "Shortcut to open the window overview"
-msgstr "Bližnjica za pregled okna"
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Bližnjica za pregled okna"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Bližnjica za pregled vseh oken"
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Bližnjica za pregled vseh oken"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-#: data/org.pantheon.desktop.gala.gschema.xml.in:133
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr "Premik na desno namizje oz. vrnitev na prvo"
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr "Premik na desno namizje oz. vrnitev na prvo"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
-msgid "Cycle to next keyboard layout"
-msgstr "Naslenji razpored tipk na tipkovnici"
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Naslenji razpored tipk na tipkovnici"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
-#: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:171
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Prejšnji razpored tipk na tipkovnici"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "Cycle to previous keyboard layout"
-msgstr "Prejšnji razpored tipk na tipkovnici"
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Pripni modalna pogovorna okna"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
-msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "Ko je ta opcija vključena, so dialogi priključeni na naslovno vrstico in "
+#~ "se premikajo skupaj z oknom, kateremu pripadajo."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
-msgid "The shortcut to show the selection area to choose a window."
-msgstr ""
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Razporeditev gumbov v naslovni vrstici"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
-msgid "Attach modal dialogs"
-msgstr "Pripni modalna pogovorna okna"
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Razporeditev gumbov v naslovni vrstici. Vrednost mora biti besedilo "
+#~ "oblike \"menu:minimize,maximize,spacer,close\". Dvopičje ločuje lev kot "
+#~ "okna od desnega, imena gumbov pa so ločena z vejicami. Podvojeni gumbi "
+#~ "niso dovoljeni. Neznana imena gumbov so ignorirana."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:156
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"Ko je ta opcija vključena, so dialogi priključeni na naslovno vrstico in se "
-"premikajo skupaj z oknom, kateremu pripadajo."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
-msgid "Arrangement of buttons on the titlebar"
-msgstr "Razporeditev gumbov v naslovni vrstici"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"Razporeditev gumbov v naslovni vrstici. Vrednost mora biti besedilo oblike "
-"\"menu:minimize,maximize,spacer,close\". Dvopičje ločuje lev kot okna od "
-"desnega, imena gumbov pa so ločena z vejicami. Podvojeni gumbi niso "
-"dovoljeni. Neznana imena gumbov so ignorirana."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
 #, fuzzy
-msgid "Dims parent windows when spawning modal dialogs"
-msgstr "Zatemni okna, ki prikazujejo dialog"
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr "Zatemni okna, ki prikazujejo dialog"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
 #, fuzzy
-msgid "The opacity of windows behind the window switcher."
-msgstr "Prosojnost oken v ozadju alt-tab preklopnika"
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr "Prosojnost oken v ozadju alt-tab preklopnika"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "Background-image used in the workspace-switcher"
-msgstr "Slika za ozadje v preklopniku"
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Slika za ozadje v preklopniku"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:182
-msgid "Enable Animations"
-msgstr "Omogoči animacije"
+#~ msgid "Enable Animations"
+#~ msgstr "Omogoči animacije"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr "Vključi ali izključi animacije za celotno namizje"
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr "Vključi ali izključi animacije za celotno namizje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:190
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr "Trajanje animacije za maksimiranje in minimiranje"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:194
-msgid "Duration of the close animation"
-msgstr "Trajanje animacije za zapiranje"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
-msgid "Duration of the minimize animation"
-msgstr "Trajanje animacije za minimiranje"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
-msgid "Duration of the workspace switch animation"
-msgstr "Trajanje animacije za preklop namizja"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
-msgid "Duration of the menu mapping animation"
-msgstr "Trajanje animacije za izbiro v meniju"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
-msgid "Defines the shadow of normal focused windows"
-msgstr "Definira senco fokusiranih oken"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:214
 #, fuzzy
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]."
-msgstr ""
-"Prva vrednost je radij \"blur\" efekta sence, druga je \"fade\" efekt na "
-"vrhu (in je tipično -1), tretja in četrta vrednost pa sta x- in y- "
-"odstopanji sence, zadnja vrednost pa je prosojnost. Torej [blur-radius, top-"
-"fade, x-offset, y-offset, opacity]."
+#~ msgid "Duration of the open animation"
+#~ msgstr "Trajanje animacije za zapiranje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Definira senco nefokusiranega okna"
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr "Trajanje animacije za maksimiranje in minimiranje"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:219
-#: data/org.pantheon.desktop.gala.gschema.xml.in:224
-#: data/org.pantheon.desktop.gala.gschema.xml.in:229
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
+#~ msgid "Duration of the close animation"
+#~ msgstr "Trajanje animacije za zapiranje"
+
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Trajanje animacije za minimiranje"
+
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Trajanje animacije za preklop namizja"
+
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Trajanje animacije za izbiro v meniju"
+
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Definira senco fokusiranih oken"
+
 #, fuzzy
-msgid "See normal-focused."
-msgstr "Glej zgoraj"
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "Prva vrednost je radij \"blur\" efekta sence, druga je \"fade\" efekt na "
+#~ "vrhu (in je tipično -1), tretja in četrta vrednost pa sta x- in y- "
+#~ "odstopanji sence, zadnja vrednost pa je prosojnost. Torej [blur-radius, "
+#~ "top-fade, x-offset, y-offset, opacity]."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:223
-msgid "Defines the shadow of a menu"
-msgstr "Definira senco menija"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Definira senco nefokusiranega okna"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:228
-msgid "Defines the shadow of a focused dialog"
-msgstr "Definira senco fokusiranega dialoga"
+#, fuzzy
+#~ msgid "See normal-focused."
+#~ msgstr "Glej zgoraj"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:233
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Definira senco nefokusiranega dialoga"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Definira senco menija"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
-msgid "Disable all notifications"
-msgstr "Izklopi vsa obvestila"
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Definira senco fokusiranega dialoga"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:249
-msgid "Enable bubbles"
-msgstr "Omogoči balončke"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Definira senco nefokusiranega dialoga"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
-msgid "Enable sounds"
-msgstr "Omogoči zvoke"
+#~ msgid "Disable all notifications"
+#~ msgstr "Izklopi vsa obvestila"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
-msgid "Show missed notifications in notification center"
-msgstr "Prikaži zgrešena obvestila v centru za obveščanje."
+#~ msgid "Enable bubbles"
+#~ msgstr "Omogoči balončke"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:264
-msgid "Enable rounded corner mask"
-msgstr "Vklopi masko za zaobljene vogale"
+#~ msgid "Enable sounds"
+#~ msgstr "Omogoči zvoke"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
-msgid "Corner radius"
-msgstr "Zaobljenost vogala"
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Prikaži zgrešena obvestila v centru za obveščanje."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:273
-msgid "Disable corner mask on fullscreen"
-msgstr "Izklopi masko za zaobljene vogale v polnozaslonskem načinu"
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Vklopi masko za zaobljene vogale"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:274
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
+#~ msgid "Corner radius"
+#~ msgstr "Zaobljenost vogala"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:278
-msgid "Only show corner masks on primary monitor"
-msgstr "Uporabi masko za zaobljene vogale samo na primarnem zaslonu"
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Izklopi masko za zaobljene vogale v polnozaslonskem načinu"
+
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Uporabi masko za zaobljene vogale samo na primarnem zaslonu"
 
 #~ msgid "Cancel"
 #~ msgstr "Prekliči"

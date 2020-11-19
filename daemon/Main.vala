@@ -15,132 +15,178 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-	[DBus (name = "org.gnome.SessionManager")]
-	public interface SessionManager : Object
-	{
-		public abstract async ObjectPath register_client (string app_id, string client_start_id) throws DBusError, IOError;
-	}
+namespace Gala {
+    const string DBUS_NAME = "org.pantheon.gala";
+    const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
-	[DBus (name = "org.gnome.SessionManager.ClientPrivate")]
-	public interface SessionClient : Object
-	{
-		public abstract void end_session_response (bool is_ok, string reason) throws DBusError, IOError;
+    [DBus (name = "org.pantheon.gala")]
+    public interface WMDBus : GLib.Object {
+        public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
+        public abstract void global_transition_from_snapshot () throws DBusError, IOError;
+    }
 
-		public signal void stop () ;
-		public signal void query_end_session (uint flags);
-		public signal void end_session (uint flags);
-		public signal void cancel_end_session ();
-	}
+    [DBus (name = "org.gnome.SessionManager")]
+    public interface SessionManager : Object {
+        public abstract async ObjectPath register_client (
+            string app_id,
+            string client_start_id
+        ) throws DBusError, IOError;
+    }
 
-	public class Daemon
-	{
-		SessionClient? sclient = null;
+    [DBus (name = "org.gnome.SessionManager.ClientPrivate")]
+    public interface SessionClient : Object {
+        public abstract void end_session_response (bool is_ok, string reason) throws DBusError, IOError;
 
-		public Daemon ()
-		{
-			register.begin ((o, res)=> {
-				bool success = register.end (res);
-				if (!success) {
-					message ("Failed to register with Session manager");
-				}
-			});
+        public signal void stop () ;
+        public signal void query_end_session (uint flags);
+        public signal void end_session (uint flags);
+        public signal void cancel_end_session ();
+    }
 
-			var menu_daemon = new MenuDaemon ();
-			menu_daemon.setup_dbus ();
-		}
+    public class Daemon {
+        public WMDBus? wm_proxy { get; private set; }
+        SessionClient? sclient = null;
 
-		public void run () {
-			Gtk.main ();
-		}
+        public Daemon () {
+            register.begin ((o, res)=> {
+                bool success = register.end (res);
+                if (!success) {
+                    message ("Failed to register with Session manager");
+                }
+            });
 
-		public static async SessionClient? register_with_session (string app_id)
-		{
-			ObjectPath? path = null;
-			string? msg = null;
-			string? start_id = null;
+            Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
 
-			SessionManager? session = null;
-			SessionClient? session_client = null;
+            var granite_settings = Granite.Settings.get_default ();
+            var gtk_settings = Gtk.Settings.get_default ();
 
-			start_id = Environment.get_variable ("DESKTOP_AUTOSTART_ID");
-			if (start_id != null) {
-				Environment.unset_variable ("DESKTOP_AUTOSTART_ID");
-			} else {
-				start_id = "";
-				warning ("DESKTOP_AUTOSTART_ID not set, session registration may be broken (not running via session?)");
-			}
+            gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
 
-			try {
-				session = yield Bus.get_proxy (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager");
-			} catch (Error e) {
-				warning ("Unable to connect to session manager: %s", e.message);
-				return null;
-			}
+            granite_settings.notify["prefers-color-scheme"].connect (() => {
+                gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
+                if (wm_proxy != null) {
+                    try {
+                        wm_proxy.global_transition_from_snapshot ();
+                    } catch (Error e) {
+                        warning ("Failed to create a global transition: %s", e.message);
+                    }
+                }
+            });
 
-			try {
-				path = yield session.register_client (app_id, start_id);
-			} catch (Error e) {
-				msg = e.message;
-				warning ("Error registering with session manager: %s", e.message);
-				return null;
-			}
+            var menu_daemon = new MenuDaemon (this);
+            menu_daemon.setup_dbus ();
+        }
 
-			try {
-				session_client = yield Bus.get_proxy (BusType.SESSION, "org.gnome.SessionManager", path);
-			} catch (Error e) {
-				warning ("Unable to get private sessions client proxy: %s", e.message);
-				return null;
-			}
+        public void run () {
+            Gtk.main ();
+        }
 
-			return session_client;
-		}
+        public static async SessionClient? register_with_session (string app_id) {
+            ObjectPath? path = null;
+            string? msg = null;
+            string? start_id = null;
 
-		async bool register ()
-		{
-			sclient = yield register_with_session ("org.pantheon.gala.daemon");
+            SessionManager? session = null;
+            SessionClient? session_client = null;
 
-			sclient.query_end_session.connect (() => end_session (false));
-			sclient.end_session.connect (() => end_session (false));
-			sclient.stop.connect (() => end_session (true));
+            start_id = Environment.get_variable ("DESKTOP_AUTOSTART_ID");
+            if (start_id != null) {
+                Environment.unset_variable ("DESKTOP_AUTOSTART_ID");
+            } else {
+                start_id = "";
+                warning (
+                    "DESKTOP_AUTOSTART_ID not set, session registration may be broken (not running via session?)"
+                );
+            }
 
-			return true;
-		}
+            try {
+                session = yield Bus.get_proxy (
+                    BusType.SESSION,
+                    "org.gnome.SessionManager",
+                    "/org/gnome/SessionManager"
+                );
+            } catch (Error e) {
+                warning ("Unable to connect to session manager: %s", e.message);
+                return null;
+            }
 
-		void end_session (bool quit)
-		{
-			if (quit) {
-				Gtk.main_quit ();
-				return;
-			}
+            try {
+                path = yield session.register_client (app_id, start_id);
+            } catch (Error e) {
+                msg = e.message;
+                warning ("Error registering with session manager: %s", e.message);
+                return null;
+            }
 
-			try {
-				sclient.end_session_response (true, "");
-			} catch (Error e) {
-				warning ("Unable to respond to session manager: %s", e.message);
-			}
-		}
-	}
+            try {
+                session_client = yield Bus.get_proxy (BusType.SESSION, "org.gnome.SessionManager", path);
+            } catch (Error e) {
+                warning ("Unable to get private sessions client proxy: %s", e.message);
+                return null;
+            }
 
-	public static int main (string[] args)
-	{
-		Gtk.init (ref args);
+            return session_client;
+        }
 
-		var ctx = new OptionContext ("Gala Daemon");
-		ctx.set_help_enabled (true);
-		ctx.add_group (Gtk.get_option_group (false));
+        async bool register () {
+            sclient = yield register_with_session ("org.pantheon.gala.daemon");
 
-		try {
-			ctx.parse (ref args);
-		} catch (Error e) {
-			stderr.printf ("Error: %s\n", e.message);
-			return 0;
-		}
+            sclient.query_end_session.connect (() => end_session (false));
+            sclient.end_session.connect (() => end_session (false));
+            sclient.stop.connect (() => end_session (true));
 
-		var daemon = new Daemon ();
-		daemon.run ();
+            return true;
+        }
 
-		return 0;
-	}
+        void end_session (bool quit) {
+            if (quit) {
+                Gtk.main_quit ();
+                return;
+            }
+
+            try {
+                sclient.end_session_response (true, "");
+            } catch (Error e) {
+                warning ("Unable to respond to session manager: %s", e.message);
+            }
+        }
+
+        void on_gala_get (GLib.Object? o, GLib.AsyncResult? res) {
+            try {
+                wm_proxy = Bus.get_proxy.end (res);
+            } catch (Error e) {
+                warning ("Failed to get Gala proxy: %s", e.message);
+            }
+        }
+
+        void lost_gala () {
+            wm_proxy = null;
+        }
+
+        void gala_appeared () {
+            if (wm_proxy == null) {
+                Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
+            }
+        }
+    }
+
+    public static int main (string[] args) {
+        Gtk.init (ref args);
+
+        var ctx = new OptionContext ("Gala Daemon");
+        ctx.set_help_enabled (true);
+        ctx.add_group (Gtk.get_option_group (false));
+
+        try {
+            ctx.parse (ref args);
+        } catch (Error e) {
+            stderr.printf ("Error: %s\n", e.message);
+            return 0;
+        }
+
+        var daemon = new Daemon ();
+        daemon.run ();
+
+        return 0;
+    }
 }

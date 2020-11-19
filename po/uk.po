@@ -7,68 +7,181 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2019-06-26 22:43+0200\n"
-"PO-Revision-Date: 2016-10-27 17:17+0000\n"
-"Last-Translator: neiron13 <Unknown>\n"
-"Language-Team: Ukrainian <uk@li.org>\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: 2020-11-17 11:11+0000\n"
+"Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
+"Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
+"uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
-#: src/WindowManager.vala:1856
+#: src/ScreenshotManager.vala:252
+msgid "Screenshots"
+msgstr "Знімки екрана"
+
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Зображення на екрані виглядає нормально?"
 
-#: src/WindowManager.vala:1859
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Залишити поточну конфігурацію"
 
-#: src/WindowManager.vala:1860
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Повернути попередню конфігурацію"
 
-#: daemon/MenuDaemon.vala:105
-msgid "Minimize"
-msgstr "Згорнути"
+#: daemon/MenuDaemon.vala:111
+msgid "Hide"
+msgstr "Сховати"
 
-#: daemon/MenuDaemon.vala:117
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "Перемістити"
 
-#: daemon/MenuDaemon.vala:123
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "Змінити розмір"
 
-#: daemon/MenuDaemon.vala:129
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
 msgstr "Завжди зверху"
 
-#: daemon/MenuDaemon.vala:135
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
-msgstr "Завжди у видимому робочому просторі"
+msgstr "Завжди на видимому робочому просторі"
 
-#: daemon/MenuDaemon.vala:141
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
-msgstr "Перемістити у робочий простір ліворуч"
+msgstr "Перемістити на робочий простір ліворуч"
 
-#: daemon/MenuDaemon.vala:147
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
-msgstr "Перемістити у робочий простір праворуч"
+msgstr "Перемістити на робочий простір праворуч"
 
-#: daemon/MenuDaemon.vala:153
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "Закрити"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "Відновити розмір"
 
-#: daemon/MenuDaemon.vala:170
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "Розгорнути"
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr "Змінити тло…"
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr "Параметри екрана…"
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr "Системні параметри…"
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr "Багатозадачність &amp; Керування вікнами"
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "Віконний менеджер та композитор для Pantheon"
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"Віконний менеджер та композитор створений на libmutter та розроблений "
+"elementary для роботи з Pantheon."
+
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
+msgid "Improvements:"
+msgstr "Вдосконалення:"
+
+#: data/gala.appdata.xml.in:17
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "Закривання перемикача Alt + Tab натисканням клавіші Esc без Alt"
+
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+"Збільшено найбільший рівень масштабу та надано зворотний зв'язок, коли не "
+"вдається збільшити"
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr "Показ контекстного меню після клацанні правою клавішею миші на тлі"
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
+msgid "Updated translations"
+msgstr "Оновлено переклади"
+
+#: data/gala.appdata.xml.in:28
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr ""
+"Виправлено зникнення вікон за увімкненого “Завжди на видимому робочому "
+"просторі” під час зміни робочих просторів"
+
+#: data/gala.appdata.xml.in:29
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+"Виправлено, зникнення вікон на не головних екранах під час зміни робочого "
+"простору"
+
+#: data/gala.appdata.xml.in:38
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"Виправлено збій під чс зміни робочого простору коли відкривається перехідне "
+"вікно"
+
+#: data/gala.appdata.xml.in:47
+msgid "Don't show Gala Background Services in the dock"
+msgstr "Приховано фонові служби Gala з доку"
+
+#: data/gala.appdata.xml.in:48
+msgid "Fixes for media key handling"
+msgstr "Виправлення обробки мультимедійних ключів"
+
+#: data/gala.appdata.xml.in:49
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "Показувати комбінації клавіш у меню HeaderBar"
+
+#: data/gala.appdata.xml.in:58
+msgid "Improve window shadows for legacy apps"
+msgstr "Покращення тіней вікон для застарілих програм"
+
+#: data/gala.appdata.xml.in:59
+msgid "Fix potential crash when taking screenshots"
+msgstr "Виправлено ймовірність збою під час створення знімків екрана"
+
+#: data/gala.appdata.xml.in:60
+msgid "Fix notification position after changing DPI"
+msgstr "Виправлено положення сповіщень після зміни DPI"
+
+#: data/gala.appdata.xml.in:61
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "Виправлено анімацію переміщення та розгорнення плиткових вікон"
+
+#: data/gala.appdata.xml.in:67
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -81,347 +194,285 @@ msgstr "Переглянути всі відкриті вікна та робо�
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
-msgstr ""
+msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Інше"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Резервний робочий файл для сповіщень від застарілих програм."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
-msgstr ""
+msgstr "applications-other"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:22
-msgid "Action for the top left corner"
-msgstr "Дія для верхнього лівого кута"
+#~ msgid "Minimize"
+#~ msgstr "Згорнути"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:27
-msgid "Algorithm for window overview layout"
-msgstr "Алгоритм для режиму попереднього перегляду вікна"
+#~ msgid "Action for the top left corner"
+#~ msgstr "Дія для верхнього лівого кута"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:28
+#~ msgid "Algorithm for window overview layout"
+#~ msgstr "Алгоритм для режиму попереднього перегляду вікна"
+
 #, fuzzy
-msgid "Choose the algorithm used for exposing the windows."
-msgstr "Виберіть алгоритм для показу вікон"
+#~ msgid "Choose the algorithm used for exposing the windows."
+#~ msgstr "Виберіть алгоритм для показу вікон"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:32
-msgid "Action for the top right corner"
-msgstr "Дія для верхнього правого кута"
+#~ msgid "Action for the top right corner"
+#~ msgstr "Дія для верхнього правого кута"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:37
-msgid "Action for the bottom left corner"
-msgstr "Дія для нижнього лівого кута"
+#~ msgid "Action for the bottom left corner"
+#~ msgstr "Дія для нижнього лівого кута"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:42
-msgid "Action for the bottom right corner"
-msgstr "Дія для нижнього правого кута"
+#~ msgid "Action for the bottom right corner"
+#~ msgstr "Дія для нижнього правого кута"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:47
 #, fuzzy
-msgid ""
-"The command that will be executed for the hot corner action 'custom-command' "
-"or multiple"
-msgstr ""
-"Команда, що буде виконана для дії гарячого кута \"власна команда\" або "
-"декілька команд"
+#~ msgid ""
+#~ "The command that will be executed for the hot corner action 'custom-"
+#~ "command' or multiple"
+#~ msgstr ""
+#~ "Команда, що буде виконана для дії гарячого кута \"власна команда\" або "
+#~ "декілька команд"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:48
 #, fuzzy
-msgid ""
-"If you just put a single command, it will be used for every hot corner "
-"assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
-"topleft:command;;hotcorner-bottomright:command' the specific commands will "
-"be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
-"topright; bottomleft; bottomright]' followed by a ':' and then the command. "
-"';;' is used as delimiter between command defintions."
-msgstr ""
-"Якщо ви вказали одну команду, то вона буде використана для всіх гарячих "
-"кутів з власною дією. Якщо ви навпаки вказали декілька команд згідно шаблону "
-"'hotcorner-topleft:команда;;hotcorner-bottomright:команда', то зазначена "
-"команда буде виконана для відповідного гарячого кута. Можна використовувати "
-"наступні вирази: 'hotcorner-[topleft; topright; bottomleft; bottomright]' "
-"після яких слідує ':' і потім команда. ';;' використовується для розділення "
-"визначення окремих команд."
+#~ msgid ""
+#~ "If you just put a single command, it will be used for every hot corner "
+#~ "assigned to 'custom-command'. If you instead use the pattern 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command' the specific commands "
+#~ "will be used per hotcorner. Possible identifiers are 'hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]' followed by a ':' and then the "
+#~ "command. ';;' is used as delimiter between command defintions."
+#~ msgstr ""
+#~ "Якщо ви вказали одну команду, то вона буде використана для всіх гарячих "
+#~ "кутів з власною дією. Якщо ви навпаки вказали декілька команд згідно "
+#~ "шаблону 'hotcorner-topleft:команда;;hotcorner-bottomright:команда', то "
+#~ "зазначена команда буде виконана для відповідного гарячого кута. Можна "
+#~ "використовувати наступні вирази: 'hotcorner-[topleft; topright; "
+#~ "bottomleft; bottomright]' після яких слідує ':' і потім команда. ';;' "
+#~ "використовується для розділення визначення окремих команд."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:57
-msgid "Enable edge tiling when dropping windows on screen edges"
-msgstr ""
-"Використовувати замощення плиткою при перетягуванні вікон до країв екрану"
+#~ msgid "Enable edge tiling when dropping windows on screen edges"
+#~ msgstr ""
+#~ "Використовувати замощення плиткою при перетягуванні вікон до країв екрану"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:58
-msgid ""
-"If enabled, dropping windows on vertical screen edges maximizes them "
-"vertically and resizes them horizontally to cover half of the available "
-"area. Dropping windows on the top screen edge maximizes them completely."
-msgstr ""
-"Якщо ввімкнено, то перетягування вікон до вертикальних країв екрану буде "
-"призводити до їх розгортання по вертикалі та горизонталі, щоб перекрити "
-"половину доступної області екрану. Перетягування вікна до верхнього краю "
-"екрану буде призводити до розкривання вікна на ввесь екран."
+#~ msgid ""
+#~ "If enabled, dropping windows on vertical screen edges maximizes them "
+#~ "vertically and resizes them horizontally to cover half of the available "
+#~ "area. Dropping windows on the top screen edge maximizes them completely."
+#~ msgstr ""
+#~ "Якщо ввімкнено, то перетягування вікон до вертикальних країв екрану буде "
+#~ "призводити до їх розгортання по вертикалі та горизонталі, щоб перекрити "
+#~ "половину доступної області екрану. Перетягування вікна до верхнього краю "
+#~ "екрану буде призводити до розкривання вікна на ввесь екран."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:62
-msgid "Panel main menu action"
-msgstr "Дія панелі головного меню"
+#~ msgid "Panel main menu action"
+#~ msgstr "Дія панелі головного меню"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:63
 #, fuzzy
-msgid "Sets the command to run when the panel-main-menu keybinding is pressed."
-msgstr ""
-"Встановлює команду, що буде виконана при натисканні комбінації клавіш панелі "
-"головного меню"
+#~ msgid ""
+#~ "Sets the command to run when the panel-main-menu keybinding is pressed."
+#~ msgstr ""
+#~ "Встановлює команду, що буде виконана при натисканні комбінації клавіш "
+#~ "панелі головного меню"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:77
-msgid "Enable dynamic workspace instead of static ones"
-msgstr "Використовувати динамічні робочі простори замість статичних"
+#~ msgid "Enable dynamic workspace instead of static ones"
+#~ msgstr "Використовувати динамічні робочі простори замість статичних"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:78
 #, fuzzy
-msgid ""
-"Use a dynamically increasing or decreasing number, as needed, of workspaces "
-"instead of a static, fixed number."
-msgstr ""
-"Використовувати кількість робочих просторів, що динамічно збільшується та "
-"зменшується при необхідності. На відміну від фіксованого числа робочих "
-"просторів"
+#~ msgid ""
+#~ "Use a dynamically increasing or decreasing number, as needed, of "
+#~ "workspaces instead of a static, fixed number."
+#~ msgstr ""
+#~ "Використовувати кількість робочих просторів, що динамічно збільшується та "
+#~ "зменшується при необхідності. На відміну від фіксованого числа робочих "
+#~ "просторів"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:82
-msgid "Names that are recognized as dock windows for the window switcher"
-msgstr "Назви, що розпізнаються як вікна в доці для перемикача вікон"
+#~ msgid "Names that are recognized as dock windows for the window switcher"
+#~ msgstr "Назви, що розпізнаються як вікна в доці для перемикача вікон"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:83
 #, fuzzy
-msgid ""
-"When launching the window-switcher, Gala iterates over this list and "
-"attempts to find a window matching the names. If it does, it will hide this "
-"window and fade it back in, once the the switcher is closed."
-msgstr ""
-"При запуску перемикача вікон, gala перебирає цей список, щоб спробувати "
-"знайти вікно з такою назвою. При успішному співпаданні вона приховає це "
-"вікно та знову покаже його при виході з перемикача."
+#~ msgid ""
+#~ "When launching the window-switcher, Gala iterates over this list and "
+#~ "attempts to find a window matching the names. If it does, it will hide "
+#~ "this window and fade it back in, once the the switcher is closed."
+#~ msgstr ""
+#~ "При запуску перемикача вікон, gala перебирає цей список, щоб спробувати "
+#~ "знайти вікно з такою назвою. При успішному співпаданні вона приховає це "
+#~ "вікно та знову покаже його при виході з перемикача."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:90
-msgid "Shortcut to move to first workspace"
-msgstr "Скорочення для переміщення на перший робочий простір"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:95
-msgid "Shortcut to move to last workspace"
-msgstr "Скорочення для переміщення на останній робочий простір"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:100
-msgid "Shortcut to move the current window to first workspace"
-msgstr "Скорочення для переміщення поточного вікна на перший робочий простір"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:105
-msgid "Shortcut to move the current window to last workspace"
-msgstr "Скорочення для переміщення поточного вікна на останній робочий простір"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:110
-msgid "Zoom in"
-msgstr "Збільшити"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:115
-msgid "Zoom out"
-msgstr "Зменшити"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:119
-msgid "Shortcut to open the window overview"
-msgstr "Скорочення для відкриття огляду вікон"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:124
-msgid "Shortcut to open the window overview for all windows"
-msgstr "Скорочення для відкриття огляду всіх вікон"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:129
-#: data/org.pantheon.desktop.gala.gschema.xml.in:133
-msgid "Cycle to the next workspace to the right or to back to the first"
-msgstr ""
-"Перемикнути до наступного робочого простору вправо або до попереднього вліво"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:137
-msgid "Cycle to next keyboard layout"
-msgstr "Перемкнути до наступної розкладки клавіатури"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:138
-#: data/org.pantheon.desktop.gala.gschema.xml.in:143
-#: data/org.pantheon.desktop.gala.gschema.xml.in:171
-msgid "DEPRECATED: This key is deprecated and ignored."
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:142
-msgid "Cycle to previous keyboard layout"
-msgstr "Перемкнути до попередньої розкладки клавіатури"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:147
-msgid "The shortcut to enable picture-in-picture window"
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:148
-msgid "The shortcut to show the selection area to choose a window."
-msgstr ""
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:155
-msgid "Attach modal dialogs"
-msgstr "Приєднувати виринаючі діалогові вікна"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:156
-msgid ""
-"When true, instead of having independent titlebars, modal dialogs appear "
-"attached to the titlebar of the parent window and are moved together with "
-"the parent window."
-msgstr ""
-"При використанні, замість незалежних заголовків виринаючі діалогові вікна "
-"приєднані до батьківського вікна та рухаються разом з ним."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:160
-msgid "Arrangement of buttons on the titlebar"
-msgstr "Розташування кнопок у заголовку вікна"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:161
-msgid ""
-"Arrangement of buttons on the titlebar. The value should be a string, such "
-"as \"menu:minimize,maximize,spacer,close\"; the colon separates the left "
-"corner of the window from the right corner, and the button names are comma-"
-"separated. Duplicate buttons are not allowed. Unknown button names are "
-"silently ignored so that buttons can be added in future metacity versions "
-"without breaking older versions. A special spacer tag can be used to insert "
-"some space between two adjacent buttons."
-msgstr ""
-"Розташування кнопок у заголовку вікна. Значенням є рядок, наприклад «menu:"
-"minimize,maximize,spacer,close»; двокрапка відокремлює лівий кут вікна від "
-"правого, імена кнопок повинні відокремлюватися комами. Забороняється "
-"дублювати кнопки. Невідомі кнопки ігноруються, ці кнопки можуть бути додані "
-"у новіших версіях metacity без конфліктів зі старішими версіями. Можна "
-"використовувати особливий тег заповнювача, щоб вставити трохи простору між "
-"двома сусідніми кнопками."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:165
 #, fuzzy
-msgid "Dims parent windows when spawning modal dialogs"
-msgstr ""
-"Використовувати затемнення батьківських вікон при виринанні діалогових вікон"
+#~ msgid "Automatically move maximized windows to a new workspace"
+#~ msgstr "Переглянути всі відкриті вікна та робочі простори"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:170
+#~ msgid "Shortcut to move to first workspace"
+#~ msgstr "Скорочення для переміщення на перший робочий простір"
+
+#~ msgid "Shortcut to move to last workspace"
+#~ msgstr "Скорочення для переміщення на останній робочий простір"
+
+#~ msgid "Shortcut to move the current window to first workspace"
+#~ msgstr ""
+#~ "Скорочення для переміщення поточного вікна на перший робочий простір"
+
+#~ msgid "Shortcut to move the current window to last workspace"
+#~ msgstr ""
+#~ "Скорочення для переміщення поточного вікна на останній робочий простір"
+
+#~ msgid "Zoom in"
+#~ msgstr "Збільшити"
+
+#~ msgid "Zoom out"
+#~ msgstr "Зменшити"
+
+#~ msgid "Shortcut to open the window overview"
+#~ msgstr "Скорочення для відкриття огляду вікон"
+
+#~ msgid "Shortcut to open the window overview for all windows"
+#~ msgstr "Скорочення для відкриття огляду всіх вікон"
+
+#~ msgid "Cycle to the next workspace to the right or to back to the first"
+#~ msgstr ""
+#~ "Перемикнути до наступного робочого простору вправо або до попереднього "
+#~ "вліво"
+
+#~ msgid "Cycle to next keyboard layout"
+#~ msgstr "Перемкнути до наступної розкладки клавіатури"
+
+#~ msgid "Cycle to previous keyboard layout"
+#~ msgstr "Перемкнути до попередньої розкладки клавіатури"
+
+#~ msgid "Attach modal dialogs"
+#~ msgstr "Приєднувати виринаючі діалогові вікна"
+
+#~ msgid ""
+#~ "When true, instead of having independent titlebars, modal dialogs appear "
+#~ "attached to the titlebar of the parent window and are moved together with "
+#~ "the parent window."
+#~ msgstr ""
+#~ "При використанні, замість незалежних заголовків виринаючі діалогові вікна "
+#~ "приєднані до батьківського вікна та рухаються разом з ним."
+
+#~ msgid "Arrangement of buttons on the titlebar"
+#~ msgstr "Розташування кнопок у заголовку вікна"
+
+#~ msgid ""
+#~ "Arrangement of buttons on the titlebar. The value should be a string, "
+#~ "such as \"menu:minimize,maximize,spacer,close\"; the colon separates the "
+#~ "left corner of the window from the right corner, and the button names are "
+#~ "comma-separated. Duplicate buttons are not allowed. Unknown button names "
+#~ "are silently ignored so that buttons can be added in future metacity "
+#~ "versions without breaking older versions. A special spacer tag can be "
+#~ "used to insert some space between two adjacent buttons."
+#~ msgstr ""
+#~ "Розташування кнопок у заголовку вікна. Значенням є рядок, наприклад «menu:"
+#~ "minimize,maximize,spacer,close»; двокрапка відокремлює лівий кут вікна "
+#~ "від правого, імена кнопок повинні відокремлюватися комами. Забороняється "
+#~ "дублювати кнопки. Невідомі кнопки ігноруються, ці кнопки можуть бути "
+#~ "додані у новіших версіях metacity без конфліктів зі старішими версіями. "
+#~ "Можна використовувати особливий тег заповнювача, щоб вставити трохи "
+#~ "простору між двома сусідніми кнопками."
+
 #, fuzzy
-msgid "The opacity of windows behind the window switcher."
-msgstr ""
-"Прозорість вікон, що знаходяться на задньому фоні при перемиканні по alt-tab."
+#~ msgid "Dims parent windows when spawning modal dialogs"
+#~ msgstr ""
+#~ "Використовувати затемнення батьківських вікон при виринанні діалогових "
+#~ "вікон"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:175
-msgid "Background-image used in the workspace-switcher"
-msgstr "Фонове зображення, що використовується премикачам робочих просторів"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:182
-msgid "Enable Animations"
-msgstr "Увімкнути анімацію"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:183
-msgid ""
-"Whether animations should be displayed. Note: This is a global key, it "
-"changes the behaviour of the window manager, the panel etc."
-msgstr ""
-"Чи потрібно відображати анімацію. Зауважте, що це глобальний параметр, його "
-"зміна вплине на поведінку віконного менеджера, панелі тощо."
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:190
-msgid "Duration of the snap animation as used by maximize/unmaximize"
-msgstr "Тривалість анімації прилипання про розгортанні/відновленні"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:194
-msgid "Duration of the close animation"
-msgstr "Тривалість анімації закриття"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:198
-msgid "Duration of the minimize animation"
-msgstr "Тривалість анімації згортання"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:202
-msgid "Duration of the workspace switch animation"
-msgstr "Тривалість анімації переключання робочого простору"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:206
-msgid "Duration of the menu mapping animation"
-msgstr "Тривалість анімації меню"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:213
-msgid "Defines the shadow of normal focused windows"
-msgstr "Визначає тінь звичайного вікна в фокусі"
-
-#: data/org.pantheon.desktop.gala.gschema.xml.in:214
 #, fuzzy
-msgid ""
-"The first value is the radius of the blur of the shadow, the second one the "
-"top fade (which is usually just -1), the third and fourth the x- and y-"
-"offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
-"offset, opacity]."
-msgstr ""
-"Перше значення це радіус розмивання тіні, друге  - верхня грань затухання, "
-"третє та четверте - х- та у- зміщення і останнє значення це прозорість."
+#~ msgid "The opacity of windows behind the window switcher."
+#~ msgstr ""
+#~ "Прозорість вікон, що знаходяться на задньому фоні при перемиканні по alt-"
+#~ "tab."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:218
-msgid "Defines the shadow of a normal unfocused window"
-msgstr "Визначає тінь звичайного вікна не в фокусі"
+#~ msgid "Background-image used in the workspace-switcher"
+#~ msgstr "Фонове зображення, що використовується премикачам робочих просторів"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:219
-#: data/org.pantheon.desktop.gala.gschema.xml.in:224
-#: data/org.pantheon.desktop.gala.gschema.xml.in:229
-#: data/org.pantheon.desktop.gala.gschema.xml.in:234
+#~ msgid "Enable Animations"
+#~ msgstr "Увімкнути анімацію"
+
+#~ msgid ""
+#~ "Whether animations should be displayed. Note: This is a global key, it "
+#~ "changes the behaviour of the window manager, the panel etc."
+#~ msgstr ""
+#~ "Чи потрібно відображати анімацію. Зауважте, що це глобальний параметр, "
+#~ "його зміна вплине на поведінку віконного менеджера, панелі тощо."
+
 #, fuzzy
-msgid "See normal-focused."
-msgstr "Дивись нормальне в фокусі"
+#~ msgid "Duration of the open animation"
+#~ msgstr "Тривалість анімації закриття"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:223
-msgid "Defines the shadow of a menu"
-msgstr "Визначає тінь меню"
+#~ msgid "Duration of the snap animation as used by maximize/unmaximize"
+#~ msgstr "Тривалість анімації прилипання про розгортанні/відновленні"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:228
-msgid "Defines the shadow of a focused dialog"
-msgstr "Визначає тінь діалогу в фокусі"
+#~ msgid "Duration of the close animation"
+#~ msgstr "Тривалість анімації закриття"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:233
-msgid "Defines the shadow of an unfocused dialog"
-msgstr "Визначає тінь діалогу не в фокусі"
+#~ msgid "Duration of the minimize animation"
+#~ msgstr "Тривалість анімації згортання"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:241
-msgid "Disable all notifications"
-msgstr "Відключити усі сповіщення"
+#~ msgid "Duration of the workspace switch animation"
+#~ msgstr "Тривалість анімації переключання робочого простору"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:249
-msgid "Enable bubbles"
-msgstr "Увімкнути бульбашки"
+#~ msgid "Duration of the menu mapping animation"
+#~ msgstr "Тривалість анімації меню"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:253
-msgid "Enable sounds"
-msgstr "Включити звуки"
+#~ msgid "Defines the shadow of normal focused windows"
+#~ msgstr "Визначає тінь звичайного вікна в фокусі"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:257
-msgid "Show missed notifications in notification center"
-msgstr "Показувати пропущені сповіщення у центрі сповіщень"
+#, fuzzy
+#~ msgid ""
+#~ "The first value is the radius of the blur of the shadow, the second one "
+#~ "the top fade (which is usually just -1), the third and fourth the x- and "
+#~ "y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-"
+#~ "offset, opacity]."
+#~ msgstr ""
+#~ "Перше значення це радіус розмивання тіні, друге  - верхня грань "
+#~ "затухання, третє та четверте - х- та у- зміщення і останнє значення це "
+#~ "прозорість."
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:264
-msgid "Enable rounded corner mask"
-msgstr "Використовувати шаблон заокруглених кутів"
+#~ msgid "Defines the shadow of a normal unfocused window"
+#~ msgstr "Визначає тінь звичайного вікна не в фокусі"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:269
-msgid "Corner radius"
-msgstr "Радіус заокруглення кутів"
+#, fuzzy
+#~ msgid "See normal-focused."
+#~ msgstr "Дивись нормальне в фокусі"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:273
-msgid "Disable corner mask on fullscreen"
-msgstr "Вимкнути шаблон кутів в повноекранному режимі"
+#~ msgid "Defines the shadow of a menu"
+#~ msgstr "Визначає тінь меню"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:274
-msgid ""
-"If enabled, when an application is fullscreen (fills the monitor), the "
-"corner masks will be disabled on that monitor."
-msgstr ""
+#~ msgid "Defines the shadow of a focused dialog"
+#~ msgstr "Визначає тінь діалогу в фокусі"
 
-#: data/org.pantheon.desktop.gala.gschema.xml.in:278
-msgid "Only show corner masks on primary monitor"
-msgstr "Використовувати шаблон кутів тільки на на основному моніторі"
+#~ msgid "Defines the shadow of an unfocused dialog"
+#~ msgstr "Визначає тінь діалогу не в фокусі"
+
+#~ msgid "Disable all notifications"
+#~ msgstr "Відключити усі сповіщення"
+
+#~ msgid "Enable bubbles"
+#~ msgstr "Увімкнути бульбашки"
+
+#~ msgid "Enable sounds"
+#~ msgstr "Включити звуки"
+
+#~ msgid "Show missed notifications in notification center"
+#~ msgstr "Показувати пропущені сповіщення у центрі сповіщень"
+
+#~ msgid "Enable rounded corner mask"
+#~ msgstr "Використовувати шаблон заокруглених кутів"
+
+#~ msgid "Corner radius"
+#~ msgstr "Радіус заокруглення кутів"
+
+#~ msgid "Disable corner mask on fullscreen"
+#~ msgstr "Вимкнути шаблон кутів в повноекранному режимі"
+
+#~ msgid "Only show corner masks on primary monitor"
+#~ msgstr "Використовувати шаблон кутів тільки на на основному моніторі"
 
 #~ msgid "Cancel"
 #~ msgstr "Скасувати"

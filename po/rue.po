@@ -1,0 +1,194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR The Gala Developers
+# This file is distributed under the same license as the gala package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gala 3.2.0\n"
+"Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: rue\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/ScreenshotManager.vala:252
+msgid "Screenshots"
+msgstr ""
+
+#: src/WindowManager.vala:2202
+msgid "Does the display look OK?"
+msgstr ""
+
+#: src/WindowManager.vala:2205
+msgid "Keep This Configuration"
+msgstr ""
+
+#: src/WindowManager.vala:2206
+msgid "Restore Previous Configuration"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:111
+msgid "Hide"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:124
+msgid "Move"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:132
+msgid "Resize"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:140
+msgid "Always on Top"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:148
+msgid "Always on Visible Workspace"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:156
+msgid "Move to Workspace Left"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:164
+msgid "Move to Workspace Right"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:172
+msgid "Close"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:205
+msgid "Unmaximize"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:205
+msgid "Maximize"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr ""
+
+#: data/gala.appdata.xml.in:7
+msgid "Multitasking &amp; Window Management"
+msgstr ""
+
+#: data/gala.appdata.xml.in:8
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr ""
+
+#: data/gala.appdata.xml.in:10
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
+msgid "Improvements:"
+msgstr ""
+
+#: data/gala.appdata.xml.in:17
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
+msgid "Updated translations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:29
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+
+#: data/gala.appdata.xml.in:38
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+
+#: data/gala.appdata.xml.in:47
+msgid "Don't show Gala Background Services in the dock"
+msgstr ""
+
+#: data/gala.appdata.xml.in:48
+msgid "Fixes for media key handling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:49
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr ""
+
+#: data/gala.appdata.xml.in:58
+msgid "Improve window shadows for legacy apps"
+msgstr ""
+
+#: data/gala.appdata.xml.in:59
+msgid "Fix potential crash when taking screenshots"
+msgstr ""
+
+#: data/gala.appdata.xml.in:60
+msgid "Fix notification position after changing DPI"
+msgstr ""
+
+#: data/gala.appdata.xml.in:61
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:67
+msgid "elementary, Inc."
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr ""
+
+#: data/gala-multitaskingview.desktop.in:7
+msgid "multitasking-view"
+msgstr ""
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr ""
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+
+#: data/gala-other.desktop.in:6
+msgid "applications-other"
+msgstr ""
