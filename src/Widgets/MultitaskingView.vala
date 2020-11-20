@@ -27,6 +27,9 @@ namespace Gala {
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
+
+        private GestureAnimationDirector gesture_animation_director = null;
+
         const int SMOOTH_SCROLL_DELAY = 500;
 
         public WindowManager wm { get; construct; }
@@ -544,20 +547,40 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void open (HashTable<string,Variant>? hints = null) {
-            if (opened)
-                return;
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (!opened) {
+                if (manual_animation) {
+                    debug ("Starting MultitaskingView manual open animation");
+                    this.gesture_animation_director = new GestureAnimationDirector();
+                }
+
+                toggle ();
+            }
+
+            if (opened && manual_animation && this.gesture_animation_director != null) {
+                this.gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
          * {@inheritDoc}
          */
-        public void close () {
-            if (!opened)
-                return;
+        public void close (HashTable<string,Variant>? hints = null) {
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (opened) {
+                if (manual_animation) {
+                    debug ("Starting MultitaskingView manual close animation");
+                    this.gesture_animation_director = new GestureAnimationDirector();
+                }
+
+                toggle ();
+            }
+
+            if (!opened && manual_animation && this.gesture_animation_director != null) {
+                this.gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
@@ -626,11 +649,12 @@ namespace Gala {
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening)
-                    workspace.open ();
+                    workspace.open (this.gesture_animation_director);
                 else
-                    workspace.close ();
+                    workspace.close (this.gesture_animation_director);
             }
 
+            // TODO (José Expósito) Animate the dock and wingpanel here
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
@@ -690,30 +714,41 @@ namespace Gala {
                 }
             }
 
-            if (!opening) {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    foreach (var container in window_containers_monitors) {
-                        container.visible = false;
+            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+                var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
+                Timeout.add (animation_duration, () => {
+                    if (!opening) {
+                        foreach (var container in window_containers_monitors) {
+                            container.visible = false;
+                        }
+
+                        hide ();
+
+                        wm.background_group.show ();
+                        wm.window_group.show ();
+                        wm.top_window_group.show ();
+
+                        dock_clones.destroy_all_children ();
+
+                        wm.pop_modal (modal_proxy);
                     }
 
-                    hide ();
-
-                    wm.background_group.show ();
-                    wm.window_group.show ();
-                    wm.top_window_group.show ();
-
-                    dock_clones.destroy_all_children ();
-
-                    wm.pop_modal (modal_proxy);
-
                     animating = false;
+                    this.gesture_animation_director = null;
+
+                    if (cancel_action) {
+                        toggle ();
+                    }
 
                     return false;
                 });
+            };
+
+            if (this.gesture_animation_director == null) {
+                on_animation_end(100, false);
             } else {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    animating = false;
-                    return false;
+                this.gesture_animation_director.on_animation_end.connect((animation_percentage, cancel_action) => {
+                    on_animation_end(animation_percentage, cancel_action);
                 });
             }
         }

@@ -54,6 +54,11 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
+         public Gala.ActivatableComponent workspace_view { get; protected set; }
+
+        /**
+         * {@inheritDoc}
+         */
         public bool enable_animations { get; protected set; }
 
         public ScreenShield? screen_shield { get; private set; }
@@ -65,7 +70,6 @@ namespace Gala {
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
-        ActivatableComponent? workspace_view = null;
         ActivatableComponent? window_overview = null;
 
         // used to detect which corner was used to trigger an action

@@ -72,7 +72,7 @@ namespace Gala {
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (reflow);
+            new_window.request_reposition.connect (() => { reflow (); });
 
             var added = false;
             unowned Meta.Window? target = null;
@@ -193,7 +193,7 @@ namespace Gala {
          * Recalculate the tiling positions of the windows and animate them to
          * the resulting spots.
          */
-        public void reflow () {
+        public void reflow (GestureAnimationDirector? gesture_animation_director = null) {
             if (!opened)
                 return;
 
@@ -226,7 +226,7 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned WindowClone window = (WindowClone) tilable.id;
-                window.take_slot (tilable.rect);
+                window.take_slot (tilable.rect, gesture_animation_director);
                 window.place_widgets (tilable.rect.width, tilable.rect.height);
             }
         }
@@ -336,7 +336,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null) {
+        public void open (Window? selected_window = null, GestureAnimationDirector? gesture_animation_director = null) {
             if (opened)
                 return;
 
@@ -363,22 +363,24 @@ namespace Gala {
             // while were closed.
             foreach (var window in get_children ())
                 ((WindowClone) window).transition_to_original_state (false);
+                
+            // TODO (José Expósito) This ^ is breaking the close cancellation animation
 
-            reflow ();
+            reflow (gesture_animation_director);
         }
 
         /**
          * Calls the transition_to_original_state() function on each child
          * to make them take their original locations again.
          */
-        public void close () {
+        public void close (GestureAnimationDirector? gesture_animation_director = null) {
             if (!opened)
                 return;
 
             opened = false;
 
             foreach (var window in get_children ())
-                ((WindowClone) window).transition_to_original_state (true);
+                ((WindowClone) window).transition_to_original_state (true, gesture_animation_director);
         }
     }
 }
