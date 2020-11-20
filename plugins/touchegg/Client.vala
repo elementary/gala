@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Gala {
+namespace Gala.Plugins.Touchegg {
     /**
      * Daemon event type.
      */
@@ -45,7 +45,7 @@ namespace Gala {
      * This class connects to the Touchégg daemon to receive touch events.
      * See: https://github.com/JoseExposito/touchegg
      */
-    public class GestureManager {
+    public class Client {
         public signal void on_gesture_begin (Gesture gesture);
         public signal void on_gesture_update (Gesture gesture);
         public signal void on_gesture_end (Gesture gesture);

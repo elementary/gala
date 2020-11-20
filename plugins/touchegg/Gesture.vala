@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Gala {
+namespace Gala.Plugins.Touchegg {
     public enum GestureType {
         NOT_SUPPORTED = 0,
         SWIPE = 1,
