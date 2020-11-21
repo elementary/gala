@@ -63,7 +63,6 @@ namespace Gala {
             gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
 
             granite_settings.notify["prefers-color-scheme"].connect (() => {
-                gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
                 if (wm_proxy != null) {
                     try {
                         wm_proxy.global_transition_from_snapshot ();
@@ -71,6 +70,8 @@ namespace Gala {
                         warning ("Failed to create a global transition: %s", e.message);
                     }
                 }
+                
+                gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
             });
 
             var menu_daemon = new MenuDaemon (this);
