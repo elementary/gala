@@ -391,7 +391,7 @@ namespace Gala {
                     });
                 }
 
-                return false;
+                return Source.REMOVE;
             });
             
         }
