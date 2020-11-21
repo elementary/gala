@@ -298,23 +298,23 @@ namespace Gala {
         }
         
         /**
-        * Creates a window snapshot and transitions from it to the real state.
-        * 
-        * Calling this method will create a static temporary snapshot from a target window
-        * and will transition from it to the real window surface. This is useful if
-        * e.g you want to change the Gtk stylesheet used by your application.
-        * It can be used to create a smooth transition effect when switching to the new
-        * stylesheet. If that's your intention, call this function just before actually changing
-        * the stylesheet for the best effect.
-        * 
-        * The function will create a transition animation only when animations are enabled.
-        * If they are not, the animation will not be visible but the snapshot will be still created and added.
-        * 
-        * The transition will be applied to all windows that belong to your process ID. 
-        * 
-        * Note that you will not be able to affect any windows that do
-        * not belong to your PID, this is reserved for system components.
-        */
+         * Creates a window snapshot and transitions from it to the real state.
+         * 
+         * Calling this method will create a static temporary snapshot from a target window
+         * and will transition from it to the real window surface. This is useful if
+         * e.g you want to change the Gtk stylesheet used by your application.
+         * It can be used to create a smooth transition effect when switching to the new
+         * stylesheet. If that's your intention, call this function just before actually changing
+         * the stylesheet for the best effect.
+         * 
+         * The function will create a transition animation only when animations are enabled.
+         * If they are not, the animation will not be visible but the snapshot will be still created and added.
+         * 
+         * The transition will be applied to all windows that belong to your process ID. 
+         * 
+         * Note that you will not be able to affect any windows that do
+         * not belong to your PID, this is reserved for system components.
+         */
         public async void transition_from_snapshot (BusName sender) throws IOError {
             if (bus_proxy == null) {
                 throw new IOError.FAILED ("Could not connect to org.freedesktop.DBus");
@@ -332,12 +332,12 @@ namespace Gala {
         }
 
         /**
-        * Creates a window snapshot and transitions from it to the real state
-        * for all windows on the visible workspace. See transition_from_snapshot.
-        * 
-        * This function is reserved for system components and must not be
-        * accessed by applications.
-        */
+         * Creates a window snapshot and transitions from it to the real state
+         * for all windows on the visible workspace. See transition_from_snapshot.
+         * 
+         * This function is reserved for system components and must not be
+         * accessed by applications.
+         */
         public async void global_transition_from_snapshot () throws IOError {
             bool animate = wm.enable_animations;
 
@@ -351,6 +351,13 @@ namespace Gala {
         }
 
         static async void transition_window (Meta.Window window, bool animate) {
+            /**
+             * Because Gtk takes time to apply the styling to all elements,
+             * we will simply define an arbitrary wait time for this to happen
+             * to smoothen out the transition.
+             */
+            const uint STYLE_CHANGE_COMPLETION_DURATION = 150;
+
             unowned Meta.WindowActor actor = (Meta.WindowActor)window.get_compositor_private ();
 
             var rect = window.get_frame_rect ();
@@ -364,24 +371,29 @@ namespace Gala {
             snapshot.set_position ((float)x_offset / 2.0f, (float)y_offset / 2.0f);
             snapshot.set_size (rect.width, rect.height);
             actor.insert_child_above (snapshot, null);
+    
+            Timeout.add (STYLE_CHANGE_COMPLETION_DURATION, () => {
+                if (animate) {
+                    snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+                    snapshot.set_easing_duration (AnimationDuration.STYLE_SWITCH);
+                    snapshot.opacity = 0;
 
-            if (animate) {
-                snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                snapshot.set_easing_duration (AnimationDuration.STYLE_SWITCH);
-                snapshot.opacity = 0;
+                    ulong signal_id = 0U;
+                    signal_id = snapshot.transitions_completed.connect (() => {
+                        snapshot.disconnect (signal_id);
+                        snapshot.destroy ();
+                    });
+                } else {
+                    snapshot.opacity = 0;
+                    Timeout.add (AnimationDuration.STYLE_SWITCH, () => {
+                        snapshot.destroy ();
+                        return Source.REMOVE;
+                    });
+                }
 
-                ulong signal_id = 0U;
-                signal_id = snapshot.transitions_completed.connect (() => {
-                    snapshot.disconnect (signal_id);
-                    snapshot.destroy ();
-                });
-            } else {
-                snapshot.opacity = 0;
-                Timeout.add (AnimationDuration.STYLE_SWITCH, () => {
-                    snapshot.destroy ();
-                    return Source.REMOVE;
-                });
-            }
+                return false;
+            });
+            
         }
  
         static Cogl.Texture fast_copy_texture (Cogl.Texture texture, int xoff, int yoff, int width, int height, Cogl.PixelFormat format) {
