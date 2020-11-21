@@ -32,7 +32,7 @@ namespace Gala.Plugins.Touchegg {
      */
     private struct GestureEvent {
         public uint32 event_size;
-        public GestureEventType eventType;
+        public GestureEventType event_type;
         public GestureType type;
         public GestureDirection direction;
         public int percentage;
@@ -79,7 +79,7 @@ namespace Gala.Plugins.Touchegg {
         }
 
         private void* recive_events () {
-            uint8[] event_size_buffer = new uint8[sizeof (uint32)];
+            uint8[] event_buffer = new uint8[sizeof (GestureEvent)];
 
             while (this.reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
                 try {
@@ -101,36 +101,33 @@ namespace Gala.Plugins.Touchegg {
                         debug ("Connetion to Touchégg daemon stablished");
                     }
 
-                    // Read a uint32 to know the size of the event
-                    ssize_t bytes_received = this.socket.receive (event_size_buffer);
+                    // Read the event
+                    ssize_t bytes_received = this.socket.receive (event_buffer);
                     if (bytes_received <= 0) {
                         throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
                     }
-                    uint32 event_size = *((uint32 *) event_size_buffer);
-                    uint32 event_data_size = event_size - event_size_buffer.length;
+                    this.event = (GestureEvent *) event_buffer;
 
-                    // Read the rest of the event
-                    uint8[] event_data_buffer = new uint8[event_data_size];
-                    bytes_received = this.socket.receive (event_data_buffer);
-                    if (bytes_received <= 0) {
-                        throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
+                    // The daemon could add events not supported by this plugin yet
+                    // Discard any extra data
+                    if (bytes_received < this.event.event_size) {
+                        ssize_t pending_bytes = this.event.event_size - bytes_received;
+                        uint8[] discard_buffer = new uint8[pending_bytes];
+                        bytes_received = this.socket.receive (discard_buffer);
+                        if (bytes_received <= 0) {
+                            throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
+                        }
                     }
 
-                    // Concatenate both arrays to get the full event
-                    var event_buffer = new Array<uint8> (false, true, event_size);
-                    event_buffer.append_vals (event_size_buffer, event_size_buffer.length);
-                    event_buffer.append_vals (event_data_buffer, event_data_buffer.length);
-
-                    this.event = (GestureEvent *) event_buffer.data;
                     this.emit_event (this.event);
                 } catch (Error e) {
                     warning ("Connection to Touchégg daemon lost: %s", e.message);
                     this.reconnection_attemps++;
 
                     if (this.event != null 
-                            && this.event.eventType != GestureEventType.UNKNOWN 
-                            && this.event.eventType != GestureEventType.END) {
-                        this.event.eventType = GestureEventType.END;
+                            && this.event.event_type != GestureEventType.UNKNOWN 
+                            && this.event.event_type != GestureEventType.END) {
+                        this.event.event_type = GestureEventType.END;
                         this.emit_event (this.event);
                     }
 
@@ -160,7 +157,7 @@ namespace Gala.Plugins.Touchegg {
                 performed_on_device_type = event.performed_on_device_type
             };
 
-            switch (event.eventType) {
+            switch (event.event_type) {
                 case GestureEventType.BEGIN:
                     this.on_gesture_begin (gesture);
                     break;
