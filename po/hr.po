@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2016-07-31 19:09+0000\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -18,25 +18,25 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Izgleda li zaslon u redu?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Zadržati ove postavke"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Vrati prijašnje postavke"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Smanji"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -194,6 +194,9 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr ""
+
+#~ msgid "Minimize"
+#~ msgstr "Smanji"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Radnja za gornji lijevi kut"

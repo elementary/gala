@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2020-08-23 18:13+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
-"\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,25 +20,25 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "Capturas de pantalla"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "¿Se ve bien la pantalla?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Mantener esta configuración"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Restablecer configuración anterior"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Minimizar"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -208,6 +208,9 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "Minimizar"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Acción para la esquina superior izquierda"

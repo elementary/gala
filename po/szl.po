@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2020-02-24 21:15+0000\n"
 "Last-Translator: gkkulik <g.kulik@o2.pl>\n"
 "Language-Team: Silesian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -14,25 +14,25 @@ msgstr ""
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.9.1\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "Przechyty ekranu"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Wyglōndo ekran dobrze?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Trzim ta kōnfiguracyjo"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Prziwrōć wczaśniyjszo kōnfiguracyjo"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Zminimalizowanie ôkna"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -192,3 +192,6 @@ msgstr "Zbiōr powrotu dlo powiadōmiyń ôd starych programōw."
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "Zminimalizowanie ôkna"
