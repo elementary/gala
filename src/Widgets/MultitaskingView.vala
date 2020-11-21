@@ -654,65 +654,10 @@ namespace Gala {
                     workspace.close (this.gesture_animation_director);
             }
 
-            // TODO (José Expósito) Animate the dock and wingpanel here
-            float clone_offset_x, clone_offset_y;
-            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
-
-            if (opening) {
-#if HAS_MUTTER330
-                unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-#else
-                unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
-#endif
-                foreach (unowned Meta.WindowActor actor in window_actors) {
-                    const int MAX_OFFSET = 100;
-
-                    if (actor.is_destroyed ())
-                        continue;
-
-                    unowned Meta.Window window = actor.get_meta_window ();
-                    var monitor = window.get_monitor ();
-
-                    if (window.window_type != WindowType.DOCK)
-                        continue;
-
-#if HAS_MUTTER330
-                    if (display.get_monitor_in_fullscreen (monitor))
-                        continue;
-
-                    var monitor_geom = display.get_monitor_geometry (monitor);
-#else
-                    if (screen.get_monitor_in_fullscreen (monitor))
-                        continue;
-
-                    var monitor_geom = screen.get_monitor_geometry (monitor);
-#endif
-
-                    var window_geom = window.get_frame_rect ();
-                    var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
-                    var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
-
-                    if (!top && !bottom)
-                        continue;
-
-                    var clone = new SafeWindowClone (window, true);
-                    clone.set_position (actor.x - clone_offset_x, actor.y - clone_offset_y);
-                    clone.set_easing_duration (ANIMATION_DURATION);
-                    clone.set_easing_mode (ANIMATION_MODE);
-                    dock_clones.add_child (clone);
-
-                    if (top)
-                        clone.y = actor.y - actor.height - clone_offset_y;
-                    else if (bottom)
-                        clone.y = actor.y + actor.height - clone_offset_y;
-                }
-            } else {
-                foreach (var child in dock_clones.get_children ()) {
-                    var dock = (Clone) child;
-
-                    dock.y = dock.source.y - clone_offset_y;
-                }
-            }
+            if (opening)
+                this.show_docks ();
+            else
+                this.hide_docks ();
 
             GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
                 var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
@@ -750,6 +695,127 @@ namespace Gala {
                 this.gesture_animation_director.on_animation_end.connect((animation_percentage, cancel_action) => {
                     on_animation_end(animation_percentage, cancel_action);
                 });
+            }
+        }
+
+        void show_docks () {
+            float clone_offset_x, clone_offset_y;
+            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
+
+#if HAS_MUTTER330
+            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+#else
+            unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
+#endif
+
+            foreach (unowned Meta.WindowActor actor in window_actors) {
+                const int MAX_OFFSET = 100;
+
+                if (actor.is_destroyed ())
+                    continue;
+
+                unowned Meta.Window window = actor.get_meta_window ();
+                var monitor = window.get_monitor ();
+
+                if (window.window_type != WindowType.DOCK)
+                    continue;
+
+#if HAS_MUTTER330
+                if (display.get_monitor_in_fullscreen (monitor))
+                    continue;
+
+                var monitor_geom = display.get_monitor_geometry (monitor);
+#else
+                if (screen.get_monitor_in_fullscreen (monitor))
+                    continue;
+
+                var monitor_geom = screen.get_monitor_geometry (monitor);
+#endif
+
+                var window_geom = window.get_frame_rect ();
+                var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
+                var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+
+                if (!top && !bottom)
+                    continue;
+
+                var initial_x = actor.x - clone_offset_x;
+                var initial_y = actor.y - clone_offset_y;
+                var target_y = (top)
+                    ? actor.y - actor.height - clone_offset_y
+                    : actor.y + actor.height - clone_offset_y;
+
+                var clone = new SafeWindowClone (window, true);
+                dock_clones.add_child (clone);
+
+                GestureAnimationDirector.OnBegin on_animation_begin = () => {
+                    clone.set_position (initial_x, initial_y);
+                };
+
+                GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
+                    var y = (((target_y - initial_y) * animation_percentage) / 100) + initial_y;
+                    clone.y = y;
+                };
+
+                GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+                    if (cancel_action) {
+                        return;
+                    }
+
+                    clone.set_easing_duration (ANIMATION_DURATION);
+                    clone.set_easing_mode (ANIMATION_MODE);
+                    clone.y = target_y;
+                };
+
+                if (this.gesture_animation_director == null) {
+                    on_animation_begin (0);
+                    on_animation_end(100, false);
+                } else {
+                    gesture_animation_director.on_animation_begin.connect ((animation_percentage) => {
+                        on_animation_begin(animation_percentage);
+                    });
+                    gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
+                        on_animation_update(animation_percentage);
+                    });
+                    gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
+                        on_animation_end(animation_percentage, cancel_action);
+                    });
+                }
+            }
+        }
+
+        void hide_docks () {
+            float clone_offset_x, clone_offset_y;
+            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
+
+            foreach (var child in dock_clones.get_children ()) {
+                var dock = (Clone) child;
+                var initial_y = dock.y;
+                var target_y = dock.source.y - clone_offset_y;
+
+                GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
+                    var y = (((target_y - initial_y) * animation_percentage) / 100) + initial_y;
+                    dock.y = y;
+                };
+
+                GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+                    if (cancel_action) {
+                        return;
+                    }
+
+                    dock.y = target_y;
+                };
+
+                if (this.gesture_animation_director == null) {
+                    on_animation_end(100, false);
+                } else {
+                    gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
+                        on_animation_update(animation_percentage);
+                    });
+                    gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
+                        on_animation_end(animation_percentage, cancel_action);
+                    });
+                }
             }
         }
 
