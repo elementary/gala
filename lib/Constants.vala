@@ -31,6 +31,6 @@ namespace Gala {
         // Duration of the workspace switch animation
         WORKSPACE_SWITCH = 300,
         // Style switch animation
-        STYLE_SWITCH = 500
+        STYLE_SWITCH = 200
     }
 }
