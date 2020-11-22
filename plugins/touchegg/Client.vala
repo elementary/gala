@@ -45,7 +45,7 @@ namespace Gala.Plugins.Touchegg {
      * This class connects to the Touchégg daemon to receive touch events.
      * See: https://github.com/JoseExposito/touchegg
      */
-    public class Client {
+    public class Client : Object {
         public signal void on_gesture_begin (Gesture gesture);
         public signal void on_gesture_update (Gesture gesture);
         public signal void on_gesture_end (Gesture gesture);
@@ -58,7 +58,7 @@ namespace Gala.Plugins.Touchegg {
         /**
          * Socket used to connect to the daemon.
          */
-        private Socket socket = null;
+        private Socket? socket = null;
 
         /**
          * Current number of reconnection attemps.
