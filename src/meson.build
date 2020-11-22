@@ -2,7 +2,6 @@ gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
     'DockThemeManager.vala',
-    'DragDropAction.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
     'NotificationStack.vala',
@@ -12,7 +11,6 @@ gala_bin_sources = files(
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
-    'Settings.vala',
     'ShadowEffect.vala',
     'WindowListener.vala',
     'WindowManager.vala',
@@ -40,6 +38,13 @@ gala_bin_sources = files(
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
+
+if libmutter_dep.version().version_compare ('>= 3.35.1')
+    gala_bin_sources += files(
+        'Widgets/DwellClickTimer.vala',
+        'Widgets/PointerLocator.vala',
+    )
+endif
 
 gala_bin = executable(
     'gala',

@@ -378,6 +378,16 @@ namespace Gala {
             animate_dock_width ();
         }
 
+        public override bool key_press_event (Clutter.KeyEvent event) {
+            if (event.keyval == Clutter.Key.Escape) {
+                current_window = null;
+                close (event.time);
+                return true;
+            }
+
+            return false;
+        }
+
         public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0)
                 close (event.time);
@@ -588,19 +598,21 @@ namespace Gala {
 
             actor.hide ();
 
-            var clone = new SafeWindowClone (window, true);
-            clone.x = actor.x;
-            clone.y = actor.y;
+            var clone = new SafeWindowClone (window, true) {
+                x = actor.x,
+                y = actor.y
+            };
 
             window_clones.add_child (clone);
 
-            var icon = new WindowIcon (window, dock_settings.IconSize, ui_scale_factor, true);
-            icon.reactive = true;
-            icon.opacity = 100;
-            icon.x_expand = true;
-            icon.y_expand = true;
-            icon.x_align = ActorAlign.CENTER;
-            icon.y_align = ActorAlign.CENTER;
+            var icon = new WindowIcon (window, dock_settings.IconSize, ui_scale_factor, true) {
+                reactive = true,
+                opacity = 100,
+                x_expand = true,
+                y_expand = true,
+                x_align = ActorAlign.CENTER,
+                y_align = ActorAlign.CENTER
+            };
             icon.button_release_event.connect (clicked_icon);
 
             dock.add_child (icon);

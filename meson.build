@@ -87,9 +87,8 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
-bamf_dep = dependency('libbamf3')
 plank_dep = dependency('plank', version: '>= @0@'.format(plank_version_required))
-granite_dep = dependency('granite', version: '>= 5.3.0')
+granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
@@ -150,7 +149,7 @@ if mutter334_dep.found()
         '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
-mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.38'], required: false)
+mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.37'], required: false)
 if mutter336_dep.found()
     libmutter_dep = dependency('libmutter-6', version: '>= 3.35.1')
     mutter_dep = [
@@ -163,6 +162,19 @@ if mutter336_dep.found()
         '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
+mutter338_dep = dependency('libmutter-7', version: ['>= 3.37', '< 3.39'], required: false)
+if mutter338_dep.found()
+	libmutter_dep = dependency('libmutter-7', version: '>= 3.37')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-7'), dependency('mutter-cogl-pango-7'),
+		dependency('mutter-clutter-7')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336', '--define', 'HAS_MUTTER338']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
@@ -172,7 +184,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, bamf_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
+gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
 
 subdir('data')
 subdir('lib')

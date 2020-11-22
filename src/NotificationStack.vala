@@ -63,38 +63,41 @@ public class Gala.NotificationStack : Object {
         update_stack_allocation ();
     }
 
-    public void show_notification (Meta.WindowActor notification) {
+    public void show_notification (Meta.WindowActor notification, bool animate) {
         notification.set_pivot_point (0.5f, 0.5f);
 
         unowned Meta.Window window = notification.get_meta_window ();
         window.stick ();
-        
+
         var scale = Utils.get_ui_scaling_factor ();
 
-        var opacity_transition = new Clutter.PropertyTransition ("opacity");
-        opacity_transition.set_from_value (0);
-        opacity_transition.set_to_value (255);
+        if (animate) {
+            var opacity_transition = new Clutter.PropertyTransition ("opacity");
+            opacity_transition.set_from_value (0);
+            opacity_transition.set_to_value (255);
 
-        var flip_transition = new Clutter.KeyframeTransition ("rotation-angle-x");
-        flip_transition.set_from_value (90.0);
-        flip_transition.set_to_value (0.0);
-        flip_transition.set_key_frames ({ 0.6 });
-        flip_transition.set_values ({ -10.0 });
+            var flip_transition = new Clutter.KeyframeTransition ("rotation-angle-x");
+            flip_transition.set_from_value (90.0);
+            flip_transition.set_to_value (0.0);
+            flip_transition.set_key_frames ({ 0.6 });
+            flip_transition.set_values ({ -10.0 });
 
-        var entry = new Clutter.TransitionGroup ();
-        entry.duration = 400;
-        entry.add_transition (opacity_transition);
-        entry.add_transition (flip_transition);
+            var entry = new Clutter.TransitionGroup () {
+                duration = 400
+            };
+            entry.add_transition (opacity_transition);
+            entry.add_transition (flip_transition);
 
-        notification.transitions_completed.connect (() => notification.remove_all_transitions ());
-        notification.add_transition (TRANSITION_ENTRY_NAME, entry);
+            notification.transitions_completed.connect (() => notification.remove_all_transitions ());
+            notification.add_transition (TRANSITION_ENTRY_NAME, entry);
+        }
 
         /**
          * We will make space for the incomming notification
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */
-        update_positions (notification.height);
+        update_positions (animate, notification.height);
 
         move_window (notification, stack_x, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
         notifications.insert (0, notification);
@@ -116,19 +119,24 @@ public class Gala.NotificationStack : Object {
         stack_y = area.y;
     }
 
-    private void update_positions (float add_y = 0.0f) {
+    private void update_positions (bool animate, float add_y = 0.0f) {
         var scale = Utils.get_ui_scaling_factor ();
         var y = stack_y + TOP_OFFSET + add_y + ADDITIONAL_MARGIN * scale;
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         foreach (var actor in notifications) {
-            actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
-            actor.set_easing_duration (200);
-            actor.set_easing_delay ((i--) * delay_step);
+            if (animate) {
+                actor.save_easing_state ();
+                actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
+                actor.set_easing_duration (200);
+                actor.set_easing_delay ((i--) * delay_step);
+            }
 
             move_window (actor, -1, (int)y);
-            actor.restore_easing_state ();
+
+            if (animate) {
+                actor.restore_easing_state ();
+            }
 
             // For some reason get_transition doesn't work later when we need to restore it
             unowned Clutter.Transition? transition = actor.get_transition ("position");
@@ -138,17 +146,22 @@ public class Gala.NotificationStack : Object {
         }
     }
 
-    public void destroy_notification (Meta.WindowActor notification) {
-        notification.save_easing_state ();
-        notification.set_easing_duration (100);
-        notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-        notification.opacity = 0;
+    public void destroy_notification (Meta.WindowActor notification, bool animate) {
+        if (animate) {
+            notification.save_easing_state ();
+            notification.set_easing_duration (100);
+            notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
+            notification.opacity = 0;
 
-        notification.x += stack_width;
-        notification.restore_easing_state ();
+            notification.x += stack_width;
+            notification.restore_easing_state ();
+        } else {
+            notification.opacity = 0;
+            notification.x += stack_width;
+        }
 
         notifications.remove (notification);
-        update_positions ();
+        update_positions (animate);
     }
 
     /**

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-07-21 16:52+0000\n"
-"PO-Revision-Date: 2020-05-27 22:10+0000\n"
-"Last-Translator: Rantyrant <diseasemonger@gmail.com>\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: 2020-08-25 13:13+0000\n"
+"Last-Translator: Kaj Printz Madsen <kajprintz@gmail.com>\n"
 "Language-Team: Danish <https://l10n.elementary.io/projects/desktop/gala/da/"
 ">\n"
 "Language: da\n"
@@ -20,25 +20,25 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-03-22 06:52+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "Skærmbilleder"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Ser skærmen OK ud?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Behold Denne Konfiguration"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Gendan Forrige Konfiguration"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Minimer"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -78,15 +78,15 @@ msgstr "Maksimér"
 
 #: daemon/MenuDaemon.vala:268
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Skift Skrivebordsbaggrund…"
 
 #: daemon/MenuDaemon.vala:285
 msgid "Display Settings…"
-msgstr ""
+msgstr "Skærmindstillinger…"
 
 #: daemon/MenuDaemon.vala:302
 msgid "System Settings…"
-msgstr ""
+msgstr "Systemindstillinger…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -104,22 +104,31 @@ msgstr ""
 "En vindues &amp; kompositions administrator baseret på libmutter og designet "
 "af elementary til brug med Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
-#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "Luk Alt + Tab switcher ved at trykke på Esc uden at frigive Alt"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
-#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+"Øg maksimalt zoom niveau og giv feedback når du ikke kan zoome yderligere"
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr "Vis en kontekstmenu, nå du klikker sekundært på baggrunden"
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
 msgid "Updated translations"
 msgstr "Opdaterede oversættelser"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -127,47 +136,47 @@ msgstr ""
 "Fiks \"Altid på Synligt Workspace\" vinduer forsvinder når der skiftet "
 "workspace"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Fix vinduer på ikke-primære displays der forsvinder når man der skiftes "
 "workspace"
 
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Ret nedbrud ved ændring af arbejdsområder, mens et kortvarigt vindue åbnes"
 
-#: data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Vis ikke Gala Background Services i dokken"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
 msgstr "Rettelser til håndtering af medie knapper"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:49
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Vis tastaturgenveje i HeaderBar menuerne"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:58
 msgid "Improve window shadows for legacy apps"
 msgstr "Forbedre vindue skygger for ældre applikationer"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
 msgstr "Ret potentielt nedbrud når man tager skærmbilleder"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
 msgstr "Ret notifikations position efter ændring af DPI"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:61
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Ret animationer for flyttelse og maksimering af flise vinduer"
 
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
 msgstr "elementary, Incorporated."
 
@@ -195,6 +204,9 @@ msgstr "Fallback desktop-fil til notifikationer fra forældede applikationer."
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "Minimer"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Handling for det øvre venstre hjørne"

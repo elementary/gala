@@ -32,14 +32,14 @@ namespace Gala {
         // Window Menu
         private Granite.AccelLabel always_on_top_accellabel;
         private Granite.AccelLabel close_accellabel;
-        private Granite.AccelLabel minimize_accellabel;
+        private Granite.AccelLabel hide_accellabel;
         private Granite.AccelLabel move_accellabel;
         private Granite.AccelLabel move_left_accellabel;
         private Granite.AccelLabel move_right_accellabel;
         private Granite.AccelLabel on_visible_workspace_accellabel;
         private Granite.AccelLabel resize_accellabel;
         Gtk.Menu? window_menu = null;
-        Gtk.MenuItem minimize;
+        Gtk.MenuItem hide;
         Gtk.MenuItem maximize;
         Gtk.MenuItem move;
         Gtk.MenuItem resize;
@@ -108,12 +108,12 @@ namespace Gala {
         }
 
         private void init_window_menu () {
-            minimize_accellabel = new Granite.AccelLabel (_("Minimize"));
+            hide_accellabel = new Granite.AccelLabel (_("Hide"));
 
-            minimize = new Gtk.MenuItem ();
-            minimize.add (minimize_accellabel);
-            minimize.activate.connect (() => {
-                perform_action (Gala.ActionType.MINIMIZE_CURRENT);
+            hide = new Gtk.MenuItem ();
+            hide.add (hide_accellabel);
+            hide.activate.connect (() => {
+                perform_action (Gala.ActionType.HIDE_CURRENT);
             });
 
             maximize = new Gtk.MenuItem ();
@@ -178,7 +178,7 @@ namespace Gala {
             });
 
             window_menu = new Gtk.Menu ();
-            window_menu.append (minimize);
+            window_menu.append (hide);
             window_menu.append (maximize);
             window_menu.append (move);
             window_menu.append (resize);
@@ -195,9 +195,9 @@ namespace Gala {
                 init_window_menu ();
             }
 
-            minimize.visible = Gala.WindowFlags.CAN_MINIMIZE in flags;
-            if (minimize.visible) {
-                minimize_accellabel.accel_string = keybind_settings.get_strv ("minimize")[0];
+            hide.visible = Gala.WindowFlags.CAN_HIDE in flags;
+            if (hide.visible) {
+                hide_accellabel.accel_string = keybind_settings.get_strv ("minimize")[0];
             }
 
             maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;

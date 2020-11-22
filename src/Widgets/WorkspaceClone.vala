@@ -49,12 +49,31 @@ namespace Gala {
             var monitor_geom = screen.get_monitor_geometry (primary);
 #endif
 
-            var effect = new ShadowEffect (40, 5);
-            effect.css_class = "workspace";
+            var effect = new ShadowEffect (40, 5) {
+                css_class = "workspace"
+            };
             add_effect (effect);
         }
 
-#if HAS_MUTTER336
+#if HAS_MUTTER338
+        public override void paint (Clutter.PaintContext context) {
+            base.paint (context);
+
+            unowned Cogl.Framebuffer fb = context.get_framebuffer ();
+
+            pipeline.set_color4ub (0, 0, 0, 100);
+            fb.push_rectangle_clip (0, 0, width, height);
+            fb.draw_rectangle (pipeline, 0, 0, width, height);
+            fb.pop_clip ();
+
+            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
+            color.premultiply ();
+            pipeline.set_color (color);
+            fb.push_rectangle_clip (0.5f, 0.5f, width - 1, height - 1);
+            fb.draw_rectangle (pipeline, 0.5f, 0.5f, width - 1, height - 1);
+            fb.pop_clip ();
+        }
+#elif HAS_MUTTER336
         public override void paint (Clutter.PaintContext context) {
             base.paint (context);
 
@@ -63,9 +82,10 @@ namespace Gala {
             path.rectangle (0, 0, width, height);
             context.get_framebuffer ().stroke_path (pipeline, path);
 
-            path = new Cogl.Path ();
-            pipeline.set_color4ub (255, 255, 255, 25);
-            path.rectangle (0, 0, width, height);
+            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
+            color.premultiply ();
+            pipeline.set_color (color);
+            path.rectangle (0.5f, 0.5f, width - 1, height - 1);
             context.get_framebuffer ().stroke_path (pipeline, path);
         }
 #else

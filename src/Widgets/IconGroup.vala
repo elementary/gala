@@ -69,9 +69,10 @@ namespace Gala {
 
                 _active = value;
 
-                var transition = new PropertyTransition ("backdrop-opacity");
-                transition.duration = 300;
-                transition.remove_on_complete = true;
+                var transition = new PropertyTransition ("backdrop-opacity") {
+                    duration = 300,
+                    remove_on_complete = true
+                };
                 transition.set_from_value (_active ? 0 : 40);
                 transition.set_to_value (_active ? 40 : 0);
 
@@ -227,9 +228,9 @@ namespace Gala {
 
 #if HAS_MUTTER336
             Cogl.VertexP2T2C4 vertices[4];
-            vertices[0] = { x, y + height, 0, 1, 255, 255, 255, backdrop_opacity };
+            vertices[0] = { x, y + height, 0, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
-            vertices[2] = { x + width, y + height, 1, 1, 255, 255, 255, backdrop_opacity };
+            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
             vertices[3] = { x + width, y, 1, 0, 0, 0, 0, 0 };
 
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);

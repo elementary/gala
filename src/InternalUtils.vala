@@ -30,37 +30,62 @@ namespace Gala {
                 && Prefs.get_workspaces_only_on_primary ();
         }
 
+        private static GLib.Settings? shadow_settings = null;
         /*
          * Reload shadow settings
          */
         public static void reload_shadow () {
+            if (shadow_settings == null) {
+                shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
+            }
             var factory = ShadowFactory.get_default ();
-            var settings = ShadowSettings.get_default ();
             Meta.ShadowParams shadow;
 
             //normal focused
-            shadow = settings.get_shadowparams ("normal_focused");
+            shadow = get_shadowparams ("normal-focused");
             factory.set_params ("normal", true, shadow);
 
             //normal unfocused
-            shadow = settings.get_shadowparams ("normal_unfocused");
+            shadow = get_shadowparams ("normal-unfocused");
             factory.set_params ("normal", false, shadow);
 
             //menus
-            shadow = settings.get_shadowparams ("menu");
+            shadow = get_shadowparams ("menu");
             factory.set_params ("menu", false, shadow);
             factory.set_params ("dropdown-menu", false, shadow);
             factory.set_params ("popup-menu", false, shadow);
 
             //dialog focused
-            shadow = settings.get_shadowparams ("dialog_focused");
+            shadow = get_shadowparams ("dialog-focused");
             factory.set_params ("dialog", true, shadow);
             factory.set_params ("modal_dialog", false, shadow);
 
             //dialog unfocused
-            shadow = settings.get_shadowparams ("dialog_unfocused");
+            shadow = get_shadowparams ("dialog-unfocused");
             factory.set_params ("dialog", false, shadow);
             factory.set_params ("modal_dialog", false, shadow);
+        }
+
+        private static Meta.ShadowParams get_shadowparams (string class_name) {
+            var val = shadow_settings.get_strv (class_name);
+            if (val == null || val.length != 5 || int.parse (val[0]) < 1) {
+                warning ("Invalid shadow settings");
+                return Meta.ShadowParams () {
+                    radius = 1,
+                    top_fade = 0,
+                    x_offset = 0,
+                    y_offset = 0,
+                    opacity = 0
+                };
+            }
+
+            return Meta.ShadowParams () {
+                radius = int.parse (val[0]),
+                top_fade = int.parse (val[1]),
+                x_offset = int.parse (val[2]),
+                y_offset = int.parse (val[3]),
+                opacity = (uint8)int.parse (val[4])
+            };
         }
 
         /**
@@ -68,6 +93,10 @@ namespace Gala {
          **/
 #if HAS_MUTTER330
         public static void set_input_area (Display display, InputArea area) {
+            if (Meta.Util.is_wayland_compositor ()) {
+                return;
+            }
+
             X.Xrectangle[] rects = {};
             int width, height;
             display.get_size (out width, out height);
@@ -367,6 +396,27 @@ namespace Gala {
 
         public static int get_ui_scaling_factor () {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+        }
+
+        private static Gtk.StyleContext selection_style_context = null;
+        public static Gdk.RGBA get_theme_accent_color () {
+            if (selection_style_context == null) {
+                var dummy_label = new Gtk.Label ("");
+
+                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
+
+                var widget_path = label_style_context.get_path ().copy ();
+                widget_path.iter_set_object_name (-1, "selection");
+
+                selection_style_context = new Gtk.StyleContext ();
+                selection_style_context.set_path (widget_path);
+                selection_style_context.set_parent (label_style_context);
+            }
+
+            return (Gdk.RGBA) selection_style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
         }
     }
 }
