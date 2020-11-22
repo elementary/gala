@@ -416,13 +416,13 @@ namespace Gala {
                 on_animation_end (100, false);
             } else {
                 gesture_animation_director.on_animation_begin.connect ((percentage) => {
-                    on_animation_begin(percentage);
+                    on_animation_begin (percentage);
                 });
                 gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update(percentage);
+                    on_animation_update (percentage);
                 });
                 gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end(percentage, cancel_action);
+                    on_animation_end (percentage, cancel_action);
                 });
             }
 
@@ -483,10 +483,10 @@ namespace Gala {
                 on_animation_end (100, false);
             } else {
                 gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update(percentage);
+                    on_animation_update (percentage);
                 });
                 gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end(percentage, cancel_action);
+                    on_animation_end (percentage, cancel_action);
                 });
             }
 
