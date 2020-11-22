@@ -28,7 +28,7 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
-        private GestureAnimationDirector gesture_animation_director = null;
+        private GestureAnimationDirector? gesture_animation_director = null;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 

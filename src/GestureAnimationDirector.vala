@@ -17,7 +17,7 @@
  */
 
  namespace Gala {
-    public class GestureAnimationDirector {
+    public class GestureAnimationDirector : Object {
         public signal void on_animation_begin (int percentage);
         public signal void on_animation_update (int percentage);
         public signal void on_animation_end (int percentage, bool cancel_action);
