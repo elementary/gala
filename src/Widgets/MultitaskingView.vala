@@ -600,9 +600,9 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open ();
+                    container.open (this.gesture_animation_director);
                 } else
-                    container.close ();
+                    container.close (this.gesture_animation_director);
             }
 
             if (opening) {

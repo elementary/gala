@@ -127,16 +127,16 @@ namespace Gala {
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open () {
-            window_container.open ();
+        public void open (GestureAnimationDirector? gesture_animation_director = null) {
+            window_container.open (null, gesture_animation_director);
             // background.opacity = 0; TODO consider this option
         }
 
         /**
          * Animate the windows back to their old location
          */
-        public void close () {
-            window_container.close ();
+        public void close (GestureAnimationDirector? gesture_animation_director = null) {
+            window_container.close (gesture_animation_director);
             background.opacity = 255;
         }
 
