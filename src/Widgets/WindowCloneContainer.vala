@@ -336,7 +336,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null, GestureAnimationDirector? gesture_animation_director = null) {
+        public void open (Window? selected_window = null, GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
             if (opened)
                 return;
 
@@ -361,11 +361,11 @@ namespace Gala {
 
             // make sure our windows are where they belong in case they were moved
             // while were closed.
-            foreach (var window in get_children ())
-                ((WindowClone) window).transition_to_original_state (false);
-                
-            // TODO (José Expósito) This ^ is breaking the close cancellation animation
-
+            if (!is_cancel_animation) {
+                foreach (var window in get_children ())
+                    ((WindowClone) window).transition_to_original_state (false);
+            }
+            
             reflow (gesture_animation_director);
         }
 

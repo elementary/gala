@@ -127,8 +127,8 @@ namespace Gala {
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open (GestureAnimationDirector? gesture_animation_director = null) {
-            window_container.open (null, gesture_animation_director);
+        public void open (GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
+            window_container.open (null, gesture_animation_director, is_cancel_animation);
             // background.opacity = 0; TODO consider this option
         }
 

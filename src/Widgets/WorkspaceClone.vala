@@ -368,7 +368,7 @@ namespace Gala {
          * Also sets the current_window of the WindowCloneContainer to the active window
          * if it belongs to this workspace.
          */
-        public void open (GestureAnimationDirector? gesture_animation_director = null) {
+        public void open (GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
             if (opened)
                 return;
 
@@ -442,9 +442,9 @@ namespace Gala {
             icon_group.redraw ();
 
 #if HAS_MUTTER330
-            window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director);
+            window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director, is_cancel_animation);
 #else
-            window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director);
+            window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director, is_cancel_animation);
 #endif
         }
 

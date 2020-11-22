@@ -588,7 +588,7 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        void toggle () {
+        void toggle (bool is_cancel_animation = false) {
             if (animating)
                 return;
 
@@ -600,7 +600,7 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open (this.gesture_animation_director);
+                    container.open (this.gesture_animation_director, is_cancel_animation);
                 } else
                     container.close (this.gesture_animation_director);
             }
@@ -649,13 +649,13 @@ namespace Gala {
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening)
-                    workspace.open (this.gesture_animation_director);
+                    workspace.open (this.gesture_animation_director, is_cancel_animation);
                 else
                     workspace.close (this.gesture_animation_director);
             }
 
             if (opening)
-                this.show_docks ();
+                this.show_docks (is_cancel_animation);
             else
                 this.hide_docks ();
 
@@ -682,7 +682,7 @@ namespace Gala {
                     this.gesture_animation_director = null;
 
                     if (cancel_action) {
-                        toggle ();
+                        toggle (true);
                     }
 
                     return false;
@@ -698,7 +698,7 @@ namespace Gala {
             }
         }
 
-        void show_docks () {
+        void show_docks (bool is_cancel_animation) {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
@@ -750,6 +750,7 @@ namespace Gala {
 
                 GestureAnimationDirector.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
+                    clone.set_easing_mode (0);
                 };
 
                 GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
@@ -758,12 +759,13 @@ namespace Gala {
                 };
 
                 GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                    clone.set_easing_mode (ANIMATION_MODE);
+
                     if (cancel_action) {
                         return;
                     }
 
-                    clone.set_easing_duration (ANIMATION_DURATION);
-                    clone.set_easing_mode (ANIMATION_MODE);
+                    clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
                     clone.y = target_y;
                 };
 
@@ -803,6 +805,8 @@ namespace Gala {
                         return;
                     }
 
+                    dock.set_easing_duration (ANIMATION_DURATION);
+                    dock.set_easing_mode (ANIMATION_MODE);
                     dock.y = target_y;
                 };
 
