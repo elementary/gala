@@ -307,21 +307,21 @@ namespace Gala {
                 window_icon.set_easing_duration (0);
             };
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                var x = (((target_x - initial_x) * animation_percentage) / 100) + initial_x;
-                var y = (((target_y - initial_y) * animation_percentage) / 100) + initial_y;
-                var width = (((outer_rect.width - initial_width) * animation_percentage) / 100) + initial_width;
-                var height = (((outer_rect.height - initial_height) * animation_percentage) / 100) + initial_height;
-                var opacity = 255 - ((255 * animation_percentage) / 100);
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
+                var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                var width = GestureAnimationDirector.animation_value (initial_width, outer_rect.width, percentage);
+                var height = GestureAnimationDirector.animation_value (initial_height, outer_rect.height, percentage);
+                var opacity = GestureAnimationDirector.animation_value (255f, 0f, percentage);
 
                 set_size (width, height);
                 set_position (x, y);
-                window_icon.opacity = opacity;
+                window_icon.opacity = (uint) opacity;
                 window_icon.set_position ((width - WINDOW_ICON_SIZE) / 2,
                     height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -352,14 +352,14 @@ namespace Gala {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((animation_percentage) => {
-                    on_animation_begin(animation_percentage);
+                gesture_animation_director.on_animation_begin.connect ((percentage) => {
+                    on_animation_begin(percentage);
                 });
-                gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                    on_animation_update(animation_percentage);
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update(percentage);
                 });
-                gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                    on_animation_end(animation_percentage, cancel_action);
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end(percentage, cancel_action);
                 });
             }
         }
@@ -379,21 +379,21 @@ namespace Gala {
                 window_icon.set_easing_duration (0);
             };
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                var x = (((rect.x - initial_x) * animation_percentage) / 100) + initial_x;
-                var y = (((rect.y - initial_y) * animation_percentage) / 100) + initial_y;
-                var width = (((rect.width - initial_width) * animation_percentage) / 100) + initial_width;
-                var height = (((rect.height - initial_height) * animation_percentage) / 100) + initial_height;
-                var opacity = (255 * animation_percentage) / 100;
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureAnimationDirector.animation_value (initial_x, rect.x, percentage);
+                var y = GestureAnimationDirector.animation_value (initial_y, rect.y, percentage);
+                var width = GestureAnimationDirector.animation_value (initial_width, rect.width, percentage);
+                var height = GestureAnimationDirector.animation_value (initial_height, rect.height, percentage);
+                var opacity = GestureAnimationDirector.animation_value (0f, 255f, percentage);
 
                 set_size (width, height);
                 set_position (x, y);
-                window_icon.opacity = opacity;
+                window_icon.opacity = (uint) opacity;
                 window_icon.set_position ((width - WINDOW_ICON_SIZE) / 2,
                     height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -429,14 +429,14 @@ namespace Gala {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((animation_percentage) => {
-                    on_animation_begin(animation_percentage);
+                gesture_animation_director.on_animation_begin.connect ((percentage) => {
+                    on_animation_begin(percentage);
                 });
-                gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                    on_animation_update(animation_percentage);
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update(percentage);
                 });
-                gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                    on_animation_end(animation_percentage, cancel_action);
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end(percentage, cancel_action);
                 });
             }
         }

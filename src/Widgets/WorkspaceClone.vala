@@ -394,12 +394,12 @@ namespace Gala {
                 background.set_pivot_point (0.5f, pivotY);
             };
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                var update_scale = 1.0 - (((1.0 - scale) * animation_percentage) / 100);
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 if (cancel_action) {
                     return;
                 }
@@ -415,14 +415,14 @@ namespace Gala {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((animation_percentage) => {
-                    on_animation_begin(animation_percentage);
+                gesture_animation_director.on_animation_begin.connect ((percentage) => {
+                    on_animation_begin(percentage);
                 });
-                gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                    on_animation_update(animation_percentage);
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update(percentage);
                 });
-                gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                    on_animation_end(animation_percentage, cancel_action);
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end(percentage, cancel_action);
                 });
             }
 
@@ -461,13 +461,13 @@ namespace Gala {
             double initial_scale_x, initial_scale_y;
             background.get_scale (out initial_scale_x, out initial_scale_y);
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                var scale_x = (((1 - initial_scale_x) * animation_percentage) / 100) + initial_scale_x;
-                var scale_y = (((1 - initial_scale_y) * animation_percentage) / 100) + initial_scale_y;
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                double scale_x = (double) GestureAnimationDirector.animation_value ((float) initial_scale_x, 1.0f, percentage);
+                double scale_y = (double) GestureAnimationDirector.animation_value ((float) initial_scale_y, 1.0f, percentage);
                 background.set_scale (scale_x, scale_y);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 if (cancel_action) {
                     return;
                 }
@@ -482,11 +482,11 @@ namespace Gala {
             if (gesture_animation_director == null) {
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                    on_animation_update(animation_percentage);
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update(percentage);
                 });
-                gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                    on_animation_end(animation_percentage, cancel_action);
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end(percentage, cancel_action);
                 });
             }
 

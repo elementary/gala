@@ -659,7 +659,7 @@ namespace Gala {
             else
                 this.hide_docks ();
 
-            GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
                 Timeout.add (animation_duration, () => {
                     if (!opening) {
@@ -692,8 +692,8 @@ namespace Gala {
             if (this.gesture_animation_director == null) {
                 on_animation_end(100, false);
             } else {
-                this.gesture_animation_director.on_animation_end.connect((animation_percentage, cancel_action) => {
-                    on_animation_end(animation_percentage, cancel_action);
+                this.gesture_animation_director.on_animation_end.connect((percentage, cancel_action) => {
+                    on_animation_end(percentage, cancel_action);
                 });
             }
         }
@@ -752,12 +752,12 @@ namespace Gala {
                     clone.set_position (initial_x, initial_y);
                 };
 
-                GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                    var y = (((target_y - initial_y) * animation_percentage) / 100) + initial_y;
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
                     clone.y = y;
                 };
 
-                GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                     if (cancel_action) {
                         return;
                     }
@@ -771,14 +771,14 @@ namespace Gala {
                     on_animation_begin (0);
                     on_animation_end(100, false);
                 } else {
-                    gesture_animation_director.on_animation_begin.connect ((animation_percentage) => {
-                        on_animation_begin(animation_percentage);
+                    gesture_animation_director.on_animation_begin.connect ((percentage) => {
+                        on_animation_begin(percentage);
                     });
-                    gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                        on_animation_update(animation_percentage);
+                    gesture_animation_director.on_animation_update.connect ((percentage) => {
+                        on_animation_update(percentage);
                     });
-                    gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                        on_animation_end(animation_percentage, cancel_action);
+                    gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                        on_animation_end(percentage, cancel_action);
                     });
                 }
             }
@@ -793,12 +793,12 @@ namespace Gala {
                 var initial_y = dock.y;
                 var target_y = dock.source.y - clone_offset_y;
 
-                GestureAnimationDirector.OnUpdate on_animation_update = (animation_percentage) => {
-                    var y = (((target_y - initial_y) * animation_percentage) / 100) + initial_y;
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
                     dock.y = y;
                 };
 
-                GestureAnimationDirector.OnEnd on_animation_end = (animation_percentage, cancel_action) => {
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                     if (cancel_action) {
                         return;
                     }
@@ -809,11 +809,11 @@ namespace Gala {
                 if (this.gesture_animation_director == null) {
                     on_animation_end(100, false);
                 } else {
-                    gesture_animation_director.on_animation_update.connect ((animation_percentage) => {
-                        on_animation_update(animation_percentage);
+                    gesture_animation_director.on_animation_update.connect ((percentage) => {
+                        on_animation_update(percentage);
                     });
-                    gesture_animation_director.on_animation_end.connect ((animation_percentage, cancel_action) => {
-                        on_animation_end(animation_percentage, cancel_action);
+                    gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                        on_animation_end(percentage, cancel_action);
                     });
                 }
             }
