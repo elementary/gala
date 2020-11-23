@@ -99,6 +99,8 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
+        private GestureAnimationDirector? gesture_animation_director = null;
+
         construct {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
@@ -577,7 +579,22 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+        public void switch_to_next_workspace (Meta.MotionDirection direction, HashTable<string,Variant>? hints = null) {
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
+            if (manual_animation) {
+                string event = hints.get ("event").get_string ();
+
+                if (event == "begin") {
+                    gesture_animation_director = new GestureAnimationDirector();
+                }
+
+                this.gesture_animation_director.update_animation (hints);
+
+                if (event != "begin") {
+                    return;
+                }
+            }
+
 #if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
@@ -2079,29 +2096,64 @@ namespace Gala {
 
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
-            out_group.set_easing_mode (animation_mode);
-            out_group.set_easing_duration (animation_duration);
-            in_group.set_easing_mode (animation_mode);
-            in_group.set_easing_duration (animation_duration);
-            wallpaper_clone.set_easing_mode (animation_mode);
-            wallpaper_clone.set_easing_duration (animation_duration);
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage);
+                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage);
 
-            wallpaper.save_easing_state ();
-            wallpaper.set_easing_mode (animation_mode);
-            wallpaper.set_easing_duration (animation_duration);
+                out_group.x = x_out;
+                in_group.x = x_in;
 
-            out_group.x = x2;
-            in_group.x = 0.0f;
+                wallpaper.x = x_out;
+                wallpaper_clone.x = x_in;
+            };
 
-            wallpaper.x = x2;
-            wallpaper_clone.x = 0.0f;
-            wallpaper.restore_easing_state ();
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                // TODO (José Expósito) Allow to cancel the action
+                //  if (cancel_action) {
+                //      gesture_animation_director = null;
+                //      switch_to_next_workspace (direction == Meta.MotionDirection.LEFT
+                //          ? Meta.MotionDirection.RIGHT
+                //          : Meta.MotionDirection.LEFT);
+                //      return;
+                //  }
 
-            var transition = in_group.get_transition ("x");
-            if (transition != null)
-                transition.completed.connect (end_switch_workspace);
-            else
-                end_switch_workspace ();
+                out_group.set_easing_mode (animation_mode);
+                out_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                in_group.set_easing_mode (animation_mode);
+                in_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                wallpaper_clone.set_easing_mode (animation_mode);
+                wallpaper_clone.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+
+                wallpaper.save_easing_state ();
+                wallpaper.set_easing_mode (animation_mode);
+                wallpaper.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+
+                out_group.x = x2;
+                in_group.x = 0.0f;
+
+                wallpaper.x = x2;
+                wallpaper_clone.x = 0.0f;
+                wallpaper.restore_easing_state ();
+
+                var transition = in_group.get_transition ("x");
+                if (transition != null)
+                    transition.completed.connect (end_switch_workspace);
+                else
+                    end_switch_workspace ();
+
+                gesture_animation_director = null;
+            };
+
+            if (gesture_animation_director == null) {
+                on_animation_end (100, false);
+            } else {
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update (percentage);
+                });
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end (percentage, cancel_action);
+                });
+            }
         }
 
         void end_switch_workspace () {

@@ -60,6 +60,14 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         if (this.is_close_workspace_gesture (gesture)) {
             this.wm.workspace_view.close (hints);
         }
+
+        if (this.is_next_desktop_gesture (gesture)) {
+            this.wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
+        }
+
+        if (this.is_previous_desktop_gesture (gesture)) {
+            this.wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
+        }
     }
 
     private GLib.HashTable<string, Variant> build_hints_from_gesture (Gesture gesture, string event) {
@@ -87,6 +95,19 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     private bool is_close_workspace_gesture (Gesture gesture) {
         return gesture.type == GestureType.SWIPE
             && gesture.direction == GestureDirection.DOWN
+            && (gesture.fingers == 3 || gesture.fingers == 4);
+    }
+
+    // TODO (José Expósito) In addition to read this from settings, use user's natural scroll preferences
+    private bool is_next_desktop_gesture (Gesture gesture) {
+        return gesture.type == GestureType.SWIPE
+            && gesture.direction == GestureDirection.RIGHT
+            && (gesture.fingers == 3 || gesture.fingers == 4);
+    }
+
+    private bool is_previous_desktop_gesture (Gesture gesture) {
+        return gesture.type == GestureType.SWIPE
+            && gesture.direction == GestureDirection.LEFT
             && (gesture.fingers == 3 || gesture.fingers == 4);
     }
 }
