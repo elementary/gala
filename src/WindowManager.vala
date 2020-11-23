@@ -95,7 +95,7 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
-        public WindowManagerGala () {
+        construct {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -109,9 +109,7 @@ namespace Gala {
             Meta.Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
             Meta.Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
 #endif
-        }
 
-        construct {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
@@ -119,7 +117,7 @@ namespace Gala {
         }
 
         public override void start () {
-            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, show_stage);
+            show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
@@ -166,6 +164,7 @@ namespace Gala {
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
+
 #if HAS_MUTTER330
             WindowListener.init (display);
 #else
@@ -193,7 +192,10 @@ namespace Gala {
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
-            WorkspaceManager.init (this);
+            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
+                WorkspaceManager.init (this);
+                return false;
+            });
 
             /* our layer structure, copied from gnome-shell (from bottom to top):
              * stage
@@ -254,6 +256,7 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
 #endif
+
             ui_group.add_child (screen_shield);
 
             stage.remove_child (top_window_group);
@@ -592,13 +595,14 @@ namespace Gala {
 
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
-            double[] keyframes = { 0.28, 0.58 };
-            GLib.Value[] x = { dest, dest };
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
 
-            var nudge = new Clutter.KeyframeTransition ("x");
-            nudge.duration = 360;
-            nudge.remove_on_complete = true;
-            nudge.progress_mode = Clutter.AnimationMode.LINEAR;
+            var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                duration = 360,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            };
             nudge.set_from_value (0.0f);
             nudge.set_to_value (0.0f);
             nudge.set_key_frames (keyframes);
@@ -679,10 +683,11 @@ namespace Gala {
 
                 var actor = window.get_compositor_private () as Clutter.Actor;
                 if (enable_animations) {
-                    var op_trans = new Clutter.KeyframeTransition ("opacity");
-                    op_trans.duration = fade_out_duration;
-                    op_trans.remove_on_complete = true;
-                    op_trans.progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD;
+                    var op_trans = new Clutter.KeyframeTransition ("opacity") {
+                        duration = fade_out_duration,
+                        remove_on_complete = true,
+                        progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD
+                    };
                     op_trans.set_from_value (255.0f);
                     op_trans.set_to_value (255.0f);
                     op_trans.set_key_frames (op_keyframes);
@@ -710,10 +715,11 @@ namespace Gala {
                 double[] scale_keyframes = { 0.2, 0.3, 0.8 };
                 GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
 
-                var scale_trans = new Clutter.KeyframeTransition (prop);
-                scale_trans.duration = 500;
-                scale_trans.remove_on_complete = true;
-                scale_trans.progress_mode = Clutter.AnimationMode.EASE_IN_QUAD;
+                var scale_trans = new Clutter.KeyframeTransition (prop) {
+                    duration = 500,
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+                };
                 scale_trans.set_from_value (1.0f);
                 scale_trans.set_to_value (1.0f);
                 scale_trans.set_key_frames (scale_keyframes);
@@ -721,27 +727,6 @@ namespace Gala {
 
                 actor.add_transition ("magnify-%s".printf (prop), scale_trans);
             }
-        }
-
-        public uint32[] get_all_xids () {
-            var list = new Gee.ArrayList<uint32> ();
-
-#if HAS_MUTTER330
-            unowned Meta.Display display = get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                foreach (var window in manager.get_workspace_by_index (i).list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#else
-            unowned GLib.List<Meta.Workspace> workspaces = get_screen ().get_workspaces ();
-            foreach (var workspace in workspaces) {
-                foreach (var window in workspace.list_windows ())
-                    list.add ((uint32)window.get_xwindow ());
-            }
-#endif
-
-            return list.to_array ();
         }
 
         /**
@@ -907,7 +892,7 @@ namespace Gala {
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     break;
-                case ActionType.MINIMIZE_CURRENT:
+                case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
                         current.minimize ();
                     break;
@@ -1037,7 +1022,7 @@ namespace Gala {
 
                     WindowFlags flags = WindowFlags.NONE;
                     if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_MINIMIZE;
+                        flags |= WindowFlags.CAN_HIDE;
 
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
@@ -1243,7 +1228,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            const int duration = AnimationDuration.MINIMIZE;
+            const int duration = AnimationDuration.HIDE;
 
             if (!enable_animations
                 || duration == 0
@@ -1424,7 +1409,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         unminimize_completed (actor);
                         return;
@@ -1459,7 +1444,10 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             var window = actor.get_meta_window ();
-            if (!enable_animations) {
+
+            // Notifications are a special case and have to be always be handled
+            // regardless of the animation setting
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 actor.show ();
                 map_completed (actor);
 
@@ -1475,7 +1463,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.MINIMIZE;
+                    var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
                         return;
@@ -1575,7 +1563,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    notification_stack.show_notification (actor);
+                    notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
                     break;
@@ -1590,12 +1578,12 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations) {
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
                 destroy_completed (actor);
 
-                // only NORMAL windows have icons
-                if (window.window_type == Meta.WindowType.NORMAL)
-                    Utils.request_clean_icon_cache (get_all_xids ());
+                if (window.window_type == Meta.WindowType.NORMAL) {
+                    Utils.clear_window_cache (window);
+                }
 
                 return;
             }
@@ -1627,7 +1615,7 @@ namespace Gala {
                         actor.disconnect (destroy_handler_id);
                         destroying.remove (actor);
                         destroy_completed (actor);
-                        Utils.request_clean_icon_cache (get_all_xids ());
+                        Utils.clear_window_cache (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:
@@ -1677,15 +1665,23 @@ namespace Gala {
                     });
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    destroying.add (actor);
-                    notification_stack.destroy_notification (actor);
+                    if (enable_animations) {
+                        destroying.add (actor);
+                    }
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
+                    notification_stack.destroy_notification (actor, enable_animations);
+
+                    if (enable_animations) {
+                        ulong destroy_handler_id = 0UL;
+                        destroy_handler_id = actor.transitions_completed.connect (() => {
+                            actor.disconnect (destroy_handler_id);
+                            destroying.remove (actor);
+                            destroy_completed (actor);
+                        });
+                    } else {
                         destroy_completed (actor);
-                    });
+                    }
+
                     break;
                 default:
                     destroy_completed (actor);
@@ -2033,9 +2029,10 @@ namespace Gala {
             // the display stack
             foreach (var window in docks) {
                 if (!to_has_fullscreened) {
-                    var clone = new SafeWindowClone (window.get_meta_window ());
-                    clone.x = window.x - clone_offset_x;
-                    clone.y = window.y - clone_offset_y;
+                    var clone = new SafeWindowClone (window.get_meta_window ()) {
+                        x = window.x - clone_offset_x,
+                        y = window.y - clone_offset_y
+                    };
 
                     in_group.add_child (clone);
                     tmp_actors.prepend (clone);
