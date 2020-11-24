@@ -62,11 +62,15 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         }
 
         if (this.is_next_desktop_gesture (gesture)) {
-            this.wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
+            if (!this.wm.workspace_view.is_opened ()) {
+                this.wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
+            }
         }
 
         if (this.is_previous_desktop_gesture (gesture)) {
-            this.wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
+            if (!this.wm.workspace_view.is_opened ()) {
+                this.wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
+            }
         }
     }
 

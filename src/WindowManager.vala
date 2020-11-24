@@ -100,6 +100,7 @@ namespace Gala {
         private GLib.Settings behavior_settings;
 
         private GestureAnimationDirector? gesture_animation_director = null;
+        private bool canceling_switch_workspace = false;
 
         construct {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
@@ -607,29 +608,55 @@ namespace Gala {
 
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
-                return;
+            } else {
+                // if we didnt switch, show a nudge-over animation if one is not already in progress
+                play_nudge_animation (direction);
             }
+        }
 
-            // if we didnt switch, show a nudge-over animation if one is not already in progress
-            if (ui_group.get_transition ("nudge") != null)
-                return;
-
+        private void play_nudge_animation (Meta.MotionDirection direction) {
+            int duration = 360;
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
-            double[] keyframes = { 0.5 };
-            GLib.Value[] x = { dest };
-
-            var nudge = new Clutter.KeyframeTransition ("translation-x") {
-                duration = 360,
-                remove_on_complete = true,
-                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage);
+                ui_group.x = x;
             };
-            nudge.set_from_value (0.0f);
-            nudge.set_to_value (0.0f);
-            nudge.set_key_frames (keyframes);
-            nudge.set_values (x);
 
-            ui_group.add_transition ("nudge", nudge);
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                var nudge_gesture = new Clutter.PropertyTransition ("x") {
+                    duration = (duration / 2),
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.LINEAR
+                };
+                nudge_gesture.set_from_value ((float) ui_group.x);
+                nudge_gesture.set_to_value (0.0f);
+                ui_group.add_transition ("nudge", nudge_gesture);
+            };
+
+            if (gesture_animation_director == null) {
+                double[] keyframes = { 0.5 };
+                GLib.Value[] x = { dest };
+
+                var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                    duration = duration,
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+                };
+                nudge.set_from_value (0.0f);
+                nudge.set_to_value (0.0f);
+                nudge.set_key_frames (keyframes);
+                nudge.set_values (x);
+
+                ui_group.add_transition ("nudge", nudge);
+            } else {
+                gesture_animation_director.on_animation_update.connect ((percentage) => {
+                    on_animation_update (percentage);
+                });
+                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
+                    on_animation_end (percentage, cancel_action);
+                });
+            }
         }
 
 #if HAS_MUTTER330
@@ -1893,11 +1920,10 @@ namespace Gala {
         List<Clutter.Actor>? tmp_actors;
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            const int animation_duration = AnimationDuration.WORKSPACE_SWITCH;
-
             if (!enable_animations
-                || animation_duration == 0
-                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)) {
+                || AnimationDuration.WORKSPACE_SWITCH == 0
+                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
+                || canceling_switch_workspace) {
                 switch_workspace_completed ();
                 return;
             }
@@ -2097,8 +2123,8 @@ namespace Gala {
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage);
-                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage);
+                var x_out = GestureAnimationDirector.animation_value (0.1f, x2, percentage);
+                var x_in = GestureAnimationDirector.animation_value (-x2, 0.1f, percentage);
 
                 out_group.x = x_out;
                 in_group.x = x_in;
@@ -2108,15 +2134,6 @@ namespace Gala {
             };
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
-                // TODO (José Expósito) Allow to cancel the action
-                //  if (cancel_action) {
-                //      gesture_animation_director = null;
-                //      switch_to_next_workspace (direction == Meta.MotionDirection.LEFT
-                //          ? Meta.MotionDirection.RIGHT
-                //          : Meta.MotionDirection.LEFT);
-                //      return;
-                //  }
-
                 out_group.set_easing_mode (animation_mode);
                 out_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
                 in_group.set_easing_mode (animation_mode);
@@ -2128,18 +2145,29 @@ namespace Gala {
                 wallpaper.set_easing_mode (animation_mode);
                 wallpaper.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
 
-                out_group.x = x2;
-                in_group.x = 0.0f;
+                out_group.x = cancel_action ? 0.0f : x2;
+                in_group.x = cancel_action ? -x2 : 0.0f;
 
-                wallpaper.x = x2;
-                wallpaper_clone.x = 0.0f;
+                wallpaper.x = cancel_action ? 0.0f : x2;
+                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
                 wallpaper.restore_easing_state ();
 
                 var transition = in_group.get_transition ("x");
-                if (transition != null)
-                    transition.completed.connect (end_switch_workspace);
-                else
+                if (transition != null) {
+                    transition.completed.connect (() => {
+                        end_switch_workspace ();
+                        
+                        if (cancel_action) {
+                            cancel_switch_workspace (direction);
+                        }
+                    });
+                } else {
                     end_switch_workspace ();
+
+                    if (cancel_action) {
+                        cancel_switch_workspace (direction);
+                    }
+                }
 
                 gesture_animation_director = null;
             };
@@ -2154,6 +2182,17 @@ namespace Gala {
                     on_animation_end (percentage, cancel_action);
                 });
             }
+        }
+
+        private void cancel_switch_workspace (Meta.MotionDirection animation_direction) {
+            var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
+                ? Meta.MotionDirection.RIGHT
+                : Meta.MotionDirection.LEFT;
+            canceling_switch_workspace = true;
+
+            switch_to_next_workspace (cancel_direction);
+
+            canceling_switch_workspace = false;
         }
 
         void end_switch_workspace () {
