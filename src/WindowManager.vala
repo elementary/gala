@@ -591,7 +591,7 @@ namespace Gala {
                 string event = hints.get ("event").get_string ();
 
                 if (event == "begin") {
-                    gesture_animation_director = new GestureAnimationDirector();
+                    gesture_animation_director = new GestureAnimationDirector ();
                 } else {
                     this.gesture_animation_director.update_animation (hints);
                     return;

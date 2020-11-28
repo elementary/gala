@@ -403,7 +403,7 @@ namespace Gala {
                 if (cancel_action) {
                     return;
                 }
-                
+
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (MultitaskingView.ANIMATION_MODE);

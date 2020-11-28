@@ -25,23 +25,23 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
      */
     private const int SUCCEESS_THRESHOLD = 20;
 
-    public override void initialize (Gala.WindowManager wm) {
-        this.wm = wm;
+    public override void initialize (Gala.WindowManager window_manager) {
+        wm = window_manager;
 
-        this.client = new Client ();
-        this.client.on_gesture_begin.connect ((gesture) => Idle.add (() => {
-            this.on_handle_gesture (gesture, "begin");
+        client = new Client ();
+        client.on_gesture_begin.connect ((gesture) => Idle.add (() => {
+            on_handle_gesture (gesture, "begin");
             return false;
         }));
-        this.client.on_gesture_update.connect ((gesture) => Idle.add (() => {
-            this.on_handle_gesture (gesture, "update");
+        client.on_gesture_update.connect ((gesture) => Idle.add (() => {
+            on_handle_gesture (gesture, "update");
             return false;
         }));
-        this.client.on_gesture_end.connect ((gesture) => Idle.add (() => {
-            this.on_handle_gesture (gesture, "end");
+        client.on_gesture_end.connect ((gesture) => Idle.add (() => {
+            on_handle_gesture (gesture, "end");
             return false;
         }));
-        this.client.run ();
+        client.run ();
     }
 
     public override void destroy () {
@@ -51,25 +51,25 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
 
     private void on_handle_gesture (Gesture gesture, string event) {
         // debug (@"Gesture $(event): $(gesture.type) - $(gesture.direction) - $(gesture.fingers) fingers - $(gesture.percentage)% - $(gesture.elapsed_time) - $(gesture.performed_on_device_type)");
-        var hints = this.build_hints_from_gesture (gesture, event);
+        var hints = build_hints_from_gesture (gesture, event);
 
-        if (this.is_open_workspace_gesture (gesture)) {
-            this.wm.workspace_view.open (hints);
+        if (is_open_workspace_gesture (gesture)) {
+            wm.workspace_view.open (hints);
         }
 
-        if (this.is_close_workspace_gesture (gesture)) {
-            this.wm.workspace_view.close (hints);
+        if (is_close_workspace_gesture (gesture)) {
+            wm.workspace_view.close (hints);
         }
 
-        if (this.is_next_desktop_gesture (gesture)) {
-            if (!this.wm.workspace_view.is_opened ()) {
-                this.wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
+        if (is_next_desktop_gesture (gesture)) {
+            if (!wm.workspace_view.is_opened ()) {
+                wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
             }
         }
 
-        if (this.is_previous_desktop_gesture (gesture)) {
-            if (!this.wm.workspace_view.is_opened ()) {
-                this.wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
+        if (is_previous_desktop_gesture (gesture)) {
+            if (!wm.workspace_view.is_opened ()) {
+                wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
             }
         }
     }

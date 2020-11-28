@@ -365,7 +365,7 @@ namespace Gala {
                 foreach (var window in get_children ())
                     ((WindowClone) window).transition_to_original_state (false);
             }
-            
+
             reflow (gesture_animation_director);
         }
 

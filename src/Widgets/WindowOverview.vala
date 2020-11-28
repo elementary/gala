@@ -54,12 +54,12 @@ namespace Gala {
 #if HAS_MUTTER330
             display = wm.get_display ();
 
-            display.get_workspace_manager ().workspace_switched.connect (() => { close(); });
+            display.get_workspace_manager ().workspace_switched.connect (() => { close (); });
             display.restacked.connect (restack_windows);
 #else
             screen = wm.get_screen ();
 
-            screen.workspace_switched.connect (() => { close(); });
+            screen.workspace_switched.connect (() => { close (); });
             screen.restacked.connect (restack_windows);
 #endif
 

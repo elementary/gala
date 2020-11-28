@@ -552,7 +552,7 @@ namespace Gala {
             if (!opened) {
                 if (manual_animation) {
                     debug ("Starting MultitaskingView manual open animation");
-                    this.gesture_animation_director = new GestureAnimationDirector();
+                    this.gesture_animation_director = new GestureAnimationDirector ();
                 }
 
                 toggle ();
@@ -572,7 +572,7 @@ namespace Gala {
             if (opened) {
                 if (manual_animation) {
                     debug ("Starting MultitaskingView manual close animation");
-                    this.gesture_animation_director = new GestureAnimationDirector();
+                    this.gesture_animation_director = new GestureAnimationDirector ();
                 }
 
                 toggle ();
@@ -694,7 +694,7 @@ namespace Gala {
             if (this.gesture_animation_director == null) {
                 on_animation_end (100, false);
             } else {
-                this.gesture_animation_director.on_animation_end.connect((percentage, cancel_action) => {
+                this.gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
                     on_animation_end (percentage, cancel_action);
                 });
             }
