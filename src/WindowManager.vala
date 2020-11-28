@@ -99,8 +99,9 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
+        private bool animating_switch_workspace = false;
         private GestureAnimationDirector? gesture_animation_director = null;
-        private bool canceling_switch_workspace = false;
+        private bool skip_next_switch_workspace_animation = false;
 
         construct {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
@@ -581,17 +582,18 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, HashTable<string,Variant>? hints = null) {
+            if (animating_switch_workspace) {
+                return;
+            }
+
             bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
             if (manual_animation) {
                 string event = hints.get ("event").get_string ();
 
                 if (event == "begin") {
                     gesture_animation_director = new GestureAnimationDirector();
-                }
-
-                this.gesture_animation_director.update_animation (hints);
-
-                if (event != "begin") {
+                } else {
+                    this.gesture_animation_director.update_animation (hints);
                     return;
                 }
             }
@@ -608,6 +610,9 @@ namespace Gala {
 
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
+                if (manual_animation) {
+                    this.gesture_animation_director.update_animation (hints);
+                }
             } else {
                 // if we didnt switch, show a nudge-over animation if one is not already in progress
                 play_nudge_animation (direction);
@@ -1923,7 +1928,8 @@ namespace Gala {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || canceling_switch_workspace) {
+                || skip_next_switch_workspace_animation) {
+                skip_next_switch_workspace_animation = false;
                 switch_workspace_completed ();
                 return;
             }
@@ -2134,6 +2140,8 @@ namespace Gala {
             };
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                animating_switch_workspace = true;
+
                 out_group.set_easing_mode (animation_mode);
                 out_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
                 in_group.set_easing_mode (animation_mode);
@@ -2155,21 +2163,11 @@ namespace Gala {
                 var transition = in_group.get_transition ("x");
                 if (transition != null) {
                     transition.completed.connect (() => {
-                        end_switch_workspace ();
-                        
-                        if (cancel_action) {
-                            cancel_switch_workspace (direction);
-                        }
+                        switch_workspace_animation_finished (direction, cancel_action);
                     });
                 } else {
-                    end_switch_workspace ();
-
-                    if (cancel_action) {
-                        cancel_switch_workspace (direction);
-                    }
+                    switch_workspace_animation_finished (direction, cancel_action);
                 }
-
-                gesture_animation_director = null;
             };
 
             if (gesture_animation_director == null) {
@@ -2184,15 +2182,19 @@ namespace Gala {
             }
         }
 
-        private void cancel_switch_workspace (Meta.MotionDirection animation_direction) {
-            var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
-                ? Meta.MotionDirection.RIGHT
-                : Meta.MotionDirection.LEFT;
-            canceling_switch_workspace = true;
+        private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
+                bool cancel_action) {
+            end_switch_workspace ();
+            gesture_animation_director = null;
+            animating_switch_workspace = false;
 
-            switch_to_next_workspace (cancel_direction);
-
-            canceling_switch_workspace = false;
+            if (cancel_action) {
+                var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
+                    ? Meta.MotionDirection.RIGHT
+                    : Meta.MotionDirection.LEFT;
+                skip_next_switch_workspace_animation = true;
+                switch_to_next_workspace (cancel_direction);
+            }
         }
 
         void end_switch_workspace () {
