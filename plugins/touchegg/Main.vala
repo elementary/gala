@@ -19,6 +19,8 @@
 public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     private Gala.WindowManager? wm = null;
     private Client? client = null;
+    private GLib.Settings gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
+    private GLib.Settings touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
 
     /**
      * Percentage of the animation to be completed to apply the action.
@@ -87,32 +89,52 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         return hints;
     }
 
-    // TODO (José Expósito) It'll be nice to be able to configure this from Switchboard
-    // https://github.com/elementary/switchboard-plug-mouse-touchpad/issues/16
-
     private bool is_open_workspace_gesture (Gesture gesture) {
-        return gesture.type == GestureType.SWIPE
+        bool enabled = gala_settings.get_boolean ("multitasking-gesture-enabled");
+        int fingers = gala_settings.get_int ("multitasking-gesture-fingers");
+
+        return enabled
+            && gesture.type == GestureType.SWIPE
             && gesture.direction == GestureDirection.UP
-            && (gesture.fingers == 3 || gesture.fingers == 4);
+            && gesture.fingers == fingers;
     }
 
     private bool is_close_workspace_gesture (Gesture gesture) {
-        return gesture.type == GestureType.SWIPE
+        bool enabled = gala_settings.get_boolean ("multitasking-gesture-enabled");
+        int fingers = gala_settings.get_int ("multitasking-gesture-fingers");
+
+        return enabled
+            && gesture.type == GestureType.SWIPE
             && gesture.direction == GestureDirection.DOWN
-            && (gesture.fingers == 3 || gesture.fingers == 4);
+            && gesture.fingers == fingers;
     }
 
-    // TODO (José Expósito) In addition to read this from settings, use user's natural scroll preferences
     private bool is_next_desktop_gesture (Gesture gesture) {
-        return gesture.type == GestureType.SWIPE
-            && gesture.direction == GestureDirection.RIGHT
-            && (gesture.fingers == 3 || gesture.fingers == 4);
+        bool enabled = gala_settings.get_boolean ("workspaces-gesture-enabled");
+        int fingers = gala_settings.get_int ("workspaces-gesture-fingers");
+        bool natural_scrool = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
+            ? true
+            : touchpad_settings.get_boolean ("natural-scroll");
+        var direction = natural_scrool ? GestureDirection.LEFT : GestureDirection.RIGHT;
+
+        return enabled
+            && gesture.type == GestureType.SWIPE
+            && gesture.direction == direction
+            && gesture.fingers == fingers;
     }
 
     private bool is_previous_desktop_gesture (Gesture gesture) {
-        return gesture.type == GestureType.SWIPE
-            && gesture.direction == GestureDirection.LEFT
-            && (gesture.fingers == 3 || gesture.fingers == 4);
+        bool enabled = gala_settings.get_boolean ("workspaces-gesture-enabled");
+        int fingers = gala_settings.get_int ("workspaces-gesture-fingers");
+        bool natural_scrool = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
+            ? true
+            : touchpad_settings.get_boolean ("natural-scroll");
+        var direction = natural_scrool ? GestureDirection.RIGHT : GestureDirection.LEFT;
+
+        return enabled
+            && gesture.type == GestureType.SWIPE
+            && gesture.direction == direction
+            && gesture.fingers == fingers;
     }
 }
 
