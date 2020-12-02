@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-08-20 18:40+0000\n"
+"PO-Revision-Date: 2020-11-22 15:15+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -38,7 +38,7 @@ msgstr "Restaurar as configuração anteriores"
 
 #: daemon/MenuDaemon.vala:111
 msgid "Hide"
-msgstr ""
+msgstr "Ocultar"
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"

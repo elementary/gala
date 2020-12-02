@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-10-02 10:14+0000\n"
+"PO-Revision-Date: 2020-11-22 15:15+0000\n"
 "Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
@@ -143,7 +143,7 @@ msgstr "修复窗口在更换工作区后瞬时展开时崩溃的问题"
 
 #: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
-msgstr "不在 Dock 中显示后台 Gala 服务"
+msgstr "不在程序坞中显示 Gala 后台服务"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
