@@ -362,8 +362,9 @@ namespace Gala {
             // make sure our windows are where they belong in case they were moved
             // while were closed.
             if (!is_cancel_animation) {
-                foreach (var window in get_children ())
+                foreach (var window in get_children ()) {
                     ((WindowClone) window).transition_to_original_state (false);
+                }
             }
             
             reflow (gesture_animation_director);

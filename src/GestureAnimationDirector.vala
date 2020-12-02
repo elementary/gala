@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- namespace Gala {
-    public class GestureAnimationDirector : Object {
+public class Gala.GestureAnimationDirector : Object {
         public signal void on_animation_begin (int percentage);
         public signal void on_animation_update (int percentage);
         public signal void on_animation_end (int percentage, bool cancel_action);
