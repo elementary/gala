@@ -321,7 +321,7 @@
       <description>If enabled, swipe up with the number of fingers set in io.elementary.desktop.wm.gestures.multitasking-gesture-fingers to show the multitasking view</description>
     </key>
     <key type="i" name="multitasking-gesture-fingers">
-      <default>4</default>
+      <default>3</default>
       <range min="3" max="4"/>
       <summary>Multitasking view gesture fingers</summary>
       <description>Number of fingers used in the multitasking view gesture</description>
@@ -332,7 +332,7 @@
       <description>If enabled, swipe left/right with the number of fingers set in io.elementary.desktop.wm.gestures.workspaces-gesture-fingers to switch between workspaces</description>
     </key>
     <key type="i" name="workspaces-gesture-fingers">
-      <default>4</default>
+      <default>3</default>
       <range min="3" max="4"/>
       <summary>Switch workspace gesture fingers</summary>
       <description>Number of fingers used in the switch workspaces gesture</description>
