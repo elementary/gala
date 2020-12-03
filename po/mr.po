@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-10-14 19:14+0000\n"
+"PO-Revision-Date: 2020-11-22 15:15+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
-"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
-">\n"
+"Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/>"
+"\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +37,7 @@ msgstr "मागील कॉन्फिगरेशन पुनर्सं�
 
 #: daemon/MenuDaemon.vala:111
 msgid "Hide"
-msgstr ""
+msgstr "लपवा"
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"

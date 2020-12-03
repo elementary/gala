@@ -16,38 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- namespace Gala {
-    public class GestureAnimationDirector : Object {
-        public signal void on_animation_begin (int percentage);
-        public signal void on_animation_update (int percentage);
-        public signal void on_animation_end (int percentage, bool cancel_action);
+public class Gala.GestureAnimationDirector : Object {
+    public signal void on_animation_begin (int percentage);
+    public signal void on_animation_update (int percentage);
+    public signal void on_animation_end (int percentage, bool cancel_action);
 
-        public delegate void OnBegin (int percentage);
-        public delegate void OnUpdate (int percentage);
-        public delegate void OnEnd (int percentage, bool cancel_action);
+    public delegate void OnBegin (int percentage);
+    public delegate void OnUpdate (int percentage);
+    public delegate void OnEnd (int percentage, bool cancel_action);
 
-        public void update_animation (HashTable<string,Variant> hints) {
-            string event = hints.get ("event").get_string ();
-            int32 percentage = hints.get ("percentage").get_int32 ();
+    public void update_animation (HashTable<string,Variant> hints) {
+        string event = hints.get ("event").get_string ();
+        int32 percentage = hints.get ("percentage").get_int32 ();
 
-            switch (event) {
-                case "begin":
-                    this.on_animation_begin (percentage);
-                    break;
-                case "update":
-                    this.on_animation_update (percentage);
-                    break;
-                case "end":
-                default: {
-                    var cancel_action = hints.get ("cancel_action").get_boolean ();
-                    this.on_animation_end (percentage, cancel_action);
-                    break;
-                }
+        switch (event) {
+            case "begin":
+                this.on_animation_begin (percentage);
+                break;
+            case "update":
+                this.on_animation_update (percentage);
+                break;
+            case "end":
+            default: {
+                var cancel_action = hints.get ("cancel_action").get_boolean ();
+                this.on_animation_end (percentage, cancel_action);
+                break;
             }
         }
+    }
 
-        public static float animation_value (float initial_value, float target_value, int percentage) {
-            return (((target_value - initial_value) * percentage) / 100) + initial_value;
-        }
+    public static float animation_value (float initial_value, float target_value, int percentage) {
+        return (((target_value - initial_value) * percentage) / 100) + initial_value;
     }
 }
