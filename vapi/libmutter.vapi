@@ -97,16 +97,20 @@ namespace Meta {
 		public static void add_verbose_topic (Meta.DebugTopic topic);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_bug")]
 		public static void bug (string format, ...);
+#if !HAS_MUTTER40
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_debug_spew_real")]
 		public static void debug_spew_real (string format, ...);
+#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_external_binding_name_for_action")]
 		public static string external_binding_name_for_action (uint keybinding_action);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_fatal")]
 		public static void fatal (string format, ...);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_get_locale_direction")]
 		public static Meta.LocaleDirection get_locale_direction ();
+#if !HAS_MUTTER40
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_debugging")]
 		public static bool is_debugging ();
+#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_syncing")]
 		public static bool is_syncing ();
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_verbose")]
@@ -307,7 +311,11 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected CursorTracker ();
 		public void get_hot (out int x, out int y);
+#if HAS_MUTTER40
+		public void get_pointer (Graphene.Point coords, out Clutter.ModifierType mods);
+#else
 		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
+#endif
 		public bool get_pointer_visible ();
 		public unowned Cogl.Texture get_sprite ();
 		public void set_pointer_visible (bool visible);
@@ -316,6 +324,9 @@ namespace Meta {
 		public Meta.Backend backend { owned get; construct; }
 #endif
 		public signal void cursor_changed ();
+#if HAS_MUTTER40
+		public signal void position_invalidated ();
+#endif
 		public signal void cursor_moved (float x, float y);
 		public signal void visibility_changed ();
 	}
@@ -636,7 +647,9 @@ namespace Meta {
 		public unowned Cogl.Texture get_texture ();
 		public void set_create_mipmaps (bool create_mipmaps);
 		public void set_mask_texture (Cogl.Texture mask_texture);
+#if !HAS_MUTTER40
 		public void set_opaque_region (owned Cairo.Region opaque_region);
+#endif
 		public signal void size_changed ();
 	}
 	[CCode (cheader_filename = "meta/meta-sound-player.h", type_id = "meta_sound_player_get_type ()")]
@@ -1040,6 +1053,7 @@ namespace Meta {
 		public weak string license;
 		public weak string description;
 	}
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "meta/meta-plugin.h", has_type_id = false)]
 	public struct PluginVersion {
 		public uint version_major;
@@ -1047,6 +1061,7 @@ namespace Meta {
 		public uint version_micro;
 		public uint version_api;
 	}
+#endif
 	[CCode (cheader_filename = "meta/boxes.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_rectangle_get_type ()")]
 	public struct Rectangle {
 		public int x;
@@ -1148,7 +1163,9 @@ namespace Meta {
 		FOCUS,
 		WORKAREA,
 		STACK,
+#if !HAS_MUTTER40
 		THEMES,
+#endif
 		SM,
 		EVENTS,
 		WINDOW_STATE,
@@ -1156,18 +1173,27 @@ namespace Meta {
 		GEOMETRY,
 		PLACEMENT,
 		PING,
+#if !HAS_MUTTER40
 		XINERAMA,
+#endif
 		KEYBINDINGS,
 		SYNC,
+#if !HAS_MUTTER40
 		ERRORS,
+#endif
 		STARTUP,
 		PREFS,
 		GROUPS,
 		RESIZING,
 		SHAPES,
+#if !HAS_MUTTER40
 		COMPOSITOR,
+#endif
 		EDGE_RESISTANCE,
 		INPUT,
+#if HAS_MUTTER40
+		WAYLAND,
+#endif
 		DBUS
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_", type_id = "meta_direction_get_type ()")]
@@ -1643,6 +1669,10 @@ namespace Meta {
 	public static void init ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_restart ();
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "meta/main.h")]
+	public static bool is_topic_enabled (Meta.DebugTopic topic);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void quit (Meta.ExitCode code);
 	[CCode (cheader_filename = "meta/main.h")]

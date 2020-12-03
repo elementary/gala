@@ -416,7 +416,14 @@ namespace Gala {
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
             int x, y;
+#if HAS_MUTTER40
+            Graphene.Point coords;
+            cursor_tracker.get_pointer (coords, null);
+            x = coords.x;
+            y = coords.y;
+#else
             cursor_tracker.get_pointer (out x, out y, null);
+#endif
 
             var region = new Cairo.Region.rectangle (image_rect);
             if (!region.contains_point (x, y)) {

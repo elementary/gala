@@ -126,6 +126,19 @@ if mutter338_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
+mutter40_dep = dependency('libmutter-8', version: ['>= 40', '< 41'], required: false)
+if mutter40_dep.found()
+	libmutter_dep = dependency('libmutter-8', version: '>= 40')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-8'), dependency('mutter-cogl-pango-8'),
+		dependency('mutter-clutter-8')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336', '--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
