@@ -98,6 +98,7 @@ namespace Gala.Plugins.Touchegg {
                             throw new GLib.IOError.CONNECTION_REFUSED ("Error connecting to Touchégg daemon");
                         }
 
+                        reconnection_attemps = 0;
                         debug ("Connetion to Touchégg daemon stablished");
                     }
 
@@ -122,29 +123,37 @@ namespace Gala.Plugins.Touchegg {
                     emit_event (event);
                 } catch (Error e) {
                     warning ("Connection to Touchégg daemon lost: %s", e.message);
-                    reconnection_attemps++;
-
-                    if (event != null
-                            && event.event_type != GestureEventType.UNKNOWN
-                            && event.event_type != GestureEventType.END) {
-                        event.event_type = GestureEventType.END;
-                        emit_event (event);
-                    }
-
-                    if (socket != null) {
-                        socket.close ();
-                    }
-
-                    if (reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
-                        debug ("Reconnecting to Touchégg daemon in 5 seconds");
-                        Thread.usleep (5000000);
-                    } else {
-                        warning ("Maximum number of reconnections reached, aborting");
-                    }
+                    handle_disconnection ();
                 }
             }
 
             return null;
+        }
+
+        private void handle_disconnection () {
+            reconnection_attemps++;
+
+            if (event != null
+                    && event.event_type != GestureEventType.UNKNOWN
+                    && event.event_type != GestureEventType.END) {
+                event.event_type = GestureEventType.END;
+                emit_event (event);
+            }
+
+            if (socket != null) {
+                try {
+                    socket.close ();
+                } catch (Error e) {
+                    // The connection is already closed at this point, ignore this error
+                }
+            }
+
+            if (reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
+                debug ("Reconnecting to Touchégg daemon in 5 seconds");
+                Thread.usleep (5000000);
+            } else {
+                warning ("Maximum number of reconnections reached, aborting");
+            }
         }
 
         private void emit_event (GestureEvent *event) {

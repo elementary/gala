@@ -334,15 +334,17 @@ namespace Gala {
 
                 set_position (target_x, target_y);
                 set_size (outer_rect.width, outer_rect.height);
-
-                if (should_fade ())
+    
+                if (should_fade ()) {
                     opacity = 0;
+                }
 
                 restore_easing_state ();
-
-                if (animate)
+    
+                if (animate) {
                     toggle_shadow (false);
-
+                }
+    
                 window_icon.set_position ((outer_rect.width - WINDOW_ICON_SIZE) / 2, outer_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
                 window_icon.opacity = 0;
                 close_button.opacity = 0;
