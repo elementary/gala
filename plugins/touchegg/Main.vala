@@ -41,7 +41,12 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
             this.on_handle_gesture (gesture, "end");
             return false;
         }));
-        this.client.run ();
+
+        try {
+            this.client.run ();
+        } catch (Error e) {
+            warning ("Error initializing Touchégg client: %s", e.message);
+        }
     }
 
     public override void destroy () {
