@@ -35,19 +35,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private Clutter.Actor container;
     private Clutter.Actor close_button;
     private Clutter.Actor resize_button;
-    private Clutter.Actor resize_handle;
     private Clutter.ClickAction close_action;
-    private Clutter.DragAction resize_action;
-    private MoveAction move_action;
-
-    private bool dragging = false;
-    private bool clicked = false;
-
-    private int x_offset_press = 0;
-    private int y_offset_press = 0;
+    private DragDropAction move_action;
 
     private float begin_resize_width = 0.0f;
     private float begin_resize_height = 0.0f;
+    private float resize_start_x = 0.0f;
+    private float resize_start_y = 0.0f;
+
+    private bool resizing = false;
 
     static unowned Meta.Window? previous_focus = null;
 
@@ -95,10 +91,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         clone = new Clutter.Clone (window_actor);
 
-        move_action = new MoveAction ();
+        move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
         move_action.drag_begin.connect (on_move_begin);
-        move_action.drag_end.connect (on_move_end);
-        move_action.move.connect (on_move);
+        move_action.drag_canceled.connect (on_move_end);
+        move_action.actor_clicked.connect (activate);
 
         container = new Clutter.Actor ();
         container.reactive = true;
@@ -132,28 +128,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_button.set_easing_duration (300);
         close_button.add_action (close_action);
 
-        resize_action = new Clutter.DragAction ();
-        resize_action.drag_begin.connect (on_resize_drag_begin);
-        resize_action.drag_end.connect (on_resize_drag_end);
-        resize_action.drag_motion.connect (on_resize_drag_motion);
-
-        resize_handle = new Clutter.Actor ();
-        resize_handle.set_size (button_size, button_size);
-        resize_handle.set_pivot_point (0.5f, 0.5f);
-        resize_handle.set_position (width - button_size, height - button_size);
-        resize_handle.reactive = true;
-        resize_handle.add_action (resize_action);
-
         resize_button = Utils.create_resize_button ();
         resize_button.set_pivot_point (0.5f, 0.5f);
         resize_button.set_position (width - button_size, height - button_size);
         resize_button.opacity = 0;
+        resize_button.button_press_event.connect (on_resize_button_press);
         resize_button.reactive = true;
 
         add_child (container);
         add_child (close_button);
         add_child (resize_button);
-        add_child (resize_handle);
 
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
@@ -215,77 +199,94 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         on_allocation_changed ();
     }
 
-    private void on_move_begin () {
-        int px, py;
-        get_current_cursor_position (out px, out py);
-
-        x_offset_press = (int)(px - x);
-        y_offset_press = (int)(py - y);
-
-        clicked = true;
-        dragging = false;
+    private Clutter.Actor on_move_begin () {
+        return this;
     }
 
     private void on_move_end () {
-        clicked = false;
-
-        if (dragging) {
-            update_screen_position ();
-            dragging = false;
-        } else {
-            activate ();
-        }
-    }
-
-    private void on_move () {
-        if (!clicked) {
-            return;
-        }
-
-        float motion_x, motion_y;
-        move_action.get_motion_coords (out motion_x, out motion_y);
-
-        x = (int)motion_x - x_offset_press;
-        y = (int)motion_y - y_offset_press;
-
-        if (!dragging) {
-            dragging = true;
-        }
-    }
-
-    private void on_resize_drag_begin (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
-        begin_resize_width = width;
-        begin_resize_height = height;
-    }
-
-    private void on_resize_drag_end (Clutter.Actor actor, float event_x, float event_y, Clutter.ModifierType type) {
-        reposition_resize_handle ();
         update_screen_position ();
     }
 
-    private void on_resize_drag_motion (Clutter.Actor actor, float delta_x, float delta_y) {
-        float press_x, press_y;
-        resize_action.get_press_coords (out press_x, out press_y);
+    private bool on_resize_button_press (Clutter.ButtonEvent event) {
+        if (resizing || event.button != 1) {
+            return false;
+        }
 
-        int motion_x, motion_y;
-        get_current_cursor_position (out motion_x, out motion_y);
+        resizing = true;
 
-        float diff_x = motion_x - press_x;
-        float diff_y = motion_y - press_y;
+        get_current_cursor_position (out resize_start_x, out resize_start_y);
 
-        width = begin_resize_width + diff_x;
-        height = begin_resize_height + diff_y;
+        begin_resize_width = width;
+        begin_resize_height = height;
 
-        update_container_scale ();
-        update_size ();
-        reposition_resize_button ();
+        resize_button.get_stage ().set_motion_events_enabled (false);
+        resize_button.get_stage ().captured_event.connect (on_resize_event);
+
+        return true;
+    }
+
+    private bool on_resize_event (Clutter.Event event) {
+        if (!resizing) {
+            return false;
+        }
+
+        switch (event.get_type ()) {
+            case Clutter.EventType.MOTION:
+                var mods = event.get_state ();
+                if (!(Clutter.ModifierType.BUTTON1_MASK in mods)) {
+                    stop_resizing ();
+                    break;
+                }
+
+                int motion_x, motion_y;
+                get_current_cursor_position (out motion_x, out motion_y);
+
+                float diff_x = motion_x - resize_start_x;
+                float diff_y = motion_y - resize_start_y;
+
+                width = begin_resize_width + diff_x;
+                height = begin_resize_height + diff_y;
+
+                update_container_scale ();
+                update_size ();
+                reposition_resize_button ();
+
+                break;
+            case Clutter.EventType.BUTTON_RELEASE:
+                if (event.get_button () == 1) {
+                    stop_resizing ();
+                }
+
+                break;
+            case Clutter.EventType.LEAVE:
+            case Clutter.EventType.ENTER:
+                return true;
+            default:
+                break;
+        }
+
+        return false;
+    }
+
+    private bool stop_resizing () {
+        if (!resizing) {
+            return false;
+        }
+
+        resize_button.get_stage ().captured_event.disconnect (on_resize_event);
+        resize_button.get_stage ().set_motion_events_enabled (true);
+
+        resizing = false;
+
+        update_screen_position ();
+
+        return true;
     }
 
     private void on_allocation_changed () {
         update_clone_clip ();
         update_size ();
         reposition_resize_button ();
-        reposition_resize_handle ();
     }
 
     private void on_close_click_clicked () {
@@ -412,10 +413,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private void reposition_resize_button () {
         resize_button.set_position (width - button_size, height - button_size);
-    }
-
-    private void reposition_resize_handle () {
-        resize_handle.set_position (width - button_size, height - button_size);
     }
 
     private void get_current_monitor_rect (out Meta.Rectangle rect) {

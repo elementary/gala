@@ -1,6 +1,5 @@
 gala_pip_sources = [
     'Main.vala',
-    'MoveAction.vala',
     'PopupWindow.vala',
     'SelectionArea.vala',
     'ShadowEffect.vala',

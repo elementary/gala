@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2018-08-24 00:01+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Indonesian <https://weblate.elementary.io/projects/desktop/"
@@ -20,25 +20,25 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Apakah tampilannya terlihat baik?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Simpan Pengaturan Ini"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Kembalikan Pengaturan Sebelumnya"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Sembunyikan"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -196,6 +196,9 @@ msgstr "Sandaran berkas desktop untuk pemberitahuan dari aplikasi kadaluarsa."
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "aplikasi-lainnya"
+
+#~ msgid "Minimize"
+#~ msgstr "Sembunyikan"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Tindakan untuk pojok kiri atas"
