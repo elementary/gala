@@ -35,17 +35,18 @@ namespace Gala {
         public Screen screen { get; construct; }
 #endif
         public int monitor { get; construct; }
+        public GestureAnimationDirector gesture_animation_director { get; construct; }
 
         WindowCloneContainer window_container;
         BackgroundManager background;
 
 #if HAS_MUTTER330
-        public MonitorClone (Meta.Display display, int monitor) {
-            Object (display: display, monitor: monitor);
+        public MonitorClone (Meta.Display display, int monitor, GestureAnimationDirector gesture_animation_director) {
+            Object (display: display, monitor: monitor, gesture_animation_director: gesture_animation_director);
         }
 #else
-        public MonitorClone (Screen screen, int monitor) {
-            Object (screen: screen, monitor: monitor);
+        public MonitorClone (Screen screen, int monitor, GestureAnimationDirector gesture_animation_director) {
+            Object (screen: screen, monitor: monitor, gesture_animation_director: gesture_animation_director);
         }
 #endif
 
@@ -59,7 +60,7 @@ namespace Gala {
 #endif
             background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
-            window_container = new WindowCloneContainer ();
+            window_container = new WindowCloneContainer (gesture_animation_director);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 #if HAS_MUTTER330
             display.restacked.connect (window_container.restack_windows);
@@ -127,16 +128,16 @@ namespace Gala {
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open (GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
-            window_container.open (null, gesture_animation_director, is_cancel_animation);
+        public void open () {
+            window_container.open (null);
             // background.opacity = 0; TODO consider this option
         }
 
         /**
          * Animate the windows back to their old location
          */
-        public void close (GestureAnimationDirector? gesture_animation_director = null) {
-            window_container.close (gesture_animation_director);
+        public void close () {
+            window_container.close ();
             background.opacity = 255;
         }
 

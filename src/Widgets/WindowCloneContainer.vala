@@ -30,6 +30,7 @@ namespace Gala {
         public int padding_right { get; set; default = 12; }
         public int padding_bottom { get; set; default = 12; }
 
+        public GestureAnimationDirector? gesture_animation_director { get; construct; }
         public bool overview_mode { get; construct; }
 
         bool opened;
@@ -40,8 +41,8 @@ namespace Gala {
          */
         WindowClone? current_window;
 
-        public WindowCloneContainer (bool overview_mode = false) {
-            Object (overview_mode: overview_mode);
+        public WindowCloneContainer (GestureAnimationDirector? gesture_animation_director, bool overview_mode = false) {
+            Object (gesture_animation_director: gesture_animation_director, overview_mode: overview_mode);
         }
 
         construct {
@@ -68,7 +69,7 @@ namespace Gala {
 
             var windows_ordered = display.sort_windows_by_stacking (windows);
 
-            var new_window = new WindowClone (window, overview_mode);
+            var new_window = new WindowClone (window, gesture_animation_director, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
@@ -193,7 +194,7 @@ namespace Gala {
          * Recalculate the tiling positions of the windows and animate them to
          * the resulting spots.
          */
-        public void reflow (GestureAnimationDirector? gesture_animation_director = null) {
+        public void reflow () {
             if (!opened)
                 return;
 
@@ -226,7 +227,7 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned WindowClone window = (WindowClone) tilable.id;
-                window.take_slot (tilable.rect, gesture_animation_director);
+                window.take_slot (tilable.rect);
                 window.place_widgets (tilable.rect.width, tilable.rect.height);
             }
         }
@@ -336,9 +337,10 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null, GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
-            if (opened)
+        public void open (Window? selected_window = null) {
+            if (opened) {
                 return;
+            }
 
             opened = true;
 
@@ -361,27 +363,29 @@ namespace Gala {
 
             // make sure our windows are where they belong in case they were moved
             // while were closed.
-            if (!is_cancel_animation) {
+            if (gesture_animation_director == null || !gesture_animation_director.canceling) {
                 foreach (var window in get_children ()) {
                     ((WindowClone) window).transition_to_original_state (false);
                 }
             }
 
-            reflow (gesture_animation_director);
+            reflow ();
         }
 
         /**
          * Calls the transition_to_original_state() function on each child
          * to make them take their original locations again.
          */
-        public void close (GestureAnimationDirector? gesture_animation_director = null) {
-            if (!opened)
+        public void close () {
+            if (!opened) {
                 return;
+            }
 
             opened = false;
 
-            foreach (var window in get_children ())
-                ((WindowClone) window).transition_to_original_state (true, gesture_animation_director);
+            foreach (var window in get_children ()) {
+                ((WindowClone) window).transition_to_original_state (true);
+            }
         }
     }
 }

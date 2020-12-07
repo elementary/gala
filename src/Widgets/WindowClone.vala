@@ -92,6 +92,7 @@ namespace Gala {
         }
 
         public bool overview_mode { get; construct; }
+        public GestureAnimationDirector? gesture_animation_director { get; construct; }
 
         [CCode (notify = false)]
         public uint8 shadow_opacity {
@@ -120,8 +121,8 @@ namespace Gala {
         Actor active_shape;
         Actor window_icon;
 
-        public WindowClone (Meta.Window window, bool overview_mode = false) {
-            Object (window: window, overview_mode: overview_mode);
+        public WindowClone (Meta.Window window, GestureAnimationDirector? gesture_animation_director, bool overview_mode = false) {
+            Object (window: window, gesture_animation_director: gesture_animation_director, overview_mode: overview_mode);
         }
 
         construct {
@@ -284,7 +285,7 @@ namespace Gala {
          *
          * @param animate Animate the transformation of the placement
          */
-        public void transition_to_original_state (bool animate, GestureAnimationDirector? gesture_animation_director = null) {
+        public void transition_to_original_state (bool animate) {
             var outer_rect = window.get_frame_rect ();
 
 #if HAS_MUTTER330
@@ -295,10 +296,10 @@ namespace Gala {
             var offset_x = monitor_geom.x;
             var offset_y = monitor_geom.y;
 
-            var initial_x = this.x;
-            var initial_y = this.y;
-            var initial_width = this.width;
-            var initial_height = this.height;
+            var initial_x = x;
+            var initial_y = y;
+            var initial_width = width;
+            var initial_height = height;
 
             var target_x = outer_rect.x - offset_x;
             var target_y = outer_rect.y - offset_y;
@@ -334,42 +335,34 @@ namespace Gala {
 
                 set_position (target_x, target_y);
                 set_size (outer_rect.width, outer_rect.height);
-    
+
                 if (should_fade ()) {
                     opacity = 0;
                 }
 
                 restore_easing_state ();
-    
+
                 if (animate) {
                     toggle_shadow (false);
                 }
-    
+
                 window_icon.set_position ((outer_rect.width - WINDOW_ICON_SIZE) / 2, outer_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
                 window_icon.opacity = 0;
                 close_button.opacity = 0;
             };
 
-            if (gesture_animation_director == null) {
+            if (!animate || gesture_animation_director == null || !gesture_animation_director.running) {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((percentage) => {
-                    on_animation_begin (percentage);
-                });
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
         /**
          * Animate the window to the given slot
          */
-        public void take_slot (Meta.Rectangle rect, GestureAnimationDirector? gesture_animation_director = null) {
+        public void take_slot (Meta.Rectangle rect) {
             slot = rect;
             var initial_x = this.x;
             var initial_y = this.y;
@@ -427,19 +420,11 @@ namespace Gala {
                 }
             };
 
-            if (gesture_animation_director == null) {
+            if (gesture_animation_director == null || !gesture_animation_director.running) {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((percentage) => {
-                    on_animation_begin (percentage);
-                });
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 

@@ -52,7 +52,9 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     }
 
     public override void destroy () {
-        // TODO (José Expósito) This is not being called, but I should close the socket here
+        if (client != null) {
+            client.stop ();
+        }
     }
 
 

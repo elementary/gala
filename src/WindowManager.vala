@@ -100,10 +100,11 @@ namespace Gala {
         private GLib.Settings behavior_settings;
 
         private bool animating_switch_workspace = false;
-        private GestureAnimationDirector? gesture_animation_director = null;
-        private bool skip_next_switch_workspace_animation = false;
+        private GestureAnimationDirector gesture_animation_director;
 
         construct {
+            gesture_animation_director = new GestureAnimationDirector ();
+
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -591,9 +592,9 @@ namespace Gala {
                 string event = hints.get ("event").get_string ();
 
                 if (event == "begin") {
-                    gesture_animation_director = new GestureAnimationDirector ();
+                    gesture_animation_director.running = true;
                 } else {
-                    this.gesture_animation_director.update_animation (hints);
+                    gesture_animation_director.update_animation (hints);
                     return;
                 }
             }
@@ -611,7 +612,7 @@ namespace Gala {
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
                 if (manual_animation) {
-                    this.gesture_animation_director.update_animation (hints);
+                    gesture_animation_director.update_animation (hints);
                 }
             } else {
                 // if we didnt switch, show a nudge-over animation if one is not already in progress
@@ -637,9 +638,13 @@ namespace Gala {
                 nudge_gesture.set_from_value ((float) ui_group.x);
                 nudge_gesture.set_to_value (0.0f);
                 ui_group.add_transition ("nudge", nudge_gesture);
+
+                gesture_animation_director.disconnect_all_handlers ();
+                gesture_animation_director.running = false;
+                gesture_animation_director.canceling = false;
             };
 
-            if (gesture_animation_director == null) {
+            if (!gesture_animation_director.running) {
                 double[] keyframes = { 0.5 };
                 GLib.Value[] x = { dest };
 
@@ -655,12 +660,7 @@ namespace Gala {
 
                 ui_group.add_transition ("nudge", nudge);
             } else {
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
@@ -1928,8 +1928,8 @@ namespace Gala {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || skip_next_switch_workspace_animation) {
-                skip_next_switch_workspace_animation = false;
+                || gesture_animation_director.canceling) {
+                gesture_animation_director.canceling = false;
                 switch_workspace_completed ();
                 return;
             }
@@ -2170,29 +2170,25 @@ namespace Gala {
                 }
             };
 
-            if (gesture_animation_director == null) {
+            if (!gesture_animation_director.running) {
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
                 bool cancel_action) {
             end_switch_workspace ();
-            gesture_animation_director = null;
+            gesture_animation_director.disconnect_all_handlers ();
+            gesture_animation_director.running = false;
+            gesture_animation_director.canceling = cancel_action;
             animating_switch_workspace = false;
 
             if (cancel_action) {
                 var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
                     ? Meta.MotionDirection.RIGHT
                     : Meta.MotionDirection.LEFT;
-                skip_next_switch_workspace_animation = true;
                 switch_to_next_workspace (cancel_direction);
             }
         }

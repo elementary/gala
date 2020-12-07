@@ -17,6 +17,9 @@
  */
 
 public class Gala.GestureAnimationDirector : Object {
+    public bool running { get; set; default = false; }
+    public bool canceling { get; set; default = false; }
+
     public signal void on_animation_begin (int percentage);
     public signal void on_animation_update (int percentage);
     public signal void on_animation_end (int percentage, bool cancel_action);
@@ -25,23 +28,52 @@ public class Gala.GestureAnimationDirector : Object {
     public delegate void OnUpdate (int percentage);
     public delegate void OnEnd (int percentage, bool cancel_action);
 
+    private Array<ulong> handlers;
+
+    construct {
+        handlers = new Array<ulong> ();
+    }
+
+    public void connect_handlers (owned OnBegin? on_begin, owned OnUpdate? on_update, owned OnEnd? on_end) {
+        if (on_begin != null) {
+            ulong handler_id = on_animation_begin.connect ((percentage) => on_begin (percentage));
+            handlers.append_val (handler_id);
+        }
+
+        if (on_update != null) {
+            ulong handler_id = on_animation_update.connect ((percentage) => on_update (percentage));
+            handlers.append_val (handler_id);
+        }
+
+        if (on_end != null) {
+            ulong handler_id = on_animation_end.connect ((percentage, cancel_action) => on_end (percentage, cancel_action));
+            handlers.append_val (handler_id);
+        }
+    }
+
+    public void disconnect_all_handlers () {
+        for (int i = 0; i < handlers.length ; i++) {
+            disconnect (handlers.index (i));
+        }
+        handlers.remove_range (0, handlers.length);
+    }
+
     public void update_animation (HashTable<string,Variant> hints) {
         string event = hints.get ("event").get_string ();
         int32 percentage = hints.get ("percentage").get_int32 ();
 
         switch (event) {
             case "begin":
-                this.on_animation_begin (percentage);
+                on_animation_begin (percentage);
                 break;
             case "update":
-                this.on_animation_update (percentage);
+                on_animation_update (percentage);
                 break;
             case "end":
-            default: {
+            default:
                 var cancel_action = hints.get ("cancel_action").get_boolean ();
-                this.on_animation_end (percentage, cancel_action);
+                on_animation_end (percentage, cancel_action);
                 break;
-            }
         }
     }
 

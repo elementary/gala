@@ -143,6 +143,7 @@ namespace Gala {
         public signal void selected (bool close_view);
 
         public Workspace workspace { get; construct; }
+        public GestureAnimationDirector gesture_animation_director { get; construct; }
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
@@ -166,8 +167,8 @@ namespace Gala {
 
         uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Workspace workspace) {
-            Object (workspace: workspace);
+        public WorkspaceClone (Workspace workspace, GestureAnimationDirector gesture_animation_director) {
+            Object (workspace: workspace, gesture_animation_director: gesture_animation_director);
         }
 
         construct {
@@ -192,7 +193,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer ();
+            window_container = new WindowCloneContainer (gesture_animation_director);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 #if HAS_MUTTER330
@@ -368,9 +369,10 @@ namespace Gala {
          * Also sets the current_window of the WindowCloneContainer to the active window
          * if it belongs to this workspace.
          */
-        public void open (GestureAnimationDirector? gesture_animation_director = null, bool is_cancel_animation = false) {
-            if (opened)
+        public void open () {
+            if (opened) {
                 return;
+            }
 
             opened = true;
 
@@ -411,19 +413,11 @@ namespace Gala {
                 background.restore_easing_state ();
             };
 
-            if (gesture_animation_director == null) {
+            if (!gesture_animation_director.running) {
                 on_animation_begin (0);
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_begin.connect ((percentage) => {
-                    on_animation_begin (percentage);
-                });
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
 
             Meta.Rectangle area = {
@@ -442,9 +436,9 @@ namespace Gala {
             icon_group.redraw ();
 
 #if HAS_MUTTER330
-            window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director, is_cancel_animation);
+            window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null);
 #else
-            window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null, gesture_animation_director, is_cancel_animation);
+            window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null);
 #endif
         }
 
@@ -452,9 +446,10 @@ namespace Gala {
          * Close the view again by animating the background back to its scale and
          * the windows back to their old locations.
          */
-        public void close (GestureAnimationDirector? gesture_animation_director = null) {
-            if (!opened)
+        public void close () {
+            if (!opened) {
                 return;
+            }
 
             opened = false;
 
@@ -479,18 +474,13 @@ namespace Gala {
                 background.restore_easing_state ();
             };
 
-            if (gesture_animation_director == null) {
+            if (!gesture_animation_director.running) {
                 on_animation_end (100, false);
             } else {
-                gesture_animation_director.on_animation_update.connect ((percentage) => {
-                    on_animation_update (percentage);
-                });
-                gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
 
-            window_container.close (gesture_animation_director);
+            window_container.close ();
         }
     }
 }

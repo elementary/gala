@@ -78,6 +78,17 @@ namespace Gala.Plugins.Touchegg {
             new Thread<void*> (null, recive_events);
         }
 
+        public void stop () {
+            if (socket != null) {
+                try {
+                    reconnection_attemps = MAX_RECONNECTION_ATTEMPS;
+                    socket.close ();
+                } catch (Error e) {
+                    // Ignore this error, the process is being killed as this point
+                }
+            }
+        }
+
         private void* recive_events () {
             uint8[] event_buffer = new uint8[sizeof (GestureEvent)];
 
@@ -134,8 +145,8 @@ namespace Gala.Plugins.Touchegg {
             reconnection_attemps++;
 
             if (event != null
-                    && event.event_type != GestureEventType.UNKNOWN
-                    && event.event_type != GestureEventType.END) {
+                && event.event_type != GestureEventType.UNKNOWN
+                && event.event_type != GestureEventType.END) {
                 event.event_type = GestureEventType.END;
                 emit_event (event);
             }

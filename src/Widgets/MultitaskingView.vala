@@ -28,7 +28,7 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
-        private GestureAnimationDirector? gesture_animation_director = null;
+        private GestureAnimationDirector gesture_animation_director;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -66,6 +66,7 @@ namespace Gala {
 #else
             screen = wm.get_screen ();
 #endif
+            gesture_animation_director = new GestureAnimationDirector ();
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -185,7 +186,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (display, monitor);
+                    var monitor_clone = new MonitorClone (display, monitor, gesture_animation_director);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -203,7 +204,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (screen, monitor);
+                    var monitor_clone = new MonitorClone (screen, monitor, gesture_animation_director);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -362,9 +363,9 @@ namespace Gala {
         void add_workspace (int num) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num));
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), gesture_animation_director);
 #else
-            var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
+            var workspace = new WorkspaceClone (screen.get_workspace_by_index (num), gesture_animation_director);
 #endif
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
@@ -550,16 +551,16 @@ namespace Gala {
             bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
             if (!opened) {
-                if (manual_animation) {
+                if (manual_animation && !animating) {
                     debug ("Starting MultitaskingView manual open animation");
-                    this.gesture_animation_director = new GestureAnimationDirector ();
+                    gesture_animation_director.running = true;
                 }
 
                 toggle ();
             }
 
-            if (opened && manual_animation && this.gesture_animation_director != null) {
-                this.gesture_animation_director.update_animation (hints);
+            if (opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
             }
         }
 
@@ -570,16 +571,16 @@ namespace Gala {
             bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
             if (opened) {
-                if (manual_animation) {
+                if (manual_animation && !animating) {
                     debug ("Starting MultitaskingView manual close animation");
-                    this.gesture_animation_director = new GestureAnimationDirector ();
+                    gesture_animation_director.running = true;
                 }
 
                 toggle ();
             }
 
-            if (!opened && manual_animation && this.gesture_animation_director != null) {
-                this.gesture_animation_director.update_animation (hints);
+            if (!opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
             }
         }
 
@@ -588,9 +589,10 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        void toggle (bool is_cancel_animation = false) {
-            if (animating)
+        void toggle () {
+            if (animating) {
                 return;
+            }
 
             animating = true;
 
@@ -600,9 +602,10 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open (this.gesture_animation_director, is_cancel_animation);
-                } else
-                    container.close (this.gesture_animation_director);
+                    container.open ();
+                } else {
+                    container.close ();
+                }
             }
 
             if (opening) {
@@ -649,16 +652,16 @@ namespace Gala {
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening) {
-                    workspace.open (this.gesture_animation_director, is_cancel_animation);
+                    workspace.open ();
                 } else {
-                    workspace.close (this.gesture_animation_director);
+                    workspace.close ();
                 }
             }
 
             if (opening) {
-                this.show_docks (is_cancel_animation);
+                show_docks ();
             } else {
-                this.hide_docks ();
+                hide_docks ();
             }
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -681,26 +684,26 @@ namespace Gala {
                     }
 
                     animating = false;
-                    this.gesture_animation_director = null;
+                    gesture_animation_director.disconnect_all_handlers ();
+                    gesture_animation_director.running = false;
+                    gesture_animation_director.canceling = cancel_action;
 
                     if (cancel_action) {
-                        toggle (true);
+                        toggle ();
                     }
 
                     return false;
                 });
             };
 
-            if (this.gesture_animation_director == null) {
+            if (!gesture_animation_director.running) {
                 on_animation_end (100, false);
             } else {
-                this.gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                    on_animation_end (percentage, cancel_action);
-                });
+                gesture_animation_director.connect_handlers (null, null, (owned) on_animation_end);
             }
         }
 
-        void show_docks (bool is_cancel_animation) {
+        void show_docks () {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
@@ -767,23 +770,15 @@ namespace Gala {
                         return;
                     }
 
-                    clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
+                    clone.set_easing_duration (gesture_animation_director.canceling ? 0 : ANIMATION_DURATION);
                     clone.y = target_y;
                 };
 
-                if (this.gesture_animation_director == null) {
+                if (!gesture_animation_director.running) {
                     on_animation_begin (0);
                     on_animation_end (100, false);
                 } else {
-                    gesture_animation_director.on_animation_begin.connect ((percentage) => {
-                        on_animation_begin (percentage);
-                    });
-                    gesture_animation_director.on_animation_update.connect ((percentage) => {
-                        on_animation_update (percentage);
-                    });
-                    gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                        on_animation_end (percentage, cancel_action);
-                    });
+                    gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
@@ -812,15 +807,10 @@ namespace Gala {
                     dock.y = target_y;
                 };
 
-                if (this.gesture_animation_director == null) {
+                if (!gesture_animation_director.running) {
                     on_animation_end (100, false);
                 } else {
-                    gesture_animation_director.on_animation_update.connect ((percentage) => {
-                        on_animation_update (percentage);
-                    });
-                    gesture_animation_director.on_animation_end.connect ((percentage, cancel_action) => {
-                        on_animation_end (percentage, cancel_action);
-                    });
+                    gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
