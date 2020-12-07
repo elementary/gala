@@ -364,10 +364,10 @@ namespace Gala {
          */
         public void take_slot (Meta.Rectangle rect) {
             slot = rect;
-            var initial_x = this.x;
-            var initial_y = this.y;
-            var initial_width = this.width;
-            var initial_height = this.height;
+            var initial_x = x;
+            var initial_y = y;
+            var initial_width = width;
+            var initial_height = height;
 
             GestureAnimationDirector.OnBegin on_animation_begin = () => {
                 window_icon.opacity = 0;

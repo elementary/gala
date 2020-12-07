@@ -129,7 +129,7 @@ namespace Gala {
          * Animate the windows from their old location to a tiled layout
          */
         public void open () {
-            window_container.open (null);
+            window_container.open ();
             // background.opacity = 0; TODO consider this option
         }
 

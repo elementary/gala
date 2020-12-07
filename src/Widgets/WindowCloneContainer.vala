@@ -73,7 +73,7 @@ namespace Gala {
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (() => { reflow (); });
+            new_window.request_reposition.connect (reflow);
 
             var added = false;
             unowned Meta.Window? target = null;
