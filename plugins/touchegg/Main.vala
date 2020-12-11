@@ -25,7 +25,7 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     /**
      * Percentage of the animation to be completed to apply the action.
      */
-    private const int SUCCEESS_THRESHOLD = 20;
+    private const int SUCCESS_THRESHOLD = 20;
 
     public override void initialize (Gala.WindowManager window_manager) {
         wm = window_manager;
@@ -92,7 +92,7 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         hints.insert ("percentage", new Variant.int32 (gesture.percentage));
 
         if (event == "end") {
-            hints.insert ("cancel_action", new Variant.boolean (gesture.percentage < SUCCEESS_THRESHOLD));
+            hints.insert ("cancel_action", new Variant.boolean (gesture.percentage < SUCCESS_THRESHOLD));
         }
 
         return hints;
@@ -121,10 +121,10 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     private bool is_next_desktop_gesture (Gesture gesture) {
         bool enabled = gala_settings.get_boolean ("workspaces-gesture-enabled");
         int fingers = gala_settings.get_int ("workspaces-gesture-fingers");
-        bool natural_scrool = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
+        bool natural_scroll = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
-        var direction = natural_scrool ? GestureDirection.LEFT : GestureDirection.RIGHT;
+        var direction = natural_scroll ? GestureDirection.LEFT : GestureDirection.RIGHT;
 
         return enabled
             && gesture.type == GestureType.SWIPE
@@ -135,10 +135,10 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     private bool is_previous_desktop_gesture (Gesture gesture) {
         bool enabled = gala_settings.get_boolean ("workspaces-gesture-enabled");
         int fingers = gala_settings.get_int ("workspaces-gesture-fingers");
-        bool natural_scrool = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
+        bool natural_scroll = (gesture.performed_on_device_type == DeviceType.TOUCHSCREEN)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
-        var direction = natural_scrool ? GestureDirection.RIGHT : GestureDirection.LEFT;
+        var direction = natural_scroll ? GestureDirection.RIGHT : GestureDirection.LEFT;
 
         return enabled
             && gesture.type == GestureType.SWIPE

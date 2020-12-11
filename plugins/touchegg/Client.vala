@@ -51,9 +51,14 @@ namespace Gala.Plugins.Touchegg {
         public signal void on_gesture_end (Gesture gesture);
 
         /**
-         * Maximum number of reconnection attemps to the daemon.
+         * Maximum number of reconnection attempts to the daemon.
          */
-        private const int MAX_RECONNECTION_ATTEMPS = 5;
+        private const int MAX_RECONNECTION_ATTEMPTS = 5;
+
+        /**
+         * Time to sleep between reconnection attempts.
+         */
+        private const int RECONNECTION_USLEEP_TIME = 5000000;
 
         /**
          * Socket used to connect to the daemon.
@@ -61,12 +66,12 @@ namespace Gala.Plugins.Touchegg {
         private Socket? socket = null;
 
         /**
-         * Current number of reconnection attemps.
+         * Current number of reconnection attempts.
          */
-        private int reconnection_attemps = 0;
+        private int reconnection_attempts = 0;
 
         /**
-         * Stuct to store the received event. It is usefull to keep it to be able to finish ongoing
+         * Struct to store the received event. It is useful to keep it to be able to finish ongoing
          * actions in case of disconnection
          */
         private GestureEvent *event = null;
@@ -75,13 +80,13 @@ namespace Gala.Plugins.Touchegg {
          * Start receiving gestures.
          */
         public void run () throws IOError {
-            new Thread<void*> (null, recive_events);
+            new Thread<void*> (null, receive_events);
         }
 
         public void stop () {
             if (socket != null) {
                 try {
-                    reconnection_attemps = MAX_RECONNECTION_ATTEMPS;
+                    reconnection_attempts = MAX_RECONNECTION_ATTEMPTS;
                     socket.close ();
                 } catch (Error e) {
                     // Ignore this error, the process is being killed as this point
@@ -89,10 +94,10 @@ namespace Gala.Plugins.Touchegg {
             }
         }
 
-        private void* recive_events () {
+        private void* receive_events () {
             uint8[] event_buffer = new uint8[sizeof (GestureEvent)];
 
-            while (reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
+            while (reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
                 try {
                     if (socket == null || !socket.is_connected ()) {
                         debug ("Connecting to Touchégg daemon");
@@ -109,8 +114,8 @@ namespace Gala.Plugins.Touchegg {
                             throw new GLib.IOError.CONNECTION_REFUSED ("Error connecting to Touchégg daemon");
                         }
 
-                        reconnection_attemps = 0;
-                        debug ("Connetion to Touchégg daemon stablished");
+                        reconnection_attempts = 0;
+                        debug ("Connection to Touchégg daemon established");
                     }
 
                     // Read the event
@@ -142,7 +147,7 @@ namespace Gala.Plugins.Touchegg {
         }
 
         private void handle_disconnection () {
-            reconnection_attemps++;
+            reconnection_attempts++;
 
             if (event != null
                 && event.event_type != GestureEventType.UNKNOWN
@@ -159,9 +164,9 @@ namespace Gala.Plugins.Touchegg {
                 }
             }
 
-            if (reconnection_attemps < MAX_RECONNECTION_ATTEMPS) {
+            if (reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
                 debug ("Reconnecting to Touchégg daemon in 5 seconds");
-                Thread.usleep (5000000);
+                Thread.usleep (RECONNECTION_USLEEP_TIME);
             } else {
                 warning ("Maximum number of reconnections reached, aborting");
             }
