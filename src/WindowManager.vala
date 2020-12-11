@@ -340,7 +340,7 @@ namespace Gala {
 
             if (plugin_manager.workspace_view_provider == null
                 || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
-                workspace_view = new MultitaskingView (this);
+                workspace_view = new MultitaskingView (this, gesture_animation_director);
                 ui_group.add_child ((Clutter.Actor) workspace_view);
             }
 

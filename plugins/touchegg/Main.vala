@@ -19,8 +19,8 @@
 public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
     private Gala.WindowManager? wm = null;
     private Client? client = null;
-    private GLib.Settings gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
-    private GLib.Settings touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
+    private GLib.Settings gala_settings;
+    private GLib.Settings touchpad_settings;
 
     /**
      * Percentage of the animation to be completed to apply the action.
@@ -29,6 +29,8 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
 
     public override void initialize (Gala.WindowManager window_manager) {
         wm = window_manager;
+        gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
+        touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
 
         client = new Client ();
         client.on_gesture_begin.connect ((gesture) => Idle.add (() => {

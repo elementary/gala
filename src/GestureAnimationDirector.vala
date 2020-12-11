@@ -28,34 +28,35 @@ public class Gala.GestureAnimationDirector : Object {
     public delegate void OnUpdate (int percentage);
     public delegate void OnEnd (int percentage, bool cancel_action);
 
-    private Array<ulong> handlers;
+    private Gee.ArrayList<ulong> handlers;
 
     construct {
-        handlers = new Array<ulong> ();
+        handlers = new Gee.ArrayList<ulong> ();
     }
 
     public void connect_handlers (owned OnBegin? on_begin, owned OnUpdate? on_update, owned OnEnd? on_end) {
         if (on_begin != null) {
             ulong handler_id = on_animation_begin.connect ((percentage) => on_begin (percentage));
-            handlers.append_val (handler_id);
+            handlers.add (handler_id);
         }
 
         if (on_update != null) {
             ulong handler_id = on_animation_update.connect ((percentage) => on_update (percentage));
-            handlers.append_val (handler_id);
+            handlers.add (handler_id);
         }
 
         if (on_end != null) {
             ulong handler_id = on_animation_end.connect ((percentage, cancel_action) => on_end (percentage, cancel_action));
-            handlers.append_val (handler_id);
+            handlers.add (handler_id);
         }
     }
 
     public void disconnect_all_handlers () {
-        for (int i = 0; i < handlers.length ; i++) {
-            disconnect (handlers.index (i));
+        foreach (var handler in handlers) {
+            disconnect (handler);
         }
-        handlers.remove_range (0, handlers.length);
+
+        handlers.clear ();
     }
 
     public void update_animation (HashTable<string,Variant> hints) {

@@ -28,7 +28,7 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
-        private GestureAnimationDirector gesture_animation_director;
+        public GestureAnimationDirector gesture_animation_director { get; construct; }
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -51,8 +51,8 @@ namespace Gala {
         Actor workspaces;
         Actor dock_clones;
 
-        public MultitaskingView (WindowManager wm) {
-            Object (wm: wm);
+        public MultitaskingView (WindowManager wm, GestureAnimationDirector gesture_animation_director) {
+            Object (wm: wm, gesture_animation_director: gesture_animation_director);
         }
 
         construct {
