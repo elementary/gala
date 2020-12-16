@@ -34,8 +34,11 @@ namespace Gala {
 
         /**
          * The component was requested to be closed.
+         *
+         * @param hints The hashmap may contain special parameters that are useful
+         *              to the component.
          */
-        public abstract void close ();
+        public abstract void close (HashTable<string,Variant>? hints = null);
 
         /**
          * Should return whether the component is currently opened. Used mainly for
