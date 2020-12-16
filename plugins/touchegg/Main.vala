@@ -66,19 +66,13 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
 
         if (is_open_workspace_gesture (gesture)) {
             wm.workspace_view.open (hints);
-        }
-
-        if (is_close_workspace_gesture (gesture)) {
+        } else if (is_close_workspace_gesture (gesture)) {
             wm.workspace_view.close (hints);
-        }
-
-        if (is_next_desktop_gesture (gesture)) {
+        } else if (is_next_desktop_gesture (gesture)) {
             if (!wm.workspace_view.is_opened ()) {
                 wm.switch_to_next_workspace (Meta.MotionDirection.RIGHT, hints);
             }
-        }
-
-        if (is_previous_desktop_gesture (gesture)) {
+        } else if (is_previous_desktop_gesture (gesture)) {
             if (!wm.workspace_view.is_opened ()) {
                 wm.switch_to_next_workspace (Meta.MotionDirection.LEFT, hints);
             }
