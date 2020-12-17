@@ -119,9 +119,9 @@ namespace Gala {
             screen.monitors_changed.disconnect (monitors_changed);
 #endif
 
-            foreach (var background in backgrounds) {
-                background.value.changed.disconnect (background_changed);
-                background.value.destroy ();
+            foreach (var background in backgrounds.values) {
+                background.changed.disconnect (background_changed);
+                background.destroy ();
             }
         }
 
