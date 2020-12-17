@@ -47,3 +47,15 @@ gala_bin = executable(
 	install_rpath: mutter_typelib_dir,
 	install: true,
 )
+
+gala_bin_lib = shared_library(
+	'gala-bin-lib',
+	gala_bin_sources,
+	dependencies: [gala_dep, gala_base_dep],
+	include_directories: [config_inc_dir],
+	install: true,
+	install_dir: [true, join_paths(get_option('includedir'), 'gala'), true],
+	install_rpath: mutter_typelib_dir
+)
+
+gala_bin_lib_dep = declare_dependency(link_with: [gala_bin_lib], include_directories: include_directories('.'))

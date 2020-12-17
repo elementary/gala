@@ -120,8 +120,8 @@ namespace Gala {
 #endif
 
             foreach (var background in backgrounds) {
-                background.changed.disconnect (background_changed);
-                background.destroy ();
+                background.value.changed.disconnect (background_changed);
+                background.value.destroy ();
             }
         }
 

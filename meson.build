@@ -183,6 +183,8 @@ subdir('plugins/notify')
 subdir('plugins/pip')
 subdir('plugins/template')
 subdir('plugins/zoom')
+subdir('plugins/app-windows')
+
 if get_option('documentation')
 	subdir('docs')
 endif
