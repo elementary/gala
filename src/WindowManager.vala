@@ -2109,7 +2109,7 @@ namespace Gala {
             main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
             var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            x2 += WORKSPACE_GAP;
+            x2 += WORKSPACE_GAP * InternalUtils.get_ui_scaling_factor ();
             if (direction == Meta.MotionDirection.RIGHT)
                 x2 = -x2;
 
