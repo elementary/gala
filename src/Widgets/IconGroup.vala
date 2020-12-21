@@ -69,9 +69,10 @@ namespace Gala {
 
                 _active = value;
 
-                var transition = new PropertyTransition ("backdrop-opacity");
-                transition.duration = 300;
-                transition.remove_on_complete = true;
+                var transition = new PropertyTransition ("backdrop-opacity") {
+                    duration = 300,
+                    remove_on_complete = true
+                };
                 transition.set_from_value (_active ? 0 : 40);
                 transition.set_to_value (_active ? 40 : 0);
 

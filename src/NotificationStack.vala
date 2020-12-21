@@ -82,8 +82,9 @@ public class Gala.NotificationStack : Object {
             flip_transition.set_key_frames ({ 0.6 });
             flip_transition.set_values ({ -10.0 });
 
-            var entry = new Clutter.TransitionGroup ();
-            entry.duration = 400;
+            var entry = new Clutter.TransitionGroup () {
+                duration = 400
+            };
             entry.add_transition (opacity_transition);
             entry.add_transition (flip_transition);
 

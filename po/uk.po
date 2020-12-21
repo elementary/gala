@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-09-22 14:23+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: 2020-11-17 11:11+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -21,25 +21,25 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "Знімки екрана"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Зображення на екрані виглядає нормально?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Залишити поточну конфігурацію"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Повернути попередню конфігурацію"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Згорнути"
+msgid "Hide"
+msgstr "Сховати"
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -207,6 +207,9 @@ msgstr "Резервний робочий файл для сповіщень в�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "Згорнути"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Дія для верхнього лівого кута"

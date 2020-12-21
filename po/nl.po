@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
 "PO-Revision-Date: 2020-05-10 12:10+0000\n"
 "Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -19,25 +19,25 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
 msgstr "Screenshots"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "Ziet het beeld er goed uit?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "Behoud deze instellingen"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "Vorige instellingen terugzetten"
 
 #: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Minimaliseren"
+msgid "Hide"
+msgstr ""
 
 #: daemon/MenuDaemon.vala:124
 msgid "Move"
@@ -206,6 +206,9 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applicaties-overige"
+
+#~ msgid "Minimize"
+#~ msgstr "Minimaliseren"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Actie voor de linkerbovenhoek"

@@ -27,6 +27,9 @@ namespace Gala {
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
+
+        public GestureAnimationDirector gesture_animation_director { get; construct; }
+
         const int SMOOTH_SCROLL_DELAY = 500;
 
         public WindowManager wm { get; construct; }
@@ -48,8 +51,8 @@ namespace Gala {
         Actor workspaces;
         Actor dock_clones;
 
-        public MultitaskingView (WindowManager wm) {
-            Object (wm: wm);
+        public MultitaskingView (WindowManager wm, GestureAnimationDirector gesture_animation_director) {
+            Object (wm: wm, gesture_animation_director: gesture_animation_director);
         }
 
         construct {
@@ -63,6 +66,7 @@ namespace Gala {
 #else
             screen = wm.get_screen ();
 #endif
+            gesture_animation_director = new GestureAnimationDirector ();
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -182,7 +186,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (display, monitor);
+                    var monitor_clone = new MonitorClone (display, monitor, gesture_animation_director);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -200,7 +204,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (screen, monitor);
+                    var monitor_clone = new MonitorClone (screen, monitor, gesture_animation_director);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -359,9 +363,9 @@ namespace Gala {
         void add_workspace (int num) {
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num));
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), gesture_animation_director);
 #else
-            var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
+            var workspace = new WorkspaceClone (screen.get_workspace_by_index (num), gesture_animation_director);
 #endif
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
@@ -544,20 +548,40 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void open (HashTable<string,Variant>? hints = null) {
-            if (opened)
-                return;
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (!opened) {
+                if (manual_animation && !animating) {
+                    debug ("Starting MultitaskingView manual open animation");
+                    gesture_animation_director.running = true;
+                }
+
+                toggle ();
+            }
+
+            if (opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
          * {@inheritDoc}
          */
-        public void close () {
-            if (!opened)
-                return;
+        public void close (HashTable<string,Variant>? hints = null) {
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (opened) {
+                if (manual_animation && !animating) {
+                    debug ("Starting MultitaskingView manual close animation");
+                    gesture_animation_director.running = true;
+                }
+
+                toggle ();
+            }
+
+            if (!opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
@@ -566,8 +590,9 @@ namespace Gala {
          * to animate to their positions.
          */
         void toggle () {
-            if (animating)
+            if (animating) {
                 return;
+            }
 
             animating = true;
 
@@ -578,8 +603,9 @@ namespace Gala {
                 if (opening) {
                     container.visible = true;
                     container.open ();
-                } else
+                } else {
                     container.close ();
+                }
             }
 
             if (opening) {
@@ -625,96 +651,167 @@ namespace Gala {
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
-                if (opening)
+                if (opening) {
                     workspace.open ();
-                else
+                } else {
                     workspace.close ();
+                }
             }
 
+            if (opening) {
+                show_docks ();
+            } else {
+                hide_docks ();
+            }
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
+                Timeout.add (animation_duration, () => {
+                    if (!opening) {
+                        foreach (var container in window_containers_monitors) {
+                            container.visible = false;
+                        }
+
+                        hide ();
+
+                        wm.background_group.show ();
+                        wm.window_group.show ();
+                        wm.top_window_group.show ();
+
+                        dock_clones.destroy_all_children ();
+
+                        wm.pop_modal (modal_proxy);
+                    }
+
+                    animating = false;
+                    gesture_animation_director.disconnect_all_handlers ();
+                    gesture_animation_director.running = false;
+                    gesture_animation_director.canceling = cancel_action;
+
+                    if (cancel_action) {
+                        toggle ();
+                    }
+
+                    return false;
+                });
+            };
+
+            if (!gesture_animation_director.running) {
+                on_animation_end (100, false);
+            } else {
+                gesture_animation_director.connect_handlers (null, null, (owned) on_animation_end);
+            }
+        }
+
+        void show_docks () {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
-            if (opening) {
 #if HAS_MUTTER330
-                unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
 #else
-                unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
-#endif
-                foreach (unowned Meta.WindowActor actor in window_actors) {
-                    const int MAX_OFFSET = 100;
-
-                    if (actor.is_destroyed ())
-                        continue;
-
-                    unowned Meta.Window window = actor.get_meta_window ();
-                    var monitor = window.get_monitor ();
-
-                    if (window.window_type != WindowType.DOCK)
-                        continue;
-
-#if HAS_MUTTER330
-                    if (display.get_monitor_in_fullscreen (monitor))
-                        continue;
-
-                    var monitor_geom = display.get_monitor_geometry (monitor);
-#else
-                    if (screen.get_monitor_in_fullscreen (monitor))
-                        continue;
-
-                    var monitor_geom = screen.get_monitor_geometry (monitor);
+            unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
 #endif
 
-                    var window_geom = window.get_frame_rect ();
-                    var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
-                    var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+            foreach (unowned Meta.WindowActor actor in window_actors) {
+                const int MAX_OFFSET = 100;
 
-                    if (!top && !bottom)
-                        continue;
+                if (actor.is_destroyed ())
+                    continue;
 
-                    var clone = new SafeWindowClone (window, true);
-                    clone.set_position (actor.x - clone_offset_x, actor.y - clone_offset_y);
-                    clone.set_easing_duration (ANIMATION_DURATION);
+                unowned Meta.Window window = actor.get_meta_window ();
+                var monitor = window.get_monitor ();
+
+                if (window.window_type != WindowType.DOCK)
+                    continue;
+
+#if HAS_MUTTER330
+                if (display.get_monitor_in_fullscreen (monitor))
+                    continue;
+
+                var monitor_geom = display.get_monitor_geometry (monitor);
+#else
+                if (screen.get_monitor_in_fullscreen (monitor))
+                    continue;
+
+                var monitor_geom = screen.get_monitor_geometry (monitor);
+#endif
+
+                var window_geom = window.get_frame_rect ();
+                var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
+                var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+
+                if (!top && !bottom)
+                    continue;
+
+                var initial_x = actor.x - clone_offset_x;
+                var initial_y = actor.y - clone_offset_y;
+                var target_y = (top)
+                    ? actor.y - actor.height - clone_offset_y
+                    : actor.y + actor.height - clone_offset_y;
+
+                var clone = new SafeWindowClone (window, true);
+                dock_clones.add_child (clone);
+
+                GestureAnimationDirector.OnBegin on_animation_begin = () => {
+                    clone.set_position (initial_x, initial_y);
+                    clone.set_easing_mode (0);
+                };
+
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                    clone.y = y;
+                };
+
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                     clone.set_easing_mode (ANIMATION_MODE);
-                    dock_clones.add_child (clone);
 
-                    if (top)
-                        clone.y = actor.y - actor.height - clone_offset_y;
-                    else if (bottom)
-                        clone.y = actor.y + actor.height - clone_offset_y;
-                }
-            } else {
-                foreach (var child in dock_clones.get_children ()) {
-                    var dock = (Clone) child;
-
-                    dock.y = dock.source.y - clone_offset_y;
-                }
-            }
-
-            if (!opening) {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    foreach (var container in window_containers_monitors) {
-                        container.visible = false;
+                    if (cancel_action) {
+                        return;
                     }
 
-                    hide ();
+                    clone.set_easing_duration (gesture_animation_director.canceling ? 0 : ANIMATION_DURATION);
+                    clone.y = target_y;
+                };
 
-                    wm.background_group.show ();
-                    wm.window_group.show ();
-                    wm.top_window_group.show ();
+                if (!gesture_animation_director.running) {
+                    on_animation_begin (0);
+                    on_animation_end (100, false);
+                } else {
+                    gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                }
+            }
+        }
 
-                    dock_clones.destroy_all_children ();
+        void hide_docks () {
+            float clone_offset_x, clone_offset_y;
+            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
-                    wm.pop_modal (modal_proxy);
+            foreach (var child in dock_clones.get_children ()) {
+                var dock = (Clone) child;
+                var initial_y = dock.y;
+                var target_y = dock.source.y - clone_offset_y;
 
-                    animating = false;
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                    dock.y = y;
+                };
 
-                    return false;
-                });
-            } else {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    animating = false;
-                    return false;
-                });
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                    if (cancel_action) {
+                        return;
+                    }
+
+                    dock.set_easing_duration (ANIMATION_DURATION);
+                    dock.set_easing_mode (ANIMATION_MODE);
+                    dock.y = target_y;
+                };
+
+                if (!gesture_animation_director.running) {
+                    on_animation_end (100, false);
+                } else {
+                    gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                }
             }
         }
 

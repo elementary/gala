@@ -54,12 +54,12 @@ namespace Gala {
 #if HAS_MUTTER330
             display = wm.get_display ();
 
-            display.get_workspace_manager ().workspace_switched.connect (close);
+            display.get_workspace_manager ().workspace_switched.connect (() => { close (); });
             display.restacked.connect (restack_windows);
 #else
             screen = wm.get_screen ();
 
-            screen.workspace_switched.connect (close);
+            screen.workspace_switched.connect (() => { close (); });
             screen.restacked.connect (restack_windows);
 #endif
 
@@ -203,10 +203,12 @@ namespace Gala {
                 var geometry = screen.get_monitor_geometry (i);
 #endif
 
-                var container = new WindowCloneContainer (true);
-                container.padding_top = TOP_GAP;
-                container.padding_left = container.padding_right = BORDER;
-                container.padding_bottom = BOTTOM_GAP;
+                var container = new WindowCloneContainer (null, true) {
+                    padding_top = TOP_GAP,
+                    padding_left = BORDER,
+                    padding_right = BORDER,
+                    padding_bottom = BOTTOM_GAP
+                };
                 container.set_position (geometry.x, geometry.y);
                 container.set_size (geometry.width, geometry.height);
                 container.window_selected.connect (thumb_selected);
@@ -320,7 +322,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void close () {
+        public void close (HashTable<string,Variant>? hints = null) {
             if (!visible || !ready)
                 return;
 
