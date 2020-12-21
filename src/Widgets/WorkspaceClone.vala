@@ -143,6 +143,7 @@ namespace Gala {
         public signal void selected (bool close_view);
 
         public Workspace workspace { get; construct; }
+        public GestureAnimationDirector gesture_animation_director { get; construct; }
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
@@ -166,8 +167,8 @@ namespace Gala {
 
         uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Workspace workspace) {
-            Object (workspace: workspace);
+        public WorkspaceClone (Workspace workspace, GestureAnimationDirector gesture_animation_director) {
+            Object (workspace: workspace, gesture_animation_director: gesture_animation_director);
         }
 
         construct {
@@ -192,7 +193,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer ();
+            window_container = new WindowCloneContainer (gesture_animation_director);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 #if HAS_MUTTER330
@@ -369,8 +370,9 @@ namespace Gala {
          * if it belongs to this workspace.
          */
         public void open () {
-            if (opened)
+            if (opened) {
                 return;
+            }
 
             opened = true;
 
@@ -390,13 +392,33 @@ namespace Gala {
 
             update_size (monitor);
 
-            background.set_pivot_point (0.5f, pivotY);
+            GestureAnimationDirector.OnBegin on_animation_begin = () => {
+                background.set_pivot_point (0.5f, pivotY);
+            };
 
-            background.save_easing_state ();
-            background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-            background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
-            background.set_scale (scale, scale);
-            background.restore_easing_state ();
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, (float)scale, percentage);
+                background.set_scale (update_scale, update_scale);
+            };
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                if (cancel_action) {
+                    return;
+                }
+
+                background.save_easing_state ();
+                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                background.set_scale (scale, scale);
+                background.restore_easing_state ();
+            };
+
+            if (!gesture_animation_director.running) {
+                on_animation_begin (0);
+                on_animation_end (100, false);
+            } else {
+                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
+            }
 
             Meta.Rectangle area = {
                 (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
@@ -425,16 +447,38 @@ namespace Gala {
          * the windows back to their old locations.
          */
         public void close () {
-            if (!opened)
+            if (!opened) {
                 return;
+            }
 
             opened = false;
 
-            background.save_easing_state ();
-            background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-            background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
-            background.set_scale (1, 1);
-            background.restore_easing_state ();
+            double initial_scale_x, initial_scale_y;
+            background.get_scale (out initial_scale_x, out initial_scale_y);
+
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                double scale_x = (double) GestureAnimationDirector.animation_value ((float) initial_scale_x, 1.0f, percentage);
+                double scale_y = (double) GestureAnimationDirector.animation_value ((float) initial_scale_y, 1.0f, percentage);
+                background.set_scale (scale_x, scale_y);
+            };
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                if (cancel_action) {
+                    return;
+                }
+
+                background.save_easing_state ();
+                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                background.set_scale (1, 1);
+                background.restore_easing_state ();
+            };
+
+            if (!gesture_animation_director.running) {
+                on_animation_end (100, false);
+            } else {
+                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            }
 
             window_container.close ();
         }
