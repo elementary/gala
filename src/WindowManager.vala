@@ -1115,7 +1115,13 @@ namespace Gala {
         public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
-                tile_preview.background_color = { 100, 186, 255, 100 };
+                var rgba = InternalUtils.get_theme_accent_color ();
+                tile_preview.background_color = {
+                    (uint8)(255.0 * rgba.red), 
+                    (uint8)(255.0 * rgba.green),
+                    (uint8)(255.0 * rgba.blue),
+                    (uint8)(255.0 * rgba.alpha)
+                };
                 tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
@@ -1158,6 +1164,7 @@ namespace Gala {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
+                tile_preview = null;
             }
         }
 
