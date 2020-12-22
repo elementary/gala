@@ -123,6 +123,11 @@ namespace Gala {
         const int TOP_OFFSET = 20;
 
         /**
+         * Background wallpaper extra margin to apply.
+         */
+        const int BACKGROUND_OFFSET = 80;
+
+        /**
          * The amount of time a window has to be over the WorkspaceClone while in drag
          * before we activate the workspace.
          */
@@ -388,16 +393,17 @@ namespace Gala {
             var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
 #endif
             var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
-            var pivotY = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
+            var background_scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor - BACKGROUND_OFFSET * 2 * scale_factor) / monitor.height;
+            var pivot_y = ((TOP_OFFSET + BACKGROUND_OFFSET) * scale_factor) / (monitor.height - monitor.height * background_scale);
 
             update_size (monitor);
 
             GestureAnimationDirector.OnBegin on_animation_begin = () => {
-                background.set_pivot_point (0.5f, pivotY);
+                background.set_pivot_point (0.5f, pivot_y);
             };
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, (float)scale, percentage);
+                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, background_scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
@@ -409,7 +415,7 @@ namespace Gala {
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
-                background.set_scale (scale, scale);
+                background.set_scale (background_scale, background_scale);
                 background.restore_easing_state ();
             };
 

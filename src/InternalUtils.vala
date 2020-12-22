@@ -348,7 +348,7 @@ namespace Gala {
                                          area.y + (slot / columns) * slot_height,
                                          slot_width,
                                          slot_height};
-                target = rect_adjusted (target, 10, 10, -10, -10);
+                target = rect_adjusted (target, 20, 20, -20, -20);
 
                 float scale;
                 if (target.width / (double)rect.width < target.height / (double)rect.height) {
