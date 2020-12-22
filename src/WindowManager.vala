@@ -2122,8 +2122,12 @@ namespace Gala {
 
             out_group.x = 0.0f;
             wallpaper.x = 0.0f;
+            wallpaper.y += clone_offset_y;
             in_group.x = -x2;
             wallpaper_clone.x = -x2;
+            wallpaper_clone.y += clone_offset_y;
+            wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
+            wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
 
             // The wallpapers need to move upwards inside the container to match their
             // original position before/after the transition.
