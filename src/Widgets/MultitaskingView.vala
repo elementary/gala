@@ -300,7 +300,6 @@ namespace Gala {
          *                positions immediately.
          */
         void update_positions (bool animate) {
-            var scale = InternalUtils.get_ui_scaling_factor ();
 #if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
@@ -312,7 +311,7 @@ namespace Gala {
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
                 var index = workspace_clone.workspace.index ();
-                var dest_x = index * (workspace_clone.width - (150 * scale));
+                var dest_x = workspace_clone.multitasking_view_x ();
 
                 if (index == active_index) {
                     active_x = dest_x;
@@ -647,7 +646,9 @@ namespace Gala {
                 child.remove_all_transitions ();
             }
 
-            update_positions (false);
+            if (!gesture_animation_director.canceling) {
+                update_positions (false);
+            }
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;

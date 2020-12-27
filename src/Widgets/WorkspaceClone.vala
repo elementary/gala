@@ -123,10 +123,21 @@ namespace Gala {
         const int TOP_OFFSET = 20;
 
         /**
+         * Background wallpaper extra margin to apply.
+         */
+        const int BACKGROUND_OFFSET = 40;
+
+        /**
          * The amount of time a window has to be over the WorkspaceClone while in drag
          * before we activate the workspace.
          */
         const int HOVER_ACTIVATE_DELAY = 400;
+
+        /**
+         * The MultitaskingView shows the workspaces overlapping them WorkspaceClone.X_OFFSET pixels
+         * making it possible to move windows to the next/previous workspace.
+         */
+         public const int X_OFFSET = 220;
 
         /**
          * A window has been selected, the MultitaskingView should consider activating
@@ -351,6 +362,35 @@ namespace Gala {
         }
 
         /**
+         * @return The position on the X axis of this workspace.
+         */
+        public float multitasking_view_x () {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            return workspace.index () * (width - (X_OFFSET * scale_factor));
+        }
+
+        /**
+         * @return The amount of pixels the workspace is overlapped in the X axis.
+         */
+        float current_x_overlap () {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+#if HAS_MUTTER330
+            var display = workspace.get_display ();
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            var active_index = manager.get_active_workspace ().index ();
+#else
+            var screen = workspace.get_screen ();
+            var active_index = screen.get_active_workspace ().index ();
+#endif
+            if (workspace.index () == active_index) {
+                return 0;
+            } else {
+                var x_offset = X_OFFSET * scale_factor;
+                return (workspace.index () < active_index) ? -x_offset : x_offset;
+            }
+        }
+
+        /**
          * Utility function to shrink a MetaRectangle on all sides for the given amount.
          * Negative amounts will scale it instead.
          *
@@ -387,17 +427,25 @@ namespace Gala {
 
             var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
 #endif
+            var initial_x = gesture_animation_director.canceling ? x : x + current_x_overlap ();
+            var target_x = multitasking_view_x ();
+
             var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
-            var pivotY = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
+            var background_scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor - BACKGROUND_OFFSET * 2 * scale_factor) / monitor.height;
+            var pivot_y = ((TOP_OFFSET + BACKGROUND_OFFSET) * scale_factor) / (monitor.height - monitor.height * background_scale);
 
             update_size (monitor);
 
             GestureAnimationDirector.OnBegin on_animation_begin = () => {
-                background.set_pivot_point (0.5f, pivotY);
+                x = initial_x;
+                background.set_pivot_point (0.5f, pivot_y);
             };
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, (float)scale, percentage);
+                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
+                set_x (x);
+
+                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, background_scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
@@ -406,10 +454,16 @@ namespace Gala {
                     return;
                 }
 
+                save_easing_state ();
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_x (target_x);
+                restore_easing_state ();
+
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (MultitaskingView.ANIMATION_MODE);
-                background.set_scale (scale, scale);
+                background.set_scale (background_scale, background_scale);
                 background.restore_easing_state ();
             };
 
@@ -453,10 +507,16 @@ namespace Gala {
 
             opened = false;
 
+            var initial_x = gesture_animation_director.canceling ? x : multitasking_view_x ();
+            var target_x = multitasking_view_x () + current_x_overlap ();
+
             double initial_scale_x, initial_scale_y;
             background.get_scale (out initial_scale_x, out initial_scale_y);
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
+                set_x (x);
+
                 double scale_x = (double) GestureAnimationDirector.animation_value ((float) initial_scale_x, 1.0f, percentage);
                 double scale_y = (double) GestureAnimationDirector.animation_value ((float) initial_scale_y, 1.0f, percentage);
                 background.set_scale (scale_x, scale_y);
@@ -466,6 +526,12 @@ namespace Gala {
                 if (cancel_action) {
                     return;
                 }
+
+                save_easing_state ();
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_x (target_x);
+                restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
