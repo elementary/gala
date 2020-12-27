@@ -125,7 +125,7 @@ namespace Gala {
         /**
          * Background wallpaper extra margin to apply.
          */
-        const int BACKGROUND_OFFSET = 80;
+        const int BACKGROUND_OFFSET = 40;
 
         /**
          * The amount of time a window has to be over the WorkspaceClone while in drag
@@ -137,7 +137,7 @@ namespace Gala {
          * The MultitaskingView shows the workspaces overlapping them WorkspaceClone.X_OFFSET pixels
          * making it possible to move windows to the next/previous workspace.
          */
-         public const int X_OFFSET = 150;
+         public const int X_OFFSET = 220;
 
         /**
          * A window has been selected, the MultitaskingView should consider activating
