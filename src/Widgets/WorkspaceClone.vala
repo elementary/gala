@@ -380,7 +380,7 @@ namespace Gala {
             if (workspace.index () == active_index) {
                 return 0;
             } else {
-                var x_offset = X_OFFSET * scale_factor;
+                var x_offset = X_OFFSET * scale_factor + WindowManagerGala.WORKSPACE_GAP;
                 return (workspace.index () < active_index) ? -x_offset : x_offset;
             }
         }

@@ -102,7 +102,10 @@ namespace Gala {
         private bool animating_switch_workspace = false;
         private GestureAnimationDirector gesture_animation_director;
 
-        private const int WORKSPACE_GAP = 24;
+        /**
+         * Gap to show between workspaces while switching between them.
+         */
+        public const int WORKSPACE_GAP = 24;
 
         construct {
             gesture_animation_director = new GestureAnimationDirector ();
