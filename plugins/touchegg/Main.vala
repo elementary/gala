@@ -84,6 +84,7 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         hints.insert ("manual_animation", new Variant.boolean (true));
         hints.insert ("event", new Variant.string (event));
         hints.insert ("percentage", new Variant.int32 (gesture.percentage));
+        hints.insert ("elapsed_time", new Variant.uint64 (gesture.elapsed_time));
 
         if (event == "end") {
             hints.insert ("cancel_action", new Variant.boolean (gesture.percentage < SUCCESS_THRESHOLD));

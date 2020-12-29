@@ -17,8 +17,11 @@
  */
 
 public class Gala.GestureAnimationDirector : Object {
+    public const double ANIMATION_BASE_VELOCITY = 0.002;
+
     public bool running { get; set; default = false; }
     public bool canceling { get; set; default = false; }
+    public double velocity { get; set; default = 0; }
 
     public signal void on_animation_begin (int percentage);
     public signal void on_animation_update (int percentage);
@@ -30,8 +33,13 @@ public class Gala.GestureAnimationDirector : Object {
 
     private Gee.ArrayList<ulong> handlers;
 
+    private int previous_percentage;
+    private uint64 previous_time;
+
     construct {
         handlers = new Gee.ArrayList<ulong> ();
+        previous_percentage = 0;
+        previous_time = 0;
     }
 
     public void connect_handlers (owned OnBegin? on_begin, owned OnUpdate? on_update, owned OnEnd? on_end) {
@@ -62,18 +70,32 @@ public class Gala.GestureAnimationDirector : Object {
     public void update_animation (HashTable<string,Variant> hints) {
         string event = hints.get ("event").get_string ();
         int32 percentage = hints.get ("percentage").get_int32 ();
+        uint64 elapsed_time = hints.get ("elapsed_time").get_uint64 ();
 
         switch (event) {
             case "begin":
                 on_animation_begin (percentage);
+                previous_time = elapsed_time;
+                previous_percentage = percentage;
                 break;
             case "update":
+                if (elapsed_time != previous_time) {
+                    int percentage_delta = percentage - previous_percentage;
+                    double delta_time = (double)(elapsed_time - previous_time);
+                    velocity = (percentage_delta / delta_time);
+                }
+                
                 on_animation_update (percentage);
+                previous_time = elapsed_time;
+                previous_percentage = percentage;
                 break;
             case "end":
             default:
                 var cancel_action = hints.get ("cancel_action").get_boolean ();
                 on_animation_end (percentage, cancel_action);
+                previous_time = 0;
+                previous_percentage = 0;
+                velocity = 0;
                 break;
         }
     }

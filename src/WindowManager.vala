@@ -2143,8 +2143,8 @@ namespace Gala {
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureAnimationDirector.animation_value (0.1f, x2, percentage);
-                var x_in = GestureAnimationDirector.animation_value (-x2, 0.1f, percentage);
+                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage);
+                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage);
 
                 out_group.x = x_out;
                 in_group.x = x_in;
@@ -2154,18 +2154,32 @@ namespace Gala {
             };
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                uint duration = AnimationDuration.WORKSPACE_SWITCH;
+
+                if (gesture_animation_director.running) {
+                    double velocity = GestureAnimationDirector.ANIMATION_BASE_VELOCITY;
+                    if (gesture_animation_director.velocity > 0) {
+                        velocity = gesture_animation_director.velocity;
+                    }
+    
+                    var pending_movement = cancel_action ? percentage : 100 - percentage;
+                    duration = ((uint) (pending_movement / velocity).abs ()).clamp (
+                        AnimationDuration.WORKSPACE_SWITCH_MIN,
+                        AnimationDuration.WORKSPACE_SWITCH);
+                }
+
                 animating_switch_workspace = true;
 
                 out_group.set_easing_mode (animation_mode);
-                out_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                out_group.set_easing_duration (duration);
                 in_group.set_easing_mode (animation_mode);
-                in_group.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                in_group.set_easing_duration (duration);
                 wallpaper_clone.set_easing_mode (animation_mode);
-                wallpaper_clone.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                wallpaper_clone.set_easing_duration (duration);
 
                 wallpaper.save_easing_state ();
                 wallpaper.set_easing_mode (animation_mode);
-                wallpaper.set_easing_duration (AnimationDuration.WORKSPACE_SWITCH);
+                wallpaper.set_easing_duration (duration);
 
                 out_group.x = cancel_action ? 0.0f : x2;
                 in_group.x = cancel_action ? -x2 : 0.0f;
