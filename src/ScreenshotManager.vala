@@ -382,7 +382,14 @@ namespace Gala {
 #endif
 
             int x, y;
+#if HAS_MUTTER40
+            Graphene.Point coords;
+            cursor_tracker.get_pointer (coords, null);
+            x = coords.x;
+            y = coords.y;
+#else
             cursor_tracker.get_pointer (out x, out y, null);
+#endif
 
             var region = new Cairo.Region.rectangle (image_rect);
             if (!region.contains_point (x, y)) {
