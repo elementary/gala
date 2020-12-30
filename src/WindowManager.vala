@@ -1117,7 +1117,7 @@ namespace Gala {
                 tile_preview = new Clutter.Actor ();
                 var rgba = InternalUtils.get_theme_accent_color ();
                 tile_preview.background_color = {
-                    (uint8)(255.0 * rgba.red), 
+                    (uint8)(255.0 * rgba.red),
                     (uint8)(255.0 * rgba.green),
                     (uint8)(255.0 * rgba.blue),
                     (uint8)(255.0 * rgba.alpha)
@@ -2154,20 +2154,14 @@ namespace Gala {
             };
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
-                uint duration = AnimationDuration.WORKSPACE_SWITCH;
-
-                if (gesture_animation_director.running) {
-                    double velocity = GestureAnimationDirector.ANIMATION_BASE_VELOCITY;
-                    if (gesture_animation_director.velocity > 0) {
-                        velocity = gesture_animation_director.velocity;
-                    }
-    
-                    var pending_movement = cancel_action ? percentage : 100 - percentage;
-                    duration = ((uint) (pending_movement / velocity).abs ()).clamp (
-                        AnimationDuration.WORKSPACE_SWITCH_MIN,
-                        AnimationDuration.WORKSPACE_SWITCH);
+                if (gesture_animation_director.running && (percentage == 100 || percentage == 0)) {
+                    switch_workspace_animation_finished (direction, cancel_action);
+                    return;
                 }
 
+                int duration = gesture_animation_director.running
+                    ? gesture_animation_director.calculate_end_animation_duration (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH)
+                    : AnimationDuration.WORKSPACE_SWITCH;
                 animating_switch_workspace = true;
 
                 out_group.set_easing_mode (animation_mode);
