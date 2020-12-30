@@ -38,16 +38,19 @@ public class Gala.GestureAnimationDirector : Object {
      */
     private const double MAX_VELOCITY = 0.5;
 
+    public int min_animation_duration { get; construct; }
+    public int max_animation_duration { get; construct; }
+
     public bool running { get; set; default = false; }
     public bool canceling { get; set; default = false; }
 
     public signal void on_animation_begin (int percentage);
     public signal void on_animation_update (int percentage);
-    public signal void on_animation_end (int percentage, bool cancel_action);
+    public signal void on_animation_end (int percentage, bool cancel_action, int calculated_duration);
 
     public delegate void OnBegin (int percentage);
     public delegate void OnUpdate (int percentage);
-    public delegate void OnEnd (int percentage, bool cancel_action);
+    public delegate void OnEnd (int percentage, bool cancel_action, int calculated_duration);
 
     private Gee.ArrayList<ulong> handlers;
 
@@ -64,6 +67,10 @@ public class Gala.GestureAnimationDirector : Object {
         velocity = 0;
     }
 
+    public GestureAnimationDirector(int min_animation_duration, int max_animation_duration) {
+        Object (min_animation_duration: min_animation_duration, max_animation_duration: max_animation_duration);
+    }
+
     public void connect_handlers (owned OnBegin? on_begin, owned OnUpdate? on_update, owned OnEnd? on_end) {
         if (on_begin != null) {
             ulong handler_id = on_animation_begin.connect ((percentage) => on_begin (percentage));
@@ -76,7 +83,7 @@ public class Gala.GestureAnimationDirector : Object {
         }
 
         if (on_end != null) {
-            ulong handler_id = on_animation_end.connect ((percentage, cancel_action) => on_end (percentage, cancel_action));
+            ulong handler_id = on_animation_end.connect ((percentage, cancel_action, duration) => on_end (percentage, cancel_action, duration));
             handlers.add (handler_id);
         }
     }
@@ -91,25 +98,6 @@ public class Gala.GestureAnimationDirector : Object {
 
     public static float animation_value (float initial_value, float target_value, int percentage) {
         return (((target_value - initial_value) * percentage) / 100) + initial_value;
-    }
-
-    /**
-     * Calculates the end animation duration using the current gesture velocity.
-     * @param min_duration Minimum animation time.
-     * @param max_duration Maximum animation time.
-     */
-    public int calculate_end_animation_duration (int min_duration, int max_duration) {
-        double animation_velocity = (velocity > ANIMATION_BASE_VELOCITY)
-            ? velocity
-            : ANIMATION_BASE_VELOCITY;
-
-        int current_percentage = applied_percentage (previous_percentage, percentage_delta);
-        bool cancel_action = should_cancel_action (current_percentage, velocity);
-        int pending_percentage = cancel_action ? current_percentage : 100 - current_percentage;
-
-        int duration = ((int)(pending_percentage / animation_velocity).abs ())
-            .clamp (min_duration, max_duration);
-        return duration;
     }
 
     public void update_animation (HashTable<string,Variant> hints) {
@@ -159,9 +147,11 @@ public class Gala.GestureAnimationDirector : Object {
 
     private void update_animation_end (int32 percentage, uint64 elapsed_time) {
         int end_percentage = applied_percentage (percentage, percentage_delta);
-        bool cancel_action = should_cancel_action (end_percentage, velocity);
+        bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
+            && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
+        int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
 
-        on_animation_end (end_percentage, cancel_action);
+        on_animation_end (end_percentage, cancel_action, calculated_duration);
 
         previous_percentage = 0;
         previous_time = 0;
@@ -173,8 +163,18 @@ public class Gala.GestureAnimationDirector : Object {
         return (percentage - percentage_delta).clamp (0, 100);
     }
 
-    private static bool should_cancel_action (int percentage, double velocity) {
-        return (percentage < SUCCESS_PERCENTAGE_THRESHOLD)
-            && (velocity < SUCCESS_VELOCITY_THRESHOLD);
+    /**
+     * Calculates the end animation duration using the current gesture velocity.
+     */
+     private int calculate_end_animation_duration (int end_percentage, bool cancel_action) {
+        double animation_velocity = (velocity > ANIMATION_BASE_VELOCITY)
+            ? velocity
+            : ANIMATION_BASE_VELOCITY;
+
+        int pending_percentage = cancel_action ? end_percentage : 100 - end_percentage;
+
+        int duration = ((int)(pending_percentage / animation_velocity).abs ())
+            .clamp (min_animation_duration, max_animation_duration);
+        return duration;
     }
 }

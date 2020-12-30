@@ -108,7 +108,7 @@ namespace Gala {
         public const int WORKSPACE_GAP = 24;
 
         construct {
-            gesture_animation_director = new GestureAnimationDirector ();
+            gesture_animation_director = new GestureAnimationDirector (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
 
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
@@ -345,7 +345,7 @@ namespace Gala {
 
             if (plugin_manager.workspace_view_provider == null
                 || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
-                workspace_view = new MultitaskingView (this, gesture_animation_director);
+                workspace_view = new MultitaskingView (this);
                 ui_group.add_child ((Clutter.Actor) workspace_view);
             }
 
@@ -2156,14 +2156,14 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 if (gesture_animation_director.running && (percentage == 100 || percentage == 0)) {
                     switch_workspace_animation_finished (direction, cancel_action);
                     return;
                 }
 
                 int duration = gesture_animation_director.running
-                    ? gesture_animation_director.calculate_end_animation_duration (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH)
+                    ? calculated_duration
                     : AnimationDuration.WORKSPACE_SWITCH;
                 animating_switch_workspace = true;
 
@@ -2196,7 +2196,7 @@ namespace Gala {
             };
 
             if (!gesture_animation_director.running) {
-                on_animation_end (100, false);
+                on_animation_end (100, false, 0);
             } else {
                 gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }

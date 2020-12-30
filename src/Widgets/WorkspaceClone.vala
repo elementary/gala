@@ -463,7 +463,7 @@ namespace Gala {
 
             if (!gesture_animation_director.running) {
                 on_animation_begin (0);
-                on_animation_end (100, false);
+                on_animation_end (100, false, 0);
             } else {
                 gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
@@ -535,7 +535,7 @@ namespace Gala {
             };
 
             if (!gesture_animation_director.running) {
-                on_animation_end (100, false);
+                on_animation_end (100, false, 0);
             } else {
                 gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
