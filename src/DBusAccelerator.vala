@@ -19,9 +19,7 @@ namespace Gala {
     public struct Accelerator {
         public string name;
         public uint flags;
-#if HAS_MUTTER332
         public Meta.KeyBindingFlags grab_flags;
-#endif
     }
 
     [DBus (name="org.gnome.Shell")]
@@ -68,19 +66,11 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER332
         public uint grab_accelerator (string accelerator, uint flags, Meta.KeyBindingFlags grab_flags) throws DBusError, IOError {
-#else
-        public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
-#endif
             uint? action = grabbed_accelerators[accelerator];
 
             if (action == null) {
-#if HAS_MUTTER332
                 action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
-#else
-                action = wm.get_display ().grab_accelerator (accelerator);
-#endif
                 if (action > 0) {
                     grabbed_accelerators[accelerator] = action;
                 }
@@ -93,11 +83,7 @@ namespace Gala {
             uint[] actions = {};
 
             foreach (unowned Accelerator? accelerator in accelerators) {
-#if HAS_MUTTER332
                 actions += grab_accelerator (accelerator.name, accelerator.flags, accelerator.grab_flags);
-#else
-                actions += grab_accelerator (accelerator.name, accelerator.flags);
-#endif
             }
 
             return actions;

@@ -113,10 +113,6 @@ namespace Gala {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
-#if !HAS_MUTTER332
-            Meta.Prefs.set_ignore_request_hide_titlebar (true);
-#endif
-
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
@@ -195,15 +191,9 @@ namespace Gala {
 
             var system_background = new SystemBackground (display);
 
-#if HAS_MUTTER332
             system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
                 Clutter.BindCoordinate.ALL, 0));
             stage.insert_child_below (system_background.background_actor, null);
-#else
-            system_background.add_constraint (new Clutter.BindConstraint (stage,
-                Clutter.BindCoordinate.ALL, 0));
-            stage.insert_child_below (system_background, null);
-#endif
 
             ui_group = new Clutter.Actor ();
             ui_group.reactive = true;
