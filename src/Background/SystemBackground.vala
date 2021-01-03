@@ -30,7 +30,6 @@ namespace Gala {
 
         public signal void loaded ();
 
-#if HAS_MUTTER330
         public SystemBackground (Meta.Display display) {
 #if HAS_MUTTER332
             Object (background_actor: new Meta.BackgroundActor (display, 0));
@@ -38,11 +37,6 @@ namespace Gala {
             Object (meta_display: display, monitor: 0);
 #endif
         }
-#else
-        public SystemBackground (Meta.Screen screen) {
-            Object (meta_screen: screen, monitor: 0);
-        }
-#endif
 
         construct {
             var background_file = GLib.File.new_for_uri ("resource:///io/elementary/desktop/gala/texture.png");
@@ -55,10 +49,8 @@ namespace Gala {
             if (system_background == null) {
 #if HAS_MUTTER332
                 system_background = new Meta.Background (background_actor.meta_display);
-#elif HAS_MUTTER330
-                system_background = new Meta.Background (meta_display);
 #else
-                system_background = new Meta.Background (meta_screen);
+                system_background = new Meta.Background (meta_display);
 #endif
                 system_background.set_color (DEFAULT_BACKGROUND_COLOR);
                 system_background.set_file (background_file, GDesktop.BackgroundStyle.WALLPAPER);

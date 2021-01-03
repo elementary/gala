@@ -116,13 +116,6 @@ namespace Gala {
 #if !HAS_MUTTER332
             Meta.Prefs.set_ignore_request_hide_titlebar (true);
 #endif
-#if !HAS_MUTTER330
-            Meta.Prefs.override_preference_schema ("dynamic-workspaces", Config.SCHEMA + ".behavior");
-            Meta.Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
-            Meta.Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
-            Meta.Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
-            Meta.Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
-#endif
 
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
@@ -135,11 +128,7 @@ namespace Gala {
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
-#else
-            unowned Meta.Display display = get_screen ().get_display ();
-#endif
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
                 SystemBackground.refresh ();
@@ -165,12 +154,7 @@ namespace Gala {
         }
 
         bool show_stage () {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-#endif
 
             screen_shield = new ScreenShield (this);
             screensaver = new ScreenSaverManager (screen_shield);
@@ -179,29 +163,17 @@ namespace Gala {
             DBusAccelerator.init (this);
             MediaFeedback.init ();
 
-#if HAS_MUTTER330
             WindowListener.init (display);
-#else
-            WindowListener.init (screen);
-#endif
             KeyboardManager.init (display);
 
-#if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
-#else
-            notification_stack = new NotificationStack (screen);
-#endif
 
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
 
-#if HAS_MUTTER330
             stage = display.get_stage () as Clutter.Stage;
-#else
-            stage = screen.get_stage () as Clutter.Stage;
-#endif
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
@@ -221,11 +193,7 @@ namespace Gala {
              * +-- top window group
              */
 
-#if HAS_MUTTER330
             var system_background = new SystemBackground (display);
-#else
-            var system_background = new SystemBackground (screen);
-#endif
 
 #if HAS_MUTTER332
             system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
@@ -241,29 +209,16 @@ namespace Gala {
             ui_group.reactive = true;
             stage.add_child (ui_group);
 
-#if HAS_MUTTER330
             window_group = display.get_window_group ();
-#else
-            window_group = screen.get_window_group ();
-#endif
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-#if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
             ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
-#else
-            background_group = new BackgroundContainer (screen);
-            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
-#endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
-#if HAS_MUTTER330
             top_window_group = display.get_top_window_group ();
-#else
-            top_window_group = screen.get_top_window_group ();
-#endif
 
 #if HAS_MUTTER336
             pointer_locator = new PointerLocator (this);
@@ -330,11 +285,7 @@ namespace Gala {
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
-#if HAS_MUTTER330
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
-#else
-            screen.monitors_changed.connect (on_monitors_changed);
-#endif
 
             behavior_settings.changed.connect (configure_hotcorners);
 
@@ -421,12 +372,8 @@ namespace Gala {
         }
 
         void configure_hotcorners () {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-#else
-            var geometry = get_screen ().get_monitor_geometry (get_screen ().get_primary_monitor ());
-#endif
 
             add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
             add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
@@ -437,11 +384,7 @@ namespace Gala {
         }
 
         void add_hotcorner (float x, float y, string key) {
-#if HAS_MUTTER330
             unowned Clutter.Actor? stage = get_display ().get_stage ();
-#else
-            unowned Clutter.Actor? stage = get_screen ().get_stage ();
-#endif
             return_if_fail (stage != null);
 
             var action = (ActionType) behavior_settings.get_enum (key);
@@ -475,7 +418,6 @@ namespace Gala {
             hot_corner.y = y;
         }
 
-#if HAS_MUTTER330
         [CCode (instance_pos = -1)]
         void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
             Meta.KeyBinding binding) {
@@ -530,59 +472,6 @@ namespace Gala {
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
         }
-#else
-        [CCode (instance_pos = -1)]
-        void handle_cycle_workspaces (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
-            var index = screen.get_active_workspace_index () + direction;
-
-            int dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
-
-            if (index < 0)
-                index = screen.get_n_workspaces () - 1 - dynamic_offset;
-            else if (index > screen.get_n_workspaces () - 1 - dynamic_offset)
-                index = 0;
-
-            screen.get_workspace_by_index (index).activate (display.get_current_time ());
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_move_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            if (window == null)
-                return;
-
-            var direction = (binding.get_name () == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            move_window (window, direction);
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_move_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            if (window == null)
-                return;
-
-            var index = (binding.get_name () == "move-to-workspace-first" ? 0 : screen.get_n_workspaces () - 1);
-            var workspace = screen.get_workspace_by_index (index);
-            window.change_workspace (workspace);
-            workspace.activate_with_focus (window, display.get_current_time ());
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction);
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
-            screen.get_workspace_by_index (index).activate (display.get_current_time ());
-        }
-#endif
 
         /**
          * {@inheritDoc}
@@ -604,14 +493,8 @@ namespace Gala {
                 }
             }
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-            var active_workspace = screen.get_active_workspace ();
-#endif
             var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
@@ -669,7 +552,6 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER330
         void update_input_area () {
             unowned Meta.Display display = get_display ();
 
@@ -692,30 +574,6 @@ namespace Gala {
             else
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
         }
-#else
-        void update_input_area () {
-            var screen = get_screen ();
-
-            if (screensaver != null) {
-                try {
-                    if (screensaver.get_active ()) {
-                        InternalUtils.set_input_area (screen, InputArea.NONE);
-                        return;
-                    }
-                } catch (Error e) {
-                    // the screensaver object apparently won't be null even though
-                    // it is unavailable. This error will be thrown however, so we
-                    // can just ignore it, because if it is thrown, the screensaver
-                    // is unavailable.
-                }
-            }
-
-            if (is_modal ())
-                InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
-            else
-                InternalUtils.set_input_area (screen, InputArea.DEFAULT);
-        }
-#endif
 
         void show_bottom_stack_window (Meta.Window bottom_window) {
             unowned Meta.Workspace workspace = bottom_window.get_workspace ();
@@ -794,7 +652,6 @@ namespace Gala {
             if (window == null)
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
@@ -806,20 +663,6 @@ namespace Gala {
                 Utils.bell (display);
                 return;
             }
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-
-            var active = screen.get_active_workspace ();
-            var next = active.get_neighbor (direction);
-
-            //dont allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if ((Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == screen.n_workspaces - 1)
-                || (active == next)) {
-                Utils.bell (screen);
-                return;
-            }
-#endif
 
             moving = window;
 
@@ -841,22 +684,13 @@ namespace Gala {
             if (modal_stack.size >= 2)
                 return proxy;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
-#else
-            var screen = get_screen ();
-            var time = screen.get_display ().get_current_time ();
-#endif
 
             update_input_area ();
             begin_modal (0, time);
 
-#if HAS_MUTTER330
             display.disable_unredirect ();
-#else
-            screen.disable_unredirect ();
-#endif
 
             return proxy;
         }
@@ -875,17 +709,10 @@ namespace Gala {
 
             update_input_area ();
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             end_modal (display.get_current_time ());
 
             display.enable_unredirect ();
-#else
-            var screen = get_screen ();
-            end_modal (screen.get_display ().get_current_time ());
-
-            screen.enable_unredirect ();
-#endif
         }
 
         /**
@@ -922,14 +749,8 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void perform_action (ActionType type) {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var current = display.get_focus_window ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-            var current = display.get_focus_window ();
-#endif
 
             switch (type) {
                 case ActionType.SHOW_WORKSPACE_VIEW:
@@ -1057,12 +878,8 @@ namespace Gala {
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
-#if HAS_MUTTER330
                     unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
                     var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
-#else
-                    var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
-#endif
                     workspace.activate (display.get_current_time ());
                     break;
                 default:
@@ -1190,7 +1007,6 @@ namespace Gala {
             if (!Meta.Prefs.get_dynamic_workspaces ())
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
             unowned Meta.Workspace win_ws = window.get_workspace ();
@@ -1222,29 +1038,6 @@ namespace Gala {
 
                 ws_assoc.remove (window);
             }
-#else
-            unowned Meta.Screen screen = get_screen ();
-            var time = screen.get_display ().get_current_time ();
-            unowned Meta.Workspace win_ws = window.get_workspace ();
-
-            if (which_change == Meta.SizeChange.FULLSCREEN) {
-                // Do nothing if the current workspace would be empty
-                if (Utils.get_n_windows (win_ws) <= 1)
-                    return;
-
-                var old_ws_index = win_ws.index ();
-                var new_ws_index = old_ws_index + 1;
-                InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-                var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws_obj);
-                new_ws_obj.activate_with_focus (window, time);
-
-                ws_assoc.insert (window, old_ws_index);
-            } else {
-                move_window_to_old_ws (window);
-            }
-#endif
         }
 
         // must wait for size_changed to get updated frame_rect
@@ -1306,11 +1099,7 @@ namespace Gala {
             minimizing.add (actor);
 
             int width, height;
-#if HAS_MUTTER330
             get_display ().get_size (out width, out height);
-#else
-            get_screen ().get_size (out width, out height);
-#endif
 
             Meta.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
@@ -1848,15 +1637,9 @@ namespace Gala {
             var new_ws_index = old_ws_index + 1;
             InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
             var new_ws_obj = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
-#else
-            unowned Meta.Screen screen = get_screen ();
-            var time = get_screen ().get_display ().get_current_time ();
-            var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
-#endif
             window.change_workspace (new_ws_obj);
             new_ws_obj.activate_with_focus (window, time);
 
@@ -1878,18 +1661,11 @@ namespace Gala {
             var old_ws_index = ws_assoc.get (window);
             var new_ws_index = win_ws.index ();
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager workspace_manager = display.get_workspace_manager ();
             if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
                 uint time = display.get_current_time ();
                 var old_ws_obj = workspace_manager.get_workspace_by_index (old_ws_index);
-#else
-            unowned Meta.Screen screen = get_screen ();
-            if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
-                uint time = screen.get_display ().get_current_time ();
-                var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
-#endif
                 window.change_workspace (old_ws_obj);
                 old_ws_obj.activate_with_focus (window, time);
             }
@@ -1947,7 +1723,6 @@ namespace Gala {
             }
 
             float screen_width, screen_height;
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var primary = display.get_primary_monitor ();
             var move_primary_only = InternalUtils.workspaces_only_on_primary ();
@@ -1960,19 +1735,6 @@ namespace Gala {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             unowned Meta.Workspace workspace_from = manager.get_workspace_by_index (from);
             unowned Meta.Workspace workspace_to = manager.get_workspace_by_index (to);
-#else
-            var screen = get_screen ();
-            var primary = screen.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            var monitor_geom = screen.get_monitor_geometry (primary);
-            var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
-            var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
-
-            screen.get_size (out screen_width, out screen_height);
-
-            unowned Meta.Workspace workspace_from = screen.get_workspace_by_index (from);
-            unowned Meta.Workspace workspace_to = screen.get_workspace_by_index (to);
-#endif
 
             var main_container = new Clutter.Actor ();
             var static_windows = new Clutter.Actor ();
@@ -2027,11 +1789,7 @@ namespace Gala {
             var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
-#if HAS_MUTTER330
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-#else
-            foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
-#endif
                 if (actor.is_destroyed ())
                     continue;
 
@@ -2214,13 +1972,8 @@ namespace Gala {
             if (windows == null || parents == null)
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var screen = get_screen ();
-            var active_workspace = screen.get_active_workspace ();
-#endif
 
             for (var i = 0; i < windows.length (); i++) {
                 var actor = windows.nth_data (i);

@@ -33,11 +33,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
-#if HAS_MUTTER330
         var display = wm.get_display ();
-#else
-        var display = wm.get_screen ().get_display ();
-#endif
         var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
         display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
@@ -54,13 +50,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
     void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
         Meta.KeyBinding binding) {
-#else
-    void on_initiate (Meta.Display display, Meta.Screen screen,
-        Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#endif
         selection_area = new SelectionArea (wm);
         selection_area.selected.connect (on_selection_actor_selected);
         selection_area.captured.connect (on_selection_actor_captured);
@@ -135,13 +126,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     private Meta.WindowActor? get_window_actor_at (int x, int y) {
-#if HAS_MUTTER330
         unowned Meta.Display display = wm.get_display ();
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
-#else
-        var screen = wm.get_screen ();
-        unowned List<Meta.WindowActor> actors = screen.get_window_actors ();
-#endif
 
         var copy = actors.copy ();
         copy.reverse ();
@@ -164,13 +150,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     private Meta.WindowActor? get_active_window_actor () {
-#if HAS_MUTTER330
         unowned Meta.Display display = wm.get_display ();
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
-#else
-        var screen = wm.get_screen ();
-        unowned List<Meta.WindowActor> actors = screen.get_window_actors ();
-#endif
 
         var copy = actors.copy ();
         copy.reverse ();

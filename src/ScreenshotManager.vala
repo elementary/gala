@@ -80,11 +80,7 @@ namespace Gala {
             debug ("Taking screenshot");
 
             int width, height;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out width, out height);
-#else
-            wm.get_screen ().get_size (out width, out height);
-#endif
 
             var image = take_screenshot (0, 0, width, height, include_cursor);
             unconceal_text ();
@@ -120,12 +116,7 @@ namespace Gala {
         public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking window screenshot");
 
-#if HAS_MUTTER330
             var window = wm.get_display ().get_focus_window ();
-#else
-            var window = wm.get_screen ().get_display ().get_focus_window ();
-#endif
-
             if (window == null) {
                 unconceal_text ();
                 throw new DBusError.FAILED ("Cannot find active window");
@@ -375,12 +366,7 @@ namespace Gala {
         }
 
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
-#if HAS_MUTTER330
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
-#else
-            unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
-#endif
-
             int x, y;
             cursor_tracker.get_pointer (out x, out y, null);
 

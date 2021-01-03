@@ -45,11 +45,7 @@ namespace Gala {
             wm = _wm;
             grabbed_accelerators = new HashTable<string, uint?> (str_hash, str_equal);
 
-#if HAS_MUTTER330
             wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
-#else
-            wm.get_screen ().get_display ().accelerator_activated.connect (on_accelerator_activated);
-#endif
         }
 
 #if HAS_MUTTER334
@@ -82,10 +78,8 @@ namespace Gala {
             if (action == null) {
 #if HAS_MUTTER332
                 action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
-#elif HAS_MUTTER330
-                action = wm.get_display ().grab_accelerator (accelerator);
 #else
-                action = wm.get_screen ().get_display ().grab_accelerator (accelerator);
+                action = wm.get_display ().grab_accelerator (accelerator);
 #endif
                 if (action > 0) {
                     grabbed_accelerators[accelerator] = action;
@@ -114,11 +108,7 @@ namespace Gala {
 
             foreach (unowned string accelerator in grabbed_accelerators.get_keys ()) {
                 if (grabbed_accelerators[accelerator] == action) {
-#if HAS_MUTTER330
                     ret = wm.get_display ().ungrab_accelerator (action);
-#else
-                    ret = wm.get_screen ().get_display ().ungrab_accelerator (action);
-#endif
                     grabbed_accelerators.remove (accelerator);
                     break;
                 }

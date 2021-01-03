@@ -313,7 +313,6 @@ namespace Gala {
             return container;
         }
 
-#if HAS_MUTTER330
         /**
         * Ring the system bell, will most likely emit a <beep> error sound or, if the
         * audible bell is disabled, flash the display
@@ -326,20 +325,6 @@ namespace Gala {
             else
                 display.get_compositor ().flash_display (display);
         }
-#else
-        /**
-         * Ring the system bell, will most likely emit a <beep> error sound or, if the
-         * audible bell is disabled, flash the screen
-         *
-         * @param screen The screen to flash, if necessary
-         */
-        public static void bell (Meta.Screen screen) {
-            if (Meta.Prefs.bell_is_audible ())
-                Gdk.beep ();
-            else
-                screen.get_display ().get_compositor ().flash_screen (screen);
-        }
-#endif
 
         public static int get_ui_scaling_factor () {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
