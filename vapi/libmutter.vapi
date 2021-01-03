@@ -27,10 +27,8 @@ namespace Meta {
 		public static Meta.ButtonLayout get_button_layout ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_center_new_windows ();
-#if HAS_MUTTER336
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static uint get_check_alive_timeout ();
-#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_compositing_manager ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -107,10 +105,6 @@ namespace Meta {
 		public static void fatal (string format, ...);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_get_locale_direction")]
 		public static Meta.LocaleDirection get_locale_direction ();
-#if !HAS_MUTTER336
-		[CCode (cheader_filename = "meta/util.h", cname = "meta_gravity_to_string")]
-		public static unowned string gravity_to_string (int gravity);
-#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_debugging")]
 		public static bool is_debugging ();
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_syncing")]
@@ -156,19 +150,13 @@ namespace Meta {
 		public unowned Meta.RemoteAccessController get_remote_access_controller ();
 		public unowned Meta.Settings get_settings ();
 		public unowned Clutter.Actor get_stage ();
-#if HAS_MUTTER336
 		public bool is_rendering_hardware_accelerated ();
-#endif
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
 		public void set_numlock (bool numlock_state);
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
-#if HAS_MUTTER336
 		public signal void last_device_changed (Clutter.InputDevice object);
-#else
-		public signal void last_device_changed (int object);
-#endif
 		public signal void lid_is_closed_changed (bool object);
 	}
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
@@ -398,9 +386,7 @@ namespace Meta {
 		public void unfreeze_keyboard (uint32 timestamp);
 		public bool ungrab_accelerator (uint action_id);
 		public void ungrab_keyboard (uint32 timestamp);
-#if HAS_MUTTER336
 		public void unset_input_focus (uint32 timestamp);
-#endif
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
 		public Meta.Window focus_window { get; }
 		public signal void accelerator_activated (uint object, Clutter.InputDevice p0, uint p1);
@@ -459,17 +445,10 @@ namespace Meta {
 		public uint add_idle_watch (uint64 interval_msec, owned Meta.IdleMonitorWatchFunc? callback);
 		public uint add_user_active_watch (owned Meta.IdleMonitorWatchFunc? callback);
 		public static unowned Meta.IdleMonitor get_core ();
-#if !HAS_MUTTER336
-		public static unowned Meta.IdleMonitor get_for_device (int device_id);
-#endif
 		public int64 get_idletime ();
 		public void remove_watch (uint id);
 		[NoAccessorMethod]
-#if HAS_MUTTER336
 		public Clutter.InputDevice device { owned get; construct; }
-#else
-		public int device_id { get; construct; }
-#endif
 	}
 	[CCode (cheader_filename = "meta/keybindings.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_key_binding_get_type ()")]
 	[Compact]
@@ -592,9 +571,7 @@ namespace Meta {
 	public class RemoteAccessHandle : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected RemoteAccessHandle ();
-#if HAS_MUTTER336
 		public bool get_disable_animations ();
-#endif
 		public virtual void stop ();
 #if HAS_MUTTER338
 		[NoAccessorMethod]
@@ -890,9 +867,7 @@ namespace Meta {
 		public signal void shown ();
 		public signal void size_changed ();
 		public signal void unmanaged ();
-#if HAS_MUTTER336
 		public signal void unmanaging ();
-#endif
 		public signal void workspace_changed ();
 	}
 	[CCode (cheader_filename = "meta/meta-window-actor.h", type_id = "meta_window_actor_get_type ()")]
@@ -920,9 +895,7 @@ namespace Meta {
 		public signal void damaged ();
 		public signal void effects_completed ();
 		public signal void first_frame ();
-#if HAS_MUTTER336
 		public signal void thawed ();
-#endif
 	}
 	[CCode (cheader_filename = "meta/meta-window-group.h", type_id = "meta_window_group_get_type ()")]
 	public class WindowGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
@@ -1294,7 +1267,6 @@ namespace Meta {
 		KEYBOARD_RESIZING_SE,
 		KEYBOARD_RESIZING_W
 	}
-#if HAS_MUTTER336
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_GRAVITY_", type_id = "meta_gravity_get_type ()")]
 	public enum Gravity {
 		NONE,
@@ -1311,7 +1283,6 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/util.h")]
 		public unowned string to_string ();
 	}
-#endif
 	[CCode (cheader_filename = "meta/meta-inhibit-shortcuts-dialog.h", cprefix = "META_INHIBIT_SHORTCUTS_DIALOG_RESPONSE_", type_id = "meta_inhibit_shortcuts_dialog_response_get_type ()")]
 	public enum InhibitShortcutsDialogResponse {
 		ALLOW,
@@ -1511,9 +1482,7 @@ namespace Meta {
 		AUTO_MAXIMIZE,
 		CENTER_NEW_WINDOWS,
 		LOCATE_POINTER,
-#if HAS_MUTTER336
 		CHECK_ALIVE_TIMEOUT,
-#endif
 		DRAG_THRESHOLD;
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public unowned string to_string ();
