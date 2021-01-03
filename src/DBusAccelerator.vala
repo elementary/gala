@@ -46,19 +46,11 @@ namespace Gala {
             wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
         }
 
-#if HAS_MUTTER334
         void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp) {
-#else
-        void on_accelerator_activated (uint action, uint device_id, uint timestamp) {
-#endif
             foreach (string accelerator in grabbed_accelerators.get_keys ()) {
                 if (grabbed_accelerators[accelerator] == action) {
                     var parameters = new GLib.HashTable<string, Variant> (null, null);
-#if HAS_MUTTER334
                     parameters.set ("device-id", new Variant.uint32 (device.id));
-#else
-                    parameters.set ("device-id", new Variant.uint32 (device_id));
-#endif
                     parameters.set ("timestamp", new Variant.uint32 (timestamp));
 
                     accelerator_activated (action, parameters);
@@ -103,7 +95,6 @@ namespace Gala {
             return ret;
         }
 
-#if HAS_MUTTER334
         public bool ungrab_accelerators (uint[] actions) throws DBusError, IOError {
             foreach (uint action in actions) {
                 ungrab_accelerator (action);
@@ -111,7 +102,6 @@ namespace Gala {
 
             return true;
         }
-#endif
 
         [DBus (name = "ShowOSD")]
         public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
@@ -125,15 +115,10 @@ namespace Gala {
             if (parameters.contains ("label"))
                 label = parameters["label"].get_string ();
             int32 level = 0;
-#if HAS_MUTTER334
             if (parameters.contains ("level")) {
                 var double_level = parameters["level"].get_double ();
                 level = (int)(double_level * 100);
             }
-#else
-            if (parameters.contains ("level"))
-                level = parameters["level"].get_int32 ();
-#endif
 
             //if (monitor_index > -1)
             //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);

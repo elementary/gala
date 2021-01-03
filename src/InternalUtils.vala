@@ -131,23 +131,14 @@ namespace Gala {
                     break;
                 case InputArea.NONE:
                 default:
-#if HAS_MUTTER334
                     unowned Meta.X11Display x11display = display.get_x11_display ();
                     x11display.clear_stage_input_region ();
-#else
-                    display.empty_stage_input_region ();
-#endif
                     return;
             }
 
-#if HAS_MUTTER334
             unowned Meta.X11Display x11display = display.get_x11_display ();
             var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
             x11display.set_stage_input_region (xregion);
-#else
-            var xregion = X.Fixes.create_region (display.get_x11_display ().get_xdisplay (), rects);
-            Util.set_stage_input_region (display, xregion);
-#endif
         }
 
         /**
