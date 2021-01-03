@@ -27,27 +27,16 @@ namespace Gala {
         private Cogl.Pipeline pipeline;
 #endif
 
-#if HAS_MUTTER330
         public FramedBackground (Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
         }
-#else
-        public FramedBackground (Screen screen) {
-            Object (screen: screen, monitor_index: screen.get_primary_monitor (), control_position: false);
-        }
-#endif
 
         construct {
 #if HAS_MUTTER336
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
 #endif
-#if HAS_MUTTER330
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
-#else
-            var primary = screen.get_primary_monitor ();
-            var monitor_geom = screen.get_monitor_geometry (primary);
-#endif
 
             var effect = new ShadowEffect (40, 5) {
                 css_class = "workspace"
@@ -180,19 +169,10 @@ namespace Gala {
         construct {
             opened = false;
 
-#if HAS_MUTTER330
             unowned Display display = workspace.get_display ();
             var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-#else
-            unowned Screen screen = workspace.get_screen ();
-            var monitor_geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-#endif
 
-#if HAS_MUTTER330
             background = new FramedBackground (display);
-#else
-            background = new FramedBackground (screen);
-#endif
             background.reactive = true;
             background.button_press_event.connect (() => {
                 selected (true);
@@ -202,11 +182,7 @@ namespace Gala {
             window_container = new WindowCloneContainer (gesture_animation_director);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-#if HAS_MUTTER330
             display.restacked.connect (window_container.restack_windows);
-#else
-            screen.restacked.connect (window_container.restack_windows);
-#endif
 
             icon_group = new IconGroup (workspace);
             icon_group.selected.connect (() => selected (true));
@@ -232,13 +208,8 @@ namespace Gala {
                 }
             });
 
-#if HAS_MUTTER330
             display.window_entered_monitor.connect (window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
-#else
-            screen.window_entered_monitor.connect (window_entered_monitor);
-            screen.window_left_monitor.connect (window_left_monitor);
-#endif
             workspace.window_added.connect (add_window);
             workspace.window_removed.connect (remove_window);
 
@@ -248,21 +219,12 @@ namespace Gala {
             // add existing windows
             var windows = workspace.list_windows ();
             foreach (var window in windows) {
-#if HAS_MUTTER330
                 if (window.window_type == WindowType.NORMAL
                     && !window.on_all_workspaces
                     && window.get_monitor () == display.get_primary_monitor ()) {
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
-#else
-                if (window.window_type == WindowType.NORMAL
-                    && !window.on_all_workspaces
-                    && window.get_monitor () == screen.get_primary_monitor ()) {
-                    window_container.add_window (window);
-                    icon_group.add_window (window, true);
-                }
-#endif
             }
 
             var listener = WindowListener.get_default ();
@@ -270,21 +232,12 @@ namespace Gala {
         }
 
         ~WorkspaceClone () {
-#if HAS_MUTTER330
             unowned Meta.Display display = workspace.get_display ();
 
             display.restacked.disconnect (window_container.restack_windows);
 
             display.window_entered_monitor.disconnect (window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
-#else
-            unowned Screen screen = workspace.get_screen ();
-
-            screen.restacked.disconnect (window_container.restack_windows);
-
-            screen.window_entered_monitor.disconnect (window_entered_monitor);
-            screen.window_left_monitor.disconnect (window_left_monitor);
-#endif
             workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
 
@@ -299,19 +252,11 @@ namespace Gala {
          * belongs to this workspace and this monitor.
          */
         void add_window (Window window) {
-#if HAS_MUTTER330
             if (window.window_type != WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
                 || window.get_monitor () != window.get_display ().get_primary_monitor ())
                 return;
-#else
-            if (window.window_type != WindowType.NORMAL
-                || window.get_workspace () != workspace
-                || window.on_all_workspaces
-                || window.get_monitor () != window.get_screen ().get_primary_monitor ())
-                return;
-#endif
 
             foreach (var child in window_container.get_children ())
                 if (((WindowClone) child).window == window)
@@ -329,7 +274,6 @@ namespace Gala {
             icon_group.remove_window (window, opened);
         }
 
-#if HAS_MUTTER330
         void window_entered_monitor (Display display, int monitor, Window window) {
             add_window (window);
         }
@@ -338,16 +282,6 @@ namespace Gala {
             if (monitor == display.get_primary_monitor ())
                 remove_window (window);
         }
-#else
-        void window_entered_monitor (Screen screen, int monitor, Window window) {
-            add_window (window);
-        }
-
-        void window_left_monitor (Screen screen, int monitor, Window window) {
-            if (monitor == screen.get_primary_monitor ())
-                remove_window (window);
-        }
-#endif
 
         void update_size (Meta.Rectangle monitor_geometry) {
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
@@ -369,14 +303,9 @@ namespace Gala {
          */
         float current_x_overlap () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-#if HAS_MUTTER330
             var display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
-#else
-            var screen = workspace.get_screen ();
-            var active_index = screen.get_active_workspace ().index ();
-#endif
             if (workspace.index () == active_index) {
                 return 0;
             } else {
@@ -412,16 +341,9 @@ namespace Gala {
             opened = true;
 
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-#if HAS_MUTTER330
             var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
-#else
-            var screen = workspace.get_screen ();
-            var display = screen.get_display ();
-
-            var monitor = screen.get_monitor_geometry (screen.get_primary_monitor ());
-#endif
             var initial_x = gesture_animation_director.canceling ? x : x + current_x_overlap ();
             var target_x = multitasking_view_x ();
 
@@ -483,11 +405,7 @@ namespace Gala {
 
             icon_group.redraw ();
 
-#if HAS_MUTTER330
             window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null);
-#else
-            window_container.open (screen.get_active_workspace () == workspace ? display.get_focus_window () : null);
-#endif
         }
 
         /**

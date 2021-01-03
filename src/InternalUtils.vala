@@ -91,7 +91,6 @@ namespace Gala {
         /**
          * set the area where clutter can receive events
          **/
-#if HAS_MUTTER330
         public static void set_input_area (Display display, InputArea area) {
             if (Meta.Util.is_wayland_compositor ()) {
                 return;
@@ -150,53 +149,6 @@ namespace Gala {
             Util.set_stage_input_region (display, xregion);
 #endif
         }
-#else
-        public static void set_input_area (Screen screen, InputArea area) {
-            var display = screen.get_display ();
-
-            X.Xrectangle[] rects = {};
-            int width, height;
-            screen.get_size (out width, out height);
-            var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-
-            switch (area) {
-                case InputArea.FULLSCREEN:
-                    X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
-                    rects = {rect};
-                    break;
-                case InputArea.DEFAULT:
-                    var settings = new GLib.Settings (Config.SCHEMA + ".behavior");
-
-                    // if ActionType is NONE make it 0 sized
-                    ushort tl_size = (settings.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
-                    ushort tr_size = (settings.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
-                    ushort bl_size = (settings.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
-                    ushort br_size = (settings.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
-
-                    X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
-                    X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
-                    X.Xrectangle bottomleft = {(short)geometry.x, (short)(geometry.y + geometry.height - 1), bl_size, bl_size};
-                    X.Xrectangle bottomright = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), br_size, br_size};
-
-                    rects = {topleft, topright, bottomleft, bottomright};
-
-                    // add plugin's requested areas
-                    if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
-                        foreach (var rect in PluginManager.get_default ().regions) {
-                            rects += rect;
-                        }
-                    }
-                    break;
-                case InputArea.NONE:
-                default:
-                    screen.empty_stage_input_region ();
-                    return;
-            }
-
-            var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
-            screen.set_stage_input_region (xregion);
-        }
-#endif
 
         /**
          * Inserts a workspace at the given index. To ensure the workspace is not immediately
@@ -211,11 +163,7 @@ namespace Gala {
 
             new_window.change_workspace_by_index (index, false);
 
-#if HAS_MUTTER330
             unowned List<WindowActor> actors = new_window.get_display ().get_window_actors ();
-#else
-            unowned List<WindowActor> actors = new_window.get_screen ().get_window_actors ();
-#endif
             foreach (unowned Meta.WindowActor actor in actors) {
                 if (actor.is_destroyed ())
                     continue;
