@@ -79,11 +79,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
                 int point_x = x - (int)active.x;
                 int point_y = y - (int)active.y;
 
-#if HAS_MUTTER336
                 var rect = Graphene.Rect.alloc ();
-#else
-                var rect = Clutter.Rect.alloc ();
-#endif
                 rect.init (point_x, point_y, width, height);
 
                 var popup_window = new PopupWindow (wm, active);

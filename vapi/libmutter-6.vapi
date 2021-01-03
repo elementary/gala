@@ -1,1 +1,1 @@
-libmutter-5.vapi
+libmutter.vapi
