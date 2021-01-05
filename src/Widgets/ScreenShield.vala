@@ -189,11 +189,7 @@ namespace Gala {
 
         public void expand_to_screen_size () {
             int screen_width, screen_height;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out screen_width, out screen_height);
-#else
-            wm.get_screen ().get_size (out screen_width, out screen_height);
-#endif
             width = screen_width;
             height = screen_height;
         }
@@ -331,12 +327,7 @@ namespace Gala {
                 activation_time = GLib.get_monotonic_time ();
             }
 
-#if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
-#else
-            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (false);
-#endif
-
             visible = true;
             grab_key_focus ();
             modal_proxy = wm.push_modal ();
@@ -397,12 +388,7 @@ namespace Gala {
                 modal_proxy = null;
             }
 
-#if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
-#else
-            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (true);
-#endif
-
             visible = false;
 
             wake_up_screen ();

@@ -20,7 +20,6 @@ namespace Gala {
         public signal void changed ();
         public signal void show_background_menu (int x, int y);
 
-#if HAS_MUTTER330
         public Meta.Display display { get; construct; }
 
         public BackgroundContainer (Meta.Display display) {
@@ -43,30 +42,6 @@ namespace Gala {
         ~BackgroundContainer () {
             Meta.MonitorManager.@get ().monitors_changed.disconnect (update);
         }
-#else
-        public Meta.Screen screen { get; construct; }
-
-        public BackgroundContainer (Meta.Screen screen) {
-            Object (screen: screen);
-        }
-
-        construct {
-            screen.monitors_changed.connect (update);
-
-            reactive = true;
-            button_press_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_SECONDARY) {
-                    show_background_menu ((int)event.x, (int)event.y);
-                }
-            });
-
-            update ();
-        }
-
-        ~BackgroundContainer () {
-            screen.monitors_changed.disconnect (update);
-        }
-#endif
 
         void update () {
             var reference_child = (get_child_at_index (0) as BackgroundManager);
@@ -75,13 +50,8 @@ namespace Gala {
 
             destroy_all_children ();
 
-#if HAS_MUTTER330
             for (var i = 0; i < display.get_n_monitors (); i++) {
                 var background = new BackgroundManager (display, i);
-#else
-            for (var i = 0; i < screen.get_n_monitors (); i++) {
-                var background = new BackgroundManager (screen, i);
-#endif
 
                 add_child (background);
 

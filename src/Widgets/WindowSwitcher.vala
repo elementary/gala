@@ -100,11 +100,7 @@ namespace Gala {
             add_child (window_clones);
             add_child (dock);
 
-#if HAS_MUTTER330
             Meta.MonitorManager.@get ().monitors_changed.connect (update_actors);
-#else
-            wm.get_screen ().monitors_changed.connect (update_actors);
-#endif
 
             visible = false;
         }
@@ -113,12 +109,7 @@ namespace Gala {
             if (monitor != null)
                 monitor.cancel ();
 
-
-#if HAS_MUTTER330
             Meta.MonitorManager.@get ().monitors_changed.disconnect (update_actors);
-#else
-            wm.get_screen ().monitors_changed.disconnect (update_actors);
-#endif
         }
 
         void load_dock_theme () {
@@ -138,13 +129,8 @@ namespace Gala {
         void update_dock () {
             ui_scale_factor = InternalUtils.get_ui_scaling_factor ();
 
-#if HAS_MUTTER330
             unowned Meta.Display display = wm.get_display ();
             var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-#else
-            var screen = wm.get_screen ();
-            var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-#endif
             var layout = (BoxLayout) dock.layout_manager;
 
             var position = dock_settings.Position;
@@ -196,11 +182,7 @@ namespace Gala {
 
         void update_background () {
             int width = 0, height = 0;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out width, out height);
-#else
-            wm.get_screen ().get_size (out width, out height);
-#endif
 
             background.set_size (width, height);
         }
@@ -340,11 +322,7 @@ namespace Gala {
 
                 // wait for the dimming to finish
                 Timeout.add (250, () => {
-#if HAS_MUTTER330
                     close (wm.get_display ().get_current_time ());
-#else
-                    close (wm.get_screen ().get_display ().get_current_time ());
-#endif
                     return false;
                 });
             } else
@@ -359,11 +337,7 @@ namespace Gala {
 
         void icon_removed (Actor actor) {
             if (dock.get_n_children () == 1) {
-#if HAS_MUTTER330
                 close (wm.get_display ().get_current_time ());
-#else
-                close (wm.get_screen ().get_display ().get_current_time ());
-#endif
                 return;
             }
 
@@ -396,21 +370,12 @@ namespace Gala {
         }
 
         public override void key_focus_out () {
-#if HAS_MUTTER330
             close (wm.get_display ().get_current_time ());
-#else
-            close (wm.get_screen ().get_display ().get_current_time ());
-#endif
         }
 
         [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
         public void handle_switch_windows (Display display, Window? window, Clutter.KeyEvent event,
             KeyBinding binding) {
-#else
-        public void handle_switch_windows (Display display, Screen screen, Window? window,
-            Clutter.KeyEvent event, KeyBinding binding) {
-#endif
             var now = get_monotonic_time () / 1000;
             if (now - last_switch < MIN_DELTA)
                 return;
@@ -423,11 +388,7 @@ namespace Gala {
 
             last_switch = now;
 
-#if HAS_MUTTER330
             var workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var workspace = screen.get_active_workspace ();
-#endif
             var binding_name = binding.get_name ();
             var backward = binding_name.has_suffix ("-backward");
 
@@ -472,23 +433,13 @@ namespace Gala {
             dim_windows ();
             grab_key_focus ();
 
-#if HAS_MUTTER330
             if ((get_current_modifiers () & modifier_mask) == 0)
                 close (wm.get_display ().get_current_time ());
-#else
-            if ((get_current_modifiers () & modifier_mask) == 0)
-                close (wm.get_screen ().get_display ().get_current_time ());
-#endif
         }
 
         void close_cleanup () {
-#if HAS_MUTTER330
             var display = wm.get_display ();
             var workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var screen = wm.get_screen ();
-            var workspace = screen.get_active_workspace ();
-#endif
 
             dock.destroy_all_children ();
 
@@ -499,11 +450,7 @@ namespace Gala {
             window_clones.destroy_all_children ();
 
             // need to go through all the windows because of hidden dialogs
-#if HAS_MUTTER330
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-#else
-            unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
-#endif
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 if (actor.is_destroyed ())
                     continue;
@@ -667,13 +614,7 @@ namespace Gala {
          *         not enough windows
          */
         bool collect_windows (Workspace workspace) {
-#if HAS_MUTTER330
             var display = workspace.get_display ();
-#else
-            var screen = workspace.get_screen ();
-            var display = screen.get_display ();
-#endif
-
             var windows = display.get_tab_list (TabList.NORMAL, workspace);
             var current = display.get_tab_current (TabList.NORMAL, workspace);
 
@@ -685,11 +626,7 @@ namespace Gala {
                 if (window.minimized)
                     window.unminimize ();
                 else
-#if HAS_MUTTER330
                     Utils.bell (display);
-#else
-                    Utils.bell (screen);
-#endif
 
                 window.activate (display.get_current_time ());
 
@@ -708,11 +645,7 @@ namespace Gala {
                 current_window = (WindowIcon) dock.get_child_at_index (0);
 
             // hide the others
-#if HAS_MUTTER330
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-#else
-            unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
-#endif
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 if (actor.is_destroyed ())
                     continue;

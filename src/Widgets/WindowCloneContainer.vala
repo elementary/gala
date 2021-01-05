@@ -137,7 +137,6 @@ namespace Gala {
          * Sort the windows z-order by their actual stacking to make intersections
          * during animations correct.
          */
-#if HAS_MUTTER330
         public void restack_windows (Meta.Display display) {
             var children = get_children ();
 
@@ -162,33 +161,6 @@ namespace Gala {
                 }
             }
         }
-#else
-        public void restack_windows (Screen screen) {
-            unowned Meta.Display display = screen.get_display ();
-            var children = get_children ();
-
-            GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
-            foreach (unowned Actor child in children) {
-                unowned WindowClone tw = (WindowClone) child;
-                windows.prepend (tw.window);
-            }
-
-            var windows_ordered = display.sort_windows_by_stacking (windows);
-            windows_ordered.reverse ();
-
-            foreach (unowned Meta.Window window in windows_ordered) {
-                var i = 0;
-                foreach (unowned Actor child in children) {
-                    if (((WindowClone) child).window == window) {
-                        set_child_at_index (child, i);
-                        children.remove (child);
-                        i++;
-                        break;
-                    }
-                }
-            }
-        }
-#endif
 
         /**
          * Recalculate the tiling positions of the windows and animate them to
