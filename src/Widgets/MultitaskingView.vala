@@ -59,7 +59,7 @@ namespace Gala {
             opened = false;
             display = wm.get_display ();
 
-            gesture_animation_director = new GestureAnimationDirector ();
+            gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
