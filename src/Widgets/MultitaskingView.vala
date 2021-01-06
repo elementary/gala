@@ -28,7 +28,7 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
-        public GestureAnimationDirector gesture_animation_director { get; construct; }
+        private GestureAnimationDirector gesture_animation_director;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -47,8 +47,8 @@ namespace Gala {
         Actor workspaces;
         Actor dock_clones;
 
-        public MultitaskingView (WindowManager wm, GestureAnimationDirector gesture_animation_director) {
-            Object (wm: wm, gesture_animation_director: gesture_animation_director);
+        public MultitaskingView (WindowManager wm) {
+            Object (wm: wm);
         }
 
         construct {
@@ -58,7 +58,8 @@ namespace Gala {
 
             opened = false;
             display = wm.get_display ();
-            gesture_animation_director = new GestureAnimationDirector ();
+
+            gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -576,7 +577,7 @@ namespace Gala {
             };
 
             if (!gesture_animation_director.running) {
-                on_animation_end (100, false);
+                on_animation_end (100, false, 0);
             } else {
                 gesture_animation_director.connect_handlers (null, null, (owned) on_animation_end);
             }
@@ -643,7 +644,7 @@ namespace Gala {
 
                 if (!gesture_animation_director.running) {
                     on_animation_begin (0);
-                    on_animation_end (100, false);
+                    on_animation_end (100, false, 0);
                 } else {
                     gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
                 }
@@ -675,7 +676,7 @@ namespace Gala {
                 };
 
                 if (!gesture_animation_director.running) {
-                    on_animation_end (100, false);
+                    on_animation_end (100, false, 0);
                 } else {
                     gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
