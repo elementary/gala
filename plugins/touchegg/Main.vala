@@ -78,7 +78,7 @@ public class Gala.Plugins.Touchegg.Plugin : Gala.Plugin {
         var hints = new GLib.HashTable<string, Variant> (str_hash, str_equal);
         hints.insert ("manual_animation", new Variant.boolean (true));
         hints.insert ("event", new Variant.string (event));
-        hints.insert ("percentage", new Variant.int32 (gesture.percentage));
+        hints.insert ("percentage", new Variant.double (gesture.percentage));
         hints.insert ("elapsed_time", new Variant.uint64 (gesture.elapsed_time));
         return hints;
     }

@@ -35,7 +35,7 @@ namespace Gala.Plugins.Touchegg {
         public GestureEventType event_type;
         public GestureType type;
         public GestureDirection direction;
-        public int percentage;
+        public double percentage;
         public int fingers;
         public uint64 elapsed_time;
         public DeviceType performed_on_device_type;
