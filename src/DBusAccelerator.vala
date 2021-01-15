@@ -18,7 +18,10 @@
 namespace Gala {
     public struct Accelerator {
         public string name;
-        public Meta.KeyBindingFlags flags;
+        public uint flags;
+#if HAS_MUTTER332
+        public Meta.KeyBindingFlags grab_flags;
+#endif
     }
 
     [DBus (name="org.gnome.Shell")]
@@ -69,12 +72,16 @@ namespace Gala {
             }
         }
 
+#if HAS_MUTTER332
+        public uint grab_accelerator (string accelerator, uint flags, Meta.KeyBindingFlags grab_flags) throws DBusError, IOError {
+#else
         public uint grab_accelerator (string accelerator, uint flags) throws DBusError, IOError {
+#endif
             uint? action = grabbed_accelerators[accelerator];
 
             if (action == null) {
 #if HAS_MUTTER332
-                action = wm.get_display ().grab_accelerator (accelerator, (Meta.KeyBindingFlags)flags);
+                action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
 #elif HAS_MUTTER330
                 action = wm.get_display ().grab_accelerator (accelerator);
 #else
@@ -92,7 +99,11 @@ namespace Gala {
             uint[] actions = {};
 
             foreach (unowned Accelerator? accelerator in accelerators) {
+#if HAS_MUTTER332
+                actions += grab_accelerator (accelerator.name, accelerator.flags, accelerator.grab_flags);
+#else
                 actions += grab_accelerator (accelerator.name, accelerator.flags);
+#endif
             }
 
             return actions;
@@ -116,6 +127,16 @@ namespace Gala {
             return ret;
         }
 
+#if HAS_MUTTER334
+        public bool ungrab_accelerators (uint[] actions) throws DBusError, IOError {
+            foreach (uint action in actions) {
+                ungrab_accelerator (action);
+            }
+
+            return true;
+        }
+#endif
+
         [DBus (name = "ShowOSD")]
         public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
             int32 monitor_index = -1;
@@ -128,8 +149,15 @@ namespace Gala {
             if (parameters.contains ("label"))
                 label = parameters["label"].get_string ();
             int32 level = 0;
+#if HAS_MUTTER334
+            if (parameters.contains ("level")) {
+                var double_level = parameters["level"].get_double ();
+                level = (int)(double_level * 100);
+            }
+#else
             if (parameters.contains ("level"))
                 level = parameters["level"].get_int32 ();
+#endif
 
             //if (monitor_index > -1)
             //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);

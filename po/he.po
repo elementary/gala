@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-01-15 15:08+0000\n"
-"PO-Revision-Date: 2020-01-19 13:07+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
-"\n"
+"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"PO-Revision-Date: 2020-08-25 13:13+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
+">\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,105 +15,157 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:212
+#: src/ScreenshotManager.vala:252
 msgid "Screenshots"
-msgstr ""
+msgstr "צילומי מסך"
 
-#: src/WindowManager.vala:2152
+#: src/WindowManager.vala:2202
 msgid "Does the display look OK?"
 msgstr "התצוגה נראית בסדר?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2205
 msgid "Keep This Configuration"
 msgstr "להשאיר את התצורה הזאת"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2206
 msgid "Restore Previous Configuration"
 msgstr "שחזור התצורה הקודמת"
 
-#: daemon/MenuDaemon.vala:107
-msgid "Minimize"
-msgstr "מזעור"
+#: daemon/MenuDaemon.vala:111
+msgid "Hide"
+msgstr ""
 
-#: daemon/MenuDaemon.vala:120
+#: daemon/MenuDaemon.vala:124
 msgid "Move"
 msgstr "הזזה"
 
-#: daemon/MenuDaemon.vala:128
+#: daemon/MenuDaemon.vala:132
 msgid "Resize"
 msgstr "שינוי גודל"
 
-#: daemon/MenuDaemon.vala:136
+#: daemon/MenuDaemon.vala:140
 msgid "Always on Top"
 msgstr "תמיד עליון"
 
-#: daemon/MenuDaemon.vala:144
+#: daemon/MenuDaemon.vala:148
 msgid "Always on Visible Workspace"
 msgstr "תמיד בסביבת העבודה הגלויה"
 
-#: daemon/MenuDaemon.vala:152
+#: daemon/MenuDaemon.vala:156
 msgid "Move to Workspace Left"
 msgstr "העברה לסביבת העבודה משמאל"
 
-#: daemon/MenuDaemon.vala:160
+#: daemon/MenuDaemon.vala:164
 msgid "Move to Workspace Right"
 msgstr "העברה לסביבת העבודה מימין"
 
-#: daemon/MenuDaemon.vala:168
+#: daemon/MenuDaemon.vala:172
 msgid "Close"
 msgstr "סגירה"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Unmaximize"
 msgstr "שחזור גודל"
 
-#: daemon/MenuDaemon.vala:201
+#: daemon/MenuDaemon.vala:205
 msgid "Maximize"
 msgstr "הגדלה"
 
+#: daemon/MenuDaemon.vala:268
+msgid "Change Wallpaper…"
+msgstr "החלפת טפט…"
+
+#: daemon/MenuDaemon.vala:285
+msgid "Display Settings…"
+msgstr "הגדרות תצוגה…"
+
+#: daemon/MenuDaemon.vala:302
+msgid "System Settings…"
+msgstr "הגדרות מערכת…"
+
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "ניהול ריבוי משימות וחלונות"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "מנהל הרכבת חלונות עבור Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"מנהל הרכבת חלונות שמבוסס על libmutter ותוכנן על ידי elementary לעבוד עם "
+"Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
 msgid "Improvements:"
-msgstr ""
+msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "ניתן לסגור את מחליף ה־Alt + Tab בלחיצה על Esc מבלי לשחרר את ה־Alt"
 
 #: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr "הגדלת רמת התקריב המרבית והצגת משוב כשאי אפשר להתקרב"
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr "הצגת תפריט הקשר בעת לחיצה משנית על הרקע"
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
 msgid "Updated translations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:26
-msgid "Improve window shadows for legacy apps"
-msgstr ""
-
-#: data/gala.appdata.xml.in:27
-msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "תרגומים עודכנו"
 
 #: data/gala.appdata.xml.in:28
-msgid "Fix notification position after changing DPI"
-msgstr ""
+msgid ""
+"Fix “Always on Visible Workspace” windows disappearing when changing "
+"workspaces"
+msgstr "תיקון חלונות „תמיד במרחב העבודה הגלוי” שנעלמים בעת החלפת מרחבי עבודה"
 
 #: data/gala.appdata.xml.in:29
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr "תיקון חלונות שנעלמים בתצוגות שאינן עיקריות בעת החלפת מרחבי עבודה"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:38
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr "תיקון קריסה בעת החלפת מרחבי עבודה עם פתיחת חלון חולף"
+
+#: data/gala.appdata.xml.in:47
+msgid "Don't show Gala Background Services in the dock"
+msgstr "לא להציג את שירותי הרקע של Gala במעגן"
+
+#: data/gala.appdata.xml.in:48
+msgid "Fixes for media key handling"
+msgstr "תיקונים בטיפול במקשי מדיה"
+
+#: data/gala.appdata.xml.in:49
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "הצגת קיצורי מקלדת בתפריטי כותרת"
+
+#: data/gala.appdata.xml.in:58
+msgid "Improve window shadows for legacy apps"
+msgstr "שיפור צלליות חלונות ליישומים מיושנים"
+
+#: data/gala.appdata.xml.in:59
+msgid "Fix potential crash when taking screenshots"
+msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
+
+#: data/gala.appdata.xml.in:60
+msgid "Fix notification position after changing DPI"
+msgstr "תיקון מיקום ההתראה לאחר החלפת DPI"
+
+#: data/gala.appdata.xml.in:61
+msgid "Fix animations for moving and maximizing tiled windows"
+msgstr "תיקון הנפשות להזזה ולהגדלה של חלונות מרוצפים"
+
+#: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
 msgstr "elementary בע״מ"
 
@@ -141,6 +193,9 @@ msgstr "קובץ שולחן עבודה כמנגנון גיבוי להודעות 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "מזעור"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "פעולה עבור הפינה השמאלית העליונה"

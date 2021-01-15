@@ -53,10 +53,11 @@ namespace Gala {
             double[] keyframes = { 0.3f, 0.8f };
             GLib.Value[] values = { 180U, 0U };
 
-            var transition = new Clutter.KeyframeTransition ("opacity");
-            transition.duration = 200;
-            transition.remove_on_complete = true;
-            transition.progress_mode = Clutter.AnimationMode.LINEAR;
+            var transition = new Clutter.KeyframeTransition ("opacity") {
+                duration = 200,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.LINEAR
+            };
             transition.set_key_frames (keyframes);
             transition.set_values (values);
             transition.set_to_value (0.0f);
@@ -205,6 +206,45 @@ namespace Gala {
             });
         }
 
+        public async GLib.HashTable<string, Variant> pick_color () throws DBusError, IOError {
+            var pixel_picker = new PixelPicker (wm);
+            pixel_picker.closed.connect (() => Idle.add (pick_color.callback));
+            wm.ui_group.add (pixel_picker);
+            pixel_picker.start_selection ();
+
+            yield;
+            pixel_picker.destroy ();
+
+            if (pixel_picker.cancelled) {
+                throw new GLib.IOError.CANCELLED ("Operation was cancelled");
+            }
+
+            int x = 0, y = 0;
+            pixel_picker.get_point (out x, out y);
+
+            var image = take_screenshot (x, y, 1, 1, false);
+
+            assert (image.get_format () == Cairo.Format.ARGB32);
+
+            unowned uchar[] data = image.get_data ();
+
+            double r, g, b;
+            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                r = data[2] / 255.0f;
+                g = data[1] / 255.0f;
+                b = data[0] / 255.0f;
+            } else {
+                r = data[1] / 255.0f;
+                g = data[2] / 255.0f;
+                b = data[3] / 255.0f;
+            }
+
+            var result = new GLib.HashTable<string, Variant> (str_hash, str_equal);
+            result.insert ("color", new GLib.Variant ("(ddd)", r, g, b));
+
+            return result;
+        }
+
         static string find_target_path () {
             // Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
             unowned string? base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
@@ -261,6 +301,39 @@ namespace Gala {
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
+#if HAS_MUTTER338
+            int image_width, image_height;
+            float scale;
+
+            wm.stage.get_capture_final_size ({x, y, width, height}, out image_width, out image_height, out scale);
+
+            image = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_width, image_height);
+
+            var paint_flags = Clutter.PaintFlag.NO_CURSORS;
+            if (include_cursor) {
+                paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
+            }
+
+            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    image.get_data (),
+                    image.get_stride (),
+                    Cogl.PixelFormat.BGRA_8888_PRE,
+                    paint_flags
+                );
+            } else {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    image.get_data (),
+                    image.get_stride (),
+                    Cogl.PixelFormat.ARGB_8888_PRE,
+                    paint_flags
+                );
+            }
+#else
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -276,6 +349,7 @@ namespace Gala {
             }
 
             image.mark_dirty ();
+#endif
             return image;
         }
 
@@ -324,7 +398,7 @@ namespace Gala {
             int height = (int)texture.get_height ();
 
             uint8[] data = new uint8[width * height * 4];
-            CoglFixes.texture_get_data (texture, Cogl.PixelFormat.RGBA_8888, 0, data);
+            texture.get_data (Cogl.PixelFormat.RGBA_8888, 0, data);
 
             var cursor_image = new Cairo.ImageSurface.for_data (data, Cairo.Format.ARGB32, width, height, width * 4);
             var target = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_rect.width, image_rect.height);

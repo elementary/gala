@@ -60,6 +60,20 @@ namespace Gala {
                 },
                 () => {},
                 () => critical ("Could not acquire name") );
+
+            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
+            if (gala_wm != null) {
+                var screensaver_manager = gala_wm.screensaver;
+
+                Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                    (connection) => {
+                        try {
+                            connection.register_object ("/org/gnome/ScreenSaver", screensaver_manager);
+                        } catch (Error e) { warning (e.message); }
+                    },
+                    () => {},
+                    () => critical ("Could not acquire ScreenSaver bus") );
+            }
         }
 
         private DBus () {
@@ -78,8 +92,13 @@ namespace Gala {
 
         class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
+#if HAS_MUTTER336
+            public override void post_paint (Clutter.PaintContext context) {
+                base.post_paint (context);
+#else
             public override void post_paint () {
                 base.post_paint ();
+#endif
                 done_painting ();
             }
         }
@@ -145,7 +164,7 @@ namespace Gala {
 
                 var texture = (Cogl.Texture)effect.get_texture ();
                 var pixels = new uint8[texture.get_width () * texture.get_height () * 4];
-                CoglFixes.texture_get_data (texture, Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
+                texture.get_data (Cogl.PixelFormat.BGRA_8888_PRE, 0, pixels);
 
                 int size = width * height;
 

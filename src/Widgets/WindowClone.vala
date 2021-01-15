@@ -163,9 +163,15 @@ namespace Gala {
 
             scale_factor = InternalUtils.get_ui_scaling_factor ();
 
+            var window_frame_rect = window.get_frame_rect ();
             window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
             window_icon.opacity = 0;
             window_icon.set_pivot_point (0.5f, 0.5f);
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+            window_icon.set_position (
+                (window_frame_rect.width - WINDOW_ICON_SIZE) / 2,
+                window_frame_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
 
             active_shape = new Clutter.Actor ();
             active_shape.background_color = { 255, 255, 255, 200 };
@@ -306,6 +312,7 @@ namespace Gala {
             if (animate)
                 toggle_shadow (false);
 
+            window_icon.set_position ((outer_rect.width - WINDOW_ICON_SIZE) / 2, outer_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
             window_icon.opacity = 0;
             close_button.opacity = 0;
         }
@@ -324,6 +331,8 @@ namespace Gala {
             set_position (rect.x, rect.y);
 
             window_icon.opacity = 255;
+            window_icon.set_position ((rect.width - WINDOW_ICON_SIZE) / 2, rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+
             restore_easing_state ();
 
             toggle_shadow (true);
@@ -343,12 +352,21 @@ namespace Gala {
          * according to their given allocations. The first two are placed in a way
          * that compensates for invisible borders of the texture.
          */
+#if HAS_MUTTER338
+        public override void allocate (ActorBox box) {
+            base.allocate (box);
+#else
         public override void allocate (ActorBox box, AllocationFlags flags) {
             base.allocate (box, flags);
+#endif
 
             foreach (var child in get_children ()) {
                 if (child != clone && child != active_shape)
+#if HAS_MUTTER338
+                    child.allocate_preferred_size (child.fixed_x, child.fixed_y);
+#else
                     child.allocate_preferred_size (flags);
+#endif
             }
 
             ActorBox shape_alloc = {
@@ -357,7 +375,11 @@ namespace Gala {
                 box.get_width () + ACTIVE_SHAPE_SIZE,
                 box.get_height () + ACTIVE_SHAPE_SIZE
             };
+#if HAS_MUTTER338
+            active_shape.allocate (shape_alloc);
+#else
             active_shape.allocate (shape_alloc, flags);
+#endif
 
             if (clone == null || dragging)
                 return;
@@ -372,7 +394,11 @@ namespace Gala {
                               (input_rect.y - outer_rect.y) * scale_factor);
             alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
 
+#if HAS_MUTTER338
+            clone.allocate (alloc);
+#else
             clone.allocate (alloc, flags);
+#endif
         }
 
         public override bool button_press_event (Clutter.ButtonEvent event) {
@@ -413,15 +439,6 @@ namespace Gala {
                     break;
             }
             close_button.restore_easing_state ();
-
-            if (!dragging) {
-                window_icon.save_easing_state ();
-                window_icon.set_easing_duration (0);
-
-                window_icon.set_position ((dest_width - WINDOW_ICON_SIZE) / 2, dest_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
-
-                window_icon.restore_easing_state ();
-            }
         }
 
         public void start_drag (int x, int y) {
@@ -434,10 +451,11 @@ namespace Gala {
             if (get_transition ("shadow-opacity") != null)
                 remove_transition ("shadow-opacity");
 
-            var shadow_transition = new PropertyTransition ("shadow-opacity");
-            shadow_transition.duration = MultitaskingView.ANIMATION_DURATION;
-            shadow_transition.remove_on_complete = true;
-            shadow_transition.progress_mode = MultitaskingView.ANIMATION_MODE;
+            var shadow_transition = new PropertyTransition ("shadow-opacity") {
+                duration = MultitaskingView.ANIMATION_DURATION,
+                remove_on_complete = true,
+                progress_mode = MultitaskingView.ANIMATION_MODE
+            };
 
             if (show)
                 shadow_transition.interval = new Clutter.Interval (typeof (uint8), shadow_opacity, 255);
@@ -719,9 +737,8 @@ namespace Gala {
             get_parent ().remove_child (this);
             prev_parent.insert_child_at_index (this, prev_index);
 
-            clone.set_pivot_point (0, 0);
-
             clone.save_easing_state ();
+            clone.set_pivot_point (0.5f, 0.5f);
             clone.set_easing_duration (250);
             clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
             clone.set_scale (1, 1);
