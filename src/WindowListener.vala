@@ -23,7 +23,6 @@ public class Gala.WindowListener : Object {
 
     static WindowListener? instance = null;
 
-#if HAS_MUTTER330
     public static void init (Meta.Display display) {
         if (instance != null)
             return;
@@ -44,28 +43,6 @@ public class Gala.WindowListener : Object {
                 instance.monitor_window (window);
         });
     }
-#else
-    public static void init (Meta.Screen screen) {
-        if (instance != null)
-            return;
-
-        instance = new WindowListener ();
-
-        foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
-            if (actor.is_destroyed ())
-                continue;
-
-            unowned Meta.Window window = actor.get_meta_window ();
-            if (window.window_type == Meta.WindowType.NORMAL)
-                instance.monitor_window (window);
-        }
-
-        screen.get_display ().window_created.connect ((window) => {
-            if (window.window_type == Meta.WindowType.NORMAL)
-                instance.monitor_window (window);
-        });
-    }
-#endif
 
     public static unowned WindowListener get_default () requires (instance != null) {
         return instance;
