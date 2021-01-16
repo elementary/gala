@@ -34,7 +34,7 @@ public class Gala.AppCache : GLib.Object {
         app_info_monitor = GLib.AppInfoMonitor.@get ();
         app_info_monitor.changed.connect (queue_cache_update);
 
-        rebuild_cache ();
+        rebuild_cache.begin ();
     }
 
     private void queue_cache_update () {
@@ -43,36 +43,48 @@ public class Gala.AppCache : GLib.Object {
         }
 
         queued_update_id = GLib.Timeout.add_seconds (DEFAULT_TIMEOUT_SECONDS, () => {
-            rebuild_cache ();
-            changed ();
+            rebuild_cache.begin ((obj, res) => {
+                rebuild_cache.end (res);
+                changed ();
 
-            queued_update_id = 0;
+                queued_update_id = 0;
+            });
 
             return GLib.Source.REMOVE;
         });
     }
 
-    private void rebuild_cache () {
-        startup_wm_class_to_id.clear ();
-        id_to_app.clear ();
+    private async void rebuild_cache () {
+        SourceFunc callback = rebuild_cache.callback;
 
-        var app_infos = GLib.AppInfo.get_all ();
+        new Thread<void> ("rebuild_cache", () => {
+            lock (startup_wm_class_to_id) {
+                startup_wm_class_to_id.clear ();
+                id_to_app.clear ();
 
-        foreach (unowned GLib.AppInfo app in app_infos) {
-            var id = app.get_id ();
-            var startup_wm_class = ((GLib.DesktopAppInfo)app).get_startup_wm_class ();
+                var app_infos = GLib.AppInfo.get_all ();
 
-            id_to_app[id] = (GLib.DesktopAppInfo)app;
+                foreach (unowned GLib.AppInfo app in app_infos) {
+                    var id = app.get_id ();
+                    var startup_wm_class = ((GLib.DesktopAppInfo)app).get_startup_wm_class ();
 
-            if (startup_wm_class == null) {
-                continue;
+                    id_to_app[id] = (GLib.DesktopAppInfo)app;
+
+                    if (startup_wm_class == null) {
+                        continue;
+                    }
+
+                    var old_id = startup_wm_class_to_id[startup_wm_class];
+                    if (old_id == null || id == startup_wm_class) {
+                        startup_wm_class_to_id[startup_wm_class] = id;
+                    }
+                }
             }
 
-            var old_id = startup_wm_class_to_id[startup_wm_class];
-            if (old_id == null || id == startup_wm_class) {
-                startup_wm_class_to_id[startup_wm_class] = id;
-            }
-        }
+            Idle.add ((owned)callback);
+        });
+
+        yield;
     }
 
     public GLib.DesktopAppInfo? lookup_id (string? id) {
