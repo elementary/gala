@@ -65,8 +65,8 @@ public class Gala.AppCache : GLib.Object {
                 var app_infos = GLib.AppInfo.get_all ();
 
                 foreach (unowned GLib.AppInfo app in app_infos) {
-                    var id = app.get_id ();
-                    var startup_wm_class = ((GLib.DesktopAppInfo)app).get_startup_wm_class ();
+                    unowned string id = app.get_id ();
+                    unowned string? startup_wm_class = ((GLib.DesktopAppInfo)app).get_startup_wm_class ();
 
                     id_to_app[id] = (GLib.DesktopAppInfo)app;
 
