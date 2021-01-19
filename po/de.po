@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2021-01-19 20:41+0000\n"
+"PO-Revision-Date: 2021-01-19 20:48+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
 "Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
 "\n"
@@ -113,6 +113,8 @@ msgstr "Verbesserungen:"
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
+"Sie könne den Alt + Tab-Umschalter schließen, indem Sie Esc drücken, ohne "
+"Alt loszulassen"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
@@ -120,7 +122,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "Mit Sekundärklick auf den Hintergrund wird ein Kontextmenü angezeigt"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
@@ -144,11 +146,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Gala-Hintergrunddienste nicht im Dock anzeigen"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Fehlerbehebung bei der Handhabung der Medientasten"
 
 #: data/gala.appdata.xml.in:49
 msgid "Show keyboard shortcuts in HeaderBar menus"
