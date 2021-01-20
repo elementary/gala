@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2021-01-20 02:14+0000\n"
+"PO-Revision-Date: 2021-01-20 22:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -89,28 +89,33 @@ msgid "System Settings…"
 msgstr "Systeminnstillinger …"
 
 #: data/gala.appdata.xml.in:7
+#, fuzzy
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Fleroppgavekjøring og vindusbehandling"
 
 #: data/gala.appdata.xml.in:8
+#, fuzzy
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "En vindu- og komposisjonsbehandler for Pantheon"
 
 #: data/gala.appdata.xml.in:10
+#, fuzzy
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"En vindu- og komposisjonsbehandler basert på libmutter og designet av "
+"elementary for bruk med Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
 #: data/gala.appdata.xml.in:56
 msgid "Improvements:"
-msgstr ""
+msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Lukk Alt + Tab-veksleren eller ved å trykke Esc uten å slippe Alt"
 
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
@@ -146,11 +151,12 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Fikser for mediatast-håndtering"
 
 #: data/gala.appdata.xml.in:49
+#, fuzzy
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "Vis tastatursnarveier i tittelfelt-menyer"
 
 #: data/gala.appdata.xml.in:58
 msgid "Improve window shadows for legacy apps"
