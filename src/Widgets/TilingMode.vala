@@ -100,7 +100,7 @@ public class Gala.TilingMode : Clutter.Actor, ActivatableComponent {
         modal_proxy = wm.push_modal ();
     }
 
-    public void close () {
+    public void close (HashTable<string,Variant>? hints = null) {
         if (current_window != null) {
             end_preview ();
             current_window = null;
