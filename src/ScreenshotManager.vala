@@ -53,10 +53,11 @@ namespace Gala {
             double[] keyframes = { 0.3f, 0.8f };
             GLib.Value[] values = { 180U, 0U };
 
-            var transition = new Clutter.KeyframeTransition ("opacity");
-            transition.duration = 200;
-            transition.remove_on_complete = true;
-            transition.progress_mode = Clutter.AnimationMode.LINEAR;
+            var transition = new Clutter.KeyframeTransition ("opacity") {
+                duration = 200,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.LINEAR
+            };
             transition.set_key_frames (keyframes);
             transition.set_values (values);
             transition.set_to_value (0.0f);
@@ -79,11 +80,7 @@ namespace Gala {
             debug ("Taking screenshot");
 
             int width, height;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out width, out height);
-#else
-            wm.get_screen ().get_size (out width, out height);
-#endif
 
             var image = take_screenshot (0, 0, width, height, include_cursor);
             unconceal_text ();
@@ -119,12 +116,7 @@ namespace Gala {
         public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking window screenshot");
 
-#if HAS_MUTTER330
             var window = wm.get_display ().get_focus_window ();
-#else
-            var window = wm.get_screen ().get_display ().get_focus_window ();
-#endif
-
             if (window == null) {
                 unconceal_text ();
                 throw new DBusError.FAILED ("Cannot find active window");
@@ -300,6 +292,39 @@ namespace Gala {
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
+#if HAS_MUTTER338
+            int image_width, image_height;
+            float scale;
+
+            wm.stage.get_capture_final_size ({x, y, width, height}, out image_width, out image_height, out scale);
+
+            image = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_width, image_height);
+
+            var paint_flags = Clutter.PaintFlag.NO_CURSORS;
+            if (include_cursor) {
+                paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
+            }
+
+            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    image.get_data (),
+                    image.get_stride (),
+                    Cogl.PixelFormat.BGRA_8888_PRE,
+                    paint_flags
+                );
+            } else {
+                wm.stage.paint_to_buffer (
+                    {x, y, width, height},
+                    scale,
+                    image.get_data (),
+                    image.get_stride (),
+                    Cogl.PixelFormat.ARGB_8888_PRE,
+                    paint_flags
+                );
+            }
+#else
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
 
@@ -315,6 +340,7 @@ namespace Gala {
             }
 
             image.mark_dirty ();
+#endif
             return image;
         }
 
@@ -340,12 +366,7 @@ namespace Gala {
         }
 
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
-#if HAS_MUTTER330
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
-#else
-            unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
-#endif
-
             int x, y;
             cursor_tracker.get_pointer (out x, out y, null);
 

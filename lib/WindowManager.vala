@@ -107,6 +107,11 @@ namespace Gala {
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
 
         /**
+         * View that allows to see and manage all your windows and desktops.
+         */
+        public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
+
+        /**
          * Whether animations should be displayed.
          */
         public abstract bool enable_animations { get; protected set; }
@@ -164,6 +169,7 @@ namespace Gala {
          *
          * @param direction The direction in which to switch
          */
-        public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
+        public abstract void switch_to_next_workspace (Meta.MotionDirection direction,
+            HashTable<string,Variant>? hints = null);
     }
 }

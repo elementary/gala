@@ -27,11 +27,7 @@ namespace Gala.Plugins.Zoom {
 
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
-#if HAS_MUTTER330
             var display = wm.get_display ();
-#else
-            var display = wm.get_screen ().get_display ();
-#endif
             var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
             display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
@@ -42,12 +38,7 @@ namespace Gala.Plugins.Zoom {
             if (wm == null)
                 return;
 
-#if HAS_MUTTER330
             var display = wm.get_display ();
-#else
-            var display = wm.get_screen ().get_display ();
-#endif
-
             display.remove_keybinding ("zoom-in");
             display.remove_keybinding ("zoom-out");
 
@@ -57,24 +48,14 @@ namespace Gala.Plugins.Zoom {
         }
 
         [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
         void zoom_in (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#else
-        void zoom_in (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#endif
             zoom (true);
         }
 
         [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#else
-        void zoom_out (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#endif
             zoom (false);
         }
 
@@ -100,21 +81,13 @@ namespace Gala.Plugins.Zoom {
 
                 mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
                     client_pointer.get_position (null, out mx, out my);
-#if HAS_MUTTER336
                     var new_pivot = new Graphene.Point ();
-#else
-                    var new_pivot = Clutter.Point.alloc ();
-#endif
 
                     new_pivot.init (mx / wins.width, my / wins.height);
-#if HAS_MUTTER336
                     if (wins.pivot_point.equal (new_pivot)) {
-#else
-                    if (wins.pivot_point.equals (new_pivot)) {
-#endif
-
                         return true;
-}
+                    }
+
                     wins.save_easing_state ();
                     wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
                     wins.set_easing_duration (MOUSE_POLL_TIME);
