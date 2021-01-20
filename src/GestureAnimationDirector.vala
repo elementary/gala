@@ -96,8 +96,15 @@ public class Gala.GestureAnimationDirector : Object {
         handlers.clear ();
     }
 
-    public static float animation_value (float initial_value, float target_value, int percentage) {
-        return (((target_value - initial_value) * percentage) / 100) + initial_value;
+    public static float animation_value (float initial_value, float target_value, int percentage, bool rounded = false) {
+        float value = (((target_value - initial_value) * percentage) / 100) + initial_value;
+
+        if (rounded) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            value = (float) Math.round (value * scale_factor) / scale_factor;
+        }
+
+        return value;
     }
 
     public void update_animation (HashTable<string,Variant> hints) {
