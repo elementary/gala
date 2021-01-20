@@ -149,7 +149,7 @@ namespace Gala {
          */
         public void track_actor (Clutter.Actor actor) {
             tracked_actors.prepend (actor);
-            actor.allocation_changed.connect (actor_allocation_changed);
+            actor.notify["allocation"].connect (on_actor_allocation_changed);
 
             update_region ();
         }
@@ -162,7 +162,7 @@ namespace Gala {
          */
         public void untrack_actor (Clutter.Actor actor) {
             tracked_actors.remove (actor);
-            actor.allocation_changed.disconnect (actor_allocation_changed);
+            actor.notify["allocation"].disconnect (on_actor_allocation_changed);
         }
 
         /**
@@ -202,7 +202,7 @@ namespace Gala {
             region_changed ();
         }
 
-        private void actor_allocation_changed (Clutter.ActorBox box, Clutter.AllocationFlags f) {
+        private void on_actor_allocation_changed (GLib.Object actor_object, GLib.ParamSpec pspec) {
             if (!freeze_track)
                 update_region ();
         }

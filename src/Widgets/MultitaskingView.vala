@@ -27,15 +27,14 @@ namespace Gala {
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
+
+        private GestureAnimationDirector gesture_animation_director;
+
         const int SMOOTH_SCROLL_DELAY = 500;
 
         public WindowManager wm { get; construct; }
 
-#if HAS_MUTTER330
         Meta.Display display;
-#else
-        Meta.Screen screen;
-#endif
         ModalProxy modal_proxy;
         bool opened = false;
         bool animating = false;
@@ -58,21 +57,14 @@ namespace Gala {
             clip_to_allocation = true;
 
             opened = false;
-#if HAS_MUTTER330
             display = wm.get_display ();
-#else
-            screen = wm.get_screen ();
-#endif
+
+            gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
-#if HAS_MUTTER330
             icon_groups = new IconGroupContainer (display);
-#else
-            icon_groups = new IconGroupContainer (screen);
-            icon_groups.request_reposition.connect ((animate) => reposition_icon_groups (animate));
-#endif
 
             dock_clones = new Actor ();
 
@@ -80,7 +72,6 @@ namespace Gala {
             add_child (workspaces);
             add_child (dock_clones);
 
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
                 add_workspace (i);
@@ -88,31 +79,14 @@ namespace Gala {
 
             manager.workspace_added.connect (add_workspace);
             manager.workspace_removed.connect (remove_workspace);
-#if HAS_MUTTER334
             manager.workspaces_reordered.connect (() => update_positions (false));
-#endif
             manager.workspace_switched.connect_after ((from, to, direction) => {
                 update_positions (opened);
             });
-#else
-            foreach (var workspace in screen.get_workspaces ())
-                add_workspace (workspace.index ());
-
-            screen.workspace_added.connect (add_workspace);
-            screen.workspace_removed.connect (remove_workspace);
-            screen.workspaces_reordered.connect (() => update_positions (false));
-            screen.workspace_switched.connect_after ((from, to, direction) => {
-                update_positions (opened);
-            });
-#endif
 
             window_containers_monitors = new List<MonitorClone> ();
             update_monitors ();
-#if HAS_MUTTER330
             Meta.MonitorManager.@get ().monitors_changed.connect (update_monitors);
-#else
-            screen.monitors_changed.connect (update_monitors);
-#endif
 
             Prefs.add_listener ((pref) => {
                 if (pref == Preference.WORKSPACES_ONLY_ON_PRIMARY) {
@@ -125,7 +99,6 @@ namespace Gala {
                     return;
 
                 Idle.add (() => {
-#if HAS_MUTTER330
                     unowned List<Workspace> existing_workspaces = null;
                     for (int i = 0; i < manager.get_n_workspaces (); i++) {
                         existing_workspaces.append (manager.get_workspace_by_index (i));
@@ -142,21 +115,6 @@ namespace Gala {
                             workspace_clone.destroy ();
                         }
                     }
-#else
-                    unowned List<Workspace> existing_workspaces = screen.get_workspaces ();
-
-                    foreach (var child in workspaces.get_children ()) {
-                        unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
-                        if (existing_workspaces.index (workspace_clone.workspace) < 0) {
-                            workspace_clone.window_selected.disconnect (window_selected);
-                            workspace_clone.selected.disconnect (activate_workspace);
-
-                            icon_groups.remove_group (workspace_clone.icon_group);
-
-                            workspace_clone.destroy ();
-                        }
-                    }
-#endif
 
                     update_monitors ();
                     update_positions (false);
@@ -174,7 +132,6 @@ namespace Gala {
             foreach (var monitor_clone in window_containers_monitors)
                 monitor_clone.destroy ();
 
-#if HAS_MUTTER330
             var primary = display.get_primary_monitor ();
 
             if (InternalUtils.workspaces_only_on_primary ()) {
@@ -182,7 +139,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (display, monitor);
+                    var monitor_clone = new MonitorClone (display, monitor, gesture_animation_director);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -192,25 +149,6 @@ namespace Gala {
             }
 
             var primary_geometry = display.get_monitor_geometry (primary);
-#else
-            var primary = screen.get_primary_monitor ();
-
-            if (InternalUtils.workspaces_only_on_primary ()) {
-                for (var monitor = 0; monitor < screen.get_n_monitors (); monitor++) {
-                    if (monitor == primary)
-                        continue;
-
-                    var monitor_clone = new MonitorClone (screen, monitor);
-                    monitor_clone.window_selected.connect (window_selected);
-                    monitor_clone.visible = opened;
-
-                    window_containers_monitors.append (monitor_clone);
-                    wm.ui_group.add_child (monitor_clone);
-                }
-            }
-
-            var primary_geometry = screen.get_monitor_geometry (primary);
-#endif
 
             set_position (primary_geometry.x, primary_geometry.y);
             set_size (primary_geometry.width, primary_geometry.height);
@@ -270,20 +208,12 @@ namespace Gala {
                 // smooth scroll delay still active
                 return false;
 
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_workspace = manager.get_active_workspace ();
             var new_workspace = active_workspace.get_neighbor (direction);
 
             if (active_workspace != new_workspace)
                 new_workspace.activate (display.get_current_time ());
-#else
-            var active_workspace = screen.get_active_workspace ();
-            var new_workspace = active_workspace.get_neighbor (direction);
-
-            if (active_workspace != new_workspace)
-                new_workspace.activate (screen.get_display ().get_current_time ());
-#endif
 
             return false;
         }
@@ -296,19 +226,14 @@ namespace Gala {
          *                positions immediately.
          */
         void update_positions (bool animate) {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
-#else
-            var active_index = screen.get_active_workspace ().index ();
-#endif
             var active_x = 0.0f;
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
                 var index = workspace_clone.workspace.index ();
-                var dest_x = index * (workspace_clone.width - (150 * scale));
+                var dest_x = workspace_clone.multitasking_view_x ();
 
                 if (index == active_index) {
                     active_x = dest_x;
@@ -330,12 +255,8 @@ namespace Gala {
         }
 
         void reposition_icon_groups (bool animate) {
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
-#else
-            var active_index = screen.get_active_workspace ().index ();
-#endif
 
             if (animate) {
                 icon_groups.save_easing_state ();
@@ -357,12 +278,8 @@ namespace Gala {
         }
 
         void add_workspace (int num) {
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num));
-#else
-            var workspace = new WorkspaceClone (screen.get_workspace_by_index (num));
-#endif
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), gesture_animation_director);
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
 
@@ -379,15 +296,11 @@ namespace Gala {
             WorkspaceClone? workspace = null;
 
             // FIXME is there a better way to get the removed workspace?
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             List<Workspace> existing_workspaces = null;
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
                 existing_workspaces.append (manager.get_workspace_by_index (i));
             }
-#else
-            unowned List<Meta.Workspace> existing_workspaces = screen.get_workspaces ();
-#endif
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone clone = (WorkspaceClone) child;
@@ -421,16 +334,10 @@ namespace Gala {
          *                   closed.
          */
         void activate_workspace (WorkspaceClone clone, bool close_view) {
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             close_view = close_view && manager.get_active_workspace () == clone.workspace;
 
             clone.workspace.activate (display.get_current_time ());
-#else
-            close_view = close_view && screen.get_active_workspace () == clone.workspace;
-
-            clone.workspace.activate (screen.get_display ().get_current_time ());
-#endif
 
             if (close_view)
                 toggle ();
@@ -488,7 +395,6 @@ namespace Gala {
          * @return The active WorkspaceClone
          */
         WorkspaceClone get_active_workspace_clone () {
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
@@ -496,20 +402,11 @@ namespace Gala {
                     return workspace_clone;
                 }
             }
-#else
-            foreach (var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
-                if (workspace_clone.workspace == screen.get_active_workspace ()) {
-                    return workspace_clone;
-                }
-            }
-#endif
 
             assert_not_reached ();
         }
 
         void window_selected (Meta.Window window) {
-#if HAS_MUTTER330
             var time = display.get_current_time ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var workspace = window.get_workspace ();
@@ -520,17 +417,6 @@ namespace Gala {
                 window.activate (time);
                 toggle ();
             }
-#else
-            var time = screen.get_display ().get_current_time ();
-            var workspace = window.get_workspace ();
-
-            if (workspace != screen.get_active_workspace ())
-                workspace.activate (time);
-            else {
-                window.activate (time);
-                toggle ();
-            }
-#endif
         }
 
         /**
@@ -544,20 +430,40 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void open (HashTable<string,Variant>? hints = null) {
-            if (opened)
-                return;
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (!opened) {
+                if (manual_animation && !animating) {
+                    debug ("Starting MultitaskingView manual open animation");
+                    gesture_animation_director.running = true;
+                }
+
+                toggle ();
+            }
+
+            if (opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
          * {@inheritDoc}
          */
-        public void close () {
-            if (!opened)
-                return;
+        public void close (HashTable<string,Variant>? hints = null) {
+            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
 
-            toggle ();
+            if (opened) {
+                if (manual_animation && !animating) {
+                    debug ("Starting MultitaskingView manual close animation");
+                    gesture_animation_director.running = true;
+                }
+
+                toggle ();
+            }
+
+            if (!opened && manual_animation && gesture_animation_director.running) {
+                gesture_animation_director.update_animation (hints);
+            }
         }
 
         /**
@@ -566,8 +472,9 @@ namespace Gala {
          * to animate to their positions.
          */
         void toggle () {
-            if (animating)
+            if (animating) {
                 return;
+            }
 
             animating = true;
 
@@ -578,8 +485,9 @@ namespace Gala {
                 if (opening) {
                     container.visible = true;
                     container.open ();
-                } else
+                } else {
                     container.close ();
+                }
             }
 
             if (opening) {
@@ -600,12 +508,8 @@ namespace Gala {
 
             // find active workspace clone and raise it, so there are no overlaps while transitioning
             WorkspaceClone? active_workspace = null;
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active = manager.get_active_workspace ();
-#else
-            var active = screen.get_active_workspace ();
-#endif
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (workspace.workspace == active) {
@@ -621,100 +525,161 @@ namespace Gala {
                 child.remove_all_transitions ();
             }
 
-            update_positions (false);
+            if (!gesture_animation_director.canceling) {
+                update_positions (false);
+            }
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
-                if (opening)
+                if (opening) {
                     workspace.open ();
-                else
+                } else {
                     workspace.close ();
+                }
             }
 
+            if (opening) {
+                show_docks ();
+            } else {
+                hide_docks ();
+            }
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
+                Timeout.add (animation_duration, () => {
+                    if (!opening) {
+                        foreach (var container in window_containers_monitors) {
+                            container.visible = false;
+                        }
+
+                        hide ();
+
+                        wm.background_group.show ();
+                        wm.window_group.show ();
+                        wm.top_window_group.show ();
+
+                        dock_clones.destroy_all_children ();
+
+                        wm.pop_modal (modal_proxy);
+                    }
+
+                    animating = false;
+                    gesture_animation_director.disconnect_all_handlers ();
+                    gesture_animation_director.running = false;
+                    gesture_animation_director.canceling = cancel_action;
+
+                    if (cancel_action) {
+                        toggle ();
+                    }
+
+                    return false;
+                });
+            };
+
+            if (!gesture_animation_director.running) {
+                on_animation_end (100, false, 0);
+            } else {
+                gesture_animation_director.connect_handlers (null, null, (owned) on_animation_end);
+            }
+        }
+
+        void show_docks () {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
-            if (opening) {
-#if HAS_MUTTER330
-                unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-#else
-                unowned GLib.List<Meta.WindowActor> window_actors = screen.get_window_actors ();
-#endif
-                foreach (unowned Meta.WindowActor actor in window_actors) {
-                    const int MAX_OFFSET = 100;
+            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+            foreach (unowned Meta.WindowActor actor in window_actors) {
+                const int MAX_OFFSET = 100;
 
-                    if (actor.is_destroyed ())
-                        continue;
+                if (actor.is_destroyed ())
+                    continue;
 
-                    unowned Meta.Window window = actor.get_meta_window ();
-                    var monitor = window.get_monitor ();
+                unowned Meta.Window window = actor.get_meta_window ();
+                var monitor = window.get_monitor ();
 
-                    if (window.window_type != WindowType.DOCK)
-                        continue;
+                if (window.window_type != WindowType.DOCK)
+                    continue;
 
-#if HAS_MUTTER330
-                    if (display.get_monitor_in_fullscreen (monitor))
-                        continue;
+                if (display.get_monitor_in_fullscreen (monitor))
+                    continue;
 
-                    var monitor_geom = display.get_monitor_geometry (monitor);
-#else
-                    if (screen.get_monitor_in_fullscreen (monitor))
-                        continue;
+                var monitor_geom = display.get_monitor_geometry (monitor);
 
-                    var monitor_geom = screen.get_monitor_geometry (monitor);
-#endif
+                var window_geom = window.get_frame_rect ();
+                var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
+                var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
 
-                    var window_geom = window.get_frame_rect ();
-                    var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
-                    var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+                if (!top && !bottom)
+                    continue;
 
-                    if (!top && !bottom)
-                        continue;
+                var initial_x = actor.x - clone_offset_x;
+                var initial_y = actor.y - clone_offset_y;
+                var target_y = (top)
+                    ? actor.y - actor.height - clone_offset_y
+                    : actor.y + actor.height - clone_offset_y;
 
-                    var clone = new SafeWindowClone (window, true);
-                    clone.set_position (actor.x - clone_offset_x, actor.y - clone_offset_y);
-                    clone.set_easing_duration (ANIMATION_DURATION);
+                var clone = new SafeWindowClone (window, true);
+                dock_clones.add_child (clone);
+
+                GestureAnimationDirector.OnBegin on_animation_begin = () => {
+                    clone.set_position (initial_x, initial_y);
+                    clone.set_easing_mode (0);
+                };
+
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                    clone.y = y;
+                };
+
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                     clone.set_easing_mode (ANIMATION_MODE);
-                    dock_clones.add_child (clone);
 
-                    if (top)
-                        clone.y = actor.y - actor.height - clone_offset_y;
-                    else if (bottom)
-                        clone.y = actor.y + actor.height - clone_offset_y;
-                }
-            } else {
-                foreach (var child in dock_clones.get_children ()) {
-                    var dock = (Clone) child;
-
-                    dock.y = dock.source.y - clone_offset_y;
-                }
-            }
-
-            if (!opening) {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    foreach (var container in window_containers_monitors) {
-                        container.visible = false;
+                    if (cancel_action) {
+                        return;
                     }
 
-                    hide ();
+                    clone.set_easing_duration (gesture_animation_director.canceling ? 0 : ANIMATION_DURATION);
+                    clone.y = target_y;
+                };
 
-                    wm.background_group.show ();
-                    wm.window_group.show ();
-                    wm.top_window_group.show ();
+                if (!gesture_animation_director.running) {
+                    on_animation_begin (0);
+                    on_animation_end (100, false, 0);
+                } else {
+                    gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                }
+            }
+        }
 
-                    dock_clones.destroy_all_children ();
+        void hide_docks () {
+            float clone_offset_x, clone_offset_y;
+            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
-                    wm.pop_modal (modal_proxy);
+            foreach (var child in dock_clones.get_children ()) {
+                var dock = (Clone) child;
+                var initial_y = dock.y;
+                var target_y = dock.source.y - clone_offset_y;
 
-                    animating = false;
+                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                    dock.y = y;
+                };
 
-                    return false;
-                });
-            } else {
-                Timeout.add (ANIMATION_DURATION, () => {
-                    animating = false;
-                    return false;
-                });
+                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                    if (cancel_action) {
+                        return;
+                    }
+
+                    dock.set_easing_duration (ANIMATION_DURATION);
+                    dock.set_easing_mode (ANIMATION_MODE);
+                    dock.y = target_y;
+                };
+
+                if (!gesture_animation_director.running) {
+                    on_animation_end (100, false, 0);
+                } else {
+                    gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                }
             }
         }
 
