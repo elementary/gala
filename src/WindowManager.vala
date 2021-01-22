@@ -1973,7 +1973,7 @@ namespace Gala {
             var primary = display.get_primary_monitor ();
             var move_primary_only = InternalUtils.workspaces_only_on_primary ();
             if (move_primary_only) {
-                var background = background_group.get_child_at_index (primary);
+                unowned var background = background_group.get_child_at_index (primary);
                 background.show ();
             } else {
                 background_group.show ();
