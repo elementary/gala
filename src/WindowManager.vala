@@ -1740,7 +1740,7 @@ namespace Gala {
             // prepare wallpaper
             Clutter.Actor wallpaper;
             if (move_primary_only) {
-                var background = background_group.get_child_at_index (primary);
+                unowned var background = background_group.get_child_at_index (primary);
                 background.hide ();
                 wallpaper = new Clutter.Clone (background);
             } else {
