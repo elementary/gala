@@ -16,185 +16,174 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Gala.Plugins.Touchegg {
+/**
+* This class connects to the Touchégg daemon to receive touch events.
+* See: https://github.com/JoseExposito/touchegg
+*/
+public class Gala.Plugins.Touchegg.Client : Object {
+    public signal void on_gesture_begin (Gesture gesture);
+    public signal void on_gesture_update (Gesture gesture);
+    public signal void on_gesture_end (Gesture gesture);
+
     /**
-     * Daemon event type.
+     * Daemon D-Bus address.
      */
-     private enum GestureEventType {
-        UNKNOWN = 0,
-        BEGIN = 1,
-        UPDATE = 2,
-        END = 3,
+    private const string DBUS_ADDRESS = "unix:abstract=touchegg";
+
+    /**
+     * D-Bus interface name.
+     */
+    private const string DBUS_INTERFACE_NAME = "io.github.joseexposito.Touchegg";
+
+    /**
+     * D-Bus object path.
+     */
+    private const string DBUS_OBJECT_PATH = "/io/github/joseexposito/Touchegg";
+
+    /**
+     * Signal names.
+     */
+    private const string DBUS_ON_GESTURE_BEGIN = "OnGestureBegin";
+    private const string DBUS_ON_GESTURE_UPDATE = "OnGestureUpdate";
+    private const string DBUS_ON_GESTURE_END = "OnGestureEnd";
+
+    /**
+     * Maximum number of reconnection attempts to the daemon.
+     */
+    private const int MAX_RECONNECTION_ATTEMPTS = 5;
+
+    /**
+     * Time to sleep between reconnection attempts.
+     */
+    private const int RECONNECTION_USLEEP_TIME = 5000000;
+
+    /**
+     * Connection with the daemon.
+     */
+    private GLib.DBusConnection? connection = null;
+
+    /**
+     * Current number of reconnection attempts.
+     */
+    private int reconnection_attempts = 0;
+
+    /*
+     * Store the last received signal and signal parameters so in case of
+     * disconnection in the middle of a gesture we can finish it.
+     */
+    private string? last_signal_received = null;
+    private Variant? last_params_received = null;
+
+    /**
+     * Stablish a connection with the daemon server.
+     */
+    public void stablish_connection () {
+        ThreadFunc<void> run = () => {
+            var connected = false;
+
+            while (!connected && reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
+                try {
+                    debug ("Connecting to Touchégg daemon");
+                    connection = new DBusConnection.for_address_sync (
+                        DBUS_ADDRESS,
+                        GLib.DBusConnectionFlags.AUTHENTICATION_CLIENT
+                    );
+
+                    debug ("Connection with Touchégg established");
+                    connected = true;
+                    reconnection_attempts = 0;
+
+                    connection.signal_subscribe (null, DBUS_INTERFACE_NAME, null, DBUS_OBJECT_PATH,
+                        null, DBusSignalFlags.NONE, (DBusSignalCallback) on_new_message);
+                    connection.on_closed.connect (on_disconnected);
+                } catch (Error e) {
+                    warning ("Error connecting to Touchégg daemon: %s", e.message);
+                    connected = false;
+                    reconnection_attempts++;
+
+                    if (reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
+                        debug ("Reconnecting to Touchégg daemon in 5 seconds");
+                        Thread.usleep (RECONNECTION_USLEEP_TIME);
+                    } else {
+                        warning ("Maximum number of reconnections reached, aborting");
+                    }
+                }
+            }
+        };
+
+        new Thread<void> (null, (owned) run);
     }
 
-    /**
-     * Daemon event.
-     */
-    private struct GestureEvent {
-        public uint32 event_size;
-        public GestureEventType event_type;
-        public GestureType type;
-        public GestureDirection direction;
-        public double percentage;
-        public int fingers;
-        public uint64 elapsed_time;
-        public DeviceType performed_on_device_type;
+    public void stop () {
+        try {
+            reconnection_attempts = MAX_RECONNECTION_ATTEMPTS;
+
+            if (!connection.closed) {
+                connection.close_sync ();
+            }
+        } catch (Error e) {
+            // Ignore this error, the process is being killed as this point
+        }
     }
 
-    /**
-     * This class connects to the Touchégg daemon to receive touch events.
-     * See: https://github.com/JoseExposito/touchegg
-     */
-    public class Client : Object {
-        public signal void on_gesture_begin (Gesture gesture);
-        public signal void on_gesture_update (Gesture gesture);
-        public signal void on_gesture_end (Gesture gesture);
+    [CCode (instance_pos = -1)]
+    private void on_new_message (DBusConnection connection, string? sender_name, string object_path,
+        string interface_name, string signal_name, Variant parameters) {
+        last_signal_received = signal_name;
+        last_params_received = parameters;
 
-        /**
-         * Maximum number of reconnection attempts to the daemon.
-         */
-        private const int MAX_RECONNECTION_ATTEMPTS = 5;
+        var gesture = make_gesture (parameters);
+        emit_event (signal_name, gesture);
+    }
 
-        /**
-         * Time to sleep between reconnection attempts.
-         */
-        private const int RECONNECTION_USLEEP_TIME = 5000000;
+    private void on_disconnected (bool remote_peer_vanished, Error? error) {
+        debug ("Connection with Touchégg daemon lost %s", error.message);
 
-        /**
-         * Socket used to connect to the daemon.
-         */
-        private Socket? socket = null;
-
-        /**
-         * Current number of reconnection attempts.
-         */
-        private int reconnection_attempts = 0;
-
-        /**
-         * Struct to store the received event. It is useful to keep it to be able to finish ongoing
-         * actions in case of disconnection
-         */
-        private GestureEvent *event = null;
-
-        /**
-         * Start receiving gestures.
-         */
-        public void run () throws IOError {
-            new Thread<void*> (null, receive_events);
+        if (last_signal_received == DBUS_ON_GESTURE_BEGIN || last_signal_received == DBUS_ON_GESTURE_UPDATE) {
+            debug ("Connection lost in the middle of a gesture, ending it");
+            var gesture = make_gesture (last_params_received);
+            emit_event (DBUS_ON_GESTURE_END, gesture);
         }
 
-        public void stop () {
-            if (socket != null) {
-                try {
-                    reconnection_attempts = MAX_RECONNECTION_ATTEMPTS;
-                    socket.close ();
-                } catch (Error e) {
-                    // Ignore this error, the process is being killed as this point
-                }
-            }
-        }
+        stablish_connection ();
+    }
 
-        private void* receive_events () {
-            uint8[] event_buffer = new uint8[sizeof (GestureEvent)];
+    private static Gesture make_gesture (Variant signal_params) {
+        GestureType type;
+        GestureDirection direction;
+        double percentage;
+        int fingers;
+        DeviceType performed_on_device_type;
+        uint64 elapsed_time;
 
-            while (reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
-                try {
-                    if (socket == null || !socket.is_connected ()) {
-                        debug ("Connecting to Touchégg daemon");
-                        socket = new Socket (SocketFamily.UNIX, SocketType.STREAM, 0);
-                        if (socket == null) {
-                            throw new GLib.IOError.CONNECTION_REFUSED (
-                                "Error connecting to Touchégg daemon: Can not create socket"
-                            );
-                        }
+        signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
+            out performed_on_device_type, out elapsed_time);
 
-                        UnixSocketAddress address = new UnixSocketAddress.as_abstract ("/touchegg", -1);
-                        bool connected = socket.connect (address);
-                        if (!connected) {
-                            throw new GLib.IOError.CONNECTION_REFUSED ("Error connecting to Touchégg daemon");
-                        }
+        Gesture gesture = new Gesture () {
+            type = type,
+            direction = direction,
+            percentage = percentage,
+            fingers = fingers,
+            performed_on_device_type = performed_on_device_type,
+            elapsed_time = elapsed_time
+        };
 
-                        reconnection_attempts = 0;
-                        debug ("Connection to Touchégg daemon established");
-                    }
+        return gesture;
+    }
 
-                    // Read the event
-                    ssize_t bytes_received = socket.receive (event_buffer);
-                    if (bytes_received <= 0) {
-                        throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
-                    }
-                    event = (GestureEvent *) event_buffer;
-
-                    // The daemon could add events not supported by this plugin yet
-                    // Discard any extra data
-                    if (bytes_received < event.event_size) {
-                        ssize_t pending_bytes = event.event_size - bytes_received;
-                        uint8[] discard_buffer = new uint8[pending_bytes];
-                        bytes_received = socket.receive (discard_buffer);
-                        if (bytes_received <= 0) {
-                            throw new GLib.IOError.CONNECTION_CLOSED ("Error reading socket");
-                        }
-                    }
-
-                    emit_event (event);
-                } catch (Error e) {
-                    warning ("Connection to Touchégg daemon lost: %s", e.message);
-                    handle_disconnection ();
-                }
-            }
-
-            return null;
-        }
-
-        private void handle_disconnection () {
-            reconnection_attempts++;
-
-            if (event != null
-                && event.event_type != GestureEventType.UNKNOWN
-                && event.event_type != GestureEventType.END) {
-                event.event_type = GestureEventType.END;
-                emit_event (event);
-            }
-
-            if (socket != null) {
-                try {
-                    socket.close ();
-                } catch (Error e) {
-                    // The connection is already closed at this point, ignore this error
-                }
-            }
-
-            if (reconnection_attempts < MAX_RECONNECTION_ATTEMPTS) {
-                debug ("Reconnecting to Touchégg daemon in 5 seconds");
-                Thread.usleep (RECONNECTION_USLEEP_TIME);
-            } else {
-                warning ("Maximum number of reconnections reached, aborting");
-            }
-        }
-
-        private void emit_event (GestureEvent *event) {
-            Gesture gesture = new Gesture () {
-                type = event.type,
-                direction = event.direction,
-                percentage = event.percentage,
-                fingers = event.fingers,
-                elapsed_time = event.elapsed_time,
-                performed_on_device_type = event.performed_on_device_type
-            };
-
-            switch (event.event_type) {
-                case GestureEventType.BEGIN:
-                    on_gesture_begin (gesture);
-                    break;
-                case GestureEventType.UPDATE:
-                    on_gesture_update (gesture);
-                    break;
-                case GestureEventType.END:
-                    on_gesture_end (gesture);
-                    break;
-                default:
-                    break;
-            }
+    private void emit_event (string signal_name, Gesture gesture) {
+        switch (signal_name) {
+            case DBUS_ON_GESTURE_BEGIN:
+                on_gesture_begin (gesture);
+                break;
+            case DBUS_ON_GESTURE_UPDATE:
+                on_gesture_update (gesture);
+                break;
+            case DBUS_ON_GESTURE_END:
+                on_gesture_end (gesture);
+                break;
+            default:
+                break;
         }
     }
 }
