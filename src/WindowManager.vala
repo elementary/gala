@@ -1782,20 +1782,20 @@ namespace Gala {
             // prepare wallpaper
             Clutter.Actor wallpaper;
             if (move_primary_only) {
-                wallpaper = background_group.get_child_at_index (primary);
-                wallpaper.set_data<int> ("prev-x", (int) wallpaper.x);
-                wallpaper.set_data<int> ("prev-y", (int) wallpaper.y);
-            } else
-                wallpaper = background_group;
-
-            windows.prepend (wallpaper);
-            parents.prepend (wallpaper.get_parent ());
+                unowned var background = background_group.get_child_at_index (primary);
+                background.hide ();
+                wallpaper = new Clutter.Clone (background);
+            } else {
+                background_group.hide ();
+                wallpaper = new Clutter.Clone (background_group);
+            }
+            tmp_actors.prepend (wallpaper);
 
             var wallpaper_clone = new Clutter.Clone (wallpaper);
             tmp_actors.prepend (wallpaper_clone);
 
             // pack all containers
-            clutter_actor_reparent (wallpaper, main_container);
+            main_container.add_child (wallpaper);
             main_container.add_child (wallpaper_clone);
             main_container.add_child (out_group);
             main_container.add_child (in_group);
@@ -1932,8 +1932,8 @@ namespace Gala {
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureAnimationDirector.animation_value (0.1f, x2, percentage);
-                var x_in = GestureAnimationDirector.animation_value (-x2, 0.1f, percentage);
+                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage);
+                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage);
 
                 out_group.x = x_out;
                 in_group.x = x_in;
@@ -2011,26 +2011,19 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
+            // Show the real wallpaper again
+            var primary = display.get_primary_monitor ();
+            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
+            if (move_primary_only) {
+                unowned var background = background_group.get_child_at_index (primary);
+                background.show ();
+            } else {
+                background_group.show ();
+            }
+
             for (var i = 0; i < windows.length (); i++) {
                 var actor = windows.nth_data (i);
                 actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                // to maintain the correct order of monitor, we need to insert the Background
-                // back manually
-                if (actor is BackgroundManager) {
-                    var background = (BackgroundManager) actor;
-
-                    background.get_parent ().remove_child (background);
-                    background_group.insert_child_at_index (background, background.monitor_index);
-                    background.x = background.steal_data<int> ("prev-x");
-                    background.y = background.steal_data<int> ("prev-y");
-                    continue;
-                } else if (actor is Meta.BackgroundGroup) {
-                    actor.x = 0;
-                    // thankfully mutter will take care of stacking it at the right place for us
-                    clutter_actor_reparent (actor, window_group);
-                    continue;
-                }
 
                 unowned Meta.WindowActor? window = actor as Meta.WindowActor;
                 if (window == null) {
