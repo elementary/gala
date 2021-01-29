@@ -1620,7 +1620,7 @@ namespace Gala {
             }
 
             // Do nothing if window is not on primary monitor
-            if (!window.is_on_primary_monitor()) {
+            if (!window.is_on_primary_monitor ()) {
                 return;
             }
 
