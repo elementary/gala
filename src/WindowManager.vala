@@ -65,6 +65,8 @@ namespace Gala {
 
         public PointerLocator pointer_locator { get; private set; }
 
+        SystemBackground system_background;
+
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
@@ -187,7 +189,7 @@ namespace Gala {
              * +-- top window group
              */
 
-            var system_background = new SystemBackground (display);
+            system_background = new SystemBackground (display);
 
             system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
                 Clutter.BindCoordinate.ALL, 0));
@@ -1723,6 +1725,7 @@ namespace Gala {
             unowned Meta.Workspace workspace_to = manager.get_workspace_by_index (to);
 
             var main_container = new Clutter.Actor ();
+            var background_actor = new Clutter.Clone (system_background.background_actor);
             var static_windows = new Clutter.Actor ();
             var in_group = new Clutter.Actor ();
             var out_group = new Clutter.Actor ();
@@ -1731,6 +1734,7 @@ namespace Gala {
             tmp_actors = new List<Clutter.Clone> ();
 
             tmp_actors.prepend (main_container);
+            tmp_actors.prepend (background_actor);
             tmp_actors.prepend (in_group);
             tmp_actors.prepend (out_group);
             tmp_actors.prepend (static_windows);
@@ -1753,6 +1757,7 @@ namespace Gala {
             tmp_actors.prepend (wallpaper_clone);
 
             // pack all containers
+            main_container.add_child (background_actor);
             main_container.add_child (wallpaper);
             main_container.add_child (wallpaper_clone);
             main_container.add_child (out_group);
