@@ -1619,6 +1619,11 @@ namespace Gala {
                 return;
             }
 
+            // Do nothing if window is not on primary monitor
+            if (!window.is_on_primary_monitor ()) {
+                return;
+            }
+
             var old_ws_index = win_ws.index ();
             var new_ws_index = old_ws_index + 1;
             InternalUtils.insert_workspace_with_window (new_ws_index, window);
