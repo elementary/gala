@@ -86,7 +86,7 @@ public class Gala.NotificationStack : Object {
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
-        int notification_x_pos = area.width - window.get_frame_rect ().width;
+        int notification_x_pos = area.x + area.width - window.get_frame_rect ().width;
 
         move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
         notifications.insert (0, notification);
