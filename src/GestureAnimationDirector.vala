@@ -44,19 +44,19 @@ public class Gala.GestureAnimationDirector : Object {
     public bool running { get; set; default = false; }
     public bool canceling { get; set; default = false; }
 
-    public signal void on_animation_begin (int percentage);
-    public signal void on_animation_update (int percentage);
-    public signal void on_animation_end (int percentage, bool cancel_action, int calculated_duration);
+    public signal void on_animation_begin (double percentage);
+    public signal void on_animation_update (double percentage);
+    public signal void on_animation_end (double percentage, bool cancel_action, int calculated_duration);
 
-    public delegate void OnBegin (int percentage);
-    public delegate void OnUpdate (int percentage);
-    public delegate void OnEnd (int percentage, bool cancel_action, int calculated_duration);
+    public delegate void OnBegin (double percentage);
+    public delegate void OnUpdate (double percentage);
+    public delegate void OnEnd (double percentage, bool cancel_action, int calculated_duration);
 
     private Gee.ArrayList<ulong> handlers;
 
-    private int previous_percentage;
+    private double previous_percentage;
     private uint64 previous_time;
-    private int percentage_delta;
+    private double percentage_delta;
     private double velocity;
 
     construct {
@@ -108,8 +108,8 @@ public class Gala.GestureAnimationDirector : Object {
      * values not divisible by physical pixels.
      * @returns The linear animation value at the specified percentage.
      */
-    public static float animation_value (float initial_value, float target_value, int percentage, bool rounded = false) {
-        float value = (((target_value - initial_value) * percentage) / 100) + initial_value;
+    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
+        float value = (((target_value - initial_value) * (float) percentage) / 100) + initial_value;
 
         if (rounded) {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
@@ -121,7 +121,7 @@ public class Gala.GestureAnimationDirector : Object {
 
     public void update_animation (HashTable<string,Variant> hints) {
         string event = hints.get ("event").get_string ();
-        int32 percentage = hints.get ("percentage").get_int32 ();
+        double percentage = hints.get ("percentage").get_double ();
         uint64 elapsed_time = hints.get ("elapsed_time").get_uint64 ();
 
         switch (event) {
@@ -138,23 +138,23 @@ public class Gala.GestureAnimationDirector : Object {
         }
     }
 
-    private void update_animation_begin (int32 percentage, uint64 elapsed_time) {
+    private void update_animation_begin (double percentage, uint64 elapsed_time) {
         on_animation_begin (percentage);
 
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
 
-    private void update_animation_update (int32 percentage, uint64 elapsed_time) {
+    private void update_animation_update (double percentage, uint64 elapsed_time) {
         if (elapsed_time != previous_time) {
-            int distance = percentage - previous_percentage;
+            double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
             velocity = (distance / time);
 
             if (velocity > MAX_VELOCITY) {
                 velocity = MAX_VELOCITY;
                 var used_percentage = MAX_VELOCITY * time + previous_percentage;
-                percentage_delta += (int)(percentage - used_percentage);
+                percentage_delta += percentage - used_percentage;
             }
         }
 
@@ -164,8 +164,8 @@ public class Gala.GestureAnimationDirector : Object {
         previous_time = elapsed_time;
     }
 
-    private void update_animation_end (int32 percentage, uint64 elapsed_time) {
-        int end_percentage = applied_percentage (percentage, percentage_delta);
+    private void update_animation_end (double percentage, uint64 elapsed_time) {
+        double end_percentage = applied_percentage (percentage, percentage_delta);
         bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
             && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
         int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
@@ -178,19 +178,19 @@ public class Gala.GestureAnimationDirector : Object {
         velocity = 0;
     }
 
-    private static int applied_percentage (int percentage, int percentage_delta) {
+    private static double applied_percentage (double percentage, double percentage_delta) {
         return (percentage - percentage_delta).clamp (0, 100);
     }
 
     /**
      * Calculates the end animation duration using the current gesture velocity.
      */
-     private int calculate_end_animation_duration (int end_percentage, bool cancel_action) {
+     private int calculate_end_animation_duration (double end_percentage, bool cancel_action) {
         double animation_velocity = (velocity > ANIMATION_BASE_VELOCITY)
             ? velocity
             : ANIMATION_BASE_VELOCITY;
 
-        int pending_percentage = cancel_action ? end_percentage : 100 - end_percentage;
+        double pending_percentage = cancel_action ? end_percentage : 100 - end_percentage;
 
         int duration = ((int)(pending_percentage / animation_velocity).abs ())
             .clamp (min_animation_duration, max_animation_duration);
