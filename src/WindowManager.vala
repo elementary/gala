@@ -501,7 +501,7 @@ namespace Gala {
             var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage);
+                var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage, true);
                 ui_group.x = x;
             };
 
@@ -1900,8 +1900,8 @@ namespace Gala {
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage);
-                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage);
+                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage, true);
+                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage, true);
 
                 out_group.x = x_out;
                 in_group.x = x_in;
