@@ -136,11 +136,15 @@ namespace Gala {
 
             expand_to_screen_size ();
 
+            init_dbus_interfaces.begin ();
+        }
+
+        private async void init_dbus_interfaces () {
             bool success = true;
 
             try {
-                login_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
-                login_user_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1/user/self");
+                login_manager = yield Bus.get_proxy (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
+                login_user_manager = yield Bus.get_proxy (BusType.SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1/user/self");
 
                 // Listen for sleep/resume events from logind
                 login_manager.prepare_for_sleep.connect (prepare_for_sleep);
@@ -162,7 +166,7 @@ namespace Gala {
             }
 
             try {
-                session_presence = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager/Presence");
+                session_presence = yield Bus.get_proxy (BusType.SESSION, "org.gnome.SessionManager", "/org/gnome/SessionManager/Presence");
                 on_status_changed (session_presence.status);
                 session_presence.status_changed.connect ((status) => on_status_changed (status));
             } catch (Error e) {
@@ -174,7 +178,7 @@ namespace Gala {
             string? seat_path = GLib.Environment.get_variable ("XDG_SEAT_PATH");
             if (seat_path != null) {
                 try {
-                    display_manager = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
+                    display_manager = yield Bus.get_proxy (BusType.SYSTEM, "org.freedesktop.DisplayManager", seat_path);
                 } catch (Error e) {
                     success = false;
                     critical ("Unable to connect to display manager bus, screen locking disabled");
@@ -189,11 +193,7 @@ namespace Gala {
 
         public void expand_to_screen_size () {
             int screen_width, screen_height;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out screen_width, out screen_height);
-#else
-            wm.get_screen ().get_size (out screen_width, out screen_height);
-#endif
             width = screen_width;
             height = screen_height;
         }
@@ -331,12 +331,7 @@ namespace Gala {
                 activation_time = GLib.get_monotonic_time ();
             }
 
-#if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
-#else
-            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (false);
-#endif
-
             visible = true;
             grab_key_focus ();
             modal_proxy = wm.push_modal ();
@@ -397,12 +392,7 @@ namespace Gala {
                 modal_proxy = null;
             }
 
-#if HAS_MUTTER330
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
-#else
-            wm.get_screen ().get_cursor_tracker ().set_pointer_visible (true);
-#endif
-
             visible = false;
 
             wake_up_screen ();
