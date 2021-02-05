@@ -96,8 +96,27 @@ public class Gala.GestureAnimationDirector : Object {
         handlers.clear ();
     }
 
-    public static float animation_value (float initial_value, float target_value, double percentage) {
-        return (((target_value - initial_value) * (float)percentage) / 100) + initial_value;
+    /**
+     * Utility method to calculate the current animation value based on the percentage of the
+     * gesture performed.
+     * Animations are always linear, as they are 1:1 to the user's movement.
+     * @param initial_value Animation start value.
+     * @param target_value Animation end value.
+     * @param percentage Current animation percentage.
+     * @param rounded If the returned value should be rounded to match physical pixels.
+     * Default to false because some animations, like for example scaling an actor, use intermediate
+     * values not divisible by physical pixels.
+     * @returns The linear animation value at the specified percentage.
+     */
+    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
+        float value = (((target_value - initial_value) * (float) percentage) / 100) + initial_value;
+
+        if (rounded) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            value = (float) Math.round (value * scale_factor) / scale_factor;
+        }
+
+        return value;
     }
 
     public void update_animation (HashTable<string,Variant> hints) {
