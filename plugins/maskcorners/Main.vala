@@ -1,5 +1,6 @@
 //
-//  Copyright (C) 2015 Rory J Sanderson
+//  Copyright 2021 elementary, Inc. (https://elementary.io)
+//            2015 Rory J Sanderson
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,7 +23,8 @@ namespace Gala.Plugins.MaskCorners {
     public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
         Display display;
-        Settings settings;
+
+        private GLib.Settings settings;
 
         List<Actor>[] cornermasks;
         private const int DEFAULT_CORNER_RADIUS = 6;
@@ -31,7 +33,8 @@ namespace Gala.Plugins.MaskCorners {
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
             display = wm.get_display ();
-            settings = Settings.get_default ();
+
+            settings = new GLib.Settings (Config.SCHEMA + ".mask-corners");
 
             setup_cornermasks ();
 
@@ -42,9 +45,10 @@ namespace Gala.Plugins.MaskCorners {
             destroy_cornermasks ();
         }
 
-        void setup_cornermasks () {
-            if (!settings.enable)
+        private void setup_cornermasks () {
+            if (!settings.get_boolean ("enable")) {
                 return;
+            }
 
             var scale = Utils.get_ui_scaling_factor ();
 
@@ -52,15 +56,16 @@ namespace Gala.Plugins.MaskCorners {
             cornermasks = new List<Actor>[n_monitors];
             corner_radius = DEFAULT_CORNER_RADIUS * scale;
 
-            if (settings.only_on_primary) {
+            if (settings.get_boolean ("only-on-primary")) {
                 add_cornermasks (display.get_primary_monitor ());
             } else {
                 for (int m = 0; m < n_monitors; m++)
                     add_cornermasks (m);
             }
 
-            if (settings.disable_on_fullscreen)
+            if (settings.get_boolean ("disable-on-fullscreen")) {
                 display.in_fullscreen_changed.connect (fullscreen_changed);
+            }
 
             unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
             monitor_manager.monitors_changed.connect (resetup_cornermasks);
