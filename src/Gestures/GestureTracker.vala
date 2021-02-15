@@ -20,7 +20,7 @@
     /**
      * Percentage of the animation to be completed to apply the action.
      */
-    private const int SUCCESS_PERCENTAGE_THRESHOLD = 20;
+    private const double SUCCESS_PERCENTAGE_THRESHOLD = 0.2;
 
     /**
      * When a gesture ends with a velocity greater than this constant, the action is not cancelled,
@@ -44,7 +44,8 @@
 
     public bool running { get; set; default = false; }
     public bool canceling { get; set; default = false; }
-
+    
+    public signal void on_gesture_detected (Gesture gesture);
     public signal void on_animation_begin (double percentage);
     public signal void on_animation_update (double percentage);
     public signal void on_animation_end (double percentage, bool cancel_action, int calculated_duration);
@@ -76,6 +77,7 @@
 
         // TODO Use the scroll backend only if required (pass a config or something)
         scroll_backend = new ScrollBackend (actor, orientation);
+        scroll_backend.on_gesture_detected.connect ((gesture) => on_gesture_detected(gesture));
         scroll_backend.on_begin.connect (update_animation_begin);
         scroll_backend.on_update.connect (update_animation_update);
         scroll_backend.on_end.connect (update_animation_end);
@@ -119,7 +121,7 @@
      * @returns The linear animation value at the specified percentage.
      */
     public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
-        float value = (((target_value - initial_value) * (float) percentage) / 100) + initial_value;
+        float value = ((target_value - initial_value) * (float) percentage) + initial_value;
 
         if (rounded) {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
@@ -149,8 +151,6 @@
     }
 
     private void update_animation_begin (double percentage, uint64 elapsed_time) {
-        debug (@"################ BEGIN: $(percentage) $(elapsed_time)");
-
         on_animation_begin (percentage);
 
         previous_percentage = percentage;
@@ -158,8 +158,6 @@
     }
 
     private void update_animation_update (double percentage, uint64 elapsed_time) {
-        debug (@"################ UPDATE: $(percentage) $(elapsed_time)");
-
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -179,8 +177,6 @@
     }
 
     private void update_animation_end (double percentage, uint64 elapsed_time) {
-        debug (@"################ END: $(percentage) $(elapsed_time)");
-
         double end_percentage = applied_percentage (percentage, percentage_delta);
         bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
             && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
@@ -195,7 +191,7 @@
     }
 
     private static double applied_percentage (double percentage, double percentage_delta) {
-        return (percentage - percentage_delta).clamp (0, 100);
+        return (percentage - percentage_delta).clamp (0, 1);
     }
 
     /**
@@ -206,7 +202,7 @@
             ? velocity
             : ANIMATION_BASE_VELOCITY;
 
-        double pending_percentage = cancel_action ? end_percentage : 100 - end_percentage;
+        double pending_percentage = cancel_action ? end_percentage : 1 - end_percentage;
 
         int duration = ((int)(pending_percentage / animation_velocity).abs ())
             .clamp (min_animation_duration, max_animation_duration);

@@ -26,6 +26,7 @@ public class Gala.ScrollBackend : Object {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
+    public signal void on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);
@@ -63,7 +64,10 @@ public class Gala.ScrollBackend : Object {
         uint64 time = event.get_time ();
 
         if (!started) {
-            started = true;            
+            // TODO The first time the gesture starts the direction is incorrect
+            started = true;
+            Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+            on_gesture_detected (gesture);
             on_begin (delta, time);
         } else if (x == 0 && y == 0) {
             started = false;
@@ -90,7 +94,24 @@ public class Gala.ScrollBackend : Object {
         double finish_delta = (orientation == Clutter.Orientation.HORIZONTAL)
             ? FINISH_DELTA_HORIZONTAL
             : FINISH_DELTA_VERTICAL;
-        double normalized_delta = (used_delta / finish_delta).clamp (-1, 1);
+        // TODO Not properly handling negative values
+        double normalized_delta = (used_delta.abs () / finish_delta).clamp (0, 1);
         return normalized_delta;
+    }
+
+    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
+        GestureDirection direction;
+        if (orientation == Clutter.Orientation.HORIZONTAL) {
+            direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
+        } else {
+            direction = delta_y > 0 ? GestureDirection.UP : GestureDirection.DOWN;
+        }
+        
+        return new Gesture () {
+            type = GestureType.SCROLL,
+            direction = direction,
+            fingers = 2,
+            performed_on_device_type = DeviceType.TOUCHPAD
+        };
     }
 }

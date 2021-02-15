@@ -29,6 +29,7 @@ namespace Gala {
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
         private GestureAnimationDirector gesture_animation_director;
+        private GestureTracker gesture_tracker;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -60,6 +61,8 @@ namespace Gala {
             display = wm.get_display ();
 
             gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
+            gesture_tracker = new GestureTracker (this, AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH, Clutter.Orientation.HORIZONTAL);
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -216,6 +219,85 @@ namespace Gala {
                 new_workspace.activate (display.get_current_time ());
 
             return false;
+        }
+
+        private void on_gesture_detected (Gesture gesture) {
+            // TODO Follow natural scroll settings
+            if (gesture.type == GestureType.SCROLL) {
+                if (gesture.direction == GestureDirection.LEFT) {
+                    switch_workspace_with_gesture (Meta.MotionDirection.LEFT);
+                } else if (gesture.direction == GestureDirection.RIGHT) {
+                    switch_workspace_with_gesture (Meta.MotionDirection.RIGHT);
+                }
+            }
+        }
+
+        private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+            // TODO Move this duration to a contant an share it with wm.play_nudge_animation
+            int NUDGE_ANIMATION_DURATION = 360;
+
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            var num_workspaces = manager.get_n_workspaces ();
+            var active_workspace_index = manager.get_active_workspace ().index ();
+            var target_workspace_index = (direction == Meta.MotionDirection.LEFT)
+                ? active_workspace_index - 1
+                : active_workspace_index + 1;
+
+            float initial_x = workspaces.x;
+            float target_x = 0;
+            bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
+
+            if (is_nudge_animation) {
+                // TODO Move this to a constant and share it with wm.play_nudge_animation
+                var nudge_delta = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
+                target_x = initial_x + nudge_delta;
+            } else {
+                foreach (var child in workspaces.get_children ()) {
+                    unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                    var index = workspace_clone.workspace.index ();
+                    if (index == target_workspace_index) {
+                        target_x = -workspace_clone.multitasking_view_x ();
+                        break;
+                    }
+                }
+            }
+
+            debug ("Starting MultitaskingView switch workspace animation:");
+            debug ("Active workspace index: %d",  active_workspace_index);
+            debug ("Target workspace index: %d", target_workspace_index);
+            debug ("Total number of workspaces: %d", num_workspaces);
+            debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
+            debug ("Initial X: %f", initial_x);
+            debug ("Target X: %f", target_x);
+
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                // TODO Once https://github.com/elementary/gala/pull/1036 gets merged, apply the same multiplier
+                var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
+                workspaces.x = x;
+            };
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+                if (is_nudge_animation) {
+                    workspaces.set_easing_duration (NUDGE_ANIMATION_DURATION / 2);
+                    workspaces.x = initial_x;
+                } else {
+                    workspaces.set_easing_duration (calculated_duration);
+
+                    if (cancel_action) {
+                        workspaces.x = initial_x;
+                    } else {
+                        workspaces.x = target_x;
+                        workspaces.get_transition ("x").completed.connect (() => {
+                            manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
+                            update_positions (false);
+                        });
+                    }
+                }
+
+                gesture_tracker.disconnect_all_handlers ();
+            };
+
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
 
         /**
