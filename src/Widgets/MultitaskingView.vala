@@ -259,24 +259,20 @@ namespace Gala {
             };
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-                if (is_nudge_animation) {
-                    workspaces.set_easing_duration (NUDGE_ANIMATION_DURATION / 2);
-                    workspaces.x = initial_x;
-                } else {
-                    workspaces.set_easing_duration (calculated_duration);
+                gesture_tracker.enabled = false;
 
-                    if (cancel_action) {
-                        workspaces.x = initial_x;
-                    } else {
-                        workspaces.x = target_x;
-                        workspaces.get_transition ("x").completed.connect (() => {
-                            manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
-                            update_positions (false);
-                        });
+                var duration = is_nudge_animation ? (NUDGE_ANIMATION_DURATION / 2) : calculated_duration;
+                workspaces.set_easing_duration (duration);
+                workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
+
+                workspaces.get_transition ("x").completed.connect (() => {
+                    gesture_tracker.enabled = true;
+
+                    if (!is_nudge_animation && !cancel_action) {
+                        manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
+                        update_positions (false);
                     }
-                }
-
-                gesture_tracker.disconnect_all_handlers ();
+                });
             };
 
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
