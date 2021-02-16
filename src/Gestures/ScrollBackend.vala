@@ -98,9 +98,9 @@ public class Gala.ScrollBackend : Object {
     private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
-            direction = delta_x > 0 ? GestureDirection.LEFT : GestureDirection.RIGHT;
+            direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
         } else {
-            direction = delta_y > 0 ? GestureDirection.UP : GestureDirection.DOWN;
+            direction = delta_y > 0 ? GestureDirection.DOWN : GestureDirection.UP;
         }
         
         return new Gesture () {
@@ -116,7 +116,7 @@ public class Gala.ScrollBackend : Object {
         double used_delta = is_horizontal ? delta_x : delta_y;
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
 
-        bool is_positive = (direction == GestureDirection.LEFT || direction == GestureDirection.UP);
+        bool is_positive = (direction == GestureDirection.RIGHT || direction == GestureDirection.DOWN);
         double clamp_low = is_positive ? 0 : -1;
         double clamp_high = is_positive ? 1 : 0;
 

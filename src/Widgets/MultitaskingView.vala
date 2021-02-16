@@ -204,13 +204,11 @@ namespace Gala {
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            // TODO Follow natural scroll settings
             if (gesture.type == GestureType.SCROLL) {
-                if (gesture.direction == GestureDirection.LEFT) {
-                    switch_workspace_with_gesture (Meta.MotionDirection.LEFT);
-                } else if (gesture.direction == GestureDirection.RIGHT) {
-                    switch_workspace_with_gesture (Meta.MotionDirection.RIGHT);
-                }
+                Meta.MotionDirection direction = (gesture.direction == GestureDirection.LEFT)
+                    ? Meta.MotionDirection.LEFT
+                    : Meta.MotionDirection.RIGHT;
+                switch_workspace_with_gesture (direction);
             }
         }
 
