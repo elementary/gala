@@ -213,9 +213,6 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
-            // TODO Move this duration to a constant an share it with wm.play_nudge_animation
-            int NUDGE_ANIMATION_DURATION = 360;
-
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
             var active_workspace_index = manager.get_active_workspace ().index ();
@@ -259,7 +256,7 @@ namespace Gala {
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 gesture_tracker.enabled = false;
 
-                var duration = is_nudge_animation ? (NUDGE_ANIMATION_DURATION / 2) : calculated_duration;
+                var duration = is_nudge_animation ? (AnimationDuration.NUDGE / 2) : calculated_duration;
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
 

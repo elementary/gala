@@ -505,7 +505,7 @@ namespace Gala {
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 var nudge_gesture = new Clutter.PropertyTransition ("x") {
-                    duration = (duration / 2),
+                    duration = (AnimationDuration.NUDGE / 2),
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.LINEAR
                 };
@@ -523,7 +523,7 @@ namespace Gala {
                 GLib.Value[] x = { dest };
 
                 var nudge = new Clutter.KeyframeTransition ("translation-x") {
-                    duration = duration,
+                    duration = AnimationDuration.NUDGE,
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
                 };
