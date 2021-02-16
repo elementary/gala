@@ -47,9 +47,9 @@ public class Gala.ScrollBackend : Object {
     }
 
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation) {
-        Object(actor: actor, orientation: orientation);
+        Object (actor: actor, orientation: orientation);
 
-        actor.scroll_event.connect(on_scroll_event);
+        actor.scroll_event.connect (on_scroll_event);
     }
 
     private bool on_scroll_event (Clutter.ScrollEvent event) {
@@ -102,7 +102,7 @@ public class Gala.ScrollBackend : Object {
         } else {
             direction = delta_y > 0 ? GestureDirection.DOWN : GestureDirection.UP;
         }
-        
+
         return new Gesture () {
             type = GestureType.SCROLL,
             direction = direction,

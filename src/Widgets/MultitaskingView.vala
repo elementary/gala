@@ -225,7 +225,7 @@ namespace Gala {
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
 
             if (is_nudge_animation) {
-                var nudge_delta = (direction == Meta.MotionDirection.LEFT) 
+                var nudge_delta = (direction == Meta.MotionDirection.LEFT)
                     ? WindowManagerGala.NUDGE_GAP
                     : -WindowManagerGala.NUDGE_GAP;
                 target_x = initial_x + nudge_delta;
@@ -241,7 +241,7 @@ namespace Gala {
             }
 
             debug ("Starting MultitaskingView switch workspace animation:");
-            debug ("Active workspace index: %d",  active_workspace_index);
+            debug ("Active workspace index: %d", active_workspace_index);
             debug ("Target workspace index: %d", target_workspace_index);
             debug ("Total number of workspaces: %d", num_workspaces);
             debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
