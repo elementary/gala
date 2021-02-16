@@ -61,7 +61,9 @@ namespace Gala {
             display = wm.get_display ();
 
             gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
-            gesture_tracker = new GestureTracker (this, AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH, Clutter.Orientation.HORIZONTAL);
+
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
             workspaces = new Actor ();

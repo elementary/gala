@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- public class Gala.GestureTracker : Object {
+public class Gala.GestureTracker : Object {
     /**
      * Percentage of the animation to be completed to apply the action.
      */
@@ -38,7 +38,6 @@
      */
     private const double MAX_VELOCITY = 0.5;
 
-    public Clutter.Actor actor { get; construct; }
     public int min_animation_duration { get; construct; }
     public int max_animation_duration { get; construct; }
 
@@ -71,11 +70,16 @@
         velocity = 0;
     }
 
-    public GestureTracker (Clutter.Actor actor, int min_animation_duration, int max_animation_duration, Clutter.Orientation orientation) {
-        Object (actor: actor, min_animation_duration: min_animation_duration,
-            max_animation_duration: max_animation_duration);
+    public GestureTracker (int min_animation_duration, int max_animation_duration) {
+        Object (min_animation_duration: min_animation_duration, max_animation_duration: max_animation_duration);
+    }
 
-        // TODO Use the scroll backend only if required (pass a config or something)
+    /**
+     * Allow to receive scroll gestures.
+     * @param actor Clutter actor that will receive the scroll events.
+     * @param orientation If we are interested in the horizontal or vertical axis.
+     */
+    public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
         scroll_backend = new ScrollBackend (actor, orientation);
         scroll_backend.on_gesture_detected.connect ((gesture) => on_gesture_detected(gesture));
         scroll_backend.on_begin.connect (update_animation_begin);
@@ -129,25 +133,6 @@
         }
 
         return value;
-    }
-
-    public void update_animation (HashTable<string,Variant> hints) {
-        string event = hints.get ("event").get_string ();
-        double percentage = hints.get ("percentage").get_double ();
-        uint64 elapsed_time = hints.get ("elapsed_time").get_uint64 ();
-
-        switch (event) {
-            case "begin":
-                update_animation_begin (percentage, elapsed_time);
-                break;
-            case "update":
-                update_animation_update (percentage, elapsed_time);
-                break;
-            case "end":
-            default:
-                update_animation_end (percentage, elapsed_time);
-                break;
-        }
     }
 
     private void update_animation_begin (double percentage, uint64 elapsed_time) {
