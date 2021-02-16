@@ -59,6 +59,7 @@ public class Gala.GestureTracker : Object {
      */
     private const int DURATION_MULTIPLIER = 3;
 
+    public GestureSettings settings { get; construct; }
     public int min_animation_duration { get; construct; }
     public int max_animation_duration { get; construct; }
 
@@ -66,7 +67,6 @@ public class Gala.GestureTracker : Object {
      * Property to control when event signals are emitted or not.
      */
     public bool enabled { get; set; default = true; }
-
 
     /**
      * Emitted when a new gesture is detected.
@@ -112,6 +112,8 @@ public class Gala.GestureTracker : Object {
     private double velocity;
 
     construct {
+        settings = new GestureSettings ();
+
         handlers = new Gee.ArrayList<ulong> ();
         previous_percentage = 0;
         previous_time = 0;
