@@ -225,8 +225,9 @@ namespace Gala {
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
 
             if (is_nudge_animation) {
-                // TODO Move this to a constant and share it with wm.play_nudge_animation
-                var nudge_delta = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
+                var nudge_delta = (direction == Meta.MotionDirection.LEFT) 
+                    ? WindowManagerGala.NUDGE_GAP
+                    : -WindowManagerGala.NUDGE_GAP;
                 target_x = initial_x + nudge_delta;
             } else {
                 foreach (var child in workspaces.get_children ()) {
@@ -248,7 +249,6 @@ namespace Gala {
             debug ("Target X: %f", target_x);
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                // TODO Once https://github.com/elementary/gala/pull/1036 gets merged, apply the same multiplier
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
                 workspaces.x = x;
             };
