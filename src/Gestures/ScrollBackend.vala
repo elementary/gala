@@ -64,11 +64,12 @@ public class Gala.ScrollBackend : Object {
         uint64 time = event.get_time ();
 
         if (!started) {
-            // TODO The first time the gesture starts the direction is incorrect
-            started = true;
-            Gesture gesture = build_gesture (delta_x, delta_y, orientation);
-            on_gesture_detected (gesture);
-            on_begin (delta, time);
+            if (delta_x != 0 || delta_y != 0) {
+                started = true;
+                Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+                on_gesture_detected (gesture);
+                on_begin (delta, time);
+            }
         } else if (x == 0 && y == 0) {
             started = false;
             delta_x = 0;
@@ -102,7 +103,7 @@ public class Gala.ScrollBackend : Object {
     private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
-            direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
+            direction = delta_x > 0 ? GestureDirection.LEFT : GestureDirection.RIGHT;
         } else {
             direction = delta_y > 0 ? GestureDirection.UP : GestureDirection.DOWN;
         }
