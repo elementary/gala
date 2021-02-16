@@ -40,8 +40,6 @@ namespace Gala {
         bool opened = false;
         bool animating = false;
 
-        bool is_smooth_scrolling = false;
-
         List<MonitorClone> window_containers_monitors;
 
         IconGroupContainer icon_groups;
@@ -169,14 +167,17 @@ namespace Gala {
         }
 
         /**
-         * Scroll through workspaces
+         * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
+         * GestureTracker.
          */
         public override bool scroll_event (ScrollEvent scroll_event) {
-            if (!opened)
+            if (!opened) {
                 return true;
+            }
 
-            if (scroll_event.direction != ScrollDirection.SMOOTH)
+            if (scroll_event.direction != ScrollDirection.SMOOTH) {
                 return false;
+            }
 
             double dx, dy;
 #if VALA_0_32
@@ -186,39 +187,18 @@ namespace Gala {
             event->get_scroll_delta (out dx, out dy);
 #endif
 
-            var direction = MotionDirection.LEFT;
-
-            // concept from maya to detect mouse wheel and proper smooth scroll and prevent
-            // too much repetition on the events
+            // concept from maya to detect mouse wheel
             if (Math.fabs (dy) == 1.0) {
-                // mouse wheel scroll
-                direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
-            } else if (!is_smooth_scrolling) {
-                // actual smooth scroll
-                var choice = Math.fabs (dx) > Math.fabs (dy) ? dx : dy;
+                var direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
 
-                if (choice > 0.3)
-                    direction = MotionDirection.RIGHT;
-                else if (choice < -0.3)
-                    direction = MotionDirection.LEFT;
-                else
-                    return false;
+                unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+                var active_workspace = manager.get_active_workspace ();
+                var new_workspace = active_workspace.get_neighbor (direction);
 
-                is_smooth_scrolling = true;
-                Timeout.add (SMOOTH_SCROLL_DELAY, () => {
-                    is_smooth_scrolling = false;
-                    return false;
-                });
-            } else
-                // smooth scroll delay still active
-                return false;
-
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_workspace = manager.get_active_workspace ();
-            var new_workspace = active_workspace.get_neighbor (direction);
-
-            if (active_workspace != new_workspace)
-                new_workspace.activate (display.get_current_time ());
+                if (active_workspace != new_workspace) {
+                    new_workspace.activate (display.get_current_time ());
+                }
+            }
 
             return false;
         }
@@ -235,7 +215,7 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
-            // TODO Move this duration to a contant an share it with wm.play_nudge_animation
+            // TODO Move this duration to a constant an share it with wm.play_nudge_animation
             int NUDGE_ANIMATION_DURATION = 360;
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
