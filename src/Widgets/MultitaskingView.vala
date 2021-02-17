@@ -303,7 +303,7 @@ namespace Gala {
                 workspace_clone.restore_easing_state ();
             }
 
-            workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH : 0);
+            workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
             workspaces.x = -active_x;
 
             reposition_icon_groups (animate);

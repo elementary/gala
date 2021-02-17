@@ -1917,7 +1917,7 @@ namespace Gala {
 
                 int duration = gesture_animation_director.running
                     ? calculated_duration
-                    : AnimationDuration.WORKSPACE_SWITCH;
+                    : AnimationDuration.WORKSPACE_SWITCH_MIN;
                 animating_switch_workspace = true;
 
                 out_group.set_easing_mode (animation_mode);
