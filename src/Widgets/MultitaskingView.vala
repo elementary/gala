@@ -204,7 +204,7 @@ namespace Gala {
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            if (gesture.type == GestureType.SCROLL) {
+            if (gesture.type == Gdk.EventType.SCROLL) {
                 Meta.MotionDirection direction = (gesture.direction == GestureDirection.LEFT)
                     ? Meta.MotionDirection.LEFT
                     : Meta.MotionDirection.RIGHT;

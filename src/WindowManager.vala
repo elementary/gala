@@ -500,7 +500,6 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
-            int duration = 360;
             var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {

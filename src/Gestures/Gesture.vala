@@ -17,13 +17,6 @@
  */
 
 namespace Gala {
-    public enum GestureType {
-        NOT_SUPPORTED = 0,
-        SWIPE = 1,
-        PINCH = 2,
-        SCROLL,
-    }
-
     public enum GestureDirection {
         UNKNOWN = 0,
 
@@ -38,16 +31,10 @@ namespace Gala {
         OUT = 6,
     }
 
-    public enum DeviceType {
-        UNKNOWN = 0,
-        TOUCHPAD = 1,
-        TOUCHSCREEN = 2,
-    }
-
     public class Gesture {
-        public GestureType type;
+        public Gdk.EventType type;
         public GestureDirection direction;
         public int fingers;
-        public DeviceType performed_on_device_type;
+        public Gdk.InputSource performed_on_device_type;
     }
 }

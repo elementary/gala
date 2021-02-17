@@ -34,8 +34,8 @@ public class Gala.GestureSettings : Object {
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
     }
 
-    public bool is_natural_scroll_enabled (DeviceType device_type) {
-        return (device_type == DeviceType.TOUCHSCREEN)
+    public bool is_natural_scroll_enabled (Gdk.InputSource device_type) {
+        return (device_type == Gdk.InputSource.TOUCHSCREEN)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
     }

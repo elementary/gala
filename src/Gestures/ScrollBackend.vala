@@ -104,10 +104,10 @@ public class Gala.ScrollBackend : Object {
         }
 
         return new Gesture () {
-            type = GestureType.SCROLL,
+            type = Gdk.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = DeviceType.TOUCHPAD
+            performed_on_device_type = Gdk.InputSource.TOUCHPAD
         };
     }
 
