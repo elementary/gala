@@ -1,163 +1,159 @@
-//
-//  Copyright 2021 elementary, Inc. (https://elementary.io)
-//            2015 Rory J Sanderson
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2021 elementary, Inc (https://elementary.io)
+ *           2015 Rory J Sanderson
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-using Clutter;
-using Meta;
+public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
+    private const int DEFAULT_CORNER_RADIUS = 6;
 
-namespace Gala.Plugins.MaskCorners {
-    public class Main : Gala.Plugin {
-        Gala.WindowManager? wm = null;
-        Display display;
+    private Gala.WindowManager? wm = null;
+    private GLib.Settings settings;
+    private int corner_radius = DEFAULT_CORNER_RADIUS;
+    private List<Clutter.Actor>[] cornermasks;
+    private Meta.Display display;
 
-        private GLib.Settings settings;
+    public override void initialize (Gala.WindowManager wm) {
+        this.wm = wm;
+        display = wm.get_display ();
 
-        List<Actor>[] cornermasks;
-        private const int DEFAULT_CORNER_RADIUS = 6;
-        private int corner_radius = DEFAULT_CORNER_RADIUS;
+        settings = new GLib.Settings (Config.SCHEMA + ".mask-corners");
 
-        public override void initialize (Gala.WindowManager wm) {
-            this.wm = wm;
-            display = wm.get_display ();
+        setup_cornermasks ();
 
-            settings = new GLib.Settings (Config.SCHEMA + ".mask-corners");
+        settings.changed.connect (resetup_cornermasks);
+    }
 
-            setup_cornermasks ();
+    public override void destroy () {
+        destroy_cornermasks ();
+    }
 
-            settings.changed.connect (resetup_cornermasks);
+    private void setup_cornermasks () {
+        if (!settings.get_boolean ("enable")) {
+            return;
         }
 
-        public override void destroy () {
-            destroy_cornermasks ();
+        var scale = Utils.get_ui_scaling_factor ();
+
+        int n_monitors = display.get_n_monitors ();
+        cornermasks = new List<Clutter.Actor>[n_monitors];
+        corner_radius = DEFAULT_CORNER_RADIUS * scale;
+
+        if (settings.get_boolean ("only-on-primary")) {
+            add_cornermasks (display.get_primary_monitor ());
+        } else {
+            for (int m = 0; m < n_monitors; m++)
+                add_cornermasks (m);
         }
 
-        private void setup_cornermasks () {
-            if (!settings.get_boolean ("enable")) {
-                return;
-            }
-
-            var scale = Utils.get_ui_scaling_factor ();
-
-            int n_monitors = display.get_n_monitors ();
-            cornermasks = new List<Actor>[n_monitors];
-            corner_radius = DEFAULT_CORNER_RADIUS * scale;
-
-            if (settings.get_boolean ("only-on-primary")) {
-                add_cornermasks (display.get_primary_monitor ());
-            } else {
-                for (int m = 0; m < n_monitors; m++)
-                    add_cornermasks (m);
-            }
-
-            if (settings.get_boolean ("disable-on-fullscreen")) {
-                display.in_fullscreen_changed.connect (fullscreen_changed);
-            }
-
-            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
-            monitor_manager.monitors_changed.connect (resetup_cornermasks);
-
-            display.gl_video_memory_purged.connect (resetup_cornermasks);
+        if (settings.get_boolean ("disable-on-fullscreen")) {
+            display.in_fullscreen_changed.connect (fullscreen_changed);
         }
 
-        void destroy_cornermasks () {
-            display.gl_video_memory_purged.disconnect (resetup_cornermasks);
+        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        monitor_manager.monitors_changed.connect (resetup_cornermasks);
 
-            unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
-            monitor_manager.monitors_changed.disconnect (resetup_cornermasks);
-            display.in_fullscreen_changed.disconnect (fullscreen_changed);
+        display.gl_video_memory_purged.connect (resetup_cornermasks);
+    }
 
-            foreach (unowned List<Actor> list in cornermasks) {
-                foreach (Actor actor in list)
-                    actor.destroy ();
+    private void destroy_cornermasks () {
+        display.gl_video_memory_purged.disconnect (resetup_cornermasks);
+
+        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        monitor_manager.monitors_changed.disconnect (resetup_cornermasks);
+        display.in_fullscreen_changed.disconnect (fullscreen_changed);
+
+        foreach (unowned List<Clutter.Actor> list in cornermasks) {
+            foreach (Clutter.Actor actor in list) {
+                actor.destroy ();
             }
         }
+    }
 
-        void resetup_cornermasks () {
-            destroy_cornermasks ();
-            setup_cornermasks ();
-        }
+    private void resetup_cornermasks () {
+        destroy_cornermasks ();
+        setup_cornermasks ();
+    }
 
-        void fullscreen_changed () {
-            for (int i = 0; i < display.get_n_monitors (); i++) {
-                foreach (Actor actor in cornermasks[i]) {
-                    if (display.get_monitor_in_fullscreen (i))
-                        actor.hide ();
-                    else
-                        actor.show ();
+    private void fullscreen_changed () {
+        for (int i = 0; i < display.get_n_monitors (); i++) {
+            foreach (Clutter.Actor actor in cornermasks[i]) {
+                if (display.get_monitor_in_fullscreen (i)) {
+                    actor.hide ();
+                } else {
+                    actor.show ();
                 }
-             }
-        }
-
-        void add_cornermasks (int monitor_no) {
-            var monitor_geometry = display.get_monitor_geometry (monitor_no);
-
-            Canvas canvas = new Canvas ();
-            canvas.set_size (corner_radius, corner_radius);
-            canvas.draw.connect (draw_cornermask);
-            canvas.invalidate ();
-
-            Actor actor = new Actor ();
-            actor.set_content (canvas);
-            actor.set_size (corner_radius, corner_radius);
-            actor.set_position (monitor_geometry.x, monitor_geometry.y);
-            actor.set_pivot_point ((float) 0.5, (float) 0.5);
-
-            cornermasks[monitor_no].append (actor);
-            wm.stage.add_child (actor);
-
-            for (int p = 1; p < 4; p++) {
-                Clone clone = new Clone (actor);
-                clone.rotation_angle_z = p * 90;
-
-                switch (p) {
-                    case 1:
-                        clone.set_position (monitor_geometry.x + monitor_geometry.width, monitor_geometry.y);
-                        break;
-                    case 2:
-                        clone.set_position (monitor_geometry.x + monitor_geometry.width, monitor_geometry.y + monitor_geometry.height);
-                        break;
-                    case 3:
-                        clone.set_position (monitor_geometry.x, monitor_geometry.y + monitor_geometry.height);
-                        break;
-                }
-
-                cornermasks[monitor_no].append (clone);
-                wm.stage.add_child (clone);
             }
+         }
+    }
+
+    private void add_cornermasks (int monitor_no) {
+        var monitor_geometry = display.get_monitor_geometry (monitor_no);
+
+        var canvas = new Clutter.Canvas ();
+        canvas.set_size (corner_radius, corner_radius);
+        canvas.draw.connect (draw_cornermask);
+        canvas.invalidate ();
+
+        var actor = new Clutter.Actor ();
+        actor.set_content (canvas);
+        actor.set_size (corner_radius, corner_radius);
+        actor.set_position (monitor_geometry.x, monitor_geometry.y);
+        actor.set_pivot_point ((float) 0.5, (float) 0.5);
+
+        cornermasks[monitor_no].append (actor);
+        wm.stage.add_child (actor);
+
+        for (int p = 1; p < 4; p++) {
+            var clone = new Clutter.Clone (actor);
+            clone.rotation_angle_z = p * 90;
+
+            switch (p) {
+                case 1:
+                    clone.set_position (monitor_geometry.x + monitor_geometry.width, monitor_geometry.y);
+                    break;
+                case 2:
+                    clone.set_position (monitor_geometry.x + monitor_geometry.width, monitor_geometry.y + monitor_geometry.height);
+                    break;
+                case 3:
+                    clone.set_position (monitor_geometry.x, monitor_geometry.y + monitor_geometry.height);
+                    break;
+            }
+
+            cornermasks[monitor_no].append (clone);
+            wm.stage.add_child (clone);
         }
+    }
 
-        bool draw_cornermask (Cairo.Context context) {
-            var buffer = new Granite.Drawing.BufferSurface (corner_radius, corner_radius);
-            var buffer_context = buffer.context;
+    private bool draw_cornermask (Cairo.Context context) {
+        var buffer = new Granite.Drawing.BufferSurface (corner_radius, corner_radius);
+        var buffer_context = buffer.context;
 
-            buffer_context.arc (corner_radius, corner_radius, corner_radius, Math.PI, 1.5 * Math.PI);
-            buffer_context.line_to (0, 0);
-            buffer_context.line_to (0, corner_radius);
-            buffer_context.set_source_rgb (0, 0, 0);
-            buffer_context.fill ();
+        buffer_context.arc (corner_radius, corner_radius, corner_radius, Math.PI, 1.5 * Math.PI);
+        buffer_context.line_to (0, 0);
+        buffer_context.line_to (0, corner_radius);
+        buffer_context.set_source_rgb (0, 0, 0);
+        buffer_context.fill ();
 
-            context.set_operator (Cairo.Operator.CLEAR);
-            context.paint ();
-            context.set_operator (Cairo.Operator.OVER);
-            context.set_source_surface (buffer.surface, 0, 0);
-            context.paint ();
+        context.set_operator (Cairo.Operator.CLEAR);
+        context.paint ();
+        context.set_operator (Cairo.Operator.OVER);
+        context.set_source_surface (buffer.surface, 0, 0);
+        context.paint ();
 
-            return true;
-        }
+        return true;
     }
 }
 
