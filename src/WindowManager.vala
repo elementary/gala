@@ -501,6 +501,7 @@ namespace Gala {
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
             var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
+            dest *= InternalUtils.get_ui_scaling_factor ();
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage, true);

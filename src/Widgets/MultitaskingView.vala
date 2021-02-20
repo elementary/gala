@@ -228,7 +228,7 @@ namespace Gala {
                 var nudge_delta = (direction == Meta.MotionDirection.LEFT)
                     ? WindowManagerGala.NUDGE_GAP
                     : -WindowManagerGala.NUDGE_GAP;
-                target_x = initial_x + nudge_delta;
+                target_x = initial_x + nudge_delta * InternalUtils.get_ui_scaling_factor ();
             } else {
                 foreach (var child in workspaces.get_children ()) {
                     unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
