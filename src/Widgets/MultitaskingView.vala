@@ -29,6 +29,7 @@ namespace Gala {
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
         private GestureAnimationDirector gesture_animation_director;
+        private GestureTracker gesture_tracker;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -38,8 +39,6 @@ namespace Gala {
         ModalProxy modal_proxy;
         bool opened = false;
         bool animating = false;
-
-        bool is_smooth_scrolling = false;
 
         List<MonitorClone> window_containers_monitors;
 
@@ -60,6 +59,10 @@ namespace Gala {
             display = wm.get_display ();
 
             gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
+
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -164,14 +167,17 @@ namespace Gala {
         }
 
         /**
-         * Scroll through workspaces
+         * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
+         * GestureTracker.
          */
         public override bool scroll_event (ScrollEvent scroll_event) {
-            if (!opened)
+            if (!opened) {
                 return true;
+            }
 
-            if (scroll_event.direction != ScrollDirection.SMOOTH)
+            if (scroll_event.direction != ScrollDirection.SMOOTH) {
                 return false;
+            }
 
             double dx, dy;
 #if VALA_0_32
@@ -181,41 +187,90 @@ namespace Gala {
             event->get_scroll_delta (out dx, out dy);
 #endif
 
-            var direction = MotionDirection.LEFT;
-
-            // concept from maya to detect mouse wheel and proper smooth scroll and prevent
-            // too much repetition on the events
+            // concept from maya to detect mouse wheel
             if (Math.fabs (dy) == 1.0) {
-                // mouse wheel scroll
-                direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
-            } else if (!is_smooth_scrolling) {
-                // actual smooth scroll
-                var choice = Math.fabs (dx) > Math.fabs (dy) ? dx : dy;
+                var direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
 
-                if (choice > 0.3)
-                    direction = MotionDirection.RIGHT;
-                else if (choice < -0.3)
-                    direction = MotionDirection.LEFT;
-                else
-                    return false;
+                unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+                var active_workspace = manager.get_active_workspace ();
+                var new_workspace = active_workspace.get_neighbor (direction);
 
-                is_smooth_scrolling = true;
-                Timeout.add (SMOOTH_SCROLL_DELAY, () => {
-                    is_smooth_scrolling = false;
-                    return false;
-                });
-            } else
-                // smooth scroll delay still active
-                return false;
-
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_workspace = manager.get_active_workspace ();
-            var new_workspace = active_workspace.get_neighbor (direction);
-
-            if (active_workspace != new_workspace)
-                new_workspace.activate (display.get_current_time ());
+                if (active_workspace != new_workspace) {
+                    new_workspace.activate (display.get_current_time ());
+                }
+            }
 
             return false;
+        }
+
+        private void on_gesture_detected (Gesture gesture) {
+            if (gesture.type == Gdk.EventType.SCROLL) {
+                Meta.MotionDirection direction = (gesture.direction == GestureDirection.LEFT)
+                    ? Meta.MotionDirection.LEFT
+                    : Meta.MotionDirection.RIGHT;
+                switch_workspace_with_gesture (direction);
+            }
+        }
+
+        private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            var num_workspaces = manager.get_n_workspaces ();
+            var active_workspace_index = manager.get_active_workspace ().index ();
+            var target_workspace_index = (direction == Meta.MotionDirection.LEFT)
+                ? active_workspace_index - 1
+                : active_workspace_index + 1;
+
+            float initial_x = workspaces.x;
+            float target_x = 0;
+            bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
+
+            if (is_nudge_animation) {
+                var nudge_delta = (direction == Meta.MotionDirection.LEFT)
+                    ? WindowManagerGala.NUDGE_GAP
+                    : -WindowManagerGala.NUDGE_GAP;
+                target_x = initial_x + nudge_delta * InternalUtils.get_ui_scaling_factor ();
+            } else {
+                foreach (var child in workspaces.get_children ()) {
+                    unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                    var index = workspace_clone.workspace.index ();
+                    if (index == target_workspace_index) {
+                        target_x = -workspace_clone.multitasking_view_x ();
+                        break;
+                    }
+                }
+            }
+
+            debug ("Starting MultitaskingView switch workspace animation:");
+            debug ("Active workspace index: %d", active_workspace_index);
+            debug ("Target workspace index: %d", target_workspace_index);
+            debug ("Total number of workspaces: %d", num_workspaces);
+            debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
+            debug ("Initial X: %f", initial_x);
+            debug ("Target X: %f", target_x);
+
+            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
+                workspaces.x = x;
+            };
+
+            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+                gesture_tracker.enabled = false;
+
+                var duration = is_nudge_animation ? (AnimationDuration.NUDGE / 2) : calculated_duration;
+                workspaces.set_easing_duration (duration);
+                workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
+
+                workspaces.get_transition ("x").completed.connect (() => {
+                    gesture_tracker.enabled = true;
+
+                    if (!is_nudge_animation && !cancel_action) {
+                        manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
+                        update_positions (false);
+                    }
+                });
+            };
+
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
 
         /**
