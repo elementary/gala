@@ -103,6 +103,11 @@ namespace Gala {
         private GestureAnimationDirector gesture_animation_director;
 
         /**
+         * Amount of pixels to move on the nudge animation.
+         */
+        public const float NUDGE_GAP = 32;
+
+        /**
          * Gap to show between workspaces while switching between them.
          */
         public const int WORKSPACE_GAP = 24;
@@ -497,8 +502,8 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
-            int duration = 360;
-            var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
+            var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
+            dest *= InternalUtils.get_ui_scaling_factor ();
 
             GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage, true);
@@ -507,7 +512,7 @@ namespace Gala {
 
             GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
                 var nudge_gesture = new Clutter.PropertyTransition ("x") {
-                    duration = (duration / 2),
+                    duration = (AnimationDuration.NUDGE / 2),
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.LINEAR
                 };
@@ -525,7 +530,7 @@ namespace Gala {
                 GLib.Value[] x = { dest };
 
                 var nudge = new Clutter.KeyframeTransition ("translation-x") {
-                    duration = duration,
+                    duration = AnimationDuration.NUDGE,
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
                 };
@@ -1918,7 +1923,7 @@ namespace Gala {
 
                 int duration = gesture_animation_director.running
                     ? calculated_duration
-                    : AnimationDuration.WORKSPACE_SWITCH;
+                    : AnimationDuration.WORKSPACE_SWITCH_MIN;
                 animating_switch_workspace = true;
 
                 out_group.set_easing_mode (animation_mode);

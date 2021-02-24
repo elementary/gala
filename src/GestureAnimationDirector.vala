@@ -67,7 +67,7 @@ public class Gala.GestureAnimationDirector : Object {
         velocity = 0;
     }
 
-    public GestureAnimationDirector(int min_animation_duration, int max_animation_duration) {
+    public GestureAnimationDirector (int min_animation_duration, int max_animation_duration) {
         Object (min_animation_duration: min_animation_duration, max_animation_duration: max_animation_duration);
     }
 
