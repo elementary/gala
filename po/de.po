@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2021-02-15 19:46+0000\n"
+"PO-Revision-Date: 2021-02-25 19:53+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
 "Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
 "\n"
@@ -102,7 +102,7 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 "Ein Fenster &amp; Compositing Manager basierend auf libmutter, entwickelt "
-"von Elementary für die Verwendung mit Pantheon."
+"von elementary für die Verwendung mit Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
