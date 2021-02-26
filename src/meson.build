@@ -27,6 +27,7 @@ gala_bin_sources = files(
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',
     'Gestures/ScrollBackend.vala',
+    'Gestures/ToucheggBackend.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',

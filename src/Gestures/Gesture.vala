@@ -17,6 +17,9 @@
  */
 
 namespace Gala {
+    /**
+     * Physical direction of the gesture. This direction doesn't follow natural scroll preferences.
+     */
     public enum GestureDirection {
         UNKNOWN = 0,
 

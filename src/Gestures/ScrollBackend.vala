@@ -33,6 +33,7 @@ public class Gala.ScrollBackend : Object {
 
     public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
+    public GestureSettings settings { get; construct; }
 
     private bool started;
     private double delta_x;
@@ -46,8 +47,8 @@ public class Gala.ScrollBackend : Object {
         direction = GestureDirection.UNKNOWN;
     }
 
-    public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation) {
-        Object (actor: actor, orientation: orientation);
+    public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
+        Object (actor: actor, orientation: orientation, settings: settings);
 
         actor.scroll_event.connect (on_scroll_event);
     }
@@ -60,6 +61,16 @@ public class Gala.ScrollBackend : Object {
         uint64 time = event.get_time ();
         double x, y;
         event.get_scroll_delta (out x, out y);
+
+        // Scroll events apply the natural scroll preferences out of the box
+        // Standardize them so the direction matches the physical direction of the gesture and the
+        // GestureTracker user can decide if it wants to follow natural scroll settings or not
+        bool natural_scroll = settings.is_natural_scroll_enabled (Gdk.InputSource.TOUCHPAD);
+        if (natural_scroll) {
+            x *= -1;
+            y *= -1;
+        }
+
         delta_x += x;
         delta_y += y;
 
