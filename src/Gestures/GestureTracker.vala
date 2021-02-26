@@ -100,6 +100,11 @@ public class Gala.GestureTracker : Object {
     public delegate void OnEnd (double percentage, bool cancel_action, int calculated_duration);
 
     /**
+     * Backend used if enable_touchpad is called.
+     */
+    private ToucheggBackend touchpad_backend;
+
+    /**
      * Scroll backend used if enable_scroll is called.
      */
     private ScrollBackend scroll_backend;
@@ -126,12 +131,23 @@ public class Gala.GestureTracker : Object {
     }
 
     /**
+     * Allow to receive touchpad multi-touch gestures.
+     */
+    public void enable_touchpad () {
+        touchpad_backend = ToucheggBackend.get_default ();
+        touchpad_backend.on_gesture_detected.connect (gesture_detected);
+        touchpad_backend.on_begin.connect (gesture_begin);
+        touchpad_backend.on_update.connect (gesture_update);
+        touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    /**
      * Allow to receive scroll gestures.
      * @param actor Clutter actor that will receive the scroll events.
      * @param orientation If we are interested in the horizontal or vertical axis.
      */
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
-        scroll_backend = new ScrollBackend (actor, orientation);
+        scroll_backend = new ScrollBackend (actor, orientation, settings);
         scroll_backend.on_gesture_detected.connect (gesture_detected);
         scroll_backend.on_begin.connect (gesture_begin);
         scroll_backend.on_update.connect (gesture_update);
