@@ -61,6 +61,7 @@ namespace Gala {
             gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
 
             gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_touchpad ();
             gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
@@ -204,10 +205,21 @@ namespace Gala {
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            if (gesture.type == Gdk.EventType.SCROLL) {
-                Meta.MotionDirection direction = (gesture.direction == GestureDirection.LEFT)
-                    ? Meta.MotionDirection.LEFT
-                    : Meta.MotionDirection.RIGHT;
+            if (!opened) {
+                return;
+            }
+
+            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
+            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
+
+            bool can_handle_scroll = gesture.type == Gdk.EventType.SCROLL;
+            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
+                && (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
+                && gesture.fingers == fingers;
+            bool can_handle_gesture = enabled && (can_handle_scroll || can_handle_swipe);
+
+            if (can_handle_gesture) {
+                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }
         }
