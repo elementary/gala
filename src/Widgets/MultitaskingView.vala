@@ -28,8 +28,8 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
-        private GestureAnimationDirector gesture_animation_director;
-        private GestureTracker gesture_tracker;
+        private GestureTracker multitasking_gesture_tracker;
+        private GestureTracker workspace_gesture_tracker;
 
         const int SMOOTH_SCROLL_DELAY = 500;
 
@@ -58,12 +58,14 @@ namespace Gala {
             opened = false;
             display = wm.get_display ();
 
-            gesture_animation_director = new GestureAnimationDirector (ANIMATION_DURATION, ANIMATION_DURATION);
+            multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+            multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
 
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            gesture_tracker.enable_touchpad ();
-            gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
-            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+            workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            workspace_gesture_tracker.enable_touchpad ();
+            workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
+            workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
 
             workspaces = new Actor ();
             workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
@@ -143,7 +145,7 @@ namespace Gala {
                     if (monitor == primary)
                         continue;
 
-                    var monitor_clone = new MonitorClone (display, monitor, gesture_animation_director);
+                    var monitor_clone = new MonitorClone (display, monitor, multitasking_gesture_tracker);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -204,13 +206,33 @@ namespace Gala {
             return false;
         }
 
-        private void on_gesture_detected (Gesture gesture) {
+        private void on_multitasking_gesture_detected (Gesture gesture) {
+            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.MULTITASKING_ENABLED);
+            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.MULTITASKING_FINGERS);
+
+            bool up = gesture.direction == GestureDirection.UP;
+            bool down = gesture.direction == GestureDirection.DOWN;
+            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
+                && (up || down)
+                && gesture.fingers == fingers;
+            bool can_handle_gesture = enabled && can_handle_swipe;
+
+            if (can_handle_gesture) {
+                if (up && !opened) {
+                    toggle (true, false);
+                } else if (down && opened) {
+                    toggle (true, false);
+                }
+            }
+        }
+
+        private void on_workspace_gesture_detected (Gesture gesture) {
             if (!opened) {
                 return;
             }
 
-            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
-            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
+            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
+            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
 
             bool can_handle_scroll = gesture.type == Gdk.EventType.SCROLL;
             bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
@@ -219,7 +241,7 @@ namespace Gala {
             bool can_handle_gesture = enabled && (can_handle_scroll || can_handle_swipe);
 
             if (can_handle_gesture) {
-                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }
         }
@@ -260,20 +282,20 @@ namespace Gala {
             debug ("Initial X: %f", initial_x);
             debug ("Target X: %f", target_x);
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
                 workspaces.x = x;
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-                gesture_tracker.enabled = false;
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+                workspace_gesture_tracker.enabled = false;
 
                 var duration = is_nudge_animation ? (AnimationDuration.NUDGE / 2) : calculated_duration;
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
 
                 workspaces.get_transition ("x").completed.connect (() => {
-                    gesture_tracker.enabled = true;
+                    workspace_gesture_tracker.enabled = true;
 
                     if (!is_nudge_animation && !cancel_action) {
                         manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
@@ -282,7 +304,7 @@ namespace Gala {
                 });
             };
 
-            gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            workspace_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
 
         /**
@@ -346,7 +368,7 @@ namespace Gala {
 
         void add_workspace (int num) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), gesture_animation_director);
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), multitasking_gesture_tracker);
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
 
@@ -497,19 +519,8 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void open (HashTable<string,Variant>? hints = null) {
-            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
-
             if (!opened) {
-                if (manual_animation && !animating) {
-                    debug ("Starting MultitaskingView manual open animation");
-                    gesture_animation_director.running = true;
-                }
-
                 toggle ();
-            }
-
-            if (opened && manual_animation && gesture_animation_director.running) {
-                gesture_animation_director.update_animation (hints);
             }
         }
 
@@ -517,19 +528,8 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void close (HashTable<string,Variant>? hints = null) {
-            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
-
             if (opened) {
-                if (manual_animation && !animating) {
-                    debug ("Starting MultitaskingView manual close animation");
-                    gesture_animation_director.running = true;
-                }
-
                 toggle ();
-            }
-
-            if (!opened && manual_animation && gesture_animation_director.running) {
-                gesture_animation_director.update_animation (hints);
             }
         }
 
@@ -538,7 +538,7 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        void toggle () {
+        void toggle (bool with_gesture = false, bool is_cancel_animation = false) {
             if (animating) {
                 return;
             }
@@ -551,9 +551,9 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open ();
+                    container.open (with_gesture, is_cancel_animation);
                 } else {
-                    container.close ();
+                    container.close (with_gesture, is_cancel_animation);
                 }
             }
 
@@ -592,26 +592,26 @@ namespace Gala {
                 child.remove_all_transitions ();
             }
 
-            if (!gesture_animation_director.canceling) {
+            if (!is_cancel_animation) {
                 update_positions (false);
             }
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening) {
-                    workspace.open ();
+                    workspace.open (with_gesture, is_cancel_animation);
                 } else {
-                    workspace.close ();
+                    workspace.close (with_gesture, is_cancel_animation);
                 }
             }
 
             if (opening) {
-                show_docks ();
+                show_docks (with_gesture, is_cancel_animation);
             } else {
-                hide_docks ();
+                hide_docks (with_gesture, is_cancel_animation);
             }
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
                 Timeout.add (animation_duration, () => {
                     if (!opening) {
@@ -631,26 +631,23 @@ namespace Gala {
                     }
 
                     animating = false;
-                    gesture_animation_director.disconnect_all_handlers ();
-                    gesture_animation_director.running = false;
-                    gesture_animation_director.canceling = cancel_action;
 
                     if (cancel_action) {
-                        toggle ();
+                        toggle (false, true);
                     }
 
                     return false;
                 });
             };
 
-            if (!gesture_animation_director.running) {
-                on_animation_end (100, false, 0);
+            if (!with_gesture) {
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers (null, null, (owned) on_animation_end);
+                multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
         }
 
-        void show_docks () {
+        void show_docks (bool with_gesture, bool is_cancel_animation) {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
@@ -688,37 +685,37 @@ namespace Gala {
                 var clone = new SafeWindowClone (window, true);
                 dock_clones.add_child (clone);
 
-                GestureAnimationDirector.OnBegin on_animation_begin = () => {
+                GestureTracker.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
                     clone.set_easing_mode (0);
                 };
 
-                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureTracker.animation_value (initial_y, target_y, percentage);
                     clone.y = y;
                 };
 
-                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                     clone.set_easing_mode (ANIMATION_MODE);
 
                     if (cancel_action) {
                         return;
                     }
 
-                    clone.set_easing_duration (gesture_animation_director.canceling ? 0 : ANIMATION_DURATION);
+                    clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
                     clone.y = target_y;
                 };
 
-                if (!gesture_animation_director.running) {
+                if (!with_gesture) {
                     on_animation_begin (0);
-                    on_animation_end (100, false, 0);
+                    on_animation_end (1, false, 0);
                 } else {
-                    gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                    multitasking_gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
 
-        void hide_docks () {
+        void hide_docks (bool with_gesture, bool is_cancel_animation) {
             float clone_offset_x, clone_offset_y;
             dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
 
@@ -727,12 +724,12 @@ namespace Gala {
                 var initial_y = dock.y;
                 var target_y = dock.source.y - clone_offset_y;
 
-                GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                    var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
+                GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                    var y = GestureTracker.animation_value (initial_y, target_y, percentage);
                     dock.y = y;
                 };
 
-                GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                     if (cancel_action) {
                         return;
                     }
@@ -742,10 +739,10 @@ namespace Gala {
                     dock.y = target_y;
                 };
 
-                if (!gesture_animation_director.running) {
-                    on_animation_end (100, false, 0);
+                if (!with_gesture) {
+                    on_animation_end (1, false, 0);
                 } else {
-                    gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                    multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
