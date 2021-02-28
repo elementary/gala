@@ -31,13 +31,13 @@ namespace Gala {
 
         public Meta.Display display { get; construct; }
         public int monitor { get; construct; }
-        public GestureAnimationDirector gesture_animation_director { get; construct; }
+        public GestureTracker gesture_tracker { get; construct; }
 
         WindowCloneContainer window_container;
         BackgroundManager background;
 
-        public MonitorClone (Meta.Display display, int monitor, GestureAnimationDirector gesture_animation_director) {
-            Object (display: display, monitor: monitor, gesture_animation_director: gesture_animation_director);
+        public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
+            Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
         }
 
         construct {
@@ -46,7 +46,7 @@ namespace Gala {
             background = new BackgroundManager (display, monitor, false);
             background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
-            window_container = new WindowCloneContainer (gesture_animation_director);
+            window_container = new WindowCloneContainer (gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             display.restacked.connect (window_container.restack_windows);
 
@@ -93,16 +93,16 @@ namespace Gala {
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open () {
-            window_container.open ();
+        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
+            window_container.open (null, with_gesture, is_cancel_animation);
             // background.opacity = 0; TODO consider this option
         }
 
         /**
          * Animate the windows back to their old location
          */
-        public void close () {
-            window_container.close ();
+        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+            window_container.close (with_gesture, is_cancel_animation);
             background.opacity = 255;
         }
 
