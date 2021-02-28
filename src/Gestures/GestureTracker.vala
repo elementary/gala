@@ -203,29 +203,21 @@ public class Gala.GestureTracker : Object {
     }
 
     private void gesture_detected (Gesture gesture) {
-        if (!enabled) {
-            return;
+        if (enabled) {
+            on_gesture_detected (gesture);
         }
-
-        on_gesture_detected (gesture);
     }
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
-        if (!enabled) {
-            return;
+        if (enabled) {
+            on_begin (percentage);
         }
-
-        on_begin (percentage);
 
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
 
     private void gesture_update (double percentage, uint64 elapsed_time) {
-        if (!enabled) {
-            return;
-        }
-
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -238,25 +230,25 @@ public class Gala.GestureTracker : Object {
             }
         }
 
-        on_update (applied_percentage (percentage, percentage_delta));
+        if (enabled) {
+            on_update (applied_percentage (percentage, percentage_delta));
+        }
 
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
-        if (!enabled) {
-            return;
-        }
-
         double end_percentage = applied_percentage (percentage, percentage_delta);
         bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
             && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
         int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
 
-        on_end (end_percentage, cancel_action, calculated_duration);
-        disconnect_all_handlers ();
+        if (enabled) {
+            on_end (end_percentage, cancel_action, calculated_duration);
+        }
 
+        disconnect_all_handlers ();
         previous_percentage = 0;
         previous_time = 0;
         percentage_delta = 0;

@@ -169,7 +169,6 @@ namespace Gala {
          *
          * @param direction The direction in which to switch
          */
-        public abstract void switch_to_next_workspace (Meta.MotionDirection direction,
-            HashTable<string,Variant>? hints = null);
+        public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
     }
 }

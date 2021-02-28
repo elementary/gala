@@ -99,8 +99,9 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
+        private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
-        private GestureAnimationDirector gesture_animation_director;
+        private bool switch_workspace_with_gesture = false;
 
         /**
          * Amount of pixels to move on the nudge animation.
@@ -113,7 +114,9 @@ namespace Gala {
         public const int WORKSPACE_GAP = 24;
 
         construct {
-            gesture_animation_director = new GestureAnimationDirector (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_touchpad ();
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
@@ -466,24 +469,31 @@ namespace Gala {
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public void switch_to_next_workspace (Meta.MotionDirection direction, HashTable<string,Variant>? hints = null) {
-            if (animating_switch_workspace) {
+        private void on_gesture_detected (Gesture gesture) {
+            if (workspace_view.is_opened ()) {
                 return;
             }
 
-            bool manual_animation = hints != null && hints.get ("manual_animation").get_boolean ();
-            if (manual_animation) {
-                string event = hints.get ("event").get_string ();
+            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
+            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
 
-                if (event == "begin") {
-                    gesture_animation_director.running = true;
-                } else {
-                    gesture_animation_director.update_animation (hints);
-                    return;
-                }
+            bool can_handle_gesture = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
+                && (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
+                && gesture.fingers == fingers;
+
+            switch_workspace_with_gesture = enabled && can_handle_gesture;
+            if (switch_workspace_with_gesture) {
+                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                switch_to_next_workspace (direction);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+            if (animating_switch_workspace) {
+                return;
             }
 
             unowned Meta.Display display = get_display ();
@@ -492,9 +502,6 @@ namespace Gala {
 
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
-                if (manual_animation) {
-                    gesture_animation_director.update_animation (hints);
-                }
             } else {
                 // if we didnt switch, show a nudge-over animation if one is not already in progress
                 play_nudge_animation (direction);
@@ -502,15 +509,17 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
+            animating_switch_workspace = true;
+
             var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
             dest *= InternalUtils.get_ui_scaling_factor ();
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (0.0f, dest, percentage, true);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
                 ui_group.x = x;
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 var nudge_gesture = new Clutter.PropertyTransition ("x") {
                     duration = (AnimationDuration.NUDGE / 2),
                     remove_on_complete = true,
@@ -520,12 +529,11 @@ namespace Gala {
                 nudge_gesture.set_to_value (0.0f);
                 ui_group.add_transition ("nudge", nudge_gesture);
 
-                gesture_animation_director.disconnect_all_handlers ();
-                gesture_animation_director.running = false;
-                gesture_animation_director.canceling = false;
+                switch_workspace_with_gesture = false;
+                animating_switch_workspace = false;
             };
 
-            if (!gesture_animation_director.running) {
+            if (!switch_workspace_with_gesture) {
                 double[] keyframes = { 0.5 };
                 GLib.Value[] x = { dest };
 
@@ -538,10 +546,13 @@ namespace Gala {
                 nudge.set_to_value (0.0f);
                 nudge.set_key_frames (keyframes);
                 nudge.set_values (x);
+                nudge.completed.connect (() => {
+                    animating_switch_workspace = false;
+                });
 
                 ui_group.add_transition ("nudge", nudge);
             } else {
-                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
@@ -1714,11 +1725,13 @@ namespace Gala {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || gesture_animation_director.canceling) {
-                gesture_animation_director.canceling = false;
+                || animating_switch_workspace) {
+                animating_switch_workspace = false;
                 switch_workspace_completed ();
                 return;
             }
+
+            animating_switch_workspace = true;
 
             float screen_width, screen_height;
             unowned Meta.Display display = get_display ();
@@ -1904,9 +1917,9 @@ namespace Gala {
 
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureAnimationDirector.animation_value (0.0f, x2, percentage, true);
-                var x_in = GestureAnimationDirector.animation_value (-x2, 0.0f, percentage, true);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x_out = GestureTracker.animation_value (0.0f, x2, percentage, true);
+                var x_in = GestureTracker.animation_value (-x2, 0.0f, percentage, true);
 
                 out_group.x = x_out;
                 in_group.x = x_in;
@@ -1915,16 +1928,15 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-                if (gesture_animation_director.running && (percentage == 100 || percentage == 0)) {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+                if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
                     switch_workspace_animation_finished (direction, cancel_action);
                     return;
                 }
 
-                int duration = gesture_animation_director.running
+                int duration = switch_workspace_with_gesture
                     ? calculated_duration
                     : AnimationDuration.WORKSPACE_SWITCH_MIN;
-                animating_switch_workspace = true;
 
                 out_group.set_easing_mode (animation_mode);
                 out_group.set_easing_duration (duration);
@@ -1954,26 +1966,27 @@ namespace Gala {
                 }
             };
 
-            if (!gesture_animation_director.running) {
-                on_animation_end (100, false, 0);
+            if (!switch_workspace_with_gesture) {
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
                 bool cancel_action) {
             end_switch_workspace ();
-            gesture_animation_director.disconnect_all_handlers ();
-            gesture_animation_director.running = false;
-            gesture_animation_director.canceling = cancel_action;
-            animating_switch_workspace = false;
+            switch_workspace_with_gesture = false;
+            animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
                 var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
                     ? Meta.MotionDirection.RIGHT
                     : Meta.MotionDirection.LEFT;
-                switch_to_next_workspace (cancel_direction);
+                unowned Meta.Display display = get_display ();
+                var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+                var neighbor = active_workspace.get_neighbor (cancel_direction);
+                neighbor.activate (display.get_current_time ());
             }
         }
 
