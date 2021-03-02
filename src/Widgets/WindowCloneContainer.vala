@@ -195,7 +195,7 @@ namespace Gala {
             };
 
             var window_positions = InternalUtils.calculate_grid_placement (area, windows);
-            debug (@"############################## $(window_positions.length ())");
+
             foreach (var tilable in window_positions) {
                 unowned WindowClone window = (WindowClone) tilable.id;
                 window.take_slot (tilable.rect, with_gesture, is_cancel_animation);
