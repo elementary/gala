@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2021-03-02 08:37+0000\n"
+"PO-Revision-Date: 2021-03-02 13:03+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -131,7 +131,7 @@ msgstr "תיקון חלונות „תמיד במרחב העבודה הגלוי�
 #: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr "תיקון להיעלמות חלונות ממסכים משניים בזמן שינוי סביבות עבודה"
+msgstr "תיקון חלונות שנעלמים בתצוגות משניות בעת החלפת מרחבי עבודה"
 
 #: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
