@@ -108,11 +108,10 @@ namespace Gala {
             foreach (var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
                     remove_child (child);
+                    reflow ();
                     break;
                 }
             }
-
-            reflow ();
         }
 
         void window_selected_cb (WindowClone tiled) {
