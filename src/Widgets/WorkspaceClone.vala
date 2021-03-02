@@ -121,7 +121,7 @@ namespace Gala {
         public signal void selected (bool close_view);
 
         public Workspace workspace { get; construct; }
-        public GestureAnimationDirector gesture_animation_director { get; construct; }
+        public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
@@ -145,8 +145,8 @@ namespace Gala {
 
         uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Workspace workspace, GestureAnimationDirector gesture_animation_director) {
-            Object (workspace: workspace, gesture_animation_director: gesture_animation_director);
+        public WorkspaceClone (Workspace workspace, GestureTracker gesture_tracker) {
+            Object (workspace: workspace, gesture_tracker: gesture_tracker);
         }
 
         construct {
@@ -162,7 +162,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer (gesture_animation_director);
+            window_container = new WindowCloneContainer (gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);
@@ -316,7 +316,7 @@ namespace Gala {
          * Also sets the current_window of the WindowCloneContainer to the active window
          * if it belongs to this workspace.
          */
-        public void open () {
+        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
             if (opened) {
                 return;
             }
@@ -327,7 +327,7 @@ namespace Gala {
             var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
-            var initial_x = gesture_animation_director.canceling ? x : x + current_x_overlap ();
+            var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
             var target_x = multitasking_view_x ();
 
             var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
@@ -335,20 +335,20 @@ namespace Gala {
 
             update_size (monitor);
 
-            GestureAnimationDirector.OnBegin on_animation_begin = () => {
+            GestureTracker.OnBegin on_animation_begin = () => {
                 x = initial_x;
                 background.set_pivot_point (0.5f, pivotY);
             };
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
                 set_x (x);
 
-                double update_scale = (double)GestureAnimationDirector.animation_value (1.0f, (float)scale, percentage);
+                double update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 if (cancel_action) {
                     return;
                 }
@@ -366,11 +366,11 @@ namespace Gala {
                 background.restore_easing_state ();
             };
 
-            if (!gesture_animation_director.running) {
+            if (!with_gesture) {
                 on_animation_begin (0);
-                on_animation_end (100, false, 0);
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
+                gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
 
             Meta.Rectangle area = {
@@ -388,36 +388,37 @@ namespace Gala {
 
             icon_group.redraw ();
 
-            window_container.open (display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null);
+            Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
+            window_container.open (selected_window, with_gesture, is_cancel_animation);
         }
 
         /**
          * Close the view again by animating the background back to its scale and
          * the windows back to their old locations.
          */
-        public void close () {
+        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
             if (!opened) {
                 return;
             }
 
             opened = false;
 
-            var initial_x = gesture_animation_director.canceling ? x : multitasking_view_x ();
+            var initial_x = is_cancel_animation ? x : multitasking_view_x ();
             var target_x = multitasking_view_x () + current_x_overlap ();
 
             double initial_scale_x, initial_scale_y;
             background.get_scale (out initial_scale_x, out initial_scale_y);
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
                 set_x (x);
 
-                double scale_x = (double) GestureAnimationDirector.animation_value ((float) initial_scale_x, 1.0f, percentage);
-                double scale_y = (double) GestureAnimationDirector.animation_value ((float) initial_scale_y, 1.0f, percentage);
+                double scale_x = (double) GestureTracker.animation_value ((float) initial_scale_x, 1.0f, percentage);
+                double scale_y = (double) GestureTracker.animation_value ((float) initial_scale_y, 1.0f, percentage);
                 background.set_scale (scale_x, scale_y);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 if (cancel_action) {
                     return;
                 }
@@ -435,13 +436,13 @@ namespace Gala {
                 background.restore_easing_state ();
             };
 
-            if (!gesture_animation_director.running) {
-                on_animation_end (100, false, 0);
+            if (!with_gesture) {
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
 
-            window_container.close ();
+            window_container.close (with_gesture, is_cancel_animation);
         }
     }
 }

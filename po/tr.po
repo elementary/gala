@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-12-06 18:16+0000\n"
+"PO-Revision-Date: 2021-02-09 17:10+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:252
@@ -123,7 +123,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
-msgstr "Arka plana sağ  tıklarken bağlam menüsünü göster"
+msgstr "Arka plana sağ tıklarken bağlam menüsünü göster"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
