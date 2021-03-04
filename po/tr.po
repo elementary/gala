@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2021-02-09 17:10+0000\n"
+"PO-Revision-Date: 2021-03-04 23:33+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -153,7 +153,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
-msgstr "Gala Arka Plan Hizmetlerini rıhtımda gösterme"
+msgstr "Gala Arka Plan Hizmetlerini dock'ta gösterme"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
