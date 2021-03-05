@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"POT-Creation-Date: 2021-03-05 06:50+0000\n"
 "PO-Revision-Date: 2021-02-18 11:03+0000\n"
 "Last-Translator: Corentin Noël <corentin@elementary.io>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
-"\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,71 +20,84 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-28 05:04+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr "Captures d'écran"
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2084
 msgid "Does the display look OK?"
 msgstr "L'affichage semble-t-il correct ?"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2087
 msgid "Keep This Configuration"
 msgstr "Conserver cette configuration"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2088
 msgid "Restore Previous Configuration"
 msgstr "Restaurer la configuration précédente"
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2111
+#, fuzzy, c-format
+#| msgid "Screenshots"
+msgid "Screenshot from %s"
+msgstr "Captures d'écran"
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr "Masquer"
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "Déplacer"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "Redimensionner"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "Toujours au premier plan"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "Toujours sur l'espace de travail visible"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "Déplacer vers l'espace de travail de gauche"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "Déplacer vers l'espace de travail de droite"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Take Screenshot"
+msgstr "Captures d'écran"
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "Fermer"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Unmaximize"
 msgstr "Restaurer"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Maximize"
 msgstr "Maximiser"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:283
 msgid "Change Wallpaper…"
 msgstr "Modifier le fond d'écran…"
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:300
 msgid "Display Settings…"
 msgstr "Paramètres d'affichage…"
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:317
 msgid "System Settings…"
 msgstr "Paramètres du système…"
 
