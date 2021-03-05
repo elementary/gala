@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2020-11-22 15:15+0000\n"
+"PO-Revision-Date: 2021-03-05 12:28+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:243
@@ -38,10 +38,9 @@ msgstr "Restaurar as configuração anteriores"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2111
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "Capturas de ecrã"
+msgstr "Captura de ecrã de %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
@@ -72,10 +71,8 @@ msgid "Move to Workspace Right"
 msgstr "Mover para a área de trabalho à direita"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Capturas de ecrã"
+msgstr "Capturar ecrã"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
