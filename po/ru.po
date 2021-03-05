@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-03-02 21:50+0000\n"
+"PO-Revision-Date: 2021-03-05 18:48+0000\n"
 "Last-Translator: DartDeaDia <jorydit@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
-">\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
+"\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:243
 msgid "Screenshots"
-msgstr ""
+msgstr "Снимки экрана"
 
 #: src/WindowManager.vala:2084
 msgid "Does the display look OK?"
@@ -41,11 +41,11 @@ msgstr "Восстановить предыдущие настройки"
 #: src/WindowManager.vala:2111
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Снимок экрана от %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Скрыть"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -73,7 +73,7 @@ msgstr "Переместить на рабочий стол справа"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Сделать снимок экрана"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -89,19 +89,19 @@ msgstr "Развернуть"
 
 #: daemon/MenuDaemon.vala:283
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Изменить обои…"
 
 #: daemon/MenuDaemon.vala:300
 msgid "Display Settings…"
-msgstr ""
+msgstr "Настройки дисплея…"
 
 #: daemon/MenuDaemon.vala:317
 msgid "System Settings…"
-msgstr ""
+msgstr "Параметры системы…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Многозадачность &amp; Управление окнами"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
@@ -117,7 +117,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
 #: data/gala.appdata.xml.in:56
 msgid "Improvements:"
-msgstr ""
+msgstr "Улучшения:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
