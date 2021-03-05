@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2020-11-17 11:11+0000\n"
+"PO-Revision-Date: 2021-03-05 12:28+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:243
@@ -39,10 +39,9 @@ msgstr "Повернути попередню конфігурацію"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2111
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "Знімки екрана"
+msgstr "Знімок екрана від %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
@@ -73,10 +72,8 @@ msgid "Move to Workspace Right"
 msgstr "Перемістити на робочий простір праворуч"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Знімки екрана"
+msgstr "Зробити знімок екрана"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
