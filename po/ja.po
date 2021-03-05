@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2020-11-17 11:11+0000\n"
+"PO-Revision-Date: 2021-03-05 10:20+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:243
@@ -38,10 +38,9 @@ msgstr "前の設定へ戻す"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2111
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "スクリーンショット"
+msgstr "スクリーンショット %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
@@ -72,10 +71,8 @@ msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "スクリーンショット"
+msgstr "スクリーンショットを撮る"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
