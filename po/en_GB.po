@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-02-14 23:29+0000\n"
+"PO-Revision-Date: 2021-03-06 08:57+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -38,10 +38,9 @@ msgstr "Restore Previous Configuration"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2111
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "Screenshots"
+msgstr "Screenshot from %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
@@ -72,10 +71,8 @@ msgid "Move to Workspace Right"
 msgstr "Move to Workspace Right"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Screenshots"
+msgstr "Take Screenshot"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
