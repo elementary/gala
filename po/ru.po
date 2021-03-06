@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
 "PO-Revision-Date: 2021-03-06 17:44+0000\n"
-"Last-Translator: Daniil <solodyankin.daniilgo@gmail.com>\n"
+"Last-Translator: DartDeaDia <jorydit@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -175,7 +175,7 @@ msgstr "Улучшение теней окон для устаревших пр�
 
 #: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
-msgstr "Исправление потенциального падения при создании скриншота"
+msgstr "Исправлена вероятность сбоя при создании снимков экрана"
 
 #: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
