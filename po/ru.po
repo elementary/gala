@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-03-06 17:45+0000\n"
+"PO-Revision-Date: 2021-03-06 18:55+0000\n"
 "Last-Translator: DartDeaDia <jorydit@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
@@ -183,7 +183,7 @@ msgstr "Исправлено положения уведомления посл�
 
 #: data/gala.appdata.xml.in:61
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr "Исправление анимации для перемещения и максимизации окна"
+msgstr "Исправлена анимация для перемещения и максимизации окон"
 
 #: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
