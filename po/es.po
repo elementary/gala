@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-03-05 10:20+0000\n"
-"Last-Translator: Alvaro <alvaroaraoz_92@hotmail.com>\n"
+"PO-Revision-Date: 2021-03-08 18:26+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
 "Language: es\n"
@@ -40,7 +40,7 @@ msgstr "Restablecer configuración anterior"
 #: src/WindowManager.vala:2111
 #, c-format
 msgid "Screenshot from %s"
-msgstr "Capturas de pantalla de %s"
+msgstr "Captura de pantalla de %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
@@ -71,10 +71,8 @@ msgid "Move to Workspace Right"
 msgstr "Mover al área de trabajo derecha"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Capturas de pantalla"
+msgstr "Hacer captura de pantalla"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
