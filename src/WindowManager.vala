@@ -886,6 +886,9 @@ namespace Gala {
                     var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
                     workspace.activate (display.get_current_time ());
                     break;
+                case ActionType.SCREENSHOT_CURRENT:
+                    screenshot_current_window ();
+                    break;
                 default:
                     warning ("Trying to run unknown action");
                     break;
@@ -2099,6 +2102,21 @@ namespace Gala {
 
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
+        }
+
+        private async void screenshot_current_window () {
+            try {
+                var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
+                /// TRANSLATORS: %s represents a timestamp here
+                string file_name = _("Screenshot from %s").printf (date_time);
+    
+                bool success = false;
+                string filename_used = "";
+                var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot_window (true, false, true, file_name, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
         }
 
         /**
