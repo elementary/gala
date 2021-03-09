@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
-"PO-Revision-Date: 2020-12-06 18:16+0000\n"
+"POT-Creation-Date: 2021-03-05 06:50+0000\n"
+"PO-Revision-Date: 2021-03-05 12:28+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -17,74 +17,84 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr "Ekran Görüntüleri"
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2084
 msgid "Does the display look OK?"
 msgstr "Ekran iyi görünüyor mu?"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2087
 msgid "Keep This Configuration"
 msgstr "Bu Yapılandırmayı Koru"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2088
 msgid "Restore Previous Configuration"
 msgstr "Önceki Yapılandırmayı Geri Yükle"
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2111
+#, c-format
+msgid "Screenshot from %s"
+msgstr "%s ekran görüntüsü"
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr "Gizle"
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "Taşı"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "Yeniden Boyutlandır"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "Her Zaman Üstte"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "Her Zaman Görünür Çalışma Alanında"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "Soldaki Çalışma Alanına Taşı"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "Sağdaki Çalışma Alanına Taşı"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr "Ekran Görüntüsü Al"
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "Kapat"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Unmaximize"
 msgstr "Tam Ekrandan Çık"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Maximize"
 msgstr "Ekranı Kapla"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:283
 msgid "Change Wallpaper…"
 msgstr "Arkaplanı Değiştir…"
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:300
 msgid "Display Settings…"
 msgstr "Görüntü Ayarları…"
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:317
 msgid "System Settings…"
 msgstr "Sistem Ayarları…"
 
@@ -123,7 +133,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
-msgstr "Arka plana sağ  tıklarken bağlam menüsünü göster"
+msgstr "Arka plana sağ tıklarken bağlam menüsünü göster"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
@@ -153,7 +163,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
-msgstr "Gala Arka Plan Hizmetlerini rıhtımda gösterme"
+msgstr "Gala Arka Plan Hizmetlerini dock'ta gösterme"
 
 #: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"

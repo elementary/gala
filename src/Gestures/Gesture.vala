@@ -1,6 +1,6 @@
 /*
- * Copyright 2020 elementary, Inc (https://elementary.io)
- *           2020 José Expósito <jose.exposito89@gmail.com>
+ * Copyright 2021 elementary, Inc (https://elementary.io)
+ *           2021 José Expósito <jose.exposito89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Gala.Plugins.Touchegg {
-    public enum GestureType {
-        NOT_SUPPORTED = 0,
-        SWIPE = 1,
-        PINCH = 2,
-    }
-
+namespace Gala {
+    /**
+     * Physical direction of the gesture. This direction doesn't follow natural scroll preferences.
+     */
     public enum GestureDirection {
         UNKNOWN = 0,
 
-        // GestureType.SWIPE
+        // GestureType.SWIPE and GestureType.SCROLL
         UP = 1,
         DOWN = 2,
         LEFT = 3,
@@ -37,18 +34,10 @@ namespace Gala.Plugins.Touchegg {
         OUT = 6,
     }
 
-    public enum DeviceType {
-        UNKNOWN = 0,
-        TOUCHPAD = 1,
-        TOUCHSCREEN = 2,
-    }
-
     public class Gesture {
-        public GestureType type;
+        public Gdk.EventType type;
         public GestureDirection direction;
-        public double percentage;
         public int fingers;
-        public uint64 elapsed_time;
-        public DeviceType performed_on_device_type;
+        public Gdk.InputSource performed_on_device_type;
     }
 }

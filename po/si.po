@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"POT-Creation-Date: 2021-03-05 06:50+0000\n"
 "PO-Revision-Date: 2018-06-10 00:11+0000\n"
 "Last-Translator: Gamunu Balagalla <gamunu.balagalla@gmail.com>\n"
 "Language-Team: Sinhala <https://weblate.elementary.io/projects/desktop/gala/"
@@ -20,71 +20,81 @@ msgstr ""
 "X-Generator: Weblate 2.18\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2084
 msgid "Does the display look OK?"
 msgstr "ප්රදර්ශනය හරිද?"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2087
 msgid "Keep This Configuration"
 msgstr ""
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2088
 msgid "Restore Previous Configuration"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2111
+#, c-format
+msgid "Screenshot from %s"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "ගෙනයන්න"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "සැමවිටම ඉහළින්"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "සැමවිටම දෘශ්ය කාර්ය ඉඩ මත"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "වම් දෘශ්ය කාර්ය ඉඩට ගෙනයන්න"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "දකුණු දෘශ්ය කාර්ය ඉඩට ගෙනයන්න"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "වසන්න"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Unmaximize"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:218
 msgid "Maximize"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:283
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:300
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:317
 msgid "System Settings…"
 msgstr ""
 
