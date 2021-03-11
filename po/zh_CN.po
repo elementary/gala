@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-01-31 15:10+0000\n"
-"Last-Translator: imgradeone Yan <imgradeone@outlook.com>\n"
+"PO-Revision-Date: 2021-03-11 11:02+0000\n"
+"Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -38,10 +38,9 @@ msgstr "恢复上次的配置"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2111
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "屏幕截图"
+msgstr "屏幕截图 %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
