@@ -76,7 +76,7 @@ public class Gala.Tooltip : Clutter.Actor {
         if (!visible) {
             return;
         }
-        
+
         // First set the text
         remove_child (text_actor);
 

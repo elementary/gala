@@ -177,7 +177,7 @@ namespace Gala {
             window_title = new Tooltip ();
             window_title.opacity = 0;
             window_title.set_easing_duration (FADE_ANIMATION_DURATION);
-            
+
             active_shape = new Clutter.Actor ();
             active_shape.background_color = { 255, 255, 255, 200 };
             active_shape.opacity = 0;
@@ -302,7 +302,7 @@ namespace Gala {
 
             var target_x = outer_rect.x - offset_x;
             var target_y = outer_rect.y - offset_y;
-    
+
             in_slot_animation = true;
             place_widgets (outer_rect.width, outer_rect.height);
 
@@ -531,7 +531,6 @@ namespace Gala {
                     break;
             }
 
-            // bool show = has_pointer && !animation_running;
             bool show = has_pointer && !in_slot_animation;
             close_button.opacity = show ? 255 : 0;
             window_title.opacity = show ? 255 : 0;
