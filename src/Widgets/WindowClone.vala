@@ -826,7 +826,7 @@ namespace Gala {
 
         private void set_window_title_position (float window_width, float window_height) {
             window_title.set_position ((window_width - window_title.width) / 2,
-                window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (12 * scale_factor));
+                window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
         }
     }
 }
