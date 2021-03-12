@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-05 06:50+0000\n"
-"PO-Revision-Date: 2021-03-05 18:48+0000\n"
+"PO-Revision-Date: 2021-03-06 18:55+0000\n"
 "Last-Translator: DartDeaDia <jorydit@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
@@ -105,13 +105,15 @@ msgstr "Многозадачность &amp; Управление окнами"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Оконный менеджер и композитор для Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Оконный менеджер и композитор на основе libmutter и разработанный elementary "
+"для использования в Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
@@ -126,10 +128,12 @@ msgstr ""
 #: data/gala.appdata.xml.in:18
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"Увеличен максимальный уровень масштабирования и обеспечена обратная связь, "
+"когда не удается увеличить"
 
 #: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "Отображения контекстного меню после щелчка правой кнопкой мыши по фону"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
@@ -141,6 +145,8 @@ msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"Исправлено исчезновение окон из-за включенного режима «Всегда на видимом "
+"рабочем столе» при смене рабочих столов"
 
 #: data/gala.appdata.xml.in:29
 msgid ""
@@ -165,19 +171,19 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:58
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Улучшение теней окон для устаревших приложений"
 
 #: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Исправлена вероятность сбоя при создании снимков экрана"
 
 #: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "Исправлено положения уведомления после изменения DPI"
 
 #: data/gala.appdata.xml.in:61
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "Исправлена анимация для перемещения и максимизации окон"
 
 #: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
