@@ -89,8 +89,8 @@ public class Gala.Tooltip : Clutter.Actor {
         };
         text_actor.set_markup (Markup.printf_escaped ("<span size='large'>%s</span>", text));
 
-        if (text_actor.width > max_width) {
-            text_actor.width = max_width;
+        if ((text_actor.width + PADDING_LEFT + PADDING_RIGHT) > max_width) {
+            text_actor.width = max_width - PADDING_LEFT - PADDING_RIGHT;
         }
 
         add_child (text_actor);
