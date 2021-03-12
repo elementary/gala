@@ -30,7 +30,7 @@ namespace Gala {
         public int padding_right { get; set; default = 12; }
         public int padding_bottom { get; set; default = 12; }
 
-        public GestureAnimationDirector? gesture_animation_director { get; construct; }
+        public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
         bool opened;
@@ -41,8 +41,8 @@ namespace Gala {
          */
         WindowClone? current_window;
 
-        public WindowCloneContainer (GestureAnimationDirector? gesture_animation_director, bool overview_mode = false) {
-            Object (gesture_animation_director: gesture_animation_director, overview_mode: overview_mode);
+        public WindowCloneContainer (GestureTracker? gesture_tracker, bool overview_mode = false) {
+            Object (gesture_tracker: gesture_tracker, overview_mode: overview_mode);
         }
 
         construct {
@@ -69,11 +69,11 @@ namespace Gala {
 
             var windows_ordered = display.sort_windows_by_stacking (windows);
 
-            var new_window = new WindowClone (window, gesture_animation_director, overview_mode);
+            var new_window = new WindowClone (window, gesture_tracker, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (reflow);
+            new_window.request_reposition.connect (() => reflow ());
 
             var added = false;
             unowned Meta.Window? target = null;
@@ -108,11 +108,10 @@ namespace Gala {
             foreach (var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
                     remove_child (child);
+                    reflow ();
                     break;
                 }
             }
-
-            reflow ();
         }
 
         void window_selected_cb (WindowClone tiled) {
@@ -166,7 +165,7 @@ namespace Gala {
          * Recalculate the tiling positions of the windows and animate them to
          * the resulting spots.
          */
-        public void reflow () {
+        public void reflow (bool with_gesture = false, bool is_cancel_animation = false) {
             if (!opened)
                 return;
 
@@ -199,7 +198,7 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned WindowClone window = (WindowClone) tilable.id;
-                window.take_slot (tilable.rect);
+                window.take_slot (tilable.rect, with_gesture, is_cancel_animation);
                 window.place_widgets (tilable.rect.width, tilable.rect.height);
             }
         }
@@ -309,7 +308,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null) {
+        public void open (Window? selected_window = null, bool with_gesture = false, bool is_cancel_animation = false) {
             if (opened) {
                 return;
             }
@@ -335,20 +334,20 @@ namespace Gala {
 
             // make sure our windows are where they belong in case they were moved
             // while were closed.
-            if (gesture_animation_director == null || !gesture_animation_director.canceling) {
+            if (gesture_tracker == null || !is_cancel_animation) {
                 foreach (var window in get_children ()) {
-                    ((WindowClone) window).transition_to_original_state (false);
+                    ((WindowClone) window).transition_to_original_state (false, with_gesture, is_cancel_animation);
                 }
             }
 
-            reflow ();
+            reflow (with_gesture, is_cancel_animation);
         }
 
         /**
          * Calls the transition_to_original_state() function on each child
          * to make them take their original locations again.
          */
-        public void close () {
+        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
             if (!opened) {
                 return;
             }
@@ -356,7 +355,7 @@ namespace Gala {
             opened = false;
 
             foreach (var window in get_children ()) {
-                ((WindowClone) window).transition_to_original_state (true);
+                ((WindowClone) window).transition_to_original_state (true, with_gesture, is_cancel_animation);
             }
         }
     }

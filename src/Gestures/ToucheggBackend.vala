@@ -1,6 +1,6 @@
 /*
- * Copyright 2020 elementary, Inc (https://elementary.io)
- *           2020 José Expósito <jose.exposito89@gmail.com>
+ * Copyright 2020 - 2021 elementary, Inc (https://elementary.io)
+ *           2020 - 2021 José Expósito <jose.exposito89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,32 @@
  */
 
 /**
-* This class connects to the Touchégg daemon to receive touch events.
+* Singleton class to manage the connection with Touchégg daemon and receive touch events.
 * See: https://github.com/JoseExposito/touchegg
 */
-public class Gala.Plugins.Touchegg.Client : Object {
-    public signal void on_gesture_begin (Gesture gesture);
-    public signal void on_gesture_update (Gesture gesture);
-    public signal void on_gesture_end (Gesture gesture);
+public class Gala.ToucheggBackend : Object {
+    public signal void on_gesture_detected (Gesture gesture);
+    public signal void on_begin (double delta, uint64 time);
+    public signal void on_update (double delta, uint64 time);
+    public signal void on_end (double delta, uint64 time);
+
+    /**
+     * Gesture type as returned by the daemon.
+     */
+    private enum GestureType {
+        NOT_SUPPORTED = 0,
+        SWIPE = 1,
+        PINCH = 2,
+    }
+
+    /**
+     * Device type as returned by the daemon.
+     */
+    private enum DeviceType {
+        UNKNOWN = 0,
+        TOUCHPAD = 1,
+        TOUCHSCREEN = 2,
+    }
 
     /**
      * Daemon D-Bus address.
@@ -50,12 +69,22 @@ public class Gala.Plugins.Touchegg.Client : Object {
     /**
      * Maximum number of reconnection attempts to the daemon.
      */
-    private const int MAX_RECONNECTION_ATTEMPTS = 5;
+    private const int MAX_RECONNECTION_ATTEMPTS = 10;
 
     /**
      * Time to sleep between reconnection attempts.
      */
     private const int RECONNECTION_USLEEP_TIME = 5000000;
+
+    /**
+     * Multiplier to transform from Touchégg percentage to Gala.Gesture delta.
+     */
+    private const double DELTA_MULTIPLIER = 0.01;
+
+    /**
+     * Single instance of the class.
+     */
+    private static ToucheggBackend? instance = null;
 
     /**
      * Connection with the daemon.
@@ -75,9 +104,21 @@ public class Gala.Plugins.Touchegg.Client : Object {
     private Variant? last_params_received = null;
 
     /**
+     * @returns Single instance of the class.
+     */
+    public static unowned ToucheggBackend get_default () {
+        if (instance == null) {
+            instance = new ToucheggBackend ();
+            instance.stablish_connection ();
+        }
+
+        return instance;
+    }
+
+    /**
      * Stablish a connection with the daemon server.
      */
-    public void stablish_connection () {
+    private void stablish_connection () {
         ThreadFunc<void> run = () => {
             var connected = false;
 
@@ -131,9 +172,7 @@ public class Gala.Plugins.Touchegg.Client : Object {
         string interface_name, string signal_name, Variant parameters) {
         last_signal_received = signal_name;
         last_params_received = parameters;
-
-        var gesture = make_gesture (parameters);
-        emit_event (signal_name, gesture);
+        emit_event (signal_name, parameters);
     }
 
     private void on_disconnected (bool remote_peer_vanished, Error? error) {
@@ -141,14 +180,13 @@ public class Gala.Plugins.Touchegg.Client : Object {
 
         if (last_signal_received == DBUS_ON_GESTURE_BEGIN || last_signal_received == DBUS_ON_GESTURE_UPDATE) {
             debug ("Connection lost in the middle of a gesture, ending it");
-            var gesture = make_gesture (last_params_received);
-            emit_event (DBUS_ON_GESTURE_END, gesture);
+            emit_event (DBUS_ON_GESTURE_END, last_params_received);
         }
 
         stablish_connection ();
     }
 
-    private static Gesture make_gesture (Variant signal_params) {
+    private void emit_event (string signal_name, Variant signal_params) {
         GestureType type;
         GestureDirection direction;
         double percentage;
@@ -159,31 +197,63 @@ public class Gala.Plugins.Touchegg.Client : Object {
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
 
-        Gesture gesture = new Gesture () {
-            type = type,
-            direction = direction,
-            percentage = percentage,
-            fingers = fingers,
-            performed_on_device_type = performed_on_device_type,
-            elapsed_time = elapsed_time
-        };
+        var delta = percentage * DELTA_MULTIPLIER;
 
-        return gesture;
-    }
-
-    private void emit_event (string signal_name, Gesture gesture) {
         switch (signal_name) {
             case DBUS_ON_GESTURE_BEGIN:
-                on_gesture_begin (gesture);
+                Idle.add (() => {
+                    on_gesture_detected (make_gesture (type, direction, fingers, performed_on_device_type));
+                    on_begin (delta, elapsed_time);
+                    return false;
+                });
                 break;
             case DBUS_ON_GESTURE_UPDATE:
-                on_gesture_update (gesture);
+                Idle.add (() => {
+                    on_update (delta, elapsed_time);
+                    return false;
+                });
                 break;
             case DBUS_ON_GESTURE_END:
-                on_gesture_end (gesture);
+                Idle.add (() => {
+                    on_end (delta, elapsed_time);
+                    return false;
+                });
                 break;
             default:
                 break;
         }
+    }
+
+    private static Gesture? make_gesture (GestureType type, GestureDirection direction, int fingers, DeviceType performed_on_device_type) {
+        Gdk.EventType event_type;
+        switch (type) {
+            case GestureType.SWIPE:
+                event_type = Gdk.EventType.TOUCHPAD_SWIPE;
+                break;
+            case GestureType.PINCH:
+                event_type = Gdk.EventType.TOUCHPAD_PINCH;
+                break;
+            default:
+                return null;
+        }
+
+        Gdk.InputSource input_source;
+        switch (performed_on_device_type) {
+            case DeviceType.TOUCHPAD:
+                input_source = Gdk.InputSource.TOUCHPAD;
+                break;
+            case DeviceType.TOUCHSCREEN:
+                input_source = Gdk.InputSource.TOUCHSCREEN;
+                break;
+            default:
+                return null;
+        }
+
+        return new Gesture () {
+            type = event_type,
+            direction = direction,
+            fingers = fingers,
+            performed_on_device_type = input_source
+        };
     }
 }
