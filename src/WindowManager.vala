@@ -820,8 +820,10 @@ namespace Gala {
                     }
                     break;
                 case ActionType.TILE_CURRENT_LEFT:
+                    // TODO
                     break;
                 case ActionType.TILE_CURRENT_RIGHT:
+                    // TODO
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
