@@ -182,7 +182,7 @@ namespace Gala {
             tile_left = new Gtk.MenuItem ();
             tile_left.add (tile_left_accellabel);
             tile_left.activate.connect (() => {
-                perform_action (Gala.ActionType.TILE_WINDOW_LEFT);
+                perform_action (Gala.ActionType.TILE_CURRENT_LEFT);
             });
 
             tile_right_accellabel = new Granite.AccelLabel (_("Tile window right"));
@@ -190,7 +190,7 @@ namespace Gala {
             tile_right = new Gtk.MenuItem ();
             tile_right.add (tile_right_accellabel);
             tile_right.activate.connect (() => {
-                perform_action (Gala.ActionType.TILE_WINDOW_RIGHT);
+                perform_action (Gala.ActionType.TILE_CURRENT_RIGHT);
             });
 
             screenshot_accellabel = new Granite.AccelLabel (_("Take Screenshot"));

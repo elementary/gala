@@ -819,9 +819,9 @@ namespace Gala {
                             current.change_workspace (wp);
                     }
                     break;
-                case ActionType.TILE_WINDOW_LEFT:
+                case ActionType.TILE_CURRENT_LEFT:
                     break;
-                case ActionType.TILE_WINDOW_RIGHT:
+                case ActionType.TILE_CURRENT_RIGHT:
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
