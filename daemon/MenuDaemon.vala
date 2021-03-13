@@ -64,10 +64,12 @@ namespace Gala {
         ulong on_visible_workspace_sid = 0U;
 
         private static GLib.Settings keybind_settings;
+        private static GLib.Settings keybind_mutter_settings;
         private static GLib.Settings media_keys_settings;
 
         static construct {
             keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
+            keybind_mutter_settings = new GLib.Settings ("org.gnome.mutter.keybindings");
             media_keys_settings = new GLib.Settings ("org.gnome.settings-daemon.plugins.media-keys");
         }
 
@@ -282,6 +284,10 @@ namespace Gala {
             if (move_left.visible) {
                 move_left_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-left")[0];
             }
+
+            tile_left_accellabel.accel_string = keybind_mutter_settings.get_strv ("toggle-tiled-left")[0];
+
+            tile_right_accellabel.accel_string = keybind_mutter_settings.get_strv ("toggle-tiled-right")[0];
 
             screenshot_accellabel.accel_string = media_keys_settings.get_strv ("window-screenshot")[0];
 
