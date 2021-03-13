@@ -36,6 +36,8 @@ namespace Gala {
         private Granite.AccelLabel move_accellabel;
         private Granite.AccelLabel move_left_accellabel;
         private Granite.AccelLabel move_right_accellabel;
+        private Granite.AccelLabel tile_left_accellabel;
+        private Granite.AccelLabel tile_right_accellabel;
         private Granite.AccelLabel on_visible_workspace_accellabel;
         private Granite.AccelLabel resize_accellabel;
         private Granite.AccelLabel screenshot_accellabel;
@@ -48,6 +50,8 @@ namespace Gala {
         Gtk.CheckMenuItem on_visible_workspace;
         Gtk.MenuItem move_left;
         Gtk.MenuItem move_right;
+        Gtk.MenuItem tile_left;
+        Gtk.MenuItem tile_right;
         Gtk.MenuItem close;
         Gtk.MenuItem screenshot;
 
@@ -173,6 +177,22 @@ namespace Gala {
                 perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
             });
 
+            tile_left_accellabel = new Granite.AccelLabel (_("Tile window left"));
+
+            tile_left = new Gtk.MenuItem ();
+            tile_left.add (tile_left_accellabel);
+            tile_left.activate.connect (() => {
+                perform_action (Gala.ActionType.TILE_WINDOW_LEFT);
+            });
+
+            tile_right_accellabel = new Granite.AccelLabel (_("Tile window right"));
+
+            tile_right = new Gtk.MenuItem ();
+            tile_right.add (tile_right_accellabel);
+            tile_right.activate.connect (() => {
+                perform_action (Gala.ActionType.TILE_WINDOW_RIGHT);
+            });
+
             screenshot_accellabel = new Granite.AccelLabel (_("Take Screenshot"));
 
             screenshot = new Gtk.MenuItem ();
@@ -198,6 +218,8 @@ namespace Gala {
             window_menu.append (on_visible_workspace);
             window_menu.append (move_left);
             window_menu.append (move_right);
+            window_menu.append (tile_left);
+            window_menu.append (tile_right);
             window_menu.append (screenshot);
             window_menu.append (close);
             window_menu.show_all ();
