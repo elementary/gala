@@ -337,6 +337,14 @@ namespace Gala {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
 
+        /**
+         * Round the value to match physical pixels.
+         */
+        public static int pixel_align (float value) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            return (int) Math.round (value * scale_factor) / scale_factor;    
+        }
+
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {

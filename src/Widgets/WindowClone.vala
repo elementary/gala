@@ -321,7 +321,7 @@ namespace Gala {
                 set_position (x, y);
 
                 window_icon.opacity = (uint) opacity;
-                set_window_icon_position (width, height);
+                set_window_icon_position (width, height, false);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -392,7 +392,7 @@ namespace Gala {
                 set_position (x, y);
 
                 window_icon.opacity = (uint) opacity;
-                set_window_icon_position (width, height);
+                set_window_icon_position (width, height, false);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -819,14 +819,22 @@ namespace Gala {
             dragging = false;
         }
 
-        private void set_window_icon_position (float window_width, float window_height) {
-            window_icon.set_position ((window_width - WINDOW_ICON_SIZE) / 2,
-                window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+        private void set_window_icon_position (float window_width, float window_height, bool aligned = true) {
+            var x = (window_width - WINDOW_ICON_SIZE) / 2;
+            var y = window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f;
+
+            if (aligned) {
+                x = InternalUtils.pixel_align (x);
+                y = InternalUtils.pixel_align (y);
+            }
+
+            window_icon.set_position (x, y);
         }
 
         private void set_window_title_position (float window_width, float window_height) {
-            window_title.set_position ((window_width - window_title.width) / 2,
-                window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+            var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
+            var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+            window_title.set_position (x, y);
         }
     }
 }
