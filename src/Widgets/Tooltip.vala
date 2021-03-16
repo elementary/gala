@@ -23,36 +23,14 @@
  * https://github.com/elementary/stylesheet/blob/master/src/widgets/_tooltips.scss
  */
 public class Gala.Tooltip : Clutter.Actor {
-    private const double BACKGROUND_COLOR = (26 / 255); // #1a
-    private const double BACKGROUND_OPACITY = 0.9;
-    private const double BACKGROUND_BORDER_RADIUS = 3;
-    private const string COLOR = "#ffffff";
-    private const int PADDING_TOP = 3;
-    private const int PADDING_BOTTOM = 3;
-    private const int PADDING_LEFT = 6;
-    private const int PADDING_RIGHT = 6;
-
-    public string text {
-        get {
-            return _text;
-        }
-        set {
-            _text = value;
-            draw ();
-        }
-    }
-    private string _text = "";
-
-    public float max_width {
-        get {
-            return _max_width;
-        }
-        set {
-            _max_width = value;
-            draw ();
-        }
-    }
-    private float _max_width = 200;
+    private static double background_color;
+    private static double background_opacity;
+    private static double background_border_radius;
+    private static Clutter.Color text_color;
+    private static int padding_top;
+    private static int padding_bottom;
+    private static int padding_left;
+    private static int padding_right;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -64,10 +42,56 @@ public class Gala.Tooltip : Clutter.Actor {
      */
     private Clutter.Text? text_actor = null;
 
+    /**
+     * Text displayed in the Tooltip.
+     * @see set_text
+     */
+    private string text;
+
+    /**
+     * Maximum width of the Tooltip.
+     * @see set_max_width
+     */
+    public float max_width;
+
+    static construct {
+        var scale = InternalUtils.get_ui_scaling_factor ();
+
+        background_color = (26 / 255); // #1a
+        background_opacity = 0.9;
+        background_border_radius = 3 * scale;
+        text_color = Clutter.Color.from_string ("#ffffff");
+        padding_top = 3 * scale;
+        padding_bottom = 3 * scale;
+        padding_left = 6 * scale;
+        padding_right = 6 * scale;
+    }
+
     construct {
+        text = "";
+        max_width = 200;
+
         background_canvas = new Clutter.Canvas ();
         background_canvas.draw.connect (draw_background);
         content = background_canvas;
+
+        draw ();
+    }
+
+    public void set_text (string new_text, bool redraw = true) {
+        text = new_text;
+
+        if (redraw) {
+            draw ();
+        }
+    }
+
+    public void set_max_width (float new_max_width, bool redraw = true) {
+        max_width = new_max_width;
+
+        if (redraw) {
+            draw ();
+        }
     }
 
     private void draw () {
@@ -81,23 +105,23 @@ public class Gala.Tooltip : Clutter.Actor {
         remove_child (text_actor);
 
         text_actor = new Clutter.Text () {
-            color = Clutter.Color.from_string (COLOR),
-            x = PADDING_LEFT,
-            y = PADDING_TOP,
+            color = text_color,
+            x = padding_left,
+            y = padding_top,
             ellipsize = Pango.EllipsizeMode.END,
             use_markup = true
         };
         text_actor.set_markup (Markup.printf_escaped ("<span size='large'>%s</span>", text));
 
-        if ((text_actor.width + PADDING_LEFT + PADDING_RIGHT) > max_width) {
-            text_actor.width = max_width - PADDING_LEFT - PADDING_RIGHT;
+        if ((text_actor.width + padding_left + padding_right) > max_width) {
+            text_actor.width = max_width - padding_left - padding_right;
         }
 
         add_child (text_actor);
 
         // Adjust the size of the tooltip to the text
-        width = text_actor.width + PADDING_LEFT + PADDING_RIGHT;
-        height = text_actor.height + PADDING_TOP + PADDING_BOTTOM;
+        width = text_actor.width + padding_left + padding_right;
+        height = text_actor.height + padding_top + padding_bottom;
         background_canvas.set_size ((int) width, (int) height);
 
         // And paint the background
@@ -110,8 +134,8 @@ public class Gala.Tooltip : Clutter.Actor {
         cr.paint ();
         cr.restore ();
 
-        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, BACKGROUND_BORDER_RADIUS);
-        cr.set_source_rgba (BACKGROUND_COLOR, BACKGROUND_COLOR, BACKGROUND_COLOR, BACKGROUND_OPACITY);
+        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, background_border_radius);
+        cr.set_source_rgba (background_color, background_color, background_color, background_opacity);
         cr.fill ();
 
         return false;

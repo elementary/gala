@@ -535,8 +535,8 @@ namespace Gala {
             close_button.opacity = show ? 255 : 0;
             window_title.opacity = show ? 255 : 0;
 
-            window_title.text = window.get_title ();
-            window_title.max_width = dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor);
+            window_title.set_text (window.get_title (), false);
+            window_title.set_max_width (dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor));
             set_window_title_position (dest_width, dest_height);
 
             close_button.restore_easing_state ();
