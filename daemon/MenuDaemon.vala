@@ -218,7 +218,7 @@ namespace Gala {
 
             maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;
             if (maximize.visible) {
-                string maximize_label;
+                unowned string maximize_label;
                 if (Gala.WindowFlags.IS_MAXIMIZED in flags) {
                     maximize_label = (Gala.WindowFlags.IS_TILED in flags) ? _("Untile") : _("Unmaximize");
                 } else {
