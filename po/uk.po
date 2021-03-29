@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-29 11:40+0000\n"
-"PO-Revision-Date: 2021-03-05 12:28+0000\n"
+"PO-Revision-Date: 2021-03-29 17:23+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -81,7 +81,7 @@ msgstr "Закрити"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Відкріпити"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
