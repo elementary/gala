@@ -770,7 +770,8 @@ namespace Gala {
                     if (current == null || current.window_type != Meta.WindowType.NORMAL)
                         break;
 
-                    if (current.get_maximized () == (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL))
+                    var maximize_flags = current.get_maximized ();
+                    if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
                         current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
@@ -909,8 +910,14 @@ namespace Gala {
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
 
-                    if (window.get_maximized () > 0)
+                    var maximize_flags = window.get_maximized ();
+                    if (maximize_flags > 0) {
                         flags |= WindowFlags.IS_MAXIMIZED;
+
+                        if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
+                            flags |= WindowFlags.IS_TILED;
+                        }
+                    }
 
                     if (window.allows_move ())
                         flags |= WindowFlags.ALLOWS_MOVE;
