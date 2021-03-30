@@ -48,7 +48,8 @@ namespace Gala {
         ALLOWS_RESIZE,
         ALWAYS_ON_TOP,
         ON_ALL_WORKSPACES,
-        CAN_CLOSE
+        CAN_CLOSE,
+        IS_TILED
     }
 
     /**

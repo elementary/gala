@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-05 06:50+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2019-12-10 17:16-0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -21,20 +21,20 @@ msgstr ""
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2084
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "Does the display look OK?"
 
-#: src/WindowManager.vala:2087
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "Keep This Configuration"
 
-#: src/WindowManager.vala:2088
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "Restore Previous Configuration"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2111
+#: src/WindowManager.vala:2118
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -75,23 +75,27 @@ msgstr ""
 msgid "Close"
 msgstr "Close"
 
-#: daemon/MenuDaemon.vala:218
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "Unmaximize"
 
-#: daemon/MenuDaemon.vala:218
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "Maximize"
 
-#: daemon/MenuDaemon.vala:283
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:300
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:317
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr ""
 

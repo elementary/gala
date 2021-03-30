@@ -212,17 +212,20 @@ namespace Gala {
             });
 
             window_menu = new Gtk.Menu ();
-            window_menu.append (hide);
-            window_menu.append (maximize);
-            window_menu.append (move);
-            window_menu.append (resize);
+            window_menu.append (screenshot);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
             window_menu.append (always_on_top);
             window_menu.append (on_visible_workspace);
             window_menu.append (move_left);
             window_menu.append (move_right);
             window_menu.append (tile_left);
             window_menu.append (tile_right);
-            window_menu.append (screenshot);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
+            window_menu.append (move);
+            window_menu.append (resize);
+            window_menu.append (maximize);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
+            window_menu.append (hide);
             window_menu.append (close);
             window_menu.show_all ();
         }
@@ -239,7 +242,12 @@ namespace Gala {
 
             maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;
             if (maximize.visible) {
-                var maximize_label = Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize");
+                unowned string maximize_label;
+                if (Gala.WindowFlags.IS_MAXIMIZED in flags) {
+                    maximize_label = (Gala.WindowFlags.IS_TILED in flags) ? _("Untile") : _("Unmaximize");
+                } else {
+                    maximize_label = _("Maximize");
+                }
 
                 maximize.get_child ().destroy ();
                 maximize.add (
@@ -275,13 +283,13 @@ namespace Gala {
             SignalHandler.unblock (always_on_top, always_on_top_sid);
             SignalHandler.unblock (on_visible_workspace, on_visible_workspace_sid);
 
-            move_right.visible = !on_visible_workspace.active;
-            if (move_right.visible) {
+            move_right.sensitive = !on_visible_workspace.active;
+            if (move_right.sensitive) {
                 move_right_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-right")[0];
             }
 
-            move_left.visible = !on_visible_workspace.active;
-            if (move_left.visible) {
+            move_left.sensitive = !on_visible_workspace.active;
+            if (move_left.sensitive) {
                 move_left_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-left")[0];
             }
 
@@ -324,7 +332,7 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
+
                 var display_settings = new Gtk.MenuItem.with_label (_("Display Settings…"));
                 display_settings.activate.connect (() => {
                     try {
@@ -341,7 +349,7 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
+
                 var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
                 system_settings.activate.connect (() => {
                     try {
@@ -358,13 +366,11 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
-                var separator = new Gtk.SeparatorMenuItem ();
-    
+
                 desktop_menu = new Gtk.Menu ();
                 desktop_menu.append (change_wallpaper);
                 desktop_menu.append (display_settings);
-                desktop_menu.append (separator);
+                desktop_menu.append (new Gtk.SeparatorMenuItem ());
                 desktop_menu.append (system_settings);
                 desktop_menu.show_all ();
             }
