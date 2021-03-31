@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-05 06:50+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2021-03-11 11:02+0000\n"
 "Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -24,20 +24,20 @@ msgstr ""
 msgid "Screenshots"
 msgstr "屏幕截图"
 
-#: src/WindowManager.vala:2084
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "显示看起来正常吗？"
 
-#: src/WindowManager.vala:2087
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "保持当前配置"
 
-#: src/WindowManager.vala:2088
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "恢复上次的配置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2111
+#: src/WindowManager.vala:2118
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"
@@ -80,23 +80,27 @@ msgstr "屏幕截图"
 msgid "Close"
 msgstr "关闭"
 
-#: daemon/MenuDaemon.vala:218
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "还原"
 
-#: daemon/MenuDaemon.vala:218
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "最大化"
 
-#: daemon/MenuDaemon.vala:283
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr "更改壁纸…"
 
-#: daemon/MenuDaemon.vala:300
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr "显示设置…"
 
-#: daemon/MenuDaemon.vala:317
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr "系统设置…"
 
