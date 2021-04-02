@@ -21,6 +21,7 @@ You'll need the following dependencies:
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)
 * libxml2-utils
+* libxrdesktop-0.15-0
 * valac (>= 0.28.0)
 
 Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
