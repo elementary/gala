@@ -148,3 +148,17 @@ if mutter338_dep.found()
 		output: 'libmutter-7.vapi'
 	)
 endif
+
+if xrdesktop_dep.found()
+	xrdesktop_target = custom_target('xrdesktop',
+		command: [
+			vapigen,
+			'Xrd-0.15.gir',
+			'--library=xrdesktop-0.15',
+			'--pkg=gio-2.0',
+			'--pkg=gdk-3.0',
+			vapigen_args
+		],
+		output: 'xrdesktop-0.15.vapi'
+	)
+endif

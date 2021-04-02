@@ -21,13 +21,13 @@ namespace Gala.Plugins.XRDesktop {
 
     public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
-        XRD.Client? client = null;
+        Xrd.Client? client = null;
 
         // This function is called as soon as Gala has started and gives you
         // an instance of the GalaWindowManager class.
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
-            this.client = new XRD.Client ();
+            this.client = new Xrd.Client ();
         }
 
         public override void destroy () {
