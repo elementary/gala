@@ -29,6 +29,8 @@ namespace Gala {
         float current_zoom = MIN_ZOOM;
         ulong wins_handler_id = 0UL;
 
+        private GestureTracker gesture_tracker;
+
         public Zoom (WindowManager wm) {
             Object (wm: wm);
 
@@ -37,6 +39,10 @@ namespace Gala {
 
             display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
+
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_touchpad ();
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         }
 
         ~Zoom () {
@@ -62,6 +68,34 @@ namespace Gala {
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             zoom (-SHORTCUT_DELTA, true, true);
+        }
+
+        private void on_gesture_detected (Gesture gesture) {
+            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.ZOOM_ENABLED);
+            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.ZOOM_FINGERS);
+
+            bool can_handle_gesture = gesture.type == Gdk.EventType.TOUCHPAD_PINCH
+                && (gesture.direction == GestureDirection.IN || gesture.direction == GestureDirection.OUT)
+                && gesture.fingers == fingers;
+
+            if (enabled && can_handle_gesture) {
+                zoom_with_gesture (gesture.direction);
+            }
+        }
+
+        private void zoom_with_gesture (GestureDirection direction) {
+            var initial_zoom = current_zoom;
+            var target_zoom = (direction == GestureDirection.IN)
+                ? initial_zoom - MAX_ZOOM
+                : initial_zoom + MAX_ZOOM;
+
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var zoom_level = GestureTracker.animation_value (initial_zoom, target_zoom, percentage);
+                var delta = zoom_level - current_zoom;
+                zoom (delta, false, false);
+            };
+
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, null);
         }
 
         void zoom (float delta, bool play_sound, bool animate) {
