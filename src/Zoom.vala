@@ -15,18 +15,19 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala.Plugins.Zoom {
-    public class Main : Gala.Plugin {
+namespace Gala {
+    public class Zoom : Object {
         const uint MOUSE_POLL_TIME = 50;
 
-        Gala.WindowManager? wm = null;
+        public WindowManager wm { get; construct; }
 
         uint mouse_poll_timer = 0;
         float current_zoom = 1.0f;
         ulong wins_handler_id = 0UL;
 
-        public override void initialize (Gala.WindowManager wm) {
-            this.wm = wm;
+        public Zoom (WindowManager wm) {
+            Object (wm: wm);
+
             var display = wm.get_display ();
             var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
@@ -34,7 +35,7 @@ namespace Gala.Plugins.Zoom {
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
         }
 
-        public override void destroy () {
+        ~Zoom () {
             if (wm == null)
                 return;
 
@@ -127,14 +128,4 @@ namespace Gala.Plugins.Zoom {
             wins.restore_easing_state ();
         }
     }
-}
-
-public Gala.PluginInfo register_plugin () {
-    return Gala.PluginInfo () {
-        name = "Zoom",
-        author = "Gala Developers",
-        plugin_type = typeof (Gala.Plugins.Zoom.Main),
-        provides = Gala.PluginFunction.ADDITION,
-        load_priority = Gala.LoadPriority.IMMEDIATE
-    };
 }
