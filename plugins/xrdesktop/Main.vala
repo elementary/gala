@@ -23,11 +23,17 @@ namespace Gala.Plugins.XRDesktop {
         Gala.WindowManager? wm = null;
         Xrd.Client? client = null;
 
-        // This function is called as soon as Gala has started and gives you
-        // an instance of the GalaWindowManager class.
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
             this.client = new Xrd.Client ();
+
+            if (this.client == null) {
+                error ("Failed to initialize xrdesktop!\nUsually this is caused by a problem with the VR runtime.");
+            }
+
+            debug ("== Started xrdesktop ==");
+
+            debug (GLES2.glGetString (GLES2.GL_VENDOR));
         }
 
         public override void destroy () {

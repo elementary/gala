@@ -153,7 +153,7 @@ if xrdesktop_dep.found()
 	xrdesktop_target = custom_target('xrdesktop',
 		command: [
 			vapigen,
-			'Xrd-0.15.gir',
+			mutter_typelib_dir / 'Xrd-0.15.gir',
 			'--library=xrdesktop-0.15',
 			'--pkg=gio-2.0',
 			'--pkg=gdk-3.0',

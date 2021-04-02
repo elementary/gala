@@ -92,7 +92,13 @@ granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
+
 xrdesktop_dep = dependency('xrdesktop-0.15', version: '>= 0.15.1')
+add_project_arguments([
+        '--pkg=gles2'
+    ],
+    language: 'vala',
+)
 
 mutter_dep = []
 libmutter_dep = []
