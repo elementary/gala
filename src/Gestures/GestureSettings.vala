@@ -29,6 +29,9 @@ public class Gala.GestureSettings : Object {
     public const string WORKSPACE_ENABLED = "workspaces-gesture-enabled";
     public const string WORKSPACE_FINGERS = "workspaces-gesture-fingers";
 
+    public const string ZOOM_ENABLED = "zoom-gesture-enabled";
+    public const string ZOOM_FINGERS = "zoom-gesture-fingers";
+
     static construct {
         gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
