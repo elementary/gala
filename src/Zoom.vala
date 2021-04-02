@@ -17,12 +17,16 @@
 
 namespace Gala {
     public class Zoom : Object {
+        const float MIN_ZOOM = 1.0f;
+        const float MAX_ZOOM = 10.0f;
+        const float SHORTCUT_DELTA = 0.5f;
+        const int ANIMATION_DURATION = 300;
         const uint MOUSE_POLL_TIME = 50;
 
         public WindowManager wm { get; construct; }
 
         uint mouse_poll_timer = 0;
-        float current_zoom = 1.0f;
+        float current_zoom = MIN_ZOOM;
         ulong wins_handler_id = 0UL;
 
         public Zoom (WindowManager wm) {
@@ -51,22 +55,21 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         void zoom_in (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (true);
+            zoom (SHORTCUT_DELTA, true, true);
         }
 
         [CCode (instance_pos = -1)]
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (false);
+            zoom (-SHORTCUT_DELTA, true, true);
         }
 
-        void zoom (bool @in) {
+        void zoom (float delta, bool play_sound, bool animate) {
             // Nothing to do if zooming out of our bounds is requested
-            if (current_zoom <= 1.0f && !@in) {
-                Gdk.beep ();
-                return;
-            } else if (current_zoom >= 10.0f && @in) {
-                Gdk.beep ();
+            if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
+                if (play_sound) {
+                    Gdk.beep ();
+                }
                 return;
             }
 
@@ -98,10 +101,11 @@ namespace Gala {
                 });
             }
 
-            current_zoom += (@in ? 0.5f : -0.5f);
+            current_zoom += delta;
+            var animation_duration = animate ? ANIMATION_DURATION : 0;
 
-            if (current_zoom <= 1.0f) {
-                current_zoom = 1.0f;
+            if (current_zoom <= MIN_ZOOM) {
+                current_zoom = MIN_ZOOM;
 
                 if (mouse_poll_timer > 0)
                     Source.remove (mouse_poll_timer);
@@ -109,21 +113,25 @@ namespace Gala {
 
                 wins.save_easing_state ();
                 wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
-                wins.set_easing_duration (300);
-                wins.set_scale (1.0f, 1.0f);
+                wins.set_easing_duration (animation_duration);
+                wins.set_scale (MIN_ZOOM, MIN_ZOOM);
                 wins.restore_easing_state ();
 
-                wins_handler_id = wins.transitions_completed.connect (() => {
-                    wins.disconnect (wins_handler_id);
+                if (animate) {
+                    wins_handler_id = wins.transitions_completed.connect (() => {
+                        wins.disconnect (wins_handler_id);
+                        wins.set_pivot_point (0.0f, 0.0f);
+                    });
+                } else {
                     wins.set_pivot_point (0.0f, 0.0f);
-                });
+                }
 
                 return;
             }
 
             wins.save_easing_state ();
             wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
-            wins.set_easing_duration (300);
+            wins.set_easing_duration (animation_duration);
             wins.set_scale (current_zoom, current_zoom);
             wins.restore_easing_state ();
         }
