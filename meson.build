@@ -98,7 +98,8 @@ gulkan_dep = dependency('gulkan-0.15')
 vulkan_dep = dependency('vulkan')
 libinputsynth_dep = dependency('libinputsynth-0.15')
 add_project_arguments([
-        '--pkg=gl'
+        '--pkg=gl',
+        '--pkg=gl-ext'
     ],
     language: 'vala',
 )

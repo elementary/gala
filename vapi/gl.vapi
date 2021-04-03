@@ -11195,7 +11195,7 @@ namespace GL {
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameterfv")]
 	public static void glGetTexLevelParameterfv (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] GL.GLfloat[] @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameteriv")]
-	public static void glGetTexLevelParameteriv (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] GL.GLint[] @params);
+	public static void glGetTexLevelParameteriv (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] out GL.GLint[] @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameterxvOES")]
 	public static void glGetTexLevelParameterxvOES (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] GL.GLfixed[] @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexParameterIiv")]
@@ -14554,26 +14554,4 @@ namespace GL {
 	public static void glWindowPos4svMESA ([CCode (array_length = false)] GL.GLshort[]? v);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glWriteMaskEXT")]
 	public static void glWriteMaskEXT (GL.GLuint res, GL.GLuint @in, GL.GLenum outX, GL.GLenum outY, GL.GLenum outZ, GL.GLenum outW);
-
-	/* --- Manually Added --- */
-	[CCode (cheader_filename = "GL/glew.h", cname = "GL_OPTIMAL_TILING_EXT")]
-	public const int GL_OPTIMAL_TILING_EXT;
-	[CCode (cheader_filename = "GL/glew.h", cname = "GL_TEXTURE_TILING_EXT")]
-	public const int GL_TEXTURE_TILING_EXT;
-	[CCode (cheader_filename = "GL/glew.h", cname = "GL_DEDICATED_MEMORY_OBJECT_EXT")]
-	public const int GL_DEDICATED_MEMORY_OBJECT_EXT;
-	[CCode (cheader_filename = "GL/glew.h", cname = "GL_HANDLE_TYPE_OPAQUE_FD_EXT")]
-	public const int GL_HANDLE_TYPE_OPAQUE_FD_EXT;
-	[CCode (cheader_filename = "GL/glew.h", cname = "glCreateMemoryObjectsEXT")]
-	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, GL.GLuint[]? memoryObjects);
-	[CCode (cheader_filename = "GL/glew.h", cname = "glDeleteMemoryObjectsEXT")]
-	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, GL.GLuint[]? memoryObjects);
-	[CCode (cheader_filename = "GL/glew.h", cname = "glMemoryObjectParameterivEXT")]
-	public static void glMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, GL.GLint[]? params);
-	[CCode (cheader_filename = "GL/glew.h", cname = "glGetMemoryObjectParameterivEXT")]
-	public static void glGetMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, GL.GLint[]? params);
-	[CCode (cheader_filename = "GL/glew.h", cname = "glImportMemoryFdEXT")]
-	public static void glImportMemoryFdEXT (GL.GLuint memory, GL.GLuint64 size, GL.GLenum handleType, GL.GLint fd);
-	[CCode (cheader_filename = "GL/glew.h", cname = "glTexStorageMem2DEXT")]
-	public static void glTexStorageMem2DEXT (GL.GLenum target, GL.GLsizei levels, GL.GLenum internalFormat, GL.GLsizei width, GL.GLsizei height, GL.GLuint memory, GL.GLuint64 offset);
 }
