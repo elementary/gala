@@ -6,8 +6,11 @@ namespace Xrd {
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
+		public Xrd.Window? lookup_window (Meta.Window meta_win);
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
+		public Gulkan.Client get_gulkan ();
+		public Vk.ImageLayout get_upload_layout ();
 		public bool poll_input_events ();
 		public bool poll_runtime_events ();
 		public void remove_container (Xrd.Container container);
@@ -75,6 +78,8 @@ namespace Xrd {
 	}
 	[CCode (cheader_filename = "xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
 	public interface Window : GLib.Object {
+		public static Xrd.Window new_from_pixels (Xrd.Client client, string title, int width, int height, float ppm);
+		public void add_child (Xrd.Window window, Graphene.Point offset);
 		public void close ();
 		public void deselect ();
 		public abstract void emit_grab (Xrd.GrabEvent event);
@@ -84,7 +89,9 @@ namespace Xrd {
 		public float get_current_height_meters ();
 		public float get_current_ppm ();
 		public float get_current_width_meters ();
+		public Xrd.WindowData? get_data ();
 		public float get_initial_ppm ();
+		public Gulkan.Texture get_texture ();
 		public abstract void hide ();
 		public bool is_pinned ();
 		public bool is_selected ();
@@ -94,6 +101,7 @@ namespace Xrd {
 		public void select ();
 		public abstract void set_flip_y (bool flip_y);
 		public void set_pin (bool pinned, bool hide_unpinned);
+		public void set_transformation (Graphene.Matrix transform);
 		public abstract void submit_texture ();
 		public void update_child ();
 		[NoAccessorMethod]
@@ -167,13 +175,13 @@ namespace Xrd {
 	}
 	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct WindowData {
-		public void* native;
+		public weak Gala.Plugins.XRDesktop.XRWindow? native;
 		public uint32 texture_width;
 		public uint32 texture_height;
 		public weak GLib.StringBuilder title;
 		public float scale;
 		public void* child_window;
-		public void* parent_window;
+		public weak Xrd.Window? parent_window;
 		public bool pinned;
 		public weak Xrd.Window xrd_window;
 		public bool owned_by_window;

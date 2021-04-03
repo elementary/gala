@@ -162,3 +162,15 @@ if xrdesktop_dep.found()
 		output: 'xrdesktop-0.15.vapi'
 	)
 endif
+
+if libinputsynth_dep.found ()
+	libinputsynth_target = custom_target('libinputsynth',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'libinputsynth-0.15.gir',
+			'--library=libinputsynth-0.15',
+			vapigen_args
+		],
+		output: 'libinputsynth-0.15.vapi'
+	)
+endif

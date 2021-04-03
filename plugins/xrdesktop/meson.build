@@ -1,5 +1,6 @@
 gala_xrdesktop_sources = [
     'Main.vala',
+    'XRWindow.vala',
 ]
 
 gala_xrdesktop_lib = shared_library(
