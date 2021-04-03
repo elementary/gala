@@ -9,7 +9,8 @@ gala_xrdesktop_lib = shared_library(
     dependencies: [
         gala_dep,
         gala_base_dep,
-        xrdesktop_dep
+        xrdesktop_dep,
+        gulkan_dep
     ],
     include_directories: config_inc_dir,
     install: true,

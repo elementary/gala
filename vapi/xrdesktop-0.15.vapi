@@ -10,7 +10,7 @@ namespace Xrd {
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
 		public Gulkan.Client get_gulkan ();
-		public Vk.ImageLayout get_upload_layout ();
+		public Vulkan.ImageLayout get_upload_layout ();
 		public bool poll_input_events ();
 		public bool poll_runtime_events ();
 		public void remove_container (Xrd.Container container);

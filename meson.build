@@ -94,7 +94,8 @@ gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_versi
 m_dep = cc.find_library('m', required: false)
 
 xrdesktop_dep = dependency('xrdesktop-0.15')
-libinputsynth_dep = dependency('libinputsynth-0.15', required: true)
+gulkan_dep = dependency('gulkan-0.15')
+libinputsynth_dep = dependency('libinputsynth-0.15')
 add_project_arguments([
         '--pkg=gles2'
     ],

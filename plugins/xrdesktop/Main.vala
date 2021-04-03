@@ -293,7 +293,7 @@ namespace Gala.Plugins.XRDesktop {
             var mst = window_actor.get_texture ();
             var gulkan_client = xrd_client.get_gulkan ();
 
-            Cogl.TextureComponents components = null;
+            Cogl.TextureComponents? components = null;
             if (is_nvidia) {
                 var cogl_texture = mst.get_texture ();
 
@@ -345,10 +345,10 @@ namespace Gala.Plugins.XRDesktop {
                 texture == null
             ) {
                 debug ("Reallocating %dx%d vulkan texture", rect.width, rect.height);
-                texture = Gulkan.Texture.new_from_cairo_surface (
+                texture = new Gulkan.Texture.from_cairo_surface (
                     gulkan_client,
                     cairo_surface,
-                    VK_FORMAT_B8G8R8A8_SRGB,
+                    Vulkan.Format.B8G8R8A8_SRGB,
                     upload_layout
                 );
 
