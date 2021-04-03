@@ -28,7 +28,7 @@ namespace Gala.Plugins.XRDesktop {
     public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
         Xrd.Client? xrd_client = null;
-        GLES2.GLuint cursor_gl_texture;
+        GL.GLuint cursor_gl_texture;
         bool is_nvidia = false;
         int top_layer = 0;
 
@@ -45,7 +45,7 @@ namespace Gala.Plugins.XRDesktop {
             debug ("== Started xrdesktop ==");
 
             cursor_gl_texture = 0;
-            is_nvidia = "NVIDIA Corporation" == GLES2.glGetString (GLES2.GL_VENDOR);
+            is_nvidia = "NVIDIA Corporation" == GL.glGetString (GL.GL_VENDOR);
 
             initialize_input ();
             mirror_current_windows ();
@@ -386,13 +386,13 @@ namespace Gala.Plugins.XRDesktop {
                 return false;
             }
 
-            GLES2.GLuint meta_tex;
+            GL.GLuint meta_tex;
             uint meta_target_uint;
             if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target_uint)) {
                 error ("Could not get GL handle from CoglTexture.");
                 return false;
             }
-            GLES2.GLenum meta_target = (GLES2.GLenum) meta_target_uint;
+            GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
 
             var xr_window = (XRWindow) xrd_window.native;
             var texture = xrd_window.get_texture ();
@@ -406,7 +406,7 @@ namespace Gala.Plugins.XRDesktop {
             Xrd.render_lock ();
             if (extent_changed) {
                 if (xr_window.gl_texture != 0) {
-                    GLES2.glDeleteTextures (1, out xr_window.gl_texture);
+                    GL.glDeleteTextures (1, out xr_window.gl_texture);
                 }
 
                 texture = allocate_external_memory (client,
@@ -422,7 +422,7 @@ namespace Gala.Plugins.XRDesktop {
                     return false;
                 }
 
-                GLES2.glCopyImageSubData (
+                GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
@@ -430,7 +430,7 @@ namespace Gala.Plugins.XRDesktop {
                     0,
                     0,
                     xr_window.gl_texture,
-                    GLES2.GL_TEXTURE_2D,
+                    GL.GL_TEXTURE_2D,
                     0,
                     0,
                     0,
@@ -440,12 +440,12 @@ namespace Gala.Plugins.XRDesktop {
                     1);
 
                 gl_check_error ("glCopyImageSubData");
-                GLES2.glFinish ();
+                GL.glFinish ();
 
                 xrd_window.set_and_submit_texture (texture);
 
             } else {
-                GLES2.glCopyImageSubData (
+                GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
@@ -453,7 +453,7 @@ namespace Gala.Plugins.XRDesktop {
                     0,
                     0,
                     xr_window.gl_texture,
-                    GLES2.GL_TEXTURE_2D,
+                    GL.GL_TEXTURE_2D,
                     0,
                     0,
                     0,
@@ -464,7 +464,7 @@ namespace Gala.Plugins.XRDesktop {
                 );
 
                 gl_check_error ("glCopyImageSubData");
-                GLES2.glFinish ();
+                GL.glFinish ();
 
                 xrd_window.set_and_submit_texture (texture);
             }
@@ -475,18 +475,18 @@ namespace Gala.Plugins.XRDesktop {
 
         private Gulkan.Texture? allocate_external_memory (
             Gulkan.Client client,
-            GLES2.GLuint source_gl_handle,
-            GLES2.GLenum gl_target,
+            GL.GLuint source_gl_handle,
+            GL.GLenum gl_target,
             int width,
             int height,
-            out GLES2.GLuint gl_handle
+            out GL.GLuint gl_handle
         ) {
             debug ("Reallocating %dx%d vulkan texture", width, height);
 
             /* Get meta texture format */
-            GLES2.glBindTexture (gl_target, out source_gl_handle);
-            GLES2.GLint internal_format;
-            GLES2.glGetTexLevelParameteriv (GLES2.GL_TEXTURE_2D, 0, GLES2.GL_TEXTURE_INTERNAL_FORMAT, out internal_format);
+            GL.glBindTexture (gl_target, out source_gl_handle);
+            GL.GLint internal_format;
+            GL.glGetTexLevelParameteriv (GL.GL_TEXTURE_2D, 0, GL.GL_TEXTURE_INTERNAL_FORMAT, out internal_format);
 
             ulong size;
             int fd;
@@ -510,49 +510,49 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            GLES2.GLuint gl_mem_object;
-            GLES2.glCreateMemoryObjectsEXT (1, out gl_mem_object);
+            GL.GLuint gl_mem_object;
+            GL.glCreateMemoryObjectsEXT (1, out gl_mem_object);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
-            GLES2.GLint gl_dedicated_mem;
-            GLES2.glMemoryObjectParameterivEXT (gl_mem_object, GLES2.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL.GLint gl_dedicated_mem;
+            GL.glMemoryObjectParameterivEXT (gl_mem_object, GL.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
-            GLES2.glGetMemoryObjectParameterivEXT (gl_mem_object, GLES2.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL.glGetMemoryObjectParameterivEXT (gl_mem_object, GL.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glGetMemoryObjectParameterivEXT");
 
-            GLES2.glImportMemoryFdEXT (gl_mem_object, size, GLES2.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
+            GL.glImportMemoryFdEXT (gl_mem_object, size, GL.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
             gl_check_error ("glImportMemoryFdEXT");
 
-            GLES2.glGenTextures (1, out gl_handle);
+            GL.glGenTextures (1, out gl_handle);
             gl_check_error ("glGenTextures");
 
-            GLES2.glBindTexture (GLES2.GL_TEXTURE_2D, out gl_handle);
+            GL.glBindTexture (GL.GL_TEXTURE_2D, out gl_handle);
             gl_check_error ("glBindTexture");
 
-            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_TILING_EXT, GLES2.GL_OPTIMAL_TILING_EXT);
+            GL.glTexParameteri (GL.GL_TEXTURE_2D, GL.GL_TEXTURE_TILING_EXT, GL.GL_OPTIMAL_TILING_EXT);
             gl_check_error ("glTexParameteri GL_TEXTURE_TILING_EXT");
 
-            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_MIN_FILTER, GLES2.GL_LINEAR);
+            GL.glTexParameteri (GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
             gl_check_error ("glTexParameteri GL_TEXTURE_MIN_FILTER");
 
-            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_MAG_FILTER, GLES2.GL_LINEAR);
+            GL.glTexParameteri (GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
             gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
 
             if (is_nvidia) {
-                internal_format = GLES2.GL_RGBA8;
+                internal_format = GL.GL_RGBA8;
             }
 
-            GLES2.glTexStorageMem2DEXT (GLES2.GL_TEXTURE_2D, 1, internal_format, width, height, gl_mem_object, 0);
+            GL.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format, width, height, gl_mem_object, 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
-            GLES2.glFinish ();
+            GL.glFinish ();
 
             if (!texture.transfer_layout (Vk.ImageLayout.UNDEFINED, Vk.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
                 error ("Unable to transfer layout.");
             }
 
-            GLES2.glDeleteMemoryObjectsEXT (1, gl_mem_object);
+            GL.glDeleteMemoryObjectsEXT (1, gl_mem_object);
             gl_check_error ("glDeleteMemoryObjectsEXT");
 
             return texture;
@@ -560,20 +560,20 @@ namespace Gala.Plugins.XRDesktop {
 
 
         private void gl_check_error (string prefix) {
-            var err = GLES2.GL_NO_ERROR;
+            var err = GL.GL_NO_ERROR;
 
-            while ((err = GLES2.glGetError ()) != GLES2.GL_NO_ERROR) {
+            while ((err = GL.glGetError ()) != GL.GL_NO_ERROR) {
                 var gl_err_string = "UNKNOWN GL Error";
 
                 switch (err) {
-                    case GLES2.GL_NO_ERROR: gl_err_string = "GL_NO_ERROR GL Error"; break;
-                    case GLES2.GL_INVALID_ENUM: gl_err_string = "GL_INVALID_ENUM GL Error"; break;
-                    case GLES2.GL_INVALID_VALUE: gl_err_string = "GL_INVALID_VALUE GL Error"; break;
-                    case GLES2.GL_INVALID_OPERATION: gl_err_string = "GL_INVALID_OPERATION GL Error"; break;
-                    case GLES2.GL_INVALID_FRAMEBUFFER_OPERATION: gl_err_string = "GL_INVALID_FRAMEBUFFER_OPERATION GL Error"; break;
-                    case GLES2.GL_OUT_OF_MEMORY: gl_err_string = "GL_OUT_OF_MEMORY GL Error"; break;
-                    case GLES2.GL_STACK_UNDERFLOW: gl_err_string = "GL_STACK_UNDERFLOW GL Error"; break;
-                    case GLES2.GL_STACK_OVERFLOW: gl_err_string = "GL_STACK_OVERFLOW GL Error"; break;
+                    case GL.GL_NO_ERROR: gl_err_string = "GL_NO_ERROR GL Error"; break;
+                    case GL.GL_INVALID_ENUM: gl_err_string = "GL_INVALID_ENUM GL Error"; break;
+                    case GL.GL_INVALID_VALUE: gl_err_string = "GL_INVALID_VALUE GL Error"; break;
+                    case GL.GL_INVALID_OPERATION: gl_err_string = "GL_INVALID_OPERATION GL Error"; break;
+                    case GL.GL_INVALID_FRAMEBUFFER_OPERATION: gl_err_string = "GL_INVALID_FRAMEBUFFER_OPERATION GL Error"; break;
+                    case GL.GL_OUT_OF_MEMORY: gl_err_string = "GL_OUT_OF_MEMORY GL Error"; break;
+                    case GL.GL_STACK_UNDERFLOW: gl_err_string = "GL_STACK_UNDERFLOW GL Error"; break;
+                    case GL.GL_STACK_OVERFLOW: gl_err_string = "GL_STACK_OVERFLOW GL Error"; break;
                     default:
                         break;
                 }
