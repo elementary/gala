@@ -27,63 +27,67 @@ namespace GLES2
     /*-------------------------------------------------------------------------
      * Data type definitions
      *-----------------------------------------------------------------------*/
-     
+
     [SimpleType]
     public struct GLvoid {
     }
-     
+
     [SimpleType]
     public struct GLchar: char {
     }
-    
+
     [SimpleType]
     public struct GLenum: int {
     }
-    
+
     [SimpleType]
     public struct GLboolean: uint8 {
     }
-    
+
     [SimpleType]
     public struct GLbitfield: uint8 {
     }
-    
+
     [SimpleType]
     public struct GLbyte: char {
     }
-    
+
     [SimpleType]
     public struct GLshort: short {
     }
-    
+
     [SimpleType]
     public struct GLint: int {
     }
-    
+
     [SimpleType]
     public struct GLsizei: int {
     }
-    
+
     [SimpleType]
     public struct GLubyte: uchar {
     }
-    
+
     [SimpleType]
     public struct GLushort: ushort {
     }
-    
+
     [SimpleType]
     public struct GLuint: uint {
     }
-    
+
+    [SimpleType]
+    public struct GLuint64: uint64 {
+    }
+
     [SimpleType]
     public struct GLfloat: float {
     }
-    
+
     [SimpleType]
     public struct GLclampf: float {
     }
-    
+
     [SimpleType]
     public struct GLfixed: int32 {
     }
@@ -92,14 +96,14 @@ namespace GLES2
     [SimpleType]
     public struct GLintptr: size_t {
     }
-    
+
     [SimpleType]
     public struct GLsizeiptr: size_t {
     }
-    
+
     public const GLboolean GL_FALSE;
     public const GLboolean GL_TRUE;
-    
+
     /* ClearBufferMask */
     public const GLbitfield GL_DEPTH_BUFFER_BIT;
     public const GLbitfield GL_STENCIL_BUFFER_BIT;
@@ -520,7 +524,7 @@ namespace GLES2
     public const GLenum GL_MAX_RENDERBUFFER_SIZE;
 
     public const GLenum GL_INVALID_FRAMEBUFFER_OPERATION;
-    
+
     /*-------------------------------------------------------------------------
      * GL core functions.
      *-----------------------------------------------------------------------*/
@@ -667,4 +671,13 @@ namespace GLES2
     public void glVertexAttrib4fv (GLuint indx, GLfloat* values);
     public void glVertexAttribPointer (GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* ptr);
     public void glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
+
+    public void glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint params);
+    public void glCreateMemoryObjectsEXT (GLsizei n, GLuint memoryObjects);
+    public void glDeleteMemoryObjectsEXT (GLsizei n, GLuint memoryObjects);
+    public void glMemoryObjectParameterivEXT (GLuint memoryObject, GLenum pname, GLint params);
+    public void glGetMemoryObjectParameterivEXT (GLuint memoryObject, GLenum pname, GLint params);
+    public void glImportMemoryFdEXT (GLuint memory, GLuint64 size, GLenum handleType, GLint fd);
+    public void glTexStorageMem2DEXT (GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLuint memory, GLuint64 offset);
+    public void glCopyImageSubData (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);
 }
