@@ -1,6 +1,7 @@
 [CCode (cprefix = "Vk", gir_namespace = "Vk", gir_version = "1.2.131.2", lower_case_cprefix = "vk_")]
 namespace Vk {
 
+    [SimpleType]
     [CCode (cheader_filename = "vulkan/vulkan_core.h", has_type_id = false)]
 	public struct Extent2D {
 		public uint32 width;

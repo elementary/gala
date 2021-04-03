@@ -109,6 +109,4 @@ namespace Gulkan {
 		public bool map_array ();
 		public void reset ();
 	}
-	[CCode (cheader_filename = "gulkan.h")]
-	public static bool is_texture (Gulkan.Texture texture);
 }

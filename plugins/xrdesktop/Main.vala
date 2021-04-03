@@ -352,7 +352,7 @@ namespace Gala.Plugins.XRDesktop {
                     upload_layout
                 );
 
-                if (!Gulkan.is_texture (texture)) {
+                if (texture == null) {
                     error ("Error creating texture for window!");
                     Xrd.render_unlock ();
                     return false;
