@@ -10,7 +10,7 @@ namespace Xrd {
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
 		public Gulkan.Client get_gulkan ();
-		public Vulkan.ImageLayout get_upload_layout ();
+		public Vk.ImageLayout get_upload_layout ();
 		public bool poll_input_events ();
 		public bool poll_runtime_events ();
 		public void remove_container (Xrd.Container container);
@@ -99,6 +99,7 @@ namespace Xrd {
 		public abstract void poll_event ();
 		public void save_reset_transformation ();
 		public void select ();
+		public void set_and_submit_texture (Gulkan.Texture texture);
 		public abstract void set_flip_y (bool flip_y);
 		public void set_pin (bool pinned, bool hide_unpinned);
 		public void set_transformation (Graphene.Matrix transform);

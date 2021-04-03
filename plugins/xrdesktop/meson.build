@@ -10,7 +10,8 @@ gala_xrdesktop_lib = shared_library(
         gala_dep,
         gala_base_dep,
         xrdesktop_dep,
-        gulkan_dep
+        gulkan_dep,
+        vulkan_dep
     ],
     include_directories: config_inc_dir,
     install: true,

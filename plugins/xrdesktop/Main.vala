@@ -132,7 +132,7 @@ namespace Gala.Plugins.XRDesktop {
 
             var xr_window = new XRWindow ();
             xr_window.meta_window_actor = window_actor;
-            xr_window.gl_texture = 0;
+            xr_window.gl_texture = null;
 
             xrd_window.native = xr_window;
             window_actor.paint.connect ((paint_context) => {
@@ -345,23 +345,20 @@ namespace Gala.Plugins.XRDesktop {
                 texture == null
             ) {
                 debug ("Reallocating %dx%d vulkan texture", rect.width, rect.height);
-                texture = new Gulkan.Texture.from_cairo_surface (
-                    gulkan_client,
+                texture = Gulkan.Texture.new_from_cairo_surface (
+                    client,
                     cairo_surface,
-                    Vulkan.Format.B8G8R8A8_SRGB,
+                    Vk.Format.B8G8R8A8_SRGB,
                     upload_layout
                 );
 
-                /*
-                if (!GULKAN_IS_TEXTURE (texture))
-                {
-                    g_printerr ("Error creating texture for window!\n");
-                    xrd_render_unlock ();
-                    return FALSE;
-                    }
-                xrd_window_set_and_submit_texture (xrd_win, texture);
+                if (!Gulkan.is_texture (texture)) {
+                    error ("Error creating texture for window!");
+                    Xrd.render_unlock ();
+                    return false;
                 }
-                */
+                xrd_window.set_and_submit_texture (texture);
+
             } else {
                 texture.upload_cairo_surface (cairo_surface, upload_layout);
                 xrd_window.submit_texture ();
@@ -383,11 +380,12 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             GLES2.GLuint meta_tex;
-            GLES2.GLenum meta_target;
-            if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target)) {
+            uint meta_target_uint;
+            if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target_uint)) {
                 error ("Could not get GL handle from CoglTexture.");
                 return false;
             }
+            GLES2.GLenum meta_target = (GLES2.GLenum) meta_target_uint;
 
             var xr_window = (XRWindow) xrd_window.native;
             var texture = xrd_window.get_texture ();
@@ -395,13 +393,13 @@ namespace Gala.Plugins.XRDesktop {
 
             if (texture != null) {
                 var extent = texture.get_extent ();
-                extent_changed = rect.with != extent.width || rect.height != extent.height;
+                extent_changed = rect.width != extent.width || rect.height != extent.height;
             }
 
             Xrd.render_lock ();
 
             if (extent_changed) {
-                if (xr_window.gl_texture != 0) {
+                if (xr_window.gl_texture != null) {
                     GLES2.glDeleteTextures (1, xr_window.gl_texture);
                 }
 
@@ -429,7 +427,7 @@ namespace Gala.Plugins.XRDesktop {
                 */
 
             } else {
-                GLES2.glCopyImageSubData (
+                /*GLES2.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
@@ -445,13 +443,110 @@ namespace Gala.Plugins.XRDesktop {
                     cursor_width,
                     cursor_height,
                     1
-                );
+                );*/
 
                 GLES2.glFinish ();
                 // xrd_desktop_cursor_submit_texture (cursor);
             }
 
             Xrd.render_unlock ();
+            return false;
+        }
+
+        private Gulkan.Texture? allocate_external_memory (
+            Gulkan.Client client,
+            GLES2.GLuint source_gl_handle,
+            GLES2.GLenum gl_target,
+            int width,
+            int height,
+            out GLES2.GLuint* gl_handle
+        ) {
+            debug ("Reallocating %dx%d vulkan texture", width, height);
+
+            /* Get meta texture format */
+            GLES2.glBindTexture (gl_target, source_gl_handle);
+            GLES2.GLint internal_format;
+            /*GLint internal_format;
+            _glGetTexLevelParameteriv (GL_TEXTURE_2D, 0,
+                                        GL_TEXTURE_INTERNAL_FORMAT, &internal_format);*/
+            ulong size;
+            int fd;
+            var extent = Vk.Extent2D () {
+                width = width,
+                height = height
+            };
+
+            var layout = xrd_client.get_upload_layout ();
+            var texture = Gulkan.Texture.new_export_fd (
+                client,
+                extent,
+                Vk.Format.R8G8B8A8_SRGB,
+                layout,
+                out size,
+                out fd
+            );
+
+            if (texture == null) {
+                error ("Unable to initialize Vulkan texture.");
+                return null;
+            }
+
+            var gl_dedicated_mem = GLES2.GL_TRUE;
+            GLES2.GLuint gl_mem_object;
+
+/*
+  _glCreateMemoryObjectsEXT (1, &gl_mem_object);
+  gl_check_error ("_glCreateMemoryObjectsEXT");
+
+  _glMemoryObjectParameterivEXT (gl_mem_object,
+                                 GL_DEDICATED_MEMORY_OBJECT_EXT,
+                                &gl_dedicated_mem);
+  gl_check_error ("_glMemoryObjectParameterivEXT");
+
+  _glGetMemoryObjectParameterivEXT (gl_mem_object,
+                                    GL_DEDICATED_MEMORY_OBJECT_EXT,
+                                   &gl_dedicated_mem);
+  gl_check_error ("_glGetMemoryObjectParameterivEXT");
+
+  _glImportMemoryFdEXT (gl_mem_object, size,
+                        GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
+  gl_check_error ("_glImportMemoryFdEXT");
+
+  _glGenTextures (1, out_gl_handle);
+  gl_check_error ("_glGenTextures");
+
+  _glBindTexture (GL_TEXTURE_2D, *out_gl_handle);
+  gl_check_error ("_glBindTexture");
+
+  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_TILING_EXT, GL_OPTIMAL_TILING_EXT);
+  gl_check_error ("glTexParameteri GL_TEXTURE_TILING_EXT");
+  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl_check_error ("glTexParameteri GL_TEXTURE_MIN_FILTER");
+  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
+
+  if (self->nvidia)
+    internal_format = GL_RGBA8;
+
+  _glTexStorageMem2DEXT (GL_TEXTURE_2D, 1, internal_format,
+                         width, height, gl_mem_object, 0);
+  gl_check_error ("_glTexStorageMem2DEXT");
+
+  _glFinish ();
+
+  if (!gulkan_texture_transfer_layout (texture,
+                                       VK_IMAGE_LAYOUT_UNDEFINED,
+                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL))
+    {
+      g_printerr ("Unable to transfer layout.\n");
+    }
+
+  _glDeleteMemoryObjectsEXT (1, &gl_mem_object);
+  gl_check_error ("_glDeleteMemoryObjectsEXT");
+
+  return texture;
+} */
+            return null;
         }
     }
 }
