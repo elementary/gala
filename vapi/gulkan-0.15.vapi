@@ -90,6 +90,7 @@ namespace Gulkan {
 		public static Texture? new_export_fd (Gulkan.Client client, Vk.Extent2D extent, Vk.Format format, Vk.ImageLayout layout, out ulong size, out int fd);
 		public void upload_cairo_surface (Cairo.Surface cairo_surface, Vk.ImageLayout upload_layout);
 		public Vk.Extent2D get_extent ();
+		public bool transfer_layout (Vk.ImageLayout src, Vk.ImageLayout dst);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_uniform_buffer_get_type ()")]
 	public class UniformBuffer : GLib.Object {

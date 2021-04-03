@@ -218,6 +218,8 @@ namespace GLES2
     public const GLenum GL_INVALID_VALUE;
     public const GLenum GL_INVALID_OPERATION;
     public const GLenum GL_OUT_OF_MEMORY;
+    public const GLenum GL_STACK_UNDERFLOW;
+    public const GLenum GL_STACK_OVERFLOW;
 
     /* FrontFaceDirection */
     public const GLenum GL_CW;
@@ -379,6 +381,8 @@ namespace GLES2
     public const GLenum GL_TEXTURE_MIN_FILTER;
     public const GLenum GL_TEXTURE_WRAP_S;
     public const GLenum GL_TEXTURE_WRAP_T;
+    public const GLenum GL_TEXTURE_TILING_EXT;
+    public const GLenum GL_OPTIMAL_TILING_EXT;
 
     /* TextureTarget */
     /*      GL_TEXTURE_2D */
@@ -428,6 +432,7 @@ namespace GLES2
     public const GLenum GL_TEXTURE30;
     public const GLenum GL_TEXTURE31;
     public const GLenum GL_ACTIVE_TEXTURE;
+    public const GLenum GL_TEXTURE_INTERNAL_FORMAT;
 
     /* TextureWrapMode */
     public const GLenum GL_REPEAT;
@@ -487,6 +492,7 @@ namespace GLES2
     public const GLenum GL_RENDERBUFFER;
 
     public const GLenum GL_RGBA4;
+    public const GLenum GL_RGBA8;
     public const GLenum GL_RGB5_A1;
     public const GLenum GL_RGB565;
     public const GLenum GL_DEPTH_COMPONENT16;
@@ -525,6 +531,12 @@ namespace GLES2
 
     public const GLenum GL_INVALID_FRAMEBUFFER_OPERATION;
 
+    /* MemoryObjectParameterName */
+    public const GLenum GL_DEDICATED_MEMORY_OBJECT_EXT;
+    public const GLenum GL_PROTECTED_MEMORY_OBJECT_EXT;
+
+    public const GLenum GL_HANDLE_TYPE_OPAQUE_FD_EXT;
+
     /*-------------------------------------------------------------------------
      * GL core functions.
      *-----------------------------------------------------------------------*/
@@ -535,7 +547,7 @@ namespace GLES2
     public void glBindBuffer (GLenum target, GLuint buffer);
     public void glBindFramebuffer (GLenum target, GLuint framebuffer);
     public void glBindRenderbuffer (GLenum target, GLuint renderbuffer);
-    public void glBindTexture (GLenum target, GLuint texture);
+    public void glBindTexture (GLenum target, out GLuint texture);
     public void glBlendColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
     public void glBlendEquation ( GLenum mode );
     public void glBlendEquationSeparate (GLenum modeRGB, GLenum modeAlpha);
@@ -562,7 +574,7 @@ namespace GLES2
     public void glDeleteProgram (GLuint program);
     public void glDeleteRenderbuffers (GLsizei n, GLuint* renderbuffers);
     public void glDeleteShader (GLuint shader);
-    public void glDeleteTextures (GLsizei n, GLuint* textures);
+    public void glDeleteTextures (GLsizei n, out GLuint textures);
     public void glDepthFunc (GLenum func);
     public void glDepthMask (GLboolean flag);
     public void glDepthRangef (GLclampf zNear, GLclampf zFar);
@@ -582,7 +594,7 @@ namespace GLES2
     public void glGenerateMipmap (GLenum target);
     public void glGenFramebuffers (GLsizei n, GLuint* framebuffers);
     public void glGenRenderbuffers (GLsizei n, GLuint* renderbuffers);
-    public void glGenTextures (GLsizei n, GLuint* textures);
+    public void glGenTextures (GLsizei n, out GLuint textures);
     public void glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
     public void glGetActiveUniform (GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, GLchar* name);
     public void glGetAttachedShaders (GLuint program, GLsizei maxcount, GLsizei* count, GLuint* shaders);
@@ -672,11 +684,11 @@ namespace GLES2
     public void glVertexAttribPointer (GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, void* ptr);
     public void glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
 
-    public void glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint params);
-    public void glCreateMemoryObjectsEXT (GLsizei n, GLuint memoryObjects);
+    public void glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, out GLint params);
+    public void glCreateMemoryObjectsEXT (GLsizei n, out GLuint memoryObjects);
     public void glDeleteMemoryObjectsEXT (GLsizei n, GLuint memoryObjects);
-    public void glMemoryObjectParameterivEXT (GLuint memoryObject, GLenum pname, GLint params);
-    public void glGetMemoryObjectParameterivEXT (GLuint memoryObject, GLenum pname, GLint params);
+    public void glMemoryObjectParameterivEXT (GLuint memoryObjects, GLenum pname, out GLint params);
+    public void glGetMemoryObjectParameterivEXT (GLuint memoryObjects, GLenum pname, out GLint params);
     public void glImportMemoryFdEXT (GLuint memory, GLuint64 size, GLenum handleType, GLint fd);
     public void glTexStorageMem2DEXT (GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLuint memory, GLuint64 offset);
     public void glCopyImageSubData (GLuint srcName, GLenum srcTarget, GLint srcLevel, GLint srcX, GLint srcY, GLint srcZ, GLuint dstName, GLenum dstTarget, GLint dstLevel, GLint dstX, GLint dstY, GLint dstZ, GLsizei srcWidth, GLsizei srcHeight, GLsizei srcDepth);

@@ -28,6 +28,7 @@ namespace Gala.Plugins.XRDesktop {
     public class Main : Gala.Plugin {
         Gala.WindowManager? wm = null;
         Xrd.Client? xrd_client = null;
+        GLES2.GLuint cursor_gl_texture;
         bool is_nvidia = false;
         int top_layer = 0;
 
@@ -42,7 +43,9 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             debug ("== Started xrdesktop ==");
-            this.is_nvidia = "NVIDIA Corporation" == GLES2.glGetString (GLES2.GL_VENDOR);
+
+            cursor_gl_texture = 0;
+            is_nvidia = "NVIDIA Corporation" == GLES2.glGetString (GLES2.GL_VENDOR);
 
             initialize_input ();
             mirror_current_windows ();
@@ -132,7 +135,7 @@ namespace Gala.Plugins.XRDesktop {
 
             var xr_window = new XRWindow ();
             xr_window.meta_window_actor = window_actor;
-            xr_window.gl_texture = null;
+            xr_window.gl_texture = 0;
 
             xrd_window.native = xr_window;
             window_actor.paint.connect ((paint_context) => {
@@ -316,10 +319,12 @@ namespace Gala.Plugins.XRDesktop {
             return ret;
         }
 
-        private bool upload_xrd_window_raw_cairo (Gulkan.Client client,
+        private bool upload_xrd_window_raw_cairo (
+            Gulkan.Client client,
             Xrd.Window xrd_window,
             Meta.ShapedTexture mst,
-            Meta.Rectangle rect) {
+            Meta.Rectangle rect
+        ) {
 
             var cairo_rect = Cairo.RectangleInt () {
                 x = 0,
@@ -368,10 +373,12 @@ namespace Gala.Plugins.XRDesktop {
             return true;
         }
 
-        private bool upload_xrd_window_gl_external_memory (Gulkan.Client client,
+        private bool upload_xrd_window_gl_external_memory (
+            Gulkan.Client client,
             Xrd.Window xrd_window,
             Meta.ShapedTexture mst,
-            Meta.Rectangle rect) {
+            Meta.Rectangle rect
+        ) {
             var cogl_texture = mst.get_texture ();
 
             if (cogl_texture == null || !cogl_texture.is_texture ()) {
@@ -397,10 +404,9 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             Xrd.render_lock ();
-
             if (extent_changed) {
-                if (xr_window.gl_texture != null) {
-                    GLES2.glDeleteTextures (1, xr_window.gl_texture);
+                if (xr_window.gl_texture != 0) {
+                    GLES2.glDeleteTextures (1, out xr_window.gl_texture);
                 }
 
                 texture = allocate_external_memory (client,
@@ -410,47 +416,61 @@ namespace Gala.Plugins.XRDesktop {
                     rect.height,
                     out xr_window.gl_texture);
 
-                /*
-                if (!GULKAN_IS_TEXTURE (texture))
-                {
-                g_printerr ("Error creating texture for window!\n");
-                xrd_render_unlock ();
-                return FALSE;
+                if (texture == null) {
+                    error ("Error creating texture for window!");
+                    Xrd.render_unlock ();
+                    return false;
                 }
 
-            _glCopyImageSubData (meta_tex, meta_target, 0, 0, 0, 0,
-                                shell_win->gl_texture, GL_TEXTURE_2D, 0, 0, 0, 0,
-                                rect->width, rect->height, 1);
-            gl_check_error ("_glCopyImageSubData");
-            _glFinish ();
-            xrd_window_set_and_submit_texture (xrd_win, texture);
-                */
-
-            } else {
-                /*GLES2.glCopyImageSubData (
+                GLES2.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
                     0,
                     0,
                     0,
-                    cursor_gl_texture,
-                    GL_TEXTURE_2D,
+                    xr_window.gl_texture,
+                    GLES2.GL_TEXTURE_2D,
                     0,
                     0,
                     0,
                     0,
-                    cursor_width,
-                    cursor_height,
-                    1
-                );*/
+                    rect.width,
+                    rect.height,
+                    1);
 
+                gl_check_error ("glCopyImageSubData");
                 GLES2.glFinish ();
-                // xrd_desktop_cursor_submit_texture (cursor);
-            }
 
+                xrd_window.set_and_submit_texture (texture);
+
+            } else {
+                GLES2.glCopyImageSubData (
+                    meta_tex,
+                    meta_target,
+                    0,
+                    0,
+                    0,
+                    0,
+                    xr_window.gl_texture,
+                    GLES2.GL_TEXTURE_2D,
+                    0,
+                    0,
+                    0,
+                    0,
+                    rect.width,
+                    rect.height,
+                    1
+                );
+
+                gl_check_error ("glCopyImageSubData");
+                GLES2.glFinish ();
+
+                xrd_window.set_and_submit_texture (texture);
+            }
             Xrd.render_unlock ();
-            return false;
+
+            return true;
         }
 
         private Gulkan.Texture? allocate_external_memory (
@@ -459,16 +479,15 @@ namespace Gala.Plugins.XRDesktop {
             GLES2.GLenum gl_target,
             int width,
             int height,
-            out GLES2.GLuint* gl_handle
+            out GLES2.GLuint gl_handle
         ) {
             debug ("Reallocating %dx%d vulkan texture", width, height);
 
             /* Get meta texture format */
-            GLES2.glBindTexture (gl_target, source_gl_handle);
+            GLES2.glBindTexture (gl_target, out source_gl_handle);
             GLES2.GLint internal_format;
-            /*GLint internal_format;
-            _glGetTexLevelParameteriv (GL_TEXTURE_2D, 0,
-                                        GL_TEXTURE_INTERNAL_FORMAT, &internal_format);*/
+            GLES2.glGetTexLevelParameteriv (GLES2.GL_TEXTURE_2D, 0, GLES2.GL_TEXTURE_INTERNAL_FORMAT, out internal_format);
+
             ulong size;
             int fd;
             var extent = Vk.Extent2D () {
@@ -491,62 +510,76 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            var gl_dedicated_mem = GLES2.GL_TRUE;
             GLES2.GLuint gl_mem_object;
+            GLES2.glCreateMemoryObjectsEXT (1, out gl_mem_object);
+            gl_check_error ("glCreateMemoryObjectsEXT");
 
-/*
-  _glCreateMemoryObjectsEXT (1, &gl_mem_object);
-  gl_check_error ("_glCreateMemoryObjectsEXT");
+            GLES2.GLint gl_dedicated_mem;
+            GLES2.glMemoryObjectParameterivEXT (gl_mem_object, GLES2.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            gl_check_error ("glMemoryObjectParameterivEXT");
 
-  _glMemoryObjectParameterivEXT (gl_mem_object,
-                                 GL_DEDICATED_MEMORY_OBJECT_EXT,
-                                &gl_dedicated_mem);
-  gl_check_error ("_glMemoryObjectParameterivEXT");
+            GLES2.glGetMemoryObjectParameterivEXT (gl_mem_object, GLES2.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            gl_check_error ("glGetMemoryObjectParameterivEXT");
 
-  _glGetMemoryObjectParameterivEXT (gl_mem_object,
-                                    GL_DEDICATED_MEMORY_OBJECT_EXT,
-                                   &gl_dedicated_mem);
-  gl_check_error ("_glGetMemoryObjectParameterivEXT");
+            GLES2.glImportMemoryFdEXT (gl_mem_object, size, GLES2.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
+            gl_check_error ("glImportMemoryFdEXT");
 
-  _glImportMemoryFdEXT (gl_mem_object, size,
-                        GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
-  gl_check_error ("_glImportMemoryFdEXT");
+            GLES2.glGenTextures (1, out gl_handle);
+            gl_check_error ("glGenTextures");
 
-  _glGenTextures (1, out_gl_handle);
-  gl_check_error ("_glGenTextures");
+            GLES2.glBindTexture (GLES2.GL_TEXTURE_2D, out gl_handle);
+            gl_check_error ("glBindTexture");
 
-  _glBindTexture (GL_TEXTURE_2D, *out_gl_handle);
-  gl_check_error ("_glBindTexture");
+            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_TILING_EXT, GLES2.GL_OPTIMAL_TILING_EXT);
+            gl_check_error ("glTexParameteri GL_TEXTURE_TILING_EXT");
 
-  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_TILING_EXT, GL_OPTIMAL_TILING_EXT);
-  gl_check_error ("glTexParameteri GL_TEXTURE_TILING_EXT");
-  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  gl_check_error ("glTexParameteri GL_TEXTURE_MIN_FILTER");
-  _glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
+            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_MIN_FILTER, GLES2.GL_LINEAR);
+            gl_check_error ("glTexParameteri GL_TEXTURE_MIN_FILTER");
 
-  if (self->nvidia)
-    internal_format = GL_RGBA8;
+            GLES2.glTexParameteri (GLES2.GL_TEXTURE_2D, GLES2.GL_TEXTURE_MAG_FILTER, GLES2.GL_LINEAR);
+            gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
 
-  _glTexStorageMem2DEXT (GL_TEXTURE_2D, 1, internal_format,
-                         width, height, gl_mem_object, 0);
-  gl_check_error ("_glTexStorageMem2DEXT");
+            if (is_nvidia) {
+                internal_format = GLES2.GL_RGBA8;
+            }
 
-  _glFinish ();
+            GLES2.glTexStorageMem2DEXT (GLES2.GL_TEXTURE_2D, 1, internal_format, width, height, gl_mem_object, 0);
+            gl_check_error ("glTexStorageMem2DEXT");
 
-  if (!gulkan_texture_transfer_layout (texture,
-                                       VK_IMAGE_LAYOUT_UNDEFINED,
-                                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL))
-    {
-      g_printerr ("Unable to transfer layout.\n");
-    }
+            GLES2.glFinish ();
 
-  _glDeleteMemoryObjectsEXT (1, &gl_mem_object);
-  gl_check_error ("_glDeleteMemoryObjectsEXT");
+            if (!texture.transfer_layout (Vk.ImageLayout.UNDEFINED, Vk.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
+                error ("Unable to transfer layout.");
+            }
 
-  return texture;
-} */
-            return null;
+            GLES2.glDeleteMemoryObjectsEXT (1, gl_mem_object);
+            gl_check_error ("glDeleteMemoryObjectsEXT");
+
+            return texture;
+        }
+
+
+        private void gl_check_error (string prefix) {
+            var err = GLES2.GL_NO_ERROR;
+
+            while ((err = GLES2.glGetError ()) != GLES2.GL_NO_ERROR) {
+                var gl_err_string = "UNKNOWN GL Error";
+
+                switch (err) {
+                    case GLES2.GL_NO_ERROR: gl_err_string = "GL_NO_ERROR GL Error"; break;
+                    case GLES2.GL_INVALID_ENUM: gl_err_string = "GL_INVALID_ENUM GL Error"; break;
+                    case GLES2.GL_INVALID_VALUE: gl_err_string = "GL_INVALID_VALUE GL Error"; break;
+                    case GLES2.GL_INVALID_OPERATION: gl_err_string = "GL_INVALID_OPERATION GL Error"; break;
+                    case GLES2.GL_INVALID_FRAMEBUFFER_OPERATION: gl_err_string = "GL_INVALID_FRAMEBUFFER_OPERATION GL Error"; break;
+                    case GLES2.GL_OUT_OF_MEMORY: gl_err_string = "GL_OUT_OF_MEMORY GL Error"; break;
+                    case GLES2.GL_STACK_UNDERFLOW: gl_err_string = "GL_STACK_UNDERFLOW GL Error"; break;
+                    case GLES2.GL_STACK_OVERFLOW: gl_err_string = "GL_STACK_OVERFLOW GL Error"; break;
+                    default:
+                        break;
+                }
+
+                error ("%s - %s", prefix, gl_err_string);
+            }
         }
     }
 }
