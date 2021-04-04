@@ -26,20 +26,69 @@ namespace Gala.Plugins.XRDesktop {
     const float DEFAULT_LEVEL = 0.5f;
 
     public class Main : Gala.Plugin {
-        Gala.WindowManager? wm = null;
-        Xrd.Client? xrd_client = null;
-        GL.GLuint cursor_gl_texture;
-        bool is_nvidia = false;
-        int top_layer = 0;
+        private Gala.WindowManager? wm = null;
+        private DBusService? dbus_service = null;
+
+        private Xrd.Client? xrd_client = null;
+        private bool is_enabled { get { return xrd_client != null; } }
+
+        private GL.GLuint cursor_gl_texture;
+        private bool is_nvidia = false;
+        private int top_layer = 0;
 
         private static GLib.Mutex upload_xrd_window_mutex = Mutex ();
 
         public override void initialize (Gala.WindowManager wm) {
             this.wm = wm;
+
+            try {
+                watch_dbus_service ();
+            } catch (Error e) {
+                critical ("xrdesktop watching dbus service failed: %s", e.message);
+            }
+        }
+
+        public override void destroy () {
+            unwatch_dbus_service ();
+        }
+
+        private void watch_dbus_service () throws Error {
+            dbus_service = Bus.get_proxy_sync (
+                BusType.SYSTEM,
+                "io.elementary.pantheon.XRDesktopService",
+                "/",
+                DBusProxyFlags.NONE
+            );
+
+            ((DBusProxy)dbus_service).g_properties_changed.connect (on_dbus_properties_changed);
+        }
+
+        private void unwatch_dbus_service () {
+            if (dbus_service != null) {
+                ((DBusProxy)dbus_service).g_properties_changed.disconnect (on_dbus_properties_changed);
+            }
+            dbus_service = null;
+        }
+
+        private void on_dbus_properties_changed (Variant changed_properties, string[] invalidated_properties) {
+            var enabled = changed_properties.lookup_value ("enabled", new VariantType ("b"));
+            if (enabled != null) {
+                if (enabled.get_boolean () && !is_enabled) {
+                    enable ();
+                } else if (!enabled.get_boolean () && is_enabled) {
+                    disable ();
+                }
+            }
+        }
+
+        private void enable () {
+            debug ("Enabling mirroring to xrdesktop...");
+
+            /*
             this.xrd_client = new Xrd.Client ();
 
             if (this.xrd_client == null) {
-                error ("Failed to initialize xrdesktop!\nUsually this is caused by a problem with the VR runtime.");
+                critical ("Failed to initialize xrdesktop!\nUsually this is caused by a problem with the VR runtime.");
             }
 
             debug ("== Started xrdesktop ==");
@@ -48,14 +97,13 @@ namespace Gala.Plugins.XRDesktop {
             is_nvidia = "NVIDIA Corporation" == GL.glGetString (GL.GL_VENDOR);
 
             initialize_input ();
-            mirror_current_windows ();
+            mirror_current_windows (); */
             /*arrange_windows_by_desktop_position ();
             connect_signals ();*/
         }
 
-        public override void destroy () {
-            // here you would destroy actors you added to the stage or remove
-            // keybindings
+        private void disable () {
+            debug ("Disabling mirroring to xrdesktop...");
         }
 
         private void initialize_input () {
@@ -95,7 +143,7 @@ namespace Gala.Plugins.XRDesktop {
                         xrd_parent_window = xrd_parent_window_data.parent_window;
                         xrd_parent_window_data = xrd_parent_window.get_data ();
 
-                        var gala_xr_window = (Gala.Plugins.XRDesktop.XRWindow?) xrd_parent_window.native;
+                        var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_parent_window.native;
                         if (gala_xr_window != null && gala_xr_window.meta_window_actor != null) {
                             meta_parent_window_actor = gala_xr_window.meta_window_actor;
                             meta_parent_window = meta_parent_window_actor.get_meta_window ();
@@ -133,7 +181,7 @@ namespace Gala.Plugins.XRDesktop {
                 top_layer++;
             }
 
-            var xr_window = new XRWindow ();
+            var xr_window = new Window ();
             xr_window.meta_window_actor = window_actor;
             xr_window.gl_textures = null;
 
@@ -283,7 +331,7 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool upload_xrd_window (Xrd.Window xrd_window) {
-            var xr_window = (XRWindow?) xrd_window.native;
+            var xr_window = (Window?) xrd_window.native;
             var window_actor = xr_window.meta_window_actor;
             var meta_window = get_validated_window (window_actor);
             var rect = meta_window.get_buffer_rect ();
@@ -301,7 +349,7 @@ namespace Gala.Plugins.XRDesktop {
                 var cogl_texture = mst.get_texture ();
 
                 if (cogl_texture == null || !cogl_texture.is_texture ()) {
-                    error ("Could not CoglTexture from MetaShapedTexture.");
+                    critical ("Could not CoglTexture from MetaShapedTexture.");
                     return false;
                 }
                 components = cogl_texture.get_components ();
@@ -335,11 +383,11 @@ namespace Gala.Plugins.XRDesktop {
 
             var cairo_surface = mst.get_image (cairo_rect);
             if (cairo_surface == null) {
-                error ("Could not get Cairo surface from MetaShapedTexture.");
+                critical ("Could not get Cairo surface from MetaShapedTexture.");
                 return false;
             }
 
-            var xr_window = (XRWindow) xrd_window.native;
+            var xr_window = (Window) xrd_window.native;
             var upload_layout = xrd_client.get_upload_layout ();
             var texture = xrd_window.get_texture ();
 
@@ -358,7 +406,7 @@ namespace Gala.Plugins.XRDesktop {
                 );
 
                 if (texture == null) {
-                    error ("Error creating texture for window!");
+                    critical ("Error creating texture for window!");
                     Xrd.render_unlock ();
                     return false;
                 }
@@ -382,19 +430,19 @@ namespace Gala.Plugins.XRDesktop {
             var cogl_texture = mst.get_texture ();
 
             if (cogl_texture == null || !cogl_texture.is_texture ()) {
-                error ("Could not get CoglTexture from MetaShapedTexture.");
+                critical ("Could not get CoglTexture from MetaShapedTexture.");
                 return false;
             }
 
             GL.GLuint meta_tex;
             uint meta_target_uint;
             if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target_uint)) {
-                error ("Could not get GL handle from CoglTexture.");
+                critical ("Could not get GL handle from CoglTexture.");
                 return false;
             }
             GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
 
-            var xr_window = (XRWindow) xrd_window.native;
+            var xr_window = (Window) xrd_window.native;
             var texture = xrd_window.get_texture ();
             var extent_changed = true;
 
@@ -417,12 +465,12 @@ namespace Gala.Plugins.XRDesktop {
                     xr_window.gl_textures);
 
                 if (texture == null) {
-                    error ("Error creating texture for window!");
+                    critical ("Error creating texture for window!");
                     Xrd.render_unlock ();
                     return false;
                 }
 
-                GL.glCopyImageSubData (
+                /*GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
@@ -439,12 +487,13 @@ namespace Gala.Plugins.XRDesktop {
                     rect.height,
                     1);
 
-                gl_check_error ("glCopyImageSubData");
+                gl_check_error ("glCopyImageSubData"); */
                 GL.glFinish ();
 
                 xrd_window.set_and_submit_texture (texture);
 
             } else {
+                /*
                 GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
@@ -462,6 +511,7 @@ namespace Gala.Plugins.XRDesktop {
                     rect.height,
                     1
                 );
+                 */
 
                 gl_check_error ("glCopyImageSubData");
                 GL.glFinish ();
@@ -506,22 +556,22 @@ namespace Gala.Plugins.XRDesktop {
             );
 
             if (texture == null) {
-                error ("Unable to initialize Vulkan texture.");
+                critical ("Unable to initialize Vulkan texture.");
                 return null;
             }
 
             GL.GLuint[]? gl_mem_object;
-            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_object);
+            //GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_object);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
             GL.GLint[]? gl_dedicated_mem;
-            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            //GL_EXT.glMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
-            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            //GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glGetMemoryObjectParameterivEXT");
 
-            GL_EXT.glImportMemoryFdEXT (gl_mem_object[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
+            //GL_EXT.glImportMemoryFdEXT (gl_mem_object[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
             gl_check_error ("glImportMemoryFdEXT");
 
             GL.glGenTextures (1, gl_handle);
@@ -543,16 +593,16 @@ namespace Gala.Plugins.XRDesktop {
                 internal_format = { GL.GL_RGBA8 };
             }
 
-            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_object[0], 0);
+            //GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_object[0], 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
             GL.glFinish ();
 
             if (!texture.transfer_layout (Vk.ImageLayout.UNDEFINED, Vk.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
-                error ("Unable to transfer layout.");
+                critical ("Unable to transfer layout.");
             }
 
-            GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
+            //GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
             gl_check_error ("glDeleteMemoryObjectsEXT");
 
             return texture;
@@ -578,7 +628,7 @@ namespace Gala.Plugins.XRDesktop {
                         break;
                 }
 
-                error ("%s - %s", prefix, gl_err_string);
+                critical ("%s - %s", prefix, gl_err_string);
             }
         }
     }
