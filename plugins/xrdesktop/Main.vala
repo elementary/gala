@@ -471,7 +471,7 @@ namespace Gala.Plugins.XRDesktop {
                     return false;
                 }
 
-                /*GL.glCopyImageSubData (
+                GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
                     0,
@@ -488,13 +488,12 @@ namespace Gala.Plugins.XRDesktop {
                     rect.height,
                     1);
 
-                gl_check_error ("glCopyImageSubData"); */
+                gl_check_error ("glCopyImageSubData");
                 GL.glFinish ();
 
                 xrd_window.set_and_submit_texture (texture);
 
             } else {
-                /*
                 GL.glCopyImageSubData (
                     meta_tex,
                     meta_target,
@@ -512,7 +511,6 @@ namespace Gala.Plugins.XRDesktop {
                     rect.height,
                     1
                 );
-                 */
 
                 gl_check_error ("glCopyImageSubData");
                 GL.glFinish ();
@@ -562,17 +560,17 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             GL.GLuint[]? gl_mem_object;
-            //GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_object);
+            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_object);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
             GL.GLint[]? gl_dedicated_mem;
-            //GL_EXT.glMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
-            //GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_object[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glGetMemoryObjectParameterivEXT");
 
-            //GL_EXT.glImportMemoryFdEXT (gl_mem_object[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
+            GL_EXT.glImportMemoryFdEXT (gl_mem_object[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
             gl_check_error ("glImportMemoryFdEXT");
 
             GL.glGenTextures (1, gl_handle);
@@ -594,7 +592,7 @@ namespace Gala.Plugins.XRDesktop {
                 internal_format = { GL.GL_RGBA8 };
             }
 
-            //GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_object[0], 0);
+            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_object[0], 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
             GL.glFinish ();
@@ -603,7 +601,7 @@ namespace Gala.Plugins.XRDesktop {
                 critical ("xrdesktop: Unable to transfer layout.");
             }
 
-            //GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
+            GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
             gl_check_error ("glDeleteMemoryObjectsEXT");
 
             return texture;

@@ -96,6 +96,7 @@ m_dep = cc.find_library('m', required: false)
 xrdesktop_dep = dependency('xrdesktop-0.15')
 gulkan_dep = dependency('gulkan-0.15')
 vulkan_dep = dependency('vulkan')
+glew_dep = cc.find_library('GLEW', required: false)
 libinputsynth_dep = dependency('libinputsynth-0.15')
 add_project_arguments([
         '--pkg=gl',
