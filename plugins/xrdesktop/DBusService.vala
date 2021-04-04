@@ -13,10 +13,9 @@
  *
  * You should have received a copy of the GNU Library General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
- [DBus (name = "io.elementary.pantheon.XRDesktopService")]
- public interface Gala.Plugins.XRDesktop.DBusService : Object {
-     public abstract bool enabled { owned get; set; }
-     public signal void enabled_changed ();
- }
+[DBus (name = "io.elementary.pantheon.XRDesktop")]
+public interface Gala.Plugins.XRDesktop.DBusService : Object {
+    public signal void enabled_changed (bool enabled);
+}

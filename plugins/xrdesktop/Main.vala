@@ -42,68 +42,69 @@ namespace Gala.Plugins.XRDesktop {
             this.wm = wm;
 
             try {
-                watch_dbus_service ();
+                connect_dbus_service ();
             } catch (Error e) {
-                critical ("xrdesktop watching dbus service failed: %s", e.message);
+                critical ("xrdesktop connecting to dbus service failed: %s", e.message);
             }
         }
 
         public override void destroy () {
-            unwatch_dbus_service ();
+            disconnect_dbus_service ();
         }
 
-        private void watch_dbus_service () throws Error {
+        private void connect_dbus_service () throws Error {
             dbus_service = Bus.get_proxy_sync (
-                BusType.SYSTEM,
-                "io.elementary.pantheon.XRDesktopService",
-                "/",
-                DBusProxyFlags.NONE
+                BusType.SESSION,
+                "io.elementary.pantheon.XRDesktop",
+                "/io/elementary/pantheon/xrdesktop"
             );
-
-            ((DBusProxy)dbus_service).g_properties_changed.connect (on_dbus_properties_changed);
+            dbus_service.enabled_changed.connect (on_enabled_changed);
         }
 
-        private void unwatch_dbus_service () {
+        private void disconnect_dbus_service () {
             if (dbus_service != null) {
-                ((DBusProxy)dbus_service).g_properties_changed.disconnect (on_dbus_properties_changed);
+                dbus_service.enabled_changed.disconnect (on_enabled_changed);
             }
             dbus_service = null;
         }
 
-        private void on_dbus_properties_changed (Variant changed_properties, string[] invalidated_properties) {
-            var enabled = changed_properties.lookup_value ("enabled", new VariantType ("b"));
-            if (enabled != null) {
-                if (enabled.get_boolean () && !is_enabled) {
-                    enable ();
-                } else if (!enabled.get_boolean () && is_enabled) {
-                    disable ();
-                }
+        private void on_enabled_changed (bool enabled) {
+            if (enabled) {
+                enable ();
+            } else {
+                disable ();
             }
         }
 
         private void enable () {
-            debug ("Enabling mirroring to xrdesktop...");
+            debug ("xrdesktop: Enable mirroring to XR...");
 
-            /*
             this.xrd_client = new Xrd.Client ();
-
             if (this.xrd_client == null) {
-                critical ("Failed to initialize xrdesktop!\nUsually this is caused by a problem with the VR runtime.");
+                var error_dialog = new Granite.MessageDialog (
+                    _("Failed to Mirror Desktop to XR"),
+                    _("Usually this is caused by a problem with the VR runtime."),
+                    new ThemedIcon ("dialog-error"),
+                    Gtk.ButtonsType.CLOSE
+                );
+                error_dialog.run ();
+                error_dialog.destroy ();
             }
 
-            debug ("== Started xrdesktop ==");
+            var gl_vendor = GL.glGetString (GL.GL_VENDOR);
+            debug ("xrdesktop: GL_VENDOR = '%s'", gl_vendor);
 
             cursor_gl_texture = 0;
-            is_nvidia = "NVIDIA Corporation" == GL.glGetString (GL.GL_VENDOR);
+            is_nvidia = "NVIDIA Corporation" == gl_vendor;
 
-            initialize_input ();
-            mirror_current_windows (); */
+            //initialize_input ();
+            mirror_current_windows ();
             /*arrange_windows_by_desktop_position ();
             connect_signals ();*/
         }
 
         private void disable () {
-            debug ("Disabling mirroring to xrdesktop...");
+            debug ("xrdesktop: Disable mirroring to XR...");
         }
 
         private void initialize_input () {
@@ -152,7 +153,7 @@ namespace Gala.Plugins.XRDesktop {
                 }
             }
 
-            debug ("Map window %p: %s (%s)",
+            debug ("xrdesktop: Map window %p: %s (%s)",
                 meta_parent_window_actor,
                 meta_parent_window.title,
                 meta_parent_window.get_description ());
@@ -173,7 +174,7 @@ namespace Gala.Plugins.XRDesktop {
                 xrd_parent_window.add_child (xrd_window, offset);
 
             } else if (is_child && xrd_parent_window == null) {
-                warning ("Can't add window '%s' as child. No parent candidate!", meta_parent_window.title);
+                warning ("xrdesktop: Can't add window '%s' as child. No parent candidate!", meta_parent_window.title);
             }
 
             if (!is_child) {
@@ -195,18 +196,18 @@ namespace Gala.Plugins.XRDesktop {
 
         private Meta.Window? get_validated_window (Meta.WindowActor? window_actor) {
             if (window_actor == null) {
-                warning ("Actor for move cursor not available.");
+                warning ("xrdesktop: Actor for move cursor not available.");
                 return null;
             }
 
             var window = window_actor.get_meta_window ();
             if (window == null) {
-                warning ("No window to move");
+                warning ("xrdesktop: No window to move");
                 return null;
             }
 
             if (window.get_display () == null) {
-                warning ("Window has no display?!");
+                warning ("xrdesktop: Window has no display?!");
                 return null;
             }
 
@@ -256,7 +257,7 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             /* Didn't find anything */
-            warning ("Could not find a parent for '%s'", child_window.get_title ());
+            warning ("xrdesktop: Could not find a parent for '%s'", child_window.get_title ());
 
             return false;
         }
@@ -267,7 +268,7 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             if (is_window_excluded_from_mirroring (meta_window)) {
-                debug ("Window is excluded from mirroring");
+                debug ("xrdesktop: Window is excluded from mirroring");
                 return null;
             }
 
@@ -287,7 +288,7 @@ namespace Gala.Plugins.XRDesktop {
             var offset_x = child_center_x - parent_center_x;
             var offset_y = child_center_y - parent_center_y;
 
-            debug ("child at %d,%d to parent at %d,%d, offset %d,%d",
+            debug ("xrdesktop: child at %d,%d to parent at %d,%d, offset %d,%d",
                 child_center_x,
                 child_center_y,
                 parent_center_x,
@@ -349,7 +350,7 @@ namespace Gala.Plugins.XRDesktop {
                 var cogl_texture = mst.get_texture ();
 
                 if (cogl_texture == null || !cogl_texture.is_texture ()) {
-                    critical ("Could not CoglTexture from MetaShapedTexture.");
+                    critical ("xrdesktop: Could not CoglTexture from MetaShapedTexture.");
                     return false;
                 }
                 components = cogl_texture.get_components ();
@@ -383,7 +384,7 @@ namespace Gala.Plugins.XRDesktop {
 
             var cairo_surface = mst.get_image (cairo_rect);
             if (cairo_surface == null) {
-                critical ("Could not get Cairo surface from MetaShapedTexture.");
+                critical ("xrdesktop: Could not get Cairo surface from MetaShapedTexture.");
                 return false;
             }
 
@@ -397,7 +398,7 @@ namespace Gala.Plugins.XRDesktop {
                 rect.height != xrd_window.texture_height ||
                 texture == null
             ) {
-                debug ("Reallocating %dx%d vulkan texture", rect.width, rect.height);
+                debug ("xrdesktop: Reallocating %dx%d vulkan texture", rect.width, rect.height);
                 texture = Gulkan.Texture.new_from_cairo_surface (
                     client,
                     cairo_surface,
@@ -406,7 +407,7 @@ namespace Gala.Plugins.XRDesktop {
                 );
 
                 if (texture == null) {
-                    critical ("Error creating texture for window!");
+                    critical ("xrdesktop: Error creating texture for window!");
                     Xrd.render_unlock ();
                     return false;
                 }
@@ -430,14 +431,14 @@ namespace Gala.Plugins.XRDesktop {
             var cogl_texture = mst.get_texture ();
 
             if (cogl_texture == null || !cogl_texture.is_texture ()) {
-                critical ("Could not get CoglTexture from MetaShapedTexture.");
+                critical ("xrdesktop: Could not get CoglTexture from MetaShapedTexture.");
                 return false;
             }
 
             GL.GLuint meta_tex;
             uint meta_target_uint;
             if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target_uint)) {
-                critical ("Could not get GL handle from CoglTexture.");
+                critical ("xrdesktop: Could not get GL handle from CoglTexture.");
                 return false;
             }
             GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
@@ -465,7 +466,7 @@ namespace Gala.Plugins.XRDesktop {
                     xr_window.gl_textures);
 
                 if (texture == null) {
-                    critical ("Error creating texture for window!");
+                    critical ("xrdesktop: Error creating texture for window!");
                     Xrd.render_unlock ();
                     return false;
                 }
@@ -531,7 +532,7 @@ namespace Gala.Plugins.XRDesktop {
             int height,
             GL.GLuint[]? gl_handle
         ) {
-            debug ("Reallocating %dx%d vulkan texture", width, height);
+            debug ("xrdesktop: Reallocating %dx%d vulkan texture", width, height);
 
             /* Get meta texture format */
             GL.glBindTexture (gl_target, source_gl_handle);
@@ -556,7 +557,7 @@ namespace Gala.Plugins.XRDesktop {
             );
 
             if (texture == null) {
-                critical ("Unable to initialize Vulkan texture.");
+                critical ("xrdesktop: Unable to initialize Vulkan texture.");
                 return null;
             }
 
@@ -599,7 +600,7 @@ namespace Gala.Plugins.XRDesktop {
             GL.glFinish ();
 
             if (!texture.transfer_layout (Vk.ImageLayout.UNDEFINED, Vk.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
-                critical ("Unable to transfer layout.");
+                critical ("xrdesktop: Unable to transfer layout.");
             }
 
             //GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
@@ -628,7 +629,7 @@ namespace Gala.Plugins.XRDesktop {
                         break;
                 }
 
-                critical ("%s - %s", prefix, gl_err_string);
+                critical ("xrdesktop: %s - %s", prefix, gl_err_string);
             }
         }
     }
@@ -640,6 +641,6 @@ public Gala.PluginInfo register_plugin () {
         "elementary, Inc. (https://elementary.io)",
         typeof (Gala.Plugins.XRDesktop.Main),
         Gala.PluginFunction.ADDITION,
-        Gala.LoadPriority.IMMEDIATE
+        Gala.LoadPriority.DEFERRED
     };
 }
