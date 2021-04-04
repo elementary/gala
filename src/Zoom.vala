@@ -61,13 +61,13 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         void zoom_in (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (SHORTCUT_DELTA, true, true);
+            zoom (SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
         [CCode (instance_pos = -1)]
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (-SHORTCUT_DELTA, true, true);
+            zoom (-SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
         private void on_gesture_detected (Gesture gesture) {
