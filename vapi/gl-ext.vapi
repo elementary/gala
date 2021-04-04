@@ -8,13 +8,13 @@ namespace GL_EXT {
 	[CCode (cheader_filename = "GL/glext.h", cname = "GL_HANDLE_TYPE_OPAQUE_FD_EXT")]
 	public const int GL_HANDLE_TYPE_OPAQUE_FD_EXT;
 	[CCode (cheader_filename = "GL/glext.h", cname = "glCreateMemoryObjectsEXT")]
-	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, out GL.GLuint[]? memoryObjects);
+	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] out GL.GLuint[]? memoryObjects);
 	[CCode (cheader_filename = "GL/glext.h", cname = "glDeleteMemoryObjectsEXT")]
-	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, GL.GLuint[]? memoryObjects);
+	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] GL.GLuint[]? memoryObjects);
 	[CCode (cheader_filename = "GL/glext.h", cname = "glMemoryObjectParameterivEXT")]
-	public static void glMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, out GL.GLint[]? params);
+	public static void glMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, [CCode (array_length = false)] out GL.GLint[]? params);
 	[CCode (cheader_filename = "GL/glext.h", cname = "glGetMemoryObjectParameterivEXT")]
-	public static void glGetMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, out GL.GLint[]? params);
+	public static void glGetMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, [CCode (array_length = false)] out GL.GLint[]? params);
 	[CCode (cheader_filename = "GL/glext.h", cname = "glImportMemoryFdEXT")]
 	public static void glImportMemoryFdEXT (GL.GLuint memory, GL.GLuint64 size, GL.GLenum handleType, GL.GLint fd);
 	[CCode (cheader_filename = "GL/glext.h", cname = "glTexStorageMem2DEXT")]
