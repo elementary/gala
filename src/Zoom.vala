@@ -40,7 +40,7 @@ namespace Gala {
             display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
 
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             gesture_tracker.enable_touchpad ();
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         }
@@ -92,6 +92,15 @@ namespace Gala {
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var zoom_level = GestureTracker.animation_value (initial_zoom, target_zoom, percentage);
                 var delta = zoom_level - current_zoom;
+
+                if (!wm.enable_animations) {
+                    if (delta.abs () >= SHORTCUT_DELTA) {
+                        delta = (delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA;
+                    } else {
+                        delta = 0;
+                    }
+                }
+
                 zoom (delta, false, false);
             };
 
