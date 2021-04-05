@@ -52,6 +52,27 @@ public class Gala.NotificationStack : Object {
 
         unowned Meta.Window window = notification.get_meta_window ();
         window.stick ();
+<<<<<<< HEAD
+
+        var scale = Utils.get_ui_scaling_factor ();
+
+        if (animate) {
+            var opacity_transition = new Clutter.PropertyTransition ("opacity");
+            opacity_transition.set_from_value (0);
+            opacity_transition.set_to_value (255);
+
+            var flip_transition = new Clutter.KeyframeTransition ("rotation-angle-x");
+            flip_transition.set_from_value (90.0);
+            flip_transition.set_to_value (0.0);
+            flip_transition.set_key_frames ({ 0.6 });
+            flip_transition.set_values ({ -10.0 });
+
+            var entry = new Clutter.TransitionGroup ();
+            entry.duration = 400;
+            entry.add_transition (opacity_transition);
+            entry.add_transition (flip_transition);
+
+=======
 
         var scale = Utils.get_ui_scaling_factor ();
 
@@ -72,6 +93,7 @@ public class Gala.NotificationStack : Object {
             entry.add_transition (opacity_transition);
             entry.add_transition (flip_transition);
 
+>>>>>>> 667e401391619fd6ce46306418e556047949a4e0
             notification.transitions_completed.connect (() => notification.remove_all_transitions ());
             notification.add_transition (TRANSITION_ENTRY_NAME, entry);
         }

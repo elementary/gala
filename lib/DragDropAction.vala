@@ -139,6 +139,15 @@ namespace Gala {
             base.set_actor (new_actor);
         }
 
+        public void start_drag_action (int x, int y) {
+            actor.get_stage ().captured_event.connect (follow_move);
+            clicked = true;
+            last_x = x;
+            last_y = y;
+
+            start_motion (x, y);
+        }
+
         void release_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
                 actor.button_press_event.disconnect (source_clicked);
@@ -206,30 +215,7 @@ namespace Gala {
 
                         var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
                         if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-                            handle = drag_begin (x, y);
-                            if (handle == null) {
-                                actor.get_stage ().captured_event.disconnect (follow_move);
-                                critical ("No handle has been returned by the started signal, aborting drag.");
-                                return false;
-                            }
-
-                            handle.reactive = false;
-
-                            clicked = false;
-                            dragging = true;
-
-                            var source_list = sources.@get (drag_id);
-                            if (source_list != null) {
-                                var dest_list = destinations[drag_id];
-                                foreach (var actor in source_list) {
-                                    // Do not unset reactivity on destinations
-                                    if (dest_list == null || actor in dest_list) {
-                                        continue;
-                                    }
-
-                                    actor.reactive = false;
-                                }
-                            }
+                            return start_motion (x, y);
                         }
                         return true;
                     case EventType.BUTTON_RELEASE:
@@ -313,6 +299,35 @@ namespace Gala {
             }
 
             return false;
+        }
+
+        bool start_motion (float x, float y) {
+            handle = drag_begin (x, y);
+            if (handle == null) {
+                actor.get_stage ().captured_event.disconnect (follow_move);
+                critical ("No handle has been returned by the started signal, aborting drag.");
+                return false;
+            }
+
+            handle.reactive = false;
+
+            clicked = false;
+            dragging = true;
+
+            var source_list = sources.@get (drag_id);
+            if (source_list != null) {
+                var dest_list = destinations[drag_id];
+                foreach (var actor in source_list) {
+                    // Do not unset reactivity on destinations
+                    if (actor in dest_list) {
+                        continue;
+                    }
+
+                    actor.reactive = false;
+                }
+            }
+
+            return true;
         }
 
         /**
