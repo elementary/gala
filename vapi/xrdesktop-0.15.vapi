@@ -11,6 +11,7 @@ namespace Xrd {
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
 		public Gulkan.Client get_gulkan ();
 		public Vk.ImageLayout get_upload_layout ();
+		public GLib.SList<Xrd.Window> get_windows ();
 		public bool poll_input_events ();
 		public bool poll_runtime_events ();
 		public void remove_container (Xrd.Container container);

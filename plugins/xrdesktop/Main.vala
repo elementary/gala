@@ -35,6 +35,7 @@ namespace Gala.Plugins.XRDesktop {
         private GL.GLuint cursor_gl_texture;
         private bool is_nvidia = false;
         private int top_layer = 0;
+        private Meta.CursorTracker? cursor_tracker = null;
 
         private static GLib.Mutex upload_xrd_window_mutex = Mutex ();
 
@@ -49,6 +50,7 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         public override void destroy () {
+            shutdown_xrdesktop ();
             disconnect_dbus_service ();
         }
 
@@ -70,14 +72,18 @@ namespace Gala.Plugins.XRDesktop {
 
         private void on_enabled_changed (bool enabled) {
             if (enabled) {
-                enable ();
+                startup_xrdesktop ();
             } else {
-                disable ();
+                shutdown_xrdesktop ();
             }
         }
 
-        private void enable () {
-            debug ("xrdesktop: Enable mirroring to XR...");
+        private void startup_xrdesktop () {
+            if (this.xrd_client != null) {
+                debug ("xrdesktop: Is already started.");
+                return;
+            }
+            debug ("xrdesktop: Starting mirroring to XR...");
 
             this.xrd_client = new Xrd.Client ();
             if (this.xrd_client == null) {
@@ -89,6 +95,7 @@ namespace Gala.Plugins.XRDesktop {
                 );
                 error_dialog.run ();
                 error_dialog.destroy ();
+                return;
             }
 
             var gl_vendor = GL.glGetString (GL.GL_VENDOR);
@@ -99,12 +106,39 @@ namespace Gala.Plugins.XRDesktop {
 
             //initialize_input ();
             mirror_current_windows ();
-            /*arrange_windows_by_desktop_position ();
-            connect_signals ();*/
+            arrange_windows_by_desktop_position ();
+            connect_signals ();
         }
 
-        private void disable () {
-            debug ("xrdesktop: Disable mirroring to XR...");
+        private void shutdown_xrdesktop () {
+            if (this.xrd_client == null) {
+                debug ("xrdesktop: Is already stopped.");
+                return;
+            }
+            debug ("xrdesktop: Stopping mirroring to XR...");
+            disconnect_signals ();
+
+             /*
+              * We have to clean up windows first because it will only
+              * clean up as long as there is an active xrd_client
+              * instance
+              */
+            var xrd_windows = xrd_client.get_windows ();
+            foreach (var xrd_window in xrd_windows) {
+                var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_window.native;
+                if (gala_xr_window == null) {
+                    continue;
+                }
+
+                //gala_xr_window.meta_window_actor.paint.disconnect ();
+                if (gala_xr_window.gl_textures != null) {
+                    GL.glDeleteTextures (1, gala_xr_window.gl_textures);
+                }
+                xrd_client.remove_window (xrd_window);
+                xrd_window.close ();
+            }
+
+            xrd_client = null;
         }
 
         private void initialize_input () {
@@ -120,6 +154,93 @@ namespace Gala.Plugins.XRDesktop {
             foreach (var window_actor in window_actors) {
                 map_window_actor (window_actor);
             }
+        }
+
+        private void arrange_windows_by_desktop_position () {
+            var meta_windows = new GLib.SList<Meta.Window> ();
+            var xrd_windows = xrd_client.get_windows ();
+
+            foreach (var xrd_window in xrd_windows) {
+                var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_window.native;
+                if (gala_xr_window == null) {
+                    continue;
+                }
+                var meta_window = gala_xr_window.meta_window_actor.get_meta_window ();
+
+                if (!is_window_excluded_from_mirroring (meta_window)) {
+                    meta_windows.append (meta_window);
+                }
+            }
+
+            var display = this.wm.get_display ();
+            var meta_windows_sorted = display.sort_windows_by_stacking (meta_windows);
+
+            top_layer = 0;
+            foreach (var meta_window in meta_windows_sorted) {
+                var xrd_window = xrd_client.lookup_window (meta_window);
+                if (xrd_window == null) {
+                    continue;
+                }
+
+                apply_desktop_position (meta_window, xrd_window, top_layer);
+                top_layer++;
+            }
+        }
+
+        private void connect_signals () {
+            xrd_client.keyboard_press_event.connect (on_keyboard_press);
+            xrd_client.click_event.connect (on_click);
+            xrd_client.move_cursor_event.connect (on_move_cursor);
+            xrd_client.request_quit_event.connect (on_request_quit);
+
+            this.wm.get_display ().grab_op_begin.connect (on_grab_op_begin);
+            this.wm.get_display ().grab_op_end.connect (on_grab_op_end);
+
+            cursor_tracker = this.wm.get_display ().get_cursor_tracker ();
+            cursor_tracker.cursor_changed.connect (on_cursor_changed);
+        }
+
+        private void disconnect_signals () {
+            xrd_client.keyboard_press_event.disconnect (on_keyboard_press);
+            xrd_client.click_event.disconnect (on_click);
+            xrd_client.move_cursor_event.disconnect (on_move_cursor);
+            xrd_client.request_quit_event.disconnect (on_request_quit);
+
+            this.wm.get_display ().grab_op_begin.disconnect (on_grab_op_begin);
+            this.wm.get_display ().grab_op_end.disconnect (on_grab_op_end);
+
+            if (cursor_tracker != null) {
+                cursor_tracker.cursor_changed.disconnect (on_cursor_changed);
+            }
+        }
+
+        private void on_keyboard_press (Gdk.Event event) {
+            debug ("on_keyboard_press");
+        }
+
+        private void on_click (Gdk.Event event) {
+            debug ("on_click");
+        }
+
+        private void on_move_cursor (Gdk.Event event) {
+            debug ("on_move_cursor");
+        }
+
+        private void on_request_quit (Gdk.Event event) {
+            debug ("Handling XR quit event");
+            shutdown_xrdesktop ();
+        }
+
+        private void on_grab_op_begin (Meta.Display display, Meta.Window window, Meta.GrabOp grab_op) {
+            debug ("on_grab_op_begin");
+        }
+
+        private void on_grab_op_end (Meta.Display display, Meta.Window window, Meta.GrabOp grab_op) {
+            debug ("on_grab_op_end");
+        }
+
+        private void on_cursor_changed () {
+            debug ("on_cursor_changed");
         }
 
         private bool map_window_actor (Meta.WindowActor window_actor) {
@@ -187,6 +308,8 @@ namespace Gala.Plugins.XRDesktop {
             xr_window.gl_textures = null;
 
             xrd_window.native = xr_window;
+            // TODO: We need a way to disconnect this callback,
+            // but still pass xrd_window from here somehow
             window_actor.paint.connect ((paint_context) => {
                 on_window_actor_paint (window_actor, paint_context, xrd_window);
             });
