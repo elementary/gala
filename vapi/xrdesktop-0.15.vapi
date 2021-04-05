@@ -177,7 +177,7 @@ namespace Xrd {
 	}
 	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct WindowData {
-		public weak Gala.Plugins.XRDesktop.Window? native;
+		public weak void* native;
 		public uint32 texture_width;
 		public uint32 texture_height;
 		public weak GLib.StringBuilder title;

@@ -19,14 +19,14 @@
 
 namespace Gala.Plugins.XRDesktop {
 
-    public struct Window {
-        public weak Meta.WindowActor? meta_window_actor;
+    public class Window: Object {
+        public Meta.WindowActor? meta_window_actor = null;
         public bool keep_above_restore;
         public bool keep_below_restore;
 
         /* The offscreen texture Gala renders into to avoid allocating a
          * new offscreen texture every frame
          */
-        public GL.GLuint[]? gl_textures;
+        public GL.GLuint[]? gl_textures = null;
     }
 }

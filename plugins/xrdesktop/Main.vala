@@ -125,16 +125,14 @@ namespace Gala.Plugins.XRDesktop {
               */
             var xrd_windows = xrd_client.get_windows ();
             foreach (var xrd_window in xrd_windows) {
-                Window? gala_xr_window;
-                xrd_window.@get("native", out gala_xr_window);
-
-                if (gala_xr_window == null) {
+                var xr_window = (Window?) xrd_window.native;
+                if (xr_window == null) {
                     continue;
                 }
 
-                //gala_xr_window.meta_window_actor.paint.disconnect ();
-                if (gala_xr_window.gl_textures != null) {
-                    GL.glDeleteTextures (1, gala_xr_window.gl_textures);
+                //xr_window.meta_window_actor.paint.disconnect ();
+                if (xr_window.gl_textures != null) {
+                    GL.glDeleteTextures (1, xr_window.gl_textures);
                 }
                 xrd_client.remove_window (xrd_window);
                 xrd_window.close ();
@@ -163,13 +161,14 @@ namespace Gala.Plugins.XRDesktop {
             var xrd_windows = xrd_client.get_windows ();
 
             foreach (var xrd_window in xrd_windows) {
-                Window? gala_xr_window;
-                xrd_window.@get ("native", out gala_xr_window);
+                var xr_window = (Window?) xrd_window.native;
 
-                if (gala_xr_window == null) {
+                if (xr_window == null || xr_window.meta_window_actor == null) {
                     continue;
                 }
-                var meta_window = gala_xr_window.meta_window_actor.get_meta_window ();
+
+                var meta_window_actor = xr_window.meta_window_actor;
+                var meta_window = meta_window_actor.get_meta_window ();
 
                 if (!is_window_excluded_from_mirroring (meta_window)) {
                     meta_windows.append (meta_window);
@@ -269,11 +268,9 @@ namespace Gala.Plugins.XRDesktop {
                         xrd_parent_window = xrd_parent_window_data.parent_window;
                         xrd_parent_window_data = xrd_parent_window.get_data ();
 
-                        Window? gala_xr_window;
-                        xrd_parent_window.@get ("native", out gala_xr_window);
-
-                        if (gala_xr_window != null && gala_xr_window.meta_window_actor != null) {
-                            meta_parent_window_actor = gala_xr_window.meta_window_actor;
+                        var xr_window = (Window?) xrd_parent_window.native;
+                        if (xr_window != null) {
+                            meta_parent_window_actor = xr_window.meta_window_actor;
                             meta_parent_window = meta_parent_window_actor.get_meta_window ();
                         }
                     }
@@ -311,11 +308,8 @@ namespace Gala.Plugins.XRDesktop {
 
             var xr_window = new Window ();
             xr_window.meta_window_actor = window_actor;
-            xr_window.gl_textures = null;
+            xrd_window.native = (void*) &xr_window;
 
-            xrd_window.@set ("native", xr_window);
-            xrd_window.set_property ();
-            //xrd_window.setv ();
             // TODO: We need a way to disconnect this callback,
             // but still pass xrd_window from here somehow
             window_actor.paint.connect ((paint_context) => {
@@ -465,8 +459,7 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool upload_xrd_window (Xrd.Window xrd_window) {
-            Window? xr_window;
-            xrd_window.@get ("native", out xr_window);
+            var xr_window = (Window?) xrd_window.native;
 
             if (xr_window == null) {
                 critical ("xrdesktop: Could not read native Window from XrdWindow.");
@@ -582,9 +575,7 @@ namespace Gala.Plugins.XRDesktop {
             }
             GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
 
-            Window? xr_window;
-            xrd_window.@get ("native", xr_window);
-
+            var xr_window = (Window?) xrd_window.native;
             if (xr_window == null) {
                 critical ("xrdesktop: Could not read native Window from XrdWindow.");
                 return false;
