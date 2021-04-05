@@ -19,7 +19,7 @@
 
 namespace Gala.Plugins.XRDesktop {
 
-    public class Window: Object {
+    public struct Window {
         public weak Meta.WindowActor? meta_window_actor;
         public bool keep_above_restore;
         public bool keep_below_restore;

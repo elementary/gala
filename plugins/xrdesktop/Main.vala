@@ -125,7 +125,9 @@ namespace Gala.Plugins.XRDesktop {
               */
             var xrd_windows = xrd_client.get_windows ();
             foreach (var xrd_window in xrd_windows) {
-                var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_window.native;
+                Window? gala_xr_window;
+                xrd_window.@get("native", out gala_xr_window);
+
                 if (gala_xr_window == null) {
                     continue;
                 }
@@ -161,7 +163,9 @@ namespace Gala.Plugins.XRDesktop {
             var xrd_windows = xrd_client.get_windows ();
 
             foreach (var xrd_window in xrd_windows) {
-                var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_window.native;
+                Window? gala_xr_window;
+                xrd_window.@get ("native", out gala_xr_window);
+
                 if (gala_xr_window == null) {
                     continue;
                 }
@@ -265,7 +269,9 @@ namespace Gala.Plugins.XRDesktop {
                         xrd_parent_window = xrd_parent_window_data.parent_window;
                         xrd_parent_window_data = xrd_parent_window.get_data ();
 
-                        var gala_xr_window = (Gala.Plugins.XRDesktop.Window?) xrd_parent_window.native;
+                        Window? gala_xr_window;
+                        xrd_parent_window.@get ("native", out gala_xr_window);
+
                         if (gala_xr_window != null && gala_xr_window.meta_window_actor != null) {
                             meta_parent_window_actor = gala_xr_window.meta_window_actor;
                             meta_parent_window = meta_parent_window_actor.get_meta_window ();
@@ -307,7 +313,9 @@ namespace Gala.Plugins.XRDesktop {
             xr_window.meta_window_actor = window_actor;
             xr_window.gl_textures = null;
 
-            xrd_window.native = xr_window;
+            xrd_window.@set ("native", xr_window);
+            xrd_window.set_property ();
+            //xrd_window.setv ();
             // TODO: We need a way to disconnect this callback,
             // but still pass xrd_window from here somehow
             window_actor.paint.connect ((paint_context) => {
@@ -443,8 +451,10 @@ namespace Gala.Plugins.XRDesktop {
             };
 
             var transform = Graphene.Matrix ().init_translate (point);
-            xrd_window.set_transformation (transform);
-            xrd_window.save_reset_transformation ();
+            if (transform != null) {
+                xrd_window.set_transformation (transform);
+                xrd_window.save_reset_transformation ();
+            }
         }
 
 
@@ -455,7 +465,14 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool upload_xrd_window (Xrd.Window xrd_window) {
-            var xr_window = (Window?) xrd_window.native;
+            Window? xr_window;
+            xrd_window.@get ("native", out xr_window);
+
+            if (xr_window == null) {
+                critical ("xrdesktop: Could not read native Window from XrdWindow.");
+                return false;
+            }
+
             var window_actor = xr_window.meta_window_actor;
             var meta_window = get_validated_window (window_actor);
             var rect = meta_window.get_buffer_rect ();
@@ -511,7 +528,6 @@ namespace Gala.Plugins.XRDesktop {
                 return false;
             }
 
-            var xr_window = (Window) xrd_window.native;
             var upload_layout = xrd_client.get_upload_layout ();
             var texture = xrd_window.get_texture ();
 
@@ -566,7 +582,14 @@ namespace Gala.Plugins.XRDesktop {
             }
             GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
 
-            var xr_window = (Window) xrd_window.native;
+            Window? xr_window;
+            xrd_window.@get ("native", xr_window);
+
+            if (xr_window == null) {
+                critical ("xrdesktop: Could not read native Window from XrdWindow.");
+                return false;
+            }
+
             var texture = xrd_window.get_texture ();
             var extent_changed = true;
 
