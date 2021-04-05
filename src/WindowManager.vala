@@ -76,6 +76,11 @@ namespace Gala {
         Clutter.Actor? last_hotcorner;
         public ScreenSaverManager? screensaver { get; private set; }
 
+        /**
+         * Allow to zoom in/out the entire desktop.
+         */
+        Zoom? zoom = null;
+
         Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -284,6 +289,8 @@ namespace Gala {
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 
             behavior_settings.changed.connect (configure_hotcorners);
+
+            zoom = new Zoom (this);
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
@@ -509,6 +516,10 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
+            if (!enable_animations) {
+                return;
+            }
+
             animating_switch_workspace = true;
 
             var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
