@@ -244,21 +244,21 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool map_window_actor (Meta.WindowActor window_actor) {
-            var window = get_validated_window (window_actor);
+            var meta_window = get_validated_window (window_actor);
 
-            if (window == null || is_window_excluded_from_mirroring (window)) {
+            if (meta_window == null || is_window_excluded_from_mirroring (meta_window)) {
                 return false;
             }
 
-            var rect = window.get_buffer_rect ();
-            var is_child = is_child_window (window);
+            var rect = meta_window.get_buffer_rect ();
+            var is_child = is_child_window (meta_window);
 
             Meta.WindowActor meta_parent_window_actor = window_actor;
             Meta.Window? meta_parent_window = null;
             Xrd.Window? xrd_parent_window = null;
 
             if (is_child) {
-                if (find_valid_parent_window (window, out meta_parent_window, out xrd_parent_window)) {
+                if (find_valid_parent_window (meta_window, out meta_parent_window, out xrd_parent_window)) {
                     var xrd_parent_window_data = xrd_parent_window.get_data ();
 
                     while (xrd_parent_window_data != null && xrd_parent_window_data.child_window != null) {
@@ -275,22 +275,22 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             debug ("xrdesktop: Map window %p: %s (%s)",
-                meta_parent_window_actor,
-                meta_parent_window.title,
-                meta_parent_window.get_description ());
+                window_actor,
+                meta_window.title,
+                meta_window.get_description ());
 
             var xrd_window = Xrd.Window.new_from_pixels (
                 xrd_client,
-                meta_parent_window.title,
+                meta_window.title,
                 rect.width,
                 rect.height,
                 XR_PIXELS_PER_METER);
 
             var is_draggable = !(is_child && meta_parent_window != null && xrd_parent_window != null);
-            xrd_client.add_window (xrd_window, is_draggable, meta_parent_window);
+            xrd_client.add_window (xrd_window, is_draggable, meta_window);
 
             if (is_child && !is_draggable) {
-                var offset = get_offset (meta_parent_window, window);
+                var offset = get_offset (meta_parent_window, meta_window);
 
                 xrd_parent_window.add_child (xrd_window, offset);
 
@@ -299,7 +299,7 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             if (!is_child) {
-                apply_desktop_position (meta_parent_window, xrd_parent_window, top_layer);
+                apply_desktop_position (meta_window, xrd_window, top_layer);
                 top_layer++;
             }
 
