@@ -357,5 +357,19 @@ namespace Gala {
                 Gtk.StateFlags.NORMAL
             );
         }
+
+        /**
+         * Returns the workspaces geometry following the only_on_primary settings.
+         */
+         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+            if (InternalUtils.workspaces_only_on_primary ()) {
+                var primary = display.get_primary_monitor ();
+                return display.get_monitor_geometry (primary);
+            } else {
+                float screen_width, screen_height;
+                display.get_size (out screen_width, out screen_height);
+                return { 0, 0, (int) screen_width, (int) screen_height };
+            }
+        }
     }
 }
