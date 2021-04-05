@@ -18,19 +18,12 @@
 
 /**
  * Clutter actor to display text in a tooltip-like component.
- *
- * Style constants from:
- * https://github.com/elementary/stylesheet/blob/master/src/widgets/_tooltips.scss
  */
 public class Gala.Tooltip : Clutter.Actor {
-    private static double background_color;
-    private static double background_opacity;
-    private static double background_border_radius;
     private static Clutter.Color text_color;
-    private static int padding_top;
-    private static int padding_bottom;
-    private static int padding_left;
-    private static int padding_right;
+    private static Gdk.RGBA bg_color;
+    private static Gtk.Border padding;
+    private static int border_radius;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -55,16 +48,33 @@ public class Gala.Tooltip : Clutter.Actor {
     public float max_width;
 
     static construct {
-        var scale = InternalUtils.get_ui_scaling_factor ();
+        var dummy_label = new Gtk.Label ("") {
+            tooltip_text = "null"
+        };
 
-        background_color = (26 / 255); // #1a
-        background_opacity = 0.9;
-        background_border_radius = 3 * scale;
+        unowned var label_style_context = dummy_label.get_style_context ();
+
+        var widget_path = label_style_context.get_path ().copy ();
+        widget_path.iter_set_object_name (-1, "tooltip");
+
+        var tooltip_style_context = new Gtk.StyleContext ();
+        tooltip_style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
+        tooltip_style_context.set_path (widget_path);
+        tooltip_style_context.set_parent (label_style_context);
+
+        bg_color = (Gdk.RGBA) tooltip_style_context.get_property (
+            Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+            Gtk.StateFlags.NORMAL
+        );
+
+        border_radius = (int) tooltip_style_context.get_property (
+            Gtk.STYLE_PROPERTY_BORDER_RADIUS,
+            Gtk.StateFlags.NORMAL
+        );
+
+        padding = tooltip_style_context.get_padding (Gtk.StateFlags.NORMAL);
+
         text_color = Clutter.Color.from_string ("#ffffff");
-        padding_top = 3 * scale;
-        padding_bottom = 3 * scale;
-        padding_left = 6 * scale;
-        padding_right = 6 * scale;
     }
 
     construct {
@@ -106,22 +116,22 @@ public class Gala.Tooltip : Clutter.Actor {
 
         text_actor = new Clutter.Text () {
             color = text_color,
-            x = padding_left,
-            y = padding_top,
-            ellipsize = Pango.EllipsizeMode.END,
+            x = padding.left,
+            y = padding.top,
+            ellipsize = Pango.EllipsizeMode.MIDDLE,
             use_markup = true
         };
         text_actor.set_markup (Markup.printf_escaped ("<span size='large'>%s</span>", text));
 
-        if ((text_actor.width + padding_left + padding_right) > max_width) {
-            text_actor.width = max_width - padding_left - padding_right;
+        if ((text_actor.width + padding.left + padding.right) > max_width) {
+            text_actor.width = max_width - padding.left - padding.right;
         }
 
         add_child (text_actor);
 
         // Adjust the size of the tooltip to the text
-        width = text_actor.width + padding_left + padding_right;
-        height = text_actor.height + padding_top + padding_bottom;
+        width = text_actor.width + padding.left + padding.right;
+        height = text_actor.height + padding.top + padding.bottom;
         background_canvas.set_size ((int) width, (int) height);
 
         // And paint the background
@@ -134,8 +144,8 @@ public class Gala.Tooltip : Clutter.Actor {
         cr.paint ();
         cr.restore ();
 
-        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, background_border_radius);
-        cr.set_source_rgba (background_color, background_color, background_color, background_opacity);
+        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+        cr.set_source_rgba (bg_color.red, bg_color.green, bg_color.blue, bg_color.alpha);
         cr.fill ();
 
         return false;
