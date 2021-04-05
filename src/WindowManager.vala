@@ -76,6 +76,11 @@ namespace Gala {
         Clutter.Actor? last_hotcorner;
         public ScreenSaverManager? screensaver { get; private set; }
 
+        /**
+         * Allow to zoom in/out the entire desktop.
+         */
+        Zoom? zoom = null;
+
         Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -284,6 +289,8 @@ namespace Gala {
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 
             behavior_settings.changed.connect (configure_hotcorners);
+
+            zoom = new Zoom (this);
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
@@ -509,14 +516,29 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
-            animating_switch_workspace = true;
+            if (!enable_animations) {
+                return;
+            }
 
-            var dest = (direction == Meta.MotionDirection.LEFT ? NUDGE_GAP : -NUDGE_GAP);
-            dest *= InternalUtils.get_ui_scaling_factor ();
+            animating_switch_workspace = true;
+            var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+
+            float dest = 0;
+            if (!switch_workspace_with_gesture) {
+                dest = nudge_gap;
+            } else {
+                unowned Meta.Display display = get_display ();
+                var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
+                dest = workspaces_geometry.width;
+            }
+
+            if (direction == Meta.MotionDirection.RIGHT) {
+                dest *= -1;
+            }
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
-                ui_group.x = x;
+                ui_group.x = x.clamp (-nudge_gap, nudge_gap);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {

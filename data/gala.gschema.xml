@@ -337,5 +337,16 @@
       <summary>Switch workspace gesture fingers</summary>
       <description>Number of fingers used in the switch workspaces gesture</description>
     </key>
+    <key type="b" name="zoom-gesture-enabled">
+      <default>false</default>
+      <summary>Zoom gesture</summary>
+      <description>If enabled, pinch with the number of fingers set in io.elementary.desktop.wm.gestures.multitasking-gesture-fingers to zoom in/out the entire desktop</description>
+    </key>
+    <key type="i" name="zoom-gesture-fingers">
+      <default>3</default>
+      <range min="3" max="4"/>
+      <summary>Zoom gesture fingers</summary>
+      <description>Number of fingers used in the zoom gesture</description>
+    </key>
   </schema>
 </schemalist>
