@@ -142,8 +142,6 @@ subdir('daemon')
 subdir('plugins/maskcorners')
 subdir('plugins/pip')
 subdir('plugins/template')
-subdir('plugins/touchegg')
-subdir('plugins/zoom')
 if get_option('documentation')
     subdir('docs')
 endif

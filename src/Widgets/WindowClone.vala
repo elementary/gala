@@ -42,12 +42,14 @@ namespace Gala {
     }
 
     /**
-     * A container for a clone of the texture of a MetaWindow, a WindowIcon,
+     * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
      * a close button and a shadow. Used together with the WindowCloneContainer.
      */
     public class WindowClone : Actor {
         const int WINDOW_ICON_SIZE = 64;
         const int ACTIVE_SHAPE_SIZE = 12;
+        const int FADE_ANIMATION_DURATION = 200;
+        const int TITLE_MAX_WIDTH_MARGIN = 60;
 
         /**
          * The window was selected. The MultitaskingView should consider activating
@@ -83,7 +85,7 @@ namespace Gala {
                 _active = value;
 
                 active_shape.save_easing_state ();
-                active_shape.set_easing_duration (200);
+                active_shape.set_easing_duration (FADE_ANIMATION_DURATION);
 
                 active_shape.opacity = _active ? 255 : 0;
 
@@ -92,7 +94,7 @@ namespace Gala {
         }
 
         public bool overview_mode { get; construct; }
-        public GestureAnimationDirector? gesture_animation_director { get; construct; }
+        public GestureTracker? gesture_tracker { get; construct; }
 
         [CCode (notify = false)]
         public uint8 shadow_opacity {
@@ -116,13 +118,15 @@ namespace Gala {
         ulong check_confirm_dialog_cb = 0;
         uint shadow_update_timeout = 0;
         int scale_factor = 0;
+        bool in_slot_animation = false;
 
         Actor close_button;
         Actor active_shape;
         Actor window_icon;
+        Tooltip window_title;
 
-        public WindowClone (Meta.Window window, GestureAnimationDirector? gesture_animation_director, bool overview_mode = false) {
-            Object (window: window, gesture_animation_director: gesture_animation_director, overview_mode: overview_mode);
+        public WindowClone (Meta.Window window, GestureTracker? gesture_tracker, bool overview_mode = false) {
+            Object (window: window, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
         }
 
         construct {
@@ -154,7 +158,7 @@ namespace Gala {
 
             close_button = Utils.create_close_button ();
             close_button.opacity = 0;
-            close_button.set_easing_duration (200);
+            close_button.set_easing_duration (FADE_ANIMATION_DURATION);
             close_button.button_press_event.connect (() => {
                 close_window ();
                 return true;
@@ -168,9 +172,11 @@ namespace Gala {
             window_icon.set_pivot_point (0.5f, 0.5f);
             window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             window_icon.set_easing_mode (MultitaskingView.ANIMATION_MODE);
-            window_icon.set_position (
-                (window_frame_rect.width - WINDOW_ICON_SIZE) / 2,
-                window_frame_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+            set_window_icon_position (window_frame_rect.width, window_frame_rect.height);
+
+            window_title = new Tooltip ();
+            window_title.opacity = 0;
+            window_title.set_easing_duration (FADE_ANIMATION_DURATION);
 
             active_shape = new Clutter.Actor ();
             active_shape.background_color = { 255, 255, 255, 200 };
@@ -178,6 +184,7 @@ namespace Gala {
 
             add_child (active_shape);
             add_child (window_icon);
+            add_child (window_title);
             add_child (close_button);
 
             load_clone ();
@@ -225,6 +232,7 @@ namespace Gala {
             set_child_below_sibling (active_shape, clone);
             set_child_above_sibling (close_button, clone);
             set_child_above_sibling (window_icon, clone);
+            set_child_above_sibling (window_title, clone);
 
             transition_to_original_state (false);
 
@@ -280,7 +288,7 @@ namespace Gala {
          *
          * @param animate Animate the transformation of the placement
          */
-        public void transition_to_original_state (bool animate) {
+        public void transition_to_original_state (bool animate, bool with_gesture = false, bool is_cancel_animation = false) {
             var outer_rect = window.get_frame_rect ();
 
             var monitor_geom = window.get_display ().get_monitor_geometry (window.get_monitor ());
@@ -295,25 +303,28 @@ namespace Gala {
             var target_x = outer_rect.x - offset_x;
             var target_y = outer_rect.y - offset_y;
 
-            GestureAnimationDirector.OnBegin on_animation_begin = () => {
+            in_slot_animation = true;
+            place_widgets (outer_rect.width, outer_rect.height);
+
+            GestureTracker.OnBegin on_animation_begin = () => {
                 window_icon.set_easing_duration (0);
             };
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (initial_x, target_x, percentage);
-                var y = GestureAnimationDirector.animation_value (initial_y, target_y, percentage);
-                var width = GestureAnimationDirector.animation_value (initial_width, outer_rect.width, percentage);
-                var height = GestureAnimationDirector.animation_value (initial_height, outer_rect.height, percentage);
-                var opacity = GestureAnimationDirector.animation_value (255f, 0f, percentage);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
+                var y = GestureTracker.animation_value (initial_y, target_y, percentage);
+                var width = GestureTracker.animation_value (initial_width, outer_rect.width, percentage);
+                var height = GestureTracker.animation_value (initial_height, outer_rect.height, percentage);
+                var opacity = GestureTracker.animation_value (255f, 0f, percentage);
 
                 set_size (width, height);
                 set_position (x, y);
+
                 window_icon.opacity = (uint) opacity;
-                window_icon.set_position ((width - WINDOW_ICON_SIZE) / 2,
-                    height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+                set_window_icon_position (width, height, false);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -337,49 +348,54 @@ namespace Gala {
                     toggle_shadow (false);
                 }
 
-                window_icon.set_position ((outer_rect.width - WINDOW_ICON_SIZE) / 2, outer_rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
                 window_icon.opacity = 0;
-                close_button.opacity = 0;
+                set_window_icon_position (outer_rect.width, outer_rect.height);
+
+                window_icon.get_transition ("opacity").completed.connect (() => {
+                    in_slot_animation = false;
+                    place_widgets (outer_rect.width, outer_rect.height);
+                });
             };
 
-            if (!animate || gesture_animation_director == null || !gesture_animation_director.running) {
+            if (!animate || gesture_tracker == null || !with_gesture) {
                 on_animation_begin (0);
-                on_animation_end (100, false, 0);
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
         /**
          * Animate the window to the given slot
          */
-        public void take_slot (Meta.Rectangle rect) {
+        public void take_slot (Meta.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
             slot = rect;
             var initial_x = x;
             var initial_y = y;
             var initial_width = width;
             var initial_height = height;
 
-            GestureAnimationDirector.OnBegin on_animation_begin = () => {
-                window_icon.opacity = 0;
-                window_icon.set_easing_duration (0);
-            };
+            window_icon.opacity = 0;
+            window_icon.set_easing_duration (0);
 
-            GestureAnimationDirector.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureAnimationDirector.animation_value (initial_x, rect.x, percentage);
-                var y = GestureAnimationDirector.animation_value (initial_y, rect.y, percentage);
-                var width = GestureAnimationDirector.animation_value (initial_width, rect.width, percentage);
-                var height = GestureAnimationDirector.animation_value (initial_height, rect.height, percentage);
-                var opacity = GestureAnimationDirector.animation_value (0f, 255f, percentage);
+            in_slot_animation = true;
+            place_widgets (rect.width, rect.height);
+
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (initial_x, rect.x, percentage);
+                var y = GestureTracker.animation_value (initial_y, rect.y, percentage);
+                var width = GestureTracker.animation_value (initial_width, rect.width, percentage);
+                var height = GestureTracker.animation_value (initial_height, rect.height, percentage);
+                var opacity = GestureTracker.animation_value (0f, 255f, percentage);
 
                 set_size (width, height);
                 set_position (x, y);
+
                 window_icon.opacity = (uint) opacity;
-                window_icon.set_position ((width - WINDOW_ICON_SIZE) / 2,
-                    height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
+                set_window_icon_position (width, height, false);
             };
 
-            GestureAnimationDirector.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -394,9 +410,7 @@ namespace Gala {
                 set_position (rect.x, rect.y);
 
                 window_icon.opacity = 255;
-                window_icon.set_position ((rect.width - WINDOW_ICON_SIZE) / 2,
-                    rect.height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f);
-
+                set_window_icon_position (rect.width, rect.height);
                 restore_easing_state ();
 
                 toggle_shadow (true);
@@ -409,13 +423,17 @@ namespace Gala {
                     opacity = 255;
                     restore_easing_state ();
                 }
+
+                window_icon.get_transition ("opacity").completed.connect (() => {
+                    in_slot_animation = false;
+                    place_widgets (rect.width, rect.height);
+                });
             };
 
-            if (gesture_animation_director == null || !gesture_animation_director.running) {
-                on_animation_begin (0);
-                on_animation_end (100, false, 0);
+            if (gesture_tracker == null || !with_gesture) {
+                on_animation_end (1, false, 0);
             } else {
-                gesture_animation_director.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
         }
 
@@ -478,14 +496,14 @@ namespace Gala {
         }
 
         public override bool enter_event (Clutter.CrossingEvent event) {
-            close_button.opacity = 255;
-
+            close_button.opacity = in_slot_animation ? 0 : 255;
+            window_title.opacity = in_slot_animation ? 0 : 255;
             return false;
         }
 
         public override bool leave_event (Clutter.CrossingEvent event) {
             close_button.opacity = 0;
-
+            window_title.opacity = 0;
             return false;
         }
 
@@ -498,7 +516,9 @@ namespace Gala {
             Granite.Widgets.Utils.get_default_close_button_position (out pos);
 
             close_button.save_easing_state ();
+            window_title.save_easing_state ();
             close_button.set_easing_duration (0);
+            window_title.set_easing_duration (0);
 
             close_button.y = -close_button.height * 0.33f;
 
@@ -510,7 +530,17 @@ namespace Gala {
                     close_button.x = -close_button.width * 0.5f;
                     break;
             }
+
+            bool show = has_pointer && !in_slot_animation;
+            close_button.opacity = show ? 255 : 0;
+            window_title.opacity = close_button.opacity;
+
+            window_title.set_text (window.get_title (), false);
+            window_title.set_max_width (dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor));
+            set_window_title_position (dest_width, dest_height);
+
             close_button.restore_easing_state ();
+            window_title.restore_easing_state ();
         }
 
         void toggle_shadow (bool show) {
@@ -615,7 +645,7 @@ namespace Gala {
 
             clone.get_transformed_position (out abs_x, out abs_y);
             clone.save_easing_state ();
-            clone.set_easing_duration (200);
+            clone.set_easing_duration (FADE_ANIMATION_DURATION);
             clone.set_easing_mode (AnimationMode.EASE_IN_CUBIC);
             clone.set_scale (scale, scale);
             clone.opacity = 0;
@@ -631,13 +661,14 @@ namespace Gala {
             set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
             window_icon.save_easing_state ();
-            window_icon.set_easing_duration (200);
+            window_icon.set_easing_duration (FADE_ANIMATION_DURATION);
             window_icon.set_easing_mode (AnimationMode.EASE_IN_OUT_CUBIC);
             window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
                 click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
             window_icon.restore_easing_state ();
 
             close_button.opacity = 0;
+            window_title.opacity = 0;
 
             dragging = true;
 
@@ -782,10 +813,28 @@ namespace Gala {
             window_icon.save_easing_state ();
             window_icon.set_easing_duration (250);
             window_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_position ((slot.width - WINDOW_ICON_SIZE) / 2, slot.height - WINDOW_ICON_SIZE * 0.75f);
+            set_window_icon_position (slot.width, slot.height);
             window_icon.restore_easing_state ();
 
             dragging = false;
+        }
+
+        private void set_window_icon_position (float window_width, float window_height, bool aligned = true) {
+            var x = (window_width - WINDOW_ICON_SIZE) / 2;
+            var y = window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f;
+
+            if (aligned) {
+                x = InternalUtils.pixel_align (x);
+                y = InternalUtils.pixel_align (y);
+            }
+
+            window_icon.set_position (x, y);
+        }
+
+        private void set_window_title_position (float window_width, float window_height) {
+            var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
+            var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+            window_title.set_position (x, y);
         }
     }
 }

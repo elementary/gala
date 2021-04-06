@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2020-03-01 15:09+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://l10n.elementary.io/projects/"
@@ -20,71 +20,85 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:48+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "顯示器畫面是否正常？"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "保留此設定"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "恢復先前設定"
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2118
+#, c-format
+msgid "Screenshot from %s"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "移動"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "調整大小"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "永遠在最上層"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "永遠在顯示的工作區"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "向左移動工作區"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "向右移動工作區"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "關閉"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "取消最大化"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "最大化"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr ""
 

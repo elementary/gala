@@ -32,7 +32,8 @@ namespace Gala {
         TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT,
         MOVE_CURRENT_WORKSPACE_LEFT,
         MOVE_CURRENT_WORKSPACE_RIGHT,
-        CLOSE_CURRENT
+        CLOSE_CURRENT,
+        SCREENSHOT_CURRENT
     }
 
     [Flags]
@@ -45,7 +46,8 @@ namespace Gala {
         ALLOWS_RESIZE,
         ALWAYS_ON_TOP,
         ON_ALL_WORKSPACES,
-        CAN_CLOSE
+        CAN_CLOSE,
+        IS_TILED
     }
 
     /**
@@ -169,7 +171,6 @@ namespace Gala {
          *
          * @param direction The direction in which to switch
          */
-        public abstract void switch_to_next_workspace (Meta.MotionDirection direction,
-            HashTable<string,Variant>? hints = null);
+        public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
     }
 }

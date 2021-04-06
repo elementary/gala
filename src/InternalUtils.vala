@@ -337,6 +337,14 @@ namespace Gala {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
 
+        /**
+         * Round the value to match physical pixels.
+         */
+        public static int pixel_align (float value) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            return (int) Math.round (value * scale_factor) / scale_factor;    
+        }
+
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
@@ -356,6 +364,20 @@ namespace Gala {
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
+        }
+
+        /**
+         * Returns the workspaces geometry following the only_on_primary settings.
+         */
+         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+            if (InternalUtils.workspaces_only_on_primary ()) {
+                var primary = display.get_primary_monitor ();
+                return display.get_monitor_geometry (primary);
+            } else {
+                float screen_width, screen_height;
+                display.get_size (out screen_width, out screen_height);
+                return { 0, 0, (int) screen_width, (int) screen_height };
+            }
         }
     }
 }
