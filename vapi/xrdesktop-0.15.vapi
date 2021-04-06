@@ -79,7 +79,8 @@ namespace Xrd {
 	}
 	[CCode (cheader_filename = "xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
 	public interface Window<T> : GLib.Object {
-		public static Xrd.Window new_from_pixels (Xrd.Client client, string title, int width, int height, float ppm);
+		[CCode (simple_generics = true)]
+		public static Xrd.Window<T> new_from_pixels (Xrd.Client client, string title, int width, int height, float ppm);
 		public void add_child (Xrd.Window window, Graphene.Point offset);
 		public void close ();
 		public void deselect ();
@@ -111,7 +112,16 @@ namespace Xrd {
 		[NoAccessorMethod]
 		public abstract float initial_width_meters { get; set construct; }
 		[NoAccessorMethod]
-		public abstract T native { owned get; set construct; }
+		public unowned T? native {
+			[CCode (simple_generics = true)] owned get;
+			[CCode (simple_generics = true)] set construct;
+		}
+		/*[NoAccessorMethod, CCode (simple_generics = true)]
+		public abstract T native { get; set construct; }*/
+		/*[CCode (cname = "g_object_set", simple_generics = true)]
+		public void set_native<T> (T? value);
+		[CCode (cname = "g_object_get", simple_generics = true)]
+		public T? get_native<T> ();*/
 		[NoAccessorMethod]
 		public abstract float scale { get; set construct; }
 		[NoAccessorMethod]
