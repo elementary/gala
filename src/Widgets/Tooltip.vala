@@ -48,6 +48,7 @@ public class Gala.Tooltip : Clutter.Actor {
     public float max_width;
 
     static construct {
+        // Create a dummy label so that we can build a Gtk.WidgetPath to use for foreign drawing
         var dummy_label = new Gtk.Label ("") {
             tooltip_text = "null"
         };
@@ -138,7 +139,7 @@ public class Gala.Tooltip : Clutter.Actor {
         background_canvas.invalidate ();
     }
 
-    private bool draw_background (Cairo.Context cr, int width, int height) {
+    private static bool draw_background (Cairo.Context cr, int width, int height) {
         cr.save ();
         cr.set_operator (Cairo.Operator.CLEAR);
         cr.paint ();
