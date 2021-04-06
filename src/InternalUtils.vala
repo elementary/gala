@@ -177,24 +177,19 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-        // constants, mainly for natural expo
-        const int GAPS = 10;
-        const int MAX_TRANSLATIONS = 100000;
-        const int ACCURACY = 20;
-
         // some math utilities
-        static int squared_distance (Gdk.Point a, Gdk.Point b) {
+        private static int squared_distance (Gdk.Point a, Gdk.Point b) {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
             return k1 * k1 + k2 * k2;
         }
 
-        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-        static Gdk.Point rect_center (Meta.Rectangle rect) {
+        private static Gdk.Point rect_center (Meta.Rectangle rect) {
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
