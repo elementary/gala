@@ -48,20 +48,13 @@ public class Gala.Tooltip : Clutter.Actor {
     public float max_width;
 
     static construct {
-        // Create a dummy label so that we can build a Gtk.WidgetPath to use for foreign drawing
-        var dummy_label = new Gtk.Label ("") {
-            tooltip_text = "null"
-        };
-
-        unowned var label_style_context = dummy_label.get_style_context ();
-
-        var widget_path = label_style_context.get_path ().copy ();
-        widget_path.iter_set_object_name (-1, "tooltip");
+        var label_widget_path = new Gtk.WidgetPath ();
+        label_widget_path.append_type (GLib.Type.from_name ("label"));
+        label_widget_path.iter_set_object_name (-1, "tooltip");
 
         var tooltip_style_context = new Gtk.StyleContext ();
         tooltip_style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
-        tooltip_style_context.set_path (widget_path);
-        tooltip_style_context.set_parent (label_style_context);
+        tooltip_style_context.set_path (label_widget_path);
 
         bg_color = (Gdk.RGBA) tooltip_style_context.get_property (
             Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
