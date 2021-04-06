@@ -78,7 +78,7 @@ namespace Xrd {
 		public abstract void submit_texture ();
 	}
 	[CCode (cheader_filename = "xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
-	public interface Window : GLib.Object {
+	public interface Window<T> : GLib.Object {
 		public static Xrd.Window new_from_pixels (Xrd.Client client, string title, int width, int height, float ppm);
 		public void add_child (Xrd.Window window, Graphene.Point offset);
 		public void close ();
@@ -111,7 +111,7 @@ namespace Xrd {
 		[NoAccessorMethod]
 		public abstract float initial_width_meters { get; set construct; }
 		[NoAccessorMethod]
-		public abstract void* native { get; set construct; }
+		public abstract T native { owned get; set construct; }
 		[NoAccessorMethod]
 		public abstract float scale { get; set construct; }
 		[NoAccessorMethod]
