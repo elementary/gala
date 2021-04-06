@@ -348,16 +348,12 @@ namespace Gala {
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
-                var dummy_label = new Gtk.Label ("");
-
-                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-                var widget_path = label_style_context.get_path ().copy ();
-                widget_path.iter_set_object_name (-1, "selection");
+                var label_widget_path = new Gtk.WidgetPath ();
+                label_widget_path.append_type (GLib.Type.from_name ("label"));
+                label_widget_path.iter_set_object_name (-1, "selection");
 
                 selection_style_context = new Gtk.StyleContext ();
-                selection_style_context.set_path (widget_path);
-                selection_style_context.set_parent (label_style_context);
+                selection_style_context.set_path (label_widget_path);
             }
 
             return (Gdk.RGBA) selection_style_context.get_property (
