@@ -533,7 +533,7 @@ namespace Gala {
 
             bool show = has_pointer && !in_slot_animation;
             close_button.opacity = show ? 255 : 0;
-            window_title.opacity = show ? 255 : 0;
+            window_title.opacity = close_button.opacity;
 
             window_title.set_text (window.get_title (), false);
             window_title.set_max_width (dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor));
