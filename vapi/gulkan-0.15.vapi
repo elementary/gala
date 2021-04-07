@@ -2,112 +2,128 @@
 
 [CCode (cprefix = "Gulkan", gir_namespace = "Gulkan", gir_version = "0.15", lower_case_cprefix = "gulkan_")]
 namespace Gulkan {
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_buffer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_buffer_get_type ()")]
 	public class Buffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Buffer ();
 		public bool map (void* data);
 		public void unmap ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_client_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_client_get_type ()")]
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
+		[CCode (has_construct_function = false)]
+		public Client.from_extensions (GLib.SList<string> instance_ext_list, GLib.SList<string> device_ext_list);
+		public unowned Gulkan.Device get_device ();
+		public static GLib.SList<string> get_external_memory_device_extensions ();
+		public static GLib.SList<string> get_external_memory_instance_extensions ();
+		public unowned Gulkan.Instance get_instance ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_cmd_buffer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_cmd_buffer_get_type ()")]
 	public class CmdBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected CmdBuffer ();
 		public bool begin ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_descriptor_pool_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_descriptor_pool_get_type ()")]
 	public class DescriptorPool : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected DescriptorPool ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_device_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_device_get_type ()")]
 	public class Device : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Device ();
+		public unowned Gulkan.Queue get_graphics_queue ();
+		public unowned Gulkan.Queue get_transfer_queue ();
 		public void print_memory_budget ();
 		public void print_memory_properties ();
 		public void wait_idle ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_frame_buffer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_frame_buffer_get_type ()")]
 	public class FrameBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected FrameBuffer ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_instance_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_instance_get_type ()")]
 	public class Instance : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Instance ();
+		public bool create (GLib.SList<string> required_extensions);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_queue_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_queue_get_type ()")]
 	public class Queue : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Queue (Gulkan.Device device, uint32 family_index);
 		public void free_cmd_buffer (Gulkan.CmdBuffer cmd_buffer);
 		public uint32 get_family_index ();
 		public bool initialize ();
+		public Gulkan.CmdBuffer request_cmd_buffer ();
 		public bool submit (Gulkan.CmdBuffer cmd_buffer);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_render_pass_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_render_pass_get_type ()")]
 	public class RenderPass : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected RenderPass ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_renderer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_renderer_get_type ()")]
 	public class Renderer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Renderer ();
 		public virtual bool draw ();
 		public float get_aspect ();
+		public unowned Gulkan.Client get_client ();
 		public int64 get_msec_since_start ();
 		public void set_client (Gulkan.Client client);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_swapchain_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_swapchain_get_type ()")]
 	public class Swapchain : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Swapchain ();
 		public uint32 get_size ();
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_swapchain_renderer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_swapchain_renderer_get_type ()")]
 	public class SwapchainRenderer : Gulkan.Renderer {
 		[CCode (has_construct_function = false)]
 		protected SwapchainRenderer ();
+		public unowned Gulkan.FrameBuffer get_frame_buffer (uint32 index);
+		public unowned Gulkan.RenderPass get_render_pass ();
 		public uint32 get_swapchain_size ();
 		public bool init_draw_cmd_buffers ();
 		[NoWrapper]
 		public virtual bool init_pipeline (void* data);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_texture_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_texture_get_type ()")]
 	public class Texture : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Texture ();
 		public uint get_mip_levels ();
-		public static Texture new_from_cairo_surface (Gulkan.Client client, Cairo.Surface cairo_surface, Vk.Format format, Vk.ImageLayout upload_layout);
-		public static Texture? new_export_fd (Gulkan.Client client, Vk.Extent2D extent, Vk.Format format, Vk.ImageLayout layout, out ulong size, out int fd);
-		public void upload_cairo_surface (Cairo.Surface cairo_surface, Vk.ImageLayout upload_layout);
-		public Vk.Extent2D get_extent ();
-		public bool transfer_layout (Vk.ImageLayout src, Vk.ImageLayout dst);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_uniform_buffer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_uniform_buffer_get_type ()")]
 	public class UniformBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected UniformBuffer ();
 		public void update (void* s);
 	}
-	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_vertex_buffer_get_type ()")]
+	[CCode (cheader_filename = "gulkan/gulkan.h", type_id = "gulkan_vertex_buffer_get_type ()")]
 	public class VertexBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public VertexBuffer ();
 		public bool alloc_array (Gulkan.Device device);
 		public bool alloc_empty (Gulkan.Device device, uint32 multiplier);
+		public void append_position_uv (Graphene.Vec4 vec, float u, float v);
+		public void append_with_color (Graphene.Vec4 vec, Graphene.Vec3 color);
 		[CCode (has_construct_function = false)]
 		public VertexBuffer.from_attribs (Gulkan.Device device, float positions, size_t positions_size, float colors, size_t colors_size, float normals, size_t normals_size);
 		public bool is_initialized ();
 		public bool map_array ();
 		public void reset ();
 	}
+	[CCode (cheader_filename = "gulkan/gulkan.h")]
+	public static void geometry_append_axes (Gulkan.VertexBuffer self, Graphene.Vec4 center, float length, Graphene.Matrix mat);
+	[CCode (cheader_filename = "gulkan/gulkan.h")]
+	public static void geometry_append_plane (Gulkan.VertexBuffer self, Graphene.Point from, Graphene.Point to, Graphene.Matrix mat);
+	[CCode (cheader_filename = "gulkan/gulkan.h")]
+	public static void geometry_append_ray (Gulkan.VertexBuffer self, Graphene.Vec4 center, float length, Graphene.Matrix mat);
 }

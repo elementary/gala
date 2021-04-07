@@ -40,6 +40,7 @@ namespace Gala.Plugins.XRDesktop {
         private static GLib.Mutex upload_xrd_window_mutex = Mutex ();
 
         public override void initialize (Gala.WindowManager wm) {
+            debug ("xrdesktop: Initialize Gala plugin.");
             this.wm = wm;
 
             try {
@@ -50,6 +51,7 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         public override void destroy () {
+            debug ("xrdesktop: Destroy Gala plugin.");
             shutdown_xrdesktop ();
             disconnect_dbus_service ();
         }
@@ -125,7 +127,8 @@ namespace Gala.Plugins.XRDesktop {
               */
             var xrd_windows = xrd_client.get_windows ();
             foreach (var xrd_window in xrd_windows) {
-                var xr_window = ((Xrd.Window<Gala.Plugins.XRDesktop.Window>) xrd_window).native;
+                Window? xr_window = null;
+                //var xr_window = ((Xrd.Window<Gala.Plugins.XRDesktop.Window>) xrd_window).native;
                 //var xr_window = xrd_window.get_native<Window> ();
                 if (xr_window == null) {
                     continue;
@@ -162,7 +165,8 @@ namespace Gala.Plugins.XRDesktop {
             var xrd_windows = xrd_client.get_windows ();
 
             foreach (var xrd_window in xrd_windows) {
-                var xr_window = ((Xrd.Window<Gala.Plugins.XRDesktop.Window>) xrd_window).native;
+                Window? xr_window = null;
+                //var xr_window = ((Xrd.Window<Gala.Plugins.XRDesktop.Window>) xrd_window).native;
                 //var xr_window = xrd_window.get_native<Window> ();
 
                 if (xr_window == null || xr_window.meta_window_actor == null) {
@@ -260,10 +264,10 @@ namespace Gala.Plugins.XRDesktop {
 
             Meta.WindowActor meta_parent_window_actor = window_actor;
             Meta.Window? meta_parent_window = null;
-            Xrd.Window<Gala.Plugins.XRDesktop.Window>? xrd_parent_window = null;
+            Xrd.Window? xrd_parent_window = null;
 
             if (is_child) {
-                if (find_valid_parent_window<Window> (meta_window, out meta_parent_window, out xrd_parent_window)) {
+                if (find_valid_parent_window (meta_window, out meta_parent_window, out xrd_parent_window)) {
                     var xrd_parent_window_data = xrd_parent_window.get_data ();
 
                     while (xrd_parent_window_data != null && xrd_parent_window_data.child_window != null) {
@@ -285,7 +289,7 @@ namespace Gala.Plugins.XRDesktop {
                 meta_window.title,
                 meta_window.get_description ());
 
-            var xrd_window = Xrd.Window<Window>.new_from_pixels (
+            var xrd_window = Xrd.Window.new_from_pixels (
                 xrd_client,
                 meta_window.title,
                 rect.width,
@@ -361,26 +365,26 @@ namespace Gala.Plugins.XRDesktop {
                 window_type == Meta.WindowType.COMBO;
         }
 
-        private bool find_valid_parent_window<T> (Meta.Window child_window,
+        private bool find_valid_parent_window (Meta.Window child_window,
             out Meta.Window? meta_parent_window,
-            out Xrd.Window<T>? xrd_parent_window) {
+            out Xrd.Window? xrd_parent_window) {
             /* Try transient first */
             meta_parent_window = child_window.get_transient_for ();
-            xrd_parent_window = get_valid_xrd_window<T> (meta_parent_window);
+            xrd_parent_window = get_valid_xrd_window (meta_parent_window);
             if (xrd_parent_window != null) {
                 return true;
             }
 
             /* If this doesn't work out try the root ancestor */
             meta_parent_window = child_window.find_root_ancestor ();
-            xrd_parent_window = get_valid_xrd_window<T> (meta_parent_window);
+            xrd_parent_window = get_valid_xrd_window (meta_parent_window);
             if (xrd_parent_window != null) {
                 return true;
             }
 
             /* Last try, check if anything is focused and make that our parent */
             meta_parent_window = this.wm.get_display ().get_focus_window ();
-            xrd_parent_window = get_valid_xrd_window<T> (meta_parent_window);
+            xrd_parent_window = get_valid_xrd_window (meta_parent_window);
             if (xrd_parent_window != null) {
                 return true;
             }
@@ -391,7 +395,7 @@ namespace Gala.Plugins.XRDesktop {
             return false;
         }
 
-        private Xrd.Window<T>? get_valid_xrd_window<T> (Meta.Window? meta_window) {
+        private Xrd.Window? get_valid_xrd_window (Meta.Window? meta_window) {
             if (meta_window == null) {
                 return null;
             }
@@ -401,7 +405,7 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            return (Xrd.Window<T>?) xrd_client.lookup_window (meta_window);
+            return xrd_client.lookup_window (meta_window);
         }
 
         private Graphene.Point get_offset (Meta.Window parent, Meta.Window child) {
@@ -462,7 +466,7 @@ namespace Gala.Plugins.XRDesktop {
             upload_xrd_window (xrd_window);
         }
 
-        private bool upload_xrd_window (Xrd.Window<Gala.Plugins.XRDesktop.Window> xrd_window) {
+        private bool upload_xrd_window (Xrd.Window xrd_window) {
             var xr_window = xrd_window.native;
             //var xr_window = xrd_window.get_native<Window> ();
 
@@ -561,7 +565,7 @@ namespace Gala.Plugins.XRDesktop {
 
         private bool upload_xrd_window_gl_external_memory (
             Gulkan.Client client,
-            Xrd.Window<Gala.Plugins.XRDesktop.Window> xrd_window,
+            Xrd.Window xrd_window,
             Meta.ShapedTexture mst,
             Meta.Rectangle rect
         ) {
@@ -782,6 +786,6 @@ public Gala.PluginInfo register_plugin () {
         "elementary, Inc. (https://elementary.io)",
         typeof (Gala.Plugins.XRDesktop.Main),
         Gala.PluginFunction.ADDITION,
-        Gala.LoadPriority.DEFERRED
+        Gala.LoadPriority.IMMEDIATE
     };
 }

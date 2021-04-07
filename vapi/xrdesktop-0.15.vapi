@@ -2,16 +2,25 @@
 
 [CCode (cprefix = "Xrd", gir_namespace = "Xrd", gir_version = "0.15", lower_case_cprefix = "xrd_")]
 namespace Xrd {
-	[CCode (cheader_filename = "xrd.h", type_id = "xrd_client_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_client_get_type ()")]
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
-		public Xrd.Window? lookup_window (Meta.Window meta_win);
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
-		public Gulkan.Client get_gulkan ();
-		public Vk.ImageLayout get_upload_layout ();
-		public GLib.SList<Xrd.Window> get_windows ();
+		public Xrd.Window? button_new_from_icon (float width, float height, float ppm, string url);
+		public Xrd.Window? button_new_from_text (float width, float height, float ppm, [CCode (array_length_cname = "label_count", array_length_pos = 3.5)] string[] label);
+		public unowned GLib.SList<Gxr.Controller> get_controllers ();
+		public unowned Xrd.DesktopCursor get_desktop_cursor ();
+		public unowned Gxr.Context get_gxr_context ();
+		public unowned Xrd.InputSynth get_input_synth ();
+		public unowned Xrd.Window? get_keyboard_window ();
+		public unowned Xrd.WindowManager get_manager ();
+		public unowned Xrd.Window? get_synth_hovered ();
+		public unowned GLib.SList<Xrd.Window> get_windows ();
+		[NoWrapper]
+		public virtual void init_controller (Gxr.Controller controller);
+		public unowned Xrd.Window? lookup_window (void* key);
 		public bool poll_input_events ();
 		public bool poll_runtime_events ();
 		public void remove_container (Xrd.Container container);
@@ -26,28 +35,35 @@ namespace Xrd {
 		public signal void move_cursor_event (Gdk.Event object);
 		public signal void request_quit_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrd.h", type_id = "xrd_container_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_container_get_type ()")]
 	public class Container : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Container ();
+		public void center_view (Gxr.Context context, float distance);
 		public float get_distance ();
+		public GLib.SList<weak Xrd.Window> get_windows ();
 		public void hide ();
 		public bool is_visible ();
 		public void remove_window (Xrd.Window window);
+		public void set_attachment (Xrd.ContainerAttachment attachment, Gxr.Controller controller);
 		public void set_distance (float distance);
 		public void set_layout (Xrd.ContainerLayout layout);
 		public void show ();
+		public bool step (Gxr.Context context);
 	}
-	[CCode (cheader_filename = "xrd.h", type_id = "xrd_input_synth_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_input_synth_get_type ()")]
 	public class InputSynth : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public InputSynth ();
+		public Gxr.ActionSet create_action_set (Gxr.Context context);
+		public unowned Gxr.Controller get_primary_controller ();
+		public void make_primary (Gxr.Controller controller);
 		public void reset_press_state ();
 		public void reset_scroll ();
 		public signal void click_event (Gdk.Event object);
 		public signal void move_cursor_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrd.h", type_id = "xrd_shake_compensator_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_shake_compensator_get_type ()")]
 	public class ShakeCompensator : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public ShakeCompensator ();
@@ -55,21 +71,31 @@ namespace Xrd {
 		public void replay_move_queue (Xrd.InputSynth synth, uint move_cursor_event_signal, Xrd.Window hover_window);
 		public void reset ();
 	}
-	[CCode (cheader_filename = "xrd.h", type_id = "xrd_window_manager_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_window_manager_get_type ()")]
 	public class WindowManager : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public WindowManager ();
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, Xrd.WindowFlags flags);
 		public void arrange_reset ();
+		public bool arrange_sphere (Gxr.Context context);
+		public void check_grab (Gxr.Controller controller);
+		public void check_release (Gxr.Controller controller);
+		public void drag_start (Gxr.Controller controller);
+		public unowned GLib.SList<Xrd.Window> get_buttons ();
 		public Xrd.HoverMode get_hover_mode ();
+		public unowned GLib.SList<Xrd.Window> get_windows ();
+		public void poll_window_events (Gxr.Context context);
 		public void remove_container (Xrd.Container container);
 		public void remove_window (Xrd.Window window);
+		public void scale (Gxr.GrabState grab_state, float factor, float update_rate_ms);
 		public void set_hover_mode (Xrd.HoverMode mode);
+		public void update_controller (Gxr.Controller controller);
 		public signal void no_hover_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrd.h", type_cname = "XrdDesktopCursorInterface", type_id = "xrd_desktop_cursor_get_type ()")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdDesktopCursorInterface", type_id = "xrd_desktop_cursor_get_type ()")]
 	public interface DesktopCursor : GLib.Object {
+		public abstract unowned Xrd.DesktopCursorData? get_data ();
 		public abstract void hide ();
 		public void init_settings ();
 		public void set_hotspot (int hotspot_x, int hotspot_y);
@@ -77,34 +103,36 @@ namespace Xrd {
 		public abstract void show ();
 		public abstract void submit_texture ();
 	}
-	[CCode (cheader_filename = "xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
-	public interface Window<T> : GLib.Object {
-		[CCode (simple_generics = true)]
-		public static Xrd.Window<T> new_from_pixels (Xrd.Client client, string title, int width, int height, float ppm);
-		public void add_child (Xrd.Window window, Graphene.Point offset);
+	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
+	public interface Window : GLib.Object {
 		public void close ();
 		public void deselect ();
 		public abstract void emit_grab (Xrd.GrabEvent event);
+		public abstract void emit_grab_start (Gxr.Controller controller);
 		public abstract void emit_hover (Xrd.HoverEvent event);
+		public abstract void emit_hover_end (Gxr.Controller controller);
+		public abstract void emit_hover_start (Gxr.Controller controller);
+		public abstract void emit_release (Gxr.Controller controller);
 		public void end_selection ();
 		public float get_aspect_ratio ();
 		public float get_current_height_meters ();
 		public float get_current_ppm ();
 		public float get_current_width_meters ();
-		public Xrd.WindowData? get_data ();
+		public abstract unowned Xrd.WindowData? get_data ();
 		public float get_initial_ppm ();
-		public Gulkan.Texture get_texture ();
 		public abstract void hide ();
 		public bool is_pinned ();
 		public bool is_selected ();
 		public abstract bool is_visible ();
+		public static Xrd.Window new_from_data (Xrd.Client self, Xrd.WindowData data);
+		public static Xrd.Window new_from_meters (Xrd.Client client, string title, float width, float height, float ppm);
+		public static Xrd.Window new_from_native (Xrd.Client client, string title, void* native, uint32 width_pixels, uint32 height_pixels, float ppm);
+		public static Xrd.Window new_from_pixels (Xrd.Client client, string title, uint32 width, uint32 height, float ppm);
 		public abstract void poll_event ();
 		public void save_reset_transformation ();
 		public void select ();
-		public void set_and_submit_texture (Gulkan.Texture texture);
 		public abstract void set_flip_y (bool flip_y);
 		public void set_pin (bool pinned, bool hide_unpinned);
-		public void set_transformation (Graphene.Matrix transform);
 		public abstract void submit_texture ();
 		public void update_child ();
 		[NoAccessorMethod]
@@ -112,16 +140,7 @@ namespace Xrd {
 		[NoAccessorMethod]
 		public abstract float initial_width_meters { get; set construct; }
 		[NoAccessorMethod]
-		public unowned T? native {
-			[CCode (simple_generics = true)] owned get;
-			[CCode (simple_generics = true)] set construct;
-		}
-		/*[NoAccessorMethod, CCode (simple_generics = true)]
-		public abstract T native { get; set construct; }*/
-		/*[CCode (cname = "g_object_set", simple_generics = true)]
-		public void set_native<T> (T? value);
-		[CCode (cname = "g_object_get", simple_generics = true)]
-		public T? get_native<T> ();*/
+		public abstract void* native { get; set construct; }
 		[NoAccessorMethod]
 		public abstract float scale { get; set construct; }
 		[NoAccessorMethod]
@@ -146,14 +165,16 @@ namespace Xrd {
 		[HasEmitter]
 		public virtual signal void show ();
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct ClickEvent {
 		public weak Xrd.Window window;
 		public bool state;
+		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct DesktopCursorData {
 		public weak Xrd.DesktopCursor cursor;
+		public weak Gxr.Context context;
 		public bool keep_apparent_size;
 		public float width_meters;
 		public float cached_width_meters;
@@ -162,22 +183,25 @@ namespace Xrd {
 		public uint32 texture_width;
 		public uint32 texture_height;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct GrabEvent {
+		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct HoverEvent {
 		public float distance;
+		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct MoveCursorEvent {
 		public weak Xrd.Window window;
 		public bool ignore;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct NoHoverEvent {
+		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct TransformTransition {
 		public weak Xrd.Window window;
 		public float from_scaling;
@@ -185,43 +209,43 @@ namespace Xrd {
 		public float interpolate;
 		public int64 last_timestamp;
 	}
-	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct WindowData {
-		public weak void* native;
+		public void* native;
 		public uint32 texture_width;
 		public uint32 texture_height;
 		public weak GLib.StringBuilder title;
 		public float scale;
 		public void* child_window;
-		public weak Xrd.Window? parent_window;
+		public void* parent_window;
 		public bool pinned;
 		public weak Xrd.Window xrd_window;
 		public bool owned_by_window;
 	}
-	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CLIENT_MODE_", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CLIENT_MODE_", has_type_id = false)]
 	public enum ClientMode {
 		OVERLAY,
 		SCENE
 	}
-	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CONTAINER_ATTACHMENT_", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CONTAINER_ATTACHMENT_", has_type_id = false)]
 	public enum ContainerAttachment {
 		NONE,
 		HEAD,
 		HAND
 	}
-	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CONTAINER_", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CONTAINER_", has_type_id = false)]
 	public enum ContainerLayout {
 		NO_LAYOUT,
 		HORIZONTAL,
 		VERTICAL,
 		RELATIVE
 	}
-	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_HOVER_MODE_", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_HOVER_MODE_", has_type_id = false)]
 	public enum HoverMode {
 		EVERYTHING,
 		BUTTONS
 	}
-	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_WINDOW_", has_type_id = false)]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_WINDOW_", has_type_id = false)]
 	[Flags]
 	public enum WindowFlags {
 		HOVERABLE,
@@ -230,26 +254,38 @@ namespace Xrd {
 		DESTROY_WITH_PARENT,
 		BUTTON
 	}
-	[CCode (cheader_filename = "xrd.h", cname = "XRD_TIP_APPARENT_SIZE_DISTANCE")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cname = "XRD_TIP_APPARENT_SIZE_DISTANCE")]
 	public const double TIP_APPARENT_SIZE_DISTANCE;
-	[CCode (cheader_filename = "xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
 	public const int TIP_VIEWPORT_SCALE;
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void render_lock ();
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void render_lock_destroy ();
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void render_lock_init ();
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void render_unlock ();
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void settings_connect_and_apply ([CCode (delegate_target_pos = 2.1, scope = "async")] GLib.Callback callback, string key);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void settings_destroy_instance ();
-	[CCode (cheader_filename = "xrd.h")]
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static unowned GLib.Settings settings_get_instance ();
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static bool settings_is_schema_installed ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_double_val (GLib.Settings settings, string key, double val);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_gboolean_val (GLib.Settings settings, string key, bool val);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_int_val (GLib.Settings settings, string key, int val);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void settings_update_double_val (GLib.Settings settings, string key, out double val);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void settings_update_gboolean_val (GLib.Settings settings, string key, out bool val);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void settings_update_int_val (GLib.Settings settings, string key, out int val);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static Xrd.Window window_new_from_data (Xrd.Client self, Xrd.WindowData data);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static Xrd.Window window_new_from_meters (Xrd.Client client, string title, float width, float height, float ppm);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static Xrd.Window window_new_from_native (Xrd.Client client, string title, void* native, uint32 width_pixels, uint32 height_pixels, float ppm);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static Xrd.Window window_new_from_pixels (Xrd.Client client, string title, uint32 width, uint32 height, float ppm);
 }

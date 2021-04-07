@@ -12,6 +12,7 @@ gala_xrdesktop_lib = shared_library(
         gala_base_dep,
         xrdesktop_dep,
         gulkan_dep,
+        gxr_dep,
         vulkan_dep,
         glew_dep
     ],

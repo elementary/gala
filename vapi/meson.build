@@ -149,20 +149,6 @@ if mutter338_dep.found()
 	)
 endif
 
-if xrdesktop_dep.found()
-	xrdesktop_target = custom_target('xrdesktop',
-		command: [
-			vapigen,
-			mutter_typelib_dir / 'Xrd-0.15.gir',
-			'--library=xrdesktop-0.15',
-			'--pkg=gio-2.0',
-			'--pkg=gdk-3.0',
-			vapigen_args
-		],
-		output: 'xrdesktop-0.15.vapi'
-	)
-endif
-
 if gulkan_dep.found ()
 	gulkan_target = custom_target('gulkan',
 		command: [
@@ -174,6 +160,34 @@ if gulkan_dep.found ()
 			vapigen_args
 		],
 		output: 'gulkan-0.15.vapi'
+	)
+endif
+
+if gxr_dep.found ()
+	gxr_target = custom_target('gxr',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Gxr-0.15.gir',
+			'--library=gxr-0.15',
+			'--pkg=gio-2.0',
+			'--pkg=gdk-3.0',
+			vapigen_args
+		],
+		output: 'gxr-0.15.vapi'
+	)
+endif
+
+if xrdesktop_dep.found()
+	xrdesktop_target = custom_target('xrdesktop',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Xrd-0.15.gir',
+			'--library=xrdesktop-0.15',
+			'--pkg=gio-2.0',
+			'--pkg=gdk-3.0',
+			vapigen_args
+		],
+		output: 'xrdesktop-0.15.vapi'
 	)
 endif
 
