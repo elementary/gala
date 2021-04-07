@@ -6,12 +6,14 @@ namespace Xrd {
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
+		public void add_button (Xrd.Window button, Graphene.Point3D position, [CCode (scope = "async")] GLib.Callback press_callback);
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
 		public Xrd.Window? button_new_from_icon (float width, float height, float ppm, string url);
 		public Xrd.Window? button_new_from_text (float width, float height, float ppm, [CCode (array_length_cname = "label_count", array_length_pos = 3.5)] string[] label);
 		public unowned GLib.SList<Gxr.Controller> get_controllers ();
 		public unowned Xrd.DesktopCursor get_desktop_cursor ();
+		public virtual unowned Gulkan.Client get_gulkan ();
 		public unowned Gxr.Context get_gxr_context ();
 		public unowned Xrd.InputSynth get_input_synth ();
 		public unowned Xrd.Window? get_keyboard_window ();
@@ -39,6 +41,7 @@ namespace Xrd {
 	public class Container : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Container ();
+		public void add_window (Xrd.Window window, Graphene.Matrix relative_transform);
 		public void center_view (Gxr.Context context, float distance);
 		public float get_distance ();
 		public GLib.SList<weak Xrd.Window> get_windows ();
@@ -58,6 +61,7 @@ namespace Xrd {
 		public Gxr.ActionSet create_action_set (Gxr.Context context);
 		public unowned Gxr.Controller get_primary_controller ();
 		public void make_primary (Gxr.Controller controller);
+		public void move_cursor (Xrd.Window window, Graphene.Matrix controller_pose, Graphene.Point3D intersection);
 		public void reset_press_state ();
 		public void reset_scroll ();
 		public signal void click_event (Gdk.Event object);
@@ -67,7 +71,9 @@ namespace Xrd {
 	public class ShakeCompensator : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public ShakeCompensator ();
+		public bool is_drag (Xrd.Window window, Graphene.Matrix controller_pose, Graphene.Point3D intersection);
 		public bool is_recording ();
+		public void record (Graphene.Point position);
 		public void replay_move_queue (Xrd.InputSynth synth, uint move_cursor_event_signal, Xrd.Window hover_window);
 		public void reset ();
 	}
@@ -96,15 +102,21 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdDesktopCursorInterface", type_id = "xrd_desktop_cursor_get_type ()")]
 	public interface DesktopCursor : GLib.Object {
 		public abstract unowned Xrd.DesktopCursorData? get_data ();
+		public abstract unowned Gulkan.Texture get_texture ();
+		public abstract void get_transformation (Graphene.Matrix matrix);
 		public abstract void hide ();
 		public void init_settings ();
+		public abstract void set_and_submit_texture (Gulkan.Texture texture);
 		public void set_hotspot (int hotspot_x, int hotspot_y);
+		public abstract void set_transformation (Graphene.Matrix matrix);
 		public abstract void set_width_meters (float meters);
 		public abstract void show ();
 		public abstract void submit_texture ();
+		public void update (Gxr.Context context, Xrd.Window window, Graphene.Point3D intersection);
 	}
 	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
 	public interface Window : GLib.Object {
+		public abstract void add_child (Xrd.Window child, Graphene.Point offset_center);
 		public void close ();
 		public void deselect ();
 		public abstract void emit_grab (Xrd.GrabEvent event);
@@ -120,6 +132,14 @@ namespace Xrd {
 		public float get_current_width_meters ();
 		public abstract unowned Xrd.WindowData? get_data ();
 		public float get_initial_ppm ();
+		public void get_intersection_2d (Graphene.Point3D intersection_3d, Graphene.Point intersection_2d);
+		public void get_intersection_2d_pixels (Graphene.Point3D intersection_3d, Graphene.Point intersection_pixels);
+		public void get_normal (Graphene.Vec3 normal);
+		public void get_plane (Graphene.Plane res);
+		public void get_reset_transformation (Graphene.Matrix transform);
+		public abstract unowned Gulkan.Texture? get_texture ();
+		public abstract bool get_transformation (Graphene.Matrix mat);
+		public abstract bool get_transformation_no_scale (Graphene.Matrix mat);
 		public abstract void hide ();
 		public bool is_pinned ();
 		public bool is_selected ();
@@ -131,8 +151,12 @@ namespace Xrd {
 		public abstract void poll_event ();
 		public void save_reset_transformation ();
 		public void select ();
+		public abstract void set_and_submit_texture (owned Gulkan.Texture texture);
+		public abstract void set_color (Graphene.Vec3 color);
 		public abstract void set_flip_y (bool flip_y);
 		public void set_pin (bool pinned, bool hide_unpinned);
+		public void set_reset_transformation (Graphene.Matrix transform);
+		public abstract bool set_transformation (Graphene.Matrix mat);
 		public abstract void submit_texture ();
 		public void update_child ();
 		[NoAccessorMethod]
@@ -168,6 +192,7 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct ClickEvent {
 		public weak Xrd.Window window;
+		public weak Graphene.Point position;
 		public bool state;
 		public weak Gxr.Controller controller;
 	}
@@ -185,16 +210,20 @@ namespace Xrd {
 	}
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct GrabEvent {
+		public weak Graphene.Matrix pose;
 		public weak Gxr.Controller controller;
 	}
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct HoverEvent {
+		public weak Graphene.Point3D point;
+		public weak Graphene.Matrix pose;
 		public float distance;
 		public weak Gxr.Controller controller;
 	}
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct MoveCursorEvent {
 		public weak Xrd.Window window;
+		public weak Graphene.Point position;
 		public bool ignore;
 	}
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
@@ -204,6 +233,8 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
 	public struct TransformTransition {
 		public weak Xrd.Window window;
+		public weak Graphene.Matrix from;
+		public weak Graphene.Matrix to;
 		public float from_scaling;
 		public float to_scaling;
 		public float interpolate;
@@ -215,10 +246,15 @@ namespace Xrd {
 		public uint32 texture_width;
 		public uint32 texture_height;
 		public weak GLib.StringBuilder title;
+		public weak Graphene.Point initial_size_meters;
 		public float scale;
+		public weak Graphene.Matrix transform;
 		public void* child_window;
 		public void* parent_window;
+		public weak Graphene.Point child_offset_center;
+		public weak Graphene.Matrix reset_transform;
 		public bool pinned;
+		public weak Gulkan.Texture texture;
 		public weak Xrd.Window xrd_window;
 		public bool owned_by_window;
 	}
@@ -258,6 +294,20 @@ namespace Xrd {
 	public const double TIP_APPARENT_SIZE_DISTANCE;
 	[CCode (cheader_filename = "xrdesktop/xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
 	public const int TIP_VIEWPORT_SCALE;
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static bool math_clamp_towards_zero_2d (Graphene.Point min, Graphene.Point max, Graphene.Point point, Graphene.Point clamped);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void math_get_rotation_angles (Graphene.Vec3 direction, float azimuth, float inclination);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static bool math_intersect_lines_2d (Graphene.Point p0, Graphene.Point p1, Graphene.Point p2, Graphene.Point p3, Graphene.Point intersection);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void math_matrix_set_translation_point (Graphene.Matrix matrix, Graphene.Point3D point);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void math_matrix_set_translation_vec (Graphene.Matrix matrix, Graphene.Vec3 vec);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static float math_point_matrix_distance (Graphene.Point3D intersection_point, Graphene.Matrix pose);
+	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	public static void math_sphere_to_3d_coords (float azimuth, float inclination, float distance, Graphene.Point3D point);
 	[CCode (cheader_filename = "xrdesktop/xrd.h")]
 	public static void render_lock ();
 	[CCode (cheader_filename = "xrdesktop/xrd.h")]
