@@ -125,7 +125,7 @@ namespace Gala.Plugins.XRDesktop {
               * clean up as long as there is an active xrd_client
               * instance
               */
-            var xrd_windows = xrd_client.get_windows ();
+            unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
             foreach (var xrd_window in xrd_windows) {
                 Window? xr_window = null;
                 //var xr_window = ((Xrd.Window<Gala.Plugins.XRDesktop.Window>) xrd_window).native;
@@ -162,7 +162,7 @@ namespace Gala.Plugins.XRDesktop {
 
         private void arrange_windows_by_desktop_position () {
             var meta_windows = new GLib.SList<Meta.Window> ();
-            var xrd_windows = xrd_client.get_windows ();
+            unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
 
             foreach (var xrd_window in xrd_windows) {
                 Window? xr_window = null;
@@ -274,8 +274,7 @@ namespace Gala.Plugins.XRDesktop {
                         xrd_parent_window = xrd_parent_window_data.parent_window;
                         xrd_parent_window_data = xrd_parent_window.get_data ();
 
-                        var xr_window = xrd_parent_window.native;
-                        // var xr_window = xrd_parent_window.get_native<Window> ();
+                        unowned Window? xr_window = (Window?) xrd_parent_window.native;
                         if (xr_window != null) {
                             meta_parent_window_actor = xr_window.meta_window_actor;
                             meta_parent_window = meta_parent_window_actor.get_meta_window ();
@@ -467,7 +466,7 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool upload_xrd_window (Xrd.Window xrd_window) {
-            var xr_window = xrd_window.native;
+            unowned Window? xr_window = (Window?) xrd_window.native;
             //var xr_window = xrd_window.get_native<Window> ();
 
             if (xr_window == null) {
@@ -584,7 +583,7 @@ namespace Gala.Plugins.XRDesktop {
             }
             GL.GLenum meta_target = (GL.GLenum) meta_target_uint;
 
-            var xr_window = xrd_window.native;
+            unowned Window? xr_window = (Window?) xrd_window.native;
             //var xr_window = xrd_window.get_native<Window> ();
             if (xr_window == null) {
                 critical ("xrdesktop: Could not read native Window from XrdWindow.");
