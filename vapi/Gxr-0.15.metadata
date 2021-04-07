@@ -1,0 +1,4 @@
+//* skip=false
+
+Window.child_window type="weak Xrd.Window?"
+Window.parent_window type="weak Xrd.Window?"
