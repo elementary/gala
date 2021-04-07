@@ -1,1 +1,13 @@
 //* skip=false
+
+WindowData.child_window type="unowned Xrd.Window?"
+WindowData.parent_window type="unowned Xrd.Window?"
+
+window_new_from_data skip
+window_new_from_meters skip
+window_new_from_native skip
+window_new_from_pixels skip
+
+settings_* name="settings_(.+)" parent="Xrd.Settings"
+render_* name="render_(.+)" parent="Xrd.Render"
+math_* name="math_(.+)" parent="Xrd.Math"

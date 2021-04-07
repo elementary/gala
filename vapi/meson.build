@@ -152,7 +152,7 @@ if mutter338_dep.found()
 	)
 endif
 
-if gulkan_dep.found ()
+if get_option('xrdesktop')
 	gulkan_girdir = gulkan_dep.get_pkgconfig_variable('prefix', default: get_option('prefix')) / get_option('datadir') / 'gir-1.0'
 	gulkan_target = custom_target('gulkan',
 		command: [
@@ -167,9 +167,7 @@ if gulkan_dep.found ()
 		],
 		output: 'gulkan-0.15.vapi'
 	)
-endif
 
-if gxr_dep.found ()
 	gxr_girdir = gxr_dep.get_pkgconfig_variable('prefix', default: get_option('prefix')) / get_option('datadir') / 'gir-1.0'
 	gxr_target = custom_target('gxr',
 		command: [
@@ -183,11 +181,10 @@ if gxr_dep.found ()
 			vapigen_standard_args,
 			'--girdir=@0@'.format(gxr_girdir),
 		],
+		depends: gulkan_target,
 		output: 'gxr-0.15.vapi'
 	)
-endif
 
-if xrdesktop_dep.found()
 	xrdesktop_girdir = xrdesktop_dep.get_pkgconfig_variable('prefix', default: get_option('prefix')) / get_option('datadir') / 'gir-1.0'
 	xrdesktop_target = custom_target('xrdesktop',
 		command: [
@@ -202,17 +199,18 @@ if xrdesktop_dep.found()
 			vapigen_standard_args,
 			'--girdir=@0@'.format(xrdesktop_girdir),
 		],
+		depends: [ gulkan_target, gxr_target ],
 		output: 'xrdesktop-0.15.vapi'
 	)
-endif
 
-if libinputsynth_dep.found ()
+	libinputsynth_girdir = xrdesktop_dep.get_pkgconfig_variable('prefix', default: get_option('prefix')) / get_option('datadir') / 'gir-1.0'
 	libinputsynth_target = custom_target('libinputsynth',
 		command: [
 			vapigen,
-			'libinputsynth-0.15.gir',
+			libinputsynth_girdir / 'libinputsynth-0.15.gir',
 			'--library=libinputsynth-0.15',
-			vapigen_standard_args
+			vapigen_standard_args,
+			'--girdir=@0@'.format(libinputsynth_girdir),
 		],
 		output: 'libinputsynth-0.15.vapi'
 	)
