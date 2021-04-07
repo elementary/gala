@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "Xrd", gir_namespace = "Xrd", gir_version = "0.15", lower_case_cprefix = "xrd_")]
 namespace Xrd {
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_client_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_id = "xrd_client_get_type ()")]
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
@@ -14,6 +14,7 @@ namespace Xrd {
 		public unowned GLib.SList<Gxr.Controller> get_controllers ();
 		public unowned Xrd.DesktopCursor get_desktop_cursor ();
 		public virtual unowned Gulkan.Client get_gulkan ();
+		public Vk.ImageLayout get_upload_layout ();
 		public unowned Gxr.Context get_gxr_context ();
 		public unowned Xrd.InputSynth get_input_synth ();
 		public unowned Xrd.Window? get_keyboard_window ();
@@ -37,7 +38,7 @@ namespace Xrd {
 		public signal void move_cursor_event (Gdk.Event object);
 		public signal void request_quit_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_container_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_id = "xrd_container_get_type ()")]
 	public class Container : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Container ();
@@ -54,7 +55,7 @@ namespace Xrd {
 		public void show ();
 		public bool step (Gxr.Context context);
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_input_synth_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_id = "xrd_input_synth_get_type ()")]
 	public class InputSynth : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public InputSynth ();
@@ -67,7 +68,7 @@ namespace Xrd {
 		public signal void click_event (Gdk.Event object);
 		public signal void move_cursor_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_shake_compensator_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_id = "xrd_shake_compensator_get_type ()")]
 	public class ShakeCompensator : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public ShakeCompensator ();
@@ -77,7 +78,7 @@ namespace Xrd {
 		public void replay_move_queue (Xrd.InputSynth synth, uint move_cursor_event_signal, Xrd.Window hover_window);
 		public void reset ();
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_id = "xrd_window_manager_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_id = "xrd_window_manager_get_type ()")]
 	public class WindowManager : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public WindowManager ();
@@ -99,7 +100,7 @@ namespace Xrd {
 		public void update_controller (Gxr.Controller controller);
 		public signal void no_hover_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdDesktopCursorInterface", type_id = "xrd_desktop_cursor_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_cname = "XrdDesktopCursorInterface", type_id = "xrd_desktop_cursor_get_type ()")]
 	public interface DesktopCursor : GLib.Object {
 		public abstract unowned Xrd.DesktopCursorData? get_data ();
 		public abstract unowned Gulkan.Texture get_texture ();
@@ -114,7 +115,7 @@ namespace Xrd {
 		public abstract void submit_texture ();
 		public void update (Gxr.Context context, Xrd.Window window, Graphene.Point3D intersection);
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
+	[CCode (cheader_filename = "xrd.h", type_cname = "XrdWindowInterface", type_id = "xrd_window_get_type ()")]
 	public interface Window : GLib.Object {
 		public abstract void add_child (Xrd.Window child, Graphene.Point offset_center);
 		public void close ();
@@ -189,14 +190,14 @@ namespace Xrd {
 		[HasEmitter]
 		public virtual signal void show ();
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct ClickEvent {
 		public weak Xrd.Window window;
 		public weak Graphene.Point position;
 		public bool state;
 		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct DesktopCursorData {
 		public weak Xrd.DesktopCursor cursor;
 		public weak Gxr.Context context;
@@ -208,29 +209,29 @@ namespace Xrd {
 		public uint32 texture_width;
 		public uint32 texture_height;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct GrabEvent {
 		public weak Graphene.Matrix pose;
 		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct HoverEvent {
 		public weak Graphene.Point3D point;
 		public weak Graphene.Matrix pose;
 		public float distance;
 		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct MoveCursorEvent {
 		public weak Xrd.Window window;
 		public weak Graphene.Point position;
 		public bool ignore;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct NoHoverEvent {
 		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct TransformTransition {
 		public weak Xrd.Window window;
 		public weak Graphene.Matrix from;
@@ -240,7 +241,7 @@ namespace Xrd {
 		public float interpolate;
 		public int64 last_timestamp;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct WindowData {
 		public void* native;
 		public uint32 texture_width;
@@ -249,8 +250,8 @@ namespace Xrd {
 		public weak Graphene.Point initial_size_meters;
 		public float scale;
 		public weak Graphene.Matrix transform;
-		public void* child_window;
-		public void* parent_window;
+		public unowned Xrd.Window? child_window;
+		public unowned Xrd.Window? parent_window;
 		public weak Graphene.Point child_offset_center;
 		public weak Graphene.Matrix reset_transform;
 		public bool pinned;
@@ -258,30 +259,30 @@ namespace Xrd {
 		public weak Xrd.Window xrd_window;
 		public bool owned_by_window;
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CLIENT_MODE_", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CLIENT_MODE_", has_type_id = false)]
 	public enum ClientMode {
 		OVERLAY,
 		SCENE
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CONTAINER_ATTACHMENT_", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CONTAINER_ATTACHMENT_", has_type_id = false)]
 	public enum ContainerAttachment {
 		NONE,
 		HEAD,
 		HAND
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_CONTAINER_", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_CONTAINER_", has_type_id = false)]
 	public enum ContainerLayout {
 		NO_LAYOUT,
 		HORIZONTAL,
 		VERTICAL,
 		RELATIVE
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_HOVER_MODE_", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_HOVER_MODE_", has_type_id = false)]
 	public enum HoverMode {
 		EVERYTHING,
 		BUTTONS
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cprefix = "XRD_WINDOW_", has_type_id = false)]
+	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_WINDOW_", has_type_id = false)]
 	[Flags]
 	public enum WindowFlags {
 		HOVERABLE,
@@ -290,52 +291,52 @@ namespace Xrd {
 		DESTROY_WITH_PARENT,
 		BUTTON
 	}
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cname = "XRD_TIP_APPARENT_SIZE_DISTANCE")]
+	[CCode (cheader_filename = "xrd.h", cname = "XRD_TIP_APPARENT_SIZE_DISTANCE")]
 	public const double TIP_APPARENT_SIZE_DISTANCE;
-	[CCode (cheader_filename = "xrdesktop/xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
+	[CCode (cheader_filename = "xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
 	public const int TIP_VIEWPORT_SCALE;
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static bool math_clamp_towards_zero_2d (Graphene.Point min, Graphene.Point max, Graphene.Point point, Graphene.Point clamped);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void math_get_rotation_angles (Graphene.Vec3 direction, float azimuth, float inclination);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static bool math_intersect_lines_2d (Graphene.Point p0, Graphene.Point p1, Graphene.Point p2, Graphene.Point p3, Graphene.Point intersection);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void math_matrix_set_translation_point (Graphene.Matrix matrix, Graphene.Point3D point);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void math_matrix_set_translation_vec (Graphene.Matrix matrix, Graphene.Vec3 vec);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static float math_point_matrix_distance (Graphene.Point3D intersection_point, Graphene.Matrix pose);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void math_sphere_to_3d_coords (float azimuth, float inclination, float distance, Graphene.Point3D point);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void render_lock ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void render_lock_destroy ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void render_lock_init ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void render_unlock ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void settings_connect_and_apply ([CCode (delegate_target_pos = 2.1, scope = "async")] GLib.Callback callback, string key);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void settings_destroy_instance ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static unowned GLib.Settings settings_get_instance ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static bool settings_is_schema_installed ();
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void settings_update_double_val (GLib.Settings settings, string key, out double val);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void settings_update_gboolean_val (GLib.Settings settings, string key, out bool val);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static void settings_update_int_val (GLib.Settings settings, string key, out int val);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static Xrd.Window window_new_from_data (Xrd.Client self, Xrd.WindowData data);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static Xrd.Window window_new_from_meters (Xrd.Client client, string title, float width, float height, float ppm);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static Xrd.Window window_new_from_native (Xrd.Client client, string title, void* native, uint32 width_pixels, uint32 height_pixels, float ppm);
-	[CCode (cheader_filename = "xrdesktop/xrd.h")]
+	[CCode (cheader_filename = "xrd.h")]
 	public static Xrd.Window window_new_from_pixels (Xrd.Client client, string title, uint32 width, uint32 height, float ppm);
 }
