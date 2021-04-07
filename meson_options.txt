@@ -1,1 +1,2 @@
 option ('documentation', type : 'boolean', value : false)
+option ('xrdesktop', type : 'boolean', value : false)

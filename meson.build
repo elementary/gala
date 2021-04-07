@@ -93,18 +93,16 @@ gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
 
+if get_option('xrdesktop')
 xrdesktop_dep = dependency('xrdesktop-0.15')
 gulkan_dep = dependency('gulkan-0.15')
 gxr_dep = dependency('gxr-0.15')
 vulkan_dep = dependency('vulkan')
+gl_dep = vala.find_library('gl', dirs: vapi_dir)
+gl_ext_dep = vala.find_library('gl-ext', dirs: vapi_dir)
 glew_dep = cc.find_library('GLEW', required: false)
 libinputsynth_dep = dependency('libinputsynth-0.15')
-add_project_arguments([
-        '--pkg=gl',
-        '--pkg=gl-ext'
-    ],
-    language: 'vala',
-)
+endif
 
 mutter_dep = []
 libmutter_dep = []
@@ -156,7 +154,9 @@ subdir('plugins/maskcorners')
 subdir('plugins/pip')
 subdir('plugins/template')
 subdir('plugins/zoom')
-subdir('plugins/xrdesktop')
+if get_option('xrdesktop')
+    subdir('plugins/xrdesktop')
+endif
 if get_option('documentation')
     subdir('docs')
 endif
