@@ -99,7 +99,6 @@ gulkan_dep = dependency('gulkan-0.15')
 gxr_dep = dependency('gxr-0.15')
 vulkan_dep = dependency('vulkan')
 gl_dep = vala.find_library('gl', dirs: vapi_dir)
-gl_ext_dep = vala.find_library('gl-ext', dirs: vapi_dir)
 glew_dep = cc.find_library('GLEW', required: false)
 libinputsynth_dep = dependency('libinputsynth-0.15')
 endif
