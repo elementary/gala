@@ -702,14 +702,14 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             GL.GLuint[] gl_mem_objects;
-            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_objects);
+            GL_EXT.glCreateMemoryObjectsEXT (1, gl_mem_objects);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
             GL.GLint[] gl_dedicated_mem;
-            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
-            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, gl_dedicated_mem);
             gl_check_error ("glGetMemoryObjectParameterivEXT");
 
             GL_EXT.glImportMemoryFdEXT (gl_mem_objects[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
