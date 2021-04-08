@@ -701,15 +701,15 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            GL.GLuint[] gl_mem_objects;
-            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_objects);
+            var gl_mem_objects = new GL.GLuint[1];
+            GL_EXT.glCreateMemoryObjectsEXT (1, ref gl_mem_objects);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
             var gl_dedicated_mem = GL.GL_TRUE;
-            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, ref gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
-            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
+            GL_EXT.glGetMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, ref gl_dedicated_mem);
             gl_check_error ("glGetMemoryObjectParameterivEXT");
 
             GL_EXT.glImportMemoryFdEXT (gl_mem_objects[0], size, GL_EXT.GL_HANDLE_TYPE_OPAQUE_FD_EXT, fd);
@@ -722,7 +722,7 @@ namespace Gala.Plugins.XRDesktop {
             gl_check_error ("glBindTexture");
 
             GL.glTexParameteri (GL.GL_TEXTURE_2D, GL_EXT.GL_TEXTURE_TILING_EXT, GL_EXT.GL_OPTIMAL_TILING_EXT);
-            gl_check_error ("glTexParameteri GL_TEXTURE_TILING_EXT");
+            gl_check_error ("glTexParameteri GL_T/uEXTURE_TILING_EXT");
 
             GL.glTexParameteri (GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
             gl_check_error ("glTexParameteri GL_TEXTURE_MIN_FILTER");
