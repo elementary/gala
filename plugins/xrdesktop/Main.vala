@@ -701,11 +701,11 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            GL.GLuint gl_mem_object;
-            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_object);
+            GL.GLuint[] gl_mem_objects;
+            GL_EXT.glCreateMemoryObjectsEXT (1, out gl_mem_objects);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
-            GL.GLint gl_dedicated_mem = GL.GL_TRUE;
+            var gl_dedicated_mem = GL.GL_TRUE;
             GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, out gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
@@ -734,7 +734,7 @@ namespace Gala.Plugins.XRDesktop {
                 internal_format = { GL.GL_RGBA8 };
             }
 
-            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_object[0], 0);
+            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_objects[0], 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
             GL.glFinish ();
@@ -743,7 +743,7 @@ namespace Gala.Plugins.XRDesktop {
                 critical ("xrdesktop: Unable to transfer layout.");
             }
 
-            GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_object);
+            GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_objects);
             gl_check_error ("glDeleteMemoryObjectsEXT");
 
             return texture;
