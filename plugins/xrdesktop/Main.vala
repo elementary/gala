@@ -133,7 +133,7 @@ namespace Gala.Plugins.XRDesktop {
                 }
 
                 //xr_window.meta_window_actor.paint.disconnect ();
-                if (xr_window.gl_textures != null) {
+                if (xr_window.gl_textures[0] != 0) {
                     GL.glDeleteTextures (1, xr_window.gl_textures);
                 }
                 xrd_client.remove_window (xrd_window);
@@ -596,7 +596,7 @@ namespace Gala.Plugins.XRDesktop {
 
             Xrd.render_lock ();
             if (extent_changed) {
-                if (xr_window.gl_textures != null) {
+                if (xr_window.gl_textures[0] != 0) {
                     GL.glDeleteTextures (1, xr_window.gl_textures);
                 }
 
@@ -701,11 +701,11 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            GL.GLuint[] gl_mem_objects;
+            var gl_mem_objects = new GL.GLuint[1];
             GL_EXT.glCreateMemoryObjectsEXT (1, gl_mem_objects);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
-            GL.GLint[] gl_dedicated_mem;
+            var gl_dedicated_mem = GL.GLint[1];
             GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
