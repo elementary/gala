@@ -27,6 +27,6 @@ namespace Gala.Plugins.XRDesktop {
         /* The offscreen texture Gala renders into to avoid allocating a
          * new offscreen texture every frame
          */
-        public GL.GLuint[] gl_textures = new GL.GLuint[1];
+        public GL.GLuint[] gl_textures = new GL.GLuint[1] { 0 };
     }
 }
