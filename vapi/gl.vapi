@@ -2,6 +2,16 @@
 
 [CCode (cprefix = "GL", gir_namespace = "GLEW", gir_version = "1.0", lower_case_cprefix = "gl_")]
 namespace GL {
+	[CCode (cheader_filename = "GL/glew.h", cname = "glewInit")]
+	public static GLenum glewInit ();
+	[CCode (cheader_filename = "GL/glew.h", cname = "GLEW_OK")]
+	public const GLenum GLEW_OK;
+	[CCode (cheader_filename = "GL/glew.h", cname = "glewGetErrorString")]
+	public static unowned string? glewGetErrorString (GLenum error);
+	[CCode (cheader_filename = "GL/glew.h", cname = "glewGetString")]
+	public static unowned string? glewGetString (GLenum name);
+	[CCode (cheader_filename = "GL/glew.h", cname = "GLEW_VERSION")]
+	public const GLenum GLEW_VERSION;
 	[CCode (cheader_filename = "GL/glew.h", cname = "GLsync")]
 	[Compact]
 	public class GLsync {
@@ -11195,7 +11205,7 @@ namespace GL {
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameterfv")]
 	public static void glGetTexLevelParameterfv (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] GL.GLfloat[] @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameteriv")]
-	public static void glGetTexLevelParameteriv (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] out GL.GLint[] @params);
+	public static void glGetTexLevelParameteriv (GL.GLenum target, GL.GLint level, GL.GLenum pname, out GL.GLint @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexLevelParameterxvOES")]
 	public static void glGetTexLevelParameterxvOES (GL.GLenum target, GL.GLint level, GL.GLenum pname, [CCode (array_length = false)] GL.GLfixed[] @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetTexParameterIiv")]

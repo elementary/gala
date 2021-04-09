@@ -48,6 +48,12 @@ namespace Gala.Plugins.XRDesktop {
             } catch (Error e) {
                 critical ("xrdesktop connecting to dbus service failed: %s", e.message);
             }
+
+            var glew_error = GL.glewInit ();
+            if (glew_error != GL.GLEW_OK) {
+                critical ("xrdesktop: Error initializing GLEW: %s", GL.glewGetErrorString (glew_error));
+            }
+            debug ("xrdesktop: Using GLEW %s", GL.glewGetString (GL.GLEW_VERSION));
         }
 
         public override void destroy () {
@@ -676,7 +682,7 @@ namespace Gala.Plugins.XRDesktop {
 
             /* Get meta texture format */
             GL.glBindTexture (gl_target, source_gl_handle);
-            GL.GLint[] internal_format;
+            GL.GLint internal_format;
             GL.glGetTexLevelParameteriv (GL.GL_TEXTURE_2D, 0, GL.GL_TEXTURE_INTERNAL_FORMAT, out internal_format);
 
             ulong size;
@@ -701,12 +707,11 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-
-            var gl_mem_objects = new GL.GLuint[1];
-            GL_EXT.glCreateMemoryObjectsEXT (1, &gl_mem_objects[0]);
+            GL.GLuint[] gl_mem_objects = { 0 };
+            GL_EXT.glCreateMemoryObjectsEXT (1, gl_mem_objects);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
-            var gl_dedicated_mem = GL.GL_TRUE;
+            GL.GLint[] gl_dedicated_mem = { GL.GL_TRUE };
             GL_EXT.glMemoryObjectParameterivEXT (gl_mem_objects[0], GL_EXT.GL_DEDICATED_MEMORY_OBJECT_EXT, gl_dedicated_mem);
             gl_check_error ("glMemoryObjectParameterivEXT");
 
@@ -732,10 +737,10 @@ namespace Gala.Plugins.XRDesktop {
             gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
 
             if (is_nvidia) {
-                internal_format = { GL.GL_RGBA8 };
+                internal_format = GL.GL_RGBA8;
             }
 
-            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_objects[0], 0);
+            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format, width, height, gl_mem_objects[0], 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
             GL.glFinish ();
