@@ -743,7 +743,7 @@ namespace Gala.Plugins.XRDesktop {
                 critical ("xrdesktop: Unable to transfer layout.");
             }
 
-            GL_EXT.glDeleteMemoryObjectsEXT (1, gl_mem_objects);
+            GL_EXT.glDeleteMemoryObjectsEXT (1, ref gl_mem_objects);
             gl_check_error ("glDeleteMemoryObjectsEXT");
 
             return texture;

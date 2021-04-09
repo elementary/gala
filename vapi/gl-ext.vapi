@@ -11,7 +11,7 @@ namespace GL_EXT {
 	[CCode (cheader_filename = "GL/glew.h", cname = "glCreateMemoryObjectsEXT")]
 	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] ref GL.GLuint[] @memoryObjects);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glDeleteMemoryObjectsEXT")]
-	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] GL.GLuint[]? memoryObjects);
+	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] ref GL.GLuint[]? memoryObjects);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glMemoryObjectParameterivEXT")]
 	public static void glMemoryObjectParameterivEXT (GL.GLuint memoryObject, GL.GLenum pname, ref GL.GLint @params);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glGetMemoryObjectParameterivEXT")]
