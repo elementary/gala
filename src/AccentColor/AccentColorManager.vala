@@ -107,25 +107,12 @@
                     "org.freedesktop.Accounts",
                     user_path
                 );
-            } catch (Error e) {
-                warning ("Unable to get AccountsService proxy, accent color preference may be incorrect");
-            }
 
-            try {
-                FDO.Properties? properties = GLib.Bus.get_proxy_sync (
-                    GLib.BusType.SYSTEM,
-                    "org.freedesktop.Accounts",
-                    user_path
-                );
-
-                // FIXME: binding to signal does not work
-                properties.properties_changed.connect ((interface_name, changed_properties, invalidated_properties) => {
-                    //  if (interface_name == "io.elementary.pantheon.AccountsService") {
-                        update_accent_color ();
-                    //  }
+                ((DBusProxy)gala_accounts_service).g_properties_changed.connect (() => {
+                    update_accent_color ();
                 });
             } catch (Error e) {
-                warning ("Unable to get Properties proxy, can not react to accent color preference change");
+                warning ("Unable to get AccountsService proxy, accent color preference may be incorrect");
             }
         }
 
