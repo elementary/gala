@@ -2,11 +2,12 @@ gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
     'DockThemeManager.vala',
+    'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
-    'NotificationStack.vala',
     'Main.vala',
     'MediaFeedback.vala',
+    'NotificationStack.vala',
     'PluginManager.vala',
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
@@ -16,6 +17,7 @@ gala_bin_sources = files(
     'WindowManager.vala',
     'WorkspaceManager.vala',
     'Zoom.vala',
+    'AccentColor/AccentColorManager.vala',
     'AccentColor/ColorExtractor.vala',
     'AccentColor/NamedColor.vala',
     'Background/Animation.vala',
@@ -62,4 +64,19 @@ gala_bin = executable(
     include_directories: config_inc_dir,
     install_rpath: mutter_typelib_dir,
     install: true,
+)
+
+demo_bin  = executable(
+    'demo',
+    [
+        'AccentColor/AccentColorManager.vala',
+        'AccentColor/ColorExtractor.vala',
+        'AccentColor/NamedColor.vala',
+        'Demo.vala',
+        'GalaAccountsServicePlugin.vala',
+    ],
+    dependencies: [gala_dep, gala_base_dep],
+    include_directories: config_inc_dir,
+    install_rpath: mutter_typelib_dir,
+    install: false,
 )
