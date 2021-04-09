@@ -9,7 +9,7 @@ namespace GL_EXT {
 	[CCode (cheader_filename = "GL/glew.h", cname = "GL_HANDLE_TYPE_OPAQUE_FD_EXT")]
 	public const int GL_HANDLE_TYPE_OPAQUE_FD_EXT;
 	[CCode (cheader_filename = "GL/glew.h", cname = "glCreateMemoryObjectsEXT")]
-	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] GL.GLuint[] @memoryObjects);
+	public static void glCreateMemoryObjectsEXT (GL.GLsizei n, GL.GLuint* @memoryObjects);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glDeleteMemoryObjectsEXT")]
 	public static void glDeleteMemoryObjectsEXT (GL.GLsizei n, [CCode (array_length = false)] GL.GLuint[]? memoryObjects);
 	[CCode (cheader_filename = "GL/glew.h", cname = "glMemoryObjectParameterivEXT")]

@@ -701,8 +701,9 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
+
             var gl_mem_objects = new GL.GLuint[1];
-            GL_EXT.glCreateMemoryObjectsEXT (1, gl_mem_objects);
+            GL_EXT.glCreateMemoryObjectsEXT (1, &gl_mem_objects[0]);
             gl_check_error ("glCreateMemoryObjectsEXT");
 
             var gl_dedicated_mem = GL.GL_TRUE;
