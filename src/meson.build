@@ -16,6 +16,8 @@ gala_bin_sources = files(
     'WindowManager.vala',
     'WorkspaceManager.vala',
     'Zoom.vala',
+    'AccentColor/ColorExtractor.vala',
+    'AccentColor/NamedColor.vala',
     'Background/Animation.vala',
     'Background/Background.vala',
     'Background/BackgroundCache.vala',
