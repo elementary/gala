@@ -25,9 +25,10 @@
     private const string STYLESHEET_PREFIX = "io.elementary.stylesheet.";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
 
+    private Gala.AccountsService? gala_accounts_service = null;
+
     private Settings background_settings;
     private Settings interface_settings;
-    private Granite.Settings granite_settings;
 
     private NamedColor[] theme_colors = {
         new NamedColor () {
@@ -85,16 +86,43 @@
     construct {
         background_settings = new Settings ("org.gnome.desktop.background");
         interface_settings = new Settings (INTERFACE_SCHEMA);
-        granite_settings = Granite.Settings.get_default ();
+
+        string? user_path = null;
+        try {
+            FDO.Accounts? accounts_service = GLib.Bus.get_proxy_sync (
+                GLib.BusType.SYSTEM,
+               "org.freedesktop.Accounts",
+               "/org/freedesktop/Accounts"
+            );
+
+            user_path = accounts_service.find_user_by_name (GLib.Environment.get_user_name ());
+        } catch (Error e) {
+            critical (e.message);
+        }
+
+        if (user_path != null) {
+            try {
+                gala_accounts_service = GLib.Bus.get_proxy_sync (
+                    GLib.BusType.SYSTEM,
+                    "org.freedesktop.Accounts",
+                    user_path
+                );
+
+                ((DBusProxy)gala_accounts_service).g_properties_changed.connect (() => {
+                    update_accent_color ();
+                });
+            } catch (Error e) {
+                warning ("Unable to get AccountsService proxy, accent color preference may be incorrect");
+            }
+        }
 
         background_settings.changed["picture-uri"].connect (update_accent_color);
-        granite_settings.notify["prefers-accent-color"].connect (update_accent_color);
 
         update_accent_color ();
     }
 
     private void update_accent_color () {
-        bool set_accent_color_based_on_wallpaper = granite_settings.prefers_accent_color == Granite.Settings.AccentColor.NO_PREFERENCE;
+        bool set_accent_color_based_on_wallpaper = gala_accounts_service.prefers_accent_color == 0;
 
         if (set_accent_color_based_on_wallpaper) {
             var picture_uri = background_settings.get_string ("picture-uri");
