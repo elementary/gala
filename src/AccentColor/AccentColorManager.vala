@@ -122,10 +122,7 @@
     }
 
     private void update_accent_color () {
-        debug ("prefers_accent_color: %d", gala_accounts_service.prefers_accent_color);
         bool set_accent_color_based_on_wallpaper = gala_accounts_service.prefers_accent_color == 0;
-
-        debug ("set_accent_color_based_on_wallpaper: %s", set_accent_color_based_on_wallpaper ? "true" : "false");
 
         if (set_accent_color_based_on_wallpaper) {
             var picture_uri = background_settings.get_string ("picture-uri");

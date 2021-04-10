@@ -65,18 +65,3 @@ gala_bin = executable(
     install_rpath: mutter_typelib_dir,
     install: true,
 )
-
-demo_bin  = executable(
-    'demo',
-    [
-        'AccentColor/AccentColorManager.vala',
-        'AccentColor/ColorExtractor.vala',
-        'AccentColor/NamedColor.vala',
-        'Demo.vala',
-        'GalaAccountsServicePlugin.vala',
-    ],
-    dependencies: [gala_dep, gala_base_dep],
-    include_directories: config_inc_dir,
-    install_rpath: mutter_typelib_dir,
-    install: false,
-)
