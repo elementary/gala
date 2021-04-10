@@ -149,6 +149,24 @@ namespace Gala.Plugins.XRDesktop {
             xrd_client = null;
         }
 
+        private void destroy_textures () {
+            if (this.xrd_client == null) {
+                warning ("xrdesktop: xrd_client is already gone - unable to destroy any textures.");
+                return;
+            }
+
+            unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
+            foreach (var xrd_window in xrd_windows) {
+                unowned Window? xr_window = (Window?) xrd_window.native;
+                if (xr_window == null) {
+                    continue;
+                }
+
+                GL.glDeleteTextures (1, xr_window.gl_textures);
+                xr_window.gl_textures = { 0 };
+            }
+        }
+
         private void initialize_input () {
             /** TODO:
              * We need a libinputsynth VAPI first,
@@ -237,8 +255,39 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private void on_request_quit (Gdk.Event event) {
-            debug ("Handling XR quit event");
-            shutdown_xrdesktop ();
+            var quit_event = (Gxr.QuitEvent) event;
+
+            var settings = Xrd.settings_get_instance ();
+            var defaultMode = settings.get_enum ("default-mode");
+
+            switch (quit_event.reason) {
+                case Gxr.QuitReason.SHUTDOWN:
+                    debug ("xrdesktop: quit_event: XR is shutting down...");
+                    shutdown_xrdesktop ();
+                    break;
+
+                case Gxr.QuitReason.PROCESS_QUIT:
+                    debug ("xrdesktop: quit_event: A scene XR app quit.");
+                    if (xrd_client != null) {
+                        debug ("xrdesktop: quit_event: Ignoring process quit because that's us!");
+                    } else if (defaultMode == Xrd.ClientMode.SCENE) {
+                        Timeout.add (0, () => {
+                            perform_switch ();
+                            return GLib.Source.REMOVE;
+                        });
+                    }
+                    break;
+
+                case Gxr.QuitReason.APPLICATION_TRANSITION:
+                    debug ("xrdesktop: quit_event XR Application transition...");
+                    if (defaultMode == Xrd.ClientMode.SCENE) {
+                        Timeout.add (0, () => {
+                            perform_switch ();
+                            return GLib.Source.REMOVE;
+                        });
+                    };
+                    break;
+            }
         }
 
         private void on_grab_op_begin (Meta.Display display, Meta.Window window, Meta.GrabOp grab_op) {
@@ -251,6 +300,17 @@ namespace Gala.Plugins.XRDesktop {
 
         private void on_cursor_changed () {
             debug ("on_cursor_changed");
+        }
+
+        private void perform_switch () {
+            detach_window_actor_paint ();
+            disconnect_signals ();
+            destroy_textures ();
+
+            this.xrd_client.switch_mode ();
+
+            connect_signals ();
+            attach_window_actor_paint ();
         }
 
         private bool map_window_actor (Meta.WindowActor window_actor) {
@@ -322,11 +382,9 @@ namespace Gala.Plugins.XRDesktop {
             // as soon as xrd_window is freed.
             xrd_window.set_data<Window> ("native-window", xr_window);
 
-            // TODO: We need a way to disconnect this callback,
-            // but still pass xrd_window from here somehow
-            window_actor.paint.connect ((paint_context) => {
-                on_window_actor_paint (window_actor, paint_context, xrd_window);
-            });
+            var signal_handler = new WindowActorSignalHandler (this, xrd_window);
+            window_actor.paint.connect (signal_handler.handle_paint_signal);
+            window_actor.set_data<WindowActorSignalHandler> ("signal-handler", signal_handler);
 
             return true;
         }
@@ -463,14 +521,64 @@ namespace Gala.Plugins.XRDesktop {
             }
         }
 
+        private class WindowActorSignalHandler {
+            private Main plugin_main;
+            private Xrd.Window xrd_window;
 
-        private void on_window_actor_paint (Meta.WindowActor window_actor,
-            Clutter.PaintContext paint_context,
-            Xrd.Window xrd_window) {
-            upload_xrd_window (xrd_window);
+            public WindowActorSignalHandler(Main plugin_main, Xrd.Window xrd_window) {
+                this.xrd_window = xrd_window;
+            }
+
+            public void handle_paint_signal () {
+                plugin_main.upload_xrd_window (xrd_window);
+            }
         }
 
-        private bool upload_xrd_window (Xrd.Window xrd_window) {
+        /*private void on_window_actor_paint (Meta.WindowActor window_actor,
+            Clutter.PaintContext paint_context,
+            Xrd.Window xrd_window
+        ) {
+            upload_xrd_window (xrd_window);
+        }*/
+
+        private void attach_window_actor_paint () {
+            unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
+            foreach (var xrd_window in xrd_windows) {
+                unowned Window? xr_window = (Window?) xrd_window.native;
+                if (xr_window == null) {
+                    continue;
+                }
+                WindowActorSignalHandler? signal_handler = null;
+
+                // just in case:
+                signal_handler = xr_window.meta_window_actor.get_data<WindowActorSignalHandler> ("signal-handler");
+                if (signal_handler != null) {
+                    xr_window.meta_window_actor.paint.disconnect (signal_handler.handle_paint_signal);
+                    xr_window.meta_window_actor.steal_data<WindowActorSignalHandler> ("signal-handler");
+                }
+
+                signal_handler = new WindowActorSignalHandler (this, xrd_window);
+                xr_window.meta_window_actor.paint.connect (signal_handler.handle_paint_signal);
+                xr_window.meta_window_actor.set_data<WindowActorSignalHandler> ("signal-handler", signal_handler);
+            }
+        }
+
+        private void detach_window_actor_paint () {
+            unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
+            foreach (var xrd_window in xrd_windows) {
+                unowned Window? xr_window = (Window?) xrd_window.native;
+                if (xr_window == null) {
+                    continue;
+                }
+                var signal_handler = xr_window.meta_window_actor.get_data<WindowActorSignalHandler> ("signal-handler");
+                if (signal_handler != null) {
+                    xr_window.meta_window_actor.paint.disconnect (signal_handler.handle_paint_signal);
+                    xr_window.meta_window_actor.steal_data<WindowActorSignalHandler> ("signal-handler");
+                }
+            }
+        }
+
+        public bool upload_xrd_window (Xrd.Window xrd_window) {
             unowned Window? xr_window = (Window?) xrd_window.native;
             if (xr_window == null) {
                 critical ("xrdesktop: Could not read native Window from XrdWindow.");

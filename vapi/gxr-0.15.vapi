@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "Gxr", gir_namespace = "Gxr", gir_version = "0.15", lower_case_cprefix = "gxr_")]
 namespace Gxr {
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_action_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_action_get_type ()")]
 	public class Action : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Action ();
@@ -27,7 +27,7 @@ namespace Gxr {
 		public signal void digital_event (Gdk.Event object);
 		public signal void pose_event (Gdk.Event object);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_action_set_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_action_set_get_type ()")]
 	public class ActionSet : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected ActionSet ();
@@ -41,13 +41,13 @@ namespace Gxr {
 		[NoWrapper]
 		public virtual bool update (uint32 count);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_backend_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_backend_get_type ()")]
 	public class Backend : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Backend ();
 		public static void shutdown ();
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_context_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_context_get_type ()")]
 	public class Context : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Context (Gxr.AppType type, string app_name, uint32 app_version);
@@ -103,7 +103,7 @@ namespace Gxr {
 		public signal void keyboard_press_event (void* object);
 		public signal void quit_event (void* object);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_controller_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_controller_get_type ()")]
 	public class Controller : Gxr.Device {
 		[CCode (has_construct_function = false)]
 		public Controller (uint64 controller_handle, Gxr.Context context, string model_name);
@@ -130,7 +130,7 @@ namespace Gxr {
 		public void update_hovered_object (void* last_object, void* object, Graphene.Matrix object_pose, Graphene.Point3D intersection_point, Graphene.Point intersection_2d, float intersection_distance);
 		public void update_pointer_pose (Graphene.Matrix pose, bool valid);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_device_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_device_get_type ()")]
 	public class Device : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Device (uint64 device_id, string model_name);
@@ -147,7 +147,7 @@ namespace Gxr {
 		public void set_model_name (string model_name);
 		public void set_transformation_direct (Graphene.Matrix mat);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_device_manager_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_device_manager_get_type ()")]
 	public class DeviceManager : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public DeviceManager ();
@@ -161,7 +161,7 @@ namespace Gxr {
 		public signal void device_activate_event (void* object);
 		public signal void device_deactivate_event (void* object);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_manifest_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_manifest_get_type ()")]
 	public class Manifest : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Manifest ();
@@ -170,7 +170,7 @@ namespace Gxr {
 		public bool load_actions (GLib.InputStream action_stream);
 		public bool load_bindings (string resource_path);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_id = "gxr_overlay_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_id = "gxr_overlay_get_type ()")]
 	public class Overlay : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Overlay (Gxr.Context context, string key);
@@ -215,11 +215,11 @@ namespace Gxr {
 		[HasEmitter]
 		public virtual signal void show ();
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_cname = "GxrModelInterface", type_id = "gxr_model_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_cname = "GxrModelInterface", type_id = "gxr_model_get_type ()")]
 	public interface Model : GLib.Object {
 		public abstract string get_name ();
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_cname = "GxrPointerInterface", type_id = "gxr_pointer_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_cname = "GxrPointerInterface", type_id = "gxr_pointer_get_type ()")]
 	public interface Pointer : GLib.Object {
 		public abstract unowned Gxr.PointerData? get_data ();
 		public float get_default_length ();
@@ -238,7 +238,7 @@ namespace Gxr {
 		public abstract void show ();
 		public void update_render_ray (bool render_ray);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", type_cname = "GxrPointerTipInterface", type_id = "gxr_pointer_tip_get_type ()")]
+	[CCode (cheader_filename = "gxr.h", type_cname = "GxrPointerTipInterface", type_id = "gxr_pointer_tip_get_type ()")]
 	public interface PointerTip : GLib.Object {
 		public void animate_pulse ();
 		public abstract unowned Gxr.PointerTipData? get_data ();
@@ -263,12 +263,12 @@ namespace Gxr {
 		public void update_texture_resolution (int width, int height);
 		public void update_width_meters (float width);
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct ActionManifestEntry {
 		public weak string name;
 		public Gxr.BindingType type;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct AnalogEvent {
 		public bool active;
 		public weak Graphene.Vec3 state;
@@ -276,24 +276,24 @@ namespace Gxr {
 		public weak Gxr.Controller controller;
 		public float time;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct Binding {
 		public Gxr.ActionManifestEntry action;
 		public weak GLib.SList<void*> input_paths;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct BindingManifest {
 		public weak string filename;
 		public weak GLib.SList<void*> gxr_bindings;
 		public weak string interaction_profile;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct BindingPath {
 		public Gxr.BindingComponent component;
 		public weak string path;
 		public Gxr.BindingMode mode;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct DigitalEvent {
 		public bool active;
 		public bool state;
@@ -301,7 +301,7 @@ namespace Gxr {
 		public weak Gxr.Controller controller;
 		public float time;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct GrabState {
 		public void* grabbed_object;
 		public weak Graphene.Quaternion object_rotation;
@@ -309,13 +309,13 @@ namespace Gxr {
 		public weak Graphene.Point grab_offset;
 		public Gxr.TransformLock transform_lock;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct HoverState {
 		public void* hovered_object;
 		public float distance;
 		public weak Graphene.Point intersection_2d;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct PointerData {
 		public float start_offset;
 		public float length;
@@ -323,20 +323,20 @@ namespace Gxr {
 		public bool visible;
 		public bool render_ray;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct PointerTipAnimation {
 		public weak Gxr.PointerTip tip;
 		public float progress;
 		public uint callback_id;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct PointerTipData {
 		public weak Gxr.PointerTip tip;
 		public bool active;
 		public Gxr.PointerTipSettings settings;
 		public Gxr.PointerTipAnimation animation;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct PointerTipSettings {
 		public bool keep_apparent_size;
 		public float width_meters;
@@ -346,12 +346,12 @@ namespace Gxr {
 		public int texture_width;
 		public int texture_height;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct Pose {
 		public weak Graphene.Matrix transformation;
 		public bool is_valid;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct PoseEvent {
 		public bool active;
 		public weak Graphene.Matrix pose;
@@ -361,11 +361,11 @@ namespace Gxr {
 		public bool device_connected;
 		public weak Gxr.Controller controller;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", has_type_id = false)]
 	public struct QuitEvent {
 		public Gxr.QuitReason reason;
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_ACTION_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_ACTION_", has_type_id = false)]
 	public enum ActionType {
 		DIGITAL,
 		DIGITAL_FROM_FLOAT,
@@ -374,19 +374,19 @@ namespace Gxr {
 		POSE,
 		HAPTIC
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_API_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_API_", has_type_id = false)]
 	public enum Api {
 		OPENVR,
 		OPENXR,
 		NONE
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_APP_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_APP_", has_type_id = false)]
 	public enum AppType {
 		SCENE,
 		OVERLAY,
 		HEADLESS
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_BINDING_COMPONENT_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_BINDING_COMPONENT_", has_type_id = false)]
 	public enum BindingComponent {
 		NONE,
 		UNKNOWN,
@@ -396,7 +396,7 @@ namespace Gxr {
 		TOUCH,
 		FORCE
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_BINDING_MODE_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_BINDING_MODE_", has_type_id = false)]
 	public enum BindingMode {
 		NONE,
 		UNKNOWN,
@@ -404,7 +404,7 @@ namespace Gxr {
 		TRACKPAD,
 		ANALOG_STICK
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_BINDING_TYPE_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_BINDING_TYPE_", has_type_id = false)]
 	public enum BindingType {
 		UNKNOWN,
 		POSE,
@@ -413,39 +413,39 @@ namespace Gxr {
 		VEC2,
 		HAPTIC
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_EYE_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_EYE_", has_type_id = false)]
 	public enum Eye {
 		LEFT,
 		RIGHT
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_QUIT_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_QUIT_", has_type_id = false)]
 	public enum QuitReason {
 		SHUTDOWN,
 		APPLICATION_TRANSITION,
 		PROCESS_QUIT
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cprefix = "GXR_TRANSFORM_LOCK_", has_type_id = false)]
+	[CCode (cheader_filename = "gxr.h", cprefix = "GXR_TRANSFORM_LOCK_", has_type_id = false)]
 	public enum TransformLock {
 		NONE,
 		PUSH_PULL,
 		SCALE
 	}
-	[CCode (cheader_filename = "gxr/gxr.h", cname = "GXR_DEVICE_INDEX_HMD")]
+	[CCode (cheader_filename = "gxr.h", cname = "GXR_DEVICE_INDEX_HMD")]
 	public const int DEVICE_INDEX_HMD;
-	[CCode (cheader_filename = "gxr/gxr.h", cname = "GXR_DEVICE_INDEX_MAX")]
+	[CCode (cheader_filename = "gxr.h", cname = "GXR_DEVICE_INDEX_MAX")]
 	public const int DEVICE_INDEX_MAX;
-	[CCode (cheader_filename = "gxr/gxr.h", cname = "GXR_MODEL_NAME_MAX")]
+	[CCode (cheader_filename = "gxr.h", cname = "GXR_MODEL_NAME_MAX")]
 	public const int MODEL_NAME_MAX;
-	[CCode (cheader_filename = "gxr/gxr.h", cname = "GXR_TIP_APPARENT_SIZE_DISTANCE")]
+	[CCode (cheader_filename = "gxr.h", cname = "GXR_TIP_APPARENT_SIZE_DISTANCE")]
 	public const double TIP_APPARENT_SIZE_DISTANCE;
-	[CCode (cheader_filename = "gxr/gxr.h", cname = "GXR_TIP_VIEWPORT_SCALE")]
+	[CCode (cheader_filename = "gxr.h", cname = "GXR_TIP_VIEWPORT_SCALE")]
 	public const int TIP_VIEWPORT_SCALE;
-	[CCode (cheader_filename = "gxr/gxr.h")]
+	[CCode (cheader_filename = "gxr.h")]
 	public static bool io_create_directory_if_needed (string path);
-	[CCode (cheader_filename = "gxr/gxr.h")]
+	[CCode (cheader_filename = "gxr.h")]
 	public static GLib.StringBuilder io_get_cache_path (string dir_name);
-	[CCode (cheader_filename = "gxr/gxr.h")]
+	[CCode (cheader_filename = "gxr.h")]
 	public static bool io_write_resource_to_file (string res_base_path, string cache_path, string file_name, GLib.StringBuilder file_path);
-	[CCode (cheader_filename = "gxr/gxr.h")]
+	[CCode (cheader_filename = "gxr.h")]
 	public static uint32 time_age_secs_to_monotonic_msecs (float age);
 }
