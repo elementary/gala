@@ -49,11 +49,11 @@ namespace Gala.Plugins.XRDesktop {
                 critical ("xrdesktop connecting to dbus service failed: %s", e.message);
             }
 
-            var glew_error = GL.glewInit ();
-            if (glew_error != GL.GLEW_OK) {
-                critical ("xrdesktop: Error initializing GLEW: %s", GL.glewGetErrorString (glew_error));
+            var glew_error = GLEW.glewInit ();
+            if (glew_error != GLEW.GLEW_OK) {
+                critical ("xrdesktop: Error initializing GLEW: %s", GLEW.glewGetErrorString (glew_error));
             }
-            debug ("xrdesktop: Using GLEW %s", GL.glewGetString (GL.GLEW_VERSION));
+            debug ("xrdesktop: Using GLEW %s", GLEW.glewGetString (GLEW.GLEW_VERSION));
         }
 
         public override void destroy () {
@@ -682,8 +682,8 @@ namespace Gala.Plugins.XRDesktop {
 
             /* Get meta texture format */
             GL.glBindTexture (gl_target, source_gl_handle);
-            GL.GLint internal_format;
-            GL.glGetTexLevelParameteriv (GL.GL_TEXTURE_2D, 0, GL.GL_TEXTURE_INTERNAL_FORMAT, out internal_format);
+            GL.GLint[] internal_format = { 0 };
+            GL.glGetTexLevelParameteriv (GL.GL_TEXTURE_2D, 0, GL.GL_TEXTURE_INTERNAL_FORMAT, internal_format);
 
             ulong size;
             int fd;
@@ -737,10 +737,10 @@ namespace Gala.Plugins.XRDesktop {
             gl_check_error ("glTexParameteri GL_TEXTURE_MAG_FILTER");
 
             if (is_nvidia) {
-                internal_format = GL.GL_RGBA8;
+                internal_format = { GL.GL_RGBA8 };
             }
 
-            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format, width, height, gl_mem_objects[0], 0);
+            GL_EXT.glTexStorageMem2DEXT (GL.GL_TEXTURE_2D, 1, internal_format[0], width, height, gl_mem_objects[0], 0);
             gl_check_error ("glTexStorageMem2DEXT");
 
             GL.glFinish ();

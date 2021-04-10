@@ -101,6 +101,7 @@ vulkan_dep = dependency('vulkan')
 gl_dep = vala.find_library('gl', dirs: vapi_dir)
 gl_ext_dep = vala.find_library('gl-ext', dirs: vapi_dir)
 glew_dep = cc.find_library('GLEW', required: false)
+glew_vapi_dep = vala.find_library('glew-minimal', dirs: vapi_dir)
 libinputsynth_dep = dependency('libinputsynth-0.15')
 endif
 

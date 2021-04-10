@@ -16,7 +16,8 @@ gala_xrdesktop_lib = shared_library(
         gl_ext_dep,
         gxr_dep,
         vulkan_dep,
-        glew_dep
+        glew_dep,
+        glew_vapi_dep
     ],
     include_directories: config_inc_dir,
     install: true,
