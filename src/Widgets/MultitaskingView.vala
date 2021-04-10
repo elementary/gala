@@ -247,22 +247,21 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
+
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
             var active_workspace_index = manager.get_active_workspace ().index ();
-            var target_workspace_index = (direction == Meta.MotionDirection.LEFT)
-                ? active_workspace_index - 1
-                : active_workspace_index + 1;
+            var target_workspace_index = active_workspace_index + relative_dir;
 
             float initial_x = workspaces.x;
             float target_x = 0;
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
+            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
 
             if (is_nudge_animation) {
-                var nudge_delta = (direction == Meta.MotionDirection.LEFT)
-                    ? WindowManagerGala.NUDGE_GAP
-                    : -WindowManagerGala.NUDGE_GAP;
-                target_x = initial_x + nudge_delta * InternalUtils.get_ui_scaling_factor ();
+                var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
+                target_x = initial_x + (workspaces_geometry.width * -relative_dir);
             } else {
                 foreach (var child in workspaces.get_children ()) {
                     unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
@@ -284,6 +283,11 @@ namespace Gala {
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
+
+                if (is_nudge_animation) {
+                    x = x.clamp (initial_x - nudge_gap, initial_x + nudge_gap);
+                }
+
                 workspaces.x = x;
             };
 

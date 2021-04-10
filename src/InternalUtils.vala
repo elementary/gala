@@ -177,24 +177,19 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-        // constants, mainly for natural expo
-        const int GAPS = 10;
-        const int MAX_TRANSLATIONS = 100000;
-        const int ACCURACY = 20;
-
         // some math utilities
-        static int squared_distance (Gdk.Point a, Gdk.Point b) {
+        private static int squared_distance (Gdk.Point a, Gdk.Point b) {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
             return k1 * k1 + k2 * k2;
         }
 
-        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-        static Gdk.Point rect_center (Meta.Rectangle rect) {
+        private static Gdk.Point rect_center (Meta.Rectangle rect) {
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
@@ -337,25 +332,43 @@ namespace Gala {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
 
+        /**
+         * Round the value to match physical pixels.
+         */
+        public static int pixel_align (float value) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            return (int) Math.round (value * scale_factor) / scale_factor;    
+        }
+
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
-                var dummy_label = new Gtk.Label ("");
-
-                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-                var widget_path = label_style_context.get_path ().copy ();
-                widget_path.iter_set_object_name (-1, "selection");
+                var label_widget_path = new Gtk.WidgetPath ();
+                label_widget_path.append_type (GLib.Type.from_name ("label"));
+                label_widget_path.iter_set_object_name (-1, "selection");
 
                 selection_style_context = new Gtk.StyleContext ();
-                selection_style_context.set_path (widget_path);
-                selection_style_context.set_parent (label_style_context);
+                selection_style_context.set_path (label_widget_path);
             }
 
             return (Gdk.RGBA) selection_style_context.get_property (
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
+        }
+
+        /**
+         * Returns the workspaces geometry following the only_on_primary settings.
+         */
+         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+            if (InternalUtils.workspaces_only_on_primary ()) {
+                var primary = display.get_primary_monitor ();
+                return display.get_monitor_geometry (primary);
+            } else {
+                float screen_width, screen_height;
+                display.get_size (out screen_width, out screen_height);
+                return { 0, 0, (int) screen_width, (int) screen_height };
+            }
         }
     }
 }
