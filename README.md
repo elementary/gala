@@ -14,6 +14,7 @@ You'll need the following dependencies:
 * libcanberra-gtk3-dev
 * libclutter-1.0-dev (>= 1.12.0)
 * libgee-0.8-dev
+* libgexiv2-dev
 * libglib2.0-dev (>= 2.44)
 * libgnome-desktop-3-dev
 * libgranite-dev (>= 5.4.0)
@@ -21,7 +22,6 @@ You'll need the following dependencies:
 * libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
 * libplank-dev (>= 0.10.9)
 * libxml2-utils
-* libgexiv2-dev
 * valac (>= 0.28.0)
 
 Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
