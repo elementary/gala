@@ -359,17 +359,5 @@
       <summary>Four-finger horizontal swipe gesture</summary>
       <description>The action that corresponds to performing a horizontal swipe gesture with four fingers</description>
     </key>
-
-    <key type="b" name="workspaces-gesture-enabled">
-      <default>true</default>
-      <summary>Switch workspace gesture</summary>
-      <description>If enabled, swipe left/right with the number of fingers set in io.elementary.desktop.wm.gestures.workspaces-gesture-fingers to switch between workspaces</description>
-    </key>
-    <key type="i" name="workspaces-gesture-fingers">
-      <default>3</default>
-      <range min="3" max="4"/>
-      <summary>Switch workspace gesture fingers</summary>
-      <description>Number of fingers used in the switch workspaces gesture</description>
-    </key>
   </schema>
 </schemalist>
