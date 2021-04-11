@@ -229,16 +229,14 @@ namespace Gala {
                 return;
             }
 
-            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
-            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
+            var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
+                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
 
-            bool can_handle_scroll = gesture.type == Gdk.EventType.SCROLL;
-            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
-                && (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
-                && gesture.fingers == fingers;
-            bool can_handle_gesture = enabled && (can_handle_scroll || can_handle_swipe);
+            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT) &&
+                fingers;
 
-            if (can_handle_gesture) {
+            if (gesture.type == Gdk.EventType.SCROLL || can_handle_swipe) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }

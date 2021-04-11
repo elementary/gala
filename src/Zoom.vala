@@ -79,11 +79,9 @@ namespace Gala {
                 return;
             }
 
-            if (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-pinch") == "zoom") {
-                zoom_with_gesture (gesture.direction);
-            }
-
-            if (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-pinch") == "zoom") {
+            if ((gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
+                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-pinch") == "zoom")
+            ) {
                 zoom_with_gesture (gesture.direction);
             }
         }
