@@ -35,33 +35,22 @@
     private const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
     private const string THEME_GRAY = "io.elementary.stylesheet.slate";
 
-    private const string COLOR_BLUE = "#3689e6";
-    private const string COLOR_MINT = "#28bca3";
-    private const string COLOR_GREEN = "#68b723";
-    private const string COLOR_YELLOW = "#f9c440";
-    private const string COLOR_ORANGE = "#ffa154";
-    private const string COLOR_RED = "#ed5353";
-    private const string COLOR_PINK = "#de3e80";
-    private const string COLOR_PURPLE = "#a56de2";
-    private const string COLOR_BROWN = "#8a715e";
-    private const string COLOR_GRAY = "#667885";
-
     private Gala.AccountsService? gala_accounts_service = null;
 
     private Settings background_settings;
     private Settings interface_settings;
 
     private NamedColor[] theme_colors = {
-        new NamedColor ("Blue", THEME_BLUE, COLOR_BLUE),
-        new NamedColor ("Mint", THEME_MINT, COLOR_MINT),
-        new NamedColor ("Green", THEME_GREEN, COLOR_GREEN),
-        new NamedColor ("Yellow", THEME_YELLOW, COLOR_YELLOW),
-        new NamedColor ("Orange", THEME_ORANGE, COLOR_ORANGE),
-        new NamedColor ("Red", THEME_RED, COLOR_ORANGE),
-        new NamedColor ("Pink", THEME_PINK, COLOR_PINK),
-        new NamedColor ("Purple", THEME_PURPLE, COLOR_PURPLE),
-        new NamedColor ("Brown", THEME_BROWN, COLOR_BROWN),
-        new NamedColor ("Gray", THEME_GRAY, COLOR_GRAY)
+        new NamedColor ("Blue", THEME_BLUE),
+        new NamedColor ("Mint", THEME_MINT),
+        new NamedColor ("Green", THEME_GREEN),
+        new NamedColor ("Yellow", THEME_YELLOW),
+        new NamedColor ("Orange", THEME_ORANGE),
+        new NamedColor ("Red", THEME_RED),
+        new NamedColor ("Pink", THEME_PINK),
+        new NamedColor ("Purple", THEME_PURPLE),
+        new NamedColor ("Brown", THEME_BROWN),
+        new NamedColor ("Gray", THEME_GRAY)
     };
 
     construct {

@@ -24,7 +24,7 @@ public class Gala.NamedColor : Object {
     public string theme { get; construct set; }
     public Granite.Drawing.Color color { get; construct set; }
 
-    public NamedColor (string name, string theme, string hex) {
+    public NamedColor (string name, string theme) {
         Object (
             name: name,
             theme: theme,
