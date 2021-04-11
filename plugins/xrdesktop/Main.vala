@@ -254,9 +254,7 @@ namespace Gala.Plugins.XRDesktop {
             debug ("on_move_cursor");
         }
 
-        private void on_request_quit (Gdk.Event event) {
-            var quit_event = (Gxr.QuitEvent) event;
-
+        private void on_request_quit (Gxr.QuitEvent quit_event) {
             var settings = Xrd.settings_get_instance ();
             var defaultMode = settings.get_enum ("default-mode");
 
