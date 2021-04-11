@@ -28,7 +28,7 @@ public class Gala.NamedColor : Object {
         Object (
             name: name,
             theme: theme,
-            color: new Granite.Drawing.Color.from_string (hex)
+            color: InternalUtils.get_accent_color_by_theme_name (theme)
         );
     }
 }
