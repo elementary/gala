@@ -71,14 +71,19 @@ namespace Gala {
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.ZOOM_ENABLED);
-            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.ZOOM_FINGERS);
+            if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH) {
+                return;
+            }
 
-            bool can_handle_gesture = gesture.type == Gdk.EventType.TOUCHPAD_PINCH
-                && (gesture.direction == GestureDirection.IN || gesture.direction == GestureDirection.OUT)
-                && gesture.fingers == fingers;
+            if (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT) {
+                return;
+            }
 
-            if (enabled && can_handle_gesture) {
+            if (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-pinch") == "zoom") {
+                zoom_with_gesture (gesture.direction);
+            }
+
+            if (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-pinch") == "zoom") {
                 zoom_with_gesture (gesture.direction);
             }
         }

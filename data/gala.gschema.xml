@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <enum id="GalaActionType">
-    <value nick='none' value="0" />
+    <value nick="none" value="0" />
     <value nick="show-workspace-view" value="1" />
     <value nick="maximize-current" value="2" />
     <value nick="minimize-current" value="3" />
@@ -26,7 +26,7 @@
 
   <schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
     <key enum="GalaActionType" name="hotcorner-topleft">
-      <default>'none'</default>
+      <default>"none"</default>
       <summary>Action for the top left corner</summary>
       <description></description>
     </key>
@@ -36,17 +36,17 @@
       <description>Choose the algorithm used for exposing the windows.</description>
     </key>
     <key enum="GalaActionType" name="hotcorner-topright">
-      <default>'none'</default>
+      <default>"none"</default>
       <summary>Action for the top right corner</summary>
       <description></description>
     </key>
     <key enum="GalaActionType" name="hotcorner-bottomleft">
-      <default>'none'</default>
+      <default>"none"</default>
       <summary>Action for the bottom left corner</summary>
       <description></description>
     </key>
     <key enum="GalaActionType" name="hotcorner-bottomright">
-      <default>'none'</default>
+      <default>"none"</default>
       <summary>Action for the bottom right corner</summary>
       <description></description>
     </key>
@@ -314,7 +314,53 @@
     </key>
   </schema>
 
+  <enum id="GesturePinch">
+    <value nick="none" value="0" />
+    <value nick="zoom" value="1" />
+  </enum>
+  <enum id="GestureSwipeHorizontal">
+    <value nick="none" value="0" />
+    <value nick="switch-to-workspace" value="1" />
+  </enum>
+  <enum id="GestureSwipeUp">
+    <value nick="none" value="0" />
+    <value nick="multitasking-view" value="1" />
+    <value nick="toggle-maximized" value="2" />
+  </enum>
+
   <schema path="/io/elementary/desktop/wm/gestures/" id="io.elementary.desktop.wm.gestures">
+    <key name="three-finger-pinch" enum="GesturePinch">
+      <default>"none"</default>
+      <summary>Three-finger pinch gesture</summary>
+      <description>The action that corresponds to performing a pinch gesture with three fingers</description>
+    </key>
+    <key name="four-finger-pinch" enum="GesturePinch">
+      <default>"none"</default>
+      <summary>Four-finger pinch gesture</summary>
+      <description>The action that corresponds to performing a pinch gesture with four fingers</description>
+    </key>
+    <key name="three-finger-swipe-up" enum="GestureSwipeUp">
+      <default>"multitasking-view"</default>
+      <summary>Three-finger up-swipe gesture</summary>
+      <description>The action that corresponds to swiping up with three fingers</description>
+    </key>
+    <key name="four-finger-swipe-up" enum="GestureSwipeUp">
+      <default>"none"</default>
+      <summary>Four-finger up-swipe gesture</summary>
+      <description>The action that corresponds to swiping up with four fingers</description>
+    </key>
+    <key name="three-finger-swipe-horizontal" enum="GestureSwipeHorizontal">
+      <default>"switch-to-workspace"</default>
+      <summary>Three-finger horizontal swipe gesture</summary>
+      <description>The action that corresponds to performing a horizontal swipe gesture with three fingers</description>
+    </key>
+    <key name="four-finger-swipe-horizontal" enum="GestureSwipeHorizontal">
+      <default>"none"</default>
+      <summary>Four-finger horizontal swipe gesture</summary>
+      <description>The action that corresponds to performing a horizontal swipe gesture with four fingers</description>
+    </key>
+
+
     <key type="b" name="multitasking-gesture-enabled">
       <default>true</default>
       <summary>Multitasking view gesture</summary>
@@ -336,17 +382,6 @@
       <range min="3" max="4"/>
       <summary>Switch workspace gesture fingers</summary>
       <description>Number of fingers used in the switch workspaces gesture</description>
-    </key>
-    <key type="b" name="zoom-gesture-enabled">
-      <default>false</default>
-      <summary>Zoom gesture</summary>
-      <description>If enabled, pinch with the number of fingers set in io.elementary.desktop.wm.gestures.multitasking-gesture-fingers to zoom in/out the entire desktop</description>
-    </key>
-    <key type="i" name="zoom-gesture-fingers">
-      <default>3</default>
-      <range min="3" max="4"/>
-      <summary>Zoom gesture fingers</summary>
-      <description>Number of fingers used in the zoom gesture</description>
     </key>
   </schema>
 </schemalist>
