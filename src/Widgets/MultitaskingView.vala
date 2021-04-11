@@ -207,22 +207,20 @@ namespace Gala {
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
-            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.MULTITASKING_ENABLED);
-            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.MULTITASKING_FINGERS);
+            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE) {
+                return;
+            }
 
-            bool up = gesture.direction == GestureDirection.UP;
-            bool down = gesture.direction == GestureDirection.DOWN;
-            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
-                && (up || down)
-                && gesture.fingers == fingers;
-            bool can_handle_gesture = enabled && can_handle_swipe;
+            if ((gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
+                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
+            ) {
+                return;
+            }
 
-            if (can_handle_gesture) {
-                if (up && !opened) {
-                    toggle (true, false);
-                } else if (down && opened) {
-                    toggle (true, false);
-                }
+            if (gesture.direction == GestureDirection.UP && !opened) {
+                toggle (true, false);
+            } else if (gesture.direction == GestureDirection.DOWN && opened) {
+                toggle (true, false);
             }
         }
 

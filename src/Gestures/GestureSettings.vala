@@ -23,9 +23,6 @@ public class Gala.GestureSettings : Object {
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 
-    public const string MULTITASKING_ENABLED = "multitasking-gesture-enabled";
-    public const string MULTITASKING_FINGERS = "multitasking-gesture-fingers";
-
     public const string WORKSPACE_ENABLED = "workspaces-gesture-enabled";
     public const string WORKSPACE_FINGERS = "workspaces-gesture-fingers";
 

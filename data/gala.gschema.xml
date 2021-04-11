@@ -360,18 +360,6 @@
       <description>The action that corresponds to performing a horizontal swipe gesture with four fingers</description>
     </key>
 
-
-    <key type="b" name="multitasking-gesture-enabled">
-      <default>true</default>
-      <summary>Multitasking view gesture</summary>
-      <description>If enabled, swipe up with the number of fingers set in io.elementary.desktop.wm.gestures.multitasking-gesture-fingers to show the multitasking view</description>
-    </key>
-    <key type="i" name="multitasking-gesture-fingers">
-      <default>3</default>
-      <range min="3" max="4"/>
-      <summary>Multitasking view gesture fingers</summary>
-      <description>Number of fingers used in the multitasking view gesture</description>
-    </key>
     <key type="b" name="workspaces-gesture-enabled">
       <default>true</default>
       <summary>Switch workspace gesture</summary>
