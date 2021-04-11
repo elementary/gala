@@ -5,9 +5,14 @@ namespace Gulkan {
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_buffer_get_type ()")]
 	public class Buffer : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected Buffer ();
+		public Buffer (Gulkan.Device device, VK.DeviceSize size, VK.BufferUsageFlags usage, VK.MemoryPropertyFlags properties);
+		[CCode (has_construct_function = false)]
+		public Buffer.from_data (Gulkan.Device device, void* data, VK.DeviceSize size, VK.BufferUsageFlags usage, VK.MemoryPropertyFlags properties);
+		public unowned VK.Buffer? get_handle ();
+		public unowned VK.DeviceMemory? get_memory_handle ();
 		public bool map (void* data);
 		public void unmap ();
+		public bool upload (void* data, VK.DeviceSize size);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_client_get_type ()")]
 	public class Client : GLib.Object {
@@ -16,27 +21,42 @@ namespace Gulkan {
 		[CCode (has_construct_function = false)]
 		public Client.from_extensions (GLib.SList<string> instance_ext_list, GLib.SList<string> device_ext_list);
 		public unowned Gulkan.Device get_device ();
+		public unowned VK.Device? get_device_handle ();
 		public static GLib.SList<string> get_external_memory_device_extensions ();
 		public static GLib.SList<string> get_external_memory_instance_extensions ();
 		public unowned Gulkan.Instance get_instance ();
+		public unowned VK.Instance? get_instance_handle ();
+		public unowned VK.PhysicalDevice? get_physical_device_handle ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_cmd_buffer_get_type ()")]
 	public class CmdBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected CmdBuffer ();
 		public bool begin ();
+		public unowned VK.CommandBuffer? get_handle ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_descriptor_pool_get_type ()")]
 	public class DescriptorPool : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected DescriptorPool ();
+		public DescriptorPool (VK.Device device, [CCode (array_length_cname = "binding_count", array_length_pos = 2.5, array_length_type = "guint32")] VK.DescriptorSetLayoutBinding[] bindings, [CCode (array_length_cname = "pool_size_count", array_length_pos = 3.5, array_length_type = "guint32")] VK.DescriptorPoolSize[] pool_sizes, uint32 set_count);
+		public bool allocate_sets ([CCode (array_length_cname = "count", array_length_pos = 0.5, array_length_type = "guint32")] VK.DescriptorSet[] sets);
+		[CCode (has_construct_function = false)]
+		public DescriptorPool.from_layout (VK.Device device, VK.DescriptorSetLayout layout, [CCode (array_length_cname = "pool_size_count", array_length_pos = 3.5, array_length_type = "guint32")] VK.DescriptorPoolSize[] pool_sizes, uint32 set_count);
+		public unowned VK.PipelineLayout? get_pipeline_layout ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_device_get_type ()")]
 	public class Device : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Device ();
+		public bool create (Gulkan.Instance instance, VK.PhysicalDevice device, GLib.SList<string> extensions);
 		public unowned Gulkan.Queue get_graphics_queue ();
+		public unowned VK.Device? get_handle ();
+		public unowned VK.DeviceSize? get_heap_budget (uint32 i);
+		public bool get_memory_fd (VK.DeviceMemory image_memory, int fd);
+		public unowned VK.PhysicalDeviceProperties? get_physical_device_properties ();
+		public unowned VK.PhysicalDevice? get_physical_handle ();
 		public unowned Gulkan.Queue get_transfer_queue ();
+		public bool memory_type_from_properties (uint32 memory_type_bits, VK.MemoryPropertyFlags memory_property_flags, uint32 type_index_out);
 		public void print_memory_budget ();
 		public void print_memory_properties ();
 		public void wait_idle ();
@@ -44,71 +64,117 @@ namespace Gulkan {
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_frame_buffer_get_type ()")]
 	public class FrameBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected FrameBuffer ();
+		public FrameBuffer (Gulkan.Device device, Gulkan.RenderPass render_pass, VK.Extent2D extent, VK.SampleCountFlagBits sample_count, VK.Format color_format, bool use_depth);
+		[CCode (has_construct_function = false)]
+		public FrameBuffer.from_image (Gulkan.Device device, Gulkan.RenderPass render_pass, VK.Image color_image, VK.Extent2D extent, VK.Format color_format);
+		[CCode (has_construct_function = false)]
+		public FrameBuffer.from_image_with_depth (Gulkan.Device device, Gulkan.RenderPass render_pass, VK.Image color_image, VK.Extent2D extent, VK.SampleCountFlagBits sample_count, VK.Format color_format);
+		public unowned VK.Image? get_color_image ();
+		public unowned VK.Framebuffer? get_handle ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_instance_get_type ()")]
 	public class Instance : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Instance ();
 		public bool create (GLib.SList<string> required_extensions);
+		public unowned VK.Instance? get_handle ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_queue_get_type ()")]
 	public class Queue : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Queue (Gulkan.Device device, uint32 family_index);
-		public void free_cmd_buffer (Gulkan.CmdBuffer cmd_buffer);
+		public void free_cmd_buffer (owned Gulkan.CmdBuffer cmd_buffer);
+		public unowned VK.CommandPool? get_command_pool ();
 		public uint32 get_family_index ();
+		public unowned VK.Queue? get_handle ();
+		public unowned GLib.Mutex? get_pool_mutex ();
 		public bool initialize ();
 		public Gulkan.CmdBuffer request_cmd_buffer ();
 		public bool submit (Gulkan.CmdBuffer cmd_buffer);
+		public bool supports_surface (VK.SurfaceKHR surface);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_render_pass_get_type ()")]
 	public class RenderPass : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected RenderPass ();
+		public RenderPass (Gulkan.Device device, VK.SampleCountFlagBits samples, VK.Format color_format, VK.ImageLayout final_color_layout, bool use_depth);
+		public void begin (VK.Extent2D extent, VK.ClearColorValue clear_color, Gulkan.FrameBuffer frame_buffer, VK.CommandBuffer cmd_buffer);
+		public unowned VK.RenderPass? get_handle ();
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_renderer_get_type ()")]
 	public class Renderer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Renderer ();
+		public bool create_shader_module (string resource_name, out VK.ShaderModule module);
 		public virtual bool draw ();
 		public float get_aspect ();
 		public unowned Gulkan.Client get_client ();
+		public VK.Extent2D get_extent ();
 		public int64 get_msec_since_start ();
 		public void set_client (Gulkan.Client client);
+		public void set_extent (VK.Extent2D extent);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_swapchain_get_type ()")]
 	public class Swapchain : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected Swapchain ();
+		public Swapchain (Gulkan.Client client, VK.SurfaceKHR surface, VK.PresentModeKHR present_mode, VK.Format format, VK.ColorSpaceKHR colorspace);
+		public bool acquire (VK.Semaphore signal_semaphore, uint32 index);
+		public VK.Extent2D get_extent ();
+		public VK.Format get_format ();
+		public void get_images ([CCode (array_length = false, array_null_terminated = true)] VK.Image[]? swap_chain_images);
 		public uint32 get_size ();
+		public bool present (VK.Semaphore wait_semaphore, uint32 index);
+		public bool reset_surface (VK.SurfaceKHR surface);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_swapchain_renderer_get_type ()")]
 	public class SwapchainRenderer : Gulkan.Renderer {
 		[CCode (has_construct_function = false)]
 		protected SwapchainRenderer ();
+		public void begin_render_pass (VK.ClearColorValue clear_color, uint32 index);
+		public unowned VK.CommandBuffer? get_cmd_buffer (uint32 index);
 		public unowned Gulkan.FrameBuffer get_frame_buffer (uint32 index);
 		public unowned Gulkan.RenderPass get_render_pass ();
+		public unowned VK.RenderPass? get_render_pass_handle ();
 		public uint32 get_swapchain_size ();
+		[NoWrapper]
+		public virtual void init_draw_cmd (VK.CommandBuffer cmd_buffer);
 		public bool init_draw_cmd_buffers ();
 		[NoWrapper]
 		public virtual bool init_pipeline (void* data);
+		public bool initialize (VK.SurfaceKHR surface, VK.ClearColorValue clear_color, void* pipeline_data);
+		public bool resize (VK.SurfaceKHR surface);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_texture_get_type ()")]
 	public class Texture : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected Texture ();
+		public Texture (Gulkan.Client client, VK.Extent2D extent, VK.Format format);
+		[CCode (has_construct_function = false)]
+		public Texture.export_fd (Gulkan.Client client, VK.Extent2D extent, VK.Format format, VK.ImageLayout layout, out size_t size, out int fd);
+		[CCode (has_construct_function = false)]
+		public Texture.from_cairo_surface (Gulkan.Client client, Cairo.Surface surface, VK.Format format, VK.ImageLayout layout);
+		[CCode (has_construct_function = false)]
+		public Texture.from_dmabuf (Gulkan.Client client, int fd, VK.Extent2D extent, VK.Format format);
+		[CCode (has_construct_function = false)]
+		public Texture.from_pixbuf (Gulkan.Client client, Gdk.Pixbuf pixbuf, VK.Format format, VK.ImageLayout layout, bool create_mipmaps);
+		public VK.Extent2D get_extent ();
+		public VK.Format get_format ();
+		public unowned VK.Image? get_image ();
+		public unowned VK.ImageView? get_image_view ();
 		public uint get_mip_levels ();
-		public static Texture new_from_cairo_surface (Gulkan.Client client, Cairo.Surface cairo_surface, Vk.Format format, Vk.ImageLayout upload_layout);
-		public static Texture? new_export_fd (Gulkan.Client client, Vk.Extent2D extent, Vk.Format format, Vk.ImageLayout layout, out ulong size, out int fd);
-		public void upload_cairo_surface (Cairo.Surface cairo_surface, Vk.ImageLayout upload_layout);
-		public Vk.Extent2D get_extent ();
-		public bool transfer_layout (Vk.ImageLayout src, Vk.ImageLayout dst);
+		[CCode (has_construct_function = false)]
+		public Texture.mip_levels (Gulkan.Client client, VK.Extent2D extent, uint mip_levels, VK.Format format);
+		public void record_transfer (VK.CommandBuffer cmd_buffer, VK.ImageLayout src_layout, VK.ImageLayout dst_layout);
+		public void record_transfer_full (VK.CommandBuffer cmd_buffer, VK.AccessFlags src_access_mask, VK.AccessFlags dst_access_mask, VK.ImageLayout src_layout, VK.ImageLayout dst_layout, VK.PipelineStageFlags src_stage_mask, VK.PipelineStageFlags dst_stage_mask);
+		public bool transfer_layout (VK.ImageLayout src_layout, VK.ImageLayout dst_layout);
+		public bool transfer_layout_full (VK.AccessFlags src_access_mask, VK.AccessFlags dst_access_mask, VK.ImageLayout src_layout, VK.ImageLayout dst_layout, VK.PipelineStageFlags src_stage_mask, VK.PipelineStageFlags dst_stage_mask);
+		public bool upload_cairo_surface (Cairo.Surface surface, VK.ImageLayout layout);
+		public bool upload_pixbuf (Gdk.Pixbuf pixbuf, VK.ImageLayout layout);
+		public bool upload_pixels (uint8 pixels, size_t size, VK.ImageLayout layout);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_uniform_buffer_get_type ()")]
 	public class UniformBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected UniformBuffer ();
+		public UniformBuffer (Gulkan.Device device, VK.DeviceSize size);
+		public unowned VK.Buffer? get_handle ();
 		public void update (void* s);
 	}
 	[CCode (cheader_filename = "gulkan.h", type_id = "gulkan_vertex_buffer_get_type ()")]
@@ -116,9 +182,14 @@ namespace Gulkan {
 		[CCode (has_construct_function = false)]
 		public VertexBuffer ();
 		public bool alloc_array (Gulkan.Device device);
+		public bool alloc_data (Gulkan.Device device, void* data, VK.DeviceSize size);
 		public bool alloc_empty (Gulkan.Device device, uint32 multiplier);
+		public bool alloc_index_data (Gulkan.Device device, void* data, VK.DeviceSize element_size, uint element_count);
 		public void append_position_uv (Graphene.Vec4 vec, float u, float v);
 		public void append_with_color (Graphene.Vec4 vec, Graphene.Vec3 color);
+		public void bind_with_offsets (VK.CommandBuffer cmd_buffer);
+		public void draw (VK.CommandBuffer cmd_buffer);
+		public void draw_indexed (VK.CommandBuffer cmd_buffer);
 		[CCode (has_construct_function = false)]
 		public VertexBuffer.from_attribs (Gulkan.Device device, float positions, size_t positions_size, float colors, size_t colors_size, float normals, size_t normals_size);
 		public bool is_initialized ();
@@ -131,4 +202,6 @@ namespace Gulkan {
 	public static void geometry_append_plane (Gulkan.VertexBuffer self, Graphene.Point from, Graphene.Point to, Graphene.Matrix mat);
 	[CCode (cheader_filename = "gulkan.h")]
 	public static void geometry_append_ray (Gulkan.VertexBuffer self, Graphene.Vec4 center, float length, Graphene.Matrix mat);
+	[CCode (cheader_filename = "gulkan.h")]
+	public static bool has_error (VK.Result res, string fun, string file, int line);
 }

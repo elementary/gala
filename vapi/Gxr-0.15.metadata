@@ -1,7 +1,1 @@
 //* skip=false
-<<<<<<< HEAD
-
-Window.child_window type="weak Xrd.Window?"
-Window.parent_window type="weak Xrd.Window?"
-=======
->>>>>>> b25c5bec3f0fdd20cdc2b9cf35102188866279e1

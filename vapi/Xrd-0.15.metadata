@@ -1,5 +1,7 @@
 //* skip=false
 
+Client.* skip=false
+Client.request_quit_event.object name="event" type="Gxr.QuitEvent"
 WindowData.child_window type="unowned Xrd.Window?"
 WindowData.parent_window type="unowned Xrd.Window?"
 

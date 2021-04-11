@@ -1,2 +1,5 @@
 //* skip=false
 
+Texture.* skip=false
+Texture.new_export_fd.fd out
+Texture.new_export_fd.size out

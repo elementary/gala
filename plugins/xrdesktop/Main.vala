@@ -254,8 +254,9 @@ namespace Gala.Plugins.XRDesktop {
             debug ("on_move_cursor");
         }
 
-        private void on_request_quit (Gxr.QuitEvent quit_event) {
-            var settings = Xrd.settings_get_instance ();
+        [CCode (instance_pos=-1)]
+        private void on_request_quit (Xrd.Client client, Gxr.QuitEvent quit_event) {
+            unowned var settings = Xrd.Settings.get_instance ();
             var defaultMode = settings.get_enum ("default-mode");
 
             switch (quit_event.reason) {
@@ -641,23 +642,23 @@ namespace Gala.Plugins.XRDesktop {
             var upload_layout = xrd_client.get_upload_layout ();
             var texture = xrd_window.get_texture ();
 
-            Xrd.render_lock ();
+            Xrd.Render.lock ();
             if (
                 rect.width != xrd_window.texture_width ||
                 rect.height != xrd_window.texture_height ||
                 texture == null
             ) {
                 debug ("xrdesktop: Reallocating %dx%d vulkan texture", rect.width, rect.height);
-                texture = Gulkan.Texture.new_from_cairo_surface (
+                texture = new Gulkan.Texture.from_cairo_surface (
                     client,
                     cairo_surface,
-                    Vk.Format.B8G8R8A8_SRGB,
+                    VK.Format.B8G8R8A8_SRGB,
                     upload_layout
                 );
 
                 if (texture == null) {
                     critical ("xrdesktop: Error creating texture for window!");
-                    Xrd.render_unlock ();
+                    Xrd.Render.unlock ();
                     return false;
                 }
                 xrd_window.set_and_submit_texture (texture);
@@ -666,7 +667,7 @@ namespace Gala.Plugins.XRDesktop {
                 texture.upload_cairo_surface (cairo_surface, upload_layout);
                 xrd_window.submit_texture ();
             }
-            Xrd.render_unlock ();
+            Xrd.Render.unlock ();
 
             return true;
         }
@@ -706,7 +707,7 @@ namespace Gala.Plugins.XRDesktop {
                 extent_changed = rect.width != extent.width || rect.height != extent.height;
             }
 
-            Xrd.render_lock ();
+            Xrd.Render.lock ();
             if (extent_changed) {
                 if (xr_window.gl_textures[0] != 0) {
                     GL.glDeleteTextures (1, xr_window.gl_textures);
@@ -721,7 +722,7 @@ namespace Gala.Plugins.XRDesktop {
 
                 if (texture == null) {
                     critical ("xrdesktop: Error creating texture for window!");
-                    Xrd.render_unlock ();
+                    Xrd.Render.unlock ();
                     return false;
                 }
 
@@ -771,7 +772,7 @@ namespace Gala.Plugins.XRDesktop {
 
                 xrd_window.set_and_submit_texture (texture);
             }
-            Xrd.render_unlock ();
+            Xrd.Render.unlock ();
 
             return true;
         }
@@ -793,16 +794,16 @@ namespace Gala.Plugins.XRDesktop {
 
             ulong size;
             int fd;
-            var extent = Vk.Extent2D () {
+            var extent = VK.Extent2D () {
                 width = width,
                 height = height
             };
 
             var layout = xrd_client.get_upload_layout ();
-            var texture = Gulkan.Texture.new_export_fd (
+            var texture = new Gulkan.Texture.export_fd (
                 client,
                 extent,
-                Vk.Format.R8G8B8A8_SRGB,
+                VK.Format.R8G8B8A8_SRGB,
                 layout,
                 out size,
                 out fd
@@ -851,7 +852,7 @@ namespace Gala.Plugins.XRDesktop {
 
             GL.glFinish ();
 
-            if (!texture.transfer_layout (Vk.ImageLayout.UNDEFINED, Vk.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
+            if (!texture.transfer_layout (VK.ImageLayout.UNDEFINED, VK.ImageLayout.TRANSFER_SRC_OPTIMAL)) {
                 critical ("xrdesktop: Unable to transfer layout.");
             }
 

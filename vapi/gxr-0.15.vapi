@@ -76,12 +76,14 @@ namespace Gxr {
 		public virtual uint32 get_model_uv_offset ();
 		public virtual uint32 get_model_vertex_stride ();
 		public virtual void get_projection (Gxr.Eye eye, float near, float far, Graphene.Matrix mat);
+		public virtual void get_render_dimensions (VK.Extent2D extent);
 		public virtual void get_view (Gxr.Eye eye, Graphene.Matrix mat);
 		public virtual uint32 get_view_count ();
 		[CCode (has_construct_function = false)]
 		public Context.headless (string app_name, uint32 app_version);
 		[CCode (has_construct_function = false)]
 		public Context.headless_from_api (Gxr.Api api, string app_name, uint32 app_version);
+		public virtual bool init_framebuffers (VK.Extent2D extent, VK.SampleCountFlagBits sample_count, Gulkan.RenderPass render_pass);
 		[NoWrapper]
 		public virtual bool init_runtime (Gxr.AppType type, string app_name, uint32 app_version);
 		[NoWrapper]
@@ -90,6 +92,7 @@ namespace Gxr {
 		public virtual bool is_input_available ();
 		public virtual bool is_tracked_device_connected (uint32 i);
 		public virtual bool load_action_manifest (string cache_name, string resource_path, string manifest_name);
+		public virtual bool load_model (Gulkan.VertexBuffer vbo, Gulkan.Texture texture, VK.Sampler sampler, string model_name);
 		public virtual void poll_event ();
 		public virtual void request_quit ();
 		public virtual void set_keyboard_transform (Graphene.Matrix transform);
@@ -180,6 +183,7 @@ namespace Gxr {
 		public unowned Gxr.Context get_context ();
 		public bool get_flip_y ();
 		public bool get_size_meters (Graphene.Vec2 size);
+		public virtual bool get_size_pixels (VK.Extent2D size);
 		public virtual bool get_transform_absolute (Graphene.Matrix mat);
 		public virtual bool get_width_meters (float width);
 		public virtual bool is_visible ();
@@ -333,6 +337,7 @@ namespace Gxr {
 	public struct PointerTipData {
 		public weak Gxr.PointerTip tip;
 		public bool active;
+		public VK.ImageLayout upload_layout;
 		public Gxr.PointerTipSettings settings;
 		public Gxr.PointerTipAnimation animation;
 	}

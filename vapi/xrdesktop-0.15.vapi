@@ -2,11 +2,54 @@
 
 [CCode (cprefix = "Xrd", gir_namespace = "Xrd", gir_version = "0.15", lower_case_cprefix = "xrd_")]
 namespace Xrd {
+	namespace Math {
+		[CCode (cheader_filename = "xrd.h")]
+		public static bool clamp_towards_zero_2d (Graphene.Point min, Graphene.Point max, Graphene.Point point, Graphene.Point clamped);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void get_rotation_angles (Graphene.Vec3 direction, float azimuth, float inclination);
+		[CCode (cheader_filename = "xrd.h")]
+		public static bool intersect_lines_2d (Graphene.Point p0, Graphene.Point p1, Graphene.Point p2, Graphene.Point p3, Graphene.Point intersection);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void matrix_set_translation_point (Graphene.Matrix matrix, Graphene.Point3D point);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void matrix_set_translation_vec (Graphene.Matrix matrix, Graphene.Vec3 vec);
+		[CCode (cheader_filename = "xrd.h")]
+		public static float point_matrix_distance (Graphene.Point3D intersection_point, Graphene.Matrix pose);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void sphere_to_3d_coords (float azimuth, float inclination, float distance, Graphene.Point3D point);
+	}
+	namespace Render {
+		[CCode (cheader_filename = "xrd.h")]
+		public static void @lock ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static void lock_destroy ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static void lock_init ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static void @unlock ();
+	}
+	namespace Settings {
+		[CCode (cheader_filename = "xrd.h")]
+		public static void connect_and_apply ([CCode (delegate_target_pos = 2.1, scope = "async")] GLib.Callback callback, string key);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void destroy_instance ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static unowned GLib.Settings get_instance ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static bool is_schema_installed ();
+		[CCode (cheader_filename = "xrd.h")]
+		public static void update_double_val (GLib.Settings settings, string key, out double val);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void update_gboolean_val (GLib.Settings settings, string key, out bool val);
+		[CCode (cheader_filename = "xrd.h")]
+		public static void update_int_val (GLib.Settings settings, string key, out int val);
+	}
 	[CCode (cheader_filename = "xrd.h", type_id = "xrd_client_get_type ()")]
 	public class Client : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Client ();
-		public void add_button (Xrd.Window button, Graphene.Point3D position, [CCode (scope = "async")] GLib.Callback press_callback);
+		[NoWrapper]
+		public virtual bool add_button (Xrd.Window button, int label_count, string label, Graphene.Point3D position, GLib.Callback press_callback);
 		public void add_container (Xrd.Container container);
 		public void add_window (Xrd.Window window, bool draggable, void* lookup_key);
 		public Xrd.Window? button_new_from_icon (float width, float height, float ppm, string url);
@@ -14,12 +57,12 @@ namespace Xrd {
 		public unowned GLib.SList<Gxr.Controller> get_controllers ();
 		public unowned Xrd.DesktopCursor get_desktop_cursor ();
 		public virtual unowned Gulkan.Client get_gulkan ();
-		public Vk.ImageLayout get_upload_layout ();
 		public unowned Gxr.Context get_gxr_context ();
 		public unowned Xrd.InputSynth get_input_synth ();
 		public unowned Xrd.Window? get_keyboard_window ();
 		public unowned Xrd.WindowManager get_manager ();
 		public unowned Xrd.Window? get_synth_hovered ();
+		public VK.ImageLayout get_upload_layout ();
 		public unowned GLib.SList<Xrd.Window> get_windows ();
 		[NoWrapper]
 		public virtual void init_controller (Gxr.Controller controller);
@@ -31,12 +74,20 @@ namespace Xrd {
 		public void set_pin (Xrd.Window win, bool pin);
 		public void show_pinned_only (bool pinned_only);
 		public void* switch_mode ();
+		[NoWrapper]
+		public virtual unowned Xrd.Window window_new_from_data (Xrd.WindowData data);
+		[NoWrapper]
+		public virtual unowned Xrd.Window window_new_from_meters (string title, float width, float height, float ppm);
+		[NoWrapper]
+		public virtual unowned Xrd.Window window_new_from_native (string title, void* native, uint32 width_pixels, uint32 height_pixels, float ppm);
+		[NoWrapper]
+		public virtual unowned Xrd.Window window_new_from_pixels (string title, uint32 width, uint32 height, float ppm);
 		[CCode (has_construct_function = false)]
 		public Client.with_mode (Xrd.ClientMode mode);
 		public signal void click_event (Gdk.Event object);
 		public signal void keyboard_press_event (Gdk.Event object);
 		public signal void move_cursor_event (Gdk.Event object);
-		public signal void request_quit_event (Gdk.Event object);
+		public signal void request_quit_event (Gxr.QuitEvent event);
 	}
 	[CCode (cheader_filename = "xrd.h", type_id = "xrd_container_get_type ()")]
 	public class Container : GLib.Object {
@@ -250,8 +301,8 @@ namespace Xrd {
 		public weak Graphene.Point initial_size_meters;
 		public float scale;
 		public weak Graphene.Matrix transform;
-		public unowned Xrd.Window? child_window;
-		public unowned Xrd.Window? parent_window;
+		public weak Xrd.Window? child_window;
+		public weak Xrd.Window? parent_window;
 		public weak Graphene.Point child_offset_center;
 		public weak Graphene.Matrix reset_transform;
 		public bool pinned;
@@ -296,47 +347,7 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrd.h", cname = "XRD_TIP_VIEWPORT_SCALE")]
 	public const int TIP_VIEWPORT_SCALE;
 	[CCode (cheader_filename = "xrd.h")]
-	public static bool math_clamp_towards_zero_2d (Graphene.Point min, Graphene.Point max, Graphene.Point point, Graphene.Point clamped);
+	public static void button_set_icon (Xrd.Window button, Gulkan.Client client, VK.ImageLayout upload_layout, string url);
 	[CCode (cheader_filename = "xrd.h")]
-	public static void math_get_rotation_angles (Graphene.Vec3 direction, float azimuth, float inclination);
-	[CCode (cheader_filename = "xrd.h")]
-	public static bool math_intersect_lines_2d (Graphene.Point p0, Graphene.Point p1, Graphene.Point p2, Graphene.Point p3, Graphene.Point intersection);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void math_matrix_set_translation_point (Graphene.Matrix matrix, Graphene.Point3D point);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void math_matrix_set_translation_vec (Graphene.Matrix matrix, Graphene.Vec3 vec);
-	[CCode (cheader_filename = "xrd.h")]
-	public static float math_point_matrix_distance (Graphene.Point3D intersection_point, Graphene.Matrix pose);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void math_sphere_to_3d_coords (float azimuth, float inclination, float distance, Graphene.Point3D point);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void render_lock ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void render_lock_destroy ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void render_lock_init ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void render_unlock ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_connect_and_apply ([CCode (delegate_target_pos = 2.1, scope = "async")] GLib.Callback callback, string key);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_destroy_instance ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static unowned GLib.Settings settings_get_instance ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static bool settings_is_schema_installed ();
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_double_val (GLib.Settings settings, string key, out double val);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_gboolean_val (GLib.Settings settings, string key, out bool val);
-	[CCode (cheader_filename = "xrd.h")]
-	public static void settings_update_int_val (GLib.Settings settings, string key, out int val);
-	[CCode (cheader_filename = "xrd.h")]
-	public static Xrd.Window window_new_from_data (Xrd.Client self, Xrd.WindowData data);
-	[CCode (cheader_filename = "xrd.h")]
-	public static Xrd.Window window_new_from_meters (Xrd.Client client, string title, float width, float height, float ppm);
-	[CCode (cheader_filename = "xrd.h")]
-	public static Xrd.Window window_new_from_native (Xrd.Client client, string title, void* native, uint32 width_pixels, uint32 height_pixels, float ppm);
-	[CCode (cheader_filename = "xrd.h")]
-	public static Xrd.Window window_new_from_pixels (Xrd.Client client, string title, uint32 width, uint32 height, float ppm);
+	public static void button_set_text (Xrd.Window button, Gulkan.Client client, VK.ImageLayout upload_layout, int label_count, string label);
 }
