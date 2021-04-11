@@ -22,8 +22,29 @@
  public class Gala.AccentColorManager : Object {
     private const string INTERFACE_SCHEMA = "org.gnome.desktop.interface";
     private const string STYLESHEET_KEY = "gtk-theme";
-    private const string STYLESHEET_PREFIX = "io.elementary.stylesheet.";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
+
+    private const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
+    private const string THEME_MINT = "io.elementary.stylesheet.mint";
+    private const string THEME_GREEN = "io.elementary.stylesheet.lime";
+    private const string THEME_YELLOW = "io.elementary.stylesheet.banana";
+    private const string THEME_ORANGE = "io.elementary.stylesheet.orange";
+    private const string THEME_RED = "io.elementary.stylesheet.strawberry";
+    private const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
+    private const string THEME_PURPLE = "io.elementary.stylesheet.grape";
+    private const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
+    private const string THEME_GRAY = "io.elementary.stylesheet.slate";
+
+    private const string COLOR_BLUE = "#3689e6";
+    private const string COLOR_MINT = "#28bca3";
+    private const string COLOR_GREEN = "#68b723";
+    private const string COLOR_YELLOW = "#f9c440";
+    private const string COLOR_ORANGE = "#ffa154";
+    private const string COLOR_RED = "#ed5353";
+    private const string COLOR_PINK = "#de3e80";
+    private const string COLOR_PURPLE = "#a56de2";
+    private const string COLOR_BROWN = "#8a715e";
+    private const string COLOR_GRAY = "#667885";
 
     private Gala.AccountsService? gala_accounts_service = null;
 
@@ -31,56 +52,16 @@
     private Settings interface_settings;
 
     private NamedColor[] theme_colors = {
-        new NamedColor () {
-            name = "Blue",
-            theme = "blueberry",
-            hex = "#3689e6"
-        },
-        new NamedColor () {
-            name = "Mint",
-            theme = "mint",
-            hex = "#28bca3"
-        },
-        new NamedColor () {
-            name = "Green",
-            theme = "lime",
-            hex = "#68b723"
-        },
-        new NamedColor () {
-            name = "Yellow",
-            theme = "banana",
-            hex = "#f9c440"
-        },
-        new NamedColor () {
-            name = "Orange",
-            theme = "orange",
-            hex = "#ffa154"
-        },
-        new NamedColor () {
-            name = "Red",
-            theme = "strawberry",
-            hex = "#ed5353"
-        },
-        new NamedColor () {
-            name = "Pink",
-            theme = "bubblegum",
-            hex = "#de3e80"
-        },
-        new NamedColor () {
-            name = "Purple",
-            theme = "grape",
-            hex = "#a56de2"
-        },
-        new NamedColor () {
-            name = "Brown",
-            theme = "cocoa",
-            hex = "#8a715e"
-        },
-        new NamedColor () {
-            name = "Gray",
-            theme = "slate",
-            hex = "#667885"
-        }
+        new NamedColor ("Blue", THEME_BLUE, COLOR_BLUE),
+        new NamedColor ("Mint", THEME_MINT, COLOR_MINT),
+        new NamedColor ("Green", THEME_GREEN, COLOR_GREEN),
+        new NamedColor ("Yellow", THEME_YELLOW, COLOR_YELLOW),
+        new NamedColor ("Orange", THEME_ORANGE, COLOR_ORANGE),
+        new NamedColor ("Red", THEME_RED, COLOR_ORANGE),
+        new NamedColor ("Pink", THEME_PINK, COLOR_PINK),
+        new NamedColor ("Purple", THEME_PURPLE, COLOR_PURPLE),
+        new NamedColor ("Brown", THEME_BROWN, COLOR_BROWN),
+        new NamedColor ("Gray", THEME_GRAY, COLOR_GRAY)
     };
 
     construct {
@@ -128,10 +109,9 @@
             var picture_uri = background_settings.get_string ("picture-uri");
 
             var current_stylesheet = interface_settings.get_string (STYLESHEET_KEY);
-            var current_accent = current_stylesheet.replace (STYLESHEET_PREFIX, "");
 
             debug ("Current wallpaper: %s", picture_uri);
-            debug ("Current accent color: %s", current_accent);
+            debug ("Current stylesheet: %s", current_stylesheet);
 
             NamedColor? new_color = null;
             var accent_color_name = read_accent_color_name_from_exif (picture_uri);
@@ -146,12 +126,12 @@
                 new_color = get_accent_color_of_picture_simple (picture_uri);
             }
 
-            debug ("New accent color: %s", new_color.theme);
+            if (new_color != null && new_color.theme != current_stylesheet) {
+                debug ("New stylesheet: %s", new_color.theme);
 
-            if (new_color != null && new_color.theme != current_accent) {
                 interface_settings.set_string (
                     STYLESHEET_KEY,
-                    STYLESHEET_PREFIX + new_color.theme
+                    new_color.theme
                 );
             }
         }
@@ -183,7 +163,7 @@
 
             var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
             for (int i = 0; i < theme_colors.length; i++) {
-                palette.add (new Granite.Drawing.Color.from_string (theme_colors[i].hex));
+                palette.add (theme_colors[i].color);
             }
 
             var index = color_extractor.get_dominant_color_index (palette);

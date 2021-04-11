@@ -20,39 +20,15 @@
  */
 
 public class Gala.NamedColor : Object {
-    public string theme { get; set; }
-    public string name { get; set; }
-    public string hex { get; set; }
+    public string name { get; construct set; }
+    public string theme { get; construct set; }
+    public Granite.Drawing.Color color { get; construct set; }
 
-    public NamedColor.from_rgba (Gdk.RGBA rgba) {
-        hex = "#%02x%02x%02x".printf (
-            (int) (rgba.red * 255),
-            (int) (rgba.green * 255),
-            (int) (rgba.blue * 255)
+    public NamedColor (string name, string theme, string hex) {
+        Object (
+            name: name,
+            theme: theme,
+            color: new Granite.Drawing.Color.from_string (hex)
         );
-    }
-
-    public double compare (NamedColor other) {
-        var rgba1 = to_rgba ();
-        var rgba2 = other.to_rgba ();
-
-        var distance = Math.sqrt (
-            Math.pow ((rgba2.red - rgba1.red), 2) +
-            Math.pow ((rgba2.green - rgba1.green), 2) +
-            Math.pow ((rgba2.blue - rgba1.blue), 2)
-        );
-
-        return 1.0 - distance / Math.sqrt (
-            Math.pow (255, 2) +
-            Math.pow (255, 2) +
-            Math.pow (255, 2)
-        );
-    }
-
-    public Gdk.RGBA to_rgba () {
-        Gdk.RGBA rgba = { 0, 0, 0, 0 };
-        rgba.parse (hex);
-
-        return rgba;
     }
 }
