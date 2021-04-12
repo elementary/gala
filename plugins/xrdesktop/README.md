@@ -31,10 +31,14 @@ sudo apt install libgxr-openvr-0.15-0
 
 Running xrdesktop on OpenXR/Monado is supported without additional packages. The OpenXR backend is already included in the libgxr-0.15 (or newer) package. Read the [xrdesktop wiki about openxr](https://gitlab.freedesktop.org/xrdesktop/xrdesktop/-/wikis/openxr) for more information.
 
+### Wingpanel Indicator for xrdesktop
+
+To start/stop mirroring the desktop windows to VR, you need to compile and install the `wingpanel-indicator-desktop` from source. To do so, head over to its GitHub repository: https://github.com/marbetschar/wingpanel-indicator-xrdesktop
+
 ## Running
 
 1. Start SteamVR
-2. Enable `Mirror to XR` in Wingpanel (To be done).
+2. Enable `Mirror Desktop to XR` in Wingpanel
 
 ## Further reading
 
