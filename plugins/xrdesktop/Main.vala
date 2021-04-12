@@ -44,6 +44,7 @@ namespace Gala.Plugins.XRDesktop {
             private Xrd.Window xrd_window;
 
             internal WindowActorSignalHandler(Main plugin_main, Xrd.Window xrd_window) {
+                this.plugin_main = plugin_main;
                 this.xrd_window = xrd_window;
             }
 
