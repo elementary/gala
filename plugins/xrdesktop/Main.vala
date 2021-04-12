@@ -39,6 +39,19 @@ namespace Gala.Plugins.XRDesktop {
 
         private static GLib.Mutex upload_xrd_window_mutex = Mutex ();
 
+        private class WindowActorSignalHandler {
+            private Main plugin_main;
+            private Xrd.Window xrd_window;
+
+            internal WindowActorSignalHandler(Main plugin_main, Xrd.Window xrd_window) {
+                this.xrd_window = xrd_window;
+            }
+
+            internal void handle_paint_signal () {
+                plugin_main.upload_xrd_window (xrd_window);
+            }
+        }
+
         public override void initialize (Gala.WindowManager wm) {
             debug ("xrdesktop: Initialize Gala plugin.");
             this.wm = wm;
@@ -520,26 +533,6 @@ namespace Gala.Plugins.XRDesktop {
             }
         }
 
-        private class WindowActorSignalHandler {
-            private Main plugin_main;
-            private Xrd.Window xrd_window;
-
-            public WindowActorSignalHandler(Main plugin_main, Xrd.Window xrd_window) {
-                this.xrd_window = xrd_window;
-            }
-
-            public void handle_paint_signal () {
-                plugin_main.upload_xrd_window (xrd_window);
-            }
-        }
-
-        /*private void on_window_actor_paint (Meta.WindowActor window_actor,
-            Clutter.PaintContext paint_context,
-            Xrd.Window xrd_window
-        ) {
-            upload_xrd_window (xrd_window);
-        }*/
-
         private void attach_window_actor_paint () {
             unowned GLib.SList<Xrd.Window> xrd_windows = xrd_client.get_windows ();
             foreach (var xrd_window in xrd_windows) {
@@ -577,7 +570,7 @@ namespace Gala.Plugins.XRDesktop {
             }
         }
 
-        public bool upload_xrd_window (Xrd.Window xrd_window) {
+        protected bool upload_xrd_window (Xrd.Window xrd_window) {
             unowned Window? xr_window = (Window?) xrd_window.native;
             if (xr_window == null) {
                 critical ("xrdesktop: Could not read native Window from XrdWindow.");
