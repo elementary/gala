@@ -86,7 +86,7 @@ namespace Xrd {
 		public Client.with_mode (Xrd.ClientMode mode);
 		public signal void click_event (Gdk.Event object);
 		public signal void keyboard_press_event (Gdk.Event object);
-		public signal void move_cursor_event (Gdk.Event object);
+		public signal void move_cursor_event (Xrd.MoveCursorEvent event);
 		public signal void request_quit_event (Gxr.QuitEvent event);
 	}
 	[CCode (cheader_filename = "xrd.h", type_id = "xrd_container_get_type ()")]
@@ -123,11 +123,13 @@ namespace Xrd {
 	public class ShakeCompensator : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public ShakeCompensator ();
+		public Xrd.InputSynthButton get_button ();
 		public bool is_drag (Xrd.Window window, Graphene.Matrix controller_pose, Graphene.Point3D intersection);
 		public bool is_recording ();
 		public void record (Graphene.Point position);
 		public void replay_move_queue (Xrd.InputSynth synth, uint move_cursor_event_signal, Xrd.Window hover_window);
 		public void reset ();
+		public void start_recording (Xrd.InputSynthButton button);
 	}
 	[CCode (cheader_filename = "xrd.h", type_id = "xrd_window_manager_get_type ()")]
 	public class WindowManager : GLib.Object {
@@ -245,6 +247,7 @@ namespace Xrd {
 	public struct ClickEvent {
 		public weak Xrd.Window window;
 		public weak Graphene.Point position;
+		public Xrd.InputSynthButton button;
 		public bool state;
 		public weak Gxr.Controller controller;
 	}
@@ -332,6 +335,23 @@ namespace Xrd {
 	public enum HoverMode {
 		EVERYTHING,
 		BUTTONS
+	}
+	[CCode (cheader_filename = "xrd.h", cprefix = "", has_type_id = false)]
+	public enum InputSynthButton {
+		[CCode (cname = "LEFT_BUTTON")]
+		EFT_BUTTON,
+		[CCode (cname = "MIDDLE_BUTTON")]
+		IDDLE_BUTTON,
+		[CCode (cname = "RIGHT_BUTTON")]
+		IGHT_BUTTON,
+		[CCode (cname = "SCROLL_UP")]
+		CROLL_UP,
+		[CCode (cname = "SCROLL_DOWN")]
+		CROLL_DOWN,
+		[CCode (cname = "SCROLL_LEFT")]
+		CROLL_LEFT,
+		[CCode (cname = "SCROLL_RIGHT")]
+		CROLL_RIGHT
 	}
 	[CCode (cheader_filename = "xrd.h", cprefix = "XRD_WINDOW_", has_type_id = false)]
 	[Flags]
