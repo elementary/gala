@@ -2,6 +2,8 @@
 
 A library for XR interaction with traditional desktop compositors.
 
+![Rendering elementary desktop windows in VR](screenshot.png)
+
 ## Installation
 
 Add the [xrdesktop PPA](https://launchpad.net/~xrdesktop/+archive/ubuntu/xrdesktop/+packages):
