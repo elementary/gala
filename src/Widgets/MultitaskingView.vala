@@ -207,12 +207,9 @@ namespace Gala {
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
-            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE) {
-                return;
-            }
-
-            if ((gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
-                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
+            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE ||
+                (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
             ) {
                 return;
             }

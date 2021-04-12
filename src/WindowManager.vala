@@ -484,8 +484,8 @@ namespace Gala {
             var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
                 (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
 
-            var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
-                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
+            var fingers = (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
 
             switch_workspace_with_gesture = can_handle_swipe && fingers;
             if (switch_workspace_with_gesture) {

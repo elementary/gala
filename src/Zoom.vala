@@ -71,16 +71,14 @@ namespace Gala {
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH) {
+            if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH ||
+                (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
+            ) {
                 return;
             }
 
-            if (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT) {
-                return;
-            }
-
-            if ((gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
-                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-pinch") == "zoom")
+            if ((gesture.fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
             ) {
                 zoom_with_gesture (gesture.direction);
             }
