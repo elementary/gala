@@ -1,6 +1,7 @@
 gala_xrdesktop_sources = [
     'DBusService.vala',
     'Main.vala',
+    'Util.vala',
     'Window.vala',
 ]
 

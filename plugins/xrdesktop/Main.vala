@@ -211,7 +211,7 @@ namespace Gala.Plugins.XRDesktop {
                 var meta_window_actor = xr_window.meta_window_actor;
                 var meta_window = meta_window_actor.get_meta_window ();
 
-                if (!is_window_excluded_from_mirroring (meta_window)) {
+                if (!Util.is_meta_window_excluded_from_mirroring (meta_window)) {
                     meta_windows.append (meta_window);
                 }
             }
@@ -306,13 +306,13 @@ namespace Gala.Plugins.XRDesktop {
                 return;
             }
 
-            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            var meta_window = Util.get_validated_meta_window (xr_window.meta_window_actor);
             if (meta_window == null) {
                 return;
             }
 
-            ensure_window_is_on_workspace (meta_window);
-            ensure_window_is_focused (meta_window);
+            Util.ensure_meta_window_is_on_workspace (meta_window);
+            Util.ensure_meta_window_is_focused (meta_window);
 
             //TODO:
             /*
@@ -322,34 +322,6 @@ namespace Gala.Plugins.XRDesktop {
             */
         }
 
-        private void ensure_window_is_focused (Meta.Window window) {
-            /* mutter asserts that we don't mess with override_redirect windows */
-            if (window.is_override_redirect ()) {
-                return;
-            }
-            window.raise ();
-            if (!window.has_focus ()) {
-                window.focus (window.get_display ().get_current_time ());
-            }
-        }
-
-        private void ensure_window_is_on_workspace (Meta.Window window) {
-            if (window.on_all_workspaces) {
-                return;
-            }
-
-            unowned Meta.Display display = window.get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            unowned Meta.Workspace current_workspace = manager.get_active_workspace ();
-            unowned Meta.Workspace window_workspace = window.get_workspace ();
-
-            if (window_workspace == null || current_workspace == null) {
-                return;
-            }
-
-            window_workspace.activate_with_focus (window, display.get_current_time ());
-        }
-
         [CCode (instance_pos=-1)]
         private void on_click (Xrd.Client client, Xrd.ClickEvent event) {
             unowned Window? xr_window = (Window?) event.window.native;
@@ -357,20 +329,20 @@ namespace Gala.Plugins.XRDesktop {
                 return;
             }
 
-            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            var meta_window = Util.get_validated_meta_window (xr_window.meta_window_actor);
             if (meta_window == null) {
                 return;
             }
 
-            ensure_window_is_on_workspace (meta_window);
-            ensure_window_is_focused (meta_window);
+            Util.ensure_meta_window_is_on_workspace (meta_window);
+            Util.ensure_meta_window_is_focused (meta_window);
 
             var position = event.position;
             if (position == null) {
                 return;
             }
 
-            var desktop_coords = window_to_desktop_coords (meta_window, position);
+            var desktop_coords = Util.meta_window_to_desktop_coords (meta_window, position);
             //TODO:
             /*
   input_synth_click (self->vr_input,
@@ -388,7 +360,7 @@ namespace Gala.Plugins.XRDesktop {
                 return;
             }
 
-            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            var meta_window = Util.get_validated_meta_window (xr_window.meta_window_actor);
             if (meta_window == null) {
                 return;
             }
@@ -398,15 +370,15 @@ namespace Gala.Plugins.XRDesktop {
                 return;
             }
 
-            ensure_window_is_on_workspace (meta_window);
-            ensure_window_is_focused (meta_window);
+            Util.ensure_meta_window_is_on_workspace (meta_window);
+            Util.ensure_meta_window_is_focused (meta_window);
 
             var position = event.position;
             if (position == null) {
                 return;
             }
 
-            var desktop_coords = window_to_desktop_coords (meta_window, position);
+            var desktop_coords = Util.meta_window_to_desktop_coords (meta_window, position);
             //TODO:
             //input_synth_move_cursor (self->vr_input, desktop_coords.x, desktop_coords.y);
         }
@@ -542,14 +514,14 @@ namespace Gala.Plugins.XRDesktop {
         }
 
         private bool map_window_actor (Meta.WindowActor window_actor) {
-            var meta_window = get_validated_window (window_actor);
+            var meta_window = Util.get_validated_meta_window (window_actor);
 
-            if (meta_window == null || is_window_excluded_from_mirroring (meta_window)) {
+            if (meta_window == null || Util.is_meta_window_excluded_from_mirroring (meta_window)) {
                 return false;
             }
 
             var rect = meta_window.get_buffer_rect ();
-            var is_child = is_child_window (meta_window);
+            var is_child = Util.is_child_meta_window (meta_window);
 
             Meta.WindowActor meta_parent_window_actor = window_actor;
             Meta.Window? meta_parent_window = null;
@@ -588,7 +560,7 @@ namespace Gala.Plugins.XRDesktop {
             xrd_client.add_window (xrd_window, is_draggable, meta_window);
 
             if (is_child && !is_draggable) {
-                var offset = get_offset (meta_parent_window, meta_window);
+                var offset = Util.get_meta_window_offset (meta_parent_window, meta_window);
 
                 xrd_parent_window.add_child (xrd_window, offset);
 
@@ -615,53 +587,6 @@ namespace Gala.Plugins.XRDesktop {
             window_actor.set_data<WindowActorSignalHandler> ("signal-handler", signal_handler);
 
             return true;
-        }
-
-        private Graphene.Point window_to_desktop_coords (Meta.Window window, Graphene.Point pixels) {
-            var rect = window.get_buffer_rect ();
-
-            return Graphene.Point () {
-                x = rect.x + pixels.x,
-                y = rect.y + pixels.y
-            };
-        }
-
-        private Meta.Window? get_validated_window (Meta.WindowActor? window_actor) {
-            if (window_actor == null) {
-                warning ("xrdesktop: Actor for move cursor not available.");
-                return null;
-            }
-
-            var window = window_actor.get_meta_window ();
-            if (window == null) {
-                warning ("xrdesktop: No window to move");
-                return null;
-            }
-
-            if (window.get_display () == null) {
-                warning ("xrdesktop: Window has no display?!");
-                return null;
-            }
-
-            return window;
-        }
-
-        private bool is_window_excluded_from_mirroring (Meta.Window window) {
-            var window_type = window.get_type ();
-
-            return window_type == Meta.WindowType.DESKTOP ||
-                window_type == Meta.WindowType.DOCK ||
-                window_type == Meta.WindowType.DND;
-        }
-
-        private bool is_child_window (Meta.Window window) {
-            var window_type = window.get_type ();
-
-            return window_type == Meta.WindowType.POPUP_MENU ||
-                window_type == Meta.WindowType.DROPDOWN_MENU ||
-                window_type == Meta.WindowType.TOOLTIP ||
-                window_type == Meta.WindowType.MODAL_DIALOG ||
-                window_type == Meta.WindowType.COMBO;
         }
 
         private bool find_valid_parent_window (Meta.Window child_window,
@@ -699,39 +624,12 @@ namespace Gala.Plugins.XRDesktop {
                 return null;
             }
 
-            if (is_window_excluded_from_mirroring (meta_window)) {
+            if (Util.is_meta_window_excluded_from_mirroring (meta_window)) {
                 debug ("xrdesktop: Window is excluded from mirroring");
                 return null;
             }
 
             return xrd_client.lookup_window (meta_window);
-        }
-
-        private Graphene.Point get_offset (Meta.Window parent, Meta.Window child) {
-            var parent_rect = parent.get_buffer_rect ();
-            var child_rect = child.get_buffer_rect ();
-
-            var parent_center_x = parent_rect.x + parent_rect.width / 2;
-            var parent_center_y = parent_rect.y + parent_rect.height / 2;
-
-            var child_center_x = child_rect.x + child_rect.width / 2;
-            var child_center_y = child_rect.y + child_rect.height / 2;
-
-            var offset_x = child_center_x - parent_center_x;
-            var offset_y = child_center_y - parent_center_y;
-
-            debug ("xrdesktop: child at %d,%d to parent at %d,%d, offset %d,%d",
-                child_center_x,
-                child_center_y,
-                parent_center_x,
-                parent_center_y,
-                offset_x,
-                offset_y);
-
-            return Graphene.Point () {
-                x = offset_x,
-                y = - offset_y
-            };
         }
 
         private void apply_desktop_position (Meta.Window meta_window, Xrd.Window xrd_window, int layer) {
@@ -803,7 +701,7 @@ namespace Gala.Plugins.XRDesktop {
             }
 
             var window_actor = xr_window.meta_window_actor;
-            var meta_window = get_validated_window (window_actor);
+            var meta_window = Util.get_validated_meta_window (window_actor);
             var rect = meta_window.get_buffer_rect ();
 
             /* skip upload of small buffers */
