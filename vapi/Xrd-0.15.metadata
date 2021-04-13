@@ -3,6 +3,10 @@
 Client.* skip=false
 Client.request_quit_event.object name="event" type="Gxr.QuitEvent"
 Client.move_cursor_event.object name="event" type="Xrd.MoveCursorEvent"
+Client.click_event.object name="event" type="Xrd.ClickEvent"
+
+ClickEvent.position type="weak Graphene.Point?"
+MoveCursorEvent.position type="weak Graphene.Point?"
 
 WindowData.child_window type="unowned Xrd.Window?"
 WindowData.parent_window type="unowned Xrd.Window?"

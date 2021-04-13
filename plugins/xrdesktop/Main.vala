@@ -32,10 +32,11 @@ namespace Gala.Plugins.XRDesktop {
         private Xrd.Client? xrd_client = null;
         private bool is_enabled { get { return xrd_client != null; } }
 
-        private GL.GLuint cursor_gl_texture;
         private bool is_nvidia = false;
         private int top_layer = 0;
         private Meta.CursorTracker? cursor_tracker = null;
+        private GL.GLuint[] cursor_gl_textures = { 0 };
+        private Xrd.InputSynth? xrd_input = null;
 
         private GLib.SList<Meta.Window> grabbed_windows = new GLib.SList<Meta.Window> ();
 
@@ -109,7 +110,15 @@ namespace Gala.Plugins.XRDesktop {
             }
             debug ("xrdesktop: Starting mirroring to XR...");
 
-            this.xrd_client = new Xrd.Client ();
+            /* Reset Instance Variables */
+            xrd_client = null;
+            cursor_gl_textures = { 0 };
+            is_nvidia = false;
+            top_layer = 0;
+            cursor_tracker = null;
+            xrd_input = null;
+
+            xrd_client = new Xrd.Client ();
             if (this.xrd_client == null) {
                 var error_dialog = new Granite.MessageDialog (
                     _("Failed to Mirror Desktop to XR"),
@@ -122,13 +131,12 @@ namespace Gala.Plugins.XRDesktop {
                 return;
             }
 
+            xrd_input = new Xrd.InputSynth ();
+
             var gl_vendor = GL.glGetString (GL.GL_VENDOR);
             debug ("xrdesktop: GL_VENDOR = '%s'", gl_vendor);
-
-            cursor_gl_texture = 0;
             is_nvidia = "NVIDIA Corporation" == gl_vendor;
 
-            //initialize_input ();
             mirror_current_windows ();
             arrange_windows_by_desktop_position ();
             connect_signals ();
@@ -181,14 +189,6 @@ namespace Gala.Plugins.XRDesktop {
                 GL.glDeleteTextures (1, xr_window.gl_textures);
                 xr_window.gl_textures = { 0 };
             }
-        }
-
-        private void initialize_input () {
-            /** TODO:
-             * We need a libinputsynth VAPI first,
-             * which in turn needs this MR resolved:
-             * https://gitlab.freedesktop.org/xrdesktop/libinputsynth/-/merge_requests/3
-             */
         }
 
         private void mirror_current_windows () {
@@ -293,30 +293,29 @@ namespace Gala.Plugins.XRDesktop {
             }
         }
 
-        private void on_keyboard_press (Gdk.Event event) {
-            //TODO
-            debug ("on_keyboard_press");
+        [CCode (instance_pos=-1)]
+        private void on_keyboard_press (Xrd.Client client, Gdk.Event event) {
+            var xrd_window = client.get_keyboard_window ();
+            if (xrd_window == null) {
+                warning ("xrdesktop: Keyboard window is not available.");
+                return;
+            }
+
+            unowned Window? xr_window = (Window?) xrd_window.native;
+            if (xr_window == null) {
+                return;
+            }
+
+            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            if (meta_window == null) {
+                return;
+            }
+
+            ensure_window_is_on_workspace (meta_window);
+            ensure_window_is_focused (meta_window);
+
+            //TODO:
             /*
-            XrdWindow* keyboard_xrd_win = xrd_client_get_keyboard_window (client);
-  if (!keyboard_xrd_win)
-    {
-      g_print ("ERROR: No keyboard window!\n");
-      return;
-    }
-
-  ShellVRWindow *shell_win;
-  g_object_get (keyboard_xrd_win, "native", &shell_win, NULL);
-  if (!shell_win)
-    return;
-
-  MetaWindowActor *actor = (MetaWindowActor*) shell_win->meta_window_actor;
-  MetaWindow *meta_win = _get_validated_window (actor);
-  if (!meta_win)
-    return;
-
-  _ensure_on_workspace (meta_win);
-  _ensure_focused (meta_win);
-
   for (int i = 0; i < event->length; i++)
     input_synth_character (self->vr_input, event->string[i]);
 
@@ -351,26 +350,29 @@ namespace Gala.Plugins.XRDesktop {
             window_workspace.activate_with_focus (window, display.get_current_time ());
         }
 
-        private void on_click (Gdk.Event event) {
-            //TODO
-            debug ("on_click");
+        [CCode (instance_pos=-1)]
+        private void on_click (Xrd.Client client, Xrd.ClickEvent event) {
+            unowned Window? xr_window = (Window?) event.window.native;
+            if (xr_window == null) {
+                return;
+            }
+
+            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            if (meta_window == null) {
+                return;
+            }
+
+            ensure_window_is_on_workspace (meta_window);
+            ensure_window_is_focused (meta_window);
+
+            var position = event.position;
+            if (position == null) {
+                return;
+            }
+
+            var desktop_coords = window_to_desktop_coords (meta_window, position);
+            //TODO:
             /*
-            ShellVRWindow *shell_win;
-  g_object_get (event->window, "native", &shell_win, NULL);
-  if (!shell_win)
-    return;
-
-  MetaWindowActor *actor = (MetaWindowActor*) shell_win->meta_window_actor;
-  MetaWindow *meta_win = _get_validated_window (actor);
-  if (!meta_win)
-    return;
-
-  _ensure_on_workspace (meta_win);
-  _ensure_focused (meta_win);
-
-  graphene_point_t desktop_coords =
-    _window_to_desktop_coords (meta_win, event->position);
-
   input_synth_click (self->vr_input,
                      desktop_coords.x, desktop_coords.y,
                      event->button, event->state);
@@ -398,30 +400,15 @@ namespace Gala.Plugins.XRDesktop {
 
             ensure_window_is_on_workspace (meta_window);
             ensure_window_is_focused (meta_window);
-            debug ("on_move_cursor");
-            /*
-            ShellVRWindow *shell_win;
-  g_object_get (event->window, "native", &shell_win, NULL);
-  if (!shell_win)
-    return;
 
-  MetaWindowActor *actor = (MetaWindowActor*) shell_win->meta_window_actor;
-  MetaWindow *meta_win = _get_validated_window (actor);
-  if (!meta_win)
-    return;
-*/
-  /* do not move mouse cursor while the window is grabbed (in "move" mode) */
-  /*if (g_slist_find (self->grabbed_windows, meta_win))
-  return;
+            var position = event.position;
+            if (position == null) {
+                return;
+            }
 
-_ensure_on_workspace (meta_win);
-_ensure_focused (meta_win);
-
-graphene_point_t desktop_coords =
-  _window_to_desktop_coords (meta_win, event->position);
-input_synth_move_cursor (self->vr_input, desktop_coords.x, desktop_coords.y);
-
-            */
+            var desktop_coords = window_to_desktop_coords (meta_window, position);
+            //TODO:
+            //input_synth_move_cursor (self->vr_input, desktop_coords.x, desktop_coords.y);
         }
 
         private void on_grab_op_begin (Meta.Display display, Meta.Window window, Meta.GrabOp grab_op) {
@@ -445,82 +432,102 @@ input_synth_move_cursor (self->vr_input, desktop_coords.x, desktop_coords.y);
             debug ("xrdesktop: End grab window '%s'", window.title);
         }
 
-        private void on_cursor_changed () {
-            //TODO
-            debug ("on_cursor_changed");
-            /*
-              ShellVRMirror *self = _self;
-  if (!self)
-    return;
+        private void on_cursor_changed (Meta.CursorTracker cursor_tracker) {
+            if (xrd_client == null) {
+                return;
+            }
 
-  CoglTexture *cogl_texture = meta_cursor_tracker_get_sprite (cursor_tracker);
-  int hotspot_x, hotspot_y;
-  meta_cursor_tracker_get_hot (cursor_tracker, &hotspot_x, &hotspot_y);
+            unowned Cogl.Texture cogl_texture = cursor_tracker.get_sprite ();
+            if (cogl_texture == null || !cogl_texture.is_texture ()) {
+                warning ("xrdesktop: CoglTexture of cursor not available.");
+                return;
+            }
 
+            int hotspot_x, hotspot_y;
+            cursor_tracker.get_hot (out hotspot_x, out hotspot_y);
 
-  if (cogl_texture == NULL || !cogl_is_texture (cogl_texture))
-    {
-      g_printerr ("Cursor Error: Could not CoglTexture.\n");
-      return;
-    }
+            GL.GLuint meta_tex;
+            uint meta_target;
+            if (!cogl_texture.get_gl_texture (out meta_tex, out meta_target)) {
+                warning ("xrdesktop: Could not get GL handle from CoglTexture.");
+                return;
+            }
 
-  GLuint meta_tex;
-  GLenum meta_target;
-  if (!cogl_texture_get_gl_texture (cogl_texture, &meta_tex, &meta_target))
-    {
-      g_printerr ("Cursor Error: Could not get GL handle.\n");
-      return;
-    }
+            var gulkan_client = xrd_client.get_gulkan ();
+            var cursor_width = (int) cogl_texture.get_width ();
+            var cursor_height = (GL.GLsizei) cogl_texture.get_height ();
 
-  GulkanClient *gulkan_client = xrd_client_get_gulkan (self->client);
+            var desktop_cursor = xrd_client.get_desktop_cursor ();
+            desktop_cursor.set_hotspot (hotspot_x, hotspot_y);
 
-  guint cursor_width = (guint) cogl_texture_get_width (cogl_texture);
-  guint cursor_height = (guint) cogl_texture_get_width (cogl_texture);
+            var texture = desktop_cursor.get_texture ();
+            var extent_changed = true;
 
-  XrdDesktopCursor *cursor = xrd_client_get_desktop_cursor (self->client);
-  xrd_desktop_cursor_set_hotspot (cursor, hotspot_x, hotspot_y);
+            if (texture != null) {
+                var extent = texture.get_extent ();
+                extent_changed = (cursor_width != extent.width ||
+                    cursor_height != extent.height);
+            }
 
-  GulkanTexture *texture = xrd_desktop_cursor_get_texture (cursor);
+            if (extent_changed) {
+                if (cursor_gl_textures[0] != 0) {
+                    GL.glDeleteTextures (1, cursor_gl_textures);
+                }
 
-  gboolean extent_changed = TRUE;
-  if (texture)
-    {
-      VkExtent2D extent = gulkan_texture_get_extent (texture);
-      extent_changed = (cursor_width != extent.width ||
-                        cursor_height != extent.height);
-    }
+                debug ("xrdesktop: Cursor: Reallocating %dx%d vulkan texture", cursor_width, cursor_height);
+                texture = allocate_external_memory (
+                    gulkan_client,
+                    meta_tex,
+                    meta_target,
+                    cursor_width,
+                    cursor_height,
+                    cursor_gl_textures);
 
-  if (extent_changed)
-    {
-      if (self->cursor_gl_texture != 0)
-        _glDeleteTextures (1, &self->cursor_gl_texture);
+                GL.glCopyImageSubData (
+                    meta_tex,
+                    meta_target,
+                    0,
+                    0,
+                    0,
+                    0,
+                    cursor_gl_textures[0],
+                    GL.GL_TEXTURE_2D,
+                    0,
+                    0,
+                    0,
+                    0,
+                    cursor_width,
+                    cursor_height,
+                    1);
 
-      g_print ("Cursor: Reallocating %dx%d vulkan texture\n",
-               cursor_width, cursor_height);
+                gl_check_error ("glCopyImageSubData");
+                GL.glFinish ();
 
-      texture =
-        _allocate_external_memory (self, gulkan_client, meta_tex, meta_target,
-                                   cursor_width, cursor_height,
-                                  &self->cursor_gl_texture);
+                desktop_cursor.set_and_submit_texture (texture);
 
-      _glCopyImageSubData (meta_tex, meta_target, 0, 0, 0, 0,
-                           self->cursor_gl_texture, GL_TEXTURE_2D, 0, 0, 0, 0,
-                           cursor_width, cursor_height, 1);
-      _glFinish ();
+            } else {
+                GL.glCopyImageSubData (
+                    meta_tex,
+                    meta_target,
+                    0,
+                    0,
+                    0,
+                    0,
+                    cursor_gl_textures[0],
+                    GL.GL_TEXTURE_2D,
+                    0,
+                    0,
+                    0,
+                    0,
+                    cursor_width,
+                    cursor_height,
+                    1);
 
+                gl_check_error ("glCopyImageSubData");
+                GL.glFinish ();
 
-      xrd_desktop_cursor_set_and_submit_texture (cursor, texture);
-    }
-  else
-    {
-      _glCopyImageSubData (meta_tex, meta_target, 0, 0, 0, 0,
-                     self->cursor_gl_texture, GL_TEXTURE_2D, 0, 0, 0, 0,
-                     cursor_width, cursor_height, 1);
-      _glFinish ();
-      xrd_desktop_cursor_submit_texture (cursor);
-    }
-
-            */
+                desktop_cursor.set_and_submit_texture (texture);
+            }
         }
 
         private void perform_switch () {
@@ -608,6 +615,15 @@ input_synth_move_cursor (self->vr_input, desktop_coords.x, desktop_coords.y);
             window_actor.set_data<WindowActorSignalHandler> ("signal-handler", signal_handler);
 
             return true;
+        }
+
+        private Graphene.Point window_to_desktop_coords (Meta.Window window, Graphene.Point pixels) {
+            var rect = window.get_buffer_rect ();
+
+            return Graphene.Point () {
+                x = rect.x + pixels.x,
+                y = rect.y + pixels.y
+            };
         }
 
         private Meta.Window? get_validated_window (Meta.WindowActor? window_actor) {

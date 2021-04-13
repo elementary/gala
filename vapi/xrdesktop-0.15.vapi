@@ -84,7 +84,7 @@ namespace Xrd {
 		public virtual unowned Xrd.Window window_new_from_pixels (string title, uint32 width, uint32 height, float ppm);
 		[CCode (has_construct_function = false)]
 		public Client.with_mode (Xrd.ClientMode mode);
-		public signal void click_event (Gdk.Event object);
+		public signal void click_event (Xrd.ClickEvent event);
 		public signal void keyboard_press_event (Gdk.Event object);
 		public signal void move_cursor_event (Xrd.MoveCursorEvent event);
 		public signal void request_quit_event (Gxr.QuitEvent event);
@@ -246,7 +246,7 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct ClickEvent {
 		public weak Xrd.Window window;
-		public weak Graphene.Point position;
+		public Graphene.Point? position;
 		public Xrd.InputSynthButton button;
 		public bool state;
 		public weak Gxr.Controller controller;
@@ -278,7 +278,7 @@ namespace Xrd {
 	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
 	public struct MoveCursorEvent {
 		public weak Xrd.Window window;
-		public weak Graphene.Point position;
+		public Graphene.Point? position;
 		public bool ignore;
 	}
 	[CCode (cheader_filename = "xrd.h", has_type_id = false)]
