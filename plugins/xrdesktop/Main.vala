@@ -323,28 +323,32 @@ namespace Gala.Plugins.XRDesktop {
             */
         }
 
-        private void ensure_on_workspace (Meta.Window meta_window) {
-            //TODO
-            /*
-            if (meta_window_is_on_all_workspaces (meta_win))
-    return;
+        private void ensure_window_is_focused (Meta.Window window) {
+            /* mutter asserts that we don't mess with override_redirect windows */
+            if (window.is_override_redirect ()) {
+                return;
+            }
+            window.raise ();
+            if (!window.has_focus ()) {
+                window.focus (window.get_display ().get_current_time ());
+            }
+        }
 
-  MetaDisplay *display = meta_window_get_display (meta_win);
+        private void ensure_window_is_on_workspace (Meta.Window window) {
+            if (window.on_all_workspaces) {
+                return;
+            }
 
-  MetaWorkspaceManager *manager = meta_display_get_workspace_manager (display);
-  MetaWorkspace *ws_current =
-    meta_workspace_manager_get_active_workspace (manager);
+            unowned Meta.Display display = window.get_display ();
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            unowned Meta.Workspace current_workspace = manager.get_active_workspace ();
+            unowned Meta.Workspace window_workspace = window.get_workspace ();
 
-  MetaWorkspace *ws_window = meta_window_get_workspace (meta_win);
-  if (!ws_window || !META_IS_WORKSPACE (ws_window))
-    return;
+            if (window_workspace == null || current_workspace == null) {
+                return;
+            }
 
-  if (ws_current == ws_window)
-    return;
-
-  guint32 timestamp = meta_display_get_current_time_roundtrip (display);
-  meta_workspace_activate_with_focus (ws_window, meta_win, timestamp);
-            */
+            window_workspace.activate_with_focus (window, display.get_current_time ());
         }
 
         private void on_click (Gdk.Event event) {
@@ -377,6 +381,23 @@ namespace Gala.Plugins.XRDesktop {
 
         [CCode (instance_pos=-1)]
         private void on_move_cursor (Xrd.Client client, Xrd.MoveCursorEvent event) {
+            unowned Window? xr_window = (Window?) event.window.native;
+            if (xr_window == null) {
+                return;
+            }
+
+            var meta_window = get_validated_window (xr_window.meta_window_actor);
+            if (meta_window == null) {
+                return;
+            }
+
+            /* do not move mouse cursor while the window is grabbed (in "move" mode) */
+            if (grabbed_windows.find (meta_window) != null) {
+                return;
+            }
+
+            ensure_window_is_on_workspace (meta_window);
+            ensure_window_is_focused (meta_window);
             debug ("on_move_cursor");
             /*
             ShellVRWindow *shell_win;
