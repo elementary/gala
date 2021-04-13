@@ -1112,6 +1112,6 @@ public Gala.PluginInfo register_plugin () {
         "elementary, Inc. (https://elementary.io)",
         typeof (Gala.Plugins.XRDesktop.Main),
         Gala.PluginFunction.ADDITION,
-        Gala.LoadPriority.IMMEDIATE
+        Gala.LoadPriority.DEFERRED
     };
 }
