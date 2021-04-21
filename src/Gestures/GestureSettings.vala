@@ -23,15 +23,6 @@ public class Gala.GestureSettings : Object {
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 
-    public const string MULTITASKING_ENABLED = "multitasking-gesture-enabled";
-    public const string MULTITASKING_FINGERS = "multitasking-gesture-fingers";
-
-    public const string WORKSPACE_ENABLED = "workspaces-gesture-enabled";
-    public const string WORKSPACE_FINGERS = "workspaces-gesture-fingers";
-
-    public const string ZOOM_ENABLED = "zoom-gesture-enabled";
-    public const string ZOOM_FINGERS = "zoom-gesture-fingers";
-
     static construct {
         gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
@@ -75,11 +66,7 @@ public class Gala.GestureSettings : Object {
         }
     }
 
-    public bool is_gesture_enabled (string setting_id) {
-        return gala_settings.get_boolean (setting_id);
-    }
-
-    public int gesture_fingers (string setting_id) {
-        return gala_settings.get_int (setting_id);
+    public static string get_string (string setting_id) {
+        return gala_settings.get_string (setting_id);
     }
 }
