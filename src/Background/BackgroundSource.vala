@@ -116,11 +116,11 @@ namespace Gala {
         SettingsHashCache settings_hash_cache;
 
         // list of keys that are actually relevant for us
-        const string[] options = { "color-shading-type", "picture-opacity",
+        const string[] OPTIONS = { "color-shading-type", "picture-opacity",
                 "picture-options", "picture-uri", "primary-color", "secondary-color" };
 
         void settings_changed (string key) {
-            if (!(key in options))
+            if (!(key in OPTIONS))
                 return;
 
             var current = get_current_settings_hash_cache ();
