@@ -29,6 +29,9 @@ namespace Gala {
         // Duration of the snap animation as used by maximize/unmaximize
         SNAP = 250,
         // Duration of the workspace switch animation
-        WORKSPACE_SWITCH = 300,
+        WORKSPACE_SWITCH_MIN = 300,
+        WORKSPACE_SWITCH = 400,
+        // Duration of the nudge animation when trying to switch to at the end of the workspace list
+        NUDGE = 360,
     }
 }

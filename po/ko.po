@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Korean <https://l10n.elementary.io/projects/desktop/gala/ko/"
@@ -20,71 +20,85 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "화면이 잘 나오나요?"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "설정을 이대로 유지합니다"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "이전 설정으로 되돌립니다"
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2118
+#, c-format
+msgid "Screenshot from %s"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "이동"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "크기조절"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "항상 위"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "항상 보이는 작업 공간에"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "왼쪽 작업 공간으로 이동"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "오른쪽 작업 공간으로 이동"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "닫기"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "최대화에서 복원"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "최대화"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr ""
 

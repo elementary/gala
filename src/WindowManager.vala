@@ -54,23 +54,32 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
+         public Gala.ActivatableComponent workspace_view { get; protected set; }
+
+        /**
+         * {@inheritDoc}
+         */
         public bool enable_animations { get; protected set; }
 
         public ScreenShield? screen_shield { get; private set; }
 
-#if HAS_MUTTER336
         public PointerLocator pointer_locator { get; private set; }
-#endif
+
+        SystemBackground system_background;
 
         Meta.PluginInfo info;
 
         WindowSwitcher? winswitcher = null;
-        ActivatableComponent? workspace_view = null;
         ActivatableComponent? window_overview = null;
 
         // used to detect which corner was used to trigger an action
         Clutter.Actor? last_hotcorner;
         public ScreenSaverManager? screensaver { get; private set; }
+
+        /**
+         * Allow to zoom in/out the entire desktop.
+         */
+        Zoom? zoom = null;
 
         Clutter.Actor? tile_preview;
 
@@ -95,20 +104,27 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
+        private GestureTracker gesture_tracker;
+        private bool animating_switch_workspace = false;
+        private bool switch_workspace_with_gesture = false;
+
+        /**
+         * Amount of pixels to move on the nudge animation.
+         */
+        public const float NUDGE_GAP = 32;
+
+        /**
+         * Gap to show between workspaces while switching between them.
+         */
+        public const int WORKSPACE_GAP = 24;
+
         construct {
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_touchpad ();
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
-
-#if !HAS_MUTTER332
-            Meta.Prefs.set_ignore_request_hide_titlebar (true);
-#endif
-#if !HAS_MUTTER330
-            Meta.Prefs.override_preference_schema ("dynamic-workspaces", Config.SCHEMA + ".behavior");
-            Meta.Prefs.override_preference_schema ("attach-modal-dialogs", Config.SCHEMA + ".appearance");
-            Meta.Prefs.override_preference_schema ("button-layout", Config.SCHEMA + ".appearance");
-            Meta.Prefs.override_preference_schema ("edge-tiling", Config.SCHEMA + ".behavior");
-            Meta.Prefs.override_preference_schema ("enable-animations", Config.SCHEMA + ".animations");
-#endif
 
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
@@ -121,11 +137,7 @@ namespace Gala {
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
-#else
-            unowned Meta.Display display = get_screen ().get_display ();
-#endif
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
                 SystemBackground.refresh ();
@@ -151,12 +163,7 @@ namespace Gala {
         }
 
         bool show_stage () {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-#endif
 
             screen_shield = new ScreenShield (this);
             screensaver = new ScreenSaverManager (screen_shield);
@@ -165,29 +172,17 @@ namespace Gala {
             DBusAccelerator.init (this);
             MediaFeedback.init ();
 
-#if HAS_MUTTER330
             WindowListener.init (display);
-#else
-            WindowListener.init (screen);
-#endif
             KeyboardManager.init (display);
 
-#if HAS_MUTTER330
             notification_stack = new NotificationStack (display);
-#else
-            notification_stack = new NotificationStack (screen);
-#endif
 
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
 
-#if HAS_MUTTER330
             stage = display.get_stage () as Clutter.Stage;
-#else
-            stage = screen.get_stage () as Clutter.Stage;
-#endif
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
@@ -207,55 +202,30 @@ namespace Gala {
              * +-- top window group
              */
 
-#if HAS_MUTTER330
-            var system_background = new SystemBackground (display);
-#else
-            var system_background = new SystemBackground (screen);
-#endif
+            system_background = new SystemBackground (display);
 
-#if HAS_MUTTER332
             system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
                 Clutter.BindCoordinate.ALL, 0));
             stage.insert_child_below (system_background.background_actor, null);
-#else
-            system_background.add_constraint (new Clutter.BindConstraint (stage,
-                Clutter.BindCoordinate.ALL, 0));
-            stage.insert_child_below (system_background, null);
-#endif
 
             ui_group = new Clutter.Actor ();
             ui_group.reactive = true;
             stage.add_child (ui_group);
 
-#if HAS_MUTTER330
             window_group = display.get_window_group ();
-#else
-            window_group = screen.get_window_group ();
-#endif
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-#if HAS_MUTTER330
             background_group = new BackgroundContainer (display);
             ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
-#else
-            background_group = new BackgroundContainer (screen);
-            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
-#endif
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
-#if HAS_MUTTER330
             top_window_group = display.get_top_window_group ();
-#else
-            top_window_group = screen.get_top_window_group ();
-#endif
 
-#if HAS_MUTTER336
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-#endif
 
             ui_group.add_child (screen_shield);
 
@@ -316,13 +286,11 @@ namespace Gala {
 
             /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
             configure_hotcorners ();
-#if HAS_MUTTER330
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
-#else
-            screen.monitors_changed.connect (on_monitors_changed);
-#endif
 
             behavior_settings.changed.connect (configure_hotcorners);
+
+            zoom = new Zoom (this);
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
@@ -407,12 +375,8 @@ namespace Gala {
         }
 
         void configure_hotcorners () {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-#else
-            var geometry = get_screen ().get_monitor_geometry (get_screen ().get_primary_monitor ());
-#endif
 
             add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
             add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
@@ -423,11 +387,7 @@ namespace Gala {
         }
 
         void add_hotcorner (float x, float y, string key) {
-#if HAS_MUTTER330
             unowned Clutter.Actor? stage = get_display ().get_stage ();
-#else
-            unowned Clutter.Actor? stage = get_screen ().get_stage ();
-#endif
             return_if_fail (stage != null);
 
             var action = (ActionType) behavior_settings.get_enum (key);
@@ -461,7 +421,6 @@ namespace Gala {
             hot_corner.y = y;
         }
 
-#if HAS_MUTTER330
         [CCode (instance_pos = -1)]
         void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
             Meta.KeyBinding binding) {
@@ -516,102 +475,108 @@ namespace Gala {
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
         }
-#else
-        [CCode (instance_pos = -1)]
-        void handle_cycle_workspaces (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
-            var index = screen.get_active_workspace_index () + direction;
 
-            int dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
-
-            if (index < 0)
-                index = screen.get_n_workspaces () - 1 - dynamic_offset;
-            else if (index > screen.get_n_workspaces () - 1 - dynamic_offset)
-                index = 0;
-
-            screen.get_workspace_by_index (index).activate (display.get_current_time ());
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_move_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            if (window == null)
+        private void on_gesture_detected (Gesture gesture) {
+            if (workspace_view.is_opened ()) {
                 return;
+            }
 
-            var direction = (binding.get_name () == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            move_window (window, direction);
+            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
+
+            var fingers = (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
+
+            switch_workspace_with_gesture = can_handle_swipe && fingers;
+            if (switch_workspace_with_gesture) {
+                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                switch_to_next_workspace (direction);
+            }
         }
-
-        [CCode (instance_pos = -1)]
-        void handle_move_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            if (window == null)
-                return;
-
-            var index = (binding.get_name () == "move-to-workspace-first" ? 0 : screen.get_n_workspaces () - 1);
-            var workspace = screen.get_workspace_by_index (index);
-            window.change_workspace (workspace);
-            workspace.activate_with_focus (window, display.get_current_time ());
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction);
-        }
-
-        [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace_end (Meta.Display display, Meta.Screen screen, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : screen.n_workspaces - 1);
-            screen.get_workspace_by_index (index).activate (display.get_current_time ());
-        }
-#endif
 
         /**
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
-#if HAS_MUTTER330
+            if (animating_switch_workspace) {
+                return;
+            }
+
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-            var active_workspace = screen.get_active_workspace ();
-#endif
             var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
+            } else {
+                // if we didnt switch, show a nudge-over animation if one is not already in progress
+                play_nudge_animation (direction);
+            }
+        }
+
+        private void play_nudge_animation (Meta.MotionDirection direction) {
+            if (!enable_animations) {
                 return;
             }
 
-            // if we didnt switch, show a nudge-over animation if one is not already in progress
-            if (ui_group.get_transition ("nudge") != null)
-                return;
+            animating_switch_workspace = true;
+            var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
 
-            var dest = (direction == Meta.MotionDirection.LEFT ? 32.0f : -32.0f);
+            float dest = 0;
+            if (!switch_workspace_with_gesture) {
+                dest = nudge_gap;
+            } else {
+                unowned Meta.Display display = get_display ();
+                var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
+                dest = workspaces_geometry.width;
+            }
 
-            double[] keyframes = { 0.5 };
-            GLib.Value[] x = { dest };
+            if (direction == Meta.MotionDirection.RIGHT) {
+                dest *= -1;
+            }
 
-            var nudge = new Clutter.KeyframeTransition ("translation-x") {
-                duration = 360,
-                remove_on_complete = true,
-                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
+                ui_group.x = x.clamp (-nudge_gap, nudge_gap);
             };
-            nudge.set_from_value (0.0f);
-            nudge.set_to_value (0.0f);
-            nudge.set_key_frames (keyframes);
-            nudge.set_values (x);
 
-            ui_group.add_transition ("nudge", nudge);
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
+                var nudge_gesture = new Clutter.PropertyTransition ("x") {
+                    duration = (AnimationDuration.NUDGE / 2),
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.LINEAR
+                };
+                nudge_gesture.set_from_value ((float) ui_group.x);
+                nudge_gesture.set_to_value (0.0f);
+                ui_group.add_transition ("nudge", nudge_gesture);
+
+                switch_workspace_with_gesture = false;
+                animating_switch_workspace = false;
+            };
+
+            if (!switch_workspace_with_gesture) {
+                double[] keyframes = { 0.5 };
+                GLib.Value[] x = { dest };
+
+                var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                    duration = AnimationDuration.NUDGE,
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+                };
+                nudge.set_from_value (0.0f);
+                nudge.set_to_value (0.0f);
+                nudge.set_key_frames (keyframes);
+                nudge.set_values (x);
+                nudge.completed.connect (() => {
+                    animating_switch_workspace = false;
+                });
+
+                ui_group.add_transition ("nudge", nudge);
+            } else {
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            }
         }
 
-#if HAS_MUTTER330
         void update_input_area () {
             unowned Meta.Display display = get_display ();
 
@@ -634,30 +599,6 @@ namespace Gala {
             else
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
         }
-#else
-        void update_input_area () {
-            var screen = get_screen ();
-
-            if (screensaver != null) {
-                try {
-                    if (screensaver.get_active ()) {
-                        InternalUtils.set_input_area (screen, InputArea.NONE);
-                        return;
-                    }
-                } catch (Error e) {
-                    // the screensaver object apparently won't be null even though
-                    // it is unavailable. This error will be thrown however, so we
-                    // can just ignore it, because if it is thrown, the screensaver
-                    // is unavailable.
-                }
-            }
-
-            if (is_modal ())
-                InternalUtils.set_input_area (screen, InputArea.FULLSCREEN);
-            else
-                InternalUtils.set_input_area (screen, InputArea.DEFAULT);
-        }
-#endif
 
         void show_bottom_stack_window (Meta.Window bottom_window) {
             unowned Meta.Workspace workspace = bottom_window.get_workspace ();
@@ -736,7 +677,6 @@ namespace Gala {
             if (window == null)
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
@@ -748,20 +688,6 @@ namespace Gala {
                 Utils.bell (display);
                 return;
             }
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-
-            var active = screen.get_active_workspace ();
-            var next = active.get_neighbor (direction);
-
-            //dont allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if ((Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == screen.n_workspaces - 1)
-                || (active == next)) {
-                Utils.bell (screen);
-                return;
-            }
-#endif
 
             moving = window;
 
@@ -783,22 +709,13 @@ namespace Gala {
             if (modal_stack.size >= 2)
                 return proxy;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
-#else
-            var screen = get_screen ();
-            var time = screen.get_display ().get_current_time ();
-#endif
 
             update_input_area ();
             begin_modal (0, time);
 
-#if HAS_MUTTER330
             display.disable_unredirect ();
-#else
-            screen.disable_unredirect ();
-#endif
 
             return proxy;
         }
@@ -817,17 +734,10 @@ namespace Gala {
 
             update_input_area ();
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             end_modal (display.get_current_time ());
 
             display.enable_unredirect ();
-#else
-            var screen = get_screen ();
-            end_modal (screen.get_display ().get_current_time ());
-
-            screen.enable_unredirect ();
-#endif
         }
 
         /**
@@ -864,14 +774,8 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void perform_action (ActionType type) {
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var current = display.get_focus_window ();
-#else
-            var screen = get_screen ();
-            var display = screen.get_display ();
-            var current = display.get_focus_window ();
-#endif
 
             switch (type) {
                 case ActionType.SHOW_WORKSPACE_VIEW:
@@ -887,7 +791,8 @@ namespace Gala {
                     if (current == null || current.window_type != Meta.WindowType.NORMAL)
                         break;
 
-                    if (current.get_maximized () == (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL))
+                    var maximize_flags = current.get_maximized ();
+                    if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
                         current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
@@ -999,13 +904,12 @@ namespace Gala {
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
-#if HAS_MUTTER330
                     unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
                     var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
-#else
-                    var workspace = screen.get_workspace_by_index (screen.get_n_workspaces () - 1);
-#endif
                     workspace.activate (display.get_current_time ());
+                    break;
+                case ActionType.SCREENSHOT_CURRENT:
+                    screenshot_current_window ();
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -1027,8 +931,14 @@ namespace Gala {
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
 
-                    if (window.get_maximized () > 0)
+                    var maximize_flags = window.get_maximized ();
+                    if (maximize_flags > 0) {
                         flags |= WindowFlags.IS_MAXIMIZED;
+
+                        if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
+                            flags |= WindowFlags.IS_TILED;
+                        }
+                    }
 
                     if (window.allows_move ())
                         flags |= WindowFlags.ALLOWS_MOVE;
@@ -1060,7 +970,13 @@ namespace Gala {
         public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
-                tile_preview.background_color = { 100, 186, 255, 100 };
+                var rgba = InternalUtils.get_theme_accent_color ();
+                tile_preview.background_color = {
+                    (uint8)(255.0 * rgba.red),
+                    (uint8)(255.0 * rgba.green),
+                    (uint8)(255.0 * rgba.blue),
+                    (uint8)(255.0 * rgba.alpha)
+                };
                 tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
@@ -1103,6 +1019,7 @@ namespace Gala {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
+                tile_preview = null;
             }
         }
 
@@ -1125,7 +1042,6 @@ namespace Gala {
             if (!Meta.Prefs.get_dynamic_workspaces ())
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
             unowned Meta.Workspace win_ws = window.get_workspace ();
@@ -1157,29 +1073,6 @@ namespace Gala {
 
                 ws_assoc.remove (window);
             }
-#else
-            unowned Meta.Screen screen = get_screen ();
-            var time = screen.get_display ().get_current_time ();
-            unowned Meta.Workspace win_ws = window.get_workspace ();
-
-            if (which_change == Meta.SizeChange.FULLSCREEN) {
-                // Do nothing if the current workspace would be empty
-                if (Utils.get_n_windows (win_ws) <= 1)
-                    return;
-
-                var old_ws_index = win_ws.index ();
-                var new_ws_index = old_ws_index + 1;
-                InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-                var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws_obj);
-                new_ws_obj.activate_with_focus (window, time);
-
-                ws_assoc.insert (window, old_ws_index);
-            } else {
-                move_window_to_old_ws (window);
-            }
-#endif
         }
 
         // must wait for size_changed to get updated frame_rect
@@ -1241,11 +1134,7 @@ namespace Gala {
             minimizing.add (actor);
 
             int width, height;
-#if HAS_MUTTER330
             get_display ().get_size (out width, out height);
-#else
-            get_screen ().get_size (out width, out height);
-#endif
 
             Meta.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
@@ -1779,19 +1668,18 @@ namespace Gala {
                 return;
             }
 
+            // Do nothing if window is not on primary monitor
+            if (!window.is_on_primary_monitor ()) {
+                return;
+            }
+
             var old_ws_index = win_ws.index ();
             var new_ws_index = old_ws_index + 1;
             InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var time = display.get_current_time ();
             var new_ws_obj = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
-#else
-            unowned Meta.Screen screen = get_screen ();
-            var time = get_screen ().get_display ().get_current_time ();
-            var new_ws_obj = screen.get_workspace_by_index (new_ws_index);
-#endif
             window.change_workspace (new_ws_obj);
             new_ws_obj.activate_with_focus (window, time);
 
@@ -1813,18 +1701,11 @@ namespace Gala {
             var old_ws_index = ws_assoc.get (window);
             var new_ws_index = win_ws.index ();
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager workspace_manager = display.get_workspace_manager ();
             if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
                 uint time = display.get_current_time ();
                 var old_ws_obj = workspace_manager.get_workspace_by_index (old_ws_index);
-#else
-            unowned Meta.Screen screen = get_screen ();
-            if (new_ws_index != old_ws_index && old_ws_index < screen.get_n_workspaces ()) {
-                uint time = screen.get_display ().get_current_time ();
-                var old_ws_obj = screen.get_workspace_by_index (old_ws_index);
-#endif
                 window.change_workspace (old_ws_obj);
                 old_ws_obj.activate_with_focus (window, time);
             }
@@ -1872,17 +1753,18 @@ namespace Gala {
         List<Clutter.Actor>? tmp_actors;
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            const int animation_duration = AnimationDuration.WORKSPACE_SWITCH;
-
             if (!enable_animations
-                || animation_duration == 0
-                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)) {
+                || AnimationDuration.WORKSPACE_SWITCH == 0
+                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
+                || animating_switch_workspace) {
+                animating_switch_workspace = false;
                 switch_workspace_completed ();
                 return;
             }
 
+            animating_switch_workspace = true;
+
             float screen_width, screen_height;
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var primary = display.get_primary_monitor ();
             var move_primary_only = InternalUtils.workspaces_only_on_primary ();
@@ -1895,21 +1777,9 @@ namespace Gala {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             unowned Meta.Workspace workspace_from = manager.get_workspace_by_index (from);
             unowned Meta.Workspace workspace_to = manager.get_workspace_by_index (to);
-#else
-            var screen = get_screen ();
-            var primary = screen.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            var monitor_geom = screen.get_monitor_geometry (primary);
-            var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
-            var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
-
-            screen.get_size (out screen_width, out screen_height);
-
-            unowned Meta.Workspace workspace_from = screen.get_workspace_by_index (from);
-            unowned Meta.Workspace workspace_to = screen.get_workspace_by_index (to);
-#endif
 
             var main_container = new Clutter.Actor ();
+            var background_actor = new Clutter.Clone (system_background.background_actor);
             var static_windows = new Clutter.Actor ();
             var in_group = new Clutter.Actor ();
             var out_group = new Clutter.Actor ();
@@ -1918,6 +1788,7 @@ namespace Gala {
             tmp_actors = new List<Clutter.Clone> ();
 
             tmp_actors.prepend (main_container);
+            tmp_actors.prepend (background_actor);
             tmp_actors.prepend (in_group);
             tmp_actors.prepend (out_group);
             tmp_actors.prepend (static_windows);
@@ -1927,20 +1798,21 @@ namespace Gala {
             // prepare wallpaper
             Clutter.Actor wallpaper;
             if (move_primary_only) {
-                wallpaper = background_group.get_child_at_index (primary);
-                wallpaper.set_data<int> ("prev-x", (int) wallpaper.x);
-                wallpaper.set_data<int> ("prev-y", (int) wallpaper.y);
-            } else
-                wallpaper = background_group;
-
-            windows.prepend (wallpaper);
-            parents.prepend (wallpaper.get_parent ());
+                unowned var background = background_group.get_child_at_index (primary);
+                background.hide ();
+                wallpaper = new Clutter.Clone (background);
+            } else {
+                background_group.hide ();
+                wallpaper = new Clutter.Clone (background_group);
+            }
+            tmp_actors.prepend (wallpaper);
 
             var wallpaper_clone = new Clutter.Clone (wallpaper);
             tmp_actors.prepend (wallpaper_clone);
 
             // pack all containers
-            clutter_actor_reparent (wallpaper, main_container);
+            main_container.add_child (background_actor);
+            main_container.add_child (wallpaper);
             main_container.add_child (wallpaper_clone);
             main_container.add_child (out_group);
             main_container.add_child (in_group);
@@ -1962,11 +1834,7 @@ namespace Gala {
             var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
-#if HAS_MUTTER330
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-#else
-            foreach (unowned Meta.WindowActor actor in screen.get_window_actors ()) {
-#endif
                 if (actor.is_destroyed ())
                     continue;
 
@@ -2054,13 +1922,18 @@ namespace Gala {
             main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
             var x2 = move_primary_only ? monitor_geom.width : screen_width;
+            x2 += WORKSPACE_GAP * InternalUtils.get_ui_scaling_factor ();
             if (direction == Meta.MotionDirection.RIGHT)
                 x2 = -x2;
 
             out_group.x = 0.0f;
             wallpaper.x = 0.0f;
+            wallpaper.y += clone_offset_y;
             in_group.x = -x2;
             wallpaper_clone.x = -x2;
+            wallpaper_clone.y += clone_offset_y;
+            wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
+            wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
 
             // The wallpapers need to move upwards inside the container to match their
             // original position before/after the transition.
@@ -2075,63 +1948,99 @@ namespace Gala {
 
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
-            out_group.set_easing_mode (animation_mode);
-            out_group.set_easing_duration (animation_duration);
-            in_group.set_easing_mode (animation_mode);
-            in_group.set_easing_duration (animation_duration);
-            wallpaper_clone.set_easing_mode (animation_mode);
-            wallpaper_clone.set_easing_duration (animation_duration);
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var x_out = GestureTracker.animation_value (0.0f, x2, percentage, true);
+                var x_in = GestureTracker.animation_value (-x2, 0.0f, percentage, true);
 
-            wallpaper.save_easing_state ();
-            wallpaper.set_easing_mode (animation_mode);
-            wallpaper.set_easing_duration (animation_duration);
+                out_group.x = x_out;
+                in_group.x = x_in;
 
-            out_group.x = x2;
-            in_group.x = 0.0f;
+                wallpaper.x = x_out;
+                wallpaper_clone.x = x_in;
+            };
 
-            wallpaper.x = x2;
-            wallpaper_clone.x = 0.0f;
-            wallpaper.restore_easing_state ();
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+                if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
+                    switch_workspace_animation_finished (direction, cancel_action);
+                    return;
+                }
 
-            var transition = in_group.get_transition ("x");
-            if (transition != null)
-                transition.completed.connect (end_switch_workspace);
-            else
-                end_switch_workspace ();
+                int duration = switch_workspace_with_gesture
+                    ? calculated_duration
+                    : AnimationDuration.WORKSPACE_SWITCH_MIN;
+
+                out_group.set_easing_mode (animation_mode);
+                out_group.set_easing_duration (duration);
+                in_group.set_easing_mode (animation_mode);
+                in_group.set_easing_duration (duration);
+                wallpaper_clone.set_easing_mode (animation_mode);
+                wallpaper_clone.set_easing_duration (duration);
+
+                wallpaper.save_easing_state ();
+                wallpaper.set_easing_mode (animation_mode);
+                wallpaper.set_easing_duration (duration);
+
+                out_group.x = cancel_action ? 0.0f : x2;
+                in_group.x = cancel_action ? -x2 : 0.0f;
+
+                wallpaper.x = cancel_action ? 0.0f : x2;
+                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
+                wallpaper.restore_easing_state ();
+
+                var transition = in_group.get_transition ("x");
+                if (transition != null) {
+                    transition.completed.connect (() => {
+                        switch_workspace_animation_finished (direction, cancel_action);
+                    });
+                } else {
+                    switch_workspace_animation_finished (direction, cancel_action);
+                }
+            };
+
+            if (!switch_workspace_with_gesture) {
+                on_animation_end (1, false, 0);
+            } else {
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            }
+        }
+
+        private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
+                bool cancel_action) {
+            end_switch_workspace ();
+            switch_workspace_with_gesture = false;
+            animating_switch_workspace = cancel_action;
+
+            if (cancel_action) {
+                var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
+                    ? Meta.MotionDirection.RIGHT
+                    : Meta.MotionDirection.LEFT;
+                unowned Meta.Display display = get_display ();
+                var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+                var neighbor = active_workspace.get_neighbor (cancel_direction);
+                neighbor.activate (display.get_current_time ());
+            }
         }
 
         void end_switch_workspace () {
             if (windows == null || parents == null)
                 return;
 
-#if HAS_MUTTER330
             unowned Meta.Display display = get_display ();
             var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-#else
-            var screen = get_screen ();
-            var active_workspace = screen.get_active_workspace ();
-#endif
+
+            // Show the real wallpaper again
+            var primary = display.get_primary_monitor ();
+            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
+            if (move_primary_only) {
+                unowned var background = background_group.get_child_at_index (primary);
+                background.show ();
+            } else {
+                background_group.show ();
+            }
 
             for (var i = 0; i < windows.length (); i++) {
                 var actor = windows.nth_data (i);
                 actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                // to maintain the correct order of monitor, we need to insert the Background
-                // back manually
-                if (actor is BackgroundManager) {
-                    var background = (BackgroundManager) actor;
-
-                    background.get_parent ().remove_child (background);
-                    background_group.insert_child_at_index (background, background.monitor_index);
-                    background.x = background.steal_data<int> ("prev-x");
-                    background.y = background.steal_data<int> ("prev-y");
-                    continue;
-                } else if (actor is Meta.BackgroundGroup) {
-                    actor.x = 0;
-                    // thankfully mutter will take care of stacking it at the right place for us
-                    clutter_actor_reparent (actor, window_group);
-                    continue;
-                }
 
                 unowned Meta.WindowActor? window = actor as Meta.WindowActor;
                 if (window == null) {
@@ -2183,11 +2092,9 @@ namespace Gala {
             end_switch_workspace ();
         }
 
-#if HAS_MUTTER336
         public override void locate_pointer () {
             pointer_locator.show_ripple ();
         }
-#endif
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
             if (!is_modal ())
@@ -2223,6 +2130,21 @@ namespace Gala {
 
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
+        }
+
+        private async void screenshot_current_window () {
+            try {
+                var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
+                /// TRANSLATORS: %s represents a timestamp here
+                string file_name = _("Screenshot from %s").printf (date_time);
+    
+                bool success = false;
+                string filename_used = "";
+                var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot_window (true, false, true, file_name, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
         }
 
         /**
