@@ -337,7 +337,7 @@ namespace Gala {
          */
         public static int pixel_align (float value) {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return (int) Math.round (value * scale_factor) / scale_factor;    
+            return (int) Math.round (value * scale_factor) / scale_factor;
         }
 
         private static Gtk.StyleContext selection_style_context = null;
