@@ -34,7 +34,7 @@ namespace Gala {
 
             // Occupy only window frame area plus shadow size
             var bounding_box = ActorBox ();
-            bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size);
+            bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size); //vala-lint=space-before-paren
             bounding_box.set_size (outer_rect.width + size * 2, outer_rect.height + size * 2);
 
             return bounding_box;
