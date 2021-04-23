@@ -331,13 +331,13 @@ namespace Gala {
             var target_x = multitasking_view_x ();
 
             var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
-            var pivotY = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
+            var pivot_y = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
 
             update_size (monitor);
 
             GestureTracker.OnBegin on_animation_begin = () => {
                 x = initial_x;
-                background.set_pivot_point (0.5f, pivotY);
+                background.set_pivot_point (0.5f, pivot_y);
             };
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
