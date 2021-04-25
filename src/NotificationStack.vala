@@ -51,6 +51,7 @@ public class Gala.NotificationStack : Object {
         notification.set_pivot_point (0.5f, 0.5f);
 
         unowned Meta.Window window = notification.get_meta_window ();
+        var window_rect = window.get_frame_rect ();
         window.stick ();
 
         var scale = Utils.get_ui_scaling_factor ();
@@ -81,12 +82,12 @@ public class Gala.NotificationStack : Object {
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */
-        update_positions (animate, notification.height);
+        update_positions (animate, window_rect.height);
 
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
-        int notification_x_pos = area.x + area.width - window.get_frame_rect ().width;
+        int notification_x_pos = area.x + area.width - window_rect.width;
 
         move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
         notifications.insert (0, notification);
@@ -125,7 +126,8 @@ public class Gala.NotificationStack : Object {
             unowned Clutter.Transition? transition = actor.get_transition ("position");
             actor.set_data<Clutter.Transition?> (TRANSITION_MOVE_STACK_ID, transition);
 
-            y += actor.height;
+            unowned Meta.Window window = actor.get_meta_window ();
+            y += window.get_frame_rect ().height;
         }
     }
 
