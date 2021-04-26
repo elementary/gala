@@ -70,7 +70,7 @@ msgstr "حرك مكان العمل لليسار"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "حرك مكان العمل لليمين"
 
 #: daemon/MenuDaemon.vala:176
 #, fuzzy
