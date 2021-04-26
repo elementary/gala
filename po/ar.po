@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2021-04-26 12:57+0000\n"
-"Last-Translator: EpixMan <abdullahgtgt@gmail.com>\n"
+"Last-Translator: nasserbinlaboun <nasser1990com@gmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
 "\n"
 "Language: ar\n"
@@ -108,7 +108,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "تعدد المهام &amp; ادارة النافذة"
+msgstr "تعدد المهام &amp; إدارة النوافذ"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
