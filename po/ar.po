@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-29 11:40+0000\n"
-"PO-Revision-Date: 2021-04-26 11:34+0000\n"
-"Last-Translator: nasserbinlaboun <nasser1990com@gmail.com>\n"
+"PO-Revision-Date: 2021-04-26 12:57+0000\n"
+"Last-Translator: EpixMan <abdullahgtgt@gmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
 "\n"
 "Language: ar\n"
@@ -152,11 +152,11 @@ msgstr ""
 #: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
+msgstr "اصلاح اختفاء النوافذ في الشاشات الاضافية عند تغيير سطح العمل"
 
 #: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
+msgstr "اصلاح التعطل عند تغيير اسطح العمل عندما تكون هناك نافذة متنقلة موجودة"
 
 #: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "اصلاح تعطل محتمل عند اخذ لقطة للشاشة"
 
 #: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
