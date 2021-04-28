@@ -82,7 +82,7 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
     }
 
     /*
-    * Case A: application is not running           --> open a new instance
+    * Case A: application is not running           -->  a new instance
     * Case B: application is running without focus --> focus instance with highest z-index
     * Case C: application is running and has focus --> focus another instance (lowest z-index)
     */
@@ -93,60 +93,36 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
             return;
         }
 
+        unowned Meta.Display display = wm.get_display ();
         var windows = new SList<Meta.Window> ();
-        foreach (unowned Meta.Window window in get_window_stack ()) {
+        foreach (unowned Meta.Window window in display.get_tab_list (Meta.TabList.NORMAL, null)) {
             if (Utils.window_to_desktop_cache[window].equal(info)) {
                 windows.append (window);
             }
         }
 
+        // Case A
         if (windows.length () == 0) {
-            launch_application (info);
+            try {
+                info.launch (null, null);
+            } catch {
+                warning("Failed to launch %s.", info.get_display_name ());
+            }
             return;
         }
 
-        unowned Meta.Display display = wm.get_display ();
         var sorted_windows = display.sort_windows_by_stacking (windows);
         var active_window = display.get_focus_window ();
         var last_window = sorted_windows.data;
         var first_window = sorted_windows.last ().data;
         var time = display.get_current_time ();
+
+        // Case B
         if (active_window != first_window) {
             first_window.activate (time);
+        // Case C
         } else {
             last_window.activate (time);
-        }
-    }
-
-    private SList<Meta.Window> get_window_stack () {
-        var windows = new SList<Meta.Window> ();
-        unowned Meta.Display display = wm.get_display ();
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            unowned Meta.Workspace workspace = manager.get_workspace_by_index (i);
-            foreach (unowned Meta.Window window in workspace.list_windows ()) {
-                if (window.window_type != Meta.WindowType.NORMAL) {
-                    continue;
-                }
-
-                // skip windows that are on all workspace except we're currently
-                // processing the workspace it actually belongs to
-                if (window.is_on_all_workspaces () && window.get_workspace () != workspace) {
-                    continue;
-                }
-
-                windows.append (window);
-            }
-        }
-
-        return windows;
-    }
-
-    private void launch_application (DesktopAppInfo info) {
-        try {
-            info.launch (null, null);
-        } catch {
-            warning("Failed to launch %s.", info.get_display_name ());
         }
     }
 }
