@@ -44,9 +44,6 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
                 (Meta.KeyHandlerFunc) handler_default_application);
         });
 
-        display.add_keybinding ("application-same", settings, Meta.KeyBindingFlags.NONE,
-            (Meta.KeyHandlerFunc) handler_same_application);
-
         settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.applications.custom");
         for (var i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
             display.add_keybinding ("application-custom" + i.to_string (), settings_custom,
@@ -78,19 +75,6 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
         var index = int.parse(keybinding.substring (-1));
         var desktop_id = settings_custom.get_strv ("desktop-ids")[index];
         focus_by_desktop_id (desktop_id);
-    }
-
-    [CCode (instance_pos = -1)]
-    void handler_same_application (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) {
-        var active_window = display.get_focus_window ();
-        var wm_class = active_window.get_wm_class ();
-        foreach (unowned Meta.Window other in get_window_stack ()) {
-            if (other.get_wm_class () == wm_class && other != active_window) {
-                other.activate (display.get_current_time ());
-                return;
-            }
-        }
     }
 
     /*
