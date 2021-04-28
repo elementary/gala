@@ -27,7 +27,7 @@ namespace Gala {
         static Gdk.Pixbuf? close_pixbuf = null;
 
         static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
-        static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
+        public static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
         static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
 
         static AppCache app_cache;

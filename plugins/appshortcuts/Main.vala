@@ -46,8 +46,12 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
 
         settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.applications.custom");
         for (var i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
-            display.add_keybinding ("application-custom" + i.to_string (), settings_custom,
-                Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler_custom_application);
+            display.add_keybinding (
+                @"application-custom$(i)",
+                settings_custom,
+                Meta.KeyBindingFlags.NONE, 
+                (Meta.KeyHandlerFunc) handler_custom_application
+            );
         }
     }
 
@@ -89,19 +93,10 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
             return;
         }
 
-        var xids = Bamf.Matcher.get_default ().get_xids_for_application (info.filename);
-        if (xids.length == 0) {
-            launch_application (info);
-            return;
-        }
-
         var windows = new SList<Meta.Window> ();
         foreach (unowned Meta.Window window in get_window_stack ()) {
-            for (var j = 0; j < xids.length; j++) {
-                if (xids.index (j) == (uint32) window.get_xwindow ()) {
-                    windows.append (window);
-                    break;
-                }
+            if (Utils.window_to_desktop_cache[window].equal(info)) {
+                windows.append (window);
             }
         }
 
@@ -130,17 +125,7 @@ public class Gala.Plugins.AppShortcuts : Gala.Plugin {
         for (int i = 0; i < manager.get_n_workspaces (); i++) {
             unowned Meta.Workspace workspace = manager.get_workspace_by_index (i);
             foreach (unowned Meta.Window window in workspace.list_windows ()) {
-                if (window.window_type != Meta.WindowType.NORMAL &&
-                    window.window_type != Meta.WindowType.DOCK &&
-                    window.window_type != Meta.WindowType.DIALOG ||
-                    window.is_attached_dialog ()) {
-                    var actor = window.get_compositor_private () as Meta.WindowActor;
-                    if (actor != null)
-                        actor.hide ();
-                    continue;
-                }
-
-                if (window.window_type == Meta.WindowType.DOCK) {
+                if (window.window_type != Meta.WindowType.NORMAL) {
                     continue;
                 }
 
