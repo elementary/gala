@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-08-19 23:19+0000\n"
-"PO-Revision-Date: 2020-08-25 13:13+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"PO-Revision-Date: 2021-03-29 17:23+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -12,74 +12,88 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "התצוגה נראית בסדר?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "להשאיר את התצורה הזאת"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "שחזור התצורה הקודמת"
 
-#: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "מזעור"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2118
+#, c-format
+msgid "Screenshot from %s"
+msgstr "צילום מסך מ־%s"
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:115
+msgid "Hide"
+msgstr "הסתרה"
+
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "הזזה"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "שינוי גודל"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "תמיד עליון"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "תמיד בסביבת העבודה הגלויה"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "העברה לסביבת העבודה משמאל"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "העברה לסביבת העבודה מימין"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr "צילום המסך"
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "סגירה"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr "ביטול פריסת אריחים"
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "שחזור גודל"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "הגדלה"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr "החלפת טפט…"
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr "הגדרות תצוגה…"
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr "הגדרות מערכת…"
 
@@ -131,7 +145,7 @@ msgstr "תיקון חלונות „תמיד במרחב העבודה הגלוי�
 #: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr "תיקון חלונות שנעלמים בתצוגות שאינן עיקריות בעת החלפת מרחבי עבודה"
+msgstr "תיקון חלונות שנעלמים בתצוגות משניות בעת החלפת מרחבי עבודה"
 
 #: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
@@ -193,6 +207,9 @@ msgstr "קובץ שולחן עבודה כמנגנון גיבוי להודעות 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Minimize"
+#~ msgstr "מזעור"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "פעולה עבור הפינה השמאלית העליונה"

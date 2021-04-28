@@ -21,7 +21,7 @@ namespace Cogl {
 	}
 
 	[Compact]
-	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_shader_ref", unref_function = "cogl_shader_unref")]
+	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_object_ref", unref_function = "cogl_object_unref")]
 	public class Shader : Cogl.Handle {
 	}
 
@@ -68,7 +68,7 @@ namespace Cogl {
 	}
 
 	[Compact]
-	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_program_ref", unref_function = "cogl_program_unref")]
+	[CCode (cname = "CoglHandle", cheader_filename = "cogl/cogl.h", type_id = "cogl_handle_get_gtype ()", ref_function = "cogl_object_ref", unref_function = "cogl_object_unref")]
 	public class Program : Cogl.Handle {
 	}
 

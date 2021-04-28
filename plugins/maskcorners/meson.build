@@ -1,6 +1,5 @@
 gala_maskcorners_sources = [
-    'Main.vala',
-    'Settings.vala',
+    'Main.vala'
 ]
 
 gala_maskcorners_lib = shared_library(

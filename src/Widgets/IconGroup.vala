@@ -69,9 +69,10 @@ namespace Gala {
 
                 _active = value;
 
-                var transition = new PropertyTransition ("backdrop-opacity");
-                transition.duration = 300;
-                transition.remove_on_complete = true;
+                var transition = new PropertyTransition ("backdrop-opacity") {
+                    duration = 300,
+                    remove_on_complete = true
+                };
                 transition.set_from_value (_active ? 0 : 40);
                 transition.set_to_value (_active ? 40 : 0);
 
@@ -204,18 +205,9 @@ namespace Gala {
         /**
          * Override the paint handler to draw our backdrop if necessary
          */
-#if HAS_MUTTER336
         public override void paint (Clutter.PaintContext context) {
-#else
-        public override void paint () {
-#endif
             if (backdrop_opacity < 1 || drag_action.dragging) {
-#if HAS_MUTTER336
                 base.paint (context);
-#else
-                base.paint ();
-#endif
-
                 return;
             }
 
@@ -225,7 +217,6 @@ namespace Gala {
             var y = -10;
             var height = WorkspaceClone.BOTTOM_OFFSET * scale;
 
-#if HAS_MUTTER336
             Cogl.VertexP2T2C4 vertices[4];
             vertices[0] = { x, y + height, 0, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
@@ -235,28 +226,7 @@ namespace Gala {
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
             var pipeline = new Cogl.Pipeline (context.get_framebuffer ().get_context ());
             primitive.draw (context.get_framebuffer (), pipeline);
-#else
-            var color_top = Cogl.Color.from_4ub (0, 0, 0, 0);
-            var color_bottom = Cogl.Color.from_4ub (255, 255, 255, backdrop_opacity);
-            color_bottom.premultiply ();
-
-            Cogl.TextureVertex vertices[4];
-            vertices[0] = { x, y, 0, 0, 0, color_top };
-            vertices[1] = { x, y + height, 0, 0, 1, color_bottom };
-            vertices[2] = { x + width, y + height, 0, 1, 1, color_bottom };
-            vertices[3] = { x + width, y, 0, 1, 0, color_top };
-
-            // for some reason cogl will try mapping the textures of the children
-            // to the cogl_polygon call. We can fix this and force it to use our
-            // color by setting a different material with no properties.
-            Cogl.set_source (dummy_material);
-            Cogl.polygon (vertices, true);
-#endif
-#if HAS_MUTTER336
-                base.paint (context);
-#else
-                base.paint ();
-#endif
+            base.paint (context);
         }
 
         /**
@@ -342,11 +312,7 @@ namespace Gala {
          * delete signal
          */
         void close () {
-#if HAS_MUTTER330
             var time = workspace.get_display ().get_current_time ();
-#else
-            var time = workspace.get_screen ().get_display ().get_current_time ();
-#endif
             foreach (var window in workspace.list_windows ()) {
                 var type = window.window_type;
                 if (!window.is_on_all_workspaces () && (type == WindowType.NORMAL
@@ -418,7 +384,6 @@ namespace Gala {
 
             // it's not safe to to call meta_workspace_index() here, we may be still animating something
             // while the workspace is already gone, which would result in a crash.
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             int workspace_index = 0;
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
@@ -427,21 +392,11 @@ namespace Gala {
                     break;
                 }
             }
-#else
-            var screen = workspace.get_screen ();
-            var workspace_index = screen.get_workspaces ().index (workspace);
-#endif
 
             if (n_windows < 1) {
-#if HAS_MUTTER330
                 if (!Prefs.get_dynamic_workspaces ()
                     || workspace_index != manager.get_n_workspaces () - 1)
                     return false;
-#else
-                if (!Prefs.get_dynamic_workspaces ()
-                    || workspace_index != screen.get_n_workspaces () - 1)
-                    return false;
-#endif
 
                 var buffer = new Granite.Drawing.BufferSurface (SIZE * scale, SIZE * scale);
                 var offset = (SIZE * scale) / 2 - (PLUS_WIDTH * scale) / 2;
@@ -535,21 +490,12 @@ namespace Gala {
         }
 
         Actor drag_begin (float click_x, float click_y) {
-#if HAS_MUTTER330
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Prefs.get_dynamic_workspaces () &&
                 workspace.index () == manager.get_n_workspaces () - 1) {
                 return null;
             }
-#else
-            unowned Screen screen = workspace.get_screen ();
-            if (icon_container.get_n_children () < 1 &&
-                Prefs.get_dynamic_workspaces () &&
-                workspace.index () == screen.get_n_workspaces () - 1) {
-                return null;
-            }
-#endif
 
             float abs_x, abs_y;
             float prev_parent_x, prev_parent_y;
@@ -581,12 +527,8 @@ namespace Gala {
                 get_parent ().remove_child (this);
 
                 unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
-#if HAS_MUTTER330
                 unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
                 manager.reorder_workspace (workspace, inserter.workspace_index);
-#else
-                workspace.get_screen ().reorder_workspace (workspace, inserter.workspace_index);
-#endif
 
                 restore_group ();
             } else {

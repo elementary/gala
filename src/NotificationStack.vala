@@ -28,38 +28,22 @@ public class Gala.NotificationStack : Object {
 
     private const int WIDTH = 300;
 
-    private int stack_x;
     private int stack_y;
     private int stack_width;
 
-#if HAS_MUTTER330
     public Meta.Display display { get; construct; }
-#else
-    public Meta.Screen screen { get; construct; }
-#endif
 
     private Gee.ArrayList<unowned Meta.WindowActor> notifications;
 
-#if HAS_MUTTER330
     public NotificationStack (Meta.Display display) {
         Object (display: display);
     }
-#else
-    public NotificationStack (Meta.Screen screen) {
-        Object (screen: screen);
-    }
-#endif
 
     construct {
         notifications = new Gee.ArrayList<unowned Meta.WindowActor> ();
 
-#if HAS_MUTTER330
         Meta.MonitorManager.@get ().monitors_changed_internal.connect (update_stack_allocation);
         display.workareas_changed.connect (update_stack_allocation);
-#else
-        screen.monitors_changed.connect (update_stack_allocation);
-        screen.workareas_changed.connect (update_stack_allocation);
-#endif
         update_stack_allocation ();
     }
 
@@ -67,6 +51,7 @@ public class Gala.NotificationStack : Object {
         notification.set_pivot_point (0.5f, 0.5f);
 
         unowned Meta.Window window = notification.get_meta_window ();
+        var window_rect = window.get_frame_rect ();
         window.stick ();
 
         var scale = Utils.get_ui_scaling_factor ();
@@ -82,8 +67,9 @@ public class Gala.NotificationStack : Object {
             flip_transition.set_key_frames ({ 0.6 });
             flip_transition.set_values ({ -10.0 });
 
-            var entry = new Clutter.TransitionGroup ();
-            entry.duration = 400;
+            var entry = new Clutter.TransitionGroup () {
+                duration = 400
+            };
             entry.add_transition (opacity_transition);
             entry.add_transition (flip_transition);
 
@@ -96,25 +82,24 @@ public class Gala.NotificationStack : Object {
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */
-        update_positions (animate, notification.height);
+        update_positions (animate, window_rect.height);
 
-        move_window (notification, stack_x, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
+        var primary = display.get_primary_monitor ();
+        var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+
+        int notification_x_pos = area.x + area.width - window_rect.width;
+
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
         notifications.insert (0, notification);
     }
 
     private void update_stack_allocation () {
-#if HAS_MUTTER330
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
-#else
-        var primary = screen.get_primary_monitor ();
-        var area = screen.get_active_workspace ().get_work_area_for_monitor (primary);
-#endif
 
         var scale = Utils.get_ui_scaling_factor ();
         stack_width = (WIDTH + MARGIN) * scale;
 
-        stack_x = area.x + area.width - stack_width;
         stack_y = area.y;
     }
 
@@ -141,7 +126,8 @@ public class Gala.NotificationStack : Object {
             unowned Clutter.Transition? transition = actor.get_transition ("position");
             actor.set_data<Clutter.Transition?> (TRANSITION_MOVE_STACK_ID, transition);
 
-            y += actor.height;
+            unowned Meta.Window window = actor.get_meta_window ();
+            y += window.get_frame_rect ().height;
         }
     }
 
@@ -166,7 +152,7 @@ public class Gala.NotificationStack : Object {
     /**
      * This function takes care of properly updating both the actor
      * position and the actual window position.
-     * 
+     *
      * To enable animations for a window we first need to move it's frame
      * in the compositor and then calculate & apply the coordinates for the window
      * actor.
