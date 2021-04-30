@@ -105,7 +105,93 @@
 			<summary>Automatically move fullscreened windows to a new workspace</summary>
 			<description></description>
 		</key>
-  </schema>
+	</schema>
+
+	<schema path="/org/pantheon/desktop/gala/keybindings/launch-or-focus/" id="org.pantheon.desktop.gala.keybindings.launch-or-focus">
+		<key type="as" name="webbrowser">
+			<default><![CDATA[['<Super>b']]]></default>
+			<summary>Launch or focus default webbrowser</summary>
+		</key>
+		<key type="as" name="emailclient">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus default email client</summary>
+		</key>
+		<key type="as" name="calendar">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus default calendar</summary>
+		</key>
+		<key type="as" name="videoplayer">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus default videoplayer</summary>
+		</key>
+		<key type="as" name="musicplayer">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus default musicplayer</summary>
+		</key>
+		<key type="as" name="imageviewer">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus default imageviewer</summary>
+		</key>
+		<key type="as" name="texteditor">
+			<default><![CDATA[['<Super>e']]]></default>
+			<summary>Launch or focus default texteditor</summary>
+		</key>
+		<key type="as" name="filebrowser">
+			<default><![CDATA[['<Super>m']]]></default>
+			<summary>Launch or focus default filebrowser</summary>
+		</key>
+		<key type="as" name="terminal">
+			<default><![CDATA[['<Super>t']]]></default>
+			<summary>Launch or focus elementary terminal</summary>
+		</key>
+	</schema>
+
+	<schema path="/org/pantheon/desktop/gala/keybindings/launch-or-focus/custom/" id="org.pantheon.desktop.gala.keybindings.launch-or-focus.custom-applications">
+		<key type="as" name="desktop-ids">
+			<default>['', '', '', '', '', '', '', '', '', '']</default>
+			<summary>Desktop IDs of custom applications</summary>
+		</key>
+		<key type="as" name="application-0">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 0</summary>
+		</key>
+		<key type="as" name="application-1">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 1</summary>
+		</key>
+		<key type="as" name="application-2">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 2</summary>
+		</key>
+		<key type="as" name="application-3">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 3</summary>
+		</key>
+		<key type="as" name="application-4">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 4</summary>
+		</key>
+		<key type="as" name="application-5">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 5</summary>
+		</key>
+		<key type="as" name="application-6">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 6</summary>
+		</key>
+		<key type="as" name="application-7">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 7</summary>
+		</key>
+		<key type="as" name="application-8">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 8</summary>
+		</key>
+		<key type="as" name="application-9">
+			<default><![CDATA[['']]]></default>
+			<summary>Launch or focus custom application 9</summary>
+		</key>
+	</schema>
 
   <schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">
     <key type="as" name="switch-to-workspace-first">
