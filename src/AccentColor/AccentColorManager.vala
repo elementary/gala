@@ -154,43 +154,35 @@ public class Gala.AccentColorManager : Object {
         return metadata.get_tag_string (TAG_ACCENT_COLOR);
     }
 
-    public NamedColor? get_accent_color_of_picture_simple (string picture_uri) {
-        NamedColor new_color = null;
-
-        var file = File.new_for_uri (picture_uri);
-
-        try {
-            var pixbuf = new Gdk.Pixbuf.from_file (file.get_path ());
-            var color_extractor = new ColorExtractor.from_pixbuf (pixbuf);
-
-            var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
-            for (int i = 0; i < theme_colors.length; i++) {
-                palette.add (theme_colors[i].color);
-            }
-
-            var index = color_extractor.get_dominant_color_index (palette);
-            new_color = theme_colors[index];
-        } catch (Error e) {
-            warning (e.message);
-        }
-
-        return new_color;
-    }
-
-    public NamedColor? get_accent_color_based_on_primary_color (string primary_color) {
-        NamedColor new_color = null;
-
-        var granite_primary_color = new Granite.Drawing.Color.from_string (primary_color);
-        var color_extractor = new ColorExtractor.from_primary_color (granite_primary_color);
-
+    private NamedColor? get_accent_color (ColorExtractor color_extractor) {
         var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
         for (int i = 0; i < theme_colors.length; i++) {
             palette.add (theme_colors[i].color);
         }
 
         var index = color_extractor.get_dominant_color_index (palette);
-        new_color = theme_colors[index];
+        return theme_colors[index];
+    }
 
-        return new_color;   
+    private NamedColor? get_accent_color_of_picture_simple (string picture_uri) {
+        var file = File.new_for_uri (picture_uri);
+
+        try {
+            var pixbuf = new Gdk.Pixbuf.from_file (file.get_path ());
+            var color_extractor = new ColorExtractor.from_pixbuf (pixbuf);
+
+            return get_accent_color (color_extractor);
+        } catch (Error e) {
+            warning (e.message);
+        }
+
+        return null;
+    }
+
+    private NamedColor? get_accent_color_based_on_primary_color (string primary_color) {
+        var granite_primary_color = new Granite.Drawing.Color.from_string (primary_color);
+        var color_extractor = new ColorExtractor.from_primary_color (granite_primary_color);
+
+        return get_accent_color (color_extractor);
     }
 }
