@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-29 11:40+0000\n"
-"PO-Revision-Date: 2021-03-29 22:48+0000\n"
+"PO-Revision-Date: 2021-05-02 16:01+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -200,7 +200,7 @@ msgstr "elementary, Inc."
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "Vista multi-tarefa"
+msgstr "Vista de Tarefas"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"

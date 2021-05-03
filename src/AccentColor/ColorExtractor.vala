@@ -22,14 +22,22 @@
 public class Gala.ColorExtractor : Object {
     private const double PERCENTAGE_SAMPLE_PIXELS = 0.01;
 
-    public Gdk.Pixbuf pixbuf { get; construct set; }
+    public Gdk.Pixbuf? pixbuf { get; construct set; }
+    public Granite.Drawing.Color? primary_color { get; construct set; }
 
     private Gee.List<Granite.Drawing.Color> pixels;
 
-    public ColorExtractor (Gdk.Pixbuf pixbuf) {
+    public ColorExtractor.from_pixbuf (Gdk.Pixbuf pixbuf) {
         Object (pixbuf: pixbuf);
 
         pixels = convert_pixels_to_rgb (pixbuf.get_pixels_with_length (), pixbuf.has_alpha);
+    }
+
+    public ColorExtractor.from_primary_color (Granite.Drawing.Color primary_color) {
+        Object (primary_color: primary_color);
+
+        pixels = new Gee.ArrayList<Granite.Drawing.Color> ();
+        pixels.add (primary_color);
     }
 
     public int get_dominant_color_index (Gee.List<Granite.Drawing.Color> palette) {

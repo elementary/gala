@@ -19,7 +19,7 @@
  * Authored by: Marius Meisenzahl <mariusmeisenzahl@gmail.com>
  */
 
- public class Gala.AccentColorManager : Object {
+public class Gala.AccentColorManager : Object {
     private const string INTERFACE_SCHEMA = "org.gnome.desktop.interface";
     private const string STYLESHEET_KEY = "gtk-theme";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
@@ -86,23 +86,36 @@
             }
         }
 
+        background_settings.changed["picture-options"].connect (update_accent_color);
         background_settings.changed["picture-uri"].connect (update_accent_color);
+        background_settings.changed["primary-color"].connect (update_accent_color);
 
         update_accent_color ();
     }
 
     private void update_accent_color () {
-        bool set_accent_color_based_on_wallpaper = gala_accounts_service.prefers_accent_color == 0;
+        bool set_accent_color_auto = gala_accounts_service.prefers_accent_color == 0;
 
-        if (set_accent_color_based_on_wallpaper) {
+        if (!set_accent_color_auto) {
+            return;
+        }
+
+        bool set_accent_color_based_on_primary_color = background_settings.get_enum ("picture-options") == 0;
+
+        var current_stylesheet = interface_settings.get_string (STYLESHEET_KEY);
+
+        debug ("Current stylesheet: %s", current_stylesheet);
+
+        NamedColor? new_color = null;
+        if (set_accent_color_based_on_primary_color) {
+            var primary_color = background_settings.get_string ("primary-color");
+            debug ("Current primary color: %s", primary_color);
+
+            new_color = get_accent_color_based_on_primary_color (primary_color);
+        } else {
             var picture_uri = background_settings.get_string ("picture-uri");
-
-            var current_stylesheet = interface_settings.get_string (STYLESHEET_KEY);
-
             debug ("Current wallpaper: %s", picture_uri);
-            debug ("Current stylesheet: %s", current_stylesheet);
 
-            NamedColor? new_color = null;
             var accent_color_name = read_accent_color_name_from_exif (picture_uri);
             if (accent_color_name != null) {
                 for (int i = 0; i < theme_colors.length; i++) {
@@ -114,15 +127,15 @@
             } else {
                 new_color = get_accent_color_of_picture_simple (picture_uri);
             }
+        }
 
-            if (new_color != null && new_color.theme != current_stylesheet) {
-                debug ("New stylesheet: %s", new_color.theme);
+        if (new_color != null && new_color.theme != current_stylesheet) {
+            debug ("New stylesheet: %s", new_color.theme);
 
-                interface_settings.set_string (
-                    STYLESHEET_KEY,
-                    new_color.theme
-                );
-            }
+            interface_settings.set_string (
+                STYLESHEET_KEY,
+                new_color.theme
+            );
         }
     }
 
@@ -141,26 +154,35 @@
         return metadata.get_tag_string (TAG_ACCENT_COLOR);
     }
 
-    public NamedColor? get_accent_color_of_picture_simple (string picture_uri) {
-        NamedColor new_color = null;
+    private NamedColor? get_accent_color (ColorExtractor color_extractor) {
+        var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
+        for (int i = 0; i < theme_colors.length; i++) {
+            palette.add (theme_colors[i].color);
+        }
 
+        var index = color_extractor.get_dominant_color_index (palette);
+        return theme_colors[index];
+    }
+
+    private NamedColor? get_accent_color_of_picture_simple (string picture_uri) {
         var file = File.new_for_uri (picture_uri);
 
         try {
             var pixbuf = new Gdk.Pixbuf.from_file (file.get_path ());
-            var color_extractor = new ColorExtractor (pixbuf);
+            var color_extractor = new ColorExtractor.from_pixbuf (pixbuf);
 
-            var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
-            for (int i = 0; i < theme_colors.length; i++) {
-                palette.add (theme_colors[i].color);
-            }
-
-            var index = color_extractor.get_dominant_color_index (palette);
-            new_color = theme_colors[index];
+            return get_accent_color (color_extractor);
         } catch (Error e) {
             warning (e.message);
         }
 
-        return new_color;
+        return null;
+    }
+
+    private NamedColor? get_accent_color_based_on_primary_color (string primary_color) {
+        var granite_primary_color = new Granite.Drawing.Color.from_string (primary_color);
+        var color_extractor = new ColorExtractor.from_primary_color (granite_primary_color);
+
+        return get_accent_color (color_extractor);
     }
 }
