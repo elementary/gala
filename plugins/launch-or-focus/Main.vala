@@ -48,7 +48,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
         );
 
         for (int i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
-            add_custom_keybinding (i, @"application-$(i)");
+            add_custom_keybinding (i);
         }
     }
 
@@ -61,7 +61,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
         );
     }
 
-    private void add_custom_keybinding (int index, string name) {
+    private void add_custom_keybinding (int index) {
         display.add_keybinding (CUSTOM_KEY_TEMPLATE.printf (index), settings_custom, Meta.KeyBindingFlags.NONE, 
             (display, window, event, binding) => {
                 var desktop_id = settings_custom.get_strv ("desktop-ids")[index];
@@ -85,7 +85,6 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
             return;
         }
 
-        unowned Meta.Display display = wm.get_display ();
         var windows = new SList<Meta.Window> ();
         foreach (unowned Meta.Window window in display.get_tab_list (Meta.TabList.NORMAL, null)) {
             if (app_info.equal (Utils.get_app_from_window (window))) {
