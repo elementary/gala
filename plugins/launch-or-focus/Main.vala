@@ -17,71 +17,71 @@
 
 public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
     private const int MAX_CUSTOM_SHORTCUTS = 10;
+    private const string SCHEMA_DEFAULT = ".keybindings.launch-or-focus";
+    private const string SCHEMA_CUSTOM = ".keybindings.launch-or-focus.custom-applications";
+    private const string CUSTOM_KEY_TEMPLATE = "application-%d";
 
     private Gala.WindowManager? wm = null;
-    private HashTable<string, string> name_to_type;
+    private unowned Meta.Display? display = null;
+    private GLib.Settings settings_default;
     private GLib.Settings settings_custom;
 
-    construct {
-        name_to_type = new HashTable<string, string> (str_hash, str_equal);
-        name_to_type.insert ("webbrowser", "x-scheme-handler/http");
-        name_to_type.insert ("emailclient", "x-scheme-handler/mailto");
-        name_to_type.insert ("calendar", "text/calendar");
-        name_to_type.insert ("videoplayer", "video/x-ogm+ogg");
-        name_to_type.insert ("musicplayer", "audio/x-vorbis+ogg");
-        name_to_type.insert ("imageviewer", "image/jpeg");
-        name_to_type.insert ("texteditor", "text/plain");
-        name_to_type.insert ("filebrowser", "inode/directory");
-        name_to_type.insert ("terminal", "");
-    }
 
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
-        unowned Meta.Display display = wm.get_display ();
-        var settings = new GLib.Settings (Config.SCHEMA + ".keybindings.launch-or-focus");
-        settings_custom = new GLib.Settings (Config.SCHEMA + ".keybindings.launch-or-focus.custom-applications");
+        this.display = wm.get_display ();
 
-        name_to_type.foreach ((name, _) => {
-            display.add_keybinding (name, settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler);
-        });
-        for (var i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
-            display.add_keybinding (@"application-$(i)", settings_custom, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handler);
+        settings_default = new GLib.Settings (Config.SCHEMA + SCHEMA_DEFAULT);
+        settings_custom = new GLib.Settings (Config.SCHEMA + SCHEMA_CUSTOM);
+
+        add_default_keybinding("webbrowser", "x-scheme-handler/http");
+        add_default_keybinding("emailclient", "x-scheme-handler/mailto");
+        add_default_keybinding("calendar", "text/calendar");
+        add_default_keybinding("videoplayer", "video/x-ogm+ogg");
+        add_default_keybinding("musicplayer", "audio/x-vorbis+ogg");
+        add_default_keybinding("imageviewer", "image/jpeg");
+        add_default_keybinding("texteditor", "text/plain");
+        add_default_keybinding("filebrowser", "inode/directory");
+        // can't set default application for terminal
+        display.add_keybinding ("terminal", settings_default, Meta.KeyBindingFlags.NONE, 
+            (display, window, event, binding) => launch_or_focus ("io.elementary.terminal.desktop")
+        );
+
+        for (int i = 0; i < MAX_CUSTOM_SHORTCUTS; i ++) {
+            add_custom_keybinding (i, @"application-$(i)");
         }
     }
+
+    private void add_default_keybinding (string name, string content_type) {
+        display.add_keybinding (name, settings_default, Meta.KeyBindingFlags.NONE, 
+            (display, window, event, binding) => {
+                var desktop_id = GLib.AppInfo.get_default_for_type (content_type, false).get_id ();
+                launch_or_focus (desktop_id);
+            }
+        );
+    }
+
+    private void add_custom_keybinding (int index, string name) {
+        display.add_keybinding (CUSTOM_KEY_TEMPLATE.printf (index), settings_custom, Meta.KeyBindingFlags.NONE, 
+            (display, window, event, binding) => {
+                var desktop_id = settings_custom.get_strv ("desktop-ids")[index];
+                launch_or_focus (desktop_id);
+            }
+        );
+    }
+
 
     public override void destroy () {}
-
-    [CCode (instance_pos = -1)]
-    void handler (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-        debug("handle!");
-        string name = binding.get_name ();
-        string? content_type = name_to_type.get (name);
-        string desktop_id;
-        if (content_type == null) {
-            var index = int.parse(name.substring (-1));
-            desktop_id = settings_custom.get_strv ("desktop-ids")[index];
-        } else if (name == "terminal") { // can't set default application for terminal
-            desktop_id = "io.elementary.terminal.desktop";
-        } else {
-            desktop_id = AppInfo.get_default_for_type (content_type, false).get_id ();
-        } 
-
-        var app_info = new GLib.DesktopAppInfo (desktop_id);
-        if (event.has_control_modifier ()) {
-            launch (app_info);
-        } else {
-            launch_or_focus (app_info);
-        }
-    }
 
     /*
     * Case A: application is not running           --> launch a new instance
     * Case B: application is running without focus --> focus instance with highest z-index
     * Case C: application is running and has focus --> focus another instance (lowest z-index)
     */
-    private void launch_or_focus (GLib.DesktopAppInfo app_info) {
+    private void launch_or_focus (string desktop_id) {
+        var app_info = new GLib.DesktopAppInfo (desktop_id);
         if (app_info == null) {
-            warning("Failed to get DesktopAppInfo");
+            warning("Unable to get DesktopAppInfo for desktop_id: $(desktop_id)");
             return;
         }
 

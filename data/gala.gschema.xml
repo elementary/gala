@@ -191,7 +191,7 @@
 			<default><![CDATA[['']]]></default>
 			<summary>Launch or focus custom application 9</summary>
 		</key>
-	</schema>
+  </schema>
 
   <schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">
     <key type="as" name="switch-to-workspace-first">
