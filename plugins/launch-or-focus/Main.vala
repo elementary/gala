@@ -81,7 +81,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
     private void launch_or_focus (string desktop_id) {
         var app_info = new GLib.DesktopAppInfo (desktop_id);
         if (app_info == null) {
-            warning("Unable to get DesktopAppInfo for desktop_id: $(desktop_id)");
+            warning(@"Unable to get DesktopAppInfo for desktop-id: $(desktop_id)");
             return;
         }
 
