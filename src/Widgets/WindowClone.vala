@@ -47,6 +47,8 @@ namespace Gala {
     class ActiveShape : Actor {
         private Clutter.Canvas background_canvas;
         private static int border_radius;
+        private static Gdk.RGBA color;
+        private static const double COLOR_OPACITY = 0.8;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -61,6 +63,8 @@ namespace Gala {
                 Gtk.STYLE_PROPERTY_BORDER_RADIUS,
                 Gtk.StateFlags.NORMAL
             ).get_int () * 4;
+
+            color = InternalUtils.get_theme_accent_color ();
         }
 
         construct {
@@ -76,7 +80,7 @@ namespace Gala {
             cr.restore ();
 
             Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
-            cr.set_source_rgba (1, 1, 1, 0.8);
+            cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 
             return false;
@@ -89,6 +93,7 @@ namespace Gala {
         public override void allocate (ActorBox box, AllocationFlags flags) {
             base.allocate (box, flags);
 #endif
+            color = InternalUtils.get_theme_accent_color ();
             background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
             background_canvas.invalidate ();
         }
