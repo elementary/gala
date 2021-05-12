@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-07-21 16:52+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
 "PO-Revision-Date: 2020-05-10 12:10+0000\n"
 "Last-Translator: Jaimie85 <alsemgeest@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -19,71 +19,88 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr "Screenshots"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "Ziet het beeld er goed uit?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "Behoud deze instellingen"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "Vorige instellingen terugzetten"
 
-#: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "Minimaliseren"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2118
+#, fuzzy, c-format
+#| msgid "Screenshots"
+msgid "Screenshot from %s"
+msgstr "Screenshots"
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:115
+msgid "Hide"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "Verplaatsen"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "Herschalen"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "Altijd op de voorgrond"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "Altijd op het zichtbare werkblad"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "Verplaats naar linker werkblad"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "Verplaats naar rechter werkblad"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Take Screenshot"
+msgstr "Screenshots"
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "Sluiten"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "Demaximaliseren"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "Maximaliseren"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr ""
 
@@ -103,22 +120,30 @@ msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
-#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
 msgid "Show a context menu when secondary clicking the background"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
-#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -126,50 +151,50 @@ msgstr ""
 "Probleem opgelost met \"Altijd op Zichtbare Werkruimte\" vensters die "
 "verdwijnen na het veranderen van werkruimte"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Probleem opgelost voor vensters op niet-primaire beeldschermen die "
 "verdwijnen bij het veranderen van werkruimte"
 
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Probleem opgelost wat een crash veroorzaakte bij het veranderen van "
 "werkruimtes tijdens het openen van een tijdelijk venster"
 
-#: data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Toon Gala Background Services niet in het dock"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
 msgstr "Het gebruik van de media toets is verbeterd"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:49
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Toon sneltoetsen in titelbalkmenu's"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:58
 msgid "Improve window shadows for legacy apps"
 msgstr "Verbeterde venster schaduwen voor oudere apps"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
 msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
 msgstr "De positie van notificaties is verbeterd na het veranderen van DPI"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:61
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Verbeterde animaties voor bewegende en gemaximaliseerde maar niet "
 "schermvullende vensters"
 
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -198,6 +223,9 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applicaties-overige"
+
+#~ msgid "Minimize"
+#~ msgstr "Minimaliseren"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Actie voor de linkerbovenhoek"

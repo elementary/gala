@@ -32,14 +32,15 @@ namespace Gala {
         // Window Menu
         private Granite.AccelLabel always_on_top_accellabel;
         private Granite.AccelLabel close_accellabel;
-        private Granite.AccelLabel minimize_accellabel;
+        private Granite.AccelLabel hide_accellabel;
         private Granite.AccelLabel move_accellabel;
         private Granite.AccelLabel move_left_accellabel;
         private Granite.AccelLabel move_right_accellabel;
         private Granite.AccelLabel on_visible_workspace_accellabel;
         private Granite.AccelLabel resize_accellabel;
+        private Granite.AccelLabel screenshot_accellabel;
         Gtk.Menu? window_menu = null;
-        Gtk.MenuItem minimize;
+        Gtk.MenuItem hide;
         Gtk.MenuItem maximize;
         Gtk.MenuItem move;
         Gtk.MenuItem resize;
@@ -48,6 +49,7 @@ namespace Gala {
         Gtk.MenuItem move_left;
         Gtk.MenuItem move_right;
         Gtk.MenuItem close;
+        Gtk.MenuItem screenshot;
 
         // Desktop Menu
         Gtk.Menu? desktop_menu = null;
@@ -58,9 +60,11 @@ namespace Gala {
         ulong on_visible_workspace_sid = 0U;
 
         private static GLib.Settings keybind_settings;
+        private static GLib.Settings media_keys_settings;
 
         static construct {
             keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
+            media_keys_settings = new GLib.Settings ("org.gnome.settings-daemon.plugins.media-keys");
         }
 
         [DBus (visible = false)]
@@ -108,12 +112,12 @@ namespace Gala {
         }
 
         private void init_window_menu () {
-            minimize_accellabel = new Granite.AccelLabel (_("Minimize"));
+            hide_accellabel = new Granite.AccelLabel (_("Hide"));
 
-            minimize = new Gtk.MenuItem ();
-            minimize.add (minimize_accellabel);
-            minimize.activate.connect (() => {
-                perform_action (Gala.ActionType.MINIMIZE_CURRENT);
+            hide = new Gtk.MenuItem ();
+            hide.add (hide_accellabel);
+            hide.activate.connect (() => {
+                perform_action (Gala.ActionType.HIDE_CURRENT);
             });
 
             maximize = new Gtk.MenuItem ();
@@ -169,6 +173,14 @@ namespace Gala {
                 perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
             });
 
+            screenshot_accellabel = new Granite.AccelLabel (_("Take Screenshot"));
+
+            screenshot = new Gtk.MenuItem ();
+            screenshot.add (screenshot_accellabel);
+            screenshot.activate.connect (() => {
+                perform_action (Gala.ActionType.SCREENSHOT_CURRENT);
+            });
+
             close_accellabel = new Granite.AccelLabel (_("Close"));
 
             close = new Gtk.MenuItem ();
@@ -178,14 +190,18 @@ namespace Gala {
             });
 
             window_menu = new Gtk.Menu ();
-            window_menu.append (minimize);
-            window_menu.append (maximize);
-            window_menu.append (move);
-            window_menu.append (resize);
+            window_menu.append (screenshot);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
             window_menu.append (always_on_top);
             window_menu.append (on_visible_workspace);
             window_menu.append (move_left);
             window_menu.append (move_right);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
+            window_menu.append (move);
+            window_menu.append (resize);
+            window_menu.append (maximize);
+            window_menu.append (new Gtk.SeparatorMenuItem ());
+            window_menu.append (hide);
             window_menu.append (close);
             window_menu.show_all ();
         }
@@ -195,14 +211,19 @@ namespace Gala {
                 init_window_menu ();
             }
 
-            minimize.visible = Gala.WindowFlags.CAN_MINIMIZE in flags;
-            if (minimize.visible) {
-                minimize_accellabel.accel_string = keybind_settings.get_strv ("minimize")[0];
+            hide.visible = Gala.WindowFlags.CAN_HIDE in flags;
+            if (hide.visible) {
+                hide_accellabel.accel_string = keybind_settings.get_strv ("minimize")[0];
             }
 
             maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;
             if (maximize.visible) {
-                var maximize_label = Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize");
+                unowned string maximize_label;
+                if (Gala.WindowFlags.IS_MAXIMIZED in flags) {
+                    maximize_label = (Gala.WindowFlags.IS_TILED in flags) ? _("Untile") : _("Unmaximize");
+                } else {
+                    maximize_label = _("Maximize");
+                }
 
                 maximize.get_child ().destroy ();
                 maximize.add (
@@ -238,15 +259,17 @@ namespace Gala {
             SignalHandler.unblock (always_on_top, always_on_top_sid);
             SignalHandler.unblock (on_visible_workspace, on_visible_workspace_sid);
 
-            move_right.visible = !on_visible_workspace.active;
-            if (move_right.visible) {
+            move_right.sensitive = !on_visible_workspace.active;
+            if (move_right.sensitive) {
                 move_right_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-right")[0];
             }
 
-            move_left.visible = !on_visible_workspace.active;
-            if (move_left.visible) {
+            move_left.sensitive = !on_visible_workspace.active;
+            if (move_left.sensitive) {
                 move_left_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-left")[0];
             }
+
+            screenshot_accellabel.accel_string = media_keys_settings.get_strv ("window-screenshot")[0];
 
             close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
             if (close.visible) {
@@ -281,7 +304,7 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
+
                 var display_settings = new Gtk.MenuItem.with_label (_("Display Settings…"));
                 display_settings.activate.connect (() => {
                     try {
@@ -298,7 +321,7 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
+
                 var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
                 system_settings.activate.connect (() => {
                     try {
@@ -315,13 +338,11 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-    
-                var separator = new Gtk.SeparatorMenuItem ();
-    
+
                 desktop_menu = new Gtk.Menu ();
                 desktop_menu.append (change_wallpaper);
                 desktop_menu.append (display_settings);
-                desktop_menu.append (separator);
+                desktop_menu.append (new Gtk.SeparatorMenuItem ());
                 desktop_menu.append (system_settings);
                 desktop_menu.show_all ();
             }

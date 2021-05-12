@@ -1,6 +1,8 @@
 gala_lib_sources = files(
     'ActivatableComponent.vala',
+    'AppCache.vala',
     'Constants.vala',
+    'DragDropAction.vala',
     'Plugin.vala',
     'Utils.vala',
     'WindowIcon.vala',

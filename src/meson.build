@@ -3,22 +3,25 @@ gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
     'DockThemeManager.vala',
-    'DragDropAction.vala',
+    'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
-    'NotificationStack.vala',
     'Main.vala',
     'MediaFeedback.vala',
+    'NotificationStack.vala',
     'PluginManager.vala',
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
-    'Settings.vala',
     'ShadowEffect.vala',
     'WindowListener.vala',
     'WindowManager.vala',
     'WindowMovementTracker.vala',
     'WorkspaceManager.vala',
+    'Zoom.vala',
+    'AccentColor/AccentColorManager.vala',
+    'AccentColor/ColorExtractor.vala',
+    'AccentColor/NamedColor.vala',
     'Background/Animation.vala',
     'Background/Background.vala',
     'Background/BackgroundCache.vala',
@@ -26,6 +29,11 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
+    'Gestures/Gesture.vala',
+    'Gestures/GestureSettings.vala',
+    'Gestures/GestureTracker.vala',
+    'Gestures/ScrollBackend.vala',
+    'Gestures/ToucheggBackend.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
@@ -34,6 +42,7 @@ gala_bin_sources = files(
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
+    'Widgets/Tooltip.vala',
     'Widgets/WindowClone.vala',
     'Widgets/WindowCloneContainer.vala',
     'Widgets/WindowIconActor.vala',
@@ -42,6 +51,13 @@ gala_bin_sources = files(
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
+
+if libmutter_dep.version().version_compare ('>= 3.35.1')
+    gala_bin_sources += files(
+        'Widgets/DwellClickTimer.vala',
+        'Widgets/PointerLocator.vala',
+    )
+endif
 
 gala_bin = executable(
     'gala',

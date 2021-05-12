@@ -70,7 +70,7 @@ namespace Gala {
 
         [CCode (instance_pos = -1)]
         void set_keyboard_layout (GLib.Settings settings, string key) {
-            if (!(key == "current" || key == "source" || key == "xkb-options"))
+            if (!(key == "current" || key == "sources" || key == "xkb-options"))
                 return;
 
             string layout = "us", variant = "", options = "";
@@ -87,6 +87,8 @@ namespace Gala {
                 string[] arr = name.split ("+", 2);
                 layout = arr[0];
                 variant = arr[1] ?? "";
+            } else {
+                return;  //We do not want to change the current xkb layout here when using ibus.
             }
 
             var xkb_options = settings.get_strv ("xkb-options");

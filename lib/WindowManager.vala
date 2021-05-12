@@ -20,7 +20,7 @@ namespace Gala {
         NONE = 0,
         SHOW_WORKSPACE_VIEW,
         MAXIMIZE_CURRENT,
-        MINIMIZE_CURRENT,
+        HIDE_CURRENT,
         OPEN_LAUNCHER,
         CUSTOM_COMMAND,
         WINDOW_OVERVIEW,
@@ -32,20 +32,22 @@ namespace Gala {
         TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT,
         MOVE_CURRENT_WORKSPACE_LEFT,
         MOVE_CURRENT_WORKSPACE_RIGHT,
-        CLOSE_CURRENT
+        CLOSE_CURRENT,
+        SCREENSHOT_CURRENT
     }
 
     [Flags]
     public enum WindowFlags {
         NONE = 0,
-        CAN_MINIMIZE,
+        CAN_HIDE,
         CAN_MAXIMIZE,
         IS_MAXIMIZED,
         ALLOWS_MOVE,
         ALLOWS_RESIZE,
         ALWAYS_ON_TOP,
         ON_ALL_WORKSPACES,
-        CAN_CLOSE
+        CAN_CLOSE,
+        IS_TILED
     }
 
     /**
@@ -105,6 +107,11 @@ namespace Gala {
          * The background group is a container for the background actors forming the wallpaper
          */
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
+
+        /**
+         * View that allows to see and manage all your windows and desktops.
+         */
+        public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
 
         /**
          * Whether animations should be displayed.

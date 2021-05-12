@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-07-21 16:52+0000\n"
-"PO-Revision-Date: 2020-05-27 22:10+0000\n"
+"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"PO-Revision-Date: 2020-11-22 15:15+0000\n"
 "Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
 "Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
 ">\n"
@@ -19,73 +19,90 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
-#: src/ScreenshotManager.vala:251
+#: src/ScreenshotManager.vala:243
 msgid "Screenshots"
 msgstr "स्क्रीनशॉट"
 
-#: src/WindowManager.vala:2191
+#: src/WindowManager.vala:2091
 msgid "Does the display look OK?"
 msgstr "डिस्प्ले ठीक दिसत आहे का?"
 
-#: src/WindowManager.vala:2194
+#: src/WindowManager.vala:2094
 msgid "Keep This Configuration"
 msgstr "हे कॉन्फिगरेशन ठेवा"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2095
 msgid "Restore Previous Configuration"
 msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
 
-#: daemon/MenuDaemon.vala:111
-msgid "Minimize"
-msgstr "कमीतकमी करा"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2118
+#, fuzzy, c-format
+#| msgid "Screenshots"
+msgid "Screenshot from %s"
+msgstr "स्क्रीनशॉट"
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:115
+msgid "Hide"
+msgstr "लपवा"
+
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "हलवा"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "आकार बदला"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "नेहमी वरच्या बाजूला"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "नेहमीच दृश्यमान कार्यक्षेत्रात"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "डावीकडील वर्कस्पेस मध्ये हलवा"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "उजवीकडील वर्कस्पेस मध्ये हलवा"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Take Screenshot"
+msgstr "स्क्रीनशॉट"
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "बंद करा"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "अनमॅक्सिमाइझ करा"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "वाढवा"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "वॉलपेपर बदला…"
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "प्रदर्शन सेटिंग्ज…"
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "प्रणाली संयोजना …"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -103,69 +120,77 @@ msgstr ""
 "लिंबमुटरवर आधारीत एक विंडो आणि कम्पोझिटिंग मॅनेजर पॅन्थिओन सह वापरासाठी प्राथमिक द्वारे "
 "डिझाइन केलेले."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
-#: data/gala.appdata.xml.in:34 data/gala.appdata.xml.in:43
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:56
 msgid "Improvements:"
 msgstr "सुधारणा:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "Alt न सोडता Esc दाबून Alt + Tab स्विचर बंद करा"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:28
-#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:18
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr "अधिकतम झूम पातळी वाढवा आणि झूम करण्यास अक्षम असताना अभिप्राय प्रदान करा"
+
+#: data/gala.appdata.xml.in:19
+msgid "Show a context menu when secondary clicking the background"
+msgstr "पार्श्वभूमीवर दुय्यम क्लिक करताना संदर्भ मेनू दर्शवा"
+
+#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
 msgid "Updated translations"
 msgstr "अद्ययावत भाषांतर"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:28
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
 "कार्यक्षेत्र बदलताना “नेहमीच दृश्यमान कार्यक्षेत्र” विंडो अदृश्य होण्याशी संबंधित अडचणी दूर करा"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:29
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "कार्यक्षेत्र बदलत असताना प्राथमिक नसलेल्या डिस्पलेवर विंडो अदृश्य होण्याशी संबंधित समस्या "
 "सोडवा"
 
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:38
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr "क्षणिक विंडो उघडत असताना कार्यक्षेत्र बदलताना होणाऱ्या क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:47
 msgid "Don't show Gala Background Services in the dock"
 msgstr "डॉकमध्ये गाला पार्श्वभूमी सेवा दर्शवू नका"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:48
 msgid "Fixes for media key handling"
 msgstr "मीडिया की हाताळणीशी संबंधित समस्यांसाठी निराकरणे"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:49
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:58
 msgid "Improve window shadows for legacy apps"
 msgstr "लेगसी अॅप्ससाठी विंडो सावली सुधारित करा"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:59
 msgid "Fix potential crash when taking screenshots"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:60
 msgid "Fix notification position after changing DPI"
 msgstr "डीपीआय बदलल्यानंतर सूचना स्थितीशी संबंधित समस्यांचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:61
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "टाइल केलेल्या विंडो हलविण्यासाठी आणि जास्तीत जास्त करण्यासाठी अ‍ॅनिमेशनचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:67
 msgid "elementary, Inc."
 msgstr "एलिमेंटरी,Inc."
 
@@ -193,3 +218,6 @@ msgstr "कालबाह्य अनुप्रयोगांकडील �
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "अनुप्रयोग-इतर"
+
+#~ msgid "Minimize"
+#~ msgstr "कमीतकमी करा"
