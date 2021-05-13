@@ -207,22 +207,17 @@ namespace Gala {
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
-            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.MULTITASKING_ENABLED);
-            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.MULTITASKING_FINGERS);
+            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE ||
+                (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
+            ) {
+                return;
+            }
 
-            bool up = gesture.direction == GestureDirection.UP;
-            bool down = gesture.direction == GestureDirection.DOWN;
-            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
-                && (up || down)
-                && gesture.fingers == fingers;
-            bool can_handle_gesture = enabled && can_handle_swipe;
-
-            if (can_handle_gesture) {
-                if (up && !opened) {
-                    toggle (true, false);
-                } else if (down && opened) {
-                    toggle (true, false);
-                }
+            if (gesture.direction == GestureDirection.UP && !opened) {
+                toggle (true, false);
+            } else if (gesture.direction == GestureDirection.DOWN && opened) {
+                toggle (true, false);
             }
         }
 
@@ -231,16 +226,13 @@ namespace Gala {
                 return;
             }
 
-            var enabled = workspace_gesture_tracker.settings.is_gesture_enabled (GestureSettings.WORKSPACE_ENABLED);
-            var fingers = workspace_gesture_tracker.settings.gesture_fingers (GestureSettings.WORKSPACE_FINGERS);
+            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
 
-            bool can_handle_scroll = gesture.type == Gdk.EventType.SCROLL;
-            bool can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE
-                && (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
-                && gesture.fingers == fingers;
-            bool can_handle_gesture = enabled && (can_handle_scroll || can_handle_swipe);
+            var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
+                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
 
-            if (can_handle_gesture) {
+            if (gesture.type == Gdk.EventType.SCROLL || (can_handle_swipe && fingers)) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }

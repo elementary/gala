@@ -40,7 +40,7 @@ namespace Gala {
             display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
 
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             gesture_tracker.enable_touchpad ();
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         }
@@ -61,24 +61,25 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         void zoom_in (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (SHORTCUT_DELTA, true, true);
+            zoom (SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
         [CCode (instance_pos = -1)]
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            zoom (-SHORTCUT_DELTA, true, true);
+            zoom (-SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
         private void on_gesture_detected (Gesture gesture) {
-            var enabled = gesture_tracker.settings.is_gesture_enabled (GestureSettings.ZOOM_ENABLED);
-            var fingers = gesture_tracker.settings.gesture_fingers (GestureSettings.ZOOM_FINGERS);
+            if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH ||
+                (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
+            ) {
+                return;
+            }
 
-            bool can_handle_gesture = gesture.type == Gdk.EventType.TOUCHPAD_PINCH
-                && (gesture.direction == GestureDirection.IN || gesture.direction == GestureDirection.OUT)
-                && gesture.fingers == fingers;
-
-            if (enabled && can_handle_gesture) {
+            if ((gesture.fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
+            ) {
                 zoom_with_gesture (gesture.direction);
             }
         }
@@ -92,6 +93,15 @@ namespace Gala {
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var zoom_level = GestureTracker.animation_value (initial_zoom, target_zoom, percentage);
                 var delta = zoom_level - current_zoom;
+
+                if (!wm.enable_animations) {
+                    if (delta.abs () >= SHORTCUT_DELTA) {
+                        delta = (delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA;
+                    } else {
+                        delta = 0;
+                    }
+                }
+
                 zoom (delta, false, false);
             };
 

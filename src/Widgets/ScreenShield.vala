@@ -157,7 +157,7 @@ namespace Gala {
                         in_greeter = false;
                     });
 
-                    login_session.notify.connect (sync_inhibitor);
+                    ((DBusProxy)login_session).g_properties_changed.connect (sync_inhibitor);
                     sync_inhibitor ();
                 }
             } catch (Error e) {
@@ -273,10 +273,10 @@ namespace Gala {
                 cancel_animation ();
                 try {
                     display_manager.switch_to_greeter ();
+                    in_greeter = true;
                 } catch (Error e) {
                     critical ("Unable to switch to greeter to unlock: %s", e.message);
                 }
-                in_greeter = true;
             // Otherwise, we're in screensaver mode, just deactivate
             } else if (!is_locked) {
                 debug ("user became active in unlocked session, closing screensaver");
@@ -340,6 +340,8 @@ namespace Gala {
                 animate_and_lock (animation_time);
             } else {
                 _set_active (true);
+
+                opacity = 255;
 
                 if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);

@@ -177,24 +177,19 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-        // constants, mainly for natural expo
-        const int GAPS = 10;
-        const int MAX_TRANSLATIONS = 100000;
-        const int ACCURACY = 20;
-
         // some math utilities
-        static int squared_distance (Gdk.Point a, Gdk.Point b) {
+        private static int squared_distance (Gdk.Point a, Gdk.Point b) {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
             return k1 * k1 + k2 * k2;
         }
 
-        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-        static Gdk.Point rect_center (Meta.Rectangle rect) {
+        private static Gdk.Point rect_center (Meta.Rectangle rect) {
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
@@ -348,22 +343,36 @@ namespace Gala {
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
-                var dummy_label = new Gtk.Label ("");
-
-                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-                var widget_path = label_style_context.get_path ().copy ();
-                widget_path.iter_set_object_name (-1, "selection");
+                var label_widget_path = new Gtk.WidgetPath ();
+                label_widget_path.append_type (GLib.Type.from_name ("label"));
+                label_widget_path.iter_set_object_name (-1, "selection");
 
                 selection_style_context = new Gtk.StyleContext ();
-                selection_style_context.set_path (widget_path);
-                selection_style_context.set_parent (label_style_context);
+                selection_style_context.set_path (label_widget_path);
             }
 
             return (Gdk.RGBA) selection_style_context.get_property (
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
+        }
+
+        public static Granite.Drawing.Color get_accent_color_by_theme_name (string theme_name) {
+            var label_widget_path = new Gtk.WidgetPath ();
+            label_widget_path.append_type (GLib.Type.from_name ("label"));
+            label_widget_path.iter_set_object_name (-1, "selection");
+
+            var selection_style_context = new Gtk.StyleContext ();
+            unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
+            selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+            selection_style_context.set_path (label_widget_path);
+
+            var rgba = (Gdk.RGBA) selection_style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
+
+            return new Granite.Drawing.Color.from_rgba (rgba);
         }
 
         /**

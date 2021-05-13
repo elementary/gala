@@ -42,6 +42,59 @@ namespace Gala {
     }
 
     /**
+     * Border to show around the selected window when using keyboard navigation.
+     */
+    class ActiveShape : Actor {
+        private Clutter.Canvas background_canvas;
+        private static int border_radius;
+
+        static construct {
+            var label_widget_path = new Gtk.WidgetPath ();
+            label_widget_path.append_type (typeof (Gtk.Label));
+
+            var style_context = new Gtk.StyleContext ();
+            style_context.add_class (Granite.STYLE_CLASS_CARD);
+            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
+            style_context.set_path (label_widget_path);
+
+            border_radius = style_context.get_property (
+                Gtk.STYLE_PROPERTY_BORDER_RADIUS,
+                Gtk.StateFlags.NORMAL
+            ).get_int () * 4;
+        }
+
+        construct {
+            background_canvas = new Clutter.Canvas ();
+            background_canvas.draw.connect (draw_background);
+            content = background_canvas;
+        }
+
+        private static bool draw_background (Cairo.Context cr, int width, int height) {
+            cr.save ();
+            cr.set_operator (Cairo.Operator.CLEAR);
+            cr.paint ();
+            cr.restore ();
+
+            Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+            cr.set_source_rgba (1, 1, 1, 0.8);
+            cr.fill ();
+
+            return false;
+        }
+
+#if HAS_MUTTER338
+        public override void allocate (ActorBox box) {
+            base.allocate (box);
+#else
+        public override void allocate (ActorBox box, AllocationFlags flags) {
+            base.allocate (box, flags);
+#endif
+            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
+            background_canvas.invalidate ();
+        }
+    }
+
+    /**
      * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
      * a close button and a shadow. Used together with the WindowCloneContainer.
      */
@@ -121,7 +174,7 @@ namespace Gala {
         bool in_slot_animation = false;
 
         Actor close_button;
-        Actor active_shape;
+        ActiveShape active_shape;
         Actor window_icon;
         Tooltip window_title;
 
@@ -178,8 +231,7 @@ namespace Gala {
             window_title.opacity = 0;
             window_title.set_easing_duration (FADE_ANIMATION_DURATION);
 
-            active_shape = new Clutter.Actor ();
-            active_shape.background_color = { 255, 255, 255, 200 };
+            active_shape = new ActiveShape ();
             active_shape.opacity = 0;
 
             add_child (active_shape);
