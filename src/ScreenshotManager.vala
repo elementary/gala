@@ -254,6 +254,10 @@ namespace Gala {
         }
 
         static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
+            return yield save_image_to_file (image, filename, out used_filename);
+        }
+
+        static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
