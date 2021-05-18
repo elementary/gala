@@ -649,7 +649,7 @@ namespace Gala {
 
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
-                const int MAX_OFFSET = 100;
+                const int MAX_OFFSET = 85;
 
                 if (actor.is_destroyed ())
                     continue;
