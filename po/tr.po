@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-03-29 11:40+0000\n"
-"PO-Revision-Date: 2021-04-10 10:08+0000\n"
+"PO-Revision-Date: 2021-05-05 10:46+0000\n"
 "Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -92,7 +92,7 @@ msgstr "Ekranı Kapla"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr "Arkaplanı Değiştir…"
+msgstr "Duvar Kağıdını Değiştir…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
