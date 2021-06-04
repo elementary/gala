@@ -120,8 +120,7 @@ namespace Gala {
             add_child (icon_container);
 
             close_button = Utils.create_close_button ();
-            close_button.x = -Math.floorf (close_button.width * 0.4f);
-            close_button.y = -Math.floorf (close_button.height * 0.4f);
+            place_close_button ();
             close_button.opacity = 0;
             close_button.reactive = true;
             close_button.visible = false;
@@ -205,6 +204,11 @@ namespace Gala {
             height = size;
 
             return ((Canvas) content).set_size (size, size);
+        }
+
+        void place_close_button () {
+            close_button.x = -Math.floorf (close_button.width * 0.4f);
+            close_button.y = -Math.floorf (close_button.height * 0.4f);
         }
 
         /**
