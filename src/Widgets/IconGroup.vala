@@ -30,6 +30,7 @@ namespace Gala {
         const int PLUS_SIZE = 8;
         const int PLUS_WIDTH = 24;
 
+        const int CLOSE_BUTTON_SIZE = 36;
         const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
         /**
@@ -178,6 +179,7 @@ namespace Gala {
 
             if (show) {
                 show_close_button_timeout = Timeout.add (SHOW_CLOSE_BUTTON_DELAY, () => {
+                    place_close_button ();
                     close_button.visible = true;
                     close_button.opacity = 255;
                     show_close_button_timeout = 0;
@@ -207,6 +209,9 @@ namespace Gala {
         }
 
         void place_close_button () {
+            var size = CLOSE_BUTTON_SIZE * InternalUtils.get_ui_scaling_factor ();
+            close_button.set_size (size, size);
+
             close_button.x = -Math.floorf (close_button.width * 0.4f);
             close_button.y = -Math.floorf (close_button.height * 0.4f);
         }
