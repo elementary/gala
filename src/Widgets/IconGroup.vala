@@ -308,7 +308,9 @@ namespace Gala {
          * Trigger a redraw
          */
         public void redraw () {
-            content.invalidate ();
+            if (!resize_canvas ()) {
+                content.invalidate ();
+            }
         }
 
         /**
