@@ -96,17 +96,12 @@ namespace Gala {
         }
 
         construct {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var size = SIZE * scale;
-
-            width = size;
-            height = size;
             reactive = true;
 
             var canvas = new Canvas ();
-            canvas.set_size (size, size);
             canvas.draw.connect (draw);
             content = canvas;
+            resize_canvas ();
 
             dummy_material = new Cogl.Material ();
 
@@ -200,6 +195,16 @@ namespace Gala {
                 });
             else
                 close_button.visible = false;
+        }
+
+        bool resize_canvas () {
+            var scale = InternalUtils.get_ui_scaling_factor ();
+            var size = SIZE * scale;
+
+            width = size;
+            height = size;
+
+            return ((Canvas) content).set_size (size, size);
         }
 
         /**
