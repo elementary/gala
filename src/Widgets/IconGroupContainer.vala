@@ -128,6 +128,22 @@ namespace Gala {
             return width;
         }
 
+        public void force_reposition () {
+            var children = get_children ();
+
+            foreach (var child in children) {
+                if (child is IconGroup) {
+                    remove_group ((IconGroup) child);
+                }
+            }
+
+            foreach (var child in children) {
+                if (child is IconGroup) {
+                    add_group ((IconGroup) child);
+                }
+            }
+        }
+
         void update_inserter_indices () {
             var current_index = 0;
 
