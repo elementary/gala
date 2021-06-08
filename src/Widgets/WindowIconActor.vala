@@ -27,6 +27,8 @@ namespace Gala {
     public class WindowIconActor : Actor {
         public Window window { get; construct; }
 
+        int icon_scale;
+
         int _icon_size;
         /**
          * The icon size of the WindowIcon. Once set the new icon will be
@@ -37,11 +39,14 @@ namespace Gala {
                 return _icon_size;
             }
             set {
-                if (value == _icon_size)
-                    return;
-
                 var scale = InternalUtils.get_ui_scaling_factor ();
+
+                if (value == _icon_size && scale == icon_scale) {
+                    return;
+                }
+
                 _icon_size = value;
+                icon_scale = scale;
 
                 set_size (_icon_size * scale, _icon_size * scale);
 
@@ -111,6 +116,7 @@ namespace Gala {
             set_easing_duration (800);
 
             window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
+            icon_scale = InternalUtils.get_ui_scaling_factor ();
         }
 
         ~WindowIconActor () {

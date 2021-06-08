@@ -564,6 +564,7 @@ namespace Gala {
                 grab_key_focus ();
 
                 var scale = InternalUtils.get_ui_scaling_factor ();
+                icon_groups.force_reposition ();
                 icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
