@@ -883,14 +883,16 @@ namespace Gala {
 
         private void set_window_icon_position (float window_width, float window_height, bool aligned = true) {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var x = (window_width - WINDOW_ICON_SIZE) / 2;
-            var y = window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f;
+            var size = WINDOW_ICON_SIZE * scale_factor;
+            var x = (window_width - size) / 2;
+            var y = window_height - (size * 0.75f);
 
             if (aligned) {
                 x = InternalUtils.pixel_align (x);
                 y = InternalUtils.pixel_align (y);
             }
 
+            window_icon.set_size (size, size);
             window_icon.set_position (x, y);
         }
 
