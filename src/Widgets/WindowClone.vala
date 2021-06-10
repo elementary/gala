@@ -105,6 +105,7 @@ namespace Gala {
      * a close button and a shadow. Used together with the WindowCloneContainer.
      */
     public class WindowClone : Actor {
+        const int CLOSE_WINDOW_ICON_SIZE = 36;
         const int WINDOW_ICON_SIZE = 64;
         const int ACTIVE_SHAPE_SIZE = 12;
         const int FADE_ANIMATION_DURATION = 200;
@@ -577,6 +578,9 @@ namespace Gala {
             window_title.save_easing_state ();
             close_button.set_easing_duration (0);
             window_title.set_easing_duration (0);
+
+            var close_button_size = CLOSE_WINDOW_ICON_SIZE * scale_factor;
+            close_button.set_size (close_button_size, close_button_size);
 
             close_button.y = -close_button.height * 0.33f;
 
