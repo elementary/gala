@@ -27,6 +27,7 @@ namespace Gala {
         }
 
         public override ActorBox get_bounding_box () {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var size = shadow_size * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
@@ -175,7 +176,6 @@ namespace Gala {
         int prev_index = -1;
         ulong check_confirm_dialog_cb = 0;
         uint shadow_update_timeout = 0;
-        int scale_factor = 0;
         bool in_slot_animation = false;
 
         Actor close_button;
@@ -222,7 +222,7 @@ namespace Gala {
                 return true;
             });
 
-            scale_factor = InternalUtils.get_ui_scaling_factor ();
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             var window_frame_rect = window.get_frame_rect ();
             window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
@@ -571,6 +571,7 @@ namespace Gala {
         public void place_widgets (int dest_width, int dest_height) {
             Granite.CloseButtonPosition pos;
             Granite.Widgets.Utils.get_default_close_button_position (out pos);
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             close_button.save_easing_state ();
             window_title.save_easing_state ();
@@ -877,6 +878,7 @@ namespace Gala {
         }
 
         private void set_window_icon_position (float window_width, float window_height, bool aligned = true) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var x = (window_width - WINDOW_ICON_SIZE) / 2;
             var y = window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f;
 
@@ -889,6 +891,7 @@ namespace Gala {
         }
 
         private void set_window_title_position (float window_width, float window_height) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
             var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
             window_title.set_position (x, y);
