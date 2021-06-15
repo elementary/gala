@@ -353,7 +353,7 @@ namespace Gala {
                 // Move the menu 1 pixel outside of the pointer or else it closes instantly
                 // on the mouse up event
                 py = (y / scale) + 1;
-                push_in = true;
+                push_in = false;
             }, 3, Gdk.CURRENT_TIME);
         }
     }
