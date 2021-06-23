@@ -22,6 +22,13 @@ namespace Gala {
 
         private const double START_ANGLE = 3 * Math.PI / 2;
 
+        /**
+         * Delay, in milliseconds, before showing the animation.
+         * libinput uses a timeout of 180ms when tapping is enabled. Use that value plus a safety
+         * margin so the animation is never displayed when tapping.
+         */
+        private const double DELAY_TIMEOUT = 185;
+
         private int scaling_factor = 1;
         private int cursor_size = 24;
 
@@ -94,6 +101,10 @@ namespace Gala {
         }
 
         public override void paint (Clutter.PaintContext context) {
+            if (angle == 0) {
+                return;
+            }
+
             var rgba = InternalUtils.get_theme_accent_color ();
 
             /* Don't use alpha from the stylesheet to ensure contrast */
@@ -145,7 +156,14 @@ namespace Gala {
 
         public bool interpolate_value (string property_name, Clutter.Interval interval, double progress, out Value @value) {
             if (property_name == "angle") {
-                @value = progress * 2 * Math.PI;
+                @value = 0;
+
+                var elapsed_time = transition.get_elapsed_time ();
+                if (elapsed_time > DELAY_TIMEOUT) {
+                    double delayed_progress = (elapsed_time - DELAY_TIMEOUT) / (transition.duration - DELAY_TIMEOUT);
+                    @value = (delayed_progress * 2 * Math.PI);
+                }
+
                 return true;
             }
 

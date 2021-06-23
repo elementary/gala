@@ -254,6 +254,12 @@ namespace Gala {
         }
 
         static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
+            return (filename != "")
+                ? yield save_image_to_file (image, filename, out used_filename)
+                : save_image_to_clipboard (image, filename, out used_filename);
+        }
+
+        static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
@@ -288,6 +294,22 @@ namespace Gala {
                 warning ("could not save file: %s", e.message);
                 return false;
             }
+        }
+
+        static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+            used_filename = filename;
+
+            unowned Gdk.Display display = Gdk.Display.get_default ();
+            unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
+
+            var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+            if (screenshot == null) {
+                warning ("could not save screenshot to clipboard: null pixbuf");
+                return false;
+            }
+
+            clipboard.set_image (screenshot);
+            return true;
         }
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {

@@ -27,6 +27,7 @@ namespace Gala {
         }
 
         public override ActorBox get_bounding_box () {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var size = shadow_size * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
@@ -34,7 +35,7 @@ namespace Gala {
 
             // Occupy only window frame area plus shadow size
             var bounding_box = ActorBox ();
-            bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size);
+            bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size); //vala-lint=space-before-paren
             bounding_box.set_size (outer_rect.width + size * 2, outer_rect.height + size * 2);
 
             return bounding_box;
@@ -47,6 +48,8 @@ namespace Gala {
     class ActiveShape : Actor {
         private Clutter.Canvas background_canvas;
         private static int border_radius;
+        private static Gdk.RGBA color;
+        private static const double COLOR_OPACITY = 0.8;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -61,6 +64,8 @@ namespace Gala {
                 Gtk.STYLE_PROPERTY_BORDER_RADIUS,
                 Gtk.StateFlags.NORMAL
             ).get_int () * 4;
+
+            color = InternalUtils.get_theme_accent_color ();
         }
 
         construct {
@@ -76,7 +81,7 @@ namespace Gala {
             cr.restore ();
 
             Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
-            cr.set_source_rgba (1, 1, 1, 0.8);
+            cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 
             return false;
@@ -89,6 +94,7 @@ namespace Gala {
         public override void allocate (ActorBox box, AllocationFlags flags) {
             base.allocate (box, flags);
 #endif
+            color = InternalUtils.get_theme_accent_color ();
             background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
             background_canvas.invalidate ();
         }
@@ -99,6 +105,7 @@ namespace Gala {
      * a close button and a shadow. Used together with the WindowCloneContainer.
      */
     public class WindowClone : Actor {
+        const int CLOSE_WINDOW_ICON_SIZE = 36;
         const int WINDOW_ICON_SIZE = 64;
         const int ACTIVE_SHAPE_SIZE = 12;
         const int FADE_ANIMATION_DURATION = 200;
@@ -170,7 +177,6 @@ namespace Gala {
         int prev_index = -1;
         ulong check_confirm_dialog_cb = 0;
         uint shadow_update_timeout = 0;
-        int scale_factor = 0;
         bool in_slot_animation = false;
 
         Actor close_button;
@@ -217,7 +223,7 @@ namespace Gala {
                 return true;
             });
 
-            scale_factor = InternalUtils.get_ui_scaling_factor ();
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             var window_frame_rect = window.get_frame_rect ();
             window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
@@ -566,11 +572,15 @@ namespace Gala {
         public void place_widgets (int dest_width, int dest_height) {
             Granite.CloseButtonPosition pos;
             Granite.Widgets.Utils.get_default_close_button_position (out pos);
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             close_button.save_easing_state ();
             window_title.save_easing_state ();
             close_button.set_easing_duration (0);
             window_title.set_easing_duration (0);
+
+            var close_button_size = CLOSE_WINDOW_ICON_SIZE * scale_factor;
+            close_button.set_size (close_button_size, close_button_size);
 
             close_button.y = -close_button.height * 0.33f;
 
@@ -872,18 +882,22 @@ namespace Gala {
         }
 
         private void set_window_icon_position (float window_width, float window_height, bool aligned = true) {
-            var x = (window_width - WINDOW_ICON_SIZE) / 2;
-            var y = window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f;
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            var size = WINDOW_ICON_SIZE * scale_factor;
+            var x = (window_width - size) / 2;
+            var y = window_height - (size * 0.75f);
 
             if (aligned) {
                 x = InternalUtils.pixel_align (x);
                 y = InternalUtils.pixel_align (y);
             }
 
+            window_icon.set_size (size, size);
             window_icon.set_position (x, y);
         }
 
         private void set_window_title_position (float window_width, float window_height) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
             var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
             window_title.set_position (x, y);

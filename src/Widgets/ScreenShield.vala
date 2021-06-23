@@ -83,7 +83,7 @@ namespace Gala {
 
         public bool is_locked { get; private set; default = false; }
         public bool in_greeter { get; private set; default = false; }
-        public int64 activation_time  { get; private set; default = 0; }
+        public int64 activation_time { get; private set; default = 0; }
 
         public WindowManager wm { get; construct; }
 

@@ -564,6 +564,7 @@ namespace Gala {
                 grab_key_focus ();
 
                 var scale = InternalUtils.get_ui_scaling_factor ();
+                icon_groups.force_reposition ();
                 icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
@@ -649,7 +650,7 @@ namespace Gala {
 
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
-                const int MAX_OFFSET = 100;
+                const int MAX_OFFSET = 85;
 
                 if (actor.is_destroyed ())
                     continue;
