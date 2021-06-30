@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2021-06-20 11:45+0000\n"
 "Last-Translator: imgradeone Yan <imgradeone@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -20,24 +20,30 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr "屏幕截图"
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Screenshot taken"
+msgstr "屏幕截图"
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "显示看起来正常吗？"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "保持当前配置"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "恢复上次的配置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"

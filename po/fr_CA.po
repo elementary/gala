@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2018-06-16 00:09+0000\n"
 "Last-Translator: martin fromont <martin.fromont1@gmail.com>\n"
 "Language-Team: French (Canada) <https://weblate.elementary.io/projects/"
@@ -20,24 +20,28 @@ msgstr ""
 "X-Generator: Weblate 2.18\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:48+0000\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+msgid "Screenshot taken"
+msgstr ""
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "L'affichage est-il de bonne qualité?"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "Garder Ce Configuration"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "Restaurer la Configuration Précédent"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2016-04-30 11:17+0000\n"
 "Last-Translator: Rockworld <sumoisrock@gmail.com>\n"
 "Language-Team: Thai <th@li.org>\n"
@@ -18,24 +18,28 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Generator: Launchpad (build 18326)\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+msgid "Screenshot taken"
+msgstr ""
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "จอแสดงผลดูใช้ได้หรือยัง?"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "เก็บการตั้งค่านี้ไว้"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "คืนค่าการตั้งค่าเป็นแบบเดิม"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Urdu <https://l10n.elementary.io/projects/desktop/gala/ur/>\n"
@@ -19,24 +19,28 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+msgid "Screenshot taken"
+msgstr ""
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "کیا آپکو ڈسپلے ٹھیک محسوس ہو رہا ہے؟"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "یہ تشکیل ٹھیک ہے، محفوظ کریں"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "پہلے کی گئی تشکیل واپس بحال کریں"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

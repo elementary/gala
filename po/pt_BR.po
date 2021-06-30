@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2020-05-21 13:11+0000\n"
 "Last-Translator: Rodrigo Oliveira <rod.oliveira@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
@@ -20,24 +20,30 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr "Capturas de tela"
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Screenshot taken"
+msgstr "Capturas de tela"
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "O vídeo está bom?"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "Manter essa configuração"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "Restaurar a configuração anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"

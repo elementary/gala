@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2020-08-29 20:13+0000\n"
 "Last-Translator: Mejans <farga@mejans.fr>\n"
 "Language-Team: Occitan <https://l10n.elementary.io/projects/desktop/gala/oc/"
@@ -19,24 +19,30 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr "Capturas d’ecran"
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Screenshot taken"
+msgstr "Capturas d’ecran"
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "L’afichatge sembla bon ?"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "Gardar aquesta configuracion"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "Restablir la configuracion precedenta"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"

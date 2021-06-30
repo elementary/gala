@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-03-29 11:40+0000\n"
+"POT-Creation-Date: 2021-06-30 06:47+0000\n"
 "PO-Revision-Date: 2021-05-04 13:48+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/>"
-"\n"
+"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
+">\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,24 +20,30 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-23 06:29+0000\n"
 
-#: src/ScreenshotManager.vala:243
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr "Kuvakaappaukset"
 
-#: src/WindowManager.vala:2091
+#: src/ScreenshotManager.vala:335
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Screenshot taken"
+msgstr "Kuvakaappaukset"
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "Näyttääkö kaikki kelvolliselta?"
 
-#: src/WindowManager.vala:2094
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "Säilytä nämä asetukset"
 
-#: src/WindowManager.vala:2095
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "Palauta aiemmat asetukset"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2143
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Kuvakaappaus - %s"
