@@ -90,6 +90,10 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
+
+            if (success) {
+                play_shutter_sound ();
+            }
         }
 
         public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
@@ -109,8 +113,12 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
-            if (!success)
+
+            if (success) {
+                play_shutter_sound ();
+            } else {
                 throw new DBusError.FAILED ("Failed to save image");
+            }
         }
 
         public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
@@ -146,6 +154,10 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
+
+            if (success) {
+                play_shutter_sound ();
+            }
         }
 
         public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError {
@@ -310,6 +322,20 @@ namespace Gala {
 
             clipboard.set_image (screenshot);
             return true;
+        }
+
+        private void play_shutter_sound () {
+            Canberra.Context context;
+            Canberra.Proplist props;
+
+            Canberra.Context.create (out context);
+            Canberra.Proplist.create (out props);
+
+            props.sets (Canberra.PROP_EVENT_ID, "screen-capture");
+            props.sets (Canberra.PROP_EVENT_DESCRIPTION, _("Screenshot taken"));
+            props.sets (Canberra.PROP_CANBERRA_CACHE_CONTROL, "permanent");
+
+            context.play_full (0, props, null);
         }
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
