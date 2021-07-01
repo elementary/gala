@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-06-30 06:47+0000\n"
-"PO-Revision-Date: 2021-05-05 10:46+0000\n"
-"Last-Translator: Ozgur Baskin <bebeto_baskin@yahoo.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"PO-Revision-Date: 2021-07-01 11:05+0000\n"
+"Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,10 +25,8 @@ msgid "Screenshots"
 msgstr "Ekran Görüntüleri"
 
 #: src/ScreenshotManager.vala:335
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Ekran Görüntüleri"
+msgstr "Ekran görüntüsüsü alındı"
 
 #: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
