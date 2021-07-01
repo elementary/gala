@@ -89,6 +89,9 @@ namespace Gala {
 
         Daemon? daemon_proxy = null;
 
+        public AreaTiling area_tiling;
+        WindowMovementTracker window_movement_tracker;
+
         NotificationStack notification_stack;
 
         Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -176,6 +179,10 @@ namespace Gala {
 
             WindowListener.init (display);
             KeyboardManager.init (display);
+
+            area_tiling = new AreaTiling (this, display);
+            window_movement_tracker = new WindowMovementTracker (display, area_tiling);
+            window_movement_tracker.watch ();
 
             notification_stack = new NotificationStack (display);
 
@@ -984,8 +991,10 @@ namespace Gala {
                 tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
-            } else if (tile_preview.is_visible ()) {
-                float width, height, x, y;
+            }
+
+            float width, height, x, y;
+            if (tile_preview.is_visible ()) {
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
 
@@ -993,6 +1002,12 @@ namespace Gala {
                     || tile_preview.get_transition ("size") != null) {
                     return;
                 }
+            } else {
+                var rect = window.get_frame_rect ();
+                width = rect.width;
+                height = rect.height;
+                x = rect.x;
+                y = rect.y;
             }
 
             unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
@@ -1000,9 +1015,8 @@ namespace Gala {
 
             var duration = AnimationDuration.SNAP / 2U;
 
-            var rect = window.get_frame_rect ();
-            tile_preview.set_position (rect.x, rect.y);
-            tile_preview.set_size (rect.width, rect.height);
+            tile_preview.set_position (x, y);
+            tile_preview.set_size (width, height);
             tile_preview.show ();
 
             if (enable_animations) {
@@ -1019,7 +1033,7 @@ namespace Gala {
         }
 
         public override void hide_tile_preview () {
-            if (tile_preview != null) {
+            if (tile_preview != null && !area_tiling.is_active) {
                 tile_preview.remove_all_transitions ();
                 tile_preview.opacity = 0U;
                 tile_preview.hide ();
