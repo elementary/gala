@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-06-30 06:47+0000\n"
-"PO-Revision-Date: 2021-05-21 19:39+0000\n"
+"PO-Revision-Date: 2021-07-01 10:21+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
-"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/"
-">\n"
+"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,10 +25,8 @@ msgid "Screenshots"
 msgstr "Bildschirmfotos"
 
 #: src/ScreenshotManager.vala:335
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Bildschirmfotos"
+msgstr "Bildschirmfoto erstellt"
 
 #: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
@@ -78,7 +76,7 @@ msgstr "Auf die rechte Arbeitsfläche verschieben"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr "Bildschirmfoto schießen"
+msgstr "Bildschirmfoto erstellen"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
