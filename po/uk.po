@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-06-30 06:47+0000\n"
-"PO-Revision-Date: 2021-06-30 20:56+0000\n"
+"PO-Revision-Date: 2021-07-03 20:17+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -101,11 +101,11 @@ msgstr "Змінити тло…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr "Параметри екрана…"
+msgstr "Налаштування екрана…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr "Системні параметри…"
+msgstr "Налаштування системи…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
