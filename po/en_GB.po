@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-06-30 06:47+0000\n"
-"PO-Revision-Date: 2021-04-08 02:50+0000\n"
+"PO-Revision-Date: 2021-07-05 11:21+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -25,10 +25,8 @@ msgid "Screenshots"
 msgstr "Screenshots"
 
 #: src/ScreenshotManager.vala:335
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Screenshots"
+msgstr "Screenshot taken"
 
 #: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
