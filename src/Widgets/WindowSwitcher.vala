@@ -24,6 +24,8 @@ namespace Gala {
         const float BACKGROUND_OPACITY = 155.0f;
         const float DIM_WINDOW_BRIGHTNESS = -BACKGROUND_OPACITY / 255.0f;
 
+        uint animation_timeout;
+
         public WindowManager wm { get; construct; }
 
         WindowIcon? current_window = null;
@@ -410,7 +412,13 @@ namespace Gala {
 
             current_window = next_window (workspace, backward);
 
-            place_dock ();
+            this.animation_timeout = GLib.Timeout.add (150, () => {
+                place_dock ();
+                animate_dock_width ();
+                show_background ();
+                dim_windows ();
+                return false;
+            }, 1);
 
             visible = true;
             closing = false;
@@ -427,10 +435,6 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             };
 
-            animate_dock_width ();
-            show_background ();
-
-            dim_windows ();
             grab_key_focus ();
 
             if ((get_current_modifiers () & modifier_mask) == 0)
@@ -468,6 +472,8 @@ namespace Gala {
 
             closing = true;
             last_switch = 0;
+
+            GLib.Source.remove (animation_timeout);
 
             foreach (var actor in clone_sort_order) {
                 unowned SafeWindowClone clone = (SafeWindowClone) actor;
