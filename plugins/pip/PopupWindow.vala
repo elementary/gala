@@ -379,6 +379,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_screen_position () {
+        place_window_in_screen ();
+    }
+
+    private void place_window_in_screen () {
         Meta.Rectangle monitor_rect;
         get_current_monitor_rect (out monitor_rect);
 
