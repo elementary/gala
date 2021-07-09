@@ -95,13 +95,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         move_action.drag_begin.connect (on_move_begin);
         move_action.drag_canceled.connect (on_move_end);
         move_action.actor_clicked.connect (activate);
+        add_action (move_action);
 
         container = new Clutter.Actor ();
         container.reactive = true;
         container.set_scale (0.35f, 0.35f);
         container.add_effect (new ShadowEffect (SHADOW_SIZE, 2));
         container.add_child (clone);
-        container.add_action (move_action);
 
         update_size ();
         update_container_position ();
