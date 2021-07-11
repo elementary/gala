@@ -191,6 +191,10 @@ namespace Gala {
             return app_cache.lookup_id (desktop_file);
         }
 
+        public static GLib.DesktopAppInfo get_app_from_window (Meta.Window window) {
+            return window_to_desktop_cache[window];
+        }
+
         private static GLib.DesktopAppInfo? lookup_desktop_wmclass (string? wm_class) {
             if (wm_class == null) {
                 return null;
