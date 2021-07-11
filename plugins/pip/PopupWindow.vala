@@ -388,6 +388,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void place_window_in_screen () {
+        off_screen = false;
+
         Meta.Rectangle monitor_rect;
         get_current_monitor_rect (out monitor_rect);
 
@@ -515,7 +517,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void activate () {
-        var window = window_actor.get_meta_window ();
-        window.activate (Clutter.get_current_event_time ());
+        if (off_screen) {
+            place_window_in_screen ();
+        } else {
+            var window = window_actor.get_meta_window ();
+            window.activate (Clutter.get_current_event_time ());
+        }
     }
 }
