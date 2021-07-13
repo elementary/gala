@@ -845,6 +845,12 @@ namespace Gala {
                             current.change_workspace (wp);
                     }
                     break;
+                case ActionType.TILE_CURRENT_LEFT:
+                    // TODO
+                    break;
+                case ActionType.TILE_CURRENT_RIGHT:
+                    // TODO
+                    break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
                         current.@delete (Gtk.get_current_event_time ());
