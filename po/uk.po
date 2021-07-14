@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-03 20:17+0000\n"
+"PO-Revision-Date: 2021-07-14 18:02+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -131,11 +131,11 @@ msgstr "Вдосконалення:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Додано жести"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Показ назв вікон у багатозадачному поданні"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
