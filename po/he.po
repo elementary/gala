@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-06-30 10:29+0000\n"
+"PO-Revision-Date: 2021-07-14 21:48+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -125,11 +125,11 @@ msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "נוספה תמיכה במחוות מגע במספר נקודות"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "כותרות החלונות מוצגות בתצוגת ריבוי משימות"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -145,29 +145,27 @@ msgstr "הצגת תפריט הקשר בעת לחיצה משנית על הרקע"
 
 #: data/gala.appdata.xml.in:22
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "הנפשות חדשות להשהיית לחיצה ואיתור הסמן"
 
 #: data/gala.appdata.xml.in:23
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "נוסף צילום מסך לתפריט ההקשר של החלון"
 
 #: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
+msgstr "תמיד להשמיע קול של צמצם עם צילום המסך"
 
 #: data/gala.appdata.xml.in:25
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "תיקונים חזותיים קלים"
 
 #: data/gala.appdata.xml.in:26
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "תיקוני אבחנה גבוהה"
 
 #: data/gala.appdata.xml.in:27
 msgid "Performance improvements"
-msgstr ""
+msgstr "שיפורי ביצועים"
 
 #: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
