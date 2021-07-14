@@ -1,3 +1,9 @@
+gala (6.0.0) focal; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Foré <daniel@elementary.io>  Wed, 14 Jul 2021 10:39:47 -0700
+
 gala (3.3.2) unstable; urgency=medium
 
   * Release 3.3.2 (#787)
