@@ -5959,14 +5959,21 @@ namespace Clutter {
 		protected Effect ();
 		[NoWrapper]
 		public virtual bool modify_paint_volume (Clutter.PaintVolume volume);
-		[NoWrapper]
-		public virtual void paint (Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags);
+        [NoWrapper]
+        public virtual void paint (Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags);
 		[NoWrapper]
 		public virtual void pick (Clutter.PickContext pick_context);
+#if HAS_MUTTER40
+        [NoWrapper]
+		public virtual void post_paint (Clutter.PaintNode node, Clutter.PaintContext paint_context);
+        [NoWrapper]
+		public virtual bool pre_paint (Clutter.PaintNode node, Clutter.PaintContext paint_context);
+#else
 		[NoWrapper]
 		public virtual void post_paint (Clutter.PaintContext paint_context);
-		[NoWrapper]
+        [NoWrapper]
 		public virtual bool pre_paint (Clutter.PaintContext paint_context);
+#endif
 		[Version (since = "1.8")]
 		public void queue_repaint ();
 	}
