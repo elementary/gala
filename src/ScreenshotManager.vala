@@ -418,9 +418,9 @@ namespace Gala {
             int x, y;
 #if HAS_MUTTER40
             Graphene.Point coords;
-            cursor_tracker.get_pointer (coords, null);
-            x = coords.x;
-            y = coords.y;
+            cursor_tracker.get_pointer (out coords, null);
+            x = (int)coords.x;
+            y = (int)coords.y;
 #else
             cursor_tracker.get_pointer (out x, out y, null);
 #endif
