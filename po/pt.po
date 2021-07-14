@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-06-30 13:27+0000\n"
+"PO-Revision-Date: 2021-07-14 21:48+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -130,11 +130,11 @@ msgstr "Melhorias:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Adicionar gestos multitoque"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Mostra títulos de janelas em vista multitarefa"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -153,29 +153,27 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:22
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Novas animações de clique Dwell e localizador de cursor"
 
 #: data/gala.appdata.xml.in:23
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Adiciona o tirar captura de ecrã ao menu de contexto da janela"
 
 #: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Corrige possíveis falhas ao tirar capturas de ecrã"
+msgstr "Reproduzir sempre o som do obturador ao tirar capturas de ecrã"
 
 #: data/gala.appdata.xml.in:25
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Pequenas melhorias visuais"
 
 #: data/gala.appdata.xml.in:26
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "Correções de HiDPI"
 
 #: data/gala.appdata.xml.in:27
 msgid "Performance improvements"
-msgstr ""
+msgstr "Melhorias de desempenho"
 
 #: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
