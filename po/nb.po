@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-06-30 06:47+0000\n"
+"POT-Creation-Date: 2021-07-14 17:09+0000\n"
 "PO-Revision-Date: 2021-07-01 17:39+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -125,32 +125,66 @@ msgstr ""
 "En vindu- og komposisjonsbehandler basert på libmutter og designet av "
 "elementary for bruk med Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
-#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:64
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Add multitouch gestures"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18
+msgid "Show window titles in multitasking view"
+msgstr ""
+
+#: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr "Lukk Alt + Tab-veksleren eller ved å trykke Esc uten å slippe Alt"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:20
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Øk maksimalt forstørrelsesnivå og tilby tilbakemelding når forstørring er "
 "umulig"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:21
 msgid "Show a context menu when secondary clicking the background"
 msgstr "Vis en bindeleddsinfo-meny ved høyreklikk på bakgrunnen"
 
-#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:22
+msgid "New Dwell Click and Locate Pointer animations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:23
+msgid "Add Take Screenshot to window context menu"
+msgstr ""
+
+#: data/gala.appdata.xml.in:24
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Always play shutter sound when taking screenshots"
+msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
+
+#: data/gala.appdata.xml.in:25
+msgid "Minor visual improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:26
+msgid "HiDPI fixes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Performance improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
 msgid "Updated translations"
 msgstr "Oppdaterte oversettelser"
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:36
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -158,48 +192,48 @@ msgstr ""
 "Fiks «Alltid på tilgjengelig arbeidsområde»-vinduer som forsvinner under "
 "endring av arbeidsområde"
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:37
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Fiks vinduer på annet enn hovedskjerm som forsvinner under endring av "
 "arbeidsområde"
 
-#: data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:46
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Fiks krasj ved endring av arbeidsområder under åpning av kortvarig vindu"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:55
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Ikke vis Gala-bakgrunnstjenester i dokken"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:56
 msgid "Fixes for media key handling"
 msgstr "Fikser for mediatast-håndtering"
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:57
 #, fuzzy
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Vis tastatursnarveier i tittelfelt-menyer"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:66
 msgid "Improve window shadows for legacy apps"
 msgstr "Forbedre vindusskygger for eldre programmer"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:67
 msgid "Fix potential crash when taking screenshots"
 msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.appdata.xml.in:68
 msgid "Fix notification position after changing DPI"
 msgstr "Fiks merknadsposisjon etter endring av DPI"
 
-#: data/gala.appdata.xml.in:61
+#: data/gala.appdata.xml.in:69
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Fiks animasjoner for flytting og maksimering av flislagte vinduer"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:75
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
