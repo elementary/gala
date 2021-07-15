@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-15 11:59+0000\n"
+"PO-Revision-Date: 2021-07-15 13:10+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -153,29 +153,27 @@ msgstr "壁紙の副クリック時にコンテキストメニューを表示す
 
 #: data/gala.appdata.xml.in:22
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "ホバークリック時とポインターの位置を強調する際に、アニメーション表示するように変更"
 
 #: data/gala.appdata.xml.in:23
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "ウィンドウのコンテキストメニューに\"スクリーンショットを撮る\"を追加"
 
 #: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
+msgstr "スクリーンショットを取得する際、常にシャッター音が鳴るように変更"
 
 #: data/gala.appdata.xml.in:25
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "軽微な視覚上の改善"
 
 #: data/gala.appdata.xml.in:26
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI に関する修正"
 
 #: data/gala.appdata.xml.in:27
 msgid "Performance improvements"
-msgstr ""
+msgstr "パフォーマンスの改善"
 
 #: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
