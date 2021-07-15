@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-01 11:05+0000\n"
+"PO-Revision-Date: 2021-07-15 07:48+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -130,11 +130,11 @@ msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Çok noktalı dokunma davranışları eklendi"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Çoklu görev görünümünde pencere başlıklarını göster"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -157,25 +157,23 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:23
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Pencere içerik menüsüne Ekran Görüntüsü Al eklendi"
 
 #: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
+msgstr "Ekran görüntüsü alırken her zaman deklanşör sesi çal"
 
 #: data/gala.appdata.xml.in:25
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Küçük görsel iyileştirmeler"
 
 #: data/gala.appdata.xml.in:26
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI düzeltmeleri"
 
 #: data/gala.appdata.xml.in:27
 msgid "Performance improvements"
-msgstr ""
+msgstr "Performans iyileştirmeleri"
 
 #: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
