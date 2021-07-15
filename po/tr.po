@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-15 07:48+0000\n"
+"PO-Revision-Date: 2021-07-15 08:46+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
 "\n"
@@ -130,7 +130,7 @@ msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr "Çok noktalı dokunma davranışları eklendi"
+msgstr "Çok noktalı dokunma hareketleri eklendi"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
