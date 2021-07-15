@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-06-30 14:02+0000\n"
+"PO-Revision-Date: 2021-07-15 11:59+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -130,11 +130,11 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "マルチタッチジェスチャーを追加"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "マルチタスキング画面でウィンドウのタイトルを表示するように変更"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -241,7 +241,7 @@ msgstr "elementary, Inc."
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "マルチタスキングビュー"
+msgstr "マルチタスク画面"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
