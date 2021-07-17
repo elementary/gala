@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-05 11:21+0000\n"
+"PO-Revision-Date: 2021-07-18 02:11+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -130,11 +130,11 @@ msgstr "Improvements:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Add multitouch gestures"
 
 #: data/gala.appdata.xml.in:18
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Show window titles in multitasking view"
 
 #: data/gala.appdata.xml.in:19
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -150,29 +150,27 @@ msgstr "Show a context menu when secondary clicking the background"
 
 #: data/gala.appdata.xml.in:22
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "New Dwell Click and Locate Pointer animations"
 
 #: data/gala.appdata.xml.in:23
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Add Take Screenshot to window context menu"
 
 #: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Fix potential crash when taking screenshots"
+msgstr "Always play shutter sound when taking screenshots"
 
 #: data/gala.appdata.xml.in:25
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Minor visual improvements"
 
 #: data/gala.appdata.xml.in:26
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI fixes"
 
 #: data/gala.appdata.xml.in:27
 msgid "Performance improvements"
-msgstr ""
+msgstr "Performance improvements"
 
 #: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
