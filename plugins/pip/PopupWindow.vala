@@ -200,6 +200,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void on_move_end () {
+        reactive = true;
         update_screen_position ();
     }
 

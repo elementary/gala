@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '3.3.2',
+    version: '6.0.0',
     meson_version: '>= 0.48.0',
     license: 'GPL3',
 )
@@ -81,6 +81,7 @@ gtk_version_required = '3.10.0'
 plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
+canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
@@ -134,7 +135,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, gexiv2_dep, config_dep]
 
 subdir('data')
 subdir('lib')

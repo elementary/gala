@@ -321,7 +321,7 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
                     } catch (Error e) {
-                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Wallpaper Settings",
                             "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-error",
@@ -338,7 +338,7 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://display", null);
                     } catch (Error e) {
-                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open Display Settings",
                             "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-warning",
@@ -355,7 +355,7 @@ namespace Gala {
                     try {
                         AppInfo.launch_default_for_uri ("settings://", null);
                     } catch (Error e) {
-                        var message_dialog  = new Granite.MessageDialog.with_image_from_icon_name (
+                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
                             "Failed to Open System Settings",
                             "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
                             "dialog-warning",
@@ -381,7 +381,7 @@ namespace Gala {
                 // Move the menu 1 pixel outside of the pointer or else it closes instantly
                 // on the mouse up event
                 py = (y / scale) + 1;
-                push_in = true;
+                push_in = false;
             }, 3, Gdk.CURRENT_TIME);
         }
     }

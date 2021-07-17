@@ -30,6 +30,7 @@ namespace Gala {
         const int PLUS_SIZE = 8;
         const int PLUS_WIDTH = 24;
 
+        const int CLOSE_BUTTON_SIZE = 36;
         const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
         /**
@@ -96,17 +97,12 @@ namespace Gala {
         }
 
         construct {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var size = SIZE * scale;
-
-            width = size;
-            height = size;
             reactive = true;
 
             var canvas = new Canvas ();
-            canvas.set_size (size, size);
             canvas.draw.connect (draw);
             content = canvas;
+            resize_canvas ();
 
             dummy_material = new Cogl.Material ();
 
@@ -125,8 +121,7 @@ namespace Gala {
             add_child (icon_container);
 
             close_button = Utils.create_close_button ();
-            close_button.x = -Math.floorf (close_button.width * 0.4f);
-            close_button.y = -Math.floorf (close_button.height * 0.4f);
+            place_close_button ();
             close_button.opacity = 0;
             close_button.reactive = true;
             close_button.visible = false;
@@ -184,6 +179,7 @@ namespace Gala {
 
             if (show) {
                 show_close_button_timeout = Timeout.add (SHOW_CLOSE_BUTTON_DELAY, () => {
+                    place_close_button ();
                     close_button.visible = true;
                     close_button.opacity = 255;
                     show_close_button_timeout = 0;
@@ -200,6 +196,24 @@ namespace Gala {
                 });
             else
                 close_button.visible = false;
+        }
+
+        bool resize_canvas () {
+            var scale = InternalUtils.get_ui_scaling_factor ();
+            var size = SIZE * scale;
+
+            width = size;
+            height = size;
+
+            return ((Canvas) content).set_size (size, size);
+        }
+
+        void place_close_button () {
+            var size = CLOSE_BUTTON_SIZE * InternalUtils.get_ui_scaling_factor ();
+            close_button.set_size (size, size);
+
+            close_button.x = -Math.floorf (close_button.width * 0.4f);
+            close_button.y = -Math.floorf (close_button.height * 0.4f);
         }
 
         /**
@@ -303,7 +317,9 @@ namespace Gala {
          * Trigger a redraw
          */
         public void redraw () {
-            content.invalidate ();
+            if (!resize_canvas ()) {
+                content.invalidate ();
+            }
         }
 
         /**
