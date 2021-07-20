@@ -80,11 +80,7 @@ namespace Gala {
             debug ("Taking screenshot");
 
             int width, height;
-#if HAS_MUTTER330
             wm.get_display ().get_size (out width, out height);
-#else
-            wm.get_screen ().get_size (out width, out height);
-#endif
 
             var image = take_screenshot (0, 0, width, height, include_cursor);
             unconceal_text ();
@@ -94,6 +90,10 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
+
+            if (success) {
+                play_shutter_sound ();
+            }
         }
 
         public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
@@ -113,19 +113,18 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
-            if (!success)
+
+            if (success) {
+                play_shutter_sound ();
+            } else {
                 throw new DBusError.FAILED ("Failed to save image");
+            }
         }
 
         public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking window screenshot");
 
-#if HAS_MUTTER330
             var window = wm.get_display ().get_focus_window ();
-#else
-            var window = wm.get_screen ().get_display ().get_focus_window ();
-#endif
-
             if (window == null) {
                 unconceal_text ();
                 throw new DBusError.FAILED ("Cannot find active window");
@@ -155,6 +154,10 @@ namespace Gala {
             }
 
             success = yield save_image (image, filename, out filename_used);
+
+            if (success) {
+                play_shutter_sound ();
+            }
         }
 
         public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError {
@@ -263,6 +266,12 @@ namespace Gala {
         }
 
         static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
+            return (filename != "")
+                ? yield save_image_to_file (image, filename, out used_filename)
+                : save_image_to_clipboard (image, filename, out used_filename);
+        }
+
+        static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
@@ -297,6 +306,36 @@ namespace Gala {
                 warning ("could not save file: %s", e.message);
                 return false;
             }
+        }
+
+        static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+            used_filename = filename;
+
+            unowned Gdk.Display display = Gdk.Display.get_default ();
+            unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
+
+            var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+            if (screenshot == null) {
+                warning ("could not save screenshot to clipboard: null pixbuf");
+                return false;
+            }
+
+            clipboard.set_image (screenshot);
+            return true;
+        }
+
+        private void play_shutter_sound () {
+            Canberra.Context context;
+            Canberra.Proplist props;
+
+            Canberra.Context.create (out context);
+            Canberra.Proplist.create (out props);
+
+            props.sets (Canberra.PROP_EVENT_ID, "screen-capture");
+            props.sets (Canberra.PROP_EVENT_DESCRIPTION, _("Screenshot taken"));
+            props.sets (Canberra.PROP_CANBERRA_CACHE_CONTROL, "permanent");
+
+            context.play_full (0, props, null);
         }
 
         Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
@@ -375,12 +414,7 @@ namespace Gala {
         }
 
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
-#if HAS_MUTTER330
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
-#else
-            unowned Meta.CursorTracker cursor_tracker = wm.get_screen ().get_cursor_tracker ();
-#endif
-
             int x, y;
             cursor_tracker.get_pointer (out x, out y, null);
 

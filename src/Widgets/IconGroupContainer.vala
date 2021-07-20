@@ -30,25 +30,13 @@ namespace Gala {
 
         public signal void request_reposition (bool animate);
 
-#if HAS_MUTTER330
         public Meta.Display display { get; construct; }
-#else
-        public Screen screen { get; construct; }
-#endif
 
-#if HAS_MUTTER330
         public IconGroupContainer (Meta.Display display) {
             Object (display: display);
 
             layout_manager = new BoxLayout ();
         }
-#else
-        public IconGroupContainer (Screen screen) {
-            Object (screen: screen);
-
-            layout_manager = new BoxLayout ();
-        }
-#endif
 
         public void add_group (IconGroup group) {
             var index = group.workspace.index ();
@@ -138,6 +126,22 @@ namespace Gala {
             width += spacing;
 
             return width;
+        }
+
+        public void force_reposition () {
+            var children = get_children ();
+
+            foreach (var child in children) {
+                if (child is IconGroup) {
+                    remove_group ((IconGroup) child);
+                }
+            }
+
+            foreach (var child in children) {
+                if (child is IconGroup) {
+                    add_group ((IconGroup) child);
+                }
+            }
         }
 
         void update_inserter_indices () {

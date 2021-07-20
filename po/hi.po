@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2020-11-17 00:07+0000\n"
+"POT-Creation-Date: 2021-07-14 17:09+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Hindi <https://l10n.elementary.io/projects/desktop/gala/hi/>\n"
@@ -19,71 +19,89 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:252
+#: src/ScreenshotManager.vala:255
 msgid "Screenshots"
 msgstr ""
 
-#: src/WindowManager.vala:2202
+#: src/ScreenshotManager.vala:335
+msgid "Screenshot taken"
+msgstr ""
+
+#: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
 msgstr "क्या यह प्रदर्शन ठीक है?"
 
-#: src/WindowManager.vala:2205
+#: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
 msgstr "इस कॉन्फ़िगरेशन को बनायें रखें"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
 msgstr "पिछला विन्यास बहाल करें"
 
-#: daemon/MenuDaemon.vala:111
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2143
+#, c-format
+msgid "Screenshot from %s"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:115
 msgid "Hide"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:124
+#: daemon/MenuDaemon.vala:128
 msgid "Move"
 msgstr "स्थानान्तर"
 
-#: daemon/MenuDaemon.vala:132
+#: daemon/MenuDaemon.vala:136
 msgid "Resize"
 msgstr "आकार बदलें"
 
-#: daemon/MenuDaemon.vala:140
+#: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
 msgstr "हमेशा ऊपर"
 
-#: daemon/MenuDaemon.vala:148
+#: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
 msgstr "हमेशा दिखाई कार्यस्थानों पर"
 
-#: daemon/MenuDaemon.vala:156
+#: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
 msgstr "बाए कार्यस्थल पर भेजे"
 
-#: daemon/MenuDaemon.vala:164
+#: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
 msgstr "दाहिने कार्यस्थल पर भेजे"
 
-#: daemon/MenuDaemon.vala:172
+#: daemon/MenuDaemon.vala:176
+msgid "Take Screenshot"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:184
 msgid "Close"
 msgstr "बंद करें"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:223
+msgid "Untile"
+msgstr ""
+
+#: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
 msgstr "छोटा करें"
 
-#: daemon/MenuDaemon.vala:205
+#: daemon/MenuDaemon.vala:225
 msgid "Maximize"
 msgstr "बड़ा करें"
 
-#: daemon/MenuDaemon.vala:268
+#: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:285
+#: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:302
+#: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
 msgstr ""
 
@@ -101,73 +119,105 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:26
-#: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:45
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:64
 msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:17
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgid "Add multitouch gestures"
 msgstr ""
 
 #: data/gala.appdata.xml.in:18
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgid "Show window titles in multitasking view"
 msgstr ""
 
 #: data/gala.appdata.xml.in:19
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+
+#: data/gala.appdata.xml.in:21
 msgid "Show a context menu when secondary clicking the background"
 msgstr ""
 
-#: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:39 data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:22
+msgid "New Dwell Click and Locate Pointer animations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:23
+msgid "Add Take Screenshot to window context menu"
+msgstr ""
+
+#: data/gala.appdata.xml.in:24
+msgid "Always play shutter sound when taking screenshots"
+msgstr ""
+
+#: data/gala.appdata.xml.in:25
+msgid "Minor visual improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:26
+msgid "HiDPI fixes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:27
+msgid "Performance improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:36
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:37
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:38
+#: data/gala.appdata.xml.in:46
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:55
 msgid "Don't show Gala Background Services in the dock"
 msgstr ""
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:56
 msgid "Fixes for media key handling"
 msgstr ""
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:57
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr ""
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:66
 msgid "Improve window shadows for legacy apps"
 msgstr ""
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:67
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.appdata.xml.in:68
 msgid "Fix notification position after changing DPI"
 msgstr ""
 
-#: data/gala.appdata.xml.in:61
+#: data/gala.appdata.xml.in:69
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:75
 msgid "elementary, Inc."
 msgstr ""
 

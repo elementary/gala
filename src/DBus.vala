@@ -132,13 +132,9 @@ namespace Gala {
 
         class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
-#if HAS_MUTTER336
+
             public override void post_paint (Clutter.PaintContext context) {
                 base.post_paint (context);
-#else
-            public override void post_paint () {
-                base.post_paint ();
-#endif
                 done_painting ();
             }
         }
@@ -195,7 +191,7 @@ namespace Gala {
                 throw new DBusError.INVALID_ARGS ("Invalid rectangle specified");
 
             double variance = 0, mean = 0,
-                   rTotal = 0, gTotal = 0, bTotal = 0;
+                   r_total = 0, g_total = 0, b_total = 0;
 
             ulong paint_signal_handler = 0;
             paint_signal_handler = effect.done_painting.connect (() => {
@@ -211,8 +207,8 @@ namespace Gala {
                 double mean_squares = 0;
                 double pixel = 0;
 
-                double max, min, score, delta, scoreTotal = 0,
-                       rTotal2 = 0, gTotal2 = 0, bTotal2 = 0;
+                double max, min, score, delta, score_total = 0,
+                       r_total2 = 0, g_total2 = 0, b_total2 = 0;
 
                 // code to calculate weighted average color is copied from
                 // plank's lib/Drawing/DrawingService.vala average_color()
@@ -234,52 +230,52 @@ namespace Gala {
                         // prefer colored pixels over shades of grey
                         score = SATURATION_WEIGHT * (delta == 0 ? 0.0 : delta / max);
 
-                        rTotal += score * r;
-                        gTotal += score * g;
-                        bTotal += score * b;
-                        scoreTotal += score;
+                        r_total += score * r;
+                        g_total += score * g;
+                        b_total += score * b;
+                        score_total += score;
 
-                        rTotal += r;
-                        gTotal += g;
-                        bTotal += b;
+                        r_total += r;
+                        g_total += g;
+                        b_total += b;
 
                         mean += pixel;
                         mean_squares += pixel * pixel;
                     }
                 }
 
-                scoreTotal /= size;
-                bTotal /= size;
-                gTotal /= size;
-                rTotal /= size;
+                score_total /= size;
+                b_total /= size;
+                g_total /= size;
+                r_total /= size;
 
-                if (scoreTotal > 0.0) {
-                    bTotal /= scoreTotal;
-                    gTotal /= scoreTotal;
-                    rTotal /= scoreTotal;
+                if (score_total > 0.0) {
+                    b_total /= score_total;
+                    g_total /= score_total;
+                    r_total /= score_total;
                 }
 
-                bTotal2 /= size * uint8.MAX;
-                gTotal2 /= size * uint8.MAX;
-                rTotal2 /= size * uint8.MAX;
+                b_total2 /= size * uint8.MAX;
+                g_total2 /= size * uint8.MAX;
+                r_total2 /= size * uint8.MAX;
 
                 // combine weighted and not weighted sum depending on the average "saturation"
                 // if saturation isn't reasonable enough
                 // s = 0.0 -> f = 0.0 ; s = WEIGHT_THRESHOLD -> f = 1.0
-                if (scoreTotal <= WEIGHT_THRESHOLD) {
-                    var f = 1.0 / WEIGHT_THRESHOLD * scoreTotal;
+                if (score_total <= WEIGHT_THRESHOLD) {
+                    var f = 1.0 / WEIGHT_THRESHOLD * score_total;
                     var rf = 1.0 - f;
-                    bTotal = bTotal * f + bTotal2 * rf;
-                    gTotal = gTotal * f + gTotal2 * rf;
-                    rTotal = rTotal * f + rTotal2 * rf;
+                    b_total = b_total * f + b_total2 * rf;
+                    g_total = g_total * f + g_total2 * rf;
+                    r_total = r_total * f + r_total2 * rf;
                 }
 
                 // there shouldn't be values larger then 1.0
-                var max_val = double.max (rTotal, double.max (gTotal, bTotal));
+                var max_val = double.max (r_total, double.max (g_total, b_total));
                 if (max_val > 1.0) {
-                    bTotal /= max_val;
-                    gTotal /= max_val;
-                    rTotal /= max_val;
+                    b_total /= max_val;
+                    g_total /= max_val;
+                    r_total /= max_val;
                 }
 
                 mean /= size;
@@ -294,7 +290,7 @@ namespace Gala {
 
             yield;
 
-            return { rTotal, gTotal, bTotal, mean, variance };
+            return { r_total, g_total, b_total, mean, variance };
         }
         
         /**

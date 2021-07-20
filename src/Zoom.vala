@@ -15,39 +15,41 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala.Plugins.Zoom {
-    public class Main : Gala.Plugin {
+namespace Gala {
+    public class Zoom : Object {
+        const float MIN_ZOOM = 1.0f;
+        const float MAX_ZOOM = 10.0f;
+        const float SHORTCUT_DELTA = 0.5f;
+        const int ANIMATION_DURATION = 300;
         const uint MOUSE_POLL_TIME = 50;
 
-        Gala.WindowManager? wm = null;
+        public WindowManager wm { get; construct; }
 
         uint mouse_poll_timer = 0;
-        float current_zoom = 1.0f;
+        float current_zoom = MIN_ZOOM;
         ulong wins_handler_id = 0UL;
 
-        public override void initialize (Gala.WindowManager wm) {
-            this.wm = wm;
-#if HAS_MUTTER330
+        private GestureTracker gesture_tracker;
+
+        public Zoom (WindowManager wm) {
+            Object (wm: wm);
+
             var display = wm.get_display ();
-#else
-            var display = wm.get_screen ().get_display ();
-#endif
             var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
             display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
             display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
+
+            gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+            gesture_tracker.enable_touchpad ();
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         }
 
-        public override void destroy () {
+        ~Zoom () {
             if (wm == null)
                 return;
 
-#if HAS_MUTTER330
             var display = wm.get_display ();
-#else
-            var display = wm.get_screen ().get_display ();
-#endif
-
             display.remove_keybinding ("zoom-in");
             display.remove_keybinding ("zoom-out");
 
@@ -57,34 +59,61 @@ namespace Gala.Plugins.Zoom {
         }
 
         [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
         void zoom_in (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#else
-        void zoom_in (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#endif
-            zoom (true);
+            zoom (SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
         [CCode (instance_pos = -1)]
-#if HAS_MUTTER330
         void zoom_out (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#else
-        void zoom_out (Meta.Display display, Meta.Screen screen,
-            Meta.Window? window, Clutter.KeyEvent event, Meta.KeyBinding binding) {
-#endif
-            zoom (false);
+            zoom (-SHORTCUT_DELTA, true, wm.enable_animations);
         }
 
-        void zoom (bool @in) {
-            // Nothing to do if zooming out of our bounds is requested
-            if (current_zoom <= 1.0f && !@in) {
-                Gdk.beep ();
+        private void on_gesture_detected (Gesture gesture) {
+            if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH ||
+                (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
+            ) {
                 return;
-            } else if (current_zoom >= 10.0f && @in) {
-                Gdk.beep ();
+            }
+
+            if ((gesture.fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
+                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
+            ) {
+                zoom_with_gesture (gesture.direction);
+            }
+        }
+
+        private void zoom_with_gesture (GestureDirection direction) {
+            var initial_zoom = current_zoom;
+            var target_zoom = (direction == GestureDirection.IN)
+                ? initial_zoom - MAX_ZOOM
+                : initial_zoom + MAX_ZOOM;
+
+            GestureTracker.OnUpdate on_animation_update = (percentage) => {
+                var zoom_level = GestureTracker.animation_value (initial_zoom, target_zoom, percentage);
+                var delta = zoom_level - current_zoom;
+
+                if (!wm.enable_animations) {
+                    if (delta.abs () >= SHORTCUT_DELTA) {
+                        delta = (delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA;
+                    } else {
+                        delta = 0;
+                    }
+                }
+
+                zoom (delta, false, false);
+            };
+
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, null);
+        }
+
+        void zoom (float delta, bool play_sound, bool animate) {
+            // Nothing to do if zooming out of our bounds is requested
+            if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
+                if (play_sound) {
+                    Gdk.beep ();
+                }
                 return;
             }
 
@@ -100,21 +129,13 @@ namespace Gala.Plugins.Zoom {
 
                 mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
                     client_pointer.get_position (null, out mx, out my);
-#if HAS_MUTTER336
                     var new_pivot = new Graphene.Point ();
-#else
-                    var new_pivot = Clutter.Point.alloc ();
-#endif
 
                     new_pivot.init (mx / wins.width, my / wins.height);
-#if HAS_MUTTER336
                     if (wins.pivot_point.equal (new_pivot)) {
-#else
-                    if (wins.pivot_point.equals (new_pivot)) {
-#endif
-
                         return true;
-}
+                    }
+
                     wins.save_easing_state ();
                     wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
                     wins.set_easing_duration (MOUSE_POLL_TIME);
@@ -124,10 +145,11 @@ namespace Gala.Plugins.Zoom {
                 });
             }
 
-            current_zoom += (@in ? 0.5f : -0.5f);
+            current_zoom += delta;
+            var animation_duration = animate ? ANIMATION_DURATION : 0;
 
-            if (current_zoom <= 1.0f) {
-                current_zoom = 1.0f;
+            if (current_zoom <= MIN_ZOOM) {
+                current_zoom = MIN_ZOOM;
 
                 if (mouse_poll_timer > 0)
                     Source.remove (mouse_poll_timer);
@@ -135,33 +157,27 @@ namespace Gala.Plugins.Zoom {
 
                 wins.save_easing_state ();
                 wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
-                wins.set_easing_duration (300);
-                wins.set_scale (1.0f, 1.0f);
+                wins.set_easing_duration (animation_duration);
+                wins.set_scale (MIN_ZOOM, MIN_ZOOM);
                 wins.restore_easing_state ();
 
-                wins_handler_id = wins.transitions_completed.connect (() => {
-                    wins.disconnect (wins_handler_id);
+                if (animate) {
+                    wins_handler_id = wins.transitions_completed.connect (() => {
+                        wins.disconnect (wins_handler_id);
+                        wins.set_pivot_point (0.0f, 0.0f);
+                    });
+                } else {
                     wins.set_pivot_point (0.0f, 0.0f);
-                });
+                }
 
                 return;
             }
 
             wins.save_easing_state ();
             wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
-            wins.set_easing_duration (300);
+            wins.set_easing_duration (animation_duration);
             wins.set_scale (current_zoom, current_zoom);
             wins.restore_easing_state ();
         }
     }
-}
-
-public Gala.PluginInfo register_plugin () {
-    return Gala.PluginInfo () {
-        name = "Zoom",
-        author = "Gala Developers",
-        plugin_type = typeof (Gala.Plugins.Zoom.Main),
-        provides = Gala.PluginFunction.ADDITION,
-        load_priority = Gala.LoadPriority.IMMEDIATE
-    };
 }

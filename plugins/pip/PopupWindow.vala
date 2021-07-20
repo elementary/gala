@@ -188,11 +188,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return true;
     }
 
-#if HAS_MUTTER336
     public void set_container_clip (Graphene.Rect? container_clip) {
-#else
-    public void set_container_clip (Clutter.Rect? container_clip) {
-#endif
         container.clip_rect = container_clip;
         dynamic_container = true;
         update_container_scale ();
@@ -204,6 +200,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void on_move_end () {
+        reactive = true;
         update_screen_position ();
     }
 
@@ -301,11 +298,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_window_focus () {
-#if HAS_MUTTER330
         unowned Meta.Window focus_window = wm.get_display ().get_focus_window ();
-#else
-        unowned Meta.Window focus_window = wm.get_screen ().get_display ().get_focus_window ();
-#endif
         if ((focus_window != null && !get_window_is_normal (focus_window))
             || (previous_focus != null && !get_window_is_normal (previous_focus))) {
             previous_focus = focus_window;
@@ -416,13 +409,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void get_current_monitor_rect (out Meta.Rectangle rect) {
-#if HAS_MUTTER330
         var display = wm.get_display ();
         rect = display.get_monitor_geometry (display.get_current_monitor ());
-#else
-        var screen = wm.get_screen ();
-        rect = screen.get_monitor_geometry (screen.get_current_monitor ());
-#endif
     }
 
     private void get_target_window_size (out float width, out float height) {

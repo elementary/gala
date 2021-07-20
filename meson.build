@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '3.3.2',
+    version: '6.0.0',
     meson_version: '>= 0.48.0',
     license: 'GPL3',
 )
@@ -81,6 +81,7 @@ gtk_version_required = '3.10.0'
 plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
+canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
@@ -92,62 +93,12 @@ granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
+gexiv2_dep = dependency('gexiv2')
 
 mutter_dep = []
 libmutter_dep = []
 
 vala_flags = []
-
-mutter328_dep = dependency('libmutter-2', version: ['>= 3.27', '< 3.29'], required: false)
-if mutter328_dep.found()
-    libmutter_dep = dependency('libmutter-2', version: '>= 3.27.92')
-    mutter_dep = [
-        libmutter_dep,
-        dependency('mutter-cogl-2'), dependency('mutter-cogl-pango-2'),
-        dependency('mutter-cogl-path-2'), dependency('mutter-clutter-2')
-    ]
-    add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-        '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter330_dep = dependency('libmutter-3', version: ['>= 3.29.4', '< 3.31'], required: false)
-if mutter330_dep.found()
-    libmutter_dep = dependency('libmutter-3', version: '>= 3.29.4')
-    mutter_dep = [
-        libmutter_dep,
-        dependency('mutter-cogl-3'), dependency('mutter-cogl-pango-3'),
-        dependency('mutter-cogl-path-3'), dependency('mutter-clutter-3')
-    ]
-    vala_flags = ['--define', 'HAS_MUTTER330']
-    add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-        '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter332_dep = dependency('libmutter-4', version: ['>= 3.31.2', '< 3.34'], required: false)
-if mutter332_dep.found()
-    libmutter_dep = dependency('libmutter-4', version: '>= 3.31.2')
-    mutter_dep = [
-        libmutter_dep,
-        dependency('mutter-cogl-4'), dependency('mutter-cogl-pango-4'),
-        dependency('mutter-cogl-path-4'), dependency('mutter-clutter-4')
-    ]
-    vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332']
-    add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-        '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter334_dep = dependency('libmutter-5', version: ['>= 3.34', '< 3.35.1'], required: false)
-if mutter334_dep.found()
-    libmutter_dep = dependency('libmutter-5', version: '>= 3.34')
-    mutter_dep = [
-        libmutter_dep,
-        dependency('mutter-cogl-5'), dependency('mutter-cogl-pango-5'),
-        dependency('mutter-cogl-path-5'), dependency('mutter-clutter-5')
-    ]
-    vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334']
-    add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-        '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
 
 mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.37'], required: false)
 if mutter336_dep.found()
@@ -157,7 +108,7 @@ if mutter336_dep.found()
         dependency('mutter-cogl-6'), dependency('mutter-cogl-pango-6'),
         dependency('mutter-cogl-path-6'), dependency('mutter-clutter-6')
     ]
-    vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336']
+    vala_flags = []
     add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
         '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -170,7 +121,7 @@ if mutter338_dep.found()
 		dependency('mutter-cogl-7'), dependency('mutter-cogl-pango-7'),
 		dependency('mutter-clutter-7')
 	]
-	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336', '--define', 'HAS_MUTTER338']
+	vala_flags = ['--define', 'HAS_MUTTER338']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
@@ -184,7 +135,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, gexiv2_dep, config_dep]
 
 subdir('data')
 subdir('lib')
@@ -193,7 +144,6 @@ subdir('daemon')
 subdir('plugins/maskcorners')
 subdir('plugins/pip')
 subdir('plugins/template')
-subdir('plugins/zoom')
 if get_option('documentation')
     subdir('docs')
 endif

@@ -87,6 +87,8 @@ namespace Gala {
                 string[] arr = name.split ("+", 2);
                 layout = arr[0];
                 variant = arr[1] ?? "";
+            } else {
+                return;  //We do not want to change the current xkb layout here when using ibus.
             }
 
             var xkb_options = settings.get_strv ("xkb-options");

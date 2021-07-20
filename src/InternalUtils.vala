@@ -91,7 +91,6 @@ namespace Gala {
         /**
          * set the area where clutter can receive events
          **/
-#if HAS_MUTTER330
         public static void set_input_area (Display display, InputArea area) {
             if (Meta.Util.is_wayland_compositor ()) {
                 return;
@@ -132,71 +131,15 @@ namespace Gala {
                     break;
                 case InputArea.NONE:
                 default:
-#if HAS_MUTTER334
                     unowned Meta.X11Display x11display = display.get_x11_display ();
                     x11display.clear_stage_input_region ();
-#else
-                    display.empty_stage_input_region ();
-#endif
                     return;
             }
 
-#if HAS_MUTTER334
             unowned Meta.X11Display x11display = display.get_x11_display ();
             var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
             x11display.set_stage_input_region (xregion);
-#else
-            var xregion = X.Fixes.create_region (display.get_x11_display ().get_xdisplay (), rects);
-            Util.set_stage_input_region (display, xregion);
-#endif
         }
-#else
-        public static void set_input_area (Screen screen, InputArea area) {
-            var display = screen.get_display ();
-
-            X.Xrectangle[] rects = {};
-            int width, height;
-            screen.get_size (out width, out height);
-            var geometry = screen.get_monitor_geometry (screen.get_primary_monitor ());
-
-            switch (area) {
-                case InputArea.FULLSCREEN:
-                    X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
-                    rects = {rect};
-                    break;
-                case InputArea.DEFAULT:
-                    var settings = new GLib.Settings (Config.SCHEMA + ".behavior");
-
-                    // if ActionType is NONE make it 0 sized
-                    ushort tl_size = (settings.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);
-                    ushort tr_size = (settings.get_enum ("hotcorner-topright") != ActionType.NONE ? 1 : 0);
-                    ushort bl_size = (settings.get_enum ("hotcorner-bottomleft") != ActionType.NONE ? 1 : 0);
-                    ushort br_size = (settings.get_enum ("hotcorner-bottomright") != ActionType.NONE ? 1 : 0);
-
-                    X.Xrectangle topleft = {(short)geometry.x, (short)geometry.y, tl_size, tl_size};
-                    X.Xrectangle topright = {(short)(geometry.x + geometry.width - 1), (short)geometry.y, tr_size, tr_size};
-                    X.Xrectangle bottomleft = {(short)geometry.x, (short)(geometry.y + geometry.height - 1), bl_size, bl_size};
-                    X.Xrectangle bottomright = {(short)(geometry.x + geometry.width - 1), (short)(geometry.y + geometry.height - 1), br_size, br_size};
-
-                    rects = {topleft, topright, bottomleft, bottomright};
-
-                    // add plugin's requested areas
-                    if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
-                        foreach (var rect in PluginManager.get_default ().regions) {
-                            rects += rect;
-                        }
-                    }
-                    break;
-                case InputArea.NONE:
-                default:
-                    screen.empty_stage_input_region ();
-                    return;
-            }
-
-            var xregion = X.Fixes.create_region (display.get_xdisplay (), rects);
-            screen.set_stage_input_region (xregion);
-        }
-#endif
 
         /**
          * Inserts a workspace at the given index. To ensure the workspace is not immediately
@@ -211,11 +154,7 @@ namespace Gala {
 
             new_window.change_workspace_by_index (index, false);
 
-#if HAS_MUTTER330
             unowned List<WindowActor> actors = new_window.get_display ().get_window_actors ();
-#else
-            unowned List<WindowActor> actors = new_window.get_screen ().get_window_actors ();
-#endif
             foreach (unowned Meta.WindowActor actor in actors) {
                 if (actor.is_destroyed ())
                     continue;
@@ -238,24 +177,19 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-        // constants, mainly for natural expo
-        const int GAPS = 10;
-        const int MAX_TRANSLATIONS = 100000;
-        const int ACCURACY = 20;
-
         // some math utilities
-        static int squared_distance (Gdk.Point a, Gdk.Point b) {
+        private static int squared_distance (Gdk.Point a, Gdk.Point b) {
             var k1 = b.x - a.x;
             var k2 = b.y - a.y;
 
             return k1 * k1 + k2 * k2;
         }
 
-        static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-        static Gdk.Point rect_center (Meta.Rectangle rect) {
+        private static Gdk.Point rect_center (Meta.Rectangle rect) {
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
@@ -398,25 +332,61 @@ namespace Gala {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
 
+        /**
+         * Round the value to match physical pixels.
+         */
+        public static int pixel_align (float value) {
+            var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            return (int) Math.round (value * scale_factor) / scale_factor;
+        }
+
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
-                var dummy_label = new Gtk.Label ("");
-
-                unowned Gtk.StyleContext label_style_context = dummy_label.get_style_context ();
-
-                var widget_path = label_style_context.get_path ().copy ();
-                widget_path.iter_set_object_name (-1, "selection");
+                var label_widget_path = new Gtk.WidgetPath ();
+                label_widget_path.append_type (GLib.Type.from_name ("label"));
+                label_widget_path.iter_set_object_name (-1, "selection");
 
                 selection_style_context = new Gtk.StyleContext ();
-                selection_style_context.set_path (widget_path);
-                selection_style_context.set_parent (label_style_context);
+                selection_style_context.set_path (label_widget_path);
             }
 
             return (Gdk.RGBA) selection_style_context.get_property (
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
+        }
+
+        public static Granite.Drawing.Color get_accent_color_by_theme_name (string theme_name) {
+            var label_widget_path = new Gtk.WidgetPath ();
+            label_widget_path.append_type (GLib.Type.from_name ("label"));
+            label_widget_path.iter_set_object_name (-1, "selection");
+
+            var selection_style_context = new Gtk.StyleContext ();
+            unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
+            selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+            selection_style_context.set_path (label_widget_path);
+
+            var rgba = (Gdk.RGBA) selection_style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
+
+            return new Granite.Drawing.Color.from_rgba (rgba);
+        }
+
+        /**
+         * Returns the workspaces geometry following the only_on_primary settings.
+         */
+         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+            if (InternalUtils.workspaces_only_on_primary ()) {
+                var primary = display.get_primary_monitor ();
+                return display.get_monitor_geometry (primary);
+            } else {
+                float screen_width, screen_height;
+                display.get_size (out screen_width, out screen_height);
+                return { 0, 0, (int) screen_width, (int) screen_height };
+            }
         }
     }
 }
