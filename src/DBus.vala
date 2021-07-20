@@ -353,7 +353,7 @@ namespace Gala {
              * we will simply define an arbitrary wait time for this to happen
              * to smoothen out the transition.
              */
-            const uint STYLE_CHANGE_COMPLETION_DURATION = 150;
+            const uint STYLE_CHANGE_COMPLETION_DURATION = 300;
 
             unowned Meta.WindowActor actor = (Meta.WindowActor)window.get_compositor_private ();
 
