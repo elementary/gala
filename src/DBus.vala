@@ -1,19 +1,20 @@
-//
-//  Copyright (C) 2012 - 2014 Tom Beckmann, Jacob Parker
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2021 elementary, Inc (https://elementary.io)
+ *           2012–2014 Tom Beckmann, Jacob Parker
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace Gala {
     [DBus (name = "org.freedesktop.DBus")]
@@ -107,7 +108,7 @@ namespace Gala {
                     () => {},
                     () => critical ("Could not acquire ScreenSaver bus") );
             }
-            
+
             try {
                 bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
             } catch (Error e) {
@@ -292,22 +293,22 @@ namespace Gala {
 
             return { r_total, g_total, b_total, mean, variance };
         }
-        
+
         /**
          * Creates a window snapshot and transitions from it to the real state.
-         * 
+         *
          * Calling this method will create a static temporary snapshot from a target window
          * and will transition from it to the real window surface. This is useful if
          * e.g you want to change the Gtk stylesheet used by your application.
          * It can be used to create a smooth transition effect when switching to the new
          * stylesheet. If that's your intention, call this function just before actually changing
          * the stylesheet for the best effect.
-         * 
+         *
          * The function will create a transition animation only when animations are enabled.
          * If they are not, the animation will not be visible but the snapshot will be still created and added.
-         * 
-         * The transition will be applied to all windows that belong to your process ID. 
-         * 
+         *
+         * The transition will be applied to all windows that belong to your process ID.
+         *
          * Note that you will not be able to affect any windows that do
          * not belong to your PID, this is reserved for system components.
          */
@@ -330,7 +331,7 @@ namespace Gala {
         /**
          * Creates a window snapshot and transitions from it to the real state
          * for all windows on the visible workspace. See transition_from_snapshot.
-         * 
+         *
          * This function is reserved for system components and must not be
          * accessed by applications.
          */
@@ -367,7 +368,7 @@ namespace Gala {
             snapshot.set_position ((float)x_offset / 2.0f, (float)y_offset / 2.0f);
             snapshot.set_size (rect.width, rect.height);
             actor.insert_child_above (snapshot, null);
-    
+
             Timeout.add (STYLE_CHANGE_COMPLETION_DURATION, () => {
                 if (animate) {
                     snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
@@ -389,9 +390,9 @@ namespace Gala {
 
                 return Source.REMOVE;
             });
-            
+
         }
- 
+
         static Cogl.Texture fast_copy_texture (Cogl.Texture texture, int xoff, int yoff, int width, int height, Cogl.PixelFormat format) {
             var copy = Cogl.Texture.new_with_size (width, height, Cogl.TextureFlags.NONE, format);
 
@@ -404,9 +405,9 @@ namespace Gala {
 
             var fbo = new Cogl.Offscreen.with_texture (copy);
             fbo.draw_textured_rectangle (copy_pipeline,
-                -1, -1, 1, 1, 
+                -1, -1, 1, 1,
                 xoff / (float)texture.get_width (),
-                (yoff + height) / (float)texture.get_height (), 
+                (yoff + height) / (float)texture.get_height (),
                 (xoff + width) / (float)texture.get_width (),
                 yoff / (float)texture.get_height ());
 
