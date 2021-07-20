@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
+ * Copyright 2021 elementary, Inc. (https://elementary.io)
  *           2012–2014 Tom Beckmann, Jacob Parker
  *
  * This program is free software: you can redistribute it and/or modify
