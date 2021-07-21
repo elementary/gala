@@ -34,16 +34,16 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
         settings_default = new GLib.Settings (Config.SCHEMA + SCHEMA_DEFAULT);
         settings_custom = new GLib.Settings (Config.SCHEMA + SCHEMA_CUSTOM);
 
-        add_default_keybinding("webbrowser", "x-scheme-handler/http");
-        add_default_keybinding("emailclient", "x-scheme-handler/mailto");
-        add_default_keybinding("calendar", "text/calendar");
-        add_default_keybinding("videoplayer", "video/x-ogm+ogg");
-        add_default_keybinding("musicplayer", "audio/x-vorbis+ogg");
-        add_default_keybinding("imageviewer", "image/jpeg");
-        add_default_keybinding("texteditor", "text/plain");
-        add_default_keybinding("filebrowser", "inode/directory");
+        add_default_keybinding ("webbrowser", "x-scheme-handler/http");
+        add_default_keybinding ("emailclient", "x-scheme-handler/mailto");
+        add_default_keybinding ("calendar", "text/calendar");
+        add_default_keybinding ("videoplayer", "video/x-ogm+ogg");
+        add_default_keybinding ("musicplayer", "audio/x-vorbis+ogg");
+        add_default_keybinding ("imageviewer", "image/jpeg");
+        add_default_keybinding ("texteditor", "text/plain");
+        add_default_keybinding ("filebrowser", "inode/directory");
         // can't set default application for terminal
-        display.add_keybinding ("terminal", settings_default, Meta.KeyBindingFlags.NONE, 
+        display.add_keybinding ("terminal", settings_default, Meta.KeyBindingFlags.NONE,
             (display, window, event, binding) => launch_or_focus ("io.elementary.terminal.desktop")
         );
 
@@ -53,7 +53,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
     }
 
     private void add_default_keybinding (string name, string content_type) {
-        display.add_keybinding (name, settings_default, Meta.KeyBindingFlags.NONE, 
+        display.add_keybinding (name, settings_default, Meta.KeyBindingFlags.NONE,
             (display, window, event, binding) => {
                 var desktop_id = GLib.AppInfo.get_default_for_type (content_type, false).get_id ();
                 launch_or_focus (desktop_id);
@@ -62,7 +62,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
     }
 
     private void add_custom_keybinding (int index) {
-        display.add_keybinding (CUSTOM_KEY_TEMPLATE.printf (index), settings_custom, Meta.KeyBindingFlags.NONE, 
+        display.add_keybinding (CUSTOM_KEY_TEMPLATE.printf (index), settings_custom, Meta.KeyBindingFlags.NONE,
             (display, window, event, binding) => {
                 var desktop_id = settings_custom.get_strv ("desktop-ids")[index];
                 launch_or_focus (desktop_id);
@@ -81,7 +81,7 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
     private void launch_or_focus (string desktop_id) {
         var app_info = new GLib.DesktopAppInfo (desktop_id);
         if (app_info == null) {
-            warning(@"Unable to get DesktopAppInfo for desktop-id: $(desktop_id)");
+            warning (@"Unable to get DesktopAppInfo for desktop-id: $(desktop_id)");
             return;
         }
 
@@ -123,11 +123,11 @@ public class Gala.Plugins.LaunchOrFocus : Gala.Plugin {
 }
 
 public Gala.PluginInfo register_plugin () {
-	return {
-		"launch-or-focus",
-		"Felix Andreas",
-		typeof (Gala.Plugins.LaunchOrFocus),
-		Gala.PluginFunction.ADDITION,
-		Gala.LoadPriority.IMMEDIATE
-	};
+    return {
+        "launch-or-focus",
+        "Felix Andreas",
+        typeof (Gala.Plugins.LaunchOrFocus),
+        Gala.PluginFunction.ADDITION,
+        Gala.LoadPriority.IMMEDIATE
+    };
 }
