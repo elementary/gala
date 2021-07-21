@@ -654,9 +654,9 @@ namespace Gala {
         }
 
         void animate_bottom_window_scale (Meta.WindowActor actor) {
-            const string[] props = { "scale-x", "scale-y" };
+            const string[] PROPS = { "scale-x", "scale-y" };
 
-            foreach (string prop in props) {
+            foreach (string prop in PROPS) {
                 double[] scale_keyframes = { 0.2, 0.3, 0.8 };
                 GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
 
@@ -1125,7 +1125,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            const int duration = AnimationDuration.HIDE;
+            var duration = AnimationDuration.HIDE;
 
             if (!enable_animations
                 || duration == 0
@@ -1195,7 +1195,7 @@ namespace Gala {
         }
 
         void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            const int duration = AnimationDuration.SNAP;
+            var duration = AnimationDuration.SNAP;
 
             if (!enable_animations
                 || duration == 0) {
@@ -1485,7 +1485,7 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    const int duration = AnimationDuration.CLOSE;
+                    var duration = AnimationDuration.CLOSE;
                     if (duration == 0) {
                         destroy_completed (actor);
                         return;
@@ -1583,7 +1583,7 @@ namespace Gala {
         }
 
         void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            const int duration = AnimationDuration.SNAP;
+            var duration = AnimationDuration.SNAP;
             if (!enable_animations
                 || duration == 0) {
                 return;
@@ -2141,7 +2141,6 @@ namespace Gala {
                 var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
                 /// TRANSLATORS: %s represents a timestamp here
                 string file_name = _("Screenshot from %s").printf (date_time);
-    
                 bool success = false;
                 string filename_used = "";
                 var screenshot_manager = ScreenshotManager.init (this);

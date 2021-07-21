@@ -18,9 +18,9 @@ You'll need the following dependencies:
 * libglib2.0-dev (>= 2.44)
 * libgnome-desktop-3-dev
 * libgranite-dev (>= 5.4.0)
-* libgtk-3-dev (>= 3.4.0)
-* libmutter-0-dev (>= 3.23.90) | libmutter-dev (>= 3.14.4)
-* libplank-dev (>= 0.10.9)
+* libgtk-3-dev (>= 3.10.0)
+* libmutter-6-dev (>= 3.35.1) | libmutter-dev (>= 3.18.3)
+* libplank-dev (>= 0.11.0)
 * libxml2-utils
 * valac (>= 0.28.0)
 

@@ -10,13 +10,21 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="4.0.0" date="2020-08-01" urgency="medium">
+    <release version="6.0.0" date="2021-07-14" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Add multitouch gestures</li>
+          <li>Show window titles in multitasking view</li>
           <li>Close the Alt + Tab switcher by pressing Esc without releasing Alt</li>
           <li>Increase maximum zoom level and provide feedback when unable to zoom</li>
           <li>Show a context menu when secondary clicking the background</li>
+          <li>New Dwell Click and Locate Pointer animations</li>
+          <li>Add Take Screenshot to window context menu</li>
+          <li>Always play shutter sound when taking screenshots</li>
+          <li>Minor visual improvements</li>
+          <li>HiDPI fixes</li>
+          <li>Performance improvements</li>
           <li>Updated translations</li>
         </ul>
       </description>
