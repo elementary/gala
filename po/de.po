@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-19 21:05+0000\n"
+"PO-Revision-Date: 2021-07-23 14:59+0000\n"
 "Last-Translator: supaeasy <ismo+github@wolffson.ch>\n"
 "Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
 "\n"
@@ -187,20 +187,20 @@ msgid ""
 "workspaces"
 msgstr ""
 "Fehler behoben, der dafür sorgte, dass Fenster, die als \"immer auf "
-"sichtbarem Workspace\" definiert waren, verschwanden, wenn zwischen "
-"Workspaces gewechselt wurde"
+"sichtbarer Arbeitsfläche\" definiert waren, verschwanden, wenn zwischen "
+"Arbeitsflächen gewechselt wurde"
 
 #: data/gala.appdata.xml.in:37
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
-"Fehler behoben, der dafür sorgte, dass beim Wechsel zwischen Workspaces "
+"Fehler behoben, der dafür sorgte, dass beim Wechsel zwischen Arbeitsflächen "
 "Fenster verschwanden, die sich nicht auf dem Hauptmonitor befanden"
 
 #: data/gala.appdata.xml.in:46
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
-"Fehler behoben, der für einen Absturz sorgte, wenn zwischen Workspaces "
+"Fehler behoben, der für einen Absturz sorgte, wenn zwischen Arbeitsflächen "
 "gewechselt wurde, während ein kurzlebiges Fenster sich öffnete"
 
 #: data/gala.appdata.xml.in:55
