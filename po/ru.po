@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-22 23:06+0000\n"
+"PO-Revision-Date: 2021-07-25 12:22+0000\n"
 "Last-Translator: DartDeaDia <jorydit@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
@@ -211,7 +211,7 @@ msgstr "Исправление обработки мультимедийных �
 
 #: data/gala.appdata.xml.in:57
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Показывать горячие клавиши в меню HeaderBar"
+msgstr "Показывать сочетания клавиш в меню HeaderBar"
 
 #: data/gala.appdata.xml.in:66
 msgid "Improve window shadows for legacy apps"
