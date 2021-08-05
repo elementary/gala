@@ -89,10 +89,20 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     public override bool key_press_event (Clutter.KeyEvent e) {
-        if (e.keyval == Clutter.Key.Escape) {
-            close ();
-            closed ();
-            return true;
+        switch (e.keyval) {
+            case Clutter.Key.Escape:
+                close ();
+                closed ();
+                return true;
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                int x, y, w, h;
+                get_selection_rectangle (out x, out y, out w, out h);
+                close ();
+                this.hide ();
+                content.invalidate ();
+                captured (x, y, w, h);
+                return true;
         }
 
         return false;
@@ -154,16 +164,6 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
 
         dragging = false;
         resizing = false;
-
-        int x, y, w, h;
-        get_selection_rectangle (out x, out y, out w, out h);
-        close ();
-        start_point = { 0, 0 };
-        end_point = { 0, 0 };
-        this.hide ();
-        content.invalidate ();
-
-        captured (x, y, w, h);
 
         return true;
     }

@@ -81,14 +81,21 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         } else {
             var active = get_active_window_actor ();
             if (active != null) {
-                int point_x = x - (int)active.x;
-                int point_y = y - (int)active.y;
-
-                var rect = Graphene.Rect.alloc ();
-                rect.init (point_x, point_y, width, height);
-
+                var window = active.get_meta_window ();
+                var frame = window.get_frame_rect ();
                 var popup_window = new PopupWindow (wm, active);
-                popup_window.set_container_clip (rect);
+
+                // Don't clip if the entire window was selected
+                if (frame.x != x || frame.y != y || frame.width != width || frame.height != height) {
+                    int point_x = x - (int)frame.x;
+                    int point_y = y - (int)frame.y;
+
+                    var rect = Graphene.Rect.alloc ();
+                    rect.init (point_x, point_y, width, height);
+
+                    popup_window.set_container_clip (rect);
+                }
+
                 popup_window.show.connect (on_popup_window_show);
                 popup_window.hide.connect (on_popup_window_hide);
                 add_window (popup_window);
