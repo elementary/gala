@@ -52,7 +52,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     [CCode (instance_pos = -1)]
     void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
         Meta.KeyBinding binding) {
-        selection_area = new SelectionArea (wm);
+        var target_actor = get_active_window_actor ();
+        if (target_actor == null) {
+            return;
+        }
+
+        selection_area = new SelectionArea (wm, target_actor);
         selection_area.selected.connect (on_selection_actor_selected);
         selection_area.captured.connect (on_selection_actor_captured);
         selection_area.closed.connect (clear_selection_area);

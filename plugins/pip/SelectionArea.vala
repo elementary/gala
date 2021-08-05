@@ -21,6 +21,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     public signal void closed ();
 
     public Gala.WindowManager wm { get; construct; }
+    public Meta.WindowActor target_actor { get; construct; }
 
     private Gala.ModalProxy? modal_proxy;
     private Gdk.Point start_point;
@@ -28,8 +29,8 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     private bool dragging = false;
     private bool clicked = false;
 
-    public SelectionArea (Gala.WindowManager wm) {
-        Object (wm: wm);
+    public SelectionArea (Gala.WindowManager wm, Meta.WindowActor target_actor) {
+        Object (wm: wm, target_actor: target_actor);
     }
 
     construct {
