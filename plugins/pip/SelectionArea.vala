@@ -156,10 +156,9 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
             return true;
         }
 
-        if (!dragging) {
-            selected ((int) e.x, (int) e.y);
+        if (!resizing && !dragging) {
             close ();
-            return true;
+            closed ();
         }
 
         dragging = false;
