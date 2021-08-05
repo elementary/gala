@@ -23,19 +23,31 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     public Gala.WindowManager wm { get; construct; }
     public Meta.WindowActor target_actor { get; construct; }
 
+    /**
+     * Resize handlers radius.
+     */
+    private const double HANDLER_RADIUS = 6.0;
+
     private Gala.ModalProxy? modal_proxy;
     private Gdk.Point start_point;
     private Gdk.Point end_point;
     private bool dragging = false;
     private bool clicked = false;
 
+    /**
+     * Maximum size allowed for the selection area.
+     */
+    private Meta.Rectangle max_size;
+
     public SelectionArea (Gala.WindowManager wm, Meta.WindowActor target_actor) {
         Object (wm: wm, target_actor: target_actor);
     }
 
     construct {
-        start_point = { 0, 0 };
-        end_point = { 0, 0 };
+        var window = target_actor.get_meta_window ();
+        max_size = window.get_frame_rect ();
+        start_point = { max_size.x, max_size.y };
+        end_point = { max_size.x + max_size.width, max_size.y + max_size.height };
         visible = true;
         reactive = true;
 
@@ -134,30 +146,45 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     private void get_selection_rectangle (out int x, out int y, out int width, out int height) {
-        x = int.min (start_point.x, end_point.x);
-        y = int.min (start_point.y, end_point.y);
-        width = (start_point.x - end_point.x).abs ();
-        height = (start_point.y - end_point.y).abs ();
+        x = start_point.x;
+        y = start_point.y;
+        width = end_point.x - start_point.x;
+        height = end_point.y - start_point.y;
     }
 
     private bool draw_area (Cairo.Context ctx) {
+        // Draws a full-screen colored rectangle with a smaller transparent
+        // rectangle inside with border with handlers
         Clutter.cairo_clear (ctx);
+        ctx.set_operator (Cairo.Operator.SOURCE);
 
-        if (!dragging) {
-            return true;
-        }
+        // Full-screen rectangle
+        ctx.rectangle (0, 0, width, height);
+        ctx.set_source_rgba (0.1, 0.1, 0.1, 0.8);
+        ctx.fill ();
 
+        // Transparent rectangle
         int x, y, w, h;
         get_selection_rectangle (out x, out y, out w, out h);
 
         ctx.rectangle (x, y, w, h);
-        ctx.set_source_rgba (0.1, 0.1, 0.1, 0.2);
+        ctx.set_source_rgba (0.0, 0.0, 0.0, 0.0);
         ctx.fill ();
 
         ctx.rectangle (x, y, w, h);
         ctx.set_source_rgb (0.7, 0.7, 0.7);
         ctx.set_line_width (1.0);
         ctx.stroke ();
+
+        // Handlers
+        ctx.arc (start_point.x, start_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
+        ctx.fill ();
+        ctx.arc (start_point.x, end_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
+        ctx.fill ();
+        ctx.arc (end_point.x, start_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
+        ctx.fill ();
+        ctx.arc (end_point.x, end_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
+        ctx.fill ();
 
         return true;
     }
