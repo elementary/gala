@@ -41,7 +41,6 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     private Gala.ModalProxy? modal_proxy;
     private Gdk.Point start_point;
     private Gdk.Point end_point;
-    private bool dragging = false;
 
     /**
      * If the user is resizing the selection area and the resize handler used.
@@ -51,6 +50,13 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     private bool resizing_bottom = false;
     private bool resizing_left = false;
     private bool resizing_right = false;
+
+    /**
+     * If the user is dragging the selection area and the starting point.
+     */
+    private bool dragging = false;
+    private float drag_x = 0.0f;
+    private float drag_y = 0.0f;
 
     /**
      * Maximum size allowed for the selection area.
@@ -93,7 +99,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     public override bool button_press_event (Clutter.ButtonEvent e) {
-        if (dragging || e.button != 1) {
+        if (e.button != 1) {
             return true;
         }
 
@@ -111,12 +117,28 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
             return true;
         }
 
+        // Allow to drag & drop the resize area when clicking inside it
+        dragging = is_in_selection_area (e.x, e.y);
+
+        if (dragging) {
+            drag_x = e.x - start_point.x;
+            drag_y = e.y - start_point.y;
+            return true;
+        }
+
         return true;
     }
 
     private static bool is_close_to_coord (float c, int target, int threshold) {
         return (c >= target - threshold) &&
                (c <= target + threshold);
+    }
+
+    private bool is_in_selection_area (float x, float y) {
+        return (x >= start_point.x) &&
+               (x <= end_point.x) &&
+               (y >= start_point.y) &&
+               (y <= end_point.y);
     }
 
     public override bool button_release_event (Clutter.ButtonEvent e) {
@@ -147,20 +169,17 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     public override bool motion_event (Clutter.MotionEvent e) {
-        if (!resizing) {
+        if (!resizing && !dragging) {
             return true;
         }
 
         if (resizing) {
             resize_selection_area (e);
+        } else if (dragging) {
+            drag_selection_area (e);
         }
 
         content.invalidate ();
-
-        if (!dragging) {
-            dragging = true;
-        }
-
         return true;
     }
 
@@ -176,6 +195,19 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         } else if (resizing_right) {
             end_point.x = (int) e.x.clamp (start_point.x + MIN_SELECTION, max_size.x + max_size.width);
         }
+    }
+
+    private void drag_selection_area (Clutter.MotionEvent e) {
+        var width = end_point.x - start_point.x;
+        var height = end_point.y - start_point.y;
+
+        var x = (int) (e.x - drag_x).clamp (max_size.x, max_size.x + max_size.width - width);
+        var y = (int) (e.y - drag_y).clamp (max_size.y, max_size.y + max_size.height - height);
+
+        end_point.x = x + width;
+        end_point.y = y + height;
+        start_point.x = x;
+        start_point.y = y;
     }
 
     public void close () {
