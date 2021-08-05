@@ -28,11 +28,29 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
      */
     private const double HANDLER_RADIUS = 6.0;
 
+    /**
+     * When resizing, the number of pixel the user can click outside of the handler.
+     */
+    private const int RESIZE_THRESHOLD = 10;
+
+    /**
+     * Minimum allowed selection size.
+     */
+    private const int MIN_SELECTION = 100;
+
     private Gala.ModalProxy? modal_proxy;
     private Gdk.Point start_point;
     private Gdk.Point end_point;
     private bool dragging = false;
-    private bool clicked = false;
+
+    /**
+     * If the user is resizing the selection area and the resize handler used.
+     */
+    private bool resizing = false;
+    private bool resizing_top = false;
+    private bool resizing_bottom = false;
+    private bool resizing_left = false;
+    private bool resizing_right = false;
 
     /**
      * Maximum size allowed for the selection area.
@@ -79,12 +97,26 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
             return true;
         }
 
-        clicked = true;
+        // Check that the user clicked on a resize handler
+        resizing_top = is_close_to_coord (e.y, start_point.y, RESIZE_THRESHOLD);
+        resizing_bottom = is_close_to_coord (e.y, end_point.y, RESIZE_THRESHOLD);
+        resizing_left = is_close_to_coord (e.x, start_point.x, RESIZE_THRESHOLD);
+        resizing_right = is_close_to_coord (e.x, end_point.x, RESIZE_THRESHOLD);
+        resizing = (resizing_top && resizing_left) ||
+                   (resizing_top && resizing_right) ||
+                   (resizing_bottom && resizing_left) ||
+                   (resizing_bottom && resizing_right);
 
-        start_point.x = (int) e.x;
-        start_point.y = (int) e.y;
+        if (resizing) {
+            return true;
+        }
 
         return true;
+    }
+
+    private static bool is_close_to_coord (float c, int target, int threshold) {
+        return (c >= target - threshold) &&
+               (c <= target + threshold);
     }
 
     public override bool button_release_event (Clutter.ButtonEvent e) {
@@ -99,7 +131,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         }
 
         dragging = false;
-        clicked = false;
+        resizing = false;
 
         int x, y, w, h;
         get_selection_rectangle (out x, out y, out w, out h);
@@ -115,12 +147,14 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     public override bool motion_event (Clutter.MotionEvent e) {
-        if (!clicked) {
+        if (!resizing) {
             return true;
         }
 
-        end_point.x = (int) e.x;
-        end_point.y = (int) e.y;
+        if (resizing) {
+            resize_selection_area (e);
+        }
+
         content.invalidate ();
 
         if (!dragging) {
@@ -128,6 +162,20 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         }
 
         return true;
+    }
+
+    private void resize_selection_area (Clutter.MotionEvent e) {
+        if (resizing_top) {
+            start_point.y = (int) e.y.clamp (max_size.y, end_point.y - MIN_SELECTION);
+        } else if (resizing_bottom) {
+            end_point.y = (int) e.y.clamp (start_point.y + MIN_SELECTION, max_size.y + max_size.height);
+        }
+
+        if (resizing_left) {
+            start_point.x = (int) e.x.clamp (max_size.x, end_point.x - MIN_SELECTION);
+        } else if (resizing_right) {
+            end_point.x = (int) e.x.clamp (start_point.x + MIN_SELECTION, max_size.x + max_size.width);
+        }
     }
 
     public void close () {
