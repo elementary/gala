@@ -14,7 +14,7 @@
       <description>
         <p>Improvements:</p>
         <ul>
-          <li>Include window decorations for server-side decorated windows</li>
+          <li>Include window decorations in screenshots for server-side decorated windows</li>
           <li>Updated translations</li>
         </ul>
       </description>
