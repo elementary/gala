@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-11 20:52+0000\n"
-"PO-Revision-Date: 2021-08-11 18:37+0000\n"
+"PO-Revision-Date: 2021-08-12 07:44+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -130,11 +130,11 @@ msgid "Improvements:"
 msgstr "Вдосконалення:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid "Include window decorations for server-side decorated windows"
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
-msgstr "Включити декорації вікон для вікон декорованих на стороні сервера"
+msgstr ""
+"Включити декорації вікон до знімків екрана для вікон декорованих на стороні "
+"сервера"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
