@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
+"POT-Creation-Date: 2021-08-11 15:53+0000\n"
 "PO-Revision-Date: 2021-07-22 23:06+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/>"
-"\n"
+"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
+">\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,11 +20,11 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-23 06:29+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Kuvakaappaukset"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Kuvakaappaus otettu"
 
@@ -122,107 +122,112 @@ msgstr ""
 "Ikkuna- ja kompositointihallinta pohjautuen libmutteriin, suunniteltu "
 "Pantheoniin elementaryn toimesta."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:73
 msgid "Improvements:"
 msgstr "Parannukset:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Include window decorations for server-side decorated windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:67
+msgid "Updated translations"
+msgstr "Päivitetyt kielikäännökset"
+
+#: data/gala.appdata.xml.in:26
 msgid "Add multitouch gestures"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:27
 msgid "Show window titles in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:28
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
 "Sulje Alt + Tab -vaihdin painamalla Esc ilman että vapautat Alt-näppäintä"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:29
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:30
 msgid "Show a context menu when secondary clicking the background"
 msgstr ""
 "Näytä kontekstivalikko napsauttaessa toissijaisella painikkeella taustakuvaa"
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.appdata.xml.in:31
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.appdata.xml.in:32
 msgid "Add Take Screenshot to window context menu"
 msgstr ""
 
-#: data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:33
 msgid "Always play shutter sound when taking screenshots"
 msgstr ""
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34
 msgid "Minor visual improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:35
 msgid "HiDPI fixes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:36
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "Päivitetyt kielikäännökset"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:45
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:55
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:64
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Älä näytä Galan taustakuvapalveluita telakassa"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:65
 msgid "Fixes for media key handling"
 msgstr ""
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:66
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Näytä pikanäppäimet otsikkopalkin valikoissa"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:75
 msgid "Improve window shadows for legacy apps"
 msgstr ""
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:76
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:77
 msgid "Fix notification position after changing DPI"
 msgstr ""
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:78
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:84
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 

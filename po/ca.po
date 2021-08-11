@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-15 16:49+0000\n"
+"POT-Creation-Date: 2021-08-11 15:53+0000\n"
+"PO-Revision-Date: 2021-08-11 18:37+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -20,11 +20,11 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
@@ -122,66 +122,73 @@ msgstr ""
 "Un gestor de finestres i de composició basat en libmutter i dissenyat per "
 "l'elementary per usar amb el Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:73
 msgid "Improvements:"
 msgstr "Millores:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Include window decorations for server-side decorated windows"
+msgstr ""
+"Inclou decoracions de finestres per a finestres decorades del costat del "
+"servidor"
+
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:67
+msgid "Updated translations"
+msgstr "Traduccions actualitzades"
+
+#: data/gala.appdata.xml.in:26
 msgid "Add multitouch gestures"
 msgstr "Afegeix gests multitàctils"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:27
 msgid "Show window titles in multitasking view"
 msgstr "Mostra els títols de les finestres a la vista de multitasca"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:28
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr "Tanqueu el commutador Alt + Tab prement Esc sense deixar anar Alt."
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:29
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Incrementeu el nivell màxim de zoom i proporcioneu comentaris quan no pugueu "
 "fer zoom."
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:30
 msgid "Show a context menu when secondary clicking the background"
 msgstr "Mostra un menú contextual quan es fa clic secundari al fons."
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.appdata.xml.in:31
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr "Animacions noves del clic d'aturada i de localització del punter"
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.appdata.xml.in:32
 msgid "Add Take Screenshot to window context menu"
 msgstr ""
 "Afegeix l'opció de fer una captura de pantalla al menú contextual de la "
 "finestra"
 
-#: data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:33
 msgid "Always play shutter sound when taking screenshots"
 msgstr "Reprodueix sempre el so de l'obturador en fer captures de pantalla"
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34
 msgid "Minor visual improvements"
 msgstr "Millores visuals menors"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:35
 msgid "HiDPI fixes"
 msgstr "Correccions d'HiDPI"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:36
 msgid "Performance improvements"
 msgstr "Millores de rendiment"
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "Traduccions actualitzades"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:45
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -189,50 +196,50 @@ msgstr ""
 "Correcció de les finestres \"Sempre visible a l'espai de treball\" que "
 "desapareixien en canviar d'espai de treball"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Correcció de les finestres a les pantalles no primàries que desapareixien "
 "quan es canviava d'espai de treball"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:55
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Correcció del bloqueig en canviar d’espai de treball mentre s’obre una "
 "finestra transitòria"
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:64
 msgid "Don't show Gala Background Services in the dock"
 msgstr "No es mostren els serveis de fons de Gala a l'acoblador."
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:65
 msgid "Fixes for media key handling"
 msgstr "Correccions per a la gestió de les tecles multimèdia"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:66
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Mostra les dreceres de teclat als menús de la barra de capçalera"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:75
 msgid "Improve window shadows for legacy apps"
 msgstr "Millora de les ombres de les finestres per a les aplicacions de llegat"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:76
 msgid "Fix potential crash when taking screenshots"
 msgstr "Correcció de la fallada potencial en fer captures de pantalla"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:77
 msgid "Fix notification position after changing DPI"
 msgstr ""
 "Correcció de la posició de les notificacions després de canviar els DPI"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:78
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Correcció de les animacions per moure i maximitzar les finestres en mosaic"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:84
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
