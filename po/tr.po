@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
+"POT-Creation-Date: 2021-08-11 15:53+0000\n"
 "PO-Revision-Date: 2021-07-15 11:59+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
-"\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
+">\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,11 +20,11 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Ekran Görüntüleri"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Ekran görüntüsüsü alındı"
 
@@ -122,65 +122,70 @@ msgstr ""
 "Pantheon ile kullanılmak üzere libmutter temel alınan ve elementary "
 "tarafından tasarlanmış bir pencere yöneticisi."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:73
 msgid "Improvements:"
 msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:17
+msgid "Include window decorations for server-side decorated windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:67
+msgid "Updated translations"
+msgstr "Çeviriler güncellendi"
+
+#: data/gala.appdata.xml.in:26
 msgid "Add multitouch gestures"
 msgstr "Çok noktalı dokunma hareketleri eklendi"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:27
 msgid "Show window titles in multitasking view"
 msgstr "Çoklu görev görünümünde pencere başlıklarını göster"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:28
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
 "Alt tuşunu bırakmadan Esc tuşuna basarak Alt + Tab değiştiriciyi kapatın"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:29
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Maksimum yakınlaştırma seviyesini artırın ve yakınlaştırma yapılamadığında "
 "geri bildirim sağlayın"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:30
 msgid "Show a context menu when secondary clicking the background"
 msgstr "Arka plana sağ tıklarken bağlam menüsünü göster"
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.appdata.xml.in:31
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr "Yeni Otomatik Tıklama ve İşaretçi Bul animasyonları eklendi"
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.appdata.xml.in:32
 msgid "Add Take Screenshot to window context menu"
 msgstr "Pencere içerik menüsüne Ekran Görüntüsü Al eklendi"
 
-#: data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:33
 msgid "Always play shutter sound when taking screenshots"
 msgstr "Ekran görüntüsü alırken her zaman deklanşör sesi çal"
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:34
 msgid "Minor visual improvements"
 msgstr "Küçük görsel iyileştirmeler"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:35
 msgid "HiDPI fixes"
 msgstr "HiDPI düzeltmeleri"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:36
 msgid "Performance improvements"
 msgstr "Performans iyileştirmeleri"
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "Çeviriler güncellendi"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:45
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -188,48 +193,48 @@ msgstr ""
 "Çalışma alanlarını değiştirirken \"Her Zaman Görünür Çalışma Alanında\" "
 "pencerelerinin kaybolması düzeltildi"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:46
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Çalışma alanlarını değiştirirken kaybolan birincil olmayan ekranlardaki "
 "pencereler düzeltildi"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:55
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Geçici bir pencere açılırken çalışma alanlarını değiştirirken kilitlenme "
 "düzeltildi"
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:64
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Gala Arka Plan Hizmetlerini dock'ta gösterme"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:65
 msgid "Fixes for media key handling"
 msgstr "Medya tuşu kullanımı düzeltildi"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:66
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Üst Bilgi Çubuğu menülerinde klavye kısayollarını göster"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:75
 msgid "Improve window shadows for legacy apps"
 msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:76
 msgid "Fix potential crash when taking screenshots"
 msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:77
 msgid "Fix notification position after changing DPI"
 msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:78
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:84
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
