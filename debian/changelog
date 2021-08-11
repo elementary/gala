@@ -1,3 +1,9 @@
+gala (6.0.1) focal; urgency=medium
+
+  * Release 6.0.1 (#1201)
+
+ -- elementary OS Team <builds@elementary.io>  Wed, 11 Aug 2021 20:58:27 +0000
+
 gala (6.0.0) focal; urgency=medium
 
   * New upstream release.
