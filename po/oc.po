@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-08-11 15:53+0000\n"
+"POT-Creation-Date: 2021-08-11 20:52+0000\n"
 "PO-Revision-Date: 2020-08-29 20:13+0000\n"
 "Last-Translator: Mejans <farga@mejans.fr>\n"
 "Language-Team: Occitan <https://l10n.elementary.io/projects/desktop/gala/oc/"
@@ -131,7 +131,8 @@ msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:17
-msgid "Include window decorations for server-side decorated windows"
+msgid ""
+"Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
