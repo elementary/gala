@@ -83,6 +83,8 @@ namespace Gala {
 
         AccentColorManager accent_color_manager;
 
+        MixedDpiManager? mixed_dpi_manager = null;
+
         Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -295,6 +297,9 @@ namespace Gala {
             zoom = new Zoom (this);
 
             accent_color_manager = new AccentColorManager ();
+
+            mixed_dpi_manager = new MixedDpiManager (this);
+            mixed_dpi_manager.adjust_mixed_dpi ();
 
             // initialize plugins and add default components if no plugin overrides them
             var plugin_manager = PluginManager.get_default ();
