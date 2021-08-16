@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '6.0.0',
+    version: '6.0.1',
     meson_version: '>= 0.48.0',
     license: 'GPL3',
 )
@@ -22,12 +22,15 @@ endif
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 
+locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
 pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('LOCALEDIR', locale_dir)
 conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)

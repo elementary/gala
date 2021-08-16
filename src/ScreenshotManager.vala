@@ -137,7 +137,8 @@ namespace Gala {
             window_actor.get_position (out actor_x, out actor_y);
 
             var rect = window.get_frame_rect ();
-            if (include_frame) {
+            if ((include_frame && window.is_client_decorated ()) ||
+                (!include_frame && !window.is_client_decorated ())) {
                 rect = window.frame_rect_to_client_rect (rect);
             }
 
