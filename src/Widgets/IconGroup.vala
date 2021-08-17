@@ -505,7 +505,7 @@ namespace Gala {
             return false;
         }
 
-        Actor drag_begin (float click_x, float click_y) {
+        Actor? drag_begin (float click_x, float click_y) {
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Prefs.get_dynamic_workspaces () &&
