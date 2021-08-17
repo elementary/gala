@@ -104,11 +104,16 @@ namespace Gala {
 
             cr.paint ();
 
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
-            shadow_cache.@set (current_key, new Shadow (texture));
+            try {
+                var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (), surface.get_data ());
+                shadow_cache.@set (current_key, new Shadow (texture));
 
-            return texture;
+                return texture;
+            } catch (Error e) {
+                debug (e.message);
+                return null;
+            }
         }
 
         void decrement_shadow_users (string key) {

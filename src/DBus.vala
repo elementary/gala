@@ -78,7 +78,7 @@ namespace Gala {
 
         private DBus () {
             if (wm.background_group != null)
-                (wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
+                ((BackgroundContainer) wm.background_group).changed.connect (() => background_changed ());
             else
                 assert_not_reached ();
         }

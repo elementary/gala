@@ -91,12 +91,16 @@ namespace Gala.Plugins.PIP {
             cr.set_source_surface (buffer.surface, 0, 0);
             cr.paint ();
 
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
+            try {
+                var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (), surface.get_data ());
 
-            shadow_cache.@set (current_key, new Shadow (texture));
-
-            return texture;
+                shadow_cache.@set (current_key, new Shadow (texture));
+                return texture;
+            } catch (GLib.Error e) {
+                debug (e.message);
+                return null;
+            }
         }
 
         void decrement_shadow_users (string key) {
