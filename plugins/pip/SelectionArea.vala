@@ -96,16 +96,20 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
                 return true;
             case Clutter.Key.Return:
             case Clutter.Key.KP_Enter:
-                int x, y, w, h;
-                get_selection_rectangle (out x, out y, out w, out h);
-                close ();
-                this.hide ();
-                content.invalidate ();
-                captured (x, y, w, h);
+                capture_selected_area ();
                 return true;
         }
 
         return false;
+    }
+
+    private void capture_selected_area () {
+        int x, y, w, h;
+        get_selection_rectangle (out x, out y, out w, out h);
+        close ();
+        this.hide ();
+        content.invalidate ();
+        captured (x, y, w, h);
     }
 
     public override bool button_press_event (Clutter.ButtonEvent e) {
