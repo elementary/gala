@@ -163,11 +163,14 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
 
         dragging = false;
         resizing = false;
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         return true;
     }
 
     public override bool motion_event (Clutter.MotionEvent e) {
+        set_mouse_cursor_on_motion (e);
+
         if (!resizing && !dragging) {
             return true;
         }
@@ -209,6 +212,35 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         start_point.y = y;
     }
 
+    private void set_mouse_cursor_on_motion (Clutter.MotionEvent e) {
+        if (resizing) {
+            return;
+        }
+
+        var cursor = Meta.Cursor.DEFAULT;
+
+        if (dragging) {
+            cursor = Meta.Cursor.MOVE_OR_RESIZE_WINDOW;
+        } else {
+            var top = is_close_to_coord (e.y, start_point.y, RESIZE_THRESHOLD);
+            var bottom = is_close_to_coord (e.y, end_point.y, RESIZE_THRESHOLD);
+            var left = is_close_to_coord (e.x, start_point.x, RESIZE_THRESHOLD);
+            var right = is_close_to_coord (e.x, end_point.x, RESIZE_THRESHOLD);
+
+            if (top && left) {
+                cursor = Meta.Cursor.NW_RESIZE;
+            } else if (top && right) {
+                cursor = Meta.Cursor.NE_RESIZE;
+            } else if (bottom && left) {
+                cursor = Meta.Cursor.SW_RESIZE;
+            } else if (bottom && right) {
+                cursor = Meta.Cursor.SE_RESIZE;
+            }
+        }
+
+        wm.get_display ().set_cursor (cursor);
+    }
+
     public void close () {
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
@@ -218,7 +250,6 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     public void start_selection () {
-        wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
         grab_key_focus ();
 
         modal_proxy = wm.push_modal ();
