@@ -17,7 +17,6 @@
 
 public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     public signal void captured (int x, int y, int width, int height);
-    public signal void selected (int x, int y);
     public signal void closed ();
 
     public Gala.WindowManager wm { get; construct; }
