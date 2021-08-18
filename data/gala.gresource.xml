@@ -19,6 +19,7 @@
   <gresource prefix="/org/pantheon/desktop/gala">
     <file alias="buttons/close.svg" compressed="true" preprocess="xml-stripblanks">close.svg</file>
     <file alias="buttons/resize.svg" compressed="true" preprocess="xml-stripblanks">resize.svg</file>
+    <file alias="buttons/confirm.svg" compressed="true" preprocess="xml-stripblanks">confirm.svg</file>
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala">
     <file compressed="true">gala.css</file>

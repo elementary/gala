@@ -25,6 +25,7 @@ namespace Gala {
 
         static Gdk.Pixbuf? resize_pixbuf = null;
         static Gdk.Pixbuf? close_pixbuf = null;
+        static Gdk.Pixbuf? confirm_pixbuf = null;
 
         static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
@@ -439,6 +440,30 @@ namespace Gala {
             }
 
             return texture;
+        }
+
+        /**
+         * Returns the pixbuf that is used for confirm buttons throughout gala.
+         *
+         * @return the close confirm pixbuf or null if it failed to load
+         */
+         public static Gdk.Pixbuf? get_confirm_button_pixbuf (int size) {
+            var height = size * Utils.get_ui_scaling_factor ();
+            if (confirm_pixbuf == null || confirm_pixbuf.height != height) {
+                try {
+                    confirm_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
+                        Config.RESOURCEPATH + "/buttons/confirm.svg",
+                        -1,
+                        height,
+                        true
+                    );
+                } catch (Error e) {
+                    warning (e.message);
+                    return null;
+                }
+            }
+
+            return confirm_pixbuf;
         }
 
         static Gtk.CssProvider gala_css = null;

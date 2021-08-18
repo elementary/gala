@@ -38,6 +38,11 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
      */
     private const int MIN_SELECTION = 100;
 
+    /**
+     * Confirm button size.
+     */
+    private const int CONFIRM_BUTTON_SIZE = 60;
+
     private Gala.ModalProxy? modal_proxy;
     private Gdk.Point start_point;
     private Gdk.Point end_point;
@@ -63,6 +68,11 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
      */
     private Meta.Rectangle max_size;
 
+    /**
+     * Confirm button texture.
+     */
+    Cairo.ImageSurface? confirm_button_img = null;
+
     public SelectionArea (Gala.WindowManager wm, Meta.WindowActor target_actor) {
         Object (wm: wm, target_actor: target_actor);
     }
@@ -79,6 +89,16 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         wm.get_display ().get_size (out screen_width, out screen_height);
         width = screen_width;
         height = screen_height;
+
+        var confirm_button_pixbuf = Gala.Utils.get_confirm_button_pixbuf (CONFIRM_BUTTON_SIZE);
+        if (confirm_button_pixbuf != null) {
+            confirm_button_img = new Cairo.ImageSurface (Cairo.Format.ARGB32, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
+            Cairo.Context img_ctx = new Cairo.Context (confirm_button_img);
+
+            Gdk.cairo_set_source_pixbuf (img_ctx, confirm_button_pixbuf, 0, 0);
+            img_ctx.rectangle (0.0, 0.0, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
+            img_ctx.paint ();
+        }
 
         var canvas = new Clutter.Canvas ();
         canvas.set_size (screen_width, screen_height);
@@ -128,6 +148,15 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
                    (resizing_bottom && resizing_right);
 
         if (resizing) {
+            return true;
+        }
+
+        // Click on the confirm button
+        var confirm_button_pressed =
+            is_close_to_coord (e.x, (start_point.x + end_point.x) / 2, CONFIRM_BUTTON_SIZE / 2) &&
+            is_close_to_coord (e.y, (start_point.y + end_point.y) / 2, CONFIRM_BUTTON_SIZE / 2);
+        if (confirm_button_pressed) {
+            capture_selected_area ();
             return true;
         }
 
@@ -299,6 +328,17 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         ctx.fill ();
         ctx.arc (end_point.x, end_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
         ctx.fill ();
+
+        // Confirm button
+        if (confirm_button_img != null) {
+            var img_x = ((start_point.x + end_point.x) / 2) - (CONFIRM_BUTTON_SIZE / 2);
+            var img_y = ((start_point.y + end_point.y) / 2) - (CONFIRM_BUTTON_SIZE / 2);
+
+            ctx.set_source_surface (confirm_button_img, img_x, img_y);
+            ctx.rectangle (img_x, img_y, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
+            ctx.clip ();
+            ctx.paint ();
+        }
 
         return true;
     }
