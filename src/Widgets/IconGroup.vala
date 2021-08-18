@@ -102,7 +102,6 @@ namespace Gala {
             var canvas = new Canvas ();
             canvas.draw.connect (draw);
             content = canvas;
-            resize_canvas ();
 
             dummy_material = new Cogl.Material ();
 
@@ -119,6 +118,8 @@ namespace Gala {
             icon_container.height = height;
 
             add_child (icon_container);
+
+            resize_canvas ();
 
             close_button = Utils.create_close_button ();
             place_close_button ();
