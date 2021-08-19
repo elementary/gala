@@ -20,7 +20,7 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : Clutter.Actor {
-    private static Clutter.Color text_color;
+    private static Gdk.RGBA text_color;
     private static Gdk.RGBA bg_color;
     private static Gtk.Border padding;
     private static int border_radius;
@@ -36,28 +36,33 @@ public class Gala.Tooltip : Clutter.Actor {
     private Clutter.Text? text_actor = null;
 
     /**
-     * Text displayed in the Tooltip.
-     * @see set_text
-     */
-    private string text;
-
-    /**
      * Maximum width of the Tooltip.
      * @see set_max_width
      */
     public float max_width;
 
     static construct {
-        var label_widget_path = new Gtk.WidgetPath ();
-        label_widget_path.append_type (GLib.Type.from_name ("label"));
-        label_widget_path.iter_set_object_name (-1, "tooltip");
+        var tooltip_widget_path = new Gtk.WidgetPath ();
+        var pos = tooltip_widget_path.append_type (typeof (Gtk.Window));
+        tooltip_widget_path.iter_set_object_name (pos, "tooltip");
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
 
         var tooltip_style_context = new Gtk.StyleContext ();
-        tooltip_style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
-        tooltip_style_context.set_path (label_widget_path);
+        tooltip_style_context.set_path (tooltip_widget_path);
+
+        tooltip_widget_path.append_type (typeof (Gtk.Label));
+
+        var label_style_context = new Gtk.StyleContext ();
+        label_style_context.set_path (tooltip_widget_path);
 
         bg_color = (Gdk.RGBA) tooltip_style_context.get_property (
             Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+            Gtk.StateFlags.NORMAL
+        );
+
+        text_color = (Gdk.RGBA) label_style_context.get_property (
+            Gtk.STYLE_PROPERTY_COLOR,
             Gtk.StateFlags.NORMAL
         );
 
@@ -67,23 +72,32 @@ public class Gala.Tooltip : Clutter.Actor {
         );
 
         padding = tooltip_style_context.get_padding (Gtk.StateFlags.NORMAL);
-
-        text_color = Clutter.Color.from_string ("#ffffff");
     }
 
     construct {
-        text = "";
         max_width = 200;
 
         background_canvas = new Clutter.Canvas ();
         background_canvas.draw.connect (draw_background);
         content = background_canvas;
+        text_actor = new Clutter.Text () {
+            color = Clutter.Color () {
+                red = (uint8) text_color.red * uint8.MAX,
+                green = (uint8) text_color.green * uint8.MAX,
+                blue = (uint8) text_color.blue * uint8.MAX,
+                alpha = (uint8) text_color.alpha * uint8.MAX,
+            },
+            x = padding.left,
+            y = padding.top,
+            ellipsize = Pango.EllipsizeMode.MIDDLE
+        };
 
+        add_child (text_actor);
         draw ();
     }
 
     public void set_text (string new_text, bool redraw = true) {
-        text = new_text;
+        text_actor.text = new_text;
 
         if (redraw) {
             draw ();
@@ -99,29 +113,15 @@ public class Gala.Tooltip : Clutter.Actor {
     }
 
     private void draw () {
-        visible = (text.length != 0);
+        visible = (text_actor.text.length != 0);
 
         if (!visible) {
             return;
         }
 
-        // First set the text
-        remove_child (text_actor);
-
-        text_actor = new Clutter.Text () {
-            color = text_color,
-            x = padding.left,
-            y = padding.top,
-            ellipsize = Pango.EllipsizeMode.MIDDLE,
-            use_markup = true
-        };
-        text_actor.set_markup (Markup.printf_escaped ("<span size='large'>%s</span>", text));
-
         if ((text_actor.width + padding.left + padding.right) > max_width) {
             text_actor.width = max_width - padding.left - padding.right;
         }
-
-        add_child (text_actor);
 
         // Adjust the size of the tooltip to the text
         width = text_actor.width + padding.left + padding.right;
