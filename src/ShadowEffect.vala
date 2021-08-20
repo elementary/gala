@@ -104,11 +104,16 @@ namespace Gala {
 
             cr.paint ();
 
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
-            shadow_cache.@set (current_key, new Shadow (texture));
+            try {
+                var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (), surface.get_data ());
+                shadow_cache.@set (current_key, new Shadow (texture));
 
-            return texture;
+                return texture;
+            } catch (Error e) {
+                debug (e.message);
+                return null;
+            }
         }
 
         void decrement_shadow_users (string key) {
@@ -121,7 +126,11 @@ namespace Gala {
                 shadow_cache.unset (key);
         }
 
+#if HAS_MUTTER40
+        public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
+#else
         public override void paint (Clutter.PaintContext context, EffectPaintFlags flags) {
+#endif
             var bounding_box = get_bounding_box ();
             var width = (int) (bounding_box.x2 - bounding_box.x1);
             var height = (int) (bounding_box.y2 - bounding_box.y1);
