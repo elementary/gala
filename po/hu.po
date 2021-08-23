@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-11 20:52+0000\n"
-"PO-Revision-Date: 2018-06-23 00:11+0000\n"
-"Last-Translator: Majer Tamás <mtamas@disroot.org>\n"
-"Language-Team: Hungarian <https://weblate.elementary.io/projects/desktop/"
-"gala/hu/>\n"
+"PO-Revision-Date: 2021-08-23 10:34+0000\n"
+"Last-Translator: zoli111 <acszoltan111@gmail.com>\n"
+"Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
+"hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr ""
+msgstr "Képernyőképek"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
@@ -96,7 +96,7 @@ msgstr "Teljes méret"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Háttérkép megváltoztatása…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
