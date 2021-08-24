@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-11 20:52+0000\n"
 "PO-Revision-Date: 2021-08-24 12:12+0000\n"
-"Last-Translator: mateszabo2001 <mateszabo2001@gmail.com>\n"
+"Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
 "Language: hu\n"
@@ -30,11 +30,11 @@ msgstr "Képernyőkép mentve"
 
 #: src/WindowManager.vala:2116
 msgid "Does the display look OK?"
-msgstr "A kijelző jól mutat?"
+msgstr "Megfelelően jelenik meg a kép?"
 
 #: src/WindowManager.vala:2119
 msgid "Keep This Configuration"
-msgstr "Beállítások megtartása"
+msgstr "Beállítás megtartása"
 
 #: src/WindowManager.vala:2120
 msgid "Restore Previous Configuration"
