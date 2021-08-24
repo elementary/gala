@@ -73,11 +73,15 @@ namespace Gala {
 
             seat.ptr_a11y_timeout_started.connect ((device, type, timeout) => {
                 var tracker = wm.get_display ().get_cursor_tracker ();
-                int x, y;
-                tracker.get_pointer (out x, out y, null);
+                Graphene.Point coords = {};
+#if HAS_MUTTER40
+                tracker.get_pointer (coords, null);
+#else
+                tracker.get_pointer (out coords.x, out coords.y, null);
+#endif
 
-                this.x = x - (width / 2);
-                this.y = y - (width / 2);
+                x = coords.x - (width / 2);
+                y = coords.y - (width / 2);
 
                 transition.set_duration (timeout);
                 visible = true;

@@ -148,21 +148,19 @@ namespace Gala {
             });
         }
 
-        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
-            try {
-                daemon_proxy = Bus.get_proxy.end (res);
-            } catch (Error e) {
-                warning ("Failed to get Menu proxy: %s", e.message);
-            }
-        }
-
         void lost_daemon () {
             daemon_proxy = null;
         }
 
         void daemon_appeared () {
             if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
+                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
+                    try {
+                        daemon_proxy = Bus.get_proxy.end (res);
+                    } catch (Error e) {
+                        warning ("Failed to get Menu proxy: %s", e.message);
+                    }
+                });
             }
         }
 
@@ -371,11 +369,13 @@ namespace Gala {
                 return;
             }
 
-            try {
-                daemon_proxy.show_desktop_menu.begin (x, y);
-            } catch (Error e) {
-                message ("Error invoking MenuManager: %s", e.message);
-            }
+                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
+                    try {
+                        ((Daemon) obj).show_desktop_menu.end (res);
+                    } catch (Error e) {
+                        message ("Error invoking MenuManager: %s", e.message);
+                    }
+                });
         }
 
         void on_monitors_changed () {
@@ -918,7 +918,7 @@ namespace Gala {
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
-                    screenshot_current_window ();
+                    screenshot_current_window.begin ();
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -964,11 +964,13 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    try {
-                        daemon_proxy.show_window_menu.begin (flags, x, y);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
+                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
+                        try {
+                            ((Daemon) obj).show_window_menu.end (res);
+                        } catch (Error e) {
+                            message ("Error invoking MenuManager: %s", e.message);
+                        }
+                    });
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
