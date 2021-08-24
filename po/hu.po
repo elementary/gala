@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-11 20:52+0000\n"
 "PO-Revision-Date: 2021-08-24 12:12+0000\n"
-"Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
+"Last-Translator: mateszabo2001 <mateszabo2001@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
 "Language: hu\n"
@@ -226,7 +226,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:84
 msgid "elementary, Inc."
-msgstr "elementary, Inc."
+msgstr "elementary, bejegyezve"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
