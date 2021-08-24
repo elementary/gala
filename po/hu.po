@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-11 20:52+0000\n"
-"PO-Revision-Date: 2021-08-24 12:12+0000\n"
+"PO-Revision-Date: 2021-08-24 18:33+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -84,7 +84,7 @@ msgstr "Bezárás"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Felosztás visszavonása"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
@@ -108,28 +108,32 @@ msgstr "Rendszerbeállítások…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "Multitaszking és ablakkezelés"
+msgstr "Feladat- és ablakkezelés"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Egy ablak- és megjelenítéskezelő a Pantheon számára"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Egy ablak- és megjelenítéskezelő, ami libmutter alapú és az elementary "
+"számára lett tervezve a Pantheonnal való használatra."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:53
 #: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:73
 msgid "Improvements:"
-msgstr ""
+msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:17
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
+"Az ablakdekorátorok megjelennek a szerveroldali ablakok esetén is a "
+"képernyőképeken"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
@@ -139,94 +143,101 @@ msgstr "Frissített fordítások"
 
 #: data/gala.appdata.xml.in:26
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Többujjas gesztusok hozzáadva"
 
 #: data/gala.appdata.xml.in:27
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Ablakcímek mutatása a többfeladatos nézetben"
 
 #: data/gala.appdata.xml.in:28
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Alt + Tab váltó bezárása az Esc lenyomásával az Alt felengedése nélkül"
 
 #: data/gala.appdata.xml.in:29
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"A maximális nagyítási szint növelve és visszajelzés ha nem lehet nagyítani"
 
 #: data/gala.appdata.xml.in:30
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "Egy menü megjelenítése a háttérképre kattintáskor"
 
 #: data/gala.appdata.xml.in:31
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Új animációk tartózkodásos kattintásnál és mutatónál"
 
 #: data/gala.appdata.xml.in:32
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Képernyőkép készítése opció az ablakok menüjében"
 
 #: data/gala.appdata.xml.in:33
 msgid "Always play shutter sound when taking screenshots"
-msgstr ""
+msgstr "Mindig legyen hang képernyőkép készítésekor"
 
 #: data/gala.appdata.xml.in:34
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Kisebb megjelenítésbeli fejlesztések"
 
 #: data/gala.appdata.xml.in:35
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI javítások"
 
 #: data/gala.appdata.xml.in:36
 msgid "Performance improvements"
-msgstr ""
+msgstr "Teljesítménybeli javítások"
 
 #: data/gala.appdata.xml.in:45
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"A \"Mindig a látható munkaterületen\" lévő ablakok eltűnése munkaterület "
+"váltásakor javítva"
 
 #: data/gala.appdata.xml.in:46
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"A nem elsődleges képernyőn lévő ablakok eltűnése munkaterület váltásakor "
+"javítva"
 
 #: data/gala.appdata.xml.in:55
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
+msgstr "Összeomlás javítva munkaterület váltásakor, ha éppen ablak nyílik meg"
 
 #: data/gala.appdata.xml.in:64
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Ne jelenjen meg a Gala háttérfolyamatok ikon a dokkon"
 
 #: data/gala.appdata.xml.in:65
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Médiagombok kezelése javítva"
 
 #: data/gala.appdata.xml.in:66
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "A címsáv menüjeiben lévő gyorsparancsok javítva"
 
 #: data/gala.appdata.xml.in:75
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Az elavult alkalmazások ablakának árnyéka javítva"
 
 #: data/gala.appdata.xml.in:76
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Esetleges összeomlás javítva képernyőkép készítésekor"
 
 #: data/gala.appdata.xml.in:77
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI-állítás utáni értesítéshelyzet javítva"
 
 #: data/gala.appdata.xml.in:78
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"A felosztott ablakok mozgatásának és teljes méretre állításának animációi "
+"javítva"
 
 #: data/gala.appdata.xml.in:84
 msgid "elementary, Inc."
-msgstr "elementary, bejegyezve"
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
