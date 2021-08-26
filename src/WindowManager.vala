@@ -185,7 +185,7 @@ namespace Gala {
             stage = display.get_stage () as Clutter.Stage;
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
-            stage.background_color = Clutter.Color.from_string (color);
+            stage.background_color.from_string (color);
 
             Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
                 WorkspaceManager.init (this);
@@ -348,12 +348,15 @@ namespace Gala {
 
             stage.show ();
 
-            // let the session manager move to the next phase
-            Meta.register_with_session ();
-
             Idle.add (() => {
+                // let the session manager move to the next phase
+#if HAS_MUTTER41
+                display.get_context ().notify_ready ();
+#else
+                Meta.register_with_session ();
+#endif
                 plugin_manager.load_waiting_plugins ();
-                return false;
+                return GLib.Source.REMOVE;
             });
 
             return false;

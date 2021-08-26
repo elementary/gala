@@ -94,10 +94,12 @@ namespace Gala {
             var settings = background_source.settings;
 
             color_string = settings.get_string ("primary-color");
-            var color = Clutter.Color.from_string (color_string);
+            var color = Clutter.Color ();
+            color.from_string (color_string);
 
             color_string = settings.get_string ("secondary-color");
-            var second_color = Clutter.Color.from_string (color_string);
+            var second_color = Clutter.Color ();
+            second_color.from_string (color_string);
 
             var shading_type = settings.get_enum ("color-shading-type");
 

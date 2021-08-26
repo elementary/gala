@@ -132,7 +132,7 @@ namespace Gala {
                 on_user_became_active ();
             });
 
-            background_color = Clutter.Color.from_string ("black");
+            background_color.from_string ("black");
 
             expand_to_screen_size ();
 
