@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-25 22:35+0000\n"
-"PO-Revision-Date: 2021-08-24 18:33+0000\n"
+"PO-Revision-Date: 2021-08-26 00:49+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -124,11 +124,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "New features:"
-msgstr ""
+msgstr "Új funkciók:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "Tüntesse el a kép-a-képben ablakot a képernyőn kívülre helyezéssel"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:55
