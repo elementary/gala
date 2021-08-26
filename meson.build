@@ -96,6 +96,7 @@ granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
+posix_dep = vala.find_library('posix', required: false)
 gexiv2_dep = dependency('gexiv2')
 
 mutter_dep = []
@@ -137,9 +138,20 @@ if mutter40_dep.found()
 		dependency('mutter-cogl-8'), dependency('mutter-cogl-pango-8'),
 		dependency('mutter-clutter-8')
 	]
-	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336', '--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
+mutter41_dep = dependency('libmutter-9', version: ['>= 41', '< 42'], required: false)
+if mutter41_dep.found()
+	libmutter_dep = dependency('libmutter-9', version: '>= 41')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-9'), dependency('mutter-cogl-pango-9'),
+		dependency('mutter-clutter-9')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41']
 endif
 
 if mutter_dep.length() == 0
@@ -151,7 +163,7 @@ mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
 
 subdir('data')
 subdir('lib')
