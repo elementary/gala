@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-25 22:35+0000\n"
-"PO-Revision-Date: 2021-08-15 13:18+0000\n"
+"PO-Revision-Date: 2021-08-26 00:49+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -127,11 +127,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "New features:"
-msgstr ""
+msgstr "Nye funksjoner:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "Legg unna bilde-i-bilde -vinduet ved å dytte det av skjermen"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:55
@@ -185,10 +185,8 @@ msgid "Add Take Screenshot to window context menu"
 msgstr "Skjermavbildning i vindus-bindeleddsmeny"
 
 #: data/gala.appdata.xml.in:45
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
+msgstr "Alltid spill lyd ved knipsing av skjermavbildninger"
 
 #: data/gala.appdata.xml.in:46
 msgid "Minor visual improvements"
