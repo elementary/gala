@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
-    version: '6.0.0',
-    meson_version: '>= 0.48.0',
+    version: '6.0.1',
+    meson_version: '>= 0.49.0',
     license: 'GPL3',
 )
 
@@ -22,12 +22,15 @@ endif
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 
+locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
 pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('LOCALEDIR', locale_dir)
 conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
@@ -122,6 +125,19 @@ if mutter338_dep.found()
 		dependency('mutter-clutter-7')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER338']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
+mutter40_dep = dependency('libmutter-8', version: ['>= 40', '< 41'], required: false)
+if mutter40_dep.found()
+	libmutter_dep = dependency('libmutter-8', version: '>= 40')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-8'), dependency('mutter-cogl-pango-8'),
+		dependency('mutter-clutter-8')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER330', '--define', 'HAS_MUTTER332', '--define', 'HAS_MUTTER334', '--define', 'HAS_MUTTER336', '--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
 	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif

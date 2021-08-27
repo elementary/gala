@@ -137,7 +137,8 @@ namespace Gala {
             window_actor.get_position (out actor_x, out actor_y);
 
             var rect = window.get_frame_rect ();
-            if (include_frame) {
+            if ((include_frame && window.is_client_decorated ()) ||
+                (!include_frame && !window.is_client_decorated ())) {
                 rect = window.frame_rect_to_client_rect (rect);
             }
 
@@ -353,11 +354,12 @@ namespace Gala {
                 paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
             }
 
+            unowned var data = image.get_data ();
             if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
                 wm.stage.paint_to_buffer (
                     {x, y, width, height},
                     scale,
-                    image.get_data (),
+                    ref data,
                     image.get_stride (),
                     Cogl.PixelFormat.BGRA_8888_PRE,
                     paint_flags
@@ -366,7 +368,7 @@ namespace Gala {
                 wm.stage.paint_to_buffer (
                     {x, y, width, height},
                     scale,
-                    image.get_data (),
+                    ref data,
                     image.get_stride (),
                     Cogl.PixelFormat.ARGB_8888_PRE,
                     paint_flags
@@ -415,11 +417,15 @@ namespace Gala {
 
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
-            int x, y;
-            cursor_tracker.get_pointer (out x, out y, null);
+            Graphene.Point coords = {};
+#if HAS_MUTTER40
+            cursor_tracker.get_pointer (coords, null);
+#else
+            cursor_tracker.get_pointer (out coords.x, out coords.y, null);
+#endif
 
             var region = new Cairo.Region.rectangle (image_rect);
-            if (!region.contains_point (x, y)) {
+            if (!region.contains_point ((int) coords.x, (int) coords.y)) {
                 return image;
             }
 
@@ -443,7 +449,7 @@ namespace Gala {
             cr.paint ();
 
             cr.set_operator (Cairo.Operator.OVER);
-            cr.set_source_surface (cursor_image, x - image_rect.x, y - image_rect.y);
+            cr.set_source_surface (cursor_image, coords.x - image_rect.x, coords.y - image_rect.y);
             cr.paint ();
 
             return (Cairo.ImageSurface)cr.get_target ();
@@ -451,7 +457,7 @@ namespace Gala {
 
         async void wait_stage_repaint () {
             ulong signal_id = 0UL;
-            signal_id = wm.stage.paint.connect_after (() => {
+            signal_id = wm.stage.after_paint.connect (() => {
                 wm.stage.disconnect (signal_id);
                 Idle.add (wait_stage_repaint.callback);
             });

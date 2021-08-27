@@ -50,9 +50,7 @@ namespace Gala {
             }
         }
 
-        DBusConnection? connection = null;
         DBusNotifications? notifications = null;
-        uint dbus_name_owner_changed_signal_id = 0;
         uint32 notification_id = 0;
 
         MediaFeedback () {
@@ -61,49 +59,40 @@ namespace Gala {
 
         construct {
             try {
-                pool = new ThreadPool<Feedback>.with_owned_data ((ThreadPoolFunc<Feedback>) send_feedback, 1, false);
+                pool = new ThreadPool<Feedback>.with_owned_data (send_feedback, 1, false);
             } catch (ThreadError e) {
                 critical ("%s", e.message);
                 pool = null;
             }
 
             try {
-                connection = Bus.get_sync (BusType.SESSION);
-                dbus_name_owner_changed_signal_id = connection.signal_subscribe ("org.freedesktop.DBus", "org.freedesktop.DBus",
-                    "NameOwnerChanged", "/org/freedesktop/DBus", null, DBusSignalFlags.NONE, (DBusSignalCallback) handle_name_owner_changed);
+                Bus.watch_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameWatcherFlags.NONE, on_watch, on_unwatch);
             } catch (IOError e) {
+                debug (e.message);
             }
         }
 
-        [CCode (instance_pos = -1)]
-        void handle_name_owner_changed (DBusConnection connection, string sender_name, string object_path,
-            string interface_name, string signal_name, Variant parameters) {
-            string name, before, after;
-            parameters.get ("(sss)", out name, out before, out after);
-
-            if (name != "org.freedesktop.Notifications")
-                return;
-
-            if (after != "" && before == "")
-                new Thread<void*> (null, () => {
-                    lock (notifications) {
-                        try {
-                            notifications = connection.get_proxy_sync<DBusNotifications> ("org.freedesktop.Notifications",
-                                "/org/freedesktop/Notifications", DBusProxyFlags.NONE);
-                        } catch (Error e) {
-                            notifications = null;
-                        }
-                    }
-                    return null;
-                });
-            else if (before != "" && after == "")
-                lock (notifications) {
+        private void on_watch (DBusConnection conn) {
+            conn.get_proxy.begin<DBusNotifications> ("org.freedesktop.Notifications",
+                "/org/freedesktop/Notifications", DBusProxyFlags.NONE, null, (obj, res) => {
+                try {
+                    notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
+                } catch (Error e) {
+                    debug (e.message);
                     notifications = null;
                 }
+            });
         }
 
-        [CCode (instance_pos = -1)]
+        private void on_unwatch (DBusConnection conn) {
+            notifications = null;
+        }
+
         void send_feedback (owned Feedback feedback) {
+            if (notifications == null) {
+                return;
+            }
+
             var hints = new GLib.HashTable<string, Variant> (null, null);
             hints.set ("x-canonical-private-synchronous", new Variant.string ("gala-feedback"));
             hints.set ("value", new Variant.int32 (feedback.level));

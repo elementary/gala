@@ -49,7 +49,7 @@ namespace Gala {
         private Clutter.Canvas background_canvas;
         private static int border_radius;
         private static Gdk.RGBA color;
-        private static const double COLOR_OPACITY = 0.8;
+        private const double COLOR_OPACITY = 0.8;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
