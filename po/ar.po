@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-25 22:35+0000\n"
-"PO-Revision-Date: 2021-04-26 12:57+0000\n"
-"Last-Translator: nasserbinlaboun <nasser1990com@gmail.com>\n"
-"Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
-">\n"
+"PO-Revision-Date: 2021-08-27 18:48+0000\n"
+"Last-Translator: Muhammad Al-Jayyousi <m7md.j99@protonmail.com>\n"
+"Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
+"\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,36 +23,33 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات الشاشة"
 
 #: src/ScreenshotManager.vala:336
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات الشاشة الملتقطة"
 
 #: src/WindowManager.vala:2118
 msgid "Does the display look OK?"
-msgstr "هل الواجهة تبدو جيدة؟"
+msgstr "هل تبدو شاشة العرض جيدة؟"
 
 #: src/WindowManager.vala:2121
 msgid "Keep This Configuration"
-msgstr "إحتفظ بهذه الإعدادات"
+msgstr "احتفظ بهذه الإعدادات"
 
 #: src/WindowManager.vala:2122
 msgid "Restore Previous Configuration"
-msgstr "إسترجع إعدادات الضبط السابقة"
+msgstr "استرجع الإعدادات السابقة"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2145
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات شاشة من %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "أخف"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -60,7 +57,7 @@ msgstr "حرك"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Resize"
-msgstr "تغيير الحجم"
+msgstr "غير الحجم"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
@@ -68,71 +65,70 @@ msgstr "دائماً في المقدمة"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
-msgstr "عرض دائم لمكان العمل"
+msgstr "دائماً في مساحة العمل الظاهرة"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
-msgstr "انتقل إلى مساحة العمل لليسار"
+msgstr "انتقل إلى مساحة العمل على اليسار"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr "انتقل إلى مساحة العمل لليمين"
+msgstr "انتقل إلى مساحة العمل على اليمين"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "صور الشاشة الملتقطة"
+msgstr "التقط صورة للشاشة"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
-msgstr "اغلاق"
+msgstr "أغلق"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "ألغ التجانب"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
-msgstr "إلغاء التكبير"
+msgstr "ألغ التكبير"
 
 #: daemon/MenuDaemon.vala:225
 msgid "Maximize"
-msgstr "تكبير"
+msgstr "قم بالتكبير"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "قم بتغيير صورة الخلفية…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "إعدادات شاشة العرض…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "إعدادات النظام…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "تعدد المهام &amp; إدارة النوافذ"
+msgstr "تعدد المهام وإدارة النوافذ"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "مدير نوافذ ل Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"مدير نوافذ مبني على libmutter ومصمم من قبل elementary للاستخدام مع Pantheon."
 
 #: data/gala.appdata.xml.in:15
 msgid "New features:"
-msgstr ""
+msgstr "ميزات جديدة:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "قم بإخفاء وضع \"صورة داخل صورة\" عن طريق سحب النافذة إلى خارج الشاشة"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:36 data/gala.appdata.xml.in:55
@@ -145,7 +141,7 @@ msgstr "التحسينات:"
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:59
 #: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:79
 msgid "Updated translations"
-msgstr "ترجمات محدثة"
+msgstr "تحديثات على الترجمة"
 
 #: data/gala.appdata.xml.in:29
 msgid ""
@@ -243,7 +239,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:96
 msgid "elementary, Inc."
-msgstr "اليمينتري المتحدة."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
