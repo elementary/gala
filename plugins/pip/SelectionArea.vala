@@ -24,6 +24,12 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     public Meta.WindowActor target_actor { get; construct; }
 
     /**
+     * A clone of the "target_actor" displayed and clipped while the selection
+     * mask is visible.
+     */
+    public Clutter.Actor clone { get; construct; }
+
+    /**
      * Resize handlers radius.
      */
     private const double HANDLER_RADIUS = 6.0;
@@ -84,6 +90,12 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         end_point = { max_size.x + max_size.width, max_size.y + max_size.height };
         visible = true;
         reactive = true;
+
+        clone = new Clutter.Clone (target_actor);
+        clone.x = target_actor.x;
+        clone.y = target_actor.y;
+        wm.ui_group.add_child (clone);
+        target_actor.visible = false;
 
         int screen_width, screen_height;
         wm.get_display ().get_size (out screen_width, out screen_height);
@@ -276,6 +288,8 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
 
     public void close () {
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+        wm.ui_group.remove_child (clone);
+        target_actor.visible = true;
 
         if (modal_proxy != null) {
             wm.pop_modal (modal_proxy);
@@ -339,6 +353,9 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
             ctx.clip ();
             ctx.paint ();
         }
+
+        // Hide the masked part of the actor
+        clone.set_clip (start_point.x - clone.x, start_point.y - clone.y, w, h);
 
         return true;
     }
