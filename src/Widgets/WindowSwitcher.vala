@@ -20,7 +20,6 @@
 //
 
 using Clutter;
-using Meta;
 
 namespace Gala
 {
@@ -140,8 +139,8 @@ namespace Gala
 
         [CCode (instance_pos = -1)]
         public void handle_switch_windows(
-            Display display, Window? window,
-            Clutter.KeyEvent event, KeyBinding binding)
+            Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding)
         {
             var workspace = display.get_workspace_manager().get_active_workspace();
 
@@ -172,15 +171,15 @@ namespace Gala
             next_window(display, workspace, backward);
         }
 
-        bool collect_windows(Display display, Workspace? workspace)
+        bool collect_windows(Meta.Display display, Meta.Workspace? workspace)
         {
-            var windows = display.get_tab_list(TabList.NORMAL, workspace);
+            var windows = display.get_tab_list(Meta.TabList.NORMAL, workspace);
 
             if (windows == null) {
                 return false;
             }
 
-            var current_window = display.get_tab_current(TabList.NORMAL, workspace);
+            var current_window = display.get_tab_current(Meta.TabList.NORMAL, workspace);
 
             container.width = -1;
             container.destroy_all_children();
@@ -320,7 +319,7 @@ namespace Gala
             wrapper.restore_easing_state();
         }
 
-        void next_window(Display display, Workspace? workspace, bool backward)
+        void next_window(Meta.Display display, Meta.Workspace? workspace, bool backward)
         {
             Clutter.Actor actor;
             var current = cur_icon;
@@ -464,7 +463,7 @@ namespace Gala
             return modifiers;
         }
 
-        bool keybinding_filter (KeyBinding binding)
+        bool keybinding_filter (Meta.KeyBinding binding)
         {
             // if it's not built-in, we can block it right away
             if (!binding.is_builtin()) {
