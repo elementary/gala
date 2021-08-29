@@ -194,9 +194,6 @@ namespace Gala
             container.width = -1;
             container.destroy_all_children();
 
-            // Update wnck
-            Wnck.Screen.get_default().force_update();
-
             foreach (var window in windows) {
                 var icon = new WindowIcon(window, ICON_SIZE);
                 if (window == current_window) {
@@ -366,11 +363,7 @@ namespace Gala
             var current_window = cur_icon.window;
             var current_caption = "n/a";
             if (current_window != null) {
-                ulong xid = (ulong) current_window.get_xwindow();
-                var wnck_current_window = Wnck.Window.get(xid);
-                if (wnck_current_window != null) {
-                    current_caption = wnck_current_window.get_name();
-                }
+                current_caption = current_window.get_title();
             }
             caption.set_text(current_caption);
 
