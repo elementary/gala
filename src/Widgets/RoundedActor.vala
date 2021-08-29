@@ -14,28 +14,21 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
-namespace Gala
-{
-    class RoundedActor : Actor
-    {
-        private Canvas canvas;
-        private Color back_color;
+namespace Gala {
+    class RoundedActor : Clutter.Actor {
+        private Clutter.Canvas canvas;
+        private Clutter.Color back_color;
         private int rect_radius;
 
-        public RoundedActor (Color background_color, int radius)
-        {
+        public RoundedActor (Clutter.Color background_color, int radius) {
             rect_radius = radius;
             back_color = background_color;
-            canvas = new Canvas ();
+            canvas = new Clutter.Canvas ();
             this.set_content (canvas);
             canvas.draw.connect (this.drawit);
         }
 
-        protected virtual bool drawit ( Cairo.Context ctx)
-        {
+        protected virtual bool drawit (Cairo.Context ctx) {
             Granite.Drawing.BufferSurface buffer;
             buffer = new Granite.Drawing.BufferSurface ((int)this.width, (int)this.height);
 
@@ -48,7 +41,7 @@ namespace Gala
             buffer.context.reset_clip ();
 
             // draw rect
-            cairo_set_source_color (buffer.context, back_color);
+            Clutter.cairo_set_source_color (buffer.context, back_color);
             Granite.Drawing.Utilities.cairo_rounded_rectangle (buffer.context, 0, 0, (int)this.width, (int)this.height, rect_radius);
             buffer.context.fill ();
 
@@ -64,8 +57,7 @@ namespace Gala
             return true;
         }
 
-        public void resize (int width, int height)
-        {
+        public void resize (int width, int height) {
             set_size (width, height);
             canvas.set_size (width, height);
             canvas.invalidate ();
