@@ -262,14 +262,25 @@ namespace Gala {
             wrapper.restore_easing_state ();
 
             modal_proxy = wm.push_modal ();
-            modal_proxy.keybinding_filter = keybinding_filter;
+            modal_proxy.keybinding_filter = (binding) => {
+                // if it's not built-in, we can block it right away
+                if (!binding.is_builtin ())
+                    return true;
+
+                // otherwise we determine by name if it's meant for us
+                var name = binding.get_name ();
+
+                return !(name == "switch-applications" || name == "switch-applications-backward"
+                    || name == "switch-windows" || name == "switch-windows-backward");
+            };
+
             opened = true;
 
             wrapper.grab_key_focus ();
 
             // if we did not have the grab before the key was released, close immediately
             if ((get_current_modifiers () & modifier_mask) == 0) {
-                close_switcher (get_timestamp ());
+                close_switcher (wm.get_display ().get_current_time ());
             }
         }
 
@@ -392,7 +403,7 @@ namespace Gala {
             if (opened) {
                 //FIXME: problem if layout swicher across witch window switcher shortcut
                 //FIXME: ^^^ I don’t understand what this comment means. Something about witches? (Aral)
-                close_switcher (get_timestamp ());
+                close_switcher (wm.get_display ().get_current_time ());
             }
         }
 
@@ -447,23 +458,6 @@ namespace Gala {
                 .get_state (Gdk.get_default_root_window (), axes, out modifiers);
 
             return modifiers;
-        }
-
-        bool keybinding_filter (Meta.KeyBinding binding) {
-            // if it's not built-in, we can block it right away
-            if (!binding.is_builtin ()) {
-                return true;
-            }
-
-            // otherwise we determine by name if it's meant for us
-            var name = binding.get_name ();
-
-            return !(name == "switch-applications" || name == "switch-applications-backward"
-                || name == "switch-windows" || name == "switch-windows-backward");
-        }
-
-        private uint32 get_timestamp () {
-            return wm.get_display ().get_current_time ();
         }
     }
 }
