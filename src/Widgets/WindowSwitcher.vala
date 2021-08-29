@@ -19,11 +19,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-namespace Gala
-{
-    public class WindowSwitcher : Clutter.Actor
-    {
-        public delegate void ObjectCallback(Object object);
+namespace Gala {
+    public class WindowSwitcher : Clutter.Actor {
+        public delegate void ObjectCallback (Object object);
 
         // Visual Settings
         //  public const string ACTIVE_ICON_COLOR = "#5e5e6448";
@@ -54,27 +52,27 @@ namespace Gala
         // For some reason, on Odin, the height of the caption loses
         // its padding after the first time the switcher displays. As a
         // workaround, I store the initial value here once we have it.
-        float captionHeight = -1.0f;
+        float caption_height = -1.0f;
 
-        public WindowSwitcher(Gala.WindowManager wm) {
+        public WindowSwitcher (Gala.WindowManager wm) {
             Object (wm: wm);
         }
 
         construct {
-            var granite_settings = Granite.Settings.get_default();
+            var granite_settings = Granite.Settings.get_default ();
 
             // Redraw the components if the colour scheme changes.
-            granite_settings.notify["prefers-color-scheme"].connect(() => {
-                createComponents(granite_settings);
+            granite_settings.notify["prefers-color-scheme"].connect (() => {
+                create_components (granite_settings);
             });
 
             // Carry out the initial draw
-            createComponents(granite_settings, true);
+            create_components (granite_settings, true);
         }
 
-        private void createComponents (Granite.Settings granite_settings, bool initial = false) {
+        private void create_components (Granite.Settings granite_settings, bool initial = false) {
             if (initial) {
-                destroy();
+                destroy ();
             }
 
             // Set the colours based on the person’s light/dark scheme preference.
@@ -94,41 +92,40 @@ namespace Gala
                 caption_color = "#ffffff";
             }
 
-            wrapper = new RoundedActor(Clutter.Color.from_string(wrapper_background_color), WRAPPER_BORDER_RADIUS);
+            wrapper = new RoundedActor (Clutter.Color.from_string (wrapper_background_color), WRAPPER_BORDER_RADIUS);
             wrapper.reactive = true;
-            wrapper.set_pivot_point(0.5f, 0.5f);
-            wrapper.key_release_event.connect(key_release_event);
-            wrapper.key_focus_out.connect(key_focus_out);
+            wrapper.set_pivot_point (0.5f, 0.5f);
+            wrapper.key_release_event.connect (key_release_event);
+            wrapper.key_focus_out.connect (key_focus_out);
 
-            var layout = new Clutter.FlowLayout(Clutter.FlowOrientation.HORIZONTAL);
-            container = new Clutter.Actor();
+            var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
+            container = new Clutter.Actor ();
             container.layout_manager = layout;
             container.reactive = true;
-            container.button_press_event.connect(container_mouse_press);
-            container.motion_event.connect(container_motion_event);
+            container.button_press_event.connect (container_mouse_press);
+            container.motion_event.connect (container_motion_event);
 
-            indicator = new RoundedActor(Clutter.Color.from_string(active_icon_color), WRAPPER_BORDER_RADIUS);
+            indicator = new RoundedActor (Clutter.Color.from_string (active_icon_color), WRAPPER_BORDER_RADIUS);
 
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
-            indicator.set_pivot_point(0.5f, 0.5f);
+            indicator.set_pivot_point (0.5f, 0.5f);
 
-            caption = new Clutter.Text.full(CAPTION_FONT_NAME, "", Clutter.Color.from_string(caption_color));
-            caption.set_pivot_point(0.5f, 0.5f);
-            caption.set_ellipsize(Pango.EllipsizeMode.END);
-            caption.set_line_alignment(Pango.Alignment.CENTER);
+            caption = new Clutter.Text.full (CAPTION_FONT_NAME, "", Clutter.Color.from_string (caption_color));
+            caption.set_pivot_point (0.5f, 0.5f);
+            caption.set_ellipsize (Pango.EllipsizeMode.END);
+            caption.set_line_alignment (Pango.Alignment.CENTER);
 
-            wrapper.add_child(indicator);
-            wrapper.add_child(container);
-            wrapper.add_child(caption);
+            wrapper.add_child (indicator);
+            wrapper.add_child (container);
+            wrapper.add_child (caption);
         }
 
-        public override void destroy()
-        {
-            wrapper.destroy();
-            container.destroy();
-            indicator.destroy();
-            caption.destroy();
+        public override void destroy () {
+            wrapper.destroy ();
+            container.destroy ();
+            indicator.destroy ();
+            caption.destroy ();
 
             if (wm == null) {
                 return;
@@ -136,14 +133,14 @@ namespace Gala
         }
 
         [CCode (instance_pos = -1)]
-        public void handle_switch_windows(
+        public void handle_switch_windows (
             Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding)
-        {
-            var workspace = display.get_workspace_manager().get_active_workspace();
+            Clutter.KeyEvent event, Meta.KeyBinding binding
+        ) {
+            var workspace = display.get_workspace_manager ().get_active_workspace ();
 
             // copied from gnome-shell, finds the primary modifier in the mask
-            var mask = binding.get_mask();
+            var mask = binding.get_mask ();
             if (mask == 0) {
                 modifier_mask = 0;
             } else {
@@ -155,48 +152,48 @@ namespace Gala
             }
 
             if (!opened) {
-                var windowsExist = collect_windows(display, workspace);
-                if (!windowsExist) {
-                  return;
+                var windows_exist = collect_windows (display, workspace);
+                if (!windows_exist) {
+                    return;
                 }
-                open_switcher();
-                update_indicator_position(true);
+
+                open_switcher ();
+                update_indicator_position (true);
             }
 
-            var binding_name = binding.get_name();
-            var backward = binding_name.has_suffix("-backward");
+            var binding_name = binding.get_name ();
+            var backward = binding_name.has_suffix ("-backward");
 
-            next_window(display, workspace, backward);
+            next_window (display, workspace, backward);
         }
 
-        bool collect_windows(Meta.Display display, Meta.Workspace? workspace)
-        {
-            var windows = display.get_tab_list(Meta.TabList.NORMAL, workspace);
+        bool collect_windows (Meta.Display display, Meta.Workspace? workspace) {
+            var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
 
             if (windows == null) {
                 return false;
             }
 
-            var current_window = display.get_tab_current(Meta.TabList.NORMAL, workspace);
+            var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
 
             container.width = -1;
-            container.destroy_all_children();
+            container.destroy_all_children ();
 
             foreach (var window in windows) {
-                var icon = new WindowIcon(window, ICON_SIZE);
+                var icon = new WindowIcon (window, ICON_SIZE);
                 if (window == current_window) {
                     cur_icon = icon;
                 }
-                icon.set_pivot_point(0.5f, 0.5f);
-                container.add_child(icon);
+
+                icon.set_pivot_point (0.5f, 0.5f);
+                container.add_child (icon);
             }
 
             return true;
         }
 
-        void open_switcher()
-        {
-            if (container.get_n_children() == 0) {
+        void open_switcher () {
+            if (container.get_n_children () == 0) {
                 return;
             }
 
@@ -204,8 +201,8 @@ namespace Gala
                 return;
             }
 
-            var display = wm.get_display();
-            indicator.set_easing_duration(200);
+            var display = wm.get_display ();
+            indicator.set_easing_duration (200);
 
             container.margin_left = container.margin_top =
                 container.margin_right = container.margin_bottom = (WRAPPER_PADDING * 3);
@@ -214,18 +211,18 @@ namespace Gala
             l.column_spacing = l.row_spacing = WRAPPER_PADDING;
 
             indicator.visible = false;
-            indicator.resize(
+            indicator.resize (
                 ICON_SIZE + WRAPPER_PADDING * 2,
                 ICON_SIZE + WRAPPER_PADDING * 2
             );
             caption.visible = false;
             caption.margin_bottom = caption.margin_top = WRAPPER_PADDING;
 
-            var monitor = display.get_primary_monitor();
-            var geom = display.get_monitor_geometry(monitor);
+            var monitor = display.get_primary_monitor ();
+            var geom = display.get_monitor_geometry (monitor);
 
             float container_width;
-            container.get_preferred_width(
+            container.get_preferred_width (
                 ICON_SIZE + container.margin_left + container.margin_right,
                 null,
                 out container_width
@@ -235,57 +232,56 @@ namespace Gala
             }
 
             float nat_width, nat_height;
-            container.get_preferred_size(null, null, out nat_width, null);
+            container.get_preferred_size (null, null, out nat_width, null);
 
-            if (container.get_n_children() == 1) {
+            if (container.get_n_children () == 1) {
                 nat_width -= WRAPPER_PADDING;
             }
-            container.get_preferred_size(null, null, null, out nat_height);
+            container.get_preferred_size (null, null, null, out nat_height);
 
             // For some reason, on Odin, the height of the caption loses
             // its padding after the first time the switcher displays. As a
             // workaround, I store the initial value here once we have it
             // and use that correct value on subsequent attempts.
-            if (captionHeight == -1.0f) {
-                captionHeight = caption.height;
+            if (caption_height == -1.0f) {
+                caption_height = caption.height;
             }
 
             wrapper.opacity = 0;
-            wrapper.resize(
+            wrapper.resize (
                 (int) nat_width,
-                (int) (nat_height + (captionHeight - (container.margin_bottom - captionHeight)) / 2)
+                (int) (nat_height + (caption_height - (container.margin_bottom - caption_height)) / 2)
             );
-            wrapper.set_position(
+            wrapper.set_position (
                 geom.x + (geom.width - wrapper.width) / 2,
                 geom.y + (geom.height - wrapper.height) / 2
             );
 
-            wm.ui_group.insert_child_above(wrapper, null);
+            wm.ui_group.insert_child_above (wrapper, null);
 
-            wrapper.save_easing_state();
-            wrapper.set_easing_duration(200);
+            wrapper.save_easing_state ();
+            wrapper.set_easing_duration (200);
             wrapper.opacity = 255;
-            wrapper.restore_easing_state();
+            wrapper.restore_easing_state ();
 
-            modal_proxy = wm.push_modal();
+            modal_proxy = wm.push_modal ();
             modal_proxy.keybinding_filter = keybinding_filter;
             opened = true;
 
-            wrapper.grab_key_focus();
+            wrapper.grab_key_focus ();
 
             // if we did not have the grab before the key was released, close immediately
-            if ((get_current_modifiers() & modifier_mask) == 0) {
-                close_switcher(get_timestamp());
+            if ((get_current_modifiers () & modifier_mask) == 0) {
+                close_switcher (get_timestamp ());
             }
         }
 
-        void close_switcher(uint32 time)
-        {
+        void close_switcher (uint32 time) {
             if (!opened) {
                 return;
             }
 
-            wm.pop_modal(modal_proxy);
+            wm.pop_modal (modal_proxy);
             opened = false;
 
             var window = cur_icon.window;
@@ -293,56 +289,55 @@ namespace Gala
                 return;
             }
 
-            var workspace = window.get_workspace();
-            if (workspace != wm.get_display().get_workspace_manager().get_active_workspace()) {
-                workspace.activate_with_focus(window, time);
+            var workspace = window.get_workspace ();
+            if (workspace != wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
+                workspace.activate_with_focus (window, time);
             } else {
-                window.activate(time);
+                window.activate (time);
             }
 
             ObjectCallback remove_actor = () => {
-                wm.ui_group.remove_child(wrapper);
+                wm.ui_group.remove_child (wrapper);
             };
 
-            wrapper.save_easing_state();
-            wrapper.set_easing_duration(100);
+            wrapper.save_easing_state ();
+            wrapper.set_easing_duration (100);
             wrapper.opacity = 0;
 
-            var transition = wrapper.get_transition("opacity");
+            var transition = wrapper.get_transition ("opacity");
             if (transition != null) {
-                transition.completed.connect(() => remove_actor(this));
+                transition.completed.connect (() => remove_actor (this));
             } else {
-                remove_actor(this);
+                remove_actor (this);
             }
-            wrapper.restore_easing_state();
+            wrapper.restore_easing_state ();
         }
 
-        void next_window(Meta.Display display, Meta.Workspace? workspace, bool backward)
-        {
+        void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
             Clutter.Actor actor;
             var current = cur_icon;
 
             if (!backward) {
-                actor = current.get_next_sibling();
+                actor = current.get_next_sibling ();
                 if (actor == null) {
-                    actor = container.get_first_child();
+                    actor = container.get_first_child ();
                 }
             } else {
-                actor = current.get_previous_sibling();
+                actor = current.get_previous_sibling ();
                 if (actor == null) {
-                    actor = container.get_last_child();
+                    actor = container.get_last_child ();
                 }
             }
 
             cur_icon = (WindowIcon) actor;
-            update_indicator_position();
+            update_indicator_position ();
         }
 
-        void update_caption_text(bool initial = false) {
+        void update_caption_text (bool initial = false) {
             // FIXME: width contains incorrect value, if we have one children in container
             if (container.get_n_children () == 1 && container.width > ICON_SIZE + WRAPPER_PADDING) {
-                GLib.Timeout.add(FIX_TIMEOUT_INTERVAL, () => {
-                    update_caption_text(initial);
+                GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
+                    update_caption_text (initial);
                     return false;
                 }, GLib.Priority.DEFAULT);
                 return;
@@ -351,9 +346,9 @@ namespace Gala
             var current_window = cur_icon.window;
             var current_caption = "n/a";
             if (current_window != null) {
-                current_caption = current_window.get_title();
+                current_caption = current_window.get_title ();
             }
-            caption.set_text(current_caption);
+            caption.set_text (current_caption);
 
             if (initial) {
                 caption.visible = true;
@@ -361,52 +356,49 @@ namespace Gala
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = wrapper.width - WRAPPER_PADDING * 2;
-            caption.set_position(WRAPPER_PADDING, container.y + container.height + WRAPPER_PADDING);
+            caption.set_position (WRAPPER_PADDING, container.y + container.height + WRAPPER_PADDING);
         }
 
-        void update_indicator_position(bool initial = false)
-        {
+        void update_indicator_position (bool initial = false) {
             // FIXME there are some troubles with layouting, in some cases we
             //       are here too early, in which case all the children are at
             //       (0|0), so we can easily check for that and come back later
-            if (container.get_n_children() > 1
-                && container.get_child_at_index(1).allocation.x1 < 1) {
+            if (container.get_n_children () > 1
+                && container.get_child_at_index (1).allocation.x1 < 1) {
 
-                GLib.Timeout.add(FIX_TIMEOUT_INTERVAL, () => {
-                    update_indicator_position(initial);
+                GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
+                    update_indicator_position (initial);
                     return false;
                 }, GLib.Priority.DEFAULT);
                 return;
             }
 
             float x, y;
-            cur_icon.allocation.get_origin(out x, out y);
+            cur_icon.allocation.get_origin (out x, out y);
 
             if (initial) {
                 indicator.visible = true;
             }
 
             // Move the indicator without animating it.
-            indicator.save_easing_state();
-            indicator.set_easing_duration(0);
-            indicator.x = container.margin_left + (container.get_n_children() > 1 ? x : 0) - WRAPPER_PADDING;
+            indicator.save_easing_state ();
+            indicator.set_easing_duration (0);
+            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - WRAPPER_PADDING;
             indicator.y = container.margin_top + y - WRAPPER_PADDING;
-            indicator.restore_easing_state();
-            update_caption_text(initial);
+            indicator.restore_easing_state ();
+            update_caption_text (initial);
         }
 
-        void key_focus_out()
-        {
+        void key_focus_out () {
             if (opened) {
                 //FIXME: problem if layout swicher across witch window switcher shortcut
                 //FIXME: ^^^ I don’t understand what this comment means. Something about witches? (Aral)
-                close_switcher(get_timestamp());
+                close_switcher (get_timestamp ());
             }
         }
 
-        bool container_motion_event (Clutter.MotionEvent event)
-        {
-            var actor = event.stage.get_actor_at_pos(Clutter.PickMode.ALL, (int) event.x, (int) event.y);
+        bool container_motion_event (Clutter.MotionEvent event) {
+            var actor = event.stage.get_actor_at_pos (Clutter.PickMode.ALL, (int)event.x, (int)event.y);
             if (actor == null) {
                 return true;
             }
@@ -418,65 +410,61 @@ namespace Gala
 
             if (cur_icon != selected) {
                 cur_icon = selected;
-                update_indicator_position();
+                update_indicator_position ();
             }
 
             return true;
         }
 
-        bool container_mouse_press (Clutter.ButtonEvent event)
-        {
+        bool container_mouse_press (Clutter.ButtonEvent event) {
             if (opened && event.button == Gdk.BUTTON_PRIMARY) {
-                close_switcher(event.time);
+                close_switcher (event.time);
             }
 
             return true;
         }
 
-        bool key_release_event (Clutter.KeyEvent event)
-        {
-            if ((get_current_modifiers() & modifier_mask) == 0) {
-                close_switcher(event.time);
+        bool key_release_event (Clutter.KeyEvent event) {
+            if ((get_current_modifiers () & modifier_mask) == 0) {
+                close_switcher (event.time);
                 return true;
             }
 
             switch (event.keyval) {
                 case Clutter.Key.Escape:
-                    close_switcher(event.time);
+                    close_switcher (event.time);
                     return true;
             }
 
             return false;
         }
 
-        Gdk.ModifierType get_current_modifiers ()
-        {
+        Gdk.ModifierType get_current_modifiers () {
             Gdk.ModifierType modifiers;
             double[] axes = {};
-            Gdk.Display.get_default()
-                .get_device_manager()
-                .get_client_pointer()
-                .get_state(Gdk.get_default_root_window(), axes, out modifiers);
+            Gdk.Display.get_default ()
+                .get_device_manager ()
+                .get_client_pointer ()
+                .get_state (Gdk.get_default_root_window (), axes, out modifiers);
 
             return modifiers;
         }
 
-        bool keybinding_filter (Meta.KeyBinding binding)
-        {
+        bool keybinding_filter (Meta.KeyBinding binding) {
             // if it's not built-in, we can block it right away
-            if (!binding.is_builtin()) {
+            if (!binding.is_builtin ()) {
                 return true;
             }
 
             // otherwise we determine by name if it's meant for us
-            var name = binding.get_name();
+            var name = binding.get_name ();
 
             return !(name == "switch-applications" || name == "switch-applications-backward"
                 || name == "switch-windows" || name == "switch-windows-backward");
         }
 
-        private uint32 get_timestamp() {
-            return wm.get_display().get_current_time();
+        private uint32 get_timestamp () {
+            return wm.get_display ().get_current_time ();
         }
     }
 }
