@@ -273,7 +273,7 @@ namespace Gala {
             }
         }
 
-        void close_switcher (uint32 time) {
+        void close_switcher (uint32 time, bool cancel = false) {
             if (!opened) {
                 return;
             }
@@ -286,11 +286,13 @@ namespace Gala {
                 return;
             }
 
-            var workspace = window.get_workspace ();
-            if (workspace != wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
-                workspace.activate_with_focus (window, time);
-            } else {
-                window.activate (time);
+            if (!cancel) {
+                var workspace = window.get_workspace ();
+                if (workspace != wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
+                    workspace.activate_with_focus (window, time);
+                } else {
+                    window.activate (time);
+                }
             }
 
             ObjectCallback remove_actor = () => {
@@ -429,7 +431,7 @@ namespace Gala {
 
             switch (event.keyval) {
                 case Clutter.Key.Escape:
-                    close_switcher (event.time);
+                    close_switcher (event.time, true);
                     return true;
             }
 
