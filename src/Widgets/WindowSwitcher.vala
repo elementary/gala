@@ -65,11 +65,6 @@ namespace Gala
         {
             this.wm = wm;
 
-            KeyBinding.set_custom_handler("switch-applications", (Meta.KeyHandlerFunc) handle_switch_windows);
-            KeyBinding.set_custom_handler("switch-applications-backward", (Meta.KeyHandlerFunc) handle_switch_windows);
-            KeyBinding.set_custom_handler("switch-windows", (Meta.KeyHandlerFunc) handle_switch_windows);
-            KeyBinding.set_custom_handler("switch-windows-backward", (Meta.KeyHandlerFunc) handle_switch_windows);
-
             var granite_settings = Granite.Settings.get_default();
 
             // Redraw the components if the colour scheme changes.
@@ -144,7 +139,7 @@ namespace Gala
             }
         }
 
-        [CCode (instance_pos = -1)] void handle_switch_windows(
+        [CCode (instance_pos = -1)] public void handle_switch_windows(
             Display display, Window? window,
         #if HAS_MUTTER314
             Clutter.KeyEvent event, KeyBinding binding)
