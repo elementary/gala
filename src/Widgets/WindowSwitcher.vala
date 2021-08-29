@@ -96,8 +96,6 @@ namespace Gala {
             wrapper = new RoundedActor (Clutter.Color.from_string (wrapper_background_color), WRAPPER_BORDER_RADIUS);
             wrapper.reactive = true;
             wrapper.set_pivot_point (0.5f, 0.5f);
-            wrapper.key_release_event.connect (key_release_event);
-            wrapper.key_focus_out.connect (key_focus_out);
 
             var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
             container = new Clutter.Actor ();
@@ -276,7 +274,7 @@ namespace Gala {
 
             opened = true;
 
-            wrapper.grab_key_focus ();
+            grab_key_focus ();
 
             // if we did not have the grab before the key was released, close immediately
             if ((get_current_modifiers () & modifier_mask) == 0) {
@@ -399,12 +397,8 @@ namespace Gala {
             update_caption_text (initial);
         }
 
-        void key_focus_out () {
-            if (opened) {
-                //FIXME: problem if layout swicher across witch window switcher shortcut
-                //FIXME: ^^^ I don’t understand what this comment means. Something about witches? (Aral)
-                close_switcher (wm.get_display ().get_current_time ());
-            }
+        public override void key_focus_out () {
+            close_switcher (wm.get_display ().get_current_time ());
         }
 
         bool container_motion_event (Clutter.MotionEvent event) {
@@ -434,7 +428,7 @@ namespace Gala {
             return true;
         }
 
-        bool key_release_event (Clutter.KeyEvent event) {
+        public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0) {
                 close_switcher (event.time);
                 return true;
