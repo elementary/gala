@@ -24,27 +24,25 @@ using Meta;
 
 namespace Gala
 {
-    public delegate void ObjectCallback(Object object);
-
-    public const string VERSION = "1.0";
-
-    // Visual Settings
-    //  public const string ACTIVE_ICON_COLOR = "#5e5e6448";
-    public const int ICON_SIZE = 96;
-    //  public const string WRAPPER_BACKGROUND_COLOR = "#EAEAEAC8";
-    public const int WRAPPER_BORDER_RADIUS = 12;
-    public const int WRAPPER_PADDING = 12;
-    public const string CAPTION_FONT_NAME = "Inter";
-    //  public const string CAPTION_COLOR = "#2e2e31";
-
     public class WindowSwitcher : Clutter.Actor
     {
+        public delegate void ObjectCallback(Object object);
+
+        // Visual Settings
+        //  public const string ACTIVE_ICON_COLOR = "#5e5e6448";
+        public const int ICON_SIZE = 96;
+        //  public const string WRAPPER_BACKGROUND_COLOR = "#EAEAEAC8";
+        public const int WRAPPER_BORDER_RADIUS = 12;
+        public const int WRAPPER_PADDING = 12;
+        public const string CAPTION_FONT_NAME = "Inter";
+        //  public const string CAPTION_COLOR = "#2e2e31";
+
         const int MIN_OFFSET = 64;
         const int FIX_TIMEOUT_INTERVAL = 100;
 
         public bool opened { get; private set; default = false; }
 
-        Gala.WindowManager? wm = null;
+        public Gala.WindowManager? wm { get; construct; }
         Gala.ModalProxy modal_proxy = null;
 
         Clutter.Actor container;
@@ -61,10 +59,11 @@ namespace Gala
         // workaround, I store the initial value here once we have it.
         float captionHeight = -1.0f;
 
-        WindowSwitcher(Gala.WindowManager wm)
-        {
-            this.wm = wm;
+        public WindowSwitcher(Gala.WindowManager wm) {
+            Object (wm: wm);
+        }
 
+        construct {
             var granite_settings = Granite.Settings.get_default();
 
             // Redraw the components if the colour scheme changes.
@@ -139,13 +138,10 @@ namespace Gala
             }
         }
 
-        [CCode (instance_pos = -1)] public void handle_switch_windows(
+        [CCode (instance_pos = -1)]
+        public void handle_switch_windows(
             Display display, Window? window,
-        #if HAS_MUTTER314
             Clutter.KeyEvent event, KeyBinding binding)
-        #else
-            X.Event event, KeyBinding binding)
-        #endif
         {
             var workspace = display.get_workspace_manager().get_active_workspace();
 
