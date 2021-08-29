@@ -22,7 +22,7 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Catts
+namespace Gala
 {
     public delegate void ObjectCallback(Object object);
 
@@ -37,7 +37,7 @@ namespace Gala.Plugins.Catts
     public const string CAPTION_FONT_NAME = "Inter";
     //  public const string CAPTION_COLOR = "#2e2e31";
 
-    public class Main : Gala.Plugin
+    public class WindowSwitcher : Clutter.Actor
     {
         const int MIN_OFFSET = 64;
         const int FIX_TIMEOUT_INTERVAL = 100;
@@ -61,7 +61,7 @@ namespace Gala.Plugins.Catts
         // workaround, I store the initial value here once we have it.
         float captionHeight = -1.0f;
 
-        public override void initialize(Gala.WindowManager wm)
+        WindowSwitcher(Gala.WindowManager wm)
         {
             this.wm = wm;
 
@@ -498,15 +498,4 @@ namespace Gala.Plugins.Catts
             return wm.get_display().get_current_time();
         }
     }
-}
-
-public Gala.PluginInfo register_plugin()
-{
-    return Gala.PluginInfo() {
-        name = "Catts" + Gala.Plugins.Catts.VERSION,
-        author = "Tom Beckmann, Mark Story, Aral Balkan, et al.",
-        plugin_type = typeof (Gala.Plugins.Catts.Main),
-        provides = Gala.PluginFunction.WINDOW_SWITCHER,
-        load_priority = Gala.LoadPriority.IMMEDIATE
-    };
 }

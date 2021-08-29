@@ -17,7 +17,7 @@
 using Clutter;
 using Meta;
 
-namespace Gala.Plugins.Catts
+namespace Gala
 {
     class RoundedActor : Actor
     {
