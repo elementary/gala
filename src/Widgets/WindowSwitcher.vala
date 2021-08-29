@@ -61,17 +61,18 @@ namespace Gala {
         construct {
             var granite_settings = Granite.Settings.get_default ();
 
+            // Carry out the initial draw
+            create_components (granite_settings);
+
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
                 create_components (granite_settings);
             });
-
-            // Carry out the initial draw
-            create_components (granite_settings, true);
         }
 
-        private void create_components (Granite.Settings granite_settings, bool initial = false) {
-            if (initial) {
+        private void create_components (Granite.Settings granite_settings) {
+            // We've already been constructed once, start again
+            if (wrapper != null) {
                 destroy ();
             }
 
@@ -126,10 +127,6 @@ namespace Gala {
             container.destroy ();
             indicator.destroy ();
             caption.destroy ();
-
-            if (wm == null) {
-                return;
-            }
         }
 
         [CCode (instance_pos = -1)]
