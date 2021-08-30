@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-25 22:35+0000\n"
-"PO-Revision-Date: 2021-05-19 19:48+0000\n"
+"PO-Revision-Date: 2021-08-27 11:39+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
-">\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
+"\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,10 +25,8 @@ msgid "Screenshots"
 msgstr "Capturas de pantalla"
 
 #: src/ScreenshotManager.vala:336
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Capturas de pantalla"
+msgstr "Captura de pantalla hecha"
 
 #: src/WindowManager.vala:2118
 msgid "Does the display look OK?"
@@ -126,7 +124,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "New features:"
-msgstr ""
+msgstr "Funcionalidades nuevas:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Stash the picture-in-picture window by pushing it off screen"
@@ -188,7 +186,7 @@ msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
 
 #: data/gala.appdata.xml.in:46
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Mejoras visuales menores"
 
 #: data/gala.appdata.xml.in:47
 msgid "HiDPI fixes"
