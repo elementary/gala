@@ -49,6 +49,8 @@ namespace Gala {
 
         WindowIcon? cur_icon = null;
 
+        private int scaling_factor = 1;
+
         // For some reason, on Odin, the height of the caption loses
         // its padding after the first time the switcher displays. As a
         // workaround, I store the initial value here once we have it.
@@ -61,12 +63,22 @@ namespace Gala {
         construct {
             var granite_settings = Granite.Settings.get_default ();
 
+            scaling_factor = InternalUtils.get_ui_scaling_factor ();
+
             // Carry out the initial draw
             create_components (granite_settings);
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
                 create_components (granite_settings);
+            });
+
+            Meta.MonitorManager.@get ().monitors_changed.connect (() => {
+                var cur_scale = InternalUtils.get_ui_scaling_factor ();
+                if (cur_scale != scaling_factor) {
+                    scaling_factor = cur_scale;
+                    create_components (granite_settings);
+                }
             });
         }
 
@@ -93,7 +105,7 @@ namespace Gala {
                 caption_color = "#ffffff";
             }
 
-            wrapper = new RoundedActor (Clutter.Color.from_string (wrapper_background_color), WRAPPER_BORDER_RADIUS);
+            wrapper = new RoundedActor (Clutter.Color.from_string (wrapper_background_color), WRAPPER_BORDER_RADIUS * scaling_factor);
             wrapper.reactive = true;
             wrapper.set_pivot_point (0.5f, 0.5f);
 
@@ -104,7 +116,7 @@ namespace Gala {
             container.button_press_event.connect (container_mouse_press);
             container.motion_event.connect (container_motion_event);
 
-            indicator = new RoundedActor (Clutter.Color.from_string (active_icon_color), WRAPPER_BORDER_RADIUS);
+            indicator = new RoundedActor (Clutter.Color.from_string (active_icon_color), WRAPPER_BORDER_RADIUS * scaling_factor);
 
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
@@ -175,7 +187,7 @@ namespace Gala {
             container.destroy_all_children ();
 
             foreach (var window in windows) {
-                var icon = new WindowIcon (window, ICON_SIZE);
+                var icon = new WindowIcon (window, ICON_SIZE * scaling_factor);
                 if (window == current_window) {
                     cur_icon = icon;
                 }
@@ -200,37 +212,37 @@ namespace Gala {
             indicator.set_easing_duration (200);
 
             container.margin_left = container.margin_top =
-                container.margin_right = container.margin_bottom = (WRAPPER_PADDING * 3);
+                container.margin_right = container.margin_bottom = WRAPPER_PADDING * 3 * scaling_factor;
 
             var l = container.layout_manager as Clutter.FlowLayout;
-            l.column_spacing = l.row_spacing = WRAPPER_PADDING;
+            l.column_spacing = l.row_spacing = WRAPPER_PADDING * scaling_factor;
 
             indicator.visible = false;
             indicator.resize (
-                ICON_SIZE + WRAPPER_PADDING * 2,
-                ICON_SIZE + WRAPPER_PADDING * 2
+                (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor,
+                (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor
             );
             caption.visible = false;
-            caption.margin_bottom = caption.margin_top = WRAPPER_PADDING;
+            caption.margin_bottom = caption.margin_top = WRAPPER_PADDING * scaling_factor;
 
             var monitor = display.get_primary_monitor ();
             var geom = display.get_monitor_geometry (monitor);
 
             float container_width;
             container.get_preferred_width (
-                ICON_SIZE + container.margin_left + container.margin_right,
+                ICON_SIZE * scaling_factor + container.margin_left + container.margin_right,
                 null,
                 out container_width
             );
-            if (container_width + MIN_OFFSET * 2 > geom.width) {
-                container.width = geom.width - MIN_OFFSET * 2;
+            if (container_width + MIN_OFFSET * scaling_factor * 2 > geom.width) {
+                container.width = geom.width - MIN_OFFSET * scaling_factor * 2;
             }
 
             float nat_width, nat_height;
             container.get_preferred_size (null, null, out nat_width, null);
 
             if (container.get_n_children () == 1) {
-                nat_width -= WRAPPER_PADDING;
+                nat_width -= WRAPPER_PADDING * scaling_factor;
             }
             container.get_preferred_size (null, null, null, out nat_height);
 
@@ -341,30 +353,18 @@ namespace Gala {
             update_indicator_position ();
         }
 
-        void update_caption_text (bool initial = false) {
-            // FIXME: width contains incorrect value, if we have one children in container
-            if (container.get_n_children () == 1 && container.width > ICON_SIZE + WRAPPER_PADDING) {
-                GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
-                    update_caption_text (initial);
-                    return false;
-                }, GLib.Priority.DEFAULT);
-                return;
-            }
-
+        void update_caption_text () {
             var current_window = cur_icon.window;
             var current_caption = "n/a";
             if (current_window != null) {
                 current_caption = current_window.get_title ();
             }
             caption.set_text (current_caption);
-
-            if (initial) {
-                caption.visible = true;
-            }
+            caption.visible = true;
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
-            caption.width = wrapper.width - WRAPPER_PADDING * 2;
-            caption.set_position (WRAPPER_PADDING, container.y + container.height + WRAPPER_PADDING);
+            caption.width = wrapper.width - WRAPPER_PADDING * 2 * scaling_factor;
+            caption.set_position (WRAPPER_PADDING * scaling_factor, wrapper.height - (caption_height / 2) - WRAPPER_PADDING * 2 * scaling_factor);
         }
 
         void update_indicator_position (bool initial = false) {
@@ -391,10 +391,10 @@ namespace Gala {
             // Move the indicator without animating it.
             indicator.save_easing_state ();
             indicator.set_easing_duration (0);
-            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - WRAPPER_PADDING;
-            indicator.y = container.margin_top + y - WRAPPER_PADDING;
+            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - (WRAPPER_PADDING * scaling_factor);
+            indicator.y = container.margin_top + y - (WRAPPER_PADDING * scaling_factor);
             indicator.restore_easing_state ();
-            update_caption_text (initial);
+            update_caption_text ();
         }
 
         public override void key_focus_out () {
