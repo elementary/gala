@@ -19,6 +19,8 @@
 
 private class Gala.Barrier : Meta.Barrier {
     public bool is_hit { get; set; default = false; }
+    public double pressure_x { get; set; default = 0; }
+    public double pressure_y { get; set; default = 0; }
 
     public Barrier (Meta.Display display, int x1, int y1, int x2, int y2, Meta.BarrierDirection directions) {
         Object (display: display, x1: x1, y1: y1, x2: x2, y2: y2, directions: directions);
@@ -31,6 +33,12 @@ public class Gala.HotCorner : Object {
     public const string POSITION_BOTTOM_LEFT = "hotcorner-bottomleft";
     public const string POSITION_BOTTOM_RIGHT = "hotcorner-bottomright";
     private const int BARRIER_SIZE = 30;
+
+    /**
+     * When the mouse pointer pressures the barrier without activating the hot corner,
+     * release it when this threshold is reached.
+     */
+    private const int RELEASE_PRESSURE_THRESHOLD = 100;
 
     public signal void trigger ();
 
@@ -118,14 +126,26 @@ public class Gala.HotCorner : Object {
 
     private void on_barrier_hit (Gala.Barrier barrier, Meta.BarrierEvent event) {
         barrier.is_hit = true;
+        barrier.pressure_x += event.dx;
+        barrier.pressure_y += event.dy;
 
         if (!triggered && vertical_barrier.is_hit && horizontal_barrier.is_hit) {
             trigger_hot_corner ();
+        }
+
+        var pressure = (barrier == vertical_barrier) ?
+            barrier.pressure_x.abs () :
+            barrier.pressure_y.abs ();
+
+        if (!triggered && pressure.abs () > RELEASE_PRESSURE_THRESHOLD) {
+            barrier.release (event);
         }
     }
 
     private void on_barrier_left (Gala.Barrier barrier, Meta.BarrierEvent event) {
         barrier.is_hit = false;
+        barrier.pressure_x = 0;
+        barrier.pressure_y = 0;
 
         if (!vertical_barrier.is_hit && !horizontal_barrier.is_hit) {
             triggered = false;
@@ -134,6 +154,10 @@ public class Gala.HotCorner : Object {
 
     private void trigger_hot_corner () {
         triggered = true;
+        vertical_barrier.pressure_x = 0;
+        vertical_barrier.pressure_y = 0;
+        horizontal_barrier.pressure_x = 0;
+        horizontal_barrier.pressure_y = 0;
         trigger ();
     }
 }
