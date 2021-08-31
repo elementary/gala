@@ -35,6 +35,12 @@ public class Gala.HotCorner : Object {
     private const int BARRIER_SIZE = 30;
 
     /**
+     * In order to avoid accidental triggers, don't trigger the hot corner until
+     * this threshold is reached.
+     */
+    private const int TRIGGER_PRESSURE_THRESHOLD = 50;
+
+    /**
      * When the mouse pointer pressures the barrier without activating the hot corner,
      * release it when this threshold is reached.
      */
@@ -135,13 +141,16 @@ public class Gala.HotCorner : Object {
         barrier.pressure_x += event.dx;
         barrier.pressure_y += event.dy;
 
-        if (!triggered && vertical_barrier.is_hit && horizontal_barrier.is_hit) {
-            trigger_hot_corner ();
-        }
-
         var pressure = (barrier == vertical_barrier) ?
             barrier.pressure_x.abs () :
             barrier.pressure_y.abs ();
+
+        if (!triggered && vertical_barrier.is_hit && horizontal_barrier.is_hit) {
+            if (pressure.abs () > TRIGGER_PRESSURE_THRESHOLD) {
+                trigger_hot_corner ();
+                pressure = 0;
+            }
+        }
 
         if (!triggered && pressure.abs () > RELEASE_PRESSURE_THRESHOLD) {
             barrier.release (event);
