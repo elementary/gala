@@ -40,6 +40,12 @@ public class Gala.HotCorner : Object {
      */
     private const int RELEASE_PRESSURE_THRESHOLD = 100;
 
+    /**
+     * When the mouse pointer pressures the hot corner after activation, trigger the
+     * action again when this threshold is reached.
+     */
+    private const int RETRIGGER_PRESSURE_THRESHOLD = 500;
+
     public signal void trigger ();
 
     private Gala.Barrier? vertical_barrier = null;
@@ -139,6 +145,10 @@ public class Gala.HotCorner : Object {
 
         if (!triggered && pressure.abs () > RELEASE_PRESSURE_THRESHOLD) {
             barrier.release (event);
+        }
+
+        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD) {
+            trigger_hot_corner ();
         }
     }
 
