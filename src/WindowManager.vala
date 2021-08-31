@@ -76,6 +76,8 @@ namespace Gala {
 
         HotCornerManager? hot_corner_manager = null;
 
+        public WindowTracker? window_tracker { get; private set; }
+
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -175,6 +177,8 @@ namespace Gala {
 
             WindowListener.init (display);
             KeyboardManager.init (display);
+            window_tracker = new WindowTracker ();
+            window_tracker.init (display);
 
             notification_stack = new NotificationStack (display);
 

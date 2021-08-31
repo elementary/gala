@@ -1,6 +1,7 @@
 gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
+    'DesktopIntegration.vala',
     'Dialogs.vala',
     'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
@@ -15,6 +16,7 @@ gala_bin_sources = files(
     'ShadowEffect.vala',
     'WindowListener.vala',
     'WindowManager.vala',
+    'WindowTracker.vala',
     'WorkspaceManager.vala',
     'Zoom.vala',
     'AccentColor/AccentColorManager.vala',
