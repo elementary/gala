@@ -15,14 +15,19 @@
 //
 
 namespace Gala {
-    class RoundedActor : Clutter.Actor {
+    public class RoundedActor : Clutter.Actor {
         private Clutter.Canvas canvas;
-        private Clutter.Color back_color;
-        private int rect_radius;
+        public Clutter.Color back_color { get; protected set; }
+        public int rect_radius { get; protected set; }
 
         public RoundedActor (Clutter.Color background_color, int radius) {
-            rect_radius = radius;
-            back_color = background_color;
+            Object (
+                back_color: background_color,
+                rect_radius: radius
+            );
+        }
+
+        construct {
             canvas = new Clutter.Canvas ();
             this.set_content (canvas);
             canvas.draw.connect (this.drawit);

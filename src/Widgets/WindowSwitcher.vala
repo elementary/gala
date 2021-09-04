@@ -20,17 +20,11 @@
 //
 
 namespace Gala {
-    public class WindowSwitcher : Clutter.Actor {
-        public delegate void ObjectCallback (Object object);
-
-        // Visual Settings
-        //  public const string ACTIVE_ICON_COLOR = "#5e5e6448";
+    public class WindowSwitcher : RoundedActor {
         public const int ICON_SIZE = 96;
-        //  public const string WRAPPER_BACKGROUND_COLOR = "#EAEAEAC8";
         public const int WRAPPER_BORDER_RADIUS = 12;
         public const int WRAPPER_PADDING = 12;
         public const string CAPTION_FONT_NAME = "Inter";
-        //  public const string CAPTION_COLOR = "#2e2e31";
 
         const int MIN_OFFSET = 64;
         const int FIX_TIMEOUT_INTERVAL = 100;
@@ -41,7 +35,6 @@ namespace Gala {
         Gala.ModalProxy modal_proxy = null;
 
         Clutter.Actor container;
-        RoundedActor wrapper;
         RoundedActor indicator;
         Clutter.Text caption;
 
@@ -84,8 +77,9 @@ namespace Gala {
 
         private void create_components (Granite.Settings granite_settings) {
             // We've already been constructed once, start again
-            if (wrapper != null) {
-                destroy ();
+            if (container != null) {
+                caption_height = -1.0f;
+                destroy_all_children ();
             }
 
             // Set the colours based on the person’s light/dark scheme preference.
@@ -105,9 +99,8 @@ namespace Gala {
                 caption_color = "#ffffff";
             }
 
-            wrapper = new RoundedActor (Clutter.Color.from_string (wrapper_background_color), WRAPPER_BORDER_RADIUS * scaling_factor);
-            wrapper.reactive = true;
-            wrapper.set_pivot_point (0.5f, 0.5f);
+            back_color = Clutter.Color.from_string (wrapper_background_color);
+            rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
 
             var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
             container = new Clutter.Actor ();
@@ -127,16 +120,9 @@ namespace Gala {
             caption.set_ellipsize (Pango.EllipsizeMode.END);
             caption.set_line_alignment (Pango.Alignment.CENTER);
 
-            wrapper.add_child (indicator);
-            wrapper.add_child (container);
-            wrapper.add_child (caption);
-        }
-
-        public override void destroy () {
-            wrapper.destroy ();
-            container.destroy ();
-            indicator.destroy ();
-            caption.destroy ();
+            add_child (indicator);
+            add_child (container);
+            add_child (caption);
         }
 
         [CCode (instance_pos = -1)]
@@ -254,22 +240,20 @@ namespace Gala {
                 caption_height = caption.height;
             }
 
-            wrapper.opacity = 0;
-            wrapper.resize (
+            opacity = 0;
+            resize (
                 (int) nat_width,
                 (int) (nat_height + (caption_height - (container.margin_bottom - caption_height)) / 2)
             );
-            wrapper.set_position (
-                geom.x + (geom.width - wrapper.width) / 2,
-                geom.y + (geom.height - wrapper.height) / 2
+            set_position (
+                geom.x + (geom.width - width) / 2,
+                geom.y + (geom.height - height) / 2
             );
 
-            wm.ui_group.insert_child_above (wrapper, null);
-
-            wrapper.save_easing_state ();
-            wrapper.set_easing_duration (200);
-            wrapper.opacity = 255;
-            wrapper.restore_easing_state ();
+            save_easing_state ();
+            set_easing_duration (200);
+            opacity = 255;
+            restore_easing_state ();
 
             modal_proxy = wm.push_modal ();
             modal_proxy.keybinding_filter = (binding) => {
@@ -316,21 +300,10 @@ namespace Gala {
                 }
             }
 
-            ObjectCallback remove_actor = () => {
-                wm.ui_group.remove_child (wrapper);
-            };
-
-            wrapper.save_easing_state ();
-            wrapper.set_easing_duration (100);
-            wrapper.opacity = 0;
-
-            var transition = wrapper.get_transition ("opacity");
-            if (transition != null) {
-                transition.completed.connect (() => remove_actor (this));
-            } else {
-                remove_actor (this);
-            }
-            wrapper.restore_easing_state ();
+            save_easing_state ();
+            set_easing_duration (100);
+            opacity = 0;
+            restore_easing_state ();
         }
 
         void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
@@ -363,8 +336,8 @@ namespace Gala {
             caption.visible = true;
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
-            caption.width = wrapper.width - WRAPPER_PADDING * 2 * scaling_factor;
-            caption.set_position (WRAPPER_PADDING * scaling_factor, wrapper.height - (caption_height / 2) - WRAPPER_PADDING * 2 * scaling_factor);
+            caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
+            caption.set_position (WRAPPER_PADDING * scaling_factor, height - (caption_height / 2) - WRAPPER_PADDING * 2 * scaling_factor);
         }
 
         void update_indicator_position (bool initial = false) {
