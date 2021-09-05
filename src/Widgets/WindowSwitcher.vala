@@ -186,7 +186,10 @@ namespace Gala {
         }
 
         void open_switcher () {
+            var display = wm.get_display ();
+
             if (container.get_n_children () == 0) {
+                Utils.bell (display);
                 return;
             }
 
@@ -194,7 +197,6 @@ namespace Gala {
                 return;
             }
 
-            var display = wm.get_display ();
             indicator.set_easing_duration (200);
 
             container.margin_left = container.margin_top =
@@ -230,6 +232,7 @@ namespace Gala {
             if (container.get_n_children () == 1) {
                 nat_width -= WRAPPER_PADDING * scaling_factor;
             }
+
             container.get_preferred_size (null, null, null, out nat_height);
 
             // For some reason, on Odin, the height of the caption loses
@@ -309,6 +312,11 @@ namespace Gala {
         void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
             Clutter.Actor actor;
             var current = cur_icon;
+
+            if (container.get_n_children () == 1) {
+                Utils.bell (display);
+                return;
+            }
 
             if (!backward) {
                 actor = current.get_next_sibling ();
