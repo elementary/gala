@@ -200,7 +200,7 @@ namespace Gala {
             indicator.set_easing_duration (200);
 
             container.margin_left = container.margin_top =
-                container.margin_right = container.margin_bottom = WRAPPER_PADDING * 3 * scaling_factor;
+                container.margin_right = container.margin_bottom = (WRAPPER_PADDING * 2 * scaling_factor);
 
             var l = container.layout_manager as Clutter.FlowLayout;
             l.column_spacing = l.row_spacing = WRAPPER_PADDING * scaling_factor;
@@ -246,7 +246,7 @@ namespace Gala {
             opacity = 0;
             resize (
                 (int) nat_width,
-                (int) (nat_height + (caption_height - (container.margin_bottom - caption_height)) / 2)
+                (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor)
             );
             set_position (
                 geom.x + (geom.width - width) / 2,
@@ -345,7 +345,7 @@ namespace Gala {
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
-            caption.set_position (WRAPPER_PADDING * scaling_factor, height - (caption_height / 2) - WRAPPER_PADDING * 2 * scaling_factor);
+            caption.set_position (WRAPPER_PADDING * scaling_factor, height - caption_height / 2 - (WRAPPER_PADDING * scaling_factor * 2));
         }
 
         void update_indicator_position (bool initial = false) {
