@@ -57,7 +57,7 @@ public class Gala.Tooltip : Clutter.Actor {
 
         padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
 
-        text_color.from_string ("#ffffff");
+        text_color = Clutter.Color.from_string ("#ffffff");
     }
 
     construct {

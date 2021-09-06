@@ -185,7 +185,7 @@ namespace Gala {
             stage = display.get_stage () as Clutter.Stage;
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
-            stage.background_color.from_string (color);
+            stage.background_color = Clutter.Color.from_string (color);
 
             Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
                 WorkspaceManager.init (this);
