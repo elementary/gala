@@ -94,19 +94,17 @@ namespace Gala {
             var settings = background_source.settings;
 
             color_string = settings.get_string ("primary-color");
-            var color = Clutter.Color ();
-            color.from_string (color_string);
-
-            color_string = settings.get_string ("secondary-color");
-            var second_color = Clutter.Color ();
-            second_color.from_string (color_string);
+            var color = Clutter.Color.from_string (color_string);
 
             var shading_type = settings.get_enum ("color-shading-type");
 
-            if (shading_type == GDesktop.BackgroundShading.SOLID)
+            if (shading_type == GDesktop.BackgroundShading.SOLID) {
                 background.set_color (color);
-            else
+            } else {
+                color_string = settings.get_string ("secondary-color");
+                var second_color = Clutter.Color.from_string (color_string);
                 background.set_gradient ((GDesktop.BackgroundShading) shading_type, color, second_color);
+            }
         }
 
         void watch_file (string filename) {
