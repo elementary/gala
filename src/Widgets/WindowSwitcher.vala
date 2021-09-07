@@ -83,20 +83,21 @@ namespace Gala {
             }
 
             // Set the colours based on the person’s light/dark scheme preference.
-            var wrapper_background_color = "red";
-            var active_icon_color = "blue";
-            var caption_color = "green";
+            var wrapper_background_color = "#fafafa";
+            var caption_color = "#2e2e31";
 
-            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.LIGHT || granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.NO_PREFERENCE) {
-                // Light mode.
-                wrapper_background_color = "#EAEAEAC8";
-                active_icon_color = "#5e5e6448";
-                caption_color = "#2e2e31";
-            } else {
-                // Dark mode.
-                wrapper_background_color = "#5e5e64C8";
-                active_icon_color = "#EAEAEA48";
-                caption_color = "#ffffff";
+            var rgba = InternalUtils.get_theme_accent_color ();
+            var accent_color = new Clutter.Color ();
+            accent_color.init (
+                (uint8) (rgba.red * 255),
+                (uint8) (rgba.green * 255),
+                (uint8) (rgba.blue * 255),
+                (uint8) (rgba.alpha * 255)
+            );
+
+            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+                wrapper_background_color = "#333333";
+                caption_color = "#fafafa";
             }
 
             back_color = Clutter.Color.from_string (wrapper_background_color);
@@ -109,7 +110,7 @@ namespace Gala {
             container.button_press_event.connect (container_mouse_press);
             container.motion_event.connect (container_motion_event);
 
-            indicator = new RoundedActor (Clutter.Color.from_string (active_icon_color), WRAPPER_BORDER_RADIUS * scaling_factor);
+            indicator = new RoundedActor (accent_color, WRAPPER_BORDER_RADIUS * scaling_factor);
 
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
