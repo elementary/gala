@@ -21,9 +21,8 @@
  */
 public class Gala.Tooltip : Clutter.Actor {
     private static Clutter.Color text_color;
-    private static Gdk.RGBA bg_color;
     private static Gtk.Border padding;
-    private static int border_radius;
+    private static Gtk.StyleContext style_context;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -52,21 +51,11 @@ public class Gala.Tooltip : Clutter.Actor {
         label_widget_path.append_type (GLib.Type.from_name ("label"));
         label_widget_path.iter_set_object_name (-1, "tooltip");
 
-        var tooltip_style_context = new Gtk.StyleContext ();
-        tooltip_style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
-        tooltip_style_context.set_path (label_widget_path);
+        style_context = new Gtk.StyleContext ();
+        style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
+        style_context.set_path (label_widget_path);
 
-        bg_color = (Gdk.RGBA) tooltip_style_context.get_property (
-            Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-            Gtk.StateFlags.NORMAL
-        );
-
-        border_radius = (int) tooltip_style_context.get_property (
-            Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-            Gtk.StateFlags.NORMAL
-        );
-
-        padding = tooltip_style_context.get_padding (Gtk.StateFlags.NORMAL);
+        padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
 
         text_color.from_string ("#ffffff");
     }
@@ -132,15 +121,13 @@ public class Gala.Tooltip : Clutter.Actor {
         background_canvas.invalidate ();
     }
 
-    private static bool draw_background (Cairo.Context cr, int width, int height) {
-        cr.save ();
-        cr.set_operator (Cairo.Operator.CLEAR);
-        cr.paint ();
-        cr.restore ();
+    private static bool draw_background (Cairo.Context ctx, int width, int height) {
+        ctx.save ();
 
-        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
-        cr.set_source_rgba (bg_color.red, bg_color.green, bg_color.blue, bg_color.alpha);
-        cr.fill ();
+        style_context.render_background (ctx, 0, 0, width, height);
+        style_context.render_frame (ctx, 0, 0, width, height);
+
+        ctx.restore ();
 
         return false;
     }
