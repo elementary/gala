@@ -68,6 +68,7 @@ namespace Gala {
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
+                canvas.invalidate ();
                 create_components ();
             });
 
@@ -83,44 +84,28 @@ namespace Gala {
         }
 
         private bool draw (Cairo.Context ctx) {
-            Granite.Drawing.BufferSurface buffer;
-            buffer = new Granite.Drawing.BufferSurface ((int)this.width, (int)this.height);
+            ctx.save ();
 
-            // Set the colours based on the person’s light/dark scheme preference.
-            var wrapper_background_color = "#fafafa";
+            var widget_path = new Gtk.WidgetPath ();
+            widget_path.append_type (typeof (Gtk.Window));
+            widget_path.iter_set_object_name (-1, "window");
 
-            var rgba = InternalUtils.get_theme_accent_color ();
-            var accent_color = new Clutter.Color ();
-            accent_color.init (
-                (uint8) (rgba.red * 255),
-                (uint8) (rgba.green * 255),
-                (uint8) (rgba.blue * 255),
-                (uint8) (rgba.alpha * 255)
-            );
+            var style_context = new Gtk.StyleContext ();
+            style_context.set_path (widget_path);
+            style_context.add_class ("background");
+            style_context.add_class ("csd");
+            style_context.add_class ("unified");
 
             if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-                wrapper_background_color = "#333333";
+                var gtksettings = Gtk.Settings.get_default ();
+                var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
+                style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             }
 
-            var back_color = Clutter.Color.from_string (wrapper_background_color);
-            var rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
+            style_context.render_background (ctx, 0, 0, (int) width, (int) height);
+            style_context.render_frame (ctx, 0, 0, (int) width, (int) height);
 
-            buffer.context.clip ();
-            buffer.context.reset_clip ();
-
-            // draw rect
-            Clutter.cairo_set_source_color (buffer.context, back_color);
-            Granite.Drawing.Utilities.cairo_rounded_rectangle (buffer.context, 0, 0, (int)this.width, (int)this.height, rect_radius);
-            buffer.context.fill ();
-
-            //clear surface to transparent
-            ctx.set_operator (Cairo.Operator.SOURCE);
-            ctx.set_source_rgba (0, 0, 0, 0);
-            ctx.paint ();
-
-            //now paint our buffer on
-            ctx.set_source_surface (buffer.surface, 0, 0);
-            ctx.paint ();
+            ctx.restore ();
 
             return true;
         }
@@ -132,6 +117,13 @@ namespace Gala {
                 destroy_all_children ();
             }
 
+            var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
+            container = new Clutter.Actor ();
+            container.layout_manager = layout;
+            container.reactive = true;
+            container.button_press_event.connect (container_mouse_press);
+            container.motion_event.connect (container_motion_event);
+
             var rgba = InternalUtils.get_theme_accent_color ();
             var accent_color = new Clutter.Color ();
             accent_color.init (
@@ -141,24 +133,17 @@ namespace Gala {
                 (uint8) (rgba.alpha * 255)
             );
 
-            var caption_color = "#2e2e31";
-
-            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-                caption_color = "#fafafa";
-            }
-
-            var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
-            container = new Clutter.Actor ();
-            container.layout_manager = layout;
-            container.reactive = true;
-            container.button_press_event.connect (container_mouse_press);
-            container.motion_event.connect (container_motion_event);
-
             indicator = new RoundedActor (accent_color, WRAPPER_BORDER_RADIUS * scaling_factor);
 
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
             indicator.set_pivot_point (0.5f, 0.5f);
+
+            var caption_color = "#2e2e31";
+
+            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+                caption_color = "#fafafa";
+            }
 
             caption = new Clutter.Text.full (CAPTION_FONT_NAME, "", Clutter.Color.from_string (caption_color));
             caption.set_pivot_point (0.5f, 0.5f);
