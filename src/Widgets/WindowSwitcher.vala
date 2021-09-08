@@ -22,7 +22,7 @@
 namespace Gala {
     public class WindowSwitcher : Clutter.Actor {
         public const int ICON_SIZE = 64;
-        public const int WRAPPER_BORDER_RADIUS = 12;
+        public const int WRAPPER_BORDER_RADIUS = 3;
         public const int WRAPPER_PADDING = 12;
         public const string CAPTION_FONT_NAME = "Inter";
 
@@ -280,8 +280,8 @@ namespace Gala {
             canvas.invalidate ();
 
             set_position (
-                geom.x + (geom.width - width) / 2,
-                geom.y + (geom.height - height) / 2
+                (int) (geom.x + (geom.width - width) / 2),
+                (int) (geom.y + (geom.height - height) / 2)
             );
 
             save_easing_state ();
@@ -376,7 +376,10 @@ namespace Gala {
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
-            caption.set_position (WRAPPER_PADDING * scaling_factor, height - caption_height / 2 - (WRAPPER_PADDING * scaling_factor * 2));
+            caption.set_position (
+                WRAPPER_PADDING * scaling_factor,
+                (int) (height - caption_height / 2 - (WRAPPER_PADDING * scaling_factor * 2))
+            );
         }
 
         void update_indicator_position (bool initial = false) {
