@@ -20,8 +20,8 @@
 //
 
 namespace Gala {
-    public class WindowSwitcher : RoundedActor {
-        public const int ICON_SIZE = 96;
+    public class WindowSwitcher : Clutter.Actor {
+        public const int ICON_SIZE = 64;
         public const int WRAPPER_BORDER_RADIUS = 12;
         public const int WRAPPER_PADDING = 12;
         public const string CAPTION_FONT_NAME = "Inter";
@@ -34,6 +34,8 @@ namespace Gala {
         public Gala.WindowManager? wm { get; construct; }
         Gala.ModalProxy modal_proxy = null;
 
+        private Granite.Settings granite_settings;
+        private Clutter.Canvas canvas;
         Clutter.Actor container;
         RoundedActor indicator;
         Clutter.Text caption;
@@ -54,37 +56,38 @@ namespace Gala {
         }
 
         construct {
-            var granite_settings = Granite.Settings.get_default ();
+            granite_settings = Granite.Settings.get_default ();
 
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
 
+            canvas = new Clutter.Canvas ();
+            set_content (canvas);
+
             // Carry out the initial draw
-            create_components (granite_settings);
+            create_components ();
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
-                create_components (granite_settings);
+                create_components ();
             });
 
             Meta.MonitorManager.@get ().monitors_changed.connect (() => {
                 var cur_scale = InternalUtils.get_ui_scaling_factor ();
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
-                    create_components (granite_settings);
+                    create_components ();
                 }
             });
+
+            canvas.draw.connect (draw);
         }
 
-        private void create_components (Granite.Settings granite_settings) {
-            // We've already been constructed once, start again
-            if (container != null) {
-                caption_height = -1.0f;
-                destroy_all_children ();
-            }
+        private bool draw (Cairo.Context ctx) {
+            Granite.Drawing.BufferSurface buffer;
+            buffer = new Granite.Drawing.BufferSurface ((int)this.width, (int)this.height);
 
             // Set the colours based on the person’s light/dark scheme preference.
             var wrapper_background_color = "#fafafa";
-            var caption_color = "#2e2e31";
 
             var rgba = InternalUtils.get_theme_accent_color ();
             var accent_color = new Clutter.Color ();
@@ -97,11 +100,52 @@ namespace Gala {
 
             if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
                 wrapper_background_color = "#333333";
-                caption_color = "#fafafa";
             }
 
-            back_color = Clutter.Color.from_string (wrapper_background_color);
-            rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
+            var back_color = Clutter.Color.from_string (wrapper_background_color);
+            var rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
+
+            buffer.context.clip ();
+            buffer.context.reset_clip ();
+
+            // draw rect
+            Clutter.cairo_set_source_color (buffer.context, back_color);
+            Granite.Drawing.Utilities.cairo_rounded_rectangle (buffer.context, 0, 0, (int)this.width, (int)this.height, rect_radius);
+            buffer.context.fill ();
+
+            //clear surface to transparent
+            ctx.set_operator (Cairo.Operator.SOURCE);
+            ctx.set_source_rgba (0, 0, 0, 0);
+            ctx.paint ();
+
+            //now paint our buffer on
+            ctx.set_source_surface (buffer.surface, 0, 0);
+            ctx.paint ();
+
+            return true;
+        }
+
+        private void create_components () {
+            // We've already been constructed once, start again
+            if (container != null) {
+                caption_height = -1.0f;
+                destroy_all_children ();
+            }
+
+            var rgba = InternalUtils.get_theme_accent_color ();
+            var accent_color = new Clutter.Color ();
+            accent_color.init (
+                (uint8) (rgba.red * 255),
+                (uint8) (rgba.green * 255),
+                (uint8) (rgba.blue * 255),
+                (uint8) (rgba.alpha * 255)
+            );
+
+            var caption_color = "#2e2e31";
+
+            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+                caption_color = "#fafafa";
+            }
 
             var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
             container = new Clutter.Actor ();
@@ -245,10 +289,11 @@ namespace Gala {
             }
 
             opacity = 0;
-            resize (
-                (int) nat_width,
-                (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor)
-            );
+
+            set_size ((int) nat_width, (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor));
+            canvas.set_size ((int) nat_width, (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor));
+            canvas.invalidate ();
+
             set_position (
                 geom.x + (geom.width - width) / 2,
                 geom.y + (geom.height - height) / 2
