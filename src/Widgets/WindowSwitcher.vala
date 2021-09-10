@@ -17,7 +17,13 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2021 Aral Balkan <mail@ar.al>
+ * Copyright 2020 Mark Story <mark@mark-story.com>
+ * Copyright 2017 Popye <sailor3101@gmail.com>
+ * Copyright 2014 Tom Beckmann
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 namespace Gala {
     public class WindowSwitcher : Clutter.Actor {
