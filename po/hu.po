@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-08-25 22:35+0000\n"
-"PO-Revision-Date: 2021-08-26 00:49+0000\n"
+"PO-Revision-Date: 2021-09-02 21:46+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -38,7 +38,7 @@ msgstr "Beállítás megtartása"
 
 #: src/WindowManager.vala:2122
 msgid "Restore Previous Configuration"
-msgstr "Az előző beállítás visszaállítása"
+msgstr "Előző beállítások visszaállítása"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2145
