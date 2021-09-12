@@ -214,8 +214,6 @@ namespace Gala {
                 return;
             }
 
-            indicator.set_easing_duration (200);
-
             container.margin_left = container.margin_top =
                 container.margin_right = container.margin_bottom = (WRAPPER_PADDING * 2 * scaling_factor);
 
@@ -391,11 +389,8 @@ namespace Gala {
             }
 
             // Move the indicator without animating it.
-            indicator.save_easing_state ();
-            indicator.set_easing_duration (0);
             indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - (WRAPPER_PADDING * scaling_factor);
             indicator.y = container.margin_top + y - (WRAPPER_PADDING * scaling_factor);
-            indicator.restore_easing_state ();
             update_caption_text ();
         }
 
