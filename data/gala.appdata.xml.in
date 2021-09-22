@@ -18,6 +18,7 @@
         </ul>
         <p>Improvements:</p>
         <ul>
+          <li>Fix a potential crash while changing wallpapers</li>
           <li>Updated translations</li>
         </ul>
       </description>
