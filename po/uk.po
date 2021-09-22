@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-09-22 20:44+0000\n"
-"PO-Revision-Date: 2021-08-28 20:33+0000\n"
-"Last-Translator: DartDeaDia <dartdeadia@protonmail.com>\n"
+"PO-Revision-Date: 2021-09-22 22:27+0000\n"
+"Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
 "Language: uk\n"
@@ -137,13 +137,11 @@ msgstr ""
 #: data/gala.appdata.xml.in:66 data/gala.appdata.xml.in:75
 #: data/gala.appdata.xml.in:86
 msgid "Improvements:"
-msgstr "Вдосконалення:"
+msgstr "Удосконалення:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Виправлено ймовірність збою під час створення знімків екрана"
+msgstr "Виправлено ймовірність збою під час зміни тла"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:60
