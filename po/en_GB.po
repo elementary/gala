@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-09-22 20:44+0000\n"
-"PO-Revision-Date: 2021-07-18 02:11+0000\n"
+"PO-Revision-Date: 2021-09-22 22:27+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -124,11 +124,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "New features:"
-msgstr ""
+msgstr "New features:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "Stash the picture-in-picture window by pushing it off screen"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:56
@@ -138,10 +138,8 @@ msgid "Improvements:"
 msgstr "Improvements:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Fix potential crash when taking screenshots"
+msgstr "Fix a potential crash while changing wallpapers"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:60
@@ -153,6 +151,7 @@ msgstr "Updated translations"
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
+"Include window decorations in screenshots for server-side decorated windows"
 
 #: data/gala.appdata.xml.in:39
 msgid "Add multitouch gestures"
