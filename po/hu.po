@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-09-22 20:44+0000\n"
-"PO-Revision-Date: 2021-09-02 21:46+0000\n"
+"PO-Revision-Date: 2021-09-26 19:28+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -138,10 +138,8 @@ msgid "Improvements:"
 msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Esetleges összeomlás javítva képernyőkép készítésekor"
+msgstr "Egy esetleges összeomlás javítva háttérkép váltásakor"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:60
