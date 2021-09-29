@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-09-22 20:44+0000\n"
-"PO-Revision-Date: 2021-08-26 00:49+0000\n"
+"PO-Revision-Date: 2021-09-29 02:28+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -141,10 +141,8 @@ msgid "Improvements:"
 msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
+msgstr "Fiks potensielt krasj ved endring av bakgrunnsbilde"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:60
