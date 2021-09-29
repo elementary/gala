@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-09-22 20:44+0000\n"
+"POT-Creation-Date: 2021-09-29 17:15+0000\n"
 "PO-Revision-Date: 2021-09-23 13:39+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -122,88 +122,95 @@ msgstr ""
 "libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
 "ンポジット型ウィンドウマネージャーです。"
 
-#: data/gala.appdata.xml.in:15
-msgid "New features:"
-msgstr "新機能:"
-
-#: data/gala.appdata.xml.in:17
-msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr "ピクチャーインピクチャーのウィンドウを画面端に隠せる機能を追加"
-
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
-#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:56
-#: data/gala.appdata.xml.in:66 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:65 data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:95
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.appdata.xml.in:21
-msgid "Fix a potential crash while changing wallpapers"
-msgstr "壁紙の変更時に起こりうるクラッシュを修正"
+#: data/gala.appdata.xml.in:17
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fix a potential crash when taking screenshots"
+msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
-#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:31
-#: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:60
-#: data/gala.appdata.xml.in:69 data/gala.appdata.xml.in:80
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:69 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:89
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
+#: data/gala.appdata.xml.in:24
+msgid "New features:"
+msgstr "新機能:"
+
+#: data/gala.appdata.xml.in:26
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr "ピクチャーインピクチャーのウィンドウを画面端に隠せる機能を追加"
+
 #: data/gala.appdata.xml.in:30
+msgid "Fix a potential crash while changing wallpapers"
+msgstr "壁紙の変更時に起こりうるクラッシュを修正"
+
+#: data/gala.appdata.xml.in:39
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
 "サーバサイドデコレーションを使用するウィンドウのスクリーンショットにデコレー"
 "ション部分も取得されるように修正"
 
-#: data/gala.appdata.xml.in:39
+#: data/gala.appdata.xml.in:48
 msgid "Add multitouch gestures"
 msgstr "マルチタッチジェスチャーを追加"
 
-#: data/gala.appdata.xml.in:40
+#: data/gala.appdata.xml.in:49
 msgid "Show window titles in multitasking view"
 msgstr "マルチタスキング画面でウィンドウのタイトルを表示するように変更"
 
-#: data/gala.appdata.xml.in:41
+#: data/gala.appdata.xml.in:50
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
 "Alt + Tab でのウィンドウの切り替え時に Alt キーを離さずに Esc キーを押すと、"
 "ウィンドウの切り替えを終了できるように変更"
 
-#: data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:51
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "拡大レベルの上限を大きくし、拡大できない場合はユーザーに知らせるように変更"
 
-#: data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:52
 msgid "Show a context menu when secondary clicking the background"
 msgstr "壁紙の副クリック時にコンテキストメニューを表示するように変更"
 
-#: data/gala.appdata.xml.in:44
+#: data/gala.appdata.xml.in:53
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr ""
 "ホバークリック時とポインターの位置を強調する際に、アニメーション表示するよう"
 "に変更"
 
-#: data/gala.appdata.xml.in:45
+#: data/gala.appdata.xml.in:54
 msgid "Add Take Screenshot to window context menu"
 msgstr "ウィンドウのコンテキストメニューに“スクリーンショットを撮る”を追加"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:55
 msgid "Always play shutter sound when taking screenshots"
 msgstr "スクリーンショットを取得する際、常にシャッター音が鳴るように変更"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:56
 msgid "Minor visual improvements"
 msgstr "軽微な視覚上の改善"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:57
 msgid "HiDPI fixes"
 msgstr "HiDPI に関する修正"
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:58
 msgid "Performance improvements"
 msgstr "パフォーマンスの改善"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:67
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -211,51 +218,51 @@ msgstr ""
 "ワークスペースの切り替え時に、“すべてのワークスペースに表示” を有効にしたウィ"
 "ンドウが消滅する不具合を修正"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:68
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "ワークスペースの切り替え時に、外部モニターに表示中のウィンドウが消滅する不具"
 "合を修正"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:77
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "一時的なウィンドウが開いている際にワークスペースを切り替えるとクラッシュする"
 "不具合を修正"
 
-#: data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:86
 msgid "Don't show Gala Background Services in the dock"
 msgstr ""
 "ドックに Gala Background Services というアイコンが表示される不具合を修正"
 
-#: data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:87
 msgid "Fixes for media key handling"
 msgstr "メディアキーの処理に関する修正"
 
-#: data/gala.appdata.xml.in:79
+#: data/gala.appdata.xml.in:88
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
 
-#: data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:97
 msgid "Improve window shadows for legacy apps"
 msgstr "レガシーなアプリのウィンドウの影を改善"
 
-#: data/gala.appdata.xml.in:89
+#: data/gala.appdata.xml.in:98
 msgid "Fix potential crash when taking screenshots"
 msgstr "スクリーンショットを取る際に起こりうるクラッシュを修正"
 
-#: data/gala.appdata.xml.in:90
+#: data/gala.appdata.xml.in:99
 msgid "Fix notification position after changing DPI"
 msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
 
-#: data/gala.appdata.xml.in:91
+#: data/gala.appdata.xml.in:100
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
 "正"
 
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:106
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
