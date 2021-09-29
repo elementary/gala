@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
     version: '6.2.1',
-    meson_version: '>= 0.49.0',
+    meson_version: '>= 0.50.0',
     license: 'GPL3',
 )
 
@@ -98,6 +98,9 @@ gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_versi
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 gexiv2_dep = dependency('gexiv2')
+if get_option('systemd')
+    systemd_dep = cc.find_library('libsystemd', required: false)
+endif
 
 mutter_dep = []
 libmutter_dep = []
@@ -164,6 +167,11 @@ add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
 gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+
+if get_option('systemd')
+    gala_base_dep += systemd_dep
+    vala_flags += ['--define', 'WITH_SYSTEMD']
+endif
 
 subdir('data')
 subdir('lib')
