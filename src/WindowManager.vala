@@ -350,6 +350,9 @@ namespace Gala {
 
             Idle.add (() => {
                 // let the session manager move to the next phase
+#if WITH_SYSTEMD
+                Systemd.Daemon.notify (true, "READY=1");
+#endif
 #if HAS_MUTTER41
                 display.get_context ().notify_ready ();
 #else
