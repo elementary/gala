@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-09-29 17:15+0000\n"
 "PO-Revision-Date: 2021-09-30 11:23+0000\n"
-"Last-Translator: DarkKnightComes <darkknightcomes@gmail.com>\n"
+"Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
 "Language: pl\n"
@@ -23,11 +23,11 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr ""
+msgstr "Zrzuty ekranu"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Zrzut ekranu wykonany"
 
 #: src/WindowManager.vala:2045
 msgid "Does the display look OK?"
@@ -49,7 +49,7 @@ msgstr "Zrzut ekranu z %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Ukryj"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -109,28 +109,30 @@ msgstr "Ustawienia systemu…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Wielozadaniowość &amp; Zarządzanie oknem"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Menadżer okien i kompozytor dla Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Menedżer okien i kompozytor oparty na libmutter i zaprojektowany przez "
+"elementary do użytku z Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:46
 #: data/gala.appdata.xml.in:65 data/gala.appdata.xml.in:75
 #: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:95
 msgid "Improvements:"
-msgstr ""
+msgstr "Ulepszenia:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix a potential crash when taking screenshots"
-msgstr ""
+msgstr "Naprawiono potencjalny crash podczas robienia zrzutu ekranu"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:59
@@ -141,36 +143,39 @@ msgstr "Zaktualizowano tłumaczenia"
 
 #: data/gala.appdata.xml.in:24
 msgid "New features:"
-msgstr ""
+msgstr "Nowe funkcje:"
 
 #: data/gala.appdata.xml.in:26
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "Schowaj okno picture-in-picture przez wypychanie je poza ekran"
 
 #: data/gala.appdata.xml.in:30
 msgid "Fix a potential crash while changing wallpapers"
-msgstr ""
+msgstr "Naprawiono potencjalny crash podczas zmiany tapety"
 
 #: data/gala.appdata.xml.in:39
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
+"Włącz dekoracje okien w zrzutach ekranu dla okien dekorowanych przez serwer"
 
 #: data/gala.appdata.xml.in:48
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Dodano gesty wielodotykowe"
 
 #: data/gala.appdata.xml.in:49
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Pokaż nazwy okien w widoku wielu zadań"
 
 #: data/gala.appdata.xml.in:50
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Zamknij podgląd Alt + Tab naciskając Esc bez puszczania Alt"
 
 #: data/gala.appdata.xml.in:51
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"Zwiększ maksymalne przybliżenie i zgłoś, jeżeli przybliżenie będzie "
+"niemożliwe"
 
 #: data/gala.appdata.xml.in:52
 msgid "Show a context menu when secondary clicking the background"
