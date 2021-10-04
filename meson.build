@@ -99,7 +99,7 @@ m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 gexiv2_dep = dependency('gexiv2')
 if get_option('systemd')
-    systemd_dep = cc.find_library('libsystemd', required: false)
+    systemd_dep = dependency('libsystemd')
 endif
 
 mutter_dep = []
@@ -163,6 +163,10 @@ endif
 
 mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 
+if get_option('systemd')
+    vala_flags += ['--define', 'WITH_SYSTEMD']
+endif
+
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
@@ -170,7 +174,6 @@ gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
-    vala_flags += ['--define', 'WITH_SYSTEMD']
 endif
 
 subdir('data')
