@@ -10,4 +10,5 @@ StartupNotify=true
 X-GNOME-AutoRestart=true
 X-GNOME-Autostart-Notify=true
 X-GNOME-Autostart-Phase=Desktop
+X-GNOME-HiddenUnderSystemd=true
 OnlyShowIn=Pantheon
