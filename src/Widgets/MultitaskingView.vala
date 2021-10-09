@@ -178,32 +178,34 @@ namespace Gala {
                 return true;
             }
 
-            if (scroll_event.direction != ScrollDirection.SMOOTH) {
+            if (scroll_event.direction == ScrollDirection.SMOOTH ||
+                scroll_event.scroll_source == ScrollSource.FINGER ||
+                scroll_event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE) {
                 return false;
             }
 
-            double dx, dy;
-#if VALA_0_32
-            scroll_event.get_scroll_delta (out dx, out dy);
-#else
-            var event = (Event*)(&scroll_event);
-            event->get_scroll_delta (out dx, out dy);
-#endif
-
-            // concept from maya to detect mouse wheel
-            if (Math.fabs (dy) == 1.0) {
-                var direction = dy > 0 ? MotionDirection.RIGHT : MotionDirection.LEFT;
-
-                unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-                var active_workspace = manager.get_active_workspace ();
-                var new_workspace = active_workspace.get_neighbor (direction);
-
-                if (active_workspace != new_workspace) {
-                    new_workspace.activate (display.get_current_time ());
-                }
+            Meta.MotionDirection direction;
+            switch (scroll_event.direction) {
+                case ScrollDirection.UP:
+                case ScrollDirection.LEFT:
+                    direction = MotionDirection.LEFT;
+                    break;
+                case ScrollDirection.DOWN:
+                case ScrollDirection.RIGHT:
+                default:
+                    direction = MotionDirection.RIGHT;
+                    break;
             }
 
-            return false;
+            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            var active_workspace = manager.get_active_workspace ();
+            var new_workspace = active_workspace.get_neighbor (direction);
+
+            if (active_workspace != new_workspace) {
+                new_workspace.activate (display.get_current_time ());
+            }
+
+            return true;
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
