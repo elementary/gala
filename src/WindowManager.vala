@@ -72,9 +72,9 @@ namespace Gala {
         WindowSwitcher? winswitcher = null;
         ActivatableComponent? window_overview = null;
 
-        // used to detect which corner was used to trigger an action
-        Clutter.Actor? last_hotcorner;
         public ScreenSaverManager? screensaver { get; private set; }
+
+        HotCornerManager? hot_corner_manager = null;
 
         /**
          * Allow to zoom in/out the entire desktop.
@@ -146,21 +146,19 @@ namespace Gala {
             });
         }
 
-        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
-            try {
-                daemon_proxy = Bus.get_proxy.end (res);
-            } catch (Error e) {
-                warning ("Failed to get Menu proxy: %s", e.message);
-            }
-        }
-
         void lost_daemon () {
             daemon_proxy = null;
         }
 
         void daemon_appeared () {
             if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
+                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
+                    try {
+                        daemon_proxy = Bus.get_proxy.end (res);
+                    } catch (Error e) {
+                        warning ("Failed to get Menu proxy: %s", e.message);
+                    }
+                });
             }
         }
 
@@ -286,11 +284,11 @@ namespace Gala {
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
             shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
-            /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
-            configure_hotcorners ();
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 
-            behavior_settings.changed.connect (configure_hotcorners);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings);
+            hot_corner_manager.on_configured.connect (update_input_area);
+            hot_corner_manager.configure ();
 
             zoom = new Zoom (this);
 
@@ -350,12 +348,18 @@ namespace Gala {
 
             stage.show ();
 
-            // let the session manager move to the next phase
-            Meta.register_with_session ();
-
             Idle.add (() => {
+                // let the session manager move to the next phase
+#if WITH_SYSTEMD
+                Systemd.Daemon.notify (true, "READY=1");
+#endif
+#if HAS_MUTTER41
+                display.get_context ().notify_ready ();
+#else
+                Meta.register_with_session ();
+#endif
                 plugin_manager.load_waiting_plugins ();
-                return false;
+                return GLib.Source.REMOVE;
             });
 
             return false;
@@ -366,63 +370,17 @@ namespace Gala {
                 return;
             }
 
-            try {
-                daemon_proxy.show_desktop_menu.begin (x, y);
-            } catch (Error e) {
-                message ("Error invoking MenuManager: %s", e.message);
-            }
+                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
+                    try {
+                        ((Daemon) obj).show_desktop_menu.end (res);
+                    } catch (Error e) {
+                        message ("Error invoking MenuManager: %s", e.message);
+                    }
+                });
         }
 
         void on_monitors_changed () {
-            configure_hotcorners ();
             screen_shield.expand_to_screen_size ();
-        }
-
-        void configure_hotcorners () {
-            unowned Meta.Display display = get_display ();
-            var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-
-            add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
-            add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
-            add_hotcorner (geometry.x, geometry.y + geometry.height - 1, "hotcorner-bottomleft");
-            add_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
-
-            update_input_area ();
-        }
-
-        void add_hotcorner (float x, float y, string key) {
-            unowned Clutter.Actor? stage = get_display ().get_stage ();
-            return_if_fail (stage != null);
-
-            var action = (ActionType) behavior_settings.get_enum (key);
-            Clutter.Actor? hot_corner = stage.find_child_by_name (key);
-
-            if (action == ActionType.NONE) {
-                if (hot_corner != null)
-                    stage.remove_child (hot_corner);
-                return;
-            }
-
-            // if the hot corner already exists, just reposition it, create it otherwise
-            if (hot_corner == null) {
-                hot_corner = new Clutter.Actor ();
-                hot_corner.width = 1;
-                hot_corner.height = 1;
-                hot_corner.opacity = 0;
-                hot_corner.reactive = true;
-                hot_corner.name = key;
-
-                stage.add_child (hot_corner);
-
-                hot_corner.enter_event.connect ((actor, event) => {
-                    last_hotcorner = actor;
-                    perform_action ((ActionType) behavior_settings.get_enum (actor.name));
-                    return false;
-                });
-            }
-
-            hot_corner.x = x;
-            hot_corner.y = y;
         }
 
         [CCode (instance_pos = -1)]
@@ -864,34 +822,6 @@ namespace Gala {
                         warning (e.message);
                     }
                     break;
-                case ActionType.CUSTOM_COMMAND:
-                    string command = "";
-                    var line = behavior_settings.get_string ("hotcorner-custom-command");
-                    if (line == "")
-                        return;
-
-                    var parts = line.split (";;");
-                    // keep compatibility to old version where only one command was possible
-                    if (parts.length == 1) {
-                        command = line;
-                    } else {
-                        // find specific actions
-                        var search = last_hotcorner.name;
-
-                        foreach (var part in parts) {
-                            var details = part.split (":");
-                            if (details[0] == search) {
-                                command = details[1];
-                            }
-                        }
-                    }
-
-                    try {
-                        Process.spawn_command_line_async (command);
-                    } catch (Error e) {
-                        warning (e.message);
-                    }
-                    break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null)
                         break;
@@ -919,7 +849,7 @@ namespace Gala {
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
-                    screenshot_current_window ();
+                    screenshot_current_window.begin ();
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -965,11 +895,13 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    try {
-                        daemon_proxy.show_window_menu.begin (flags, x, y);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
+                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
+                        try {
+                            ((Daemon) obj).show_window_menu.end (res);
+                        } catch (Error e) {
+                            message ("Error invoking MenuManager: %s", e.message);
+                        }
+                    });
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus

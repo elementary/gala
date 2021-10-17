@@ -78,7 +78,7 @@ namespace Gala {
 
         private DBus () {
             if (wm.background_group != null)
-                (wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
+                ((BackgroundContainer) wm.background_group).changed.connect (() => background_changed ());
             else
                 assert_not_reached ();
         }
@@ -93,8 +93,13 @@ namespace Gala {
         class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
 
+#if HAS_MUTTER40
+            public override void post_paint (Clutter.PaintNode node, Clutter.PaintContext context) {
+                base.post_paint (node, context);
+#else
             public override void post_paint (Clutter.PaintContext context) {
                 base.post_paint (context);
+#endif
                 done_painting ();
             }
         }

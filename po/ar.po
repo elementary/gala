@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-04-26 12:57+0000\n"
-"Last-Translator: nasserbinlaboun <nasser1990com@gmail.com>\n"
+"POT-Creation-Date: 2021-09-29 17:15+0000\n"
+"PO-Revision-Date: 2021-09-04 17:03+0000\n"
+"Last-Translator: Muhammad Al-Jayyousi <m7md.j99@protonmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
 ">\n"
 "Language: ar\n"
@@ -21,38 +21,35 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات الشاشة"
 
-#: src/ScreenshotManager.vala:335
-#, fuzzy
-#| msgid "Screenshots"
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات الشاشة الملتقطة"
 
-#: src/WindowManager.vala:2116
+#: src/WindowManager.vala:2045
 msgid "Does the display look OK?"
-msgstr "هل الواجهة تبدو جيدة؟"
+msgstr "هل تبدو شاشة العرض جيدة؟"
 
-#: src/WindowManager.vala:2119
+#: src/WindowManager.vala:2048
 msgid "Keep This Configuration"
-msgstr "إحتفظ بهذه الإعدادات"
+msgstr "احتفظ بهذه الإعدادات"
 
-#: src/WindowManager.vala:2120
+#: src/WindowManager.vala:2049
 msgid "Restore Previous Configuration"
-msgstr "إسترجع إعدادات الضبط السابقة"
+msgstr "استرجع الإعدادات السابقة"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2143
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#: src/WindowManager.vala:2072
+#, c-format
 msgid "Screenshot from %s"
-msgstr "صور الشاشة الملتقطة"
+msgstr "لقطات شاشة من %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "أخف"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -60,7 +57,7 @@ msgstr "حرك"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Resize"
-msgstr "تغيير الحجم"
+msgstr "غير الحجم"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
@@ -68,176 +65,208 @@ msgstr "دائماً في المقدمة"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
-msgstr "عرض دائم لمكان العمل"
+msgstr "دائماً في مساحة العمل الظاهرة"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
-msgstr "انتقل إلى مساحة العمل لليسار"
+msgstr "انتقل إلى مساحة العمل على اليسار"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr "انتقل إلى مساحة العمل لليمين"
+msgstr "انتقل إلى مساحة العمل على اليمين"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "صور الشاشة الملتقطة"
+msgstr "التقط صورة للشاشة"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
-msgstr "اغلاق"
+msgstr "أغلق"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "ألغ التجانب"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
-msgstr "إلغاء التكبير"
+msgstr "ألغ التكبير"
 
 #: daemon/MenuDaemon.vala:225
 msgid "Maximize"
-msgstr "تكبير"
+msgstr "قم بالتكبير"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "قم بتغيير صورة الخلفية…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "إعدادات شاشة العرض…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "إعدادات النظام…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr "تعدد المهام &amp; إدارة النوافذ"
+msgstr "تعدد المهام وإدارة النوافذ"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "مدير نوافذ ل Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"مدير نوافذ مبني على libmutter ومصمم من قبل elementary للاستخدام مع Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:65 data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:95
 msgid "Improvements:"
 msgstr "التحسينات:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Add multitouch gestures"
-msgstr ""
-
-#: data/gala.appdata.xml.in:18
-msgid "Show window titles in multitasking view"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
-
-#: data/gala.appdata.xml.in:20
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
-
-#: data/gala.appdata.xml.in:21
-msgid "Show a context menu when secondary clicking the background"
-msgstr ""
-
-#: data/gala.appdata.xml.in:22
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:23
-msgid "Add Take Screenshot to window context menu"
-msgstr ""
-
-#: data/gala.appdata.xml.in:24
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
-msgid "Always play shutter sound when taking screenshots"
-msgstr "اصلاح تعطل محتمل عند اخذ لقطة للشاشة"
+msgid "Fix a potential crash when taking screenshots"
+msgstr "إصلاح التعطل المحتمل عند التقاط صورة للشاشة"
 
-#: data/gala.appdata.xml.in:25
-msgid "Minor visual improvements"
-msgstr ""
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:69 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:89
+msgid "Updated translations"
+msgstr "تحديثات على الترجمة"
+
+#: data/gala.appdata.xml.in:24
+msgid "New features:"
+msgstr "الميزات الجديدة:"
 
 #: data/gala.appdata.xml.in:26
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr "قم بإخفاء وضع \"صورة داخل صورة\" عن طريق سحب النافذة إلى خارج الشاشة"
+
+#: data/gala.appdata.xml.in:30
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fix a potential crash while changing wallpapers"
+msgstr "إصلاح التعطل المحتمل عند التقاط صورة للشاشة"
+
+#: data/gala.appdata.xml.in:39
+msgid ""
+"Include window decorations in screenshots for server-side decorated windows"
+msgstr "تضمين زينة النافذة في لقطات الشاشة للنوافذ المزينة من جانب الخادم"
+
+#: data/gala.appdata.xml.in:48
+msgid "Add multitouch gestures"
+msgstr "إضافة حركات اللمس المتعدد"
+
+#: data/gala.appdata.xml.in:49
+msgid "Show window titles in multitasking view"
+msgstr "إظهار عناوين النوافذ في منظور تعدد المهام"
+
+#: data/gala.appdata.xml.in:50
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "إغلاق متنقل ال Alt + Tab عن طريق الضغط على Esc دون ترك مفتاح Alt"
+
+#: data/gala.appdata.xml.in:51
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+"زيادة درجة التكبير القصوى والتمكن من تقديم إبلاغ مشكلة عند عدم التمكن من "
+"التكبير"
+
+#: data/gala.appdata.xml.in:52
+msgid "Show a context menu when secondary clicking the background"
+msgstr "إظهار القائمة المنبثقة عند الضغط بالضغطة الثانوية على خلفية الشاشة"
+
+#: data/gala.appdata.xml.in:53
+msgid "New Dwell Click and Locate Pointer animations"
+msgstr "ميزة \"الأزرار الساكنة\" الجديدة والتمكن من تحديد حركات المؤشر"
+
+#: data/gala.appdata.xml.in:54
+msgid "Add Take Screenshot to window context menu"
+msgstr "إضافة خيار \"التقط صورة للشاشة\" على القائمة المنبثقة للنافذة"
+
+#: data/gala.appdata.xml.in:55
+msgid "Always play shutter sound when taking screenshots"
+msgstr "تشغيل صوت التصوير دائماً عند التقاط صورة للشاشة"
+
+#: data/gala.appdata.xml.in:56
+msgid "Minor visual improvements"
+msgstr "تحسينات مرئية طفيفة"
+
+#: data/gala.appdata.xml.in:57
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "إصلاحات للشاشات ذات الدقة العالية"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:58
 msgid "Performance improvements"
-msgstr ""
+msgstr "تحسينات على الأداء"
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "ترجمات محدثة"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:67
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
-
-#: data/gala.appdata.xml.in:37
-msgid ""
-"Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr "اصلاح اختفاء النوافذ في الشاشات الاضافية عند تغيير سطح العمل"
-
-#: data/gala.appdata.xml.in:46
-msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr "اصلاح التعطل عند تغيير اسطح العمل عندما تكون هناك نافذة متنقلة موجودة"
-
-#: data/gala.appdata.xml.in:55
-msgid "Don't show Gala Background Services in the dock"
-msgstr ""
-
-#: data/gala.appdata.xml.in:56
-msgid "Fixes for media key handling"
-msgstr ""
-
-#: data/gala.appdata.xml.in:57
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
-
-#: data/gala.appdata.xml.in:66
-msgid "Improve window shadows for legacy apps"
-msgstr ""
-
-#: data/gala.appdata.xml.in:67
-msgid "Fix potential crash when taking screenshots"
-msgstr "اصلاح تعطل محتمل عند اخذ لقطة للشاشة"
+"إصلاح اختفاء نوافذ \"دائماً في مساحة العمل الظاهرة\" عند التبديل بين مساحات "
+"العمل"
 
 #: data/gala.appdata.xml.in:68
+msgid ""
+"Fix windows on non-primary displays disappearing when changing workspaces"
+msgstr ""
+"إصلاح اختفاء النوافذ على شاشات العرض غير الأساسية بين التبديل بين مساحات "
+"العمل"
+
+#: data/gala.appdata.xml.in:77
+msgid "Fix crash when changing workspaces while a transient window is opening"
+msgstr ""
+"إصلاح التعطل عند التبديل بين مساحات العمل بينما هناك نافذة مؤقتة مفتوحة"
+
+#: data/gala.appdata.xml.in:86
+msgid "Don't show Gala Background Services in the dock"
+msgstr "عدم إظهار خدمات Gala الموجودة في الخلفية على المرسى"
+
+#: data/gala.appdata.xml.in:87
+msgid "Fixes for media key handling"
+msgstr "إصلاحات للتعامل مع أزرار الوسائط"
+
+#: data/gala.appdata.xml.in:88
+msgid "Show keyboard shortcuts in HeaderBar menus"
+msgstr "إظهار اختصارات لوحة المفاتيح في قوائم HeaderBar"
+
+#: data/gala.appdata.xml.in:97
+msgid "Improve window shadows for legacy apps"
+msgstr "تحسين ظلال النوافذ للتطبيقات القديمة"
+
+#: data/gala.appdata.xml.in:98
+msgid "Fix potential crash when taking screenshots"
+msgstr "إصلاح التعطل المحتمل عند التقاط صورة للشاشة"
+
+#: data/gala.appdata.xml.in:99
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "إصلاح مكان الإشعار عند تغيير دقة الشاشة"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:100
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "إصلاح الحركات عند تحريك وتكبير النوافذ المتجانبة"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:106
 msgid "elementary, Inc."
-msgstr "اليمينتري المتحدة."
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "واجهة تعدد المهام"
+msgstr "منظور تعدد المهام"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "إعرض كل النوافذ المفتوحة و مساحات العمال"
+msgstr "اعرض جميع النوافذ المفتوحة ومساحات العمل"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "multitasking-view"
@@ -249,7 +278,7 @@ msgstr "أخرى"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"

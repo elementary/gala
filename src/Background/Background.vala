@@ -96,15 +96,15 @@ namespace Gala {
             color_string = settings.get_string ("primary-color");
             var color = Clutter.Color.from_string (color_string);
 
-            color_string = settings.get_string ("secondary-color");
-            var second_color = Clutter.Color.from_string (color_string);
-
             var shading_type = settings.get_enum ("color-shading-type");
 
-            if (shading_type == GDesktop.BackgroundShading.SOLID)
+            if (shading_type == GDesktop.BackgroundShading.SOLID) {
                 background.set_color (color);
-            else
+            } else {
+                color_string = settings.get_string ("secondary-color");
+                var second_color = Clutter.Color.from_string (color_string);
                 background.set_gradient ((GDesktop.BackgroundShading) shading_type, color, second_color);
+            }
         }
 
         void watch_file (string filename) {
@@ -131,24 +131,24 @@ namespace Gala {
             }
         }
 
+        void finish_animation (string[] files) {
+            set_loaded ();
+
+            if (files.length > 1)
+                background.set_blend (File.new_for_path (files[0]), File.new_for_path (files[1]), animation.transition_progress, style);
+            else if (files.length > 0)
+                background.set_file (File.new_for_path (files[0]), style);
+            else
+                background.set_file (null, style);
+
+            queue_update_animation ();
+        }
+
         void update_animation () {
             update_animation_timeout_id = 0;
 
             animation.update (display.get_monitor_geometry (monitor_index));
             var files = animation.key_frame_files;
-
-            Clutter.Callback finish = () => {
-                set_loaded ();
-
-                if (files.length > 1)
-                    background.set_blend (File.new_for_path (files[0]), File.new_for_path (files[1]), animation.transition_progress, style);
-                else if (files.length > 0)
-                    background.set_file (File.new_for_path (files[0]), style);
-                else
-                    background.set_file (null, style);
-
-                queue_update_animation ();
-            };
 
             var cache = Meta.BackgroundImageCache.get_default ();
             var num_pending_images = files.length;
@@ -159,14 +159,16 @@ namespace Gala {
 
                 if (image.is_loaded ()) {
                     num_pending_images--;
-                    if (num_pending_images == 0)
-                        finish (null);
+                    if (num_pending_images == 0) {
+                        finish_animation (files);
+                    }
                 } else {
                     ulong handler = 0;
                     handler = image.loaded.connect (() => {
                         SignalHandler.disconnect (image, handler);
-                        if (--num_pending_images == 0)
-                            finish (null);
+                        if (--num_pending_images == 0) {
+                            finish_animation (files);
+                        }
                     });
                 }
             }

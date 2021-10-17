@@ -32,6 +32,10 @@ jobs:
       image: valalang/lint
       
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Lint
-      run: io.elementary.vala-lint -d .
+      run: |
+        io.elementary.vala-lint -d deamon
+        io.elementary.vala-lint -d lib
+        io.elementary.vala-lint -d plugins
+        io.elementary.vala-lint -d src
