@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-10-22 20:33+0000\n"
-"PO-Revision-Date: 2021-09-29 20:42+0000\n"
+"PO-Revision-Date: 2021-10-22 20:43+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -133,7 +133,7 @@ msgstr "Удосконалення:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Підтримка подій прокручування з високою роздільною здатністю"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
