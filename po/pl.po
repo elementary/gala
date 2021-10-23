@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-10-22 20:33+0000\n"
-"PO-Revision-Date: 2021-09-30 11:23+0000\n"
+"PO-Revision-Date: 2021-10-23 18:20+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
-">\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
+"\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -133,7 +133,7 @@ msgstr "Ulepszenia:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Wsparcie dla rolek myszy o wysokiej rozdzielczości"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
