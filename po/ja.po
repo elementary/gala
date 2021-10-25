@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-10-22 20:33+0000\n"
-"PO-Revision-Date: 2021-09-30 00:44+0000\n"
+"PO-Revision-Date: 2021-10-25 22:07+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -132,7 +132,7 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "高精度のスクロールイベントへの対応"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
