@@ -7336,7 +7336,7 @@ namespace Clutter {
 		[Version (since = "1.2")]
 		public bool get_use_alpha ();
 #if HAS_MUTTER338
-		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, [CCode (array_length = false)] ref unowned uint8[] data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
+		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, [CCode (array_length = false, type = "uint8_t*")] uint8[] data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
 		public void paint_to_framebuffer (Cogl.Framebuffer framebuffer, Cairo.RectangleInt rect, float scale, Clutter.PaintFlag paint_flags);
 #else
 		[Version (since = "0.4")]
@@ -8187,16 +8187,40 @@ namespace Clutter {
 		public bool equal (Clutter.Color v2);
 		[Version (since = "0.2")]
 		public void free ();
-		public void from_hls (float hue, float luminance, float saturation);
-		public void from_pixel (uint32 pixel);
-		[Version (since = "1.0")]
-		public bool from_string (string str);
+		[CCode (cname = "_vala_clutter_color_from_hls")]
+		public static Clutter.Color? from_hls (float hue, float luminance, float saturation) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_hls (hue, luminance, saturation);
+			return color;
+		}
+		[CCode (cname = "_vala_clutter_color_from_pixel")]
+		public static Clutter.Color? from_pixel (uint32 pixel) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_pixel (pixel);
+			return color;
+		}
+		[CCode (cname = "clutter_color_new")]
+		[Version (since = "0.8")]
+		public static Clutter.Color? from_rgba (uint8 red = 0, uint8 green = 0, uint8 blue = 0, uint8 alpha = 0);
+		[CCode (cname = "_vala_clutter_color_from_string")]
+		public static Clutter.Color? from_string (string str) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_string (str);
+			return color;
+		}
 		[Version (since = "1.6")]
 		public static unowned Clutter.Color? get_static (Clutter.StaticColor color);
 		[Version (since = "1.0")]
 		public uint hash ();
 		[Version (since = "1.12")]
-		public unowned Clutter.Color? init (uint8 red, uint8 green, uint8 blue, uint8 alpha);
+		public unowned Clutter.Color? init (uint8 red = 0, uint8 green = 0, uint8 blue = 0, uint8 alpha = 0);
+		[CCode (cname = "clutter_color_from_hls")]
+		public void init_from_hls (float hue, float luminance, float saturation);
+		[CCode (cname = "clutter_color_from_pixel")]
+		public void init_from_pixel (uint32 pixel);
+		[CCode (cname = "clutter_color_from_string")]
+		[Version (since = "1.0")]
+		public bool init_from_string (string str);
 		[Version (since = "1.6")]
 		public Clutter.Color interpolate (Clutter.Color final, double progress);
 		public Clutter.Color lighten ();

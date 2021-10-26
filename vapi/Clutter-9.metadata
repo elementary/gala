@@ -106,8 +106,6 @@ ActorBox
 	.new skip
 	.from_vertices skip
 Units.from_* skip
-Color
-	.new skip
 Margin
 	.new skip
 
@@ -116,7 +114,6 @@ container_class_find_child_property skip
 container_class_list_child_properties skip
 
 // Move symbols
-color_from_* skip
 units_from_* skip
 
 // Struct return values
@@ -177,6 +174,22 @@ threads_add_timeout_full name="add_full" parent="Clutter.Threads.Timeout"
 
 // Backwards compatibility
 Color.alloc symbol_type="function"
+
+Color.from_hls name="init_from_hls"
+Color.from_pixel name="init_from_pixel"
+Color.from_string name="init_from_string"
+
+Color.new name="from_rgba" symbol_type="function"
+	.alpha default=0
+	.blue default=0
+	.green default=0
+	.red default=0
+
+Color.init
+	.alpha default=0
+	.blue default=0
+	.green default=0
+	.red default=0
 
 BinAlignment deprecated=false deprecated_since=null
 BinAlignment.* deprecated

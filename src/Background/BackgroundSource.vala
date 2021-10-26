@@ -52,14 +52,20 @@ namespace Gala {
             // new actors all the time, which lead to some problems in other areas of the code
             for (int i = 0; i < OPTIONS.length; i++) {
                 hash_cache[i] = settings.get_value (OPTIONS[i]).hash ();
-                settings.changed[OPTIONS[i]].connect (() => {
-                    uint new_hash = settings.get_value (OPTIONS[i]).hash ();
-                    if (new_hash != hash_cache[i]) {
-                        hash_cache[i] = new_hash;
-                        changed ();
-                    }
-                });
             }
+
+            settings.changed.connect ((key) => {
+                for (int i = 0; i < OPTIONS.length; i++) {
+                    if (key == OPTIONS[i]) {
+                        uint new_hash = settings.get_value (key).hash ();
+                        if (hash_cache[i] != new_hash) {
+                            hash_cache[i] = new_hash;
+                            changed ();
+                            break;
+                        }
+                    }
+                }
+            });
         }
 
         void monitors_changed () {

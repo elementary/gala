@@ -10,7 +10,25 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="6.2.0" date="2020-08-24" urgency="medium">
+    <release version="6.2.2" date="2021-10-21" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Support for high-resolution scroll events</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
+    <release version="6.2.1" date="2021-09-29" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fix a potential crash when taking screenshots</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
+    <release version="6.2.0" date="2021-09-22" urgency="medium">
       <description>
         <p>New features:</p>
         <ul>
@@ -18,11 +36,12 @@
         </ul>
         <p>Improvements:</p>
         <ul>
+          <li>Fix a potential crash while changing wallpapers</li>
           <li>Updated translations</li>
         </ul>
       </description>
     </release>
-    <release version="6.0.1" date="2020-08-11" urgency="medium">
+    <release version="6.0.1" date="2021-08-11" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
