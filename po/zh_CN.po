@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-09-29 17:15+0000\n"
-"PO-Revision-Date: 2021-09-07 02:12+0000\n"
-"Last-Translator: colindemian <colindemian@outlook.com>\n"
+"POT-Creation-Date: 2021-10-22 20:33+0000\n"
+"PO-Revision-Date: 2021-10-27 13:56+0000\n"
+"Last-Translator: Yuchen Deng <loaden@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -28,20 +28,20 @@ msgstr "屏幕截图"
 msgid "Screenshot taken"
 msgstr "已截屏"
 
-#: src/WindowManager.vala:2045
+#: src/WindowManager.vala:2048
 msgid "Does the display look OK?"
 msgstr "显示看起来正常吗？"
 
-#: src/WindowManager.vala:2048
+#: src/WindowManager.vala:2051
 msgid "Keep This Configuration"
 msgstr "保持当前配置"
 
-#: src/WindowManager.vala:2049
+#: src/WindowManager.vala:2052
 msgid "Restore Previous Configuration"
 msgstr "恢复上次的配置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2072
+#: src/WindowManager.vala:2075
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"
@@ -121,135 +121,138 @@ msgid ""
 msgstr ""
 "elementary 为 Pantheon 桌面环境设计的基于 libmutter 的窗口&amp;管理器。"
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:24
 #: data/gala.appdata.xml.in:37 data/gala.appdata.xml.in:46
-#: data/gala.appdata.xml.in:65 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:104
 msgid "Improvements:"
 msgstr "改进："
 
 #: data/gala.appdata.xml.in:17
+msgid "Support for high-resolution scroll events"
+msgstr ""
+
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:87 data/gala.appdata.xml.in:98
+msgid "Updated translations"
+msgstr "翻译更新"
+
+#: data/gala.appdata.xml.in:26
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when taking screenshots"
 msgstr "修复截屏时潜在的崩溃问题"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:31
-#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:59
-#: data/gala.appdata.xml.in:69 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:89
-msgid "Updated translations"
-msgstr "翻译更新"
-
-#: data/gala.appdata.xml.in:24
+#: data/gala.appdata.xml.in:33
 msgid "New features:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:35
 msgid "Stash the picture-in-picture window by pushing it off screen"
 msgstr ""
 
-#: data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:39
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
 msgstr "修复截屏时潜在的崩溃问题"
 
-#: data/gala.appdata.xml.in:39
+#: data/gala.appdata.xml.in:48
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:57
 msgid "Add multitouch gestures"
 msgstr ""
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:58
 msgid "Show window titles in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:59
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr "不放开 Alt 键的情况下也能通过 Esc 键退出 Alt + Tab 切换器"
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:60
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr "提高最大缩放级别，无法缩放时提供反馈"
 
-#: data/gala.appdata.xml.in:52
+#: data/gala.appdata.xml.in:61
 msgid "Show a context menu when secondary clicking the background"
 msgstr "次要键单击背景时将显示菜单"
 
-#: data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:62
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:63
 msgid "Add Take Screenshot to window context menu"
 msgstr ""
 
-#: data/gala.appdata.xml.in:55
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
+#: data/gala.appdata.xml.in:64
 msgid "Always play shutter sound when taking screenshots"
-msgstr "修复截屏时潜在的崩溃问题"
+msgstr "截屏时始终播放快门声音"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:65
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "轻微的视觉改进"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:66
 msgid "HiDPI fixes"
-msgstr ""
-
-#: data/gala.appdata.xml.in:58
-msgid "Performance improvements"
-msgstr ""
+msgstr "HiDPI 修复"
 
 #: data/gala.appdata.xml.in:67
+msgid "Performance improvements"
+msgstr "性能改进"
+
+#: data/gala.appdata.xml.in:76
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr "修复 “总在可见工作区显示” 的窗口在更换工作区后消失的问题"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:77
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr "修复次要显示器内窗口在更换工作区后消失的问题"
 
-#: data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:86
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr "修复窗口在更换工作区后瞬时展开时崩溃的问题"
 
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:95
 msgid "Don't show Gala Background Services in the dock"
 msgstr "不在程序坞中显示 Gala 后台服务"
 
-#: data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:96
 msgid "Fixes for media key handling"
 msgstr "修复媒体键控制"
 
-#: data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:97
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "在顶栏菜单中显示键盘快捷键"
 
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:106
 msgid "Improve window shadows for legacy apps"
 msgstr "优化传统应用窗口阴影"
 
-#: data/gala.appdata.xml.in:98
+#: data/gala.appdata.xml.in:107
 msgid "Fix potential crash when taking screenshots"
 msgstr "修复截屏时潜在的崩溃问题"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:108
 msgid "Fix notification position after changing DPI"
 msgstr "修复更改 DPI 后通知的显示位置"
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:109
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "修复移动和最大化已帖屏窗口时的动画"
 
-#: data/gala.appdata.xml.in:106
+#: data/gala.appdata.xml.in:115
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
