@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-10-22 20:33+0000\n"
 "PO-Revision-Date: 2021-10-27 13:56+0000\n"
-"Last-Translator: XXTXTOP <xxtxtop@gmail.com>\n"
+"Last-Translator: Yuchen Deng <loaden@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -194,10 +194,8 @@ msgid "Add Take Screenshot to window context menu"
 msgstr ""
 
 #: data/gala.appdata.xml.in:64
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "修复截屏时潜在的崩溃问题"
+msgstr "截屏时始终播放快门声音"
 
 #: data/gala.appdata.xml.in:65
 msgid "Minor visual improvements"
