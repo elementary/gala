@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-10-22 20:33+0000\n"
-"PO-Revision-Date: 2021-10-27 13:56+0000\n"
+"PO-Revision-Date: 2021-11-01 00:34+0000\n"
 "Last-Translator: Yuchen Deng <loaden@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
@@ -131,7 +131,7 @@ msgstr "改进："
 
 #: data/gala.appdata.xml.in:17
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "支持高分屏滚动事件"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:27
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
@@ -141,24 +141,20 @@ msgid "Updated translations"
 msgstr "翻译更新"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when taking screenshots"
 msgstr "修复截屏时潜在的崩溃问题"
 
 #: data/gala.appdata.xml.in:33
 msgid "New features:"
-msgstr ""
+msgstr "新特性："
 
 #: data/gala.appdata.xml.in:35
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "通过将画中画窗口推离屏幕来隐藏它"
 
 #: data/gala.appdata.xml.in:39
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "修复截屏时潜在的崩溃问题"
+msgstr "修复更换壁纸时潜在的崩溃"
 
 #: data/gala.appdata.xml.in:48
 msgid ""
@@ -183,11 +179,11 @@ msgstr "提高最大缩放级别，无法缩放时提供反馈"
 
 #: data/gala.appdata.xml.in:61
 msgid "Show a context menu when secondary clicking the background"
-msgstr "次要键单击背景时将显示菜单"
+msgstr "二次单击背景时显示上下文菜单"
 
 #: data/gala.appdata.xml.in:62
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "新的停留点击和定位指针动画"
 
 #: data/gala.appdata.xml.in:63
 msgid "Add Take Screenshot to window context menu"
@@ -207,13 +203,13 @@ msgstr "HiDPI 修复"
 
 #: data/gala.appdata.xml.in:67
 msgid "Performance improvements"
-msgstr "性能改进"
+msgstr "性能提升"
 
 #: data/gala.appdata.xml.in:76
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
-msgstr "修复 “总在可见工作区显示” 的窗口在更换工作区后消失的问题"
+msgstr "修复更换工作区后“总在可见工作区显示” 的窗口消失"
 
 #: data/gala.appdata.xml.in:77
 msgid ""
@@ -222,7 +218,7 @@ msgstr "修复次要显示器内窗口在更换工作区后消失的问题"
 
 #: data/gala.appdata.xml.in:86
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr "修复窗口在更换工作区后瞬时展开时崩溃的问题"
+msgstr "修复更换工作区后突然打开窗口导致的崩溃问题"
 
 #: data/gala.appdata.xml.in:95
 msgid "Don't show Gala Background Services in the dock"
@@ -271,7 +267,7 @@ msgstr "multitasking-view"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr "其他"
+msgstr "其它"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
