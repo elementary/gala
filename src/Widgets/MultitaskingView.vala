@@ -203,9 +203,38 @@ namespace Gala {
 
             if (active_workspace != new_workspace) {
                 new_workspace.activate (display.get_current_time ());
+            } else {
+                play_nudge_animation (direction);
             }
 
             return true;
+        }
+
+        public void play_nudge_animation (Meta.MotionDirection direction) {
+            if (!wm.enable_animations) {
+                return;
+            }
+
+            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+
+            float dest = nudge_gap;
+            if (direction == Meta.MotionDirection.RIGHT) {
+                dest *= -1;
+            }
+
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
+
+            var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                duration = AnimationDuration.NUDGE,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            };
+            nudge.set_from_value (0.0f);
+            nudge.set_to_value (0.0f);
+            nudge.set_key_frames (keyframes);
+            nudge.set_values (x);
+            workspaces.add_transition ("nudge", nudge);
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
