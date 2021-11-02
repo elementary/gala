@@ -53,6 +53,14 @@ namespace Gala {
             // Carry out the initial draw
             create_components ();
 
+            // FIXME: Kind of abusing the style class here for a smaller shadow
+            var effect = new ShadowEffect (30, 1) {
+                shadow_opacity = 200,
+                css_class = "workspace"
+            };
+
+            add_effect (effect);
+
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
                 canvas.invalidate ();
