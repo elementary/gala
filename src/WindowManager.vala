@@ -721,17 +721,6 @@ namespace Gala {
                 out x, out y);
         }
 
-        public void dim_window (Meta.Window window, bool dim) {
-            /*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
-            var win = window.get_compositor_private () as Meta.WindowActor;
-            if (dim) {
-                if (win.has_effects ())
-                    return;
-                win.add_effect_with_name ("darken", new Clutter.BlurEffect ());
-            } else
-                win.clear_effects ();*/
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -1380,11 +1369,22 @@ namespace Gala {
                         }
                     });
 
-                    var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
-                    if (appearance_settings.get_boolean ("dim-parents") &&
-                        window.window_type == Meta.WindowType.MODAL_DIALOG &&
-                        window.is_attached_dialog ())
-                        dim_window (window.find_root_ancestor (), true);
+                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
+                        var ancestor = window.find_root_ancestor ();
+                        if (ancestor != null && ancestor != window) {
+                            var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                            if (!(win.has_effects ())) {
+                                var dark_effect = new Clutter.BrightnessContrastEffect ();
+                                dark_effect.set_brightness (-0.4f);
+
+                                win.add_effect_with_name (
+                                    "darken",
+                                    dark_effect
+                                );
+                            }
+                        }
+                    }
+
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1462,7 +1462,8 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    dim_window (window.find_root_ancestor (), false);
+                    // Clear darken effect
+                    ((Meta.WindowActor) window.find_root_ancestor ().get_compositor_private ()).clear_effects ();
 
                     break;
                 case Meta.WindowType.MENU:
