@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-02 19:34+0000\n"
-"PO-Revision-Date: 2021-09-29 02:28+0000\n"
+"PO-Revision-Date: 2021-11-03 02:27+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -135,11 +135,11 @@ msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Støtte for høyoppløselige rullingshendelser"
 
 #: data/gala.appdata.xml.in:18
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Redesignet Alt+Tab-bytter"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:41 data/gala.appdata.xml.in:50
