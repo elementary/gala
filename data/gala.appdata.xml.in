@@ -16,6 +16,7 @@
         <ul>
           <li>Support for high-resolution scroll events</li>
           <li>Redesigned Alt + Tab switcher</li>
+          <li>Enable switch group shortcuts from mutter (Alt + AboveTab)</li>
           <li>Updated translations</li>
         </ul>
       </description>

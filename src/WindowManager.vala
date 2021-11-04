@@ -276,9 +276,6 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
-            Meta.KeyBinding.set_custom_handler ("switch-group", () => {});
-            Meta.KeyBinding.set_custom_handler ("switch-group-backward", () => {});
-
             /*shadows*/
             InternalUtils.reload_shadow ();
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
