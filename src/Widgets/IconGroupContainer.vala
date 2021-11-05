@@ -83,10 +83,12 @@ namespace Gala {
              * the expanded thumb, we will also update the drag & drop action
              * of IconGroup on that.
              */
-            float deleted_width = deleted_thumb.get_width () + group.get_width ();
-            deleted_placeholder_thumb.expanded = true;
-            deleted_placeholder_thumb.width += deleted_width;
-            group.set_hovered_actor (deleted_placeholder_thumb);
+            if (deleted_placeholder_thumb != null) {
+                float deleted_width = deleted_thumb.get_width () + group.get_width ();
+                deleted_placeholder_thumb.expanded = true;
+                deleted_placeholder_thumb.width += deleted_width;
+                group.set_hovered_actor (deleted_placeholder_thumb);
+            }
         }
 
         public void reset_thumbs (int delay) {
