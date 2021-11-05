@@ -230,7 +230,7 @@ namespace Gala {
             window_icon.opacity = 0;
             window_icon.set_pivot_point (0.5f, 0.5f);
             window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-            window_icon.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+            window_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
             set_window_icon_position (window_frame_rect.width, window_frame_rect.height);
 
             window_title = new Tooltip ();
@@ -390,7 +390,7 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
                 set_easing_duration (animate ? MultitaskingView.ANIMATION_DURATION : 0);
 
                 set_position (target_x, target_y);
@@ -462,7 +462,7 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
                 set_size (rect.width, rect.height);
                 set_position (rect.x, rect.y);
@@ -612,7 +612,7 @@ namespace Gala {
             var shadow_transition = new PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
-                progress_mode = MultitaskingView.ANIMATION_MODE
+                progress_mode = AnimationMode.EASE_OUT_QUAD
             };
 
             if (show)
