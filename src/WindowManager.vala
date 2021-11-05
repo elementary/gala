@@ -721,6 +721,26 @@ namespace Gala {
                 out x, out y);
         }
 
+        private void toggle_dim_parent (Meta.Window window) {
+            if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
+                var ancestor = window.find_root_ancestor ();
+                if (ancestor != null && ancestor != window) {
+                    var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                    if (win.has_effects ()) {
+                        win.clear_effects ();
+                    } else {
+                        var dark_effect = new Clutter.BrightnessContrastEffect ();
+                        dark_effect.set_brightness (-0.4f);
+
+                        win.add_effect_with_name (
+                            "darken",
+                            dark_effect
+                        );
+                    }
+                }
+            }
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -1369,22 +1389,7 @@ namespace Gala {
                         }
                     });
 
-                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
-                        var ancestor = window.find_root_ancestor ();
-                        if (ancestor != null && ancestor != window) {
-                            var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                            if (!(win.has_effects ())) {
-                                var dark_effect = new Clutter.BrightnessContrastEffect ();
-                                dark_effect.set_brightness (-0.4f);
-
-                                win.add_effect_with_name (
-                                    "darken",
-                                    dark_effect
-                                );
-                            }
-                        }
-                    }
-
+                    toggle_dim_parent (window);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1462,8 +1467,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    // Clear darken effect
-                    ((Meta.WindowActor) window.find_root_ancestor ().get_compositor_private ()).clear_effects ();
+                    toggle_dim_parent (window);
 
                     break;
                 case Meta.WindowType.MENU:
