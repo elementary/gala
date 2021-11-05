@@ -236,7 +236,7 @@ namespace Gala {
             caption.visible = false;
             caption.margin_bottom = caption.margin_top = WRAPPER_PADDING * scaling_factor;
 
-            var monitor = display.get_primary_monitor ();
+            var monitor = display.get_current_monitor ();
             var geom = display.get_monitor_geometry (monitor);
 
             float container_width;
