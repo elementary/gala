@@ -12,6 +12,10 @@
   <releases>
     <release version="6.2.2" date="2021-10-21" urgency="medium">
       <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix shadow clipping on server-side decorated windows</li>
+        </ul>
         <p>Improvements:</p>
         <ul>
           <li>Support for high-resolution scroll events</li>
