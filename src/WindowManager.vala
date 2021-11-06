@@ -722,18 +722,19 @@ namespace Gala {
                 out x, out y);
         }
 
-        private void toggle_dim_parent (Meta.Window window) {
+        private void dim_parent_window (Meta.Window window, bool dim) {
             if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                 var ancestor = window.find_root_ancestor ();
                 if (ancestor != null && ancestor != window) {
                     var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                    if (win.has_effects ()) {
-                        win.clear_effects ();
-                    } else {
+                    // We can't necessarily rely on win.has_effects. Possible race condition
+                    if (dim) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
 
                         win.add_effect (dark_effect);
+                    } else {
+                        win.clear_effects ();
                     }
                 }
             }
@@ -1387,7 +1388,7 @@ namespace Gala {
                         }
                     });
 
-                    toggle_dim_parent (window);
+                    dim_parent_window (window, true);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1465,7 +1466,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    toggle_dim_parent (window);
+                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
