@@ -28,7 +28,7 @@ namespace Gala {
 
         public override ActorBox get_bounding_box () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var size = shadow_size * scale_factor;
+            var size = shadow_size + shadow_spread * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
             var outer_rect = window.get_frame_rect ();
