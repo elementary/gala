@@ -15,6 +15,7 @@
         <p>Improvements:</p>
         <ul>
           <li>Support for high-resolution scroll events</li>
+          <li>Redesigned Alt + Tab switcher</li>
           <li>Updated translations</li>
         </ul>
       </description>
