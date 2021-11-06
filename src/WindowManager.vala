@@ -727,7 +727,7 @@ namespace Gala {
                 var ancestor = window.find_root_ancestor ();
                 if (ancestor != null && ancestor != window) {
                     var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                    // We can't necessarily rely on win.has_effects. Possible race condition
+                    // Can't rely on win.has_effects since other effects could be applied
                     if (dim) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
