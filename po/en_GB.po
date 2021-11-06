@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-06 17:02+0000\n"
-"PO-Revision-Date: 2021-11-03 03:54+0000\n"
+"PO-Revision-Date: 2021-11-06 17:15+0000\n"
 "Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -139,10 +139,8 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr "Redesigned Alt + Tab switcher"
 
 #: data/gala.appdata.xml.in:19
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "Dims parent windows when spawning modal dialogs"
+msgstr "Dim the parents of modal dialogs"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:29
 #: data/gala.appdata.xml.in:42 data/gala.appdata.xml.in:51
