@@ -243,27 +243,15 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 
             display.overlay_key.connect (() => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("overlay-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("overlay-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("panel-main-menu-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("panel-main-menu-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("toggle-recording-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("toggle-recording-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -363,6 +351,15 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        private void launch_action (string action_key) {
+            try {
+                var action = behavior_settings.get_string (action_key);
+                if (action != null && action != "") {
+                    Process.spawn_command_line_async (action);
+                }
+            } catch (Error e) { warning (e.message); }
         }
 
         void on_show_background_menu (int x, int y) {
