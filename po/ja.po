@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-06 17:02+0000\n"
-"PO-Revision-Date: 2021-11-02 23:34+0000\n"
+"PO-Revision-Date: 2021-11-06 22:56+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -139,10 +139,8 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr "Alt + Tab スイッチャーのデザインを変更"
 
 #: data/gala.appdata.xml.in:19
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "モーダル表示のダイアログを表示する際に親ウィンドウを薄暗くする"
+msgstr "モーダルダイアログの親ウィンドウを薄暗くするように修正"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:29
 #: data/gala.appdata.xml.in:42 data/gala.appdata.xml.in:51
