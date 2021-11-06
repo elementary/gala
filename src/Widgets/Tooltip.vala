@@ -95,7 +95,9 @@ public class Gala.Tooltip : Clutter.Actor {
         }
 
         // First set the text
-        remove_child (text_actor);
+        if (text_actor != null) {
+            remove_child (text_actor);
+        }
 
         text_actor = new Clutter.Text () {
             color = text_color,
