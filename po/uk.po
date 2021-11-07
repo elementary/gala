@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-07 01:37+0000\n"
-"PO-Revision-Date: 2021-11-06 20:34+0000\n"
+"PO-Revision-Date: 2021-11-07 23:32+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -145,7 +145,7 @@ msgstr "Затемнювати батьківські модальні вікн�
 
 #: data/gala.appdata.xml.in:20
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "Діалогові вікна спадають на батьківські замість виокремлення"
 
 #: data/gala.appdata.xml.in:21 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:52
