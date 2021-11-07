@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-07 01:37+0000\n"
-"PO-Revision-Date: 2021-11-06 22:56+0000\n"
+"PO-Revision-Date: 2021-11-07 23:32+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -144,7 +144,7 @@ msgstr "モーダルダイアログの親ウィンドウを薄暗くするよう
 
 #: data/gala.appdata.xml.in:20
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "ダイアログを親ウィンドウ上にフェードして表示するように修正"
 
 #: data/gala.appdata.xml.in:21 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:52
