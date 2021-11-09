@@ -722,18 +722,19 @@ namespace Gala {
                 out x, out y);
         }
 
-        private void toggle_dim_parent (Meta.Window window) {
+        private void dim_parent_window (Meta.Window window, bool dim) {
             if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                 var ancestor = window.find_root_ancestor ();
                 if (ancestor != null && ancestor != window) {
                     var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                    if (win.has_effects ()) {
-                        win.clear_effects ();
-                    } else {
+                    // Can't rely on win.has_effects since other effects could be applied
+                    if (dim) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
 
                         win.add_effect (dark_effect);
+                    } else {
+                        win.clear_effects ();
                     }
                 }
             }
@@ -1366,12 +1367,12 @@ namespace Gala {
                     mapping.add (actor);
 
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
+                    actor.set_easing_duration (200);
                     actor.set_scale (1.0f, 1.0f);
                     actor.opacity = 255U;
                     actor.restore_easing_state ();
@@ -1387,7 +1388,7 @@ namespace Gala {
                         }
                     });
 
-                    toggle_dim_parent (window);
+                    dim_parent_window (window, true);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1453,8 +1454,8 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (100);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_easing_duration (150);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0U;
                     actor.restore_easing_state ();
 
@@ -1465,7 +1466,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    toggle_dim_parent (window);
+                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
