@@ -20,7 +20,7 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : Clutter.Actor {
-    private static Gdk.RGBA text_color;
+    private static Clutter.Color text_color;
     private static Gtk.Border padding;
     private static Gtk.StyleContext style_context;
 
@@ -63,10 +63,17 @@ public class Gala.Tooltip : Clutter.Actor {
         var label_style_context = new Gtk.StyleContext ();
         label_style_context.set_path (tooltip_widget_path);
 
-        text_color = (Gdk.RGBA) label_style_context.get_property (
+        var text_rgba = (Gdk.RGBA) label_style_context.get_property (
              Gtk.STYLE_PROPERTY_COLOR,
              Gtk.StateFlags.NORMAL
          );
+
+        text_color = Clutter.Color () {
+            red = (uint8) text_rgba.red * uint8.MAX,
+            green = (uint8) text_rgba.green * uint8.MAX,
+            blue = (uint8) text_rgba.blue * uint8.MAX,
+            alpha = (uint8) text_rgba.alpha * uint8.MAX,
+        };
     }
 
     construct {
@@ -109,12 +116,7 @@ public class Gala.Tooltip : Clutter.Actor {
         }
 
         text_actor = new Clutter.Text () {
-            color = Clutter.Color () {
-                red = (uint8) text_color.red * uint8.MAX,
-                green = (uint8) text_color.green * uint8.MAX,
-                blue = (uint8) text_color.blue * uint8.MAX,
-                alpha = (uint8) text_color.alpha * uint8.MAX,
-            },
+            color = text_color,
             x = padding.left,
             y = padding.top,
             ellipsize = Pango.EllipsizeMode.MIDDLE,
