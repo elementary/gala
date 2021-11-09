@@ -723,9 +723,9 @@ namespace Gala {
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {
-            var ancestor = window.find_root_ancestor ();
+            unowned var ancestor = window.find_root_ancestor ();
             if (ancestor != null && ancestor != window) {
-                var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
                 // Can't rely on win.has_effects since other effects could be applied
                 if (dim) {
                     if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
