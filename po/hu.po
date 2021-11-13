@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-07 01:37+0000\n"
-"PO-Revision-Date: 2021-11-04 01:51+0000\n"
+"PO-Revision-Date: 2021-11-13 03:34+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -139,7 +139,6 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr "Újradizájnolt Alt + Tab váltó"
 
 #: data/gala.appdata.xml.in:19
-#, fuzzy
 msgid "Dim the parents of modal dialogs"
 msgstr ""
 "Halványítsa el a szülő ablakokat, amelyek környezetfüggő párbeszédablakot "
@@ -147,7 +146,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:20
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "A párbeszédablakok a szülőikre esnek, ahelyett, hogy előtörnének"
 
 #: data/gala.appdata.xml.in:21 data/gala.appdata.xml.in:30
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:52
