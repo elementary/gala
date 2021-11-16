@@ -42,7 +42,27 @@ namespace Gala {
             return Posix.EXIT_FAILURE;
         }
 
+        /* Intercept signals */
         ctx.set_plugin_gtype (typeof (WindowManagerGala));
+        Posix.sigset_t empty_mask;
+        Posix.sigemptyset (out empty_mask);
+        Posix.sigaction_t act = {};
+        act.sa_handler = Posix.SIG_IGN;
+        act.sa_mask = empty_mask;
+        act.sa_flags = 0;
+
+        if (Posix.sigaction (Posix.SIGPIPE, act, null) < 0) {
+            warning ("Failed to register SIGPIPE handler: %s", GLib.strerror (GLib.errno));
+        }
+
+        if (Posix.sigaction (Posix.SIGXFSZ, act, null) < 0) {
+            warning ("Failed to register SIGXFSZ handler: %s", GLib.strerror (GLib.errno));
+        }
+
+        GLib.Unix.signal_add (Posix.SIGTERM, () => {
+            ctx.terminate ();
+            return GLib.Source.REMOVE;
+        });
 #else
         unowned OptionContext ctx = Meta.get_option_context ();
         ctx.add_main_entries (Gala.OPTIONS, null);
@@ -76,8 +96,6 @@ namespace Gala {
         GLib.Environment.unset_variable ("NO_GAIL");
         GLib.Environment.unset_variable ("NO_AT_BRIDGE");
 #endif
-
-        Plank.Paths.initialize ("plank", Config.DATADIR + "/plank");
 
         // Force initialization of static fields in Utils class
         // https://gitlab.gnome.org/GNOME/vala/-/issues/11

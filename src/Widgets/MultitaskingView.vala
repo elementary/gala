@@ -26,7 +26,6 @@ namespace Gala {
      */
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
-        public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
@@ -715,7 +714,7 @@ namespace Gala {
 
                 GestureTracker.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
-                    clone.set_easing_mode (0);
+                    clone.set_easing_mode (AnimationMode.LINEAR);
                 };
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -724,7 +723,7 @@ namespace Gala {
                 };
 
                 GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    clone.set_easing_mode (ANIMATION_MODE);
+                    clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
                     if (cancel_action) {
                         return;
@@ -763,7 +762,7 @@ namespace Gala {
                     }
 
                     dock.set_easing_duration (ANIMATION_DURATION);
-                    dock.set_easing_mode (ANIMATION_MODE);
+                    dock.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
                     dock.y = target_y;
                 };
 

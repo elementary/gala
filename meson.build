@@ -81,7 +81,6 @@ add_project_arguments([
 # Dependencies
 glib_version_required = '2.44.0'
 gtk_version_required = '3.10.0'
-plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
 canberra_dep = dependency('libcanberra')
@@ -91,7 +90,6 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
-plank_dep = dependency('plank', version: '>= @0@'.format(plank_version_required))
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
@@ -170,7 +168,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep

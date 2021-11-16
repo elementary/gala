@@ -16,6 +16,8 @@
         <ul>
           <li>Support for high-resolution scroll events</li>
           <li>Redesigned Alt + Tab switcher</li>
+          <li>Dim the parents of modal dialogs</li>
+          <li>Dialogs fall down on parents instead of shooting out</li>
           <li>Updated translations</li>
         </ul>
       </description>
