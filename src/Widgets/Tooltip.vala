@@ -21,9 +21,8 @@
  */
 public class Gala.Tooltip : Clutter.Actor {
     private static Clutter.Color text_color;
-    private static Gdk.RGBA bg_color;
     private static Gtk.Border padding;
-    private static int border_radius;
+    private static Gtk.StyleContext style_context;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -48,27 +47,33 @@ public class Gala.Tooltip : Clutter.Actor {
     public float max_width;
 
     static construct {
-        var label_widget_path = new Gtk.WidgetPath ();
-        label_widget_path.append_type (GLib.Type.from_name ("label"));
-        label_widget_path.iter_set_object_name (-1, "tooltip");
+        var tooltip_widget_path = new Gtk.WidgetPath ();
+        var pos = tooltip_widget_path.append_type (typeof (Gtk.Window));
+        tooltip_widget_path.iter_set_object_name (pos, "tooltip");
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
 
-        var tooltip_style_context = new Gtk.StyleContext ();
-        tooltip_style_context.add_class (Gtk.STYLE_CLASS_BACKGROUND);
-        tooltip_style_context.set_path (label_widget_path);
+        style_context = new Gtk.StyleContext ();
+        style_context.set_path (tooltip_widget_path);
 
-        bg_color = (Gdk.RGBA) tooltip_style_context.get_property (
-            Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-            Gtk.StateFlags.NORMAL
-        );
+        padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
 
-        border_radius = (int) tooltip_style_context.get_property (
-            Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-            Gtk.StateFlags.NORMAL
-        );
+        tooltip_widget_path.append_type (typeof (Gtk.Label));
 
-        padding = tooltip_style_context.get_padding (Gtk.StateFlags.NORMAL);
+        var label_style_context = new Gtk.StyleContext ();
+        label_style_context.set_path (tooltip_widget_path);
 
-        text_color = Clutter.Color.from_string ("#ffffff");
+        var text_rgba = (Gdk.RGBA) label_style_context.get_property (
+             Gtk.STYLE_PROPERTY_COLOR,
+             Gtk.StateFlags.NORMAL
+         );
+
+        text_color = Clutter.Color () {
+            red = (uint8) text_rgba.red * uint8.MAX,
+            green = (uint8) text_rgba.green * uint8.MAX,
+            blue = (uint8) text_rgba.blue * uint8.MAX,
+            alpha = (uint8) text_rgba.alpha * uint8.MAX,
+        };
     }
 
     construct {
@@ -106,7 +111,9 @@ public class Gala.Tooltip : Clutter.Actor {
         }
 
         // First set the text
-        remove_child (text_actor);
+        if (text_actor != null) {
+            remove_child (text_actor);
+        }
 
         text_actor = new Clutter.Text () {
             color = text_color,
@@ -132,15 +139,13 @@ public class Gala.Tooltip : Clutter.Actor {
         background_canvas.invalidate ();
     }
 
-    private static bool draw_background (Cairo.Context cr, int width, int height) {
-        cr.save ();
-        cr.set_operator (Cairo.Operator.CLEAR);
-        cr.paint ();
-        cr.restore ();
+    private static bool draw_background (Cairo.Context ctx, int width, int height) {
+        ctx.save ();
 
-        Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
-        cr.set_source_rgba (bg_color.red, bg_color.green, bg_color.blue, bg_color.alpha);
-        cr.fill ();
+        style_context.render_background (ctx, 0, 0, width, height);
+        style_context.render_frame (ctx, 0, 0, width, height);
+
+        ctx.restore ();
 
         return false;
     }

@@ -42,3 +42,28 @@ icons_dir = join_paths(get_option('datadir'), 'icons', 'hicolor')
 install_data('icons/32x32/multitasking-view.svg', install_dir: join_paths(icons_dir, '32x32', 'apps'))
 install_data('icons/48x48/multitasking-view.svg', install_dir: join_paths(icons_dir, '48x48', 'apps'))
 install_data('icons/64x64/multitasking-view.svg', install_dir: join_paths(icons_dir, '64x64', 'apps'))
+
+if get_option('systemd')
+    dep_systemd = dependency('systemd', required: true)
+    systemd_userunitdir = get_option('systemduserunitdir')
+    if systemd_userunitdir == ''
+        systemd_userunitdir = dep_systemd.get_pkgconfig_variable('systemduserunitdir', define_variable: ['prefix', get_option('prefix')])
+    endif
+
+    bindir = join_paths(get_option('prefix'), get_option('bindir'))
+    unit_conf = configuration_data()
+    unit_conf.set('bindir', bindir)
+
+    configure_file(
+        input: 'gala-x11.service.in',
+        output: 'gala-x11.service',
+        install: true,
+        install_dir: systemd_userunitdir,
+        configuration: unit_conf
+    )
+
+    install_data(
+        'gala-x11.target',
+        install_dir: systemd_userunitdir
+    )
+endif

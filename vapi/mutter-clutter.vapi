@@ -6219,10 +6219,16 @@ namespace Clutter {
 		[CCode (has_construct_function = false)]
 		protected FrameClock ();
 		public void add_timeline (Clutter.Timeline timeline);
+#if HAS_MUTTER41
+		public GLib.StringBuilder get_max_render_time_debug_info ();
+#endif
 		public float get_refresh_rate ();
 		public void inhibit ();
 #if HAS_MUTTER40
 		public void notify_ready ();
+#endif
+#if HAS_MUTTER41
+		public void record_flip_time (int64 flip_time_us);
 #endif
 		public void remove_timeline (Clutter.Timeline timeline);
 		public void schedule_update ();
@@ -7330,7 +7336,7 @@ namespace Clutter {
 		[Version (since = "1.2")]
 		public bool get_use_alpha ();
 #if HAS_MUTTER338
-		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, [CCode (array_length = false)] ref unowned uint8[] data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
+		public bool paint_to_buffer (Cairo.RectangleInt rect, float scale, [CCode (array_length = false, type = "uint8_t*")] uint8[] data, int stride, Cogl.PixelFormat format, Clutter.PaintFlag paint_flags) throws GLib.Error;
 		public void paint_to_framebuffer (Cogl.Framebuffer framebuffer, Cairo.RectangleInt rect, float scale, Clutter.PaintFlag paint_flags);
 #else
 		[Version (since = "0.4")]
@@ -7503,6 +7509,10 @@ namespace Clutter {
 		public Clutter.Stage stage { owned get; construct; }
 		[NoAccessorMethod]
 		public bool use_shadowfb { get; construct; }
+#endif
+		[NoAccessorMethod]
+		public int64 vblank_duration_us { get; construct; }
+#if HAS_MUTTER41
 #endif
 	}
 #if !HAS_MUTTER338
@@ -7737,6 +7747,15 @@ namespace Clutter {
 		[CCode (has_construct_function = false, type = "ClutterPaintNode*")]
 		public TextNode (Pango.Layout? layout, Clutter.Color? color);
 	}
+#if HAS_MUTTER41
+	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_texture_content_get_type ()")]
+	public class TextureContent : GLib.Object, Clutter.Content {
+		[CCode (has_construct_function = false)]
+		protected TextureContent ();
+		public unowned Cogl.Texture get_texture ();
+		public static Clutter.Content new_from_texture (Cogl.Texture texture, Cairo.RectangleInt? clip);
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_texture_node_get_type ()")]
 	[Version (since = "1.10")]
 	public class TextureNode : Clutter.PipelineNode {
@@ -8168,18 +8187,40 @@ namespace Clutter {
 		public bool equal (Clutter.Color v2);
 		[Version (since = "0.2")]
 		public void free ();
-		[CCode (cname = "clutter_color_from_hls")]
-		public Color.from_hls (float hue, float luminance, float saturation);
-		[CCode (cname = "clutter_color_from_pixel")]
-		public Color.from_pixel (uint32 pixel);
-		[CCode (cname = "clutter_color_from_string")]
-		public Color.from_string (string str);
+		[CCode (cname = "_vala_clutter_color_from_hls")]
+		public static Clutter.Color? from_hls (float hue, float luminance, float saturation) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_hls (hue, luminance, saturation);
+			return color;
+		}
+		[CCode (cname = "_vala_clutter_color_from_pixel")]
+		public static Clutter.Color? from_pixel (uint32 pixel) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_pixel (pixel);
+			return color;
+		}
+		[CCode (cname = "clutter_color_new")]
+		[Version (since = "0.8")]
+		public static Clutter.Color? from_rgba (uint8 red = 0, uint8 green = 0, uint8 blue = 0, uint8 alpha = 0);
+		[CCode (cname = "_vala_clutter_color_from_string")]
+		public static Clutter.Color? from_string (string str) {
+			Clutter.Color? color = Clutter.Color.alloc ();
+			color.init_from_string (str);
+			return color;
+		}
 		[Version (since = "1.6")]
 		public static unowned Clutter.Color? get_static (Clutter.StaticColor color);
 		[Version (since = "1.0")]
 		public uint hash ();
 		[Version (since = "1.12")]
-		public unowned Clutter.Color? init (uint8 red, uint8 green, uint8 blue, uint8 alpha);
+		public unowned Clutter.Color? init (uint8 red = 0, uint8 green = 0, uint8 blue = 0, uint8 alpha = 0);
+		[CCode (cname = "clutter_color_from_hls")]
+		public void init_from_hls (float hue, float luminance, float saturation);
+		[CCode (cname = "clutter_color_from_pixel")]
+		public void init_from_pixel (uint32 pixel);
+		[CCode (cname = "clutter_color_from_string")]
+		[Version (since = "1.0")]
+		public bool init_from_string (string str);
 		[Version (since = "1.6")]
 		public Clutter.Color interpolate (Clutter.Color final, double progress);
 		public Clutter.Color lighten ();
@@ -8484,6 +8525,10 @@ namespace Clutter {
 		PICK,
 		EVENTLOOP,
 		CLIPPING,
+#if HAS_MUTTER41
+		FRAME_TIMINGS,
+		DETAILED_TRACE,
+#endif
 		OOB_TRANSFORMS
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_DRAG_", type_id = "clutter_drag_axis_get_type ()")]
@@ -8504,6 +8549,10 @@ namespace Clutter {
 		DISABLE_OFFSCREEN_REDIRECT,
 		CONTINUOUS_REDRAW,
 		PAINT_DEFORM_TILES,
+#if HAS_MUTTER41
+		DISABLE_DYNAMIC_MAX_RENDER_TIME,
+		PAINT_MAX_RENDER_TIME,
+#endif
 		PAINT_DAMAGE_REGION
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EFFECT_PAINT_", type_id = "clutter_effect_paint_flags_get_type ()")]
@@ -9222,6 +9271,10 @@ namespace Clutter {
 	[Version (since = "1.10")]
 	public static bool check_windowing_backend (string backend_type);
 #endif
+#if HAS_MUTTER41
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static void debug_set_max_render_time_constant (int max_render_time_constant_us);
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.14")]
 	public static void disable_accessibility ();
@@ -9237,6 +9290,10 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.2")]
 	public static unowned Clutter.Event get_current_event ();
+#if HAS_MUTTER41
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static void get_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.0")]
 	public static uint32 get_current_event_time ();
@@ -9263,9 +9320,11 @@ namespace Clutter {
 	public static unowned string get_script_id (GLib.Object gobject);
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static Clutter.InitError init ([CCode (array_length_cname = "argc", array_length_pos = 0.5)] ref unowned string[]? argv);
+#if !HAS_MUTTER41
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "0.2")]
 	public static Clutter.InitError init_with_args ([CCode (array_length_cname = "argc", array_length_pos = 0.5)] ref unowned string[]? argv, string? parameter_string, [CCode (array_length = false)] GLib.OptionEntry[]? entries, string? translation_domain) throws GLib.Error;
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static uint32 keysym_to_unicode (uint keyval);
 #if !HAS_MUTTER338
