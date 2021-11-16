@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-07 01:37+0000\n"
-"PO-Revision-Date: 2021-11-12 20:06+0000\n"
-"Last-Translator: Nick Khaetsky <rzzsapb@gmail.com>\n"
+"PO-Revision-Date: 2021-11-16 22:52+0000\n"
+"Last-Translator: DartDeaDia <dartdeadia@protonmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -140,9 +140,8 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr "Переработан внешний вид переключателя Alt + Tab"
 
 #: data/gala.appdata.xml.in:19
-#, fuzzy
 msgid "Dim the parents of modal dialogs"
-msgstr "Затемнять родительское окно при открытии в нём модального окна"
+msgstr "Затемнять родительские модальные окна"
 
 #: data/gala.appdata.xml.in:20
 msgid "Dialogs fall down on parents instead of shooting out"
