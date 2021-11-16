@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-16 22:52+0000\n"
-"PO-Revision-Date: 2021-11-07 12:02+0000\n"
+"PO-Revision-Date: 2021-11-17 00:46+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,16 +119,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Fixes:"
-msgstr ""
+msgstr "תיקונים:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid ""
-#| "Include window decorations in screenshots for server-side decorated "
-#| "windows"
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
-"לכלול את עיטורי החלונות בצילומי המסך לחלונות שהעיטור שלהם מגיע מצד השרת"
+msgstr "תוקנו קיטועי צלליות בחלונות שהעיטור שלהם מגיע מצד השרת"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
