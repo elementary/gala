@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-16 22:52+0000\n"
-"PO-Revision-Date: 2021-11-07 15:36+0000\n"
+"PO-Revision-Date: 2021-11-17 14:30+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -124,17 +124,13 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Fixes:"
-msgstr ""
+msgstr "Correccions:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid ""
-#| "Include window decorations in screenshots for server-side decorated "
-#| "windows"
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr ""
-"Inclou decoracions de finestres a les captures de pantalla per a les "
-"finestres decorades del costat del servidor"
+"Correcció del retall d'ombres a les finestres decorades al costat del "
+"servidor"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
