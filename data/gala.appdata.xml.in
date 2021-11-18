@@ -12,9 +12,16 @@
   <releases>
     <release version="6.3.0" date="2021-10-22" urgency="medium">
       <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix shadow clipping on server-side decorated windows</li>
+        </ul>
         <p>Improvements:</p>
         <ul>
           <li>Support for high-resolution scroll events</li>
+          <li>Redesigned Alt + Tab switcher</li>
+          <li>Dim the parents of modal dialogs</li>
+          <li>Dialogs fall down on parents instead of shooting out</li>
           <li>Updated translations</li>
         </ul>
       </description>

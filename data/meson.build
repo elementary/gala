@@ -45,7 +45,10 @@ install_data('icons/64x64/multitasking-view.svg', install_dir: join_paths(icons_
 
 if get_option('systemd')
     dep_systemd = dependency('systemd', required: true)
-    systemd_userunitdir = dep_systemd.get_pkgconfig_variable('systemduserunitdir')
+    systemd_userunitdir = get_option('systemduserunitdir')
+    if systemd_userunitdir == ''
+        systemd_userunitdir = dep_systemd.get_pkgconfig_variable('systemduserunitdir', define_variable: ['prefix', get_option('prefix')])
+    endif
 
     bindir = join_paths(get_option('prefix'), get_option('bindir'))
     unit_conf = configuration_data()
