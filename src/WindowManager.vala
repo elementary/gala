@@ -723,19 +723,19 @@ namespace Gala {
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {
-            if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
-                var ancestor = window.find_root_ancestor ();
-                if (ancestor != null && ancestor != window) {
-                    var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                    // Can't rely on win.has_effects since other effects could be applied
-                    if (dim) {
+            unowned var ancestor = window.find_root_ancestor ();
+            if (ancestor != null && ancestor != window) {
+                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                // Can't rely on win.has_effects since other effects could be applied
+                if (dim) {
+                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
 
-                        win.add_effect (dark_effect);
-                    } else {
-                        win.clear_effects ();
+                        win.add_effect_with_name ("dim-parent", dark_effect);
                     }
+                } else if (win.get_effect ("dim-parent") != null) {
+                    win.remove_effect_by_name ("dim-parent");
                 }
             }
         }
