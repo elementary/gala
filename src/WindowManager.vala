@@ -734,7 +734,7 @@ namespace Gala {
 
                         win.add_effect_with_name ("dim-parent", dark_effect);
                     }
-                } else if (win.get_effect ("dim-parent") != null){
+                } else if (win.get_effect ("dim-parent") != null) {
                     win.remove_effect_by_name ("dim-parent");
                 }
             }
