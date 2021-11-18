@@ -732,10 +732,10 @@ namespace Gala {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
 
-                        win.add_effect (dark_effect);
+                        win.add_effect_with_name ("dim-parent", dark_effect);
                     }
-                } else {
-                    win.clear_effects ();
+                } else if (win.get_effect ("dim-parent") != null){
+                    win.remove_effect_by_name ("dim-parent");
                 }
             }
         }
