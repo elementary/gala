@@ -1,7 +1,6 @@
 gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
-    'DockThemeManager.vala',
     'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
@@ -39,6 +38,7 @@ gala_bin_sources = files(
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
+    'Widgets/RoundedActor.vala',
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',

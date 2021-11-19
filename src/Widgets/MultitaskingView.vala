@@ -26,7 +26,6 @@ namespace Gala {
      */
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
-        public const AnimationMode ANIMATION_MODE = AnimationMode.EASE_OUT_QUAD;
 
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
@@ -203,9 +202,38 @@ namespace Gala {
 
             if (active_workspace != new_workspace) {
                 new_workspace.activate (display.get_current_time ());
+            } else {
+                play_nudge_animation (direction);
             }
 
             return true;
+        }
+
+        public void play_nudge_animation (Meta.MotionDirection direction) {
+            if (!wm.enable_animations) {
+                return;
+            }
+
+            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+
+            float dest = nudge_gap;
+            if (direction == Meta.MotionDirection.RIGHT) {
+                dest *= -1;
+            }
+
+            double[] keyframes = { 0.5 };
+            GLib.Value[] x = { dest };
+
+            var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                duration = AnimationDuration.NUDGE,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+            };
+            nudge.set_from_value (0.0f);
+            nudge.set_to_value (0.0f);
+            nudge.set_key_frames (keyframes);
+            nudge.set_values (x);
+            workspaces.add_transition ("nudge", nudge);
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
@@ -686,7 +714,7 @@ namespace Gala {
 
                 GestureTracker.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
-                    clone.set_easing_mode (0);
+                    clone.set_easing_mode (AnimationMode.LINEAR);
                 };
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -695,7 +723,7 @@ namespace Gala {
                 };
 
                 GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    clone.set_easing_mode (ANIMATION_MODE);
+                    clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
                     if (cancel_action) {
                         return;
@@ -734,7 +762,7 @@ namespace Gala {
                     }
 
                     dock.set_easing_duration (ANIMATION_DURATION);
-                    dock.set_easing_mode (ANIMATION_MODE);
+                    dock.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
                     dock.y = target_y;
                 };
 
