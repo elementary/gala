@@ -57,7 +57,7 @@
         'custom-command'. If you instead use the pattern
         'hotcorner-topleft:command;;hotcorner-bottomright:command' the specific commands will be used
         per hotcorner. Possible identifiers are 'hotcorner-[topleft; topright; bottomleft; bottomright]'
-        followed by a ':' and then the command. ';;' is used as delimiter between command defintions.
+        followed by a ':' and then the command. ';;' is used as delimiter between command definitions.
       </description>
     </key>
     <key type="b" name="edge-tiling">
