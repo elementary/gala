@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-16 22:52+0000\n"
-"PO-Revision-Date: 2021-11-13 03:34+0000\n"
+"PO-Revision-Date: 2021-11-20 02:41+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -124,17 +124,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Fixes:"
-msgstr ""
+msgstr "Javítások:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid ""
-#| "Include window decorations in screenshots for server-side decorated "
-#| "windows"
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
-"Az ablakdekorátorok megjelennek a szerveroldali ablakok esetén is a "
-"képernyőképeken"
+msgstr "Az ablakdekorátorok javítása a szerveroldali ablakok esetén is"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
