@@ -57,7 +57,7 @@ void destroy ()
 
 Overriding default keybindings
 ------------------------------
-Libmutter allows you to override exisiting shortcuts, which is a lot easier than
+Libmutter allows you to override existing shortcuts, which is a lot easier than
 adding new ones. All you have to do is:
 
 Keybinding.set_custom_handler ("shortcut-name", my_handler);

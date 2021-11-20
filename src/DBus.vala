@@ -113,7 +113,7 @@ namespace Gala {
         }
 
         /**
-         * Emitted when the background change occured and the transition ended.
+         * Emitted when the background change occurred and the transition ended.
          * You can safely call get_optimal_panel_alpha then. It is not guaranteed
          * that this signal will be emitted only once per group of changes as often
          * done by GUIs. The change may not be visible to the user.

@@ -78,7 +78,7 @@ public class Gala.NotificationStack : Object {
         }
 
         /**
-         * We will make space for the incomming notification
+         * We will make space for the incoming notification
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */

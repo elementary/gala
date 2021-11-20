@@ -468,7 +468,7 @@ namespace Gala {
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
             } else {
-                // if we didnt switch, show a nudge-over animation if one is not already in progress
+                // if we didn't switch, show a nudge-over animation if one is not already in progress
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
                     ((MultitaskingView) workspace_view).play_nudge_animation (direction);
                 } else {
