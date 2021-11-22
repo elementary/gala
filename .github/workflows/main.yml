@@ -35,7 +35,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Lint
       run: |
-        io.elementary.vala-lint -d deamon
+        io.elementary.vala-lint -d daemon
         io.elementary.vala-lint -d lib
         io.elementary.vala-lint -d plugins
         io.elementary.vala-lint -d src

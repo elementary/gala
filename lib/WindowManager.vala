@@ -92,7 +92,7 @@ namespace Gala {
         public abstract Clutter.Stage stage { get; protected set; }
 
         /**
-         * A group containting all 'usual' windows
+         * A group containing all 'usual' windows
          * @see top_window_group
          */
         public abstract Clutter.Actor window_group { get; protected set; }
