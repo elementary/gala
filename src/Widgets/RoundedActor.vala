@@ -23,8 +23,13 @@ namespace Gala {
         }
 
         protected virtual bool drawit (Cairo.Context ctx) {
+            var buffer_width = (int)this.width;
+            var buffer_height = (int)this.height;
+            if (buffer_width == 0 || buffer_height == 0)
+                return false;
+
             Granite.Drawing.BufferSurface buffer;
-            buffer = new Granite.Drawing.BufferSurface ((int)this.width, (int)this.height);
+            buffer = new Granite.Drawing.BufferSurface (buffer_width, buffer_height);
 
             /*
             * copied from popover-granite-drawing
@@ -36,7 +41,7 @@ namespace Gala {
 
             // draw rect
             Clutter.cairo_set_source_color (buffer.context, back_color);
-            Granite.Drawing.Utilities.cairo_rounded_rectangle (buffer.context, 0, 0, (int)this.width, (int)this.height, rect_radius);
+            Granite.Drawing.Utilities.cairo_rounded_rectangle (buffer.context, 0, 0, buffer_width, buffer_height, rect_radius);
             buffer.context.fill ();
 
             //clear surface to transparent
