@@ -24,7 +24,7 @@ namespace Gala {
         private Granite.Settings granite_settings;
         private Clutter.Canvas canvas;
         Clutter.Actor container;
-        RoundedActor indicator;
+        Clutter.Actor indicator;
         Clutter.Text caption;
 
         int modifier_mask;
@@ -48,6 +48,7 @@ namespace Gala {
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
 
             canvas = new Clutter.Canvas ();
+            canvas.scale_factor = scaling_factor;
             set_content (canvas);
 
             // Carry out the initial draw
@@ -71,6 +72,7 @@ namespace Gala {
                 var cur_scale = InternalUtils.get_ui_scaling_factor ();
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
+                    canvas.scale_factor = scaling_factor;
                     create_components ();
                 }
             });
@@ -78,7 +80,7 @@ namespace Gala {
             canvas.draw.connect (draw);
         }
 
-        private bool draw (Cairo.Context ctx) {
+        private bool draw (Cairo.Context ctx, int width, int height) {
             ctx.save ();
 
             var widget_path = new Gtk.WidgetPath ();
@@ -86,6 +88,7 @@ namespace Gala {
             widget_path.iter_set_object_name (-1, "window");
 
             var style_context = new Gtk.StyleContext ();
+            style_context.set_scale (scaling_factor);
             style_context.set_path (widget_path);
             style_context.add_class ("background");
             style_context.add_class ("csd");
@@ -97,9 +100,8 @@ namespace Gala {
                 style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             }
 
-            style_context.render_background (ctx, 0, 0, (int) width, (int) height);
-            style_context.render_frame (ctx, 0, 0, (int) width, (int) height);
-
+            style_context.render_background (ctx, 0, 0, width, height);
+            style_context.render_frame (ctx, 0, 0, width, height);
             ctx.restore ();
 
             return true;
@@ -128,11 +130,27 @@ namespace Gala {
                 (uint8) (rgba.alpha * 255)
             );
 
-            indicator = new RoundedActor (accent_color, WRAPPER_BORDER_RADIUS * scaling_factor);
-
+            var rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
+            indicator = new Clutter.Actor ();
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
             indicator.set_pivot_point (0.5f, 0.5f);
+            var indicator_canvas = new Clutter.Canvas ();
+            indicator.set_content (indicator_canvas);
+            indicator_canvas.scale_factor = scaling_factor;
+            indicator_canvas.draw.connect ((ctx, width, height) => {
+                ctx.save ();
+                ctx.clip ();
+                ctx.reset_clip ();
+
+                // draw rect
+                Clutter.cairo_set_source_color (ctx, accent_color);
+                Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+                ctx.fill ();
+
+                ctx.restore ();
+                return true;
+            });
 
             var caption_color = "#2e2e31";
 
@@ -229,10 +247,9 @@ namespace Gala {
             l.column_spacing = l.row_spacing = WRAPPER_PADDING * scaling_factor;
 
             indicator.visible = false;
-            indicator.resize (
-                (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor,
-                (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor
-            );
+            var indicator_size = (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor;
+            indicator.set_size (indicator_size, indicator_size);
+            ((Clutter.Canvas) indicator.content).set_size (indicator_size, indicator_size);
             caption.visible = false;
             caption.margin_bottom = caption.margin_top = WRAPPER_PADDING * scaling_factor;
 
@@ -268,8 +285,9 @@ namespace Gala {
 
             opacity = 0;
 
-            set_size ((int) nat_width, (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor));
-            canvas.set_size ((int) nat_width, (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor));
+            var switcher_height = (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
+            set_size ((int) nat_width, switcher_height);
+            canvas.set_size ((int) nat_width, switcher_height);
             canvas.invalidate ();
 
             set_position (
