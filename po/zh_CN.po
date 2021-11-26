@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-11-16 22:52+0000\n"
-"PO-Revision-Date: 2021-11-04 01:51+0000\n"
+"PO-Revision-Date: 2021-11-26 00:47+0000\n"
 "Last-Translator: Yuchen Deng <loaden@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
@@ -123,15 +123,11 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:15
 msgid "Fixes:"
-msgstr ""
+msgstr "修复："
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid ""
-#| "Include window decorations in screenshots for server-side decorated "
-#| "windows"
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "在服务端装饰窗口的截图中包括窗口装饰"
+msgstr "修复服务器端装饰窗口上的阴影剪辑"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:31
 #: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
@@ -150,14 +146,12 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr "重新设计的 Alt + Tab 切换器"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "当模式窗口弹出时淡化上级窗口"
+msgstr "调暗模态对话框的父级窗口"
 
 #: data/gala.appdata.xml.in:24
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "对话框显示在父窗口上，而不是外面"
 
 #: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:56
