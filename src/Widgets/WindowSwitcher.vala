@@ -140,12 +140,15 @@ namespace Gala {
             indicator_canvas.scale_factor = scaling_factor;
             indicator_canvas.draw.connect ((ctx, width, height) => {
                 ctx.save ();
+                ctx.set_operator (Cairo.Operator.CLEAR);
+                ctx.paint ();
                 ctx.clip ();
                 ctx.reset_clip ();
 
                 // draw rect
                 Clutter.cairo_set_source_color (ctx, accent_color);
                 Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+                ctx.set_operator (Cairo.Operator.SOURCE);
                 ctx.fill ();
 
                 ctx.restore ();
