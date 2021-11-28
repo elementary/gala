@@ -43,6 +43,7 @@ namespace Gala {
         }
 
         construct {
+            var gtk_settings = Gtk.Settings.get_default ();
             granite_settings = Granite.Settings.get_default ();
 
             scaling_factor = InternalUtils.get_ui_scaling_factor ();
@@ -64,6 +65,11 @@ namespace Gala {
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
+                canvas.invalidate ();
+                create_components ();
+            });
+
+            gtk_settings.notify["gtk-theme-name"].connect (() => {
                 canvas.invalidate ();
                 create_components ();
             });
