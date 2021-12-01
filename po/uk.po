@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2021-11-16 23:12+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -29,20 +29,28 @@ msgstr "Знімки екрана"
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "Зображення на екрані виглядає нормально?"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "Залишити поточну конфігурацію"
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "Налаштування екрана…"
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "Повернути попередню конфігурацію"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "Налаштування системи…"
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
@@ -315,6 +323,15 @@ msgstr "Резервний робочий файл для сповіщень в�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Зображення на екрані виглядає нормально?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Залишити поточну конфігурацію"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Повернути попередню конфігурацію"
 
 #~ msgid "Minimize"
 #~ msgstr "Згорнути"

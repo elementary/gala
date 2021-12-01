@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Tamil <https://l10n.elementary.io/projects/desktop/gala/ta/>\n"
@@ -27,20 +27,24 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr ""
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
+msgid "Keep new display settings?"
 msgstr ""
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+msgid "Keep Settings"
+msgstr ""
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

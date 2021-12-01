@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Lithuanian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -29,20 +29,24 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "Ar ekranas gerai atrodo?"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "Palikti šią konfigūraciją"
+msgid "Keep new display settings?"
+msgstr ""
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "Atkurti ankstesnę konfigūraciją"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+msgid "Keep Settings"
+msgstr ""
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -304,6 +308,15 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Ar ekranas gerai atrodo?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Palikti šią konfigūraciją"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Atkurti ankstesnę konfigūraciją"
 
 #~ msgid "Minimize"
 #~ msgstr "Suskleisti"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2021-03-11 08:40+0000\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <https://l10n.elementary.io/projects/desktop/gala/sr/"
@@ -31,20 +31,28 @@ msgstr "Снимци екрана"
 msgid "Screenshot taken"
 msgstr "Снимци екрана"
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "Да ли екран изгледа како треба?"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "Задржи ове поставке"
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "Поставке екрана…"
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "Врати претходно подешавање"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "Системска подешавања…"
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимак екрана из „%s“"
@@ -324,6 +332,15 @@ msgstr "Пребаците датотеку радне површи за оба�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Да ли екран изгледа како треба?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Задржи ове поставке"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Врати претходно подешавање"
 
 #~ msgid "Minimize"
 #~ msgstr "Умањи"

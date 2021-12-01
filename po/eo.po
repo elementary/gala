@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2020-03-14 21:09+0000\n"
 "Last-Translator: Shtonchjo <shtonchjo@gmail.com>\n"
 "Language-Team: Esperanto <https://l10n.elementary.io/projects/desktop/gala/"
@@ -30,20 +30,24 @@ msgstr "Ekrankopioj"
 msgid "Screenshot taken"
 msgstr "Ekrankopioj"
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "Ĉu la ekrano aspektas bone?"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "Konservi la Agordojn"
+msgid "Keep new display settings?"
+msgstr ""
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "Restaŭri la Antaŭajn Agordojn"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+msgid "Keep Settings"
+msgstr ""
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
@@ -313,6 +317,15 @@ msgstr "Retrodefaŭlta dosiero “.desktop”  por atentigoj el eksdataj aplika�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Ĉu la ekrano aspektas bone?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Konservi la Agordojn"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Restaŭri la Antaŭajn Agordojn"
 
 #~ msgid "Minimize"
 #~ msgstr "Minimumigi"

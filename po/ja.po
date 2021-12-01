@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2021-11-17 04:20+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -28,20 +28,28 @@ msgstr "スクリーンショット"
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "ディスプレイの設定に問題はありませんか？"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "この設定を保つ"
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "ディスプレイの設定…"
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "前の設定へ戻す"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "システム設定…"
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
@@ -320,6 +328,15 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "ディスプレイの設定に問題はありませんか？"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "この設定を保つ"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "前の設定へ戻す"
 
 #~ msgid "Minimize"
 #~ msgstr "最小化"

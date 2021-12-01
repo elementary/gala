@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-12-01 22:30+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2015-02-07 21:35+0000\n"
 "Last-Translator: Yvo Marques <macghivo@gmail.com>\n"
 "Language-Team: Luxembourgish <lb@li.org>\n"
@@ -26,20 +26,24 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "Gesäit den Bildschierm OK aus?"
-
 #: src/WindowManager.vala:2053
-msgid "Keep This Configuration"
-msgstr "Configuratioun behalen"
+msgid "Keep new display settings?"
+msgstr ""
 
 #: src/WindowManager.vala:2054
-msgid "Restore Previous Configuration"
-msgstr "Letzt configuratioun opruffen"
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+
+#: src/WindowManager.vala:2057
+msgid "Keep Settings"
+msgstr ""
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2080
+#: src/WindowManager.vala:2084
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -298,6 +302,15 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr ""
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Gesäit den Bildschierm OK aus?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Configuratioun behalen"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Letzt configuratioun opruffen"
 
 #~ msgid "Minimize"
 #~ msgstr "Kleng maachen"
