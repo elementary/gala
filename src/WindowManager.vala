@@ -2056,7 +2056,6 @@ namespace Gala {
 
             dialog.show.connect (() => {
                 Timeout.add_seconds (30, () => {
-                    dialog.response (Gtk.ResponseType.CANCEL);
                     dialog.close ();
 
                     return Source.REMOVE;
@@ -2064,7 +2063,7 @@ namespace Gala {
             });
 
             dialog.response.connect ((res) => {
-                complete_display_change (res == Gtk.ResponseType.OK);
+                complete_display_change (res == 0);
             });
 
             dialog.show ();
