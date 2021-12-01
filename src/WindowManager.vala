@@ -2049,9 +2049,13 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
-            var dialog = new AccessDialog (_("Does the display look OK?"), "", "preferences-desktop-display") {
-                accept_label = _("Keep This Configuration"),
-                deny_label = _("Restore Previous Configuration")
+            var dialog = new AccessDialog (
+                _("Keep new display settings?"),
+                _("Changes will automatically revert after 30 seconds."),
+                "preferences-desktop-display"
+            ) {
+                accept_label = _("Keep Settings"),
+                deny_label = _("Use Previous Settings")
             };
 
             dialog.show.connect (() => {
