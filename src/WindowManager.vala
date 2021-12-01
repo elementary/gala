@@ -138,6 +138,7 @@ namespace Gala {
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+            AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
@@ -2048,24 +2049,24 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
-            var pid = Meta.Util.show_dialog ("--question",
-                _("Does the display look OK?"),
-                "30",
-                null,
-                _("Keep This Configuration"),
-                _("Restore Previous Configuration"),
-                "preferences-desktop-display",
-                0,
-                null, null);
+            var dialog = new AccessDialog (_("Does the display look OK?"), "", "preferences-desktop-display") {
+                accept_label = _("Keep This Configuration"),
+                deny_label = _("Restore Previous Configuration")
+            };
 
-            ChildWatch.add (pid, (pid, status) => {
-                var ok = false;
-                try {
-                    ok = Process.check_exit_status (status);
-                } catch (Error e) {}
+            dialog.show.connect (() => {
+                Timeout.add_seconds (30, () => {
+                    dialog.close ();
 
-                complete_display_change (ok);
+                    return Source.REMOVE;
+                });
             });
+
+            dialog.response.connect ((res) => {
+                complete_display_change (res == 0);
+            });
+
+            dialog.show ();
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {
