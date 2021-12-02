@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-11-17 08:52+0000\n"
+"PO-Revision-Date: 2021-12-02 12:58+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
-">\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
+"\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,24 +30,20 @@ msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
 #: src/WindowManager.vala:2053
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Ustawienia ekranu…"
+msgstr "Zachować nowe ustawienia ekranu?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Zmiany zostaną automatycznie cofnięte po 30 sekundach."
 
 #: src/WindowManager.vala:2057
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Ustawienia systemu…"
+msgstr "Zachowaj ustawienia"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
@@ -141,7 +137,7 @@ msgstr "Ulepszenia:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
-msgstr ""
+msgstr "Użyj portalu dostępu dla okna potwierdzenia ustawień wyświetlacza"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
