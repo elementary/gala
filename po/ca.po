@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-11-17 14:30+0000\n"
+"PO-Revision-Date: 2021-12-03 19:44+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,24 +29,20 @@ msgid "Screenshot taken"
 msgstr "Captura feta"
 
 #: src/WindowManager.vala:2053
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Paràmetres de la pantalla…"
+msgstr "Voleu mantenir la configuració de la pantalla nova?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Els canvis es revertiran automàticament al cap de 30 segons."
 
 #: src/WindowManager.vala:2057
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Paràmetres del sistema…"
+msgstr "Mantén la configuració"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Usa els paràmetres anteriors"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
@@ -141,6 +137,8 @@ msgstr "Millores:"
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
 msgstr ""
+"Useu el portal d'accés per al diàleg de confirmació de la configuració de la "
+"pantalla."
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
