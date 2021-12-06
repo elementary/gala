@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-11-20 02:41+0000\n"
+"PO-Revision-Date: 2021-12-06 13:39+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -29,24 +29,20 @@ msgid "Screenshot taken"
 msgstr "Képernyőkép mentve"
 
 #: src/WindowManager.vala:2053
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Kijelzőbeállítások…"
+msgstr "Új kijelzőbeállítások megtartása?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "A változások automatikusan visszaállnak 30 másodperc múlva."
 
 #: src/WindowManager.vala:2057
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Rendszerbeállítások…"
+msgstr "Beállítások megtartása"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Előző beállítások visszaállítása"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
@@ -141,6 +137,8 @@ msgstr "Újdonságok:"
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
 msgstr ""
+"Hozzáférési portál használata a kijelzőbeállítások megerősítésénél megjelenő "
+"párbeszédablaknál"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
