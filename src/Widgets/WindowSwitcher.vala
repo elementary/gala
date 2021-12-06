@@ -278,9 +278,7 @@ namespace Gala {
             float nat_width, nat_height;
             container.get_preferred_size (null, null, out nat_width, null);
 
-            if (container.get_n_children () == 1) {
-                nat_width -= WRAPPER_PADDING * scaling_factor;
-            }
+            nat_width -= (WRAPPER_PADDING * scaling_factor) / container.get_n_children ();
 
             container.get_preferred_size (null, null, null, out nat_height);
 
