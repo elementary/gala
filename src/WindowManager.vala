@@ -2073,6 +2073,17 @@ namespace Gala {
             dialog.show ();
         }
 
+        public override unowned Meta.CloseDialog create_close_dialog (Meta.Window window) {
+            var new_dialog = CloseDialog.open_dialogs.first_match ((d) => d.window == window);
+
+            if (new_dialog == null) {
+                new_dialog = new CloseDialog (window);
+            }
+
+            unowned var dialog = new_dialog;
+            return dialog;
+        }
+
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
