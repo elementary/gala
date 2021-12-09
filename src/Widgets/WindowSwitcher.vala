@@ -304,7 +304,7 @@ namespace Gala {
                 (int) (geom.y + (geom.height - height) / 2)
             );
 
-            toggle_display(true);
+            toggle_display (true);
 
             // if we did not have the grab before the key was released, close immediately
             if ((get_current_modifiers () & modifier_mask) == 0) {
@@ -312,14 +312,14 @@ namespace Gala {
             }
         }
 
-        void toggle_display(bool show) {
+        void toggle_display (bool show) {
             if (opened == show) {
                 return;
             }
 
             opened = show;
             if (show) {
-                push_modal();
+                push_modal ();
             } else {
                 wm.pop_modal (modal_proxy);
             }
@@ -368,7 +368,7 @@ namespace Gala {
                 }
             }
 
-            toggle_display(false);
+            toggle_display (false);
         }
 
         void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
