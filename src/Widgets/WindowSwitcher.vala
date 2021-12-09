@@ -332,7 +332,7 @@ namespace Gala {
             container.reactive = show;
         }
 
-        void push_modal() {
+        void push_modal () {
             modal_proxy = wm.push_modal ();
             modal_proxy.keybinding_filter = (binding) => {
                 // if it's not built-in, we can block it right away
