@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2021-12-10 15:17+0000\n"
-"Last-Translator: DartDeaDia <dartdeadia@protonmail.com>\n"
+"Last-Translator: Daniil <solodyankin.d@outlook.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -35,17 +35,15 @@ msgstr "Сохранить новые настройки экрана?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Изменения автоматически отменятся через 30 секунд."
 
 #: src/WindowManager.vala:2057
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Параметры системы…"
+msgstr "Сохранить настройки"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Использовать предыдущие настройки"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
