@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-12-10 11:44+0000\n"
-"Last-Translator: Daniil <solodyankin.d@outlook.com>\n"
+"PO-Revision-Date: 2021-12-10 15:17+0000\n"
+"Last-Translator: DartDeaDia <dartdeadia@protonmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -31,7 +31,7 @@ msgstr "Снимок экрана сделан"
 
 #: src/WindowManager.vala:2053
 msgid "Keep new display settings?"
-msgstr "Сохранить новые настройки дисплея?"
+msgstr "Сохранить новые настройки экрана?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
@@ -140,6 +140,7 @@ msgstr "Улучшения:"
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
 msgstr ""
+"Использовать портал доступа для отображения диалога подтверждения настроек"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
