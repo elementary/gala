@@ -364,7 +364,7 @@ namespace Gala {
             in_slot_animation = true;
             place_widgets (outer_rect.width, outer_rect.height);
 
-            GestureTracker.OnBegin on_animation_begin = () => {
+            GestureTracker.OnBegin on_animation_begin = (percentage) => {
                 window_icon.set_easing_duration (0);
             };
 
@@ -382,7 +382,7 @@ namespace Gala {
                 set_window_icon_position (width, height, false);
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -419,7 +419,11 @@ namespace Gala {
                 on_animation_begin (0);
                 on_animation_end (1, false, 0);
             } else {
-                gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (
+                    (percentage) => on_animation_begin (percentage),
+                    (percentage) => on_animation_update (percentage),
+                    (percentage, cancel_action, calculated_duration) => on_animation_end (percentage, cancel_action, calculated_duration)
+                );
             }
         }
 
@@ -453,7 +457,7 @@ namespace Gala {
                 set_window_icon_position (width, height, false);
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
                 if (cancel_action) {
@@ -491,7 +495,11 @@ namespace Gala {
             if (gesture_tracker == null || !with_gesture) {
                 on_animation_end (1, false, 0);
             } else {
-                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                gesture_tracker.connect_handlers (
+                    null,
+                    (percentage) => on_animation_update (percentage),
+                    (percentage, cancel_action, calculated_duration) => on_animation_end (percentage, cancel_action, calculated_duration)
+                );
             }
         }
 
