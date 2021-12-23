@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-12-09 08:55+0000\n"
+"PO-Revision-Date: 2021-12-23 14:19+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -122,9 +122,7 @@ msgstr "Pantheon 向けのコンポジット型ウィンドウマネージャー
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
-msgstr ""
-"libmutter をベースに elementary がデザインし、Pantheon での使用を想定した、コ"
-"ンポジット型ウィンドウマネージャーです。"
+msgstr "libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が Pantheon 向けにデザインしました。"
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
 #: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:53
