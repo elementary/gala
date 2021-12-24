@@ -56,7 +56,7 @@ namespace Gala {
             }
         }
 
-        void swap_background_actor () {
+        void swap_background_actor (bool animate) {
             return_if_fail (new_background_actor != null);
 
             var old_background_actor = background_actor;
@@ -66,22 +66,27 @@ namespace Gala {
             if (old_background_actor == null)
                 return;
 
-            var transition = new Clutter.PropertyTransition ("opacity");
-            transition.set_from_value (255);
-            transition.set_to_value (0);
-            transition.duration = FADE_ANIMATION_TIME;
-            transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
-            transition.remove_on_complete = true;
-            transition.completed.connect (() => {
+            if (animate) {
+                var transition = new Clutter.PropertyTransition ("opacity");
+                transition.set_from_value (255);
+                transition.set_to_value (0);
+                transition.duration = FADE_ANIMATION_TIME;
+                transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+                transition.remove_on_complete = true;
+                transition.completed.connect (() => {
+                    old_background_actor.destroy ();
+
+                    changed ();
+                });
+
+                old_background_actor.add_transition ("fade-out", transition);
+            } else {
                 old_background_actor.destroy ();
-
                 changed ();
-            });
-
-            old_background_actor.add_transition ("fade-out", transition);
+            }
         }
 
-        void update_background_actor () {
+        void update_background_actor (bool animate = true) {
             if (new_background_actor != null) {
                 // Skip displaying existing background queued for load
                 new_background_actor.destroy ();
@@ -108,7 +113,7 @@ namespace Gala {
 #endif
 
             if (background.is_loaded) {
-                swap_background_actor ();
+                swap_background_actor (animate);
                 return;
             }
 
@@ -117,13 +122,15 @@ namespace Gala {
                 SignalHandler.disconnect (background, handler);
                 background.set_data<ulong> ("background-loaded-handler", 0);
 
-                swap_background_actor ();
+                swap_background_actor (animate);
             });
             background.set_data<ulong> ("background-loaded-handler", handler);
         }
 
         public void set_size (float width, float height) {
-            background_actor.set_size (width, height);
+            if (width != background_actor.width || height != background_actor.height) {
+                update_background_actor (false);
+            }
         }
 
         Meta.BackgroundActor create_background_actor () {
