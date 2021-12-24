@@ -266,7 +266,7 @@ namespace Gala {
                 remove_window (window);
         }
 
-        void update_size (Meta.Rectangle monitor_geometry) {
+        public void update_size (Meta.Rectangle monitor_geometry) {
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
