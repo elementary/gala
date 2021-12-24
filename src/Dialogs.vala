@@ -61,6 +61,10 @@ namespace Gala {
         }
 
         public virtual signal void show () {
+            if (portal == null) {
+                return;
+            }
+
             path = new ObjectPath (GALA_DIALOG_PATH + "/%i".printf (Random.int_range (0, int.MAX)));
             string parent_handler = "";
             var app_id = "";
