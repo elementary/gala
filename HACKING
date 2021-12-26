@@ -85,7 +85,7 @@ Mutter works with plugins, although they are not implemented in the way you
 would maybe expect. In fact, you should better only load a single plugin at a
 time. This plugin will then be queried by mutter for animating windows or 
 workspaces and defining a few other things. The plugin also has the oppurtinity
-to add arbitrary ClutterActors to the stage or registring handlers for shortcuts.
+to add arbitrary ClutterActors to the stage or registering handlers for shortcuts.
 
 ===== Adding a new shell component ====
 
@@ -212,7 +212,7 @@ To see the last 5 revisions in the current branch:
 
     git log -5
 
-In the case you added something wrong or want to ammend it:
+In the case you added something wrong or want to amend it:
 
     git reset HEAD file
 
@@ -231,7 +231,7 @@ command and 'git help' lists all available commands.
 
 ====== Push proposed changes ======
 
-After you have commited your patch(es), just push it to your fork
+After you have committed your patch(es), just push it to your fork
 on Github and you can propose it for merging into master by creating a pull request. This will
 automatically request a review from other developers who can then comment on
 it and provide feedback.

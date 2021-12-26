@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
-    version: '6.2.0',
-    meson_version: '>= 0.49.0',
+    version: '6.3.0',
+    meson_version: '>= 0.50.0',
     license: 'GPL3',
 )
 
@@ -81,7 +81,6 @@ add_project_arguments([
 # Dependencies
 glib_version_required = '2.44.0'
 gtk_version_required = '3.10.0'
-plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
 canberra_dep = dependency('libcanberra')
@@ -91,13 +90,15 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
-plank_dep = dependency('plank', version: '>= @0@'.format(plank_version_required))
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 gexiv2_dep = dependency('gexiv2')
+if get_option('systemd')
+    systemd_dep = dependency('libsystemd')
+endif
 
 mutter_dep = []
 libmutter_dep = []
@@ -160,10 +161,18 @@ endif
 
 mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 
+if get_option('systemd')
+    vala_flags += ['--define', 'WITH_SYSTEMD']
+endif
+
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+
+if get_option('systemd')
+    gala_base_dep += systemd_dep
+endif
 
 subdir('data')
 subdir('lib')

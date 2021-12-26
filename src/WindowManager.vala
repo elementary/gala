@@ -138,6 +138,7 @@ namespace Gala {
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+            AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
@@ -243,27 +244,15 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 
             display.overlay_key.connect (() => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("overlay-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("overlay-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("panel-main-menu-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("panel-main-menu-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("toggle-recording-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("toggle-recording-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -350,6 +339,9 @@ namespace Gala {
 
             Idle.add (() => {
                 // let the session manager move to the next phase
+#if WITH_SYSTEMD
+                Systemd.Daemon.notify (true, "READY=1");
+#endif
 #if HAS_MUTTER41
                 display.get_context ().notify_ready ();
 #else
@@ -360,6 +352,15 @@ namespace Gala {
             });
 
             return false;
+        }
+
+        private void launch_action (string action_key) {
+            try {
+                var action = behavior_settings.get_string (action_key);
+                if (action != null && action != "") {
+                    Process.spawn_command_line_async (action);
+                }
+            } catch (Error e) { warning (e.message); }
         }
 
         void on_show_background_menu (int x, int y) {
@@ -468,8 +469,12 @@ namespace Gala {
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
             } else {
-                // if we didnt switch, show a nudge-over animation if one is not already in progress
-                play_nudge_animation (direction);
+                // if we didn't switch, show a nudge-over animation if one is not already in progress
+                if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
+                    ((MultitaskingView) workspace_view).play_nudge_animation (direction);
+                } else {
+                    play_nudge_animation (direction);
+                }
             }
         }
 
@@ -718,15 +723,22 @@ namespace Gala {
                 out x, out y);
         }
 
-        public void dim_window (Meta.Window window, bool dim) {
-            /*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
-            var win = window.get_compositor_private () as Meta.WindowActor;
-            if (dim) {
-                if (win.has_effects ())
-                    return;
-                win.add_effect_with_name ("darken", new Clutter.BlurEffect ());
-            } else
-                win.clear_effects ();*/
+        private void dim_parent_window (Meta.Window window, bool dim) {
+            unowned var ancestor = window.find_root_ancestor ();
+            if (ancestor != null && ancestor != window) {
+                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                // Can't rely on win.has_effects since other effects could be applied
+                if (dim) {
+                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
+                        var dark_effect = new Clutter.BrightnessContrastEffect ();
+                        dark_effect.set_brightness (-0.4f);
+
+                        win.add_effect_with_name ("dim-parent", dark_effect);
+                    }
+                } else if (win.get_effect ("dim-parent") != null) {
+                    win.remove_effect_by_name ("dim-parent");
+                }
+            }
         }
 
         /**
@@ -1356,12 +1368,12 @@ namespace Gala {
                     mapping.add (actor);
 
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
+                    actor.set_easing_duration (200);
                     actor.set_scale (1.0f, 1.0f);
                     actor.opacity = 255U;
                     actor.restore_easing_state ();
@@ -1377,11 +1389,7 @@ namespace Gala {
                         }
                     });
 
-                    var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
-                    if (appearance_settings.get_boolean ("dim-parents") &&
-                        window.window_type == Meta.WindowType.MODAL_DIALOG &&
-                        window.is_attached_dialog ())
-                        dim_window (window.find_root_ancestor (), true);
+                    dim_parent_window (window, true);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1447,8 +1455,8 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (100);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_easing_duration (150);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0U;
                     actor.restore_easing_state ();
 
@@ -1459,7 +1467,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    dim_window (window.find_root_ancestor (), false);
+                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
@@ -2041,24 +2049,28 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
-            var pid = Meta.Util.show_dialog ("--question",
-                _("Does the display look OK?"),
-                "30",
-                null,
-                _("Keep This Configuration"),
-                _("Restore Previous Configuration"),
-                "preferences-desktop-display",
-                0,
-                null, null);
+            var dialog = new AccessDialog (
+                _("Keep new display settings?"),
+                _("Changes will automatically revert after 30 seconds."),
+                "preferences-desktop-display"
+            ) {
+                accept_label = _("Keep Settings"),
+                deny_label = _("Use Previous Settings")
+            };
 
-            ChildWatch.add (pid, (pid, status) => {
-                var ok = false;
-                try {
-                    ok = Process.check_exit_status (status);
-                } catch (Error e) {}
+            dialog.show.connect (() => {
+                Timeout.add_seconds (30, () => {
+                    dialog.close ();
 
-                complete_display_change (ok);
+                    return Source.REMOVE;
+                });
             });
+
+            dialog.response.connect ((res) => {
+                complete_display_change (res == 0);
+            });
+
+            dialog.show ();
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {

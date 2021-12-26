@@ -57,7 +57,7 @@
         'custom-command'. If you instead use the pattern
         'hotcorner-topleft:command;;hotcorner-bottomright:command' the specific commands will be used
         per hotcorner. Possible identifiers are 'hotcorner-[topleft; topright; bottomleft; bottomright]'
-        followed by a ':' and then the command. ';;' is used as delimiter between command defintions.
+        followed by a ':' and then the command. ';;' is used as delimiter between command definitions.
       </description>
     </key>
     <key type="b" name="edge-tiling">
@@ -221,10 +221,6 @@
       <default>'close:maximize'</default>
       <summary>Arrangement of buttons on the titlebar</summary>
       <description>Arrangement of buttons on the titlebar. The value should be a string, such as "menu:minimize,maximize,spacer,close"; the colon separates the left corner of the window from the right corner, and the button names are comma-separated. Duplicate buttons are not allowed. Unknown button names are silently ignored so that buttons can be added in future metacity versions without breaking older versions. A special spacer tag can be used to insert some space between two adjacent buttons.</description>
-    </key>
-    <key type="b" name="dim-parents">
-      <default>false</default>
-      <summary>Dims parent windows when spawning modal dialogs</summary>
     </key>
     <key type="d" name="alt-tab-window-opacity">
       <range min="0.0" max="1.0"/>
