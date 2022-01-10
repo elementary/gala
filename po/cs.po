@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2022-01-10 18:13+0000\n"
+"PO-Revision-Date: 2022-01-10 21:14+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -157,27 +157,23 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:30
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Podpora pro jemné posouvání"
 
 #: data/gala.appdata.xml.in:31
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Předělaný přepínač Alt+Tab"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "Ztmavit rodičovské okno při vyvolávání modálních dialogů"
+msgstr "Ztmavení nadřazených oken modálních dialogů"
 
 #: data/gala.appdata.xml.in:33
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "Dialogy odpadnou na nadřazené namísto jejich odstřelení"
 
 #: data/gala.appdata.xml.in:42
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when taking screenshots"
-msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
+msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
 
 #: data/gala.appdata.xml.in:49
 msgid "New features:"
@@ -185,26 +181,26 @@ msgstr "Nové funkce:"
 
 #: data/gala.appdata.xml.in:51
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "Stash okno obraz-v-obraze vytlačením mimo obrazovku"
 
 #: data/gala.appdata.xml.in:55
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
+msgstr "Opraveny potenciální pády při změně pozadí plochy"
 
 #: data/gala.appdata.xml.in:64
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
+"V případě oken orámovaných na straně serveru zahrnout při pořizování snímku "
+"i tato orámování"
 
 #: data/gala.appdata.xml.in:73
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Přidána vícedotyková gesta"
 
 #: data/gala.appdata.xml.in:74
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
 
 #: data/gala.appdata.xml.in:75
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
@@ -222,29 +218,27 @@ msgstr "Při kliknutí pravým tlačítkem na pozadí zobrazit kontextovou nabí
 
 #: data/gala.appdata.xml.in:78
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Nové animace Prodlévající kliknutí a Najít ukazatel"
 
 #: data/gala.appdata.xml.in:79
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Do kontextové nabídky okna přidáno pořízení snímku obrazovky"
 
 #: data/gala.appdata.xml.in:80
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
+msgstr "Při pořizování snímků obrazovky vždy přehrát zvuk závěrky fotoaparátu"
 
 #: data/gala.appdata.xml.in:81
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Drobná vylepšení vzhledu"
 
 #: data/gala.appdata.xml.in:82
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "Opravy ohledně ultra vysokých rozlišení (HiDPI)"
 
 #: data/gala.appdata.xml.in:83
 msgid "Performance improvements"
-msgstr ""
+msgstr "Zlepšení výkonu"
 
 #: data/gala.appdata.xml.in:92
 msgid ""
