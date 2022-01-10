@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2022-01-10 21:14+0000\n"
+"PO-Revision-Date: 2022-01-11 03:35+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -33,7 +33,7 @@ msgstr "Ponechat nová nastavení zobrazení?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Změny budou za 30 sekund automaticky vzaty zpět."
 
 #: src/WindowManager.vala:2057
 msgid "Keep Settings"
@@ -41,7 +41,7 @@ msgstr "Ponechat nastavení"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Použít předchozí nastavení"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
@@ -51,7 +51,7 @@ msgstr "Snímky obrazovky pořízený %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Skrýt"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -78,10 +78,8 @@ msgid "Move to Workspace Right"
 msgstr "Přesunout na plochu vpravo"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Snímky obrazovky"
+msgstr "Zachytit snímek obrazovky"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -89,7 +87,7 @@ msgstr "Zavřít"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Zrušit titulek"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
@@ -137,7 +135,7 @@ msgstr "Vylepšení:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
-msgstr ""
+msgstr "Použit přístup portálu pro zobrazení dialogu potvrzení nastavení"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
@@ -149,11 +147,11 @@ msgstr "Aktualizovány překlady"
 
 #: data/gala.appdata.xml.in:24
 msgid "Fixes:"
-msgstr ""
+msgstr "Opravy:"
 
 #: data/gala.appdata.xml.in:26
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
+msgstr "Opraveno ořezávání stínování u oken orámovaných na straně serveru"
 
 #: data/gala.appdata.xml.in:30
 msgid "Support for high-resolution scroll events"
