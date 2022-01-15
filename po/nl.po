@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2022-01-15 13:42+0000\n"
-"Last-Translator: RobbeBuyle <robbe.buyle@telenet.be>\n"
+"Last-Translator: Niels Van Laerhoven <niels1995@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "Schermafbeelding van %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Verbergen"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -103,7 +103,7 @@ msgstr "Verander achtergrond…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "Scherminstellingen…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
