@@ -88,7 +88,6 @@ namespace Gala {
         Actor? prev_parent = null;
         Actor close_button;
         Actor icon_container;
-        Cogl.Material dummy_material;
 
         uint show_close_button_timeout = 0;
 
@@ -102,8 +101,6 @@ namespace Gala {
             var canvas = new Canvas ();
             canvas.draw.connect (draw);
             content = canvas;
-
-            dummy_material = new Cogl.Material ();
 
             drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
             drag_action.actor_clicked.connect (() => selected ());
