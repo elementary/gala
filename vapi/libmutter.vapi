@@ -137,14 +137,18 @@ namespace Meta {
 #endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_show_dialog")]
 		public static GLib.Pid show_dialog (string type, string message, string? timeout = null, string? display = null, string? ok_text = null, string? cancel_text = null, string? icon_name = null, int transient_for = 0, GLib.SList<string>? columns = null, GLib.SList<string>? entries = null);
+#if !HAS_MUTTER42
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
+#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_unsigned_long_equal")]
 		public static int ulong_equal ([CCode (type = "gconstpointer")] ulong? v1, [CCode (type = "gconstpointer")] ulong? v2);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_unsigned_long_hash")]
 		public static uint ulong_hash ([CCode (type = "gconstpointer")] ulong? v);
+#if !HAS_MUTTER42
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_verbose_real")]
 		public static void verbose_real (string format, ...);
+#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_warning")]
 		public static void warning (string format, ...);
 	}
@@ -159,16 +163,24 @@ namespace Meta {
 		public unowned Meta.IdleMonitor get_core_idle_monitor ();
 #endif
 		public unowned Meta.Dnd get_dnd ();
+#if HAS_MUTTER42
+		public unowned Meta.MonitorManager get_monitor_manager ();
+#endif
 		public unowned Meta.RemoteAccessController get_remote_access_controller ();
 		public unowned Meta.Settings get_settings ();
 		public unowned Clutter.Actor get_stage ();
+#if HAS_MUTTER42
+		public bool is_headless ();
+#endif
 		public bool is_rendering_hardware_accelerated ();
 		public void lock_layout_group (uint idx);
 		public void set_keymap (string layouts, string variants, string options);
 #if HAS_MUTTER41
 		public Meta.Context context { get; construct; }
 #endif
+#if !HAS_MUTTER42
 		public void set_numlock (bool numlock_state);
+#endif
 		public signal void keymap_changed ();
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (Clutter.InputDevice object);
@@ -352,6 +364,10 @@ namespace Meta {
 		public void terminate_with_error (GLib.Error error);
 		[NoAccessorMethod]
 		public string name { owned get; construct; }
+#if HAS_MUTTER42
+		[NoAccessorMethod]
+		public bool unsafe_mode { get; set; }
+#endif
 	}
 #endif
 	[CCode (cheader_filename = "meta/meta-cursor-tracker.h", type_id = "meta_cursor_tracker_get_type ()")]
@@ -365,6 +381,9 @@ namespace Meta {
 		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
 #endif
 		public bool get_pointer_visible ();
+#if HAS_MUTTER42
+		public float get_scale ();
+#endif
 		public unowned Cogl.Texture get_sprite ();
 		public void set_pointer_visible (bool visible);
 #if HAS_MUTTER338
@@ -444,6 +463,9 @@ namespace Meta {
 		public unowned Meta.X11Display get_x11_display ();
 		public uint grab_accelerator (string accelerator, Meta.KeyBindingFlags flags);
 		public bool is_pointer_emulating_sequence (Clutter.EventSequence? sequence);
+#if HAS_MUTTER42
+		public GLib.List<weak Meta.Window> list_all_windows ();
+#endif
 		public bool remove_keybinding (string name);
 		public void request_pad_osd (Clutter.InputDevice pad, bool edition_mode);
 		public void set_cursor (Meta.Cursor cursor);
@@ -569,6 +591,10 @@ namespace Meta {
 		public void switch_config (Meta.MonitorSwitchConfigType config_type);
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
+#if HAS_MUTTER42
+		[NoAccessorMethod]
+		public bool has_builtin_panel { get; }
+#endif
 #if HAS_MUTTER338
 		public bool panel_orientation_managed { get; }
 #endif
@@ -855,6 +881,9 @@ namespace Meta {
 		public unowned Meta.Workspace get_workspace ();
 		public X.Window get_xwindow ();
 		public void group_leader_changed ();
+#if HAS_MUTTER42
+		public bool has_attached_dialogs ();
+#endif
 		public bool has_focus ();
 		public bool is_above ();
 		public bool is_always_on_all_workspaces ();
@@ -923,6 +952,10 @@ namespace Meta {
 		public string gtk_window_object_path { get; }
 		[NoAccessorMethod]
 		public Cairo.Surface icon { owned get; }
+#if HAS_MUTTER42
+		[NoAccessorMethod]
+		public bool is_alive { get; }
+#endif
 		[NoAccessorMethod]
 		public bool maximized_horizontally { get; }
 		[NoAccessorMethod]
@@ -968,6 +1001,9 @@ namespace Meta {
 		public unowned Meta.Window get_meta_window ();
 		public unowned Meta.ShapedTexture get_texture ();
 		public bool is_destroyed ();
+#if HAS_MUTTER42
+		public Clutter.Content? paint_to_content (Meta.Rectangle? clip) throws GLib.Error;
+#endif
 		public void sync_visibility ();
 #if HAS_MUTTER338
 		public void thaw ();
@@ -1278,6 +1314,10 @@ namespace Meta {
 		SCREEN_CAST,
 		REMOTE_DESKTOP,
 #endif
+#if HAS_MUTTER42
+		BACKEND,
+		RENDER,
+#endif
 		DBUS
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_", type_id = "meta_direction_get_type ()")]
@@ -1433,7 +1473,9 @@ namespace Meta {
 		CYCLE_PANELS,
 		CYCLE_PANELS_BACKWARD,
 		SHOW_DESKTOP,
+#if !HAS_MUTTER42
 		PANEL_MAIN_MENU,
+#endif
 		PANEL_RUN_DIALOG,
 		TOGGLE_RECORDING,
 		SET_SPEW_MARK,
@@ -1745,10 +1787,6 @@ namespace Meta {
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void clutter_init ();
-#if HAS_MUTTER41
-	[CCode (cheader_filename = "meta/meta-context.h")]
-	public static Meta.Context create_context (string name);
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 #if !HAS_MUTTER41

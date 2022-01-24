@@ -278,9 +278,7 @@ namespace Gala {
             float nat_width, nat_height;
             container.get_preferred_size (null, null, out nat_width, null);
 
-            if (container.get_n_children () == 1) {
-                nat_width -= WRAPPER_PADDING * scaling_factor;
-            }
+            nat_width -= (WRAPPER_PADDING * scaling_factor) / container.get_n_children ();
 
             container.get_preferred_size (null, null, null, out nat_height);
 
@@ -304,11 +302,35 @@ namespace Gala {
                 (int) (geom.y + (geom.height - height) / 2)
             );
 
+            toggle_display (true);
+
+            // if we did not have the grab before the key was released, close immediately
+            if ((get_current_modifiers () & modifier_mask) == 0) {
+                close_switcher (wm.get_display ().get_current_time ());
+            }
+        }
+
+        void toggle_display (bool show) {
+            if (opened == show) {
+                return;
+            }
+
+            opened = show;
+            if (show) {
+                push_modal ();
+            } else {
+                wm.pop_modal (modal_proxy);
+            }
+
             save_easing_state ();
             set_easing_duration (200);
-            opacity = 255;
+            opacity = show ? 255 : 0;
             restore_easing_state ();
 
+            container.reactive = show;
+        }
+
+        void push_modal () {
             modal_proxy = wm.push_modal ();
             modal_proxy.keybinding_filter = (binding) => {
                 // if it's not built-in, we can block it right away
@@ -322,23 +344,13 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             };
 
-            opened = true;
-
             grab_key_focus ();
-
-            // if we did not have the grab before the key was released, close immediately
-            if ((get_current_modifiers () & modifier_mask) == 0) {
-                close_switcher (wm.get_display ().get_current_time ());
-            }
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
             if (!opened) {
                 return;
             }
-
-            wm.pop_modal (modal_proxy);
-            opened = false;
 
             var window = cur_icon.window;
             if (window == null) {
@@ -354,10 +366,7 @@ namespace Gala {
                 }
             }
 
-            save_easing_state ();
-            set_easing_duration (100);
-            opacity = 0;
-            restore_easing_state ();
+            toggle_display (false);
         }
 
         void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {

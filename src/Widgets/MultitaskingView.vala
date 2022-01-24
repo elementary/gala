@@ -157,6 +157,11 @@ namespace Gala {
 
             set_position (primary_geometry.x, primary_geometry.y);
             set_size (primary_geometry.width, primary_geometry.height);
+
+            foreach (var child in workspaces.get_children ()) {
+                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                workspace_clone.update_size (primary_geometry);
+            }
         }
 
         /**
