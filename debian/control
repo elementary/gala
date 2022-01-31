@@ -15,7 +15,7 @@ Build-Depends: debhelper (>= 10.5.1),
                libgnome-desktop-3-dev,
                libgranite-dev (>= 5.4.0),
                libgtk-3-dev (>= 3.10.0),
-               libmutter-9-dev | libmutter-8-dev | libmutter-7-dev | libmutter-6-dev | libmutter-dev (>= 3.35.1),
+               libmutter-9-dev | libmutter-8-dev | libmutter-7-dev | libmutter-6-dev,
                libxml2-utils,
                meson,
                valac (>= 0.28.0)
