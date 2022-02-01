@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-07-05 11:21+0000\n"
-"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
+"PO-Revision-Date: 2022-01-15 13:42+0000\n"
+"Last-Translator: Niels Van Laerhoven <niels1995@gmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -24,37 +24,34 @@ msgid "Screenshots"
 msgstr "Screenshots"
 
 #: src/ScreenshotManager.vala:336
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Screenshots"
+msgstr "Schermafbeelding genomen"
 
 #: src/WindowManager.vala:2053
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Nieuwe scherminstellingen behouden?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Veranderingen zullen automatisch worden teruggedraaid na 30 seconden."
 
 #: src/WindowManager.vala:2057
 msgid "Keep Settings"
-msgstr ""
+msgstr "Instellingen behouden"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Vorige instellingen terugzetten"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "Screenshots"
+msgstr "Schermafbeelding van %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Verbergen"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -81,10 +78,8 @@ msgid "Move to Workspace Right"
 msgstr "Verplaats naar rechter werkblad"
 
 #: daemon/MenuDaemon.vala:176
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Screenshots"
+msgstr "Schermafbeelding nemen"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -92,7 +87,7 @@ msgstr "Sluiten"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Stop met tegelen"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
@@ -104,15 +99,15 @@ msgstr "Maximaliseren"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Verander achtergrond…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "Scherminstellingen…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "Systeeminstellingen…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
@@ -140,7 +135,7 @@ msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
-msgstr ""
+msgstr "Gebruik toegangsportaal om scherminstellingen te bevestigen"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
@@ -152,101 +147,102 @@ msgstr "Bijgewerkte vertalingen"
 
 #: data/gala.appdata.xml.in:24
 msgid "Fixes:"
-msgstr ""
+msgstr "Fixes:"
 
 #: data/gala.appdata.xml.in:26
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
+msgstr "Los schaduwclipping op bij door de server gedecoreerde vensters"
 
 #: data/gala.appdata.xml.in:30
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Ondersteuning voor scrolevenementen met een hoge resolutie"
 
 #: data/gala.appdata.xml.in:31
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Vernieuwde Alt + Tab schakelaar"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr ""
-"Dim de hoofdvensters als een daaraan gehecht dialoogvenster wordt geopend"
+msgstr "Verdimt de ouders van modale dialoogvensters"
 
 #: data/gala.appdata.xml.in:33
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "Dialoogvensters vallen neer op ouders in plaats van omhoog te schieten"
 
 #: data/gala.appdata.xml.in:42
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when taking screenshots"
 msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
 #: data/gala.appdata.xml.in:49
 msgid "New features:"
-msgstr ""
+msgstr "Nieuwe functionaliteit:"
 
 #: data/gala.appdata.xml.in:51
 msgid "Stash the picture-in-picture window by pushing it off screen"
 msgstr ""
+"Verberg het picture-in-picture venster door het van het scherm af te duwen"
 
 #: data/gala.appdata.xml.in:55
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
-msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
+msgstr ""
+"Een mogelijke crash verholpen bij het veranderen van het "
+"bureaubladachtergrond"
 
 #: data/gala.appdata.xml.in:64
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
+"Begrijp vensterdecoraties in op schermafbeeldingen van door de server "
+"gedecoreerde vensters"
 
 #: data/gala.appdata.xml.in:73
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Multitouch-gebaren zijn toegevoegd"
 
 #: data/gala.appdata.xml.in:74
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Toon venstertitels in het multitasking overzicht"
 
 #: data/gala.appdata.xml.in:75
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
+"Sluit de Alt + Tab schakelaar door op Esc te drukken zonder Alt lost te laten"
 
 #: data/gala.appdata.xml.in:76
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
+"Maximaal zoomniveau verhoogt en geef feedback wanneer inzoomen niet mogelijk "
+"is"
 
 #: data/gala.appdata.xml.in:77
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "Toon een contextmenu met een secondaire muisklik op de achtergrond"
 
 #: data/gala.appdata.xml.in:78
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Nieuwe Zwevend Klikken en Vind Aanwijzer animaties"
 
 #: data/gala.appdata.xml.in:79
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Voeg Neem Schermafbeelding toe aan het contextmenu van vensters"
 
 #: data/gala.appdata.xml.in:80
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
+msgstr ""
+"Speel altijd het camerasluiter geluid af bij het nemen van een "
+"schermafbeelding"
 
 #: data/gala.appdata.xml.in:81
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Kleine visuele verbeteringen"
 
 #: data/gala.appdata.xml.in:82
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI fixes"
 
 #: data/gala.appdata.xml.in:83
 msgid "Performance improvements"
-msgstr ""
+msgstr "Prestatie verbeteringen"
 
 #: data/gala.appdata.xml.in:92
 msgid ""
