@@ -288,6 +288,14 @@
     </key>
   </schema>
 
+  <schema path="/org/pantheon/desktop/gala/sounds/" id="org.pantheon.desktop.gala.sounds">
+    <key type="b" name="play-login-sound">
+      <default>true</default>
+      <summary>Play login sound</summary>
+      <description>Whether a sound should be played on login.</description>
+    </key>
+  </schema>
+
   <schema path="/org/pantheon/desktop/gala/mask-corners/" id="org.pantheon.desktop.gala.mask-corners">
     <key type="b" name="enable">
       <default>true</default>
