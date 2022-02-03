@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2021-11-17 14:30+0000\n"
+"PO-Revision-Date: 2022-02-03 16:47+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -29,24 +29,20 @@ msgid "Screenshot taken"
 msgstr "Captura de ecrã tirada"
 
 #: src/WindowManager.vala:2053
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Definições de Ecrã…"
+msgstr "Manter a novas definições de ecrã?"
 
 #: src/WindowManager.vala:2054
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "As alterações irão reverter automaticamente após 30 segundos."
 
 #: src/WindowManager.vala:2057
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Definições do Sistema…"
+msgstr "Manter definições"
 
 #: src/WindowManager.vala:2058
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Usar definições anteriores"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2084
@@ -141,6 +137,8 @@ msgstr "Melhorias:"
 #: data/gala.appdata.xml.in:17
 msgid "Use access portal for display settings confirmation dialog"
 msgstr ""
+"Utilizar o portal de acesso para o diálogo de confirmação das definições de "
+"ecrã"
 
 #: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
@@ -155,11 +153,9 @@ msgid "Fixes:"
 msgstr "Correções:"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Include window decorations for server-side decorated windows"
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr ""
-"Incluir decorações de janela para janelas decoradas pelo servidor gráfico"
+"Corrije o recorte de sombra em janelas decoradas do lado do servidor gráfico"
 
 #: data/gala.appdata.xml.in:30
 msgid "Support for high-resolution scroll events"
