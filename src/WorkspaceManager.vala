@@ -46,6 +46,9 @@ namespace Gala {
             // There are some empty workspace at startup
             cleanup ();
 
+            unowned Meta.SoundPlayer sound_player = display.get_sound_player ();
+            sound_player.play_from_theme ("login", "", null);
+
             if (Prefs.get_dynamic_workspaces ())
                 manager.override_workspace_layout (DisplayCorner.TOPLEFT, false, 1, -1);
 
