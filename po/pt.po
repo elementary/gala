@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2021-12-01 22:41+0000\n"
-"PO-Revision-Date: 2022-02-03 16:47+0000\n"
+"PO-Revision-Date: 2022-02-22 19:40+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -159,17 +159,15 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:30
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Suporte para eventos de deslocamento de alta resolução"
 
 #: data/gala.appdata.xml.in:31
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Alternador de Alt + Tab redesenhado"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "Escurecer janelas principais ao gerar caixas de diálogo modais"
+msgstr "Escurecer os principais dos diálogos modais"
 
 #: data/gala.appdata.xml.in:33
 msgid "Dialogs fall down on parents instead of shooting out"
@@ -183,7 +181,7 @@ msgstr "Corrige possíveis falhas ao tirar capturas de ecrã"
 
 #: data/gala.appdata.xml.in:49
 msgid "New features:"
-msgstr ""
+msgstr "Novas funcionalidades:"
 
 #: data/gala.appdata.xml.in:51
 msgid "Stash the picture-in-picture window by pushing it off screen"
