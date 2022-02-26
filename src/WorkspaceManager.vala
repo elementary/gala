@@ -31,6 +31,8 @@ namespace Gala {
 
         public WindowManager wm { get; construct; }
 
+        private SessionStateManager session_state;
+
         Gee.LinkedList<Workspace> workspaces_marked_removed;
         int remove_freeze_count = 0;
 
@@ -46,11 +48,14 @@ namespace Gala {
             // There are some empty workspace at startup
             cleanup ();
 
-            var sounds_settings = new GLib.Settings ("org.pantheon.desktop.gala.sounds");
-            if (sounds_settings.get_boolean ("play-login-sound")) {
-                unowned Meta.SoundPlayer sound_player = display.get_sound_player ();
-                sound_player.play_from_theme ("login", "", null);
-            }
+            session_state = new SessionStateManager ();
+            session_state.session_running.connect (() => {
+                var sounds_settings = new GLib.Settings ("org.pantheon.desktop.gala.sounds");
+                if (sounds_settings.get_boolean ("play-login-sound")) {
+                    unowned Meta.SoundPlayer sound_player = display.get_sound_player ();
+                    sound_player.play_from_theme ("login", "", null);
+                }
+            });
 
             if (Prefs.get_dynamic_workspaces ())
                 manager.override_workspace_layout (DisplayCorner.TOPLEFT, false, 1, -1);
