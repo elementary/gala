@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-11-07 01:37+0000\n"
+"POT-Creation-Date: 2021-12-01 22:41+0000\n"
 "PO-Revision-Date: 2021-07-05 11:21+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
@@ -29,20 +29,28 @@ msgstr "स्क्रीनशॉट"
 msgid "Screenshot taken"
 msgstr "स्क्रीनशॉट"
 
-#: src/WindowManager.vala:2052
-msgid "Does the display look OK?"
-msgstr "डिस्प्ले ठीक दिसत आहे का?"
+#: src/WindowManager.vala:2053
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "प्रदर्शन सेटिंग्ज…"
 
-#: src/WindowManager.vala:2055
-msgid "Keep This Configuration"
-msgstr "हे कॉन्फिगरेशन ठेवा"
+#: src/WindowManager.vala:2054
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
 
-#: src/WindowManager.vala:2056
-msgid "Restore Previous Configuration"
-msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
+#: src/WindowManager.vala:2057
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "प्रणाली संयोजना …"
+
+#: src/WindowManager.vala:2058
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2079
+#: src/WindowManager.vala:2084
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
@@ -126,156 +134,169 @@ msgstr ""
 "लिंबमुटरवर आधारीत एक विंडो आणि कम्पोझिटिंग मॅनेजर पॅन्थिओन सह वापरासाठी प्राथमिक द्वारे "
 "डिझाइन केलेले."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:27
-#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:49
-#: data/gala.appdata.xml.in:58 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:87 data/gala.appdata.xml.in:96
-#: data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:28
+#: data/gala.appdata.xml.in:40 data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:109 data/gala.appdata.xml.in:120
 msgid "Improvements:"
 msgstr "सुधारणा:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Support for high-resolution scroll events"
+msgid "Use access portal for display settings confirmation dialog"
 msgstr ""
 
-#: data/gala.appdata.xml.in:18
-msgid "Redesigned Alt + Tab switcher"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19
-msgid "Dim the parents of modal dialogs"
-msgstr ""
-
-#: data/gala.appdata.xml.in:20
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
-
-#: data/gala.appdata.xml.in:21 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:52
-#: data/gala.appdata.xml.in:71 data/gala.appdata.xml.in:81
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:43 data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:65 data/gala.appdata.xml.in:84
+#: data/gala.appdata.xml.in:94 data/gala.appdata.xml.in:103
+#: data/gala.appdata.xml.in:114
 msgid "Updated translations"
 msgstr "अद्ययावत भाषांतर"
 
-#: data/gala.appdata.xml.in:29
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
-msgid "Fix a potential crash when taking screenshots"
-msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
-
-#: data/gala.appdata.xml.in:36
-msgid "New features:"
+#: data/gala.appdata.xml.in:24
+msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:38
-msgid "Stash the picture-in-picture window by pushing it off screen"
+#: data/gala.appdata.xml.in:26
+msgid "Fix shadow clipping on server-side decorated windows"
+msgstr ""
+
+#: data/gala.appdata.xml.in:30
+msgid "Support for high-resolution scroll events"
+msgstr ""
+
+#: data/gala.appdata.xml.in:31
+msgid "Redesigned Alt + Tab switcher"
+msgstr ""
+
+#: data/gala.appdata.xml.in:32
+msgid "Dim the parents of modal dialogs"
+msgstr ""
+
+#: data/gala.appdata.xml.in:33
+msgid "Dialogs fall down on parents instead of shooting out"
 msgstr ""
 
 #: data/gala.appdata.xml.in:42
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
+msgid "Fix a potential crash when taking screenshots"
+msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
+
+#: data/gala.appdata.xml.in:49
+msgid "New features:"
+msgstr ""
+
+#: data/gala.appdata.xml.in:51
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr ""
+
+#: data/gala.appdata.xml.in:55
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash while changing wallpapers"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:64
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.appdata.xml.in:73
 msgid "Add multitouch gestures"
 msgstr ""
 
-#: data/gala.appdata.xml.in:61
+#: data/gala.appdata.xml.in:74
 msgid "Show window titles in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:75
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr "Alt न सोडता Esc दाबून Alt + Tab स्विचर बंद करा"
 
-#: data/gala.appdata.xml.in:63
+#: data/gala.appdata.xml.in:76
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr "अधिकतम झूम पातळी वाढवा आणि झूम करण्यास अक्षम असताना अभिप्राय प्रदान करा"
 
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:77
 msgid "Show a context menu when secondary clicking the background"
 msgstr "पार्श्वभूमीवर दुय्यम क्लिक करताना संदर्भ मेनू दर्शवा"
 
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:78
 msgid "New Dwell Click and Locate Pointer animations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:79
 msgid "Add Take Screenshot to window context menu"
 msgstr ""
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:80
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Always play shutter sound when taking screenshots"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:81
 msgid "Minor visual improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:82
 msgid "HiDPI fixes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:70
+#: data/gala.appdata.xml.in:83
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:79
+#: data/gala.appdata.xml.in:92
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
 "कार्यक्षेत्र बदलताना “नेहमीच दृश्यमान कार्यक्षेत्र” विंडो अदृश्य होण्याशी संबंधित अडचणी दूर करा"
 
-#: data/gala.appdata.xml.in:80
+#: data/gala.appdata.xml.in:93
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "कार्यक्षेत्र बदलत असताना प्राथमिक नसलेल्या डिस्पलेवर विंडो अदृश्य होण्याशी संबंधित समस्या "
 "सोडवा"
 
-#: data/gala.appdata.xml.in:89
+#: data/gala.appdata.xml.in:102
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr "क्षणिक विंडो उघडत असताना कार्यक्षेत्र बदलताना होणाऱ्या क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:98
+#: data/gala.appdata.xml.in:111
 msgid "Don't show Gala Background Services in the dock"
 msgstr "डॉकमध्ये गाला पार्श्वभूमी सेवा दर्शवू नका"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:112
 msgid "Fixes for media key handling"
 msgstr "मीडिया की हाताळणीशी संबंधित समस्यांसाठी निराकरणे"
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:113
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "हेडरबार मेनूमध्ये कीबोर्ड शॉर्टकट दाखवा"
 
-#: data/gala.appdata.xml.in:109
+#: data/gala.appdata.xml.in:122
 msgid "Improve window shadows for legacy apps"
 msgstr "लेगसी अॅप्ससाठी विंडो सावली सुधारित करा"
 
-#: data/gala.appdata.xml.in:110
+#: data/gala.appdata.xml.in:123
 msgid "Fix potential crash when taking screenshots"
 msgstr "स्क्रीनशॉट घेताना संभाव्य क्रॅशचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:111
+#: data/gala.appdata.xml.in:124
 msgid "Fix notification position after changing DPI"
 msgstr "डीपीआय बदलल्यानंतर सूचना स्थितीशी संबंधित समस्यांचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:112
+#: data/gala.appdata.xml.in:125
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "टाइल केलेल्या विंडो हलविण्यासाठी आणि जास्तीत जास्त करण्यासाठी अ‍ॅनिमेशनचे निराकरण करा"
 
-#: data/gala.appdata.xml.in:118
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "एलिमेंटरी,Inc."
 
@@ -303,6 +324,15 @@ msgstr "कालबाह्य अनुप्रयोगांकडील �
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "डिस्प्ले ठीक दिसत आहे का?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "हे कॉन्फिगरेशन ठेवा"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
 
 #~ msgid "Minimize"
 #~ msgstr "कमीतकमी करा"

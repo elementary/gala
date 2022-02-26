@@ -139,6 +139,7 @@ namespace Gala {
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+            AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
@@ -472,7 +473,7 @@ namespace Gala {
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
             } else {
-                // if we didnt switch, show a nudge-over animation if one is not already in progress
+                // if we didn't switch, show a nudge-over animation if one is not already in progress
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
                     ((MultitaskingView) workspace_view).play_nudge_animation (direction);
                 } else {
@@ -727,19 +728,19 @@ namespace Gala {
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {
-            if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
-                var ancestor = window.find_root_ancestor ();
-                if (ancestor != null && ancestor != window) {
-                    var win = (Meta.WindowActor) ancestor.get_compositor_private ();
-                    // Can't rely on win.has_effects since other effects could be applied
-                    if (dim) {
+            unowned var ancestor = window.find_root_ancestor ();
+            if (ancestor != null && ancestor != window) {
+                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                // Can't rely on win.has_effects since other effects could be applied
+                if (dim) {
+                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
 
-                        win.add_effect (dark_effect);
-                    } else {
-                        win.clear_effects ();
+                        win.add_effect_with_name ("dim-parent", dark_effect);
                     }
+                } else if (win.get_effect ("dim-parent") != null) {
+                    win.remove_effect_by_name ("dim-parent");
                 }
             }
         }
@@ -2052,24 +2053,28 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
-            var pid = Meta.Util.show_dialog ("--question",
-                _("Does the display look OK?"),
-                "30",
-                null,
-                _("Keep This Configuration"),
-                _("Restore Previous Configuration"),
-                "preferences-desktop-display",
-                0,
-                null, null);
+            var dialog = new AccessDialog (
+                _("Keep new display settings?"),
+                _("Changes will automatically revert after 30 seconds."),
+                "preferences-desktop-display"
+            ) {
+                accept_label = _("Keep Settings"),
+                deny_label = _("Use Previous Settings")
+            };
 
-            ChildWatch.add (pid, (pid, status) => {
-                var ok = false;
-                try {
-                    ok = Process.check_exit_status (status);
-                } catch (Error e) {}
+            dialog.show.connect (() => {
+                Timeout.add_seconds (30, () => {
+                    dialog.close ();
 
-                complete_display_change (ok);
+                    return Source.REMOVE;
+                });
             });
+
+            dialog.response.connect ((res) => {
+                complete_display_change (res == 0);
+            });
+
+            dialog.show ();
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {

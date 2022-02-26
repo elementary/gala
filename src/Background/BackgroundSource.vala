@@ -48,7 +48,7 @@ namespace Gala {
             Meta.MonitorManager.@get ().monitors_changed.connect (monitors_changed);
 
             // unfortunately the settings sometimes tend to fire random changes even though
-            // nothing actually happend. The code below is used to prevent us from spamming
+            // nothing actually happened. The code below is used to prevent us from spamming
             // new actors all the time, which lead to some problems in other areas of the code
             for (int i = 0; i < OPTIONS.length; i++) {
                 hash_cache[i] = settings.get_value (OPTIONS[i]).hash ();

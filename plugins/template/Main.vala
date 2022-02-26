@@ -65,7 +65,7 @@ namespace Gala.Plugins.Template {
             track_actor (red_box);
 
             // now we'll add our box into the ui_group. This is where all the shell
-            // elements and also the windows and backgrouds are located.
+            // elements and also the windows and backgrounds are located.
             wm.ui_group.add_child (red_box);
         }
 

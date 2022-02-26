@@ -245,7 +245,7 @@ namespace Gala {
 
         /**
          * If workspaces are dynamic, checks if there are empty workspaces that should
-         * be removed. Particularily useful in conjunction with freeze/thaw_remove to
+         * be removed. Particularly useful in conjunction with freeze/thaw_remove to
          * cleanup after an operation that required stable workspace/window indices
          */
         public void cleanup () {
