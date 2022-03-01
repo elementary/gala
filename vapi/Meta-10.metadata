@@ -65,10 +65,10 @@ KeyHandlerFunc cheader_filename="meta/prefs.h"
 KeyHandlerFunc.event type="Clutter.KeyEvent?"
 KeyHandlerFunc.window nullable
 LaunchContext cheader_filename="meta/meta-launch-context.h"
+Laters cheader_filename="meta/types.h"
 LaterType cheader_filename="meta/util.h"
 LocaleDirection cheader_filename="meta/util.h"
 MaximizeFlags cheader_filename="meta/window.h"
-ModalOptions cheader_filename="meta/meta-plugin.h"
 MonitorManager cheader_filename="meta/meta-monitor-manager.h"
 MonitorSwitchConfigType cheader_filename="meta/meta-monitor-manager.h"
 MotionDirection cheader_filename="meta/common.h"
@@ -123,6 +123,9 @@ WindowShape cheader_filename="meta/meta-window-shape.h"
 WindowType cheader_filename="meta/window.h"
 X11Display cheader_filename="meta/meta-x11-display.h"
 
+// As per https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2287
+MonitorManager.monitor_privacy_screen_changed skip
+
 rect skip
 prefs_* parent="Meta.Prefs" name="prefs_(.+)" cheader_filename="meta/prefs.h"
 
@@ -144,6 +147,11 @@ PRIORITY_REDRAW cheader_filename="meta/common.h"
 PRIORITY_PREFS_NOTIFY cheader_filename="meta/common.h"
 VIRTUAL_CORE_POINTER_ID cheader_filename="meta/common.h"
 VIRTUAL_CORE_KEYBOARD_ID cheader_filename="meta/common.h"
+
+Display.window_visibility_updated
+	.object name="unplaced" type="GLib.List<unowned Meta.Window>"
+	.p0 name="should_show" type="GLib.List<unowned Meta.Window>"
+	.p1 name="should_hide" type="GLib.List<unowned Meta.Window>"
 
 add_verbose_topic parent="Meta.Util" cheader_filename="meta/util.h"
 bug parent="Meta.Util" cheader_filename="meta/util.h"
