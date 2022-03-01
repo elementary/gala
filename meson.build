@@ -155,9 +155,9 @@ if mutter41_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41']
 endif
 
-mutter42_dep = dependency('libmutter-10', version: ['>= 42', '< 43'], required: false)
+mutter42_dep = dependency('libmutter-10', version: ['>= 42.beta', '< 43'], required: false)
 if mutter42_dep.found()
-	libmutter_dep = dependency('libmutter-10', version: '>= 42')
+	libmutter_dep = dependency('libmutter-10', version: '>= 42.beta')
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-cogl-10'), dependency('mutter-cogl-pango-10'),
