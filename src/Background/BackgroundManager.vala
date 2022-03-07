@@ -127,7 +127,7 @@ namespace Gala {
             background.set_data<ulong> ("background-loaded-handler", handler);
         }
 
-        public void set_size (float width, float height) {
+        public new void set_size (float width, float height) {
             if (width != background_actor.width || height != background_actor.height) {
                 update_background_actor (false);
             }
