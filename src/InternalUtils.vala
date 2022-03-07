@@ -124,7 +124,7 @@ namespace Gala {
 
                     // add plugin's requested areas
                     if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
-                        foreach (var rect in PluginManager.get_default ().regions) {
+                        foreach (var rect in PluginManager.get_default ().get_regions ()) {
                             rects += rect;
                         }
                     }

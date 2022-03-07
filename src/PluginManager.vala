@@ -31,7 +31,10 @@ namespace Gala {
 
         public bool initialized { get; private set; default = false; }
 
-        public X.Xrectangle[] regions { get; private set; }
+        private X.Xrectangle[] _regions = {};
+        public X.Xrectangle[] get_regions () {
+            return _regions;
+        }
 
         public string? window_switcher_provider { get; private set; default = null; }
         public string? desktop_provider { get; private set; default = null; }
@@ -201,7 +204,7 @@ namespace Gala {
             X.Xrectangle[] regions = {};
 
             plugins.@foreach ((name, plugin) => {
-                foreach (var region in plugin.region) {
+                foreach (var region in plugin.get_region ()) {
                     X.Xrectangle rect = {
                         (short) region.x,
                         (short) region.y,
@@ -213,7 +216,7 @@ namespace Gala {
                 }
             });
 
-            this.regions = regions;
+            this._regions = regions;
             regions_changed ();
         }
     }

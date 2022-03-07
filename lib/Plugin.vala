@@ -86,23 +86,23 @@ namespace Gala {
          * It is calculated by the system whenever update_region is called.
          * You can influce it with the custom_region and the track_actor function.
          */
-        public Meta.Rectangle[] region { get; private set; }
-
+        private Meta.Rectangle[] region;
+        public Meta.Rectangle[] get_region () {
+            return region;
+        }
         /**
          * This list will be merged with the region property. See region for
          * more details. Changing this property will cause update_region to be
          * called. Default to null.
          */
-        protected Meta.Rectangle[]? custom_region {
-            get {
-                return _custom_region;
-            }
-            protected set {
-                _custom_region = value;
-                update_region ();
-            }
+        private Meta.Rectangle[]? _custom_region = null;
+        protected Meta.Rectangle[]? get_custom_region () {
+            return _custom_region;
         }
-
+        protected void set_custom_region (Meta.Rectangle[]? custom_region) {
+            _custom_region = custom_region;
+            update_region ();
+        }
         /**
          * Set this property to true while animating an actor if you have tracked
          * actors to prevent constant recalculations of the regions during an
@@ -121,7 +121,6 @@ namespace Gala {
         }
 
         private bool _freeze_track = false;
-        private Meta.Rectangle[]? _custom_region = null;
         private List<Clutter.Actor> tracked_actors = new List<Clutter.Actor> ();
 
         /**
@@ -174,6 +173,7 @@ namespace Gala {
          * wm aware of the new position of the actor in question.
          */
         public void update_region () {
+            var custom_region = get_custom_region ();
             var has_custom = custom_region != null;
             var len = tracked_actors.length () + (has_custom ? custom_region.length : 0);
 
