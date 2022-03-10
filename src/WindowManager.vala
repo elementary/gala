@@ -2046,14 +2046,16 @@ namespace Gala {
                 return false;
 
             var modal_proxy = modal_stack.peek_head ();
-            if (modal_proxy != null) {
-                var filter = modal_proxy.get_keybinding_filter ();
-                if (filter != null) {
-                    return filter (binding);
-                }
+            if (modal_proxy == null) {
+                return false;
             }
 
-            return false;
+            var filter = modal_proxy.get_keybinding_filter ();
+            if (filter == null) {
+                return false;
+            }
+
+            return filter (binding);
         }
 
         public override void confirm_display_change () {
