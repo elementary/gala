@@ -123,11 +123,10 @@ namespace Gala {
                     rects = {topleft, topright, bottomleft, bottomright};
 
                     // add plugin's requested areas
-                    if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
-                        foreach (var rect in PluginManager.get_default ().regions) {
-                            rects += rect;
-                        }
+                    foreach (var rect in PluginManager.get_default ().regions) {
+                        rects += rect;
                     }
+
                     break;
                 case InputArea.NONE:
                 default:
