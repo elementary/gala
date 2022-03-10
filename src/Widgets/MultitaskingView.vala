@@ -323,7 +323,7 @@ namespace Gala {
 
                 var duration = is_nudge_animation ?
                                (uint)(AnimationDuration.NUDGE / 2) :
-                               (uint)(calculated_duration.clamp (0, AnimationDuration.WORKSPACE_SWITCH));
+                               (uint)calculated_duration;
 
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
