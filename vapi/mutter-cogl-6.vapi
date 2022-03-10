@@ -1136,8 +1136,6 @@ namespace Cogl {
 #if HAS_MUTTER42
 		[CCode (cname = "COGL_FEATURE_ID_TIMESTAMP_QUERY")]
 		OGL_FEATURE_ID_TIMESTAMP_QUERY,
-		[CCode (cname = "COGL_FEATURE_ID_GET_GPU_TIME")]
-		OGL_FEATURE_ID_GET_GPU_TIME,
 #endif
 		[CCode (cname = "COGL_FEATURE_ID_TEXTURE_EGL_IMAGE_EXTERNAL")]
 		OGL_FEATURE_ID_TEXTURE_EGL_IMAGE_EXTERNAL
@@ -1369,7 +1367,7 @@ namespace Cogl {
 		SYNC_AND_COMPLETE_EVENT,
 		N_FEATURES
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BITMAP_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BITMAP_ERROR_", has_type_id = false)]
 	[Version (since = "1.4")]
 	public errordomain BitmapError {
 		FAILED,
@@ -1377,7 +1375,7 @@ namespace Cogl {
 		CORRUPT_IMAGE;
 		public static uint32 quark ();
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BLEND_STRING_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BLEND_STRING_ERROR_", has_type_id = false)]
 	[Version (since = "1.0")]
 	public errordomain BlendStringError {
 		PARSE_ERROR,
@@ -1387,13 +1385,18 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h")]
 		public static uint32 quark ();
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_FRAMEBUFFER_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_FRAMEBUFFER_ERROR_", has_type_id = false)]
 	public errordomain FramebufferError {
 		[CCode (cname = "COGL_FRAMEBUFFER_ERROR_ALLOCATE")]
 		FRAMEBUFFER_ERROR_ALLOCATE
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_RENDERER_ERROR_", has_type_id = false)]
+	public errordomain RendererError {
+		XLIB_DISPLAY_OPEN,
+		BAD_CONSTRAINT
+	}
 #if HAS_MUTTER40
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SCANOUT_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SCANOUT_ERROR_", has_type_id = false)]
 	public errordomain ScanoutError {
 		[CCode (cname = "COGL_SCANOUT_ERROR_INHIBITED")]
 		SCANOUT_ERROR_INHIBITED;
@@ -1401,18 +1404,13 @@ namespace Cogl {
 		public static GLib.Quark quark ();
 	}
 #endif
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_RENDERER_ERROR_")]
-	public errordomain RendererError {
-		XLIB_DISPLAY_OPEN,
-		BAD_CONSTRAINT
-	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SYSTEM_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SYSTEM_ERROR_", has_type_id = false)]
 	[Version (since = "1.4")]
 	public errordomain SystemError {
 		UNSUPPORTED,
 		NO_MEMORY
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_ERROR_", has_type_id = false)]
 	[Version (since = "1.8")]
 	public errordomain TextureError {
 		SIZE,
@@ -1464,7 +1462,7 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h", cname = "COGL_TEXTURE_MAX_WASTE")]
 	public const int TEXTURE_MAX_WASTE;
 	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static bool blit_framebuffer (Cogl.Framebuffer src, Cogl.Framebuffer dest, int src_x, int src_y, int dst_x, int dst_y, int width, int height) throws GLib.Error;
+	public static bool blit_framebuffer (Cogl.Framebuffer framebuffer, Cogl.Framebuffer dst, int src_x, int src_y, int dst_x, int dst_y, int width, int height) throws GLib.Error;
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static bool clutter_winsys_has_feature_CLUTTER (Cogl.WinsysFeature feature);
 #if !HAS_MUTTER40

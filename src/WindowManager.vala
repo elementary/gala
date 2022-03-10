@@ -677,7 +677,9 @@ namespace Gala {
             var time = display.get_current_time ();
 
             update_input_area ();
+#if !HAS_MUTTER42
             begin_modal (0, time);
+#endif
 
             display.disable_unredirect ();
 
@@ -699,7 +701,9 @@ namespace Gala {
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             end_modal (display.get_current_time ());
+#endif
 
             display.enable_unredirect ();
         }
