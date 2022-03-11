@@ -67,7 +67,7 @@ namespace Gala {
          * @see KeybindingFilter
          */
         private KeybindingFilter? _keybinding_filter = () => true;
-        public KeybindingFilter? get_keybinding_filter () {
+        public unowned KeybindingFilter? get_keybinding_filter () {
             return _keybinding_filter;
         }
 
