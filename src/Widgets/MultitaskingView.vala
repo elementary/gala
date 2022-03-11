@@ -322,8 +322,8 @@ namespace Gala {
                 workspace_gesture_tracker.enabled = false;
 
                 var duration = is_nudge_animation ?
-                               (uint)(AnimationDuration.NUDGE / 2) :
-                               (uint)calculated_duration;
+                               (uint) (AnimationDuration.NUDGE / 2) :
+                               (uint) calculated_duration;
 
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
