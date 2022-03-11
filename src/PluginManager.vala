@@ -32,7 +32,7 @@ namespace Gala {
         public bool initialized { get; private set; default = false; }
 
         private X.Xrectangle[] _regions = {};
-        public X.Xrectangle[] get_regions () {
+        public unowned X.Xrectangle[] get_regions () {
             return _regions;
         }
 
