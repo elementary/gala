@@ -87,7 +87,7 @@ namespace Gala {
          * You can influce it with the custom_region and the track_actor function.
          */
         private Meta.Rectangle[] region;
-        public Meta.Rectangle[] get_region () {
+        public unowned Meta.Rectangle[] get_region () {
             return region;
         }
         /**
