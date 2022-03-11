@@ -96,7 +96,7 @@ namespace Gala {
          * called. Default to null.
          */
         private Meta.Rectangle[]? _custom_region = null;
-        protected Meta.Rectangle[]? get_custom_region () {
+        protected unowned Meta.Rectangle[]? get_custom_region () {
             return _custom_region;
         }
         protected void set_custom_region (Meta.Rectangle[]? custom_region) {
