@@ -785,6 +785,7 @@ namespace Gala {
                 case KeyBindingAction.WORKSPACE_LEFT:
                 case KeyBindingAction.WORKSPACE_RIGHT:
                 case KeyBindingAction.SHOW_DESKTOP:
+                case KeyBindingAction.OVERLAY_KEY:
                     return false;
                 default:
                     return true;
