@@ -2050,7 +2050,7 @@ namespace Gala {
                 return false;
             }
 
-            var filter = modal_proxy.get_keybinding_filter ();
+           unowned var filter = modal_proxy.get_keybinding_filter ();
             if (filter == null) {
                 return false;
             }
