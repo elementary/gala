@@ -173,7 +173,7 @@ namespace Gala {
          * wm aware of the new position of the actor in question.
          */
         public void update_region () {
-            var custom_region = get_custom_region ();
+            unowned var custom_region = get_custom_region ();
             var has_custom = custom_region != null;
             var len = tracked_actors.length () + (has_custom ? custom_region.length : 0);
 
