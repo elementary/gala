@@ -321,7 +321,10 @@ namespace Gala {
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 workspace_gesture_tracker.enabled = false;
 
-                var duration = is_nudge_animation ? (AnimationDuration.NUDGE / 2) : calculated_duration;
+                var duration = is_nudge_animation ?
+                               (uint) (AnimationDuration.NUDGE / 2) :
+                               (uint) calculated_duration;
+
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
 
@@ -590,7 +593,7 @@ namespace Gala {
 
             if (opening) {
                 modal_proxy = wm.push_modal ();
-                modal_proxy.keybinding_filter = keybinding_filter;
+                modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 wm.background_group.hide ();
                 wm.window_group.hide ();

@@ -66,7 +66,14 @@ namespace Gala {
          * Defaults to blocking all.
          * @see KeybindingFilter
          */
-        public KeybindingFilter? keybinding_filter { get; owned set; default = () => true; }
+        private KeybindingFilter? _keybinding_filter = () => true;
+        public unowned KeybindingFilter? get_keybinding_filter () {
+            return _keybinding_filter;
+        }
+
+        public void set_keybinding_filter (KeybindingFilter? filter) {
+            _keybinding_filter = filter;
+        }
 
         public ModalProxy () {
         }
@@ -75,7 +82,7 @@ namespace Gala {
          * Small utility to allow all keybindings
          */
         public void allow_all_keybindings () {
-            keybinding_filter = null;
+            _keybinding_filter = null;
         }
     }
 

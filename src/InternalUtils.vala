@@ -123,7 +123,7 @@ namespace Gala {
                     rects = {topleft, topright, bottomleft, bottomright};
 
                     // add plugin's requested areas
-                    foreach (var rect in PluginManager.get_default ().regions) {
+                    foreach (var rect in PluginManager.get_default ().get_regions ()) {
                         rects += rect;
                     }
 
