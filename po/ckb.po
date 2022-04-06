@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-06 20:14+0000\n"
+"PO-Revision-Date: 2022-04-06 20:24+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
 "desktop/gala/ckb/>\n"
@@ -132,23 +132,23 @@ msgstr "چاککردنەکان:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Properly update accent color in the window switcher"
-msgstr ""
+msgstr "نوێکردنەوەی ڕەنگی ئەکسێنت لە بەشێوەیەکی گونجاو"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix selecting windows underneath the window switcher"
-msgstr ""
+msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "ڕێگریکردن لە چەند کێشەیەک کە دەکرا لە داهاتوودا ڕووبدەن"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "ڕیسایزکردنی ناوچەکارەکان کاتێک ڕونما دەگۆڕدرێت"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "کۆنتڕۆڵکردنی پەنجەرە بێ ناو نیشانەکان"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -159,17 +159,12 @@ msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
-msgstr ""
-"بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ دایەلۆگی دڵنیابوونەوەی ڕێکخستنەکانی ڕونما"
+msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ دایەلۆگی دڵنیابوونەوەی ڕێکخستنەکانی ڕونما"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "پشاندنی تایتڵی پەنجەرەکان لە دیمەنی مەڵتی-تاسکینگدا"
+msgstr "ڕێگەدان بە داخستنی دیمەنی مەڵتی-تاسکینگ بە کلیلی سوپەر"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
