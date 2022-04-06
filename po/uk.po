@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2021-12-02 03:54+0000\n"
+"PO-Revision-Date: 2022-04-07 01:39+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -132,28 +132,24 @@ msgid "Fixes:"
 msgstr "Виправлення:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
 msgid "Properly update accent color in the window switcher"
-msgstr ""
-"Прозорість вікон, що знаходяться на задньому фоні при перемиканні по alt-tab."
+msgstr "Правильне оновлення основного кольору у перемикачі вікна"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
 msgid "Fix selecting windows underneath the window switcher"
-msgstr ""
-"Прозорість вікон, що знаходяться на задньому фоні при перемиканні по alt-tab."
+msgstr "Виправлено вибір вікон під перемикачем вікна"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Усунено ймовірність збоїв"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Зміна розміру робочих просторів, коли показується зміна"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Обробка вікон без заголовків"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -164,18 +160,14 @@ msgid "Improvements:"
 msgstr "Удосконалення:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
 msgstr ""
-"Використовувати портал доступу для діалогового вікна підтвердження "
-"налаштувань дисплея"
+"Використовувати портал доступу для вікна підтвердження налаштувань дисплея "
+"та швидкого виходу"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Показ назв вікон у багатозадачному поданні"
+msgstr "Дозволено закриття багатозадачного подання клавішею Super"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
