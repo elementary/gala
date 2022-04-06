@@ -25,6 +25,7 @@ Package: gala
 Architecture: any
 Depends: gnome-settings-daemon (>= 3.15.2),
          gsettings-desktop-schemas,
+         io.elementary.portals (>=1.1.0),
          libgala0 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
