@@ -677,7 +677,9 @@ namespace Gala {
             var time = display.get_current_time ();
 
             update_input_area ();
+#if !HAS_MUTTER42
             begin_modal (0, time);
+#endif
 
             display.disable_unredirect ();
 
@@ -699,7 +701,9 @@ namespace Gala {
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             end_modal (display.get_current_time ());
+#endif
 
             display.enable_unredirect ();
         }
@@ -2042,10 +2046,16 @@ namespace Gala {
                 return false;
 
             var modal_proxy = modal_stack.peek_head ();
+            if (modal_proxy == null) {
+                return false;
+            }
 
-            return (modal_proxy != null
-                && modal_proxy.keybinding_filter != null
-                && modal_proxy.keybinding_filter (binding));
+           unowned var filter = modal_proxy.get_keybinding_filter ();
+            if (filter == null) {
+                return false;
+            }
+
+            return filter (binding);
         }
 
         public override void confirm_display_change () {
