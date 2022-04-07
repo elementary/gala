@@ -72,9 +72,9 @@ namespace Gala {
         WindowSwitcher? winswitcher = null;
         ActivatableComponent? window_overview = null;
 
-        // used to detect which corner was used to trigger an action
-        Clutter.Actor? last_hotcorner;
         public ScreenSaverManager? screensaver { get; private set; }
+
+        HotCornerManager? hot_corner_manager = null;
 
         /**
          * Allow to zoom in/out the entire desktop.
@@ -138,6 +138,7 @@ namespace Gala {
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
+            AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
@@ -146,21 +147,19 @@ namespace Gala {
             });
         }
 
-        void on_menu_get (GLib.Object? o, GLib.AsyncResult? res) {
-            try {
-                daemon_proxy = Bus.get_proxy.end (res);
-            } catch (Error e) {
-                warning ("Failed to get Menu proxy: %s", e.message);
-            }
-        }
-
         void lost_daemon () {
             daemon_proxy = null;
         }
 
         void daemon_appeared () {
             if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, on_menu_get);
+                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
+                    try {
+                        daemon_proxy = Bus.get_proxy.end (res);
+                    } catch (Error e) {
+                        warning ("Failed to get Menu proxy: %s", e.message);
+                    }
+                });
             }
         }
 
@@ -245,27 +244,15 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
 
             display.overlay_key.connect (() => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("overlay-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("overlay-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("panel-main-menu-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("panel-main-menu-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
-                try {
-                    Process.spawn_command_line_async (
-                        behavior_settings.get_string ("toggle-recording-action")
-                    );
-                } catch (Error e) { warning (e.message); }
+                launch_action ("toggle-recording-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -286,11 +273,11 @@ namespace Gala {
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
             shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
-            /*hot corner, getting enum values from GraniteServicesSettings did not work, so we use GSettings directly*/
-            configure_hotcorners ();
             Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
 
-            behavior_settings.changed.connect (configure_hotcorners);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings);
+            hot_corner_manager.on_configured.connect (update_input_area);
+            hot_corner_manager.configure ();
 
             zoom = new Zoom (this);
 
@@ -350,15 +337,30 @@ namespace Gala {
 
             stage.show ();
 
-            // let the session manager move to the next phase
-            Meta.register_with_session ();
-
             Idle.add (() => {
+                // let the session manager move to the next phase
+#if WITH_SYSTEMD
+                Systemd.Daemon.notify (true, "READY=1");
+#endif
+#if HAS_MUTTER41
+                display.get_context ().notify_ready ();
+#else
+                Meta.register_with_session ();
+#endif
                 plugin_manager.load_waiting_plugins ();
-                return false;
+                return GLib.Source.REMOVE;
             });
 
             return false;
+        }
+
+        private void launch_action (string action_key) {
+            try {
+                var action = behavior_settings.get_string (action_key);
+                if (action != null && action != "") {
+                    Process.spawn_command_line_async (action);
+                }
+            } catch (Error e) { warning (e.message); }
         }
 
         void on_show_background_menu (int x, int y) {
@@ -366,63 +368,17 @@ namespace Gala {
                 return;
             }
 
-            try {
-                daemon_proxy.show_desktop_menu.begin (x, y);
-            } catch (Error e) {
-                message ("Error invoking MenuManager: %s", e.message);
-            }
+                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
+                    try {
+                        ((Daemon) obj).show_desktop_menu.end (res);
+                    } catch (Error e) {
+                        message ("Error invoking MenuManager: %s", e.message);
+                    }
+                });
         }
 
         void on_monitors_changed () {
-            configure_hotcorners ();
             screen_shield.expand_to_screen_size ();
-        }
-
-        void configure_hotcorners () {
-            unowned Meta.Display display = get_display ();
-            var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
-
-            add_hotcorner (geometry.x, geometry.y, "hotcorner-topleft");
-            add_hotcorner (geometry.x + geometry.width - 1, geometry.y, "hotcorner-topright");
-            add_hotcorner (geometry.x, geometry.y + geometry.height - 1, "hotcorner-bottomleft");
-            add_hotcorner (geometry.x + geometry.width - 1, geometry.y + geometry.height - 1, "hotcorner-bottomright");
-
-            update_input_area ();
-        }
-
-        void add_hotcorner (float x, float y, string key) {
-            unowned Clutter.Actor? stage = get_display ().get_stage ();
-            return_if_fail (stage != null);
-
-            var action = (ActionType) behavior_settings.get_enum (key);
-            Clutter.Actor? hot_corner = stage.find_child_by_name (key);
-
-            if (action == ActionType.NONE) {
-                if (hot_corner != null)
-                    stage.remove_child (hot_corner);
-                return;
-            }
-
-            // if the hot corner already exists, just reposition it, create it otherwise
-            if (hot_corner == null) {
-                hot_corner = new Clutter.Actor ();
-                hot_corner.width = 1;
-                hot_corner.height = 1;
-                hot_corner.opacity = 0;
-                hot_corner.reactive = true;
-                hot_corner.name = key;
-
-                stage.add_child (hot_corner);
-
-                hot_corner.enter_event.connect ((actor, event) => {
-                    last_hotcorner = actor;
-                    perform_action ((ActionType) behavior_settings.get_enum (actor.name));
-                    return false;
-                });
-            }
-
-            hot_corner.x = x;
-            hot_corner.y = y;
         }
 
         [CCode (instance_pos = -1)]
@@ -513,8 +469,12 @@ namespace Gala {
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
             } else {
-                // if we didnt switch, show a nudge-over animation if one is not already in progress
-                play_nudge_animation (direction);
+                // if we didn't switch, show a nudge-over animation if one is not already in progress
+                if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
+                    ((MultitaskingView) workspace_view).play_nudge_animation (direction);
+                } else {
+                    play_nudge_animation (direction);
+                }
             }
         }
 
@@ -717,7 +677,9 @@ namespace Gala {
             var time = display.get_current_time ();
 
             update_input_area ();
+#if !HAS_MUTTER42
             begin_modal (0, time);
+#endif
 
             display.disable_unredirect ();
 
@@ -739,7 +701,9 @@ namespace Gala {
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             end_modal (display.get_current_time ());
+#endif
 
             display.enable_unredirect ();
         }
@@ -763,15 +727,22 @@ namespace Gala {
                 out x, out y);
         }
 
-        public void dim_window (Meta.Window window, bool dim) {
-            /*FIXME we need a super awesome blureffect here, the one from clutter is just... bah!
-            var win = window.get_compositor_private () as Meta.WindowActor;
-            if (dim) {
-                if (win.has_effects ())
-                    return;
-                win.add_effect_with_name ("darken", new Clutter.BlurEffect ());
-            } else
-                win.clear_effects ();*/
+        private void dim_parent_window (Meta.Window window, bool dim) {
+            unowned var ancestor = window.find_root_ancestor ();
+            if (ancestor != null && ancestor != window) {
+                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+                // Can't rely on win.has_effects since other effects could be applied
+                if (dim) {
+                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
+                        var dark_effect = new Clutter.BrightnessContrastEffect ();
+                        dark_effect.set_brightness (-0.4f);
+
+                        win.add_effect_with_name ("dim-parent", dark_effect);
+                    }
+                } else if (win.get_effect ("dim-parent") != null) {
+                    win.remove_effect_by_name ("dim-parent");
+                }
+            }
         }
 
         /**
@@ -858,34 +829,6 @@ namespace Gala {
                         warning (e.message);
                     }
                     break;
-                case ActionType.CUSTOM_COMMAND:
-                    string command = "";
-                    var line = behavior_settings.get_string ("hotcorner-custom-command");
-                    if (line == "")
-                        return;
-
-                    var parts = line.split (";;");
-                    // keep compatibility to old version where only one command was possible
-                    if (parts.length == 1) {
-                        command = line;
-                    } else {
-                        // find specific actions
-                        var search = last_hotcorner.name;
-
-                        foreach (var part in parts) {
-                            var details = part.split (":");
-                            if (details[0] == search) {
-                                command = details[1];
-                            }
-                        }
-                    }
-
-                    try {
-                        Process.spawn_command_line_async (command);
-                    } catch (Error e) {
-                        warning (e.message);
-                    }
-                    break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null)
                         break;
@@ -913,7 +856,7 @@ namespace Gala {
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
-                    screenshot_current_window ();
+                    screenshot_current_window.begin ();
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -959,11 +902,13 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    try {
-                        daemon_proxy.show_window_menu.begin (flags, x, y);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
+                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
+                        try {
+                            ((Daemon) obj).show_window_menu.end (res);
+                        } catch (Error e) {
+                            message ("Error invoking MenuManager: %s", e.message);
+                        }
+                    });
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
@@ -1427,12 +1372,12 @@ namespace Gala {
                     mapping.add (actor);
 
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
+                    actor.set_easing_duration (200);
                     actor.set_scale (1.0f, 1.0f);
                     actor.opacity = 255U;
                     actor.restore_easing_state ();
@@ -1448,11 +1393,7 @@ namespace Gala {
                         }
                     });
 
-                    var appearance_settings = new GLib.Settings (Config.SCHEMA + ".appearance");
-                    if (appearance_settings.get_boolean ("dim-parents") &&
-                        window.window_type == Meta.WindowType.MODAL_DIALOG &&
-                        window.is_attached_dialog ())
-                        dim_window (window.find_root_ancestor (), true);
+                    dim_parent_window (window, true);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1518,8 +1459,8 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (100);
-                    actor.set_scale (0.9f, 0.9f);
+                    actor.set_easing_duration (150);
+                    actor.set_scale (1.05f, 1.05f);
                     actor.opacity = 0U;
                     actor.restore_easing_state ();
 
@@ -1530,7 +1471,7 @@ namespace Gala {
                         destroy_completed (actor);
                     });
 
-                    dim_window (window.find_root_ancestor (), false);
+                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
@@ -2105,31 +2046,52 @@ namespace Gala {
                 return false;
 
             var modal_proxy = modal_stack.peek_head ();
+            if (modal_proxy == null) {
+                return false;
+            }
 
-            return (modal_proxy != null
-                && modal_proxy.keybinding_filter != null
-                && modal_proxy.keybinding_filter (binding));
+           unowned var filter = modal_proxy.get_keybinding_filter ();
+            if (filter == null) {
+                return false;
+            }
+
+            return filter (binding);
         }
 
         public override void confirm_display_change () {
-            var pid = Meta.Util.show_dialog ("--question",
-                _("Does the display look OK?"),
-                "30",
-                null,
-                _("Keep This Configuration"),
-                _("Restore Previous Configuration"),
-                "preferences-desktop-display",
-                0,
-                null, null);
+            var dialog = new AccessDialog (
+                _("Keep new display settings?"),
+                _("Changes will automatically revert after 30 seconds."),
+                "preferences-desktop-display"
+            ) {
+                accept_label = _("Keep Settings"),
+                deny_label = _("Use Previous Settings")
+            };
 
-            ChildWatch.add (pid, (pid, status) => {
-                var ok = false;
-                try {
-                    ok = Process.check_exit_status (status);
-                } catch (Error e) {}
+            dialog.show.connect (() => {
+                Timeout.add_seconds (30, () => {
+                    dialog.close ();
 
-                complete_display_change (ok);
+                    return Source.REMOVE;
+                });
             });
+
+            dialog.response.connect ((res) => {
+                complete_display_change (res == 0);
+            });
+
+            dialog.show ();
+        }
+
+        public override unowned Meta.CloseDialog create_close_dialog (Meta.Window window) {
+            var new_dialog = CloseDialog.open_dialogs.first_match ((d) => d.window == window);
+
+            if (new_dialog == null) {
+                new_dialog = new CloseDialog (window);
+            }
+
+            unowned var dialog = new_dialog;
+            return dialog;
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {

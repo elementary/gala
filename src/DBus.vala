@@ -119,7 +119,7 @@ namespace Gala {
 
         private DBus () {
             if (wm.background_group != null)
-                (wm.background_group as BackgroundContainer).changed.connect (() => background_changed ());
+                ((BackgroundContainer) wm.background_group).changed.connect (() => background_changed ());
             else
                 assert_not_reached ();
         }
@@ -134,8 +134,13 @@ namespace Gala {
         class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
 
+#if HAS_MUTTER40
+            public override void post_paint (Clutter.PaintNode node, Clutter.PaintContext context) {
+                base.post_paint (node, context);
+#else
             public override void post_paint (Clutter.PaintContext context) {
                 base.post_paint (context);
+#endif
                 done_painting ();
             }
         }
@@ -149,7 +154,7 @@ namespace Gala {
         }
 
         /**
-         * Emitted when the background change occured and the transition ended.
+         * Emitted when the background change occurred and the transition ended.
          * You can safely call get_optimal_panel_alpha then. It is not guaranteed
          * that this signal will be emitted only once per group of changes as often
          * done by GUIs. The change may not be visible to the user.

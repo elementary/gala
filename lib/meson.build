@@ -28,7 +28,14 @@ gala_lib = shared_library(
     version : '0.0.0'
 )
 
-install_data('gala.deps', install_dir: join_paths(get_option('datadir'), 'vala', 'vapi'))
+deps_conf = configuration_data()
+deps_conf.set('MUTTER_DEP', libmutter_dep.name())
+config_h = configure_file(
+    input: 'gala.deps.in',
+    output: '@BASENAME@',
+    configuration: deps_conf,
+    install_dir: join_paths(get_option('datadir'), 'vala', 'vapi')
+)
 
 gala_dep = declare_dependency(link_with: [gala_lib], include_directories: include_directories('.'))
 

@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-06-30 13:27+0000\n"
+"POT-Creation-Date: 2022-04-06 20:14+0000\n"
+"PO-Revision-Date: 2022-04-07 15:05+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
-">\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,28 +20,33 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-28 05:04+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Captures d'écran"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
-#: src/WindowManager.vala:2116
-msgid "Does the display look OK?"
-msgstr "L'affichage semble-t-il correct ?"
+#: src/WindowManager.vala:2063
+msgid "Keep new display settings?"
+msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2119
-msgid "Keep This Configuration"
-msgstr "Conserver cette configuration"
+#: src/WindowManager.vala:2064
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
+"Les modifications seront automatiquement annulées au bout de 30 secondes."
 
-#: src/WindowManager.vala:2120
-msgid "Restore Previous Configuration"
-msgstr "Restaurer la configuration précédente"
+#: src/WindowManager.vala:2067
+msgid "Keep Settings"
+msgstr "Conserver les paramètres"
+
+#: src/WindowManager.vala:2068
+msgid "Use Previous Settings"
+msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2143
+#: src/WindowManager.vala:2094
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
@@ -122,69 +127,155 @@ msgstr ""
 "Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
 "par elementary pour être utilisé avec Panthéon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:33
+msgid "Fixes:"
+msgstr "Corrections :"
+
+#: data/gala.appdata.xml.in:17
+msgid "Properly update accent color in the window switcher"
+msgstr ""
+"Mise à jour cohérente de la couleur d'accentuation dans le sélecteur de "
+"fenêtres"
+
+#: data/gala.appdata.xml.in:18
+msgid "Fix selecting windows underneath the window switcher"
+msgstr ""
+"Correction de la sélection des fenêtres en arrière-plan du sélecteur de "
+"fenêtre"
+
+#: data/gala.appdata.xml.in:19
+msgid "Prevent potential crashes"
+msgstr "Prévention de plantages potentiels"
+
+#: data/gala.appdata.xml.in:20
+msgid "Resize workspaces when displays change"
+msgstr "Redimensionnement des espaces de travail lors du changement d'écran"
+
+#: data/gala.appdata.xml.in:21
+msgid "Handle windows with no title"
+msgstr "Prise en charge des fenêtres sans titre"
+
+#: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:71 data/gala.appdata.xml.in:80
+#: data/gala.appdata.xml.in:99 data/gala.appdata.xml.in:109
+#: data/gala.appdata.xml.in:118 data/gala.appdata.xml.in:129
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.appdata.xml.in:17
+#: data/gala.appdata.xml.in:25
+msgid "Use access portal for display settings confirmation and force quit"
+msgstr ""
+"Utiliser le portail d'accès pour la boîte de confirmation des paramètres "
+"d'affichage et forcer à quitter"
+
+#: data/gala.appdata.xml.in:26
+msgid "Allow closing multitasking view with Super"
+msgstr "Autoriser la fermeture de la vue multitâche avec la touche Super"
+
+#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:74 data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
+#: data/gala.appdata.xml.in:123
+msgid "Updated translations"
+msgstr "Mise à jour des traductions"
+
+#: data/gala.appdata.xml.in:35
+msgid "Fix shadow clipping on server-side decorated windows"
+msgstr "Correction de la distorsion de l'ombre sur les fenêtres côté serveur"
+
+#: data/gala.appdata.xml.in:39
+msgid "Support for high-resolution scroll events"
+msgstr "Prise en charge des événements de défilement de haute résolution"
+
+#: data/gala.appdata.xml.in:40
+msgid "Redesigned Alt + Tab switcher"
+msgstr "Nouveau design du sélecteur Alt + Tab"
+
+#: data/gala.appdata.xml.in:41
+msgid "Dim the parents of modal dialogs"
+msgstr "Réduction des parents des boîtes de dialogue"
+
+#: data/gala.appdata.xml.in:42
+msgid "Dialogs fall down on parents instead of shooting out"
+msgstr "Les dialogues se rabattent sur les parents au lieu de se fermer"
+
+#: data/gala.appdata.xml.in:51
+msgid "Fix a potential crash when taking screenshots"
+msgstr ""
+"Correction d'un plantage potentiel lors de la prise de captures d'écran"
+
+#: data/gala.appdata.xml.in:58
+msgid "New features:"
+msgstr "Nouvelles fonctionnalités :"
+
+#: data/gala.appdata.xml.in:60
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr "Fermez le mode picture-in-picture dans le faisant sortir de l'écran"
+
+#: data/gala.appdata.xml.in:64
+msgid "Fix a potential crash while changing wallpapers"
+msgstr "Correction d'un plantage potentiel lors du changement de fond d'écran"
+
+#: data/gala.appdata.xml.in:73
+msgid ""
+"Include window decorations in screenshots for server-side decorated windows"
+msgstr ""
+"Inclure des décorations de fenêtre dans les captures d'écran pour les "
+"fenêtres décorées côté serveur"
+
+#: data/gala.appdata.xml.in:82
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Ajout du multi-touch"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:83
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Afficher le nom des fenêtres dans la vue multitâche"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:84
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr ""
 "Fermez le gestionnaire de fenêtres Alt + Tab en appuyant sur Échap sans "
 "relâcher la touche Alt"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:85
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Augmentation du niveau de zoom maximum et envoi de commentaires si il est "
 "impossible de zoomer"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:86
 msgid "Show a context menu when secondary clicking the background"
 msgstr "Affiche un menu contextuel lors d'un clic droit sur le fond d'écran"
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.appdata.xml.in:87
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Nouvelles animations de clic prolongé et de localisation du pointeur"
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.appdata.xml.in:88
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Ajout de Prendre une capture d'écran au menu contextuel des fenêtres"
 
-#: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
+#: data/gala.appdata.xml.in:89
 msgid "Always play shutter sound when taking screenshots"
 msgstr ""
-"Correction de plantages potentiels lors de la prise de captures d'écran"
+"Lecture systématique du son de l'obturateur lors de la prise de captures "
+"d'écran"
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:90
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Améliorations visuelles mineures"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:91
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "Corrections pour les résolutions HiDPI"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:92
 msgid "Performance improvements"
-msgstr ""
+msgstr "Améliorations des performances"
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "Mise à jour des traductions"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:101
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -192,53 +283,53 @@ msgstr ""
 "Correction des fenêtres configurées comme « toujours sur l'espace de travail "
 "visible » qui disparaissaient lors du changement d'espace de travail"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:102
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Correction des fenêtres qui disparaissaient lors du changement d'espace de "
 "travail sur les écrans non-principaux"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:111
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Correction d'un plantage au moment du changement d'espace de travail lors de "
 "l'ouverture d'une fenêtre"
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:120
 msgid "Don't show Gala Background Services in the dock"
 msgstr ""
 "Les services en arrière-plan de Gala ne sont plus affichés dans le dock"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:121
 msgid "Fixes for media key handling"
 msgstr "Corrections pour la gestion des touches de média"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:122
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Affichage des raccourcis claviers dans les menus d'entête"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:131
 msgid "Improve window shadows for legacy apps"
 msgstr "Amélioration des ombres des fenêtres pour les applications officielles"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:132
 msgid "Fix potential crash when taking screenshots"
 msgstr ""
 "Correction de plantages potentiels lors de la prise de captures d'écran"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:133
 msgid "Fix notification position after changing DPI"
 msgstr ""
 "Correction de la position des notifications après la modification du DPI"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:134
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
 "Correction des animations de déplacement et d'agrandissement des fenêtres "
 "tuilées"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:140
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -268,6 +359,15 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "L'affichage semble-t-il correct ?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Conserver cette configuration"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Restaurer la configuration précédente"
 
 #~ msgid "Minimize"
 #~ msgstr "Réduire"
@@ -448,16 +548,6 @@ msgstr "applications-other"
 #~ "versions de metacity sans casser les anciennes versions. Une balise "
 #~ "spéciale « spacer » permet d'insérer un peu d'espace entre deux boutons "
 #~ "adjacents."
-
-#~ msgid "Dims parent windows when spawning modal dialogs"
-#~ msgstr ""
-#~ "Rendre une fenêtre parente assombrie lorsque celle-ci ouvre une boîte de "
-#~ "dialogue"
-
-#~ msgid "The opacity of windows behind the window switcher."
-#~ msgstr ""
-#~ "L'opacité des fenêtres se trouvant en arrière plan lors du basculement "
-#~ "entre fenêtres."
 
 #~ msgid "Background-image used in the workspace-switcher"
 #~ msgstr "Arrière-plan utilisé avec la bascule d'espaces de travail"

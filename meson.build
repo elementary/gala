@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
-    version: '6.0.0',
-    meson_version: '>= 0.48.0',
+    version: '6.3.1',
+    meson_version: '>= 0.50.0',
     license: 'GPL3',
 )
 
@@ -22,12 +22,15 @@ endif
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 
+locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
 pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('LOCALEDIR', locale_dir)
 conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
@@ -78,7 +81,6 @@ add_project_arguments([
 # Dependencies
 glib_version_required = '2.44.0'
 gtk_version_required = '3.10.0'
-plank_version_required = '0.11.0'
 gsd_version_required = '3.15.2'
 
 canberra_dep = dependency('libcanberra')
@@ -88,12 +90,15 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
-plank_dep = dependency('plank', version: '>= @0@'.format(plank_version_required))
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
+posix_dep = vala.find_library('posix', required: false)
 gexiv2_dep = dependency('gexiv2')
+if get_option('systemd')
+    systemd_dep = dependency('libsystemd')
+endif
 
 mutter_dep = []
 libmutter_dep = []
@@ -126,16 +131,59 @@ if mutter338_dep.found()
 		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
 endif
 
+mutter40_dep = dependency('libmutter-8', version: ['>= 40', '< 41'], required: false)
+if mutter40_dep.found()
+	libmutter_dep = dependency('libmutter-8', version: '>= 40')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-8'), dependency('mutter-cogl-pango-8'),
+		dependency('mutter-clutter-8')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
+	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
+		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
+endif
+
+mutter41_dep = dependency('libmutter-9', version: ['>= 41', '< 42'], required: false)
+if mutter41_dep.found()
+	libmutter_dep = dependency('libmutter-9', version: '>= 41')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-9'), dependency('mutter-cogl-pango-9'),
+		dependency('mutter-clutter-9')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41']
+endif
+
+mutter42_dep = dependency('libmutter-10', version: ['>= 42', '< 43'], required: false)
+if mutter42_dep.found()
+	libmutter_dep = dependency('libmutter-10', version: '>= 42')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-10'), dependency('mutter-cogl-pango-10'),
+		dependency('mutter-clutter-10')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41', '--define', 'HAS_MUTTER42']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
 
 mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
 
+if get_option('systemd')
+    vala_flags += ['--define', 'WITH_SYSTEMD']
+endif
+
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, plank_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+
+if get_option('systemd')
+    gala_base_dep += systemd_dep
+endif
 
 subdir('data')
 subdir('lib')

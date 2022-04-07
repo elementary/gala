@@ -88,7 +88,6 @@ namespace Gala {
         Actor? prev_parent = null;
         Actor close_button;
         Actor icon_container;
-        Cogl.Material dummy_material;
 
         uint show_close_button_timeout = 0;
 
@@ -102,9 +101,6 @@ namespace Gala {
             var canvas = new Canvas ();
             canvas.draw.connect (draw);
             content = canvas;
-            resize_canvas ();
-
-            dummy_material = new Cogl.Material ();
 
             drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
             drag_action.actor_clicked.connect (() => selected ());
@@ -119,6 +115,8 @@ namespace Gala {
             icon_container.height = height;
 
             add_child (icon_container);
+
+            resize_canvas ();
 
             close_button = Utils.create_close_button ();
             place_close_button ();
@@ -505,7 +503,7 @@ namespace Gala {
             return false;
         }
 
-        Actor drag_begin (float click_x, float click_y) {
+        Actor? drag_begin (float click_x, float click_y) {
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Prefs.get_dynamic_workspaces () &&

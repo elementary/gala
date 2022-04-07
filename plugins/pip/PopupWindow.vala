@@ -23,6 +23,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private const float MINIMUM_SCALE = 0.1f;
     private const float MAXIMUM_SCALE = 1.0f;
     private const int SCREEN_MARGIN = 0;
+    private const float OFF_SCREEN_PERCENT = 0.5f;
+    private const int OFF_SCREEN_VISIBLE_PIXELS = 80;
 
     public signal void closed ();
 
@@ -44,6 +46,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private float resize_start_y = 0.0f;
 
     private bool resizing = false;
+    private bool off_screen = false;
+#if HAS_MUTTER42
+    private Clutter.Grab? grab = null;
+#endif
 
     static unowned Meta.Window? previous_focus = null;
 
@@ -216,7 +222,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         begin_resize_width = width;
         begin_resize_height = height;
 
+#if HAS_MUTTER42
+        grab = resize_button.get_stage ().grab (this);
+#else
         resize_button.get_stage ().set_motion_events_enabled (false);
+#endif
         resize_button.get_stage ().captured_event.connect (on_resize_event);
 
         return true;
@@ -271,7 +281,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
 
         resize_button.get_stage ().captured_event.disconnect (on_resize_event);
+#if HAS_MUTTER42
+        if (grab != null) {
+            grab.dismiss ();
+            grab = null;
+        }
+#else
         resize_button.get_stage ().set_motion_events_enabled (true);
+#endif
 
         resizing = false;
 
@@ -379,6 +396,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_screen_position () {
+        if (!place_window_off_screen ()) {
+            place_window_in_screen ();
+        }
+    }
+
+    private void place_window_in_screen () {
+        off_screen = false;
+
         Meta.Rectangle monitor_rect;
         get_current_monitor_rect (out monitor_rect);
 
@@ -404,6 +429,87 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_duration (0);
     }
 
+    private bool place_window_off_screen () {
+        off_screen = false;
+        set_easing_duration (300);
+        set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
+
+        Meta.Rectangle monitor_rect;
+        get_current_monitor_rect (out monitor_rect);
+
+        int monitor_x = monitor_rect.x;
+        int monitor_y = monitor_rect.y;
+        int monitor_width = monitor_rect.width;
+        int monitor_height = monitor_rect.height;
+
+        // X axis off screen
+        var off_screen_x_threshold = width * OFF_SCREEN_PERCENT;
+
+        var off_screen_x = (x - monitor_x) < -off_screen_x_threshold;
+        if (off_screen_x
+                && !coord_is_in_other_monitor (x, Clutter.Orientation.HORIZONTAL)) {
+            off_screen = true;
+            x = monitor_x - width + OFF_SCREEN_VISIBLE_PIXELS;
+        }
+
+        var off_screen_w = (x + width) > (monitor_x + monitor_width + off_screen_x_threshold);
+        if (off_screen_w
+                && !coord_is_in_other_monitor (x + width, Clutter.Orientation.HORIZONTAL)) {
+            off_screen = true;
+            x = monitor_x + monitor_width - OFF_SCREEN_VISIBLE_PIXELS;
+        }
+
+        // Y axis off screen
+        var off_screen_y_threshold = height * OFF_SCREEN_PERCENT;
+
+        var off_screen_y = (y - monitor_y) < -off_screen_y_threshold;
+        if (off_screen_y
+                && !coord_is_in_other_monitor (y, Clutter.Orientation.VERTICAL)) {
+            off_screen = true;
+            y = monitor_y - height + OFF_SCREEN_VISIBLE_PIXELS;
+        }
+
+        var off_screen_h = (y + height) > (monitor_y + monitor_height + off_screen_y_threshold);
+        if (off_screen_h
+                && !coord_is_in_other_monitor (y + height, Clutter.Orientation.VERTICAL)) {
+            off_screen = true;
+            y = monitor_y + monitor_height - OFF_SCREEN_VISIBLE_PIXELS;
+        }
+
+        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
+        set_easing_duration (0);
+        return off_screen;
+    }
+
+    private bool coord_is_in_other_monitor (float coord, Clutter.Orientation axis) {
+        var display = wm.get_display ();
+        int n_monitors = display.get_n_monitors ();
+
+        if (n_monitors == 1) {
+            return false;
+        }
+
+        int current = display.get_current_monitor ();
+        for (int i = 0; i < n_monitors; i++) {
+            if (i != current) {
+                var monitor_rect = display.get_monitor_geometry (i);
+                bool in_monitor = false;
+
+                if (axis == Clutter.Orientation.HORIZONTAL) {
+                    in_monitor = (coord >= monitor_rect.x) && (coord <= monitor_rect.x + monitor_rect.width);
+                } else {
+                    in_monitor = (coord >= monitor_rect.y) && (coord <= monitor_rect.y + monitor_rect.height);
+                }
+
+                if (in_monitor) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void reposition_resize_button () {
         resize_button.set_position (width - button_size, height - button_size);
     }
@@ -425,7 +531,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void activate () {
-        var window = window_actor.get_meta_window ();
-        window.activate (Clutter.get_current_event_time ());
+        if (off_screen) {
+            place_window_in_screen ();
+        } else {
+            var window = window_actor.get_meta_window ();
+            window.activate (Clutter.get_current_event_time ());
+        }
     }
 }

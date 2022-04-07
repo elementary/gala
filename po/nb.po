@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2021-07-01 17:39+0000\n"
+"POT-Creation-Date: 2022-04-06 20:14+0000\n"
+"PO-Revision-Date: 2021-11-17 04:20+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -20,28 +20,36 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Skjermavbildninger"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2116
-msgid "Does the display look OK?"
-msgstr "Ser skjermen OK ut?"
+#: src/WindowManager.vala:2063
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "Skjerminnstillinger …"
 
-#: src/WindowManager.vala:2119
-msgid "Keep This Configuration"
-msgstr "Behold dette oppsettet"
+#: src/WindowManager.vala:2064
+msgid "Changes will automatically revert after 30 seconds."
+msgstr ""
 
-#: src/WindowManager.vala:2120
-msgid "Restore Previous Configuration"
-msgstr "Gjenopprett tidligere oppsett"
+#: src/WindowManager.vala:2067
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "Systeminnstillinger …"
+
+#: src/WindowManager.vala:2068
+msgid "Use Previous Settings"
+msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2143
+#: src/WindowManager.vala:2094
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
@@ -125,66 +133,157 @@ msgstr ""
 "En vindu- og komposisjonsbehandler basert på libmutter og designet av "
 "elementary for bruk med Pantheon."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:33
+msgid "Fixes:"
+msgstr "Fikser:"
+
+#: data/gala.appdata.xml.in:17
+#, fuzzy
+msgid "Properly update accent color in the window switcher"
+msgstr ""
+"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+"bytteren."
+
+#: data/gala.appdata.xml.in:18
+#, fuzzy
+msgid "Fix selecting windows underneath the window switcher"
+msgstr ""
+"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+"bytteren."
+
+#: data/gala.appdata.xml.in:19
+msgid "Prevent potential crashes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+msgid "Resize workspaces when displays change"
+msgstr ""
+
+#: data/gala.appdata.xml.in:21
+msgid "Handle windows with no title"
+msgstr ""
+
+#: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:71 data/gala.appdata.xml.in:80
+#: data/gala.appdata.xml.in:99 data/gala.appdata.xml.in:109
+#: data/gala.appdata.xml.in:118 data/gala.appdata.xml.in:129
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
-#: data/gala.appdata.xml.in:17
+#: data/gala.appdata.xml.in:25
+msgid "Use access portal for display settings confirmation and force quit"
+msgstr ""
+
+#: data/gala.appdata.xml.in:26
+#, fuzzy
+#| msgid "Show window titles in multitasking view"
+msgid "Allow closing multitasking view with Super"
+msgstr "Vindustitler i fleroppgaveløsnings-visning"
+
+#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:74 data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
+#: data/gala.appdata.xml.in:123
+msgid "Updated translations"
+msgstr "Oppdaterte oversettelser"
+
+#: data/gala.appdata.xml.in:35
+#, fuzzy
+msgid "Fix shadow clipping on server-side decorated windows"
+msgstr ""
+"Inkluder vindusdekorasjoner i skjermavbildninger for dekorering av vinduer "
+"på tjenersiden"
+
+#: data/gala.appdata.xml.in:39
+msgid "Support for high-resolution scroll events"
+msgstr "Støtte for høyoppløselige rullingshendelser"
+
+#: data/gala.appdata.xml.in:40
+msgid "Redesigned Alt + Tab switcher"
+msgstr "Redesignet Alt+Tab-bytter"
+
+#: data/gala.appdata.xml.in:41
+#, fuzzy
+msgid "Dim the parents of modal dialogs"
+msgstr "Dimmer foreldrevindu som lager undervinduer"
+
+#: data/gala.appdata.xml.in:42
+msgid "Dialogs fall down on parents instead of shooting out"
+msgstr "Dialoger faller ned til opphav istedenfor å sprette ut"
+
+#: data/gala.appdata.xml.in:51
+msgid "Fix a potential crash when taking screenshots"
+msgstr "Fiks av potensielt krasj ved knipsing av skjermavbildninger"
+
+#: data/gala.appdata.xml.in:58
+msgid "New features:"
+msgstr "Nye funksjoner:"
+
+#: data/gala.appdata.xml.in:60
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr "Legg unna bilde-i-bilde -vinduet ved å dytte det av skjermen"
+
+#: data/gala.appdata.xml.in:64
+msgid "Fix a potential crash while changing wallpapers"
+msgstr "Fiks potensielt krasj ved endring av bakgrunnsbilde"
+
+#: data/gala.appdata.xml.in:73
+#, fuzzy
+msgid ""
+"Include window decorations in screenshots for server-side decorated windows"
+msgstr ""
+"Inkluder vindusdekorasjoner i skjermavbildninger for dekorering av vinduer "
+"på tjenersiden"
+
+#: data/gala.appdata.xml.in:82
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "Multitrykks-håndvendinger"
 
-#: data/gala.appdata.xml.in:18
+#: data/gala.appdata.xml.in:83
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "Vindustitler i fleroppgaveløsnings-visning"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:84
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
 msgstr "Lukk Alt + Tab-veksleren eller ved å trykke Esc uten å slippe Alt"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:85
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Øk maksimalt forstørrelsesnivå og tilby tilbakemelding når forstørring er "
 "umulig"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:86
 msgid "Show a context menu when secondary clicking the background"
 msgstr "Vis en bindeleddsinfo-meny ved høyreklikk på bakgrunnen"
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.appdata.xml.in:87
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "Ny animasjon for forsinket klikk og pekerposisjonsvisning"
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.appdata.xml.in:88
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "Skjermavbildning i vindus-bindeleddsmeny"
 
-#: data/gala.appdata.xml.in:24
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
+#: data/gala.appdata.xml.in:89
 msgid "Always play shutter sound when taking screenshots"
-msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
+msgstr "Alltid spill lyd ved knipsing av skjermavbildninger"
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:90
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "Små visuelle forbedringer"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:91
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI-fikser"
 
-#: data/gala.appdata.xml.in:27
+#: data/gala.appdata.xml.in:92
 msgid "Performance improvements"
-msgstr ""
+msgstr "Ytelsesforbedringer"
 
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
-msgid "Updated translations"
-msgstr "Oppdaterte oversettelser"
-
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:101
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
@@ -192,48 +291,49 @@ msgstr ""
 "Fiks «Alltid på tilgjengelig arbeidsområde»-vinduer som forsvinner under "
 "endring av arbeidsområde"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:102
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Fiks vinduer på annet enn hovedskjerm som forsvinner under endring av "
 "arbeidsområde"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:111
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
 "Fiks krasj ved endring av arbeidsområder under åpning av kortvarig vindu"
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:120
 msgid "Don't show Gala Background Services in the dock"
 msgstr "Ikke vis Gala-bakgrunnstjenester i dokken"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:121
 msgid "Fixes for media key handling"
 msgstr "Fikser for mediatast-håndtering"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:122
 #, fuzzy
 msgid "Show keyboard shortcuts in HeaderBar menus"
 msgstr "Vis tastatursnarveier i tittelfelt-menyer"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:131
 msgid "Improve window shadows for legacy apps"
 msgstr "Forbedre vindusskygger for eldre programmer"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:132
 msgid "Fix potential crash when taking screenshots"
 msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:133
 msgid "Fix notification position after changing DPI"
 msgstr "Fiks merknadsposisjon etter endring av DPI"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:134
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr "Fiks animasjoner for flytting og maksimering av flislagte vinduer"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:140
+#, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -261,6 +361,15 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Ser skjermen OK ut?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Behold dette oppsettet"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Gjenopprett tidligere oppsett"
 
 #~ msgid "Minimize"
 #~ msgstr "Minimér"
@@ -436,16 +545,6 @@ msgstr "applications-other"
 #~ "tilbakemelding, slik at knapper kan legges til i fremtidige versjoner "
 #~ "uten å ødelegge for eldre versjoner. En tagg for mellomrom kan brukes for "
 #~ "å sette inn mellomrom mellom to knapper."
-
-#, fuzzy
-#~ msgid "Dims parent windows when spawning modal dialogs"
-#~ msgstr "Dimmer foreldrevindu som lager undervinduer"
-
-#, fuzzy
-#~ msgid "The opacity of windows behind the window switcher."
-#~ msgstr ""
-#~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
-#~ "bytteren."
 
 #~ msgid "Background-image used in the workspace-switcher"
 #~ msgstr "Bakgrunnsbilde brukt i arbeidsområde-velger"

@@ -36,7 +36,7 @@ namespace Gala {
          * @param y The global y coordinate where the action was activated
          * @return  A ClutterActor that serves as handle
          */
-        public signal Actor drag_begin (float x, float y);
+        public signal Actor? drag_begin (float x, float y);
 
         /**
          * A drag has been canceled. You may want to consider cleaning up

@@ -7,48 +7,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2021-07-14 17:09+0000\n"
-"PO-Revision-Date: 2018-06-23 00:11+0000\n"
-"Last-Translator: Majer Tamás <mtamas@disroot.org>\n"
-"Language-Team: Hungarian <https://weblate.elementary.io/projects/desktop/"
-"gala/hu/>\n"
+"POT-Creation-Date: 2022-04-06 20:14+0000\n"
+"PO-Revision-Date: 2021-12-06 13:39+0000\n"
+"Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
+"Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
+"hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/ScreenshotManager.vala:255
+#: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr ""
+msgstr "Képernyőképek"
 
-#: src/ScreenshotManager.vala:335
+#: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Képernyőkép mentve"
 
-#: src/WindowManager.vala:2116
-msgid "Does the display look OK?"
-msgstr "Megfelelően jelenik meg a kép?"
+#: src/WindowManager.vala:2063
+msgid "Keep new display settings?"
+msgstr "Új kijelzőbeállítások megtartása?"
 
-#: src/WindowManager.vala:2119
-msgid "Keep This Configuration"
+#: src/WindowManager.vala:2064
+msgid "Changes will automatically revert after 30 seconds."
+msgstr "A változások automatikusan visszaállnak 30 másodperc múlva."
+
+#: src/WindowManager.vala:2067
+msgid "Keep Settings"
 msgstr "Beállítások megtartása"
 
-#: src/WindowManager.vala:2120
-msgid "Restore Previous Configuration"
-msgstr "Az előző beállítások visszaállítása"
+#: src/WindowManager.vala:2068
+msgid "Use Previous Settings"
+msgstr "Előző beállítások visszaállítása"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2143
+#: src/WindowManager.vala:2094
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Képernyőkép ekkorról: %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Elrejtés"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -76,7 +80,7 @@ msgstr "Mozgatás a jobb oldali munkaterületre"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Képernyőkép készítése"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -84,7 +88,7 @@ msgstr "Bezárás"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Felosztás visszavonása"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
@@ -96,131 +100,230 @@ msgstr "Teljes méret"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Háttérkép megváltoztatása…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "Kijelzőbeállítások…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "Rendszerbeállítások…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Feladat- és ablakkezelés"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Egy ablak- és megjelenítéskezelő a Pantheon számára"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Egy ablak- és megjelenítéskezelő, ami libmutter alapú és az elementary "
+"számára lett tervezve a Pantheonnal való használatra."
 
-#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:44 data/gala.appdata.xml.in:53
-#: data/gala.appdata.xml.in:64
-msgid "Improvements:"
-msgstr ""
+#: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:33
+msgid "Fixes:"
+msgstr "Javítások:"
 
 #: data/gala.appdata.xml.in:17
-msgid "Add multitouch gestures"
-msgstr ""
+#, fuzzy
+msgid "Properly update accent color in the window switcher"
+msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
 
 #: data/gala.appdata.xml.in:18
-msgid "Show window titles in multitasking view"
-msgstr ""
+#, fuzzy
+msgid "Fix selecting windows underneath the window switcher"
+msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
 
 #: data/gala.appdata.xml.in:19
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgid "Prevent potential crashes"
 msgstr ""
 
 #: data/gala.appdata.xml.in:20
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgid "Resize workspaces when displays change"
 msgstr ""
 
 #: data/gala.appdata.xml.in:21
-msgid "Show a context menu when secondary clicking the background"
+msgid "Handle windows with no title"
 msgstr ""
 
-#: data/gala.appdata.xml.in:22
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:23
-msgid "Add Take Screenshot to window context menu"
-msgstr ""
-
-#: data/gala.appdata.xml.in:24
-msgid "Always play shutter sound when taking screenshots"
-msgstr ""
+#: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:71 data/gala.appdata.xml.in:80
+#: data/gala.appdata.xml.in:99 data/gala.appdata.xml.in:109
+#: data/gala.appdata.xml.in:118 data/gala.appdata.xml.in:129
+msgid "Improvements:"
+msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:25
-msgid "Minor visual improvements"
+#, fuzzy
+#| msgid "Use access portal for display settings confirmation dialog"
+msgid "Use access portal for display settings confirmation and force quit"
 msgstr ""
+"Hozzáférési portál használata a kijelzőbeállítások megerősítésénél megjelenő "
+"párbeszédablaknál"
 
 #: data/gala.appdata.xml.in:26
-msgid "HiDPI fixes"
-msgstr ""
+#, fuzzy
+#| msgid "Show window titles in multitasking view"
+msgid "Allow closing multitasking view with Super"
+msgstr "Ablakcímek mutatása a többfeladatos nézetben"
 
-#: data/gala.appdata.xml.in:27
-msgid "Performance improvements"
-msgstr ""
-
-#: data/gala.appdata.xml.in:28 data/gala.appdata.xml.in:38
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:74 data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
+#: data/gala.appdata.xml.in:123
 msgid "Updated translations"
-msgstr ""
+msgstr "Frissített fordítások"
 
-#: data/gala.appdata.xml.in:36
+#: data/gala.appdata.xml.in:35
+msgid "Fix shadow clipping on server-side decorated windows"
+msgstr "Az ablakdekorátorok javítása a szerveroldali ablakok esetén is"
+
+#: data/gala.appdata.xml.in:39
+msgid "Support for high-resolution scroll events"
+msgstr "Magas felbontású görgetési események támogatása"
+
+#: data/gala.appdata.xml.in:40
+msgid "Redesigned Alt + Tab switcher"
+msgstr "Újradizájnolt Alt + Tab váltó"
+
+#: data/gala.appdata.xml.in:41
+msgid "Dim the parents of modal dialogs"
+msgstr ""
+"Halványítsa el a szülő ablakokat, amelyek környezetfüggő párbeszédablakot "
+"nyitnak meg"
+
+#: data/gala.appdata.xml.in:42
+msgid "Dialogs fall down on parents instead of shooting out"
+msgstr "A párbeszédablakok a szülőikre esnek, ahelyett, hogy előtörnének"
+
+#: data/gala.appdata.xml.in:51
+msgid "Fix a potential crash when taking screenshots"
+msgstr "Egy esetleges összeomlás javítva képernyőkép készítésekor"
+
+#: data/gala.appdata.xml.in:58
+msgid "New features:"
+msgstr "Új funkciók:"
+
+#: data/gala.appdata.xml.in:60
+msgid "Stash the picture-in-picture window by pushing it off screen"
+msgstr "Tüntesse el a kép-a-képben ablakot a képernyőn kívülre helyezéssel"
+
+#: data/gala.appdata.xml.in:64
+msgid "Fix a potential crash while changing wallpapers"
+msgstr "Egy esetleges összeomlás javítva háttérkép váltásakor"
+
+#: data/gala.appdata.xml.in:73
+msgid ""
+"Include window decorations in screenshots for server-side decorated windows"
+msgstr ""
+"Az ablakdekorátorok megjelennek a szerveroldali ablakok esetén is a "
+"képernyőképeken"
+
+#: data/gala.appdata.xml.in:82
+msgid "Add multitouch gestures"
+msgstr "Többujjas gesztusok hozzáadva"
+
+#: data/gala.appdata.xml.in:83
+msgid "Show window titles in multitasking view"
+msgstr "Ablakcímek mutatása a többfeladatos nézetben"
+
+#: data/gala.appdata.xml.in:84
+msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+msgstr "Alt + Tab váltó bezárása az Esc lenyomásával az Alt felengedése nélkül"
+
+#: data/gala.appdata.xml.in:85
+msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+msgstr ""
+"A maximális nagyítási szint növelve és visszajelzés ha nem lehet nagyítani"
+
+#: data/gala.appdata.xml.in:86
+msgid "Show a context menu when secondary clicking the background"
+msgstr "Egy menü megjelenítése a háttérképre kattintáskor"
+
+#: data/gala.appdata.xml.in:87
+msgid "New Dwell Click and Locate Pointer animations"
+msgstr "Új animációk tartózkodásos kattintásnál és mutatónál"
+
+#: data/gala.appdata.xml.in:88
+msgid "Add Take Screenshot to window context menu"
+msgstr "Képernyőkép készítése opció az ablakok menüjében"
+
+#: data/gala.appdata.xml.in:89
+msgid "Always play shutter sound when taking screenshots"
+msgstr "Mindig legyen hang képernyőkép készítésekor"
+
+#: data/gala.appdata.xml.in:90
+msgid "Minor visual improvements"
+msgstr "Kisebb megjelenítésbeli fejlesztések"
+
+#: data/gala.appdata.xml.in:91
+msgid "HiDPI fixes"
+msgstr "HiDPI javítások"
+
+#: data/gala.appdata.xml.in:92
+msgid "Performance improvements"
+msgstr "Teljesítménybeli javítások"
+
+#: data/gala.appdata.xml.in:101
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
 msgstr ""
+"A \"Mindig a látható munkaterületen\" lévő ablakok eltűnése munkaterület "
+"váltásakor javítva"
 
-#: data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:102
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
+"A nem elsődleges képernyőn lévő ablakok eltűnése munkaterület váltásakor "
+"javítva"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:111
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
+msgstr "Összeomlás javítva munkaterület váltásakor, ha éppen ablak nyílik meg"
 
-#: data/gala.appdata.xml.in:55
+#: data/gala.appdata.xml.in:120
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Ne jelenjen meg a Gala háttérfolyamatok ikon a dokkon"
 
-#: data/gala.appdata.xml.in:56
+#: data/gala.appdata.xml.in:121
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "Médiagombok kezelése javítva"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:122
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "A címsáv menüjeiben lévő gyorsparancsok javítva"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:131
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "Az elavult alkalmazások ablakának árnyéka javítva"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:132
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "Esetleges összeomlás javítva képernyőkép készítésekor"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:133
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI-állítás utáni értesítéshelyzet javítva"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:134
 msgid "Fix animations for moving and maximizing tiled windows"
 msgstr ""
+"A felosztott ablakok mozgatásának és teljes méretre állításának animációi "
+"javítva"
 
-#: data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:140
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -247,6 +350,15 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Does the display look OK?"
+#~ msgstr "Megfelelően jelenik meg a kép?"
+
+#~ msgid "Keep This Configuration"
+#~ msgstr "Beállítás megtartása"
+
+#~ msgid "Restore Previous Configuration"
+#~ msgstr "Előző beállítások visszaállítása"
 
 #~ msgid "Minimize"
 #~ msgstr "Minimalizálás"
@@ -418,16 +530,6 @@ msgstr "applications-other"
 #~ "gombnevek figyelmen kívül lesznek hagyva, így a jövőbeli metacity "
 #~ "verziókban hozzáadhatók lesznek a gombok, anélkül, hogy a régebbi verziók "
 #~ "elromlanának."
-
-#, fuzzy
-#~ msgid "Dims parent windows when spawning modal dialogs"
-#~ msgstr ""
-#~ "Halványítsa el a szülő ablakokat, amelyek környezetfüggő párbeszédablakot "
-#~ "nyitnak meg"
-
-#, fuzzy
-#~ msgid "The opacity of windows behind the window switcher."
-#~ msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
 
 #~ msgid "Background-image used in the workspace-switcher"
 #~ msgstr "A munkaterület-váltóban használt háttérkép"

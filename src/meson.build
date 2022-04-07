@@ -1,7 +1,7 @@
 gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
-    'DockThemeManager.vala',
+    'Dialogs.vala',
     'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
@@ -32,6 +32,8 @@ gala_bin_sources = files(
     'Gestures/GestureTracker.vala',
     'Gestures/ScrollBackend.vala',
     'Gestures/ToucheggBackend.vala',
+    'HotCorners/HotCorner.vala',
+    'HotCorners/HotCornerManager.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',

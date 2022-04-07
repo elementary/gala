@@ -27,16 +27,31 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_foreach_feature")]
 		[Version (since = "1.10")]
 		public void foreach_feature (Cogl.FeatureCallback callback);
+#if HAS_MUTTER42
+		public void free_timestamp_query (owned Cogl.TimestampQuery query);
+		public int64 get_gpu_time_ns ();
+#endif
+#if !HAS_MUTTER40
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_get_clock_time")]
 		[Version (since = "1.14")]
 		public int64 get_clock_time ();
+#endif
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_get_graphics_reset_status")]
 		public Cogl.GraphicsResetStatus get_graphics_reset_status ();
+#if HAS_MUTTER40
+		public unowned Cogl.Pipeline get_named_pipeline (Cogl.PipelineKey key);
+#endif
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_has_feature")]
 		[Version (since = "1.10")]
 		public bool has_feature (Cogl.FeatureID feature);
 #if HAS_MUTTER338
 		public bool is_hardware_accelerated ();
+#endif
+#if HAS_MUTTER40
+		public void set_named_pipeline (Cogl.PipelineKey key, Cogl.Pipeline? pipeline);
+#endif
+#if HAS_MUTTER42
+		public int64 timestamp_query_get_time_ns (Cogl.TimestampQuery query);
 #endif
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_frame_closure_get_gtype ()")]
@@ -51,10 +66,160 @@ namespace Cogl {
 		protected FrameInfo ();
 		[Version (since = "1.14")]
 		public int64 get_frame_counter ();
+#if HAS_MUTTER40
+		public bool get_is_symbolic ();
+		[Version (since = "1.14")]
+		public int64 get_presentation_time_us ();
+#else
 		[Version (since = "1.14")]
 		public int64 get_presentation_time ();
+#endif
 		[Version (since = "1.14")]
 		public float get_refresh_rate ();
+#if HAS_MUTTER42
+		public int64 get_rendering_duration_ns ();
+#endif
+#if HAS_MUTTER40
+		public uint get_sequence ();
+#if HAS_MUTTER42
+		public int64 get_time_before_buffer_swap_us ();
+#endif
+		public bool is_hw_clock ();
+		public bool is_vsync ();
+		public bool is_zero_copy ();
+#endif
+	}
+#endif
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_framebuffer_get_type ()")]
+	public abstract class Framebuffer : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected Framebuffer ();
+		[Version (since = "1.8")]
+		public virtual bool allocate () throws GLib.Error;
+		[Version (since = "1.8")]
+		public void clear (ulong buffers, Cogl.Color color);
+		[Version (since = "1.8")]
+		public void clear4f (ulong buffers, float red, float green, float blue, float alpha);
+		[Version (since = "1.8")]
+		public void discard_buffers (ulong buffers);
+		[Version (since = "1.10")]
+		public void draw_multitextured_rectangle (Cogl.Pipeline pipeline, float x_1, float y_1, float x_2, float y_2, [CCode (array_length = false)] float[] tex_coords, int tex_coords_len);
+		[Version (since = "1.10")]
+		public void draw_rectangle (Cogl.Pipeline pipeline, float x_1, float y_1, float x_2, float y_2);
+		[Version (since = "1.10")]
+		public void draw_rectangles (Cogl.Pipeline pipeline, [CCode (array_length = false)] float[] coordinates, uint n_rectangles);
+		[Version (since = "1.10")]
+		public void draw_textured_rectangle (Cogl.Pipeline pipeline, float x_1, float y_1, float x_2, float y_2, float s_1, float t_1, float s_2, float t_2);
+		[Version (since = "1.10")]
+		public void draw_textured_rectangles (Cogl.Pipeline pipeline, [CCode (array_length = false)] float[] coordinates, uint n_rectangles);
+		public static uint32 error_quark ();
+		[Version (since = "1.10")]
+		public void finish ();
+		public void flush ();
+		[Version (since = "1.10")]
+		public void frustum (float left, float right, float bottom, float top, float z_near, float z_far);
+		[Version (since = "1.8")]
+		public int get_alpha_bits ();
+		[Version (since = "1.8")]
+		public int get_blue_bits ();
+		[Version (since = "1.8")]
+		public unowned Cogl.Context get_context ();
+		[Version (since = "2.0")]
+		public int get_depth_bits ();
+		[Version (since = "1.18")]
+		public bool get_depth_write_enabled ();
+		[Version (since = "1.8")]
+		public bool get_dither_enabled ();
+		[Version (since = "1.8")]
+		public int get_green_bits ();
+		[Version (since = "1.8")]
+		public int get_height ();
+		public bool get_is_stereo ();
+		[Version (since = "1.10")]
+		public Graphene.Matrix get_modelview_matrix ();
+		[Version (since = "1.10")]
+		public Graphene.Matrix get_projection_matrix ();
+		[Version (since = "1.8")]
+		public int get_red_bits ();
+		[Version (since = "1.10")]
+		public int get_samples_per_pixel ();
+		[Version (since = "1.20")]
+		public Cogl.StereoMode get_stereo_mode ();
+		[Version (since = "1.8")]
+		public void get_viewport4fv ([CCode (array_length = false)] out unowned float viewport[4]);
+		[Version (since = "1.8")]
+		public float get_viewport_height ();
+		[Version (since = "1.8")]
+		public float get_viewport_width ();
+		[Version (since = "1.8")]
+		public float get_viewport_x ();
+		[Version (since = "1.8")]
+		public float get_viewport_y ();
+		[Version (since = "1.8")]
+		public int get_width ();
+		[Version (since = "1.10")]
+		public void identity_matrix ();
+		[NoWrapper]
+		public virtual bool is_y_flipped ();
+		[Version (since = "1.10")]
+		public void orthographic (float x_1, float y_1, float x_2, float y_2, float near, float far);
+		[Version (since = "1.10")]
+		public void perspective (float fov_y, float aspect, float z_near, float z_far);
+		[Version (since = "1.10")]
+		public void pop_clip ();
+		[Version (since = "1.10")]
+		public void pop_matrix ();
+		[Version (since = "1.10")]
+		public void push_matrix ();
+		[Version (since = "1.10")]
+		public void push_rectangle_clip (float x_1, float y_1, float x_2, float y_2);
+		public void push_region_clip (Cairo.Region region);
+		[Version (since = "1.10")]
+		public void push_scissor_clip (int x, int y, int width, int height);
+		[Version (since = "1.10")]
+		public bool read_pixels (int x, int y, int width, int height, Cogl.PixelFormat format, uint8 pixels);
+		[Version (since = "1.10")]
+		public bool read_pixels_into_bitmap (int x, int y, Cogl.ReadPixelsFlags source, Cogl.Bitmap bitmap);
+		[Version (since = "1.8")]
+		public void resolve_samples ();
+		[Version (since = "1.8")]
+		public void resolve_samples_region (int x, int y, int width, int height);
+		[Version (since = "1.10")]
+		public void rotate (float angle, float x, float y, float z);
+		[Version (since = "2.0")]
+		public void rotate_euler (Graphene.Euler euler);
+		[Version (since = "1.10")]
+		public void scale (float x, float y, float z);
+		[Version (since = "1.18")]
+		public void set_depth_write_enabled (bool depth_write_enabled);
+		[Version (since = "1.8")]
+		public void set_dither_enabled (bool dither_enabled);
+		[Version (since = "1.10")]
+		public void set_modelview_matrix (Graphene.Matrix matrix);
+		[Version (since = "1.10")]
+		public void set_projection_matrix (Graphene.Matrix matrix);
+		[Version (since = "1.8")]
+		public void set_samples_per_pixel (int samples_per_pixel);
+		[Version (since = "1.20")]
+		public void set_stereo_mode (Cogl.StereoMode stereo_mode);
+		[Version (since = "1.8")]
+		public void set_viewport (float x, float y, float width, float height);
+		[Version (since = "1.10")]
+		public void transform (Graphene.Matrix matrix);
+		[Version (since = "1.10")]
+		public void translate (float x, float y, float z);
+		[NoAccessorMethod]
+		public void* driver_config { get; construct; }
+		[NoAccessorMethod]
+		public int height { get; set construct; }
+		[NoAccessorMethod]
+		public int width { get; set construct; }
+		public signal void destroy ();
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Compact]
+	public class FramebufferDriverConfig {
 	}
 #endif
 	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_object_ref", type_id = "cogl_handle_get_gtype ()", unref_function = "cogl_object_unref")]
@@ -72,6 +237,7 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_texture")]
 		public bool is_texture ();
 	}
+#if !HAS_MUTTER42
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_material_get_type ()")]
 	[Compact]
 	public class Material : Cogl.Handle {
@@ -97,7 +263,11 @@ namespace Cogl {
 		[Version (deprecated = true, deprecated_since = "1.16")]
 		public void set_layer_filters (int layer_index, Cogl.MaterialFilter min_filter, Cogl.MaterialFilter mag_filter);
 		[Version (deprecated = true, deprecated_since = "1.16")]
+#if HAS_MUTTER40
+		public void set_layer_matrix (int layer_index, Graphene.Matrix matrix);
+#else
 		public void set_layer_matrix (int layer_index, Cogl.Matrix matrix);
+#endif
 		[Version (deprecated = true, deprecated_since = "1.16", since = "1.4")]
 		public bool set_layer_point_sprite_coords_enabled (int layer_index, bool enable) throws GLib.Error;
 		[Version (deprecated = true, deprecated_since = "1.16", since = "1.4")]
@@ -109,6 +279,7 @@ namespace Cogl {
 	[Compact]
 	public class MaterialLayer : Cogl.Handle {
 	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_object_get_gtype ()")]
 	public abstract class Object {
 		[CCode (has_construct_function = false)]
@@ -125,11 +296,13 @@ namespace Cogl {
 		[Version (since = "2.0")]
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_frame_info")]
 		public bool is_frame_info ();
+#if !HAS_MUTTER40
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_offscreen")]
 		public bool is_offscreen ();
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_onscreen")]
 		[Version (since = "1.10")]
 		public bool is_onscreen ();
+#endif
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_pipeline")]
 		[Version (since = "2.0")]
 		public bool is_pipeline ();
@@ -141,18 +314,30 @@ namespace Cogl {
 		[Version (since = "1.10")]
 		public bool is_texture_2d_sliced ();
 	}
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_offscreen_get_type ()")]
+	public class Offscreen : Cogl.Framebuffer {
+#else
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_offscreen_get_gtype ()")]
 	public class Offscreen : Cogl.Object, Cogl.Framebuffer {
+#endif
 		[CCode (has_construct_function = false)]
 		protected Offscreen ();
+#if !HAS_MUTTER40
 		[CCode (has_construct_function = false)]
 		[Version (deprecated = true, deprecated_since = "1.16")]
 		public Offscreen.to_texture (Cogl.Texture texture);
+#endif
 		[CCode (has_construct_function = false)]
 		public Offscreen.with_texture (Cogl.Texture texture);
 	}
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_onscreen_get_type ()")]
+	public class Onscreen : Cogl.Framebuffer {
+#else
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_onscreen_get_gtype ()")]
 	public class Onscreen : Cogl.Object, Cogl.Framebuffer {
+#endif
 		[CCode (has_construct_function = false)]
 		protected Onscreen ();
 		[Version (since = "1.16")]
@@ -161,27 +346,51 @@ namespace Cogl {
 		[Version (since = "1.14")]
 		public Cogl.FrameClosure add_frame_callback ([CCode (delegate_target_pos = 1.5)] Cogl.FrameCallback callback, Cogl.UserDataDestroyCallback? destroy);
 #endif
+#if !HAS_MUTTER40
 		[Version (since = "2.0")]
 		public Cogl.OnscreenResizeClosure add_resize_callback ([CCode (delegate_target_pos = 1.5)] Cogl.OnscreenResizeCallback callback, Cogl.UserDataDestroyCallback? destroy);
+#endif
+#if HAS_MUTTER40
+		[NoWrapper]
+		public virtual void bind ();
+#endif
 		[Version (since = "1.14")]
+#if HAS_MUTTER40
+		public virtual int get_buffer_age ();
+#else
 		public int get_buffer_age ();
+#endif
 		[Version (since = "1.14")]
 		public int64 get_frame_counter ();
+#if !HAS_MUTTER40
 		[Version (since = "2.0")]
 		public bool get_resizable ();
+#endif
 		[Version (since = "2.0")]
 		public void hide ();
+#if HAS_MUTTER42
+		public virtual void queue_damage_region (int rectangles, int n_rectangles);
+#endif 
 		[Version (since = "1.16")]
 		public void remove_dirty_callback (Cogl.OnscreenDirtyClosure closure);
 		[Version (since = "1.14")]
 		public void remove_frame_callback (Cogl.FrameClosure closure);
+#if !HAS_MUTTER40
 		[Version (since = "2.0")]
 		public void remove_resize_callback (Cogl.OnscreenResizeClosure closure);
 		[Version (since = "2.0")]
 		public void set_resizable (bool resizable);
+#endif
 		[Version (since = "2.0")]
 		public void show ();
-#if HAS_MUTTER338
+#if HAS_MUTTER40
+		[Version (since = "1.10")]
+		public void swap_buffers (Cogl.FrameInfo frame_info, void* user_data);
+		[Version (since = "1.16")]
+		public virtual void swap_buffers_with_damage (int rectangles, int n_rectangles, Cogl.FrameInfo info);
+		[Version (since = "1.10")]
+		public virtual void swap_region (int rectangles, int n_rectangles, Cogl.FrameInfo info);
+#elif HAS_MUTTER338
 		[Version (since = "1.10")]
 		public void swap_buffers (Cogl.FrameInfo frame_info);
 		[Version (since = "1.16")]
@@ -202,11 +411,13 @@ namespace Cogl {
 	[Version (since = "1.16")]
 	public class OnscreenDirtyClosure {
 	}
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_onscreen_resize_closure_get_gtype ()")]
 	[Compact]
 	[Version (since = "2.0")]
 	public class OnscreenResizeClosure {
 	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_pipeline_get_gtype ()")]
 	public class Pipeline : Cogl.Object {
 		[CCode (has_construct_function = false)]
@@ -273,7 +484,11 @@ namespace Cogl {
 		[Version (since = "1.10")]
 		public void set_layer_filters (int layer_index, Cogl.PipelineFilter min_filter, Cogl.PipelineFilter mag_filter);
 		[Version (since = "1.10")]
+#if HAS_MUTTER40
+		public void set_layer_matrix (int layer_index, Graphene.Matrix matrix);
+#else
 		public void set_layer_matrix (int layer_index, Cogl.Matrix matrix);
+#endif
 #if HAS_MUTTER338
 		public void set_layer_max_mipmap_level (int layer, int max_level);
 #endif
@@ -305,6 +520,12 @@ namespace Cogl {
 		[Version (since = "2.0")]
 		public void set_user_program (Cogl.Handle program);
 	}
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "G_TYPE_STRING")]
+	[Compact]
+	public class PipelineKey : string {
+	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_primitive_get_gtype ()")]
 	public class Primitive : Cogl.Object {
 		[CCode (has_construct_function = false)]
@@ -417,12 +638,19 @@ namespace Cogl {
 		[Version (since = "1.16")]
 		public Texture2DSliced.from_bitmap (Cogl.Bitmap bmp, int max_waste);
 	}
+#if HAS_MUTTER42
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Compact]
+	public class TimestampQuery {
+	}
+#endif
 #if HAS_MUTTER338
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	[Compact]
 	public class TraceContext {
 	}
 #endif
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_framebuffer_get_gtype ()")]
 	public interface Framebuffer : Cogl.Object {
 		[Version (since = "1.8")]
@@ -542,17 +770,18 @@ namespace Cogl {
 		[Version (since = "1.10")]
 		public void translate (float x, float y, float z);
 	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_texture_get_gtype ()")]
 	public interface Texture : Cogl.Object {
 		public bool allocate () throws GLib.Error;
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_bitmap")]
-		[Version (deprecated = true, deprecated_since = "1.18", since = "1.0")]
+		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_bitmap", since = "1.0")]
 		public static Cogl.Texture from_bitmap (Cogl.Bitmap bitmap, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_data")]
-		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
+		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_data", since = "0.8")]
 		public static Cogl.Texture from_data (int width, int height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, int rowstride, [CCode (array_length = false)] uint8[] data);
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_file")]
-		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
+		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_file", since = "0.8")]
 		public static Cogl.Texture from_file (string filename, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format) throws GLib.Error;
 		[Version (since = "1.18")]
 		public Cogl.TextureComponents get_components ();
@@ -570,10 +799,12 @@ namespace Cogl {
 		public static Cogl.Texture new_from_data (int width, int height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, int rowstride, [CCode (array_length = false)] uint8[] data);
 		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
 		public static Cogl.Texture new_from_file (string filename, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format) throws GLib.Error;
+#if !HAS_MUTTER42
 		[Version (deprecated = true, deprecated_since = "1.18", since = "1.2")]
 		public Cogl.Texture new_from_sub_texture (int sub_x, int sub_y, int sub_width, int sub_height);
 		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
 		public static Cogl.Texture new_with_size (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
+#endif
 		[Version (since = "1.18")]
 		public void set_components (Cogl.TextureComponents components);
 		public bool set_data (Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] uint8[] data, int level) throws GLib.Error;
@@ -582,9 +813,11 @@ namespace Cogl {
 		public bool set_region (int src_x, int src_y, int dst_x, int dst_y, uint dst_width, uint dst_height, int width, int height, Cogl.PixelFormat format, uint rowstride, [CCode (array_length = false)] uint8[] data);
 		[Version (since = "1.8")]
 		public bool set_region_from_bitmap (int src_x, int src_y, int dst_x, int dst_y, uint dst_width, uint dst_height, Cogl.Bitmap bitmap);
+#if !HAS_MUTTER42
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_with_size")]
 		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
 		public static Cogl.Texture with_size (uint width, uint height, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
+#endif
 	}
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[SimpleType]
@@ -623,6 +856,14 @@ namespace Cogl {
 		public float get_red ();
 		public uint8 get_red_byte ();
 		public float get_red_float ();
+		[Version (since = "1.4")]
+		public void init_from_4f (float red, float green, float blue, float alpha);
+		[Version (since = "1.4")]
+		public void init_from_4fv (float color_array);
+		[Version (since = "1.4")]
+		public void init_from_4ub (uint8 red, uint8 green, uint8 blue, uint8 alpha);
+		[Version (since = "1.16")]
+		public void init_from_hsl (float hue, float saturation, float luminance);
 		public void premultiply ();
 		[Version (since = "1.4")]
 		public void set_alpha (float alpha);
@@ -659,6 +900,7 @@ namespace Cogl {
 		public weak string name;
 		public ulong instance_count;
 	}
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_matrix_get_gtype ()")]
 	public struct Matrix {
 		public float xx;
@@ -716,6 +958,7 @@ namespace Cogl {
 		[Version (since = "1.8")]
 		public void view_2d_in_perspective (float fov_y, float aspect, float z_near, float z_2d, float width_2d, float height_2d);
 	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	[Version (since = "1.16")]
 	public struct OnscreenDirtyInfo {
@@ -738,6 +981,9 @@ namespace Cogl {
 	public struct TraceHead {
 		public uint64 begin_time;
 		public weak string name;
+#if HAS_MUTTER42
+		public weak string description;
+#endif
 	}
 #endif
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
@@ -871,10 +1117,12 @@ namespace Cogl {
 		OGL_FEATURE_ID_MAP_BUFFER_FOR_READ,
 		[CCode (cname = "COGL_FEATURE_ID_MAP_BUFFER_FOR_WRITE")]
 		OGL_FEATURE_ID_MAP_BUFFER_FOR_WRITE,
+#if !HAS_MUTTER40
 		[CCode (cname = "COGL_FEATURE_ID_SWAP_BUFFERS_EVENT")]
 		OGL_FEATURE_ID_SWAP_BUFFERS_EVENT,
 		[CCode (cname = "COGL_FEATURE_ID_PRESENTATION_TIME")]
 		OGL_FEATURE_ID_PRESENTATION_TIME,
+#endif
 		[CCode (cname = "COGL_FEATURE_ID_FENCE")]
 		OGL_FEATURE_ID_FENCE,
 		[CCode (cname = "COGL_FEATURE_ID_TEXTURE_RG")]
@@ -884,6 +1132,10 @@ namespace Cogl {
 #if HAS_MUTTER338
 		[CCode (cname = "COGL_FEATURE_ID_BLIT_FRAMEBUFFER")]
 		OGL_FEATURE_ID_BLIT_FRAMEBUFFER,
+#endif
+#if HAS_MUTTER42
+		[CCode (cname = "COGL_FEATURE_ID_TIMESTAMP_QUERY")]
+		OGL_FEATURE_ID_TIMESTAMP_QUERY,
 #endif
 		[CCode (cname = "COGL_FEATURE_ID_TEXTURE_EGL_IMAGE_EXTERNAL")]
 		OGL_FEATURE_ID_TEXTURE_EGL_IMAGE_EXTERNAL
@@ -899,13 +1151,6 @@ namespace Cogl {
 		SYNC,
 		COMPLETE
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_FRAMEBUFFER_ERROR_", has_type_id = false)]
-	public enum FramebufferError {
-		[CCode (cname = "COGL_FRAMEBUFFER_ERROR_ALLOCATE")]
-		FRAMEBUFFER_ERROR_ALLOCATE;
-		[CCode (cheader_filename = "cogl/cogl.h")]
-		public static uint32 quark ();
-	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_GRAPHICS_RESET_STATUS_", has_type_id = false)]
 	public enum GraphicsResetStatus {
 		NO_ERROR,
@@ -920,6 +1165,7 @@ namespace Cogl {
 		SHORT,
 		INT
 	}
+#if !HAS_MUTTER42
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_MATERIAL_ALPHA_FUNC_", has_type_id = false)]
 	public enum MaterialAlphaFunc {
 		NEVER,
@@ -947,6 +1193,7 @@ namespace Cogl {
 		CLAMP_TO_EDGE,
 		AUTOMATIC
 	}
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_PIPELINE_ALPHA_FUNC_", has_type_id = false)]
 	public enum PipelineAlphaFunc {
 		NEVER,
@@ -1002,12 +1249,24 @@ namespace Cogl {
 		ABGR_8888,
 		RGBA_1010102,
 		BGRA_1010102,
+#if HAS_MUTTER42
+		XRGB_2101010,
+#endif
 		ARGB_2101010,
+#if HAS_MUTTER42
+		XBGR_2101010,
+#endif
 		ABGR_2101010,
 #if HAS_MUTTER338
 		RGBA_FP_16161616,
 		BGRA_FP_16161616,
+#if HAS_MUTTER42
+		XRGB_FP_16161616,
+#endif
 		ARGB_FP_16161616,
+#if HAS_MUTTER42
+		XBGR_FP_16161616,
+#endif
 		ABGR_FP_16161616,
 #endif
 		RGBA_8888_PRE,
@@ -1091,7 +1350,9 @@ namespace Cogl {
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_WINSYS_FEATURE_", has_type_id = false)]
 	public enum WinsysFeature {
+#if !HAS_MUTTER42
 		MULTIPLE_ONSCREEN,
+#endif
 #if !HAS_MUTTER338
 		SWAP_THROTTLE,
 #endif
@@ -1106,7 +1367,7 @@ namespace Cogl {
 		SYNC_AND_COMPLETE_EVENT,
 		N_FEATURES
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BITMAP_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BITMAP_ERROR_", has_type_id = false)]
 	[Version (since = "1.4")]
 	public errordomain BitmapError {
 		FAILED,
@@ -1114,7 +1375,7 @@ namespace Cogl {
 		CORRUPT_IMAGE;
 		public static uint32 quark ();
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BLEND_STRING_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BLEND_STRING_ERROR_", has_type_id = false)]
 	[Version (since = "1.0")]
 	public errordomain BlendStringError {
 		PARSE_ERROR,
@@ -1124,18 +1385,32 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h")]
 		public static uint32 quark ();
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_RENDERER_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_FRAMEBUFFER_ERROR_", has_type_id = false)]
+	public errordomain FramebufferError {
+		[CCode (cname = "COGL_FRAMEBUFFER_ERROR_ALLOCATE")]
+		FRAMEBUFFER_ERROR_ALLOCATE
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_RENDERER_ERROR_", has_type_id = false)]
 	public errordomain RendererError {
 		XLIB_DISPLAY_OPEN,
 		BAD_CONSTRAINT
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SYSTEM_ERROR_")]
+#if HAS_MUTTER40
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SCANOUT_ERROR_", has_type_id = false)]
+	public errordomain ScanoutError {
+		[CCode (cname = "COGL_SCANOUT_ERROR_INHIBITED")]
+		SCANOUT_ERROR_INHIBITED;
+		[CCode (cheader_filename = "cogl/cogl.h")]
+		public static GLib.Quark quark ();
+	}
+#endif
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SYSTEM_ERROR_", has_type_id = false)]
 	[Version (since = "1.4")]
 	public errordomain SystemError {
 		UNSUPPORTED,
 		NO_MEMORY
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_ERROR_")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_ERROR_", has_type_id = false)]
 	[Version (since = "1.8")]
 	public errordomain TextureError {
 		SIZE,
@@ -1158,9 +1433,11 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 2.9)]
 	[Version (since = "1.16")]
 	public delegate void OnscreenDirtyCallback (Cogl.Onscreen onscreen, Cogl.OnscreenDirtyInfo info);
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 3.9)]
 	[Version (since = "2.0")]
 	public delegate void OnscreenResizeCallback (Cogl.Onscreen onscreen, int width, int height);
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 2.9)]
 	[Version (since = "2.0")]
 	public delegate bool PipelineLayerCallback (Cogl.Pipeline pipeline, int layer_index);
@@ -1185,12 +1462,14 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h", cname = "COGL_TEXTURE_MAX_WASTE")]
 	public const int TEXTURE_MAX_WASTE;
 	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static bool blit_framebuffer (Cogl.Framebuffer src, Cogl.Framebuffer dest, int src_x, int src_y, int dst_x, int dst_y, int width, int height) throws GLib.Error;
+	public static bool blit_framebuffer (Cogl.Framebuffer framebuffer, Cogl.Framebuffer dst, int src_x, int src_y, int dst_x, int dst_y, int width, int height) throws GLib.Error;
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static bool clutter_winsys_has_feature_CLUTTER (Cogl.WinsysFeature feature);
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "2.0")]
 	public static void debug_matrix_print (Cogl.Matrix matrix);
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "1.8")]
 	public static void debug_object_foreach_type (Cogl.DebugObjectForeachTypeCallback func);
@@ -1200,35 +1479,47 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "1.0")]
 	public static void flush ();
+#if !HAS_MUTTER42
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16")]
 	public static bool get_backface_culling_enabled ();
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16")]
 	public static bool get_depth_test_enabled ();
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16", since = "1.0")]
 	public static GLib.OptionGroup get_option_group ();
+#if !HAS_MUTTER40
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.18")]
 	public static GLib.Type gtype_matrix_get_type ();
+#endif
+#if !HAS_MUTTER42
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16")]
 	public static void set_backface_culling_enabled (bool setting);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16")]
 	public static void set_depth_test_enabled (bool setting);
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_disabled_on_thread (GLib.MainContext main_context);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_enabled_on_thread (GLib.MainContext main_context, string group, string filename);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_enabled_on_thread_with_fd (GLib.MainContext main_context, string group, int fd);
+#if HAS_MUTTER42
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void trace_describe (Cogl.TraceHead head, string description);
+#endif
 #if HAS_MUTTER338
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void trace_end (Cogl.TraceHead head);
 #endif
+#if !HAS_MUTTER42
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "1.10")]
 	public static uint32 x11_onscreen_get_window_xid (Cogl.Onscreen onscreen);
+#endif
 }

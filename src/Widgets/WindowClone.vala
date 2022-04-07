@@ -28,7 +28,7 @@ namespace Gala {
 
         public override ActorBox get_bounding_box () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var size = shadow_size * scale_factor;
+            var size = (shadow_size + shadow_spread) * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
             var outer_rect = window.get_frame_rect ();
@@ -49,7 +49,7 @@ namespace Gala {
         private Clutter.Canvas background_canvas;
         private static int border_radius;
         private static Gdk.RGBA color;
-        private static const double COLOR_OPACITY = 0.8;
+        private const double COLOR_OPACITY = 0.8;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -230,7 +230,7 @@ namespace Gala {
             window_icon.opacity = 0;
             window_icon.set_pivot_point (0.5f, 0.5f);
             window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-            window_icon.set_easing_mode (MultitaskingView.ANIMATION_MODE);
+            window_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
             set_window_icon_position (window_frame_rect.width, window_frame_rect.height);
 
             window_title = new Tooltip ();
@@ -266,7 +266,7 @@ namespace Gala {
          * itself at the location of the original window. Also adds the shadow
          * effect and makes sure the shadow is updated on size changes.
          *
-         * @param was_waiting Internal argument used to indicate that we had to 
+         * @param was_waiting Internal argument used to indicate that we had to
          *                    wait before the window's texture became available.
          */
         void load_clone (bool was_waiting = false) {
@@ -390,7 +390,7 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
                 set_easing_duration (animate ? MultitaskingView.ANIMATION_DURATION : 0);
 
                 set_position (target_x, target_y);
@@ -409,10 +409,16 @@ namespace Gala {
                 window_icon.opacity = 0;
                 set_window_icon_position (outer_rect.width, outer_rect.height);
 
-                window_icon.get_transition ("opacity").completed.connect (() => {
+                var transition = window_icon.get_transition ("opacity");
+                if (transition != null) {
+                    transition.completed.connect (() => {
+                        in_slot_animation = false;
+                        place_widgets (outer_rect.width, outer_rect.height);
+                    });
+                } else {
                     in_slot_animation = false;
                     place_widgets (outer_rect.width, outer_rect.height);
-                });
+                }
             };
 
             if (!animate || gesture_tracker == null || !with_gesture) {
@@ -462,7 +468,7 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                set_easing_mode (MultitaskingView.ANIMATION_MODE);
+                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
 
                 set_size (rect.width, rect.height);
                 set_position (rect.x, rect.y);
@@ -570,8 +576,6 @@ namespace Gala {
          * at their positions inside the actor for a given width and height.
          */
         public void place_widgets (int dest_width, int dest_height) {
-            Granite.CloseButtonPosition pos;
-            Granite.Widgets.Utils.get_default_close_button_position (out pos);
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
             close_button.save_easing_state ();
@@ -583,21 +587,15 @@ namespace Gala {
             close_button.set_size (close_button_size, close_button_size);
 
             close_button.y = -close_button.height * 0.33f;
-
-            switch (pos) {
-                case Granite.CloseButtonPosition.RIGHT:
-                    close_button.x = dest_width - close_button.width * 0.5f;
-                    break;
-                case Granite.CloseButtonPosition.LEFT:
-                    close_button.x = -close_button.width * 0.5f;
-                    break;
-            }
+            close_button.x = is_close_button_on_left () ?
+                -close_button.width * 0.5f :
+                dest_width - close_button.width * 0.5f;
 
             bool show = has_pointer && !in_slot_animation;
             close_button.opacity = show ? 255 : 0;
             window_title.opacity = close_button.opacity;
 
-            window_title.set_text (window.get_title (), false);
+            window_title.set_text (window.get_title () ?? "", false);
             window_title.set_max_width (dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor));
             set_window_title_position (dest_width, dest_height);
 
@@ -612,7 +610,7 @@ namespace Gala {
             var shadow_transition = new PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
-                progress_mode = MultitaskingView.ANIMATION_MODE
+                progress_mode = AnimationMode.EASE_OUT_QUAD
             };
 
             if (show)
@@ -739,7 +737,7 @@ namespace Gala {
 
         /**
          * When we cross an IconGroup, we animate to an even smaller size and slightly
-         * less opacity and add ourselves as temporary window to the group. When left, 
+         * less opacity and add ourselves as temporary window to the group. When left,
          * we reverse those steps.
          */
         void drag_destination_crossed (Actor destination, bool hovered) {
@@ -901,6 +899,17 @@ namespace Gala {
             var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
             var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
             window_title.set_position (x, y);
+        }
+
+        private static bool is_close_button_on_left () {
+            var layout = Meta.Prefs.get_button_layout ();
+            foreach (var button_function in layout.right_buttons) {
+                if (button_function == Meta.ButtonFunction.CLOSE) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
