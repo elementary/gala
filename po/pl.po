@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-07 06:37+0000\n"
+"PO-Revision-Date: 2022-04-07 06:39+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -133,7 +133,7 @@ msgstr "Poprawki:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Properly update accent color in the window switcher"
-msgstr "Kolor akcentu w przełączniku okien jest teraz poprawnie aktualizowany."
+msgstr "Kolor akcentu w przełączniku okien jest teraz poprawnie aktualizowany"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix selecting windows underneath the window switcher"
@@ -141,7 +141,7 @@ msgstr "Naprawiono problem z przełączaniem okien pod przełącznikiem okien"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Zapobiegnięto potencjalnym błędom krytycznym"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
