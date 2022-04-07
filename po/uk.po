@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-07 01:39+0000\n"
+"PO-Revision-Date: 2022-04-07 11:33+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -266,7 +266,7 @@ msgstr "Виправлення для HiDPI"
 
 #: data/gala.appdata.xml.in:92
 msgid "Performance improvements"
-msgstr "Вдосконалення швидкодії"
+msgstr "Поліпшення швидкодії"
 
 #: data/gala.appdata.xml.in:101
 msgid ""
