@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-07 06:39+0000\n"
+"PO-Revision-Date: 2022-04-07 11:33+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -145,11 +145,11 @@ msgstr "Zapobiegnięto potencjalnym błędom krytycznym"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Rozmiar obszarów roboczych zmienia się teraz przy zmianie wyświetlacza"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Poprawna obsługa okien bez tytułu"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -160,16 +160,14 @@ msgid "Improvements:"
 msgstr "Ulepszenia:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
-msgstr "Użyj portalu dostępu dla okna potwierdzenia ustawień wyświetlacza"
+msgstr ""
+"Użyj portalu dostępu dla potwierdzenia ustawień wyświetlacza i wymuszonego "
+"zamknięcia"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Pokaż nazwy okien w widoku wielu zadań"
+msgstr "Dodano możliwość zamykania okien w widoku wielu zadań przy użyciu Super"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
