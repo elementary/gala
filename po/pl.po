@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-07 11:33+0000\n"
+"PO-Revision-Date: 2022-04-08 16:06+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -175,7 +175,7 @@ msgstr "Dodano możliwość zamykania okien w widoku wielu zadań przy użyciu S
 #: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
 #: data/gala.appdata.xml.in:123
 msgid "Updated translations"
-msgstr "Zaktualizowano tłumaczenia"
+msgstr "Aktualizacja tłumaczeń"
 
 #: data/gala.appdata.xml.in:35
 msgid "Fix shadow clipping on server-side decorated windows"
@@ -264,7 +264,7 @@ msgstr "Poprawki HiDPI"
 
 #: data/gala.appdata.xml.in:92
 msgid "Performance improvements"
-msgstr "Poprawki wydajności"
+msgstr "Poprawa wydajności"
 
 #: data/gala.appdata.xml.in:101
 msgid ""
