@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2021-12-27 16:55+0000\n"
+"PO-Revision-Date: 2022-04-09 02:45+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -131,28 +131,24 @@ msgid "Fixes:"
 msgstr "修正点:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "ウィンドウスイッチャーの背後に位置するウィンドウの透明度です。"
+msgstr "ウィンドウスイッチャーのアクセントカラーを正しく更新するように修正"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "ウィンドウスイッチャーの背後に位置するウィンドウの透明度です。"
+msgstr "ウィンドウスイッチャー直下にあったウィンドウが選択できなくなる不具合を修正"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "クラッシュする可能性がある不具合を修正"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "ディスプレイに変更があった場合、ワークスペースをサイズ変更するように修正"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "タイトルのないウィンドウを処理できるように修正"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -163,16 +159,12 @@ msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
-msgstr "ディスプレイの設定確認ダイアログにアクセスポータルを使うように修正"
+msgstr "ディスプレイの設定確認ダイアログと強制終了ダイアログにアクセスポータルを使うように修正"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "“マルチタスク画面”でウィンドウのタイトルを表示するように変更"
+msgstr "スーパーキー押下で“マルチタスク画面”を閉じられるように修正"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
