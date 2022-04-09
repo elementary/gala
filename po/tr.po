@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2021-12-14 21:27+0000\n"
+"PO-Revision-Date: 2022-04-09 14:37+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -131,28 +131,24 @@ msgid "Fixes:"
 msgstr "Düzeltmeler:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "Pencere değiştirici arkasında yer alan pencerelerin opaklıkları."
+msgstr "Pencere değiştiricide vurgu rengini uygun şekilde güncelle"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "Pencere değiştirici arkasında yer alan pencerelerin opaklıkları."
+msgstr "Pencere değiştiricinin altındaki pencereleri seçme eylemi düzeltildi"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Olası çökmeler engellendi"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Görüntüler değiştiğinde çalışma alanlarını yeniden boyutlandır"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Başlıksız pencereleri işle"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -163,16 +159,14 @@ msgid "Improvements:"
 msgstr "İyileştirmeler:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
-msgstr "Ekran ayarları onay iletişim kutusu için erişim portalını kullan"
+msgstr ""
+"Ekran ayarları onay iletişim kutusu ve zorla çıkma için erişim portalını "
+"kullan"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Çoklu görev görünümünde pencere başlıklarını göster"
+msgstr "Super tuşu ile çoklu görev görünümünü kapatmaya izin ver"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
