@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-07 22:05+0000\n"
+"PO-Revision-Date: 2022-04-09 14:37+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -126,10 +126,8 @@ msgid "Fixes:"
 msgstr "תיקונים:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "אטימות החלונות שמאחורי מחליף החלונות."
+msgstr "עדכון של צבע משני במחליף החלונות"
 
 #: data/gala.appdata.xml.in:18
 #, fuzzy
