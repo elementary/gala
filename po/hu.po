@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2021-12-06 13:39+0000\n"
+"PO-Revision-Date: 2022-04-10 05:46+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -131,26 +131,24 @@ msgid "Fixes:"
 msgstr "Javítások:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
 msgid "Properly update accent color in the window switcher"
-msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
+msgstr "Az ablakváltó témaszínének helyes frissítése"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "Az ablakváltóban háttérben lévő ablakok homályossága."
+msgstr "Az ablakváltó alatti ablakok kiválasztása javítva"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Lehetséges összeomlások megelőzése"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Munkaterületek átméretezése kijelzőváltáskor"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Cím nélküli ablakok kezelése"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -161,18 +159,14 @@ msgid "Improvements:"
 msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
 msgstr ""
-"Hozzáférési portál használata a kijelzőbeállítások megerősítésénél megjelenő "
-"párbeszédablaknál"
+"Hozzáférési portál használata a kijelzőbeállítások megerősítéséhez és "
+"kényszerített kilépés"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Ablakcímek mutatása a többfeladatos nézetben"
+msgstr "Lehetőség a többfeladatos nézet kiválasztására a Super gombbal"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
