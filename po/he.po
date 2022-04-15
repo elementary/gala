@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-04-09 14:37+0000\n"
+"PO-Revision-Date: 2022-04-15 20:31+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -130,22 +130,20 @@ msgid "Properly update accent color in the window switcher"
 msgstr "עדכון של צבע משני במחליף החלונות"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "אטימות החלונות שמאחורי מחליף החלונות."
+msgstr "תוקנה בחירת חלונות מתחת לבורר החלונות"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "נמנעו קריסות אפשריות"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "גודל מרחבי העבודה משתנה עם שינוי גודל התצוגה"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "טיפול בחלונות בלי כותרת"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -156,16 +154,12 @@ msgid "Improvements:"
 msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation and force quit"
-msgstr "להשתמש בשער הנגישות לחלונית אישור הגדרות התצוגה"
+msgstr "להשתמש בשער הנגישות לאישור הגדרות התצוגה ולאילוץ היציאה"
 
 #: data/gala.appdata.xml.in:26
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "כותרות החלונות מוצגות בתצוגת ריבוי משימות"
+msgstr "לאפשר סגירת תצוגת ריבוי משימות עם מקש חלונות (Super)"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
