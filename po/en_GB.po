@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2021-12-02 07:11+0000\n"
-"Last-Translator: Ciarán Ainsworth <ciaranainsworth@outlook.com>\n"
+"PO-Revision-Date: 2022-04-20 08:57+0000\n"
+"Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
 "Language: en_GB\n"
@@ -131,16 +131,12 @@ msgid "Fixes:"
 msgstr "Fixes:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "The opacity of windows behind the window switcher."
+msgstr "Properly update accent color in the window switcher"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "The opacity of windows behind the window switcher."
+msgstr "Fix selecting windows underneath the window switcher"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
