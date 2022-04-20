@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2020-05-21 13:11+0000\n"
-"Last-Translator: Rodrigo Oliveira <rod.oliveira@gmail.com>\n"
+"PO-Revision-Date: 2022-04-20 09:31+0000\n"
+"Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/ScreenshotManager.vala:256
@@ -48,10 +48,9 @@ msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2094
-#, fuzzy, c-format
-#| msgid "Screenshots"
+#, c-format
 msgid "Screenshot from %s"
-msgstr "Capturas de tela"
+msgstr "Captura de tela de %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
