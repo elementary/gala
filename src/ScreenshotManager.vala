@@ -416,10 +416,12 @@ namespace Gala {
 
         Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
-            Graphene.Point coords = {};
+
 #if HAS_MUTTER40
-            cursor_tracker.get_pointer (coords, null);
+            Graphene.Point coords;
+            cursor_tracker.get_pointer (out coords, null);
 #else
+            Graphene.Point coords = {};
             cursor_tracker.get_pointer (out coords.x, out coords.y, null);
 #endif
 

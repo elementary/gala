@@ -383,7 +383,7 @@ namespace Meta {
 		protected CursorTracker ();
 		public void get_hot (out int x, out int y);
 #if HAS_MUTTER40
-		public void get_pointer (Graphene.Point coords, out Clutter.ModifierType mods);
+		public void get_pointer (out Graphene.Point coords, out Clutter.ModifierType mods);
 #else
 		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
 #endif
