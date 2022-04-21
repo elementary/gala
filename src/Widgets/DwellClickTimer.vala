@@ -75,7 +75,7 @@ namespace Gala {
                 var tracker = wm.get_display ().get_cursor_tracker ();
                 Graphene.Point coords = {};
 #if HAS_MUTTER40
-                tracker.get_pointer (coords, null);
+                tracker.get_pointer (out coords, null);
 #else
                 tracker.get_pointer (out coords.x, out coords.y, null);
 #endif

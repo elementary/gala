@@ -37,8 +37,6 @@ namespace Gala {
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
 
-        private uint timeout_id;
-
         public PointerLocator (WindowManager wm) {
             Object (wm: wm);
         }
@@ -52,6 +50,10 @@ namespace Gala {
 
             update_surface ();
             set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
+
+            var pivot = Graphene.Point ();
+            pivot.init (0.5f, 0.5f);
+            pivot_point = pivot;
 
             Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
         }
@@ -114,23 +116,41 @@ namespace Gala {
                 return;
             }
 
+            unowned var old_transition = get_transition ("circle");
+            if (old_transition != null) {
+                old_transition.stop ();
+            }
+
+            var transition = new Clutter.TransitionGroup ();
+            transition.remove_on_complete = true;
+            var transition_x = new Clutter.PropertyTransition ("scale-x");
+            var transition_y = new Clutter.PropertyTransition ("scale-y");
+            var start_val = Value (typeof (double));
+            start_val.set_double (1);
+            var stop_val = Value (typeof (double));
+            stop_val.set_double (0);
+            transition_x.set_from_value (start_val);
+            transition_y.set_from_value (start_val);
+            transition_x.set_to_value (stop_val);
+            transition_y.set_to_value (stop_val);
+            transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+            transition.duration = ANIMATION_TIME_MS;
+            transition.add_transition (transition_x);
+            transition.add_transition (transition_y);
+            transition.stopped.connect (() => { visible = false; });
+            transition.started.connect (() => { visible = true; });
+            add_transition ("circle", transition);
+
             var rgba = InternalUtils.get_theme_accent_color ();
 
             /* Don't use alpha from the stylesheet to ensure contrast */
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
-            if (timeout_id != 0) {
-                GLib.Source.remove (timeout_id);
-                timeout_id = 0;
-                visible = false;
-                restore_easing_state ();
-            }
-
-            var tracker = wm.get_display ().get_cursor_tracker ();
+            unowned var tracker = wm.get_display ().get_cursor_tracker ();
             Graphene.Point coords = {};
 #if HAS_MUTTER40
-            tracker.get_pointer (coords, null);
+            tracker.get_pointer (out coords, null);
 #else
             tracker.get_pointer (out coords.x, out coords.y, null);
 #endif
@@ -138,30 +158,7 @@ namespace Gala {
             x = coords.x - (width / 2);
             y = coords.y - (width / 2);
 
-            var pivot = Graphene.Point ();
-            pivot.x = 0.5f;
-            pivot.y = 0.5f;
-            pivot_point = pivot;
-
-            scale_x = 1;
-            scale_y = 1;
-
-            visible = true;
-
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (ANIMATION_TIME_MS);
-
-            timeout_id = Timeout.add (ANIMATION_TIME_MS, () => {
-                timeout_id = 0;
-
-                restore_easing_state ();
-
-                return GLib.Source.REMOVE;
-            });
-
-            scale_x = 0;
-            scale_y = 0;
+            transition.start ();
         }
     }
 }
