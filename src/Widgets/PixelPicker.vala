@@ -83,7 +83,7 @@ namespace Gala {
             wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
             grab_key_focus ();
 
-            modal_proxy = wm.push_modal ();
+            modal_proxy = wm.push_modal (this);
         }
 
         public void get_point (out int x, out int y) {

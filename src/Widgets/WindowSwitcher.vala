@@ -331,7 +331,7 @@ namespace Gala {
         }
 
         void push_modal () {
-            modal_proxy = wm.push_modal ();
+            modal_proxy = wm.push_modal (this);
             modal_proxy.set_keybinding_filter ((binding) => {
                 // if it's not built-in, we can block it right away
                 if (!binding.is_builtin ())

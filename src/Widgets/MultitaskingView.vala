@@ -592,7 +592,7 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal ();
+                modal_proxy = wm.push_modal (this);
                 modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 wm.background_group.hide ();
