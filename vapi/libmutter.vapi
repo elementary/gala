@@ -383,7 +383,7 @@ namespace Meta {
 		protected CursorTracker ();
 		public void get_hot (out int x, out int y);
 #if HAS_MUTTER40
-		public void get_pointer (Graphene.Point coords, out Clutter.ModifierType mods);
+		public void get_pointer (out Graphene.Point coords, out Clutter.ModifierType mods);
 #else
 		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
 #endif
@@ -789,19 +789,19 @@ namespace Meta {
 		public unowned GLib.SList<Meta.StartupSequence> get_sequences ();
 		[NoAccessorMethod]
 		public Meta.Display display { owned get; construct; }
-		public signal void changed ([CCode (type = "gpointer")] Meta.StartupSequence object);
+		public signal void changed (Meta.StartupSequence object);
 	}
 	[CCode (cheader_filename = "meta/meta-startup-notification.h", type_id = "meta_startup_sequence_get_type ()")]
 	public class StartupSequence : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected StartupSequence ();
-		public unowned string get_application_id ();
+		public unowned string? get_application_id ();
 		public bool get_completed ();
-		public unowned string get_icon_name ();
+		public unowned string? get_icon_name ();
 		public unowned string get_id ();
 		public unowned string get_name ();
 		public uint64 get_timestamp ();
-		public unowned string get_wmclass ();
+		public unowned string? get_wmclass ();
 		public int get_workspace ();
 		public string application_id { get; construct; }
 		public string icon_name { get; construct; }
@@ -862,7 +862,7 @@ namespace Meta {
 		public void foreach_transient (Meta.WindowForeachFunc func);
 		public Meta.Rectangle frame_rect_to_client_rect (Meta.Rectangle frame_rect);
 		public Meta.Rectangle get_buffer_rect ();
-		public unowned string get_client_machine ();
+		public unowned string? get_client_machine ();
 		public Meta.WindowClientType get_client_type ();
 		public unowned GLib.Object get_compositor_private ();
 		public unowned string get_description ();
@@ -871,32 +871,32 @@ namespace Meta {
 		public unowned Cairo.Region? get_frame_bounds ();
 		public Meta.Rectangle get_frame_rect ();
 		public Meta.FrameType get_frame_type ();
-		public unowned Meta.Group get_group ();
-		public unowned string get_gtk_app_menu_object_path ();
-		public unowned string get_gtk_application_id ();
-		public unowned string get_gtk_application_object_path ();
-		public unowned string get_gtk_menubar_object_path ();
-		public unowned string get_gtk_theme_variant ();
-		public unowned string get_gtk_unique_bus_name ();
-		public unowned string get_gtk_window_object_path ();
+		public unowned Meta.Group? get_group ();
+		public unowned string? get_gtk_app_menu_object_path ();
+		public unowned string? get_gtk_application_id ();
+		public unowned string? get_gtk_application_object_path ();
+		public unowned string? get_gtk_menubar_object_path ();
+		public unowned string? get_gtk_theme_variant ();
+		public unowned string? get_gtk_unique_bus_name ();
+		public unowned string? get_gtk_window_object_path ();
 		public bool get_icon_geometry (out Meta.Rectangle rect);
 		public uint64 get_id ();
 		public Meta.StackLayer get_layer ();
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
-		public unowned string get_mutter_hints ();
+		public unowned string? get_mutter_hints ();
 		public int get_pid ();
 		public unowned string get_role ();
-		public unowned string get_sandboxed_app_id ();
+		public unowned string? get_sandboxed_app_id ();
 		public uint get_stable_sequence ();
-		public unowned string get_startup_id ();
+		public unowned string? get_startup_id ();
 		public unowned Meta.Window? get_tile_match ();
 		public unowned string get_title ();
-		public unowned Meta.Window get_transient_for ();
+		public unowned Meta.Window? get_transient_for ();
 		public uint32 get_user_time ();
 		public Meta.WindowType get_window_type ();
-		public unowned string get_wm_class ();
-		public unowned string get_wm_class_instance ();
+		public unowned string? get_wm_class ();
+		public unowned string? get_wm_class_instance ();
 		public Meta.Rectangle get_work_area_all_monitors ();
 		public Meta.Rectangle get_work_area_current_monitor ();
 		public Meta.Rectangle get_work_area_for_monitor (int which_monitor);
