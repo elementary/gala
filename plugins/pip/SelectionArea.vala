@@ -129,7 +129,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal ();
+        modal_proxy = wm.push_modal (this);
     }
 
     private void get_selection_rectangle (out int x, out int y, out int width, out int height) {

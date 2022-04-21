@@ -664,7 +664,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal () {
+        public ModalProxy push_modal (Clutter.Actor actor) {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
@@ -674,14 +674,20 @@ namespace Gala {
                 return proxy;
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             var time = display.get_current_time ();
+#endif
 
             update_input_area ();
-#if !HAS_MUTTER42
+#if HAS_MUTTER42
+            proxy.grab = stage.grab (actor);
+#else
             begin_modal (0, time);
 #endif
 
-            display.disable_unredirect ();
+            if (modal_stack.size == 1) {
+                display.disable_unredirect ();
+            }
 
             return proxy;
         }
@@ -694,6 +700,10 @@ namespace Gala {
                 warning ("Attempted to remove a modal proxy that was not in the stack");
                 return;
             }
+
+#if HAS_MUTTER42
+            proxy.grab.dismiss ();
+#endif
 
             if (is_modal ())
                 return;
@@ -712,7 +722,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public bool is_modal () {
-            return (modal_stack.size > 0);
+            return !modal_stack.is_empty;
         }
 
         /**

@@ -7412,7 +7412,7 @@ namespace Clutter {
 		[Version (since = "0.4")]
 		public unowned string get_title ();
 #if HAS_MUTTER42
-		public unowned Clutter.Grab grab (Clutter.Actor actor);
+		public Clutter.Grab grab (Clutter.Actor actor);
 #endif
 #if !HAS_MUTTER42
 		[Version (since = "1.2")]
