@@ -344,7 +344,9 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             });
 
+#if !HAS_MUTTER42
             grab_key_focus ();
+#endif
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
