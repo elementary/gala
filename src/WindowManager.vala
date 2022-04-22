@@ -245,9 +245,7 @@ namespace Gala {
 #if HAS_MUTTER41
             display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
 #else
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
-                launch_action ("panel-main-menu-action");
-            });
+            Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
 #endif
 
             display.overlay_key.connect (() => {
@@ -439,13 +437,11 @@ namespace Gala {
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
         }
 
-#if HAS_MUTTER41
         [CCode (instance_pos = -1)]
         void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             launch_action ("panel-main-menu-action");
         }
-#endif
 
         private void on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
