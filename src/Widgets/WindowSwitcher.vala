@@ -344,7 +344,7 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             });
 
-            grab_key_focus ();
+            get_stage ().grab (this);
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
