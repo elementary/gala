@@ -343,8 +343,6 @@ namespace Gala {
                 return !(name == "switch-applications" || name == "switch-applications-backward"
                     || name == "switch-windows" || name == "switch-windows-backward");
             });
-
-            get_stage ().grab (this);
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
