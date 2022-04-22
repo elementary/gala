@@ -308,10 +308,6 @@ namespace Gala {
             if ((get_current_modifiers () & modifier_mask) == 0) {
                 close_switcher (wm.get_display ().get_current_time ());
             }
-
-#if !HAS_MUTTER42
-            grab_key_focus ();
-#endif
         }
 
         void toggle_display (bool show) {
@@ -347,6 +343,10 @@ namespace Gala {
                 return !(name == "switch-applications" || name == "switch-applications-backward"
                     || name == "switch-windows" || name == "switch-windows-backward");
             });
+
+#if !HAS_MUTTER42
+            grab_key_focus ();
+#endif
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
