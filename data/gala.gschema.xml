@@ -155,6 +155,10 @@
       <default><![CDATA[['<Super><Shift>Tab']]]></default>
       <summary>Cycle to the next workspace to the right or to back to the first</summary>
     </key>
+    <key type="as" name="panel-main-menu">
+      <default><![CDATA[['<Super>space','<Alt>F2']]]></default>
+      <summary>Open the applications menu</summary>
+    </key>
     <key type="as" name="switch-input-source">
       <default><![CDATA[['<Alt>space']]]></default>
       <summary>Cycle to next keyboard layout</summary>
