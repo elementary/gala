@@ -60,11 +60,11 @@ namespace Gala {
         ulong on_visible_workspace_sid = 0U;
 
         private static GLib.Settings keybind_settings;
-        private static GLib.Settings media_keys_settings;
+        private static GLib.Settings gala_keybind_settings;
 
         static construct {
             keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
-            media_keys_settings = new GLib.Settings ("org.gnome.settings-daemon.plugins.media-keys");
+            gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
         }
 
         [DBus (visible = false)]
@@ -269,7 +269,7 @@ namespace Gala {
                 move_left_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-left")[0];
             }
 
-            screenshot_accellabel.accel_string = media_keys_settings.get_strv ("window-screenshot")[0];
+            screenshot_accellabel.accel_string = gala_keybind_settings.get_strv ("window-screenshot")[0];
 
             close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
             if (close.visible) {

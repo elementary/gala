@@ -248,6 +248,15 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
 #endif
 
+#if HAS_MUTTER42
+            display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+#endif
+
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
             });
@@ -441,6 +450,31 @@ namespace Gala {
         void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             launch_action ("panel-main-menu-action");
+        }
+
+        [CCode (instance_pos = -1)]
+        void handle_screenshot (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            switch (binding.get_name ()) {
+                case "screenshot":
+                    screenshot_screen.begin ();
+                    break;
+                case "area-screenshot":
+                    screenshot_area.begin ();
+                    break;
+                case "window-screenshot":
+                    screenshot_current_window.begin ();
+                    break;
+                case "screenshot-clip":
+                    screenshot_screen.begin (true);
+                    break;
+                case "area-screenshot-clip":
+                    screenshot_area.begin (true);
+                    break;
+                case "window-screenshot-clip":
+                    screenshot_current_window.begin (true);
+                    break;
+            }
         }
 
         private void on_gesture_detected (Gesture gesture) {
@@ -2115,15 +2149,47 @@ namespace Gala {
             return info;
         }
 
-        private async void screenshot_current_window () {
+        private string generate_screenshot_filename () {
+            var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
+            /// TRANSLATORS: %s represents a timestamp here
+            return _("Screenshot from %s").printf (date_time);
+        }
+
+        private async void screenshot_current_window (bool clipboard = false) {
             try {
-                var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
-                /// TRANSLATORS: %s represents a timestamp here
-                string file_name = _("Screenshot from %s").printf (date_time);
+                string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                var screenshot_manager = ScreenshotManager.init (this);
-                yield screenshot_manager.screenshot_window (true, false, true, file_name, out success, out filename_used);
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
+        }
+
+        private async void screenshot_area (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                bool success = false;
+                string filename_used = "";
+
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+
+                int x, y, w, h;
+                yield screenshot_manager.select_area (out x, out y, out w, out h);
+                yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
+        }
+
+        private async void screenshot_screen (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                bool success = false;
+                string filename_used = "";
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
             }
