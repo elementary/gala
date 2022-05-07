@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-05-07 01:27+0000\n"
+"PO-Revision-Date: 2022-05-07 15:04+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
 "\n"
@@ -157,7 +157,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:99 data/gala.appdata.xml.in:109
 #: data/gala.appdata.xml.in:118 data/gala.appdata.xml.in:129
 msgid "Improvements:"
-msgstr ""
+msgstr "Vylepšenia:"
 
 #: data/gala.appdata.xml.in:25
 msgid "Use access portal for display settings confirmation and force quit"
@@ -173,7 +173,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
 #: data/gala.appdata.xml.in:123
 msgid "Updated translations"
-msgstr "Aktualizácia prekladov"
+msgstr "Aktualizované preklady"
 
 #: data/gala.appdata.xml.in:35
 msgid "Fix shadow clipping on server-side decorated windows"
