@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-05-07 15:04+0000\n"
+"PO-Revision-Date: 2022-05-07 16:29+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
 "\n"
@@ -23,41 +23,41 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr ""
+msgstr "Snímky obrazovky"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Snímka obrazovky vytvorená"
 
 #: src/WindowManager.vala:2063
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Ponechať nové nastavenia obrazovky?"
 
 #: src/WindowManager.vala:2064
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Za 30 sekúnd sa zmeny automaticky vrátia späť."
 
 #: src/WindowManager.vala:2067
 msgid "Keep Settings"
-msgstr ""
+msgstr "Ponechať nastavenia"
 
 #: src/WindowManager.vala:2068
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Použiť predchádzajúce nastavenia"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2094
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Snímka obrazovky z %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Skryť"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
-msgstr "Presun"
+msgstr "Presunúť"
 
 #: daemon/MenuDaemon.vala:136
 msgid "Resize"
@@ -65,23 +65,23 @@ msgstr "Zmeniť veľkosť"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
-msgstr "Vždy na vrchu"
+msgstr "Vždy navrchu"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
-msgstr "Vždy na viditeľnom pracovnom priestore"
+msgstr "Vždy na viditeľnej pracovnej ploche"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
-msgstr "Presun na pracovný priestor v ľavo"
+msgstr "Presunúť na plochu vľavo"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr "Presun na pracovný priestor v pravo"
+msgstr "Presunúť na plochu vpravo"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Vytvoriť snímku obrazovky"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -89,11 +89,11 @@ msgstr "Zatvoriť"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Zrušiť zarovnanie"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
-msgstr "Obnoviť"
+msgstr "Zrušiť maximalizáciu"
 
 #: daemon/MenuDaemon.vala:225
 msgid "Maximize"
@@ -101,33 +101,35 @@ msgstr "Maximalizovať"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Zmeniť tapetu plochy…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "Nastavenia obrazovky…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "Nastavenia systému…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Zobrazenie úloh a správa okien"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Správca kompozície a okien pre Pantheon"
 
 #: data/gala.appdata.xml.in:10
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Správca okien a kompozície založený na libmutter a navrhnutý tímom "
+"elementary pre použitie s Pantheon."
 
 #: data/gala.appdata.xml.in:15 data/gala.appdata.xml.in:33
 msgid "Fixes:"
-msgstr ""
+msgstr "Opravy:"
 
 #: data/gala.appdata.xml.in:17
 #, fuzzy
