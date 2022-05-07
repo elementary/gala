@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-04-06 20:14+0000\n"
-"PO-Revision-Date: 2022-05-07 16:29+0000\n"
+"PO-Revision-Date: 2022-05-07 18:40+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
 "\n"
@@ -132,26 +132,24 @@ msgid "Fixes:"
 msgstr "Opravy:"
 
 #: data/gala.appdata.xml.in:17
-#, fuzzy
 msgid "Properly update accent color in the window switcher"
-msgstr "Priehľadnosť okien umiestnených v pozadí alt-tab prepínača okien"
+msgstr "Správne aktualizovať farebný odtieň v prepínači okien"
 
 #: data/gala.appdata.xml.in:18
-#, fuzzy
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "Priehľadnosť okien umiestnených v pozadí alt-tab prepínača okien"
+msgstr "Opravený výber okien pod prepínačom okien"
 
 #: data/gala.appdata.xml.in:19
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Zabránenie potenciálnym pádom"
 
 #: data/gala.appdata.xml.in:20
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Zmeniť veľkosť pracovných plôch pri zmene obrazovky"
 
 #: data/gala.appdata.xml.in:21
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Spracovávať aj okná bez nadpisu"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:62
@@ -164,10 +162,12 @@ msgstr "Vylepšenia:"
 #: data/gala.appdata.xml.in:25
 msgid "Use access portal for display settings confirmation and force quit"
 msgstr ""
+"Použiť prístupový portál pre potvrdzovanie nastavení obrazovky a vynútené "
+"ukončenie"
 
 #: data/gala.appdata.xml.in:26
 msgid "Allow closing multitasking view with Super"
-msgstr ""
+msgstr "Umožnenie zatvorenia zobrazenia úloh klávesou Super"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:65
@@ -179,32 +179,31 @@ msgstr "Aktualizované preklady"
 
 #: data/gala.appdata.xml.in:35
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
+msgstr "Opravené orezávanie tieňovania okien orámovaných na strane servera"
 
 #: data/gala.appdata.xml.in:39
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "Podpora pre posúvanie s vysokým rozlíšením"
 
 #: data/gala.appdata.xml.in:40
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Prerobený Alt + Tab prepínač"
 
 #: data/gala.appdata.xml.in:41
-#, fuzzy
 msgid "Dim the parents of modal dialogs"
-msgstr "Zhasnúť materské okná vyvolávajúce modálne pripnuté dialógy"
+msgstr "Stmaviť hlavné okná pod dialógovými oknami"
 
 #: data/gala.appdata.xml.in:42
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "Dialógy spadnú na hlavné okná namiesto pohybu od okna"
 
 #: data/gala.appdata.xml.in:51
 msgid "Fix a potential crash when taking screenshots"
-msgstr ""
+msgstr "Opravený potenciálny pád pri vytváraní snímok obrazovky"
 
 #: data/gala.appdata.xml.in:58
 msgid "New features:"
-msgstr ""
+msgstr "Nové funkcie:"
 
 #: data/gala.appdata.xml.in:60
 msgid "Stash the picture-in-picture window by pushing it off screen"
