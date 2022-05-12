@@ -418,7 +418,7 @@ namespace Gala {
             //       are here too early, in which case all the children are at
             //       (0|0), so we can easily check for that and come back later
             if (container.get_n_children () > 1
-                && container.get_child_at_index (1).allocation.x1 < 1) {
+                && container.get_child_at_index (1).x < 1) {
 
                 GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
                     update_indicator_position (initial);
@@ -427,8 +427,8 @@ namespace Gala {
                 return;
             }
 
-            float x, y;
-            cur_icon.allocation.get_origin (out x, out y);
+            float x = cur_icon.x;
+            float y = cur_icon.y;
 
             if (initial) {
                 indicator.visible = true;
