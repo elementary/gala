@@ -44,19 +44,36 @@ namespace Gala {
         public override void paint (Clutter.PaintContext context) {
             base.paint (context);
 
-            unowned Cogl.Framebuffer fb = context.get_framebuffer ();
+            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int) width, (int) height);
 
-            pipeline.set_color4ub (0, 0, 0, 100);
-            fb.push_rectangle_clip (0, 0, width, height);
-            fb.draw_rectangle (pipeline, 0, 0, width, height);
-            fb.pop_clip ();
+            var ctx = new Cairo.Context (surface);
+            ctx.set_source_rgba (255, 255, 255, 255);
+            ctx.rectangle (0, 0, (int) width, (int) height);
+            ctx.set_operator (Cairo.Operator.SOURCE);
+            ctx.stroke ();
+            ctx.restore ();
+            ctx.paint ();
+
+            try {
+                var texture = new Cogl.Texture2D.from_data (
+                    context.get_framebuffer ().get_context (),
+                    (int) width, (int) height,
+                    Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (), surface.get_data ()
+                );
+
+                pipeline.set_layer_texture (0, texture);
+            } catch (Error e) {
+                debug (e.message);
+            }
 
             var color = Cogl.Color.from_4ub (255, 255, 255, 25);
             color.premultiply ();
+
             pipeline.set_color (color);
-            fb.push_rectangle_clip (0.5f, 0.5f, width - 1, height - 1);
-            fb.draw_rectangle (pipeline, 0.5f, 0.5f, width - 1, height - 1);
-            fb.pop_clip ();
+
+            unowned var fb = context.get_framebuffer ();
+            fb.draw_rectangle (pipeline, 0, 0, width, height);
         }
 #else
         public override void paint (Clutter.PaintContext context) {
