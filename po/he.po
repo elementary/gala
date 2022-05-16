@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-16 16:40+0000\n"
-"PO-Revision-Date: 2022-04-15 20:31+0000\n"
+"PO-Revision-Date: 2022-05-16 18:10+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -128,7 +128,7 @@ msgstr "תיקונים:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "תוקנו תקלות שצצו מחדש ב־OS 7"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:36
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:62
@@ -140,10 +140,8 @@ msgid "Improvements:"
 msgstr "שיפורים:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr "להשתמש בשער הנגישות לאישור הגדרות התצוגה ולאילוץ היציאה"
+msgstr "להשתמש בשער הנגישות לאילוץ היציאה"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:40
 #: data/gala.appdata.xml.in:56 data/gala.appdata.xml.in:65
@@ -174,10 +172,8 @@ msgid "Handle windows with no title"
 msgstr "טיפול בחלונות בלי כותרת"
 
 #: data/gala.appdata.xml.in:38
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
-msgstr "להשתמש בשער הנגישות לאישור הגדרות התצוגה ולאילוץ היציאה"
+msgstr "להשתמש בשער הנגישות לאישור הגדרות התצוגה"
 
 #: data/gala.appdata.xml.in:39
 msgid "Allow closing multitasking view with Super"
