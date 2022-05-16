@@ -165,15 +165,6 @@ namespace Gala {
         }
 
         /**
-         * We generally assume that when the key-focus-out signal is emitted
-         * a different component was opened, so we close in that case.
-         */
-        public override void key_focus_out () {
-            if (opened && !contains (get_stage ().key_focus))
-                toggle ();
-        }
-
-        /**
          * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
          * GestureTracker.
          */
