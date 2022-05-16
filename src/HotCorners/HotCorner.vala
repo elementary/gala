@@ -35,6 +35,20 @@ public class Gala.HotCorner : Object {
     private const int BARRIER_SIZE = 30;
 
     /**
+     * Gets mouse pointer speed, a value between -1 and 1.
+     * uses this setting to create a scaling factor only for values above 0, 
+     * since smaller values are less sensitive and don't need adjusted
+     */
+    private static GLib.Settings mouse_settings;
+    private static double mouse_speed_scale_factor;
+    static construct {
+        mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
+        mouse_speed_scale_factor = (mouse_settings.get_double("speed") > 0) ? 
+            (1 + mouse_settings.get_double("speed")) * 2 :
+            1;
+    }
+
+    /**
      * In order to avoid accidental triggers, don't trigger the hot corner until
      * this threshold is reached.
      */
@@ -51,6 +65,7 @@ public class Gala.HotCorner : Object {
      * action again when this threshold is reached.
      */
     private const int RETRIGGER_PRESSURE_THRESHOLD = 500;
+    private int scaled_retrigger_threshold = RETRIGGER_PRESSURE_THRESHOLD * (int) mouse_speed_scale_factor;
 
     public signal void trigger ();
 
@@ -156,7 +171,7 @@ public class Gala.HotCorner : Object {
             barrier.release (event);
         }
 
-        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD) {
+        if (triggered && pressure.abs () > scaled_retrigger_threshold) {
             trigger_hot_corner ();
         }
     }
