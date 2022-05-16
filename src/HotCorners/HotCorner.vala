@@ -43,8 +43,8 @@ public class Gala.HotCorner : Object {
     private static double mouse_speed_scale_factor;
     static construct {
         mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
-        mouse_speed_scale_factor = (mouse_settings.get_double("speed") > 0) ? 
-            (1 + mouse_settings.get_double("speed")) * 2 :
+        mouse_speed_scale_factor = (mouse_settings.get_double ("speed") > 0) ? 
+            (1 + mouse_settings.get_double ("speed")) * 2 :
             1;
     }
 
