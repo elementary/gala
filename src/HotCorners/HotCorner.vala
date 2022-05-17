@@ -81,7 +81,7 @@ public class Gala.HotCorner : Object {
         scaled_trigger_threshold = TRIGGER_PRESSURE_THRESHOLD_MIN + TRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
         scaled_release_threshold = RELEASE_PRESSURE_THRESHOLD_MIN + RELEASE_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
         scaled_retrigger_threshold = RETRIGGER_PRESSURE_THRESHOLD_MIN + RETRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-    }    
+    }
 
     public signal void trigger ();
 
