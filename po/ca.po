@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-16 16:40+0000\n"
-"PO-Revision-Date: 2022-04-07 11:33+0000\n"
+"PO-Revision-Date: 2022-05-17 10:49+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -133,7 +133,7 @@ msgstr "Correccions:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Correcció de les regressions per a SO 7"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:36
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:62
@@ -145,12 +145,8 @@ msgid "Improvements:"
 msgstr "Millores:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr ""
-"Useu el portal d'accés per confirmar la configuració de visualització i "
-"forçar-ne la sortida."
+msgstr "Useu el portal d'accés per forçar la sortida."
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:40
 #: data/gala.appdata.xml.in:56 data/gala.appdata.xml.in:65
@@ -183,12 +179,10 @@ msgid "Handle windows with no title"
 msgstr "Gestió de finestres sense títol"
 
 #: data/gala.appdata.xml.in:38
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
 msgstr ""
-"Useu el portal d'accés per confirmar la configuració de visualització i "
-"forçar-ne la sortida."
+"Useu el portal d'accés per a la confirmació de la configuració de "
+"visualització."
 
 #: data/gala.appdata.xml.in:39
 msgid "Allow closing multitasking view with Super"
