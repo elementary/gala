@@ -59,8 +59,7 @@ public class Gala.HotCorner : Object {
 
     /**
      * Gets mouse pointer speed, a value between -1 and 1.
-     * uses this setting to create a scaling factor only for values above 0, 
-     * since smaller values are less sensitive and don't need adjusted.
+     * uses this setting to create a scaling factor.
      */
     private GLib.Settings mouse_settings;
     private double mouse_speed_scale_factor;
