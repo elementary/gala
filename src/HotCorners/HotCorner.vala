@@ -36,24 +36,26 @@ public class Gala.HotCorner : Object {
 
     /**
      * In order to avoid accidental triggers, don't trigger the hot corner until
-     * this threshold is reached. 50 min: 1 max: 200
+     * this threshold is reached.
      */
     private const int TRIGGER_PRESSURE_THRESHOLD_MIN = 0;
     private const int TRIGGER_PRESSURE_THRESHOLD = 50;
 
     /**
      * When the mouse pointer pressures the barrier without activating the hot corner,
-     * release it when this threshold is reached. 100
+     * release it when this threshold is reached.
      */
     private const int RELEASE_PRESSURE_THRESHOLD_MIN = 30;
     private const int RELEASE_PRESSURE_THRESHOLD = 70;
 
     /**
      * When the mouse pointer pressures the hot corner after activation, trigger the
-     * action again when this threshold is reached. 500
+     * action again when this threshold is reached.
+     * Only retrigger after a minimum delay (milliseconds) since original trigger.
      */
     private const int RETRIGGER_PRESSURE_THRESHOLD_MIN = 60;
     private const int RETRIGGER_PRESSURE_THRESHOLD = 440;
+    private const int RETRIGGER_DELAY = 600;
 
     /**
      * Gets mouse pointer speed, a value between -1 and 1.
@@ -87,6 +89,7 @@ public class Gala.HotCorner : Object {
     private Gala.Barrier? vertical_barrier = null;
     private Gala.Barrier? horizontal_barrier = null;
     private bool triggered = false;
+    private uint32 triggered_time;
 
     public HotCorner (Meta.Display display, float x, float y, string hot_corner_position) {
         add_barriers (display, x, y, hot_corner_position);
@@ -179,6 +182,7 @@ public class Gala.HotCorner : Object {
             if (pressure.abs () > scaled_trigger_threshold) {
                 trigger_hot_corner ();
                 pressure = 0;
+                triggered_time = event.time;
             }
         }
 
@@ -186,7 +190,7 @@ public class Gala.HotCorner : Object {
             barrier.release (event);
         }
 
-        if (triggered && pressure.abs () > scaled_retrigger_threshold) {
+        if (triggered && pressure.abs () > scaled_retrigger_threshold && event.time > RETRIGGER_DELAY + triggered_time) {
             trigger_hot_corner ();
         }
     }
