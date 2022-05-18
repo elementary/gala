@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-16 16:40+0000\n"
-"PO-Revision-Date: 2022-04-09 02:45+0000\n"
+"PO-Revision-Date: 2022-05-18 14:07+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -133,7 +133,7 @@ msgstr "修正点:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "elementary OS 7 でみられていたリグレッションを修正"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:36
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:62
@@ -145,12 +145,8 @@ msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr ""
-"ディスプレイの設定確認ダイアログと強制終了ダイアログにアクセスポータルを使う"
-"ように修正"
+msgstr "強制終了ダイアログにアクセスポータルを使うように修正"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:40
 #: data/gala.appdata.xml.in:56 data/gala.appdata.xml.in:65
@@ -183,12 +179,8 @@ msgid "Handle windows with no title"
 msgstr "タイトルのないウィンドウを処理できるように修正"
 
 #: data/gala.appdata.xml.in:38
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
-msgstr ""
-"ディスプレイの設定確認ダイアログと強制終了ダイアログにアクセスポータルを使う"
-"ように修正"
+msgstr "ディスプレイの設定確認ダイアログにアクセスポータルを使うように修正"
 
 #: data/gala.appdata.xml.in:39
 msgid "Allow closing multitasking view with Super"
