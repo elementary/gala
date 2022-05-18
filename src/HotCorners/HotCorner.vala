@@ -38,50 +38,21 @@ public class Gala.HotCorner : Object {
      * In order to avoid accidental triggers, don't trigger the hot corner until
      * this threshold is reached.
      */
-    private const int TRIGGER_PRESSURE_THRESHOLD_MIN = 0;
     private const int TRIGGER_PRESSURE_THRESHOLD = 50;
 
     /**
      * When the mouse pointer pressures the barrier without activating the hot corner,
      * release it when this threshold is reached.
      */
-    private const int RELEASE_PRESSURE_THRESHOLD_MIN = 30;
-    private const int RELEASE_PRESSURE_THRESHOLD = 70;
+    private const int RELEASE_PRESSURE_THRESHOLD = 100;
 
     /**
      * When the mouse pointer pressures the hot corner after activation, trigger the
      * action again when this threshold is reached.
      * Only retrigger after a minimum delay (milliseconds) since original trigger.
      */
-    private const int RETRIGGER_PRESSURE_THRESHOLD_MIN = 60;
-    private const int RETRIGGER_PRESSURE_THRESHOLD = 440;
+    private const int RETRIGGER_PRESSURE_THRESHOLD = 500;
     private const int RETRIGGER_DELAY = 600;
-
-    /**
-     * Gets mouse pointer speed, a value between -1 and 1.
-     * uses this setting to create a scaling factor.
-     */
-    private GLib.Settings mouse_settings;
-    private double mouse_speed_scale_factor;
-    private double scaled_trigger_threshold;
-    private double scaled_release_threshold;
-    private double scaled_retrigger_threshold;
-
-    construct {
-        mouse_settings = new GLib.Settings ("org.gnome.desktop.peripherals.mouse");
-        mouse_speed_scale_factor = (mouse_settings.get_double ("speed") + 1) * (mouse_settings.get_double ("speed") + 1);
-
-        mouse_settings.changed["speed"].connect (() => {
-            mouse_speed_scale_factor = (mouse_settings.get_double ("speed") + 1) * (mouse_settings.get_double ("speed") + 1);
-            scaled_trigger_threshold = TRIGGER_PRESSURE_THRESHOLD_MIN + TRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-            scaled_release_threshold = RELEASE_PRESSURE_THRESHOLD_MIN + RELEASE_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-            scaled_retrigger_threshold = RETRIGGER_PRESSURE_THRESHOLD_MIN + RETRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-        });
-
-        scaled_trigger_threshold = TRIGGER_PRESSURE_THRESHOLD_MIN + TRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-        scaled_release_threshold = RELEASE_PRESSURE_THRESHOLD_MIN + RELEASE_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-        scaled_retrigger_threshold = RETRIGGER_PRESSURE_THRESHOLD_MIN + RETRIGGER_PRESSURE_THRESHOLD * mouse_speed_scale_factor;
-    }
 
     public signal void trigger ();
 
@@ -178,18 +149,18 @@ public class Gala.HotCorner : Object {
             barrier.pressure_y.abs ();
 
         if (!triggered && vertical_barrier.is_hit && horizontal_barrier.is_hit) {
-            if (pressure.abs () > scaled_trigger_threshold) {
+            if (pressure.abs () > TRIGGER_PRESSURE_THRESHOLD) {
                 trigger_hot_corner ();
                 pressure = 0;
                 triggered_time = event.time;
             }
         }
 
-        if (!triggered && pressure.abs () > scaled_release_threshold) {
+        if (!triggered && pressure.abs () > RELEASE_PRESSURE_THRESHOLD) {
             barrier.release (event);
         }
 
-        if (triggered && pressure.abs () > scaled_retrigger_threshold && event.time > RETRIGGER_DELAY + triggered_time) {
+        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD && event.time > RETRIGGER_DELAY + triggered_time) {
             trigger_hot_corner ();
         }
     }
