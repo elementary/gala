@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-16 16:40+0000\n"
-"PO-Revision-Date: 2022-04-10 05:46+0000\n"
+"PO-Revision-Date: 2022-05-19 12:02+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -133,7 +133,7 @@ msgstr "Javítások:"
 
 #: data/gala.appdata.xml.in:17
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Regressziók javítása OS 7-en"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:36
 #: data/gala.appdata.xml.in:50 data/gala.appdata.xml.in:62
@@ -145,12 +145,8 @@ msgid "Improvements:"
 msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr ""
-"Hozzáférési portál használata a kijelzőbeállítások megerősítéséhez és "
-"kényszerített kilépés"
+msgstr "Hozzáférési portál használata a kényszerített kilépéshez"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:40
 #: data/gala.appdata.xml.in:56 data/gala.appdata.xml.in:65
@@ -181,12 +177,8 @@ msgid "Handle windows with no title"
 msgstr "Cím nélküli ablakok kezelése"
 
 #: data/gala.appdata.xml.in:38
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Hozzáférési portál használata a kijelzőbeállítások megerősítéséhez és "
-"kényszerített kilépés"
+msgstr "Hozzáférési portál használata a kijelzőbeállítások megerősítéséhez"
 
 #: data/gala.appdata.xml.in:39
 msgid "Allow closing multitasking view with Super"
