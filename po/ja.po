@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2022-05-18 14:07+0000\n"
+"PO-Revision-Date: 2022-05-20 21:02+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -346,7 +346,7 @@ msgstr "すべての開いているウィンドウとワークスペースを参
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "preferences-desktop-workspaces"
-msgstr ""
+msgstr "preferences-desktop-workspaces"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
