@@ -153,7 +153,7 @@ namespace Gala {
 
                 // draw rect
                 Clutter.cairo_set_source_color (ctx, accent_color);
-                Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+                Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
                 ctx.set_operator (Cairo.Operator.SOURCE);
                 ctx.fill ();
 
