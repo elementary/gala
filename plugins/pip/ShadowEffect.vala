@@ -77,7 +77,7 @@ namespace Gala.Plugins.PIP {
             }
 
             // fill a new texture for this size
-            var buffer = new Granite.Drawing.BufferSurface (width, height);
+            var buffer = new Drawing.BufferSurface (width, height);
             buffer.context.rectangle (shadow_size - shadow_spread, shadow_size - shadow_spread,
                 width - shadow_size * 2 + shadow_spread * 2, height - shadow_size * 2 + shadow_spread * 2);
             buffer.context.set_source_rgba (0, 0, 0, 0.7);

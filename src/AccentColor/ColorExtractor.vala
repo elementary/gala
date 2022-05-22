@@ -23,9 +23,9 @@ public class Gala.ColorExtractor : Object {
     private const double PERCENTAGE_SAMPLE_PIXELS = 0.01;
 
     public Gdk.Pixbuf? pixbuf { get; construct set; }
-    public Granite.Drawing.Color? primary_color { get; construct set; }
+    public Drawing.Color? primary_color { get; construct set; }
 
-    private Gee.List<Granite.Drawing.Color> pixels;
+    private Gee.List<Drawing.Color> pixels;
 
     public ColorExtractor.from_pixbuf (Gdk.Pixbuf pixbuf) {
         Object (pixbuf: pixbuf);
@@ -33,14 +33,14 @@ public class Gala.ColorExtractor : Object {
         pixels = convert_pixels_to_rgb (pixbuf.get_pixels_with_length (), pixbuf.has_alpha);
     }
 
-    public ColorExtractor.from_primary_color (Granite.Drawing.Color primary_color) {
+    public ColorExtractor.from_primary_color (Drawing.Color primary_color) {
         Object (primary_color: primary_color);
 
-        pixels = new Gee.ArrayList<Granite.Drawing.Color> ();
+        pixels = new Gee.ArrayList<Drawing.Color> ();
         pixels.add (primary_color);
     }
 
-    public int get_dominant_color_index (Gee.List<Granite.Drawing.Color> palette) {
+    public int get_dominant_color_index (Gee.List<Drawing.Color> palette) {
         int index = 0;
         var matches = new double[palette.size];
 
@@ -75,8 +75,8 @@ public class Gala.ColorExtractor : Object {
         return index;
     }
 
-    private Gee.ArrayList<Granite.Drawing.Color> convert_pixels_to_rgb (uint8[] pixels, bool has_alpha) {
-        var list = new Gee.ArrayList<Granite.Drawing.Color> ();
+    private Gee.ArrayList<Drawing.Color> convert_pixels_to_rgb (uint8[] pixels, bool has_alpha) {
+        var list = new Gee.ArrayList<Drawing.Color> ();
 
         int factor = 3 + (int) has_alpha;
         int step_size = (int) (pixels.length / factor * PERCENTAGE_SAMPLE_PIXELS);
@@ -87,7 +87,7 @@ public class Gala.ColorExtractor : Object {
             double green = pixels[offset + 1] / 255.0;
             double blue = pixels[offset + 2] / 255.0;
 
-            list.add (new Granite.Drawing.Color (red, green, blue, 0.0));
+            list.add (new Drawing.Color (red, green, blue, 0.0));
         }
 
         return list;

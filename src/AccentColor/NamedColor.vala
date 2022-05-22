@@ -22,7 +22,7 @@
 public class Gala.NamedColor : Object {
     public string name { get; construct set; }
     public string theme { get; construct set; }
-    public Granite.Drawing.Color color { get; construct set; }
+    public Drawing.Color color { get; construct set; }
 
     public NamedColor (string name, string theme) {
         Object (
