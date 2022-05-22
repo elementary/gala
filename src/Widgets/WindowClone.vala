@@ -80,7 +80,7 @@ namespace Gala {
             cr.paint ();
             cr.restore ();
 
-            Granite.Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 

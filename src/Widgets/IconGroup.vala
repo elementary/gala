@@ -357,7 +357,7 @@ namespace Gala {
             }
 
             // more than one => we need a folder
-            Granite.Drawing.Utilities.cairo_rounded_rectangle (
+            Drawing.Utilities.cairo_rounded_rectangle (
                 cr,
                 0.5 * scale,
                 0.5 * scale,
@@ -384,7 +384,7 @@ namespace Gala {
             cr.set_source (grad);
             cr.stroke ();
 
-            Granite.Drawing.Utilities.cairo_rounded_rectangle (
+            Drawing.Utilities.cairo_rounded_rectangle (
                 cr,
                 1.5 * scale,
                 1.5 * scale,
@@ -412,7 +412,7 @@ namespace Gala {
                     || workspace_index != manager.get_n_workspaces () - 1)
                     return false;
 
-                var buffer = new Granite.Drawing.BufferSurface (SIZE * scale, SIZE * scale);
+                var buffer = new Drawing.BufferSurface (SIZE * scale, SIZE * scale);
                 var offset = (SIZE * scale) / 2 - (PLUS_WIDTH * scale) / 2;
 
                 buffer.context.rectangle (PLUS_WIDTH / 2 * scale - PLUS_SIZE / 2 * scale + 0.5 + offset,
