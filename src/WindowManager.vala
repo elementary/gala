@@ -1336,7 +1336,7 @@ namespace Gala {
 
             // Notifications are a special case and have to be always be handled
             // regardless of the animation setting
-            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
+            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION && window.title != "io.elementary.notifications") {
                 actor.show ();
                 map_completed (actor);
 
@@ -1352,6 +1352,12 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
+                    // if the window title is 'io.elementary.notifications', it is the GTK4 version of notification bubble
+                    if (window.title == "io.elementary.notifications") {
+                        notification_stack.show_notification (actor, enable_animations);
+                        map_completed (actor);
+                    }
+
                     var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
