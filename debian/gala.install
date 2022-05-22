@@ -3,7 +3,6 @@ usr/lib/*/gala/plugins/lib*.so
 usr/lib/systemd/user
 usr/share/applications
 usr/share/glib-2.0
-usr/share/icons
 usr/share/locale
 usr/share/metainfo
 etc/xdg/autostart
