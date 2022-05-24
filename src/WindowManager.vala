@@ -1965,10 +1965,15 @@ namespace Gala {
                     ? calculated_duration
                     : AnimationDuration.WORKSPACE_SWITCH_MIN;
 
+                out_group.save_easing_state ();
                 out_group.set_easing_mode (animation_mode);
                 out_group.set_easing_duration (duration);
+
+                in_group.save_easing_state ();
                 in_group.set_easing_mode (animation_mode);
                 in_group.set_easing_duration (duration);
+
+                wallpaper_clone.save_easing_state ();
                 wallpaper_clone.set_easing_mode (animation_mode);
                 wallpaper_clone.set_easing_duration (duration);
 
@@ -1977,11 +1982,16 @@ namespace Gala {
                 wallpaper.set_easing_duration (duration);
 
                 out_group.x = cancel_action ? 0.0f : x2;
+                out_group.restore_easing_state ();
+
                 in_group.x = cancel_action ? -x2 : 0.0f;
+                in_group.restore_easing_state ();
 
                 wallpaper.x = cancel_action ? 0.0f : x2;
-                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
                 wallpaper.restore_easing_state ();
+
+                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
+                wallpaper_clone.restore_easing_state ();
 
                 var transition = in_group.get_transition ("x");
                 if (transition != null) {
