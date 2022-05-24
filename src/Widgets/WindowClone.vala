@@ -414,7 +414,7 @@ public class Gala.WindowClone : Clutter.Actor {
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
 #else
-    public override void allocate (ActorBox box, AllocationFlags flags) {
+    public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags) {
         base.allocate (box, flags);
 #endif
 
@@ -888,7 +888,7 @@ public class Gala.WindowClone : Clutter.Actor {
         public override void allocate (Clutter.ActorBox box) {
             base.allocate (box);
 #else
-        public override void allocate (ActorBox box, AllocationFlags flags) {
+        public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags) {
             base.allocate (box, flags);
 #endif
             color = InternalUtils.get_theme_accent_color ();
