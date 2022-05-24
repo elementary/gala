@@ -145,7 +145,7 @@ namespace Gala {
         }
 
         construct {
-            icon = "dialog-warning";
+            icon = "computer-fail";
 
             var window_title = locale_from_utf8 (window.title) ?? window.get_sandboxed_app_id ();
             if (window_title != null) {
