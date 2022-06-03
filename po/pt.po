@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2022-02-22 19:40+0000\n"
+"PO-Revision-Date: 2022-06-04 02:03+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -133,7 +133,7 @@ msgstr "Correções:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Corrige regressões para o OS 7"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
@@ -145,12 +145,8 @@ msgid "Improvements:"
 msgstr "Melhorias:"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for force quit"
-msgstr ""
-"Utilizar o portal de acesso para o diálogo de confirmação das definições de "
-"ecrã"
+msgstr "Utilizar o portal de acesso para forçar saída"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
