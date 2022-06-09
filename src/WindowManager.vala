@@ -1955,15 +1955,11 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
                 if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
                     switch_workspace_animation_finished (direction, cancel_action);
                     return;
                 }
-
-                int duration = switch_workspace_with_gesture
-                    ? calculated_duration
-                    : AnimationDuration.WORKSPACE_SWITCH_MIN;
 
                 out_group.save_easing_state ();
                 out_group.set_easing_mode (animation_mode);
@@ -2004,7 +2000,7 @@ namespace Gala {
             };
 
             if (!switch_workspace_with_gesture) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, false, AnimationDuration.WORKSPACE_SWITCH_MIN);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
