@@ -16,10 +16,43 @@
 //
 
 namespace Gala {
+    /**
+     * ActionMode:
+     * @NONE: block action
+     * @NORMAL: allow action when in window mode, e.g. when the focus is in an application window
+     * @OVERVIEW: allow action while the overview is active
+     * @LOCK_SCREEN: allow action when the screen is locked, e.g. when the screen shield is shown
+     * @UNLOCK_SCREEN: allow action in the unlock dialog
+     * @LOGIN_SCREEN: allow action in the login screen
+     * @SYSTEM_MODAL: allow action when a system modal dialog (e.g. authentification or session dialogs) is open
+     * @LOOKING_GLASS: allow action in looking glass
+     * @POPUP: allow action while a shell menu is open
+     */
+    [Flags]
+    public enum ActionMode {
+        NONE = 0,
+        NORMAL = 1 << 0,
+        OVERVIEW = 1 << 1,
+        LOCK_SCREEN = 1 << 2,
+        UNLOCK_SCREEN = 1 << 3,
+        LOGIN_SCREEN = 1 << 4,
+        SYSTEM_MODAL = 1 << 5,
+        LOOKING_GLASS = 1 << 6,
+        POPUP = 1 << 7,
+    }
+
     public struct Accelerator {
         public string name;
-        public uint flags;
+        public ActionMode flags;
         public Meta.KeyBindingFlags grab_flags;
+    }
+
+    [Compact]
+    private class GrabbedAccelerator {
+        public string name;
+        public ActionMode flags;
+        public Meta.KeyBindingFlags grab_flags;
+        public uint action;
     }
 
     [DBus (name="org.gnome.Shell")]
@@ -37,18 +70,17 @@ namespace Gala {
         public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
         WindowManager wm;
-        HashTable<string, uint?> grabbed_accelerators;
+        GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
 
         DBusAccelerator (WindowManager _wm) {
             wm = _wm;
-            grabbed_accelerators = new HashTable<string, uint?> (str_hash, str_equal);
-
+            grabbed_accelerators = new HashTable<unowned string, GrabbedAccelerator> (str_hash, str_equal);
             wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
         }
 
-        void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp) {
-            foreach (string accelerator in grabbed_accelerators.get_keys ()) {
-                if (grabbed_accelerators[accelerator] == action) {
+        private void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp) {
+            foreach (unowned GrabbedAccelerator accel in grabbed_accelerators.get_values ()) {
+                if (accel.action == action) {
                     var parameters = new GLib.HashTable<string, Variant> (null, null);
 #if !HAS_MUTTER40
                     parameters.set ("device-id", new Variant.uint32 (device.id));
@@ -59,48 +91,54 @@ namespace Gala {
                     }
 
                     accelerator_activated (action, parameters);
+
+                    return;
                 }
             }
         }
 
-        public uint grab_accelerator (string accelerator, uint flags, Meta.KeyBindingFlags grab_flags) throws DBusError, IOError {
-            uint? action = grabbed_accelerators[accelerator];
+        public uint grab_accelerator (string accelerator, ActionMode flags, Meta.KeyBindingFlags grab_flags) throws GLib.DBusError, GLib.IOError {
+            unowned var found_accel = grabbed_accelerators[accelerator];
+            if (found_accel != null) {
+                return found_accel.action;
+            }
 
-            if (action == null) {
-                action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
-                if (action > 0) {
-                    grabbed_accelerators[accelerator] = action;
-                }
+            uint action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
+            if (action != Meta.KeyBindingFlags.NONE) {
+                var accel = new GrabbedAccelerator ();
+                accel.action = action;
+                accel.name = accelerator;
+                accel.flags = flags;
+                accel.grab_flags = grab_flags;
+                grabbed_accelerators.insert (accel.name, (owned)accel);
             }
 
             return action;
         }
 
-        public uint[] grab_accelerators (Accelerator[] accelerators) throws DBusError, IOError {
+        public uint[] grab_accelerators (Accelerator[] accelerators) throws GLib.DBusError, GLib.IOError {
             uint[] actions = {};
 
-            foreach (unowned Accelerator? accelerator in accelerators) {
+            foreach (unowned Accelerator accelerator in accelerators) {
                 actions += grab_accelerator (accelerator.name, accelerator.flags, accelerator.grab_flags);
             }
 
             return actions;
         }
 
-        public bool ungrab_accelerator (uint action) throws DBusError, IOError {
-            bool ret = false;
-
-            foreach (unowned string accelerator in grabbed_accelerators.get_keys ()) {
-                if (grabbed_accelerators[accelerator] == action) {
-                    ret = wm.get_display ().ungrab_accelerator (action);
-                    grabbed_accelerators.remove (accelerator);
-                    break;
+        public bool ungrab_accelerator (uint action) throws GLib.DBusError, GLib.IOError {
+            foreach (unowned GrabbedAccelerator accel in grabbed_accelerators.get_values ()) {
+                if (accel.action == action) {
+                    bool ret = wm.get_display ().ungrab_accelerator (action);
+                    grabbed_accelerators.remove (accel.name);
+                    return ret;
                 }
             }
 
-            return ret;
+            return false;
         }
 
-        public bool ungrab_accelerators (uint[] actions) throws DBusError, IOError {
+        public bool ungrab_accelerators (uint[] actions) throws GLib.DBusError, GLib.IOError {
             foreach (uint action in actions) {
                 ungrab_accelerator (action);
             }
@@ -109,7 +147,7 @@ namespace Gala {
         }
 
         [DBus (name = "ShowOSD")]
-        public void show_osd (GLib.HashTable<string, Variant> parameters) throws DBusError, IOError {
+        public void show_osd (GLib.HashTable<string, Variant> parameters) throws GLib.DBusError, GLib.IOError {
             int32 monitor_index = -1;
             if (parameters.contains ("monitor"))
                 monitor_index = parameters["monitor"].get_int32 ();
@@ -124,9 +162,6 @@ namespace Gala {
                 var double_level = parameters["level"].get_double ();
                 level = (int)(double_level * 100);
             }
-
-            //if (monitor_index > -1)
-            //    message ("MediaFeedback requested for specific monitor %i which is not supported", monitor_index);
 
             MediaFeedback.send (icon, level);
         }
