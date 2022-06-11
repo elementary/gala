@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2022-06-04 02:03+0000\n"
+"PO-Revision-Date: 2022-06-11 23:34+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -157,16 +157,12 @@ msgid "Updated translations"
 msgstr "Traduções atualizadas"
 
 #: data/gala.appdata.xml.in:31
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "A opacidade das janelas localizadas em segundo plano na ação alt-tab."
+msgstr "Atualiza corretamente a cor de destaque no comutador de janela"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "A opacidade das janelas localizadas em segundo plano na ação alt-tab."
+msgstr "Corrige a seleção de janelas por baixo do comutador da janela"
 
 #: data/gala.appdata.xml.in:33
 msgid "Prevent potential crashes"
