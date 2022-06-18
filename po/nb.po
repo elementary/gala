@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2022-06-18 21:29+0000\n"
+"PO-Revision-Date: 2022-06-18 22:03+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -149,7 +149,7 @@ msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:22
 msgid "Use access portal for force quit"
-msgstr ""
+msgstr "Bruk av tilgangsportal for å framprovosere avslutting"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
@@ -175,25 +175,23 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:33
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Forhindring av potensielle krasj"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Endre arbeidsområder når skjermer endrer seg"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Håndtering av vindu uten navn"
 
 #: data/gala.appdata.xml.in:39
 msgid "Use access portal for display settings confirmation"
-msgstr ""
+msgstr "Bruk av portal for visning av innstllingsbekreftelse"
 
 #: data/gala.appdata.xml.in:40
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Vindustitler i fleroppgaveløsnings-visning"
+msgstr "Tillat lukking av fleroppgaveløsning med Super-tast"
 
 #: data/gala.appdata.xml.in:49
 #, fuzzy
