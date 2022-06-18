@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2021-11-17 04:20+0000\n"
+"PO-Revision-Date: 2022-06-18 21:29+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -29,24 +29,20 @@ msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
 #: src/WindowManager.vala:2114
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Skjerminnstillinger …"
+msgstr "Behold de nye skjerminnstillingene?"
 
 #: src/WindowManager.vala:2115
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "Endringer vil endes tilbake automatisk etter 30 sekunder."
 
 #: src/WindowManager.vala:2118
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Systeminnstillinger …"
+msgstr "Behold innstillingene"
 
 #: src/WindowManager.vala:2119
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Bruk de forrige innstillingene"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2155
@@ -140,7 +136,7 @@ msgstr "Fikser:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Fikset tilbakegang for OS 7"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
