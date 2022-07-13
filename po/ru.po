@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
 "PO-Revision-Date: 2022-07-13 08:43+0000\n"
-"Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
+"Last-Translator: lenemter <lenemter@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -134,7 +134,7 @@ msgstr "Исправления:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Исправлены ошибки на OS 7"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
@@ -171,18 +171,17 @@ msgstr "Предотвращены возможные сбои"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Рабочие пространства теперь меняют размер при смене монитора"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
 msgstr "Поддержка окон без заголовка"
 
 #: data/gala.appdata.xml.in:39
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation"
 msgstr ""
-"Использовать портал доступа для отображения диалога подтверждения настроек"
+"Теперь для отображения подтверждения настроек экрана используется портал "
+"доступа"
 
 #: data/gala.appdata.xml.in:40
 msgid "Allow closing multitasking view with Super"
