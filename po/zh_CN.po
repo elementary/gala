@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2021-12-04 08:16+0000\n"
-"Last-Translator: Yuchen Deng <loaden@gmail.com>\n"
+"PO-Revision-Date: 2022-07-21 11:58+0000\n"
+"Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -144,10 +144,8 @@ msgid "Improvements:"
 msgstr "改进："
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for force quit"
-msgstr "使用访问门户显示设置确认对话框"
+msgstr "强制退出时显示权限界面"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
@@ -158,40 +156,32 @@ msgid "Updated translations"
 msgstr "翻译更新"
 
 #: data/gala.appdata.xml.in:31
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr "Alt + Tab 切换时窗口的透明度。"
+msgstr "正确刷新窗口切换器的强调色"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "Alt + Tab 切换时窗口的透明度。"
+msgstr "修复窗口切换器下方的选择窗口"
 
 #: data/gala.appdata.xml.in:33
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "防止潜在的崩溃问题"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "变更显示器时重新调整工作区大小"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "接管无标题窗口"
 
 #: data/gala.appdata.xml.in:39
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation"
-msgstr "使用访问门户显示设置确认对话框"
+msgstr "确认设置变更时显示权限界面"
 
 #: data/gala.appdata.xml.in:40
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "在多任务视图中显示窗口标题"
+msgstr "允许使用超级键关闭多任务试图"
 
 #: data/gala.appdata.xml.in:49
 msgid "Fix shadow clipping on server-side decorated windows"
