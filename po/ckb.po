@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-05-19 23:04+0000\n"
-"PO-Revision-Date: 2022-04-06 20:24+0000\n"
+"PO-Revision-Date: 2022-07-31 13:30+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
 "desktop/gala/ckb/>\n"
@@ -133,7 +133,7 @@ msgstr "چاککردنەکان:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "چارەسەرکردنی ڕیگرێشن بۆ وەشانی ٧"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
@@ -145,11 +145,8 @@ msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr ""
-"بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ دایەلۆگی دڵنیابوونەوەی ڕێکخستنەکانی ڕونما"
+msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ داخستنی ناچاریانە"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
@@ -180,11 +177,8 @@ msgid "Handle windows with no title"
 msgstr "کۆنتڕۆڵکردنی پەنجەرە بێ ناو نیشانەکان"
 
 #: data/gala.appdata.xml.in:39
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
-msgstr ""
-"بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ دایەلۆگی دڵنیابوونەوەی ڕێکخستنەکانی ڕونما"
+msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ پشاندنی دایەلۆگی ڕێکخستنەکانی ڕونما"
 
 #: data/gala.appdata.xml.in:40
 msgid "Allow closing multitasking view with Super"
