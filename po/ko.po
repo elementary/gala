@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-07 23:06+0000\n"
+"PO-Revision-Date: 2022-08-07 23:26+0000\n"
 "Last-Translator: Jung-Kyu Park <bagjunggyu@gmail.com>\n"
 "Language-Team: Korean <https://l10n.elementary.io/projects/desktop/gala/ko/>"
 "\n"
@@ -231,107 +231,107 @@ msgstr "스크린샷 찍을 때 생길 수 있는 충돌 수정"
 
 #: data/gala.appdata.xml.in:72
 msgid "New features:"
-msgstr ""
+msgstr "새로운 기능:"
 
 #: data/gala.appdata.xml.in:74
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
+msgstr "PIP 창을 화면 밖으로 밀어 숨김"
 
 #: data/gala.appdata.xml.in:78
 msgid "Fix a potential crash while changing wallpapers"
-msgstr ""
+msgstr "배경 화면을 변경하는 동안 생길 수 있는 충돌 수정"
 
 #: data/gala.appdata.xml.in:87
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
-msgstr ""
+msgstr "서버 측 장식 창의 스크린샷에 창 장식 포함"
 
 #: data/gala.appdata.xml.in:96
 msgid "Add multitouch gestures"
-msgstr ""
+msgstr "멀티터치 제스처 추가"
 
 #: data/gala.appdata.xml.in:97
 msgid "Show window titles in multitasking view"
-msgstr ""
+msgstr "멀티태스킹 보기에서 창 제목 표시"
 
 #: data/gala.appdata.xml.in:98
 msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
+msgstr "Alt를 놓지 않고 Esc를 눌러 Alt + Tab 전환기 닫기"
 
 #: data/gala.appdata.xml.in:99
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
+msgstr "최대 확대/축소 수준을 높이고 확대/축소할 수 없는 경우 피드백 제공"
 
 #: data/gala.appdata.xml.in:100
 msgid "Show a context menu when secondary clicking the background"
-msgstr ""
+msgstr "배경을 보조 클릭할 때 컨텍스트 메뉴 표시"
 
 #: data/gala.appdata.xml.in:101
 msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
+msgstr "새로운 드웰 클릭 및 포인터 애니메이션 잡기"
 
 #: data/gala.appdata.xml.in:102
 msgid "Add Take Screenshot to window context menu"
-msgstr ""
+msgstr "창 컨텍스트 메뉴에 스크린샷 찍기 추가"
 
 #: data/gala.appdata.xml.in:103
 msgid "Always play shutter sound when taking screenshots"
-msgstr ""
+msgstr "스크린샷 찍을 때 항상 셔터 소리 재생하기"
 
 #: data/gala.appdata.xml.in:104
 msgid "Minor visual improvements"
-msgstr ""
+msgstr "소소한 비주얼 개선"
 
 #: data/gala.appdata.xml.in:105
 msgid "HiDPI fixes"
-msgstr ""
+msgstr "HiDPI 수정"
 
 #: data/gala.appdata.xml.in:106
 msgid "Performance improvements"
-msgstr ""
+msgstr "성능 개선"
 
 #: data/gala.appdata.xml.in:115
 msgid ""
 "Fix “Always on Visible Workspace” windows disappearing when changing "
 "workspaces"
-msgstr ""
+msgstr "작업 공간을 변경할 때 사라지는 \"항상 보이는 작업 공간\" 창 수정"
 
 #: data/gala.appdata.xml.in:116
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
+msgstr "작업 공간을 변경할 때 기본 디스플레이가 아니면 창이 사라지는 문제 수정"
 
 #: data/gala.appdata.xml.in:125
 msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
+msgstr "임시 창이 열리는 동안 작업 공간을 변경할 때 발생하는 충돌 수정"
 
 #: data/gala.appdata.xml.in:134
 msgid "Don't show Gala Background Services in the dock"
-msgstr ""
+msgstr "Dock에 Gala 백그라운드 서비스를 표시하지 않음"
 
 #: data/gala.appdata.xml.in:135
 msgid "Fixes for media key handling"
-msgstr ""
+msgstr "미디어 키 처리 수정"
 
 #: data/gala.appdata.xml.in:136
 msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr ""
+msgstr "헤더바 메뉴에 키보드 단축키 표시"
 
 #: data/gala.appdata.xml.in:145
 msgid "Improve window shadows for legacy apps"
-msgstr ""
+msgstr "레거시 앱의 창 그림자 개선"
 
 #: data/gala.appdata.xml.in:146
 msgid "Fix potential crash when taking screenshots"
-msgstr ""
+msgstr "스크린샷 찍을 때 생길 수 있는 충돌 수정"
 
 #: data/gala.appdata.xml.in:147
 msgid "Fix notification position after changing DPI"
-msgstr ""
+msgstr "DPI 변경 후 알림 위치 수정"
 
 #: data/gala.appdata.xml.in:148
 msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
+msgstr "타일 창 이동 및 최대화를 위한 애니메이션 수정"
 
 #: data/gala.appdata.xml.in:154
 msgid "elementary, Inc."
