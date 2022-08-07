@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-05-19 23:04+0000\n"
+"POT-Creation-Date: 2022-08-07 05:52+0000\n"
 "PO-Revision-Date: 2021-09-26 21:30+0000\n"
 "Last-Translator: carnage-mode <beta-stage@tutanota.com>\n"
 "Language-Team: Amharic <https://l10n.elementary.io/projects/desktop/gala/am/"
@@ -19,6 +19,29 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.4.2\n"
 
+#: src/Dialogs.vala:152
+#, c-format
+msgid "“%s” is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:154
+msgid "Application is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:157
+msgid ""
+"You may choose to wait a short while for it to continue or force the "
+"application quit entirely."
+msgstr ""
+
+#: src/Dialogs.vala:158
+msgid "Force Quit"
+msgstr ""
+
+#: src/Dialogs.vala:159
+msgid "Wait"
+msgstr ""
+
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr ""
@@ -27,24 +50,24 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2115
+#: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
 msgstr ""
 
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2124
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2119
+#: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2161
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

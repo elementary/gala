@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-05-19 23:04+0000\n"
+"POT-Creation-Date: 2022-08-07 05:52+0000\n"
 "PO-Revision-Date: 2022-05-20 06:56+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
-"\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
+">\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,6 +21,29 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
 
+#: src/Dialogs.vala:152
+#, c-format
+msgid "“%s” is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:154
+msgid "Application is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:157
+msgid ""
+"You may choose to wait a short while for it to continue or force the "
+"application quit entirely."
+msgstr ""
+
+#: src/Dialogs.vala:158
+msgid "Force Quit"
+msgstr ""
+
+#: src/Dialogs.vala:159
+msgid "Wait"
+msgstr ""
+
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
@@ -29,24 +52,24 @@ msgstr "Zrzuty ekranu"
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2115
+#: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
 msgstr "Zmiany zostaną automatycznie cofnięte po 30 sekundach."
 
-#: src/WindowManager.vala:2118
+#: src/WindowManager.vala:2124
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2119
+#: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2161
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
