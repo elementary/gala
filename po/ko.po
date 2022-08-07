@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-05 16:38+0000\n"
+"PO-Revision-Date: 2022-08-07 23:06+0000\n"
 "Last-Translator: Jung-Kyu Park <bagjunggyu@gmail.com>\n"
-"Language-Team: Korean <https://l10n.elementary.io/projects/desktop/gala/ko/"
-">\n"
+"Language-Team: Korean <https://l10n.elementary.io/projects/desktop/gala/ko/>"
+"\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,25 +23,25 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s”의 반응이 없습니다"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "애플리케이션이 반응하지 않습니다"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
-msgstr ""
+msgstr "계속 진행하거나 애플리케이션을 강제 종료할 때까지 잠시 기다리거나 할 수 있습니다."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "강제 종료"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "기다려주세요"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -49,33 +49,33 @@ msgstr "스크린샷"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr ""
+msgstr "찍은 스크린샷"
 
 #: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "새로운 디스플레이 설정을 유지하시겠습니까?"
 
 #: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
+msgstr "변경 사항이 30초 후에 자동으로 되돌아갑니다."
 
 #: src/WindowManager.vala:2124
 msgid "Keep Settings"
-msgstr ""
+msgstr "설정 유지"
 
 #: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "이전 설정 사용"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2161
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "%s에 스크린샷 찍기"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "숨기기"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -103,7 +103,7 @@ msgstr "오른쪽 작업 공간으로 이동"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "스크린샷 찍기"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -111,7 +111,7 @@ msgstr "닫기"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "타일 해제"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
@@ -123,38 +123,38 @@ msgstr "최대화"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "배경화면 바꾸기…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "디스플레이 설정…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "시스템 설정…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "멀티태스킹 &amp; 창 관리"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Pantheon 창 &amp; 합성 관리자"
 
 #: data/gala.appdata.xml.in:11
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
-msgstr ""
+msgstr "창 &amp; 합성 관리자는 libmutter 기반이며 Pantheon을 위해 elementary가 디자인했습니다."
 
 #: data/gala.appdata.xml.in:16 data/gala.appdata.xml.in:29
 #: data/gala.appdata.xml.in:47
 msgid "Fixes:"
-msgstr ""
+msgstr "수정:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "OS 7 용 퇴행 수정"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
@@ -163,11 +163,11 @@ msgstr ""
 #: data/gala.appdata.xml.in:123 data/gala.appdata.xml.in:132
 #: data/gala.appdata.xml.in:143
 msgid "Improvements:"
-msgstr ""
+msgstr "개선:"
 
 #: data/gala.appdata.xml.in:22
 msgid "Use access portal for force quit"
-msgstr ""
+msgstr "강제 종료에 포털 접근 사용"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
@@ -187,49 +187,47 @@ msgstr "창 변환기 아래의 창 선택하기 수정"
 
 #: data/gala.appdata.xml.in:33
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "잠재적 충돌 방지"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "디스플레이 변경 시 작업 공간 크기 조정"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "제목 없는 창 처리"
 
 #: data/gala.appdata.xml.in:39
 msgid "Use access portal for display settings confirmation"
-msgstr ""
+msgstr "디스플레이 설정 확인을 위해 포털 접근 사용"
 
 #: data/gala.appdata.xml.in:40
 msgid "Allow closing multitasking view with Super"
-msgstr ""
+msgstr "Super키로 멀티태스킹 보기 닫기 허용"
 
 #: data/gala.appdata.xml.in:49
 msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
+msgstr "서버 측 장식 창에서 그림자 클리핑 수정"
 
 #: data/gala.appdata.xml.in:53
 msgid "Support for high-resolution scroll events"
-msgstr ""
+msgstr "고해상도 스크롤 이벤트 지원"
 
 #: data/gala.appdata.xml.in:54
 msgid "Redesigned Alt + Tab switcher"
-msgstr ""
+msgstr "Alt + Tab 전환기 다시 설계"
 
 #: data/gala.appdata.xml.in:55
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "하부 대화 상자를 만들 땐 상위 창을 희미하게 하기"
+msgstr "상위 창을 희미하게 하기"
 
 #: data/gala.appdata.xml.in:56
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
+msgstr "대화창은 사라지지 않고 상위 창으로 갑니다"
 
 #: data/gala.appdata.xml.in:65
 msgid "Fix a potential crash when taking screenshots"
-msgstr ""
+msgstr "스크린샷 찍을 때 생길 수 있는 충돌 수정"
 
 #: data/gala.appdata.xml.in:72
 msgid "New features:"
