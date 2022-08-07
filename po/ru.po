@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-07 11:15+0000\n"
+"PO-Revision-Date: 2022-08-07 12:02+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
@@ -270,7 +270,7 @@ msgstr "Закрытие переключателя Alt + Tab нажатием �
 msgid "Increase maximum zoom level and provide feedback when unable to zoom"
 msgstr ""
 "Увеличен максимальный уровень масштабирования и обеспечена обратная связь, "
-"когда не удается увеличить"
+"когда не удаётся увеличить"
 
 #: data/gala.appdata.xml.in:100
 msgid "Show a context menu when secondary clicking the background"
