@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-05-16 22:21+0000\n"
+"PO-Revision-Date: 2022-08-07 10:06+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -24,25 +24,27 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "«%s» не відповідає"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Застосунок не відповідає"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"Ви можете зачекати, поки застосунок продовжить роботу, або примусово "
+"повністю закрити його."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Примусово вийти"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Зачекати"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
