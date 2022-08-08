@@ -113,8 +113,10 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_debugging")]
 		public static bool is_debugging ();
 #endif
+#if !HAS_MUTTER43
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_syncing")]
 		public static bool is_syncing ();
+#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_verbose")]
 		public static bool is_verbose ();
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_wayland_compositor")]
@@ -135,8 +137,10 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_wm_name")]
 		public static void set_wm_name (string wm_name);
 #endif
+#if !HAS_MUTTER43
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_show_dialog")]
 		public static GLib.Pid show_dialog (string type, string message, string? timeout = null, string? display = null, string? ok_text = null, string? cancel_text = null, string? icon_name = null, int transient_for = 0, GLib.SList<string>? columns = null, GLib.SList<string>? entries = null);
+#endif
 #if !HAS_MUTTER42
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_topic_real")]
 		public static void topic_real (Meta.DebugTopic topic, string format, ...);
@@ -826,7 +830,7 @@ namespace Meta {
 		public static unowned Meta.Theme @new ();
 	}
 #if HAS_MUTTER338
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_wayland_client_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-wayland-client.h", type_id = "meta_wayland_client_get_type ()")]
 	public class WaylandClient : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public WaylandClient (GLib.SubprocessLauncher launcher) throws GLib.Error;
@@ -1255,7 +1259,7 @@ namespace Meta {
 		NONE
 	}
 #if HAS_MUTTER41
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_COMPOSITOR_TYPE_", type_id = "meta_compositor_type_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-enums.h", cprefix = "META_COMPOSITOR_TYPE_", type_id = "meta_compositor_type_get_type ()")]
 	public enum CompositorType {
 		WAYLAND,
 		X11
@@ -1288,7 +1292,7 @@ namespace Meta {
 		LAST
 	}
 #if HAS_MUTTER338
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_DEBUG_PAINT_", type_id = "meta_debug_paint_flag_get_type ()")]
+	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_PAINT_", type_id = "meta_debug_paint_flag_get_type ()")]
 	[Flags]
 	public enum DebugPaintFlag {
 		NONE,
@@ -1340,7 +1344,9 @@ namespace Meta {
 		BACKEND,
 		RENDER,
 #endif
-		DBUS
+		DBUS;
+		[CCode (cheader_filename = "meta/util.h", cname = "meta_topic_to_string")]
+		public unowned string to_string ();
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_DIRECTION_", type_id = "meta_direction_get_type ()")]
 	[Flags]
@@ -1374,7 +1380,11 @@ namespace Meta {
 		MONITOR,
 		SCREEN
 	}
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h", cprefix = "META_EXIT_", type_id = "meta_exit_code_get_type ()")]
+#else
 	[CCode (cheader_filename = "meta/main.h", cprefix = "META_EXIT_", type_id = "meta_exit_code_get_type ()")]
+#endif
 	public enum ExitCode {
 		SUCCESS,
 		ERROR
@@ -1441,7 +1451,7 @@ namespace Meta {
 		KEYBOARD_RESIZING_SE,
 		KEYBOARD_RESIZING_W
 	}
-	[CCode (cheader_filename = "meta/main.h", cprefix = "META_GRAVITY_", type_id = "meta_gravity_get_type ()")]
+	[CCode (cheader_filename = "meta/common.h", cprefix = "META_GRAVITY_", type_id = "meta_gravity_get_type ()")]
 	public enum Gravity {
 		NONE,
 		NORTH_WEST,
@@ -1571,6 +1581,26 @@ namespace Meta {
 		IGNORE_AUTOREPEAT,
 		NO_AUTO_GRAB
 	}
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-enums.h", cprefix = "META_A11Y_", type_id = "meta_keyboard_a11y_flags_get_type ()")]
+	[Flags]
+	public enum KeyboardA11yFlags {
+		KEYBOARD_ENABLED,
+		TIMEOUT_ENABLED,
+		MOUSE_KEYS_ENABLED,
+		SLOW_KEYS_ENABLED,
+		SLOW_KEYS_BEEP_PRESS,
+		SLOW_KEYS_BEEP_ACCEPT,
+		SLOW_KEYS_BEEP_REJECT,
+		BOUNCE_KEYS_ENABLED,
+		BOUNCE_KEYS_BEEP_REJECT,
+		TOGGLE_KEYS_ENABLED,
+		STICKY_KEYS_ENABLED,
+		STICKY_KEYS_TWO_KEY_OFF,
+		STICKY_KEYS_BEEP,
+		FEATURE_STATE_CHANGE_BEEP
+	}
+#endif
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_LATER_", type_id = "meta_later_type_get_type ()")]
 	public enum LaterType {
 		RESIZE,
@@ -1806,14 +1836,30 @@ namespace Meta {
 	public static bool activate_session ();
 #endif
 #if HAS_MUTTER338
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void add_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void add_debug_paint_flag (Meta.DebugPaintFlag flag);
 #endif
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void clutter_init ();
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void exit (Meta.ExitCode code);
 #if !HAS_MUTTER41
 #if HAS_MUTTER40
@@ -1837,10 +1883,18 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void init ();
 #endif
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/main.h,meta/meta-context.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static bool is_restart ();
 #if HAS_MUTTER40
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static bool is_topic_enabled (Meta.DebugTopic topic);
 #endif
 #if !HAS_MUTTER41
@@ -1850,13 +1904,26 @@ namespace Meta {
 	public static void register_with_session ();
 #endif
 #if HAS_MUTTER338
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void remove_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+#else
 	[CCode (cheader_filename = "meta/main.h")]
+#endif
 	public static void remove_debug_paint_flag (Meta.DebugPaintFlag flag);
 #endif
+#if HAS_MUTTER43
+	[CCode (cheader_filename = "meta/meta-context.h,meta/main.h")]
+	public static void restart (string? message, Meta.Context context);
+#else
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void restart (string? message);
+#endif
 #if !HAS_MUTTER41
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
