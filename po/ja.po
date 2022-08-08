@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-05-20 21:02+0000\n"
+"PO-Revision-Date: 2022-08-08 11:29+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -23,25 +23,25 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” は応答していません"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "アプリケーションは応答していません"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
-msgstr ""
+msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "強制終了"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "待機"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
