@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-06-11 23:34+0000\n"
+"PO-Revision-Date: 2022-08-10 20:17+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -23,11 +23,11 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” não está a responder"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "A aplicação não está a responder"
 
 #: src/Dialogs.vala:157
 msgid ""
@@ -37,7 +37,7 @@ msgstr ""
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Forçar o Sair"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
