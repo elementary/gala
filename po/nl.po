@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-01-15 13:42+0000\n"
-"Last-Translator: Niels Van Laerhoven <niels1995@gmail.com>\n"
+"PO-Revision-Date: 2022-08-14 02:30+0000\n"
+"Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -22,25 +22,27 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” reageert niet"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Applicatie reageert niet"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"U kunt proberen om even te wachten of u kunt de applicatie forceren om af te "
+"sluiten."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Afsluiten forceren"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Wachten"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -155,7 +157,7 @@ msgstr "Fixes:"
 
 #: data/gala.appdata.xml.in:18
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Regressies opgelost voor OS 7"
 
 #: data/gala.appdata.xml.in:20 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:51 data/gala.appdata.xml.in:63
@@ -167,10 +169,8 @@ msgid "Improvements:"
 msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for force quit"
-msgstr "Gebruik toegangsportaal om scherminstellingen te bevestigen"
+msgstr "Gebruik het toegangsportaal om afsluiten te forceren"
 
 #: data/gala.appdata.xml.in:23 data/gala.appdata.xml.in:41
 #: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:66
@@ -181,42 +181,33 @@ msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
 #: data/gala.appdata.xml.in:31
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
-msgstr ""
-"De ondoorzichtigheid van vensters in de achtergrond van de vensterwisselaar."
+msgstr "Accentkleuren correct updaten in de vensterschakelaar"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
 msgstr ""
-"De ondoorzichtigheid van vensters in de achtergrond van de vensterwisselaar."
+"Fix het selecteren van vensters die zich onder de vensterschakelaar bevinden"
 
 #: data/gala.appdata.xml.in:33
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Potentiële crashes opgelost"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Pas grootte van workspace aan wanneer er van scherm wordt veranderd"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Ga om met vensters zonder titel"
 
 #: data/gala.appdata.xml.in:39
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation"
-msgstr "Gebruik toegangsportaal om scherminstellingen te bevestigen"
+msgstr "Gebruik het toegangsportaal om de scherminstellingen te bevestigen"
 
 #: data/gala.appdata.xml.in:40
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Toon venstertitels in het multitasking overzicht"
+msgstr "Sta toe om het multitasking overzicht te sluiten met de super-toets"
 
 #: data/gala.appdata.xml.in:49
 msgid "Fix shadow clipping on server-side decorated windows"
