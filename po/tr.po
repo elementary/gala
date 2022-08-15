@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-05-17 10:49+0000\n"
+"PO-Revision-Date: 2022-08-15 23:39+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,25 +23,27 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” yanıt vermiyor"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Uygulama yanıt vermiyor"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"Devam etmesi için kısa bir süre beklemeyi seçebilir veya uygulamadan zorla "
+"çıkabilirsiniz."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Zorla Çık"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Bekle"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
