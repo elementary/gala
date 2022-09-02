@@ -43,6 +43,7 @@ is_frame_info parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_pipeline parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_texture_2d parent="Cogl.Object" symbol_type="method" instance_idx=0
 is_texture_2d_sliced parent="Cogl.Object" symbol_type="method" instance_idx=0
+is_snippet parent="Cogl.Object" symbol_type="method" instance_idx=0
 
 create_program type="unowned Cogl.Program" name="create" parent="Cogl.Program"
 create_shader type="unowned Cogl.Shader" name="create" parent="Cogl.Shader"
@@ -64,3 +65,5 @@ SystemError errordomain
 TextureError errordomain
 FramebufferError errordomain
 ScanoutError errordomain
+
+Offscreen sealed
