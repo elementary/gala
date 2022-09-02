@@ -17,6 +17,7 @@
  */
 
 
+
 private class Gala.Barrier : Meta.Barrier {
     public bool is_hit { get; set; default = false; }
     public double pressure_x { get; set; default = 0; }
