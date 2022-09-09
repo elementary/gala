@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-07-31 13:30+0000\n"
+"PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
 "desktop/gala/ckb/>\n"
@@ -23,25 +23,27 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "\"%s\"وەڵام ناداتەوە"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "ئەپڵیکەیشنەکە هیچ وەڵامێکی نییە"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"لەوانەیە بتەوێت بۆ ماوەیەکی کەم چاوەڕێ بکەیت بۆ بەردوام بوون یان "
+"ئەپڵیکەیشنەکە ناچار بکەیت کە بە تەواوی بوەستێت."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "وەستاندنی بەزۆر"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "چاوەڕێکردن"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -225,7 +227,7 @@ msgstr "هەتاویکردنی باوانی دایەلۆگە مۆداڵەکان"
 
 #: data/gala.appdata.xml.in:56
 msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Dialogs fall down on parents instead of shooting out"
+msgstr "دایەلۆگەکان لە بردی کارکردن، دەکەونە سەر باوانیان (د)"
 
 #: data/gala.appdata.xml.in:65
 msgid "Fix a potential crash when taking screenshots"
@@ -237,7 +239,7 @@ msgstr "نەو تایبەتمەندییەکان:"
 
 #: data/gala.appdata.xml.in:74
 msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr "Stash the picture-in-picture window by pushing it off screen"
+msgstr "پەنجەرەی وێنە لە وێنەدا بشارەوە بە پاڵنانی بۆ دەرەوەی شاشەکە"
 
 #: data/gala.appdata.xml.in:78
 msgid "Fix a potential crash while changing wallpapers"
@@ -247,7 +249,8 @@ msgstr "چاککردنی کێشەیەک کە لەوانەیە ڕووبدات ل�
 msgid ""
 "Include window decorations in screenshots for server-side decorated windows"
 msgstr ""
-"Include window decorations in screenshots for server-side decorated windows"
+"ڕازاندنەوەی پەنجەرە لە وێنەی شاشەدا بۆ پەنجەرە ڕازاوەکراوەکانی لای سێرڤەر "
+"دابنێ"
 
 #: data/gala.appdata.xml.in:96
 msgid "Add multitouch gestures"
@@ -292,7 +295,7 @@ msgstr "چاککردنی HiDPI"
 
 #: data/gala.appdata.xml.in:106
 msgid "Performance improvements"
-msgstr "ئەدای کارکردنی پێشخراوە"
+msgstr "باشترکراوەکانی ئەدا"
 
 #: data/gala.appdata.xml.in:115
 msgid ""
@@ -366,7 +369,8 @@ msgstr "هیتر"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+"فایلێکی سەر مێزەکە بکەوە بۆ ئاگادارکردنەوە لە بەرنامە بەسەرچووەکانەوە (د)."
 
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
