@@ -33,7 +33,7 @@ namespace Gala {
         Meta.BackgroundActor background_actor;
         Meta.BackgroundActor? new_background_actor = null;
 
-        private Clutter.PropertyTransition? last_dim_transition = null; 
+        private Clutter.PropertyTransition? last_dim_transition = null;
 
         private static Settings gala_background_settings;
 
