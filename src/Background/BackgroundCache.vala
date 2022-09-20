@@ -32,7 +32,6 @@ namespace Gala {
         Gee.HashMap<string,BackgroundSource> background_sources;
 
         Animation animation;
-        string animation_filename;
 
         public BackgroundCache () {
             Object ();
@@ -61,7 +60,7 @@ namespace Gala {
         }
 
         public async Animation get_animation (string filename) {
-            if (animation_filename == filename) {
+            if (animation != null && animation.filename == filename) {
                 Idle.add (() => {
                     get_animation.callback ();
                     return false;
