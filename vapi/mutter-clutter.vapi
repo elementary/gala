@@ -5890,7 +5890,7 @@ namespace Clutter {
 	}
 #if HAS_MUTTER43
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_color_state_get_type ()")]
-	public class ColorState : GLib.Object {
+	public sealed class ColorState : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public ColorState (Clutter.Colorspace colorspace);
 		public Clutter.Colorspace get_colorspace ();
@@ -6262,7 +6262,7 @@ namespace Clutter {
 #endif
 #if HAS_MUTTER338
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_frame_clock_get_type ()")]
-	public class FrameClock : GLib.Object {
+	public sealed class FrameClock : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected FrameClock ();
 		public void add_timeline (Clutter.Timeline timeline);
@@ -7895,7 +7895,7 @@ namespace Clutter {
 	}
 #if HAS_MUTTER41
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_texture_content_get_type ()")]
-	public class TextureContent : GLib.Object, Clutter.Content {
+	public sealed class TextureContent : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false)]
 		protected TextureContent ();
 		public unowned Cogl.Texture get_texture ();
