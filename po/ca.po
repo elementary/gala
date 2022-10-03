@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-08 09:33+0000\n"
+"PO-Revision-Date: 2022-10-03 13:31+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -55,11 +55,11 @@ msgstr "Captura feta"
 
 #: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
-msgstr "Voleu mantenir la configuració de la pantalla nova?"
+msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
 #: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
-msgstr "Els canvis es revertiran automàticament al cap de 30 segons."
+msgstr "Els canvis es revertiran automàticament després de 30 segons."
 
 #: src/WindowManager.vala:2124
 msgid "Keep Settings"
@@ -67,7 +67,7 @@ msgstr "Mantén la configuració"
 
 #: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
-msgstr "Usa els paràmetres anteriors"
+msgstr "Usa la configuració anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2161
