@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-09-30 10:20+0000\n"
+"PO-Revision-Date: 2022-10-05 08:57+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
@@ -93,15 +93,15 @@ msgstr "Поверх всех окон"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
-msgstr "Всегда на видимом рабочем пространстве"
+msgstr "Всегда на видимом рабочем столе"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
-msgstr "Переместить на рабочее пространство слева"
+msgstr "Переместить на рабочий стол слева"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr "Переместить на рабочее пространство справа"
+msgstr "Переместить на рабочий стол справа"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
@@ -195,7 +195,7 @@ msgstr "Предотвращены возможные сбои"
 
 #: data/gala.appdata.xml.in:34
 msgid "Resize workspaces when displays change"
-msgstr "Рабочие пространства теперь меняют размер при смене монитора"
+msgstr "Рабочие столы теперь меняют размер при смене монитора"
 
 #: data/gala.appdata.xml.in:35
 msgid "Handle windows with no title"
@@ -308,20 +308,20 @@ msgid ""
 "workspaces"
 msgstr ""
 "Исправлено исчезновение окон из-за включённого режима «Всегда на видимом "
-"рабочем пространстве» при смене рабочих пространств"
+"рабочем столе» при смене рабочих столов"
 
 #: data/gala.appdata.xml.in:116
 msgid ""
 "Fix windows on non-primary displays disappearing when changing workspaces"
 msgstr ""
 "Исправлена ошибка, при которой окна на неосновных дисплеях исчезают при "
-"смене рабочих пространств"
+"смене рабочих столов"
 
 #: data/gala.appdata.xml.in:125
 msgid "Fix crash when changing workspaces while a transient window is opening"
 msgstr ""
-"Исправлена ошибка падения, когда, при изменение рабочих пространств "
-"открывалось временное окно"
+"Исправлена ошибка падения, когда, при изменении рабочих столов открывалось "
+"временное окно"
 
 #: data/gala.appdata.xml.in:134
 msgid "Don't show Gala Background Services in the dock"
@@ -362,7 +362,7 @@ msgstr "Многозадачный вид"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "Просмотр всех открытых окон и рабочих пространств"
+msgstr "Просмотр всех открытых окон и рабочих столов"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "preferences-desktop-workspaces"
