@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-09 03:40+0000\n"
+"PO-Revision-Date: 2022-10-03 13:31+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -50,7 +50,7 @@ msgstr "המסך צולם"
 
 #: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
-msgstr "לשמור על הגדרות התצוגה החדשות?"
+msgstr "לשמור את הגדרות התצוגה החדשות?"
 
 #: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
@@ -58,7 +58,7 @@ msgstr "השינויים יוחזרו לקדמותם אוטומטית לאחר 3
 
 #: src/WindowManager.vala:2124
 msgid "Keep Settings"
-msgstr "לשמור על ההגדרות"
+msgstr "לשמור את ההגדרות"
 
 #: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
