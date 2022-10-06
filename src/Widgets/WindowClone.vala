@@ -464,6 +464,10 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
+        if (drag_action.dragging) {
+            return false;
+        }
+
         close_button.opacity = in_slot_animation ? 0 : 255;
         window_title.opacity = in_slot_animation ? 0 : 255;
         return false;
