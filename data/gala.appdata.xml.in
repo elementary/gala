@@ -11,7 +11,7 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="6.3.2" date="2022-05-16" urgency="medium">
+    <release version="6.3.2" date="2022-10-06" urgency="medium">
       <description>
         <p>Fixes:</p>
         <ul>
