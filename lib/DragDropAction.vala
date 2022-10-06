@@ -102,10 +102,13 @@ namespace Gala {
         bool clicked = false;
         float last_x;
         float last_y;
+
+#if HAS_MUTTER42
         Grab? grab = null;
         static unowned Actor? grabbed_actor = null;
         InputDevice? grabbed_device = null;
         ulong on_event_id = 0;
+#endif
 
         /**
          * Create a new DragDropAction
@@ -145,6 +148,10 @@ namespace Gala {
 
         void release_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
+#if !HAS_MUTTER42
+                actor.button_press_event.disconnect (source_clicked);
+#endif
+
                 var source_list = sources.@get (drag_id);
                 source_list.remove (actor);
             }
@@ -157,6 +164,10 @@ namespace Gala {
 
         void connect_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
+#if !HAS_MUTTER42
+                actor.button_press_event.connect (source_clicked);
+#endif
+
                 var source_list = sources.@get (drag_id);
                 if (source_list == null) {
                     source_list = new Gee.LinkedList<Actor> ();
@@ -182,6 +193,7 @@ namespace Gala {
             destination_crossed (destination, is_hovered);
         }
 
+#if HAS_MUTTER42
         public override bool handle_event (Event event) {
             switch (event.get_type ()) {
                 case EventType.BUTTON_PRESS:
@@ -364,6 +376,140 @@ namespace Gala {
 
             return false;
         }
+#else
+        bool source_clicked (ButtonEvent event) {
+            if (event.button != 1) {
+                actor_clicked (event.button);
+                return false;
+            }
+
+            actor.get_stage ().captured_event.connect (follow_move);
+            clicked = true;
+            last_x = event.x;
+            last_y = event.y;
+
+            return true;
+        }
+
+        bool follow_move (Event event) {
+            // still determining if we actually want to start a drag action
+            if (!dragging) {
+                switch (event.get_type ()) {
+                    case EventType.MOTION:
+                        float x, y;
+                        event.get_coords (out x, out y);
+
+                        var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
+                        if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
+                            handle = drag_begin (x, y);
+                            if (handle == null) {
+                                actor.get_stage ().captured_event.disconnect (follow_move);
+                                critical ("No handle has been returned by the started signal, aborting drag.");
+                                return false;
+                            }
+
+                            handle.reactive = false;
+
+                            clicked = false;
+                            dragging = true;
+
+                            var source_list = sources.@get (drag_id);
+                            if (source_list != null) {
+                                var dest_list = destinations[drag_id];
+                                foreach (var actor in source_list) {
+                                    // Do not unset reactivity on destinations
+                                    if (dest_list == null || actor in dest_list) {
+                                        continue;
+                                    }
+
+                                    actor.reactive = false;
+                                }
+                            }
+                        }
+                        return true;
+                    case EventType.BUTTON_RELEASE:
+                        float x, y, ex, ey;
+                        event.get_coords (out ex, out ey);
+                        actor.get_transformed_position (out x, out y);
+
+                        // release has happened within bounds of actor
+                        if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                            actor_clicked (event.get_button ());
+                        }
+
+                        actor.get_stage ().captured_event.disconnect (follow_move);
+                        clicked = false;
+                        dragging = false;
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+
+            switch (event.get_type ()) {
+                case EventType.KEY_PRESS:
+                    if (event.get_key_code () == Key.Escape) {
+                        cancel ();
+                    }
+                    return true;
+                case EventType.MOTION:
+                    float x, y;
+                    event.get_coords (out x, out y);
+                    handle.x -= last_x - x;
+                    handle.y -= last_y - y;
+                    last_x = x;
+                    last_y = y;
+
+                    var stage = actor.get_stage ();
+                    var actor = stage.get_actor_at_pos (PickMode.REACTIVE, (int) x, (int) y);
+                    DragDropAction action = null;
+                    // if we're allowed to bubble and this actor is not a destination, check its parents
+                    if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
+                        while ((actor = actor.get_parent ()) != stage) {
+                            if ((action = get_drag_drop_action (actor)) != null)
+                                break;
+                        }
+                    }
+
+                    // didn't change, no need to do anything
+                    if (actor == hovered)
+                        return true;
+
+                    if (action == null) {
+                        // apparently we left ours if we had one before
+                        if (hovered != null) {
+                            emit_crossed (hovered, false);
+                            hovered = null;
+                        }
+
+                        return true;
+                    }
+
+                    // signal the previous one that we left it
+                    if (hovered != null) {
+                        emit_crossed (hovered, false);
+                    }
+
+                    // tell the new one that it is hovered
+                    hovered = actor;
+                    emit_crossed (hovered, true);
+
+                    return true;
+                case EventType.BUTTON_RELEASE:
+                    if (hovered != null) {
+                        finish ();
+                    } else {
+                        cancel ();
+                    }
+                    return true;
+                case EventType.ENTER:
+                case EventType.LEAVE:
+                    return true;
+            }
+
+            return false;
+        }
+#endif
 
         /**
          * Looks for a DragDropAction instance if this actor has one or NULL.
@@ -432,8 +578,13 @@ namespace Gala {
                 }
             }
 
-            if (dragging)
+            if (dragging) {
+#if HAS_MUTTER42
                 ungrab_actor ();
+#else
+                actor.get_stage ().captured_event.disconnect (follow_move);
+#endif
+            }
 
             dragging = false;
         }
