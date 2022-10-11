@@ -33,6 +33,10 @@ namespace Gala {
                     try {
                         connection.register_object ("/org/pantheon/gala", instance);
                     } catch (Error e) { warning (e.message); }
+
+                    try {
+                        connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
+                    } catch (Error e) { warning (e.message); }
                 },
                 () => {},
                 () => warning ("Could not acquire name\n") );

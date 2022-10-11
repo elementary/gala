@@ -1,6 +1,8 @@
 gala_lib_sources = files(
     'ActivatableComponent.vala',
+    'App.vala',
     'AppCache.vala',
+    'AppSystem.vala',
     'Constants.vala',
     'DragDropAction.vala',
     'Drawing/BufferSurface.vala',
@@ -48,7 +50,7 @@ pkg.generate(
     name: 'Gala',
     description: 'Library to develop plugins for Gala',
     subdirs: 'gala',
-    requires: [glib_dep, gobject_dep, libmutter_dep],
+    requires: [glib_dep, gobject_dep, gio_dep, gio_unix_dep, libmutter_dep],
     variables: [
         'datarootdir=${prefix}/@0@'.format(get_option('datadir')),
         'pkgdatadir=${datarootdir}/gala'
