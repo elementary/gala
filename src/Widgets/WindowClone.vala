@@ -217,6 +217,10 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     void check_shadow_requirements () {
+        if (clone == null) {
+            return;
+        }
+
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new WindowShadowEffect (window, 40, 5);
@@ -464,6 +468,10 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
+        if (drag_action.dragging) {
+            return false;
+        }
+
         close_button.opacity = in_slot_animation ? 0 : 255;
         window_title.opacity = in_slot_animation ? 0 : 255;
         return false;

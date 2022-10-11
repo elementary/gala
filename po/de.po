@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-08-07 05:52+0000\n"
-"PO-Revision-Date: 2022-08-13 15:44+0000\n"
+"PO-Revision-Date: 2022-10-11 00:16+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
 "Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
 "\n"
@@ -55,15 +55,15 @@ msgstr "Bildschirmfoto erstellt"
 
 #: src/WindowManager.vala:2120
 msgid "Keep new display settings?"
-msgstr "Geänderte Bildschirmeinstellungen behalten?"
+msgstr "Neue Bildschirmeinstellungen beibehalten?"
 
 #: src/WindowManager.vala:2121
 msgid "Changes will automatically revert after 30 seconds."
-msgstr "Änderungen werden nach 30 Sekunden automatisch zurückgenommen."
+msgstr "Änderungen werden nach 30 Sekunden automatisch zurückgesetzt."
 
 #: src/WindowManager.vala:2124
 msgid "Keep Settings"
-msgstr "Einstellungen behalten"
+msgstr "Einstellungen beibehalten"
 
 #: src/WindowManager.vala:2125
 msgid "Use Previous Settings"
