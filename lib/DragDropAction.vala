@@ -195,6 +195,10 @@ namespace Gala {
 
 #if HAS_MUTTER42
         public override bool handle_event (Event event) {
+            if (!(DragDropActionType.SOURCE in drag_type)) {
+                return false;
+            }
+
             switch (event.get_type ()) {
                 case EventType.BUTTON_PRESS:
                     if (event.get_button () != 1) {
