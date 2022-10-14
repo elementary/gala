@@ -224,7 +224,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
 #if HAS_MUTTER42
         grab = resize_button.get_stage ().grab (resize_button);
-        resize_button.event.connect (on_resize_button_event);
+        resize_button.event.connect (on_resize_event);
 #else
         resize_button.get_stage ().set_motion_events_enabled (false);
         resize_button.get_stage ().captured_event.connect (on_resize_event);
@@ -233,11 +233,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return true;
     }
 
-#if HAS_MUTTER42
-    private bool on_resize_button_event (Clutter.Event event) {
-#else
     private bool on_resize_event (Clutter.Event event) {
-#endif
         if (!resizing) {
             return false;
         }
@@ -288,7 +284,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 #if HAS_MUTTER42
         if (grab != null) {
             grab.dismiss ();
-            resize_button.event.disconnect (on_resize_button_event);
+            resize_button.event.disconnect (on_resize_event);
             grab = null;
         }
 #else
