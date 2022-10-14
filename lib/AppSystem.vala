@@ -39,7 +39,11 @@ public class Gala.AppSystem : GLib.Object {
         return app;
     }
 
-    public unowned Gala.App? lookup_startup_wmclass (string wmclass) {
+    public unowned Gala.App? lookup_startup_wmclass (string? wmclass) {
+        if (wmclass == null) {
+            return null;
+        }
+
         GLib.DesktopAppInfo? info = app_cache.lookup_startup_wmclass (wmclass);
         if (info == null) {
             return null;
@@ -74,7 +78,11 @@ public class Gala.AppSystem : GLib.Object {
         return null;
     }
 
-    public unowned Gala.App? lookup_desktop_wmclass (string wmclass) {
+    public unowned Gala.App? lookup_desktop_wmclass (string? wmclass) {
+        if (wmclass == null) {
+            return null;
+        }
+
         /* First try without changing the case (this handles
         org.example.Foo.Bar.desktop applications)
 
