@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-10-14 17:58+0000\n"
-"PO-Revision-Date: 2022-08-10 20:17+0000\n"
+"PO-Revision-Date: 2022-10-19 18:48+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -53,7 +53,7 @@ msgstr "Captura de ecrã tirada"
 
 #: src/WindowManager.vala:2125
 msgid "Keep new display settings?"
-msgstr "Manter a novas definições de ecrã?"
+msgstr "Manter novas definições de ecrã?"
 
 #: src/WindowManager.vala:2126
 msgid "Changes will automatically revert after 30 seconds."
