@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '6.3.1',
+    version: '6.3.3',
     meson_version: '>= 0.50.0',
     license: 'GPL3',
 )
@@ -87,6 +87,7 @@ canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
+gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
@@ -190,7 +191,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep

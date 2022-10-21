@@ -101,14 +101,14 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
-        if (overview_mode) {
-            var click_action = new Clutter.ClickAction ();
-            click_action.clicked.connect (() => {
-                actor_clicked (click_action.get_button ());
-            });
+        var click_action = new Clutter.ClickAction ();
+        click_action.clicked.connect (() => {
+            actor_clicked (click_action.get_button ());
+        });
 
-            add_action (click_action);
-        } else {
+        add_action (click_action);
+
+        if (!overview_mode) {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
             drag_action.destination_crossed.connect (drag_destination_crossed);
@@ -217,6 +217,10 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     void check_shadow_requirements () {
+        if (clone == null) {
+            return;
+        }
+
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new WindowShadowEffect (window, 40, 5);
@@ -464,6 +468,10 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
+        if (drag_action.dragging) {
+            return false;
+        }
+
         close_button.opacity = in_slot_animation ? 0 : 255;
         window_title.opacity = in_slot_animation ? 0 : 255;
         return false;

@@ -76,6 +76,8 @@ namespace Gala {
 
         HotCornerManager? hot_corner_manager = null;
 
+        public WindowTracker? window_tracker { get; private set; }
+
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -175,6 +177,8 @@ namespace Gala {
 
             WindowListener.init (display);
             KeyboardManager.init (display);
+            window_tracker = new WindowTracker ();
+            window_tracker.init (display);
 
             notification_stack = new NotificationStack (display);
 
@@ -1752,7 +1756,8 @@ namespace Gala {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || animating_switch_workspace) {
+                || animating_switch_workspace
+                || workspace_view.is_opened ()) {
                 animating_switch_workspace = false;
                 switch_workspace_completed ();
                 return;

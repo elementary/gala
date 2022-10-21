@@ -11,7 +11,20 @@
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="6.3.2" date="2022-05-15" urgency="medium">
+    <release version="6.3.3" date="2022-10-16" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1474">Can not resize Picture-in-Picture window</issue>
+        <issue url="https://github.com/elementary/gala/issues/1473">Clicking wallpaper does not quit Multitasking view</issue>
+      </issues>
+    </release>
+
+    <release version="6.3.2" date="2022-10-12" urgency="medium">
       <description>
         <p>Fixes:</p>
         <ul>
@@ -23,7 +36,12 @@
           <li>Updated translations</li>
         </ul>
       </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1334">Make sure not to re-trigger hot corner actions too quickly</issue>
+        <issue url="https://github.com/elementary/gala/issues/966">Add a function to dim the wallpaper when dark style is active</issue>
+      </issues>
     </release>
+
     <release version="6.3.1" date="2022-04-06" urgency="medium">
       <description>
         <p>Fixes:</p>

@@ -182,3 +182,24 @@ x11_error_trap_pop parent="Meta.X11Display" symbol_type="method" name="error_tra
 x11_error_trap_pop_with_return parent="Meta.X11Display" symbol_type="method" name="error_trap_pop_with_return" instance_idx=0 cheader_filename="meta/meta-x11-errors.h"
 x11_error_trap_push parent="Meta.X11Display" symbol_type="method" name="error_trap_push" instance_idx=0 cheader_filename="meta/meta-x11-errors.h"
 x11_init_gdk_display parent="Meta.X11Display" cheader_filename="meta/meta-x11-display.h"
+
+BackgroundActor sealed
+BackgroundContent sealed
+BackgroundImage sealed
+BackgroundImageCache sealed
+Background sealed
+Dnd sealed
+IdleMonitor sealed
+LaunchContext sealed
+RemoteAccessController sealed
+SelectionSourceMemory sealed
+Selection sealed
+ShadowFactory sealed
+ShapedTexture sealed
+SoundPlayer sealed
+Stage sealed
+StartupNotification sealed
+WaylandClient sealed
+WindowGroup sealed
+WorkspaceManager sealed
+X11Display sealed
