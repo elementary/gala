@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-10-14 17:58+0000\n"
-"PO-Revision-Date: 2022-10-19 18:48+0000\n"
+"PO-Revision-Date: 2022-10-28 10:41+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -34,6 +34,8 @@ msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"Pode optar por aguardar um momento para continuar ou forçar a aplicação a "
+"terminar."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -41,7 +43,7 @@ msgstr "Forçar o Sair"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Aguardar"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -190,29 +192,23 @@ msgstr "Corrige a seleção de janelas por baixo do comutador da janela"
 
 #: data/gala.appdata.xml.in:51
 msgid "Prevent potential crashes"
-msgstr ""
+msgstr "Prevenir potenciais falhas"
 
 #: data/gala.appdata.xml.in:52
 msgid "Resize workspaces when displays change"
-msgstr ""
+msgstr "Redimensionar as áreas de trabalho quando os ecrãs mudam"
 
 #: data/gala.appdata.xml.in:53
 msgid "Handle windows with no title"
-msgstr ""
+msgstr "Gerir janelas sem título"
 
 #: data/gala.appdata.xml.in:57
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Utilizar o portal de acesso para o diálogo de confirmação das definições de "
-"ecrã"
+msgstr "Utilizar o portal de acesso para confirmação das definições de ecrã"
 
 #: data/gala.appdata.xml.in:58
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Mostra títulos de janelas em vista multitarefa"
+msgstr "Permitir fechar a vista de tarefas com a tecla Super"
 
 #: data/gala.appdata.xml.in:67
 msgid "Fix shadow clipping on server-side decorated windows"
