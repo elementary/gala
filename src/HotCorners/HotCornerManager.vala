@@ -34,6 +34,11 @@ public class Gala.HotCornerManager : Object {
 
     public void configure () {
         unowned Meta.Display display = wm.get_display ();
+
+        if (display.get_n_monitors () == 0) {
+            return;
+        }
+
         var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
         remove_all_hot_corners ();
