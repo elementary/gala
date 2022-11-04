@@ -832,7 +832,9 @@ namespace Gala {
                         current.minimize ();
                     break;
                 case ActionType.HIDE_OTHERS:
-                    GLib.List<weak Meta.Window> windows = display.list_all_windows ();
+                    unowned Meta.WorkspaceManager workspace_manager = display.get_workspace_manager ();
+                    unowned Meta.Workspace workspace = workspace_manager.get_active_workspace ();
+                    GLib.List<weak Meta.Window> windows = workspace.list_windows ();
                     windows.foreach ((window) => {
                         if (current != window && window.window_type == Meta.WindowType.NORMAL) {
                             window.minimize ();
