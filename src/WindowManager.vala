@@ -831,6 +831,14 @@ namespace Gala {
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
                         current.minimize ();
                     break;
+                case ActionType.HIDE_OTHERS:
+                    GLib.List<weak Meta.Window> windows = display.list_all_windows ();
+                    windows.foreach ((window) => {
+                        if (current != window && window.window_type == Meta.WindowType.NORMAL) {
+                            window.minimize ();
+                        }
+                    });
+                    break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
