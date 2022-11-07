@@ -76,6 +76,8 @@ namespace Gala {
 
         HotCornerManager? hot_corner_manager = null;
 
+        public WindowTracker? window_tracker { get; private set; }
+
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -175,6 +177,8 @@ namespace Gala {
 
             WindowListener.init (display);
             KeyboardManager.init (display);
+            window_tracker = new WindowTracker ();
+            window_tracker.init (display);
 
             notification_stack = new NotificationStack (display);
 
@@ -242,13 +246,23 @@ namespace Gala {
             display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+#if HAS_MUTTER41
+            display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
+#else
+            Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
+#endif
+
+#if HAS_MUTTER42
+            display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+#endif
 
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
-            });
-
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu", () => {
-                launch_action ("panel-main-menu-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
@@ -434,6 +448,37 @@ namespace Gala {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
             manager.get_workspace_by_index (index).activate (display.get_current_time ());
+        }
+
+        [CCode (instance_pos = -1)]
+        void handle_applications_menu (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            launch_action ("panel-main-menu-action");
+        }
+
+        [CCode (instance_pos = -1)]
+        void handle_screenshot (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            switch (binding.get_name ()) {
+                case "screenshot":
+                    screenshot_screen.begin ();
+                    break;
+                case "area-screenshot":
+                    screenshot_area.begin ();
+                    break;
+                case "window-screenshot":
+                    screenshot_current_window.begin ();
+                    break;
+                case "screenshot-clip":
+                    screenshot_screen.begin (true);
+                    break;
+                case "area-screenshot-clip":
+                    screenshot_area.begin (true);
+                    break;
+                case "window-screenshot-clip":
+                    screenshot_current_window.begin (true);
+                    break;
+            }
         }
 
         private void on_gesture_detected (Gesture gesture) {
@@ -664,7 +709,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal () {
+        public ModalProxy push_modal (Clutter.Actor actor) {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
@@ -674,12 +719,20 @@ namespace Gala {
                 return proxy;
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             var time = display.get_current_time ();
+#endif
 
             update_input_area ();
+#if HAS_MUTTER42
+            proxy.grab = stage.grab (actor);
+#else
             begin_modal (0, time);
+#endif
 
-            display.disable_unredirect ();
+            if (modal_stack.size == 1) {
+                display.disable_unredirect ();
+            }
 
             return proxy;
         }
@@ -693,13 +746,19 @@ namespace Gala {
                 return;
             }
 
+#if HAS_MUTTER42
+            proxy.grab.dismiss ();
+#endif
+
             if (is_modal ())
                 return;
 
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER42
             end_modal (display.get_current_time ());
+#endif
 
             display.enable_unredirect ();
         }
@@ -708,7 +767,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public bool is_modal () {
-            return (modal_stack.size > 0);
+            return !modal_stack.is_empty;
         }
 
         /**
@@ -1697,7 +1756,8 @@ namespace Gala {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || animating_switch_workspace) {
+                || animating_switch_workspace
+                || workspace_view.is_opened ()) {
                 animating_switch_workspace = false;
                 switch_workspace_completed ();
                 return;
@@ -1900,20 +1960,21 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
                 if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
                     switch_workspace_animation_finished (direction, cancel_action);
                     return;
                 }
 
-                int duration = switch_workspace_with_gesture
-                    ? calculated_duration
-                    : AnimationDuration.WORKSPACE_SWITCH_MIN;
-
+                out_group.save_easing_state ();
                 out_group.set_easing_mode (animation_mode);
                 out_group.set_easing_duration (duration);
+
+                in_group.save_easing_state ();
                 in_group.set_easing_mode (animation_mode);
                 in_group.set_easing_duration (duration);
+
+                wallpaper_clone.save_easing_state ();
                 wallpaper_clone.set_easing_mode (animation_mode);
                 wallpaper_clone.set_easing_duration (duration);
 
@@ -1922,11 +1983,16 @@ namespace Gala {
                 wallpaper.set_easing_duration (duration);
 
                 out_group.x = cancel_action ? 0.0f : x2;
+                out_group.restore_easing_state ();
+
                 in_group.x = cancel_action ? -x2 : 0.0f;
+                in_group.restore_easing_state ();
 
                 wallpaper.x = cancel_action ? 0.0f : x2;
-                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
                 wallpaper.restore_easing_state ();
+
+                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
+                wallpaper_clone.restore_easing_state ();
 
                 var transition = in_group.get_transition ("x");
                 if (transition != null) {
@@ -1939,7 +2005,7 @@ namespace Gala {
             };
 
             if (!switch_workspace_with_gesture) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, false, AnimationDuration.WORKSPACE_SWITCH_MIN);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
@@ -2042,10 +2108,16 @@ namespace Gala {
                 return false;
 
             var modal_proxy = modal_stack.peek_head ();
+            if (modal_proxy == null) {
+                return false;
+            }
 
-            return (modal_proxy != null
-                && modal_proxy.keybinding_filter != null
-                && modal_proxy.keybinding_filter (binding));
+           unowned var filter = modal_proxy.get_keybinding_filter ();
+            if (filter == null) {
+                return false;
+            }
+
+            return filter (binding);
         }
 
         public override void confirm_display_change () {
@@ -2073,19 +2145,62 @@ namespace Gala {
             dialog.show ();
         }
 
+        public override unowned Meta.CloseDialog create_close_dialog (Meta.Window window) {
+            var new_dialog = CloseDialog.open_dialogs.first_match ((d) => d.window == window);
+
+            if (new_dialog == null) {
+                new_dialog = new CloseDialog (window);
+            }
+
+            unowned var dialog = new_dialog;
+            return dialog;
+        }
+
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
 
-        private async void screenshot_current_window () {
+        private string generate_screenshot_filename () {
+            var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
+            /// TRANSLATORS: %s represents a timestamp here
+            return _("Screenshot from %s").printf (date_time);
+        }
+
+        private async void screenshot_current_window (bool clipboard = false) {
             try {
-                var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
-                /// TRANSLATORS: %s represents a timestamp here
-                string file_name = _("Screenshot from %s").printf (date_time);
+                string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                var screenshot_manager = ScreenshotManager.init (this);
-                yield screenshot_manager.screenshot_window (true, false, true, file_name, out success, out filename_used);
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
+        }
+
+        private async void screenshot_area (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                bool success = false;
+                string filename_used = "";
+
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+
+                int x, y, w, h;
+                yield screenshot_manager.select_area (out x, out y, out w, out h);
+                yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
+            } catch (Error e) {
+                // Ignore this error
+            }
+        }
+
+        private async void screenshot_screen (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                bool success = false;
+                string filename_used = "";
+                unowned var screenshot_manager = ScreenshotManager.init (this);
+                yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
             }

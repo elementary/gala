@@ -334,7 +334,7 @@ namespace Gala {
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
             visible = true;
             grab_key_focus ();
-            modal_proxy = wm.push_modal ();
+            modal_proxy = wm.push_modal (this);
 
             if (animate) {
                 animate_and_lock (animation_time);

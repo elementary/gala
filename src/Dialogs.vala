@@ -83,6 +83,10 @@ namespace Gala {
             options["deny_label"] = deny_label;
             options["icon"] = icon;
 
+            if (this is CloseDialog) {
+                options["destructive"] = true;
+            }
+
             portal.access_dialog.begin (path, app_id, parent_handler, title, body, "", options, on_response);
         }
 
@@ -110,6 +114,97 @@ namespace Gala {
             }
 
             response (ret);
+            close ();
+        }
+    }
+
+    public class CloseDialog : AccessDialog, Meta.CloseDialog {
+        public Meta.Window window {
+            owned get { return parent; }
+            construct { parent = value; }
+        }
+
+        public static Gee.Set<CloseDialog> open_dialogs = new Gee.HashSet<CloseDialog> ();
+
+        // this function isn't exported in glib.vapi
+        [CCode (cname = "g_locale_from_utf8")]
+        extern static string locale_from_utf8 (
+            string str,
+            ssize_t len = -1,
+            out size_t bytes_read = null,
+            out size_t bytes_wrriten = null,
+            out Error err = null
+        );
+
+        public CloseDialog (Meta.Window window) {
+            Object (window: window);
+        }
+
+        ~CloseDialog () {
+            open_dialogs.remove (this);
+        }
+
+        construct {
+            icon = "computer-fail";
+
+            var window_title = locale_from_utf8 (window.title) ?? window.get_sandboxed_app_id ();
+            if (window_title != null) {
+                title = _("“%s” is not responding").printf (window_title);
+            } else {
+                title = _("Application is not responding");
+            }
+
+            body = _("You may choose to wait a short while for it to continue or force the application quit entirely.");
+            accept_label = _("Force Quit");
+            deny_label = _("Wait");
+
+
+            open_dialogs.add (this);
+        }
+
+        public new void show () {
+            if (path != null) {
+                focus ();
+            }
+
+            base.show ();
+        }
+
+        public void hide () {
+            close ();
+        }
+
+        public void focus () {
+            if (path == null) {
+                return;
+            }
+
+            window.foreach_transient ((w) => {
+                if (w.get_role () == "AccessDialog") {
+                    w.activate (w.get_display ().get_current_time ());
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        protected override void on_response (Object? obj, AsyncResult? res) {
+            uint ret = 2;
+
+            try {
+                portal.access_dialog.end (res, out ret);
+            } catch (Error e) {
+                warning (e.message);
+            }
+
+            // calling `response ()` doesn't seem to work
+            if (ret == 0) {
+                Signal.emit_by_name (this, "response", Meta.CloseDialogResponse.FORCE_CLOSE);
+            } else {
+                Signal.emit_by_name (this, "response", Meta.CloseDialogResponse.WAIT);
+            }
+
             close ();
         }
     }

@@ -1,3 +1,4 @@
+src/Dialogs.vala
 src/ScreenshotManager.vala
 src/WindowManager.vala
 daemon/MenuDaemon.vala

@@ -153,7 +153,7 @@ namespace Gala {
 
                 // draw rect
                 Clutter.cairo_set_source_color (ctx, accent_color);
-                Granite.Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+                Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
                 ctx.set_operator (Cairo.Operator.SOURCE);
                 ctx.fill ();
 
@@ -331,8 +331,8 @@ namespace Gala {
         }
 
         void push_modal () {
-            modal_proxy = wm.push_modal ();
-            modal_proxy.keybinding_filter = (binding) => {
+            modal_proxy = wm.push_modal (this);
+            modal_proxy.set_keybinding_filter ((binding) => {
                 // if it's not built-in, we can block it right away
                 if (!binding.is_builtin ())
                     return true;
@@ -342,9 +342,11 @@ namespace Gala {
 
                 return !(name == "switch-applications" || name == "switch-applications-backward"
                     || name == "switch-windows" || name == "switch-windows-backward");
-            };
+            });
 
+#if !HAS_MUTTER42
             grab_key_focus ();
+#endif
         }
 
         void close_switcher (uint32 time, bool cancel = false) {
@@ -416,7 +418,7 @@ namespace Gala {
             //       are here too early, in which case all the children are at
             //       (0|0), so we can easily check for that and come back later
             if (container.get_n_children () > 1
-                && container.get_child_at_index (1).allocation.x1 < 1) {
+                && container.get_child_at_index (1).x < 1) {
 
                 GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
                     update_indicator_position (initial);
@@ -425,8 +427,8 @@ namespace Gala {
                 return;
             }
 
-            float x, y;
-            cur_icon.allocation.get_origin (out x, out y);
+            float x = cur_icon.x;
+            float y = cur_icon.y;
 
             if (initial) {
                 indicator.visible = true;

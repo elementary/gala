@@ -123,11 +123,10 @@ namespace Gala {
                     rects = {topleft, topright, bottomleft, bottomright};
 
                     // add plugin's requested areas
-                    if (area == InputArea.FULLSCREEN || area == InputArea.DEFAULT) {
-                        foreach (var rect in PluginManager.get_default ().regions) {
-                            rects += rect;
-                        }
+                    foreach (var rect in PluginManager.get_default ().get_regions ()) {
+                        rects += rect;
                     }
+
                     break;
                 case InputArea.NONE:
                 default:
@@ -357,7 +356,7 @@ namespace Gala {
             );
         }
 
-        public static Granite.Drawing.Color get_accent_color_by_theme_name (string theme_name) {
+        public static Drawing.Color get_accent_color_by_theme_name (string theme_name) {
             var label_widget_path = new Gtk.WidgetPath ();
             label_widget_path.append_type (GLib.Type.from_name ("label"));
             label_widget_path.iter_set_object_name (-1, "selection");
@@ -372,7 +371,7 @@ namespace Gala {
                 Gtk.StateFlags.NORMAL
             );
 
-            return new Granite.Drawing.Color.from_rgba (rgba);
+            return new Drawing.Color.from_rgba (rgba);
         }
 
         /**

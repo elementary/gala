@@ -418,7 +418,7 @@ namespace Gala {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
             Graphene.Point coords = {};
 #if HAS_MUTTER40
-            cursor_tracker.get_pointer (coords, null);
+            cursor_tracker.get_pointer (out coords, null);
 #else
             cursor_tracker.get_pointer (out coords.x, out coords.y, null);
 #endif

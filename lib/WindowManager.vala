@@ -60,13 +60,23 @@ namespace Gala {
      * to end your modal mode again with {@link WindowManager.pop_modal}
      */
     public class ModalProxy : Object {
+#if HAS_MUTTER42
+        public Clutter.Grab? grab { get; set; }
+#endif
         /**
          * A function which is called whenever a keybinding is pressed. If you supply a custom
          * one you can filter out those that'd you like to be passed through and block all others.
          * Defaults to blocking all.
          * @see KeybindingFilter
          */
-        public KeybindingFilter? keybinding_filter { get; owned set; default = () => true; }
+        private KeybindingFilter? _keybinding_filter = () => true;
+        public unowned KeybindingFilter? get_keybinding_filter () {
+            return _keybinding_filter;
+        }
+
+        public void set_keybinding_filter (KeybindingFilter? filter) {
+            _keybinding_filter = filter;
+        }
 
         public ModalProxy () {
         }
@@ -75,7 +85,7 @@ namespace Gala {
          * Small utility to allow all keybindings
          */
         public void allow_all_keybindings () {
-            keybinding_filter = null;
+            _keybinding_filter = null;
         }
     }
 
@@ -125,7 +135,7 @@ namespace Gala {
          * @return a {@link ModalProxy} which is needed to end the modal mode again and provides some
          *         some basic control on the behavior of the window manager while it is in modal mode.
          */
-        public abstract ModalProxy push_modal ();
+        public abstract ModalProxy push_modal (Clutter.Actor actor);
 
         /**
          * May exit the modal mode again, unless another component has called {@link push_modal}

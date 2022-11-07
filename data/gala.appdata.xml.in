@@ -6,15 +6,56 @@
   <project_license>GPL-3.0+</project_license>
   <name>Multitasking &amp; Window Management</name>
   <summary>A window &amp; compositing manager for Pantheon</summary>
+  <icon type="stock">preferences-desktop-workspaces</icon>
   <description>
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
   <releases>
-    <release version="6.3.1" date="2021-12-01" urgency="medium">
+    <release version="6.3.3" date="2022-10-16" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
-          <li>Use access portal for display settings confirmation dialog</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1474">Can not resize Picture-in-Picture window</issue>
+        <issue url="https://github.com/elementary/gala/issues/1473">Clicking wallpaper does not quit Multitasking view</issue>
+      </issues>
+    </release>
+
+    <release version="6.3.2" date="2022-10-12" urgency="medium">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix regressions for OS 7</li>
+        </ul>
+        <p>Improvements:</p>
+        <ul>
+          <li>Use access portal for force quit</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1334">Make sure not to re-trigger hot corner actions too quickly</issue>
+        <issue url="https://github.com/elementary/gala/issues/966">Add a function to dim the wallpaper when dark style is active</issue>
+      </issues>
+    </release>
+
+    <release version="6.3.1" date="2022-04-06" urgency="medium">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Properly update accent color in the window switcher</li>
+          <li>Fix selecting windows underneath the window switcher</li>
+          <li>Prevent potential crashes</li>
+          <li>Resize workspaces when displays change</li>
+          <li>Handle windows with no title</li>
+        </ul>
+        <p>Improvements:</p>
+        <ul>
+          <li>Use access portal for display settings confirmation</li>
+          <li>Allow closing multitasking view with Super</li>
           <li>Updated translations</li>
         </ul>
       </description>

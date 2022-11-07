@@ -157,8 +157,8 @@ namespace Gala {
 
             grab_key_focus ();
 
-            modal_proxy = wm.push_modal ();
-            modal_proxy.keybinding_filter = keybinding_filter;
+            modal_proxy = wm.push_modal (this);
+            modal_proxy.set_keybinding_filter (keybinding_filter);
 
             visible = true;
 

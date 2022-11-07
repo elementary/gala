@@ -165,15 +165,6 @@ namespace Gala {
         }
 
         /**
-         * We generally assume that when the key-focus-out signal is emitted
-         * a different component was opened, so we close in that case.
-         */
-        public override void key_focus_out () {
-            if (opened && !contains (get_stage ().key_focus))
-                toggle ();
-        }
-
-        /**
          * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
          * GestureTracker.
          */
@@ -321,7 +312,10 @@ namespace Gala {
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 workspace_gesture_tracker.enabled = false;
 
-                var duration = is_nudge_animation ? (AnimationDuration.NUDGE / 2) : calculated_duration;
+                var duration = is_nudge_animation ?
+                               (uint) (AnimationDuration.NUDGE / 2) :
+                               (uint) calculated_duration;
+
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
 
@@ -589,8 +583,8 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal ();
-                modal_proxy.keybinding_filter = keybinding_filter;
+                modal_proxy = wm.push_modal (this);
+                modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 wm.background_group.hide ();
                 wm.window_group.hide ();
@@ -680,9 +674,6 @@ namespace Gala {
         }
 
         void show_docks (bool with_gesture, bool is_cancel_animation) {
-            float clone_offset_x, clone_offset_y;
-            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
-
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 85;
@@ -708,11 +699,11 @@ namespace Gala {
                 if (!top && !bottom)
                     continue;
 
-                var initial_x = actor.x - clone_offset_x;
-                var initial_y = actor.y - clone_offset_y;
+                var initial_x = actor.x;
+                var initial_y = actor.y;
                 var target_y = (top)
-                    ? actor.y - actor.height - clone_offset_y
-                    : actor.y + actor.height - clone_offset_y;
+                    ? actor.y - actor.height
+                    : actor.y + actor.height;
 
                 var clone = new SafeWindowClone (window, true);
                 dock_clones.add_child (clone);
@@ -748,13 +739,10 @@ namespace Gala {
         }
 
         void hide_docks (bool with_gesture, bool is_cancel_animation) {
-            float clone_offset_x, clone_offset_y;
-            dock_clones.get_transformed_position (out clone_offset_x, out clone_offset_y);
-
             foreach (var child in dock_clones.get_children ()) {
                 var dock = (Clone) child;
                 var initial_y = dock.y;
-                var target_y = dock.source.y - clone_offset_y;
+                var target_y = dock.source.y;
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
@@ -785,6 +773,7 @@ namespace Gala {
                 case KeyBindingAction.WORKSPACE_LEFT:
                 case KeyBindingAction.WORKSPACE_RIGHT:
                 case KeyBindingAction.SHOW_DESKTOP:
+                case KeyBindingAction.OVERLAY_KEY:
                     return false;
                 default:
                     return true;

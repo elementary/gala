@@ -138,7 +138,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
     }
 
     private bool draw_cornermask (Cairo.Context context) {
-        var buffer = new Granite.Drawing.BufferSurface (corner_radius, corner_radius);
+        var buffer = new Drawing.BufferSurface (corner_radius, corner_radius);
         var buffer_context = buffer.context;
 
         buffer_context.arc (corner_radius, corner_radius, corner_radius, Math.PI, 1.5 * Math.PI);

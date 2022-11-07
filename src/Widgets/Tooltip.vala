@@ -119,10 +119,14 @@ public class Gala.Tooltip : Clutter.Actor {
             color = text_color,
             x = padding.left,
             y = padding.top,
-            ellipsize = Pango.EllipsizeMode.MIDDLE,
-            use_markup = true
+            ellipsize = Pango.EllipsizeMode.MIDDLE
         };
+#if HAS_MUTTER42
+        text_actor.text = text;
+#else
+        text_actor.use_markup = true;
         text_actor.set_markup (Markup.printf_escaped ("<span size='large'>%s</span>", text));
+#endif
 
         if ((text_actor.width + padding.left + padding.right) > max_width) {
             text_actor.width = max_width - padding.left - padding.right;

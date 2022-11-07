@@ -155,7 +155,7 @@ public class Gala.AccentColorManager : Object {
     }
 
     private NamedColor? get_accent_color (ColorExtractor color_extractor) {
-        var palette = new Gee.ArrayList<Granite.Drawing.Color> ();
+        var palette = new Gee.ArrayList<Drawing.Color> ();
         for (int i = 0; i < theme_colors.length; i++) {
             palette.add (theme_colors[i].color);
         }
@@ -180,7 +180,7 @@ public class Gala.AccentColorManager : Object {
     }
 
     private NamedColor? get_accent_color_based_on_primary_color (string primary_color) {
-        var granite_primary_color = new Granite.Drawing.Color.from_string (primary_color);
+        var granite_primary_color = new Drawing.Color.from_string (primary_color);
         var color_extractor = new ColorExtractor.from_primary_color (granite_primary_color);
 
         return get_accent_color (color_extractor);

@@ -24,6 +24,14 @@
     </key>
   </schema>
 
+  <schema path="/io/elementary/desktop/background/" id="io.elementary.desktop.background">
+    <key type="b" name="dim-wallpaper-in-dark-style">
+      <default>false</default>
+      <summary>Dim wallpapers when dark style is active</summary>
+      <description></description>
+    </key>
+  </schema>
+
   <schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
     <key enum="GalaActionType" name="hotcorner-topleft">
       <default>"none"</default>
@@ -154,6 +162,34 @@
     <key type="as" name="cycle-workspaces-previous">
       <default><![CDATA[['<Super><Shift>Tab']]]></default>
       <summary>Cycle to the next workspace to the right or to back to the first</summary>
+    </key>
+    <key type="as" name="panel-main-menu">
+      <default><![CDATA[['<Super>space','<Alt>F2']]]></default>
+      <summary>Open the applications menu</summary>
+    </key>
+    <key name="screenshot" type="as">
+      <default><![CDATA[['Print']]]></default>
+      <summary>Take a screenshot</summary>
+    </key>
+    <key name="window-screenshot" type="as">
+      <default><![CDATA[['<Alt>Print']]]></default>
+      <summary>Take a screenshot of a window</summary>
+    </key>
+    <key name="area-screenshot" type="as">
+      <default><![CDATA[['<Shift>Print']]]></default>
+      <summary>Take a screenshot of an area</summary>
+    </key>
+    <key name="screenshot-clip" type="as">
+      <default><![CDATA[['<Control>Print']]]></default>
+      <summary>Copy a screenshot to clipboard</summary>
+    </key>
+    <key name="window-screenshot-clip" type="as">
+      <default><![CDATA[['<Control><Alt>Print']]]></default>
+      <summary>Copy a screenshot of a window to clipboard</summary>
+    </key>
+    <key name="area-screenshot-clip" type="as">
+      <default><![CDATA[['<Control><Shift>Print']]]></default>
+      <summary>Copy a screenshot of an area to clipboard</summary>
     </key>
     <key type="as" name="switch-input-source">
       <default><![CDATA[['<Alt>space']]]></default>

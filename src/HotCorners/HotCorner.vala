@@ -17,6 +17,7 @@
  */
 
 
+
 private class Gala.Barrier : Meta.Barrier {
     public bool is_hit { get; set; default = false; }
     public double pressure_x { get; set; default = 0; }
@@ -49,14 +50,17 @@ public class Gala.HotCorner : Object {
     /**
      * When the mouse pointer pressures the hot corner after activation, trigger the
      * action again when this threshold is reached.
+     * Only retrigger after a minimum delay (milliseconds) since original trigger.
      */
     private const int RETRIGGER_PRESSURE_THRESHOLD = 500;
+    private const int RETRIGGER_DELAY = 600;
 
     public signal void trigger ();
 
     private Gala.Barrier? vertical_barrier = null;
     private Gala.Barrier? horizontal_barrier = null;
     private bool triggered = false;
+    private uint32 triggered_time;
 
     public HotCorner (Meta.Display display, float x, float y, string hot_corner_position) {
         add_barriers (display, x, y, hot_corner_position);
@@ -149,6 +153,7 @@ public class Gala.HotCorner : Object {
             if (pressure.abs () > TRIGGER_PRESSURE_THRESHOLD) {
                 trigger_hot_corner ();
                 pressure = 0;
+                triggered_time = event.time;
             }
         }
 
@@ -156,7 +161,7 @@ public class Gala.HotCorner : Object {
             barrier.release (event);
         }
 
-        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD) {
+        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD && event.time > RETRIGGER_DELAY + triggered_time) {
             trigger_hot_corner ();
         }
     }

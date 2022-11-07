@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '6.3.0',
+    version: '6.3.3',
     meson_version: '>= 0.50.0',
     license: 'GPL3',
 )
@@ -87,6 +87,7 @@ canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
+gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
 gee_dep = dependency('gee-0.8')
@@ -166,6 +167,17 @@ if mutter42_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41', '--define', 'HAS_MUTTER42']
 endif
 
+mutter43_dep = dependency('libmutter-11', version: ['>= 43', '< 44'], required: false)
+if mutter43_dep.found()
+	libmutter_dep = dependency('libmutter-11', version: '>= 43')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-11'), dependency('mutter-cogl-pango-11'),
+		dependency('mutter-clutter-11')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41', '--define', 'HAS_MUTTER42', '--define', 'HAS_MUTTER43']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
@@ -179,7 +191,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
