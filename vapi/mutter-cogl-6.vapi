@@ -395,7 +395,8 @@ namespace Cogl {
 		public virtual void swap_buffers_with_damage (int rectangles, int n_rectangles, Cogl.FrameInfo info);
 		[Version (since = "1.10")]
 		public virtual void swap_region (int rectangles, int n_rectangles, Cogl.FrameInfo info);
-#elif HAS_MUTTER338
+#else
+#if HAS_MUTTER338
 		[Version (since = "1.10")]
 		public void swap_buffers (Cogl.FrameInfo frame_info);
 		[Version (since = "1.16")]
@@ -409,6 +410,7 @@ namespace Cogl {
 		public void swap_buffers_with_damage (int rectangles, int n_rectangles);
 		[Version (since = "1.10")]
 		public void swap_region (int rectangles, int n_rectangles);
+#endif
 #endif
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_onscreen_dirty_closure_get_gtype ()")]

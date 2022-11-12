@@ -7255,8 +7255,10 @@ namespace Clutter {
 #endif
 #if HAS_MUTTER40
 		public virtual bool handle_event_post (Clutter.Event event);
-#elif HAS_MUTTER338
+#else
+#if HAS_MUTTER338
 		public virtual bool handle_device_event (Clutter.Event event);
+#endif
 #endif
 		public void inhibit_unfocus ();
 		public bool is_unfocus_inhibited ();
@@ -7516,8 +7518,10 @@ namespace Clutter {
 #endif
 #if HAS_MUTTER42
 		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Graphene.Point point, uint32 time, Clutter.Actor new_actor, Cairo.Region region, bool emit_crossing);
-#elif HAS_MUTTER40
+#else
+#if HAS_MUTTER40
 		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Graphene.Point point, uint32 time, Clutter.Actor new_actor, bool emit_crossing);
+#endif
 #endif
 #if !HAS_MUTTER338
 		public void show_cursor ();
