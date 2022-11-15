@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2022-10-14 17:58+0000\n"
-"PO-Revision-Date: 2022-08-07 10:06+0000\n"
+"PO-Revision-Date: 2022-10-28 10:41+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -168,7 +168,7 @@ msgstr "Удосконалення:"
 #: data/gala.appdata.xml.in:135 data/gala.appdata.xml.in:144
 #: data/gala.appdata.xml.in:155
 msgid "Updated translations"
-msgstr "Оновлено переклади"
+msgstr "Оновлені переклади"
 
 #: data/gala.appdata.xml.in:29 data/gala.appdata.xml.in:47
 #: data/gala.appdata.xml.in:65
