@@ -884,8 +884,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         public void set_scale_factor (float scale_factor) {
-            if (this.scale_factor != scale_factor)
-            {
+            if (this.scale_factor != scale_factor) {
                 this.scale_factor = scale_factor;
 
                 // perf: don't bother rerendering if we're invisible
@@ -910,8 +909,7 @@ public class Gala.WindowClone : Clutter.Actor {
             return false;
         }
 
-        private bool should_disregard_allocation (int width, int height)
-        {
+        private bool should_disregard_allocation (int width, int height) {
             // TODO: why are width and height sometimes 0?
             return width == 0 || height == 0 || (width == last_width && height == last_height);
         }
