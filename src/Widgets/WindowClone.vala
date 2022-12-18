@@ -422,45 +422,13 @@ public class Gala.WindowClone : Clutter.Actor {
         base.allocate (box, flags);
 #endif
 
-        foreach (var child in get_children ()) {
-            if (child != clone && child != active_shape)
-#if HAS_MUTTER338
-                child.allocate_preferred_size (child.fixed_x, child.fixed_y);
-#else
-                child.allocate_preferred_size (flags);
-#endif
-        }
-
-        Clutter.ActorBox shape_alloc = {
-            -ACTIVE_SHAPE_SIZE,
-            -ACTIVE_SHAPE_SIZE,
-            box.get_width () + ACTIVE_SHAPE_SIZE,
-            box.get_height () + ACTIVE_SHAPE_SIZE
-        };
-#if HAS_MUTTER338
-        active_shape.allocate (shape_alloc);
-#else
-        active_shape.allocate (shape_alloc, flags);
-#endif
-
         if (clone == null || dragging)
             return;
 
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = (float)width / outer_rect.width;
 
-        Clutter.ActorBox alloc = {};
-        alloc.set_origin ((input_rect.x - outer_rect.x) * scale_factor,
-                          (input_rect.y - outer_rect.y) * scale_factor);
-        alloc.set_size (actor.width * scale_factor, actor.height * scale_factor);
-
-#if HAS_MUTTER338
-        clone.allocate (alloc);
-#else
-        clone.allocate (alloc, flags);
-#endif
+        clone.set_scale (scale_factor, scale_factor);
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
