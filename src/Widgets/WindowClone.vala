@@ -52,6 +52,7 @@ public class Gala.WindowClone : Clutter.Actor {
             active_shape.set_easing_duration (FADE_ANIMATION_DURATION);
 
             active_shape.opacity = _active ? 255 : 0;
+            active_shape.invalidate ();
 
             active_shape.restore_easing_state ();
         }
@@ -422,12 +423,26 @@ public class Gala.WindowClone : Clutter.Actor {
         base.allocate (box, flags);
 #endif
 
-        if (clone == null || dragging)
-            return;
-
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = (float)width / outer_rect.width;
+
+        Clutter.ActorBox shape_alloc = {
+            -ACTIVE_SHAPE_SIZE,
+            -ACTIVE_SHAPE_SIZE,
+            outer_rect.width + ACTIVE_SHAPE_SIZE * 2,
+            outer_rect.height + ACTIVE_SHAPE_SIZE * 2
+        };
+#if HAS_MUTTER338
+        active_shape.allocate (shape_alloc);
+#else
+        active_shape.allocate (shape_alloc, flags);
+#endif
+
+        active_shape.set_scale_factor (scale_factor);
+
+        if (clone == null || dragging)
+            return;
 
         clone.set_scale (scale_factor, scale_factor);
         clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
@@ -826,6 +841,9 @@ public class Gala.WindowClone : Clutter.Actor {
         private static int border_radius;
         private static Gdk.RGBA color;
         private const double COLOR_OPACITY = 0.8;
+        private int last_width;
+        private int last_height;
+        private float scale_factor;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -850,17 +868,41 @@ public class Gala.WindowClone : Clutter.Actor {
             content = background_canvas;
         }
 
-        private static bool draw_background (Cairo.Context cr, int width, int height) {
+        public void invalidate () {
+            background_canvas.invalidate ();
+        }
+
+        public void set_scale_factor (float scale_factor) {
+            if (this.scale_factor != scale_factor)
+            {
+                this.scale_factor = scale_factor;
+
+                // perf: don't bother rerendering if we're invisible
+                if (opacity != 0)
+                    invalidate ();
+            }
+        }
+
+        private bool draw_background (Cairo.Context cr, int width, int height) {
             cr.save ();
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
             cr.restore ();
 
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+            var corrected_width = ((float) width - ACTIVE_SHAPE_SIZE * 2) * scale_factor;
+            var corrected_height = ((float) height - ACTIVE_SHAPE_SIZE * 2) * scale_factor;
+
+            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, corrected_width + ACTIVE_SHAPE_SIZE, corrected_height + ACTIVE_SHAPE_SIZE, border_radius);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 
             return false;
+        }
+
+        private bool should_disregard_allocation (int width, int height)
+        {
+            // TODO: why are width and height sometimes 0?
+            return width == 0 || height == 0 || (width == last_width && height == last_height);
         }
 
 #if HAS_MUTTER338
@@ -870,9 +912,15 @@ public class Gala.WindowClone : Clutter.Actor {
         public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags) {
             base.allocate (box, flags);
 #endif
+            var width = (int) box.get_width ();
+            var height = (int) box.get_height ();
+
+            if (should_disregard_allocation (width, height)) return;
+
             color = InternalUtils.get_theme_accent_color ();
-            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
-            background_canvas.invalidate ();
+            background_canvas.set_size (width, height);
+            last_width = width;
+            last_height = height;
         }
     }
 }
