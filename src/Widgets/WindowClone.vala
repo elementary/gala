@@ -425,10 +425,13 @@ public class Gala.WindowClone : Clutter.Actor {
         if (clone == null || dragging)
             return;
 
+        var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = (float)width / outer_rect.width;
 
         clone.set_scale (scale_factor, scale_factor);
+        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
+            (input_rect.y - outer_rect.y) * scale_factor);
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
