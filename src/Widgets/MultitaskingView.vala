@@ -316,8 +316,10 @@ namespace Gala {
                                (uint) (AnimationDuration.NUDGE / 2) :
                                (uint) calculated_duration;
 
+                workspaces.save_easing_state ();
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
+                workspaces.restore_easing_state ();
 
                 workspaces.get_transition ("x").completed.connect (() => {
                     workspace_gesture_tracker.enabled = true;
@@ -325,6 +327,8 @@ namespace Gala {
                     if (!is_nudge_animation && !cancel_action) {
                         manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
                         update_positions (false);
+                    } else {
+                        reset_easing_parameters ();
                     }
                 });
             };
@@ -366,6 +370,14 @@ namespace Gala {
             workspaces.x = -active_x;
 
             reposition_icon_groups (animate);
+        }
+
+        /**
+         * Reset easing parameters to whatever they were before the animation started.
+         */
+
+        void reset_easing_parameters () {
+            workspaces.set_easing_duration (0);
         }
 
         void reposition_icon_groups (bool animate) {
