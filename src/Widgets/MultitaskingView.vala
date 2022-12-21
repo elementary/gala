@@ -328,7 +328,9 @@ namespace Gala {
                         manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
                         update_positions (false);
                     } else {
-                        reset_easing_parameters ();
+                        // Reset easing parameters either way.
+                        // This stops the animation from causing touch events to "lag" behind.
+                        workspaces.set_easing_duration (0);
                     }
                 });
             };
@@ -370,14 +372,6 @@ namespace Gala {
             workspaces.x = -active_x;
 
             reposition_icon_groups (animate);
-        }
-
-        /**
-         * Reset easing parameters to whatever they were before the animation started.
-         */
-
-        void reset_easing_parameters () {
-            workspaces.set_easing_duration (0);
         }
 
         void reposition_icon_groups (bool animate) {
