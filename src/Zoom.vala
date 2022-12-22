@@ -45,8 +45,8 @@ public class Gala.Zoom : Object {
 
         if (mouse_poll_timer > 0) {
             Source.remove (mouse_poll_timer);
+            mouse_poll_timer = 0;
         }
-        mouse_poll_timer = 0;
     }
 
     [CCode (instance_pos = -1)]
@@ -141,16 +141,16 @@ public class Gala.Zoom : Object {
 
         if (wins_handler_id > 0) {
             wins.disconnect (wins_handler_id);
+            wins_handler_id = 0;
         }
-        wins_handler_id = 0;
 
         if (current_zoom <= MIN_ZOOM) {
             current_zoom = MIN_ZOOM;
 
             if (mouse_poll_timer > 0) {
                 Source.remove (mouse_poll_timer);
+                mouse_poll_timer = 0;
             }
-            mouse_poll_timer = 0;
 
             wins.save_easing_state ();
             wins.set_easing_mode (Clutter.AnimationMode.EASE_OUT_CUBIC);
