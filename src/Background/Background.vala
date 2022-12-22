@@ -36,6 +36,9 @@ namespace Gala {
         Cancellable cancellable;
         uint update_animation_timeout_id = 0;
 
+        private Gnome.WallClock clock;
+        private ulong clock_timezone_handler = 0;
+
         public Background (Meta.Display display, int monitor_index, string? filename,
                 BackgroundSource background_source, GDesktop.BackgroundStyle style) {
             Object (display: display,
@@ -54,6 +57,13 @@ namespace Gala {
 
             background_source.changed.connect (settings_changed);
 
+            clock = new Gnome.WallClock ();
+            clock_timezone_handler = clock.notify["timezone"].connect (() => {
+                if (animation != null) {
+                    load_animation.begin (animation.filename);
+                }
+            });
+
             load ();
         }
 
@@ -68,6 +78,10 @@ namespace Gala {
             }
 
             background_source.changed.disconnect (settings_changed);
+
+            if (clock_timezone_handler != 0) {
+                clock.disconnect (clock_timezone_handler);
+            }
         }
 
         public void update_resolution () {

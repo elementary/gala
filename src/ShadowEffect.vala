@@ -159,5 +159,18 @@ namespace Gala {
 
             return bounding_box;
         }
+
+        public override bool modify_paint_volume (Clutter.PaintVolume volume) {
+            var size = shadow_size * scale_factor;
+            volume.set_width (volume.get_width () + size * 2);
+            volume.set_height (volume.get_height () + size * 2);
+
+            var origin = volume.get_origin ();
+            origin.x -= size;
+            origin.y -= size;
+            volume.set_origin (origin);
+
+            return true;
+        }
     }
 }
