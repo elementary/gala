@@ -2,7 +2,7 @@
  * Copyright 2022 elementary, Inc. (https://elementary.io)
  * Copyright 2013 Tom Beckmann
  * Copyright 2013 Rico Tzschichholz
- * SPDX-License-Identifier: LGPL-3.0-or-later
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 public class Gala.Zoom : Object {
