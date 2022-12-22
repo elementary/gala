@@ -147,7 +147,7 @@ public class Gala.Zoom : Object {
         if (current_zoom <= MIN_ZOOM) {
             current_zoom = MIN_ZOOM;
 
-            if (mouse_poll_timer > 0)  {
+            if (mouse_poll_timer > 0) {
                 Source.remove (mouse_poll_timer);
             }
             mouse_poll_timer = 0;
