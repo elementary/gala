@@ -24,6 +24,11 @@ namespace Gala {
      */
     class FramedBackground : BackgroundManager {
         private Cogl.Pipeline pipeline;
+        private Cairo.ImageSurface cached_surface;
+        private Cairo.Context cached_context;
+        private Cogl.Texture2D cached_texture;
+        private int last_width;
+        private int last_height;
 
         public FramedBackground (Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
@@ -44,9 +49,18 @@ namespace Gala {
         public override void paint (Clutter.PaintContext context) {
             base.paint (context);
 
-            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int) width, (int) height);
+            if (cached_surface == null || last_width != (int) width || last_height != (int) height) {
+                cached_texture = null;
 
-            var ctx = new Cairo.Context (surface);
+                cached_surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, (int) width, (int) height);
+                cached_context = new Cairo.Context (cached_surface);
+                last_width = (int) width;
+                last_height = (int) height;
+            }
+
+            var surface = cached_surface;
+            var ctx = cached_context;
+
             ctx.set_source_rgba (255, 255, 255, 255);
             ctx.rectangle (0, 0, (int) width, (int) height);
             ctx.set_operator (Cairo.Operator.SOURCE);
@@ -55,14 +69,17 @@ namespace Gala {
             ctx.paint ();
 
             try {
-                var texture = new Cogl.Texture2D.from_data (
-                    context.get_framebuffer ().get_context (),
-                    (int) width, (int) height,
-                    Cogl.PixelFormat.BGRA_8888_PRE,
-                    surface.get_stride (), surface.get_data ()
-                );
+                if (cached_texture == null) {
+                    var texture = new Cogl.Texture2D.from_data (
+                        context.get_framebuffer ().get_context (),
+                        (int) width, (int) height,
+                        Cogl.PixelFormat.BGRA_8888_PRE,
+                        surface.get_stride (), surface.get_data ()
+                    );
 
-                pipeline.set_layer_texture (0, texture);
+                    pipeline.set_layer_texture (0, texture);
+                    cached_texture = texture;
+                }
             } catch (Error e) {
                 debug (e.message);
             }
