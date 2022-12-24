@@ -430,8 +430,8 @@ public class Gala.WindowClone : Clutter.Actor {
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
             -ACTIVE_SHAPE_SIZE,
-            outer_rect.width + ACTIVE_SHAPE_SIZE * 2,
-            outer_rect.height + ACTIVE_SHAPE_SIZE * 2
+            outer_rect.width * scale_factor + ACTIVE_SHAPE_SIZE,
+            outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
         };
 #if HAS_MUTTER338
         active_shape.allocate (shape_alloc);
@@ -899,10 +899,7 @@ public class Gala.WindowClone : Clutter.Actor {
             cr.paint ();
             cr.restore ();
 
-            var corrected_width = ((float) width - ACTIVE_SHAPE_SIZE * 2) * scale_factor;
-            var corrected_height = ((float) height - ACTIVE_SHAPE_SIZE * 2) * scale_factor;
-
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, corrected_width + ACTIVE_SHAPE_SIZE, corrected_height + ACTIVE_SHAPE_SIZE, border_radius);
+            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 
