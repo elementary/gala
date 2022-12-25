@@ -368,8 +368,10 @@ namespace Gala {
                 workspace_clone.restore_easing_state ();
             }
 
+            workspaces.save_easing_state ();
             workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
             workspaces.x = -active_x;
+            workspaces.restore_easing_state ();
 
             reposition_icon_groups (animate);
         }
