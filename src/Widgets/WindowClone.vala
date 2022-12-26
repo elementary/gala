@@ -825,7 +825,7 @@ public class Gala.WindowClone : Clutter.Actor {
         public unowned Meta.Window window { get; construct; }
 
         public WindowShadowEffect (Meta.Window window, int shadow_size) {
-            Object (window: window, shadow_size: shadow_size);
+            Object (window: window, shadow_size: shadow_size, css_class: "window-clone");
         }
 
         public override Clutter.ActorBox get_bounding_box () {
