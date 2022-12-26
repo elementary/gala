@@ -168,7 +168,15 @@ namespace Gala {
             open_dialogs.add (this);
         }
 
+        private void remove_timeout () {
+            if (timeout_id > 0) {
+                Source.remove (timeout_id);
+                timeout_id = 0;
+            }
+        }
+
         public new void show () {
+            remove_timeout ();
             timeout_id = Timeout.add(5000, () => {
                 window.check_alive (window.get_display ().get_current_time_roundtrip());
                 return Source.CONTINUE;
@@ -182,10 +190,7 @@ namespace Gala {
         }
 
         public void hide () {
-            if (timeout_id > 0) {
-                Source.remove (timeout_id);
-                timeout_id = 0;
-            }
+            remove_timeout ();
 
             close ();
         }
@@ -212,7 +217,8 @@ namespace Gala {
                 portal.access_dialog.end (res, out ret);
             } catch (Error e) {
                 warning (e.message);
-                // TODO
+                
+                remove_timeout ();
             }
 
             // calling `response ()` doesn't seem to work
