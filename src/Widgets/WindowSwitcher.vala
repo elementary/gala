@@ -56,7 +56,8 @@ namespace Gala {
             create_components ();
 
             var effect = new ShadowEffect (30) {
-                shadow_opacity = 200
+                shadow_opacity = 200,
+                css_class = "workspace"
             };
 
             add_effect (effect);
