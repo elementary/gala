@@ -119,6 +119,8 @@ namespace Gala {
     }
 
     public class CloseDialog : AccessDialog, Meta.CloseDialog {
+        private const int ALIVE_TIMEOUT = 5000;
+
         public Meta.Window window {
             owned get { return parent; }
             construct { parent = value; }
@@ -174,7 +176,7 @@ namespace Gala {
 
         public new void show () {
             remove_timeout ();
-            timeout_id = Timeout.add (5000, () => {
+            timeout_id = Timeout.add (ALIVE_TIMEOUT, () => {
                 window.check_alive (window.get_display ().get_current_time_roundtrip ());
                 return Source.CONTINUE;
             });
