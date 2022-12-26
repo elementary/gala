@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2014 Gala Developers
+ *  Copyright 2014 Gala Developers
+ *  Copyright 2022 elementary, Inc. (https://elementary.io)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,14 +30,6 @@
 }
 
 .decoration {
-    border-radius: 4px 4px 0 0;
-    box-shadow:
-        0 0 0 1px alpha(#000, 0.3),
-        0 14px 20px rgba(0, 0, 0, 0.35),
-        0 10px 10px rgba(0, 0, 0, 0.22);
-}
-
-.workspace.decoration {
     border-radius: 4px;
     box-shadow:
         0 0 0 1px alpha(#000, 0.2),
