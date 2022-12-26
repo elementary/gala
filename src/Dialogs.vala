@@ -123,6 +123,7 @@ namespace Gala {
             owned get { return parent; }
             construct { parent = value; }
         }
+        private uint timeout_id = 0;
 
         public static Gee.Set<CloseDialog> open_dialogs = new Gee.HashSet<CloseDialog> ();
 
@@ -141,6 +142,11 @@ namespace Gala {
         }
 
         ~CloseDialog () {
+            if (timeout_id > 0) {
+                Source.remove (timeout_id);
+                timeout_id = 0;
+            }
+
             open_dialogs.remove (this);
         }
 
@@ -163,14 +169,24 @@ namespace Gala {
         }
 
         public new void show () {
+            timeout_id = Timeout.add(5000, () => {
+                window.check_alive (window.get_display ().get_current_time_roundtrip());
+                return Source.CONTINUE;
+            });
+
             if (path != null) {
                 focus ();
+            } else {
+                base.show ();
             }
-
-            base.show ();
         }
 
         public void hide () {
+            if (timeout_id > 0) {
+                Source.remove (timeout_id);
+                timeout_id = 0;
+            }
+
             close ();
         }
 
@@ -196,6 +212,7 @@ namespace Gala {
                 portal.access_dialog.end (res, out ret);
             } catch (Error e) {
                 warning (e.message);
+                // TODO
             }
 
             // calling `response ()` doesn't seem to work
