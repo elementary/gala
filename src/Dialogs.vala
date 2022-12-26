@@ -142,10 +142,7 @@ namespace Gala {
         }
 
         ~CloseDialog () {
-            if (timeout_id > 0) {
-                Source.remove (timeout_id);
-                timeout_id = 0;
-            }
+            remove_timeout ();
 
             open_dialogs.remove (this);
         }
