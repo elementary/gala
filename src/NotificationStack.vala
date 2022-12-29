@@ -108,7 +108,10 @@ public class Gala.NotificationStack : Object {
         var y = stack_y + TOP_OFFSET + add_y + ADDITIONAL_MARGIN * scale;
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
-        foreach (var actor in notifications) {
+        var iterator = 0;
+        // Need to iterate like this since we might be removing entries
+        while (notifications.size > iterator) {
+            var actor = notifications.get (iterator);
             if (animate) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
@@ -127,7 +130,19 @@ public class Gala.NotificationStack : Object {
             actor.set_data<Clutter.Transition?> (TRANSITION_MOVE_STACK_ID, transition);
 
             unowned Meta.Window window = actor.get_meta_window ();
+            if (window == null) {
+                // Mutter doesn't let us know when a window is closed if a workspace
+                // transition is in progress. I'm not really sure why, but what this
+                // means is that we have to remove the notification from the stack
+                // manually.
+                // See https://github.com/GNOME/mutter/blob/3.36.9/src/compositor/meta-window-actor.c#L882
+                notifications.remove (actor);
+                warning ("NotificationStack: Notification window was null (probably removed during workspace transition?)");
+                continue;
+            }
+
             y += window.get_frame_rect ().height;
+            iterator++;
         }
     }
 
