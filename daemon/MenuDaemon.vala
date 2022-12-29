@@ -282,6 +282,8 @@ namespace Gala {
 
             screenshot_accellabel.accel_string = gala_keybind_settings.get_strv ("window-screenshot")[0];
 
+            hide_others_accellabel.accel_string = gala_keybind_settings.get_strv ("hide-others")[0];
+
             close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
             if (close.visible) {
                 close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];

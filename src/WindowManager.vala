@@ -261,6 +261,9 @@ namespace Gala {
             display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
 #endif
 
+            var gala_keybinding_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
+            display.add_keybinding ("hide-others", gala_keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_hide_others);
+
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
             });
@@ -479,6 +482,12 @@ namespace Gala {
                     screenshot_current_window.begin (true);
                     break;
             }
+        }
+
+        [CCode (instance_pos = -1)]
+        void handle_hide_others (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            perform_action (Gala.ActionType.HIDE_OTHERS);
         }
 
         private void on_gesture_detected (Gesture gesture) {
