@@ -10,7 +10,26 @@
   <description>
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
+
   <releases>
+    <release version="6.4.0" date="2023-01-03" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Reload animated wallpapers when timezone changes</li>
+          <li>Fix awkward two-finger scroll in multitasking view</li>
+          <li>Improve multitasking view animation performance</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1456">Crash when receiving notifications</issue>
+        <issue url="https://github.com/elementary/gala/issues/1443">Window switcher shadow persists until overdrawn</issue>
+        <issue url="https://github.com/elementary/gala/issues/1484">Quickly zooming in and out breaks zoom</issue>
+        <issue url="https://github.com/elementary/gala/issues/1481">Slow workspace switching animation in Multitasking View</issue>
+      </issues>
+    </release>
+
     <release version="6.3.3" date="2022-10-16" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -60,6 +79,7 @@
         </ul>
       </description>
     </release>
+
     <release version="6.3.0" date="2021-11-23" urgency="medium">
       <description>
         <p>Fixes:</p>
@@ -76,98 +96,8 @@
         </ul>
       </description>
     </release>
-    <release version="6.2.1" date="2021-09-29" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Fix a potential crash when taking screenshots</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="6.2.0" date="2021-09-22" urgency="medium">
-      <description>
-        <p>New features:</p>
-        <ul>
-          <li>Stash the picture-in-picture window by pushing it off screen</li>
-        </ul>
-        <p>Improvements:</p>
-        <ul>
-          <li>Fix a potential crash while changing wallpapers</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="6.0.1" date="2021-08-11" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Include window decorations in screenshots for server-side decorated windows</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="6.0.0" date="2021-07-14" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Add multitouch gestures</li>
-          <li>Show window titles in multitasking view</li>
-          <li>Close the Alt + Tab switcher by pressing Esc without releasing Alt</li>
-          <li>Increase maximum zoom level and provide feedback when unable to zoom</li>
-          <li>Show a context menu when secondary clicking the background</li>
-          <li>New Dwell Click and Locate Pointer animations</li>
-          <li>Add Take Screenshot to window context menu</li>
-          <li>Always play shutter sound when taking screenshots</li>
-          <li>Minor visual improvements</li>
-          <li>HiDPI fixes</li>
-          <li>Performance improvements</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="3.3.2" date="2020-04-30" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Fix “Always on Visible Workspace” windows disappearing when changing workspaces</li>
-          <li>Fix windows on non-primary displays disappearing when changing workspaces</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="3.3.1" date="2020-04-25" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Fix crash when changing workspaces while a transient window is opening</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="3.3.0" date="2020-04-02" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Don't show Gala Background Services in the dock</li>
-          <li>Fixes for media key handling</li>
-          <li>Show keyboard shortcuts in HeaderBar menus</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-    <release version="3.2.0" date="2020-01-07" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Improve window shadows for legacy apps</li>
-          <li>Fix potential crash when taking screenshots</li>
-          <li>Fix notification position after changing DPI</li>
-          <li>Fix animations for moving and maximizing tiled windows</li>
-        </ul>
-      </description>
-    </release>
   </releases>
+
   <compulsory_for_desktop>Pantheon</compulsory_for_desktop>
   <developer_name>elementary, Inc.</developer_name>
   <url type="homepage">https://elementary.io</url>
