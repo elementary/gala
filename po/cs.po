@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-10-14 17:58+0000\n"
+"POT-Creation-Date: 2023-01-03 20:36+0000\n"
 "PO-Revision-Date: 2022-01-11 03:35+0000\n"
 "Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
@@ -148,217 +148,104 @@ msgstr ""
 "Správce oken a kompozice založený na libmutter a navržený elementary pro "
 "použití s Pantheon."
 
-#: data/gala.appdata.xml.in:16 data/gala.appdata.xml.in:33
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:69
-#: data/gala.appdata.xml.in:81 data/gala.appdata.xml.in:94
-#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
-#: data/gala.appdata.xml.in:131 data/gala.appdata.xml.in:141
-#: data/gala.appdata.xml.in:150 data/gala.appdata.xml.in:161
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:89
 msgid "Improvements:"
 msgstr "Vylepšení:"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:36
-#: data/gala.appdata.xml.in:59 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:106 data/gala.appdata.xml.in:125
-#: data/gala.appdata.xml.in:135 data/gala.appdata.xml.in:144
-#: data/gala.appdata.xml.in:155
+#: data/gala.appdata.xml.in:19
+msgid "Reload animated wallpapers when timezone changes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+#, fuzzy
+#| msgid "Show window titles in multitasking view"
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
+
+#: data/gala.appdata.xml.in:21
+msgid "Improve multitasking view animation performance"
+msgstr ""
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "Aktualizovány překlady"
 
-#: data/gala.appdata.xml.in:29 data/gala.appdata.xml.in:47
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:85
 msgid "Fixes:"
 msgstr "Opravy:"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:54
 #, fuzzy
 #| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for force quit"
 msgstr "Použit přístup portálu pro zobrazení dialogu potvrzení nastavení"
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:68
 #, fuzzy
 #| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
 msgstr "Průhlednost oken umístěných v pozadí přepínače aplikací."
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:69
 #, fuzzy
 #| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
 msgstr "Průhlednost oken umístěných v pozadí přepínače aplikací."
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:70
 msgid "Prevent potential crashes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:52
+#: data/gala.appdata.xml.in:71
 msgid "Resize workspaces when displays change"
 msgstr ""
 
-#: data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:72
 msgid "Handle windows with no title"
 msgstr ""
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:76
 #, fuzzy
 #| msgid "Use access portal for display settings confirmation dialog"
 msgid "Use access portal for display settings confirmation"
 msgstr "Použit přístup portálu pro zobrazení dialogu potvrzení nastavení"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:77
 #, fuzzy
 #| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
 msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:87
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr "Opraveno ořezávání stínování u oken orámovaných na straně serveru"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:91
 msgid "Support for high-resolution scroll events"
 msgstr "Podpora pro jemné posouvání"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:92
 msgid "Redesigned Alt + Tab switcher"
 msgstr "Předělaný přepínač Alt+Tab"
 
-#: data/gala.appdata.xml.in:73
+#: data/gala.appdata.xml.in:93
 msgid "Dim the parents of modal dialogs"
 msgstr "Ztmavení nadřazených oken modálních dialogů"
 
-#: data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:94
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr "Dialogy odpadnou na nadřazené namísto jejich odstřelení"
 
-#: data/gala.appdata.xml.in:83
-msgid "Fix a potential crash when taking screenshots"
-msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
-
-#: data/gala.appdata.xml.in:90
-msgid "New features:"
-msgstr "Nové funkce:"
-
-#: data/gala.appdata.xml.in:92
-msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr "Stash okno obraz-v-obraze vytlačením mimo obrazovku"
-
-#: data/gala.appdata.xml.in:96
-msgid "Fix a potential crash while changing wallpapers"
-msgstr "Opraveny potenciální pády při změně pozadí plochy"
-
-#: data/gala.appdata.xml.in:105
-msgid ""
-"Include window decorations in screenshots for server-side decorated windows"
-msgstr ""
-"V případě oken orámovaných na straně serveru zahrnout při pořizování snímku "
-"i tato orámování"
-
-#: data/gala.appdata.xml.in:114
-msgid "Add multitouch gestures"
-msgstr "Přidána vícedotyková gesta"
-
-#: data/gala.appdata.xml.in:115
-msgid "Show window titles in multitasking view"
-msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
-
-#: data/gala.appdata.xml.in:116
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr "Zavření přepínače Alt+Tab stisknutím Esc bez uvolnění Alt"
-
-#: data/gala.appdata.xml.in:117
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
-"Zvýšit úroveň maximálního přiblížení a poskytnout zpětnou vazbu, když není "
-"možné přiblížit"
-
-#: data/gala.appdata.xml.in:118
-msgid "Show a context menu when secondary clicking the background"
-msgstr "Při kliknutí pravým tlačítkem na pozadí zobrazit kontextovou nabídku"
-
-#: data/gala.appdata.xml.in:119
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr "Nové animace Prodlévající kliknutí a Najít ukazatel"
-
-#: data/gala.appdata.xml.in:120
-msgid "Add Take Screenshot to window context menu"
-msgstr "Do kontextové nabídky okna přidáno pořízení snímku obrazovky"
-
-#: data/gala.appdata.xml.in:121
-msgid "Always play shutter sound when taking screenshots"
-msgstr "Při pořizování snímků obrazovky vždy přehrát zvuk závěrky fotoaparátu"
-
-#: data/gala.appdata.xml.in:122
-msgid "Minor visual improvements"
-msgstr "Drobná vylepšení vzhledu"
-
-#: data/gala.appdata.xml.in:123
-msgid "HiDPI fixes"
-msgstr "Opravy ohledně ultra vysokých rozlišení (HiDPI)"
-
-#: data/gala.appdata.xml.in:124
-msgid "Performance improvements"
-msgstr "Zlepšení výkonu"
-
-#: data/gala.appdata.xml.in:133
-msgid ""
-"Fix “Always on Visible Workspace” windows disappearing when changing "
-"workspaces"
-msgstr ""
-"Opraveno mizení oken, které mají nastaveno „Vždy na viditelné pracovní "
-"ploše“ při přepínání mezi pracovními plochami"
-
-#: data/gala.appdata.xml.in:134
-msgid ""
-"Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
-"Opraveno mizení oken na vedlejších displejích při přepínání mezi pracovními "
-"plochami"
-
-#: data/gala.appdata.xml.in:143
-msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
-"Opraveno padání při přepínání mezi pracovními plochami v průběhu otevírání "
-"přechodných oken"
-
-#: data/gala.appdata.xml.in:152
-msgid "Don't show Gala Background Services in the dock"
-msgstr ""
-"Opraveno nechtěné zobrazování služeb Gala, spuštěných na pozadí, v doku"
-
-#: data/gala.appdata.xml.in:153
-msgid "Fixes for media key handling"
-msgstr "Opravena obsluha multimediálních kláves"
-
-#: data/gala.appdata.xml.in:154
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Zobrazovány klávesové zkratky v nabídkách titulní lišty okna"
-
-#: data/gala.appdata.xml.in:163
-msgid "Improve window shadows for legacy apps"
-msgstr "Vylepšení stínování oken pro starší aplikace"
-
-#: data/gala.appdata.xml.in:164
-msgid "Fix potential crash when taking screenshots"
-msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
-
-#: data/gala.appdata.xml.in:165
-msgid "Fix notification position after changing DPI"
-msgstr "Opravena pozice zobrazování upozorňování pro změně nastavení DPI"
-
-#: data/gala.appdata.xml.in:166
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
-"Opraveny animace pro přesouvání a maximalizaci oken, uspořádaných jako "
-"dlaždice"
-
-#: data/gala.appdata.xml.in:172
+#: data/gala.appdata.xml.in:102
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -386,6 +273,102 @@ msgstr "Náhradní spouštěč pro upozorňování ze zastaralých aplikací."
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Fix a potential crash when taking screenshots"
+#~ msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
+
+#~ msgid "New features:"
+#~ msgstr "Nové funkce:"
+
+#~ msgid "Stash the picture-in-picture window by pushing it off screen"
+#~ msgstr "Stash okno obraz-v-obraze vytlačením mimo obrazovku"
+
+#~ msgid "Fix a potential crash while changing wallpapers"
+#~ msgstr "Opraveny potenciální pády při změně pozadí plochy"
+
+#~ msgid ""
+#~ "Include window decorations in screenshots for server-side decorated "
+#~ "windows"
+#~ msgstr ""
+#~ "V případě oken orámovaných na straně serveru zahrnout při pořizování "
+#~ "snímku i tato orámování"
+
+#~ msgid "Add multitouch gestures"
+#~ msgstr "Přidána vícedotyková gesta"
+
+#~ msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+#~ msgstr "Zavření přepínače Alt+Tab stisknutím Esc bez uvolnění Alt"
+
+#~ msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+#~ msgstr ""
+#~ "Zvýšit úroveň maximálního přiblížení a poskytnout zpětnou vazbu, když "
+#~ "není možné přiblížit"
+
+#~ msgid "Show a context menu when secondary clicking the background"
+#~ msgstr ""
+#~ "Při kliknutí pravým tlačítkem na pozadí zobrazit kontextovou nabídku"
+
+#~ msgid "New Dwell Click and Locate Pointer animations"
+#~ msgstr "Nové animace Prodlévající kliknutí a Najít ukazatel"
+
+#~ msgid "Add Take Screenshot to window context menu"
+#~ msgstr "Do kontextové nabídky okna přidáno pořízení snímku obrazovky"
+
+#~ msgid "Always play shutter sound when taking screenshots"
+#~ msgstr ""
+#~ "Při pořizování snímků obrazovky vždy přehrát zvuk závěrky fotoaparátu"
+
+#~ msgid "Minor visual improvements"
+#~ msgstr "Drobná vylepšení vzhledu"
+
+#~ msgid "HiDPI fixes"
+#~ msgstr "Opravy ohledně ultra vysokých rozlišení (HiDPI)"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Zlepšení výkonu"
+
+#~ msgid ""
+#~ "Fix “Always on Visible Workspace” windows disappearing when changing "
+#~ "workspaces"
+#~ msgstr ""
+#~ "Opraveno mizení oken, které mají nastaveno „Vždy na viditelné pracovní "
+#~ "ploše“ při přepínání mezi pracovními plochami"
+
+#~ msgid ""
+#~ "Fix windows on non-primary displays disappearing when changing workspaces"
+#~ msgstr ""
+#~ "Opraveno mizení oken na vedlejších displejích při přepínání mezi "
+#~ "pracovními plochami"
+
+#~ msgid ""
+#~ "Fix crash when changing workspaces while a transient window is opening"
+#~ msgstr ""
+#~ "Opraveno padání při přepínání mezi pracovními plochami v průběhu "
+#~ "otevírání přechodných oken"
+
+#~ msgid "Don't show Gala Background Services in the dock"
+#~ msgstr ""
+#~ "Opraveno nechtěné zobrazování služeb Gala, spuštěných na pozadí, v doku"
+
+#~ msgid "Fixes for media key handling"
+#~ msgstr "Opravena obsluha multimediálních kláves"
+
+#~ msgid "Show keyboard shortcuts in HeaderBar menus"
+#~ msgstr "Zobrazovány klávesové zkratky v nabídkách titulní lišty okna"
+
+#~ msgid "Improve window shadows for legacy apps"
+#~ msgstr "Vylepšení stínování oken pro starší aplikace"
+
+#~ msgid "Fix potential crash when taking screenshots"
+#~ msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
+
+#~ msgid "Fix notification position after changing DPI"
+#~ msgstr "Opravena pozice zobrazování upozorňování pro změně nastavení DPI"
+
+#~ msgid "Fix animations for moving and maximizing tiled windows"
+#~ msgstr ""
+#~ "Opraveny animace pro přesouvání a maximalizaci oken, uspořádaných jako "
+#~ "dlaždice"
 
 #~ msgid "multitasking-view"
 #~ msgstr "multitasking-view"
