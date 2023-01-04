@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-03 20:36+0000\n"
-"PO-Revision-Date: 2022-08-08 11:29+0000\n"
+"PO-Revision-Date: 2023-01-05 18:25+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -157,17 +157,15 @@ msgstr "改善点:"
 
 #: data/gala.appdata.xml.in:19
 msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
+msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "“マルチタスク画面”でウィンドウのタイトルを表示するように変更"
+msgstr "マルチタスク画面での2本指スクロールの挙動が滑らかになるように修正"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "マルチタスク画面のアニメーションパフォーマンスを改善"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
