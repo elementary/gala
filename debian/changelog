@@ -1,3 +1,9 @@
+gala (7.0.0) jammy; urgency=medium
+
+  * New upstream release
+
+ -- Danielle Foré <danielle@elementary.io>  Thu, 05 Jan 2023 13:37:39 -0800
+
 gala (6.3.3) focal; urgency=medium
 
   * Release 6.3.3 (#1480)
