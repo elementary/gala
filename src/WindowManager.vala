@@ -1632,14 +1632,14 @@ namespace Gala {
                     old_actor.destroy ();
                 });
 
-                actor.set_pivot_point (0.5f, 0.5f);
-                actor.set_position (-ex + offset_x * (1.0f / scale_x - 1.0f) + actor.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + actor.y);
+                actor.set_translation (-ex + old_rect_size_change.x, -ey + old_rect_size_change.y, 0.0f);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 actor.set_easing_duration (duration);
                 actor.set_scale (1.0f, 1.0f);
+                actor.set_translation (0.0f, 0.0f, 0.0f);
                 actor.restore_easing_state ();
 
                 ulong handler_id = 0UL;
