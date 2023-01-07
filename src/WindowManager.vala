@@ -1593,23 +1593,18 @@ namespace Gala {
             }
 
             if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y, offset_width, offset_height;
+                float offset_x, offset_y;
                 var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
                 if (unmaximized_window_geometry != null) {
                     offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
                     offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-                    offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
-                    offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
                 } else {
                     offset_x = 0;
                     offset_y = 0;
-                    offset_width = 0;
-                    offset_height = 0;
                 }
 
-                Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
+                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect_size_change, old_rect_size_change);
 
                 if (old_actor == null) {
                     return;
@@ -1617,19 +1612,18 @@ namespace Gala {
 
                 unmaximizing.add (actor);
 
-                old_actor.set_position (old_rect.x, old_rect.y);
-
+                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
                 ui_group.add_child (old_actor);
 
-                var scale_x = (float) ew / old_rect.width;
-                var scale_y = (float) eh / old_rect.height;
+                var scale_x = (float) ew / old_rect_size_change.width;
+                var scale_y = (float) eh / old_rect_size_change.height;
 
                 old_actor.save_easing_state ();
                 old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 old_actor.set_easing_duration (duration);
-                old_actor.set_position (ex, ey);
+                old_actor.set_position (ex + offset_x, ey + offset_y);
                 old_actor.set_scale (scale_x, scale_y);
-                old_actor.opacity = 0U;
+                old_actor.opacity = 0;
                 old_actor.restore_easing_state ();
 
                 ulong unmaximize_old_handler_id = 0UL;
@@ -1638,18 +1632,14 @@ namespace Gala {
                     old_actor.destroy ();
                 });
 
-                var maximized_x = actor.x;
-                var maximized_y = actor.y;
-                actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_position (ex, ey);
-                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + maximized_x, -ey + offset_y * (1.0f / scale_y - 1.0f) + maximized_y, 0.0f);
+                actor.set_pivot_point (0.5f, 0.5f);
+                actor.set_position (-ex + offset_x * (1.0f / scale_x - 1.0f) + actor.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + actor.y);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 actor.set_easing_duration (duration);
                 actor.set_scale (1.0f, 1.0f);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
                 actor.restore_easing_state ();
 
                 ulong handler_id = 0UL;
