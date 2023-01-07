@@ -1579,7 +1579,7 @@ namespace Gala {
         }
 
         void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            var duration = AnimationDuration.SNAP;
+            var duration = 3000;
             if (!enable_animations
                 || duration == 0) {
                 return;
@@ -1593,15 +1593,19 @@ namespace Gala {
             }
 
             if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y;
+                float offset_x, offset_y, offset_width, offset_height;
                 var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
                 if (unmaximized_window_geometry != null) {
                     offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
                     offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
+                    offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
+                    offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
                 } else {
                     offset_x = 0;
                     offset_y = 0;
+                    offset_width = 0;
+                    offset_height = 0;
                 }
 
                 var old_actor = Utils.get_window_actor_snapshot (actor, old_rect_size_change, old_rect_size_change);
@@ -1612,16 +1616,16 @@ namespace Gala {
 
                 unmaximizing.add (actor);
 
-                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
                 ui_group.add_child (old_actor);
-
+                
                 var scale_x = (float) ew / old_rect_size_change.width;
-                var scale_y = (float) eh / old_rect_size_change.height;
+                var scale_y = (float) eh / old_rect_size_change.height;                
+                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
                 old_actor.save_easing_state ();
                 old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 old_actor.set_easing_duration (duration);
-                old_actor.set_position (ex + offset_x, ey + offset_y);
+                old_actor.set_position (ex, ey);
                 old_actor.set_scale (scale_x, scale_y);
                 old_actor.opacity = 0;
                 old_actor.restore_easing_state ();
@@ -1632,7 +1636,7 @@ namespace Gala {
                     old_actor.destroy ();
                 });
 
-                actor.set_translation (-ex + old_rect_size_change.x, -ey + old_rect_size_change.y, 0.0f);
+                actor.set_translation (-ex + + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();
