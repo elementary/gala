@@ -1579,7 +1579,7 @@ namespace Gala {
         }
 
         void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            var duration = 3000;
+            var duration = AnimationDuration.SNAP;
             if (!enable_animations
                 || duration == 0) {
                 return;
@@ -1627,7 +1627,7 @@ namespace Gala {
                 old_actor.set_easing_duration (duration);
                 old_actor.set_position (ex, ey);
                 old_actor.set_scale (scale_x, scale_y);
-                old_actor.opacity = 0;
+                old_actor.opacity = 0U;
                 old_actor.restore_easing_state ();
 
                 ulong unmaximize_old_handler_id = 0UL;
@@ -1636,7 +1636,7 @@ namespace Gala {
                     old_actor.destroy ();
                 });
 
-                actor.set_translation (-ex + + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
+                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();
