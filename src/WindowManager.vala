@@ -1616,7 +1616,7 @@ namespace Gala {
 
                 // Move window in bounds of screens if it was out of bounds before maximizing
                 // FIXME: This is OS 7 (Mutter 42) specific thing, this was not needed in OS 6
-                float end_x = ex;   
+                float end_x = ex;
                 float end_y = ey;
                 if (ex < offset_x) {
                     end_x = 0;
