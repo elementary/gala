@@ -1614,18 +1614,33 @@ namespace Gala {
                     return;
                 }
 
+                // Move window in bounds of screens if it was out of bounds before maximizing
+                // FIXME: This is OS 7 (Mutter 42) specific thing, this was not needed in OS 6
+                float end_x = ex;   
+                float end_y = ey;
+                if (ex < offset_x) {
+                    end_x = 0;
+                } else if (ex + ew > old_rect_size_change.x + old_rect_size_change.width) {
+                    end_x = old_rect_size_change.x + old_rect_size_change.width - ew;
+                }
+                if (ey < offset_y) {
+                    end_y = 0;
+                } else if (ey + eh > old_rect_size_change.y + old_rect_size_change.height) {
+                    end_y = old_rect_size_change.y + old_rect_size_change.height - eh;
+                }
+                actor.meta_window.move_frame (true, (int) end_x, (int) end_y);
+
                 unmaximizing.add (actor);
 
                 ui_group.add_child (old_actor);
-                
-                var scale_x = (float) ew / old_rect_size_change.width;
-                var scale_y = (float) eh / old_rect_size_change.height;                
-                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
+                var scale_x = (float) ew / old_rect_size_change.width;
+                var scale_y = (float) eh / old_rect_size_change.height;
+                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
                 old_actor.save_easing_state ();
                 old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 old_actor.set_easing_duration (duration);
-                old_actor.set_position (ex, ey);
+                old_actor.set_position (end_x, end_y);
                 old_actor.set_scale (scale_x, scale_y);
                 old_actor.opacity = 0U;
                 old_actor.restore_easing_state ();
