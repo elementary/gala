@@ -103,7 +103,8 @@ namespace Gala {
         Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
         GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         Meta.SizeChange? which_change = null;
-        Meta.Rectangle old_rect_size_change;
+        Meta.Rectangle old_frame_rect_change;
+        Meta.Rectangle old_buffer_rect_change;
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
@@ -1083,7 +1084,8 @@ namespace Gala {
         // as which_change is not passed to size_changed, save it as instance variable
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
             which_change = which_change_local;
-            old_rect_size_change = old_frame_rect;
+            old_frame_rect_change = old_frame_rect;
+            old_buffer_rect_change = old_buffer_rect;
         }
 
         // size_changed gets called after frame_rect has updated
@@ -1102,11 +1104,11 @@ namespace Gala {
                 case Meta.SizeChange.MAXIMIZE:
                     // don't animate resizing of two tiled windows with mouse drag
                     if (window.get_tile_match () != null && !window.maximized_horizontally) {
-                        var old_end = old_rect_size_change.x + old_rect_size_change.width;
+                        var old_end = old_frame_rect_change.x + old_frame_rect_change.width;
                         var new_end = new_rect.x + new_rect.width;
 
                         // a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
-                        if (old_rect_size_change.x == new_rect.x || old_end == new_end) {
+                        if (old_frame_rect_change.x == new_rect.x || old_end == new_end) {
                             break;
                         }
                     }
@@ -1593,75 +1595,66 @@ namespace Gala {
             }
 
             if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y, offset_width, offset_height;
+                float offset_x, offset_y;
                 var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
                 if (unmaximized_window_geometry != null) {
                     offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
                     offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-                    offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
-                    offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
                 } else {
                     offset_x = 0;
                     offset_y = 0;
-                    offset_width = 0;
-                    offset_height = 0;
                 }
-
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect_size_change, old_rect_size_change);
-
-                if (old_actor == null) {
-                    return;
-                }
-
-                // Move window in bounds of screens if it was out of bounds before maximizing
-                // FIXME: This is OS 7 (Mutter 42) specific thing, this was not needed in OS 6
-                float end_x = ex;
-                float end_y = ey;
-                if (ex < offset_x) {
-                    end_x = 0;
-                } else if (ex + ew > old_rect_size_change.x + old_rect_size_change.width) {
-                    end_x = old_rect_size_change.x + old_rect_size_change.width - ew;
-                }
-                if (ey < offset_y) {
-                    end_y = 0;
-                } else if (ey + eh > old_rect_size_change.y + old_rect_size_change.height) {
-                    end_y = old_rect_size_change.y + old_rect_size_change.height - eh;
-                }
-                actor.meta_window.move_frame (true, (int) end_x, (int) end_y);
 
                 unmaximizing.add (actor);
 
+                // FIXME: Gtk windows don't want to go out of bounds of screen when unmaximizing, so place them manually
+                // This is OS 7 (Mutter 42) specific, this was not needed in OS 6
+                window.move_frame (true, ex, ey);
+
+                var old_actor = Utils.get_window_actor_snapshot (actor, old_frame_rect_change, old_buffer_rect_change);
+                if (old_actor == null) {
+                    return;
+                }
                 ui_group.add_child (old_actor);
 
-                var scale_x = (float) ew / old_rect_size_change.width;
-                var scale_y = (float) eh / old_rect_size_change.height;
-                old_actor.set_position (old_rect_size_change.x, old_rect_size_change.y);
+
+                var scale_x = (float) ew / old_frame_rect_change.width;
+                var scale_y = (float) eh / old_frame_rect_change.height;
+                old_actor.set_position (old_frame_rect_change.x, old_frame_rect_change.y);
+
                 old_actor.save_easing_state ();
                 old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 old_actor.set_easing_duration (duration);
-                old_actor.set_position (end_x, end_y);
-                old_actor.set_scale (scale_x, scale_y);
-                old_actor.opacity = 0U;
+                old_actor.x = ex;
+                old_actor.y = ey;
+                old_actor.scale_x = scale_x;
+                old_actor.scale_y = scale_y;
+                old_actor.opacity = 0;
                 old_actor.restore_easing_state ();
 
-                ulong unmaximize_old_handler_id = 0UL;
+                ulong unmaximize_old_handler_id = 0;
                 unmaximize_old_handler_id = old_actor.transitions_completed.connect (() => {
                     old_actor.disconnect (unmaximize_old_handler_id);
                     old_actor.destroy ();
                 });
 
-                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
-                actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
+                actor.set_pivot_point (0.0f, 0.0f);
+                actor.translation_x = -ex + old_frame_rect_change.x + offset_x * (1.0f / scale_x - 1.0f);
+                actor.translation_y = -ey + old_frame_rect_change.y + offset_y * (1.0f / scale_y - 1.0f);
+                actor.scale_x = 1 / scale_x;
+                actor.scale_y = 1 / scale_y;
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 actor.set_easing_duration (duration);
-                actor.set_scale (1.0f, 1.0f);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
+                actor.scale_x = 1;
+                actor.scale_y = 1;
+                actor.translation_x = 0;
+                actor.translation_y = 0;
                 actor.restore_easing_state ();
 
-                ulong handler_id = 0UL;
+                ulong handler_id = 0;
                 handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (handler_id);
                     unmaximizing.remove (actor);
