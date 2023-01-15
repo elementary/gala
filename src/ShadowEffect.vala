@@ -47,7 +47,6 @@ namespace Gala {
         }
 
         public int shadow_size { get; construct; }
-        public int shadow_spread { get; construct; }
 
         public float scale_factor { get; set; default = 1; }
         public uint8 shadow_opacity { get; set; default = 255; }
@@ -56,8 +55,8 @@ namespace Gala {
         Cogl.Pipeline pipeline;
         string? current_key = null;
 
-        public ShadowEffect (int shadow_size, int shadow_spread) {
-            Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
+        public ShadowEffect (int shadow_size) {
+            Object (shadow_size: shadow_size);
         }
 
         construct {
@@ -69,9 +68,9 @@ namespace Gala {
                 decrement_shadow_users (current_key);
         }
 
-        Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread) {
+        Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
             var old_key = current_key;
-            current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
+            current_key = "%ix%i:%i".printf (width, height, shadow_size);
             if (old_key == current_key)
                 return null;
 
@@ -135,7 +134,7 @@ namespace Gala {
             var width = (int) (bounding_box.x2 - bounding_box.x1);
             var height = (int) (bounding_box.y2 - bounding_box.y1);
 
-            var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size, shadow_spread);
+            var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size);
             if (shadow != null)
                 pipeline.set_layer_texture (0, shadow);
 
@@ -161,13 +160,16 @@ namespace Gala {
         }
 
         public override bool modify_paint_volume (Clutter.PaintVolume volume) {
-            var size = shadow_size * scale_factor;
-            volume.set_width (volume.get_width () + size * 2);
-            volume.set_height (volume.get_height () + size * 2);
+            var bounding_box = get_bounding_box ();
 
+            volume.set_width (bounding_box.get_width ());
+            volume.set_height (bounding_box.get_height ());
+
+            float origin_x, origin_y;
+            bounding_box.get_origin (out origin_x, out origin_y);
             var origin = volume.get_origin ();
-            origin.x -= size;
-            origin.y -= size;
+            origin.x += origin_x;
+            origin.y += origin_y;
             volume.set_origin (origin);
 
             return true;
