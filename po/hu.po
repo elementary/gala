@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-03 20:36+0000\n"
-"PO-Revision-Date: 2022-08-12 11:27+0000\n"
+"PO-Revision-Date: 2023-01-08 00:25+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -159,17 +159,15 @@ msgstr "Újdonságok:"
 
 #: data/gala.appdata.xml.in:19
 msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
+msgstr "Animált háttérképek újratöltése az időzóna megváltozásakor"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Ablakcímek mutatása a többfeladatos nézetben"
+msgstr "Fura kétujjas görgetés javítva a többfeladatos nézetben"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "A többfeladatos nézet animációinak teljesítménye javítva"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
