@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-01-05 18:25+0000\n"
+"PO-Revision-Date: 2023-01-21 12:25+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -55,13 +55,12 @@ msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Зміни буде автоматично завернено за 30 секунд."
-msgstr[1] "Зміни буде автоматично завернено за 30 секунд."
-msgstr[2] "Зміни буде автоматично завернено за 30 секунд."
+msgstr[0] "Зміни буде автоматично відхилено за %i секунду."
+msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
+msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
