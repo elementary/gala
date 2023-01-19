@@ -2122,17 +2122,21 @@ namespace Gala {
 
         public override void confirm_display_change () {
             var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
+            var summary = ngettext (
+                "Changes will automatically revert after %i second.",
+                "Changes will automatically revert after %i seconds.",
+                timeout
+            );
             uint dialog_timeout_id = 0;
 
             var dialog = new AccessDialog (
                 _("Keep new display settings?"),
-                _("Changes will automatically revert after %i seconds.").printf (timeout),
+                summary.printf (timeout),
                 "preferences-desktop-display"
             ) {
                 accept_label = _("Keep Settings"),
                 deny_label = _("Use Previous Settings")
             };
-
 
             dialog.show.connect (() => {
                 dialog_timeout_id = Timeout.add_seconds (timeout, () => {
