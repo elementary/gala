@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2022-12-21 23:25+0000\n"
+"PO-Revision-Date: 2023-01-21 12:25+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -54,12 +54,11 @@ msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Endringer vil endes tilbake automatisk etter 30 sekunder."
-msgstr[1] "Endringer vil endes tilbake automatisk etter 30 sekunder."
+msgstr[0] "Endringer vil endes tilbake automatisk etter %i sekund."
+msgstr[1] "Endringer vil endes tilbake automatisk etter %i sekunder."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
@@ -166,17 +165,18 @@ msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:19
 msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
+msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
 
 #: data/gala.appdata.xml.in:20
 #, fuzzy
 #| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Vindustitler i fleroppgaveløsnings-visning"
+msgstr "Fiks rar to-fungerrulling i fleroppgaveløsnings-visning"
 
 #: data/gala.appdata.xml.in:21
+#, fuzzy
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "Forbedre fleroppgaveløsningsvisning av animasjonsytelse"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
