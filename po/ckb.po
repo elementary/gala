@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -53,24 +53,28 @@ msgstr "سکرینشوتەکان"
 msgid "Screenshot taken"
 msgstr "سکرینشوت کرا"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, fuzzy, c-format
+#| msgid "Changes will automatically revert after 30 seconds."
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
+msgstr[1] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "هێشتنەوەی ڕێکخستنە تازەکانی ڕونما؟"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "هێشتنەوەی ڕێکخستنەکان"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"

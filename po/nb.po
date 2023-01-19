@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
 "PO-Revision-Date: 2022-12-21 23:25+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -53,24 +53,28 @@ msgstr "Skjermavbildninger"
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, fuzzy, c-format
+#| msgid "Changes will automatically revert after 30 seconds."
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Endringer vil endes tilbake automatisk etter 30 sekunder."
+msgstr[1] "Endringer vil endes tilbake automatisk etter 30 sekunder."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "Endringer vil endes tilbake automatisk etter 30 sekunder."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "Behold innstillingene"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "Bruk de forrige innstillingene"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
