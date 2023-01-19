@@ -61,6 +61,7 @@ namespace Gala {
             Object (title: title, body: body, icon: icon);
         }
 
+        [Signal (run = "first")]
         public virtual signal void show () {
             if (portal == null) {
                 return;
