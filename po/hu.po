@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-01-08 00:25+0000\n"
+"PO-Revision-Date: 2023-01-24 20:25+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -54,12 +54,11 @@ msgid "Screenshot taken"
 msgstr "Képernyőkép mentve"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "A változások automatikusan visszaállnak 30 másodperc múlva."
-msgstr[1] "A változások automatikusan visszaállnak 30 másodperc múlva."
+msgstr[0] "A változások automatikusan visszaállnak %i másodperc múlva."
+msgstr[1] "A változások automatikusan visszaállnak %i másodperc múlva."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
