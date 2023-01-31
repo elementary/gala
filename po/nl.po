@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-01-31 18:26+0000\n"
+"PO-Revision-Date: 2023-02-02 09:25+0000\n"
 "Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -172,7 +172,7 @@ msgstr "Los onhandig twee-vinger scrollen op in multitask-weergave"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
-msgstr "prestaties van multitasking-weergave animatie verbeterd"
+msgstr "Prestaties van multitask-weergave animatie verbeterd"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
