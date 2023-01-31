@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2022-08-14 02:30+0000\n"
-"Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
+"PO-Revision-Date: 2023-01-31 18:26+0000\n"
+"Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -164,13 +164,11 @@ msgstr "Verbeteringen:"
 
 #: data/gala.appdata.xml.in:19
 msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
+msgstr "Geanimeerde achtergronden herladen wanneer de tijdzone verandert"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Toon venstertitels in het multitasking overzicht"
+msgstr "Lost onhandig twee-vinger scrollen op in multitasking-weergave"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
