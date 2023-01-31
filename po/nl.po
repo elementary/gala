@@ -172,7 +172,7 @@ msgstr "Lost onhandig twee-vinger scrollen op in multitasking-weergave"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "prestaties van multitasking-weergave animatie verbeterd"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
