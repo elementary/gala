@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-01-13 10:44+0000\n"
+"PO-Revision-Date: 2023-02-02 09:25+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
-">\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,14 +54,13 @@ msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
-"Les modifications seront automatiquement annulées au bout de 30 secondes."
+"Les modifications seront automatiquement annulées au bout de %i seconde."
 msgstr[1] ""
-"Les modifications seront automatiquement annulées au bout de 30 secondes."
+"Les modifications seront automatiquement annulées au bout de %i secondes."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
