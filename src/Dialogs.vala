@@ -1,11 +1,12 @@
 /*
- * Copyright 2021 elementary, Inc. (https://elementary.io)
+ * Copyright 2021-2023 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 namespace Gala {
     [DBus (name = "org.freedesktop.impl.portal.Access")]
     public interface AccessPortal : Object {
+        [DBus (timeout = 2147483647)] // timeout = int.MAX; value got from <limits.h>
         public abstract async void access_dialog (
             ObjectPath request_path,
             string app_id,
@@ -24,6 +25,8 @@ namespace Gala {
     }
 
     public class AccessDialog : Object {
+        public signal void response (uint response);
+
         public Meta.Window parent { owned get; construct set; }
 
         public string title { get; construct; }
@@ -31,8 +34,6 @@ namespace Gala {
         public string icon { get; construct; }
         public string accept_label { get; set; }
         public string deny_label { get; set; }
-
-        public signal void response (uint response);
 
         const string PANTHEON_PORTAL_NAME = "org.freedesktop.impl.portal.desktop.pantheon";
         const string FDO_PORTAL_PATH = "/org/freedesktop/portal/desktop";
@@ -60,6 +61,7 @@ namespace Gala {
             Object (title: title, body: body, icon: icon);
         }
 
+        [Signal (run = "first")]
         public virtual signal void show () {
             if (portal == null) {
                 return;
@@ -87,34 +89,32 @@ namespace Gala {
                 options["destructive"] = true;
             }
 
-            portal.access_dialog.begin (path, app_id, parent_handler, title, body, "", options, on_response);
+            portal.access_dialog.begin (path, app_id, parent_handler, title, body, "", options, (obj, res) => {
+                uint ret;
+
+                try {
+                    portal.access_dialog.end (res, out ret);
+                } catch (Error e) {
+                    warning (e.message);
+                    ret = 2;
+                }
+
+                on_response (ret);
+                path = null;
+            });
         }
 
         public void close () {
-            if (path != null) {
-                try {
-                    Request request = Bus.get_proxy_sync (BusType.SESSION, PANTHEON_PORTAL_NAME, path);
-                    request.close ();
-                } catch (Error e) {
-                    warning (e.message);
-                }
-
+            try {
+                Bus.get_proxy_sync<Request> (BusType.SESSION, PANTHEON_PORTAL_NAME, path).close ();
                 path = null;
+            } catch (Error e) {
+                warning (e.message);
             }
         }
 
-        protected virtual void on_response (Object? obj, AsyncResult? res) {
-            uint ret;
-
-            try {
-                portal.access_dialog.end (res, out ret);
-            } catch (Error e) {
-                warning (e.message);
-                ret = 2;
-            }
-
-            response (ret);
-            close ();
+        protected virtual void on_response (uint response_id) {
+            response (response_id);
         }
     }
 
@@ -158,27 +158,24 @@ namespace Gala {
             accept_label = _("Force Quit");
             deny_label = _("Wait");
 
-
             open_dialogs.add (this);
         }
 
-        public new void show () {
+        public override void show () {
             if (path != null) {
-                focus ();
+                return;
             }
 
             base.show ();
         }
 
         public void hide () {
-            close ();
+            if (path != null) {
+                close ();
+            }
         }
 
         public void focus () {
-            if (path == null) {
-                return;
-            }
-
             window.foreach_transient ((w) => {
                 if (w.get_role () == "AccessDialog") {
                     w.activate (w.get_display ().get_current_time ());
@@ -189,23 +186,12 @@ namespace Gala {
             });
         }
 
-        protected override void on_response (Object? obj, AsyncResult? res) {
-            uint ret = 2;
-
-            try {
-                portal.access_dialog.end (res, out ret);
-            } catch (Error e) {
-                warning (e.message);
-            }
-
-            // calling `response ()` doesn't seem to work
-            if (ret == 0) {
-                Signal.emit_by_name (this, "response", Meta.CloseDialogResponse.FORCE_CLOSE);
+        protected override void on_response (uint response_id) {
+            if (response_id == 0) {
+                base.response (Meta.CloseDialogResponse.FORCE_CLOSE);
             } else {
-                Signal.emit_by_name (this, "response", Meta.CloseDialogResponse.WAIT);
+                base.response (Meta.CloseDialogResponse.WAIT);
             }
-
-            close ();
         }
     }
 }

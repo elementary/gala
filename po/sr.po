@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-10-14 17:58+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
 "PO-Revision-Date: 2021-03-11 08:40+0000\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <https://l10n.elementary.io/projects/desktop/gala/sr/"
@@ -54,28 +54,32 @@ msgstr "Снимци екрана"
 msgid "Screenshot taken"
 msgstr "Снимци екрана"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: src/WindowManager.vala:2133
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Поставке екрана…"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Системска подешавања…"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимак екрана из „%s“"
@@ -156,215 +160,97 @@ msgstr ""
 "Композитни и управник прозора заснован на „libmutter“ и осмишљен "
 "елементаријем за коришћење са Пантеоном."
 
-#: data/gala.appdata.xml.in:16 data/gala.appdata.xml.in:33
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:69
-#: data/gala.appdata.xml.in:81 data/gala.appdata.xml.in:94
-#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
-#: data/gala.appdata.xml.in:131 data/gala.appdata.xml.in:141
-#: data/gala.appdata.xml.in:150 data/gala.appdata.xml.in:161
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:89
 msgid "Improvements:"
 msgstr "Побољшања:"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:36
-#: data/gala.appdata.xml.in:59 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:106 data/gala.appdata.xml.in:125
-#: data/gala.appdata.xml.in:135 data/gala.appdata.xml.in:144
-#: data/gala.appdata.xml.in:155
+#: data/gala.appdata.xml.in:19
+msgid "Reload animated wallpapers when timezone changes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr ""
+
+#: data/gala.appdata.xml.in:21
+msgid "Improve multitasking view animation performance"
+msgstr ""
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "Освежени преводи"
 
-#: data/gala.appdata.xml.in:29 data/gala.appdata.xml.in:47
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:85
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:54
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:68
 #, fuzzy
 msgid "Properly update accent color in the window switcher"
 msgstr "Непрозирност прозора који се налазе у позадини у алт-таб-измењивачу."
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:69
 #, fuzzy
 msgid "Fix selecting windows underneath the window switcher"
 msgstr "Непрозирност прозора који се налазе у позадини у алт-таб-измењивачу."
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:70
 msgid "Prevent potential crashes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:52
+#: data/gala.appdata.xml.in:71
 msgid "Resize workspaces when displays change"
 msgstr ""
 
-#: data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:72
 msgid "Handle windows with no title"
 msgstr ""
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:76
 msgid "Use access portal for display settings confirmation"
 msgstr ""
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:77
 msgid "Allow closing multitasking view with Super"
 msgstr ""
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:87
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr ""
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:91
 msgid "Support for high-resolution scroll events"
 msgstr ""
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:92
 msgid "Redesigned Alt + Tab switcher"
 msgstr ""
 
-#: data/gala.appdata.xml.in:73
+#: data/gala.appdata.xml.in:93
 #, fuzzy
 msgid "Dim the parents of modal dialogs"
 msgstr ""
 "Прави родитељске прозоре који израђају модално прикачено прозорче које је "
 "пригушено"
 
-#: data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:94
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr ""
 
-#: data/gala.appdata.xml.in:83
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
-msgid "Fix a potential crash when taking screenshots"
-msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
-
-#: data/gala.appdata.xml.in:90
-msgid "New features:"
-msgstr ""
-
-#: data/gala.appdata.xml.in:92
-msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
-
-#: data/gala.appdata.xml.in:96
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
-msgid "Fix a potential crash while changing wallpapers"
-msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
-
-#: data/gala.appdata.xml.in:105
-msgid ""
-"Include window decorations in screenshots for server-side decorated windows"
-msgstr ""
-
-#: data/gala.appdata.xml.in:114
-msgid "Add multitouch gestures"
-msgstr ""
-
-#: data/gala.appdata.xml.in:115
-msgid "Show window titles in multitasking view"
-msgstr ""
-
-#: data/gala.appdata.xml.in:116
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
-"Затвара Алт + Табулатор пребацивача притиском на Есц без отпуштања Алт-а"
-
-#: data/gala.appdata.xml.in:117
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
-"Повећава највећи ниво увеличања и обезбеђује повратни одговор када не може "
-"да зумира"
-
-#: data/gala.appdata.xml.in:118
-msgid "Show a context menu when secondary clicking the background"
-msgstr "Приказује приручни изборник приликом секундарног клика позадине"
-
-#: data/gala.appdata.xml.in:119
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:120
-msgid "Add Take Screenshot to window context menu"
-msgstr ""
-
-#: data/gala.appdata.xml.in:121
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
-msgid "Always play shutter sound when taking screenshots"
-msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
-
-#: data/gala.appdata.xml.in:122
-msgid "Minor visual improvements"
-msgstr ""
-
-#: data/gala.appdata.xml.in:123
-msgid "HiDPI fixes"
-msgstr ""
-
-#: data/gala.appdata.xml.in:124
-msgid "Performance improvements"
-msgstr ""
-
-#: data/gala.appdata.xml.in:133
-msgid ""
-"Fix “Always on Visible Workspace” windows disappearing when changing "
-"workspaces"
-msgstr ""
-"Поправља нестајање прозора „Увек на видљивом радном прозору“ приликом "
-"промене радних простора"
-
-#: data/gala.appdata.xml.in:134
-msgid ""
-"Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
-"Поправља нестајање прозора на не-примарним екранима приликом промене радних "
-"простора"
-
-#: data/gala.appdata.xml.in:143
-msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
-"Поправља урушавање приликом промене радних простора када је прелазни прозор "
-"у отварању"
-
-#: data/gala.appdata.xml.in:152
-msgid "Don't show Gala Background Services in the dock"
-msgstr "Не приказује услуге Гала позадине у луци"
-
-#: data/gala.appdata.xml.in:153
-msgid "Fixes for media key handling"
-msgstr "Исправке за руковање тастером медија"
-
-#: data/gala.appdata.xml.in:154
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Приказује пречице тастатуре у изборнику траке заглавља"
-
-#: data/gala.appdata.xml.in:163
-msgid "Improve window shadows for legacy apps"
-msgstr "Побољшава сенке прозора за старе програме"
-
-#: data/gala.appdata.xml.in:164
-msgid "Fix potential crash when taking screenshots"
-msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
-
-#: data/gala.appdata.xml.in:165
-msgid "Fix notification position after changing DPI"
-msgstr "Поправља положај обавештења након промене ТПИ"
-
-#: data/gala.appdata.xml.in:166
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
-"Поправља анимације за премештање и максимално увећање поплочамих прозора"
-
-#: data/gala.appdata.xml.in:172
+#: data/gala.appdata.xml.in:102
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -392,6 +278,74 @@ msgstr "Пребаците датотеку радне површи за оба�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#, fuzzy
+#~| msgid "Fix potential crash when taking screenshots"
+#~ msgid "Fix a potential crash when taking screenshots"
+#~ msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
+
+#, fuzzy
+#~| msgid "Fix potential crash when taking screenshots"
+#~ msgid "Fix a potential crash while changing wallpapers"
+#~ msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
+
+#~ msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+#~ msgstr ""
+#~ "Затвара Алт + Табулатор пребацивача притиском на Есц без отпуштања Алт-а"
+
+#~ msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+#~ msgstr ""
+#~ "Повећава највећи ниво увеличања и обезбеђује повратни одговор када не "
+#~ "може да зумира"
+
+#~ msgid "Show a context menu when secondary clicking the background"
+#~ msgstr "Приказује приручни изборник приликом секундарног клика позадине"
+
+#, fuzzy
+#~| msgid "Fix potential crash when taking screenshots"
+#~ msgid "Always play shutter sound when taking screenshots"
+#~ msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
+
+#~ msgid ""
+#~ "Fix “Always on Visible Workspace” windows disappearing when changing "
+#~ "workspaces"
+#~ msgstr ""
+#~ "Поправља нестајање прозора „Увек на видљивом радном прозору“ приликом "
+#~ "промене радних простора"
+
+#~ msgid ""
+#~ "Fix windows on non-primary displays disappearing when changing workspaces"
+#~ msgstr ""
+#~ "Поправља нестајање прозора на не-примарним екранима приликом промене "
+#~ "радних простора"
+
+#~ msgid ""
+#~ "Fix crash when changing workspaces while a transient window is opening"
+#~ msgstr ""
+#~ "Поправља урушавање приликом промене радних простора када је прелазни "
+#~ "прозор у отварању"
+
+#~ msgid "Don't show Gala Background Services in the dock"
+#~ msgstr "Не приказује услуге Гала позадине у луци"
+
+#~ msgid "Fixes for media key handling"
+#~ msgstr "Исправке за руковање тастером медија"
+
+#~ msgid "Show keyboard shortcuts in HeaderBar menus"
+#~ msgstr "Приказује пречице тастатуре у изборнику траке заглавља"
+
+#~ msgid "Improve window shadows for legacy apps"
+#~ msgstr "Побољшава сенке прозора за старе програме"
+
+#~ msgid "Fix potential crash when taking screenshots"
+#~ msgstr "Поправља могуће урушавање приликом прављења снимка екрана"
+
+#~ msgid "Fix notification position after changing DPI"
+#~ msgstr "Поправља положај обавештења након промене ТПИ"
+
+#~ msgid "Fix animations for moving and maximizing tiled windows"
+#~ msgstr ""
+#~ "Поправља анимације за премештање и максимално увећање поплочамих прозора"
 
 #~ msgid "multitasking-view"
 #~ msgstr "multitasking-view"

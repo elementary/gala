@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-10-14 17:58+0000\n"
-"PO-Revision-Date: 2022-08-08 11:29+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"PO-Revision-Date: 2023-01-21 12:25+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -51,24 +51,26 @@ msgstr "スクリーンショット"
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "変更は%i秒後に自動的に元に戻ります。"
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか？"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "変更は30秒後に自動的に元に戻ります。"
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
@@ -149,213 +151,95 @@ msgstr ""
 "libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が "
 "Pantheon 向けにデザインしました。"
 
-#: data/gala.appdata.xml.in:16 data/gala.appdata.xml.in:33
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:69
-#: data/gala.appdata.xml.in:81 data/gala.appdata.xml.in:94
-#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
-#: data/gala.appdata.xml.in:131 data/gala.appdata.xml.in:141
-#: data/gala.appdata.xml.in:150 data/gala.appdata.xml.in:161
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:89
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:36
-#: data/gala.appdata.xml.in:59 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:106 data/gala.appdata.xml.in:125
-#: data/gala.appdata.xml.in:135 data/gala.appdata.xml.in:144
-#: data/gala.appdata.xml.in:155
+#: data/gala.appdata.xml.in:19
+msgid "Reload animated wallpapers when timezone changes"
+msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr "マルチタスク画面での2本指スクロールの挙動が滑らかになるように修正"
+
+#: data/gala.appdata.xml.in:21
+msgid "Improve multitasking view animation performance"
+msgstr "マルチタスク画面のアニメーションパフォーマンスを改善"
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
-#: data/gala.appdata.xml.in:29 data/gala.appdata.xml.in:47
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:85
 msgid "Fixes:"
 msgstr "修正点:"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix regressions for OS 7"
 msgstr "elementary OS 7 でみられていたリグレッションを修正"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:54
 msgid "Use access portal for force quit"
 msgstr "強制終了ダイアログにアクセスポータルを使うように修正"
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:68
 msgid "Properly update accent color in the window switcher"
 msgstr "ウィンドウスイッチャーのアクセントカラーを正しく更新するように修正"
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:69
 msgid "Fix selecting windows underneath the window switcher"
 msgstr ""
 "ウィンドウスイッチャー直下にあったウィンドウが選択できなくなる不具合を修正"
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:70
 msgid "Prevent potential crashes"
 msgstr "クラッシュする可能性がある不具合を修正"
 
-#: data/gala.appdata.xml.in:52
+#: data/gala.appdata.xml.in:71
 msgid "Resize workspaces when displays change"
 msgstr ""
 "ディスプレイに変更があった場合、ワークスペースをサイズ変更するように修正"
 
-#: data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:72
 msgid "Handle windows with no title"
 msgstr "タイトルのないウィンドウを処理できるように修正"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:76
 msgid "Use access portal for display settings confirmation"
 msgstr "ディスプレイの設定確認ダイアログにアクセスポータルを使うように修正"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:77
 msgid "Allow closing multitasking view with Super"
 msgstr "スーパーキー押下で“マルチタスク画面”を閉じられるように修正"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:87
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr ""
 "サーバサイドデコレーションを使用するウィンドウの影が途切れていた不具合を修正"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:91
 msgid "Support for high-resolution scroll events"
 msgstr "高精度のスクロールイベントへの対応"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:92
 msgid "Redesigned Alt + Tab switcher"
 msgstr "Alt + Tab スイッチャーのデザインを変更"
 
-#: data/gala.appdata.xml.in:73
+#: data/gala.appdata.xml.in:93
 msgid "Dim the parents of modal dialogs"
 msgstr "モーダルダイアログの親ウィンドウを薄暗くするように修正"
 
-#: data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:94
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr "ダイアログを親ウィンドウ上にフェードして表示するように修正"
 
-#: data/gala.appdata.xml.in:83
-msgid "Fix a potential crash when taking screenshots"
-msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
-
-#: data/gala.appdata.xml.in:90
-msgid "New features:"
-msgstr "新機能:"
-
-#: data/gala.appdata.xml.in:92
-msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr "ピクチャーインピクチャーのウィンドウを画面端に隠せる機能を追加"
-
-#: data/gala.appdata.xml.in:96
-msgid "Fix a potential crash while changing wallpapers"
-msgstr "壁紙の変更時に起こりうるクラッシュを修正"
-
-#: data/gala.appdata.xml.in:105
-msgid ""
-"Include window decorations in screenshots for server-side decorated windows"
-msgstr ""
-"サーバサイドデコレーションを使用するウィンドウのスクリーンショットにデコレー"
-"ション部分も取得されるように修正"
-
-#: data/gala.appdata.xml.in:114
-msgid "Add multitouch gestures"
-msgstr "マルチタッチジェスチャーを追加"
-
-#: data/gala.appdata.xml.in:115
-msgid "Show window titles in multitasking view"
-msgstr "“マルチタスク画面”でウィンドウのタイトルを表示するように変更"
-
-#: data/gala.appdata.xml.in:116
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr ""
-"Alt + Tab でのウィンドウの切り替え時に Alt キーを離さずに Esc キーを押すと、"
-"ウィンドウの切り替えを終了できるように変更"
-
-#: data/gala.appdata.xml.in:117
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
-"拡大レベルの上限を大きくし、拡大できない場合はユーザーに知らせるように変更"
-
-#: data/gala.appdata.xml.in:118
-msgid "Show a context menu when secondary clicking the background"
-msgstr "壁紙の副クリック時にコンテキストメニューを表示するように変更"
-
-#: data/gala.appdata.xml.in:119
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
-"ホバークリック時とポインターの位置を強調する際に、アニメーション表示するよう"
-"に変更"
-
-#: data/gala.appdata.xml.in:120
-msgid "Add Take Screenshot to window context menu"
-msgstr "ウィンドウのコンテキストメニューに“スクリーンショットを撮る”を追加"
-
-#: data/gala.appdata.xml.in:121
-msgid "Always play shutter sound when taking screenshots"
-msgstr "スクリーンショットを取得する際、常にシャッター音が鳴るように変更"
-
-#: data/gala.appdata.xml.in:122
-msgid "Minor visual improvements"
-msgstr "軽微な視覚上の改善"
-
-#: data/gala.appdata.xml.in:123
-msgid "HiDPI fixes"
-msgstr "HiDPI に関する修正"
-
-#: data/gala.appdata.xml.in:124
-msgid "Performance improvements"
-msgstr "パフォーマンスの改善"
-
-#: data/gala.appdata.xml.in:133
-msgid ""
-"Fix “Always on Visible Workspace” windows disappearing when changing "
-"workspaces"
-msgstr ""
-"ワークスペースの切り替え時に、“すべてのワークスペースに表示” を有効にしたウィ"
-"ンドウが消滅する不具合を修正"
-
-#: data/gala.appdata.xml.in:134
-msgid ""
-"Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
-"ワークスペースの切り替え時に、外部モニターに表示中のウィンドウが消滅する不具"
-"合を修正"
-
-#: data/gala.appdata.xml.in:143
-msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
-"一時的なウィンドウが開いている際にワークスペースを切り替えるとクラッシュする"
-"不具合を修正"
-
-#: data/gala.appdata.xml.in:152
-msgid "Don't show Gala Background Services in the dock"
-msgstr ""
-"ドックに Gala Background Services というアイコンが表示される不具合を修正"
-
-#: data/gala.appdata.xml.in:153
-msgid "Fixes for media key handling"
-msgstr "メディアキーの処理に関する修正"
-
-#: data/gala.appdata.xml.in:154
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
-
-#: data/gala.appdata.xml.in:163
-msgid "Improve window shadows for legacy apps"
-msgstr "レガシーなアプリのウィンドウの影を改善"
-
-#: data/gala.appdata.xml.in:164
-msgid "Fix potential crash when taking screenshots"
-msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
-
-#: data/gala.appdata.xml.in:165
-msgid "Fix notification position after changing DPI"
-msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
-
-#: data/gala.appdata.xml.in:166
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr ""
-"タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを修"
-"正"
-
-#: data/gala.appdata.xml.in:172
+#: data/gala.appdata.xml.in:102
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -384,6 +268,104 @@ msgstr ""
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Fix a potential crash when taking screenshots"
+#~ msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
+
+#~ msgid "New features:"
+#~ msgstr "新機能:"
+
+#~ msgid "Stash the picture-in-picture window by pushing it off screen"
+#~ msgstr "ピクチャーインピクチャーのウィンドウを画面端に隠せる機能を追加"
+
+#~ msgid "Fix a potential crash while changing wallpapers"
+#~ msgstr "壁紙の変更時に起こりうるクラッシュを修正"
+
+#~ msgid ""
+#~ "Include window decorations in screenshots for server-side decorated "
+#~ "windows"
+#~ msgstr ""
+#~ "サーバサイドデコレーションを使用するウィンドウのスクリーンショットにデコ"
+#~ "レーション部分も取得されるように修正"
+
+#~ msgid "Add multitouch gestures"
+#~ msgstr "マルチタッチジェスチャーを追加"
+
+#~ msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+#~ msgstr ""
+#~ "Alt + Tab でのウィンドウの切り替え時に Alt キーを離さずに Esc キーを押す"
+#~ "と、ウィンドウの切り替えを終了できるように変更"
+
+#~ msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+#~ msgstr ""
+#~ "拡大レベルの上限を大きくし、拡大できない場合はユーザーに知らせるように変更"
+
+#~ msgid "Show a context menu when secondary clicking the background"
+#~ msgstr "壁紙の副クリック時にコンテキストメニューを表示するように変更"
+
+#~ msgid "New Dwell Click and Locate Pointer animations"
+#~ msgstr ""
+#~ "ホバークリック時とポインターの位置を強調する際に、アニメーション表示するよ"
+#~ "うに変更"
+
+#~ msgid "Add Take Screenshot to window context menu"
+#~ msgstr "ウィンドウのコンテキストメニューに“スクリーンショットを撮る”を追加"
+
+#~ msgid "Always play shutter sound when taking screenshots"
+#~ msgstr "スクリーンショットを取得する際、常にシャッター音が鳴るように変更"
+
+#~ msgid "Minor visual improvements"
+#~ msgstr "軽微な視覚上の改善"
+
+#~ msgid "HiDPI fixes"
+#~ msgstr "HiDPI に関する修正"
+
+#~ msgid "Performance improvements"
+#~ msgstr "パフォーマンスの改善"
+
+#~ msgid ""
+#~ "Fix “Always on Visible Workspace” windows disappearing when changing "
+#~ "workspaces"
+#~ msgstr ""
+#~ "ワークスペースの切り替え時に、“すべてのワークスペースに表示” を有効にした"
+#~ "ウィンドウが消滅する不具合を修正"
+
+#~ msgid ""
+#~ "Fix windows on non-primary displays disappearing when changing workspaces"
+#~ msgstr ""
+#~ "ワークスペースの切り替え時に、外部モニターに表示中のウィンドウが消滅する不"
+#~ "具合を修正"
+
+#~ msgid ""
+#~ "Fix crash when changing workspaces while a transient window is opening"
+#~ msgstr ""
+#~ "一時的なウィンドウが開いている際にワークスペースを切り替えるとクラッシュす"
+#~ "る不具合を修正"
+
+#~ msgid "Don't show Gala Background Services in the dock"
+#~ msgstr ""
+#~ "ドックに Gala Background Services というアイコンが表示される不具合を修正"
+
+#~ msgid "Fixes for media key handling"
+#~ msgstr "メディアキーの処理に関する修正"
+
+#~ msgid "Show keyboard shortcuts in HeaderBar menus"
+#~ msgstr ""
+#~ "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
+
+#~ msgid "Improve window shadows for legacy apps"
+#~ msgstr "レガシーなアプリのウィンドウの影を改善"
+
+#~ msgid "Fix potential crash when taking screenshots"
+#~ msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
+
+#~ msgid "Fix notification position after changing DPI"
+#~ msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
+
+#~ msgid "Fix animations for moving and maximizing tiled windows"
+#~ msgstr ""
+#~ "タイル表示にしたウィンドウを移動したり最大化したりする際のアニメーションを"
+#~ "修正"
 
 #~ msgid "multitasking-view"
 #~ msgstr "multitasking-view"

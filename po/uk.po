@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2022-10-14 17:58+0000\n"
-"PO-Revision-Date: 2022-10-28 10:41+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"PO-Revision-Date: 2023-01-21 12:25+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -54,24 +54,28 @@ msgstr "Знімки екрана"
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Зміни буде автоматично відхилено за %i секунду."
+msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
+msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "Зберегти нові налаштування дисплея?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "Зміни буде автоматично завернено за 30 секунд."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "Зберегти налаштування"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "Використовувати попередні налаштування"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
@@ -152,207 +156,93 @@ msgstr ""
 "Віконний менеджер та композитор створений на libmutter та розроблений "
 "elementary для роботи з Pantheon."
 
-#: data/gala.appdata.xml.in:16 data/gala.appdata.xml.in:33
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:69
-#: data/gala.appdata.xml.in:81 data/gala.appdata.xml.in:94
-#: data/gala.appdata.xml.in:103 data/gala.appdata.xml.in:112
-#: data/gala.appdata.xml.in:131 data/gala.appdata.xml.in:141
-#: data/gala.appdata.xml.in:150 data/gala.appdata.xml.in:161
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:89
 msgid "Improvements:"
 msgstr "Удосконалення:"
 
-#: data/gala.appdata.xml.in:18 data/gala.appdata.xml.in:36
-#: data/gala.appdata.xml.in:59 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:84 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:106 data/gala.appdata.xml.in:125
-#: data/gala.appdata.xml.in:135 data/gala.appdata.xml.in:144
-#: data/gala.appdata.xml.in:155
+#: data/gala.appdata.xml.in:19
+msgid "Reload animated wallpapers when timezone changes"
+msgstr "Перезавантаження анімованих шпалер за зміни часового поясу"
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr "Виправлено незручне гортання двома пальцями в багатозадачному режимі"
+
+#: data/gala.appdata.xml.in:21
+msgid "Improve multitasking view animation performance"
+msgstr "Прискорено швидкість анімації в багатозадачному режимі"
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "Оновлені переклади"
 
-#: data/gala.appdata.xml.in:29 data/gala.appdata.xml.in:47
-#: data/gala.appdata.xml.in:65
+#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:85
 msgid "Fixes:"
 msgstr "Виправлення:"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:50
 msgid "Fix regressions for OS 7"
 msgstr "Виправлено регресії для OS 7"
 
-#: data/gala.appdata.xml.in:35
+#: data/gala.appdata.xml.in:54
 msgid "Use access portal for force quit"
 msgstr "Використовувати портал доступу для швидкого виходу"
 
-#: data/gala.appdata.xml.in:49
+#: data/gala.appdata.xml.in:68
 msgid "Properly update accent color in the window switcher"
 msgstr "Правильне оновлення основного кольору у перемикачі вікна"
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:69
 msgid "Fix selecting windows underneath the window switcher"
 msgstr "Виправлено вибір вікон під перемикачем вікна"
 
-#: data/gala.appdata.xml.in:51
+#: data/gala.appdata.xml.in:70
 msgid "Prevent potential crashes"
 msgstr "Усунено ймовірність збоїв"
 
-#: data/gala.appdata.xml.in:52
+#: data/gala.appdata.xml.in:71
 msgid "Resize workspaces when displays change"
 msgstr "Зміна розміру робочих просторів, коли показується зміна"
 
-#: data/gala.appdata.xml.in:53
+#: data/gala.appdata.xml.in:72
 msgid "Handle windows with no title"
 msgstr "Обробка вікон без заголовків"
 
-#: data/gala.appdata.xml.in:57
+#: data/gala.appdata.xml.in:76
 msgid "Use access portal for display settings confirmation"
 msgstr ""
 "Використовувати портал доступу для вікна підтвердження налаштувань дисплея"
 
-#: data/gala.appdata.xml.in:58
+#: data/gala.appdata.xml.in:77
 msgid "Allow closing multitasking view with Super"
 msgstr "Дозволено закриття багатозадачного подання клавішею Super"
 
-#: data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:87
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr "Виправлено відсікання тіней вікон декорованих на стороні сервера"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:91
 msgid "Support for high-resolution scroll events"
 msgstr "Підтримка подій прокручування з високою роздільною здатністю"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:92
 msgid "Redesigned Alt + Tab switcher"
 msgstr "Новий вигляд перемикача Alt + Tab"
 
-#: data/gala.appdata.xml.in:73
+#: data/gala.appdata.xml.in:93
 msgid "Dim the parents of modal dialogs"
 msgstr "Затемнювати батьківські модальні вікна"
 
-#: data/gala.appdata.xml.in:74
+#: data/gala.appdata.xml.in:94
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr "Діалогові вікна спадають на батьківські замість виокремлення"
 
-#: data/gala.appdata.xml.in:83
-msgid "Fix a potential crash when taking screenshots"
-msgstr "Виправлено ймовірність збою під час створення знімків екрана"
-
-#: data/gala.appdata.xml.in:90
-msgid "New features:"
-msgstr "Нові функції:"
-
-#: data/gala.appdata.xml.in:92
-msgid "Stash the picture-in-picture window by pushing it off screen"
-msgstr ""
-"Закриття вікна «зображення в зображенні» переміщенням його за межі екрана"
-
-#: data/gala.appdata.xml.in:96
-msgid "Fix a potential crash while changing wallpapers"
-msgstr "Виправлено ймовірність збою під час зміни тла"
-
-#: data/gala.appdata.xml.in:105
-msgid ""
-"Include window decorations in screenshots for server-side decorated windows"
-msgstr ""
-"Включити декорації вікон до знімків екрана для вікон декорованих на стороні "
-"сервера"
-
-#: data/gala.appdata.xml.in:114
-msgid "Add multitouch gestures"
-msgstr "Додано жести"
-
-#: data/gala.appdata.xml.in:115
-msgid "Show window titles in multitasking view"
-msgstr "Показ назв вікон у багатозадачному поданні"
-
-#: data/gala.appdata.xml.in:116
-msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
-msgstr "Закривання перемикача Alt + Tab натисканням клавіші Esc без Alt"
-
-#: data/gala.appdata.xml.in:117
-msgid "Increase maximum zoom level and provide feedback when unable to zoom"
-msgstr ""
-"Збільшено найбільший рівень масштабу та надано зворотний зв'язок, коли не "
-"вдається збільшити"
-
-#: data/gala.appdata.xml.in:118
-msgid "Show a context menu when secondary clicking the background"
-msgstr "Показ контекстного меню після клацанні правою клавішею миші на тлі"
-
-#: data/gala.appdata.xml.in:119
-msgid "New Dwell Click and Locate Pointer animations"
-msgstr ""
-"Нове підсвічування натискання та анімації визначення розташування вказівника"
-
-#: data/gala.appdata.xml.in:120
-msgid "Add Take Screenshot to window context menu"
-msgstr "Додано функцію знімку екрана до контекстного меню вікна"
-
-#: data/gala.appdata.xml.in:121
-msgid "Always play shutter sound when taking screenshots"
-msgstr "Завжди відтворювати звук затвора під час створення знімків екрана"
-
-#: data/gala.appdata.xml.in:122
-msgid "Minor visual improvements"
-msgstr "Незначні візуальні вдосконалення"
-
-#: data/gala.appdata.xml.in:123
-msgid "HiDPI fixes"
-msgstr "Виправлення для HiDPI"
-
-#: data/gala.appdata.xml.in:124
-msgid "Performance improvements"
-msgstr "Поліпшення швидкодії"
-
-#: data/gala.appdata.xml.in:133
-msgid ""
-"Fix “Always on Visible Workspace” windows disappearing when changing "
-"workspaces"
-msgstr ""
-"Виправлено зникнення вікон за увімкненого «Завжди на видимому робочому "
-"просторі» під час зміни робочих просторів"
-
-#: data/gala.appdata.xml.in:134
-msgid ""
-"Fix windows on non-primary displays disappearing when changing workspaces"
-msgstr ""
-"Виправлено, зникнення вікон на не головних екранах під час зміни робочого "
-"простору"
-
-#: data/gala.appdata.xml.in:143
-msgid "Fix crash when changing workspaces while a transient window is opening"
-msgstr ""
-"Виправлено збій під чс зміни робочого простору коли відкривається перехідне "
-"вікно"
-
-#: data/gala.appdata.xml.in:152
-msgid "Don't show Gala Background Services in the dock"
-msgstr "Приховано фонові служби Gala з доку"
-
-#: data/gala.appdata.xml.in:153
-msgid "Fixes for media key handling"
-msgstr "Виправлення обробки мультимедійних ключів"
-
-#: data/gala.appdata.xml.in:154
-msgid "Show keyboard shortcuts in HeaderBar menus"
-msgstr "Показувати комбінації клавіш у меню HeaderBar"
-
-#: data/gala.appdata.xml.in:163
-msgid "Improve window shadows for legacy apps"
-msgstr "Покращення тіней вікон для застарілих програм"
-
-#: data/gala.appdata.xml.in:164
-msgid "Fix potential crash when taking screenshots"
-msgstr "Виправлено ймовірність збою під час створення знімків екрана"
-
-#: data/gala.appdata.xml.in:165
-msgid "Fix notification position after changing DPI"
-msgstr "Виправлено положення сповіщень після зміни DPI"
-
-#: data/gala.appdata.xml.in:166
-msgid "Fix animations for moving and maximizing tiled windows"
-msgstr "Виправлено анімацію переміщення та розгорнення плиткових вікон"
-
-#: data/gala.appdata.xml.in:172
+#: data/gala.appdata.xml.in:102
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -380,6 +270,100 @@ msgstr "Резервний робочий файл для сповіщень в�
 #: data/gala-other.desktop.in:6
 msgid "applications-other"
 msgstr "applications-other"
+
+#~ msgid "Fix a potential crash when taking screenshots"
+#~ msgstr "Виправлено ймовірність збою під час створення знімків екрана"
+
+#~ msgid "New features:"
+#~ msgstr "Нові функції:"
+
+#~ msgid "Stash the picture-in-picture window by pushing it off screen"
+#~ msgstr ""
+#~ "Закриття вікна «зображення в зображенні» переміщенням його за межі екрана"
+
+#~ msgid "Fix a potential crash while changing wallpapers"
+#~ msgstr "Виправлено ймовірність збою під час зміни тла"
+
+#~ msgid ""
+#~ "Include window decorations in screenshots for server-side decorated "
+#~ "windows"
+#~ msgstr ""
+#~ "Включити декорації вікон до знімків екрана для вікон декорованих на "
+#~ "стороні сервера"
+
+#~ msgid "Add multitouch gestures"
+#~ msgstr "Додано жести"
+
+#~ msgid "Close the Alt + Tab switcher by pressing Esc without releasing Alt"
+#~ msgstr "Закривання перемикача Alt + Tab натисканням клавіші Esc без Alt"
+
+#~ msgid "Increase maximum zoom level and provide feedback when unable to zoom"
+#~ msgstr ""
+#~ "Збільшено найбільший рівень масштабу та надано зворотний зв'язок, коли не "
+#~ "вдається збільшити"
+
+#~ msgid "Show a context menu when secondary clicking the background"
+#~ msgstr "Показ контекстного меню після клацанні правою клавішею миші на тлі"
+
+#~ msgid "New Dwell Click and Locate Pointer animations"
+#~ msgstr ""
+#~ "Нове підсвічування натискання та анімації визначення розташування "
+#~ "вказівника"
+
+#~ msgid "Add Take Screenshot to window context menu"
+#~ msgstr "Додано функцію знімку екрана до контекстного меню вікна"
+
+#~ msgid "Always play shutter sound when taking screenshots"
+#~ msgstr "Завжди відтворювати звук затвора під час створення знімків екрана"
+
+#~ msgid "Minor visual improvements"
+#~ msgstr "Незначні візуальні вдосконалення"
+
+#~ msgid "HiDPI fixes"
+#~ msgstr "Виправлення для HiDPI"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Поліпшення швидкодії"
+
+#~ msgid ""
+#~ "Fix “Always on Visible Workspace” windows disappearing when changing "
+#~ "workspaces"
+#~ msgstr ""
+#~ "Виправлено зникнення вікон за увімкненого «Завжди на видимому робочому "
+#~ "просторі» під час зміни робочих просторів"
+
+#~ msgid ""
+#~ "Fix windows on non-primary displays disappearing when changing workspaces"
+#~ msgstr ""
+#~ "Виправлено, зникнення вікон на не головних екранах під час зміни робочого "
+#~ "простору"
+
+#~ msgid ""
+#~ "Fix crash when changing workspaces while a transient window is opening"
+#~ msgstr ""
+#~ "Виправлено збій під чс зміни робочого простору коли відкривається "
+#~ "перехідне вікно"
+
+#~ msgid "Don't show Gala Background Services in the dock"
+#~ msgstr "Приховано фонові служби Gala з доку"
+
+#~ msgid "Fixes for media key handling"
+#~ msgstr "Виправлення обробки мультимедійних ключів"
+
+#~ msgid "Show keyboard shortcuts in HeaderBar menus"
+#~ msgstr "Показувати комбінації клавіш у меню HeaderBar"
+
+#~ msgid "Improve window shadows for legacy apps"
+#~ msgstr "Покращення тіней вікон для застарілих програм"
+
+#~ msgid "Fix potential crash when taking screenshots"
+#~ msgstr "Виправлено ймовірність збою під час створення знімків екрана"
+
+#~ msgid "Fix notification position after changing DPI"
+#~ msgstr "Виправлено положення сповіщень після зміни DPI"
+
+#~ msgid "Fix animations for moving and maximizing tiled windows"
+#~ msgstr "Виправлено анімацію переміщення та розгорнення плиткових вікон"
 
 #~ msgid "multitasking-view"
 #~ msgstr "multitasking-view"
