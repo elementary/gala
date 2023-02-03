@@ -159,26 +159,26 @@ namespace Gala {
                 return;
             }
 
-            var opacity_transition = close_button.get_transition ("opacity");
-            if (opacity_transition != null) {
-                opacity_transition.stop ();
+            var old_transition = close_button.get_transition ("opacity");
+            if (old_transition != null) {
+                old_transition.stop ();
                 close_button.remove_transition ("opacity");
             }
 
             close_button.visible = true;
-            var transition = new Clutter.PropertyTransition ("opacity") {
+            var new_transition = new Clutter.PropertyTransition ("opacity") {
                 duration = 200,
                 delay = SHOW_CLOSE_BUTTON_DELAY,
                 remove_on_complete = true
             };
-            transition.set_from_value (close_button.opacity);
-            transition.set_to_value (show ? 255 : 0);
+            new_transition.set_from_value (close_button.opacity);
+            new_transition.set_to_value (show ? 255 : 0);
             if (!show) {
-                transition.completed.connect (() => {
+                new_transition.completed.connect (() => {
                     close_button.visible = false;
                 });
             }
-            close_button.add_transition ("opacity", transition);
+            close_button.add_transition ("opacity", new_transition);
         }
 
         bool resize_canvas () {
