@@ -1,150 +1,169 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
-using Clutter;
 
-namespace Gala.Plugins.PIP {
-    public class ShadowEffect : Effect {
-        private class Shadow {
-            public int users;
-            public Cogl.Texture texture;
+public class Gala.Plugins.PIP.ShadowEffect : Clutter.Effect {
+    private class Shadow {
+        public int users;
+        public Cogl.Texture texture;
 
-            public Shadow (Cogl.Texture _texture) {
-                texture = _texture;
-                users = 1;
-            }
+        public Shadow (Cogl.Texture _texture) {
+            texture = _texture;
+            users = 1;
+        }
+    }
+
+    // the sizes of the textures often repeat, especially for the background actor
+    // so we keep a cache to avoid creating the same texture all over again.
+    static Gee.HashMap<string,Shadow> shadow_cache;
+    static Gtk.StyleContext style_context;
+
+    class construct {
+        shadow_cache = new Gee.HashMap<string,Shadow> ();
+
+        var style_path = new Gtk.WidgetPath ();
+        var id = style_path.append_type (typeof (Gtk.Window));
+
+        style_context = new Gtk.StyleContext ();
+        style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
+        style_context.add_class ("decoration");
+        style_context.set_path (style_path);
+    }
+
+    public int shadow_size { get; construct; }
+
+    public float scale_factor { get; set; default = 1; }
+    public uint8 shadow_opacity { get; set; default = 255; }
+    public string? css_class { get; set; default = null; }
+
+    Cogl.Pipeline pipeline;
+    string? current_key = null;
+
+    public ShadowEffect (int shadow_size) {
+        Object (shadow_size: shadow_size);
+    }
+
+    construct {
+        pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+    }
+
+    ~ShadowEffect () {
+        if (current_key != null)
+            decrement_shadow_users (current_key);
+    }
+
+    Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+        var old_key = current_key;
+        current_key = "%ix%i:%i".printf (width, height, shadow_size);
+        if (old_key == current_key) {
+            return null;
         }
 
-        // the sizes of the textures often repeat, especially for the background actor
-        // so we keep a cache to avoid creating the same texture all over again.
-        static Gee.HashMap<string,Shadow> shadow_cache;
-
-        static construct {
-            shadow_cache = new Gee.HashMap<string,Shadow> ();
+        if (old_key != null) {
+            decrement_shadow_users (old_key);
         }
 
-        public int shadow_size { get; construct; }
-        public int shadow_spread { get; construct; }
-
-        public float scale_factor { get; set; default = 1; }
-        public uint8 shadow_opacity { get; set; default = 255; }
-
-        Cogl.Pipeline pipeline;
-
-        string? current_key = null;
-
-        public ShadowEffect (int shadow_size, int shadow_spread) {
-            Object (shadow_size: shadow_size, shadow_spread: shadow_spread);
+        Shadow? shadow = null;
+        if ((shadow = shadow_cache.@get (current_key)) != null) {
+            shadow.users++;
+            return shadow.texture;
         }
 
-        construct {
-            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+        var cr = new Cairo.Context (surface);
+        cr.set_source_rgba (0, 0, 0, 0);
+        cr.fill ();
+
+        cr.set_operator (Cairo.Operator.OVER);
+        cr.save ();
+        cr.scale (scale_factor, scale_factor);
+        style_context.save ();
+        if (css_class != null) {
+            style_context.add_class (css_class);
         }
 
-        ~ShadowEffect () {
-            if (current_key != null)
-                decrement_shadow_users (current_key);
+        style_context.set_scale ((int)scale_factor);
+        style_context.render_background (cr, shadow_size, shadow_size, width - shadow_size * 2, height - shadow_size * 2);
+        style_context.restore ();
+        cr.restore ();
+
+        cr.paint ();
+
+        try {
+            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+                surface.get_stride (), surface.get_data ());
+            shadow_cache.@set (current_key, new Shadow (texture));
+
+            return texture;
+        } catch (Error e) {
+            debug (e.message);
+            return null;
+        }
+    }
+
+    void decrement_shadow_users (string key) {
+        var shadow = shadow_cache.@get (key);
+
+        if (shadow == null) {
+            return;
         }
 
-        Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread) {
-            var old_key = current_key;
-
-            current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, shadow_spread);
-            if (old_key == current_key)
-                return null;
-
-            if (old_key != null)
-                decrement_shadow_users (old_key);
-
-            Shadow? shadow = null;
-            if ((shadow = shadow_cache.@get (current_key)) != null) {
-                shadow.users++;
-                return shadow.texture;
-            }
-
-            // fill a new texture for this size
-            var buffer = new Drawing.BufferSurface (width, height);
-            buffer.context.rectangle (shadow_size - shadow_spread, shadow_size - shadow_spread,
-                width - shadow_size * 2 + shadow_spread * 2, height - shadow_size * 2 + shadow_spread * 2);
-            buffer.context.set_source_rgba (0, 0, 0, 0.7);
-            buffer.context.fill ();
-
-            buffer.exponential_blur (shadow_size / 2);
-
-            var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-            var cr = new Cairo.Context (surface);
-
-            cr.set_source_surface (buffer.surface, 0, 0);
-            cr.paint ();
-
-            try {
-                var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                    surface.get_stride (), surface.get_data ());
-
-                shadow_cache.@set (current_key, new Shadow (texture));
-                return texture;
-            } catch (GLib.Error e) {
-                debug (e.message);
-                return null;
-            }
+        if (--shadow.users == 0) {
+            shadow_cache.unset (key);
         }
-
-        void decrement_shadow_users (string key) {
-            var shadow = shadow_cache.@get (key);
-
-            if (shadow == null)
-                return;
-
-            if (--shadow.users == 0)
-                shadow_cache.unset (key);
-        }
+    }
 
 #if HAS_MUTTER40
-        public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
+    public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
 #else
-        public override void paint (Clutter.PaintContext context, EffectPaintFlags flags) {
+    public override void paint (Clutter.PaintContext context, EffectPaintFlags flags) {
 #endif
-            var bounding_box = get_bounding_box ();
+        var bounding_box = get_bounding_box ();
+        var width = (int) (bounding_box.x2 - bounding_box.x1);
+        var height = (int) (bounding_box.y2 - bounding_box.y1);
 
-            var shadow = get_shadow (context.get_framebuffer ().get_context (), (int) (bounding_box.x2 - bounding_box.x1),
-            (int) (bounding_box.y2 - bounding_box.y1), shadow_size, shadow_spread);
-
-            if (shadow != null)
-                pipeline.set_layer_texture (0, shadow);
-
-            var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
-            var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
-            alpha.premultiply ();
-
-            pipeline.set_color (alpha);
-
-            context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
-
-            actor.continue_paint (context);
+        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size);
+        if (shadow != null) {
+            pipeline.set_layer_texture (0, shadow);
         }
 
-        public virtual ActorBox get_bounding_box () {
-            var size = shadow_size * scale_factor;
-            var bounding_box = ActorBox ();
+        var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
+        var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
+        alpha.premultiply ();
 
-            bounding_box.set_origin (-size, -size);
-            bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
+        pipeline.set_color (alpha);
 
-            return bounding_box;
-        }
+        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
+
+        actor.continue_paint (context);
+    }
+
+    public virtual Clutter.ActorBox get_bounding_box () {
+        var size = shadow_size * scale_factor;
+        var bounding_box = Clutter.ActorBox ();
+
+        bounding_box.set_origin (-size, -size);
+        bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
+
+        return bounding_box;
+    }
+
+    public override bool modify_paint_volume (Clutter.PaintVolume volume) {
+        var bounding_box = get_bounding_box ();
+
+        volume.set_width (bounding_box.get_width ());
+        volume.set_height (bounding_box.get_height ());
+
+        float origin_x, origin_y;
+        bounding_box.get_origin (out origin_x, out origin_y);
+        var origin = volume.get_origin ();
+        origin.x += origin_x;
+        origin.y += origin_y;
+        volume.set_origin (origin);
+
+        return true;
     }
 }
