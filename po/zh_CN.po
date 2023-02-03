@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
 "PO-Revision-Date: 2022-10-28 10:41+0000\n"
 "Last-Translator: colindemian <colindemian@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -51,24 +51,27 @@ msgstr "屏幕截图"
 msgid "Screenshot taken"
 msgstr "已截屏"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, fuzzy, c-format
+#| msgid "Changes will automatically revert after 30 seconds."
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "变更将在30秒后撤销。"
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "要保留新的显示设置吗？"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "变更将在30秒后撤销。"
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "保留设置"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "恢复原有设置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"

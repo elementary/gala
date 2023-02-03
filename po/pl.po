@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
-"PO-Revision-Date: 2023-01-05 18:25+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"PO-Revision-Date: 2023-01-21 12:25+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -54,24 +54,28 @@ msgstr "Zrzuty ekranu"
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Zmiany zostaną automatycznie cofnięte po %i sekundzie."
+msgstr[1] "Zmiany zostaną automatycznie cofnięte po %i sekundach."
+msgstr[2] "Zmiany zostaną automatycznie cofnięte po %i sekundach."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "Zmiany zostaną automatycznie cofnięte po 30 sekundach."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
@@ -164,7 +168,8 @@ msgstr "Przeładuj animowane tapety przy zmianie strefy czasowej"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Naprawiono nieintuicyjne przesuwanie dwoma palcami w widoku wielu zadań"
+msgstr ""
+"Naprawiono nieintuicyjne przesuwanie dwoma palcami w widoku wielu zadań"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
