@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-
 public class Gala.Plugins.PIP.ShadowEffect : Clutter.Effect {
     private class Shadow {
         public int users;
