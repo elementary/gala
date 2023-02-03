@@ -169,7 +169,7 @@ namespace Gala {
             var transition = new Clutter.PropertyTransition ("opacity") {
                 duration = 200,
                 delay = SHOW_CLOSE_BUTTON_DELAY,
-                remove_on_complete = true 
+                remove_on_complete = true
             };
             transition.set_from_value (close_button.opacity);
             transition.set_to_value (show ? 255 : 0);
