@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
-"PO-Revision-Date: 2023-01-11 16:25+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"PO-Revision-Date: 2023-01-23 14:25+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -53,24 +53,27 @@ msgstr "Captures de pantalla"
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
+msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "Els canvis es revertiran automàticament després de 30 segons."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"

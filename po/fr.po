@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
-"PO-Revision-Date: 2022-08-08 16:47+0000\n"
+"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"PO-Revision-Date: 2023-02-02 09:25+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
-">\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-28 05:04+0000\n"
 
 #: src/Dialogs.vala:152
@@ -53,25 +53,29 @@ msgstr "Captures d'écran"
 msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] ""
+"Les modifications seront automatiquement annulées au bout de %i seconde."
+msgstr[1] ""
+"Les modifications seront automatiquement annulées au bout de %i secondes."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr ""
-"Les modifications seront automatiquement annulées au bout de 30 secondes."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
@@ -161,16 +165,16 @@ msgstr "Améliorations :"
 #: data/gala.appdata.xml.in:19
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
+"Rechargement des fonds d'écran animés lors du changement de fuseau horaire"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Afficher le nom des fenêtres dans la vue multitâche"
+msgstr ""
+"Correction d'un défilement maladroit à deux doigts dans la vue multitâche"
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "Amélioration des performances de l'animation de la vue multitâche"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78

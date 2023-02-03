@@ -224,7 +224,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new WindowShadowEffect (window, 40, 5);
+                shadow_effect = new WindowShadowEffect (window, 40);
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
         } else {
@@ -824,13 +824,13 @@ public class Gala.WindowClone : Clutter.Actor {
     private class WindowShadowEffect : ShadowEffect {
         public unowned Meta.Window window { get; construct; }
 
-        public WindowShadowEffect (Meta.Window window, int shadow_size, int shadow_spread) {
-            Object (window: window, shadow_size: shadow_size, shadow_spread: shadow_spread, shadow_opacity: 255);
+        public WindowShadowEffect (Meta.Window window, int shadow_size) {
+            Object (window: window, shadow_size: shadow_size, css_class: "window-clone");
         }
 
         public override Clutter.ActorBox get_bounding_box () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var size = (shadow_size + shadow_spread) * scale_factor;
+            var size = shadow_size * scale_factor;
 
             var input_rect = window.get_buffer_rect ();
             var outer_rect = window.get_frame_rect ();
