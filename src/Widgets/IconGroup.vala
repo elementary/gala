@@ -1,19 +1,8 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 using Clutter;
 using Meta;
@@ -141,18 +130,26 @@ namespace Gala {
         }
 
         public override bool enter_event (CrossingEvent event) {
-            show_close_button ();
+            toggle_close_button (true);
             return false;
         }
 
         public override bool leave_event (CrossingEvent event) {
             if (!contains (event.related))
-                hide_close_button ();
+            toggle_close_button (false);
 
             return false;
         }
 
-        private void show_close_button () {
+        /**
+         * Requests toggling the close button. If show is true, a timeout will be set after which
+         * the close button is shown, if false, the close button is hidden and the timeout is removed,
+         * if it exists. The close button may not be shown even though requested if the workspace has
+         * no windows or workspaces aren't set to be dynamic.
+         *
+         * @param show Whether to show the close button
+         */
+        private void toggle_close_button (bool show) {
             // don't display the close button when we don't have dynamic workspaces
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
@@ -174,32 +171,12 @@ namespace Gala {
                 remove_on_complete = true 
             };
             transition.set_from_value (close_button.opacity);
-            transition.set_to_value (255);
-            close_button.add_transition ("opacity", transition);
-        }
-
-        private void hide_close_button () {
-            // don't display the close button when we don't have dynamic workspaces
-            // or when there are no windows on us. For one, our method for closing
-            // wouldn't work anyway without windows and it's also the last workspace
-            // which we don't want to have closed if everything went correct
-            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1) {
-                return;
+            transition.set_to_value (show ? 255 : 0);
+            if (!show) {
+                transition.completed.connect (() => {
+                    close_button.visible = false;
+                });
             }
-
-            var opacity_transition = close_button.get_transition ("opacity");
-            if (opacity_transition != null) {
-                opacity_transition.stop ();
-                close_button.remove_transition ("opacity");
-            }
-
-            close_button.visible = true;
-            var transition = new Clutter.PropertyTransition ("opacity") {
-                duration = 200,
-                remove_on_complete = true 
-            };
-            transition.set_from_value (close_button.opacity);
-            transition.set_to_value (0);
             close_button.add_transition ("opacity", transition);
         }
 
