@@ -135,8 +135,9 @@ namespace Gala {
         }
 
         public override bool leave_event (CrossingEvent event) {
-            if (!contains (event.related))
-            toggle_close_button (false);
+            if (!contains (event.related)) {
+                toggle_close_button (false);
+            }
 
             return false;
         }
