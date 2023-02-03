@@ -89,8 +89,6 @@ namespace Gala {
         Actor close_button;
         Actor icon_container;
 
-        uint show_close_button_timeout = 0;
-
         public IconGroup (Workspace workspace) {
             Object (workspace: workspace);
         }
@@ -143,57 +141,66 @@ namespace Gala {
         }
 
         public override bool enter_event (CrossingEvent event) {
-            toggle_close_button (true);
+            show_close_button ();
             return false;
         }
 
         public override bool leave_event (CrossingEvent event) {
             if (!contains (event.related))
-                toggle_close_button (false);
+                hide_close_button ();
 
             return false;
         }
 
-        /**
-         * Requests toggling the close button. If show is true, a timeout will be set after which
-         * the close button is shown, if false, the close button is hidden and the timeout is removed,
-         * if it exists. The close button may not be shown even though requested if the workspace has
-         * no windows or workspaces aren't set to be dynamic.
-         *
-         * @param show Whether to show the close button
-         */
-        void toggle_close_button (bool show) {
+        private void show_close_button () {
             // don't display the close button when we don't have dynamic workspaces
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
             // which we don't want to have closed if everything went correct
-            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
-                return;
-
-            if (show_close_button_timeout != 0) {
-                Source.remove (show_close_button_timeout);
-                show_close_button_timeout = 0;
-            }
-
-            if (show) {
-                show_close_button_timeout = Timeout.add (SHOW_CLOSE_BUTTON_DELAY, () => {
-                    place_close_button ();
-                    close_button.visible = true;
-                    close_button.opacity = 255;
-                    show_close_button_timeout = 0;
-                    return false;
-                });
+            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1) {
                 return;
             }
 
-            close_button.opacity = 0;
-            var transition = get_transition ("opacity");
-            if (transition != null)
-                transition.completed.connect (() => {
-                    close_button.visible = false;
-                });
-            else
-                close_button.visible = false;
+            var opacity_transition = close_button.get_transition ("opacity");
+            if (opacity_transition != null) {
+                opacity_transition.stop ();
+                close_button.remove_transition ("opacity");
+            }
+
+            close_button.visible = true;
+            var transition = new Clutter.PropertyTransition ("opacity") {
+                duration = 200,
+                delay = SHOW_CLOSE_BUTTON_DELAY,
+                remove_on_complete = true 
+            };
+            transition.set_from_value (close_button.opacity);
+            transition.set_to_value (255);
+            close_button.add_transition ("opacity", transition);
+        }
+
+        private void hide_close_button () {
+            // don't display the close button when we don't have dynamic workspaces
+            // or when there are no windows on us. For one, our method for closing
+            // wouldn't work anyway without windows and it's also the last workspace
+            // which we don't want to have closed if everything went correct
+            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1) {
+                return;
+            }
+
+            var opacity_transition = close_button.get_transition ("opacity");
+            if (opacity_transition != null) {
+                opacity_transition.stop ();
+                close_button.remove_transition ("opacity");
+            }
+
+            close_button.visible = true;
+            var transition = new Clutter.PropertyTransition ("opacity") {
+                duration = 200,
+                remove_on_complete = true 
+            };
+            transition.set_from_value (close_button.opacity);
+            transition.set_to_value (0);
+            close_button.add_transition ("opacity", transition);
         }
 
         bool resize_canvas () {
