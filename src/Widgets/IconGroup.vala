@@ -155,7 +155,7 @@ namespace Gala {
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
             // which we don't want to have closed if everything went correct
-            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1) {
+            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
                 return;
             }
 
@@ -489,6 +489,8 @@ namespace Gala {
         }
 
         Actor? drag_begin (float click_x, float click_y) {
+            toggle_close_button (false);
+
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Prefs.get_dynamic_workspaces () &&
