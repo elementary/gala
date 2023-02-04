@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-02-02 09:25+0000\n"
+"PO-Revision-Date: 2023-02-04 12:25+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -252,7 +252,7 @@ msgstr "Többfeladatos nézet"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr "Az összes nyitott ablak és munkaterület mutatása"
+msgstr "Az összes nyitott ablak és munkaterület megjelenítése"
 
 #: data/gala-multitaskingview.desktop.in:7
 msgid "preferences-desktop-workspaces"
