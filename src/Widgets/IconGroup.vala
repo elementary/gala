@@ -131,7 +131,8 @@ namespace Gala {
 
         public override bool enter_event (CrossingEvent event) {
             toggle_close_button (true);
-            return false;
+
+            return Gdk.EVENT_PROPAGATE;
         }
 
         public override bool leave_event (CrossingEvent event) {
@@ -139,7 +140,7 @@ namespace Gala {
                 toggle_close_button (false);
             }
 
-            return false;
+            return Gdk.EVENT_PROPAGATE;
         }
 
         /**
@@ -168,7 +169,7 @@ namespace Gala {
             close_button.visible = true;
             var new_transition = new Clutter.PropertyTransition ("opacity") {
                 duration = 200,
-                delay = SHOW_CLOSE_BUTTON_DELAY,
+                delay = show ? SHOW_CLOSE_BUTTON_DELAY : 0,
                 remove_on_complete = true
             };
             new_transition.set_from_value (close_button.opacity);
