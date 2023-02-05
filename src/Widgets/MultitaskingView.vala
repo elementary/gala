@@ -26,6 +26,7 @@ namespace Gala {
      */
     public class MultitaskingView : Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
+        private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
@@ -45,11 +46,15 @@ namespace Gala {
         Actor workspaces;
         Actor dock_clones;
 
+        private GLib.Settings gala_behavior_settings;
+
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
 
         construct {
+            gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+
             visible = false;
             reactive = true;
             clip_to_allocation = true;
@@ -777,11 +782,17 @@ namespace Gala {
 
         bool keybinding_filter (KeyBinding binding) {
             var action = Prefs.get_keybinding_action (binding.get_name ());
+
+            // allow super key only when it toggles multitasking view
+            if (action == KeyBindingAction.OVERLAY_KEY &&
+                gala_behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
+                return false;
+            }
+
             switch (action) {
                 case KeyBindingAction.WORKSPACE_LEFT:
                 case KeyBindingAction.WORKSPACE_RIGHT:
                 case KeyBindingAction.SHOW_DESKTOP:
-                case KeyBindingAction.OVERLAY_KEY:
                 case KeyBindingAction.NONE:
                     return false;
                 default:
