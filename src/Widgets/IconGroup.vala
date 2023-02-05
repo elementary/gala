@@ -1,19 +1,8 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 using Clutter;
 using Meta;
@@ -89,8 +78,6 @@ namespace Gala {
         Actor close_button;
         Actor icon_container;
 
-        uint show_close_button_timeout = 0;
-
         public IconGroup (Workspace workspace) {
             Object (workspace: workspace);
         }
@@ -144,14 +131,16 @@ namespace Gala {
 
         public override bool enter_event (CrossingEvent event) {
             toggle_close_button (true);
-            return false;
+
+            return Gdk.EVENT_PROPAGATE;
         }
 
         public override bool leave_event (CrossingEvent event) {
-            if (!contains (event.related))
+            if (!contains (event.related)) {
                 toggle_close_button (false);
+            }
 
-            return false;
+            return Gdk.EVENT_PROPAGATE;
         }
 
         /**
@@ -162,38 +151,35 @@ namespace Gala {
          *
          * @param show Whether to show the close button
          */
-        void toggle_close_button (bool show) {
+        private void toggle_close_button (bool show) {
             // don't display the close button when we don't have dynamic workspaces
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
             // which we don't want to have closed if everything went correct
-            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1)
-                return;
-
-            if (show_close_button_timeout != 0) {
-                Source.remove (show_close_button_timeout);
-                show_close_button_timeout = 0;
-            }
-
-            if (show) {
-                show_close_button_timeout = Timeout.add (SHOW_CLOSE_BUTTON_DELAY, () => {
-                    place_close_button ();
-                    close_button.visible = true;
-                    close_button.opacity = 255;
-                    show_close_button_timeout = 0;
-                    return false;
-                });
+            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
                 return;
             }
 
-            close_button.opacity = 0;
-            var transition = get_transition ("opacity");
-            if (transition != null)
-                transition.completed.connect (() => {
+            var old_transition = close_button.get_transition ("opacity");
+            if (old_transition != null) {
+                old_transition.stop ();
+                close_button.remove_transition ("opacity");
+            }
+
+            close_button.visible = true;
+            var new_transition = new Clutter.PropertyTransition ("opacity") {
+                duration = 200,
+                delay = show ? SHOW_CLOSE_BUTTON_DELAY : 0,
+                remove_on_complete = true
+            };
+            new_transition.set_from_value (close_button.opacity);
+            new_transition.set_to_value (show ? 255 : 0);
+            if (!show) {
+                new_transition.completed.connect (() => {
                     close_button.visible = false;
                 });
-            else
-                close_button.visible = false;
+            }
+            close_button.add_transition ("opacity", new_transition);
         }
 
         bool resize_canvas () {
@@ -504,6 +490,8 @@ namespace Gala {
         }
 
         Actor? drag_begin (float click_x, float click_y) {
+            toggle_close_button (false);
+
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Prefs.get_dynamic_workspaces () &&
