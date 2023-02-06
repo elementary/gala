@@ -317,6 +317,7 @@ public class Gala.WindowClone : Clutter.Actor {
             }
 
             window_icon.save_easing_state ();
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             window_icon.opacity = 0;
             set_window_icon_position (outer_rect.width, outer_rect.height);
@@ -385,6 +386,7 @@ public class Gala.WindowClone : Clutter.Actor {
             restore_easing_state ();
 
             window_icon.save_easing_state ();
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             window_icon.opacity = 255;
             set_window_icon_position (rect.width, rect.height);
@@ -805,6 +807,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         window_icon.set_size (size, size);
         window_icon.set_position (x, y);
+        warning ("%f %f", x, y);
     }
 
     private void set_window_title_position (float window_width, float window_height) {
