@@ -17,8 +17,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
     // the sizes of the textures often repeat, especially for the background actor
     // so we keep a cache to avoid creating the same texture all over again.
-    static Gee.HashMap<string,Shadow> shadow_cache;
-    static Gtk.StyleContext style_context;
+    private static Gee.HashMap<string,Shadow> shadow_cache;
+    private static Gtk.StyleContext style_context;
 
     class construct {
         shadow_cache = new Gee.HashMap<string,Shadow> ();
@@ -38,8 +38,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
     public uint8 shadow_opacity { get; set; default = 255; }
     public string? css_class { get; set; default = null; }
 
-    Cogl.Pipeline pipeline;
-    string? current_key = null;
+    private Cogl.Pipeline pipeline;
+    private string? current_key = null;
 
     public ShadowEffect (int shadow_size) {
         Object (shadow_size: shadow_size);
@@ -50,11 +50,12 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     ~ShadowEffect () {
-        if (current_key != null)
+        if (current_key != null) {
             decrement_shadow_users (current_key);
+        }
     }
 
-    Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
         var old_key = current_key;
         current_key = "%ix%i:%i".printf (width, height, shadow_size);
         if (old_key == current_key) {
@@ -103,7 +104,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    void decrement_shadow_users (string key) {
+    private void decrement_shadow_users (string key) {
         var shadow = shadow_cache.@get (key);
 
         if (shadow == null) {
