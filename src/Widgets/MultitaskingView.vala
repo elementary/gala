@@ -810,7 +810,7 @@ namespace Gala {
                 default:
                     break;
             }
-            
+
             switch (binding.get_name ()) {
                 case "screenshot":
                 case "screenshot-clip":
