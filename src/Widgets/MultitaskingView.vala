@@ -812,8 +812,6 @@ namespace Gala {
             }
 
             switch (binding.get_name ()) {
-                case "screenshot":
-                case "screenshot-clip":
                 case "cycle-workspaces-next":
                 case "cycle-workspaces-previous":
                 case "switch-to-workspace-first":
