@@ -289,11 +289,11 @@ public class Gala.WindowClone : Clutter.Actor {
 
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, false);
+
+            shadow_opacity = (uint8) opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-
             if (cancel_action) {
                 return;
             }
@@ -315,8 +315,11 @@ public class Gala.WindowClone : Clutter.Actor {
                 toggle_shadow (false);
             }
 
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             window_icon.opacity = 0;
             set_window_icon_position (outer_rect.width, outer_rect.height);
+            window_icon.restore_easing_state ();
 
             var transition = window_icon.get_transition ("opacity");
             if (transition != null) {
@@ -348,9 +351,6 @@ public class Gala.WindowClone : Clutter.Actor {
         var initial_width = width;
         var initial_height = height;
 
-        window_icon.opacity = 0;
-        window_icon.set_easing_duration (0);
-
         in_slot_animation = true;
         place_widgets (rect.width, rect.height);
 
@@ -366,11 +366,11 @@ public class Gala.WindowClone : Clutter.Actor {
 
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, false);
+
+            shadow_opacity = (uint8) opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-
             if (cancel_action) {
                 return;
             }
@@ -381,10 +381,13 @@ public class Gala.WindowClone : Clutter.Actor {
 
             set_size (rect.width, rect.height);
             set_position (rect.x, rect.y);
+            restore_easing_state ();
 
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             window_icon.opacity = 255;
             set_window_icon_position (rect.width, rect.height);
-            restore_easing_state ();
+            window_icon.restore_easing_state ();
 
             toggle_shadow (true);
 
