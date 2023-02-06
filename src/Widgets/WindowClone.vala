@@ -807,7 +807,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         window_icon.set_size (size, size);
         window_icon.set_position (x, y);
-        warning ("%f %f", x, y);
     }
 
     private void set_window_title_position (float window_width, float window_height) {
