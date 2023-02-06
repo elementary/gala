@@ -68,11 +68,11 @@ namespace Gala {
             flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
             flash_actor.set_opacity (0);
             flash_actor.transitions_completed.connect ((actor) => {
-                wm.top_window_group.remove_child (actor);
+                wm.ui_group.remove_child (actor);
                 actor.destroy ();
             });
 
-            wm.top_window_group.add_child (flash_actor);
+            wm.ui_group.add_child (flash_actor);
             flash_actor.add_transition ("flash", transition);
         }
 
