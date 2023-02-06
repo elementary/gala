@@ -225,6 +225,7 @@ public class Gala.WindowClone : Clutter.Actor {
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new WindowShadowEffect (window, 40);
+                shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
         } else {
