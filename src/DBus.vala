@@ -1,25 +1,59 @@
-//
-//  Copyright (C) 2012 - 2014 Tom Beckmann, Jacob Parker
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2021 elementary, Inc. (https://elementary.io)
+ *           2012–2014 Tom Beckmann, Jacob Parker
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace Gala {
+    [DBus (name = "org.freedesktop.DBus")]
+    private interface FreedesktopDBus : Object {
+        [DBus (name = "GetConnectionUnixProcessID")]
+        public abstract uint32 get_connection_unix_process_id (string name) throws Error;
+    }
+
+    private class TextureActor : Clutter.Actor {
+        private static Clutter.Color transparent_color;
+        private Cogl.Texture texture;
+
+        public TextureActor (Cogl.Texture tex) {
+            this.texture = tex;
+        }
+
+        static construct {
+            transparent_color = Clutter.Color.alloc ();
+            transparent_color.red = transparent_color.green = transparent_color.blue = 255;
+        }
+
+        public override void paint_node (Clutter.PaintNode root) {
+            var box = get_allocation_box ();
+
+            transparent_color.alpha = get_paint_opacity ();
+            var tex_node = new Clutter.TextureNode (texture, transparent_color, Clutter.ScalingFilter.TRILINEAR, Clutter.ScalingFilter.LINEAR);
+            tex_node.add_rectangle (box);
+
+            root.add_child (tex_node);
+        }
+    }
+
     [DBus (name="org.pantheon.gala")]
     public class DBus {
         static DBus? instance;
         static WindowManager wm;
+        static FreedesktopDBus? bus_proxy;
+
+        static Cogl.Pipeline? copy_pipeline = null;
 
         [DBus (visible = false)]
         public static void init (WindowManager _wm) {
@@ -77,6 +111,13 @@ namespace Gala {
                     },
                     () => {},
                     () => critical ("Could not acquire ScreenSaver bus") );
+            }
+
+            try {
+                bus_proxy = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.DBus", "/");
+            } catch (Error e) {
+                warning (e.message);
+                bus_proxy = null;
             }
         }
 
@@ -260,6 +301,126 @@ namespace Gala {
             yield;
 
             return { r_total, g_total, b_total, mean, variance };
+        }
+
+        /**
+         * Creates a window snapshot and transitions from it to the real state.
+         *
+         * Calling this method will create a static temporary snapshot from a target window
+         * and will transition from it to the real window surface. This is useful if
+         * e.g you want to change the Gtk stylesheet used by your application.
+         * It can be used to create a smooth transition effect when switching to the new
+         * stylesheet. If that's your intention, call this function just before actually changing
+         * the stylesheet for the best effect.
+         *
+         * The function will create a transition animation only when animations are enabled.
+         * If they are not, the animation will not be visible but the snapshot will be still created and added.
+         *
+         * The transition will be applied to all windows that belong to your process ID.
+         *
+         * Note that you will not be able to affect any windows that do
+         * not belong to your PID, this is reserved for system components.
+         */
+        public async void transition_from_snapshot (BusName sender) throws IOError {
+            if (bus_proxy == null) {
+                throw new IOError.FAILED ("Could not connect to org.freedesktop.DBus");
+            }
+
+            uint32 pid = bus_proxy.get_connection_unix_process_id (sender);
+            bool animate = wm.enable_animations;
+
+            foreach (unowned Meta.WindowActor actor in wm.get_display ().get_window_actors ()) {
+                unowned Meta.Window window = actor.get_meta_window ();
+                if (window.get_pid () == pid) {
+                    yield transition_window (actor.get_meta_window (), animate);
+                }
+            }
+        }
+
+        /**
+         * Creates a window snapshot and transitions from it to the real state
+         * for all windows on the visible workspace. See transition_from_snapshot.
+         *
+         * This function is reserved for system components and must not be
+         * accessed by applications.
+         */
+        public async void global_transition_from_snapshot () throws IOError {
+            bool animate = wm.enable_animations;
+
+            unowned Meta.Workspace workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
+            var windows = workspace.list_windows ();
+            foreach (unowned Meta.Window window in windows) {
+                if (!window.minimized && window.get_window_type () != Meta.WindowType.DESKTOP) {
+                    yield transition_window (window, animate);
+                }
+            }
+        }
+
+        static async void transition_window (Meta.Window window, bool animate) {
+            /**
+             * Because Gtk takes time to apply the styling to all elements,
+             * we will simply define an arbitrary wait time for this to happen
+             * to smoothen out the transition.
+             */
+            const uint STYLE_CHANGE_COMPLETION_DURATION = 300;
+
+            unowned Meta.WindowActor actor = (Meta.WindowActor)window.get_compositor_private ();
+
+            var rect = window.get_frame_rect ();
+            int x_offset = rect.x - (int) actor.x;
+            int y_offset = rect.y - (int) actor.y;
+
+            var texture = ((Meta.ShapedTexture)actor.get_texture ()).get_texture ();
+            texture = fast_copy_texture (texture, x_offset, y_offset, rect.width, rect.height, Cogl.PixelFormat.BGRA_8888_PRE);
+
+            var snapshot = new TextureActor (texture);
+            snapshot.set_position ((float)x_offset / 2.0f, (float)y_offset / 2.0f);
+            snapshot.set_size (rect.width, rect.height);
+            actor.insert_child_above (snapshot, null);
+
+            Timeout.add (STYLE_CHANGE_COMPLETION_DURATION, () => {
+                if (animate) {
+                    snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+                    snapshot.set_easing_duration (AnimationDuration.STYLE_SWITCH);
+                    snapshot.opacity = 0;
+
+                    ulong signal_id = 0U;
+                    signal_id = snapshot.transitions_completed.connect (() => {
+                        snapshot.disconnect (signal_id);
+                        snapshot.destroy ();
+                    });
+                } else {
+                    snapshot.opacity = 0;
+                    Timeout.add (AnimationDuration.STYLE_SWITCH, () => {
+                        snapshot.destroy ();
+                        return Source.REMOVE;
+                    });
+                }
+
+                return Source.REMOVE;
+            });
+
+        }
+
+        static Cogl.Texture fast_copy_texture (Cogl.Texture texture, int xoff, int yoff, int width, int height, Cogl.PixelFormat format) {
+            var copy = Cogl.Texture.new_with_size (width, height, Cogl.TextureFlags.NONE, format);
+
+            if (copy_pipeline == null) {
+                unowned Cogl.Context context = Clutter.get_default_backend ().get_cogl_context ();
+                copy_pipeline = new Cogl.Pipeline (context);
+            }
+
+            copy_pipeline.set_layer_texture (0, texture);
+
+            var fbo = new Cogl.Offscreen.with_texture (copy);
+            fbo.draw_textured_rectangle (copy_pipeline,
+                -1, -1, 1, 1,
+                xoff / (float)texture.get_width (),
+                (yoff + height) / (float)texture.get_height (),
+                (xoff + width) / (float)texture.get_width (),
+                yoff / (float)texture.get_height ());
+
+            return copy;
         }
     }
 }

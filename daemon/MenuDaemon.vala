@@ -1,31 +1,23 @@
-//
-//  Copyright 2018-2020 elementary, Inc. (https://elementary.io)
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2018–2021 elementary, Inc. (https://elementary.io)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace Gala {
-    const string DBUS_NAME = "org.pantheon.gala";
-    const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
-
     const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
-
-    [DBus (name = "org.pantheon.gala")]
-    public interface WMDBus : GLib.Object {
-        public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
-    }
 
     [DBus (name = "org.pantheon.gala.daemon")]
     public class MenuDaemon : Object {
@@ -39,6 +31,7 @@ namespace Gala {
         private Granite.AccelLabel on_visible_workspace_accellabel;
         private Granite.AccelLabel resize_accellabel;
         private Granite.AccelLabel screenshot_accellabel;
+        unowned Daemon daemon;
         Gtk.Menu? window_menu = null;
         Gtk.MenuItem hide;
         Gtk.MenuItem maximize;
@@ -53,8 +46,6 @@ namespace Gala {
 
         // Desktop Menu
         Gtk.Menu? desktop_menu = null;
-
-        WMDBus? wm_proxy = null;
 
         ulong always_on_top_sid = 0U;
         ulong on_visible_workspace_sid = 0U;
@@ -71,26 +62,10 @@ namespace Gala {
         public void setup_dbus () {
             var flags = BusNameOwnerFlags.ALLOW_REPLACEMENT | BusNameOwnerFlags.REPLACE;
             Bus.own_name (BusType.SESSION, DAEMON_DBUS_NAME, flags, on_bus_acquired, () => {}, null);
-
-            Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
         }
 
-        void on_gala_get (GLib.Object? o, GLib.AsyncResult? res) {
-            try {
-                wm_proxy = Bus.get_proxy.end (res);
-            } catch (Error e) {
-                warning ("Failed to get Gala proxy: %s", e.message);
-            }
-        }
-
-        void lost_gala () {
-            wm_proxy = null;
-        }
-
-        void gala_appeared () {
-            if (wm_proxy == null) {
-                Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
-            }
+        public MenuDaemon (Daemon daemon) {
+            this.daemon = daemon;
         }
 
         void on_bus_acquired (DBusConnection conn) {
@@ -102,9 +77,9 @@ namespace Gala {
         }
 
         void perform_action (Gala.ActionType type) {
-            if (wm_proxy != null) {
+            if (daemon.wm_proxy != null) {
                 try {
-                    wm_proxy.perform_action (type);
+                    daemon.wm_proxy.perform_action (type);
                 } catch (Error e) {
                     warning ("Failed to perform Gala action over DBus: %s", e.message);
                 }
