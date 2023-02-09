@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2022-10-11 00:16+0000\n"
+"PO-Revision-Date: 2023-02-07 16:25+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
-"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/"
-">\n"
+"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -54,12 +54,11 @@ msgid "Screenshot taken"
 msgstr "Bildschirmfoto erstellt"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Änderungen werden nach 30 Sekunden automatisch zurückgesetzt."
-msgstr[1] "Änderungen werden nach 30 Sekunden automatisch zurückgesetzt."
+msgstr[0] "Änderungen werden nach %i Sekunde automatisch zurückgesetzt."
+msgstr[1] "Änderungen werden nach %i Sekunden automatisch zurückgesetzt."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
@@ -166,10 +165,8 @@ msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Fenstertitel in der Multitasking-Ansicht anzeigen"
+msgstr ""
 
 #: data/gala.appdata.xml.in:21
 msgid "Improve multitasking view animation performance"
@@ -195,18 +192,12 @@ msgid "Use access portal for force quit"
 msgstr ""
 
 #: data/gala.appdata.xml.in:68
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Properly update accent color in the window switcher"
 msgstr ""
-"Deckkraft der im Hintergrund angezeigten Fenster im Alt-Tab-Umschalter."
 
 #: data/gala.appdata.xml.in:69
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Fix selecting windows underneath the window switcher"
 msgstr ""
-"Deckkraft der im Hintergrund angezeigten Fenster im Alt-Tab-Umschalter."
 
 #: data/gala.appdata.xml.in:70
 msgid "Prevent potential crashes"
@@ -225,20 +216,12 @@ msgid "Use access portal for display settings confirmation"
 msgstr ""
 
 #: data/gala.appdata.xml.in:77
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Allow closing multitasking view with Super"
-msgstr "Fenstertitel in der Multitasking-Ansicht anzeigen"
+msgstr ""
 
 #: data/gala.appdata.xml.in:87
-#, fuzzy
-#| msgid ""
-#| "Include window decorations in screenshots for server-side decorated "
-#| "windows"
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr ""
-"Fensterdekorationen von serverseitig dekorierte Fenster in Bildschirmfotos "
-"einbeziehen"
 
 #: data/gala.appdata.xml.in:91
 msgid "Support for high-resolution scroll events"

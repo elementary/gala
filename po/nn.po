@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2020-07-04 10:12+0000\n"
+"PO-Revision-Date: 2023-02-07 16:25+0000\n"
 "Last-Translator: Martin Myrvold <myrvold.martin@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <https://l10n.elementary.io/projects/"
 "desktop/gala/nn/>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-04-19 06:26+0000\n"
 
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "\"%s\" svarar ikkje"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Applikasjonen svarar ikkje"
 
 #: src/Dialogs.vala:157
 msgid ""
@@ -37,11 +37,11 @@ msgstr ""
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Tving til å lukka"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Vent"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -57,20 +57,20 @@ msgstr "Skjermbilete"
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Endringane vil bli automatisk stilt tilbake etter %i sekund."
+msgstr[1] "Endringane vil bli automatisk stilt tilbake etter %i sekundar."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Vil du behalda dei nye innstillingane for skjermen?"
 
 #: src/WindowManager.vala:2137
 msgid "Keep Settings"
-msgstr ""
+msgstr "Behald innstillingar"
 
 #: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Bruk dei forrige innstillingane"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2180
@@ -179,12 +179,12 @@ msgstr ""
 #: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
 #: data/gala.appdata.xml.in:95
 msgid "Updated translations"
-msgstr "Oppdaterte oversettingar"
+msgstr "Oppdatert oversetning"
 
 #: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
 #: data/gala.appdata.xml.in:85
 msgid "Fixes:"
-msgstr ""
+msgstr "Løyste feil:"
 
 #: data/gala.appdata.xml.in:50
 msgid "Fix regressions for OS 7"
