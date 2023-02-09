@@ -168,7 +168,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * @param was_waiting Internal argument used to indicate that we had to
      *                    wait before the window's texture became available.
      */
-     private void load_clone (bool was_waiting = false) {
+    private void load_clone (bool was_waiting = false) {
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
             Idle.add (() => {
@@ -235,7 +235,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * If we are in overview mode, we may display windows from workspaces other than
      * the current one. To ease their appearance we have to fade them in.
      */
-     private bool should_fade () {
+    private bool should_fade () {
         return (overview_mode
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
@@ -531,7 +531,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * dialog of the window we were going to delete. If that's the case, we request
      * to select our window.
      */
-     private void close_window () {
+    private void close_window () {
         unowned Meta.Display display = window.get_display ();
         check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
 
@@ -553,7 +553,7 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * The window unmanaged by the compositor, so we need to destroy ourselves too.
      */
-     private void unmanaged () {
+    private void unmanaged () {
         remove_all_transitions ();
 
         if (drag_action != null && drag_action.dragging) {
@@ -758,7 +758,7 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Animate back to our previous position with a bouncing animation.
      */
-     private void drag_canceled () {
+    private void drag_canceled () {
         get_parent ().remove_child (this);
         prev_parent.insert_child_at_index (this, prev_index);
 
