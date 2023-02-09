@@ -640,8 +640,8 @@ public class Gala.WindowClone : Clutter.Actor {
      * we reverse those steps.
      */
     private void drag_destination_crossed (Clutter.Actor destination, bool hovered) {
-        var icon_group = (IconGroup) destination;
-        var insert_thumb = (WorkspaceInsertThumb) destination;
+        var icon_group = destination as IconGroup;
+        var insert_thumb = destination as WorkspaceInsertThumb;
 
         // if we have don't dynamic workspace, we don't allow inserting
         if (icon_group == null && insert_thumb == null
