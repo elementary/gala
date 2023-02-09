@@ -821,7 +821,6 @@ public class Gala.WindowClone : Clutter.Actor {
     private class ActiveShape : Clutter.Actor {
         private Clutter.Canvas background_canvas;
         private static int border_radius;
-        private static Gdk.RGBA color;
         private const double COLOR_OPACITY = 0.8;
         private int last_width;
         private int last_height;
@@ -864,7 +863,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         private bool draw_background (Cairo.Context cr, int width, int height) {
-            color = InternalUtils.get_theme_accent_color ();
+            var color = InternalUtils.get_theme_accent_color ();
 
             cr.save ();
             cr.set_operator (Cairo.Operator.CLEAR);
