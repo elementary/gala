@@ -224,7 +224,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new WindowShadowEffect (window, 40);
+                shadow_effect = new ShadowEffect (40) { css_class = "window-clone" };
                 shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
@@ -825,29 +825,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         return true;
-    }
-
-    private class WindowShadowEffect : ShadowEffect {
-        public unowned Meta.Window window { get; construct; }
-
-        public WindowShadowEffect (Meta.Window window, int shadow_size) {
-            Object (window: window, shadow_size: shadow_size, css_class: "window-clone");
-        }
-
-        public override Clutter.ActorBox get_bounding_box () {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var size = shadow_size * scale_factor;
-
-            var input_rect = window.get_buffer_rect ();
-            var outer_rect = window.get_frame_rect ();
-
-            // Occupy only window frame area plus shadow size
-            var bounding_box = Clutter.ActorBox ();
-            bounding_box.set_origin (-(input_rect.x - outer_rect.x) - size, -(input_rect.y - outer_rect.y) - size); //vala-lint=space-before-paren
-            bounding_box.set_size (outer_rect.width + size * 2, outer_rect.height + size * 2);
-
-            return bounding_box;
-        }
     }
 
     /**
