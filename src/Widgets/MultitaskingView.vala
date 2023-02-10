@@ -780,7 +780,7 @@ namespace Gala {
             }
         }
 
-        bool keybinding_filter (KeyBinding binding) {
+        private bool keybinding_filter (KeyBinding binding) {
             var action = Prefs.get_keybinding_action (binding.get_name ());
 
             // allow super key only when it toggles multitasking view
@@ -790,14 +790,38 @@ namespace Gala {
             }
 
             switch (action) {
+                case KeyBindingAction.WORKSPACE_1:
+                case KeyBindingAction.WORKSPACE_2:
+                case KeyBindingAction.WORKSPACE_3:
+                case KeyBindingAction.WORKSPACE_4:
+                case KeyBindingAction.WORKSPACE_5:
+                case KeyBindingAction.WORKSPACE_6:
+                case KeyBindingAction.WORKSPACE_7:
+                case KeyBindingAction.WORKSPACE_8:
+                case KeyBindingAction.WORKSPACE_9:
+                case KeyBindingAction.WORKSPACE_10:
+                case KeyBindingAction.WORKSPACE_11:
+                case KeyBindingAction.WORKSPACE_12:
                 case KeyBindingAction.WORKSPACE_LEFT:
                 case KeyBindingAction.WORKSPACE_RIGHT:
                 case KeyBindingAction.SHOW_DESKTOP:
                 case KeyBindingAction.NONE:
                     return false;
                 default:
-                    return true;
+                    break;
             }
+
+            switch (binding.get_name ()) {
+                case "cycle-workspaces-next":
+                case "cycle-workspaces-previous":
+                case "switch-to-workspace-first":
+                case "switch-to-workspace-last":
+                    return false;
+                default:
+                    break;
+            }
+
+            return true;
         }
     }
 }
