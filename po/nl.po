@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-01-19 10:58+0000\n"
-"PO-Revision-Date: 2023-02-02 09:25+0000\n"
+"PO-Revision-Date: 2023-02-10 14:25+0000\n"
 "Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -46,21 +46,18 @@ msgstr "Wachten"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr "Screenshots"
+msgstr "Schermafbeeldingen"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
 msgstr "Schermafbeelding genomen"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-"Veranderingen zullen automatisch worden teruggedraaid na 30 seconden."
-msgstr[1] ""
-"Veranderingen zullen automatisch worden teruggedraaid na 30 seconden."
+msgstr[0] "Veranderingen zullen automatisch worden teruggedraaid na %i seconde."
+msgstr[1] "Veranderingen zullen automatisch worden teruggedraaid na %i seconden."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
@@ -72,7 +69,7 @@ msgstr "Instellingen behouden"
 
 #: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
-msgstr "Vorige instellingen terugzetten"
+msgstr "Vorige instellingen gebruiken"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2180
