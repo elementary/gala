@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-19 10:58+0000\n"
+"POT-Creation-Date: 2023-02-11 17:25+0000\n"
 "PO-Revision-Date: 2023-02-10 14:25+0000\n"
 "Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -56,8 +56,10 @@ msgstr "Schermafbeelding genomen"
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Veranderingen zullen automatisch worden teruggedraaid na %i seconde."
-msgstr[1] "Veranderingen zullen automatisch worden teruggedraaid na %i seconden."
+msgstr[0] ""
+"Veranderingen zullen automatisch worden teruggedraaid na %i seconde."
+msgstr[1] ""
+"Veranderingen zullen automatisch worden teruggedraaid na %i seconden."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
@@ -153,93 +155,93 @@ msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
-#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
-#: data/gala.appdata.xml.in:89
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
-#: data/gala.appdata.xml.in:19
-msgid "Reload animated wallpapers when timezone changes"
-msgstr "Geanimeerde achtergronden herladen wanneer de tijdzone verandert"
-
-#: data/gala.appdata.xml.in:20
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Los onhandig twee-vinger scrollen op in multitask-weergave"
-
-#: data/gala.appdata.xml.in:21
-msgid "Improve multitasking view animation performance"
-msgstr "Prestaties van multitask-weergave animatie verbeterd"
-
-#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:31
+msgid "Reload animated wallpapers when timezone changes"
+msgstr "Geanimeerde achtergronden herladen wanneer de tijdzone verandert"
+
+#: data/gala.appdata.xml.in:32
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr "Los onhandig twee-vinger scrollen op in multitask-weergave"
+
+#: data/gala.appdata.xml.in:33
+msgid "Improve multitasking view animation performance"
+msgstr "Prestaties van multitask-weergave animatie verbeterd"
+
+#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:97
 msgid "Fixes:"
 msgstr "Fixes:"
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:62
 msgid "Fix regressions for OS 7"
 msgstr "Regressies opgelost voor OS 7"
 
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:66
 msgid "Use access portal for force quit"
 msgstr "Gebruik het toegangsportaal om afsluiten te forceren"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:80
 msgid "Properly update accent color in the window switcher"
 msgstr "Accentkleuren correct updaten in de vensterschakelaar"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:81
 msgid "Fix selecting windows underneath the window switcher"
 msgstr ""
 "Fix het selecteren van vensters die zich onder de vensterschakelaar bevinden"
 
-#: data/gala.appdata.xml.in:70
+#: data/gala.appdata.xml.in:82
 msgid "Prevent potential crashes"
 msgstr "Potentiële crashes opgelost"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:83
 msgid "Resize workspaces when displays change"
 msgstr "Pas grootte van workspace aan wanneer er van scherm wordt veranderd"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:84
 msgid "Handle windows with no title"
 msgstr "Ga om met vensters zonder titel"
 
-#: data/gala.appdata.xml.in:76
+#: data/gala.appdata.xml.in:88
 msgid "Use access portal for display settings confirmation"
 msgstr "Gebruik het toegangsportaal om de scherminstellingen te bevestigen"
 
-#: data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:89
 msgid "Allow closing multitasking view with Super"
 msgstr "Sta toe om het multitasking overzicht te sluiten met de super-toets"
 
-#: data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:99
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr "Los schaduwclipping op bij door de server gedecoreerde vensters"
 
-#: data/gala.appdata.xml.in:91
+#: data/gala.appdata.xml.in:103
 msgid "Support for high-resolution scroll events"
 msgstr "Ondersteuning voor scrolevenementen met een hoge resolutie"
 
-#: data/gala.appdata.xml.in:92
+#: data/gala.appdata.xml.in:104
 msgid "Redesigned Alt + Tab switcher"
 msgstr "Vernieuwde Alt + Tab schakelaar"
 
-#: data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:105
 msgid "Dim the parents of modal dialogs"
 msgstr "Verdimt de ouders van modale dialoogvensters"
 
-#: data/gala.appdata.xml.in:94
+#: data/gala.appdata.xml.in:106
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr "Dialoogvensters vallen neer op ouders in plaats van omhoog te schieten"
 
-#: data/gala.appdata.xml.in:102
+#: data/gala.appdata.xml.in:114
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -252,10 +254,6 @@ msgstr "Multitasking weergave"
 msgid "View all open windows and workspaces"
 msgstr "Toon alle open vensters en werkbladen"
 
-#: data/gala-multitaskingview.desktop.in:7
-msgid "preferences-desktop-workspaces"
-msgstr ""
-
 #: data/gala-other.desktop.in:4
 msgid "Other"
 msgstr "Andere"
@@ -265,9 +263,8 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Een reserve desktopbestand voor notificaties van verouderde applicaties."
 
-#: data/gala-other.desktop.in:6
-msgid "applications-other"
-msgstr "applications-other"
+#~ msgid "applications-other"
+#~ msgstr "applications-other"
 
 #~ msgid "Fix a potential crash when taking screenshots"
 #~ msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
