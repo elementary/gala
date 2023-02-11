@@ -816,6 +816,8 @@ namespace Gala {
                 case "cycle-workspaces-previous":
                 case "switch-to-workspace-first":
                 case "switch-to-workspace-last":
+                case "zoom-in":
+                case "zoom-out":
                     return false;
                 default:
                     break;
