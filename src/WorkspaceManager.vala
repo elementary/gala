@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Meta;
-
 namespace Gala {
     public class WorkspaceManager : Object {
         public static void init (WindowManager wm) requires (instance == null) {
@@ -31,7 +29,7 @@ namespace Gala {
 
         public WindowManager wm { get; construct; }
 
-        Gee.LinkedList<Workspace> workspaces_marked_removed;
+        Gee.LinkedList<Meta.Workspace> workspaces_marked_removed;
         int remove_freeze_count = 0;
 
         WorkspaceManager (WindowManager wm) {
@@ -39,20 +37,20 @@ namespace Gala {
         }
 
         construct {
-            workspaces_marked_removed = new Gee.LinkedList<Workspace> ();
+            workspaces_marked_removed = new Gee.LinkedList<Meta.Workspace> ();
             unowned Meta.Display display = wm.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
             // There are some empty workspace at startup
             cleanup ();
 
-            if (Prefs.get_dynamic_workspaces ())
-                manager.override_workspace_layout (DisplayCorner.TOPLEFT, false, 1, -1);
+            if (Meta.Prefs.get_dynamic_workspaces ())
+                manager.override_workspace_layout (Meta.DisplayCorner.TOPLEFT, false, 1, -1);
 
             for (var i = 0; i < manager.get_n_workspaces (); i++)
                 workspace_added (manager, i);
 
-            Prefs.add_listener (prefs_listener);
+            Meta.Prefs.add_listener (prefs_listener);
 
             manager.workspace_switched.connect_after (workspace_switched);
             manager.workspace_added.connect (workspace_added);
@@ -61,13 +59,13 @@ namespace Gala {
             display.window_left_monitor.connect (window_left_monitor);
 
             // make sure the last workspace has no windows on it
-            if (Prefs.get_dynamic_workspaces ()
+            if (Meta.Prefs.get_dynamic_workspaces ()
                 && Utils.get_n_windows (manager.get_workspace_by_index (manager.get_n_workspaces () - 1)) > 0)
                 append_workspace ();
         }
 
         ~WorkspaceManager () {
-            Prefs.remove_listener (prefs_listener);
+            Meta.Prefs.remove_listener (prefs_listener);
 
             unowned Meta.Display display = wm.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -88,7 +86,7 @@ namespace Gala {
         }
 
         void workspace_removed (Meta.WorkspaceManager manager, int index) {
-            List<Workspace> existing_workspaces = null;
+            List<Meta.Workspace> existing_workspaces = null;
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
                 existing_workspaces.append (manager.get_workspace_by_index (i));
             }
@@ -102,8 +100,8 @@ namespace Gala {
             }
         }
 
-        void workspace_switched (Meta.WorkspaceManager manager, int from, int to, MotionDirection direction) {
-            if (!Prefs.get_dynamic_workspaces ())
+        void workspace_switched (Meta.WorkspaceManager manager, int from, int to, Meta.MotionDirection direction) {
+            if (!Meta.Prefs.get_dynamic_workspaces ())
                 return;
 
             // remove empty workspaces after we switched away from them unless it's the last one
@@ -119,23 +117,23 @@ namespace Gala {
             }
         }
 
-        void window_added (Workspace? workspace, Window window) {
-            if (workspace == null || !Prefs.get_dynamic_workspaces ()
+        void window_added (Meta.Workspace? workspace, Meta.Window window) {
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces ()
                 || window.on_all_workspaces)
                 return;
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             int last_workspace = manager.get_n_workspaces () - 1;
 
-            if ((window.window_type == WindowType.NORMAL
-                || window.window_type == WindowType.DIALOG
-                || window.window_type == WindowType.MODAL_DIALOG)
+            if ((window.window_type == Meta.WindowType.NORMAL
+                || window.window_type == Meta.WindowType.DIALOG
+                || window.window_type == Meta.WindowType.MODAL_DIALOG)
                 && workspace.index () == last_workspace)
                 append_workspace ();
         }
 
-        void window_removed (Workspace? workspace, Window window) {
-            if (workspace == null || !Prefs.get_dynamic_workspaces () || window.on_all_workspaces)
+        void window_removed (Meta.Workspace? workspace, Meta.Window window) {
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces)
                 return;
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
@@ -143,9 +141,9 @@ namespace Gala {
             bool is_active_workspace = workspace == manager.get_active_workspace ();
             int last_workspace = manager.get_n_workspaces () - 1;
 
-            if (window.window_type != WindowType.NORMAL
-                && window.window_type != WindowType.DIALOG
-                && window.window_type != WindowType.MODAL_DIALOG)
+            if (window.window_type != Meta.WindowType.NORMAL
+                && window.window_type != Meta.WindowType.DIALOG
+                && window.window_type != Meta.WindowType.MODAL_DIALOG)
                 return;
 
             // has already been removed
@@ -162,13 +160,13 @@ namespace Gala {
             }
         }
 
-        void window_entered_monitor (Meta.Display display, int monitor, Window window) {
+        void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
             if (InternalUtils.workspaces_only_on_primary ()
                 && monitor == display.get_primary_monitor ())
                 window_added (window.get_workspace (), window);
         }
 
-        void window_left_monitor (Meta.Display display, int monitor, Window window) {
+        void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
             if (InternalUtils.workspaces_only_on_primary ()
                 && monitor == display.get_primary_monitor ())
                 window_removed (window.get_workspace (), window);
@@ -177,7 +175,7 @@ namespace Gala {
         void prefs_listener (Meta.Preference pref) {
             unowned Meta.WorkspaceManager manager = wm.get_display ().get_workspace_manager ();
 
-            if (pref == Preference.DYNAMIC_WORKSPACES && Prefs.get_dynamic_workspaces ()) {
+            if (pref == Meta.Preference.DYNAMIC_WORKSPACES && Meta.Prefs.get_dynamic_workspaces ()) {
                 // if the last workspace has a window, we need to append a new workspace
                 if (Utils.get_n_windows (manager.get_workspace_by_index (manager.get_n_workspaces () - 1)) > 0)
                     append_workspace ();
@@ -196,19 +194,19 @@ namespace Gala {
          *
          * @param workspace The workspace to remove
          */
-        void remove_workspace (Workspace workspace) {
+        void remove_workspace (Meta.Workspace workspace) {
             unowned Meta.Display display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var time = display.get_current_time ();
             unowned Meta.Workspace active_workspace = manager.get_active_workspace ();
 
             if (workspace == active_workspace) {
-                Workspace? next = null;
+                Meta.Workspace? next = null;
 
-                next = workspace.get_neighbor (MotionDirection.LEFT);
+                next = workspace.get_neighbor (Meta.MotionDirection.LEFT);
                 // if it's the first one we may have another one to the right
                 if (next == workspace || next == null)
-                    next = workspace.get_neighbor (MotionDirection.RIGHT);
+                    next = workspace.get_neighbor (Meta.MotionDirection.RIGHT);
 
                 if (next != null)
                     next.activate (time);
@@ -249,7 +247,7 @@ namespace Gala {
          * cleanup after an operation that required stable workspace/window indices
          */
         public void cleanup () {
-            if (!Prefs.get_dynamic_workspaces ())
+            if (!Meta.Prefs.get_dynamic_workspaces ())
                 return;
 
             unowned Meta.Display display = wm.get_display ();

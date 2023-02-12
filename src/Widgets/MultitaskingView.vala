@@ -15,16 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * The central class for the MultitaskingView which takes care of
      * preparing the wm, opening the components and holds containers for
      * the icon groups, the WorkspaceClones and the MonitorClones.
      */
-    public class MultitaskingView : Actor, ActivatableComponent {
+    public class MultitaskingView : Clutter.Actor, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
@@ -43,8 +40,8 @@ namespace Gala {
         List<MonitorClone> window_containers_monitors;
 
         IconGroupContainer icon_groups;
-        Actor workspaces;
-        Actor dock_clones;
+        Clutter.Actor workspaces;
+        Clutter.Actor dock_clones;
 
         private GLib.Settings gala_behavior_settings;
 
@@ -71,12 +68,12 @@ namespace Gala {
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
 
-            workspaces = new Actor ();
-            workspaces.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+            workspaces = new Clutter.Actor ();
+            workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
             icon_groups = new IconGroupContainer (display);
 
-            dock_clones = new Actor ();
+            dock_clones = new Clutter.Actor ();
 
             add_child (icon_groups);
             add_child (workspaces);
@@ -98,18 +95,18 @@ namespace Gala {
             update_monitors ();
             Meta.MonitorManager.@get ().monitors_changed.connect (update_monitors);
 
-            Prefs.add_listener ((pref) => {
-                if (pref == Preference.WORKSPACES_ONLY_ON_PRIMARY) {
+            Meta.Prefs.add_listener ((pref) => {
+                if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
                     update_monitors ();
                     return;
                 }
 
-                if (Prefs.get_dynamic_workspaces () ||
-                    (pref != Preference.DYNAMIC_WORKSPACES && pref != Preference.NUM_WORKSPACES))
+                if (Meta.Prefs.get_dynamic_workspaces () ||
+                    (pref != Meta.Preference.DYNAMIC_WORKSPACES && pref != Meta.Preference.NUM_WORKSPACES))
                     return;
 
                 Idle.add (() => {
-                    unowned List<Workspace> existing_workspaces = null;
+                    unowned List<Meta.Workspace> existing_workspaces = null;
                     for (int i = 0; i < manager.get_n_workspaces (); i++) {
                         existing_workspaces.append (manager.get_workspace_by_index (i));
                     }
@@ -173,27 +170,27 @@ namespace Gala {
          * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
          * GestureTracker.
          */
-        public override bool scroll_event (ScrollEvent scroll_event) {
+        public override bool scroll_event (Clutter.ScrollEvent scroll_event) {
             if (!opened) {
                 return true;
             }
 
-            if (scroll_event.direction == ScrollDirection.SMOOTH ||
-                scroll_event.scroll_source == ScrollSource.FINGER ||
+            if (scroll_event.direction == Clutter.ScrollDirection.SMOOTH ||
+                scroll_event.scroll_source == Clutter.ScrollSource.FINGER ||
                 scroll_event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE) {
                 return false;
             }
 
             Meta.MotionDirection direction;
             switch (scroll_event.direction) {
-                case ScrollDirection.UP:
-                case ScrollDirection.LEFT:
-                    direction = MotionDirection.LEFT;
+                case Clutter.ScrollDirection.UP:
+                case Clutter.ScrollDirection.LEFT:
+                    direction = Meta.MotionDirection.LEFT;
                     break;
-                case ScrollDirection.DOWN:
-                case ScrollDirection.RIGHT:
+                case Clutter.ScrollDirection.DOWN:
+                case Clutter.ScrollDirection.RIGHT:
                 default:
-                    direction = MotionDirection.RIGHT;
+                    direction = Meta.MotionDirection.RIGHT;
                     break;
             }
 
@@ -387,7 +384,7 @@ namespace Gala {
 
             if (animate) {
                 icon_groups.save_easing_state ();
-                icon_groups.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                icon_groups.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 icon_groups.set_easing_duration (200);
             }
 
@@ -424,7 +421,7 @@ namespace Gala {
 
             // FIXME is there a better way to get the removed workspace?
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            List<Workspace> existing_workspaces = null;
+            List<Meta.Workspace> existing_workspaces = null;
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
                 existing_workspaces.append (manager.get_workspace_by_index (i));
             }
@@ -483,16 +480,16 @@ namespace Gala {
                     toggle ();
                     break;
                 case Clutter.Key.Down:
-                    select_window (MotionDirection.DOWN);
+                    select_window (Meta.MotionDirection.DOWN);
                     break;
                 case Clutter.Key.Up:
-                    select_window (MotionDirection.UP);
+                    select_window (Meta.MotionDirection.UP);
                     break;
                 case Clutter.Key.Left:
-                    select_window (MotionDirection.LEFT);
+                    select_window (Meta.MotionDirection.LEFT);
                     break;
                 case Clutter.Key.Right:
-                    select_window (MotionDirection.RIGHT);
+                    select_window (Meta.MotionDirection.RIGHT);
                     break;
                 case Clutter.Key.Return:
                 case Clutter.Key.KP_Enter:
@@ -512,7 +509,7 @@ namespace Gala {
          *
          * @param direction The direction in which to move the focus to
          */
-        void select_window (MotionDirection direction) {
+        void select_window (Meta.MotionDirection direction) {
             get_active_workspace_clone ().window_container.select_next_window (direction);
         }
 
@@ -697,7 +694,7 @@ namespace Gala {
                 unowned Meta.Window window = actor.get_meta_window ();
                 var monitor = window.get_monitor ();
 
-                if (window.window_type != WindowType.DOCK)
+                if (window.window_type != Meta.WindowType.DOCK)
                     continue;
 
                 if (display.get_monitor_in_fullscreen (monitor))
@@ -723,7 +720,7 @@ namespace Gala {
 
                 GestureTracker.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
-                    clone.set_easing_mode (AnimationMode.LINEAR);
+                    clone.set_easing_mode (Clutter.AnimationMode.LINEAR);
                 };
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -732,7 +729,7 @@ namespace Gala {
                 };
 
                 GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                    clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
                     if (cancel_action) {
                         return;
@@ -753,7 +750,7 @@ namespace Gala {
 
         void hide_docks (bool with_gesture, bool is_cancel_animation) {
             foreach (var child in dock_clones.get_children ()) {
-                var dock = (Clone) child;
+                var dock = (Clutter.Clone) child;
                 var initial_y = dock.y;
                 var target_y = dock.source.y;
 
@@ -768,7 +765,7 @@ namespace Gala {
                     }
 
                     dock.set_easing_duration (ANIMATION_DURATION);
-                    dock.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                    dock.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     dock.y = target_y;
                 };
 
@@ -780,32 +777,32 @@ namespace Gala {
             }
         }
 
-        private bool keybinding_filter (KeyBinding binding) {
-            var action = Prefs.get_keybinding_action (binding.get_name ());
+        private bool keybinding_filter (Meta.KeyBinding binding) {
+            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
             // allow super key only when it toggles multitasking view
-            if (action == KeyBindingAction.OVERLAY_KEY &&
+            if (action == Meta.KeyBindingAction.OVERLAY_KEY &&
                 gala_behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
                 return false;
             }
 
             switch (action) {
-                case KeyBindingAction.WORKSPACE_1:
-                case KeyBindingAction.WORKSPACE_2:
-                case KeyBindingAction.WORKSPACE_3:
-                case KeyBindingAction.WORKSPACE_4:
-                case KeyBindingAction.WORKSPACE_5:
-                case KeyBindingAction.WORKSPACE_6:
-                case KeyBindingAction.WORKSPACE_7:
-                case KeyBindingAction.WORKSPACE_8:
-                case KeyBindingAction.WORKSPACE_9:
-                case KeyBindingAction.WORKSPACE_10:
-                case KeyBindingAction.WORKSPACE_11:
-                case KeyBindingAction.WORKSPACE_12:
-                case KeyBindingAction.WORKSPACE_LEFT:
-                case KeyBindingAction.WORKSPACE_RIGHT:
-                case KeyBindingAction.SHOW_DESKTOP:
-                case KeyBindingAction.NONE:
+                case Meta.KeyBindingAction.WORKSPACE_1:
+                case Meta.KeyBindingAction.WORKSPACE_2:
+                case Meta.KeyBindingAction.WORKSPACE_3:
+                case Meta.KeyBindingAction.WORKSPACE_4:
+                case Meta.KeyBindingAction.WORKSPACE_5:
+                case Meta.KeyBindingAction.WORKSPACE_6:
+                case Meta.KeyBindingAction.WORKSPACE_7:
+                case Meta.KeyBindingAction.WORKSPACE_8:
+                case Meta.KeyBindingAction.WORKSPACE_9:
+                case Meta.KeyBindingAction.WORKSPACE_10:
+                case Meta.KeyBindingAction.WORKSPACE_11:
+                case Meta.KeyBindingAction.WORKSPACE_12:
+                case Meta.KeyBindingAction.WORKSPACE_LEFT:
+                case Meta.KeyBindingAction.WORKSPACE_RIGHT:
+                case Meta.KeyBindingAction.SHOW_DESKTOP:
+                case Meta.KeyBindingAction.NONE:
                     return false;
                 default:
                     break;
@@ -816,6 +813,8 @@ namespace Gala {
                 case "cycle-workspaces-previous":
                 case "switch-to-workspace-first":
                 case "switch-to-workspace-last":
+                case "zoom-in":
+                case "zoom-out":
                     return false;
                 default:
                     break;

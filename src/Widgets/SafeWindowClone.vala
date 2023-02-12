@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Meta;
-
 namespace Gala {
     /**
      * A clone for a MetaWindowActor that will guard against the
@@ -24,7 +22,7 @@ namespace Gala {
      * as soon as it gets unavailable.
      */
     public class SafeWindowClone : Clutter.Clone {
-        public Window window { get; construct; }
+        public Meta.Window window { get; construct; }
 
         /**
          * If set to true, the SafeWindowClone will destroy itself when the connected
@@ -38,8 +36,8 @@ namespace Gala {
          * @param window               The window to clone from
          * @param destroy_on_unmanaged see destroy_on_unmanaged property
          */
-        public SafeWindowClone (Window window, bool destroy_on_unmanaged = false) {
-            var actor = (WindowActor) window.get_compositor_private ();
+        public SafeWindowClone (Meta.Window window, bool destroy_on_unmanaged = false) {
+            var actor = (Meta.WindowActor) window.get_compositor_private ();
 
             Object (window: window,
                     source: actor,
