@@ -50,7 +50,7 @@ namespace Gala {
             for (var i = 0; i < manager.get_n_workspaces (); i++)
                 workspace_added (manager, i);
 
-                Meta.Prefs.add_listener (prefs_listener);
+            Meta.Prefs.add_listener (prefs_listener);
 
             manager.workspace_switched.connect_after (workspace_switched);
             manager.workspace_added.connect (workspace_added);
