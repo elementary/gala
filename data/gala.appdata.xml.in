@@ -21,6 +21,7 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/24">Workspace switching shortcuts don't work in Multitasking View</issue>
+        <issue url="https://github.com/elementary/gala/issues/1478">PiP: Log spam on elementary OS 7.0</issue>
       </issues>
     </release>
 
