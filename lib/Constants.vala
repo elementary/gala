@@ -33,5 +33,7 @@ namespace Gala {
         WORKSPACE_SWITCH = 400,
         // Duration of the nudge animation when trying to switch to at the end of the workspace list
         NUDGE = 360,
+        // Duration of the default/dark style animation
+        STYLE = 300,
     }
 }

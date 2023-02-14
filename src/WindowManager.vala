@@ -75,6 +75,7 @@ namespace Gala {
         public ScreenSaverManager? screensaver { get; private set; }
 
         HotCornerManager? hot_corner_manager = null;
+        StyleAnimationManager? style_animation_manager = null;
 
         public WindowTracker? window_tracker { get; private set; }
 
@@ -292,6 +293,9 @@ namespace Gala {
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
+
+            style_animation_manager = new StyleAnimationManager (this);
+            style_animation_manager.watch_style_transitions ();
 
             zoom = new Zoom (this);
 
