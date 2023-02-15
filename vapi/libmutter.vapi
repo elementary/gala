@@ -216,7 +216,6 @@ namespace Meta {
 	public sealed class BackgroundActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false, type = "ClutterActor*")]
 		public BackgroundActor (Meta.Display display, int monitor);
-#if HAS_MUTTER338
 		[NoAccessorMethod]
 		public Meta.Display meta_display { owned get; construct; }
 		[NoAccessorMethod]
@@ -226,12 +225,8 @@ namespace Meta {
 	public sealed class BackgroundContent : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false, type = "ClutterContent*")]
 		public BackgroundContent (Meta.Display display, int monitor);
-#endif
 		public void set_background (Meta.Background background);
 		public void set_gradient (bool enabled, int height, double tone_start);
-#if !HAS_MUTTER338
-		public void set_monitor (int monitor);
-#endif
 #if HAS_MUTTER40
 		public void set_rounded_clip_bounds (Graphene.Rect? bounds);
 		public void set_rounded_clip_radius (float radius);
@@ -356,10 +351,8 @@ namespace Meta {
 		public void unmanage ();
 		public void window_opacity_changed (Meta.Window window);
 		public void window_shape_changed (Meta.Window window);
-#if HAS_MUTTER338
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
-#endif
 		[NoAccessorMethod]
 		public Meta.Display display { owned get; construct; }
 	}
@@ -413,10 +406,8 @@ namespace Meta {
 #endif
 		public unowned Cogl.Texture get_sprite ();
 		public void set_pointer_visible (bool visible);
-#if HAS_MUTTER338
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
-#endif
 		public signal void cursor_changed ();
 #if HAS_MUTTER40
 		public signal void position_invalidated ();
@@ -622,9 +613,7 @@ namespace Meta {
 		public static int get_display_configuration_timeout ();
 		public bool get_is_builtin_display_on ();
 		public int get_monitor_for_connector (string connector);
-#if HAS_MUTTER338
 		public bool get_panel_orientation_managed ();
-#endif
 		public Meta.MonitorSwitchConfigType get_switch_config ();
 		public void switch_config (Meta.MonitorSwitchConfigType config_type);
 		[NoAccessorMethod]
@@ -637,9 +626,7 @@ namespace Meta {
 		[NoAccessorMethod]
 		public bool night_light_supported { get; }
 #endif
-#if HAS_MUTTER338
 		public bool panel_orientation_managed { get; }
-#endif
 		public signal void confirm_display_change ();
 		public signal void monitors_changed ();
 		public signal void monitors_changed_internal ();
@@ -712,10 +699,8 @@ namespace Meta {
 	public sealed class RemoteAccessController : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected RemoteAccessController ();
-#if HAS_MUTTER338
 		public void inhibit_remote_access ();
 		public void uninhibit_remote_access ();
-#endif
 		public signal void new_handle (Meta.RemoteAccessHandle object);
 	}
 	[CCode (cheader_filename = "meta/meta-remote-access-controller.h", type_id = "meta_remote_access_handle_get_type ()")]
@@ -724,10 +709,8 @@ namespace Meta {
 		protected RemoteAccessHandle ();
 		public bool get_disable_animations ();
 		public virtual void stop ();
-#if HAS_MUTTER338
 		[NoAccessorMethod]
 		public bool is_recording { get; construct; }
-#endif
 		public signal void stopped ();
 	}
 	[CCode (cheader_filename = "meta/meta-selection.h", type_id = "meta_selection_get_type ()")]
@@ -849,7 +832,6 @@ namespace Meta {
 		[CCode (cheader_filename = "meta/theme.h")]
 		public static unowned Meta.Theme @new ();
 	}
-#if HAS_MUTTER338
 	[CCode (cheader_filename = "meta/meta-wayland-client.h", type_id = "meta_wayland_client_get_type ()")]
 	public sealed class WaylandClient : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -860,7 +842,6 @@ namespace Meta {
 		public GLib.Subprocess spawn (Meta.Display display, GLib.Error? error, string argv0, ...);
 		public GLib.Subprocess spawnv (Meta.Display display, [CCode (array_length = false, array_null_terminated = true)] string[] argv) throws GLib.Error;
 	}
-#endif
 	[CCode (cheader_filename = "meta/window.h", type_id = "meta_window_get_type ()")]
 	public abstract class Window : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -960,10 +941,6 @@ namespace Meta {
 		public void move_resize_frame (bool user_op, int root_x_nw, int root_y_nw, int w, int h);
 		public void move_to_monitor (int monitor);
 		public void raise ();
-#if !HAS_MUTTER338
-		public bool requested_bypass_compositor ();
-		public bool requested_dont_bypass_compositor ();
-#endif
 		public void set_compositor_private (GLib.Object priv);
 		public void set_demands_attention ();
 		public void set_icon_geometry (Meta.Rectangle? rect);
@@ -1025,9 +1002,6 @@ namespace Meta {
 		public string wm_class { get; }
 		[CCode (cname = "focus")]
 		public signal void focused ();
-#if !HAS_MUTTER338
-		public signal void monitor_changed (int old_monitor);
-#endif
 		public signal void position_changed ();
 		public signal void raised ();
 		public signal void shown ();
@@ -1040,9 +1014,7 @@ namespace Meta {
 	public abstract class WindowActor : Clutter.Actor, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
 		[CCode (has_construct_function = false)]
 		protected WindowActor ();
-#if HAS_MUTTER338
 		public void freeze ();
-#endif
 		public Cairo.Surface? get_image (Cairo.RectangleInt? clip);
 		public unowned Meta.Window get_meta_window ();
 		public unowned Meta.ShapedTexture get_texture ();
@@ -1051,16 +1023,8 @@ namespace Meta {
 		public Clutter.Content? paint_to_content (Meta.Rectangle? clip) throws GLib.Error;
 #endif
 		public void sync_visibility ();
-#if HAS_MUTTER338
 		public void thaw ();
-#endif
 		public Meta.Window meta_window { get; construct; }
-#if !HAS_MUTTER338
-		[NoAccessorMethod]
-		public string shadow_class { owned get; set; }
-		[NoAccessorMethod]
-		public Meta.ShadowMode shadow_mode { get; set; }
-#endif
 		public signal void damaged ();
 		public signal void effects_completed ();
 		public signal void first_frame ();
@@ -1096,10 +1060,8 @@ namespace Meta {
 		public int index ();
 		public GLib.List<weak Meta.Window> list_windows ();
 		public void set_builtin_struts (GLib.SList<Meta.Strut?> struts);
-#if HAS_MUTTER338
 		[NoAccessorMethod]
 		public bool active { get; }
-#endif
 		[NoAccessorMethod]
 		public uint n_windows { get; }
 		[NoAccessorMethod]
@@ -1314,19 +1276,15 @@ namespace Meta {
 		POINTING_HAND,
 		CROSSHAIR,
 		IBEAM,
-#if HAS_MUTTER338
 		BLANK,
-#endif
 		LAST
 	}
-#if HAS_MUTTER338
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_PAINT_", type_id = "meta_debug_paint_flag_get_type ()")]
 	[Flags]
 	public enum DebugPaintFlag {
 		NONE,
 		OPAQUE_REGION
 	}
-#endif
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_", type_id = "meta_debug_topic_get_type ()")]
 	[Flags]
 	public enum DebugTopic {
@@ -1865,12 +1823,10 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool activate_session ();
 #endif
-#if HAS_MUTTER338
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void add_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void add_debug_paint_flag (Meta.DebugPaintFlag flag);
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void clutter_init ();
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1881,10 +1837,8 @@ namespace Meta {
 	public static void finalize ();
 #endif
 #endif
-#if HAS_MUTTER338
 	[CCode (cheader_filename = "meta/main.h")]
 	public static Meta.DebugPaintFlag get_debug_paint_flags ();
-#endif
 #if !HAS_MUTTER41
 #if HAS_MUTTER40
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1909,12 +1863,10 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void register_with_session ();
 #endif
-#if HAS_MUTTER338
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void remove_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void remove_debug_paint_flag (Meta.DebugPaintFlag flag);
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 #if HAS_MUTTER43
 	public static void restart (string? message, Meta.Context context);
