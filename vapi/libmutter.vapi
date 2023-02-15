@@ -99,20 +99,12 @@ namespace Meta {
 		public static void add_verbose_topic (Meta.DebugTopic topic);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_bug")]
 		public static void bug (string format, ...);
-#if !HAS_MUTTER40
-		[CCode (cheader_filename = "meta/util.h", cname = "meta_debug_spew_real")]
-		public static void debug_spew_real (string format, ...);
-#endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_external_binding_name_for_action")]
 		public static string external_binding_name_for_action (uint keybinding_action);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_fatal")]
 		public static void fatal (string format, ...);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_get_locale_direction")]
 		public static Meta.LocaleDirection get_locale_direction ();
-#if !HAS_MUTTER40
-		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_debugging")]
-		public static bool is_debugging ();
-#endif
 #if !HAS_MUTTER43
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_syncing")]
 		public static bool is_syncing ();
@@ -195,9 +187,7 @@ namespace Meta {
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (Clutter.InputDevice object);
 		public signal void lid_is_closed_changed (bool object);
-#if HAS_MUTTER40
 		public signal void prepare_shutdown ();
-#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public sealed class Background : GLib.Object {
@@ -227,10 +217,8 @@ namespace Meta {
 		public BackgroundContent (Meta.Display display, int monitor);
 		public void set_background (Meta.Background background);
 		public void set_gradient (bool enabled, int height, double tone_start);
-#if HAS_MUTTER40
 		public void set_rounded_clip_bounds (Graphene.Rect? bounds);
 		public void set_rounded_clip_radius (float radius);
-#endif
 		public void set_vignette (bool enabled, double brightness, double sharpness);
 		[NoAccessorMethod]
 		public Meta.Background background { owned get; set; }
@@ -246,10 +234,8 @@ namespace Meta {
 		public Meta.Display meta_display { owned get; construct; }
 		[NoAccessorMethod]
 		public int monitor { get; construct; }
-#if HAS_MUTTER40
 		[NoAccessorMethod]
 		public float rounded_clip_radius { get; set; }
-#endif
 		[NoAccessorMethod]
 		public bool vignette { get; set; }
 		[NoAccessorMethod]
@@ -395,11 +381,7 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected CursorTracker ();
 		public void get_hot (out int x, out int y);
-#if HAS_MUTTER40
 		public void get_pointer (out Graphene.Point coords, out Clutter.ModifierType mods);
-#else
-		public void get_pointer (out int x, out int y, out Clutter.ModifierType mods);
-#endif
 		public bool get_pointer_visible ();
 #if HAS_MUTTER42
 		public float get_scale ();
@@ -409,11 +391,7 @@ namespace Meta {
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
 		public signal void cursor_changed ();
-#if HAS_MUTTER40
 		public signal void position_invalidated ();
-#else
-		public signal void cursor_moved (float x, float y);
-#endif
 		public signal void visibility_changed ();
 	}
 	[CCode (cheader_filename = "meta/display.h", type_id = "meta_display_get_type ()")]
@@ -435,9 +413,7 @@ namespace Meta {
 		public void focus_stage_window (uint32 timestamp);
 		public void freeze_keyboard (uint32 timestamp);
 		public unowned Meta.Compositor get_compositor ();
-#if HAS_MUTTER40
 		public Clutter.ModifierType get_compositor_modifiers ();
-#endif
 #if HAS_MUTTER41
 		public unowned Meta.Context get_context ();
 #endif
@@ -460,9 +436,7 @@ namespace Meta {
 		public int get_n_monitors ();
 		public string get_pad_action_label (Clutter.InputDevice pad, Meta.PadActionType action_type, uint action_number);
 		public int get_primary_monitor ();
-#if HAS_MUTTER40
 		public unowned Meta.Selection get_selection ();
-#endif
 		public void get_size (out int width, out int height);
 		public unowned Meta.SoundPlayer get_sound_player ();
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_stage_for_display")]
@@ -497,21 +471,14 @@ namespace Meta {
 		public void ungrab_keyboard (uint32 timestamp);
 		public void unset_input_focus (uint32 timestamp);
 		public bool xserver_time_is_before (uint32 time1, uint32 time2);
-#if HAS_MUTTER40
 		public Clutter.ModifierType compositor_modifiers { get; }
-#endif
 		public Meta.Window focus_window { get; }
 		public signal void accelerator_activated (uint object, Clutter.InputDevice p0, uint p1);
 		public signal void closing ();
 		public signal void cursor_updated ();
 		public signal void gl_video_memory_purged ();
-#if HAS_MUTTER40
 		public signal void grab_op_begin (Meta.Window object, Meta.GrabOp p0);
 		public signal void grab_op_end (Meta.Window object, Meta.GrabOp p0);
-#else
-		public signal void grab_op_begin (Meta.Display object, Meta.Window p0, Meta.GrabOp p1);
-		public signal void grab_op_end (Meta.Display object, Meta.Window p0, Meta.GrabOp p1);
-#endif
 		public signal void in_fullscreen_changed ();
 		public signal bool init_xserver (GLib.Task object);
 		public signal bool modifiers_accelerator_activated ();
@@ -770,9 +737,6 @@ namespace Meta {
 		public unowned Cogl.Texture get_texture ();
 		public void set_create_mipmaps (bool create_mipmaps);
 		public void set_mask_texture (Cogl.Texture mask_texture);
-#if !HAS_MUTTER40
-		public void set_opaque_region (owned Cairo.Region opaque_region);
-#endif
 		public signal void size_changed ();
 	}
 	[CCode (cheader_filename = "meta/meta-sound-player.h", type_id = "meta_sound_player_get_type ()")]
@@ -1171,15 +1135,6 @@ namespace Meta {
 		public weak string license;
 		public weak string description;
 	}
-#if !HAS_MUTTER40
-	[CCode (cheader_filename = "meta/meta-plugin.h", has_type_id = false)]
-	public struct PluginVersion {
-		public uint version_major;
-		public uint version_minor;
-		public uint version_micro;
-		public uint version_api;
-	}
-#endif
 	[CCode (cheader_filename = "meta/boxes.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "meta_rectangle_get_type ()")]
 	public struct Rectangle {
 		public int x;
@@ -1292,9 +1247,6 @@ namespace Meta {
 		FOCUS,
 		WORKAREA,
 		STACK,
-#if !HAS_MUTTER40
-		THEMES,
-#endif
 		SM,
 		EVENTS,
 		WINDOW_STATE,
@@ -1302,30 +1254,19 @@ namespace Meta {
 		GEOMETRY,
 		PLACEMENT,
 		PING,
-#if !HAS_MUTTER40
-		XINERAMA,
-#endif
 		KEYBINDINGS,
 		SYNC,
-#if !HAS_MUTTER40
-		ERRORS,
-#endif
 		STARTUP,
 		PREFS,
 		GROUPS,
 		RESIZING,
 		SHAPES,
-#if !HAS_MUTTER40
-		COMPOSITOR,
-#endif
 		EDGE_RESISTANCE,
 		INPUT,
-#if HAS_MUTTER40
 		WAYLAND,
 		KMS,
 		SCREEN_CAST,
 		REMOTE_DESKTOP,
-#endif
 #if HAS_MUTTER42
 		BACKEND,
 		RENDER,
@@ -1791,22 +1732,10 @@ namespace Meta {
 	public const int ICON_HEIGHT;
 	[CCode (cheader_filename = "meta/common.h", cname = "META_ICON_WIDTH")]
 	public const int ICON_WIDTH;
-#if !HAS_MUTTER40
-	[CCode (cheader_filename = "meta/meta-version.h", cname = "META_MAJOR_VERSION")]
-	public const int MAJOR_VERSION;
-	[CCode (cheader_filename = "meta/meta-version.h", cname = "META_MICRO_VERSION")]
-	public const int MICRO_VERSION;
-#endif
 	[CCode (cheader_filename = "meta/common.h", cname = "META_MINI_ICON_HEIGHT")]
 	public const int MINI_ICON_HEIGHT;
 	[CCode (cheader_filename = "meta/common.h", cname = "META_MINI_ICON_WIDTH")]
 	public const int MINI_ICON_WIDTH;
-#if !HAS_MUTTER40
-	[CCode (cheader_filename = "meta/meta-version.h", cname = "META_MINOR_VERSION")]
-	public const int MINOR_VERSION;
-	[CCode (cheader_filename = "meta/meta-version.h", cname = "META_PLUGIN_API_VERSION")]
-	public const int PLUGIN_API_VERSION;
-#endif
 	[CCode (cheader_filename = "meta/common.h", cname = "META_PRIORITY_BEFORE_REDRAW")]
 	public const int PRIORITY_BEFORE_REDRAW;
 	[CCode (cheader_filename = "meta/common.h", cname = "META_PRIORITY_PREFS_NOTIFY")]
@@ -1819,10 +1748,6 @@ namespace Meta {
 	public const int VIRTUAL_CORE_KEYBOARD_ID;
 	[CCode (cheader_filename = "meta/common.h", cname = "META_VIRTUAL_CORE_POINTER_ID")]
 	public const int VIRTUAL_CORE_POINTER_ID;
-#if !HAS_MUTTER40
-	[CCode (cheader_filename = "meta/main.h")]
-	public static bool activate_session ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void add_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1832,18 +1757,14 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
 #if !HAS_MUTTER41
-#if HAS_MUTTER40
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void finalize ();
-#endif
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static Meta.DebugPaintFlag get_debug_paint_flags ();
 #if !HAS_MUTTER41
-#if HAS_MUTTER40
 	[CCode (cheader_filename = "meta/main.h")]
 	public static Meta.ExitCode get_exit_code ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static unowned GLib.OptionContext get_option_context ();
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1853,10 +1774,8 @@ namespace Meta {
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_restart ();
-#if HAS_MUTTER40
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_topic_enabled (Meta.DebugTopic topic);
-#endif
 #if !HAS_MUTTER41
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void quit (Meta.ExitCode code);
@@ -1876,12 +1795,10 @@ namespace Meta {
 #if !HAS_MUTTER41
 	[CCode (cheader_filename = "meta/main.h")]
 	public static int run ();
-#if HAS_MUTTER40
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void run_main_loop ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void start ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void test_init ();
 #endif

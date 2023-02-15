@@ -82,9 +82,6 @@ namespace Gala {
             foreach (unowned GrabbedAccelerator accel in grabbed_accelerators.get_values ()) {
                 if (accel.action == action) {
                     var parameters = new GLib.HashTable<string, Variant> (null, null);
-#if !HAS_MUTTER40
-                    parameters.set ("device-id", new Variant.uint32 (device.id));
-#endif
                     parameters.set ("timestamp", new Variant.uint32 (timestamp));
                     if (device.device_node != null) {
                         parameters.set ("device-node", new Variant.string (device.device_node));

@@ -116,11 +116,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-#if HAS_MUTTER40
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
-#else
-    public override void paint (Clutter.PaintContext context, EffectPaintFlags flags) {
-#endif
         var bounding_box = get_bounding_box ();
         var width = (int) (bounding_box.x2 - bounding_box.x1);
         var height = (int) (bounding_box.y2 - bounding_box.y1);
