@@ -5831,15 +5831,11 @@ namespace Clutter {
 		[CCode (has_construct_function = false)]
 		protected FrameClock ();
 		public void add_timeline (Clutter.Timeline timeline);
-#if HAS_MUTTER41
 		public GLib.StringBuilder get_max_render_time_debug_info ();
-#endif
 		public float get_refresh_rate ();
 		public void inhibit ();
 		public void notify_ready ();
-#if HAS_MUTTER41
 		public void record_flip_time (int64 flip_time_us);
-#endif
 		public void remove_timeline (Clutter.Timeline timeline);
 		public void schedule_update ();
 		public void schedule_update_now ();
@@ -7065,7 +7061,6 @@ namespace Clutter {
 		[CCode (has_construct_function = false, type = "ClutterPaintNode*")]
 		public TextNode (Pango.Layout? layout, Clutter.Color? color);
 	}
-#if HAS_MUTTER41
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_texture_content_get_type ()")]
 	public sealed class TextureContent : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false)]
@@ -7073,7 +7068,6 @@ namespace Clutter {
 		public unowned Cogl.Texture get_texture ();
 		public static Clutter.Content new_from_texture (Cogl.Texture texture, Cairo.RectangleInt? clip);
 	}
-#endif
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_texture_node_get_type ()")]
 	[Version (since = "1.10")]
 	public class TextureNode : Clutter.PipelineNode {
@@ -7808,10 +7802,8 @@ namespace Clutter {
 		PICK,
 		EVENTLOOP,
 		CLIPPING,
-#if HAS_MUTTER41
 		FRAME_TIMINGS,
 		DETAILED_TRACE,
-#endif
 		OOB_TRANSFORMS
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_DRAG_", type_id = "clutter_drag_axis_get_type ()")]
@@ -7832,10 +7824,8 @@ namespace Clutter {
 		DISABLE_OFFSCREEN_REDIRECT,
 		CONTINUOUS_REDRAW,
 		PAINT_DEFORM_TILES,
-#if HAS_MUTTER41
 		DISABLE_DYNAMIC_MAX_RENDER_TIME,
 		PAINT_MAX_RENDER_TIME,
-#endif
 		PAINT_DAMAGE_REGION
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EFFECT_PAINT_", type_id = "clutter_effect_paint_flags_get_type ()")]
@@ -8534,10 +8524,8 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.0")]
 	public static void cairo_set_source_color (Cairo.Context cr, Clutter.Color color);
-#if HAS_MUTTER41
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static void debug_set_max_render_time_constant (int max_render_time_constant_us);
-#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.14")]
 	public static void disable_accessibility ();
@@ -8556,10 +8544,8 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.0")]
 	public static uint32 get_current_event_time ();
-#if HAS_MUTTER41
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static void get_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
-#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "0.4")]
 	public static unowned Clutter.Backend get_default_backend ();
@@ -8588,11 +8574,6 @@ namespace Clutter {
 #if !HAS_MUTTER42
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static Clutter.InitError init ([CCode (array_length_cname = "argc", array_length_pos = 0.5)] ref unowned string[]? argv);
-#endif
-#if !HAS_MUTTER41
-	[CCode (cheader_filename = "clutter/clutter.h")]
-	[Version (since = "0.2")]
-	public static Clutter.InitError init_with_args ([CCode (array_length_cname = "argc", array_length_pos = 0.5)] ref unowned string[]? argv, string? parameter_string, [CCode (array_length = false)] GLib.OptionEntry[]? entries, string? translation_domain) throws GLib.Error;
 #endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static uint32 keysym_to_unicode (uint keyval);

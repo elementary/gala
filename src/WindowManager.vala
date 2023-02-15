@@ -246,11 +246,7 @@ namespace Gala {
             display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-#if HAS_MUTTER41
             display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
-#else
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
-#endif
 
 #if HAS_MUTTER42
             display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
@@ -356,11 +352,7 @@ namespace Gala {
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-#if HAS_MUTTER41
                 display.get_context ().notify_ready ();
-#else
-                Meta.register_with_session ();
-#endif
                 plugin_manager.load_waiting_plugins ();
                 return GLib.Source.REMOVE;
             });

@@ -81,10 +81,6 @@ namespace Meta {
 		public static unowned string get_workspace_name (int i);
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_workspaces_only_on_primary ();
-#if !HAS_MUTTER41
-		[CCode (cheader_filename = "meta/prefs.h")]
-		public static void init ();
-#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static void remove_listener (Meta.PrefsChangedFunc func);
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -123,12 +119,6 @@ namespace Meta {
 		public static void push_no_msg_prefix ();
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_remove_verbose_topic")]
 		public static void remove_verbose_topic (Meta.DebugTopic topic);
-#if !HAS_MUTTER41
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_gnome_wm_keybindings")]
-		public static void set_gnome_wm_keybindings (string wm_keybindings);
-		[CCode (cheader_filename = "meta/main.h", cname = "meta_set_wm_name")]
-		public static void set_wm_name (string wm_name);
-#endif
 #if !HAS_MUTTER43
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_show_dialog")]
 		public static GLib.Pid show_dialog (string type, string message, string? timeout = null, string? display = null, string? ok_text = null, string? cancel_text = null, string? icon_name = null, int transient_for = 0, GLib.SList<string>? columns = null, GLib.SList<string>? entries = null);
@@ -157,10 +147,8 @@ namespace Meta {
 #if HAS_MUTTER43
 		public Meta.BackendCapabilities get_capabilities ();
 #endif
-#if HAS_MUTTER41
 		public unowned Meta.Context get_context ();
 		public unowned Meta.IdleMonitor get_core_idle_monitor ();
-#endif
 		public unowned Meta.Dnd get_dnd ();
 #if HAS_MUTTER42
 		public unowned Meta.MonitorManager get_monitor_manager ();
@@ -177,9 +165,7 @@ namespace Meta {
 #if HAS_MUTTER43
 		public Meta.BackendCapabilities capabilities { get; }
 #endif
-#if HAS_MUTTER41
 		public Meta.Context context { get; construct; }
-#endif
 #if !HAS_MUTTER42
 		public void set_numlock (bool numlock_state);
 #endif
@@ -342,7 +328,6 @@ namespace Meta {
 		[NoAccessorMethod]
 		public Meta.Display display { owned get; construct; }
 	}
-#if HAS_MUTTER41
 	[CCode (cheader_filename = "meta/meta-context.h", type_id = "meta_context_get_type ()")]
 	public class Context : GLib.Object {
 		[CCode (cheader_filename = "meta/meta-context.h", cname = "meta_create_context", has_construct_function = false)]
@@ -375,7 +360,6 @@ namespace Meta {
 		public bool unsafe_mode { get; set; }
 #endif
 	}
-#endif
 	[CCode (cheader_filename = "meta/meta-cursor-tracker.h", type_id = "meta_cursor_tracker_get_type ()")]
 	public class CursorTracker : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -414,9 +398,7 @@ namespace Meta {
 		public void freeze_keyboard (uint32 timestamp);
 		public unowned Meta.Compositor get_compositor ();
 		public Clutter.ModifierType get_compositor_modifiers ();
-#if HAS_MUTTER41
 		public unowned Meta.Context get_context ();
-#endif
 		public int get_current_monitor ();
 		public uint32 get_current_time ();
 		public uint32 get_current_time_roundtrip ();
@@ -531,9 +513,6 @@ namespace Meta {
 		protected IdleMonitor ();
 		public uint add_idle_watch (uint64 interval_msec, owned Meta.IdleMonitorWatchFunc? callback);
 		public uint add_user_active_watch (owned Meta.IdleMonitorWatchFunc? callback);
-#if !HAS_MUTTER41
-		public static unowned Meta.IdleMonitor get_core ();
-#endif
 		public int64 get_idletime ();
 		public void remove_watch (uint id);
 		[NoAccessorMethod]
@@ -783,9 +762,7 @@ namespace Meta {
 		public int workspace { get; construct; }
 		[HasEmitter]
 		public signal void complete ();
-#if HAS_MUTTER41
 		public signal void timeout ();
-#endif
 	}
 	[CCode (cheader_filename = "meta/theme.h", has_type_id = false)]
 	[Compact]
@@ -894,9 +871,7 @@ namespace Meta {
 		public void kill ();
 		public bool located_on_workspace (Meta.Workspace workspace);
 		public void lower ();
-#if HAS_MUTTER41
 		public void lower_with_transients (uint32 timestamp);
-#endif
 		public void make_above ();
 		public void make_fullscreen ();
 		public void maximize (Meta.MaximizeFlags directions);
@@ -1203,13 +1178,11 @@ namespace Meta {
 		MINIMIZE,
 		NONE
 	}
-#if HAS_MUTTER41
 	[CCode (cheader_filename = "meta/meta-enums.h", cprefix = "META_COMPOSITOR_TYPE_", type_id = "meta_compositor_type_get_type ()")]
 	public enum CompositorType {
 		WAYLAND,
 		X11
 	}
-#endif
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_CURSOR_", type_id = "meta_cursor_get_type ()")]
 	public enum Cursor {
 		NONE,
@@ -1756,32 +1729,12 @@ namespace Meta {
 	public static void clutter_init ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
-#if !HAS_MUTTER41
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void finalize ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static Meta.DebugPaintFlag get_debug_paint_flags ();
-#if !HAS_MUTTER41
-	[CCode (cheader_filename = "meta/main.h")]
-	public static Meta.ExitCode get_exit_code ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static unowned GLib.OptionContext get_option_context ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static bool get_replace_current_wm ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void init ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_restart ();
 	[CCode (cheader_filename = "meta/main.h")]
 	public static bool is_topic_enabled (Meta.DebugTopic topic);
-#if !HAS_MUTTER41
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void quit (Meta.ExitCode code);
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void register_with_session ();
-#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void remove_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1791,15 +1744,5 @@ namespace Meta {
 	public static void restart (string? message, Meta.Context context);
 #else
 	public static void restart (string? message);
-#endif
-#if !HAS_MUTTER41
-	[CCode (cheader_filename = "meta/main.h")]
-	public static int run ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void run_main_loop ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void start ();
-	[CCode (cheader_filename = "meta/main.h")]
-	public static void test_init ();
 #endif
 }
