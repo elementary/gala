@@ -14,7 +14,7 @@ cc = meson.get_compiler('c')
 
 gala_version = meson.project_version()
 
-vala_version_required = '0.40.0'
+vala_version_required = '0.46.0'
 vala = meson.get_compiler('vala')
 if not vala.version().version_compare('>= @0@'.format(vala_version_required))
     error('Valac >= @0@ required!'.format(vala_version_required))
