@@ -15,9 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * More or less utility class to contain a WindowCloneContainer for each
@@ -26,15 +23,15 @@ namespace Gala {
      * as the WindowGroup is hidden while the view is active. Only used when
      * workspaces-only-on-primary is set to true.
      */
-    public class MonitorClone : Actor {
-        public signal void window_selected (Window window);
+    public class MonitorClone : Clutter.Actor {
+        public signal void window_selected (Meta.Window window);
 
         public Meta.Display display { get; construct; }
         public int monitor { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
 
-        WindowCloneContainer window_container;
-        BackgroundManager background;
+        private WindowCloneContainer window_container;
+        private BackgroundManager background;
 
         public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
             Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
@@ -106,15 +103,15 @@ namespace Gala {
             background.opacity = 255;
         }
 
-        void window_left (int window_monitor, Window window) {
+        private void window_left (int window_monitor, Meta.Window window) {
             if (window_monitor != monitor)
                 return;
 
             window_container.remove_window (window);
         }
 
-        void window_entered (int window_monitor, Window window) {
-            if (window_monitor != monitor || window.window_type != WindowType.NORMAL)
+        private void window_entered (int window_monitor, Meta.Window window) {
+            if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
                 return;
 
             window_container.add_window (window);

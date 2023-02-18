@@ -15,15 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * Container which controls the layout of a set of WindowClones.
      */
-    public class WindowCloneContainer : Actor {
-        public signal void window_selected (Window window);
+    public class WindowCloneContainer : Clutter.Actor {
+        public signal void window_selected (Meta.Window window);
 
         public int padding_top { get; set; default = 12; }
         public int padding_left { get; set; default = 12; }
@@ -33,13 +30,13 @@ namespace Gala {
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
-        bool opened;
+        private bool opened;
 
         /**
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-        WindowClone? current_window;
+        private WindowClone? current_window;
 
         public WindowCloneContainer (GestureTracker? gesture_tracker, bool overview_mode = false) {
             Object (gesture_tracker: gesture_tracker, overview_mode: overview_mode);
@@ -55,12 +52,12 @@ namespace Gala {
          *
          * @param window The window for which to create the WindowClone for
          */
-        public void add_window (Window window) {
+        public void add_window (Meta.Window window) {
             unowned Meta.Display display = window.get_display ();
             var children = get_children ();
 
             GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
-            foreach (unowned Actor child in children) {
+            foreach (unowned Clutter.Actor child in children) {
                 unowned WindowClone tw = (WindowClone) child;
                 windows.prepend (tw.window);
             }
@@ -85,7 +82,7 @@ namespace Gala {
                 break;
             }
 
-            foreach (unowned Actor child in children) {
+            foreach (unowned Clutter.Actor child in children) {
                 unowned WindowClone tw = (WindowClone) child;
                 if (target == tw.window) {
                     insert_child_above (new_window, tw);
@@ -104,7 +101,7 @@ namespace Gala {
         /**
          * Find and remove the WindowClone for a MetaWindow
          */
-        public void remove_window (Window window) {
+        public void remove_window (Meta.Window window) {
             foreach (var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
                     remove_child (child);
@@ -114,11 +111,11 @@ namespace Gala {
             }
         }
 
-        void window_selected_cb (WindowClone tiled) {
+        private void window_selected_cb (WindowClone tiled) {
             window_selected (tiled.window);
         }
 
-        void window_destroyed (Actor actor) {
+        private void window_destroyed (Clutter.Actor actor) {
             var window = actor as WindowClone;
             if (window == null)
                 return;
@@ -140,7 +137,7 @@ namespace Gala {
             var children = get_children ();
 
             GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
-            foreach (unowned Actor child in children) {
+            foreach (unowned Clutter.Actor child in children) {
                 unowned WindowClone tw = (WindowClone) child;
                 windows.prepend (tw.window);
             }
@@ -150,7 +147,7 @@ namespace Gala {
 
             foreach (unowned Meta.Window window in windows_ordered) {
                 var i = 0;
-                foreach (unowned Actor child in children) {
+                foreach (unowned Clutter.Actor child in children) {
                     if (((WindowClone) child).window == window) {
                         set_child_at_index (child, i);
                         children.remove (child);
@@ -209,7 +206,7 @@ namespace Gala {
          *
          * @param direction The MetaMotionDirection in which to search for windows for.
          */
-        public void select_next_window (MotionDirection direction) {
+        public void select_next_window (Meta.MotionDirection direction) {
             if (get_n_children () < 1)
                 return;
 
@@ -228,7 +225,7 @@ namespace Gala {
                 var window_rect = ((WindowClone) window).slot;
 
                 switch (direction) {
-                    case MotionDirection.LEFT:
+                    case Meta.MotionDirection.LEFT:
                         if (window_rect.x > current_rect.x)
                             continue;
 
@@ -241,7 +238,7 @@ namespace Gala {
                                 closest = (WindowClone) window;
                         }
                         break;
-                    case MotionDirection.RIGHT:
+                    case Meta.MotionDirection.RIGHT:
                         if (window_rect.x < current_rect.x)
                             continue;
 
@@ -254,7 +251,7 @@ namespace Gala {
                                 closest = (WindowClone) window;
                         }
                         break;
-                    case MotionDirection.UP:
+                    case Meta.MotionDirection.UP:
                         if (window_rect.y > current_rect.y)
                             continue;
 
@@ -267,7 +264,7 @@ namespace Gala {
                                 closest = (WindowClone) window;
                         }
                         break;
-                    case MotionDirection.DOWN:
+                    case Meta.MotionDirection.DOWN:
                         if (window_rect.y < current_rect.y)
                             continue;
 
@@ -308,7 +305,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Window? selected_window = null, bool with_gesture = false, bool is_cancel_animation = false) {
+        public void open (Meta.Window? selected_window = null, bool with_gesture = false, bool is_cancel_animation = false) {
             if (opened) {
                 return;
             }

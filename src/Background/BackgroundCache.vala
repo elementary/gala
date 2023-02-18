@@ -17,7 +17,7 @@
 
 namespace Gala {
     public class BackgroundCache : Object {
-        static BackgroundCache? instance = null;
+        private static BackgroundCache? instance = null;
 
         public static unowned BackgroundCache get_default () {
             if (instance == null)
@@ -28,10 +28,10 @@ namespace Gala {
 
         public signal void file_changed (string filename);
 
-        Gee.HashMap<string,FileMonitor> file_monitors;
-        Gee.HashMap<string,BackgroundSource> background_sources;
+        private Gee.HashMap<string,FileMonitor> file_monitors;
+        private Gee.HashMap<string,BackgroundSource> background_sources;
 
-        Animation animation;
+        private Animation animation;
 
         public BackgroundCache () {
             Object ();

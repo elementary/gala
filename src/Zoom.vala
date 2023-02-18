@@ -6,17 +6,17 @@
  */
 
 public class Gala.Zoom : Object {
-    const float MIN_ZOOM = 1.0f;
-    const float MAX_ZOOM = 10.0f;
-    const float SHORTCUT_DELTA = 0.5f;
-    const int ANIMATION_DURATION = 300;
-    const uint MOUSE_POLL_TIME = 50;
+    private const float MIN_ZOOM = 1.0f;
+    private const float MAX_ZOOM = 10.0f;
+    private const float SHORTCUT_DELTA = 0.5f;
+    private const int ANIMATION_DURATION = 300;
+    private const uint MOUSE_POLL_TIME = 50;
 
     public WindowManager wm { get; construct; }
 
-    uint mouse_poll_timer = 0;
-    float current_zoom = MIN_ZOOM;
-    ulong wins_handler_id = 0UL;
+    private uint mouse_poll_timer = 0;
+    private float current_zoom = MIN_ZOOM;
+    private ulong wins_handler_id = 0UL;
 
     private GestureTracker gesture_tracker;
 
@@ -50,13 +50,13 @@ public class Gala.Zoom : Object {
     }
 
     [CCode (instance_pos = -1)]
-    void zoom_in (Meta.Display display, Meta.Window? window,
+    private void zoom_in (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true, wm.enable_animations);
     }
 
     [CCode (instance_pos = -1)]
-    void zoom_out (Meta.Display display, Meta.Window? window,
+    private void zoom_out (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
         zoom (-SHORTCUT_DELTA, true, wm.enable_animations);
     }
@@ -99,7 +99,7 @@ public class Gala.Zoom : Object {
         gesture_tracker.connect_handlers (null, (owned) on_animation_update, null);
     }
 
-    void zoom (float delta, bool play_sound, bool animate) {
+    private void zoom (float delta, bool play_sound, bool animate) {
         // Nothing to do if zooming out of our bounds is requested
         if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
             if (play_sound) {

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-01-03 20:36+0000\n"
+"POT-Creation-Date: 2023-02-11 17:25+0000\n"
 "PO-Revision-Date: 2022-08-07 23:26+0000\n"
 "Last-Translator: Jung-Kyu Park <bagjunggyu@gmail.com>\n"
 "Language-Team: Korean <https://l10n.elementary.io/projects/desktop/gala/ko/"
@@ -53,24 +53,27 @@ msgstr "스크린샷"
 msgid "Screenshot taken"
 msgstr "찍은 스크린샷"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2126
+#, fuzzy, c-format
+#| msgid "Changes will automatically revert after 30 seconds."
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "변경 사항이 30초 후에 자동으로 되돌아갑니다."
+
+#: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
 msgstr "새로운 디스플레이 설정을 유지하시겠습니까?"
 
-#: src/WindowManager.vala:2126
-msgid "Changes will automatically revert after 30 seconds."
-msgstr "변경 사항이 30초 후에 자동으로 되돌아갑니다."
-
-#: src/WindowManager.vala:2129
+#: src/WindowManager.vala:2137
 msgid "Keep Settings"
 msgstr "설정 유지"
 
-#: src/WindowManager.vala:2130
+#: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
 msgstr "이전 설정 사용"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2166
+#: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
 msgstr "%s에 스크린샷 찍기"
@@ -151,94 +154,94 @@ msgstr ""
 "창 &amp; 합성 관리자는 libmutter 기반이며 Pantheon을 위해 elementary가 디자인"
 "했습니다."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:35
-#: data/gala.appdata.xml.in:52 data/gala.appdata.xml.in:74
-#: data/gala.appdata.xml.in:89
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
+#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
 msgid "Improvements:"
 msgstr "개선:"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
+#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+msgid "Updated translations"
+msgstr "최신 번역"
+
+#: data/gala.appdata.xml.in:31
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:32
 #, fuzzy
 #| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "멀티태스킹 보기에서 창 제목 표시"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:33
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:37
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:95
-msgid "Updated translations"
-msgstr "최신 번역"
-
-#: data/gala.appdata.xml.in:48 data/gala.appdata.xml.in:66
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
+#: data/gala.appdata.xml.in:97
 msgid "Fixes:"
 msgstr "수정:"
 
-#: data/gala.appdata.xml.in:50
+#: data/gala.appdata.xml.in:62
 msgid "Fix regressions for OS 7"
 msgstr "OS 7 용 퇴행 수정"
 
-#: data/gala.appdata.xml.in:54
+#: data/gala.appdata.xml.in:66
 msgid "Use access portal for force quit"
 msgstr "강제 종료에 포털 접근 사용"
 
-#: data/gala.appdata.xml.in:68
+#: data/gala.appdata.xml.in:80
 msgid "Properly update accent color in the window switcher"
 msgstr "창 변환기 사용할 때 강조 색 제대로 업데이트"
 
-#: data/gala.appdata.xml.in:69
+#: data/gala.appdata.xml.in:81
 msgid "Fix selecting windows underneath the window switcher"
 msgstr "창 변환기 아래의 창 선택하기 수정"
 
-#: data/gala.appdata.xml.in:70
+#: data/gala.appdata.xml.in:82
 msgid "Prevent potential crashes"
 msgstr "잠재적 충돌 방지"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:83
 msgid "Resize workspaces when displays change"
 msgstr "디스플레이 변경 시 작업 공간 크기 조정"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:84
 msgid "Handle windows with no title"
 msgstr "제목 없는 창 처리"
 
-#: data/gala.appdata.xml.in:76
+#: data/gala.appdata.xml.in:88
 msgid "Use access portal for display settings confirmation"
 msgstr "디스플레이 설정 확인을 위해 포털 접근 사용"
 
-#: data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:89
 msgid "Allow closing multitasking view with Super"
 msgstr "Super키로 멀티태스킹 보기 닫기 허용"
 
-#: data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:99
 msgid "Fix shadow clipping on server-side decorated windows"
 msgstr "서버 측 장식 창에서 그림자 클리핑 수정"
 
-#: data/gala.appdata.xml.in:91
+#: data/gala.appdata.xml.in:103
 msgid "Support for high-resolution scroll events"
 msgstr "고해상도 스크롤 이벤트 지원"
 
-#: data/gala.appdata.xml.in:92
+#: data/gala.appdata.xml.in:104
 msgid "Redesigned Alt + Tab switcher"
 msgstr "Alt + Tab 전환기 다시 설계"
 
-#: data/gala.appdata.xml.in:93
+#: data/gala.appdata.xml.in:105
 msgid "Dim the parents of modal dialogs"
 msgstr "상위 창을 희미하게 하기"
 
-#: data/gala.appdata.xml.in:94
+#: data/gala.appdata.xml.in:106
 msgid "Dialogs fall down on parents instead of shooting out"
 msgstr "대화창은 사라지지 않고 상위 창으로 갑니다"
 
-#: data/gala.appdata.xml.in:102
+#: data/gala.appdata.xml.in:114
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -251,10 +254,6 @@ msgstr "멀티태스킹 보기"
 msgid "View all open windows and workspaces"
 msgstr "모든 창과 작업 공간 보기"
 
-#: data/gala-multitaskingview.desktop.in:7
-msgid "preferences-desktop-workspaces"
-msgstr ""
-
 #: data/gala-other.desktop.in:4
 msgid "Other"
 msgstr "기타"
@@ -263,9 +262,8 @@ msgstr "기타"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "오래된 애플리케이션 알림을 위한 대체 데스크톱 파일."
 
-#: data/gala-other.desktop.in:6
-msgid "applications-other"
-msgstr "applications-other"
+#~ msgid "applications-other"
+#~ msgstr "applications-other"
 
 #~ msgid "Fix a potential crash when taking screenshots"
 #~ msgstr "스크린샷 찍을 때 생길 수 있는 충돌 수정"
