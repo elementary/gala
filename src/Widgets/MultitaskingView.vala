@@ -720,7 +720,6 @@ namespace Gala {
 
                 GestureTracker.OnBegin on_animation_begin = () => {
                     clone.set_position (initial_x, initial_y);
-                    clone.set_easing_mode (Clutter.AnimationMode.LINEAR);
                 };
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -729,14 +728,15 @@ namespace Gala {
                 };
 
                 GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-
                     if (cancel_action) {
                         return;
                     }
 
+                    clone.save_easing_state ();
+                    clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
                     clone.y = target_y;
+                    clone.restore_easing_state ();
                 };
 
                 if (!with_gesture) {
@@ -754,6 +754,10 @@ namespace Gala {
                 var initial_y = dock.y;
                 var target_y = dock.source.y;
 
+                GestureTracker.OnBegin on_animation_begin = () => {
+                    dock.set_easing_duration (0);
+                };
+
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
                     dock.y = y;
@@ -764,15 +768,17 @@ namespace Gala {
                         return;
                     }
 
+                    dock.save_easing_state ();
                     dock.set_easing_duration (ANIMATION_DURATION);
                     dock.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     dock.y = target_y;
+                    dock.restore_easing_state ();
                 };
 
                 if (!with_gesture) {
                     on_animation_end (1, false, 0);
                 } else {
-                    multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                    multitasking_gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
