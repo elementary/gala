@@ -22,10 +22,10 @@
 
 namespace Gala.Plugins.Template {
     public class Main : Gala.Plugin {
-        const int PADDING = 50;
+        private const int PADDING = 50;
 
-        Gala.WindowManager? wm = null;
-        Clutter.Actor red_box;
+        private Gala.WindowManager? wm = null;
+        private Clutter.Actor red_box;
 
         // This function is called as soon as Gala has started and gives you
         // an instance of the GalaWindowManager class.
@@ -69,7 +69,7 @@ namespace Gala.Plugins.Template {
             wm.ui_group.add_child (red_box);
         }
 
-        bool turn_green (Clutter.ButtonEvent event) {
+        private bool turn_green (Clutter.ButtonEvent event) {
             red_box.background_color = { 0, 255, 0, 255 };
             return true;
         }

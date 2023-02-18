@@ -13,11 +13,11 @@ namespace Gala {
     public class IconGroup : Clutter.Actor {
         public const int SIZE = 64;
 
-        const int PLUS_SIZE = 8;
-        const int PLUS_WIDTH = 24;
+        private const int PLUS_SIZE = 8;
+        private const int PLUS_WIDTH = 24;
 
-        const int CLOSE_BUTTON_SIZE = 36;
-        const int SHOW_CLOSE_BUTTON_DELAY = 200;
+        private const int CLOSE_BUTTON_SIZE = 36;
+        private const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
         /**
          * The group has been clicked. The MultitaskingView should consider activating
@@ -25,7 +25,7 @@ namespace Gala {
          */
         public signal void selected ();
 
-        uint8 _backdrop_opacity = 0;
+        private uint8 _backdrop_opacity = 0;
         /**
          * The opacity of the backdrop/highlight. Set by the active property setter.
          */
@@ -39,7 +39,7 @@ namespace Gala {
             }
         }
 
-        bool _active = false;
+        private bool _active = false;
         /**
          * Fades in/out the backdrop/highlight
          */
@@ -67,13 +67,13 @@ namespace Gala {
             }
         }
 
-        DragDropAction drag_action;
+        private DragDropAction drag_action;
 
         public Meta.Workspace workspace { get; construct; }
 
-        Clutter.Actor? prev_parent = null;
-        Clutter.Actor close_button;
-        Clutter.Actor icon_container;
+        private Clutter.Actor? prev_parent = null;
+        private Clutter.Actor close_button;
+        private Clutter.Actor icon_container;
 
         public IconGroup (Meta.Workspace workspace) {
             Object (workspace: workspace);
@@ -179,7 +179,7 @@ namespace Gala {
             close_button.add_transition ("opacity", new_transition);
         }
 
-        bool resize_canvas () {
+        private bool resize_canvas () {
             var scale = InternalUtils.get_ui_scaling_factor ();
             var size = SIZE * scale;
 
@@ -189,7 +189,7 @@ namespace Gala {
             return ((Clutter.Canvas) content).set_size (size, size);
         }
 
-        void place_close_button () {
+        private void place_close_button () {
             var size = CLOSE_BUTTON_SIZE * InternalUtils.get_ui_scaling_factor ();
             close_button.set_size (size, size);
 
@@ -308,7 +308,7 @@ namespace Gala {
          * That way the workspace won't be deleted if windows decide to ignore the
          * delete signal
          */
-        void close () {
+        private void close () {
             var time = workspace.get_display ().get_current_time ();
             foreach (var window in workspace.list_windows ()) {
                 var type = window.window_type;
@@ -322,7 +322,7 @@ namespace Gala {
          * Draw the background or plus sign and do layouting. We won't lose performance here
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
-        bool draw (Cairo.Context cr) {
+        private bool draw (Cairo.Context cr) {
             var scale = InternalUtils.get_ui_scaling_factor ();
 
             cr.set_operator (Cairo.Operator.CLEAR);
@@ -486,7 +486,7 @@ namespace Gala {
             return false;
         }
 
-        Clutter.Actor? drag_begin (float click_x, float click_y) {
+        private Clutter.Actor? drag_begin (float click_x, float click_y) {
             toggle_close_button (false);
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
@@ -521,7 +521,7 @@ namespace Gala {
             return this;
         }
 
-        void drag_end (Clutter.Actor destination) {
+        private void drag_end (Clutter.Actor destination) {
             if (destination is WorkspaceInsertThumb) {
                 get_parent ().remove_child (this);
 
@@ -535,12 +535,12 @@ namespace Gala {
             }
         }
 
-        void drag_canceled () {
+        private void drag_canceled () {
             get_parent ().remove_child (this);
             restore_group ();
         }
 
-        void restore_group () {
+        private void restore_group () {
             var container = prev_parent as IconGroupContainer;
             if (container != null) {
                 container.add_group (this);
