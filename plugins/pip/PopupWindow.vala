@@ -40,24 +40,24 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private Clutter.Grab? grab = null;
 #endif
 
-    static unowned Meta.Window? previous_focus = null;
+    private static unowned Meta.Window? previous_focus = null;
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
-    static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
+    private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
         out float width, out float height) {
         float ratio = float.min (max_width / src_width, max_height / src_height);
         width = src_width * ratio;
         height = src_height * ratio;
     }
 
-    static bool get_window_is_normal (Meta.Window window) {
+    private static bool get_window_is_normal (Meta.Window window) {
         var window_type = window.get_window_type ();
         return window_type == Meta.WindowType.NORMAL
             || window_type == Meta.WindowType.DIALOG
             || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
-    static void get_current_cursor_position (out int x, out int y) {
+    private static void get_current_cursor_position (out int x, out int y) {
         Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null, out x, out y);
     }
 

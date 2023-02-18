@@ -17,11 +17,11 @@
 
 namespace Gala {
     public class BackgroundManager : Meta.BackgroundGroup {
-        const string GNOME_BACKGROUND_SCHEMA = "org.gnome.desktop.background";
-        const string GALA_BACKGROUND_SCHEMA = "io.elementary.desktop.background";
-        const string DIM_WALLPAPER_KEY = "dim-wallpaper-in-dark-style";
-        const double DIM_OPACITY = 0.85;
-        const int FADE_ANIMATION_TIME = 1000;
+        private const string GNOME_BACKGROUND_SCHEMA = "org.gnome.desktop.background";
+        private const string GALA_BACKGROUND_SCHEMA = "io.elementary.desktop.background";
+        private const string DIM_WALLPAPER_KEY = "dim-wallpaper-in-dark-style";
+        private const double DIM_OPACITY = 0.85;
+        private const int FADE_ANIMATION_TIME = 1000;
 
         public signal void changed ();
 
@@ -29,9 +29,9 @@ namespace Gala {
         public int monitor_index { get; construct; }
         public bool control_position { get; construct; }
 
-        BackgroundSource background_source;
-        Meta.BackgroundActor background_actor;
-        Meta.BackgroundActor? new_background_actor = null;
+        private BackgroundSource background_source;
+        private Meta.BackgroundActor background_actor;
+        private Meta.BackgroundActor? new_background_actor = null;
 
         private Clutter.PropertyTransition? last_dim_transition = null;
 
@@ -52,7 +52,7 @@ namespace Gala {
             destroy.connect (on_destroy);
         }
 
-        void on_destroy () {
+        private void on_destroy () {
             BackgroundCache.get_default ().release_background_source (GNOME_BACKGROUND_SCHEMA);
             background_source = null;
 
@@ -67,7 +67,7 @@ namespace Gala {
             }
         }
 
-        void swap_background_actor (bool animate) {
+        private void swap_background_actor (bool animate) {
             return_if_fail (new_background_actor != null);
 
             var old_background_actor = background_actor;
@@ -97,7 +97,7 @@ namespace Gala {
             }
         }
 
-        void update_background_actor (bool animate = true) {
+        private void update_background_actor (bool animate = true) {
             if (new_background_actor != null) {
                 // Skip displaying existing background queued for load
                 new_background_actor.destroy ();
@@ -144,7 +144,7 @@ namespace Gala {
             }
         }
 
-        Meta.BackgroundActor create_background_actor () {
+        private Meta.BackgroundActor create_background_actor () {
             var background = background_source.get_background (monitor_index);
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 

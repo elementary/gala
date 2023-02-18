@@ -25,18 +25,18 @@ namespace Gala {
     public delegate void WindowPlacer (Clutter.Actor window, Meta.Rectangle rect);
 
     public class WindowOverview : Clutter.Actor, ActivatableComponent {
-        const int BORDER = 10;
-        const int TOP_GAP = 30;
-        const int BOTTOM_GAP = 100;
+        private const int BORDER = 10;
+        private const int TOP_GAP = 30;
+        private const int BOTTOM_GAP = 100;
 
         public WindowManager wm { get; construct; }
 
-        Meta.Display display;
-        ModalProxy modal_proxy;
-        bool ready;
+        private Meta.Display display;
+        private ModalProxy modal_proxy;
+        private bool ready;
 
         // the workspaces which we expose right now
-        List<Meta.Workspace> workspaces;
+        private List<Meta.Workspace> workspaces;
 
         public WindowOverview (WindowManager wm) {
             Object (wm : wm);
@@ -193,17 +193,17 @@ namespace Gala {
             ready = true;
         }
 
-        bool keybinding_filter (Meta.KeyBinding binding) {
+        private bool keybinding_filter (Meta.KeyBinding binding) {
             var name = binding.get_name ();
             return (name != "expose-windows" && name != "expose-all-windows");
         }
 
-        void restack_windows (Meta.Display display) {
+        private void restack_windows (Meta.Display display) {
             foreach (var child in get_children ())
                 ((WindowCloneContainer) child).restack_windows (display);
         }
 
-        void window_left_monitor (int num, Meta.Window window) {
+        private void window_left_monitor (int num, Meta.Window window) {
             unowned WindowCloneContainer container = get_child_at_index (num) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -216,7 +216,7 @@ namespace Gala {
                 }
         }
 
-        void add_window (Meta.Window window) {
+        private void add_window (Meta.Window window) {
             if (!visible
                 || (window.window_type != Meta.WindowType.NORMAL && window.window_type != Meta.WindowType.DIALOG))
                 return;
@@ -233,7 +233,7 @@ namespace Gala {
                 }
         }
 
-        void remove_window (Meta.Window window) {
+        private void remove_window (Meta.Window window) {
             unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -241,7 +241,7 @@ namespace Gala {
             container.remove_window (window);
         }
 
-        void thumb_selected (Meta.Window window) {
+        private void thumb_selected (Meta.Window window) {
             if (window.get_workspace () == display.get_workspace_manager ().get_active_workspace ()) {
                 window.activate (display.get_current_time ());
                 close ();
@@ -283,7 +283,7 @@ namespace Gala {
             });
         }
 
-        void cleanup () {
+        private void cleanup () {
             ready = true;
             visible = false;
 

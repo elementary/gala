@@ -343,8 +343,8 @@ namespace Gala.Drawing {
             context.set_operator (Operator.OVER);
         }
 
-        const int ALPHA_PRECISION = 16;
-        const int PARAM_PRECISION = 7;
+        private const int ALPHA_PRECISION = 16;
+        private const int PARAM_PRECISION = 7;
 
         /**
         * Performs a blur operation on the internal {@link Cairo.Surface}, using an
@@ -401,7 +401,7 @@ namespace Gala.Drawing {
             context.set_operator (Operator.OVER);
         }
 
-        void exponential_blur_columns (
+        private void exponential_blur_columns (
             uint8* pixels,
             int width,
             int height,
@@ -432,7 +432,7 @@ namespace Gala.Drawing {
             }
         }
 
-        void exponential_blur_rows (
+        private void exponential_blur_rows (
             uint8* pixels,
             int width,
             int height,
@@ -614,7 +614,7 @@ namespace Gala.Drawing {
             context.set_operator (Operator.OVER);
         }
 
-        void gaussian_blur_horizontal (
+        private void gaussian_blur_horizontal (
             double* src,
             double* dest,
             double* kernel,
@@ -643,7 +643,7 @@ namespace Gala.Drawing {
             }
         }
 
-        void gaussian_blur_vertical (
+        private void gaussian_blur_vertical (
             double* src,
             double* dest,
             double* kernel,
@@ -673,7 +673,7 @@ namespace Gala.Drawing {
             }
         }
 
-        static double[] build_gaussian_kernel (int gauss_width) requires (gauss_width % 2 == 1) {
+        private static double[] build_gaussian_kernel (int gauss_width) requires (gauss_width % 2 == 1) {
             var kernel = new double[gauss_width];
 
             // Maximum value of curve
