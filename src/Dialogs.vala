@@ -154,7 +154,7 @@ namespace Gala {
                 title = _("Application is not responding");
             }
 
-            body = _("You may choose to wait a short while for it to continue or force the application quit entirely.");
+            body = _("You may choose to wait a short while for the application to continue, or force it to quit entirely.");
             accept_label = _("Force Quit");
             deny_label = _("Wait");
 
