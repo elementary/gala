@@ -377,7 +377,6 @@ namespace Gala {
             } catch (Error e) {
                 warning (e.message);
             }
-
 #else
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
