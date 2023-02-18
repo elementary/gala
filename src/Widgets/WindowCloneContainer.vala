@@ -36,7 +36,7 @@ namespace Gala {
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-         private WindowClone? current_window;
+        private WindowClone? current_window;
 
         public WindowCloneContainer (GestureTracker? gesture_tracker, bool overview_mode = false) {
             Object (gesture_tracker: gesture_tracker, overview_mode: overview_mode);

@@ -19,7 +19,7 @@ namespace Gala {
     /**
      * Utility class which adds a border and a shadow to a Background
      */
-     private class FramedBackground : BackgroundManager {
+    private class FramedBackground : BackgroundManager {
         private Cogl.Pipeline pipeline;
         private Cairo.ImageSurface cached_surface;
         private Cairo.Context cached_context;
