@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-02-11 17:25+0000\n"
-"PO-Revision-Date: 2022-11-09 13:29+0000\n"
+"PO-Revision-Date: 2023-02-18 10:25+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -23,25 +23,27 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” is not responding"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Application is not responding"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for it to continue or force the "
 "application quit entirely."
 msgstr ""
+"You may choose to wait a short while for it to continue or force the "
+"application to quit entirely."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Force Quit"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Wait"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
@@ -52,12 +54,11 @@ msgid "Screenshot taken"
 msgstr "Screenshot taken"
 
 #: src/WindowManager.vala:2126
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Changes will automatically revert after 30 seconds."
-msgstr[1] "Changes will automatically revert after 30 seconds."
+msgstr[0] "Changes will automatically revert after %i second."
+msgstr[1] "Changes will automatically revert after %i seconds."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
@@ -167,17 +168,15 @@ msgstr "Updated translations"
 
 #: data/gala.appdata.xml.in:31
 msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
+msgstr "Reload animated wallpapers when timezone changes"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Show window titles in multitasking view"
+msgstr "Fix awkward two-finger scroll in multitasking view"
 
 #: data/gala.appdata.xml.in:33
 msgid "Improve multitasking view animation performance"
-msgstr ""
+msgstr "Improve multitasking view animation performance"
 
 #: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
 #: data/gala.appdata.xml.in:97
@@ -186,13 +185,11 @@ msgstr "Fixes:"
 
 #: data/gala.appdata.xml.in:62
 msgid "Fix regressions for OS 7"
-msgstr ""
+msgstr "Fix regressions for OS 7"
 
 #: data/gala.appdata.xml.in:66
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
-msgstr "Use access portal for display settings confirmation and force quit"
+msgstr "Use access portal for force quit"
 
 #: data/gala.appdata.xml.in:80
 msgid "Properly update accent color in the window switcher"
@@ -215,10 +212,8 @@ msgid "Handle windows with no title"
 msgstr "Handle windows with no title"
 
 #: data/gala.appdata.xml.in:88
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for display settings confirmation"
-msgstr "Use access portal for display settings confirmation and force quit"
+msgstr "Use access portal for display settings confirmation"
 
 #: data/gala.appdata.xml.in:89
 msgid "Allow closing multitasking view with Super"
