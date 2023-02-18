@@ -733,7 +733,7 @@ namespace Gala {
                     }
 
                     clone.save_easing_state ();
-                    clone.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                    clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
                     clone.y = target_y;
                     clone.restore_easing_state ();
