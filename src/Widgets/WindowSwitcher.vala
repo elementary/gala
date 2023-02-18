@@ -13,30 +13,30 @@ namespace Gala {
         public const int WRAPPER_PADDING = 12;
         public const string CAPTION_FONT_NAME = "Inter";
 
-        const int MIN_OFFSET = 64;
-        const int FIX_TIMEOUT_INTERVAL = 100;
+        private const int MIN_OFFSET = 64;
+        private const int FIX_TIMEOUT_INTERVAL = 100;
 
         public bool opened { get; private set; default = false; }
 
         public Gala.WindowManager? wm { get; construct; }
-        Gala.ModalProxy modal_proxy = null;
+        private Gala.ModalProxy modal_proxy = null;
 
         private Granite.Settings granite_settings;
         private Clutter.Canvas canvas;
-        Clutter.Actor container;
-        Clutter.Actor indicator;
-        Clutter.Text caption;
+        private Clutter.Actor container;
+        private Clutter.Actor indicator;
+        private Clutter.Text caption;
 
-        int modifier_mask;
+        private int modifier_mask;
 
-        WindowIcon? cur_icon = null;
+        private WindowIcon? cur_icon = null;
 
         private int scaling_factor = 1;
 
         // For some reason, on Odin, the height of the caption loses
         // its padding after the first time the switcher displays. As a
         // workaround, I store the initial value here once we have it.
-        float caption_height = -1.0f;
+        private float caption_height = -1.0f;
 
         public WindowSwitcher (Gala.WindowManager wm) {
             Object (wm: wm);
@@ -212,7 +212,7 @@ namespace Gala {
             next_window (display, workspace, backward);
         }
 
-        bool collect_windows (Meta.Display display, Meta.Workspace? workspace) {
+        private bool collect_windows (Meta.Display display, Meta.Workspace? workspace) {
             var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
 
             if (windows == null) {
@@ -237,7 +237,7 @@ namespace Gala {
             return true;
         }
 
-        void open_switcher () {
+        private void open_switcher () {
             var display = wm.get_display ();
 
             if (container.get_n_children () == 0) {
@@ -310,7 +310,7 @@ namespace Gala {
             }
         }
 
-        void toggle_display (bool show) {
+        private void toggle_display (bool show) {
             if (opened == show) {
                 return;
             }
@@ -330,7 +330,7 @@ namespace Gala {
             container.reactive = show;
         }
 
-        void push_modal () {
+        private void push_modal () {
             modal_proxy = wm.push_modal (this);
             modal_proxy.set_keybinding_filter ((binding) => {
                 // if it's not built-in, we can block it right away
@@ -349,7 +349,7 @@ namespace Gala {
 #endif
         }
 
-        void close_switcher (uint32 time, bool cancel = false) {
+        private void close_switcher (uint32 time, bool cancel = false) {
             if (!opened) {
                 return;
             }
@@ -371,7 +371,7 @@ namespace Gala {
             toggle_display (false);
         }
 
-        void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
+        private void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
             Clutter.Actor actor;
             var current = cur_icon;
 
@@ -396,7 +396,7 @@ namespace Gala {
             update_indicator_position ();
         }
 
-        void update_caption_text () {
+        private void update_caption_text () {
             var current_window = cur_icon.window;
             var current_caption = "n/a";
             if (current_window != null) {
@@ -413,7 +413,7 @@ namespace Gala {
             );
         }
 
-        void update_indicator_position (bool initial = false) {
+        private void update_indicator_position (bool initial = false) {
             // FIXME there are some troubles with layouting, in some cases we
             //       are here too early, in which case all the children are at
             //       (0|0), so we can easily check for that and come back later
@@ -444,7 +444,7 @@ namespace Gala {
             close_switcher (wm.get_display ().get_current_time ());
         }
 
-        bool container_motion_event (Clutter.MotionEvent event) {
+        private bool container_motion_event (Clutter.MotionEvent event) {
             var actor = event.stage.get_actor_at_pos (Clutter.PickMode.ALL, (int)event.x, (int)event.y);
             if (actor == null) {
                 return true;
@@ -463,7 +463,7 @@ namespace Gala {
             return true;
         }
 
-        bool container_mouse_press (Clutter.ButtonEvent event) {
+        private bool container_mouse_press (Clutter.ButtonEvent event) {
             if (opened && event.button == Gdk.BUTTON_PRIMARY) {
                 close_switcher (event.time);
             }
@@ -486,7 +486,7 @@ namespace Gala {
             return false;
         }
 
-        Gdk.ModifierType get_current_modifiers () {
+        private Gdk.ModifierType get_current_modifiers () {
             Gdk.ModifierType modifiers;
             double[] axes = {};
             Gdk.Display.get_default ()

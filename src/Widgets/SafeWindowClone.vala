@@ -53,7 +53,7 @@ namespace Gala {
             window.unmanaged.disconnect (reset_source);
         }
 
-        void reset_source () {
+        private void reset_source () {
             // actually destroying the clone will be handled somewhere else (unless we were
             // requested to destroy it), we just need to make sure the clone doesn't attempt
             // to draw a clone of a window that has been destroyed

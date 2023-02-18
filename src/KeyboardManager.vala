@@ -17,8 +17,8 @@
 
 namespace Gala {
     public class KeyboardManager : Object {
-        static KeyboardManager? instance;
-        static VariantType sources_variant_type;
+        private static KeyboardManager? instance;
+        private static VariantType sources_variant_type;
 
         public static void init (Meta.Display display) {
             if (instance != null)
@@ -33,9 +33,9 @@ namespace Gala {
             sources_variant_type = new VariantType ("a(ss)");
         }
 
-        GLib.Settings settings;
+        private GLib.Settings settings;
 
-        KeyboardManager () {
+        private KeyboardManager () {
             Object ();
         }
 
@@ -51,7 +51,7 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        bool handle_modifiers_accelerator_activated (Meta.Display display) {
+        private bool handle_modifiers_accelerator_activated (Meta.Display display) {
             display.ungrab_keyboard (display.get_current_time ());
 
             var sources = settings.get_value ("sources");
@@ -69,7 +69,7 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        void set_keyboard_layout (GLib.Settings settings, string key) {
+        private void set_keyboard_layout (GLib.Settings settings, string key) {
             if (!(key == "current" || key == "sources" || key == "xkb-options"))
                 return;
 

@@ -28,20 +28,20 @@ namespace Gala {
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
 
-        const int SMOOTH_SCROLL_DELAY = 500;
+        private const int SMOOTH_SCROLL_DELAY = 500;
 
         public WindowManager wm { get; construct; }
 
-        Meta.Display display;
-        ModalProxy modal_proxy;
-        bool opened = false;
-        bool animating = false;
+        private Meta.Display display;
+        private ModalProxy modal_proxy;
+        private bool opened = false;
+        private bool animating = false;
 
-        List<MonitorClone> window_containers_monitors;
+        private List<MonitorClone> window_containers_monitors;
 
-        IconGroupContainer icon_groups;
-        Clutter.Actor workspaces;
-        Clutter.Actor dock_clones;
+        private IconGroupContainer icon_groups;
+        private Clutter.Actor workspaces;
+        private Clutter.Actor dock_clones;
 
         private GLib.Settings gala_behavior_settings;
 
@@ -135,7 +135,7 @@ namespace Gala {
          * Places the primary container for the WorkspaceClones and the
          * MonitorClones at the right positions
          */
-        void update_monitors () {
+        private void update_monitors () {
             foreach (var monitor_clone in window_containers_monitors)
                 monitor_clone.destroy ();
 
@@ -347,7 +347,7 @@ namespace Gala {
          * @param animate Whether to animate the movement or have all elements take their
          *                positions immediately.
          */
-        void update_positions (bool animate) {
+        private void update_positions (bool animate) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
             var active_x = 0.0f;
@@ -378,7 +378,7 @@ namespace Gala {
             reposition_icon_groups (animate);
         }
 
-        void reposition_icon_groups (bool animate) {
+        private void reposition_icon_groups (bool animate) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
 
@@ -401,7 +401,7 @@ namespace Gala {
                 icon_groups.restore_easing_state ();
         }
 
-        void add_workspace (int num) {
+        private void add_workspace (int num) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), multitasking_gesture_tracker);
             workspace.window_selected.connect (window_selected);
@@ -416,7 +416,7 @@ namespace Gala {
                 workspace.open ();
         }
 
-        void remove_workspace (int num) {
+        private void remove_workspace (int num) {
             WorkspaceClone? workspace = null;
 
             // FIXME is there a better way to get the removed workspace?
@@ -457,7 +457,7 @@ namespace Gala {
          *                   Otherwise it will only be made active, but the view won't be
          *                   closed.
          */
-        void activate_workspace (WorkspaceClone clone, bool close_view) {
+        private void activate_workspace (WorkspaceClone clone, bool close_view) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             close_view = close_view && manager.get_active_workspace () == clone.workspace;
 
@@ -509,7 +509,7 @@ namespace Gala {
          *
          * @param direction The direction in which to move the focus to
          */
-        void select_window (Meta.MotionDirection direction) {
+        private void select_window (Meta.MotionDirection direction) {
             get_active_workspace_clone ().window_container.select_next_window (direction);
         }
 
@@ -518,7 +518,7 @@ namespace Gala {
          *
          * @return The active WorkspaceClone
          */
-        WorkspaceClone get_active_workspace_clone () {
+        private WorkspaceClone get_active_workspace_clone () {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
@@ -530,7 +530,7 @@ namespace Gala {
             assert_not_reached ();
         }
 
-        void window_selected (Meta.Window window) {
+        private void window_selected (Meta.Window window) {
             var time = display.get_current_time ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var workspace = window.get_workspace ();
@@ -573,7 +573,7 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        void toggle (bool with_gesture = false, bool is_cancel_animation = false) {
+        private void toggle (bool with_gesture = false, bool is_cancel_animation = false) {
             if (animating) {
                 return;
             }
@@ -683,7 +683,7 @@ namespace Gala {
             }
         }
 
-        void show_docks (bool with_gesture, bool is_cancel_animation) {
+        private void show_docks (bool with_gesture, bool is_cancel_animation) {
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 85;
@@ -748,7 +748,7 @@ namespace Gala {
             }
         }
 
-        void hide_docks (bool with_gesture, bool is_cancel_animation) {
+        private void hide_docks (bool with_gesture, bool is_cancel_animation) {
             foreach (var child in dock_clones.get_children ()) {
                 var dock = (Clutter.Clone) child;
                 var initial_y = dock.y;

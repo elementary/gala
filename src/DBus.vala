@@ -18,8 +18,8 @@
 namespace Gala {
     [DBus (name="org.pantheon.gala")]
     public class DBus {
-        static DBus? instance;
-        static WindowManager wm;
+        private static DBus? instance;
+        private static WindowManager wm;
 
         [DBus (visible = false)]
         public static void init (WindowManager _wm) {
@@ -91,10 +91,10 @@ namespace Gala {
             wm.perform_action (type);
         }
 
-        const double SATURATION_WEIGHT = 1.5;
-        const double WEIGHT_THRESHOLD = 1.0;
+        private const double SATURATION_WEIGHT = 1.5;
+        private const double WEIGHT_THRESHOLD = 1.0;
 
-        class DummyOffscreenEffect : Clutter.OffscreenEffect {
+        private class DummyOffscreenEffect : Clutter.OffscreenEffect {
             public signal void done_painting ();
 
 #if HAS_MUTTER40

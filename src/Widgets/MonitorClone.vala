@@ -30,8 +30,8 @@ namespace Gala {
         public int monitor { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
 
-        WindowCloneContainer window_container;
-        BackgroundManager background;
+        private WindowCloneContainer window_container;
+        private BackgroundManager background;
 
         public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
             Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
@@ -103,14 +103,14 @@ namespace Gala {
             background.opacity = 255;
         }
 
-        void window_left (int window_monitor, Meta.Window window) {
+        private void window_left (int window_monitor, Meta.Window window) {
             if (window_monitor != monitor)
                 return;
 
             window_container.remove_window (window);
         }
 
-        void window_entered (int window_monitor, Meta.Window window) {
+        private void window_entered (int window_monitor, Meta.Window window) {
             if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
                 return;
 

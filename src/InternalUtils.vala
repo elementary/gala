@@ -375,7 +375,7 @@ namespace Gala {
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
-         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+        public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
             if (InternalUtils.workspaces_only_on_primary ()) {
                 var primary = display.get_primary_monitor ();
                 return display.get_monitor_geometry (primary);
