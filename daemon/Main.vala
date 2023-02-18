@@ -35,7 +35,7 @@ namespace Gala {
     }
 
     public class Daemon {
-        SessionClient? sclient = null;
+        private SessionClient? sclient = null;
 
         public Daemon () {
             register.begin ((o, res)=> {
@@ -109,7 +109,7 @@ namespace Gala {
             return session_client;
         }
 
-        async bool register () {
+        private async bool register () {
             sclient = yield register_with_session ("org.pantheon.gala.daemon");
 
             sclient.query_end_session.connect (() => end_session (false));
@@ -119,7 +119,7 @@ namespace Gala {
             return true;
         }
 
-        void end_session (bool quit) {
+        private void end_session (bool quit) {
             if (quit) {
                 Gtk.main_quit ();
                 return;
