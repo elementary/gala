@@ -16,12 +16,12 @@
 //
 
 namespace Gala {
-    const string EXTENSION = ".png";
-    const int UNCONCEAL_TEXT_TIMEOUT = 2000;
+    private const string EXTENSION = ".png";
+    private const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
-        static ScreenshotManager? instance;
+        private static ScreenshotManager? instance;
 
         [DBus (visible = false)]
         public static unowned ScreenshotManager init (WindowManager wm) {
@@ -31,19 +31,19 @@ namespace Gala {
             return instance;
         }
 
-        WindowManager wm;
-        Settings desktop_settings;
+        private WindowManager wm;
+        private Settings desktop_settings;
 
-        string prev_font_regular;
-        string prev_font_document;
-        string prev_font_mono;
-        uint conceal_timeout;
+        private string prev_font_regular;
+        private string prev_font_document;
+        private string prev_font_mono;
+        private uint conceal_timeout;
 
         construct {
             desktop_settings = new Settings ("org.gnome.desktop.interface");
         }
 
-        ScreenshotManager (WindowManager _wm) {
+        private ScreenshotManager (WindowManager _wm) {
             wm = _wm;
         }
 
@@ -249,7 +249,7 @@ namespace Gala {
             return result;
         }
 
-        static string find_target_path () {
+        private static string find_target_path () {
             // Try to create dedicated "Screenshots" subfolder in PICTURES xdg-dir
             unowned string? base_path = Environment.get_user_special_dir (UserDirectory.PICTURES);
             if (base_path != null && FileUtils.test (base_path, FileTest.EXISTS)) {
@@ -266,13 +266,13 @@ namespace Gala {
             return Environment.get_home_dir ();
         }
 
-        static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
             return (filename != "")
                 ? yield save_image_to_file (image, filename, out used_filename)
                 : save_image_to_clipboard (image, filename, out used_filename);
         }
 
-        static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
@@ -309,7 +309,7 @@ namespace Gala {
             }
         }
 
-        static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
 
             unowned Gdk.Display display = Gdk.Display.get_default ();
@@ -339,7 +339,7 @@ namespace Gala {
             context.play_full (0, props, null);
         }
 
-        Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
+        private Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
 #if HAS_MUTTER338
             int image_width, image_height;
@@ -393,7 +393,7 @@ namespace Gala {
             return image;
         }
 
-        Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height) {
+        private Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height) {
             var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
             var cr = new Cairo.Context (image);
 
@@ -414,7 +414,7 @@ namespace Gala {
             return image;
         }
 
-        Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
+        private Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
             Graphene.Point coords = {};
 #if HAS_MUTTER40
@@ -454,7 +454,7 @@ namespace Gala {
             return (Cairo.ImageSurface)cr.get_target ();
         }
 
-        async void wait_stage_repaint () {
+        private async void wait_stage_repaint () {
             ulong signal_id = 0UL;
             signal_id = wm.stage.after_paint.connect (() => {
                 wm.stage.disconnect (signal_id);

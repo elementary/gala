@@ -19,7 +19,7 @@ namespace Gala {
     /**
      * Utility class which adds a border and a shadow to a Background
      */
-    class FramedBackground : BackgroundManager {
+     private class FramedBackground : BackgroundManager {
         private Cogl.Pipeline pipeline;
         private Cairo.ImageSurface cached_surface;
         private Cairo.Context cached_context;
@@ -123,19 +123,19 @@ namespace Gala {
         /**
          * The offset of the scaled background to the top of the monitor bounds
          */
-        const int TOP_OFFSET = 20;
+        private const int TOP_OFFSET = 20;
 
         /**
          * The amount of time a window has to be over the WorkspaceClone while in drag
          * before we activate the workspace.
          */
-        const int HOVER_ACTIVATE_DELAY = 400;
+        private const int HOVER_ACTIVATE_DELAY = 400;
 
         /**
          * The MultitaskingView shows the workspaces overlapping them WorkspaceClone.X_OFFSET pixels
          * making it possible to move windows to the next/previous workspace.
          */
-         public const int X_OFFSET = 150;
+        public const int X_OFFSET = 150;
 
         /**
          * A window has been selected, the MultitaskingView should consider activating
@@ -156,7 +156,7 @@ namespace Gala {
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
-        bool _active = false;
+        private bool _active = false;
         /**
          * If this WorkspaceClone is currently the active one. Also sets the active
          * state on its IconGroup.
@@ -171,10 +171,10 @@ namespace Gala {
             }
         }
 
-        BackgroundManager background;
-        bool opened;
+        private BackgroundManager background;
+        private bool opened;
 
-        uint hover_activate_timeout = 0;
+        private uint hover_activate_timeout = 0;
 
         public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker) {
             Object (workspace: workspace, gesture_tracker: gesture_tracker);
@@ -265,7 +265,7 @@ namespace Gala {
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
-        void add_window (Meta.Window window) {
+        private void add_window (Meta.Window window) {
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
@@ -283,16 +283,16 @@ namespace Gala {
         /**
          * Remove a window from the WindowCloneContainer and the IconGroup
          */
-        void remove_window (Meta.Window window) {
+        private void remove_window (Meta.Window window) {
             window_container.remove_window (window);
             icon_group.remove_window (window, opened);
         }
 
-        void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
+        private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
             add_window (window);
         }
 
-        void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
+        private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
             if (monitor == display.get_primary_monitor ())
                 remove_window (window);
         }
@@ -315,7 +315,7 @@ namespace Gala {
         /**
          * @return The amount of pixels the workspace is overlapped in the X axis.
          */
-        float current_x_overlap () {
+        private float current_x_overlap () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -334,7 +334,7 @@ namespace Gala {
          *
          * @param amount The amount in px to shrink.
          */
-        static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
+        private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
             rect.x += amount;
             rect.y += amount;
             rect.width -= amount * 2;

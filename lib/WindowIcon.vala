@@ -46,7 +46,7 @@ namespace Gala {
             }
         }
 
-        bool _destroy_on_unmanaged = false;
+        private bool _destroy_on_unmanaged = false;
 
         /**
          * Creates a new WindowIcon
@@ -70,7 +70,7 @@ namespace Gala {
             update_texture (true);
         }
 
-        void update_texture (bool initial) {
+        private void update_texture (bool initial) {
             var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
             try {
                 var image = new Clutter.Image ();

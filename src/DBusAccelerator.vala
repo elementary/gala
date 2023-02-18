@@ -57,7 +57,7 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell")]
     public class DBusAccelerator {
-        static DBusAccelerator? instance;
+        private static DBusAccelerator? instance;
 
         [DBus (visible = false)]
         public static unowned DBusAccelerator init (WindowManager wm) {
@@ -69,10 +69,10 @@ namespace Gala {
 
         public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
-        WindowManager wm;
-        GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
+        private WindowManager wm;
+        private GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
 
-        DBusAccelerator (WindowManager _wm) {
+        private DBusAccelerator (WindowManager _wm) {
             wm = _wm;
             grabbed_accelerators = new HashTable<unowned string, GrabbedAccelerator> (str_hash, str_equal);
             wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
