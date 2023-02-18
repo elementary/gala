@@ -86,7 +86,7 @@ namespace Gala {
 
         bool load_module (string plugin_name) {
             var path = Module.build_path (plugin_dir.get_path (), plugin_name);
-            var module = Module.open (path, ModuleFlags.BIND_LOCAL);
+            var module = Module.open (path, ModuleFlags.LOCAL);
             if (module == null) {
                 warning (Module.error ());
                 return false;
@@ -170,6 +170,8 @@ namespace Gala {
                     }
                     window_switcher_provider = name;
                     return true;
+                default:
+                    break;
             }
 
             return true;

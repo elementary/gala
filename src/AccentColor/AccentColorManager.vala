@@ -151,7 +151,12 @@ public class Gala.AccentColorManager : Object {
             return null;
         }
 
-        return metadata.get_tag_string (TAG_ACCENT_COLOR);
+        try {
+            return metadata.try_get_tag_string (TAG_ACCENT_COLOR);
+        } catch (Error e) {
+            warning (e.message);
+            return null;
+        }
     }
 
     private NamedColor? get_accent_color (ColorExtractor color_extractor) {

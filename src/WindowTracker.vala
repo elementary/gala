@@ -5,7 +5,6 @@
  */
 
 public class Gala.WindowTracker : GLib.Object {
-    private Gala.App? focused_app = null;
     private GLib.HashTable<unowned Meta.Window, Gala.App> window_to_app;
 
     public signal void windows_changed ();

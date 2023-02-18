@@ -277,6 +277,8 @@ namespace Gala {
                                 closest = (WindowClone) window;
                         }
                         break;
+                    default:
+                        break;
                 }
             }
 

@@ -151,7 +151,7 @@ namespace Gala {
             // Construct a new "application-default-icon" and store it in the cache
             try {
                 var icon = Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
-                unknown_icon_cache.add (new CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
+                unknown_icon_cache.add (CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
                 return icon;
             } catch (Error e) {
                 var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
@@ -227,7 +227,7 @@ namespace Gala {
 
                 try {
                     var pixbuf = icon_info.load_icon ();
-                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
                     return null;
@@ -237,7 +237,7 @@ namespace Gala {
                 var size_with_scale = icon_size * scale;
                 try {
                     var pixbuf = new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
-                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
                     return null;

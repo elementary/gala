@@ -354,25 +354,30 @@ namespace Gala {
                 paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
             }
 
-            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
-                wm.stage.paint_to_buffer (
-                    {x, y, width, height},
-                    scale,
-                    image.get_data (),
-                    image.get_stride (),
-                    Cogl.PixelFormat.BGRA_8888_PRE,
-                    paint_flags
-                );
-            } else {
-                wm.stage.paint_to_buffer (
-                    {x, y, width, height},
-                    scale,
-                    image.get_data (),
-                    image.get_stride (),
-                    Cogl.PixelFormat.ARGB_8888_PRE,
-                    paint_flags
-                );
+            try {
+                if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                    wm.stage.paint_to_buffer (
+                        {x, y, width, height},
+                        scale,
+                        image.get_data (),
+                        image.get_stride (),
+                        Cogl.PixelFormat.BGRA_8888_PRE,
+                        paint_flags
+                    );
+                } else {
+                    wm.stage.paint_to_buffer (
+                        {x, y, width, height},
+                        scale,
+                        image.get_data (),
+                        image.get_stride (),
+                        Cogl.PixelFormat.ARGB_8888_PRE,
+                        paint_flags
+                    );
+                }
+            } catch (Error e) {
+                warning (e.message);
             }
+
 #else
             Clutter.Capture[] captures;
             wm.stage.capture (false, {x, y, width, height}, out captures);
