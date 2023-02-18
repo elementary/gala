@@ -15,9 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using Meta;
-using Clutter;
-
 namespace Gala {
 
     public enum WindowOverviewType {
@@ -25,9 +22,9 @@ namespace Gala {
         NATURAL
     }
 
-    public delegate void WindowPlacer (Actor window, Meta.Rectangle rect);
+    public delegate void WindowPlacer (Clutter.Actor window, Meta.Rectangle rect);
 
-    public class WindowOverview : Actor, ActivatableComponent {
+    public class WindowOverview : Clutter.Actor, ActivatableComponent {
         const int BORDER = 10;
         const int TOP_GAP = 30;
         const int BOTTOM_GAP = 100;
@@ -39,7 +36,7 @@ namespace Gala {
         bool ready;
 
         // the workspaces which we expose right now
-        List<Workspace> workspaces;
+        List<Meta.Workspace> workspaces;
 
         public WindowOverview (WindowManager wm) {
             Object (wm : wm);
@@ -103,9 +100,9 @@ namespace Gala {
 
             var all_windows = hints != null && "all-windows" in hints;
 
-            var used_windows = new SList<Window> ();
+            var used_windows = new SList<Meta.Window> ();
 
-            workspaces = new List<Workspace> ();
+            workspaces = new List<Meta.Workspace> ();
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             if (all_windows) {
@@ -118,16 +115,16 @@ namespace Gala {
 
             foreach (var workspace in workspaces) {
                 foreach (var window in workspace.list_windows ()) {
-                    if (window.window_type != WindowType.NORMAL &&
-                        window.window_type != WindowType.DOCK &&
-                        window.window_type != WindowType.DIALOG ||
+                    if (window.window_type != Meta.WindowType.NORMAL &&
+                        window.window_type != Meta.WindowType.DOCK &&
+                        window.window_type != Meta.WindowType.DIALOG ||
                         window.is_attached_dialog ()) {
-                        var actor = window.get_compositor_private () as WindowActor;
+                        var actor = window.get_compositor_private () as Meta.WindowActor;
                         if (actor != null)
                             actor.hide ();
                         continue;
                     }
-                    if (window.window_type == WindowType.DOCK)
+                    if (window.window_type == Meta.WindowType.DOCK)
                         continue;
 
                     // skip windows that are on all workspace except we're currently
@@ -179,7 +176,7 @@ namespace Gala {
             }
 
             foreach (var window in windows) {
-                unowned WindowActor actor = window.get_compositor_private () as WindowActor;
+                unowned Meta.WindowActor actor = window.get_compositor_private () as Meta.WindowActor;
                 if (actor != null)
                     actor.hide ();
 
@@ -196,17 +193,17 @@ namespace Gala {
             ready = true;
         }
 
-        bool keybinding_filter (KeyBinding binding) {
+        bool keybinding_filter (Meta.KeyBinding binding) {
             var name = binding.get_name ();
             return (name != "expose-windows" && name != "expose-all-windows");
         }
 
-        void restack_windows (Display display) {
+        void restack_windows (Meta.Display display) {
             foreach (var child in get_children ())
                 ((WindowCloneContainer) child).restack_windows (display);
         }
 
-        void window_left_monitor (int num, Window window) {
+        void window_left_monitor (int num, Meta.Window window) {
             unowned WindowCloneContainer container = get_child_at_index (num) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -219,9 +216,9 @@ namespace Gala {
                 }
         }
 
-        void add_window (Window window) {
+        void add_window (Meta.Window window) {
             if (!visible
-                || (window.window_type != WindowType.NORMAL && window.window_type != WindowType.DIALOG))
+                || (window.window_type != Meta.WindowType.NORMAL && window.window_type != Meta.WindowType.DIALOG))
                 return;
 
             unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
@@ -236,7 +233,7 @@ namespace Gala {
                 }
         }
 
-        void remove_window (Window window) {
+        void remove_window (Meta.Window window) {
             unowned WindowCloneContainer container = get_child_at_index (window.get_monitor ()) as WindowCloneContainer;
             if (container == null)
                 return;
@@ -244,7 +241,7 @@ namespace Gala {
             container.remove_window (window);
         }
 
-        void thumb_selected (Window window) {
+        void thumb_selected (Meta.Window window) {
             if (window.get_workspace () == display.get_workspace_manager ().get_active_workspace ()) {
                 window.activate (display.get_current_time ());
                 close ();
@@ -292,7 +289,7 @@ namespace Gala {
 
             foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ())
                 if (window.showing_on_its_workspace ())
-                    ((Actor) window.get_compositor_private ()).show ();
+                    ((Clutter.Actor) window.get_compositor_private ()).show ();
 
             destroy_all_children ();
         }

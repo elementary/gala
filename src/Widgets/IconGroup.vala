@@ -4,16 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * Container for WindowIconActors which takes care of the scaling and positioning.
      * It also decides whether to draw the container shape, a plus sign or an ellipsis.
      * Lastly it also includes the drawing code for the active highlight.
      */
-    public class IconGroup : Actor {
+    public class IconGroup : Clutter.Actor {
         public const int SIZE = 64;
 
         const int PLUS_SIZE = 8;
@@ -59,7 +56,7 @@ namespace Gala {
 
                 _active = value;
 
-                var transition = new PropertyTransition ("backdrop-opacity") {
+                var transition = new Clutter.PropertyTransition ("backdrop-opacity") {
                     duration = 300,
                     remove_on_complete = true
                 };
@@ -72,20 +69,20 @@ namespace Gala {
 
         DragDropAction drag_action;
 
-        public Workspace workspace { get; construct; }
+        public Meta.Workspace workspace { get; construct; }
 
-        Actor? prev_parent = null;
-        Actor close_button;
-        Actor icon_container;
+        Clutter.Actor? prev_parent = null;
+        Clutter.Actor close_button;
+        Clutter.Actor icon_container;
 
-        public IconGroup (Workspace workspace) {
+        public IconGroup (Meta.Workspace workspace) {
             Object (workspace: workspace);
         }
 
         construct {
             reactive = true;
 
-            var canvas = new Canvas ();
+            var canvas = new Clutter.Canvas ();
             canvas.draw.connect (draw);
             content = canvas;
 
@@ -97,7 +94,7 @@ namespace Gala {
             drag_action.notify["dragging"].connect (redraw);
             add_action (drag_action);
 
-            icon_container = new Actor ();
+            icon_container = new Clutter.Actor ();
             icon_container.width = width;
             icon_container.height = height;
 
@@ -118,7 +115,7 @@ namespace Gala {
 
             add_child (close_button);
 
-            var close_click = new ClickAction ();
+            var close_click = new Clutter.ClickAction ();
             close_click.clicked.connect (close);
             close_button.add_action (close_click);
 
@@ -129,13 +126,13 @@ namespace Gala {
             icon_container.actor_removed.disconnect (redraw);
         }
 
-        public override bool enter_event (CrossingEvent event) {
+        public override bool enter_event (Clutter.CrossingEvent event) {
             toggle_close_button (true);
 
             return Gdk.EVENT_PROPAGATE;
         }
 
-        public override bool leave_event (CrossingEvent event) {
+        public override bool leave_event (Clutter.CrossingEvent event) {
             if (!contains (event.related)) {
                 toggle_close_button (false);
             }
@@ -156,7 +153,7 @@ namespace Gala {
             // or when there are no windows on us. For one, our method for closing
             // wouldn't work anyway without windows and it's also the last workspace
             // which we don't want to have closed if everything went correct
-            if (!Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
+            if (!Meta.Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
                 return;
             }
 
@@ -189,7 +186,7 @@ namespace Gala {
             width = size;
             height = size;
 
-            return ((Canvas) content).set_size (size, size);
+            return ((Clutter.Canvas) content).set_size (size, size);
         }
 
         void place_close_button () {
@@ -243,7 +240,7 @@ namespace Gala {
          * @param temporary Mark the WindowIconActor as temporary. Used for windows dragged over
          *                  the group.
          */
-        public void add_window (Window window, bool no_redraw = false, bool temporary = false) {
+        public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
             var new_window = new WindowIconActor (window);
 
             new_window.save_easing_state ();
@@ -263,12 +260,12 @@ namespace Gala {
          *
          * @param animate Whether to fade the icon out before removing it
          */
-        public void remove_window (Window window, bool animate = true) {
+        public void remove_window (Meta.Window window, bool animate = true) {
             foreach (var child in icon_container.get_children ()) {
                 unowned WindowIconActor w = (WindowIconActor) child;
                 if (w.window == window) {
                     if (animate) {
-                        w.set_easing_mode (AnimationMode.LINEAR);
+                        w.set_easing_mode (Clutter.AnimationMode.LINEAR);
                         w.set_easing_duration (200);
                         w.opacity = 0;
 
@@ -293,7 +290,7 @@ namespace Gala {
         /**
          * Sets a hovered actor for the drag action.
          */
-        public void set_hovered_actor (Actor actor) {
+        public void set_hovered_actor (Clutter.Actor actor) {
             drag_action.hovered = actor;
         }
 
@@ -315,8 +312,8 @@ namespace Gala {
             var time = workspace.get_display ().get_current_time ();
             foreach (var window in workspace.list_windows ()) {
                 var type = window.window_type;
-                if (!window.is_on_all_workspaces () && (type == WindowType.NORMAL
-                    || type == WindowType.DIALOG || type == WindowType.MODAL_DIALOG))
+                if (!window.is_on_all_workspaces () && (type == Meta.WindowType.NORMAL
+                    || type == Meta.WindowType.DIALOG || type == Meta.WindowType.MODAL_DIALOG))
                     window.@delete (time);
             }
         }
@@ -394,7 +391,7 @@ namespace Gala {
             }
 
             if (n_windows < 1) {
-                if (!Prefs.get_dynamic_workspaces ()
+                if (!Meta.Prefs.get_dynamic_workspaces ()
                     || workspace_index != manager.get_n_workspaces () - 1)
                     return false;
 
@@ -489,12 +486,12 @@ namespace Gala {
             return false;
         }
 
-        Actor? drag_begin (float click_x, float click_y) {
+        Clutter.Actor? drag_begin (float click_x, float click_y) {
             toggle_close_button (false);
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
-                Prefs.get_dynamic_workspaces () &&
+                Meta.Prefs.get_dynamic_workspaces () &&
                 workspace.index () == manager.get_n_workspaces () - 1) {
                 return null;
             }
@@ -524,7 +521,7 @@ namespace Gala {
             return this;
         }
 
-        void drag_end (Actor destination) {
+        void drag_end (Clutter.Actor destination) {
             if (destination is WorkspaceInsertThumb) {
                 get_parent ().remove_child (this);
 
