@@ -33,6 +33,7 @@ namespace Gala {
         private Granite.AccelLabel always_on_top_accellabel;
         private Granite.AccelLabel close_accellabel;
         private Granite.AccelLabel hide_accellabel;
+        private Granite.AccelLabel hide_others_accellabel;
         private Granite.AccelLabel move_accellabel;
         private Granite.AccelLabel move_left_accellabel;
         private Granite.AccelLabel move_right_accellabel;
@@ -41,6 +42,7 @@ namespace Gala {
         private Granite.AccelLabel screenshot_accellabel;
         Gtk.Menu? window_menu = null;
         Gtk.MenuItem hide;
+        Gtk.MenuItem hide_others;
         Gtk.MenuItem maximize;
         Gtk.MenuItem move;
         Gtk.MenuItem resize;
@@ -118,6 +120,14 @@ namespace Gala {
             hide.add (hide_accellabel);
             hide.activate.connect (() => {
                 perform_action (Gala.ActionType.HIDE_CURRENT);
+            });
+
+            hide_others_accellabel = new Granite.AccelLabel (_("Hide Others"));
+
+            hide_others = new Gtk.MenuItem ();
+            hide_others.add (hide_others_accellabel);
+            hide_others.activate.connect (() => {
+                perform_action (Gala.ActionType.HIDE_OTHERS);
             });
 
             maximize = new Gtk.MenuItem ();
@@ -202,6 +212,7 @@ namespace Gala {
             window_menu.append (maximize);
             window_menu.append (new Gtk.SeparatorMenuItem ());
             window_menu.append (hide);
+            window_menu.append (hide_others);
             window_menu.append (close);
             window_menu.show_all ();
         }
@@ -270,6 +281,8 @@ namespace Gala {
             }
 
             screenshot_accellabel.accel_string = gala_keybind_settings.get_strv ("window-screenshot")[0];
+
+            hide_others_accellabel.accel_string = gala_keybind_settings.get_strv ("hide-others")[0];
 
             close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
             if (close.visible) {

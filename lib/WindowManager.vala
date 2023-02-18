@@ -21,6 +21,7 @@ namespace Gala {
         SHOW_WORKSPACE_VIEW,
         MAXIMIZE_CURRENT,
         HIDE_CURRENT,
+        HIDE_OTHERS,
         OPEN_LAUNCHER,
         CUSTOM_COMMAND,
         WINDOW_OVERVIEW,
