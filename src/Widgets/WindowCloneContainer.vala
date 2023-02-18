@@ -30,13 +30,13 @@ namespace Gala {
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
-        bool opened;
+        private bool opened;
 
         /**
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-        WindowClone? current_window;
+        private WindowClone? current_window;
 
         public WindowCloneContainer (GestureTracker? gesture_tracker, bool overview_mode = false) {
             Object (gesture_tracker: gesture_tracker, overview_mode: overview_mode);
@@ -111,11 +111,11 @@ namespace Gala {
             }
         }
 
-        void window_selected_cb (WindowClone tiled) {
+        private void window_selected_cb (WindowClone tiled) {
             window_selected (tiled.window);
         }
 
-        void window_destroyed (Clutter.Actor actor) {
+        private void window_destroyed (Clutter.Actor actor) {
             var window = actor as WindowClone;
             if (window == null)
                 return;

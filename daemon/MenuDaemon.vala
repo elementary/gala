@@ -16,11 +16,11 @@
 //
 
 namespace Gala {
-    const string DBUS_NAME = "org.pantheon.gala";
-    const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
+    private const string DBUS_NAME = "org.pantheon.gala";
+    private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
-    const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
     [DBus (name = "org.pantheon.gala")]
     public interface WMDBus : GLib.Object {
@@ -39,25 +39,25 @@ namespace Gala {
         private Granite.AccelLabel on_visible_workspace_accellabel;
         private Granite.AccelLabel resize_accellabel;
         private Granite.AccelLabel screenshot_accellabel;
-        Gtk.Menu? window_menu = null;
-        Gtk.MenuItem hide;
-        Gtk.MenuItem maximize;
-        Gtk.MenuItem move;
-        Gtk.MenuItem resize;
-        Gtk.CheckMenuItem always_on_top;
-        Gtk.CheckMenuItem on_visible_workspace;
-        Gtk.MenuItem move_left;
-        Gtk.MenuItem move_right;
-        Gtk.MenuItem close;
-        Gtk.MenuItem screenshot;
+        private Gtk.Menu? window_menu = null;
+        private Gtk.MenuItem hide;
+        private Gtk.MenuItem maximize;
+        private Gtk.MenuItem move;
+        private Gtk.MenuItem resize;
+        private Gtk.CheckMenuItem always_on_top;
+        private Gtk.CheckMenuItem on_visible_workspace;
+        private Gtk.MenuItem move_left;
+        private Gtk.MenuItem move_right;
+        private Gtk.MenuItem close;
+        private Gtk.MenuItem screenshot;
 
         // Desktop Menu
-        Gtk.Menu? desktop_menu = null;
+        private Gtk.Menu? desktop_menu = null;
 
-        WMDBus? wm_proxy = null;
+        private WMDBus? wm_proxy = null;
 
-        ulong always_on_top_sid = 0U;
-        ulong on_visible_workspace_sid = 0U;
+        private ulong always_on_top_sid = 0U;
+        private ulong on_visible_workspace_sid = 0U;
 
         private static GLib.Settings keybind_settings;
         private static GLib.Settings gala_keybind_settings;
@@ -75,7 +75,7 @@ namespace Gala {
             Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
         }
 
-        void on_gala_get (GLib.Object? o, GLib.AsyncResult? res) {
+        private void on_gala_get (GLib.Object? o, GLib.AsyncResult? res) {
             try {
                 wm_proxy = Bus.get_proxy.end (res);
             } catch (Error e) {
@@ -83,17 +83,17 @@ namespace Gala {
             }
         }
 
-        void lost_gala () {
+        private void lost_gala () {
             wm_proxy = null;
         }
 
-        void gala_appeared () {
+        private void gala_appeared () {
             if (wm_proxy == null) {
                 Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
             }
         }
 
-        void on_bus_acquired (DBusConnection conn) {
+        private void on_bus_acquired (DBusConnection conn) {
             try {
                 conn.register_object (DAEMON_DBUS_OBJECT_PATH, this);
             } catch (Error e) {
@@ -101,7 +101,7 @@ namespace Gala {
             }
         }
 
-        void perform_action (Gala.ActionType type) {
+        private void perform_action (Gala.ActionType type) {
             if (wm_proxy != null) {
                 try {
                     wm_proxy.perform_action (type);

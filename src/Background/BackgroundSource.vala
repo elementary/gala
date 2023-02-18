@@ -18,7 +18,7 @@
 namespace Gala {
     public class BackgroundSource : Object {
         // list of keys that are actually relevant for us
-        const string[] OPTIONS = {
+        private const string[] OPTIONS = {
             "color-shading-type",
             "picture-opacity",
             "picture-options",
@@ -34,8 +34,8 @@ namespace Gala {
 
         internal int use_count { get; set; default = 0; }
 
-        Gee.HashMap<int,Background> backgrounds;
-        uint[] hash_cache;
+        private Gee.HashMap<int,Background> backgrounds;
+        private uint[] hash_cache;
 
         public BackgroundSource (Meta.Display display, string settings_schema) {
             Object (display: display, settings: new Settings (settings_schema));
@@ -68,7 +68,7 @@ namespace Gala {
             });
         }
 
-        void monitors_changed () {
+        private void monitors_changed () {
             var n = display.get_n_monitors ();
             var i = 0;
 
@@ -113,7 +113,7 @@ namespace Gala {
             return backgrounds[monitor_index];
         }
 
-        void background_changed (Background background) {
+        private void background_changed (Background background) {
             background.changed.disconnect (background_changed);
             background.destroy ();
             backgrounds.unset (background.monitor_index);

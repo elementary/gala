@@ -98,7 +98,7 @@ namespace Gala {
             }
         }
 
-        void expanded_changed (ParamSpec param) {
+        private void expanded_changed (ParamSpec param) {
             request_reposition (true);
         }
 
@@ -143,7 +143,7 @@ namespace Gala {
             }
         }
 
-        void update_inserter_indices () {
+        private void update_inserter_indices () {
             var current_index = 0;
 
             foreach (var child in get_children ()) {

@@ -11,7 +11,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public bool expanded { get; set; default = false; }
     public int delay { get; set; default = EXPAND_DELAY; }
 
-    uint expand_timeout = 0;
+    private uint expand_timeout = 0;
 
     public WorkspaceInsertThumb (int workspace_index) {
         Object (workspace_index: workspace_index);

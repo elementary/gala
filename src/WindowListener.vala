@@ -21,7 +21,7 @@ public class Gala.WindowListener : Object {
         Meta.Rectangle outer;
     }
 
-    static WindowListener? instance = null;
+    private static WindowListener? instance = null;
 
     public static void init (Meta.Display display) {
         if (instance != null)
@@ -50,9 +50,9 @@ public class Gala.WindowListener : Object {
 
     public signal void window_no_longer_on_all_workspaces (Meta.Window window);
 
-    Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
+    private Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
-    WindowListener () {
+    private WindowListener () {
         unmaximized_state_geometry = new Gee.HashMap<Meta.Window, WindowGeometry?> ();
     }
 
@@ -63,7 +63,7 @@ public class Gala.WindowListener : Object {
         window_maximized_changed (window);
     }
 
-    void window_notify (Object object, ParamSpec pspec) {
+    private void window_notify (Object object, ParamSpec pspec) {
         var window = (Meta.Window) object;
 
         switch (pspec.name) {
@@ -77,14 +77,14 @@ public class Gala.WindowListener : Object {
         }
     }
 
-    void window_on_all_workspaces_changed (Meta.Window window) {
+    private void window_on_all_workspaces_changed (Meta.Window window) {
         if (window.on_all_workspaces)
             return;
 
         window_no_longer_on_all_workspaces (window);
     }
 
-    void window_maximized_changed (Meta.Window window) {
+    private void window_maximized_changed (Meta.Window window) {
         WindowGeometry window_geometry = {};
         window_geometry.inner = window.get_frame_rect ();
         window_geometry.outer = window.get_buffer_rect ();
