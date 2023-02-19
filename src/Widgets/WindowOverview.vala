@@ -51,7 +51,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (!contains (get_stage ().key_focus)) {
             close ();
         }
-        
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
@@ -196,7 +195,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
                 break;
         }
 
-        return true;;
+        return true;
     }
 
     private void restack_windows (Meta.Display display) {
