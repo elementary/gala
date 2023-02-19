@@ -271,7 +271,7 @@ namespace Gala {
         /**
          * Creates an actor showing the current contents of the given WindowActor.
          *
-         * @param actor      The actor from which to create a shnapshot
+         * @param actor      The actor from which to create a snapshot
          * @param inner_rect The inner (actually visible) rectangle of the window
          * @param outer_rect The outer (input region) rectangle of the window
          *
@@ -282,12 +282,7 @@ namespace Gala {
             Meta.Rectangle inner_rect,
             Meta.Rectangle outer_rect
         ) {
-            var texture = actor.get_texture () as Meta.ShapedTexture;
-
-            if (texture == null)
-                return null;
-
-            var surface = texture.get_image ({
+            var surface = actor.get_image ({
                 inner_rect.x - outer_rect.x,
                 inner_rect.y - outer_rect.y,
                 inner_rect.width,
