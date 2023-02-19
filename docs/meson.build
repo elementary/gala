@@ -23,7 +23,7 @@ basic_command = [
     '--pkg', 'config',
     vala_flags,
     '--vapidir=' + join_paths(meson.build_root(), 'lib'),
-    '--vapidir=' + join_paths(meson.source_root(), 'vapi'),
+    '--vapidir=' + join_paths(meson.global_source_root(), 'vapi'),
     '--doclet=html',
     '--use-svg-images'
 ]
