@@ -290,8 +290,9 @@ namespace Gala {
                 return null;
             }
 
-            if (content == null)
+            if (content == null) {
                 return null;
+            }
 
             var container = new Clutter.Actor ();
             container.set_size (inner_rect.width, inner_rect.height);
