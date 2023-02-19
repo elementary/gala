@@ -15,21 +15,18 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * Private class which is basically just a container for the actual
      * icon and takes care of blending the same icon in different sizes
      * over each other and various animations related to the icons
      */
-    public class WindowIconActor : Actor {
-        public Window window { get; construct; }
+    public class WindowIconActor : Clutter.Actor {
+        public Meta.Window window { get; construct; }
 
-        int icon_scale;
+        private int icon_scale;
 
-        int _icon_size;
+        private int _icon_size;
         /**
          * The icon size of the WindowIcon. Once set the new icon will be
          * faded over the old one and the actor animates to the new size.
@@ -54,7 +51,7 @@ namespace Gala {
             }
         }
 
-        bool _temporary;
+        private bool _temporary;
         /**
          * Mark the WindowIcon as temporary. Only effect of this is that a pulse
          * animation will be played on the actor. Used while DnDing window thumbs
@@ -68,24 +65,24 @@ namespace Gala {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
                 } else if (!_temporary && value) {
-                    var transition = new TransitionGroup () {
+                    var transition = new Clutter.TransitionGroup () {
                         duration = 800,
                         auto_reverse = true,
                         repeat_count = -1,
-                        progress_mode = AnimationMode.LINEAR
+                        progress_mode = Clutter.AnimationMode.LINEAR
                     };
 
-                    var opacity_transition = new PropertyTransition ("opacity");
+                    var opacity_transition = new Clutter.PropertyTransition ("opacity");
                     opacity_transition.set_from_value (100);
                     opacity_transition.set_to_value (255);
                     opacity_transition.auto_reverse = true;
 
-                    var scale_x_transition = new PropertyTransition ("scale-x");
+                    var scale_x_transition = new Clutter.PropertyTransition ("scale-x");
                     scale_x_transition.set_from_value (0.8);
                     scale_x_transition.set_to_value (1.1);
                     scale_x_transition.auto_reverse = true;
 
-                    var scale_y_transition = new PropertyTransition ("scale-y");
+                    var scale_y_transition = new Clutter.PropertyTransition ("scale-y");
                     scale_y_transition.set_from_value (0.8);
                     scale_y_transition.set_to_value (1.1);
                     scale_y_transition.auto_reverse = true;
@@ -101,18 +98,18 @@ namespace Gala {
             }
         }
 
-        bool initial = true;
+        private bool initial = true;
 
-        WindowIcon? icon = null;
-        WindowIcon? old_icon = null;
+        private WindowIcon? icon = null;
+        private WindowIcon? old_icon = null;
 
-        public WindowIconActor (Window window) {
+        public WindowIconActor (Meta.Window window) {
             Object (window: window);
         }
 
         construct {
             set_pivot_point (0.5f, 0.5f);
-            set_easing_mode (AnimationMode.EASE_OUT_ELASTIC);
+            set_easing_mode (Clutter.AnimationMode.EASE_OUT_ELASTIC);
             set_easing_duration (800);
 
             window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
@@ -123,7 +120,7 @@ namespace Gala {
             window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
         }
 
-        void on_all_workspaces_changed () {
+        private void on_all_workspaces_changed () {
             // we don't display windows that are on all workspaces
             if (window.on_all_workspaces)
                 destroy ();
@@ -154,15 +151,15 @@ namespace Gala {
         /**
          * Fades out the old icon and fades in the new icon
          */
-        void fade_new_icon () {
+        private void fade_new_icon () {
             var scale = InternalUtils.get_ui_scaling_factor ();
             var new_icon = new WindowIcon (window, icon_size, scale);
-            new_icon.add_constraint (new BindConstraint (this, BindCoordinate.SIZE, 0));
+            new_icon.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
             new_icon.opacity = 0;
 
             add_child (new_icon);
 
-            new_icon.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+            new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             new_icon.set_easing_duration (500);
 
             if (icon == null) {

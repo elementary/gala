@@ -23,14 +23,14 @@ namespace Gala {
             public int scale;
         }
 
-        static Gdk.Pixbuf? resize_pixbuf = null;
-        static Gdk.Pixbuf? close_pixbuf = null;
+        private static Gdk.Pixbuf? resize_pixbuf = null;
+        private static Gdk.Pixbuf? close_pixbuf = null;
 
-        static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
-        static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
-        static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
+        private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
+        private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
+        private static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
 
-        static AppCache app_cache;
+        private static AppCache app_cache;
 
         static construct {
             icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
@@ -441,7 +441,7 @@ namespace Gala {
             return texture;
         }
 
-        static Gtk.CssProvider gala_css = null;
+        private static Gtk.CssProvider gala_css = null;
         public static unowned Gtk.CssProvider? get_gala_css () {
             if (gala_css == null) {
                 gala_css = new Gtk.CssProvider ();

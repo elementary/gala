@@ -22,7 +22,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
-    static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
+    private static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
         return x >= rect.x && x < rect.x + rect.width
             && y >= rect.y && y < rect.y + rect.height;
     }
@@ -50,7 +50,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     [CCode (instance_pos = -1)]
-    void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
+    private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
         Meta.KeyBinding binding) {
         selection_area = new SelectionArea (wm);
         selection_area.selected.connect (on_selection_actor_selected);
@@ -78,6 +78,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
             if (active != null) {
                 int point_x = x - (int)active.x;
                 int point_y = y - (int)active.y;
+
+                // Compensate for server-side window decorations
+                var input_rect = active.get_meta_window ().get_buffer_rect ();
+                var outer_rect = active.get_meta_window ().get_frame_rect ();
+                point_x -= outer_rect.x - input_rect.x;
+                point_y -= outer_rect.y - input_rect.y;
 
                 var rect = Graphene.Rect.alloc ();
                 rect.init (point_x, point_y, width, height);

@@ -15,16 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * This class contains the icon groups at the bottom and will take
      * care of displaying actors for inserting windows between the groups
      * once implemented
      */
-    public class IconGroupContainer : Actor {
+    public class IconGroupContainer : Clutter.Actor {
         public const int SPACING = 48;
         public const int GROUP_WIDTH = 64;
 
@@ -35,7 +32,7 @@ namespace Gala {
         public IconGroupContainer (Meta.Display display) {
             Object (display: display);
 
-            layout_manager = new BoxLayout ();
+            layout_manager = new Clutter.BoxLayout ();
         }
 
         public void add_group (IconGroup group) {
@@ -101,7 +98,7 @@ namespace Gala {
             }
         }
 
-        void expanded_changed (ParamSpec param) {
+        private void expanded_changed (ParamSpec param) {
             request_reposition (true);
         }
 
@@ -146,7 +143,7 @@ namespace Gala {
             }
         }
 
-        void update_inserter_indices () {
+        private void update_inserter_indices () {
             var current_index = 0;
 
             foreach (var child in get_children ()) {
