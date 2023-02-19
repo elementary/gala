@@ -104,7 +104,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
                     window.window_type != Meta.WindowType.DOCK &&
                     window.window_type != Meta.WindowType.DIALOG ||
                     window.is_attached_dialog ()) {
-                    var actor = window.get_compositor_private () as Meta.WindowActor;
+                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     if (actor != null) {
                         actor.hide ();
                     }
