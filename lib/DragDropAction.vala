@@ -25,8 +25,8 @@ namespace Gala {
     }
 
     public class DragDropAction : Clutter.Action {
-        static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
-        static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
+        private static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
+        private static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
 
         /**
          * A drag has been started. You have to connect to this signal and
@@ -99,15 +99,15 @@ namespace Gala {
 
         public Actor? hovered { private get; set; default = null; }
 
-        bool clicked = false;
-        float last_x;
-        float last_y;
+        private bool clicked = false;
+        private float last_x;
+        private float last_y;
 
 #if HAS_MUTTER42
-        Grab? grab = null;
-        static unowned Actor? grabbed_actor = null;
-        InputDevice? grabbed_device = null;
-        ulong on_event_id = 0;
+        private Grab? grab = null;
+        private static unowned Actor? grabbed_actor = null;
+        private InputDevice? grabbed_device = null;
+        private ulong on_event_id = 0;
 #endif
 
         /**
@@ -146,7 +146,7 @@ namespace Gala {
             base.set_actor (new_actor);
         }
 
-        void release_actor (Actor actor) {
+        private void release_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
 #if !HAS_MUTTER42
                 actor.button_press_event.disconnect (source_clicked);
@@ -162,7 +162,7 @@ namespace Gala {
             }
         }
 
-        void connect_actor (Actor actor) {
+        private void connect_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
 #if !HAS_MUTTER42
                 actor.button_press_event.connect (source_clicked);
@@ -188,7 +188,7 @@ namespace Gala {
             }
         }
 
-        void emit_crossed (Actor destination, bool is_hovered) {
+        private void emit_crossed (Actor destination, bool is_hovered) {
             get_drag_drop_action (destination).crossed (actor, is_hovered);
             destination_crossed (destination, is_hovered);
         }
@@ -254,7 +254,7 @@ namespace Gala {
             return base.handle_event (event);
         }
 
-        void grab_actor (Actor actor, InputDevice device) {
+        private void grab_actor (Actor actor, InputDevice device) {
             if (grabbed_actor != null) {
                 critical ("Tried to grab an actor with a grab already in progress");
             }
@@ -265,7 +265,7 @@ namespace Gala {
             on_event_id = actor.event.connect (on_event);
         }
 
-        void ungrab_actor () {
+        private void ungrab_actor () {
             if (on_event_id == 0 || grabbed_actor == null) {
                 return;
             }
@@ -281,7 +281,7 @@ namespace Gala {
             grabbed_actor = null;
         }
 
-        bool on_event (Clutter.Event event) {
+        private bool on_event (Clutter.Event event) {
             var device = event.get_device ();
 
             if (grabbed_device != null &&
@@ -315,8 +315,6 @@ namespace Gala {
 
                             ungrab_actor ();
                             grab_actor (handle, event.get_device ());
-
-                            handle.reactive = false;
 
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {
@@ -381,7 +379,7 @@ namespace Gala {
             return false;
         }
 #else
-        bool source_clicked (ButtonEvent event) {
+        private bool source_clicked (ButtonEvent event) {
             if (event.button != 1) {
                 actor_clicked (event.button);
                 return false;
@@ -395,7 +393,7 @@ namespace Gala {
             return true;
         }
 
-        bool follow_move (Event event) {
+        private bool follow_move (Event event) {
             // still determining if we actually want to start a drag action
             if (!dragging) {
                 switch (event.get_type ()) {
@@ -521,7 +519,7 @@ namespace Gala {
          *
          * @return the DragDropAction instance on this actor or NULL
          */
-        DragDropAction? get_drag_drop_action (Actor actor) {
+        private DragDropAction? get_drag_drop_action (Actor actor) {
             DragDropAction? drop_action = null;
 
             foreach (var action in actor.get_actions ()) {
@@ -565,7 +563,7 @@ namespace Gala {
             }
         }
 
-        void finish () {
+        private void finish () {
             // make sure they reset the style or whatever they changed when hovered
             emit_crossed (hovered, false);
 
@@ -574,7 +572,7 @@ namespace Gala {
             drag_end (hovered);
         }
 
-        void cleanup () {
+        private void cleanup () {
             var source_list = sources.@get (drag_id);
             if (source_list != null) {
                 foreach (var actor in source_list) {

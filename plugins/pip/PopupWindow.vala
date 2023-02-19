@@ -1,19 +1,8 @@
-//
-//  Copyright (C) 2017 Adam Bieńkowski
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2017 Adam Bieńkowski
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private int button_size;
@@ -51,24 +40,24 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private Clutter.Grab? grab = null;
 #endif
 
-    static unowned Meta.Window? previous_focus = null;
+    private static unowned Meta.Window? previous_focus = null;
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
-    static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
+    private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
         out float width, out float height) {
         float ratio = float.min (max_width / src_width, max_height / src_height);
         width = src_width * ratio;
         height = src_height * ratio;
     }
 
-    static bool get_window_is_normal (Meta.Window window) {
+    private static bool get_window_is_normal (Meta.Window window) {
         var window_type = window.get_window_type ();
         return window_type == Meta.WindowType.NORMAL
             || window_type == Meta.WindowType.DIALOG
             || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
-    static void get_current_cursor_position (out int x, out int y) {
+    private static void get_current_cursor_position (out int x, out int y) {
         Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null, out x, out y);
     }
 
@@ -182,7 +171,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resize_button.set_easing_duration (300);
         resize_button.opacity = 255;
         resize_button.set_easing_duration (0);
-        return true;
+        return Gdk.EVENT_PROPAGATE;
     }
 
     public override bool leave_event (Clutter.CrossingEvent event) {
@@ -191,7 +180,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resize_button.set_easing_duration (300);
         resize_button.opacity = 0;
         resize_button.set_easing_duration (0);
-        return true;
+        return Gdk.EVENT_PROPAGATE;
     }
 
     public void set_container_clip (Graphene.Rect? container_clip) {
@@ -212,7 +201,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private bool on_resize_button_press (Clutter.ButtonEvent event) {
         if (resizing || event.button != 1) {
-            return false;
+            return Gdk.EVENT_STOP;
         }
 
         resizing = true;
@@ -230,12 +219,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resize_button.get_stage ().captured_event.connect (on_resize_event);
 #endif
 
-        return true;
+        return Gdk.EVENT_PROPAGATE;
     }
 
     private bool on_resize_event (Clutter.Event event) {
         if (!resizing) {
-            return false;
+            return Gdk.EVENT_STOP;
         }
 
         switch (event.get_type ()) {
@@ -268,17 +257,17 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
                 break;
             case Clutter.EventType.LEAVE:
             case Clutter.EventType.ENTER:
-                return true;
+                return Gdk.EVENT_PROPAGATE;
             default:
                 break;
         }
 
-        return false;
+        return Gdk.EVENT_STOP;
     }
 
-    private bool stop_resizing () {
+    private void stop_resizing () {
         if (!resizing) {
-            return false;
+            return;
         }
 
 #if HAS_MUTTER42
@@ -295,8 +284,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resizing = false;
 
         update_screen_position ();
-
-        return true;
     }
 
     private void on_allocation_changed () {

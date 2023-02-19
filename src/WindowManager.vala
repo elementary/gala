@@ -16,8 +16,8 @@
 //
 
 namespace Gala {
-    const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
@@ -65,46 +65,46 @@ namespace Gala {
 
         public PointerLocator pointer_locator { get; private set; }
 
-        SystemBackground system_background;
+        private SystemBackground system_background;
 
-        Meta.PluginInfo info;
+        private Meta.PluginInfo info;
 
-        WindowSwitcher? winswitcher = null;
-        ActivatableComponent? window_overview = null;
+        private WindowSwitcher? winswitcher = null;
+        private ActivatableComponent? window_overview = null;
 
         public ScreenSaverManager? screensaver { get; private set; }
 
-        HotCornerManager? hot_corner_manager = null;
+        private HotCornerManager? hot_corner_manager = null;
 
         public WindowTracker? window_tracker { get; private set; }
 
         /**
          * Allow to zoom in/out the entire desktop.
          */
-        Zoom? zoom = null;
+        private Zoom? zoom = null;
 
-        AccentColorManager accent_color_manager;
+        private AccentColorManager accent_color_manager;
 
-        Clutter.Actor? tile_preview;
+        private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
 
-        Daemon? daemon_proxy = null;
+        private Daemon? daemon_proxy = null;
 
-        NotificationStack notification_stack;
+        private NotificationStack notification_stack;
 
-        Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
+        private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
-        Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
-        Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
-        Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
-        Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
-        Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
-        Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
-        GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
-        Meta.SizeChange? which_change = null;
-        Meta.Rectangle old_frame_rect_change;
-        Meta.Rectangle old_buffer_rect_change;
+        private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
+        private Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
+        private Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
+        private Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
+        private Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
+        private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
+        private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
+        private Meta.SizeChange? which_change = null;
+        private Meta.Rectangle old_frame_rect_change;
+        private Meta.Rectangle old_buffer_rect_change;
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
@@ -150,11 +150,11 @@ namespace Gala {
             });
         }
 
-        void lost_daemon () {
+        private void lost_daemon () {
             daemon_proxy = null;
         }
 
-        void daemon_appeared () {
+        private void daemon_appeared () {
             if (daemon_proxy == null) {
                 Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
                     try {
@@ -166,7 +166,7 @@ namespace Gala {
             }
         }
 
-        bool show_stage () {
+        private bool show_stage () {
             unowned Meta.Display display = get_display ();
 
             screen_shield = new ScreenShield (this);
@@ -378,7 +378,7 @@ namespace Gala {
             } catch (Error e) { warning (e.message); }
         }
 
-        void on_show_background_menu (int x, int y) {
+        private void on_show_background_menu (int x, int y) {
             if (daemon_proxy == null) {
                 return;
             }
@@ -392,12 +392,12 @@ namespace Gala {
                 });
         }
 
-        void on_monitors_changed () {
+        private void on_monitors_changed () {
             screen_shield.expand_to_screen_size ();
         }
 
         [CCode (instance_pos = -1)]
-        void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
+        private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
             Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -414,7 +414,7 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        void handle_move_to_workspace (Meta.Display display, Meta.Window? window,
+        private void handle_move_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
@@ -424,7 +424,7 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        void handle_move_to_workspace_end (Meta.Display display, Meta.Window? window,
+        private void handle_move_to_workspace_end (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             if (window == null)
                 return;
@@ -437,14 +437,14 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
+        private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
             switch_to_next_workspace (direction);
         }
 
         [CCode (instance_pos = -1)]
-        void handle_switch_to_workspace_end (Meta.Display display, Meta.Window? window,
+        private void handle_switch_to_workspace_end (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
@@ -452,13 +452,13 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        void handle_applications_menu (Meta.Display display, Meta.Window? window,
+        private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             launch_action ("panel-main-menu-action");
         }
 
         [CCode (instance_pos = -1)]
-        void handle_screenshot (Meta.Display display, Meta.Window? window,
+        private void handle_screenshot (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             switch (binding.get_name ()) {
                 case "screenshot":
@@ -587,7 +587,7 @@ namespace Gala {
             }
         }
 
-        void update_input_area () {
+        private void update_input_area () {
             unowned Meta.Display display = get_display ();
 
             if (screensaver != null) {
@@ -610,7 +610,7 @@ namespace Gala {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
         }
 
-        void show_bottom_stack_window (Meta.Window bottom_window) {
+        private void show_bottom_stack_window (Meta.Window bottom_window) {
             unowned Meta.Workspace workspace = bottom_window.get_workspace ();
             if (Utils.get_n_windows (workspace) == 0) {
                 return;
@@ -659,7 +659,7 @@ namespace Gala {
             });
         }
 
-        void animate_bottom_window_scale (Meta.WindowActor actor) {
+        private void animate_bottom_window_scale (Meta.WindowActor actor) {
             const string[] PROPS = { "scale-x", "scale-y" };
 
             foreach (string prop in PROPS) {
@@ -1036,7 +1036,7 @@ namespace Gala {
          * effects
          */
 
-        void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
+        private void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
             // Only handle windows which are located on the primary monitor
             if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
                 return;
@@ -1196,7 +1196,7 @@ namespace Gala {
             }
         }
 
-        void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
+        private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             var duration = AnimationDuration.SNAP;
 
             if (!enable_animations
@@ -1580,7 +1580,7 @@ namespace Gala {
             }
         }
 
-        void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
+        private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             var duration = AnimationDuration.SNAP;
             if (!enable_animations
                 || duration == 0) {
@@ -1662,7 +1662,7 @@ namespace Gala {
             }
         }
 
-        void move_window_to_next_ws (Meta.Window window) {
+        private void move_window_to_next_ws (Meta.Window window) {
             unowned Meta.Workspace win_ws = window.get_workspace ();
 
             // Do nothing if the current workspace would be empty
@@ -1716,7 +1716,7 @@ namespace Gala {
         }
 
         // Cancel attached animation of an actor and reset it
-        bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
+        private bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
             if (!list.contains (actor))
                 return false;
 
@@ -1750,9 +1750,9 @@ namespace Gala {
         }
 
         /*workspace switcher*/
-        List<Clutter.Actor>? windows;
-        List<Clutter.Actor>? parents;
-        List<Clutter.Actor>? tmp_actors;
+        private List<Clutter.Actor>? windows;
+        private List<Clutter.Actor>? parents;
+        private List<Clutter.Actor>? tmp_actors;
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
             if (!enable_animations
@@ -2030,7 +2030,7 @@ namespace Gala {
             }
         }
 
-        void end_switch_workspace () {
+        private void end_switch_workspace () {
             if (windows == null || parents == null)
                 return;
 
@@ -2228,7 +2228,7 @@ namespace Gala {
          * remove_child flags we will save the elapsed time of required transitions and
          * then advance back to it when we're done reparenting.
          */
-        static void reparent_notification_window (Clutter.Actor actor, Clutter.Actor new_parent) {
+        private static void reparent_notification_window (Clutter.Actor actor, Clutter.Actor new_parent) {
             unowned Clutter.Transition? entry_transition = actor.get_transition (NotificationStack.TRANSITION_ENTRY_NAME);
             unowned Clutter.Transition? position_transition = actor.get_data<Clutter.Transition?> (NotificationStack.TRANSITION_MOVE_STACK_ID);
 
@@ -2257,7 +2257,7 @@ namespace Gala {
             }
         }
 
-        static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
+        private static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
             if (actor == new_parent)
                 return;
 
