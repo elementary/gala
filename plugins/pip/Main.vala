@@ -79,6 +79,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
                 int point_x = x - (int)active.x;
                 int point_y = y - (int)active.y;
 
+                // Compensate for server-side window decorations
+                var input_rect = active.get_meta_window ().get_buffer_rect ();
+                var outer_rect = active.get_meta_window ().get_frame_rect ();
+                point_x -= outer_rect.x - input_rect.x;
+                point_y -= outer_rect.y - input_rect.y;
+
                 var rect = Graphene.Rect.alloc ();
                 rect.init (point_x, point_y, width, height);
 
