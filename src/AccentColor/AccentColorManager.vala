@@ -146,15 +146,10 @@ public class Gala.AccentColorManager : Object {
             path = Filename.from_uri (picture_uri);
             metadata = new GExiv2.Metadata ();
             metadata.open_path (path);
-        } catch (Error e) {
-            warning ("Error parsing exif metadata of \"%s\": %s", path, e.message);
-            return null;
-        }
 
-        try {
             return metadata.try_get_tag_string (TAG_ACCENT_COLOR);
         } catch (Error e) {
-            warning (e.message);
+            warning ("Error parsing exif metadata of \"%s\": %s", path, e.message);
             return null;
         }
     }
