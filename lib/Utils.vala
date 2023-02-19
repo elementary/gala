@@ -279,31 +279,23 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
-            Meta.Rectangle inner_rect,
-            Meta.Rectangle outer_rect
+            Meta.Rectangle inner_rect
         ) {
-            var surface = actor.get_image ({
-                inner_rect.x - outer_rect.x,
-                inner_rect.y - outer_rect.y,
-                inner_rect.width,
-                inner_rect.height
-            });
+            Clutter.Content content;
 
-            if (surface == null)
+            try {
+                content = actor.paint_to_content (inner_rect);
+            } catch (Error e) {
+                warning ("Failed to create window actor snapshot: %s", e.message);
                 return null;
+            }
 
-            var canvas = new Clutter.Canvas ();
-            var handler = canvas.draw.connect ((cr) => {
-                cr.set_source_surface (surface, 0, 0);
-                cr.paint ();
-                return false;
-            });
-            canvas.set_size (inner_rect.width, inner_rect.height);
-            SignalHandler.disconnect (canvas, handler);
+            if (content == null)
+                return null;
 
             var container = new Clutter.Actor ();
             container.set_size (inner_rect.width, inner_rect.height);
-            container.content = canvas;
+            container.content = content;
 
             return container;
         }

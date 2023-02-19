@@ -103,7 +103,8 @@ namespace Gala {
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
         private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         private Meta.SizeChange? which_change = null;
-        private Meta.Rectangle old_rect_size_change;
+        private Meta.Rectangle old_frame_rect_change;
+        private Meta.Rectangle old_buffer_rect_change;
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
@@ -1083,7 +1084,8 @@ namespace Gala {
         // as which_change is not passed to size_changed, save it as instance variable
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
             which_change = which_change_local;
-            old_rect_size_change = old_frame_rect;
+            old_frame_rect_change = old_frame_rect;
+            old_buffer_rect_change = old_buffer_rect;
         }
 
         // size_changed gets called after frame_rect has updated
@@ -1102,11 +1104,11 @@ namespace Gala {
                 case Meta.SizeChange.MAXIMIZE:
                     // don't animate resizing of two tiled windows with mouse drag
                     if (window.get_tile_match () != null && !window.maximized_horizontally) {
-                        var old_end = old_rect_size_change.x + old_rect_size_change.width;
+                        var old_end = old_frame_rect_change.x + old_frame_rect_change.width;
                         var new_end = new_rect.x + new_rect.width;
 
                         // a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
-                        if (old_rect_size_change.x == new_rect.x || old_end == new_end) {
+                        if (old_frame_rect_change.x == new_rect.x || old_end == new_end) {
                             break;
                         }
                     }
@@ -1215,7 +1217,7 @@ namespace Gala {
                 var old_inner_rect = window_geometry != null ? window_geometry.inner : fallback;
                 var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
 
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
+                var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect);
                 if (old_actor == null) {
                     return;
                 }
@@ -1246,11 +1248,13 @@ namespace Gala {
                 var scale_x = (double) ew / old_inner_rect.width;
                 var scale_y = (double) eh / old_inner_rect.height;
 
+                old_actor.set_pivot_point (0.0f, 0.0f);
                 old_actor.save_easing_state ();
                 old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 old_actor.set_easing_duration (duration);
                 old_actor.set_position (ex, ey);
                 old_actor.set_scale (scale_x, scale_y);
+                print ("%f %f", scale_x * old_actor.width, scale_y * old_actor.height);
 
                 // the opacity animation is special, since we have to wait for the
                 // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
@@ -1609,7 +1613,7 @@ namespace Gala {
                 }
 
                 Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
+                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect);
 
                 if (old_actor == null) {
                     return;
