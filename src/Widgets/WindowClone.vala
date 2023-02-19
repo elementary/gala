@@ -107,6 +107,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             add_action (click_action);
         } else {
+            warning ("adding drag action");
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
             drag_action.destination_crossed.connect (drag_destination_crossed);
@@ -444,7 +445,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active_shape.set_scale_factor (scale_factor);
 
-        if (clone == null || drag_action.dragging) {
+        if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
@@ -469,7 +470,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
-        if (drag_action.dragging) {
+        if (drag_action != null && drag_action.dragging) {
             return Gdk.EVENT_PROPAGATE;
         }
 
