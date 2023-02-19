@@ -15,14 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Clutter;
-using Meta;
-
 namespace Gala {
     /**
      * Utility class which adds a border and a shadow to a Background
      */
-    class FramedBackground : BackgroundManager {
+    private class FramedBackground : BackgroundManager {
         private Cogl.Pipeline pipeline;
         private Cairo.ImageSurface cached_surface;
         private Cairo.Context cached_context;
@@ -30,7 +27,7 @@ namespace Gala {
         private int last_width;
         private int last_height;
 
-        public FramedBackground (Display display) {
+        public FramedBackground (Meta.Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
         }
 
@@ -117,7 +114,7 @@ namespace Gala {
      * The latter is not added to the WorkspaceClone itself though but to a container
      * of the MultitaskingView.
      */
-    public class WorkspaceClone : Actor {
+    public class WorkspaceClone : Clutter.Actor {
         /**
          * The offset of the scaled background to the bottom of the monitor bounds
          */
@@ -126,25 +123,25 @@ namespace Gala {
         /**
          * The offset of the scaled background to the top of the monitor bounds
          */
-        const int TOP_OFFSET = 20;
+        private const int TOP_OFFSET = 20;
 
         /**
          * The amount of time a window has to be over the WorkspaceClone while in drag
          * before we activate the workspace.
          */
-        const int HOVER_ACTIVATE_DELAY = 400;
+        private const int HOVER_ACTIVATE_DELAY = 400;
 
         /**
          * The MultitaskingView shows the workspaces overlapping them WorkspaceClone.X_OFFSET pixels
          * making it possible to move windows to the next/previous workspace.
          */
-         public const int X_OFFSET = 150;
+        public const int X_OFFSET = 150;
 
         /**
          * A window has been selected, the MultitaskingView should consider activating
          * and closing the view.
          */
-        public signal void window_selected (Window window);
+        public signal void window_selected (Meta.Window window);
 
         /**
          * The background has been selected. Switch to that workspace.
@@ -154,12 +151,12 @@ namespace Gala {
          */
         public signal void selected (bool close_view);
 
-        public Workspace workspace { get; construct; }
+        public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
-        bool _active = false;
+        private bool _active = false;
         /**
          * If this WorkspaceClone is currently the active one. Also sets the active
          * state on its IconGroup.
@@ -174,19 +171,19 @@ namespace Gala {
             }
         }
 
-        BackgroundManager background;
-        bool opened;
+        private BackgroundManager background;
+        private bool opened;
 
-        uint hover_activate_timeout = 0;
+        private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Workspace workspace, GestureTracker gesture_tracker) {
+        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker) {
             Object (workspace: workspace, gesture_tracker: gesture_tracker);
         }
 
         construct {
             opened = false;
 
-            unowned Display display = workspace.get_display ();
+            unowned Meta.Display display = workspace.get_display ();
             var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
             background = new FramedBackground (display);
@@ -236,7 +233,7 @@ namespace Gala {
             // add existing windows
             var windows = workspace.list_windows ();
             foreach (var window in windows) {
-                if (window.window_type == WindowType.NORMAL
+                if (window.window_type == Meta.WindowType.NORMAL
                     && !window.on_all_workspaces
                     && window.get_monitor () == display.get_primary_monitor ()) {
                     window_container.add_window (window);
@@ -268,8 +265,8 @@ namespace Gala {
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
-        void add_window (Window window) {
-            if (window.window_type != WindowType.NORMAL
+        private void add_window (Meta.Window window) {
+            if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
                 || window.get_monitor () != window.get_display ().get_primary_monitor ())
@@ -286,16 +283,16 @@ namespace Gala {
         /**
          * Remove a window from the WindowCloneContainer and the IconGroup
          */
-        void remove_window (Window window) {
+        private void remove_window (Meta.Window window) {
             window_container.remove_window (window);
             icon_group.remove_window (window, opened);
         }
 
-        void window_entered_monitor (Display display, int monitor, Window window) {
+        private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
             add_window (window);
         }
 
-        void window_left_monitor (Display display, int monitor, Window window) {
+        private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
             if (monitor == display.get_primary_monitor ())
                 remove_window (window);
         }
@@ -318,7 +315,7 @@ namespace Gala {
         /**
          * @return The amount of pixels the workspace is overlapped in the X axis.
          */
-        float current_x_overlap () {
+        private float current_x_overlap () {
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -337,7 +334,7 @@ namespace Gala {
          *
          * @param amount The amount in px to shrink.
          */
-        static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
+        private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
             rect.x += amount;
             rect.y += amount;
             rect.width -= amount * 2;
@@ -389,13 +386,13 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                background.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
             };
@@ -422,7 +419,7 @@ namespace Gala {
 
             icon_group.redraw ();
 
-            Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
+            Meta.Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
             window_container.open (selected_window, with_gesture, is_cancel_animation);
         }
 
@@ -459,13 +456,13 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-                background.set_easing_mode (AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
             };

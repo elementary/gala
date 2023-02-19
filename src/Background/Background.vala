@@ -17,8 +17,8 @@
 
 namespace Gala {
     public class Background : Object {
-        const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
-        const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
+        private const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
+        private const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
 
         public signal void changed ();
         public signal void loaded ();
@@ -31,10 +31,10 @@ namespace Gala {
         public string? filename { get; construct; }
         public Meta.Background background { get; private set; }
 
-        Animation? animation = null;
-        Gee.HashMap<string,ulong> file_watches;
-        Cancellable cancellable;
-        uint update_animation_timeout_id = 0;
+        private Animation? animation = null;
+        private Gee.HashMap<string,ulong> file_watches;
+        private Cancellable cancellable;
+        private uint update_animation_timeout_id = 0;
 
         private Gnome.WallClock clock;
         private ulong clock_timezone_handler = 0;
@@ -91,7 +91,7 @@ namespace Gala {
             }
         }
 
-        void set_loaded () {
+        private void set_loaded () {
             if (is_loaded)
                 return;
 
@@ -103,7 +103,7 @@ namespace Gala {
             });
         }
 
-        void load_pattern () {
+        private void load_pattern () {
             string color_string;
             var settings = background_source.settings;
 
@@ -121,7 +121,7 @@ namespace Gala {
             }
         }
 
-        void watch_file (string filename) {
+        private void watch_file (string filename) {
             if (file_watches.has_key (filename))
                 return;
 
@@ -138,14 +138,14 @@ namespace Gala {
             });
         }
 
-        void remove_animation_timeout () {
+        private void remove_animation_timeout () {
             if (update_animation_timeout_id != 0) {
                 Source.remove (update_animation_timeout_id);
                 update_animation_timeout_id = 0;
             }
         }
 
-        void finish_animation (string[] files) {
+        private void finish_animation (string[] files) {
             set_loaded ();
 
             if (files.length > 1)
@@ -158,7 +158,7 @@ namespace Gala {
             queue_update_animation ();
         }
 
-        void update_animation () {
+        private void update_animation () {
             update_animation_timeout_id = 0;
 
             animation.update (display.get_monitor_geometry (monitor_index));
@@ -188,7 +188,7 @@ namespace Gala {
             }
         }
 
-        void queue_update_animation () {
+        private void queue_update_animation () {
             if (update_animation_timeout_id != 0)
                 return;
 
@@ -213,7 +213,7 @@ namespace Gala {
             });
         }
 
-        async void load_animation (string filename) {
+        private async void load_animation (string filename) {
             animation = yield BackgroundCache.get_default ().get_animation (filename);
 
             if (animation == null || cancellable.is_cancelled ()) {
@@ -225,7 +225,7 @@ namespace Gala {
             watch_file (filename);
         }
 
-        void load_image (string filename) {
+        private void load_image (string filename) {
             background.set_file (File.new_for_path (filename), style);
             watch_file (filename);
 
@@ -242,14 +242,14 @@ namespace Gala {
             }
         }
 
-        void load_file (string filename) {
+        private void load_file (string filename) {
             if (filename.has_suffix (".xml"))
                 load_animation.begin (filename);
             else
                 load_image (filename);
         }
 
-        void load () {
+        private void load () {
             load_pattern ();
 
             if (filename == null)
@@ -258,7 +258,7 @@ namespace Gala {
                 load_file (filename);
         }
 
-        void settings_changed () {
+        private void settings_changed () {
             changed ();
         }
     }

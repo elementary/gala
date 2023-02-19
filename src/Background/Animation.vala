@@ -23,7 +23,7 @@ namespace Gala {
         public double transition_duration { get; private set; default = 0.0; }
         public bool loaded { get; private set; default = false; }
 
-        Gnome.BGSlideShow? show = null;
+        private Gnome.BGSlideShow? show = null;
 
         public Animation (string filename) {
             Object (filename: filename);

@@ -34,8 +34,8 @@ namespace Gala {
             }
         }
 
-        static MediaFeedback? instance = null;
-        static ThreadPool<Feedback>? pool = null;
+        private static MediaFeedback? instance = null;
+        private static ThreadPool<Feedback>? pool = null;
 
         public static void init () {
             if (instance == null)
@@ -50,10 +50,10 @@ namespace Gala {
             }
         }
 
-        DBusNotifications? notifications = null;
-        uint32 notification_id = 0;
+        private DBusNotifications? notifications = null;
+        private uint32 notification_id = 0;
 
-        MediaFeedback () {
+        private MediaFeedback () {
             Object ();
         }
 
@@ -88,7 +88,7 @@ namespace Gala {
             notifications = null;
         }
 
-        void send_feedback (owned Feedback feedback) {
+        private void send_feedback (owned Feedback feedback) {
             if (notifications == null) {
                 return;
             }

@@ -35,9 +35,9 @@ namespace Gala {
         public string accept_label { get; set; }
         public string deny_label { get; set; }
 
-        const string PANTHEON_PORTAL_NAME = "org.freedesktop.impl.portal.desktop.pantheon";
-        const string FDO_PORTAL_PATH = "/org/freedesktop/portal/desktop";
-        const string GALA_DIALOG_PATH = "/io/elementary/gala/dialog";
+        private const string PANTHEON_PORTAL_NAME = "org.freedesktop.impl.portal.desktop.pantheon";
+        private const string FDO_PORTAL_PATH = "/org/freedesktop/portal/desktop";
+        private const string GALA_DIALOG_PATH = "/io/elementary/gala/dialog";
 
         protected static AccessPortal? portal = null;
         protected ObjectPath? path = null;
@@ -154,7 +154,7 @@ namespace Gala {
                 title = _("Application is not responding");
             }
 
-            body = _("You may choose to wait a short while for it to continue or force the application quit entirely.");
+            body = _("You may choose to wait a short while for the application to continue, or force it to quit entirely.");
             accept_label = _("Force Quit");
             deny_label = _("Wait");
 

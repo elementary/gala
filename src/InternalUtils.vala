@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-using Meta;
-
 namespace Gala {
     public enum InputArea {
         NONE,
@@ -26,8 +24,8 @@ namespace Gala {
 
     public class InternalUtils {
         public static bool workspaces_only_on_primary () {
-            return Prefs.get_dynamic_workspaces ()
-                && Prefs.get_workspaces_only_on_primary ();
+            return Meta.Prefs.get_dynamic_workspaces ()
+                && Meta.Prefs.get_workspaces_only_on_primary ();
         }
 
         private static GLib.Settings? shadow_settings = null;
@@ -38,7 +36,7 @@ namespace Gala {
             if (shadow_settings == null) {
                 shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
             }
-            var factory = ShadowFactory.get_default ();
+            var factory = Meta.ShadowFactory.get_default ();
             Meta.ShadowParams shadow;
 
             //normal focused
@@ -91,7 +89,7 @@ namespace Gala {
         /**
          * set the area where clutter can receive events
          **/
-        public static void set_input_area (Display display, InputArea area) {
+        public static void set_input_area (Meta.Display display, InputArea area) {
             if (Meta.Util.is_wayland_compositor ()) {
                 return;
             }
@@ -147,13 +145,13 @@ namespace Gala {
          * @param index  The index at which to insert the workspace
          * @param new_window A window that should be moved to the new workspace
          */
-        public static void insert_workspace_with_window (int index, Window new_window) {
+        public static void insert_workspace_with_window (int index, Meta.Window new_window) {
             unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
             workspace_manager.freeze_remove ();
 
             new_window.change_workspace_by_index (index, false);
 
-            unowned List<WindowActor> actors = new_window.get_display ().get_window_actors ();
+            unowned List<Meta.WindowActor> actors = new_window.get_display ().get_window_actors ();
             foreach (unowned Meta.WindowActor actor in actors) {
                 if (actor.is_destroyed ())
                     continue;
@@ -377,7 +375,7 @@ namespace Gala {
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
-         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+        public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
             if (InternalUtils.workspaces_only_on_primary ()) {
                 var primary = display.get_primary_monitor ();
                 return display.get_monitor_geometry (primary);

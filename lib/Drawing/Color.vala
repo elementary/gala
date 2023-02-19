@@ -373,7 +373,7 @@ namespace Gala.Drawing {
             return this;
         }
 
-        void rgb_to_hsv (
+        private void rgb_to_hsv (
             double r, double g, double b, out double h, out double s, out double v
         ) requires (r >= 0 && r <= 1) requires (g >= 0 && g <= 1) requires (b >= 0 && b <= 1) {
             var min = double.min (r, double.min (g, b));
@@ -417,7 +417,7 @@ namespace Gala.Drawing {
             }
         }
 
-        void hsv_to_rgb (
+        private void hsv_to_rgb (
             double h, double s, double v, out double r, out double g, out double b
         ) requires (h >= 0 && h <= 360) requires (s >= 0 && s <= 1) requires (v >= 0 && v <= 1) {
             r = 0;
