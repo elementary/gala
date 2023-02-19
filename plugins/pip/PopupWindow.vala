@@ -158,7 +158,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
         restore_easing_state ();
 
-        if(duration == 0) {
+        if (duration == 0) {
             base.hide ();
         } else {
             ulong completed_id = 0;
@@ -311,8 +311,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void on_close_click_clicked () {
-        var duration =  wm.enable_animations ? FADE_OUT_TIMEOUT : 0;
-        
+        var duration = wm.enable_animations ? FADE_OUT_TIMEOUT : 0;
+
         save_easing_state ();
         set_easing_duration (duration);
         opacity = 0;
@@ -428,7 +428,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         var screen_limit_end_y = monitor_height + monitor_y - SCREEN_MARGIN - height;
 
         var duration = wm.enable_animations ? 300 : 0;
-        
+
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
