@@ -107,7 +107,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
             add_action (click_action);
         } else {
-            warning ("adding drag action");
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
             drag_action.destination_crossed.connect (drag_destination_crossed);
