@@ -69,14 +69,15 @@ namespace Gala {
 
         private DragDropAction drag_action;
 
+        public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
 
         private Clutter.Actor? prev_parent = null;
         private Clutter.Actor close_button;
         private Clutter.Actor icon_container;
 
-        public IconGroup (Meta.Workspace workspace) {
-            Object (workspace: workspace);
+        public IconGroup (WindowManager wm, Meta.Workspace workspace) {
+            Object (wm: wm, workspace: workspace);
         }
 
         construct {
@@ -107,11 +108,10 @@ namespace Gala {
             close_button.opacity = 0;
             close_button.reactive = true;
             close_button.visible = false;
-            close_button.set_easing_duration (200);
 
             // block propagation of button presses on the close button, otherwise
             // the click action on the icon group will act weirdly
-            close_button.button_press_event.connect (() => { return true; });
+            close_button.button_press_event.connect (() => { return Gdk.EVENT_STOP; });
 
             add_child (close_button);
 
@@ -164,19 +164,23 @@ namespace Gala {
             }
 
             close_button.visible = true;
-            var new_transition = new Clutter.PropertyTransition ("opacity") {
-                duration = 200,
-                delay = show ? SHOW_CLOSE_BUTTON_DELAY : 0,
-                remove_on_complete = true
-            };
-            new_transition.set_from_value (close_button.opacity);
-            new_transition.set_to_value (show ? 255 : 0);
+            close_button.save_easing_state ();
+            close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
+            close_button.set_easing_duration (wm.enable_animations ? 200 : 0);
+            close_button.set_easing_delay (show ? SHOW_CLOSE_BUTTON_DELAY : 0);
+            close_button.opacity = show ? 255 : 0;
+            close_button.restore_easing_state ();
+
             if (!show) {
-                new_transition.completed.connect (() => {
+                var transition = close_button.get_transition ("opacity");
+                if (transition != null) {
+                    transition.completed.connect (() => {
+                        close_button.visible = false;
+                    });
+                } else {
                     close_button.visible = false;
-                });
+                }
             }
-            close_button.add_transition ("opacity", new_transition);
         }
 
         private bool resize_canvas () {
