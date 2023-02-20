@@ -54,7 +54,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
-        if (event.button == 1) {
+        if (event.button == Gdk.BUTTON_PRIMARY) {
             close ();
         }
 
