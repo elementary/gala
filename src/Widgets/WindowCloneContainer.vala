@@ -27,6 +27,7 @@ namespace Gala {
         public int padding_right { get; set; default = 12; }
         public int padding_bottom { get; set; default = 12; }
 
+        public WindowManager wm { get; construct; }
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
@@ -38,8 +39,8 @@ namespace Gala {
          */
         private WindowClone? current_window;
 
-        public WindowCloneContainer (GestureTracker? gesture_tracker, bool overview_mode = false) {
-            Object (gesture_tracker: gesture_tracker, overview_mode: overview_mode);
+        public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, bool overview_mode = false) {
+            Object (wm: wm, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
         }
 
         construct {
@@ -66,7 +67,7 @@ namespace Gala {
 
             var windows_ordered = display.sort_windows_by_stacking (windows);
 
-            var new_window = new WindowClone (window, gesture_tracker, overview_mode);
+            var new_window = new WindowClone (wm, window, gesture_tracker, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
