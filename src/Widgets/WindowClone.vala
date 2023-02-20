@@ -444,7 +444,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active_shape.set_scale_factor (scale_factor);
 
-        if (clone == null || drag_action.dragging) {
+        if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
@@ -469,7 +469,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
-        if (drag_action.dragging) {
+        if (drag_action != null && drag_action.dragging) {
             return Gdk.EVENT_PROPAGATE;
         }
 
