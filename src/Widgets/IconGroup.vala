@@ -491,8 +491,6 @@ namespace Gala {
         }
 
         private Clutter.Actor? drag_begin (float click_x, float click_y) {
-            toggle_close_button (false);
-
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Meta.Prefs.get_dynamic_workspaces () &&
@@ -520,7 +518,7 @@ namespace Gala {
             get_transformed_position (out abs_x, out abs_y);
             set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
-            close_button.opacity = 0;
+            toggle_close_button (false);
 
             return this;
         }
