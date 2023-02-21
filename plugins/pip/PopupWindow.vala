@@ -78,7 +78,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         window.notify["appears-focused"].connect (() => {
             Idle.add (() => {
                 update_window_focus ();
-                return false;
+                return Source.REMOVE;
             });
         });
 
@@ -118,7 +118,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_button = Gala.Utils.create_close_button ();
         close_button.opacity = 0;
         close_button.reactive = true;
-        close_button.set_easing_duration (300);
         close_button.add_action (close_action);
 
         resize_button = Utils.create_resize_button ();
@@ -142,42 +141,61 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         opacity = 0;
 
-        set_easing_duration (200);
+        save_easing_state ();
+        set_easing_duration (wm.enable_animations ? 200 : 0);
         opacity = 255;
-
-        set_easing_duration (0);
+        restore_easing_state ();
     }
 
     public override void hide () {
         opacity = 255;
 
-        set_easing_duration (200);
+        var duration = wm.enable_animations ? 200 : 0;
+        save_easing_state ();
+        set_easing_duration (duration);
         opacity = 0;
+        restore_easing_state ();
 
-        set_easing_duration (0);
-
-        ulong completed_id = 0UL;
-        completed_id = transitions_completed.connect (() => {
-            disconnect (completed_id);
+        if (duration == 0) {
             base.hide ();
-        });
+        } else {
+            ulong completed_id = 0;
+            completed_id = transitions_completed.connect (() => {
+                disconnect (completed_id);
+                base.hide ();
+            });
+        }
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
-        close_button.opacity = 255;
+        var duration = wm.enable_animations ? 300 : 0;
 
-        resize_button.set_easing_duration (300);
+        close_button.save_easing_state ();
+        close_button.set_easing_duration (duration);
+        close_button.opacity = 255;
+        close_button.restore_easing_state ();
+
+        resize_button.save_easing_state ();
+        resize_button.set_easing_duration (duration);
         resize_button.opacity = 255;
-        resize_button.set_easing_duration (0);
+        resize_button.restore_easing_state ();
+
         return Gdk.EVENT_PROPAGATE;
     }
 
     public override bool leave_event (Clutter.CrossingEvent event) {
-        close_button.opacity = 0;
+        var duration = wm.enable_animations ? 300 : 0;
 
-        resize_button.set_easing_duration (300);
+        close_button.save_easing_state ();
+        close_button.set_easing_duration (duration);
+        close_button.opacity = 0;
+        close_button.restore_easing_state ();
+
+        resize_button.save_easing_state ();
+        resize_button.set_easing_duration (duration);
         resize_button.opacity = 0;
-        resize_button.set_easing_duration (0);
+        resize_button.restore_easing_state ();
+
         return Gdk.EVENT_PROPAGATE;
     }
 
@@ -281,13 +299,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void on_close_click_clicked () {
-        set_easing_duration (FADE_OUT_TIMEOUT);
+        var duration = wm.enable_animations ? FADE_OUT_TIMEOUT : 0;
 
+        save_easing_state ();
+        set_easing_duration (duration);
         opacity = 0;
+        restore_easing_state ();
 
-        Clutter.Threads.Timeout.add (FADE_OUT_TIMEOUT, () => {
+        Clutter.Threads.Timeout.add (duration, () => {
             closed ();
-            return false;
+            return Source.REMOVE;
         });
     }
 
@@ -389,27 +410,29 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         int monitor_width = monitor_rect.width;
         int monitor_height = monitor_rect.height;
 
-        set_easing_duration (300);
+        var screen_limit_start_x = SCREEN_MARGIN + monitor_x;
+        var screen_limit_end_x = monitor_width + monitor_x - SCREEN_MARGIN - width;
+        var screen_limit_start_y = SCREEN_MARGIN + monitor_y;
+        var screen_limit_end_y = monitor_height + monitor_y - SCREEN_MARGIN - height;
+
+        var duration = wm.enable_animations ? 300 : 0;
+
+        save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
-
-        var screen_limit_start = SCREEN_MARGIN + monitor_x;
-        var screen_limit_end = monitor_width + monitor_x - SCREEN_MARGIN - width;
-
-        x = x.clamp (screen_limit_start, screen_limit_end);
-
-        screen_limit_start = SCREEN_MARGIN + monitor_y;
-        screen_limit_end = monitor_height + monitor_y - SCREEN_MARGIN - height;
-
-        y = y.clamp (screen_limit_start, screen_limit_end);
-
-        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-        set_easing_duration (0);
+        set_easing_duration (duration);
+        x = x.clamp (screen_limit_start_x, screen_limit_end_x);
+        y = y.clamp (screen_limit_start_y, screen_limit_end_y);
+        restore_easing_state ();
     }
 
     private bool place_window_off_screen () {
         off_screen = false;
-        set_easing_duration (300);
+
+        var duration = wm.enable_animations ? 300 : 0;
+
+        save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
+        set_easing_duration (duration);
 
         Meta.Rectangle monitor_rect;
         get_current_monitor_rect (out monitor_rect);
@@ -453,8 +476,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             y = monitor_y + monitor_height - OFF_SCREEN_VISIBLE_PIXELS;
         }
 
-        set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-        set_easing_duration (0);
+        restore_easing_state ();
+
         return off_screen;
     }
 
