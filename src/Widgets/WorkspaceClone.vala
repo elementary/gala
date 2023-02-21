@@ -134,6 +134,7 @@ namespace Gala {
          */
         public signal void selected (bool close_view);
 
+        public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
@@ -159,8 +160,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker) {
-            Object (workspace: workspace, gesture_tracker: gesture_tracker);
+        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker) {
+            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker);
         }
 
         construct {
@@ -176,7 +177,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer (gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);
