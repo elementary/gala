@@ -19,7 +19,7 @@ You'll need the following dependencies:
 * libgnome-desktop-3-dev
 * libgranite-dev (>= 5.4.0)
 * libgtk-3-dev (>= 3.10.0)
-* libmutter-6-dev (>= 3.35.1) | libmutter-dev (>= 3.18.3)
+* libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
 * libxml2-utils
 * valac (>= 0.46.0)
 
