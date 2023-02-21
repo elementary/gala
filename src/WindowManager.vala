@@ -247,20 +247,14 @@ namespace Gala {
             display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-#if HAS_MUTTER41
             display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
-#else
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
-#endif
 
-#if HAS_MUTTER42
             display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-#endif
 
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
@@ -357,11 +351,7 @@ namespace Gala {
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-#if HAS_MUTTER41
                 display.get_context ().notify_ready ();
-#else
-                Meta.register_with_session ();
-#endif
                 plugin_manager.load_waiting_plugins ();
                 return GLib.Source.REMOVE;
             });
@@ -720,16 +710,9 @@ namespace Gala {
                 return proxy;
 
             unowned Meta.Display display = get_display ();
-#if !HAS_MUTTER42
-            var time = display.get_current_time ();
-#endif
 
             update_input_area ();
-#if HAS_MUTTER42
             proxy.grab = stage.grab (actor);
-#else
-            begin_modal (0, time);
-#endif
 
             if (modal_stack.size == 1) {
                 display.disable_unredirect ();
@@ -747,9 +730,7 @@ namespace Gala {
                 return;
             }
 
-#if HAS_MUTTER42
             proxy.grab.dismiss ();
-#endif
 
             if (is_modal ())
                 return;
@@ -757,9 +738,6 @@ namespace Gala {
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
-#if !HAS_MUTTER42
-            end_modal (display.get_current_time ());
-#endif
 
             display.enable_unredirect ();
         }
