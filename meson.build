@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
     version: '7.0.0',
-    meson_version: '>= 0.50.0',
+    meson_version: '>= 0.58.0',
     license: 'GPL3',
 )
 
@@ -14,7 +14,7 @@ cc = meson.get_compiler('c')
 
 gala_version = meson.project_version()
 
-vala_version_required = '0.28.0'
+vala_version_required = '0.46.0'
 vala = meson.get_compiler('vala')
 if not vala.version().version_compare('>= @0@'.format(vala_version_required))
     error('Valac >= @0@ required!'.format(vala_version_required))
@@ -132,7 +132,7 @@ if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
 
-mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
+mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
 
 if get_option('systemd')
     vala_flags += ['--define', 'WITH_SYSTEMD']
