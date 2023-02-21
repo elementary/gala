@@ -151,7 +151,7 @@ namespace Gala {
             // Construct a new "application-default-icon" and store it in the cache
             try {
                 var icon = Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
-                unknown_icon_cache.add (new CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
+                unknown_icon_cache.add (CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
                 return icon;
             } catch (Error e) {
                 var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
@@ -227,7 +227,7 @@ namespace Gala {
 
                 try {
                     var pixbuf = icon_info.load_icon ();
-                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
                     return null;
@@ -237,7 +237,7 @@ namespace Gala {
                 var size_with_scale = icon_size * scale;
                 try {
                     var pixbuf = new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
-                    icon_cache.@set (desktop, new CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
                     return null;
@@ -271,7 +271,7 @@ namespace Gala {
         /**
          * Creates an actor showing the current contents of the given WindowActor.
          *
-         * @param actor      The actor from which to create a shnapshot
+         * @param actor      The actor from which to create a snapshot
          * @param inner_rect The inner (actually visible) rectangle of the window
          * @param outer_rect The outer (input region) rectangle of the window
          *
@@ -279,36 +279,20 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
-            Meta.Rectangle inner_rect,
-            Meta.Rectangle outer_rect
+            Meta.Rectangle inner_rect
         ) {
-            var texture = actor.get_texture () as Meta.ShapedTexture;
+            Clutter.Content content;
 
-            if (texture == null)
+            try {
+                content = actor.paint_to_content (inner_rect);
+            } catch (Error e) {
+                warning ("Could not create window snapshot: %s", e.message);
                 return null;
-
-            var surface = texture.get_image ({
-                inner_rect.x - outer_rect.x,
-                inner_rect.y - outer_rect.y,
-                inner_rect.width,
-                inner_rect.height
-            });
-
-            if (surface == null)
-                return null;
-
-            var canvas = new Clutter.Canvas ();
-            var handler = canvas.draw.connect ((cr) => {
-                cr.set_source_surface (surface, 0, 0);
-                cr.paint ();
-                return false;
-            });
-            canvas.set_size (inner_rect.width, inner_rect.height);
-            SignalHandler.disconnect (canvas, handler);
+            }
 
             var container = new Clutter.Actor ();
             container.set_size (inner_rect.width, inner_rect.height);
-            container.content = canvas;
+            container.content = content;
 
             return container;
         }

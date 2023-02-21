@@ -12,7 +12,7 @@ install_data(
 i18n.merge_file(
     input: 'gala.appdata.xml.in',
     output: meson.project_name() + '.appdata.xml',
-    po_dir: join_paths(meson.source_root(), 'po'),
+    po_dir: join_paths(meson.global_source_root(), 'po'),
     type: 'xml',
     install: true,
     install_dir: join_paths(get_option('datadir'), 'metainfo'),
@@ -21,7 +21,7 @@ i18n.merge_file(
 i18n.merge_file(
     input: 'gala-multitaskingview.desktop.in',
     output: 'gala-multitaskingview.desktop',
-    po_dir: join_paths(meson.source_root (), 'po'),
+    po_dir: join_paths(meson.global_source_root (), 'po'),
     type: 'desktop',
     install: true,
     install_dir: join_paths(data_dir, 'applications')
@@ -30,7 +30,7 @@ i18n.merge_file(
 i18n.merge_file(
     input: 'gala-other.desktop.in',
     output: 'gala-other.desktop',
-    po_dir: join_paths(meson.source_root (), 'po'),
+    po_dir: join_paths(meson.global_source_root (), 'po'),
     type: 'desktop',
     install: true,
     install_dir: join_paths(data_dir, 'applications')
@@ -42,7 +42,7 @@ if get_option('systemd')
     dep_systemd = dependency('systemd', required: true)
     systemd_userunitdir = get_option('systemduserunitdir')
     if systemd_userunitdir == ''
-        systemd_userunitdir = dep_systemd.get_pkgconfig_variable('systemduserunitdir', define_variable: ['prefix', get_option('prefix')])
+        systemd_userunitdir = dep_systemd.get_variable('systemduserunitdir', pkgconfig_define: ['prefix', get_option('prefix')])
     endif
 
     bindir = join_paths(get_option('prefix'), get_option('bindir'))

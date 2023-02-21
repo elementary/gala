@@ -367,6 +367,8 @@ namespace Gala {
                     }
 
                     break;
+                default:
+                    break;
             }
 
             return false;
