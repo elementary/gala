@@ -42,11 +42,7 @@ namespace Gala {
                 system_background.set_file (background_file, GDesktop.BackgroundStyle.WALLPAPER);
             }
 
-#if HAS_MUTTER338
             ((Meta.BackgroundContent)background_actor.content).background = system_background;
-#else
-            background_actor.background = system_background;
-#endif
 
             var cache = Meta.BackgroundImageCache.get_default ();
             var image = cache.load (background_file);
