@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2019 elementary, Inc. <contact@elementary.io> -->
+<!-- Copyright 2019-2023 elementary, Inc. <contact@elementary.io> -->
 <component>
   <id>io.elementary.gala</id>
   <metadata_license>CC0-1.0</metadata_license>
@@ -22,6 +22,12 @@
       <issues>
         <issue url="https://github.com/elementary/gala/issues/24">Workspace switching shortcuts don't work in Multitasking View</issue>
         <issue url="https://github.com/elementary/gala/issues/1478">PiP: Log spam on elementary OS 7.0</issue>
+        <issue url="https://github.com/elementary/gala/issues/510">PiP doesn't respect animations key</issue>
+        <issue url="https://github.com/elementary/gala/issues/1483">Wingpanel and applications menu stretch in multitasking view</issue>
+        <issue url="https://github.com/elementary/gala/issues/1517">The second time I click on a workspace, all applications in that workspace close</issue>
+        <issue url="https://github.com/elementary/gala/issues/1482">Duplicate "Plus" workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/1505">"Not responding" dialog and not responding app close after inactivity</issue>
+        <issue url="https://github.com/elementary/gala/issues/410">Multimedia keys are not working within multitasking view</issue>
       </issues>
     </release>
 
