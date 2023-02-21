@@ -26,6 +26,7 @@ namespace Gala {
     public class MonitorClone : Clutter.Actor {
         public signal void window_selected (Meta.Window window);
 
+        public WindowManager wm { get; construct; }
         public Meta.Display display { get; construct; }
         public int monitor { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
@@ -33,8 +34,8 @@ namespace Gala {
         private WindowCloneContainer window_container;
         private BackgroundManager background;
 
-        public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
-            Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
+        public MonitorClone (WindowManager wm, Meta.Display display, int monitor, GestureTracker gesture_tracker) {
+            Object (wm: wm, display: display, monitor: monitor, gesture_tracker: gesture_tracker);
         }
 
         construct {
@@ -43,7 +44,7 @@ namespace Gala {
             background = new BackgroundManager (display, monitor, false);
             background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
-            window_container = new WindowCloneContainer (gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             display.restacked.connect (window_container.restack_windows);
 

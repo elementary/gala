@@ -177,7 +177,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer (gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);

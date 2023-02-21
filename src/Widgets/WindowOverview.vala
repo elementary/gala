@@ -150,7 +150,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var geometry = display.get_monitor_geometry (i);
 
-            var container = new WindowCloneContainer (null, true) {
+            var container = new WindowCloneContainer (wm, null, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
