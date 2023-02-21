@@ -1625,7 +1625,6 @@ namespace Gala {
 
                 ui_group.add_child (latest_window_snapshot);
 
-                
                 var scale_x = (float) ew / old_rect_size_change.width;
                 var scale_y = (float) eh / old_rect_size_change.height;
 
