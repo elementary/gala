@@ -5,7 +5,6 @@
  */
 
 public class Gala.WindowTracker : GLib.Object {
-    private Gala.App? focused_app = null;
     private GLib.HashTable<unowned Meta.Window, Gala.App> window_to_app;
 
     public signal void windows_changed ();
@@ -22,12 +21,10 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void load_initial_windows (Meta.Display display) {
-#if HAS_MUTTER42
         GLib.List<weak Meta.Window> windows = display.list_all_windows ();
         foreach (weak Meta.Window window in windows) {
             track_window (window);
         }
-#endif
     }
 
     private void init_window_tracking (Meta.Display display) {

@@ -16,8 +16,8 @@ gala_lib_sources = files(
 
 gala_resources = gnome.compile_resources(
     'gala-resources',
-    join_paths(meson.source_root(), 'data', 'gala.gresource.xml'),
-    source_dir: join_paths(meson.source_root(), 'data'),
+    join_paths(meson.global_source_root(), 'data', 'gala.gresource.xml'),
+    source_dir: join_paths(meson.global_source_root(), 'data'),
     c_name: 'gala',
 )
 

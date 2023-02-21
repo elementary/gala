@@ -341,7 +341,6 @@ namespace Gala {
 
         private Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
             Cairo.ImageSurface image;
-#if HAS_MUTTER338
             int image_width, image_height;
             float scale;
 
@@ -354,42 +353,29 @@ namespace Gala {
                 paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
             }
 
-            if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
-                wm.stage.paint_to_buffer (
-                    {x, y, width, height},
-                    scale,
-                    image.get_data (),
-                    image.get_stride (),
-                    Cogl.PixelFormat.BGRA_8888_PRE,
-                    paint_flags
-                );
-            } else {
-                wm.stage.paint_to_buffer (
-                    {x, y, width, height},
-                    scale,
-                    image.get_data (),
-                    image.get_stride (),
-                    Cogl.PixelFormat.ARGB_8888_PRE,
-                    paint_flags
-                );
+            try {
+                if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                    wm.stage.paint_to_buffer (
+                        {x, y, width, height},
+                        scale,
+                        image.get_data (),
+                        image.get_stride (),
+                        Cogl.PixelFormat.BGRA_8888_PRE,
+                        paint_flags
+                    );
+                } else {
+                    wm.stage.paint_to_buffer (
+                        {x, y, width, height},
+                        scale,
+                        image.get_data (),
+                        image.get_stride (),
+                        Cogl.PixelFormat.ARGB_8888_PRE,
+                        paint_flags
+                    );
+                }
+            } catch (Error e) {
+                warning (e.message);
             }
-#else
-            Clutter.Capture[] captures;
-            wm.stage.capture (false, {x, y, width, height}, out captures);
-
-            if (captures.length == 0)
-                image = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-            else if (captures.length == 1)
-                image = captures[0].image;
-            else
-                image = composite_capture_images (captures, x, y, width, height);
-
-            if (include_cursor) {
-                image = composite_stage_cursor (image, { x, y, width, height});
-            }
-
-            image.mark_dirty ();
-#endif
             return image;
         }
 
@@ -417,11 +403,7 @@ namespace Gala {
         private Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
             unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
             Graphene.Point coords = {};
-#if HAS_MUTTER40
             cursor_tracker.get_pointer (out coords, null);
-#else
-            cursor_tracker.get_pointer (out coords.x, out coords.y, null);
-#endif
 
             var region = new Cairo.Region.rectangle (image_rect);
             if (!region.contains_point ((int) coords.x, (int) coords.y)) {

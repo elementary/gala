@@ -60,9 +60,7 @@ namespace Gala {
      * to end your modal mode again with {@link WindowManager.pop_modal}
      */
     public class ModalProxy : Object {
-#if HAS_MUTTER42
         public Clutter.Grab? grab { get; set; }
-#endif
         /**
          * A function which is called whenever a keybinding is pressed. If you supply a custom
          * one you can filter out those that'd you like to be passed through and block all others.

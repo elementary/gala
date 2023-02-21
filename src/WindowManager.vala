@@ -104,6 +104,7 @@ namespace Gala {
         private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         private Meta.SizeChange? which_change = null;
         private Meta.Rectangle old_rect_size_change;
+        private Clutter.Actor latest_window_snapshot;
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
@@ -246,20 +247,14 @@ namespace Gala {
             display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-#if HAS_MUTTER41
             display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
-#else
-            Meta.KeyBinding.set_custom_handler ("panel-main-menu", (Meta.KeyHandlerFunc) handle_applications_menu);
-#endif
 
-#if HAS_MUTTER42
             display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-#endif
 
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
@@ -356,11 +351,7 @@ namespace Gala {
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-#if HAS_MUTTER41
                 display.get_context ().notify_ready ();
-#else
-                Meta.register_with_session ();
-#endif
                 plugin_manager.load_waiting_plugins ();
                 return GLib.Source.REMOVE;
             });
@@ -719,16 +710,9 @@ namespace Gala {
                 return proxy;
 
             unowned Meta.Display display = get_display ();
-#if !HAS_MUTTER42
-            var time = display.get_current_time ();
-#endif
 
             update_input_area ();
-#if HAS_MUTTER42
             proxy.grab = stage.grab (actor);
-#else
-            begin_modal (0, time);
-#endif
 
             if (modal_stack.size == 1) {
                 display.disable_unredirect ();
@@ -746,9 +730,7 @@ namespace Gala {
                 return;
             }
 
-#if HAS_MUTTER42
             proxy.grab.dismiss ();
-#endif
 
             if (is_modal ())
                 return;
@@ -756,9 +738,6 @@ namespace Gala {
             update_input_area ();
 
             unowned Meta.Display display = get_display ();
-#if !HAS_MUTTER42
-            end_modal (display.get_current_time ());
-#endif
 
             display.enable_unredirect ();
         }
@@ -1084,6 +1063,8 @@ namespace Gala {
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
+
+            latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
         }
 
         // size_changed gets called after frame_rect has updated
@@ -1215,7 +1196,7 @@ namespace Gala {
                 var old_inner_rect = window_geometry != null ? window_geometry.inner : fallback;
                 var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
 
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect, old_outer_rect);
+                var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect);
                 if (old_actor == null) {
                     return;
                 }
@@ -1608,41 +1589,40 @@ namespace Gala {
                     offset_height = 0;
                 }
 
-                Meta.Rectangle old_rect = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_rect, old_rect);
-
-                if (old_actor == null) {
+                if (latest_window_snapshot == null) {
                     return;
                 }
 
                 unmaximizing.add (actor);
 
-                old_actor.set_position (old_rect.x, old_rect.y);
+                // FIXME: Gtk windows don't want to go out of bounds of screen when unmaximizing, so place them manually
+                // This is OS 7 (Mutter 42) specific, this was not needed in OS 6
+                window.move_frame (true, ex, ey);
 
-                ui_group.add_child (old_actor);
+                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
-                var scale_x = (float) ew / old_rect.width;
-                var scale_y = (float) eh / old_rect.height;
+                ui_group.add_child (latest_window_snapshot);
 
-                old_actor.save_easing_state ();
-                old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                old_actor.set_easing_duration (duration);
-                old_actor.set_position (ex, ey);
-                old_actor.set_scale (scale_x, scale_y);
-                old_actor.opacity = 0U;
-                old_actor.restore_easing_state ();
+                var scale_x = (float) ew / old_rect_size_change.width;
+                var scale_y = (float) eh / old_rect_size_change.height;
+
+                latest_window_snapshot.save_easing_state ();
+                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+                latest_window_snapshot.set_easing_duration (duration);
+                latest_window_snapshot.set_position (ex, ey);
+                latest_window_snapshot.set_scale (scale_x, scale_y);
+                latest_window_snapshot.opacity = 0U;
+                latest_window_snapshot.restore_easing_state ();
 
                 ulong unmaximize_old_handler_id = 0UL;
-                unmaximize_old_handler_id = old_actor.transitions_completed.connect (() => {
-                    old_actor.disconnect (unmaximize_old_handler_id);
-                    old_actor.destroy ();
+                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
+                    latest_window_snapshot.disconnect (unmaximize_old_handler_id);
+                    latest_window_snapshot.destroy ();
                 });
 
-                var maximized_x = actor.x;
-                var maximized_y = actor.y;
                 actor.set_pivot_point (0.0f, 0.0f);
                 actor.set_position (ex, ey);
-                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + maximized_x, -ey + offset_y * (1.0f / scale_y - 1.0f) + maximized_y, 0.0f);
+                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();

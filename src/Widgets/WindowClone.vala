@@ -27,6 +27,8 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     public signal void request_reposition ();
 
+    public WindowManager wm { get; construct; }
+
     public Meta.Window window { get; construct; }
 
     /**
@@ -86,8 +88,8 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (Meta.Window window, GestureTracker? gesture_tracker, bool overview_mode = false) {
-        Object (window: window, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
+    public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, bool overview_mode = false) {
+        Object (wm: wm, window: window, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
     }
 
     construct {
@@ -119,7 +121,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         close_button = Utils.create_close_button ();
         close_button.opacity = 0;
-        close_button.set_easing_duration (FADE_ANIMATION_DURATION);
         close_button.button_press_event.connect (() => {
             close_window ();
             return Gdk.EVENT_STOP;
@@ -137,7 +138,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         window_title = new Tooltip ();
         window_title.opacity = 0;
-        window_title.set_easing_duration (FADE_ANIMATION_DURATION);
 
         active_shape = new ActiveShape ();
         active_shape.opacity = 0;
@@ -418,13 +418,8 @@ public class Gala.WindowClone : Clutter.Actor {
      * according to their given allocations. The first two are placed in a way
      * that compensates for invisible borders of the texture.
      */
-#if HAS_MUTTER338
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
-#else
-    public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags) {
-        base.allocate (box, flags);
-#endif
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
@@ -436,11 +431,7 @@ public class Gala.WindowClone : Clutter.Actor {
             outer_rect.width * scale_factor + ACTIVE_SHAPE_SIZE,
             outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
         };
-#if HAS_MUTTER338
         active_shape.allocate (shape_alloc);
-#else
-        active_shape.allocate (shape_alloc, flags);
-#endif
 
         active_shape.set_scale_factor (scale_factor);
 
@@ -473,14 +464,34 @@ public class Gala.WindowClone : Clutter.Actor {
             return Gdk.EVENT_PROPAGATE;
         }
 
+        close_button.save_easing_state ();
+        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        close_button.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
         close_button.opacity = in_slot_animation ? 0 : 255;
+        close_button.restore_easing_state ();
+
+        window_title.save_easing_state ();
+        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        window_title.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
         window_title.opacity = in_slot_animation ? 0 : 255;
+        window_title.restore_easing_state ();
+
         return Gdk.EVENT_PROPAGATE;
     }
 
     public override bool leave_event (Clutter.CrossingEvent event) {
+        close_button.save_easing_state ();
+        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        close_button.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
         close_button.opacity = 0;
+        close_button.restore_easing_state ();
+
+        window_title.save_easing_state ();
+        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        window_title.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
         window_title.opacity = 0;
+        window_title.restore_easing_state ();
+
         return Gdk.EVENT_PROPAGATE;
     }
 
@@ -490,11 +501,6 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     public void place_widgets (int dest_width, int dest_height) {
         var scale_factor = InternalUtils.get_ui_scaling_factor ();
-
-        close_button.save_easing_state ();
-        window_title.save_easing_state ();
-        close_button.set_easing_duration (0);
-        window_title.set_easing_duration (0);
 
         var close_button_size = CLOSE_WINDOW_ICON_SIZE * scale_factor;
         close_button.set_size (close_button_size, close_button_size);
@@ -511,9 +517,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.set_text (window.get_title () ?? "", false);
         window_title.set_max_width (dest_width - (TITLE_MAX_WIDTH_MARGIN * scale_factor));
         set_window_title_position (dest_width, dest_height);
-
-        close_button.restore_easing_state ();
-        window_title.restore_easing_state ();
     }
 
     private void toggle_shadow (bool show) {
@@ -888,13 +891,8 @@ public class Gala.WindowClone : Clutter.Actor {
             return width == 0 || height == 0 || (width == last_width && height == last_height);
         }
 
-#if HAS_MUTTER338
         public override void allocate (Clutter.ActorBox box) {
             base.allocate (box);
-#else
-        public override void allocate (Clutter.ActorBox box, Clutter.AllocationFlags flags) {
-            base.allocate (box, flags);
-#endif
             var width = (int) box.get_width ();
             var height = (int) box.get_height ();
 

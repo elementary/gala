@@ -42,7 +42,6 @@ namespace Gala {
             add_effect (effect);
         }
 
-#if HAS_MUTTER338
         public override void paint (Clutter.PaintContext context) {
             base.paint (context);
 
@@ -89,22 +88,6 @@ namespace Gala {
             unowned var fb = context.get_framebuffer ();
             fb.draw_rectangle (pipeline, 0, 0, width, height);
         }
-#else
-        public override void paint (Clutter.PaintContext context) {
-            base.paint (context);
-
-            pipeline.set_color4ub (0, 0, 0, 100);
-            var path = new Cogl.Path ();
-            path.rectangle (0, 0, width, height);
-            context.get_framebuffer ().stroke_path (pipeline, path);
-
-            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
-            color.premultiply ();
-            pipeline.set_color (color);
-            path.rectangle (0.5f, 0.5f, width - 1, height - 1);
-            context.get_framebuffer ().stroke_path (pipeline, path);
-        }
-#endif
     }
 
     /**
@@ -151,6 +134,7 @@ namespace Gala {
          */
         public signal void selected (bool close_view);
 
+        public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
@@ -176,8 +160,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker) {
-            Object (workspace: workspace, gesture_tracker: gesture_tracker);
+        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker) {
+            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker);
         }
 
         construct {
@@ -193,7 +177,7 @@ namespace Gala {
                 return false;
             });
 
-            window_container = new WindowCloneContainer (gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);

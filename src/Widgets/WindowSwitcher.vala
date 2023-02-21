@@ -128,7 +128,7 @@ namespace Gala {
             container.motion_event.connect (container_motion_event);
 
             var rgba = InternalUtils.get_theme_accent_color ();
-            var accent_color = new Clutter.Color ();
+            var accent_color = Clutter.Color ();
             accent_color.init (
                 (uint8) (rgba.red * 255),
                 (uint8) (rgba.green * 255),
@@ -344,9 +344,6 @@ namespace Gala {
                     || name == "switch-windows" || name == "switch-windows-backward");
             });
 
-#if !HAS_MUTTER42
-            grab_key_focus ();
-#endif
         }
 
         private void close_switcher (uint32 time, bool cancel = false) {

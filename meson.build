@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
     version: '7.0.1',
-    meson_version: '>= 0.50.0',
+    meson_version: '>= 0.58.0',
     license: 'GPL3',
 )
 
@@ -14,7 +14,7 @@ cc = meson.get_compiler('c')
 
 gala_version = meson.project_version()
 
-vala_version_required = '0.28.0'
+vala_version_required = '0.46.0'
 vala = meson.get_compiler('vala')
 if not vala.version().version_compare('>= @0@'.format(vala_version_required))
     error('Valac >= @0@ required!'.format(vala_version_required))
@@ -106,56 +106,6 @@ libmutter_dep = []
 
 vala_flags = []
 
-mutter336_dep = dependency('libmutter-6', version: ['>= 3.35.1', '< 3.37'], required: false)
-if mutter336_dep.found()
-    libmutter_dep = dependency('libmutter-6', version: '>= 3.35.1')
-    mutter_dep = [
-        libmutter_dep,
-        dependency('mutter-cogl-6'), dependency('mutter-cogl-pango-6'),
-        dependency('mutter-cogl-path-6'), dependency('mutter-clutter-6')
-    ]
-    vala_flags = []
-    add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-        '-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter338_dep = dependency('libmutter-7', version: ['>= 3.37', '< 3.39'], required: false)
-if mutter338_dep.found()
-	libmutter_dep = dependency('libmutter-7', version: '>= 3.37')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-7'), dependency('mutter-cogl-pango-7'),
-		dependency('mutter-clutter-7')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER338']
-	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter40_dep = dependency('libmutter-8', version: ['>= 40', '< 41'], required: false)
-if mutter40_dep.found()
-	libmutter_dep = dependency('libmutter-8', version: '>= 40')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-8'), dependency('mutter-cogl-pango-8'),
-		dependency('mutter-clutter-8')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40']
-	add_project_arguments(['-DCLUTTER_ENABLE_COMPOSITOR_API', '-DCLUTTER_ENABLE_EXPERIMENTAL_API',
-		'-DCOGL_ENABLE_EXPERIMENTAL_API', '-DCOGL_ENABLE_EXPERIMENTAL_2_0_API'], language: 'c')
-endif
-
-mutter41_dep = dependency('libmutter-9', version: ['>= 41', '< 42'], required: false)
-if mutter41_dep.found()
-	libmutter_dep = dependency('libmutter-9', version: '>= 41')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-9'), dependency('mutter-cogl-pango-9'),
-		dependency('mutter-clutter-9')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41']
-endif
-
 mutter42_dep = dependency('libmutter-10', version: ['>= 42', '< 43'], required: false)
 if mutter42_dep.found()
 	libmutter_dep = dependency('libmutter-10', version: '>= 42')
@@ -164,7 +114,7 @@ if mutter42_dep.found()
 		dependency('mutter-cogl-10'), dependency('mutter-cogl-pango-10'),
 		dependency('mutter-clutter-10')
 	]
-	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41', '--define', 'HAS_MUTTER42']
+	vala_flags = []
 endif
 
 mutter43_dep = dependency('libmutter-11', version: ['>= 43', '< 44'], required: false)
@@ -175,14 +125,14 @@ if mutter43_dep.found()
 		dependency('mutter-cogl-11'), dependency('mutter-cogl-pango-11'),
 		dependency('mutter-clutter-11')
 	]
-	vala_flags = ['--define', 'HAS_MUTTER338', '--define', 'HAS_MUTTER40', '--define', 'HAS_MUTTER41', '--define', 'HAS_MUTTER42', '--define', 'HAS_MUTTER43']
+	vala_flags = ['--define', 'HAS_MUTTER43']
 endif
 
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
 
-mutter_typelib_dir = libmutter_dep.get_pkgconfig_variable('typelibdir')
+mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
 
 if get_option('systemd')
     vala_flags += ['--define', 'WITH_SYSTEMD']

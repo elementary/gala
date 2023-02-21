@@ -36,9 +36,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private bool resizing = false;
     private bool off_screen = false;
-#if HAS_MUTTER42
     private Clutter.Grab? grab = null;
-#endif
 
     private static unowned Meta.Window? previous_focus = null;
 
@@ -229,13 +227,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         begin_resize_width = width;
         begin_resize_height = height;
 
-#if HAS_MUTTER42
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
-#else
-        resize_button.get_stage ().set_motion_events_enabled (false);
-        resize_button.get_stage ().captured_event.connect (on_resize_event);
-#endif
 
         return Gdk.EVENT_PROPAGATE;
     }
@@ -288,16 +281,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             return;
         }
 
-#if HAS_MUTTER42
         if (grab != null) {
             grab.dismiss ();
             resize_button.event.disconnect (on_resize_event);
             grab = null;
         }
-#else
-        resize_button.get_stage ().captured_event.disconnect (on_resize_event);
-        resize_button.get_stage ().set_motion_events_enabled (true);
-#endif
 
         resizing = false;
 
