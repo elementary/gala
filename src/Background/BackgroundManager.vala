@@ -105,23 +105,14 @@ namespace Gala {
             }
 
             new_background_actor = create_background_actor ();
-#if HAS_MUTTER338
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
             var old_content = (Meta.BackgroundContent)background_actor.content;
             new_content.vignette_sharpness = old_content.vignette_sharpness;
             new_content.brightness = old_content.brightness;
-#else
-            new_background_actor.vignette_sharpness = background_actor.vignette_sharpness;
-            new_background_actor.brightness = background_actor.brightness;
-#endif
             new_background_actor.visible = background_actor.visible;
 
 
-#if HAS_MUTTER338
             var background = new_content.background.get_data<unowned Background> ("delegate");
-#else
-            var background = new_background_actor.background.get_data<unowned Background> ("delegate");
-#endif
 
             if (background.is_loaded) {
                 swap_background_actor (animate);
@@ -148,21 +139,12 @@ namespace Gala {
             var background = background_source.get_background (monitor_index);
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
-#if HAS_MUTTER338
             ((Meta.BackgroundContent)background_actor.content).background = background.background;
             ((Meta.BackgroundContent)background_actor.content).vignette = true;
-#else
-            background_actor.background = background.background;
-            background_actor.vignette = true;
-#endif
 
             // Don't play dim animation when launching gala or switching wallpaper
             if (should_dim ()) {
-#if HAS_MUTTER338
                 ((Meta.BackgroundContent)background_actor.content).brightness = DIM_OPACITY;
-#else
-                background_actor.brightness = DIM_OPACITY;
-#endif
             }
 
             Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (update_dim_wallpaper);
@@ -226,22 +208,14 @@ namespace Gala {
             background_actor.add_child (dim_actor);
             var binding = dim_actor.bind_property (
                 "opacity",
-#if HAS_MUTTER338
                 (Meta.BackgroundContent) background_actor.content,
-#else
-                background_actor,
-#endif
                 "brightness",
                 BindingFlags.DEFAULT
             );
 
             var transition = new Clutter.PropertyTransition ("opacity");
             transition.set_from_value (
-#if HAS_MUTTER338
                 ((Meta.BackgroundContent) background_actor.content).brightness
-#else
-                background_actor.brightness
-#endif
             );
             transition.set_to_value (should_dim () ? DIM_OPACITY : 1.0);
             transition.duration = FADE_ANIMATION_TIME;
