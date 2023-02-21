@@ -42,7 +42,6 @@ namespace Gala {
             add_effect (effect);
         }
 
-#if HAS_MUTTER338
         public override void paint (Clutter.PaintContext context) {
             base.paint (context);
 
@@ -89,22 +88,6 @@ namespace Gala {
             unowned var fb = context.get_framebuffer ();
             fb.draw_rectangle (pipeline, 0, 0, width, height);
         }
-#else
-        public override void paint (Clutter.PaintContext context) {
-            base.paint (context);
-
-            pipeline.set_color4ub (0, 0, 0, 100);
-            var path = new Cogl.Path ();
-            path.rectangle (0, 0, width, height);
-            context.get_framebuffer ().stroke_path (pipeline, path);
-
-            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
-            color.premultiply ();
-            pipeline.set_color (color);
-            path.rectangle (0.5f, 0.5f, width - 1, height - 1);
-            context.get_framebuffer ().stroke_path (pipeline, path);
-        }
-#endif
     }
 
     /**
