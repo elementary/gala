@@ -182,7 +182,7 @@ namespace Gala {
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);
 
-            icon_group = new IconGroup (workspace);
+            icon_group = new IconGroup (wm, workspace);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
