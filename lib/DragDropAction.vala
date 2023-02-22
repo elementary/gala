@@ -229,7 +229,7 @@ namespace Gala {
                             cancel ();
                         }
 
-                        return Gdk.EVENT_PROPAGATE;
+                        return Gdk.EVENT_STOP;
                     }
                     break;
 
