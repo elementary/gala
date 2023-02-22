@@ -172,9 +172,9 @@ namespace Gala {
 
             background = new FramedBackground (display);
             background.reactive = true;
-            background.button_press_event.connect (() => {
+            background.button_release_event.connect (() => {
                 selected (true);
-                return false;
+                return Gdk.EVENT_PROPAGATE;
             });
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
