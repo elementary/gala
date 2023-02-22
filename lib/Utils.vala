@@ -290,6 +290,11 @@ namespace Gala {
                 return null;
             }
 
+            if (content == null) {
+                warning ("Could not create window snapshot");
+                return null;
+            }
+
             var container = new Clutter.Actor ();
             container.set_size (inner_rect.width, inner_rect.height);
             container.content = content;
