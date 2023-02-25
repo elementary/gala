@@ -684,7 +684,7 @@ namespace Gala {
             unowned var active = manager.get_active_workspace ();
             unowned var next = active.get_neighbor (direction);
 
-            //don't allow empty workspaces to be created by moving, if we have dynamic workspaces
+            // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
                 Utils.bell (display);
                 return;
