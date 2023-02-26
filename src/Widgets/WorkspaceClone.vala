@@ -247,19 +247,15 @@ namespace Gala {
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
-        private GLib.List<Meta.Window> added_desktop_windows = new GLib.List<Meta.Window> ();
         private void add_window (Meta.Window window) {
             if (window.window_type == Meta.WindowType.DESKTOP) {
-                foreach (unowned var child in added_desktop_windows) {
-                    if (child == window) {
+                foreach (unowned var child in desktop_windows.get_children ()) {
+                    if (((DesktopWindowClone) child).window == window) {
                         return;
                     }
                 }
                 var clone = new DesktopWindowClone (window);
                 desktop_windows.add_child (clone);
-                added_desktop_windows.append (window);
-                warning ("Adding desktop clone for workspace %d", this.workspace.index ());
-                warning ("%f %f %f %f", desktop_windows.x, desktop_windows.y, desktop_windows.width, desktop_windows.height);
             }
 
             if (window.window_type != Meta.WindowType.NORMAL
