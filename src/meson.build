@@ -36,6 +36,7 @@ gala_bin_sources = files(
     'Gestures/ToucheggBackend.vala',
     'HotCorners/HotCorner.vala',
     'HotCorners/HotCornerManager.vala',
+    'Widgets/DesktopWindowClone.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',

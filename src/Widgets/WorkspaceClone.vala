@@ -33,8 +33,6 @@ namespace Gala {
 
         construct {
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-            var primary = display.get_primary_monitor ();
-            var monitor_geom = display.get_monitor_geometry (primary);
 
             var effect = new ShadowEffect (40) {
                 css_class = "workspace"
@@ -160,6 +158,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
+        private Clutter.Actor desktop_windows;
+
         public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker) {
             Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker);
         }
@@ -176,6 +176,8 @@ namespace Gala {
                 selected (true);
                 return Gdk.EVENT_PROPAGATE;
             });
+
+            desktop_windows = new Clutter.Actor ();
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
@@ -212,17 +214,13 @@ namespace Gala {
             workspace.window_removed.connect (remove_window);
 
             add_child (background);
+            add_child (desktop_windows);
             add_child (window_container);
 
             // add existing windows
             var windows = workspace.list_windows ();
             foreach (var window in windows) {
-                if (window.window_type == Meta.WindowType.NORMAL
-                    && !window.on_all_workspaces
-                    && window.get_monitor () == display.get_primary_monitor ()) {
-                    window_container.add_window (window);
-                    icon_group.add_window (window, true);
-                }
+                add_window (window);
             }
 
             var listener = WindowListener.get_default ();
@@ -249,16 +247,32 @@ namespace Gala {
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
+        private GLib.List<Meta.Window> added_desktop_windows = new GLib.List<Meta.Window> ();
         private void add_window (Meta.Window window) {
+            if (window.window_type == Meta.WindowType.DESKTOP) {
+                foreach (unowned var child in added_desktop_windows) {
+                    if (child == window) {
+                        return;
+                    }
+                }
+                var clone = new DesktopWindowClone (window);
+                desktop_windows.add_child (clone);
+                added_desktop_windows.append (window);
+                warning ("Adding desktop clone for workspace %d", this.workspace.index ());
+                warning ("%f %f %f %f", desktop_windows.x, desktop_windows.y, desktop_windows.width, desktop_windows.height);
+            }
+
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
                 || window.get_monitor () != window.get_display ().get_primary_monitor ())
                 return;
 
-            foreach (var child in window_container.get_children ())
-                if (((WindowClone) child).window == window)
+            foreach (unowned var child in window_container.get_children ()) {
+                if (((WindowClone) child).window == window) {
                     return;
+                }
+            }
 
             window_container.add_window (window);
             icon_group.add_window (window);
@@ -353,6 +367,7 @@ namespace Gala {
             GestureTracker.OnBegin on_animation_begin = () => {
                 x = initial_x;
                 background.set_pivot_point (0.5f, pivot_y);
+                desktop_windows.set_pivot_point (0.5f, pivot_y);
             };
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -361,6 +376,7 @@ namespace Gala {
 
                 double update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
+                desktop_windows.set_scale (update_scale, update_scale);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -379,6 +395,12 @@ namespace Gala {
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
+
+                desktop_windows.save_easing_state ();
+                desktop_windows.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                desktop_windows.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                desktop_windows.set_scale (scale, scale);
+                desktop_windows.restore_easing_state ();
             };
 
             if (!with_gesture) {
@@ -431,6 +453,7 @@ namespace Gala {
                 double scale_x = (double) GestureTracker.animation_value ((float) initial_scale_x, 1.0f, percentage);
                 double scale_y = (double) GestureTracker.animation_value ((float) initial_scale_y, 1.0f, percentage);
                 background.set_scale (scale_x, scale_y);
+                desktop_windows.set_scale (scale_x, scale_y);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -449,6 +472,12 @@ namespace Gala {
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
+
+                desktop_windows.save_easing_state ();
+                desktop_windows.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                desktop_windows.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                desktop_windows.set_scale (1, 1);
+                desktop_windows.restore_easing_state ();
             };
 
             if (!with_gesture) {

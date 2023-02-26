@@ -688,17 +688,20 @@ namespace Gala {
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 85;
 
-                if (actor.is_destroyed ())
+                if (actor.is_destroyed ()) {
                     continue;
+                }
 
                 unowned Meta.Window window = actor.get_meta_window ();
                 var monitor = window.get_monitor ();
 
-                if (window.window_type != Meta.WindowType.DOCK)
+                if (window.window_type != Meta.WindowType.DOCK) {
                     continue;
+                }
 
-                if (display.get_monitor_in_fullscreen (monitor))
+                if (display.get_monitor_in_fullscreen (monitor)) {
                     continue;
+                }
 
                 var monitor_geom = display.get_monitor_geometry (monitor);
 
@@ -706,8 +709,9 @@ namespace Gala {
                 var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
                 var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
 
-                if (!top && !bottom)
+                if (!top && !bottom) {
                     continue;
+                }
 
                 var initial_x = actor.x;
                 var initial_y = actor.y;
