@@ -99,17 +99,17 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
         foreach (var workspace in workspaces) {
             foreach (var window in workspace.list_windows ()) {
+                if (window.window_type == Meta.WindowType.DOCK || window.window_type == Meta.WindowType.DESKTOP) {
+                    continue;
+                }
+
                 if (window.window_type != Meta.WindowType.NORMAL &&
-                    window.window_type != Meta.WindowType.DOCK &&
                     window.window_type != Meta.WindowType.DIALOG ||
                     window.is_attached_dialog ()) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     if (actor != null) {
                         actor.hide ();
                     }
-                    continue;
-                }
-                if (window.window_type == Meta.WindowType.DOCK) {
                     continue;
                 }
 
