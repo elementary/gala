@@ -1791,7 +1791,7 @@ namespace Gala {
 
             // if we have a move action, pack that window to the static ones
             if (moving != null) {
-                var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
+                unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
 
                 windows.prepend (moving_actor);
                 parents.prepend (moving_actor.get_parent ());
@@ -1800,42 +1800,43 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
-            var to_has_fullscreened = false;
-            var from_has_fullscreened = false;
-            var docks = new List<Meta.WindowActor> ();
-
+            var windows_slist = new GLib.SList<Meta.Window> ();
+            foreach (unowned var window in display.list_all_windows ()) {
+                windows_slist.append (window);
+            }
             // collect all windows and put them in the appropriate containers
-            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
-                    continue;
-
-                unowned Meta.Window window = actor.get_meta_window ();
+            foreach (unowned var window in display.sort_windows_by_stacking (windows_slist)) {
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
                 if (!window.showing_on_its_workspace () ||
                     (move_primary_only && window.get_monitor () != primary) ||
-                    (moving != null && window == moving))
+                    (moving != null && window == moving)) {
                     continue;
+                }
 
-                if (window.is_on_all_workspaces ()) {
+                if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces
                     // all other windows will be collected below
-                    if (window.window_type == Meta.WindowType.DOCK) {
-                        docks.prepend (actor);
+
+                    windows.prepend (actor);
+                    parents.prepend (actor.get_parent ());
+
+                    if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                        reparent_notification_window (actor, static_windows);
                     } else {
-                        // windows that are on all workspaces will be faded out and back in
+                        var clone = new SafeWindowClone (window) {
+                            x = actor.x - clone_offset_x,
+                            y = actor.y - clone_offset_y
+                        };
+
+                        in_group.add_child (clone);
+                        tmp_actors.prepend (clone);
+
                         windows.prepend (actor);
                         parents.prepend (actor.get_parent ());
+                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
 
-                        if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                            reparent_notification_window (actor, static_windows);
-                        } else {
-                            clutter_actor_reparent (actor, static_windows);
-                            actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                            actor.save_easing_state ();
-                            actor.set_easing_duration (300);
-                            actor.opacity = 0;
-                            actor.restore_easing_state ();
-                        }
+                        clutter_actor_reparent (actor, out_group);
                     }
 
                     continue;
@@ -1847,42 +1848,11 @@ namespace Gala {
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
                     clutter_actor_reparent (actor, out_group);
 
-                    if (window.fullscreen)
-                        from_has_fullscreened = true;
-
                 } else if (window.get_workspace () == workspace_to) {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
                     clutter_actor_reparent (actor, in_group);
-
-                    if (window.fullscreen)
-                        to_has_fullscreened = true;
-
-                }
-            }
-
-            // make sure we don't add docks when there are fullscreened
-            // windows on one of the groups. Simply raising seems not to
-            // work, mutter probably reverts the order internally to match
-            // the display stack
-            foreach (var window in docks) {
-                if (!to_has_fullscreened) {
-                    var clone = new SafeWindowClone (window.get_meta_window ()) {
-                        x = window.x - clone_offset_x,
-                        y = window.y - clone_offset_y
-                    };
-
-                    in_group.add_child (clone);
-                    tmp_actors.prepend (clone);
-                }
-
-                if (!from_has_fullscreened) {
-                    windows.prepend (window);
-                    parents.prepend (window.get_parent ());
-                    window.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
-
-                    clutter_actor_reparent (window, out_group);
                 }
             }
 
