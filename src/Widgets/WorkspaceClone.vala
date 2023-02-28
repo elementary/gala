@@ -172,9 +172,9 @@ namespace Gala {
 
             background = new FramedBackground (display);
             background.reactive = true;
-            background.button_press_event.connect (() => {
+            background.button_release_event.connect (() => {
                 selected (true);
-                return false;
+                return Gdk.EVENT_PROPAGATE;
             });
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
@@ -182,7 +182,7 @@ namespace Gala {
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
             display.restacked.connect (window_container.restack_windows);
 
-            icon_group = new IconGroup (workspace);
+            icon_group = new IconGroup (wm, workspace);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");

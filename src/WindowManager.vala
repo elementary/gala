@@ -674,25 +674,33 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void move_window (Meta.Window? window, Meta.MotionDirection direction) {
-            if (window == null)
+            if (window == null) {
                 return;
+            }
 
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
-            var active = manager.get_active_workspace ();
-            var next = active.get_neighbor (direction);
+            unowned var active = manager.get_active_workspace ();
+            unowned var next = active.get_neighbor (direction);
 
-            //dont allow empty workspaces to be created by moving, if we have dynamic workspaces
+            // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
+                Utils.bell (display);
+                return;
+            }
+
+            // don't allow moving into non-existing workspaces
+            if (active == next) {
                 Utils.bell (display);
                 return;
             }
 
             moving = window;
 
-            if (!window.is_on_all_workspaces ())
+            if (!window.is_on_all_workspaces ()) {
                 window.change_workspace (next);
+            }
 
             next.activate_with_focus (window, display.get_current_time ());
         }
@@ -837,18 +845,10 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
-                    if (current != null) {
-                        var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.LEFT);
-                        if (wp != null)
-                            current.change_workspace (wp);
-                    }
+                    move_window (current, Meta.MotionDirection.LEFT);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
-                    if (current != null) {
-                        var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.RIGHT);
-                        if (wp != null)
-                            current.change_workspace (wp);
-                    }
+                    move_window (current, Meta.MotionDirection.RIGHT);
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
@@ -1191,20 +1191,14 @@ namespace Gala {
             }
 
             if (window.window_type == Meta.WindowType.NORMAL) {
-                Meta.Rectangle fallback = { (int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height };
-                var window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
-                var old_inner_rect = window_geometry != null ? window_geometry.inner : fallback;
-                var old_outer_rect = window_geometry != null ? window_geometry.outer : fallback;
-
-                var old_actor = Utils.get_window_actor_snapshot (actor, old_inner_rect);
-                if (old_actor == null) {
+                if (latest_window_snapshot == null) {
                     return;
                 }
 
                 maximizing.add (actor);
-                old_actor.set_position (old_inner_rect.x, old_inner_rect.y);
+                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
-                ui_group.add_child (old_actor);
+                ui_group.add_child (latest_window_snapshot);
 
                 // FIMXE that's a hacky part. There is a short moment right after maximized_completed
                 //       where the texture is screwed up and shows things it's not supposed to show,
@@ -1224,34 +1218,34 @@ namespace Gala {
                     });
                 }
 
-                var scale_x = (double) ew / old_inner_rect.width;
-                var scale_y = (double) eh / old_inner_rect.height;
+                var scale_x = (double) ew / old_rect_size_change.width;
+                var scale_y = (double) eh / old_rect_size_change.height;
 
-                old_actor.save_easing_state ();
-                old_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                old_actor.set_easing_duration (duration);
-                old_actor.set_position (ex, ey);
-                old_actor.set_scale (scale_x, scale_y);
+                latest_window_snapshot.save_easing_state ();
+                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+                latest_window_snapshot.set_easing_duration (duration);
+                latest_window_snapshot.set_position (ex, ey);
+                latest_window_snapshot.set_scale (scale_x, scale_y);
 
                 // the opacity animation is special, since we have to wait for the
                 // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
-                old_actor.save_easing_state ();
-                old_actor.set_easing_delay (delay);
-                old_actor.set_easing_duration (duration - delay);
-                old_actor.opacity = 0;
-                old_actor.restore_easing_state ();
+                latest_window_snapshot.save_easing_state ();
+                latest_window_snapshot.set_easing_delay (delay);
+                latest_window_snapshot.set_easing_duration (duration - delay);
+                latest_window_snapshot.opacity = 0;
+                latest_window_snapshot.restore_easing_state ();
 
                 ulong maximize_old_handler_id = 0UL;
-                maximize_old_handler_id = old_actor.transitions_completed.connect (() => {
-                    old_actor.disconnect (maximize_old_handler_id);
-                    old_actor.destroy ();
+                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
+                    latest_window_snapshot.disconnect (maximize_old_handler_id);
+                    latest_window_snapshot.destroy ();
                     actor.set_translation (0.0f, 0.0f, 0.0f);
                 });
 
-                old_actor.restore_easing_state ();
+                latest_window_snapshot.restore_easing_state ();
 
                 actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_translation (old_inner_rect.x - ex, old_inner_rect.y - ey, 0.0f);
+                actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
                 actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
                 actor.save_easing_state ();
@@ -1574,19 +1568,15 @@ namespace Gala {
             }
 
             if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y, offset_width, offset_height;
+                float offset_x, offset_y;
                 var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
                 if (unmaximized_window_geometry != null) {
                     offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
                     offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-                    offset_width = unmaximized_window_geometry.outer.width - unmaximized_window_geometry.inner.width;
-                    offset_height = unmaximized_window_geometry.outer.height - unmaximized_window_geometry.inner.height;
                 } else {
                     offset_x = 0;
                     offset_y = 0;
-                    offset_width = 0;
-                    offset_height = 0;
                 }
 
                 if (latest_window_snapshot == null) {
