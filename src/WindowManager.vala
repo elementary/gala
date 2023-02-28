@@ -674,25 +674,33 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void move_window (Meta.Window? window, Meta.MotionDirection direction) {
-            if (window == null)
+            if (window == null) {
                 return;
+            }
 
             unowned Meta.Display display = get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
-            var active = manager.get_active_workspace ();
-            var next = active.get_neighbor (direction);
+            unowned var active = manager.get_active_workspace ();
+            unowned var next = active.get_neighbor (direction);
 
-            //dont allow empty workspaces to be created by moving, if we have dynamic workspaces
+            // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
+                Utils.bell (display);
+                return;
+            }
+
+            // don't allow moving into non-existing workspaces
+            if (active == next) {
                 Utils.bell (display);
                 return;
             }
 
             moving = window;
 
-            if (!window.is_on_all_workspaces ())
+            if (!window.is_on_all_workspaces ()) {
                 window.change_workspace (next);
+            }
 
             next.activate_with_focus (window, display.get_current_time ());
         }
@@ -837,18 +845,10 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
-                    if (current != null) {
-                        var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.LEFT);
-                        if (wp != null)
-                            current.change_workspace (wp);
-                    }
+                    move_window (current, Meta.MotionDirection.LEFT);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
-                    if (current != null) {
-                        var wp = current.get_workspace ().get_neighbor (Meta.MotionDirection.RIGHT);
-                        if (wp != null)
-                            current.change_workspace (wp);
-                    }
+                    move_window (current, Meta.MotionDirection.RIGHT);
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
