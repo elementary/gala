@@ -433,11 +433,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone.set_scale (scale_factor, scale_factor);
-
-        // Scaling happens around the pivot point, so we need to move the clone
-        // to compensate for the difference between the pivot point and the
-        // top left corner of the clone.
-
         clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
                             (input_rect.y - outer_rect.y) * scale_factor);
     }
