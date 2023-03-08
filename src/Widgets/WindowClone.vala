@@ -132,8 +132,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
-        window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         set_window_icon_position (window_frame_rect.width, window_frame_rect.height);
 
         window_title = new Tooltip ();
@@ -271,10 +269,6 @@ public class Gala.WindowClone : Clutter.Actor {
         in_slot_animation = true;
         place_widgets (outer_rect.width, outer_rect.height);
 
-        GestureTracker.OnBegin on_animation_begin = () => {
-            window_icon.set_easing_duration (0);
-        };
-
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var x = GestureTracker.animation_value (initial_x, target_x, percentage);
             var y = GestureTracker.animation_value (initial_y, target_y, percentage);
@@ -333,10 +327,9 @@ public class Gala.WindowClone : Clutter.Actor {
         };
 
         if (!animate || gesture_tracker == null || !with_gesture) {
-            on_animation_begin (0);
             on_animation_end (1, false, 0);
         } else {
-            gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
     }
 
