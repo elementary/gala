@@ -445,14 +445,8 @@ public class Gala.WindowClone : Clutter.Actor {
         // to compensate for the difference between the pivot point and the
         // top left corner of the clone.
 
-        float pivot_x, pivot_y;
-        clone.get_pivot_point (out pivot_x, out pivot_y);
-        var absolute_pivot_x = pivot_x * clone.width;
-        var absolute_pivot_y = pivot_y * clone.height;
-        var x_offset = absolute_pivot_x * (scale_factor - 1);
-        var y_offset = absolute_pivot_y * (scale_factor - 1);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor + x_offset,
-                            (input_rect.y - outer_rect.y) * scale_factor + y_offset);
+        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
+                            (input_rect.y - outer_rect.y) * scale_factor);
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
@@ -772,7 +766,7 @@ public class Gala.WindowClone : Clutter.Actor {
         prev_parent.insert_child_at_index (this, prev_index);
 
         clone.save_easing_state ();
-        clone.set_pivot_point (0.5f, 0.5f);
+        clone.set_pivot_point (0.0f, 0.0f);
         clone.set_easing_duration (250);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_scale (1, 1);
