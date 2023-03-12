@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-02-11 17:25+0000\n"
-"PO-Revision-Date: 2015-11-28 20:54+0000\n"
-"Last-Translator: Beqa Arabuli <arabulibeqa@yahoo.com>\n"
-"Language-Team: Georgian <ka@li.org>\n"
+"PO-Revision-Date: 2023-03-12 21:33+0000\n"
+"Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
+">\n"
 "Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: src/Dialogs.vala:152
 #, c-format
@@ -53,20 +55,20 @@ msgstr ""
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
+msgstr[1] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 
 #: src/WindowManager.vala:2133
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "დავიტოვო ეკრანის ახალი პარამეტრები?"
 
 #: src/WindowManager.vala:2137
 msgid "Keep Settings"
-msgstr ""
+msgstr "პარამეტრების შენარჩუნება"
 
 #: src/WindowManager.vala:2138
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "წინა პარამეტრების გამოყენება"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2180
