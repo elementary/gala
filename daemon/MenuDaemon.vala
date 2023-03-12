@@ -340,7 +340,7 @@ namespace Gala {
                         message_dialog.run ();
                         message_dialog.destroy ();
                     }
-                });                
+                });
 
                 var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
                 system_settings.activate.connect (() => {
@@ -379,7 +379,7 @@ namespace Gala {
                         message_dialog.destroy ();
                     }
                 });
-                
+
                 desktop_menu = new Gtk.Menu ();
                 desktop_menu.append (change_wallpaper);
                 desktop_menu.append (display_settings);
