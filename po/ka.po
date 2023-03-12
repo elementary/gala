@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-02-11 17:25+0000\n"
-"PO-Revision-Date: 2023-03-12 21:33+0000\n"
+"PO-Revision-Date: 2023-03-13 22:25+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
 ">\n"
@@ -23,11 +23,11 @@ msgstr ""
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "%s არ პასუხობს"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "აპლიკაცია არ პასუხობს"
 
 #: src/Dialogs.vala:157
 msgid ""
@@ -37,19 +37,19 @@ msgstr ""
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "ძალით გასვლა"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "მოცდა"
 
 #: src/ScreenshotManager.vala:256
 msgid "Screenshots"
-msgstr ""
+msgstr "ეკრანის ანაბეჭდები"
 
 #: src/ScreenshotManager.vala:336
 msgid "Screenshot taken"
-msgstr ""
+msgstr "ეკრანის ანაბეჭდი აღებულია"
 
 #: src/WindowManager.vala:2126
 #, c-format
@@ -74,11 +74,11 @@ msgstr "წინა პარამეტრების გამოყენ�
 #: src/WindowManager.vala:2180
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "ეკრანის ანაბეჭდი %s-დან"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "დამალვა"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -90,7 +90,7 @@ msgstr "ზომის შეცვლა"
 
 #: daemon/MenuDaemon.vala:144
 msgid "Always on Top"
-msgstr "ყოველთვის წინა პლანზე"
+msgstr "ყოველთვის ყველაზე ზემოთ"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
@@ -98,15 +98,15 @@ msgstr "ყოველთვის ხილულ სამუშაო გა
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
-msgstr "მარცხენა სამუშაო გარემოში გადატანა"
+msgstr "მარცხენა სამუშაო სივრცეში გადატანა"
 
 #: daemon/MenuDaemon.vala:168
 msgid "Move to Workspace Right"
-msgstr "მარჯვენა სამუშაო გარემოში გადატანა"
+msgstr "მარჯვენა სამუშაო სივრცეში გადატანა"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "ეკრანის ანაბეჭდის გადაღება"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -118,27 +118,27 @@ msgstr ""
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
-msgstr "გაშლის დაბრუნება"
+msgstr "საწყის ზომაზე დაბრუნება"
 
 #: daemon/MenuDaemon.vala:225
 msgid "Maximize"
-msgstr "გაშლა"
+msgstr "გადიდება"
 
 #: daemon/MenuDaemon.vala:291
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "ფონის სურათის შეცვლა…"
 
 #: daemon/MenuDaemon.vala:308
 msgid "Display Settings…"
-msgstr ""
+msgstr "ეკრანის მორგება…"
 
 #: daemon/MenuDaemon.vala:325
 msgid "System Settings…"
-msgstr ""
+msgstr "სისტემის მორგება…"
 
 #: data/gala.appdata.xml.in:7
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "მრავალამოცანიანობა და ფანჯრების მართვა"
 
 #: data/gala.appdata.xml.in:8
 msgid "A window &amp; compositing manager for Pantheon"
@@ -154,13 +154,13 @@ msgstr ""
 #: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
 #: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
 msgid "Improvements:"
-msgstr ""
+msgstr "გაუმჯობესებები:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
 #: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
 #: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
 msgid "Updated translations"
-msgstr ""
+msgstr "განახლებული თარგმანები"
 
 #: data/gala.appdata.xml.in:31
 msgid "Reload animated wallpapers when timezone changes"
@@ -177,7 +177,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
 #: data/gala.appdata.xml.in:97
 msgid "Fixes:"
-msgstr ""
+msgstr "შეცდომების გასწორებები:"
 
 #: data/gala.appdata.xml.in:62
 msgid "Fix regressions for OS 7"
@@ -188,14 +188,12 @@ msgid "Use access portal for force quit"
 msgstr ""
 
 #: data/gala.appdata.xml.in:80
-#, fuzzy
 msgid "Properly update accent color in the window switcher"
-msgstr "alt-tab-გადამრთველის ფონად გამოყენებული ფანჯრის გაუმჭვირვობა."
+msgstr "ფანჯრების გადამრთველში ფერის აქცენტის სწორი განახლება"
 
 #: data/gala.appdata.xml.in:81
-#, fuzzy
 msgid "Fix selecting windows underneath the window switcher"
-msgstr "alt-tab-გადამრთველის ფონად გამოყენებული ფანჯრის გაუმჭვირვობა."
+msgstr "ფანჯრების გადამრთველის ქვემოთ მდებარე ფანჯრების არჩევის გასწორება"
 
 #: data/gala.appdata.xml.in:82
 msgid "Prevent potential crashes"
@@ -230,10 +228,8 @@ msgid "Redesigned Alt + Tab switcher"
 msgstr ""
 
 #: data/gala.appdata.xml.in:105
-#, fuzzy
-#| msgid "Attach modal dialogs"
 msgid "Dim the parents of modal dialogs"
-msgstr "მოდალური დიალოგების მიბმა"
+msgstr "მოდალური დიალოგების მშობლების მინავლება"
 
 #: data/gala.appdata.xml.in:106
 msgid "Dialogs fall down on parents instead of shooting out"
@@ -241,7 +237,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:114
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -254,7 +250,7 @@ msgstr "ყველა გახსნილი ფანჯრის და �
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "სხვა"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
