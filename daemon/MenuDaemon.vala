@@ -322,6 +322,26 @@ namespace Gala {
                     }
                 });
 
+                var open_terminal = new Gtk.MenuItem.with_label (_("Open Terminal…"));
+                open_terminal.activate.connect (() => {
+                    try {
+                        AppInfo ai = GLib.AppInfo.create_from_commandline (
+                            "io.elementary.terminal",
+                            "io.elementary.terminal", NONE);
+                        ai.launch (null, null);
+                    } catch (Error e) {
+                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                            "Failed to Open Terminal",
+                            "Unable to open Terminal.",
+                            "dialog-warning",
+                            Gtk.ButtonsType.CLOSE
+                        );
+                        message_dialog.show_error_details (e.message);
+                        message_dialog.run ();
+                        message_dialog.destroy ();
+                    }
+                });                
+
                 var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
                 system_settings.activate.connect (() => {
                     try {
@@ -339,11 +359,35 @@ namespace Gala {
                     }
                 });
 
+                var system_exit = new Gtk.MenuItem.with_label (_("Shutdown…"));
+                system_exit.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
+                system_exit.activate.connect (() => {
+                    try {
+                        AppInfo ai = GLib.AppInfo.create_from_commandline (
+                            "gnome-session-quit --reboot",
+                            null, NONE);
+                        ai.launch (null, null);
+                    } catch (Error e) {
+                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                            "Shutdown",
+                            "Failed to shut down computer.",
+                            "dialog-warning",
+                            Gtk.ButtonsType.CLOSE
+                        );
+                        message_dialog.show_error_details (e.message);
+                        message_dialog.run ();
+                        message_dialog.destroy ();
+                    }
+                });
+                
                 desktop_menu = new Gtk.Menu ();
                 desktop_menu.append (change_wallpaper);
                 desktop_menu.append (display_settings);
-                desktop_menu.append (new Gtk.SeparatorMenuItem ());
                 desktop_menu.append (system_settings);
+                desktop_menu.append (new Gtk.SeparatorMenuItem ());
+                desktop_menu.append (open_terminal);
+                desktop_menu.append (new Gtk.SeparatorMenuItem ());
+                desktop_menu.append (system_exit);
                 desktop_menu.show_all ();
             }
 
