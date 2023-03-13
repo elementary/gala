@@ -276,7 +276,7 @@ namespace Gala {
                 close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];
             }
 
-            // opened is used as workaround https://github.com/elementary/gala/issues/1387
+            // `opened` is used as workaround for https://github.com/elementary/gala/issues/1387
             var opened = false;
             Idle.add (() => {
                 window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
