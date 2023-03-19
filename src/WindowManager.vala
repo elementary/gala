@@ -2051,8 +2051,6 @@ namespace Gala {
                     }
                 }
 
-                display.disconnect (workspace_switching_window_created_id);
-
                 kill_window_effects (window);
 
                 if (meta_window != null
@@ -2068,6 +2066,8 @@ namespace Gala {
                     actor.restore_easing_state ();
                 }
             }
+
+            display.disconnect (workspace_switching_window_created_id);
 
             if (tmp_actors != null) {
                 foreach (var actor in tmp_actors) {
