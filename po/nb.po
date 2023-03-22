@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-03-22 18:54+0000\n"
-"PO-Revision-Date: 2023-02-14 13:25+0000\n"
+"PO-Revision-Date: 2023-03-25 14:59+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.16.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -30,16 +30,12 @@ msgid "Application is not responding"
 msgstr "Programmet svarer ikke"
 
 #: src/Dialogs.vala:157
-#, fuzzy
-#| msgid ""
-#| "You may choose to wait a short while for it to continue or force the "
-#| "application quit entirely."
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
 "Du kan velge å vente på at programmet skal fortsette en kort stund, eller "
-"avslutte det."
+"påtvinge avslutning av det."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -178,15 +174,12 @@ msgid "Reload animated wallpapers when timezone changes"
 msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
 
 #: data/gala.appdata.xml.in:60
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Fiks rar to-fungerrulling i fleroppgaveløsnings-visning"
+msgstr "Fikset rar to-fungerrulling i fleroppgaveløsnings-visning"
 
 #: data/gala.appdata.xml.in:61
-#, fuzzy
 msgid "Improve multitasking view animation performance"
-msgstr "Forbedre fleroppgaveløsningsvisning av animasjonsytelse"
+msgstr "Forbedret fleroppgaveløsningsvisning av animasjonsytelse"
 
 #: data/gala.appdata.xml.in:88
 msgid "Fixes:"
