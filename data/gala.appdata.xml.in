@@ -100,7 +100,7 @@
         <issue url="https://github.com/elementary/gala/issues/966">Add a function to dim the wallpaper when dark style is active</issue>
       </issues>
     </release>
-  <releases>
+  </releases>
 
   <compulsory_for_desktop>Pantheon</compulsory_for_desktop>
   <developer_name>elementary, Inc.</developer_name>
