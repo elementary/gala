@@ -12,6 +12,19 @@
   </description>
 
   <releases>
+    <release version="7.0.2" date="2023-03-22" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1229">Notification bubble appears in wrong corner on one workspace</issue>
+        <issue url="https://github.com/elementary/gala/issues/1578">Closing a window in multitasking view closes multitasking view</issue>
+      </issues>
+    </release>
+
     <release version="7.0.1" date="2023-02-27" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -87,43 +100,7 @@
         <issue url="https://github.com/elementary/gala/issues/966">Add a function to dim the wallpaper when dark style is active</issue>
       </issues>
     </release>
-
-    <release version="6.3.1" date="2022-04-06" urgency="medium">
-      <description>
-        <p>Fixes:</p>
-        <ul>
-          <li>Properly update accent color in the window switcher</li>
-          <li>Fix selecting windows underneath the window switcher</li>
-          <li>Prevent potential crashes</li>
-          <li>Resize workspaces when displays change</li>
-          <li>Handle windows with no title</li>
-        </ul>
-        <p>Improvements:</p>
-        <ul>
-          <li>Use access portal for display settings confirmation</li>
-          <li>Allow closing multitasking view with Super</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-
-    <release version="6.3.0" date="2021-11-23" urgency="medium">
-      <description>
-        <p>Fixes:</p>
-        <ul>
-          <li>Fix shadow clipping on server-side decorated windows</li>
-        </ul>
-        <p>Improvements:</p>
-        <ul>
-          <li>Support for high-resolution scroll events</li>
-          <li>Redesigned Alt + Tab switcher</li>
-          <li>Dim the parents of modal dialogs</li>
-          <li>Dialogs fall down on parents instead of shooting out</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-    </release>
-  </releases>
+  <releases>
 
   <compulsory_for_desktop>Pantheon</compulsory_for_desktop>
   <developer_name>elementary, Inc.</developer_name>
