@@ -40,6 +40,8 @@ namespace Gala {
                 css_class = "workspace"
             };
             add_effect (effect);
+
+            reactive = true;
         }
 
         public override void paint (Clutter.PaintContext context) {
@@ -170,12 +172,12 @@ namespace Gala {
             unowned Meta.Display display = workspace.get_display ();
             var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
-            background = new FramedBackground (display);
-            background.reactive = true;
-            background.button_release_event.connect (() => {
+            var background_click_action = new Clutter.ClickAction ();
+            background_click_action.clicked.connect (() => {
                 selected (true);
-                return Gdk.EVENT_PROPAGATE;
             });
+            background = new FramedBackground (display);
+            background.add_action (background_click_action);
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });

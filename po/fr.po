@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-03-22 18:54+0000\n"
 "PO-Revision-Date: 2023-03-15 09:25+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
-"\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,9 +30,13 @@ msgid "Application is not responding"
 msgstr "L'application ne répond pas"
 
 #: src/Dialogs.vala:157
+#, fuzzy
+#| msgid ""
+#| "You may choose to wait a short while for it to continue or force the "
+#| "application quit entirely."
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 "Vous pouvez patienter un instant pour continuer ou forcer la fermeture de "
 "l'application."
@@ -53,27 +57,28 @@ msgstr "Captures d'écran"
 msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2114
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Les modifications seront automatiquement annulées après %i seconde."
-msgstr[1] "Les modifications seront automatiquement annulées après %i secondes."
+msgstr[1] ""
+"Les modifications seront automatiquement annulées après %i secondes."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2121
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2125
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2126
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2168
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
@@ -154,100 +159,45 @@ msgstr ""
 "Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
 "par elementary pour être utilisé avec Panthéon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:92
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:59
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 "Rechargement des fonds d'écran animés lors du changement de fuseau horaire"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:60
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 "Correction d'un défilement maladroit à deux doigts dans la vue multitâche"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:61
 msgid "Improve multitasking view animation performance"
 msgstr "Amélioration des performances de l'animation de la vue multitâche"
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:88
 msgid "Fixes:"
 msgstr "Corrections :"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:90
 msgid "Fix regressions for OS 7"
 msgstr "Correction de régressions pour OS 7"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:94
 msgid "Use access portal for force quit"
 msgstr "Utiliser le portail d'accès pour forcer à quitter"
 
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr ""
-"Mise à jour cohérente de la couleur d'accentuation dans le sélecteur de "
-"fenêtres"
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr ""
-"Correction de la sélection des fenêtres en arrière-plan du sélecteur de "
-"fenêtre"
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "Prévention de plantages potentiels"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "Redimensionnement des espaces de travail lors du changement d'écran"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "Prise en charge des fenêtres sans titre"
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Utiliser le portail d'accès pour la boîte de confirmation des paramètres "
-"d'affichage"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "Autoriser la fermeture de la vue multitâche avec la touche Super"
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "Correction de la distorsion de l'ombre sur les fenêtres côté serveur"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "Prise en charge des événements de défilement de haute résolution"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "Nouveau design du sélecteur Alt + Tab"
-
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr "Réduction des parents des boîtes de dialogue"
-
 #: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Les dialogues se rabattent sur les parents au lieu de se fermer"
-
-#: data/gala.appdata.xml.in:114
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -269,6 +219,49 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Fichier desktop de secours pour les notifications provenant des vieilles "
 "applications."
+
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr ""
+#~ "Mise à jour cohérente de la couleur d'accentuation dans le sélecteur de "
+#~ "fenêtres"
+
+#~ msgid "Fix selecting windows underneath the window switcher"
+#~ msgstr ""
+#~ "Correction de la sélection des fenêtres en arrière-plan du sélecteur de "
+#~ "fenêtre"
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "Prévention de plantages potentiels"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "Redimensionnement des espaces de travail lors du changement d'écran"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "Prise en charge des fenêtres sans titre"
+
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr ""
+#~ "Utiliser le portail d'accès pour la boîte de confirmation des paramètres "
+#~ "d'affichage"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "Autoriser la fermeture de la vue multitâche avec la touche Super"
+
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr ""
+#~ "Correction de la distorsion de l'ombre sur les fenêtres côté serveur"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "Prise en charge des événements de défilement de haute résolution"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "Nouveau design du sélecteur Alt + Tab"
+
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Réduction des parents des boîtes de dialogue"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "Les dialogues se rabattent sur les parents au lieu de se fermer"
 
 #~ msgid "preferences-desktop-workspaces"
 #~ msgstr "preferences-desktop-workspaces"
