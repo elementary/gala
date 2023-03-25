@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-03-22 18:54+0000\n"
-"PO-Revision-Date: 2023-02-18 10:25+0000\n"
+"PO-Revision-Date: 2023-03-25 14:59+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.16.4\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
 #: src/Dialogs.vala:152
@@ -30,16 +30,12 @@ msgid "Application is not responding"
 msgstr "Application is not responding"
 
 #: src/Dialogs.vala:157
-#, fuzzy
-#| msgid ""
-#| "You may choose to wait a short while for it to continue or force the "
-#| "application quit entirely."
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
-"You may choose to wait a short while for it to continue or force the "
-"application to quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
