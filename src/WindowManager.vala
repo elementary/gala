@@ -249,7 +249,7 @@ namespace Gala {
             display.add_keybinding ("move-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_applications_menu);
+            display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
 
             display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
