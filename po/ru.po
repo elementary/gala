@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-03-22 18:54+0000\n"
 "PO-Revision-Date: 2023-03-05 12:25+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
-"\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
+">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,9 +31,13 @@ msgid "Application is not responding"
 msgstr "Приложение не отвечает"
 
 #: src/Dialogs.vala:157
+#, fuzzy
+#| msgid ""
+#| "You may choose to wait a short while for it to continue or force the "
+#| "application quit entirely."
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 "Вы можете подождать, пока приложение ответит, либо принудительно закрыть его."
 
@@ -53,7 +57,7 @@ msgstr "Снимки экрана"
 msgid "Screenshot taken"
 msgstr "Снимок экрана сделан"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2114
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -61,20 +65,20 @@ msgstr[0] "Изменения будут отменены через %i секу
 msgstr[1] "Изменения будут отменены через %i секунды."
 msgstr[2] "Изменения будут отменены через %i секунд."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2121
 msgid "Keep new display settings?"
 msgstr "Сохранить новые настройки экрана?"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2125
 msgid "Keep Settings"
 msgstr "Сохранить настройки"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2126
 msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2168
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"
@@ -155,94 +159,43 @@ msgstr ""
 "Оконный менеджер и композитор на основе libmutter, разработанный elementary "
 "для использования в Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
+#: data/gala.appdata.xml.in:92
 msgid "Improvements:"
 msgstr "Улучшения:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
+#: data/gala.appdata.xml.in:95
 msgid "Updated translations"
 msgstr "Обновлены переводы"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:59
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Перезагрузка анимированных обоев при смене часовых поясов"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:60
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Исправлена неудобная прокрутка двумя пальцами в многозадачном виде"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:61
 msgid "Improve multitasking view animation performance"
 msgstr "Улучшена производительность анимации многозадачного вида"
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:88
 msgid "Fixes:"
 msgstr "Исправления:"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:90
 msgid "Fix regressions for OS 7"
 msgstr "Исправлены ошибки на OS 7"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:94
 msgid "Use access portal for force quit"
 msgstr "Теперь для принудительного выхода используется портал доступа"
 
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr "Корректное обновление акцентного цвета в переключателе окон"
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr "Исправлен выбор окон под переключателем окон"
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "Предотвращены возможные сбои"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "Рабочие столы теперь меняют размер при смене монитора"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "Поддержка окон без заголовка"
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Теперь для отображения подтверждения настроек экрана используется портал "
-"доступа"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "Возможность закрыть многозадачный вид по нажатию Super"
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "Исправлен показ тени у окон декорированных на стороне сервера"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "Поддержка прокрутки высокого разрешения"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "Переработан внешний вид переключателя Alt + Tab"
-
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr "Затемнять родительские модальные окна"
-
 #: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Исправлен выпад диалоговых окон вниз"
-
-#: data/gala.appdata.xml.in:114
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -262,6 +215,44 @@ msgstr "Другие"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Устаревший файл desktop для уведомлений от устаревших приложений."
+
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr "Корректное обновление акцентного цвета в переключателе окон"
+
+#~ msgid "Fix selecting windows underneath the window switcher"
+#~ msgstr "Исправлен выбор окон под переключателем окон"
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "Предотвращены возможные сбои"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "Рабочие столы теперь меняют размер при смене монитора"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "Поддержка окон без заголовка"
+
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr ""
+#~ "Теперь для отображения подтверждения настроек экрана используется портал "
+#~ "доступа"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "Возможность закрыть многозадачный вид по нажатию Super"
+
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr "Исправлен показ тени у окон декорированных на стороне сервера"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "Поддержка прокрутки высокого разрешения"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "Переработан внешний вид переключателя Alt + Tab"
+
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Затемнять родительские модальные окна"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "Исправлен выпад диалоговых окон вниз"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
