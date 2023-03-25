@@ -22,6 +22,5 @@
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala">
     <file compressed="true">gala.css</file>
-    <file>texture.png</file>
   </gresource>
 </gresources>
