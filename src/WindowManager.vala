@@ -1148,9 +1148,6 @@ namespace Gala {
                 ulong minimize_handler_id = 0UL;
                 minimize_handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (minimize_handler_id);
-                    actor.set_pivot_point (0.0f, 0.0f);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
                     minimize_completed (actor);
                     minimizing.remove (actor);
                 });
@@ -1266,7 +1263,10 @@ namespace Gala {
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            if (!enable_animations) {
+            var duration = AnimationDuration.HIDE;
+
+            if (!enable_animations
+                || duration == 0) {
                 actor.show ();
                 unminimize_completed (actor);
                 return;
@@ -1279,12 +1279,6 @@ namespace Gala {
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.HIDE;
-                    if (duration == 0) {
-                        unminimize_completed (actor);
-                        return;
-                    }
-
                     unminimizing.add (actor);
 
                     actor.set_pivot_point (0.5f, 1.0f);
