@@ -243,20 +243,20 @@ namespace Gala {
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-first", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-last", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("panel-main-menu", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_applications_menu);
+            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
+            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
+            display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
 
-            display.add_keybinding ("screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot-clip", keybinding_settings, 0, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
 
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
@@ -328,16 +328,17 @@ namespace Gala {
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
-            display.add_keybinding ("expose-windows", keybinding_settings, 0, () => {
-                if (window_overview.is_opened ())
+            display.add_keybinding ("expose-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (window_overview.is_opened ()) {
                     window_overview.close ();
-                else
+                } else {
                     window_overview.open ();
+                }
             });
-            display.add_keybinding ("expose-all-windows", keybinding_settings, 0, () => {
-                if (window_overview.is_opened ())
+            display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (window_overview.is_opened ()) {
                     window_overview.close ();
-                else {
+                } else {
                     var hints = new HashTable<string,Variant> (str_hash, str_equal);
                     hints.@set ("all-windows", true);
                     window_overview.open (hints);

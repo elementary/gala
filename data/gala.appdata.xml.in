@@ -20,6 +20,7 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/913">Holding on keyboard shortcut to activate the action only once</issue>
         <issue url="https://github.com/elementary/gala/issues/1229">Notification bubble appears in wrong corner on one workspace</issue>
         <issue url="https://github.com/elementary/gala/issues/1578">Closing a window in multitasking view closes multitasking view</issue>
         <issue url="https://github.com/elementary/gala/issues/1584">When 2 windows are tiled and then resized, the inactive one gets glitched, leaving its full-sized picture as an artifact when minimized</issue>
