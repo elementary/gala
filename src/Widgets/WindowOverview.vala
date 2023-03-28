@@ -22,8 +22,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     construct {
-        wm.get_display ().get_workspace_manager ().workspace_switched.connect (() => { close (); });
-
         visible = false;
         reactive = true;
     }
