@@ -314,8 +314,34 @@ namespace Gala {
             return result;
         }
 
+        /*
+         * Sorts the windows by stacking order so that the window on active workspaces come first.
+        */
+        public static SList<weak Meta.Window> sort_windows (Meta.Display display, List<Meta.Window> windows) {
+            var windows_on_active_workspace = new SList<Meta.Window> ();
+            var windows_on_other_workspaces = new SList<Meta.Window> ();
+            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+            foreach (unowned var window in windows) {
+                if (window.get_workspace () == active_workspace) {
+                    windows_on_active_workspace.append (window);
+                } else {
+                    windows_on_other_workspaces.append (window);
+                }
+            }
+
+            var sorted_windows = new SList<weak Meta.Window> ();
+            var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
+            windows_on_active_workspace_sorted.reverse ();
+            var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
+            windows_on_other_workspaces_sorted.reverse ();
+            sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
+            sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
+
+            return sorted_windows;
+        }
+
         public static inline bool get_window_is_normal (Meta.Window window) {
-            switch (window.get_window_type ()) {
+            switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
                 case Meta.WindowType.DIALOG:
                 case Meta.WindowType.MODAL_DIALOG:
