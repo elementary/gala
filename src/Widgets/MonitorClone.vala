@@ -46,7 +46,6 @@ namespace Gala {
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
-            display.restacked.connect (window_container.restack_windows);
 
             display.window_entered_monitor.connect (window_entered);
             display.window_left_monitor.connect (window_left);
@@ -74,7 +73,6 @@ namespace Gala {
         ~MonitorClone () {
             display.window_entered_monitor.disconnect (window_entered);
             display.window_left_monitor.disconnect (window_left);
-            display.restacked.disconnect (window_container.restack_windows);
         }
 
         /**
@@ -92,16 +90,16 @@ namespace Gala {
          * Animate the windows from their old location to a tiled layout
          */
         public void open (bool with_gesture = false, bool is_cancel_animation = false) {
+            window_container.restack_windows ();
             window_container.open (null, with_gesture, is_cancel_animation);
-            // background.opacity = 0; TODO consider this option
         }
 
         /**
          * Animate the windows back to their old location
          */
         public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+            window_container.restack_windows ();
             window_container.close (with_gesture, is_cancel_animation);
-            background.opacity = 255;
         }
 
         private void window_left (int window_monitor, Meta.Window window) {
