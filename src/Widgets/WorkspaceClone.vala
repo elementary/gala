@@ -182,7 +182,6 @@ namespace Gala {
             window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            display.restacked.connect (window_container.restack_windows);
 
             icon_group = new IconGroup (wm, workspace);
             icon_group.selected.connect (() => selected (true));
@@ -233,8 +232,6 @@ namespace Gala {
 
         ~WorkspaceClone () {
             unowned Meta.Display display = workspace.get_display ();
-
-            display.restacked.disconnect (window_container.restack_windows);
 
             display.window_entered_monitor.disconnect (window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
@@ -340,6 +337,8 @@ namespace Gala {
 
             opened = true;
 
+            window_container.restack_windows ();
+
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var display = workspace.get_display ();
 
@@ -419,6 +418,8 @@ namespace Gala {
             }
 
             opened = false;
+
+            window_container.restack_windows ();
 
             var initial_x = is_cancel_animation ? x : multitasking_view_x ();
             var target_x = multitasking_view_x () + current_x_overlap ();
