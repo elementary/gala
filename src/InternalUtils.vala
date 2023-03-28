@@ -334,8 +334,8 @@ namespace Gala {
             windows_on_active_workspace_sorted.reverse ();
             var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
             windows_on_other_workspaces_sorted.reverse ();
-            sorted_windows.concat (windows_on_active_workspace_sorted.copy ());
-            sorted_windows.concat (windows_on_other_workspaces_sorted.copy ());
+            sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
+            sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
 
             return sorted_windows;
         }
