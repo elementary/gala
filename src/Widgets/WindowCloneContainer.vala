@@ -109,7 +109,7 @@ namespace Gala {
         }
 
         private void window_destroyed (Clutter.Actor actor) {
-            var clone = (WindowClone) actor;
+            unowned var clone = (WindowClone) actor;
 
             clone.destroy.disconnect (window_destroyed);
             clone.selected.disconnect (window_selected_cb);
