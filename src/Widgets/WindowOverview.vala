@@ -224,7 +224,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
     private void thumb_selected (Meta.Window window) {
         if (window.get_workspace () == wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
-            window.activate (wm.get_display ().get_current_time ());
+            window.activate (window.get_display ().get_current_time ());
             close ();
         } else {
             close ();
