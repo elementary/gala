@@ -22,7 +22,7 @@ namespace Gala {
      * the icon groups, the WorkspaceClones and the MonitorClones.
      */
     public class MultitaskingView : Clutter.Actor, ActivatableComponent {
-        public const int ANIMATION_DURATION = 2000;
+        public const int ANIMATION_DURATION = 250;
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
         private GestureTracker multitasking_gesture_tracker;
