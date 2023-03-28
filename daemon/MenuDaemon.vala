@@ -276,14 +276,21 @@ namespace Gala {
                 close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];
             }
 
-            window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
-                var scale = m.scale_factor;
-                px = x / scale;
-                // Move the menu 1 pixel outside of the pointer or else it closes instantly
-                // on the mouse up event
-                py = (y / scale) + 1;
-                push_in = true;
-            }, 3, Gdk.CURRENT_TIME);
+            // `opened` is used as workaround for https://github.com/elementary/gala/issues/1387
+            var opened = false;
+            Idle.add (() => {
+                window_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
+                    var scale = m.scale_factor;
+                    px = x / scale;
+                    // Move the menu 1 pixel outside of the pointer or else it closes instantly
+                    // on the mouse up event
+                    py = (y / scale) + 1;
+                    push_in = true;
+                    opened = true;
+                }, Gdk.BUTTON_SECONDARY, Gdk.CURRENT_TIME);
+
+                return opened ? Source.REMOVE : Source.CONTINUE;
+            });
         }
 
         public void show_desktop_menu (int x, int y) throws DBusError, IOError {
@@ -354,7 +361,7 @@ namespace Gala {
                 // on the mouse up event
                 py = (y / scale) + 1;
                 push_in = false;
-            }, 3, Gdk.CURRENT_TIME);
+            }, Gdk.BUTTON_SECONDARY, Gdk.CURRENT_TIME);
         }
     }
 }
