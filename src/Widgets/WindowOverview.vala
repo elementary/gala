@@ -64,10 +64,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
      * You may specify 'all-windows' in hints to expose all windows
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        if (visible) {
-            close ();
-            return;
-        }
         var all_windows = hints != null && "all-windows" in hints;
 
         workspaces = new List<Meta.Workspace> ();
@@ -236,7 +232,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             close ();
             
             // wait for the animation to finish before switching
-            // TODO: REMOVE THIS SHIT
             Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
                 window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
                 return Source.REMOVE;
