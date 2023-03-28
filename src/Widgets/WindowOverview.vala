@@ -230,7 +230,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             close ();
         } else {
             close ();
-            
+
             // wait for the animation to finish before switching
             Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
                 window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
