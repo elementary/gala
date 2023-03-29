@@ -27,7 +27,8 @@ public class Gala.ColorblindFiltersManager : Object {
     }
 
     construct {
-        settings.changed["colorblindness-filter"].connect (load_filter);
+        settings.changed["colorblind-correction-filter"].connect (load_filter);
+        settings.changed["colorblind-correction-filter-strength"].connect (load_filter);
         load_filter ();
     }
 
@@ -37,9 +38,10 @@ public class Gala.ColorblindFiltersManager : Object {
             wm.stage.remove_effect_by_name (EFFECT_NAME);
         }
 
-        var filter_variant = settings.get_enum ("colorblindness-filter");
+        var filter_variant = settings.get_enum ("colorblind-correction-filter");
         if (filter_variant != 0) {
-            var new_effect = new ColorblindCorrectionEffect (filter_variant);
+            var strength = settings.get_double ("colorblind-correction-filter-strength");
+            var new_effect = new ColorblindCorrectionEffect (filter_variant, strength);
             wm.stage.add_effect_with_name (EFFECT_NAME, new_effect);
         }
     }

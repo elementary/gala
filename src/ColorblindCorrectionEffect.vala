@@ -70,19 +70,21 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
     // https://www.reddit.com/r/gamemaker/comments/11us4t4/accurate_monochrome_glsl_shader_tutorial/
     private const string MONOCHROME_SHADER = """
         uniform sampler2D tex;
+        uniform float strength = %f;
         void main() {
             vec2 uv = cogl_tex_coord0_in.xy;
             vec4 sample = texture2D (tex, uv);
             vec3 luminance = vec3 (0.2126, 0.7512, 0.0722);
             float gray = luminance.r * sample.r + luminance.g * sample.g + luminance.b * sample.b;
-            cogl_color_out = vec4 (gray, gray, gray, sample.a);
+            cogl_color_out = vec4 (vec3 (gray, gray, gray) * strength, 1.0) ;
         }
     """;
 
     public int mode { get; construct; }
+    public double strength { get; construct; }
 
-    public ColorblindCorrectionEffect (int mode) {
-        Object (mode: mode);
+    public ColorblindCorrectionEffect (int mode, double strength) {
+        Object (mode: mode, strength: strength);
     }
 
     construct {
@@ -91,11 +93,11 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
             case 1:
             case 2:
             case 3:
-                shader = SHADER_TEMPLATE.printf (mode, 1.0);
+                shader = SHADER_TEMPLATE.printf (mode, strength);
                 break;
             case 4:
                 warning ("here");
-                shader = MONOCHROME_SHADER;
+                shader = MONOCHROME_SHADER.printf (strength);
                 break;
             default:
                 assert_not_reached ();

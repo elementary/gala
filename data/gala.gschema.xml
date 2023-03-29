@@ -401,9 +401,15 @@
   </schema>
 
   <schema path="/io/elementary/desktop/wm/accessibility/" id="io.elementary.desktop.wm.accessibility">
-    <key enum="GalaColorblindnessFilterType" name="colorblindness-filter">
+    <key enum="GalaColorblindnessFilterType" name="colorblind-correction-filter">
       <default>"none"</default>
       <summary>Colorblind correction filter</summary>
+      <description></description>
+    </key>
+    <key type="d" name="colorblind-correction-filter-strength">
+      <range min="0.0" max="1.0"/>
+      <default>1.0</default>
+      <summary>The strength of colorblind correction filter.</summary>
       <description></description>
     </key>
   </schema>
