@@ -32,14 +32,14 @@ public class Gala.ColorblindnessManager : Object {
     }
 
     private void load_filter () {
-        if (wm.window_group.get_effect (EFFECT_NAME) != null) {
-            wm.window_group.remove_effect_by_name (EFFECT_NAME);
+        if (wm.ui_group.get_effect (EFFECT_NAME) != null) {
+            wm.ui_group.remove_effect_by_name (EFFECT_NAME);
         }
 
         var filter_variant = settings.get_enum ("colorblindness-filter");
         if (filter_variant != 0) {
             var new_effect = new ColorblindnessEffect (filter_variant);
-            wm.window_group.add_effect_with_name (EFFECT_NAME, new_effect);
+            wm.ui_group.add_effect_with_name (EFFECT_NAME, new_effect);
         }
     }
 }
