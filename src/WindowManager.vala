@@ -183,8 +183,6 @@ namespace Gala {
             window_tracker = new WindowTracker ();
             window_tracker.init (display);
 
-            ColorblindnessManager.init (this);
-
             notification_stack = new NotificationStack (display);
 
             // Due to a bug which enables access to the stage when using multiple monitors
@@ -241,6 +239,8 @@ namespace Gala {
 
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
+
+            ColorblindnessManager.init (this);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
