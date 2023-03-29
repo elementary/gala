@@ -90,7 +90,7 @@ public class Gala.NotificationStack : Object {
 
         int notification_x_pos = area.x + area.width - window_rect.width;
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + stack_y_offset + ADDITIONAL_MARGIN * scale);
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + (stack_y_offset + ADDITIONAL_MARGIN) * scale);
         notifications.insert (0, notification);
     }
 
@@ -106,7 +106,7 @@ public class Gala.NotificationStack : Object {
 
     private void update_positions (bool animate, float add_y = 0.0f) {
         var scale = Utils.get_ui_scaling_factor ();
-        var y = stack_y + TOP_OFFSET + stack_y_offset + add_y + ADDITIONAL_MARGIN * scale;
+        var y = stack_y + TOP_OFFSET + add_y + (stack_y_offset + ADDITIONAL_MARGIN) * scale;
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;

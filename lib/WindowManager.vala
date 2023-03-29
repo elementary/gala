@@ -167,9 +167,9 @@ namespace Gala {
 
         /**
          * Tells the window manager to move the Notifications Stack down
-         * by the given number of pixels, to make room for menus.
+         * by the given number of points, to make room for menus.
          *
-         * @param offset The amount of pixels by which to move the notifications stack
+         * @param offset The number of points by which to move the notifications stack
          */
         public abstract void offset_notifications (int32 offset);
 
