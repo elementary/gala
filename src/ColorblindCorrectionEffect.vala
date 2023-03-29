@@ -7,21 +7,45 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
     // Taken from https://www.shadertoy.com/view/XslyzX
     private const string SHADER_TEMPLATE = """
         uniform sampler2D tex;
+        uniform int mode = %d;
         void main() {
-            vec4 c = texture2D(tex, cogl_tex_coord0_in.xy);
-            mat3 rgb2lms = mat3(17.8824, 43.5161, 4.11935, 3.45565, 27.1554, 3.86714, 0.0299566, 0.184309, 1.46709);
-            // inverse of a matrix calculated in numpy
-            mat3 lms2rgb = mat3(8.09444479e-02, -1.30504409e-01,  1.16721066e-01, -1.02485335e-02, 5.40193266e-02, -1.13614708e-01, -3.65296938e-04, -4.12161469e-03, 6.93511405e-01);
-            mat3 m[3] = mat3[3](
-                mat3(0.0, 2.02344, -2.52581, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0),  // protanopia
-                mat3(1.0, 0.0, 0.0, 0.494207, 0.0, 1.24827, 0.0, 0.0, 1.0),  // deuteranopia
-                mat3(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.395913, 0.801109, 0.0) // tritanopia
-            );
-            vec3 c2 = vec3 (c.r, c.g, c.b);
-            c2 *= rgb2lms;
-            c2 *= m[%d - 1];
-            c2 *= lms2rgb;
-            cogl_color_out = vec4( c2.r , c2.g, c2.b, 1.0 );
+            vec2 uv = cogl_tex_coord0_in.xy;
+            vec4 sum = texture2D (tex, uv);
+            float L = (17.8824 * sum.r) + (43.5161 * sum.g) + (4.11935 * sum.b);
+            float M = (3.45565 * sum.r) + (27.1554 * sum.g) + (3.86714 * sum.b);
+            float S = (0.0299566 * sum.r) + (0.184309 * sum.g) + (1.46709 * sum.b);
+            float l, m, s;
+            if (mode == 1) { // Protanopia
+                l = 0.0 * L + 2.02344 * M + -2.52581 * S;
+                m = 0.0 * L + 1.0 * M + 0.0 * S;
+                s = 0.0 * L + 0.0 * M + 1.0 * S;
+            }
+            
+            if (mode == 2) { // Deuteranopia
+                l = 1.0 * L + 0.0 * M + 0.0 * S;
+                m = 0.494207 * L + 0.0 * M + 1.24827 * S;
+                s = 0.0 * L + 0.0 * M + 1.0 * S;
+            }
+            
+            if (mode == 3) { // Tritanopia
+                l = 1.0 * L + 0.0 * M + 0.0 * S;
+                m = 0.0 * L + 1.0 * M + 0.0 * S;
+                s = -0.395913 * L + 0.801109 * M + 0.0 * S;
+            }
+            
+            vec4 error;
+            error.r = (0.0809444479 * l) + (-0.130504409 * m) + (0.116721066 * s);
+            error.g = (-0.0102485335 * l) + (0.0540193266 * m) + (-0.113614708 * s);
+            error.b = (-0.000365296938 * l) + (-0.00412161469 * m) + (0.693511405 * s);
+            error.a = 1.0;
+            vec4 diff = sum - error;
+            vec4 correction;
+            correction.r = 0.0;
+            correction.g =  (diff.r * 0.7) + (diff.g * 1.0);
+            correction.b =  (diff.r * 0.7) + (diff.b * 1.0);
+            correction = sum + correction;
+            
+            cogl_color_out = correction;
         }
     """;
 
