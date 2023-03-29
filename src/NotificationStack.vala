@@ -22,13 +22,14 @@ public class Gala.NotificationStack : Object {
 
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
-    private int TOP_OFFSET = 2;
+    private const int TOP_OFFSET = 2;
     private const int ADDITIONAL_MARGIN = 12;
     private const int MARGIN = 12;
 
     private const int WIDTH = 300;
 
     private int stack_y;
+    private int stack_y_offset;
     private int stack_width;
 
     public Meta.Display display { get; construct; }
@@ -89,7 +90,7 @@ public class Gala.NotificationStack : Object {
 
         int notification_x_pos = area.x + area.width - window_rect.width;
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + stack_y_offset + ADDITIONAL_MARGIN * scale);
         notifications.insert (0, notification);
     }
 
@@ -105,7 +106,7 @@ public class Gala.NotificationStack : Object {
 
     private void update_positions (bool animate, float add_y = 0.0f) {
         var scale = Utils.get_ui_scaling_factor ();
-        var y = stack_y + TOP_OFFSET + add_y + ADDITIONAL_MARGIN * scale;
+        var y = stack_y + TOP_OFFSET + stack_y_offset + add_y + ADDITIONAL_MARGIN * scale;
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;
@@ -147,7 +148,7 @@ public class Gala.NotificationStack : Object {
     }
 
     public void offset_notifications (int32 offset) {
-        TOP_OFFSET = 2 + offset;
+        stack_y_offset = offset;
         update_positions (true);
     }
 
