@@ -218,9 +218,11 @@ namespace Gala {
                             actor_clicked (event.get_button ());
                         }
 
-                        ungrab_actor ();
-                        clicked = false;
-                        dragging = false;
+                        if (clicked) {
+                            ungrab_actor ();
+                            clicked = false;
+                        }
+
                         return Gdk.EVENT_STOP;
                     } else if (dragging) {
                         if (hovered != null) {
