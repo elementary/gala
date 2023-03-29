@@ -400,7 +400,6 @@
     </key>
   </schema>
 
-
   <schema path="/io/elementary/desktop/wm/accessibility/" id="io.elementary.desktop.wm.accessibility">
     <key enum="GalaColorblindnessFilterType" name="colorblindness-filter">
       <default>"none"</default>
