@@ -91,6 +91,10 @@ namespace Gala {
             wm.perform_action (type);
         }
 
+        public void offset_notifications (int32 offset) throws DBusError, Error {
+            wm.offset_notifications (offset);
+        }
+
         private const double SATURATION_WEIGHT = 1.5;
         private const double WEIGHT_THRESHOLD = 1.0;
 

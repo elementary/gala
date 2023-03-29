@@ -22,7 +22,7 @@ public class Gala.NotificationStack : Object {
 
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
-    private const int TOP_OFFSET = 2;
+    private int TOP_OFFSET = 2;
     private const int ADDITIONAL_MARGIN = 12;
     private const int MARGIN = 12;
 
@@ -144,6 +144,11 @@ public class Gala.NotificationStack : Object {
             y += window.get_frame_rect ().height;
             iterator++;
         }
+    }
+
+    public void offset_notifications (int32 offset) {
+        TOP_OFFSET = 2 + offset;
+        update_positions (true);
     }
 
     public void destroy_notification (Meta.WindowActor notification, bool animate) {

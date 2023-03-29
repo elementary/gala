@@ -166,6 +166,14 @@ namespace Gala {
         public abstract void perform_action (ActionType type);
 
         /**
+         * Tells the window manager to move the Notifications Stack down
+         * by the given number of pixels, to make room for menus.
+         *
+         * @param offset The amount of pixels by which to move the notifications stack
+         */
+        public abstract void offset_notifications (int32 offset);
+
+        /**
          * Moves the window to the workspace next to its current workspace in the given direction.
          * Gala currently only supports LEFT and RIGHT.
          *
