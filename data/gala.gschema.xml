@@ -16,10 +16,11 @@
     <value nick='natural' value='1'/>
   </enum>
   <enum id="GalaColorblindnessFilterType">
-    <value nick="none" value='0'/>
-    <value nick="protanopia" value='1'/>
-    <value nick='deutranopia' value='2'/>
-    <value nick='tritanopia' value='3'/>
+    <value nick="none" value="0"/>
+    <value nick="protanopia" value="1"/>
+    <value nick="deutranopia" value="2"/>
+    <value nick="tritanopia" value="3"/>
+    <value nick="monochrome" value="4"/>
   </enum>
 
   <schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
