@@ -18,7 +18,7 @@
   <enum id="GalaColorblindnessFilterType">
     <value nick="none" value="0"/>
     <value nick="protanopia" value="1"/>
-    <value nick="deutranopia" value="2"/>
+    <value nick="deuteranopia" value="2"/>
     <value nick="tritanopia" value="3"/>
     <value nick="monochrome" value="4"/>
   </enum>
