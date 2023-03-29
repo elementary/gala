@@ -185,7 +185,11 @@ namespace Gala {
             }
 
             yield wait_stage_repaint ();
-            selection_area.get_selection_rectangle (out x, out y, out width, out height);
+            var rect = selection_area.get_selection_rectangle ();
+            x = (int) GLib.Math.roundf (rect.origin.x);
+            y = (int) GLib.Math.roundf (rect.origin.y);
+            width = (int) GLib.Math.roundf (rect.size.width);
+            height = (int) GLib.Math.roundf (rect.size.height);
         }
 
         private void unconceal_text () {
@@ -233,10 +237,13 @@ namespace Gala {
                 throw new GLib.IOError.CANCELLED ("Operation was cancelled");
             }
 
-            int x = 0, y = 0;
-            pixel_picker.get_point (out x, out y);
-
-            var image = take_screenshot (x, y, 1, 1, false);
+            var picker_point = pixel_picker.point;
+            var image = take_screenshot (
+                (int) GLib.Math.roundf (picker_point.x),
+                (int) GLib.Math.roundf (picker_point.y),
+                1, 1,
+                false
+            );
 
             assert (image.get_format () == Cairo.Format.ARGB32);
 

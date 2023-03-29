@@ -120,7 +120,7 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button = Utils.create_close_button (scale_factor);
         close_button.opacity = 0;
         // block propagation of button release event to window clone
-        close_button.button_release_event.connect (() => { return Gdk.EVENT_STOP; });
+        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
         close_button.add_action (close_button_action);
 
         var window_frame_rect = window.get_frame_rect ();
@@ -433,12 +433,12 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
-        return Gdk.EVENT_STOP;
+        return Clutter.EVENT_STOP;
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
         if (drag_action != null && drag_action.dragging) {
-            return Gdk.EVENT_PROPAGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         close_button.save_easing_state ();
@@ -453,7 +453,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.opacity = in_slot_animation ? 0 : 255;
         window_title.restore_easing_state ();
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
     public override bool leave_event (Clutter.CrossingEvent event) {
@@ -469,7 +469,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.opacity = 0;
         window_title.restore_easing_state ();
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
     /**
@@ -560,10 +560,10 @@ public class Gala.WindowClone : Clutter.Actor {
 
     private void actor_clicked (uint32 button) {
         switch (button) {
-            case Gdk.BUTTON_PRIMARY:
+            case Clutter.Button.PRIMARY:
                 selected ();
                 break;
-            case Gdk.BUTTON_MIDDLE:
+            case Clutter.Button.MIDDLE:
                 close_window ();
                 break;
         }
@@ -853,7 +853,7 @@ public class Gala.WindowClone : Clutter.Actor {
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
 
-            return Gdk.EVENT_PROPAGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         public override void allocate (Clutter.ActorBox box) {

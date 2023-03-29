@@ -134,7 +134,7 @@ namespace Gala {
 
         public struct TilableWindow {
             Meta.Rectangle rect;
-            void *id;
+            unowned WindowClone id;
         }
 
         public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area, List<TilableWindow?> windows) {

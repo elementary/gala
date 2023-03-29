@@ -433,7 +433,7 @@ namespace Gala {
         }
 
         private bool container_mouse_release (Clutter.ButtonEvent event) {
-            if (opened && event.button == Gdk.BUTTON_PRIMARY) {
+            if (opened && event.button == Clutter.Button.PRIMARY) {
                 close_switcher (event.time);
             }
 
@@ -455,15 +455,12 @@ namespace Gala {
             return false;
         }
 
-        private Gdk.ModifierType get_current_modifiers () {
-            Gdk.ModifierType modifiers;
-            double[] axes = {};
-            Gdk.Display.get_default ()
-                .get_device_manager ()
-                .get_client_pointer ()
-                .get_state (Gdk.get_default_root_window (), axes, out modifiers);
 
-            return modifiers;
+        private inline Clutter.ModifierType get_current_modifiers () {
+            Clutter.ModifierType modifiers;
+            wm.get_display ().get_cursor_tracker ().get_pointer (null, out modifiers);
+
+            return modifiers & Clutter.ModifierType.MODIFIER_MASK;
         }
     }
 }
