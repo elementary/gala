@@ -183,6 +183,8 @@ namespace Gala {
             window_tracker = new WindowTracker ();
             window_tracker.init (display);
 
+            ColorblindnessManager.init (this);
+
             notification_stack = new NotificationStack (display);
 
             // Due to a bug which enables access to the stage when using multiple monitors

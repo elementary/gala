@@ -15,6 +15,12 @@
     <value nick='grid' value='0'/>
     <value nick='natural' value='1'/>
   </enum>
+  <enum id="GalaColorblindnessFilterType">
+    <value nick="none" value='0'/>
+    <value nick="protanopia" value='1'/>
+    <value nick='deutranopia' value='2'/>
+    <value nick='tritanopia' value='3'/>
+  </enum>
 
   <schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
     <key type="b" name="lock-on-suspend">
@@ -390,6 +396,15 @@
       <default>"none"</default>
       <summary>Four-finger horizontal swipe gesture</summary>
       <description>The action that corresponds to performing a horizontal swipe gesture with four fingers</description>
+    </key>
+  </schema>
+
+
+  <schema path="/io/elementary/desktop/wm/accessibility/" id="io.elementary.desktop.wm.accessibility">
+    <key enum="GalaColorblindnessFilterType" name="colorblindness-filter">
+      <default>"none"</default>
+      <summary>Colorblindness filter</summary>
+      <description></description>
     </key>
   </schema>
 </schemalist>
