@@ -124,7 +124,7 @@ namespace Gala {
             container = new Clutter.Actor ();
             container.layout_manager = layout;
             container.reactive = true;
-            container.button_press_event.connect (container_mouse_press);
+            container.button_release_event.connect (container_mouse_release);
             container.motion_event.connect (container_motion_event);
 
             var rgba = InternalUtils.get_theme_accent_color ();
@@ -460,7 +460,7 @@ namespace Gala {
             return true;
         }
 
-        private bool container_mouse_press (Clutter.ButtonEvent event) {
+        private bool container_mouse_release (Clutter.ButtonEvent event) {
             if (opened && event.button == Gdk.BUTTON_PRIMARY) {
                 close_switcher (event.time);
             }
