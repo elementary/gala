@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.ColorblindnessManager : Object {
+public class Gala.ColorblindFiltersManager : Object {
     private const string EFFECT_NAME = "colorblindness-filter";
 
-    private static ColorblindnessManager instance;
+    private static ColorblindFiltersManager instance;
     private static GLib.Settings settings;
     public WindowManager wm { get; construct; }
 
@@ -15,10 +15,10 @@ public class Gala.ColorblindnessManager : Object {
             return;
         }
 
-        instance = new ColorblindnessManager (wm);
+        instance = new ColorblindFiltersManager (wm);
     }
 
-    private ColorblindnessManager (WindowManager wm) {
+    private ColorblindFiltersManager (WindowManager wm) {
         Object (wm: wm);
     }
 
@@ -39,7 +39,7 @@ public class Gala.ColorblindnessManager : Object {
 
         var filter_variant = settings.get_enum ("colorblindness-filter");
         if (filter_variant != 0) {
-            var new_effect = new ColorblindnessEffect (filter_variant);
+            var new_effect = new ColorblindCorrectionEffect (filter_variant);
             wm.stage.add_effect_with_name (EFFECT_NAME, new_effect);
         }
     }

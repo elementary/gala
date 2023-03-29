@@ -1,6 +1,6 @@
 gala_bin_sources = files(
-    'ColorblindnessManager.vala',
-    'ColorblindnessEffects.vala',
+    'ColorblindFiltersManager.vala',
+    'ColorblindCorrectionEffect.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DesktopIntegration.vala',

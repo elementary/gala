@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.ColorblindnessEffect : Clutter.ShaderEffect {
+public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
     // Taken from https://godotshaders.com/shader/colorblindness-correction-shader/
     private const string PROTANOPIA_SHADER = """
         uniform sampler2D tex;
@@ -112,7 +112,7 @@ public class Gala.ColorblindnessEffect : Clutter.ShaderEffect {
 
     public int mode { get; construct; }
 
-    public ColorblindnessEffect (int mode) {
+    public ColorblindCorrectionEffect (int mode) {
         Object (mode: mode);
     }
 
