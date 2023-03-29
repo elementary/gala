@@ -28,8 +28,7 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void init_window_tracking (Meta.Display display) {
-        display.notify["focus-window"].connect (() => {});
-        display.window_created.connect ((window) => track_window (window));
+        display.window_created.connect (track_window);
     }
 
     private void on_startup_sequence_changed (Meta.StartupSequence sequence) {
