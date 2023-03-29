@@ -214,7 +214,7 @@ namespace Gala {
                         actor.get_transformed_position (out x, out y);
 
                         // release has happened within bounds of actor
-                        if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                        if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
                             actor_clicked (event.get_button ());
                         }
 
