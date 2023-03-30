@@ -1889,7 +1889,6 @@ namespace Gala {
                 }
             }
 
-            
             workspace_switching_window_created_id = display.window_created.connect ((window) => {
                 if (window.window_type == Meta.WindowType.NOTIFICATION) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
