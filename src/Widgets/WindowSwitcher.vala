@@ -333,15 +333,20 @@ namespace Gala {
         private void push_modal () {
             modal_proxy = wm.push_modal (this);
             modal_proxy.set_keybinding_filter ((binding) => {
-                // if it's not built-in, we can block it right away
-                if (!binding.is_builtin ())
-                    return true;
+                var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
-                // otherwise we determine by name if it's meant for us
-                var name = binding.get_name ();
+                switch (action) {
+                    case Meta.KeyBindingAction.NONE:
+                    case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
+                    case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
+                    case Meta.KeyBindingAction.SWITCH_WINDOWS:
+                    case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                        return false;
+                    default:
+                        break;
+                }
 
-                return !(name == "switch-applications" || name == "switch-applications-backward"
-                    || name == "switch-windows" || name == "switch-windows-backward");
+                return true;
             });
 
         }

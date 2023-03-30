@@ -150,6 +150,15 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private bool keybinding_filter (Meta.KeyBinding binding) {
+        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+        switch (action) {
+            case Meta.KeyBindingAction.NONE:
+                return false;
+            default:
+                break;
+        }
+
         switch (binding.get_name ()) {
             case "expose-windows":
             case "expose-all-windows":
