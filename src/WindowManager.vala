@@ -213,9 +213,9 @@ namespace Gala {
              * +-- workspace view
              * +-- window switcher
              * +-- window overview
+             * +-- notification group
              * +-- pointer locator
              * +-- dwell click timer
-             * +-- notification group
              * +-- screen shield
              */
 
@@ -330,12 +330,12 @@ namespace Gala {
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
+            notification_group = new Clutter.Actor ();
+            ui_group.add_child (notification_group);
+
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-
-            notification_group = new Clutter.Actor ();
-            ui_group.add_child (notification_group);
 
             ui_group.add_child (screen_shield);
 
