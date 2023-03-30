@@ -46,7 +46,7 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        public Clutter.Actor feedback_group { get; protected set; }
+        public Clutter.Actor notification_group { get; protected set; }
 
         /**
          * {@inheritDoc}
@@ -202,7 +202,7 @@ namespace Gala {
                 return false;
             });
 
-            /* our layer structure, copied from gnome-shell (from bottom to top):
+            /* our layer structure:
              * stage
              * + system background
              * + ui group
@@ -210,7 +210,13 @@ namespace Gala {
              * +---- background manager
              * +-- shell elements
              * +-- top window group
-             * + feedback group
+             * +-- pointer locator
+             * +-- dwell click timer
+             * +-- workspace view
+             * +-- window switcher
+             * +-- window overview
+             * +-- notification group
+             * +-- screen shield
              */
 
             system_background = new SystemBackground (display);
@@ -239,12 +245,6 @@ namespace Gala {
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (this));
-
-            ui_group.add_child (screen_shield);
-
-            feedback_group = display.get_feedback_group ();
-            stage.remove_child (feedback_group);
-            stage.add_child (feedback_group);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
@@ -333,6 +333,11 @@ namespace Gala {
                 window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
+
+            notification_group = new Clutter.Actor ();
+            ui_group.add_child (notification_group);
+
+            ui_group.add_child (screen_shield);
 
             display.add_keybinding ("expose-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
@@ -1430,7 +1435,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
-                    clutter_actor_reparent (actor, feedback_group);
+                    clutter_actor_reparent (actor, notification_group);
                     notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
@@ -1827,7 +1832,7 @@ namespace Gala {
                     if (window.window_type == Meta.WindowType.DOCK) {
                         docks.prepend (actor);
                     } else if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                        // notifications use their own feedback group and are always on top
+                        // notifications use their own group and are always on top
                     } else {
                         // windows that are on all workspaces will be faded out and back in
                         windows.prepend (actor);
@@ -1894,7 +1899,7 @@ namespace Gala {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     // while a workspace is being switched mutter doesn't map windows
                     // TODO: currently only notifications are handled here, other windows should be too 
-                    clutter_actor_reparent (actor, feedback_group);
+                    clutter_actor_reparent (actor, notification_group);
                     notification_stack.show_notification (actor, enable_animations);
                 }
             });

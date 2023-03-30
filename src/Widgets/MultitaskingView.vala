@@ -151,7 +151,7 @@ namespace Gala {
                     monitor_clone.visible = opened;
 
                     window_containers_monitors.append (monitor_clone);
-                    wm.ui_group.add_child (monitor_clone);
+                    add_child (monitor_clone);
                 }
             }
 
