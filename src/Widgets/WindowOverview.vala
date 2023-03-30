@@ -77,7 +77,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK) {
+                if (window.window_type == Meta.WindowType.DOCK
+                    || window.window_type == Meta.WindowType.NOTIFICATION) {
                     continue;
                 }
 
@@ -149,6 +150,16 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private bool keybinding_filter (Meta.KeyBinding binding) {
+        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+        switch (action) {
+            case Meta.KeyBindingAction.NONE:
+            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                return false;
+            default:
+                break;
+        }
+
         switch (binding.get_name ()) {
             case "expose-windows":
             case "expose-all-windows":
@@ -187,7 +198,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (!visible) {
             return;
         }
-        if (window.window_type == Meta.WindowType.DOCK) {
+        if (window.window_type == Meta.WindowType.DOCK
+            || window.window_type == Meta.WindowType.NOTIFICATION) {
             return;
         }
         if (window.window_type != Meta.WindowType.NORMAL &&
