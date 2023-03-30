@@ -111,8 +111,6 @@ namespace Gala {
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
 
-        private ulong workspace_switching_window_created_id = 0;
-
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
@@ -357,6 +355,20 @@ namespace Gala {
             });
 
             update_input_area ();
+
+            // while a workspace is being switched mutter doesn't map windows
+            // TODO: currently only notifications are handled here, other windows should be too 
+            display.window_created.connect ((window) => {
+                if (!animating_switch_workspace) {
+                    return;
+                }
+
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+                    clutter_actor_reparent (actor, notification_group);
+                    notification_stack.show_notification (actor, enable_animations);
+                }
+            });
 
             stage.show ();
 
@@ -1894,15 +1906,6 @@ namespace Gala {
                 }
             }
 
-            workspace_switching_window_created_id = display.window_created.connect ((window) => {
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    // while a workspace is being switched mutter doesn't map windows
-                    // TODO: currently only notifications are handled here, other windows should be too 
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                }
-            });
             main_container.clip_to_allocation = true;
             main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
             main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
@@ -2062,8 +2065,6 @@ namespace Gala {
                     actor.restore_easing_state ();
                 }
             }
-
-            display.disconnect (workspace_switching_window_created_id);
 
             if (tmp_actors != null) {
                 foreach (var actor in tmp_actors) {
