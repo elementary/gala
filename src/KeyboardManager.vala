@@ -16,7 +16,7 @@ public class Gala.KeyboardManager : Object {
 
         instance = new KeyboardManager ();
 
-        display.modifiers_accelerator_activated.connect (instance.handle_modifiers_accelerator_activated);
+        display.modifiers_accelerator_activated.connect ((display) => KeyboardManager.handle_modifiers_accelerator_activated (display, false));
     }
 
     static construct {
@@ -37,7 +37,7 @@ public class Gala.KeyboardManager : Object {
     }
 
     [CCode (instance_pos = -1)]
-    private bool handle_modifiers_accelerator_activated (Meta.Display display) {
+    public static bool handle_modifiers_accelerator_activated (Meta.Display display, bool backward) {
         display.ungrab_keyboard (display.get_current_time ());
 
         var sources = settings.get_value ("sources");
@@ -51,7 +51,12 @@ public class Gala.KeyboardManager : Object {
         }
 
         var current = settings.get_uint ("current");
-        settings.set_uint ("current", (current + 1) % n_sources);
+
+        if (!backward) {
+            settings.set_uint ("current", (current + 1) % n_sources);
+        } else {
+            settings.set_uint ("current", (current - 1) % n_sources);
+        }
 
         return true;
     }
