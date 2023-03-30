@@ -77,7 +77,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK) {
+                if (window.window_type == Meta.WindowType.DOCK
+                    || window.window_type == Meta.WindowType.NOTIFICATION) {
                     continue;
                 }
 
@@ -187,7 +188,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (!visible) {
             return;
         }
-        if (window.window_type == Meta.WindowType.DOCK) {
+        if (window.window_type == Meta.WindowType.DOCK
+            || window.window_type == Meta.WindowType.NOTIFICATION) {
             return;
         }
         if (window.window_type != Meta.WindowType.NORMAL &&

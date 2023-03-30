@@ -46,6 +46,8 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
+        public Clutter.Actor feedback_group { get; protected set; }
+
         /**
          * {@inheritDoc}
          */
@@ -208,6 +210,7 @@ namespace Gala {
              * +---- background manager
              * +-- shell elements
              * +-- top window group
+             * + feedback group
              */
 
             system_background = new SystemBackground (display);
@@ -230,6 +233,8 @@ namespace Gala {
             window_group.set_child_below_sibling (background_group, null);
 
             top_window_group = display.get_top_window_group ();
+            stage.remove_child (top_window_group);
+            ui_group.add_child (top_window_group);
 
             pointer_locator = new PointerLocator (this);
             ui_group.add_child (pointer_locator);
@@ -237,8 +242,9 @@ namespace Gala {
 
             ui_group.add_child (screen_shield);
 
-            stage.remove_child (top_window_group);
-            ui_group.add_child (top_window_group);
+            feedback_group = display.get_feedback_group ();
+            stage.remove_child (feedback_group);
+            stage.add_child (feedback_group);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
@@ -1424,6 +1430,7 @@ namespace Gala {
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
+                    clutter_actor_reparent (actor, feedback_group);
                     notification_stack.show_notification (actor, enable_animations);
                     map_completed (actor);
 
@@ -1814,26 +1821,24 @@ namespace Gala {
                     (moving != null && window == moving))
                     continue;
 
-                if (window.is_on_all_workspaces ()) {
+                if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces
                     // all other windows will be collected below
                     if (window.window_type == Meta.WindowType.DOCK) {
                         docks.prepend (actor);
+                    } else if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                        // notifications use their own feedback group and are always on top
                     } else {
                         // windows that are on all workspaces will be faded out and back in
                         windows.prepend (actor);
                         parents.prepend (actor.get_parent ());
 
-                        if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                            reparent_notification_window (actor, static_windows);
-                        } else {
-                            clutter_actor_reparent (actor, static_windows);
-                            actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                            actor.save_easing_state ();
-                            actor.set_easing_duration (300);
-                            actor.opacity = 0;
-                            actor.restore_easing_state ();
-                        }
+                        clutter_actor_reparent (actor, static_windows);
+                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                        actor.save_easing_state ();
+                        actor.set_easing_duration (300);
+                        actor.opacity = 0;
+                        actor.restore_easing_state ();
                     }
 
                     continue;
@@ -1884,20 +1889,16 @@ namespace Gala {
                 }
             }
 
-
+            
             workspace_switching_window_created_id = display.window_created.connect ((window) => {
                 if (window.window_type == Meta.WindowType.NOTIFICATION) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     // while a workspace is being switched mutter doesn't map windows
                     // TODO: currently only notifications are handled here, other windows should be too 
+                    clutter_actor_reparent (actor, feedback_group);
                     notification_stack.show_notification (actor, enable_animations);
-
-                    windows.prepend (actor);
-                    parents.prepend (actor.get_parent ());
-                    reparent_notification_window (actor, static_windows);
                 }
             });
-
             main_container.clip_to_allocation = true;
             main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
             main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
@@ -2039,12 +2040,7 @@ namespace Gala {
 
                 unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    if (meta_window != null
-                        && meta_window.get_window_type () == Meta.WindowType.NOTIFICATION) {
-                        reparent_notification_window (actor, parents.nth_data (i));
-                    } else {
-                        clutter_actor_reparent (actor, parents.nth_data (i));
-                    }
+                    clutter_actor_reparent (actor, parents.nth_data (i));
                 }
 
                 kill_window_effects (window);
@@ -2201,41 +2197,6 @@ namespace Gala {
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
-            }
-        }
-
-        /**
-         * Notification windows are a special case where the transition state needs
-         * to be preserved when reparenting the actor. Because Clutter doesn't allow specifying
-         * remove_child flags we will save the elapsed time of required transitions and
-         * then advance back to it when we're done reparenting.
-         */
-        private static void reparent_notification_window (Clutter.Actor actor, Clutter.Actor new_parent) {
-            unowned Clutter.Transition? entry_transition = actor.get_transition (NotificationStack.TRANSITION_ENTRY_NAME);
-            unowned Clutter.Transition? position_transition = actor.get_data<Clutter.Transition?> (NotificationStack.TRANSITION_MOVE_STACK_ID);
-
-            uint elapsed_entry = 0U, elapsed_position = 0U;
-
-            bool save_entry = entry_transition != null && entry_transition.is_playing ();
-            if (save_entry) {
-                elapsed_entry = entry_transition.get_elapsed_time ();
-            }
-
-            bool save_position = position_transition != null && position_transition.is_playing ();
-            if (save_position) {
-                elapsed_position = position_transition.get_elapsed_time ();
-            }
-
-            clutter_actor_reparent (actor, new_parent);
-
-            if (save_entry) {
-                entry_transition.advance (elapsed_entry);
-                entry_transition.start ();
-            }
-
-            if (save_position) {
-                position_transition.advance (elapsed_position);
-                position_transition.start ();
             }
         }
 
