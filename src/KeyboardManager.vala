@@ -51,7 +51,7 @@ public class Gala.KeyboardManager : Object {
         }
 
         var current = settings.get_uint ("current");
-        
+
         if (!backward) {
             settings.set_uint ("current", (current + 1) % n_sources);
         } else {
