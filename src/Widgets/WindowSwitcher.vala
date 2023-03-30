@@ -337,6 +337,7 @@ namespace Gala {
 
                 switch (action) {
                     case Meta.KeyBindingAction.NONE:
+                    case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
                     case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                     case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                     case Meta.KeyBindingAction.SWITCH_WINDOWS:

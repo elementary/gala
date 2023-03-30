@@ -809,6 +809,7 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                 case Meta.KeyBindingAction.SHOW_DESKTOP:
                 case Meta.KeyBindingAction.NONE:
+                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
                     return false;
                 default:
                     break;

@@ -154,6 +154,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
         switch (action) {
             case Meta.KeyBindingAction.NONE:
+            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
                 return false;
             default:
                 break;

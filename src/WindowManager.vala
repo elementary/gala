@@ -210,11 +210,11 @@ namespace Gala {
              * +---- background manager
              * +-- shell elements
              * +-- top window group
-             * +-- pointer locator
-             * +-- dwell click timer
              * +-- workspace view
              * +-- window switcher
              * +-- window overview
+             * +-- pointer locator
+             * +-- dwell click timer
              * +-- notification group
              * +-- screen shield
              */
@@ -241,10 +241,6 @@ namespace Gala {
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
-
-            pointer_locator = new PointerLocator (this);
-            ui_group.add_child (pointer_locator);
-            ui_group.add_child (new DwellClickTimer (this));
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
@@ -333,6 +329,10 @@ namespace Gala {
                 window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
+
+            pointer_locator = new PointerLocator (this);
+            ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (this));
 
             notification_group = new Clutter.Actor ();
             ui_group.add_child (notification_group);
