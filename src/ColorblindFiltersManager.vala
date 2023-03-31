@@ -66,7 +66,7 @@ public class Gala.ColorblindFiltersManager : Object {
                     transition.set_from_value (effect.strength);
                     transition.set_to_value (0.0);
 
-                    // create a dummy actor and bind its `scale_x` to effect's `strength`
+                    // create a transition actor and bind its `scale_x` to effect's `strength`
                     effect.transition_actor = new Clutter.Actor () {
                         visible = false
                     };
