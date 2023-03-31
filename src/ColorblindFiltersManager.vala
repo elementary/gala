@@ -59,7 +59,7 @@ public class Gala.ColorblindFiltersManager : Object {
 
                     // create a new transition
                     var transition = new Clutter.PropertyTransition ("scale_x") {
-                        duration = 10000, // TODO: Maybe use some constant?
+                        duration = 1000, // TODO: Maybe use some constant?
                         progress_mode = EASE_OUT_QUAD,
                         remove_on_complete = true
                     };
@@ -91,7 +91,7 @@ public class Gala.ColorblindFiltersManager : Object {
 
                 // Transition new effect in the same way
                 var transition = new Clutter.PropertyTransition ("scale_x") {
-                    duration = 10000, // TODO: Maybe use some constant?
+                    duration = 1000, // TODO: Maybe use some constant?
                     progress_mode = EASE_OUT_QUAD,
                     remove_on_complete = true
                 };
