@@ -278,9 +278,6 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
-            Meta.KeyBinding.set_custom_handler ("switch-group", () => {});
-            Meta.KeyBinding.set_custom_handler ("switch-group-backward", () => {});
-
             /*shadows*/
             InternalUtils.reload_shadow ();
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
@@ -322,6 +319,8 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
                 Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
                 Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
             }
 
             if (plugin_manager.window_overview_provider == null
