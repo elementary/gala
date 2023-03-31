@@ -109,8 +109,22 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
         }
     """;
 
-    public int mode { get; construct; }
-    public double strength { get; construct; }
+    public int mode {
+        construct set { set_uniform_value ("COLORBLIND_MODE", value); }
+    }
+    private double _strength;
+    public double strength {
+        get { return _strength; }
+        construct set {
+            set_uniform_value ("STRENGTH", value);
+            _strength = value; 
+        }
+    }
+
+    /*
+     * Used for fading in and out the effect, since you can't add transitions to effects.
+     */
+    public Clutter.Actor? dummy_actor { get; set; default = null; }
 
     public ColorblindCorrectionEffect (int mode, double strength) {
         Object (
@@ -118,10 +132,6 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
             mode: mode,
             strength: strength
         );
-    }
-
-    construct {
-        set_uniform_value ("STRENGTH", strength);
 
         switch (mode) {
             case 1:
@@ -129,7 +139,6 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
             case 3:
             case 4:
             case 5:
-                set_uniform_value ("COLORBLIND_MODE", mode);
                 set_shader_source (COLORBLINDNESS_CORRECTION_SHADER);
                 break;
             case 6:
@@ -137,7 +146,6 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
                 break;
             default:
                 assert_not_reached ();
-                break;
         }
     }
 }
