@@ -18,9 +18,11 @@
   <enum id="GalaColorblindnessFilterType">
     <value nick="none" value="0"/>
     <value nick="protanopia" value="1"/>
-    <value nick="deuteranopia" value="2"/>
-    <value nick="tritanopia" value="3"/>
-    <value nick="monochrome" value="4"/>
+    <value nick="protanopia-high-contrast" value="2"/>
+    <value nick="deuteranopia" value="3"/>
+    <value nick="deuteranopia-high-contrast" value="4"/>
+    <value nick="tritanopia" value="5"/>
+    <value nick="monochrome" value="6"/>
   </enum>
 
   <schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
@@ -407,7 +409,7 @@
       <description></description>
     </key>
     <key type="d" name="colorblind-correction-filter-strength">
-      <range min="0.0" max="2.0"/>
+      <range min="0.0" max="1.0"/>
       <default>1.0</default>
       <summary>The strength of colorblind correction filter.</summary>
       <description></description>
