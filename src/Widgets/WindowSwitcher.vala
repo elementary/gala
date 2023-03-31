@@ -263,7 +263,7 @@ namespace Gala {
                     if (window == current_window) {
                         cur_icon = icon;
                     }
-    
+
                     container.add_child (icon);
                 }
             }
