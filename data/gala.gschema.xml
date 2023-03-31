@@ -199,14 +199,14 @@
       <summary>Copy a screenshot of an area to clipboard</summary>
     </key>
     <key type="as" name="switch-input-source">
-      <default><![CDATA[['<Alt>space']]]></default>
+      <default><![CDATA[['']]]></default>
       <summary>Cycle to next keyboard layout</summary>
-      <description>DEPRECATED: This key is deprecated and ignored.</description>
+      <description></description>
     </key>
     <key type="as" name="switch-input-source-backward">
       <default><![CDATA[['']]]></default>
       <summary>Cycle to previous keyboard layout</summary>
-      <description>DEPRECATED: This key is deprecated and ignored.</description>
+      <description></description>
     </key>
     <key type="as" name="pip">
       <default><![CDATA[['<Super>f']]]></default>
