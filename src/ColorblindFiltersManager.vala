@@ -60,7 +60,7 @@ public class Gala.ColorblindFiltersManager : Object {
                     // create a new transition
                     var transition = new Clutter.PropertyTransition ("scale_x") {
                         duration = 1000, // TODO: Maybe use some constant?
-                        progress_mode = EASE_OUT_QUAD,
+                        progress_mode = LINEAR,
                         remove_on_complete = true
                     };
                     transition.set_from_value (effect.strength);
@@ -92,7 +92,7 @@ public class Gala.ColorblindFiltersManager : Object {
                 // Transition new effect in the same way
                 var transition = new Clutter.PropertyTransition ("scale_x") {
                     duration = 1000, // TODO: Maybe use some constant?
-                    progress_mode = EASE_OUT_QUAD,
+                    progress_mode = LINEAR,
                     remove_on_complete = true
                 };
                 transition.set_from_value (0.0);
