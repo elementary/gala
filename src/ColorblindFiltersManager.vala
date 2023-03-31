@@ -53,8 +53,8 @@ public class Gala.ColorblindFiltersManager : Object {
                     // add it to a dummy actor and bind one of its properties to the effect
 
                     // stop transition (if there is one in progress)
-                    if (effect.dummy_actor != null) {
-                        effect.dummy_actor.destroy ();
+                    if (effect.transition_actor != null) {
+                        effect.transition_actor.destroy ();
                     }
 
                     // create a new transition
@@ -67,18 +67,18 @@ public class Gala.ColorblindFiltersManager : Object {
                     transition.set_to_value (0.0);
 
                     // create a dummy actor and bind its `scale_x` to effect's `strength`
-                    effect.dummy_actor = new Clutter.Actor () {
+                    effect.transition_actor = new Clutter.Actor () {
                         visible = false
                     };
-                    wm.ui_group.add_child (effect.dummy_actor);
-                    effect.dummy_actor.bind_property ("scale_x", effect, "strength");
+                    wm.ui_group.add_child (effect.transition_actor);
+                    effect.transition_actor.bind_property ("scale_x", effect, "strength");
 
                     transition.completed.connect (() => {
-                        effect.dummy_actor.destroy ();
+                        effect.transition_actor.destroy ();
                         wm.stage.remove_effect (effect);
                     });
 
-                    effect.dummy_actor.add_transition (TRANSITION_NAME, transition);
+                    effect.transition_actor.add_transition (TRANSITION_NAME, transition);
                 }
             }
 
@@ -98,17 +98,17 @@ public class Gala.ColorblindFiltersManager : Object {
                 transition.set_from_value (0.0);
                 transition.set_to_value (1.0);
 
-                new_effect.dummy_actor = new Clutter.Actor () {
+                new_effect.transition_actor = new Clutter.Actor () {
                     visible = false
                 };
-                wm.ui_group.add_child (new_effect.dummy_actor);
-                new_effect.dummy_actor.bind_property ("scale_x", new_effect, "strength");
+                wm.ui_group.add_child (new_effect.transition_actor);
+                new_effect.transition_actor.bind_property ("scale_x", new_effect, "strength");
 
                 transition.completed.connect (() => {
-                    new_effect.dummy_actor.destroy ();
+                    new_effect.transition_actor.destroy ();
                 });
 
-                new_effect.dummy_actor.add_transition (TRANSITION_NAME, transition);
+                new_effect.transition_actor.add_transition (TRANSITION_NAME, transition);
             }
         }
     }

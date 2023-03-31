@@ -124,7 +124,7 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
     /*
      * Used for fading in and out the effect, since you can't add transitions to effects.
      */
-    public Clutter.Actor? dummy_actor { get; set; default = null; }
+    public Clutter.Actor? transition_actor { get; set; default = null; }
 
     public ColorblindCorrectionEffect (int mode, double strength) {
         Object (
