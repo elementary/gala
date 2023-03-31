@@ -117,7 +117,7 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
         get { return _strength; }
         construct set {
             set_uniform_value ("STRENGTH", value);
-            _strength = value; 
+            _strength = value;
         }
     }
 
