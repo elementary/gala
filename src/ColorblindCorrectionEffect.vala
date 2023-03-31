@@ -113,7 +113,11 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
     public double strength { get; construct; }
 
     public ColorblindCorrectionEffect (int mode, double strength) {
-        Object (mode: mode, strength: strength);
+        Object (
+            shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
+            mode: mode,
+            strength: strength
+        );
     }
 
     construct {
@@ -135,7 +139,5 @@ public class Gala.ColorblindCorrectionEffect : Clutter.ShaderEffect {
                 assert_not_reached ();
                 break;
         }
-
-        
     }
 }

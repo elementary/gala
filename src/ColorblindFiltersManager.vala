@@ -39,8 +39,8 @@ public class Gala.ColorblindFiltersManager : Object {
         }
 
         var filter_variant = settings.get_enum ("colorblind-correction-filter");
-        if (filter_variant != 0) {
-            var strength = settings.get_double ("colorblind-correction-filter-strength");
+        var strength = settings.get_double ("colorblind-correction-filter-strength");
+        if (filter_variant != 0 && strength != 0) {
             var new_effect = new ColorblindCorrectionEffect (filter_variant, strength);
             wm.stage.add_effect_with_name (EFFECT_NAME, new_effect);
         }
