@@ -29,7 +29,8 @@ public class Gala.HotCornerManager : Object {
 
         hot_corners = new GLib.GenericArray<HotCorner> ();
         behavior_settings.changed.connect (configure);
-        Meta.MonitorManager.@get ().monitors_changed.connect (configure);
+        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (configure);
     }
 
     public void configure () {
