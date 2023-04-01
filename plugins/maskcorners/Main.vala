@@ -62,7 +62,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
             display.in_fullscreen_changed.connect (fullscreen_changed);
         }
 
-        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        unowned Meta.MonitorManager monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (resetup_cornermasks);
 
         display.gl_video_memory_purged.connect (resetup_cornermasks);
@@ -71,7 +71,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
     private void destroy_cornermasks () {
         display.gl_video_memory_purged.disconnect (resetup_cornermasks);
 
-        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        unowned Meta.MonitorManager monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.disconnect (resetup_cornermasks);
         display.in_fullscreen_changed.disconnect (fullscreen_changed);
 

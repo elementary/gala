@@ -9,12 +9,14 @@ public class Gala.KeyboardManager : Object {
     private static VariantType sources_variant_type;
     private static GLib.Settings settings;
 
+    public unowned Meta.Display display { construct; private get; }
+
     public static void init (Meta.Display display) {
         if (instance != null) {
             return;
         }
 
-        instance = new KeyboardManager ();
+        instance = new KeyboardManager (display);
 
         display.modifiers_accelerator_activated.connect ((display) => KeyboardManager.handle_modifiers_accelerator_activated (display, false));
     }
@@ -34,6 +36,10 @@ public class Gala.KeyboardManager : Object {
         settings.changed.connect (set_keyboard_layout);
 
         set_keyboard_layout (settings, "sources"); // Update layouts
+    }
+
+    private KeyboardManager (Meta.Display display) {
+        Object (display: display);
     }
 
     [CCode (instance_pos = -1)]
@@ -89,9 +95,9 @@ public class Gala.KeyboardManager : Object {
             var variant = string.joinv (",", variants);
             var options = string.joinv (",", xkb_options);
 
-            Meta.Backend.get_backend ().set_keymap (layout, variant, options);
+            display.get_context ().get_backend ().set_keymap (layout, variant, options);
         } else if (key == "current") {
-            Meta.Backend.get_backend ().lock_layout_group (settings.get_uint ("current"));
+            display.get_context ().get_backend ().lock_layout_group (settings.get_uint ("current"));
         }
     }
 }
