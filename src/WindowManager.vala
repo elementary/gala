@@ -572,16 +572,16 @@ namespace Gala {
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
-                ui_group.x = x.clamp (-nudge_gap, nudge_gap);
+                ui_group.translation_x = x.clamp (-nudge_gap, nudge_gap);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                var nudge_gesture = new Clutter.PropertyTransition ("x") {
+                var nudge_gesture = new Clutter.PropertyTransition ("translation-x") {
                     duration = (AnimationDuration.NUDGE / 2),
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.LINEAR
                 };
-                nudge_gesture.set_from_value ((float) ui_group.x);
+                nudge_gesture.set_from_value (ui_group.translation_x);
                 nudge_gesture.set_to_value (0.0f);
                 ui_group.add_transition ("nudge", nudge_gesture);
 
