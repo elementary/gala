@@ -30,6 +30,7 @@
         <issue url="https://github.com/elementary/gala/issues/1566">Hotkeys are not working with non-EN keyboard layout</issue>
         <issue url="https://github.com/elementary/gala/issues/1578">Closing a window in multitasking view closes multitasking view</issue>
         <issue url="https://github.com/elementary/gala/issues/1584">When 2 windows are tiled and then resized, the inactive one gets glitched, leaving its full-sized picture as an artifact when minimized</issue>
+        <issue url="https://github.com/elementary/gala/issues/1607">Picture-in-Picture drag seems to snap to a grid</issue>
       </issues>
     </release>
 
