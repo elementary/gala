@@ -302,8 +302,6 @@ namespace Gala {
                             ungrab_actor ();
                             grab_actor (handle, event.get_device ());
 
-                            handle.reactive = false;
-
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {
                                 var dest_list = destinations[drag_id];
