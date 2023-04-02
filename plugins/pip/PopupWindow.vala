@@ -207,10 +207,17 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
+        container.event.connect (delegate_event);
         return this;
     }
 
+    private bool delegate_event (Clutter.Event event) {
+        this.event (event);
+        return Gdk.EVENT_PROPAGATE;
+    }
+
     private void on_move_end () {
+        container.event.disconnect (delegate_event);
         reactive = true;
         update_screen_position ();
     }
