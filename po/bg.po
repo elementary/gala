@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-03-22 18:54+0000\n"
+"POT-Creation-Date: 2023-04-03 22:03+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Bulgarian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -51,27 +51,27 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2120
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2121
+#: src/WindowManager.vala:2127
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2131
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2132
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2174
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -124,15 +124,15 @@ msgstr "Връщане от уголемяване"
 msgid "Maximize"
 msgstr "Уголемяване"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr ""
 
@@ -150,43 +150,60 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:92
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:41
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:103
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
-#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:19
+msgid "Performance improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "Многозадачен изглед"
+
+#: data/gala.appdata.xml.in:21
+#, fuzzy
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr ""
+"Непрозрачността на прозорците намерени на фона на алт-табулация-"
+"превключвателя."
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:106
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:70
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.appdata.xml.in:71
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:61
+#: data/gala.appdata.xml.in:72
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:99
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:90
+#: data/gala.appdata.xml.in:101
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:94
+#: data/gala.appdata.xml.in:105
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:106
+#: data/gala.appdata.xml.in:117
 msgid "elementary, Inc."
 msgstr ""
 
@@ -209,12 +226,6 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Properly update accent color in the window switcher"
-#~ msgstr ""
-#~ "Непрозрачността на прозорците намерени на фона на алт-табулация-"
-#~ "превключвателя."
-
-#, fuzzy
-#~ msgid "Fix selecting windows underneath the window switcher"
 #~ msgstr ""
 #~ "Непрозрачността на прозорците намерени на фона на алт-табулация-"
 #~ "превключвателя."
