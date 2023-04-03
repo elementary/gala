@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-04-03 22:03+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -162,17 +162,12 @@ msgid "Performance improvements"
 msgstr "パフォーマンスの改善"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "マルチタスク画面"
+msgstr "マルチタスク画面からテクスチャを削除"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
 msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr ""
-"ウィンドウスイッチャー直下にあったウィンドウが選択できなくなる不具合を修正"
+msgstr "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
