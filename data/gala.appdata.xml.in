@@ -16,6 +16,9 @@
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Performance improvements</li>
+          <li>Remove texture from Multitasking View</li>
+          <li>Avoid accidentally selecting windows in the window switcher</li>
           <li>Updated translations</li>
         </ul>
       </description>
