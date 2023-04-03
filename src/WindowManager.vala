@@ -283,7 +283,8 @@ namespace Gala {
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
             shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
-            Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (on_monitors_changed);
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
@@ -358,7 +359,7 @@ namespace Gala {
             update_input_area ();
 
             // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too 
+            // TODO: currently only notifications are handled here, other windows should be too
             display.window_created.connect ((window) => {
                 if (!animating_switch_workspace) {
                     return;

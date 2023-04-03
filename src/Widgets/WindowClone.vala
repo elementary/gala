@@ -36,25 +36,17 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     public Meta.Rectangle? slot { get; private set; default = null; }
 
-    private bool _active = false;
     /**
      * When active fades a white border around the window in. Used for the visually
      * indicating the WindowCloneContainer's current_window.
      */
     public bool active {
-        get {
-            return _active;
-        }
         set {
-            _active = value;
-
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (FADE_ANIMATION_DURATION);
-
-            active_shape.opacity = _active ? 255 : 0;
-            active_shape.invalidate ();
-
+            active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
+
         }
     }
 
@@ -269,6 +261,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var target_x = outer_rect.x - offset_x;
         var target_y = outer_rect.y - offset_y;
 
+        active = false;
         in_slot_animation = true;
         place_widgets (outer_rect.width, outer_rect.height);
 
@@ -346,6 +339,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var initial_width = width;
         var initial_height = height;
 
+        active = false;
         in_slot_animation = true;
         place_widgets (rect.width, rect.height);
 
@@ -428,8 +422,6 @@ public class Gala.WindowClone : Clutter.Actor {
             outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
         };
         active_shape.allocate (shape_alloc);
-
-        active_shape.set_scale_factor (scale_factor);
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
@@ -813,12 +805,10 @@ public class Gala.WindowClone : Clutter.Actor {
      * Border to show around the selected window when using keyboard navigation.
      */
     private class ActiveShape : Clutter.Actor {
-        private Clutter.Canvas background_canvas;
         private static int border_radius;
         private const double COLOR_OPACITY = 0.8;
-        private int last_width;
-        private int last_height;
-        private float scale_factor;
+
+        private Clutter.Canvas background_canvas;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -839,24 +829,19 @@ public class Gala.WindowClone : Clutter.Actor {
             background_canvas = new Clutter.Canvas ();
             background_canvas.draw.connect (draw_background);
             content = background_canvas;
+
+            notify["opacity"].connect (invalidate);
         }
 
         public void invalidate () {
             background_canvas.invalidate ();
         }
 
-        public void set_scale_factor (float scale_factor) {
-            if (this.scale_factor != scale_factor) {
-                this.scale_factor = scale_factor;
-
-                // perf: don't bother rerendering if we're invisible
-                if (opacity != 0) {
-                    invalidate ();
-                }
-            }
-        }
-
         private bool draw_background (Cairo.Context cr, int width, int height) {
+            if (!visible || opacity == 0) {
+                return Gdk.EVENT_PROPAGATE;
+            }
+
             var color = InternalUtils.get_theme_accent_color ();
 
             cr.save ();
@@ -871,23 +856,11 @@ public class Gala.WindowClone : Clutter.Actor {
             return Gdk.EVENT_PROPAGATE;
         }
 
-        private bool should_disregard_allocation (int width, int height) {
-            // TODO: why are width and height sometimes 0?
-            return width == 0 || height == 0 || (width == last_width && height == last_height);
-        }
-
         public override void allocate (Clutter.ActorBox box) {
             base.allocate (box);
-            var width = (int) box.get_width ();
-            var height = (int) box.get_height ();
 
-            if (should_disregard_allocation (width, height)) {
-                return;
-            }
-
-            background_canvas.set_size (width, height);
-            last_width = width;
-            last_height = height;
+            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
+            invalidate ();
         }
     }
 }
