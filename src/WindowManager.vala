@@ -840,7 +840,7 @@ namespace Gala {
                         workspace_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
-                    if (current == null || current.window_type != Meta.WindowType.NORMAL)
+                    if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
                     var maximize_flags = current.get_maximized ();
@@ -878,6 +878,12 @@ namespace Gala {
                         current.unstick ();
                     else
                         current.stick ();
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     move_window (current, Meta.MotionDirection.LEFT);
