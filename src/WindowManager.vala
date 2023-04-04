@@ -841,7 +841,7 @@ namespace Gala {
                         workspace_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
-                    if (current == null || current.window_type != Meta.WindowType.NORMAL)
+                    if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
                     var maximize_flags = current.get_maximized ();
