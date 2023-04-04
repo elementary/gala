@@ -113,6 +113,7 @@ namespace Gala {
 
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
+        private bool animating_nudge = false;
         private bool switch_workspace_with_gesture = false;
 
         /**
@@ -528,7 +529,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
-            if (animating_switch_workspace) {
+            if (animating_switch_workspace || animating_nudge) {
                 return;
             }
 
@@ -553,7 +554,7 @@ namespace Gala {
                 return;
             }
 
-            animating_switch_workspace = true;
+            animating_nudge = true;
             var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
 
             float dest = 0;
@@ -585,7 +586,7 @@ namespace Gala {
                 ui_group.add_transition ("nudge", nudge_gesture);
 
                 switch_workspace_with_gesture = false;
-                animating_switch_workspace = false;
+                animating_nudge = false;
             };
 
             if (!switch_workspace_with_gesture) {
@@ -602,7 +603,7 @@ namespace Gala {
                 nudge.set_key_frames (keyframes);
                 nudge.set_values (x);
                 nudge.completed.connect (() => {
-                    animating_switch_workspace = false;
+                    animating_nudge = false;
                 });
 
                 ui_group.add_transition ("nudge", nudge);
@@ -839,7 +840,7 @@ namespace Gala {
                         workspace_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
-                    if (current == null || current.window_type != Meta.WindowType.NORMAL)
+                    if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
                     var maximize_flags = current.get_maximized ();
@@ -877,6 +878,12 @@ namespace Gala {
                         current.unstick ();
                     else
                         current.stick ();
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     move_window (current, Meta.MotionDirection.LEFT);
@@ -1756,6 +1763,7 @@ namespace Gala {
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
                 || animating_switch_workspace
+                || animating_nudge
                 || workspace_view.is_opened ()
                 || window_overview.is_opened ()) {
                 animating_switch_workspace = false;
