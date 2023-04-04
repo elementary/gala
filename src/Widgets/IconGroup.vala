@@ -520,6 +520,9 @@ namespace Gala {
 
             toggle_close_button (false);
 
+            // disable reactivity so that workspace thumbs can get events
+            reactive = false;
+
             return this;
         }
 

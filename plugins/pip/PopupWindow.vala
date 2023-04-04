@@ -118,14 +118,17 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_button = Gala.Utils.create_close_button ();
         close_button.opacity = 0;
         close_button.reactive = true;
+        // TODO: Check if close button should be on the right
+        close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 0.0f));
+        close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 0.0f));
         close_button.add_action (close_action);
 
         resize_button = Utils.create_resize_button ();
-        resize_button.set_pivot_point (0.5f, 0.5f);
-        resize_button.set_position (width - button_size, height - button_size);
         resize_button.opacity = 0;
-        resize_button.button_press_event.connect (on_resize_button_press);
         resize_button.reactive = true;
+        resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 1.0f));
+        resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 1.0f));
+        resize_button.button_press_event.connect (on_resize_button_press);
 
         add_child (container);
         add_child (close_button);
@@ -257,7 +260,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
                 update_container_scale ();
                 update_size ();
-                reposition_resize_button ();
 
                 break;
             case Clutter.EventType.BUTTON_RELEASE:
@@ -295,7 +297,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void on_allocation_changed () {
         update_clone_clip ();
         update_size ();
-        reposition_resize_button ();
     }
 
     private void on_close_click_clicked () {
@@ -508,10 +509,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
 
         return false;
-    }
-
-    private void reposition_resize_button () {
-        resize_button.set_position (width - button_size, height - button_size);
     }
 
     private void get_current_monitor_rect (out Meta.Rectangle rect) {
