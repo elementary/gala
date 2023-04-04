@@ -1,3 +1,9 @@
+gala (7.0.2) jammy; urgency=medium
+
+  * New upstream release
+
+ -- Danielle Foré <danielle@elementary.io>  Tue, 04 Apr 2023 16:57:35 -0700
+
 gala (7.0.1) jammy; urgency=medium
 
   * New upstream release
