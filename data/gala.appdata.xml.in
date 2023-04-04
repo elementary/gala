@@ -27,12 +27,14 @@
         <issue url="https://github.com/elementary/gala/issues/743">Keyboard media controls do not work when in "Show all windows" view</issue>
         <issue url="https://github.com/elementary/gala/issues/913">Holding on keyboard shortcut to activate the action only once</issue>
         <issue url="https://github.com/elementary/gala/issues/1059">Improper animation when use Multitasking View and Show all windows one after another</issue>
+        <issue url="https://github.com/elementary/gala/issues/1089">Maximise current window hot corner shouldn't maximise every app</issue>
         <issue url="https://github.com/elementary/gala/issues/1229">Notification bubble appears in wrong corner on one workspace</issue>
         <issue url="https://github.com/elementary/gala/issues/1347">Parity between right-clicking titlebars/headerbars on mouse and touchpad</issue>
         <issue url="https://github.com/elementary/gala/issues/1387">Window menu sluggish/inoperative for apps with flathub origin</issue>
         <issue url="https://github.com/elementary/gala/issues/1566">Hotkeys are not working with non-EN keyboard layout</issue>
         <issue url="https://github.com/elementary/gala/issues/1578">Closing a window in multitasking view closes multitasking view</issue>
         <issue url="https://github.com/elementary/gala/issues/1584">When 2 windows are tiled and then resized, the inactive one gets glitched, leaving its full-sized picture as an artifact when minimized</issue>
+        <issue url="https://github.com/elementary/gala/issues/1607">Picture-in-Picture drag seems to snap to a grid</issue>
       </issues>
     </release>
 
