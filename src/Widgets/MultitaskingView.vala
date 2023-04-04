@@ -93,7 +93,8 @@ namespace Gala {
 
             window_containers_monitors = new List<MonitorClone> ();
             update_monitors ();
-            Meta.MonitorManager.@get ().monitors_changed.connect (update_monitors);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (update_monitors);
 
             Meta.Prefs.add_listener ((pref) => {
                 if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
