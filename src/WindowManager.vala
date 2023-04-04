@@ -880,6 +880,12 @@ namespace Gala {
                     else
                         current.stick ();
                     break;
+                case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
+                    break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     move_window (current, Meta.MotionDirection.LEFT);
                     break;
