@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-03-22 18:54+0000\n"
+"POT-Creation-Date: 2023-04-03 22:03+0000\n"
 "PO-Revision-Date: 2023-03-13 22:25+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
@@ -51,27 +51,27 @@ msgstr "ეკრანის ანაბეჭდები"
 msgid "Screenshot taken"
 msgstr "ეკრანის ანაბეჭდი აღებულია"
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2120
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 msgstr[1] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 
-#: src/WindowManager.vala:2121
+#: src/WindowManager.vala:2127
 msgid "Keep new display settings?"
 msgstr "დავიტოვო ეკრანის ახალი პარამეტრები?"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2131
 msgid "Keep Settings"
 msgstr "პარამეტრების შენარჩუნება"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2132
 msgid "Use Previous Settings"
 msgstr "წინა პარამეტრების გამოყენება"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2174
 #, c-format
 msgid "Screenshot from %s"
 msgstr "ეკრანის ანაბეჭდი %s-დან"
@@ -124,15 +124,15 @@ msgstr "საწყის ზომაზე დაბრუნება"
 msgid "Maximize"
 msgstr "გადიდება"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "ფონის სურათის შეცვლა…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "ეკრანის მორგება…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "სისტემის მორგება…"
 
@@ -150,43 +150,59 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:92
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:41
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:103
 msgid "Improvements:"
 msgstr "გაუმჯობესებები:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
-#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:19
+msgid "Performance improvements"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "მრავალამოცანიანი ხედი"
+
+#: data/gala.appdata.xml.in:21
+#, fuzzy
+#| msgid "Fix selecting windows underneath the window switcher"
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "ფანჯრების გადამრთველის ქვემოთ მდებარე ფანჯრების არჩევის გასწორება"
+
+#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
+#: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:106
 msgid "Updated translations"
 msgstr "განახლებული თარგმანები"
 
-#: data/gala.appdata.xml.in:59
+#: data/gala.appdata.xml.in:70
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.appdata.xml.in:71
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:61
+#: data/gala.appdata.xml.in:72
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:88
+#: data/gala.appdata.xml.in:99
 msgid "Fixes:"
 msgstr "შეცდომების გასწორებები:"
 
-#: data/gala.appdata.xml.in:90
+#: data/gala.appdata.xml.in:101
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:94
+#: data/gala.appdata.xml.in:105
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:106
+#: data/gala.appdata.xml.in:117
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -209,9 +225,6 @@ msgstr ""
 
 #~ msgid "Properly update accent color in the window switcher"
 #~ msgstr "ფანჯრების გადამრთველში ფერის აქცენტის სწორი განახლება"
-
-#~ msgid "Fix selecting windows underneath the window switcher"
-#~ msgstr "ფანჯრების გადამრთველის ქვემოთ მდებარე ფანჯრების არჩევის გასწორება"
 
 #~ msgid "Dim the parents of modal dialogs"
 #~ msgstr "მოდალური დიალოგების მშობლების მინავლება"
