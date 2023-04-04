@@ -214,13 +214,15 @@ namespace Gala {
                         actor.get_transformed_position (out x, out y);
 
                         // release has happened within bounds of actor
-                        if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                        if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
                             actor_clicked (event.get_button ());
                         }
 
-                        ungrab_actor ();
-                        clicked = false;
-                        dragging = false;
+                        if (clicked) {
+                            ungrab_actor ();
+                            clicked = false;
+                        }
+
                         return Gdk.EVENT_STOP;
                     } else if (dragging) {
                         if (hovered != null) {
@@ -301,8 +303,6 @@ namespace Gala {
 
                             ungrab_actor ();
                             grab_actor (handle, event.get_device ());
-
-                            handle.reactive = false;
 
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {

@@ -363,6 +363,14 @@ namespace Gala {
             return (int) Math.round (value * scale_factor) / scale_factor;
         }
 
+        /**
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
+         */
+        public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
+        }
+
         private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
             if (selection_style_context == null) {
