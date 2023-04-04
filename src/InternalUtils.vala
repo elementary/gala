@@ -298,10 +298,6 @@ namespace Gala {
             }
         }
 
-        public static int get_ui_scaling_factor () {
-            return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-        }
-
         /**
          * Multiplies an integer by a floating scaling factor, and then
          * returns the result rounded to the nearest integer
