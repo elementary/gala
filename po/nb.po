@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-04-03 22:03+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -168,10 +168,8 @@ msgid "Performance improvements"
 msgstr "Ytelsesforbedringer"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Vis arbeidsområder"
+msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
 
 #: data/gala.appdata.xml.in:21
 #, fuzzy
