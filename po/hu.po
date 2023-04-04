@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-04-03 22:03+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -165,16 +165,12 @@ msgid "Performance improvements"
 msgstr "Teljesítménybeli javítások"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Többfeladatos nézet"
+msgstr "A többfeladatos nézetből el lett távolítva a textúra"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
 msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Az ablakváltó alatti ablakok kiválasztása javítva"
+msgstr "Az ablakváltóban az ablakok véletlen kiválasztása javítva"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
