@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-04-03 22:03+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -165,16 +165,12 @@ msgid "Performance improvements"
 msgstr "Performance improvements"
 
 #: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Multitasking View"
+msgstr "Remove texture from Multitasking View"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
 msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Fix selecting windows underneath the window switcher"
+msgstr "Avoid accidentally selecting windows in the window switcher"
 
 #: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
 #: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
