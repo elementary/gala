@@ -113,6 +113,7 @@ namespace Gala {
 
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
+        private bool animating_nudge = false;
         private bool switch_workspace_with_gesture = false;
 
         /**
@@ -288,7 +289,8 @@ namespace Gala {
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
             shadow_settings.changed.connect (InternalUtils.reload_shadow);
 
-            Meta.MonitorManager.@get ().monitors_changed.connect (on_monitors_changed);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (on_monitors_changed);
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
@@ -361,7 +363,7 @@ namespace Gala {
             update_input_area ();
 
             // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too 
+            // TODO: currently only notifications are handled here, other windows should be too
             display.window_created.connect ((window) => {
                 if (!animating_switch_workspace) {
                     return;
@@ -530,7 +532,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
-            if (animating_switch_workspace) {
+            if (animating_switch_workspace || animating_nudge) {
                 return;
             }
 
@@ -555,7 +557,7 @@ namespace Gala {
                 return;
             }
 
-            animating_switch_workspace = true;
+            animating_nudge = true;
             var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
 
             float dest = 0;
@@ -573,21 +575,21 @@ namespace Gala {
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
-                ui_group.x = x.clamp (-nudge_gap, nudge_gap);
+                ui_group.translation_x = x.clamp (-nudge_gap, nudge_gap);
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                var nudge_gesture = new Clutter.PropertyTransition ("x") {
+                var nudge_gesture = new Clutter.PropertyTransition ("translation-x") {
                     duration = (AnimationDuration.NUDGE / 2),
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.LINEAR
                 };
-                nudge_gesture.set_from_value ((float) ui_group.x);
+                nudge_gesture.set_from_value (ui_group.translation_x);
                 nudge_gesture.set_to_value (0.0f);
                 ui_group.add_transition ("nudge", nudge_gesture);
 
                 switch_workspace_with_gesture = false;
-                animating_switch_workspace = false;
+                animating_nudge = false;
             };
 
             if (!switch_workspace_with_gesture) {
@@ -604,7 +606,7 @@ namespace Gala {
                 nudge.set_key_frames (keyframes);
                 nudge.set_values (x);
                 nudge.completed.connect (() => {
-                    animating_switch_workspace = false;
+                    animating_nudge = false;
                 });
 
                 ui_group.add_transition ("nudge", nudge);
@@ -841,7 +843,7 @@ namespace Gala {
                         workspace_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
-                    if (current == null || current.window_type != Meta.WindowType.NORMAL)
+                    if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
                     var maximize_flags = current.get_maximized ();
@@ -879,6 +881,12 @@ namespace Gala {
                         current.unstick ();
                     else
                         current.stick ();
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    break;
+                case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     move_window (current, Meta.MotionDirection.LEFT);
@@ -1758,6 +1766,7 @@ namespace Gala {
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
                 || animating_switch_workspace
+                || animating_nudge
                 || workspace_view.is_opened ()
                 || window_overview.is_opened ()) {
                 animating_switch_workspace = false;
