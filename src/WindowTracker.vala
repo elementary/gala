@@ -190,7 +190,7 @@ public class Gala.WindowTracker : GLib.Object {
         return null;
     }
 
-    private Gala.App get_app_for_window (Meta.Window window) {
+    public Gala.App get_app_for_window (Meta.Window window) {
         unowned Meta.Window? transient_for = window.get_transient_for ();
         if (transient_for != null) {
             return get_app_for_window (transient_for);

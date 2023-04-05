@@ -280,9 +280,6 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
-            Meta.KeyBinding.set_custom_handler ("switch-group", () => {});
-            Meta.KeyBinding.set_custom_handler ("switch-group-backward", () => {});
-
             /*shadows*/
             InternalUtils.reload_shadow ();
             var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
@@ -325,6 +322,8 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
                 Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
                 Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
             }
 
             if (plugin_manager.window_overview_provider == null
@@ -723,13 +722,13 @@ namespace Gala {
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
             // don't allow moving into non-existing workspaces
             if (active == next) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 

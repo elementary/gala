@@ -198,7 +198,13 @@ namespace Gala {
             }
 
             if (!opened) {
-                var windows_exist = collect_windows (display, workspace);
+                bool windows_exist;
+                if (binding.get_name ().has_prefix ("switch-group")) {
+                    windows_exist = collect_current_windows (display, workspace);
+                } else {
+                    windows_exist = collect_all_windows (display, workspace);
+                }
+
                 if (!windows_exist) {
                     return;
                 }
@@ -213,26 +219,54 @@ namespace Gala {
             next_window (display, workspace, backward);
         }
 
-        private bool collect_windows (Meta.Display display, Meta.Workspace? workspace) {
+        private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
             var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
-
             if (windows == null) {
                 return false;
             }
 
-            var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
 
             container.width = -1;
             container.destroy_all_children ();
 
-            foreach (var window in windows) {
+            foreach (unowned var window in windows) {
                 var icon = new WindowIcon (window, ICON_SIZE * scaling_factor);
                 if (window == current_window) {
                     cur_icon = icon;
                 }
 
-                icon.set_pivot_point (0.5f, 0.5f);
                 container.add_child (icon);
+            }
+
+            return true;
+        }
+
+        private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+            var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+            if (windows == null) {
+                return false;
+            }
+
+            unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            if (current_window == null) {
+                return false;
+            }
+
+            container.width = -1;
+            container.destroy_all_children ();
+
+            unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
+            var app = window_tracker.get_app_for_window (current_window);
+            foreach (unowned var window in windows) {
+                if (window_tracker.get_app_for_window (window) == app) {
+                    var icon = new WindowIcon (window, ICON_SIZE * scaling_factor);
+                    if (window == current_window) {
+                        cur_icon = icon;
+                    }
+
+                    container.add_child (icon);
+                }
             }
 
             return true;
@@ -242,7 +276,7 @@ namespace Gala {
             var display = wm.get_display ();
 
             if (container.get_n_children () == 0) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
@@ -343,6 +377,8 @@ namespace Gala {
                     case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                     case Meta.KeyBindingAction.SWITCH_WINDOWS:
                     case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                    case Meta.KeyBindingAction.SWITCH_GROUP:
+                    case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                         return false;
                     default:
                         break;
@@ -380,7 +416,7 @@ namespace Gala {
             var current = cur_icon;
 
             if (container.get_n_children () == 1) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
