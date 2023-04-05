@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-03 22:03+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -51,26 +51,26 @@ msgstr "スクリーンショット"
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2120
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "変更は%i秒後に自動的に元に戻ります。"
 
-#: src/WindowManager.vala:2127
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか？"
 
-#: src/WindowManager.vala:2131
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:2132
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2174
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
@@ -151,60 +151,55 @@ msgstr ""
 "libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が "
 "Pantheon 向けにデザインしました。"
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:41
-#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:86
-#: data/gala.appdata.xml.in:103
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.appdata.xml.in:19
-msgid "Performance improvements"
-msgstr "パフォーマンスの改善"
-
-#: data/gala.appdata.xml.in:20
-#, fuzzy
-#| msgid "Multitasking View"
-msgid "Remove texture from Multitasking View"
-msgstr "マルチタスク画面"
-
-#: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr ""
-"ウィンドウスイッチャー直下にあったウィンドウが選択できなくなる不具合を修正"
-
-#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
-#: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
-#: data/gala.appdata.xml.in:106
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
-#: data/gala.appdata.xml.in:70
+#: data/gala.appdata.xml.in:31
+msgid "Performance improvements"
+msgstr "パフォーマンスの改善"
+
+#: data/gala.appdata.xml.in:32
+msgid "Remove texture from Multitasking View"
+msgstr "マルチタスク画面からテクスチャを削除"
+
+#: data/gala.appdata.xml.in:33
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
+
+#: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:85
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "マルチタスク画面での2本指スクロールの挙動が滑らかになるように修正"
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr "マルチタスク画面のアニメーションパフォーマンスを改善"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr "修正点:"
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr "elementary OS 7 でみられていたリグレッションを修正"
 
-#: data/gala.appdata.xml.in:105
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr "強制終了ダイアログにアクセスポータルを使うように修正"
 
-#: data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
