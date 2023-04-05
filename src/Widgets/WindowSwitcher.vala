@@ -198,7 +198,7 @@ namespace Gala {
             }
 
             if (!opened) {
-                bool windows_exist = false;
+                bool windows_exist;
                 if (binding.get_name ().has_prefix ("switch-group")) {
                     windows_exist = collect_current_windows (display, workspace);
                 } else {

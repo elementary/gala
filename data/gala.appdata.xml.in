@@ -35,7 +35,6 @@
         </ul>
       </description>
       <issues>
-        <issue url="https://github.com/elementary/gala/issues/536">Enable "Alt + ~" to switch between windows of the same application</issue>
         <issue url="https://github.com/elementary/gala/issues/705">Notification windows don't appear in multitasking</issue>
         <issue url="https://github.com/elementary/gala/issues/743">Keyboard media controls do not work when in "Show all windows" view</issue>
         <issue url="https://github.com/elementary/gala/issues/913">Holding on keyboard shortcut to activate the action only once</issue>
