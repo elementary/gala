@@ -248,6 +248,14 @@ namespace Gala {
         }
 
         /**
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
+         */
+         public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
+        }
+
+        /**
          * Get the number of toplevel windows on a workspace excluding those that are
          * on all workspaces
          *
@@ -300,19 +308,6 @@ namespace Gala {
             container.content = content;
 
             return container;
-        }
-
-        /**
-        * Ring the system bell, will most likely emit a <beep> error sound or, if the
-        * audible bell is disabled, flash the display
-        *
-        * @param display The display to flash, if necessary
-        */
-        public static void bell (Meta.Display display) {
-            if (Meta.Prefs.bell_is_audible ())
-                Gdk.beep ();
-            else
-                display.get_compositor ().flash_display (display);
         }
 
         public static int get_ui_scaling_factor () {
