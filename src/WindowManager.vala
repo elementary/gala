@@ -196,7 +196,8 @@ namespace Gala {
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
-            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
+            unowned var laters = display.get_compositor ().get_laters ();
+            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
                 WorkspaceManager.init (this);
                 return false;
             });
