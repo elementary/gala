@@ -12,6 +12,18 @@
   </description>
 
   <releases>
+    <release version="7.0.3" date="2023-04-03" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/536">Enable "Alt + ~" to switch between windows of the same application</issue>
+      </issues>
+    </release>
+
     <release version="7.0.2" date="2023-04-03" urgency="medium">
       <description>
         <p>Improvements:</p>
