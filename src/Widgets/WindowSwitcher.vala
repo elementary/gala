@@ -242,7 +242,7 @@ namespace Gala {
             var display = wm.get_display ();
 
             if (container.get_n_children () == 0) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace Gala {
             var current = cur_icon;
 
             if (container.get_n_children () == 1) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 

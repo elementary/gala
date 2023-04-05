@@ -310,19 +310,6 @@ namespace Gala {
             return container;
         }
 
-        /**
-        * Ring the system bell, will most likely emit a <beep> error sound or, if the
-        * audible bell is disabled, flash the display
-        *
-        * @param display The display to flash, if necessary
-        */
-        public static void bell (Meta.Display display) {
-            if (Meta.Prefs.bell_is_audible ())
-                Gdk.beep ();
-            else
-                display.get_compositor ().flash_display (display);
-        }
-
         public static int get_ui_scaling_factor () {
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
         }
