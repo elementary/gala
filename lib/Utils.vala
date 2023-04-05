@@ -248,6 +248,14 @@ namespace Gala {
         }
 
         /**
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
+         */
+         public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
+        }
+
+        /**
          * Get the number of toplevel windows on a workspace excluding those that are
          * on all workspaces
          *
