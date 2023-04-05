@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-03 22:03+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
 "PO-Revision-Date: 2018-02-23 18:17+0000\n"
 "Last-Translator: Shawn <syst3mfailur3@gmail.com>\n"
 "Language-Team: English (Canada) <https://weblate.elementary.io/projects/"
@@ -51,27 +51,27 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2120
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2127
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2131
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2132
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2174
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -150,59 +150,59 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:41
-#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:86
-#: data/gala.appdata.xml.in:103
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
+msgid "Updated translations"
+msgstr ""
+
+#: data/gala.appdata.xml.in:31
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.appdata.xml.in:32
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "Multitasking View"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.appdata.xml.in:33
 #, fuzzy
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 "The opacity of the windows located in the background in the alt-tab-switcher."
 
-#: data/gala.appdata.xml.in:22 data/gala.appdata.xml.in:43
-#: data/gala.appdata.xml.in:73 data/gala.appdata.xml.in:88
-#: data/gala.appdata.xml.in:106
-msgid "Updated translations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:70
+#: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:71
+#: data/gala.appdata.xml.in:85
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:72
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:105
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr ""
 
