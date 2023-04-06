@@ -280,11 +280,6 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
-            /*shadows*/
-            InternalUtils.reload_shadow ();
-            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
-            shadow_settings.changed.connect (InternalUtils.reload_shadow);
-
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (on_monitors_changed);
 
