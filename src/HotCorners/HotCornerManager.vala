@@ -40,13 +40,15 @@ public class Gala.HotCornerManager : Object {
             return;
         }
 
-        var geometry = display.get_monitor_geometry (display.get_primary_monitor ());
+        var primary = display.get_primary_monitor ();
+        var geometry = display.get_monitor_geometry (primary);
+        var scale = display.get_monitor_scale (primary);
 
         remove_all_hot_corners ();
-        add_hotcorner (geometry.x, geometry.y, HotCorner.POSITION_TOP_LEFT);
-        add_hotcorner (geometry.x + geometry.width, geometry.y, HotCorner.POSITION_TOP_RIGHT);
-        add_hotcorner (geometry.x, geometry.y + geometry.height, HotCorner.POSITION_BOTTOM_LEFT);
-        add_hotcorner (geometry.x + geometry.width, geometry.y + geometry.height, HotCorner.POSITION_BOTTOM_RIGHT);
+        add_hotcorner (geometry.x, geometry.y, scale, HotCorner.POSITION_TOP_LEFT);
+        add_hotcorner (geometry.x + geometry.width, geometry.y, scale, HotCorner.POSITION_TOP_RIGHT);
+        add_hotcorner (geometry.x, geometry.y + geometry.height, scale, HotCorner.POSITION_BOTTOM_LEFT);
+        add_hotcorner (geometry.x + geometry.width, geometry.y + geometry.height, scale, HotCorner.POSITION_BOTTOM_RIGHT);
 
         this.on_configured ();
     }
@@ -59,14 +61,14 @@ public class Gala.HotCornerManager : Object {
         hot_corners.remove_range (0, hot_corners.length);
     }
 
-    private void add_hotcorner (float x, float y, string hot_corner_position) {
+    private void add_hotcorner (float x, float y, float scale, string hot_corner_position) {
         var action_type = (ActionType) behavior_settings.get_enum (hot_corner_position);
         if (action_type == ActionType.NONE) {
             return;
         }
 
         unowned Meta.Display display = wm.get_display ();
-        var hot_corner = new HotCorner (display, (int) x, (int) y, hot_corner_position);
+        var hot_corner = new HotCorner (display, (int) x, (int) y, scale, hot_corner_position);
 
         hot_corner.trigger.connect (() => {
             if (action_type == ActionType.CUSTOM_COMMAND) {
