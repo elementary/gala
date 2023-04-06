@@ -62,8 +62,8 @@ public class Gala.HotCorner : Object {
     private bool triggered = false;
     private uint32 triggered_time;
 
-    public HotCorner (Meta.Display display, float x, float y, string hot_corner_position) {
-        add_barriers (display, x, y, hot_corner_position);
+    public HotCorner (Meta.Display display, float x, float y, float scale, string hot_corner_position) {
+        add_barriers (display, x, y, scale, hot_corner_position);
     }
 
     public void destroy_barriers () {
@@ -76,9 +76,9 @@ public class Gala.HotCorner : Object {
         }
     }
 
-    private void add_barriers (Meta.Display display, float x, float y, string hot_corner_position) {
-        var vrect = get_barrier_rect (x, y, hot_corner_position, Clutter.Orientation.VERTICAL);
-        var hrect = get_barrier_rect (x, y, hot_corner_position, Clutter.Orientation.HORIZONTAL);
+    private void add_barriers (Meta.Display display, float x, float y, float scale, string hot_corner_position) {
+        var vrect = get_barrier_rect (x, y, scale, hot_corner_position, Clutter.Orientation.VERTICAL);
+        var hrect = get_barrier_rect (x, y, scale, hot_corner_position, Clutter.Orientation.HORIZONTAL);
         var vdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.VERTICAL);
         var hdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.HORIZONTAL);
 
@@ -107,9 +107,8 @@ public class Gala.HotCorner : Object {
         }
     }
 
-    private static Meta.Rectangle get_barrier_rect (float x, float y, string hot_corner_position, Clutter.Orientation orientation) {
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        var barrier_size = BARRIER_SIZE * scale;
+    private static Meta.Rectangle get_barrier_rect (float x, float y, float scale, string hot_corner_position, Clutter.Orientation orientation) {
+        var barrier_size = InternalUtils.scale_to_int (BARRIER_SIZE, scale);
 
         int x1 = (int) x;
         int y1 = (int) y;
