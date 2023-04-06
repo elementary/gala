@@ -275,27 +275,27 @@
     <key type="as" name="normal-focused">
       <default>['20', '-1', '0', '15', '100']</default>
       <summary>Defines the shadow of normal focused windows</summary>
-      <description>The first value is the radius of the blur of the shadow, the second one the top fade (which is usually just -1), the third and fourth the x- and y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-offset, opacity].</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="normal-unfocused">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of a normal unfocused window</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="menu">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of a menu</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="dialog-focused">
       <default>['12', '-1', '0', '4', '100']</default>
       <summary>Defines the shadow of a focused dialog</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="dialog-unfocused">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of an unfocused dialog</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
   </schema>
 
