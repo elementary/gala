@@ -170,7 +170,9 @@ namespace Gala {
             opened = false;
 
             unowned Meta.Display display = workspace.get_display ();
-            var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
+            var primary_monitor = display.get_primary_monitor ();
+            var monitor_geometry = display.get_monitor_geometry (primary_monitor);
+            var monitor_scale = display.get_monitor_scale (primary_monitor);
 
             var background_click_action = new Clutter.ClickAction ();
             background_click_action.clicked.connect (() => {
@@ -183,7 +185,7 @@ namespace Gala {
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
-            icon_group = new IconGroup (wm, workspace);
+            icon_group = new IconGroup (wm, workspace, monitor_scale);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
@@ -340,6 +342,7 @@ namespace Gala {
             window_container.restack_windows ();
 
             var scale_factor = InternalUtils.get_ui_scaling_factor ();
+            icon_group.scale_factor = scale_factor;
             var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());

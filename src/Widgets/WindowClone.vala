@@ -111,17 +111,17 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
+        var scale_factor = InternalUtils.get_ui_scaling_factor ();
+
         var close_button_action = new Clutter.ClickAction ();
         close_button_action.clicked.connect (() => {
             close_window ();
         });
-        close_button = Utils.create_close_button ();
+        close_button = Utils.create_close_button (scale_factor);
         close_button.opacity = 0;
         // block propagation of button release event to window clone
         close_button.button_release_event.connect (() => { return Gdk.EVENT_STOP; });
         close_button.add_action (close_button_action);
-
-        var scale_factor = InternalUtils.get_ui_scaling_factor ();
 
         var window_frame_rect = window.get_frame_rect ();
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
