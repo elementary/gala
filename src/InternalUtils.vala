@@ -70,9 +70,14 @@ namespace Gala {
                     break;
                 case InputArea.NONE:
                 default:
+#if !HAS_MUTTER44
                     unowned Meta.X11Display x11display = display.get_x11_display ();
                     x11display.clear_stage_input_region ();
                     return;
+#else
+                    rects = {};
+                    break;
+#endif
             }
 
             unowned Meta.X11Display x11display = display.get_x11_display ();
