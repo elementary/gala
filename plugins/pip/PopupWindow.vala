@@ -115,7 +115,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_action = new Clutter.ClickAction ();
         close_action.clicked.connect (on_close_click_clicked);
 
-        close_button = Gala.Utils.create_close_button ();
+        close_button = Gala.Utils.create_close_button (scale);
         close_button.opacity = 0;
         close_button.reactive = true;
         // TODO: Check if close button should be on the right
