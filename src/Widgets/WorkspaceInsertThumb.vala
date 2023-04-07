@@ -28,6 +28,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public WorkspaceInsertThumb (int workspace_index, float scale) {
         Object (workspace_index: workspace_index, scale_factor: scale);
 
+        reallocate ();
         opacity = 0;
         set_pivot_point (0.5f, 0.5f);
         reactive = true;
