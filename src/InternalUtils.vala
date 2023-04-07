@@ -298,14 +298,6 @@ namespace Gala {
         }
 
         /**
-         * Round the value to match physical pixels.
-         */
-        public static int pixel_align (float value) {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return (int) Math.round (value * scale_factor) / scale_factor;
-        }
-
-        /**
          * Multiplies an integer by a floating scaling factor, and then
          * returns the result rounded to the nearest integer
          */

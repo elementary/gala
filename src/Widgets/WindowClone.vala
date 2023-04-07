@@ -775,8 +775,8 @@ public class Gala.WindowClone : Clutter.Actor {
         var y = window_height - (size * 0.75f);
 
         if (aligned) {
-            x = InternalUtils.pixel_align (x);
-            y = InternalUtils.pixel_align (y);
+            x = (int) Math.round (x);
+            y = (int) Math.round (y);
         }
 
         window_icon.set_size (size, size);
@@ -785,8 +785,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
     private void set_window_title_position (float window_width, float window_height) {
         var scale_factor = InternalUtils.get_ui_scaling_factor ();
-        var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
-        var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+        var x = (int)Math.round ((window_width - window_title.width) / 2);
+        var y = (int)Math.round (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
         window_title.set_position (x, y);
     }
 
