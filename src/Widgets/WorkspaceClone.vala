@@ -157,13 +157,26 @@ namespace Gala {
             }
         }
 
+        private float _scale_factor = 1.0f;
+        public float scale_factor {
+            get {
+                return _scale_factor;
+            }
+            set {
+                if (value != _scale_factor) {
+                    _scale_factor = value;
+                    reallocate ();
+                }
+            }
+        }
+
         private BackgroundManager background;
         private bool opened;
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker) {
-            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker);
+        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
+            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
 
         construct {
@@ -172,7 +185,6 @@ namespace Gala {
             unowned Meta.Display display = workspace.get_display ();
             var primary_monitor = display.get_primary_monitor ();
             var monitor_geometry = display.get_monitor_geometry (primary_monitor);
-            var monitor_scale = display.get_monitor_scale (primary_monitor);
 
             var background_click_action = new Clutter.ClickAction ();
             background_click_action.clicked.connect (() => {
@@ -185,7 +197,7 @@ namespace Gala {
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
-            icon_group = new IconGroup (wm, workspace, monitor_scale);
+            icon_group = new IconGroup (wm, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
@@ -246,6 +258,10 @@ namespace Gala {
             background.destroy ();
         }
 
+        private void reallocate () {
+            icon_group.scale_factor = scale_factor;
+        }
+
         /**
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
@@ -293,22 +309,20 @@ namespace Gala {
          * @return The position on the X axis of this workspace.
          */
         public float multitasking_view_x () {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return workspace.index () * (width - (X_OFFSET * scale_factor));
+            return workspace.index () * (width - InternalUtils.scale_to_int (X_OFFSET, scale_factor));
         }
 
         /**
          * @return The amount of pixels the workspace is overlapped in the X axis.
          */
         private float current_x_overlap () {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
             if (workspace.index () == active_index) {
                 return 0;
             } else {
-                var x_offset = X_OFFSET * scale_factor + WindowManagerGala.WORKSPACE_GAP;
+                var x_offset = InternalUtils.scale_to_int (X_OFFSET, scale_factor) + WindowManagerGala.WORKSPACE_GAP;
                 return (workspace.index () < active_index) ? -x_offset : x_offset;
             }
         }
@@ -341,16 +355,14 @@ namespace Gala {
 
             window_container.restack_windows ();
 
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            icon_group.scale_factor = scale_factor;
             var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
             var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
             var target_x = multitasking_view_x ();
 
-            var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
-            var pivot_y = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
+            var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET - BOTTOM_OFFSET, scale_factor)) / monitor.height;
+            var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - InternalUtils.scale_to_int (monitor.height, scale));
 
             update_size (monitor);
 
@@ -394,16 +406,16 @@ namespace Gala {
 
             Meta.Rectangle area = {
                 (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
-                (int)Math.floorf (monitor.y + TOP_OFFSET * scale_factor),
+                (int)Math.floorf (monitor.y + InternalUtils.scale_to_int (TOP_OFFSET, scale_factor)),
                 (int)Math.floorf (monitor.width * scale),
                 (int)Math.floorf (monitor.height * scale)
             };
             shrink_rectangle (ref area, 32);
 
-            window_container.padding_top = TOP_OFFSET * scale_factor;
+            window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
             window_container.padding_left =
                 window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-            window_container.padding_bottom = BOTTOM_OFFSET * scale_factor;
+            window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
 
             icon_group.redraw ();
 

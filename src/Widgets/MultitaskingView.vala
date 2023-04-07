@@ -406,7 +406,8 @@ namespace Gala {
 
         private void add_workspace (int num) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker);
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
 
