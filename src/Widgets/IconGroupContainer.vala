@@ -27,8 +27,32 @@ namespace Gala {
 
         public signal void request_reposition (bool animate);
 
-        public IconGroupContainer () {
+        private float _scale_factor = 1.0f;
+        public float scale_factor {
+            get {
+                return _scale_factor;
+            }
+            set {
+                if (value != _scale_factor) {
+                    _scale_factor = value;
+                    reallocate ();
+                }
+            }
+        }
+
+        public IconGroupContainer (float scale) {
+            Object (scale_factor: scale);
+
             layout_manager = new Clutter.BoxLayout ();
+        }
+
+        private void reallocate () {
+            foreach (var child in get_children ()) {
+                unowned WorkspaceInsertThumb thumb = child as WorkspaceInsertThumb;
+                if (thumb != null) {
+                    thumb.scale_factor = scale_factor;
+                }
+            }
         }
 
         public void add_group (IconGroup group) {
