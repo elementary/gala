@@ -123,7 +123,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 0.0f));
         close_button.add_action (close_action);
 
-        resize_button = Utils.create_resize_button ();
+        resize_button = Utils.create_resize_button (scale);
         resize_button.opacity = 0;
         resize_button.reactive = true;
         resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 1.0f));
