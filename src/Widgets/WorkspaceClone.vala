@@ -362,7 +362,7 @@ namespace Gala {
             var target_x = multitasking_view_x ();
 
             var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
-            var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - InternalUtils.scale_to_int (monitor.height, scale));
+            var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
 
             update_size (monitor);
 
