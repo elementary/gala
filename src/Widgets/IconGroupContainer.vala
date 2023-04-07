@@ -40,7 +40,8 @@ namespace Gala {
 
             insert_child_at_index (group, index * 2);
 
-            var thumb = new WorkspaceInsertThumb (index);
+            var scale = InternalUtils.get_ui_scaling_factor ();
+            var thumb = new WorkspaceInsertThumb (index, scale);
             thumb.notify["expanded"].connect_after (expanded_changed);
             insert_child_at_index (thumb, index * 2);
 
@@ -63,8 +64,8 @@ namespace Gala {
          * it and it's previous WorkspaceInsertThumb. This would make
          * the container immediately reallocate and fill the empty space
          * with right-most IconGroups.
-         * 
-         * We don't want that until the IconGroup 
+         *
+         * We don't want that until the IconGroup
          * leaves the expanded WorkspaceInsertThumb.
          */
         public void remove_group_in_place (IconGroup group) {

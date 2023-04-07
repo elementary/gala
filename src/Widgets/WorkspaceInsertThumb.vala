@@ -10,16 +10,16 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public int workspace_index { get; construct set; }
     public bool expanded { get; set; default = false; }
     public int delay { get; set; default = EXPAND_DELAY; }
+    public float scale_factor { get; construct set; }
 
     private uint expand_timeout = 0;
 
-    public WorkspaceInsertThumb (int workspace_index) {
-        Object (workspace_index: workspace_index);
+    public WorkspaceInsertThumb (int workspace_index, float scale) {
+        Object (workspace_index: workspace_index, scale_factor: scale);
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        width = IconGroupContainer.SPACING * scale;
-        height = IconGroupContainer.GROUP_WIDTH * scale;
-        y = (IconGroupContainer.GROUP_WIDTH * scale - IconGroupContainer.SPACING * scale) / 2;
+        width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale);
+        height = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH, scale);
+        y = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING, scale) / 2;
         opacity = 0;
         set_pivot_point (0.5f, 0.5f);
         reactive = true;
@@ -49,8 +49,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public void set_window_thumb (Meta.Window window) {
         destroy_all_children ();
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale) {
+        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, (int)Math.round (scale_factor)) {
             x = IconGroupContainer.SPACING,
             x_align = Clutter.ActorAlign.CENTER
         };
@@ -70,16 +69,15 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         set_easing_duration (200);
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
         if (!expand) {
             remove_transition ("pulse");
             opacity = 0;
-            width = IconGroupContainer.SPACING * scale;
+            width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
             expanded = false;
         } else {
             add_pulse_animation ();
             opacity = 200;
-            width = IconGroupContainer.GROUP_WIDTH * scale + IconGroupContainer.SPACING * 2;
+            width = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING, scale_factor) * 2;
             expanded = true;
         }
 
