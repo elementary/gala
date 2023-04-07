@@ -23,7 +23,7 @@ namespace Gala {
             public int scale;
         }
 
-        private static Gdk.Pixbuf? resize_pixbuf = null;
+        private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
         private static Gee.HashMap<int, Gdk.Pixbuf?>? close_pixbufs = null;
 
         private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
@@ -379,11 +379,16 @@ namespace Gala {
          *
          * @return the close button pixbuf or null if it failed to load
          */
-        public static Gdk.Pixbuf? get_resize_button_pixbuf () {
-            var height = 36 * Utils.get_ui_scaling_factor ();
-            if (resize_pixbuf == null || resize_pixbuf.height != height) {
+        public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
+            var height = scale_to_int (36, scale);
+
+            if (resize_pixbufs == null) {
+                resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
+            }
+
+            if (resize_pixbufs[height] == null) {
                 try {
-                    resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
+                    resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
                         Config.RESOURCEPATH + "/buttons/resize.svg",
                         -1,
                         height,
@@ -395,7 +400,7 @@ namespace Gala {
                 }
             }
 
-            return resize_pixbuf;
+            return resize_pixbufs[height];
         }
 
         /**
@@ -403,9 +408,9 @@ namespace Gala {
          *
          * @return The resize button actor
          */
-        public static Clutter.Actor create_resize_button () {
+        public static Clutter.Actor create_resize_button (float scale) {
             var texture = new Clutter.Actor ();
-            var pixbuf = get_resize_button_pixbuf ();
+            var pixbuf = get_resize_button_pixbuf (scale);
 
             texture.reactive = true;
 
@@ -421,8 +426,8 @@ namespace Gala {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this
                 // works as good as some weird fallback-image-failed-to-load pixbuf
-                var scale = Utils.get_ui_scaling_factor ();
-                texture.set_size (36 * scale, 36 * scale);
+                var size = scale_to_int (36, scale);
+                texture.set_size (size, size);
                 texture.background_color = { 255, 0, 0, 255 };
             }
 
