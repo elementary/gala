@@ -71,7 +71,7 @@ namespace Gala {
             workspaces = new Clutter.Actor ();
             workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
-            icon_groups = new IconGroupContainer (display);
+            icon_groups = new IconGroupContainer ();
 
             dock_clones = new Clutter.Actor ();
 

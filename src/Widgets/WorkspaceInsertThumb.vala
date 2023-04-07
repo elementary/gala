@@ -77,7 +77,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
         } else {
             add_pulse_animation ();
             opacity = 200;
-            width = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING, scale_factor) * 2;
+            width = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2, scale_factor);
             expanded = true;
         }
 

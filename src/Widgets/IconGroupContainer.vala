@@ -27,11 +27,7 @@ namespace Gala {
 
         public signal void request_reposition (bool animate);
 
-        public Meta.Display display { get; construct; }
-
-        public IconGroupContainer (Meta.Display display) {
-            Object (display: display);
-
+        public IconGroupContainer () {
             layout_manager = new Clutter.BoxLayout ();
         }
 
