@@ -60,8 +60,7 @@ namespace Gala {
 
             insert_child_at_index (group, index * 2);
 
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var thumb = new WorkspaceInsertThumb (index, scale);
+            var thumb = new WorkspaceInsertThumb (index, scale_factor);
             thumb.notify["expanded"].connect_after (expanded_changed);
             insert_child_at_index (thumb, index * 2);
 
@@ -128,9 +127,8 @@ namespace Gala {
          * end states into account
          */
         public float calculate_total_width () {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var spacing = SPACING * scale;
-            var group_width = GROUP_WIDTH * scale;
+            var spacing = InternalUtils.scale_to_int (SPACING, scale_factor);
+            var group_width = InternalUtils.scale_to_int (GROUP_WIDTH, scale_factor);
 
             var width = 0.0f;
             foreach (var child in get_children ()) {
