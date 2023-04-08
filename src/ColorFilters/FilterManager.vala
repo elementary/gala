@@ -54,7 +54,7 @@ public class Gala.FilterManager : Object {
         } else {
             // Fade out applied effects
             foreach (unowned var _effect in wm.stage.get_effects ()) {
-                if (_effect.name == ColorblindnessCorrectionEffect.EFFECT_NAME) {
+                if (_effect is ColorblindnessCorrectionEffect) {
                     var effect = (ColorblindnessCorrectionEffect) _effect;
 
                     // Since you can't add a transition to an effect
