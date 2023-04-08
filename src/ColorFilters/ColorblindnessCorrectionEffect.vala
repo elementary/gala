@@ -4,6 +4,8 @@
  */
 
 public class Gala.ColorblindnessCorrectionEffect : Clutter.ShaderEffect {
+    public const string EFFECT_NAME = "colorblindness-correction-filter";
+
     // Big thank you to https://github.com/G-dH/gnome-colorblind-filters
     private const string COLORBLINDNESS_CORRECTION_SHADER = """
         uniform sampler2D tex;

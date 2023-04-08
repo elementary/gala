@@ -242,7 +242,7 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-            ColorblindFiltersManager.init (this);
+            FilterManager.init (this);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");

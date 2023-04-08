@@ -4,6 +4,8 @@
  */
 
  public class Gala.MonochromeEffect : Clutter.ShaderEffect {
+    public const string EFFECT_NAME = "monochrome-filter";
+
     // https://www.reddit.com/r/gamemaker/comments/11us4t4/accurate_monochrome_glsl_shader_tutorial/
     private const string SHADER = """
         uniform sampler2D tex;

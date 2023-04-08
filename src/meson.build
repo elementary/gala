@@ -1,6 +1,4 @@
 gala_bin_sources = files(
-    'ColorblindFiltersManager.vala',
-    'ColorblindCorrectionEffect.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DesktopIntegration.vala',
@@ -31,6 +29,9 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
+    'ColorFilters/ColorblindnessCorrectionEffect.vala',
+    'ColorFilters/FilterManager.vala',
+    'ColorFilters/MonochromeEffect.vala',
     'Gestures/Gesture.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',

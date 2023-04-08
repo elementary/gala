@@ -17,15 +17,6 @@
     <value nick='grid' value='0'/>
     <value nick='natural' value='1'/>
   </enum>
-  <enum id="GalaColorblindnessFilterType">
-    <value nick="none" value="0"/>
-    <value nick="protanopia" value="1"/>
-    <value nick="protanopia-high-contrast" value="2"/>
-    <value nick="deuteranopia" value="3"/>
-    <value nick="deuteranopia-high-contrast" value="4"/>
-    <value nick="tritanopia" value="5"/>
-    <value nick="monochrome" value="6"/>
-  </enum>
 
   <schema path="/io/elementary/desktop/screensaver/" id="io.elementary.desktop.screensaver">
     <key type="b" name="lock-on-suspend">
@@ -404,16 +395,36 @@
     </key>
   </schema>
 
+  <enum id="GalaColorblindnessFilterType">
+    <value nick="none" value="0"/>
+    <value nick="protanopia" value="1"/>
+    <value nick="protanopia-high-contrast" value="2"/>
+    <value nick="deuteranopia" value="3"/>
+    <value nick="deuteranopia-high-contrast" value="4"/>
+    <value nick="tritanopia" value="5"/>
+  </enum>
+
   <schema path="/io/elementary/desktop/wm/accessibility/" id="io.elementary.desktop.wm.accessibility">
-    <key enum="GalaColorblindnessFilterType" name="colorblind-correction-filter">
+    <key enum="GalaColorblindnessFilterType" name="colorblindness-correction-filter">
       <default>"none"</default>
-      <summary>Colorblind correction filter</summary>
+      <summary>Colorblind correction filter.</summary>
       <description></description>
     </key>
-    <key type="d" name="colorblind-correction-filter-strength">
+    <key type="d" name="colorblindness-correction-filter-strength">
       <range min="0.0" max="1.0"/>
       <default>1.0</default>
-      <summary>The strength of colorblind correction filter.</summary>
+      <summary>The strength of colorblindness correction filter.</summary>
+      <description></description>
+    </key>
+    <key type="b" name="enable-monochrome-filter">
+      <default>false</default>
+      <summary>Enable monochrome filter.</summary>
+      <description></description>
+    </key>
+    <key type="d" name="monochrome-filter-strength">
+      <range min="0.0" max="1.0"/>
+      <default>1.0</default>
+      <summary>The strength of monochrome filter.</summary>
       <description></description>
     </key>
   </schema>
