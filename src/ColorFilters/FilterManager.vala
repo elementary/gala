@@ -55,7 +55,6 @@ public class Gala.FilterManager : Object {
             // Fade out applied effects
             foreach (unowned var _effect in wm.stage.get_effects ()) {
                 if (_effect.name == ColorblindnessCorrectionEffect.EFFECT_NAME) {
-                    warning ("here");
                     var effect = (ColorblindnessCorrectionEffect) _effect;
 
                     // Since you can't add a transition to an effect
@@ -85,7 +84,6 @@ public class Gala.FilterManager : Object {
                     transition.completed.connect (() => {
                         effect.transition_actor.destroy ();
                         wm.stage.remove_effect (effect);
-                        warning ("OMG");
                     });
 
                     effect.transition_actor.add_transition (TRANSITION_NAME, transition);
@@ -178,7 +176,6 @@ public class Gala.FilterManager : Object {
             var enable = settings.get_boolean ("enable-monochrome-filter");
             var strength = settings.get_double ("monochrome-filter-strength");
             if (enable && strength > 0.0) {
-                warning ("Right here");
                 var new_effect = new MonochromeEffect (0.0);
                 wm.stage.add_effect_with_name (MonochromeEffect.EFFECT_NAME, new_effect);
 
