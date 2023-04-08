@@ -22,5 +22,7 @@
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala">
     <file compressed="true">gala.css</file>
+    <file compressed="true">shaders/colorblindness-correction.vert</file>
+    <file compressed="true">shaders/monochrome.vert</file>
   </gresource>
 </gresources>
