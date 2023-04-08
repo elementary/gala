@@ -38,6 +38,8 @@ namespace Gala {
 
                 _current_icon = value;
                 _current_icon.selected = true;
+
+                update_caption_text ();
             }
         }
 
@@ -190,7 +192,6 @@ namespace Gala {
                 }
 
                 open_switcher ();
-                update_caption_text ();
             }
 
             var binding_name = binding.get_name ();
@@ -387,7 +388,6 @@ namespace Gala {
             }
 
             current_icon = (WindowSwitcherIcon) actor;
-            update_caption_text ();
         }
 
         private void update_caption_text () {
@@ -420,7 +420,6 @@ namespace Gala {
 
             if (current_icon != selected) {
                 current_icon = selected;
-                update_caption_text ();
             }
 
             return true;
