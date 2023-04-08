@@ -31,7 +31,7 @@ namespace Gala {
 
         private WindowIcon? cur_icon = null;
 
-        private int scaling_factor = 1;
+        private float scaling_factor = 1.0f;
 
         // For some reason, on Odin, the height of the caption loses
         // its padding after the first time the switcher displays. As a
@@ -46,7 +46,8 @@ namespace Gala {
             var gtk_settings = Gtk.Settings.get_default ();
             granite_settings = Granite.Settings.get_default ();
 
-            scaling_factor = InternalUtils.get_ui_scaling_factor ();
+            unowned var display = wm.get_display ();
+            scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
             canvas = new Clutter.Canvas ();
             canvas.scale_factor = scaling_factor;
@@ -76,7 +77,8 @@ namespace Gala {
 
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (() => {
-                var cur_scale = InternalUtils.get_ui_scaling_factor ();
+                unowned var disp = wm.get_display ();
+                var cur_scale = disp.get_monitor_scale (disp.get_current_monitor ());
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
@@ -95,7 +97,7 @@ namespace Gala {
             widget_path.iter_set_object_name (-1, "window");
 
             var style_context = new Gtk.StyleContext ();
-            style_context.set_scale (scaling_factor);
+            style_context.set_scale ((int)Math.round (scaling_factor));
             style_context.set_path (widget_path);
             style_context.add_class ("background");
             style_context.add_class ("csd");
@@ -137,7 +139,7 @@ namespace Gala {
                 (uint8) (rgba.alpha * 255)
             );
 
-            var rect_radius = WRAPPER_BORDER_RADIUS * scaling_factor;
+            var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scaling_factor);
             indicator = new Clutter.Actor ();
             indicator.margin_left = indicator.margin_top =
                 indicator.margin_right = indicator.margin_bottom = 0;
@@ -198,7 +200,13 @@ namespace Gala {
             }
 
             if (!opened) {
-                var windows_exist = collect_windows (display, workspace);
+                bool windows_exist;
+                if (binding.get_name ().has_prefix ("switch-group")) {
+                    windows_exist = collect_current_windows (display, workspace);
+                } else {
+                    windows_exist = collect_all_windows (display, workspace);
+                }
+
                 if (!windows_exist) {
                     return;
                 }
@@ -213,36 +221,62 @@ namespace Gala {
             next_window (display, workspace, backward);
         }
 
-        private bool collect_windows (Meta.Display display, Meta.Workspace? workspace) {
+        private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
             var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
-
             if (windows == null) {
                 return false;
             }
 
-            var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
 
             container.width = -1;
             container.destroy_all_children ();
 
-            foreach (var window in windows) {
-                var icon = new WindowIcon (window, ICON_SIZE * scaling_factor);
+            foreach (unowned var window in windows) {
+                var icon = new WindowIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
                 if (window == current_window) {
                     cur_icon = icon;
                 }
 
-                icon.set_pivot_point (0.5f, 0.5f);
                 container.add_child (icon);
             }
 
             return true;
         }
 
-        private void open_switcher () {
-            var display = wm.get_display ();
+        private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+            var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+            if (windows == null) {
+                return false;
+            }
 
+            unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            if (current_window == null) {
+                return false;
+            }
+
+            container.width = -1;
+            container.destroy_all_children ();
+
+            unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
+            var app = window_tracker.get_app_for_window (current_window);
+            foreach (unowned var window in windows) {
+                if (window_tracker.get_app_for_window (window) == app) {
+                    var icon = new WindowIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                    if (window == current_window) {
+                        cur_icon = icon;
+                    }
+
+                    container.add_child (icon);
+                }
+            }
+
+            return true;
+        }
+
+        private void open_switcher () {
             if (container.get_n_children () == 0) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
@@ -251,35 +285,36 @@ namespace Gala {
             }
 
             container.margin_left = container.margin_top =
-                container.margin_right = container.margin_bottom = (WRAPPER_PADDING * 2 * scaling_factor);
+                container.margin_right = container.margin_bottom = InternalUtils.scale_to_int (WRAPPER_PADDING * 2, scaling_factor);
 
             var l = container.layout_manager as Clutter.FlowLayout;
-            l.column_spacing = l.row_spacing = WRAPPER_PADDING * scaling_factor;
+            l.column_spacing = l.row_spacing = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
             indicator.visible = false;
-            var indicator_size = (ICON_SIZE + WRAPPER_PADDING * 2) * scaling_factor;
+            var indicator_size = InternalUtils.scale_to_int ((ICON_SIZE + WRAPPER_PADDING * 2), scaling_factor);
             indicator.set_size (indicator_size, indicator_size);
             ((Clutter.Canvas) indicator.content).set_size (indicator_size, indicator_size);
             caption.visible = false;
-            caption.margin_bottom = caption.margin_top = WRAPPER_PADDING * scaling_factor;
+            caption.margin_bottom = caption.margin_top = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
+            var display = wm.get_display ();
             var monitor = display.get_current_monitor ();
             var geom = display.get_monitor_geometry (monitor);
 
             float container_width;
             container.get_preferred_width (
-                ICON_SIZE * scaling_factor + container.margin_left + container.margin_right,
+                InternalUtils.scale_to_int (ICON_SIZE, scaling_factor) + container.margin_left + container.margin_right,
                 null,
                 out container_width
             );
-            if (container_width + MIN_OFFSET * scaling_factor * 2 > geom.width) {
-                container.width = geom.width - MIN_OFFSET * scaling_factor * 2;
+            if (container_width + InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2 > geom.width) {
+                container.width = geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2;
             }
 
             float nat_width, nat_height;
             container.get_preferred_size (null, null, out nat_width, null);
 
-            nat_width -= (WRAPPER_PADDING * scaling_factor) / container.get_n_children ();
+            nat_width -= InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) / container.get_n_children ();
 
             container.get_preferred_size (null, null, null, out nat_height);
 
@@ -343,6 +378,8 @@ namespace Gala {
                     case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                     case Meta.KeyBindingAction.SWITCH_WINDOWS:
                     case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                    case Meta.KeyBindingAction.SWITCH_GROUP:
+                    case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                         return false;
                     default:
                         break;
@@ -380,7 +417,7 @@ namespace Gala {
             var current = cur_icon;
 
             if (container.get_n_children () == 1) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
@@ -412,8 +449,8 @@ namespace Gala {
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
             caption.set_position (
-                WRAPPER_PADDING * scaling_factor,
-                (int) (height - caption_height / 2 - (WRAPPER_PADDING * scaling_factor * 2))
+                InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
+                (int) (height - caption_height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
             );
         }
 
@@ -439,8 +476,8 @@ namespace Gala {
             }
 
             // Move the indicator without animating it.
-            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - (WRAPPER_PADDING * scaling_factor);
-            indicator.y = container.margin_top + y - (WRAPPER_PADDING * scaling_factor);
+            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+            indicator.y = container.margin_top + y - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
             update_caption_text ();
         }
 

@@ -196,7 +196,8 @@ namespace Gala {
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
 
-            Meta.Util.later_add (Meta.LaterType.BEFORE_REDRAW, () => {
+            unowned var laters = display.get_compositor ().get_laters ();
+            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
                 WorkspaceManager.init (this);
                 return false;
             });
@@ -281,14 +282,6 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
-            Meta.KeyBinding.set_custom_handler ("switch-group", () => {});
-            Meta.KeyBinding.set_custom_handler ("switch-group-backward", () => {});
-
-            /*shadows*/
-            InternalUtils.reload_shadow ();
-            var shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
-            shadow_settings.changed.connect (InternalUtils.reload_shadow);
-
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (on_monitors_changed);
 
@@ -298,66 +291,80 @@ namespace Gala {
 
             zoom = new Zoom (this);
 
-            accent_color_manager = new AccentColorManager ();
+            // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
+            // is initialized, so we hold this stuff off until we're ready to draw
+            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
+                string[] args = {};
+                unowned string[] _args = args;
+                Gtk.init (ref _args);
 
-            // initialize plugins and add default components if no plugin overrides them
-            var plugin_manager = PluginManager.get_default ();
-            plugin_manager.initialize (this);
-            plugin_manager.regions_changed.connect (update_input_area);
+                accent_color_manager = new AccentColorManager ();
 
-            if (plugin_manager.workspace_view_provider == null
-                || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
-                workspace_view = new MultitaskingView (this);
-                ui_group.add_child ((Clutter.Actor) workspace_view);
-            }
+                // initialize plugins and add default components if no plugin overrides them
+                var plugin_manager = PluginManager.get_default ();
+                plugin_manager.initialize (this);
+                plugin_manager.regions_changed.connect (update_input_area);
 
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (workspace_view.is_opened ())
-                    workspace_view.close ();
-                else
-                    workspace_view.open ();
-            });
-
-            if (plugin_manager.window_switcher_provider == null) {
-                winswitcher = new WindowSwitcher (this);
-                ui_group.add_child (winswitcher);
-
-                Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-            }
-
-            if (plugin_manager.window_overview_provider == null
-                || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null) {
-                window_overview = new WindowOverview (this);
-                ui_group.add_child ((Clutter.Actor) window_overview);
-            }
-
-            notification_group = new Clutter.Actor ();
-            ui_group.add_child (notification_group);
-
-            pointer_locator = new PointerLocator (this);
-            ui_group.add_child (pointer_locator);
-            ui_group.add_child (new DwellClickTimer (this));
-
-            ui_group.add_child (screen_shield);
-
-            display.add_keybinding ("expose-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
-                if (window_overview.is_opened ()) {
-                    window_overview.close ();
-                } else {
-                    window_overview.open ();
+                if (plugin_manager.workspace_view_provider == null
+                    || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
+                    workspace_view = new MultitaskingView (this);
+                    ui_group.add_child ((Clutter.Actor) workspace_view);
                 }
-            });
-            display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
-                if (window_overview.is_opened ()) {
-                    window_overview.close ();
-                } else {
-                    var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                    hints.@set ("all-windows", true);
-                    window_overview.open (hints);
+
+                Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
+                    if (workspace_view.is_opened ())
+                        workspace_view.close ();
+                    else
+                        workspace_view.open ();
+                });
+
+                if (plugin_manager.window_switcher_provider == null) {
+                    winswitcher = new WindowSwitcher (this);
+                    ui_group.add_child (winswitcher);
+
+                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
                 }
+
+                if (plugin_manager.window_overview_provider == null
+                    || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null) {
+                    window_overview = new WindowOverview (this);
+                    ui_group.add_child ((Clutter.Actor) window_overview);
+                }
+
+                notification_group = new Clutter.Actor ();
+                ui_group.add_child (notification_group);
+
+                pointer_locator = new PointerLocator (this);
+                ui_group.add_child (pointer_locator);
+                ui_group.add_child (new DwellClickTimer (this));
+
+                ui_group.add_child (screen_shield);
+
+                display.add_keybinding ("expose-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                    if (window_overview.is_opened ()) {
+                        window_overview.close ();
+                    } else {
+                        window_overview.open ();
+                    }
+                });
+                display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                    if (window_overview.is_opened ()) {
+                        window_overview.close ();
+                    } else {
+                        var hints = new HashTable<string,Variant> (str_hash, str_equal);
+                        hints.@set ("all-windows", true);
+                        window_overview.open (hints);
+                    }
+                });
+
+                plugin_manager.load_waiting_plugins ();
+
+                return false;
             });
 
             update_input_area ();
@@ -384,7 +391,6 @@ namespace Gala {
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
                 display.get_context ().notify_ready ();
-                plugin_manager.load_waiting_plugins ();
                 return GLib.Source.REMOVE;
             });
 
@@ -724,13 +730,13 @@ namespace Gala {
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && next.index () == manager.n_workspaces - 1) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
             // don't allow moving into non-existing workspaces
             if (active == next) {
-                Utils.bell (display);
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 

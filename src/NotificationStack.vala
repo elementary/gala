@@ -55,8 +55,6 @@ public class Gala.NotificationStack : Object {
         var window_rect = window.get_frame_rect ();
         window.stick ();
 
-        var scale = Utils.get_ui_scaling_factor ();
-
         if (animate) {
             var opacity_transition = new Clutter.PropertyTransition ("opacity");
             opacity_transition.set_from_value (0);
@@ -78,19 +76,20 @@ public class Gala.NotificationStack : Object {
             notification.add_transition (TRANSITION_ENTRY_NAME, entry);
         }
 
+        var primary = display.get_primary_monitor ();
+        var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+        var scale = display.get_monitor_scale (primary);
+
         /**
          * We will make space for the incoming notification
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */
-        update_positions (animate, window_rect.height);
-
-        var primary = display.get_primary_monitor ();
-        var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+        update_positions (animate, scale, window_rect.height);
 
         int notification_x_pos = area.x + area.width - window_rect.width;
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + ADDITIONAL_MARGIN * scale);
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
         notifications.insert (0, notification);
     }
 
@@ -98,15 +97,14 @@ public class Gala.NotificationStack : Object {
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
-        var scale = Utils.get_ui_scaling_factor ();
-        stack_width = (WIDTH + MARGIN) * scale;
+        var scale = display.get_monitor_scale (primary);
+        stack_width = InternalUtils.scale_to_int (WIDTH + MARGIN, scale);
 
         stack_y = area.y;
     }
 
-    private void update_positions (bool animate, float add_y = 0.0f) {
-        var scale = Utils.get_ui_scaling_factor ();
-        var y = stack_y + TOP_OFFSET + add_y + ADDITIONAL_MARGIN * scale;
+    private void update_positions (bool animate, float scale, float add_y = 0.0f) {
+        var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;
@@ -161,8 +159,11 @@ public class Gala.NotificationStack : Object {
             notification.x += stack_width;
         }
 
+        var primary = display.get_primary_monitor ();
+        var scale = display.get_monitor_scale (primary);
+
         notifications.remove (notification);
-        update_positions (animate);
+        update_positions (animate, scale);
     }
 
     /**

@@ -35,7 +35,8 @@ public class Gala.KeyboardManager : Object {
     construct {
         settings.changed.connect (set_keyboard_layout);
 
-        set_keyboard_layout (settings, "sources"); // Update layouts
+        set_keyboard_layout (settings, "sources"); // Update the list of layouts
+        set_keyboard_layout (settings, "current"); // Set current layout
     }
 
     private KeyboardManager (Meta.Display display) {
