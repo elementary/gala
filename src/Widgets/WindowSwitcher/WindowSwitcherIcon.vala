@@ -34,7 +34,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
     public WindowSwitcherIcon (Meta.Window window, int icon_size) {
         Object (window: window);
 
-        icon = new WindowIcon (window, icon_size, 1);
+        icon = new WindowIcon (window, icon_size);
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 

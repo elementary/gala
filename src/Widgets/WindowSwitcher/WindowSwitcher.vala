@@ -43,11 +43,6 @@ namespace Gala {
 
         private float scaling_factor = 1.0f;
 
-        // For some reason, on Odin, the height of the caption loses
-        // its padding after the first time the switcher displays. As a
-        // workaround, I store the initial value here once we have it.
-        private float caption_height = -1.0f;
-
         public WindowSwitcher (Gala.WindowManager wm) {
             Object (wm: wm);
         }
@@ -62,6 +57,8 @@ namespace Gala {
             canvas = new Clutter.Canvas ();
             canvas.scale_factor = scaling_factor;
             set_content (canvas);
+
+            opacity = 0;
 
             // Carry out the initial draw
             create_components ();
@@ -129,22 +126,18 @@ namespace Gala {
         private void create_components () {
             // We've already been constructed once, start again
             if (container != null) {
-                caption_height = -1.0f;
                 destroy_all_children ();
             }
 
-            var spacing = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-            var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL) {
-                column_spacing = spacing,
-                row_spacing = spacing
-            };
+            var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+            var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
             container = new Clutter.Actor () {
                 reactive = true,
                 layout_manager = layout,
-                margin_left = spacing,
-                margin_top = spacing,
-                margin_right = spacing,
-                margin_bottom = spacing
+                margin_left = margin,
+                margin_top = margin,
+                margin_right = margin,
+                margin_bottom = margin
             };
 
             container.button_release_event.connect (container_mouse_release);
@@ -269,10 +262,9 @@ namespace Gala {
                 return;
             }
 
-            caption.visible = false;
-            caption.margin_bottom = caption.margin_top = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+            opacity = 0;
 
-            var display = wm.get_display ();
+            unowned var display = wm.get_display ();
             var monitor = display.get_current_monitor ();
             var geom = display.get_monitor_geometry (monitor);
 
@@ -287,23 +279,9 @@ namespace Gala {
             }
 
             float nat_width, nat_height;
-            container.get_preferred_size (null, null, out nat_width, null);
+            container.get_preferred_size (null, null, out nat_width, out nat_height);
 
-            nat_width -= InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) / container.get_n_children ();
-
-            container.get_preferred_size (null, null, null, out nat_height);
-
-            // For some reason, on Odin, the height of the caption loses
-            // its padding after the first time the switcher displays. As a
-            // workaround, I store the initial value here once we have it
-            // and use that correct value on subsequent attempts.
-            if (caption_height == -1.0f) {
-                caption_height = caption.height;
-            }
-
-            opacity = 0;
-
-            var switcher_height = (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
+            var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
             set_size ((int) nat_width, switcher_height);
             canvas.set_size ((int) nat_width, switcher_height);
             canvas.invalidate ();
@@ -414,18 +392,14 @@ namespace Gala {
 
         private void update_caption_text () {
             var current_window = current_icon.window;
-            var current_caption = "n/a";
-            if (current_window != null) {
-                current_caption = current_window.get_title ();
-            }
+            var current_caption = current_window != null ? current_window.title : "n/a";
             caption.set_text (current_caption);
-            caption.visible = true;
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
             caption.set_position (
                 InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
-                (int) (height - caption_height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
+                (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
             );
         }
 
