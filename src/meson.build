@@ -52,7 +52,7 @@ gala_bin_sources = files(
     'Widgets/WindowIconActor.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
-        'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
+    'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
