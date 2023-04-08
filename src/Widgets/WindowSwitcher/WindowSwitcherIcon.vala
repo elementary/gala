@@ -1,3 +1,8 @@
+/*
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 public class Gala.WindowSwitcherIcon : Clutter.Actor {
     private const int WRAPPER_BORDER_RADIUS = 3;
 
