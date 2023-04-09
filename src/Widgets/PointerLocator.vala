@@ -21,13 +21,13 @@ namespace Gala {
         private const int HEIGHT_PX = 300;
         private const int ANIMATION_TIME_MS = 300;
 
-        private const uint BORDER_WIDTH_PX = 1;
+        private const int BORDER_WIDTH_PX = 1;
 
         private const double BACKGROUND_OPACITY = 0.7;
 
         public weak WindowManager wm { get; construct; }
 
-        private int scaling_factor = 1;
+        private float scaling_factor = 1.0f;
         private int surface_width = WIDTH_PX;
         private int surface_height = HEIGHT_PX;
 
@@ -48,24 +48,20 @@ namespace Gala {
             settings = new GLib.Settings ("org.gnome.desktop.interface");
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
 
-            update_surface ();
-            set_size (WIDTH_PX * scaling_factor, HEIGHT_PX * scaling_factor);
-
             var pivot = Graphene.Point ();
             pivot.init (0.5f, 0.5f);
             pivot_point = pivot;
-
-            Meta.MonitorManager.@get ().monitors_changed.connect (update_surface);
         }
 
-        private void update_surface () {
-            var cur_scale = InternalUtils.get_ui_scaling_factor ();
+        private void update_surface (float cur_scale) {
             if (surface == null || cur_scale != scaling_factor) {
                 scaling_factor = cur_scale;
-                surface_width = WIDTH_PX * scaling_factor;
-                surface_height = HEIGHT_PX * scaling_factor;
+                surface_width = InternalUtils.scale_to_int (WIDTH_PX, scaling_factor);
+                surface_height = InternalUtils.scale_to_int (HEIGHT_PX, scaling_factor);
 
                 surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, surface_width, surface_height);
+
+                set_size (surface_width, surface_height);
             }
         }
 
@@ -73,6 +69,7 @@ namespace Gala {
             var radius = int.min (surface_width / 2, surface_height / 2);
 
             var cr = new Cairo.Context (surface);
+            var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
             // Clear the surface
             cr.save ();
@@ -86,14 +83,14 @@ namespace Gala {
             cr.translate (surface_width / 2, surface_height / 2);
 
             cr.move_to (radius - BORDER_WIDTH_PX, 0);
-            cr.arc (0, 0, radius - BORDER_WIDTH_PX * scaling_factor, 0, 2 * Math.PI);
+            cr.arc (0, 0, radius - border_width, 0, 2 * Math.PI);
             cr.close_path ();
 
             cr.set_line_width (0);
             cr.set_source (fill_color);
             cr.fill_preserve ();
 
-            cr.set_line_width (BORDER_WIDTH_PX * scaling_factor);
+            cr.set_line_width (border_width);
             cr.set_source (stroke_color);
             cr.stroke ();
 
@@ -147,9 +144,12 @@ namespace Gala {
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
-            unowned var tracker = wm.get_display ().get_cursor_tracker ();
+            unowned var display = wm.get_display ();
+            unowned var tracker = display.get_cursor_tracker ();
             Graphene.Point coords = {};
             tracker.get_pointer (out coords, null);
+
+            update_surface (display.get_monitor_scale (display.get_current_monitor ()));
 
             x = coords.x - (width / 2);
             y = coords.y - (width / 2);

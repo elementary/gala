@@ -36,25 +36,17 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     public Meta.Rectangle? slot { get; private set; default = null; }
 
-    private bool _active = false;
     /**
      * When active fades a white border around the window in. Used for the visually
      * indicating the WindowCloneContainer's current_window.
      */
     public bool active {
-        get {
-            return _active;
-        }
         set {
-            _active = value;
-
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (FADE_ANIMATION_DURATION);
-
-            active_shape.opacity = _active ? 255 : 0;
-            active_shape.invalidate ();
-
+            active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
+
         }
     }
 
@@ -119,21 +111,22 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        close_button = Utils.create_close_button ();
-        close_button.opacity = 0;
-        close_button.button_press_event.connect (() => {
-            close_window ();
-            return Gdk.EVENT_STOP;
-        });
-
         var scale_factor = InternalUtils.get_ui_scaling_factor ();
+
+        var close_button_action = new Clutter.ClickAction ();
+        close_button_action.clicked.connect (() => {
+            close_window ();
+        });
+        close_button = Utils.create_close_button (scale_factor);
+        close_button.opacity = 0;
+        // block propagation of button release event to window clone
+        close_button.button_release_event.connect (() => { return Gdk.EVENT_STOP; });
+        close_button.add_action (close_button_action);
 
         var window_frame_rect = window.get_frame_rect ();
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, scale_factor);
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
-        window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         set_window_icon_position (window_frame_rect.width, window_frame_rect.height);
 
         window_title = new Tooltip ();
@@ -268,12 +261,9 @@ public class Gala.WindowClone : Clutter.Actor {
         var target_x = outer_rect.x - offset_x;
         var target_y = outer_rect.y - offset_y;
 
+        active = false;
         in_slot_animation = true;
         place_widgets (outer_rect.width, outer_rect.height);
-
-        GestureTracker.OnBegin on_animation_begin = () => {
-            window_icon.set_easing_duration (0);
-        };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var x = GestureTracker.animation_value (initial_x, target_x, percentage);
@@ -333,10 +323,9 @@ public class Gala.WindowClone : Clutter.Actor {
         };
 
         if (!animate || gesture_tracker == null || !with_gesture) {
-            on_animation_begin (0);
             on_animation_end (1, false, 0);
         } else {
-            gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+            gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
     }
 
@@ -350,6 +339,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var initial_width = width;
         var initial_height = height;
 
+        active = false;
         in_slot_animation = true;
         place_widgets (rect.width, rect.height);
 
@@ -433,26 +423,13 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        active_shape.set_scale_factor (scale_factor);
-
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
         clone.set_scale (scale_factor, scale_factor);
-
-        // Scaling happens around the pivot point, so we need to move the clone
-        // to compensate for the difference between the pivot point and the
-        // top left corner of the clone.
-
-        float pivot_x, pivot_y;
-        clone.get_pivot_point (out pivot_x, out pivot_y);
-        var absolute_pivot_x = pivot_x * clone.width;
-        var absolute_pivot_y = pivot_y * clone.height;
-        var x_offset = absolute_pivot_x * (scale_factor - 1);
-        var y_offset = absolute_pivot_y * (scale_factor - 1);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor + x_offset,
-                            (input_rect.y - outer_rect.y) * scale_factor + y_offset);
+        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
+                            (input_rect.y - outer_rect.y) * scale_factor);
     }
 
     public override bool button_press_event (Clutter.ButtonEvent event) {
@@ -772,7 +749,7 @@ public class Gala.WindowClone : Clutter.Actor {
         prev_parent.insert_child_at_index (this, prev_index);
 
         clone.save_easing_state ();
-        clone.set_pivot_point (0.5f, 0.5f);
+        clone.set_pivot_point (0.0f, 0.0f);
         clone.set_easing_duration (250);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_scale (1, 1);
@@ -798,8 +775,8 @@ public class Gala.WindowClone : Clutter.Actor {
         var y = window_height - (size * 0.75f);
 
         if (aligned) {
-            x = InternalUtils.pixel_align (x);
-            y = InternalUtils.pixel_align (y);
+            x = (int) Math.round (x);
+            y = (int) Math.round (y);
         }
 
         window_icon.set_size (size, size);
@@ -808,8 +785,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
     private void set_window_title_position (float window_width, float window_height) {
         var scale_factor = InternalUtils.get_ui_scaling_factor ();
-        var x = InternalUtils.pixel_align ((window_width - window_title.width) / 2);
-        var y = InternalUtils.pixel_align (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+        var x = (int)Math.round ((window_width - window_title.width) / 2);
+        var y = (int)Math.round (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
         window_title.set_position (x, y);
     }
 
@@ -828,12 +805,10 @@ public class Gala.WindowClone : Clutter.Actor {
      * Border to show around the selected window when using keyboard navigation.
      */
     private class ActiveShape : Clutter.Actor {
-        private Clutter.Canvas background_canvas;
         private static int border_radius;
         private const double COLOR_OPACITY = 0.8;
-        private int last_width;
-        private int last_height;
-        private float scale_factor;
+
+        private Clutter.Canvas background_canvas;
 
         static construct {
             var label_widget_path = new Gtk.WidgetPath ();
@@ -854,24 +829,19 @@ public class Gala.WindowClone : Clutter.Actor {
             background_canvas = new Clutter.Canvas ();
             background_canvas.draw.connect (draw_background);
             content = background_canvas;
+
+            notify["opacity"].connect (invalidate);
         }
 
         public void invalidate () {
             background_canvas.invalidate ();
         }
 
-        public void set_scale_factor (float scale_factor) {
-            if (this.scale_factor != scale_factor) {
-                this.scale_factor = scale_factor;
-
-                // perf: don't bother rerendering if we're invisible
-                if (opacity != 0) {
-                    invalidate ();
-                }
-            }
-        }
-
         private bool draw_background (Cairo.Context cr, int width, int height) {
+            if (!visible || opacity == 0) {
+                return Gdk.EVENT_PROPAGATE;
+            }
+
             var color = InternalUtils.get_theme_accent_color ();
 
             cr.save ();
@@ -886,23 +856,11 @@ public class Gala.WindowClone : Clutter.Actor {
             return Gdk.EVENT_PROPAGATE;
         }
 
-        private bool should_disregard_allocation (int width, int height) {
-            // TODO: why are width and height sometimes 0?
-            return width == 0 || height == 0 || (width == last_width && height == last_height);
-        }
-
         public override void allocate (Clutter.ActorBox box) {
             base.allocate (box);
-            var width = (int) box.get_width ();
-            var height = (int) box.get_height ();
 
-            if (should_disregard_allocation (width, height)) {
-                return;
-            }
-
-            background_canvas.set_size (width, height);
-            last_width = width;
-            last_height = height;
+            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
+            invalidate ();
         }
     }
 }

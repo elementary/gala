@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
-"PO-Revision-Date: 2023-01-21 12:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.16.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -32,11 +32,11 @@ msgstr "Застосунок не відповідає"
 
 #: src/Dialogs.vala:157
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
-"Ви можете зачекати, поки застосунок продовжить роботу, або примусово "
-"повністю закрити його."
+"Ви можете зачекати, поки застосунок відновить роботу, або примусово повністю "
+"закрити його."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -54,7 +54,7 @@ msgstr "Знімки екрана"
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -62,20 +62,20 @@ msgstr[0] "Зміни буде автоматично відхилено за %i
 msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
 msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr "Зберегти нові налаштування дисплея?"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr "Зберегти налаштування"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr "Використовувати попередні налаштування"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
@@ -128,15 +128,15 @@ msgstr "Відновити розмір"
 msgid "Maximize"
 msgstr "Розгорнути"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "Змінити тло…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "Налаштування екрана…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "Налаштування системи…"
 
@@ -157,92 +157,54 @@ msgstr ""
 "elementary для роботи з Pantheon."
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "Удосконалення:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "Оновлені переклади"
 
 #: data/gala.appdata.xml.in:31
+msgid "Performance improvements"
+msgstr "Поліпшення швидкодії"
+
+#: data/gala.appdata.xml.in:32
+msgid "Remove texture from Multitasking View"
+msgstr "Вилучено текстури з Багатозадачного вигляду"
+
+#: data/gala.appdata.xml.in:33
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "Уникнення випадкового вибору вікон у перемикачі вікон"
+
+#: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Перезавантаження анімованих шпалер за зміни часового поясу"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:85
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Виправлено незручне гортання двома пальцями в багатозадачному режимі"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr "Прискорено швидкість анімації в багатозадачному режимі"
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr "Виправлення:"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr "Виправлено регресії для OS 7"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr "Використовувати портал доступу для швидкого виходу"
 
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr "Правильне оновлення основного кольору у перемикачі вікна"
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr "Виправлено вибір вікон під перемикачем вікна"
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "Усунено ймовірність збоїв"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "Зміна розміру робочих просторів, коли показується зміна"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "Обробка вікон без заголовків"
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Використовувати портал доступу для вікна підтвердження налаштувань дисплея"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "Дозволено закриття багатозадачного подання клавішею Super"
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "Виправлено відсікання тіней вікон декорованих на стороні сервера"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "Підтримка подій прокручування з високою роздільною здатністю"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "Новий вигляд перемикача Alt + Tab"
-
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr "Затемнювати батьківські модальні вікна"
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Діалогові вікна спадають на батьківські замість виокремлення"
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -262,6 +224,40 @@ msgstr "Інше"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Резервний робочий файл для сповіщень від застарілих програм."
+
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr "Правильне оновлення основного кольору у перемикачі вікна"
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "Усунено ймовірність збоїв"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "Зміна розміру робочих просторів, коли показується зміна"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "Обробка вікон без заголовків"
+
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr ""
+#~ "Використовувати портал доступу для вікна підтвердження налаштувань дисплея"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "Дозволено закриття багатозадачного подання клавішею Super"
+
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr "Виправлено відсікання тіней вікон декорованих на стороні сервера"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "Підтримка подій прокручування з високою роздільною здатністю"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "Новий вигляд перемикача Alt + Tab"
+
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Затемнювати батьківські модальні вікна"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "Діалогові вікна спадають на батьківські замість виокремлення"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
@@ -316,9 +312,6 @@ msgstr "Резервний робочий файл для сповіщень в�
 
 #~ msgid "HiDPI fixes"
 #~ msgstr "Виправлення для HiDPI"
-
-#~ msgid "Performance improvements"
-#~ msgstr "Поліпшення швидкодії"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "

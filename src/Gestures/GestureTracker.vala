@@ -195,7 +195,7 @@ public class Gala.GestureTracker : Object {
         float value = ((target_value - initial_value) * (float) percentage) + initial_value;
 
         if (rounded) {
-            value = (float) InternalUtils.pixel_align (value);
+            value = Math.roundf (value);
         }
 
         return value;

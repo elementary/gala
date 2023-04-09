@@ -12,9 +12,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
     public WindowManager wm { get; construct; }
 
-    private Meta.Display display;
     private ModalProxy modal_proxy;
-    private bool ready;
 
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
@@ -24,17 +22,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     construct {
-        display = wm.get_display ();
-        display.get_workspace_manager ().workspace_switched.connect (() => { close (); });
-        display.restacked.connect (restack_windows);
-
         visible = false;
-        ready = true;
         reactive = true;
-    }
-
-    ~WindowOverview () {
-        display.restacked.disconnect (restack_windows);
     }
 
     public override bool key_press_event (Clutter.KeyEvent event) {
@@ -53,7 +42,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         }
     }
 
-    public override bool button_press_event (Clutter.ButtonEvent event) {
+    public override bool button_release_event (Clutter.ButtonEvent event) {
         if (event.button == Gdk.BUTTON_PRIMARY) {
             close ();
         }
@@ -62,93 +51,74 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     /**
-        * {@inheritDoc}
-        */
+     * {@inheritDoc}
+     */
     public bool is_opened () {
         return visible;
     }
 
     /**
-        * {@inheritDoc}
-        * You may specify 'all-windows' in hints to expose all windows
-        */
+     * {@inheritDoc}
+     * You may specify 'all-windows' in hints to expose all windows
+     */
     public void open (HashTable<string,Variant>? hints = null) {
-        if (!ready) {
-            return;
-        }
-
-        if (visible) {
-            close ();
-            return;
-        }
-
         var all_windows = hints != null && "all-windows" in hints;
 
-        var used_windows = new SList<Meta.Window> ();
-
         workspaces = new List<Meta.Workspace> ();
-
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+        unowned var manager = wm.get_display ().get_workspace_manager ();
         if (all_windows) {
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                workspaces.append (manager.get_workspace_by_index (i));
+            foreach (unowned var workspace in manager.get_workspaces ()) {
+                workspaces.append (workspace);
             }
         } else {
             workspaces.append (manager.get_active_workspace ());
         }
 
+        var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
-            foreach (var window in workspace.list_windows ()) {
+            foreach (unowned var window in workspace.list_windows ()) {
+                if (window.window_type == Meta.WindowType.DOCK
+                    || window.window_type == Meta.WindowType.NOTIFICATION) {
+                    continue;
+                }
+
                 if (window.window_type != Meta.WindowType.NORMAL &&
-                    window.window_type != Meta.WindowType.DOCK &&
                     window.window_type != Meta.WindowType.DIALOG ||
                     window.is_attached_dialog ()) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    if (actor != null) {
-                        actor.hide ();
-                    }
-                    continue;
-                }
-                if (window.window_type == Meta.WindowType.DOCK) {
+                    actor.hide ();
+
                     continue;
                 }
 
                 // skip windows that are on all workspace except we're currently
                 // processing the workspace it actually belongs to
-                if (window.is_on_all_workspaces () && window.get_workspace () != workspace) {
+                if (window.on_all_workspaces && window.get_workspace () != workspace) {
                     continue;
                 }
 
-                used_windows.append (window);
+                windows.append (window);
             }
         }
 
-        var n_windows = used_windows.length ();
-        if (n_windows == 0) {
+        if (windows.is_empty ()) {
             return;
         }
-
-        ready = false;
 
         foreach (var workspace in workspaces) {
             workspace.window_added.connect (add_window);
             workspace.window_removed.connect (remove_window);
         }
 
-        display.window_left_monitor.connect (window_left_monitor);
-
-        // sort windows by stacking order
-        var windows = display.sort_windows_by_stacking (used_windows);
+        wm.get_display ().window_left_monitor.connect (window_left_monitor);
 
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
 
-        visible = true;
-
-        for (var i = 0; i < display.get_n_monitors (); i++) {
-            var geometry = display.get_monitor_geometry (i);
+        for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
+            var geometry = wm.get_display ().get_monitor_geometry (i);
 
             var container = new WindowCloneContainer (wm, null, true) {
                 padding_top = TOP_GAP,
@@ -163,11 +133,11 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             add_child (container);
         }
 
-        foreach (var window in windows) {
+        visible = true;
+
+        foreach (unowned var window in windows) {
             unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-            if (actor != null) {
-                actor.hide ();
-            }
+            actor.hide ();
 
             unowned var container = (WindowCloneContainer) get_child_at_index (window.get_monitor ());
             if (container == null) {
@@ -175,16 +145,21 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             }
 
             container.add_window (window);
+            container.open ();
         }
-
-        foreach (var child in get_children ()) {
-            ((WindowCloneContainer) child).open ();
-        }
-
-        ready = true;
     }
 
     private bool keybinding_filter (Meta.KeyBinding binding) {
+        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+        switch (action) {
+            case Meta.KeyBindingAction.NONE:
+            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                return false;
+            default:
+                break;
+        }
+
         switch (binding.get_name ()) {
             case "expose-windows":
             case "expose-all-windows":
@@ -198,9 +173,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         return true;
     }
 
-    private void restack_windows (Meta.Display display) {
+    private void restack_windows () {
         foreach (var child in get_children ()) {
-            ((WindowCloneContainer) child).restack_windows (display);
+            ((WindowCloneContainer) child).restack_windows ();
         }
     }
 
@@ -220,8 +195,19 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private void add_window (Meta.Window window) {
-        if (!visible
-            || (window.window_type != Meta.WindowType.NORMAL && window.window_type != Meta.WindowType.DIALOG)) {
+        if (!visible) {
+            return;
+        }
+        if (window.window_type == Meta.WindowType.DOCK
+            || window.window_type == Meta.WindowType.NOTIFICATION) {
+            return;
+        }
+        if (window.window_type != Meta.WindowType.NORMAL &&
+            window.window_type != Meta.WindowType.DIALOG ||
+            window.is_attached_dialog ()) {
+            unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+            actor.hide ();
+
             return;
         }
 
@@ -249,42 +235,41 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private void thumb_selected (Meta.Window window) {
-        if (window.get_workspace () == display.get_workspace_manager ().get_active_workspace ()) {
-            window.activate (display.get_current_time ());
+        if (window.get_workspace () == wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
+            window.activate (window.get_display ().get_current_time ());
             close ();
         } else {
             close ();
-            //wait for the animation to finish before switching
-            Timeout.add (400, () => {
-                window.get_workspace ().activate_with_focus (window, display.get_current_time ());
+
+            // wait for the animation to finish before switching
+            Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
+                window.get_workspace ().activate_with_focus (window, window.get_display ().get_current_time ());
                 return Source.REMOVE;
             });
         }
     }
 
     /**
-        * {@inheritDoc}
-        */
+     * {@inheritDoc}
+     */
     public void close (HashTable<string,Variant>? hints = null) {
-        if (!visible || !ready) {
+        if (!visible) {
             return;
         }
+
+        restack_windows ();
 
         foreach (var workspace in workspaces) {
             workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
         }
+        wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
-        display.window_left_monitor.disconnect (window_left_monitor);
-        ready = false;
-
-        wm.pop_modal (modal_proxy);
-
-        foreach (var child in get_children ()) {
+        foreach (unowned var child in get_children ()) {
             ((WindowCloneContainer) child).close ();
         }
 
-        Clutter.Threads.Timeout.add (300, () => {
+        Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
             cleanup ();
 
             return Source.REMOVE;
@@ -292,10 +277,11 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private void cleanup () {
-        ready = true;
         visible = false;
 
-        foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
+        wm.pop_modal (modal_proxy);
+
+        foreach (var window in wm.get_display ().get_workspace_manager ().get_active_workspace ().list_windows ()) {
             if (window.showing_on_its_workspace ()) {
                 ((Clutter.Actor) window.get_compositor_private ()).show ();
             }

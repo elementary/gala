@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
 "PO-Revision-Date: 2022-05-07 18:40+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
@@ -32,8 +32,8 @@ msgstr ""
 
 #: src/Dialogs.vala:157
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 
 #: src/Dialogs.vala:158
@@ -52,7 +52,7 @@ msgstr "Snímky obrazovky"
 msgid "Screenshot taken"
 msgstr "Snímka obrazovky vytvorená"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, fuzzy, c-format
 #| msgid "Changes will automatically revert after 30 seconds."
 msgid "Changes will automatically revert after %i second."
@@ -61,20 +61,20 @@ msgstr[0] "Za 30 sekúnd sa zmeny automaticky vrátia späť."
 msgstr[1] "Za 30 sekúnd sa zmeny automaticky vrátia späť."
 msgstr[2] "Za 30 sekúnd sa zmeny automaticky vrátia späť."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr "Ponechať nové nastavenia obrazovky?"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr "Ponechať nastavenia"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr "Použiť predchádzajúce nastavenia"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Snímka obrazovky z %s"
@@ -127,15 +127,15 @@ msgstr "Zrušiť maximalizáciu"
 msgid "Maximize"
 msgstr "Maximalizovať"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "Zmeniť tapetu plochy…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "Nastavenia obrazovky…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "Nastavenia systému…"
 
@@ -156,39 +156,54 @@ msgstr ""
 "elementary pre použitie s Pantheon."
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "Vylepšenia:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "Aktualizované preklady"
 
 #: data/gala.appdata.xml.in:31
-msgid "Reload animated wallpapers when timezone changes"
+msgid "Performance improvements"
 msgstr ""
 
 #: data/gala.appdata.xml.in:32
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "Multitaskingový pohľad"
+
+#: data/gala.appdata.xml.in:33
+#, fuzzy
+#| msgid "Fix selecting windows underneath the window switcher"
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "Opravený výber okien pod prepínačom okien"
+
+#: data/gala.appdata.xml.in:84
+msgid "Reload animated wallpapers when timezone changes"
+msgstr ""
+
+#: data/gala.appdata.xml.in:85
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr "Opravy:"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:119
 #, fuzzy
 #| msgid "Use access portal for display settings confirmation and force quit"
 msgid "Use access portal for force quit"
@@ -196,59 +211,7 @@ msgstr ""
 "Použiť prístupový portál pre potvrdzovanie nastavení obrazovky a vynútené "
 "ukončenie"
 
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr "Správne aktualizovať farebný odtieň v prepínači okien"
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr "Opravený výber okien pod prepínačom okien"
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "Zabránenie potenciálnym pádom"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "Zmeniť veľkosť pracovných plôch pri zmene obrazovky"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "Spracovávať aj okná bez nadpisu"
-
-#: data/gala.appdata.xml.in:88
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation and force quit"
-msgid "Use access portal for display settings confirmation"
-msgstr ""
-"Použiť prístupový portál pre potvrdzovanie nastavení obrazovky a vynútené "
-"ukončenie"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "Umožnenie zatvorenia zobrazenia úloh klávesou Super"
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "Opravené orezávanie tieňovania okien orámovaných na strane servera"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "Podpora pre posúvanie s vysokým rozlíšením"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "Prerobený Alt + Tab prepínač"
-
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr "Stmaviť hlavné okná pod dialógovými oknami"
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Dialógy spadnú na hlavné okná namiesto pohybu od okna"
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -268,6 +231,43 @@ msgstr "Ostatné"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr "Správne aktualizovať farebný odtieň v prepínači okien"
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "Zabránenie potenciálnym pádom"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "Zmeniť veľkosť pracovných plôch pri zmene obrazovky"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "Spracovávať aj okná bez nadpisu"
+
+#, fuzzy
+#~| msgid "Use access portal for display settings confirmation and force quit"
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr ""
+#~ "Použiť prístupový portál pre potvrdzovanie nastavení obrazovky a vynútené "
+#~ "ukončenie"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "Umožnenie zatvorenia zobrazenia úloh klávesou Super"
+
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr "Opravené orezávanie tieňovania okien orámovaných na strane servera"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "Podpora pre posúvanie s vysokým rozlíšením"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "Prerobený Alt + Tab prepínač"
+
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Stmaviť hlavné okná pod dialógovými oknami"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "Dialógy spadnú na hlavné okná namiesto pohybu od okna"
 
 #~ msgid "Fix a potential crash when taking screenshots"
 #~ msgstr "Opravený potenciálny pád pri vytváraní snímok obrazovky"

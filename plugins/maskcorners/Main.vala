@@ -21,7 +21,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
 
     private Gala.WindowManager? wm = null;
     private GLib.Settings settings;
-    private int corner_radius = DEFAULT_CORNER_RADIUS;
+    private int[] corner_radii;
     private List<Clutter.Actor>[] cornermasks;
     private Meta.Display display;
 
@@ -45,11 +45,13 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
             return;
         }
 
-        var scale = Utils.get_ui_scaling_factor ();
-
         int n_monitors = display.get_n_monitors ();
+        corner_radii = new int[n_monitors];
         cornermasks = new List<Clutter.Actor>[n_monitors];
-        corner_radius = DEFAULT_CORNER_RADIUS * scale;
+
+        for (int m = 0; m < n_monitors; m++) {
+            corner_radii[m] = Utils.scale_to_int (DEFAULT_CORNER_RADIUS, display.get_monitor_scale (m));
+        }
 
         if (settings.get_boolean ("only-on-primary")) {
             add_cornermasks (display.get_primary_monitor ());
@@ -62,7 +64,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
             display.in_fullscreen_changed.connect (fullscreen_changed);
         }
 
-        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        unowned Meta.MonitorManager monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (resetup_cornermasks);
 
         display.gl_video_memory_purged.connect (resetup_cornermasks);
@@ -71,7 +73,7 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
     private void destroy_cornermasks () {
         display.gl_video_memory_purged.disconnect (resetup_cornermasks);
 
-        unowned Meta.MonitorManager monitor_manager = Meta.MonitorManager.@get ();
+        unowned Meta.MonitorManager monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.disconnect (resetup_cornermasks);
         display.in_fullscreen_changed.disconnect (fullscreen_changed);
 
@@ -103,13 +105,13 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
         var monitor_geometry = display.get_monitor_geometry (monitor_no);
 
         var canvas = new Clutter.Canvas ();
-        canvas.set_size (corner_radius, corner_radius);
-        canvas.draw.connect (draw_cornermask);
+        canvas.set_size (corner_radii[monitor_no], corner_radii[monitor_no]);
+        canvas.draw.connect ((context) => draw_cornermask (context, monitor_no));
         canvas.invalidate ();
 
         var actor = new Clutter.Actor ();
         actor.set_content (canvas);
-        actor.set_size (corner_radius, corner_radius);
+        actor.set_size (corner_radii[monitor_no], corner_radii[monitor_no]);
         actor.set_position (monitor_geometry.x, monitor_geometry.y);
         actor.set_pivot_point ((float) 0.5, (float) 0.5);
 
@@ -137,13 +139,13 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
         }
     }
 
-    private bool draw_cornermask (Cairo.Context context) {
-        var buffer = new Drawing.BufferSurface (corner_radius, corner_radius);
+    private bool draw_cornermask (Cairo.Context context, int monitor_no) requires (corner_radii.length > monitor_no) {
+        var buffer = new Drawing.BufferSurface (corner_radii[monitor_no], corner_radii[monitor_no]);
         var buffer_context = buffer.context;
 
-        buffer_context.arc (corner_radius, corner_radius, corner_radius, Math.PI, 1.5 * Math.PI);
+        buffer_context.arc (corner_radii[monitor_no], corner_radii[monitor_no], corner_radii[monitor_no], Math.PI, 1.5 * Math.PI);
         buffer_context.line_to (0, 0);
-        buffer_context.line_to (0, corner_radius);
+        buffer_context.line_to (0, corner_radii[monitor_no]);
         buffer_context.set_source_rgb (0, 0, 0);
         buffer_context.fill ();
 

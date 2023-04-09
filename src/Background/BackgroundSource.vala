@@ -45,7 +45,8 @@ namespace Gala {
             backgrounds = new Gee.HashMap<int,Background> ();
             hash_cache = new uint[OPTIONS.length];
 
-            Meta.MonitorManager.@get ().monitors_changed.connect (monitors_changed);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (monitors_changed);
 
             // unfortunately the settings sometimes tend to fire random changes even though
             // nothing actually happened. The code below is used to prevent us from spamming
@@ -120,7 +121,8 @@ namespace Gala {
         }
 
         public void destroy () {
-            Meta.MonitorManager.@get ().monitors_changed.disconnect (monitors_changed);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.disconnect (monitors_changed);
 
             foreach (var background in backgrounds.values) {
                 background.changed.disconnect (background_changed);

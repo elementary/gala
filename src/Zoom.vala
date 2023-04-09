@@ -26,8 +26,8 @@ public class Gala.Zoom : Object {
         var display = wm.get_display ();
         var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-        display.add_keybinding ("zoom-in", schema, 0, (Meta.KeyHandlerFunc) zoom_in);
-        display.add_keybinding ("zoom-out", schema, 0, (Meta.KeyHandlerFunc) zoom_out);
+        display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
+        display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
 
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
         gesture_tracker.enable_touchpad ();

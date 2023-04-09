@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
 "PO-Revision-Date: 2021-09-29 20:42+0000\n"
 "Last-Translator: Alvaro <alvaroaraoz_92@hotmail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
@@ -31,8 +31,8 @@ msgstr ""
 
 #: src/Dialogs.vala:157
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 
 #: src/Dialogs.vala:158
@@ -51,31 +51,31 @@ msgstr "Capturas de pantalla"
 msgid "Screenshot taken"
 msgstr "Captura de pantalla hecha"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Configuración de pantalla…"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Configuración del sistema…"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
@@ -128,15 +128,15 @@ msgstr "Desmaximizar"
 msgid "Maximize"
 msgstr "Maximizar"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "Cambiar fondo de escritorio…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "Configuración de pantalla…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "Configuración del sistema…"
 
@@ -157,97 +157,60 @@ msgstr ""
 "elementary para su uso con Pantheon."
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "Mejoras:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "Traducciones actualizadas"
 
 #: data/gala.appdata.xml.in:31
+#, fuzzy
+#| msgid "Minor visual improvements"
+msgid "Performance improvements"
+msgstr "Mejoras visuales menores"
+
+#: data/gala.appdata.xml.in:32
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "Vista de multitarea"
+
+#: data/gala.appdata.xml.in:33
+#, fuzzy
+#| msgid "The opacity of windows behind the window switcher."
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
+
+#: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:85
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:80
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
-msgid "Properly update accent color in the window switcher"
-msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
-
-#: data/gala.appdata.xml.in:81
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
-msgid "Fix selecting windows underneath the window switcher"
-msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr ""
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr ""
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr ""
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr ""
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr ""
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr ""
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr ""
-
-#: data/gala.appdata.xml.in:105
-#, fuzzy
-#| msgid "Dims parent windows when spawning modal dialogs"
-msgid "Dim the parents of modal dialogs"
-msgstr "Atenuar las ventanas padres cuando generan un diálogo modal"
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -268,6 +231,16 @@ msgstr "Otro"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Archivo .desktop auxiliar para notificaciones de aplicaciones anticuadas."
+
+#, fuzzy
+#~| msgid "The opacity of windows behind the window switcher."
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
+
+#, fuzzy
+#~| msgid "Dims parent windows when spawning modal dialogs"
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Atenuar las ventanas padres cuando generan un diálogo modal"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
@@ -300,9 +273,6 @@ msgstr ""
 #~| msgid "Fix potential crash when taking screenshots"
 #~ msgid "Always play shutter sound when taking screenshots"
 #~ msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
-
-#~ msgid "Minor visual improvements"
-#~ msgstr "Mejoras visuales menores"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "

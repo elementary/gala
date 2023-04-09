@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -30,9 +30,13 @@ msgid "Application is not responding"
 msgstr "ئەپڵیکەیشنەکە هیچ وەڵامێکی نییە"
 
 #: src/Dialogs.vala:157
+#, fuzzy
+#| msgid ""
+#| "You may choose to wait a short while for it to continue or force the "
+#| "application quit entirely."
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 "لەوانەیە بتەوێت بۆ ماوەیەکی کەم چاوەڕێ بکەیت بۆ بەردوام بوون یان "
 "ئەپڵیکەیشنەکە ناچار بکەیت کە بە تەواوی بوەستێت."
@@ -53,7 +57,7 @@ msgstr "سکرینشوتەکان"
 msgid "Screenshot taken"
 msgstr "سکرینشوت کرا"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, fuzzy, c-format
 #| msgid "Changes will automatically revert after 30 seconds."
 msgid "Changes will automatically revert after %i second."
@@ -61,20 +65,20 @@ msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 msgstr[1] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr "هێشتنەوەی ڕێکخستنە تازەکانی ڕونما؟"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr "هێشتنەوەی ڕێکخستنەکان"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"
@@ -127,15 +131,15 @@ msgstr "بچوککردنەوە"
 msgid "Maximize"
 msgstr "گەورەکردن"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "گۆڕینی پاشبنەما…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "ڕێکخستنەکانی ڕونما…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "ڕێکخستنەکانی سیستەم…"
 
@@ -156,93 +160,60 @@ msgstr ""
 "ئێلەمێنتەری بۆ بەکارهێنانی لەگەڵ پانسیۆن."
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "وەرگێڕانەکان نوێکراونەوە"
 
 #: data/gala.appdata.xml.in:31
+msgid "Performance improvements"
+msgstr "باشترکراوەکانی ئەدا"
+
+#: data/gala.appdata.xml.in:32
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "دیمەنی مەڵتی-تاسکینگ"
+
+#: data/gala.appdata.xml.in:33
+#, fuzzy
+#| msgid "Fix selecting windows underneath the window switcher"
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
+
+#: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:85
 #, fuzzy
 #| msgid "Show window titles in multitasking view"
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "پشاندنی تایتڵی پەنجەرەکان لە دیمەنی مەڵتی-تاسکینگدا"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:86
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr "چاککردنەکان:"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr "چارەسەرکردنی ڕیگرێشن بۆ وەشانی ٧"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ داخستنی ناچاریانە"
 
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr "نوێکردنەوەی ڕەنگی ئەکسێنت لە بەشێوەیەکی گونجاو"
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "ڕێگریکردن لە چەند کێشەیەک کە دەکرا لە داهاتوودا ڕووبدەن"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "ڕیسایزکردنی ناوچەکارەکان کاتێک ڕونما دەگۆڕدرێت"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "کۆنتڕۆڵکردنی پەنجەرە بێ ناو نیشانەکان"
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ پشاندنی دایەلۆگی ڕێکخستنەکانی ڕونما"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "ڕێگەدان بە داخستنی دیمەنی مەڵتی-تاسکینگ بە کلیلی سوپەر"
-
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr "چاککردنی بڕینی سێبەر لە دیوەڕاژەی پەنجەرە دیکۆرکراوەکان"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "پاڵپشتیکردنی ڕونی بەرز"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "سویچەری Alt + Tab دوبارە نەخشێندراوەتەوە"
-
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr "هەتاویکردنی باوانی دایەلۆگە مۆداڵەکان"
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "دایەلۆگەکان لە بردی کارکردن، دەکەونە سەر باوانیان (د)"
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr "کۆمپانیای ئێلەمێنتەری هاوپشک."
 
@@ -263,6 +234,39 @@ msgstr "هیتر"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "فایلێکی سەر مێزەکە بکەوە بۆ ئاگادارکردنەوە لە بەرنامە بەسەرچووەکانەوە (د)."
+
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr "نوێکردنەوەی ڕەنگی ئەکسێنت لە بەشێوەیەکی گونجاو"
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "ڕێگریکردن لە چەند کێشەیەک کە دەکرا لە داهاتوودا ڕووبدەن"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "ڕیسایزکردنی ناوچەکارەکان کاتێک ڕونما دەگۆڕدرێت"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "کۆنتڕۆڵکردنی پەنجەرە بێ ناو نیشانەکان"
+
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ پشاندنی دایەلۆگی ڕێکخستنەکانی ڕونما"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "ڕێگەدان بە داخستنی دیمەنی مەڵتی-تاسکینگ بە کلیلی سوپەر"
+
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr "چاککردنی بڕینی سێبەر لە دیوەڕاژەی پەنجەرە دیکۆرکراوەکان"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "پاڵپشتیکردنی ڕونی بەرز"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "سویچەری Alt + Tab دوبارە نەخشێندراوەتەوە"
+
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "هەتاویکردنی باوانی دایەلۆگە مۆداڵەکان"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "دایەلۆگەکان لە بردی کارکردن، دەکەونە سەر باوانیان (د)"
 
 #~ msgid "Fix a potential crash when taking screenshots"
 #~ msgstr "چاککردنی کێشەیەک کە لەوانەیە ڕووبدات لە کاتی سکرینشوت کردندا"
@@ -310,9 +314,6 @@ msgstr ""
 
 #~ msgid "HiDPI fixes"
 #~ msgstr "چاککردنی HiDPI"
-
-#~ msgid "Performance improvements"
-#~ msgstr "باشترکراوەکانی ئەدا"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "
