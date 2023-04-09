@@ -56,10 +56,9 @@ namespace Gala {
             // Carry out the initial draw
             create_components ();
 
-            // FIXME: Kind of abusing the style class here for a smaller shadow
-            var effect = new ShadowEffect (30) {
+            var effect = new ShadowEffect (40) {
                 shadow_opacity = 200,
-                css_class = "workspace"
+                css_class = "window-switcher"
             };
 
             add_effect (effect);
