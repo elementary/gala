@@ -90,6 +90,7 @@ namespace Gala {
         private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
+        private Clutter.Actor? moving_previous_parent; // used for workspace switch animation
 
         private Daemon? daemon_proxy = null;
 
@@ -1761,8 +1762,6 @@ namespace Gala {
         }
 
         /*workspace switcher*/
-        private List<Clutter.Actor>? windows;
-        private List<Clutter.Actor>? parents;
         private List<Clutter.Actor>? tmp_actors;
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
@@ -1799,8 +1798,6 @@ namespace Gala {
             var static_windows = new Clutter.Actor ();
             var in_group = new Clutter.Actor ();
             var out_group = new Clutter.Actor ();
-            windows = new List<Meta.WindowActor> ();
-            parents = new List<Clutter.Actor> ();
             tmp_actors = new List<Clutter.Clone> ();
 
             tmp_actors.prepend (main_container);
@@ -1838,65 +1835,56 @@ namespace Gala {
             if (moving != null) {
                 unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
 
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
+                moving_previous_parent = moving_actor.get_parent ();
 
                 moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
-            var windows_slist = new GLib.SList<Meta.Window> ();
-            foreach (unowned var window in display.list_all_windows ()) {
-                windows_slist.append (window);
-            }
-            // collect all windows and put them in the appropriate containers
-            foreach (unowned var window in display.sort_windows_by_stacking (windows_slist)) {
-                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+            // --- Create window clones for out_group ---
 
+            var windows_from = workspace_from.list_windows ();
+            // collect all windows and put them in the appropriate containers
+            foreach (unowned var window in InternalUtils.sort_windows (display, windows_from)) {
                 if (!window.showing_on_its_workspace () ||
                     (move_primary_only && window.get_monitor () != primary) ||
                     (moving != null && window == moving)) {
                     continue;
                 }
 
-                if (window.on_all_workspaces) {
-                    // only collect docks here that need to be displayed on both workspaces
-                    // all other windows will be collected below
-                    if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                        // notifications use their own group and are always on top
-                    } else {
-                        // windows that are on all workspaces will be faded out and back in
-                        windows.prepend (actor);
-                        parents.prepend (actor.get_parent ());
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
-                        var clone = new SafeWindowClone (window) {
-                            x = actor.x - clone_offset_x,
-                            y = actor.y - clone_offset_y
-                        };
+                var clone = new SafeWindowClone (window) {
+                    x = actor.x,
+                    y = actor.y
+                };
+                clone.set_translation (-clone_offset_x, clone_offset_y, 0);
 
-                        in_group.add_child (clone);
-                        tmp_actors.prepend (clone);
+                out_group.add_child (clone);
+                tmp_actors.append (clone);
+            }
 
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
+            // --- Create window clones for in_group ---
 
-                        clutter_actor_reparent (actor, out_group);
-                    }
-
+            var windows_to = workspace_to.list_windows ();
+            // collect all windows and put them in the appropriate containers
+            foreach (unowned var window in InternalUtils.sort_windows (display, windows_to)) {
+                if (!window.showing_on_its_workspace () ||
+                    (move_primary_only && window.get_monitor () != primary) ||
+                    (moving != null && window == moving)) {
                     continue;
                 }
 
-                if (window.get_workspace () == workspace_from) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, out_group);
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
-                } else if (window.get_workspace () == workspace_to) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, in_group);
-                }
+                var clone = new SafeWindowClone (window) {
+                    x = actor.x,
+                    y = actor.y
+                };
+                clone.set_translation (-clone_offset_x, clone_offset_y, 0);
+
+                in_group.add_child (clone);
+                tmp_actors.append (clone);
             }
 
             main_container.clip_to_allocation = true;
@@ -2012,11 +2000,12 @@ namespace Gala {
         }
 
         private void end_switch_workspace () {
-            if (windows == null || parents == null)
+            if (tmp_actors == null) {
                 return;
+            }
 
-            unowned Meta.Display display = get_display ();
-            var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+            unowned var display = get_display ();
+            //  unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
             // Show the real wallpaper again
             var primary = display.get_primary_monitor ();
@@ -2028,47 +2017,19 @@ namespace Gala {
                 background_group.show ();
             }
 
-            for (var i = 0; i < windows.length (); i++) {
-                var actor = windows.nth_data (i);
+            if (moving != null) {
+                unowned var actor = (Meta.WindowActor) moving.get_compositor_private ();
                 actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                unowned Meta.WindowActor? window = actor as Meta.WindowActor;
-                if (window == null) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
-                    continue;
-                }
-
-                unowned Meta.Window? meta_window = window.get_meta_window ();
-                if (!window.is_destroyed ()) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
-                }
-
-                kill_window_effects (window);
-
-                if (meta_window != null
-                    && meta_window.get_workspace () != active_workspace
-                    && !meta_window.is_on_all_workspaces ())
-                    window.hide ();
-
-                // some static windows may have been faded out
-                if (actor.opacity < 255U) {
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-                }
+                clutter_actor_reparent (actor, moving_previous_parent);
             }
 
-            if (tmp_actors != null) {
-                foreach (var actor in tmp_actors) {
-                    actor.destroy ();
-                }
-                tmp_actors = null;
+            foreach (unowned var actor in tmp_actors) {
+                actor.destroy ();
             }
+            tmp_actors = null;
 
-            windows = null;
-            parents = null;
             moving = null;
+            moving_previous_parent = null;
 
             switch_workspace_completed ();
         }

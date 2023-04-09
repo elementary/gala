@@ -259,7 +259,7 @@ namespace Gala {
         /*
          * Sorts the windows by stacking order so that the window on active workspaces come first.
         */
-        public static SList<weak Meta.Window> sort_windows (Meta.Display display, List<Meta.Window> windows) {
+        public static SList<weak Meta.Window> sort_windows (Meta.Display display, List<weak Meta.Window> windows) {
             var windows_on_active_workspace = new SList<Meta.Window> ();
             var windows_on_other_workspaces = new SList<Meta.Window> ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();

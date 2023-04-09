@@ -51,7 +51,7 @@ namespace Gala {
         public void add_window (Meta.Window window) {
             unowned Meta.Display display = window.get_display ();
 
-            var windows = new List<Meta.Window> ();
+            var windows = new List<weak Meta.Window> ();
             foreach (unowned var child in get_children ()) {
                 unowned var clone = (WindowClone) child;
                 windows.append (clone.window);
@@ -129,7 +129,7 @@ namespace Gala {
         public void restack_windows () {
             var children = get_children ();
 
-            var windows = new List<Meta.Window> ();
+            var windows = new List<weak Meta.Window> ();
             foreach (unowned Clutter.Actor child in children) {
                 windows.prepend (((WindowClone) child).window);
             }
