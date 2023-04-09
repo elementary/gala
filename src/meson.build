@@ -37,11 +37,13 @@ gala_bin_sources = files(
     'HotCorners/HotCorner.vala',
     'HotCorners/HotCornerManager.vala',
     'Widgets/DesktopWindowClone.vala',
+    'Widgets/DwellClickTimer.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
+    'Widgets/PointerLocator.vala',
     'Widgets/SafeWindowClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
@@ -54,13 +56,6 @@ gala_bin_sources = files(
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )
-
-if libmutter_dep.version().version_compare ('>= 3.35.1')
-    gala_bin_sources += files(
-        'Widgets/DwellClickTimer.vala',
-        'Widgets/PointerLocator.vala',
-    )
-endif
 
 gala_bin = executable(
     'gala',

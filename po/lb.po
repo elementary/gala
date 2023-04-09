@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
 "PO-Revision-Date: 2015-02-07 21:35+0000\n"
 "Last-Translator: Yvo Marques <macghivo@gmail.com>\n"
 "Language-Team: Luxembourgish <lb@li.org>\n"
@@ -29,8 +29,8 @@ msgstr ""
 
 #: src/Dialogs.vala:157
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 
 #: src/Dialogs.vala:158
@@ -49,27 +49,27 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -122,15 +122,15 @@ msgstr "Verklengern"
 msgid "Maximize"
 msgstr "vergréisseren"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr ""
 
@@ -149,91 +149,56 @@ msgid ""
 msgstr ""
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr ""
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr ""
 
 #: data/gala.appdata.xml.in:31
-msgid "Reload animated wallpapers when timezone changes"
+msgid "Performance improvements"
 msgstr ""
 
 #: data/gala.appdata.xml.in:32
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr ""
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "Multitasking Perspektive"
 
 #: data/gala.appdata.xml.in:33
-msgid "Improve multitasking view animation performance"
-msgstr ""
-
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
-msgid "Fixes:"
-msgstr ""
-
-#: data/gala.appdata.xml.in:62
-msgid "Fix regressions for OS 7"
-msgstr ""
-
-#: data/gala.appdata.xml.in:66
-msgid "Use access portal for force quit"
-msgstr ""
-
-#: data/gala.appdata.xml.in:80
-msgid "Properly update accent color in the window switcher"
-msgstr ""
-
-#: data/gala.appdata.xml.in:81
-msgid "Fix selecting windows underneath the window switcher"
-msgstr ""
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr ""
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
+msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 
 #: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
+msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
+#: data/gala.appdata.xml.in:85
+msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
+#: data/gala.appdata.xml.in:86
+msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:99
-msgid "Fix shadow clipping on server-side decorated windows"
+#: data/gala.appdata.xml.in:113
+msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
+#: data/gala.appdata.xml.in:115
+msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
+#: data/gala.appdata.xml.in:119
+msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:105
-msgid "Dim the parents of modal dialogs"
-msgstr ""
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr ""
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 msgid "elementary, Inc."
 msgstr ""
 

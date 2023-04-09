@@ -28,64 +28,6 @@ namespace Gala {
                 && Meta.Prefs.get_workspaces_only_on_primary ();
         }
 
-        private static GLib.Settings? shadow_settings = null;
-        /*
-         * Reload shadow settings
-         */
-        public static void reload_shadow () {
-            if (shadow_settings == null) {
-                shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
-            }
-            var factory = Meta.ShadowFactory.get_default ();
-            Meta.ShadowParams shadow;
-
-            //normal focused
-            shadow = get_shadowparams ("normal-focused");
-            factory.set_params ("normal", true, shadow);
-
-            //normal unfocused
-            shadow = get_shadowparams ("normal-unfocused");
-            factory.set_params ("normal", false, shadow);
-
-            //menus
-            shadow = get_shadowparams ("menu");
-            factory.set_params ("menu", false, shadow);
-            factory.set_params ("dropdown-menu", false, shadow);
-            factory.set_params ("popup-menu", false, shadow);
-
-            //dialog focused
-            shadow = get_shadowparams ("dialog-focused");
-            factory.set_params ("dialog", true, shadow);
-            factory.set_params ("modal_dialog", false, shadow);
-
-            //dialog unfocused
-            shadow = get_shadowparams ("dialog-unfocused");
-            factory.set_params ("dialog", false, shadow);
-            factory.set_params ("modal_dialog", false, shadow);
-        }
-
-        private static Meta.ShadowParams get_shadowparams (string class_name) {
-            var val = shadow_settings.get_strv (class_name);
-            if (val == null || val.length != 5 || int.parse (val[0]) < 1) {
-                warning ("Invalid shadow settings");
-                return Meta.ShadowParams () {
-                    radius = 1,
-                    top_fade = 0,
-                    x_offset = 0,
-                    y_offset = 0,
-                    opacity = 0
-                };
-            }
-
-            return Meta.ShadowParams () {
-                radius = int.parse (val[0]),
-                top_fade = int.parse (val[1]),
-                x_offset = int.parse (val[2]),
-                y_offset = int.parse (val[3]),
-                opacity = (uint8)int.parse (val[4])
-            };
-        }
-
         /**
          * set the area where clutter can receive events
          **/
@@ -314,8 +256,34 @@ namespace Gala {
             return result;
         }
 
+        /*
+         * Sorts the windows by stacking order so that the window on active workspaces come first.
+        */
+        public static SList<weak Meta.Window> sort_windows (Meta.Display display, List<Meta.Window> windows) {
+            var windows_on_active_workspace = new SList<Meta.Window> ();
+            var windows_on_other_workspaces = new SList<Meta.Window> ();
+            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+            foreach (unowned var window in windows) {
+                if (window.get_workspace () == active_workspace) {
+                    windows_on_active_workspace.append (window);
+                } else {
+                    windows_on_other_workspaces.append (window);
+                }
+            }
+
+            var sorted_windows = new SList<weak Meta.Window> ();
+            var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
+            windows_on_active_workspace_sorted.reverse ();
+            var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
+            windows_on_other_workspaces_sorted.reverse ();
+            sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
+            sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
+
+            return sorted_windows;
+        }
+
         public static inline bool get_window_is_normal (Meta.Window window) {
-            switch (window.get_window_type ()) {
+            switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
                 case Meta.WindowType.DIALOG:
                 case Meta.WindowType.MODAL_DIALOG:
@@ -330,11 +298,11 @@ namespace Gala {
         }
 
         /**
-         * Round the value to match physical pixels.
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
          */
-        public static int pixel_align (float value) {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return (int) Math.round (value * scale_factor) / scale_factor;
+        public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
         }
 
         private static Gtk.StyleContext selection_style_context = null;

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-02-11 17:25+0000\n"
-"PO-Revision-Date: 2023-02-14 13:25+0000\n"
+"POT-Creation-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-04-05 14:57+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.16.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -31,11 +31,11 @@ msgstr "Programmet svarer ikke"
 
 #: src/Dialogs.vala:157
 msgid ""
-"You may choose to wait a short while for it to continue or force the "
-"application quit entirely."
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
 msgstr ""
 "Du kan velge å vente på at programmet skal fortsette en kort stund, eller "
-"avslutte det."
+"påtvinge avslutning av det."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -53,27 +53,27 @@ msgstr "Skjermavbildninger"
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2128
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringer vil endes tilbake automatisk etter %i sekund."
 msgstr[1] "Endringer vil endes tilbake automatisk etter %i sekunder."
 
-#: src/WindowManager.vala:2133
+#: src/WindowManager.vala:2135
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2137
+#: src/WindowManager.vala:2139
 msgid "Keep Settings"
 msgstr "Behold innstillinger"
 
-#: src/WindowManager.vala:2138
+#: src/WindowManager.vala:2140
 msgid "Use Previous Settings"
 msgstr "Bruk tidligere oppsett"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2180
+#: src/WindowManager.vala:2182
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
@@ -126,15 +126,15 @@ msgstr "Gjenopprett"
 msgid "Maximize"
 msgstr "Maksimér"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "Endre bakgrunnsbilde …"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "Skjerminnstillinger …"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "Systeminnstillinger …"
 
@@ -158,104 +158,57 @@ msgstr ""
 "elementary for bruk med Pantheon."
 
 #: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:47 data/gala.appdata.xml.in:64
-#: data/gala.appdata.xml.in:86 data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
+#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
 #: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:49 data/gala.appdata.xml.in:67
-#: data/gala.appdata.xml.in:90 data/gala.appdata.xml.in:107
+#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
+#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
 msgid "Updated translations"
 msgstr "Oppdaterte oversettelser"
 
 #: data/gala.appdata.xml.in:31
-msgid "Reload animated wallpapers when timezone changes"
-msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
+msgid "Performance improvements"
+msgstr "Ytelsesforbedringer"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Fiks rar to-fungerrulling i fleroppgaveløsnings-visning"
+msgid "Remove texture from Multitasking View"
+msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
 
 #: data/gala.appdata.xml.in:33
 #, fuzzy
-msgid "Improve multitasking view animation performance"
-msgstr "Forbedre fleroppgaveløsningsvisning av animasjonsytelse"
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr ""
+"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+"bytteren."
 
-#: data/gala.appdata.xml.in:60 data/gala.appdata.xml.in:78
-#: data/gala.appdata.xml.in:97
+#: data/gala.appdata.xml.in:84
+msgid "Reload animated wallpapers when timezone changes"
+msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
+
+#: data/gala.appdata.xml.in:85
+msgid "Fix awkward two-finger scroll in multitasking view"
+msgstr "Fikset rar to-fungerrulling i fleroppgaveløsnings-visning"
+
+#: data/gala.appdata.xml.in:86
+msgid "Improve multitasking view animation performance"
+msgstr "Forbedret fleroppgaveløsningsvisning av animasjonsytelse"
+
+#: data/gala.appdata.xml.in:113
 msgid "Fixes:"
 msgstr "Fikser:"
 
-#: data/gala.appdata.xml.in:62
+#: data/gala.appdata.xml.in:115
 msgid "Fix regressions for OS 7"
 msgstr "Fikset tilbakegang for OS 7"
 
-#: data/gala.appdata.xml.in:66
+#: data/gala.appdata.xml.in:119
 msgid "Use access portal for force quit"
 msgstr "Bruk av tilgangsportal for å framprovosere avslutting"
 
-#: data/gala.appdata.xml.in:80
-#, fuzzy
-msgid "Properly update accent color in the window switcher"
-msgstr ""
-"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
-"bytteren."
-
-#: data/gala.appdata.xml.in:81
-#, fuzzy
-msgid "Fix selecting windows underneath the window switcher"
-msgstr ""
-"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
-"bytteren."
-
-#: data/gala.appdata.xml.in:82
-msgid "Prevent potential crashes"
-msgstr "Forhindring av potensielle krasj"
-
-#: data/gala.appdata.xml.in:83
-msgid "Resize workspaces when displays change"
-msgstr "Endre arbeidsområder når skjermer endrer seg"
-
-#: data/gala.appdata.xml.in:84
-msgid "Handle windows with no title"
-msgstr "Håndtering av vindu uten navn"
-
-#: data/gala.appdata.xml.in:88
-msgid "Use access portal for display settings confirmation"
-msgstr "Bruk av portal for visning av innstllingsbekreftelse"
-
-#: data/gala.appdata.xml.in:89
-msgid "Allow closing multitasking view with Super"
-msgstr "Tillat lukking av fleroppgaveløsning med Super-tast"
-
-#: data/gala.appdata.xml.in:99
-#, fuzzy
-msgid "Fix shadow clipping on server-side decorated windows"
-msgstr ""
-"Inkluder vindusdekorasjoner i skjermavbildninger for dekorering av vinduer "
-"på tjenersiden"
-
-#: data/gala.appdata.xml.in:103
-msgid "Support for high-resolution scroll events"
-msgstr "Støtte for høyoppløselige rullingshendelser"
-
-#: data/gala.appdata.xml.in:104
-msgid "Redesigned Alt + Tab switcher"
-msgstr "Redesignet Alt+Tab-bytter"
-
-#: data/gala.appdata.xml.in:105
-#, fuzzy
-msgid "Dim the parents of modal dialogs"
-msgstr "Dimmer foreldrevindu som lager undervinduer"
-
-#: data/gala.appdata.xml.in:106
-msgid "Dialogs fall down on parents instead of shooting out"
-msgstr "Dialoger faller ned til opphav istedenfor å sprette ut"
-
-#: data/gala.appdata.xml.in:114
+#: data/gala.appdata.xml.in:131
 #, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
@@ -276,6 +229,46 @@ msgstr "Annet"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
+
+#, fuzzy
+#~ msgid "Properly update accent color in the window switcher"
+#~ msgstr ""
+#~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+#~ "bytteren."
+
+#~ msgid "Prevent potential crashes"
+#~ msgstr "Forhindring av potensielle krasj"
+
+#~ msgid "Resize workspaces when displays change"
+#~ msgstr "Endre arbeidsområder når skjermer endrer seg"
+
+#~ msgid "Handle windows with no title"
+#~ msgstr "Håndtering av vindu uten navn"
+
+#~ msgid "Use access portal for display settings confirmation"
+#~ msgstr "Bruk av portal for visning av innstllingsbekreftelse"
+
+#~ msgid "Allow closing multitasking view with Super"
+#~ msgstr "Tillat lukking av fleroppgaveløsning med Super-tast"
+
+#, fuzzy
+#~ msgid "Fix shadow clipping on server-side decorated windows"
+#~ msgstr ""
+#~ "Inkluder vindusdekorasjoner i skjermavbildninger for dekorering av "
+#~ "vinduer på tjenersiden"
+
+#~ msgid "Support for high-resolution scroll events"
+#~ msgstr "Støtte for høyoppløselige rullingshendelser"
+
+#~ msgid "Redesigned Alt + Tab switcher"
+#~ msgstr "Redesignet Alt+Tab-bytter"
+
+#, fuzzy
+#~ msgid "Dim the parents of modal dialogs"
+#~ msgstr "Dimmer foreldrevindu som lager undervinduer"
+
+#~ msgid "Dialogs fall down on parents instead of shooting out"
+#~ msgstr "Dialoger faller ned til opphav istedenfor å sprette ut"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
@@ -328,9 +321,6 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 
 #~ msgid "HiDPI fixes"
 #~ msgstr "HiDPI-fikser"
-
-#~ msgid "Performance improvements"
-#~ msgstr "Ytelsesforbedringer"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "

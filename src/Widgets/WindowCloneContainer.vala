@@ -31,21 +31,16 @@ namespace Gala {
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
-        private bool opened;
+        private bool opened = false;
 
         /**
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-        private WindowClone? current_window;
+        private WindowClone? current_window = null;
 
         public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, bool overview_mode = false) {
             Object (wm: wm, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
-        }
-
-        construct {
-            opened = false;
-            current_window = null;
         }
 
         /**
@@ -55,27 +50,24 @@ namespace Gala {
          */
         public void add_window (Meta.Window window) {
             unowned Meta.Display display = window.get_display ();
-            var children = get_children ();
 
-            GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
-            foreach (unowned Clutter.Actor child in children) {
-                unowned WindowClone tw = (WindowClone) child;
-                windows.prepend (tw.window);
+            var windows = new List<Meta.Window> ();
+            foreach (unowned var child in get_children ()) {
+                unowned var clone = (WindowClone) child;
+                windows.append (clone.window);
             }
-            windows.prepend (window);
-            windows.reverse ();
+            windows.append (window);
 
-            var windows_ordered = display.sort_windows_by_stacking (windows);
+            var windows_ordered = InternalUtils.sort_windows (display, windows);
 
             var new_window = new WindowClone (wm, window, gesture_tracker, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (() => reflow ());
+            new_window.request_reposition.connect (window_request_reposition);
 
-            var added = false;
             unowned Meta.Window? target = null;
-            foreach (unowned Meta.Window w in windows_ordered) {
+            foreach (unowned var w in windows_ordered) {
                 if (w != window) {
                     target = w;
                     continue;
@@ -83,18 +75,18 @@ namespace Gala {
                 break;
             }
 
-            foreach (unowned Clutter.Actor child in children) {
-                unowned WindowClone tw = (WindowClone) child;
-                if (target == tw.window) {
-                    insert_child_above (new_window, tw);
-                    added = true;
+            // top most or no other children
+            if (target == null) {
+                add_child (new_window);
+            }
+
+            foreach (unowned var child in get_children ()) {
+                unowned var clone = (WindowClone) child;
+                if (target == clone.window) {
+                    insert_child_below (new_window, clone);
                     break;
                 }
             }
-
-            // top most or no other children
-            if (!added)
-                add_child (new_window);
 
             reflow ();
         }
@@ -103,7 +95,7 @@ namespace Gala {
          * Find and remove the WindowClone for a MetaWindow
          */
         public void remove_window (Meta.Window window) {
-            foreach (var child in get_children ()) {
+            foreach (unowned var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
                     remove_child (child);
                     reflow ();
@@ -112,43 +104,42 @@ namespace Gala {
             }
         }
 
-        private void window_selected_cb (WindowClone tiled) {
-            window_selected (tiled.window);
+        private void window_selected_cb (WindowClone clone) {
+            window_selected (clone.window);
         }
 
         private void window_destroyed (Clutter.Actor actor) {
-            var window = actor as WindowClone;
-            if (window == null)
-                return;
+            unowned var clone = (WindowClone) actor;
 
-            window.destroy.disconnect (window_destroyed);
-            window.selected.disconnect (window_selected_cb);
+            clone.destroy.disconnect (window_destroyed);
+            clone.selected.disconnect (window_selected_cb);
+            clone.request_reposition.disconnect (window_request_reposition);
 
-            Idle.add (() => {
-                reflow ();
-                return false;
-            });
+            reflow ();
+        }
+
+        private void window_request_reposition () {
+            reflow ();
         }
 
         /**
          * Sort the windows z-order by their actual stacking to make intersections
          * during animations correct.
          */
-        public void restack_windows (Meta.Display display) {
+        public void restack_windows () {
             var children = get_children ();
 
-            GLib.SList<Meta.Window> windows = new GLib.SList<Meta.Window> ();
+            var windows = new List<Meta.Window> ();
             foreach (unowned Clutter.Actor child in children) {
-                unowned WindowClone tw = (WindowClone) child;
-                windows.prepend (tw.window);
+                windows.prepend (((WindowClone) child).window);
             }
 
-            var windows_ordered = display.sort_windows_by_stacking (windows);
+            var windows_ordered = InternalUtils.sort_windows (wm.get_display (), windows);
             windows_ordered.reverse ();
 
-            foreach (unowned Meta.Window window in windows_ordered) {
-                var i = 0;
-                foreach (unowned Clutter.Actor child in children) {
+            var i = 0;
+            foreach (unowned var window in windows_ordered) {
+                foreach (unowned var child in children) {
                     if (((WindowClone) child).window == window) {
                         set_child_at_index (child, i);
                         children.remove (child);
@@ -164,17 +155,19 @@ namespace Gala {
          * the resulting spots.
          */
         public void reflow (bool with_gesture = false, bool is_cancel_animation = false) {
-            if (!opened)
+            if (!opened) {
                 return;
-
-            var windows = new List<InternalUtils.TilableWindow?> ();
-            foreach (var child in get_children ()) {
-                unowned WindowClone window = (WindowClone) child;
-                windows.prepend ({ window.window.get_frame_rect (), window });
             }
 
-            if (windows.length () < 1)
+            var windows = new List<InternalUtils.TilableWindow?> ();
+            foreach (unowned var child in get_children ()) {
+                unowned var clone = (WindowClone) child;
+                windows.prepend ({ clone.window.get_frame_rect (), clone });
+            }
+
+            if (windows.is_empty ()) {
                 return;
+            }
 
             // make sure the windows are always in the same order so the algorithm
             // doesn't give us different slots based on stacking order, which can lead
@@ -195,9 +188,9 @@ namespace Gala {
             var window_positions = InternalUtils.calculate_grid_placement (area, windows);
 
             foreach (var tilable in window_positions) {
-                unowned WindowClone window = (WindowClone) tilable.id;
-                window.take_slot (tilable.rect, with_gesture, is_cancel_animation);
-                window.place_widgets (tilable.rect.width, tilable.rect.height);
+                unowned var clone = (WindowClone) tilable.id;
+                clone.take_slot (tilable.rect, with_gesture, is_cancel_animation);
+                clone.place_widgets (tilable.rect.width, tilable.rect.height);
             }
         }
 
@@ -208,8 +201,9 @@ namespace Gala {
          * @param direction The MetaMotionDirection in which to search for windows for.
          */
         public void select_next_window (Meta.MotionDirection direction) {
-            if (get_n_children () < 1)
+            if (get_n_children () < 1) {
                 return;
+            }
 
             if (current_window == null) {
                 current_window = (WindowClone) get_child_at_index (0);
@@ -219,63 +213,76 @@ namespace Gala {
             var current_rect = current_window.slot;
 
             WindowClone? closest = null;
-            foreach (var window in get_children ()) {
-                if (window == current_window)
+            foreach (unowned var child in get_children ()) {
+                if (child == current_window) {
                     continue;
+                }
 
-                var window_rect = ((WindowClone) window).slot;
+                var window_rect = ((WindowClone) child).slot;
 
                 switch (direction) {
                     case Meta.MotionDirection.LEFT:
-                        if (window_rect.x > current_rect.x)
+                        if (window_rect.x > current_rect.x) {
                             continue;
+                        }
 
                         // test for vertical intersection
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
                             if (closest == null
-                                || closest.slot.x < window_rect.x)
-                                closest = (WindowClone) window;
+                                || closest.slot.x < window_rect.x) {
+
+                                closest = (WindowClone) child;
+                            }
                         }
                         break;
                     case Meta.MotionDirection.RIGHT:
-                        if (window_rect.x < current_rect.x)
+                        if (window_rect.x < current_rect.x) {
                             continue;
+                        }
 
                         // test for vertical intersection
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
                             if (closest == null
-                                || closest.slot.x > window_rect.x)
-                                closest = (WindowClone) window;
+                                || closest.slot.x > window_rect.x) {
+
+                                closest = (WindowClone) child;
+                            }
                         }
                         break;
                     case Meta.MotionDirection.UP:
-                        if (window_rect.y > current_rect.y)
+                        if (window_rect.y > current_rect.y) {
                             continue;
+                        }
 
                         // test for horizontal intersection
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
                             if (closest == null
-                                || closest.slot.y < window_rect.y)
-                                closest = (WindowClone) window;
+                                || closest.slot.y < window_rect.y) {
+
+                                    closest = (WindowClone) child;
+                            }
                         }
                         break;
                     case Meta.MotionDirection.DOWN:
-                        if (window_rect.y < current_rect.y)
+                        if (window_rect.y < current_rect.y) {
                             continue;
+                        }
 
                         // test for horizontal intersection
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
                             if (closest == null
-                                || closest.slot.y > window_rect.y)
-                                closest = (WindowClone) window;
+                                || closest.slot.y > window_rect.y) {
+
+                                closest = (WindowClone) child;
+                            }
                         }
                         break;
                     default:
@@ -283,11 +290,13 @@ namespace Gala {
                 }
             }
 
-            if (closest == null)
+            if (closest == null) {
                 return;
+            }
 
-            if (current_window != null)
+            if (current_window != null) {
                 current_window.active = false;
+            }
 
             closest.active = true;
             current_window = closest;
@@ -318,9 +327,9 @@ namespace Gala {
             // hide the highlight when opened
             if (selected_window != null) {
                 foreach (var child in get_children ()) {
-                    unowned WindowClone tiled_window = (WindowClone) child;
-                    if (tiled_window.window == selected_window) {
-                        current_window = tiled_window;
+                    unowned var clone = (WindowClone) child;
+                    if (clone.window == selected_window) {
+                        current_window = clone;
                         break;
                     }
                 }

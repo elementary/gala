@@ -71,7 +71,7 @@ namespace Gala {
             workspaces = new Clutter.Actor ();
             workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
-            icon_groups = new IconGroupContainer (display);
+            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
             dock_clones = new Clutter.Actor ();
 
@@ -93,7 +93,8 @@ namespace Gala {
 
             window_containers_monitors = new List<MonitorClone> ();
             update_monitors ();
-            Meta.MonitorManager.@get ().monitors_changed.connect (update_monitors);
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (update_monitors);
 
             Meta.Prefs.add_listener ((pref) => {
                 if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
@@ -151,17 +152,20 @@ namespace Gala {
                     monitor_clone.visible = opened;
 
                     window_containers_monitors.append (monitor_clone);
-                    wm.ui_group.add_child (monitor_clone);
+                    add_child (monitor_clone);
                 }
             }
 
             var primary_geometry = display.get_monitor_geometry (primary);
+            var scale = display.get_monitor_scale (primary);
+            icon_groups.scale_factor = scale;
 
             set_position (primary_geometry.x, primary_geometry.y);
             set_size (primary_geometry.width, primary_geometry.height);
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                workspace_clone.scale_factor = scale;
                 workspace_clone.update_size (primary_geometry);
             }
         }
@@ -403,7 +407,8 @@ namespace Gala {
 
         private void add_workspace (int num) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker);
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
 
@@ -813,6 +818,7 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                 case Meta.KeyBindingAction.SHOW_DESKTOP:
                 case Meta.KeyBindingAction.NONE:
+                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
                     return false;
                 default:
                     break;

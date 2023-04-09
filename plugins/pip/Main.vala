@@ -36,7 +36,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         var display = wm.get_display ();
         var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
-        display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) on_initiate);
+        display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) on_initiate);
     }
 
     public override void destroy () {
