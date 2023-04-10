@@ -56,10 +56,9 @@ namespace Gala {
             // Carry out the initial draw
             create_components ();
 
-            // FIXME: Kind of abusing the style class here for a smaller shadow
-            var effect = new ShadowEffect (30) {
+            var effect = new ShadowEffect (40) {
                 shadow_opacity = 200,
-                css_class = "workspace"
+                css_class = "window-switcher"
             };
 
             add_effect (effect);
@@ -91,6 +90,10 @@ namespace Gala {
 
         private bool draw (Cairo.Context ctx, int width, int height) {
             ctx.save ();
+            ctx.set_operator (Cairo.Operator.CLEAR);
+            ctx.paint ();
+            ctx.clip ();
+            ctx.reset_clip ();
 
             var widget_path = new Gtk.WidgetPath ();
             widget_path.append_type (typeof (Gtk.Window));
@@ -109,6 +112,7 @@ namespace Gala {
                 style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             }
 
+            ctx.set_operator (Cairo.Operator.OVER);
             style_context.render_background (ctx, 0, 0, width, height);
             style_context.render_frame (ctx, 0, 0, width, height);
             ctx.restore ();
