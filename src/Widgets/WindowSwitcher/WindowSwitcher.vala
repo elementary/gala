@@ -10,9 +10,9 @@ namespace Gala {
     public class WindowSwitcher : Clutter.Actor {
         public const int ICON_SIZE = 64;
         public const int WRAPPER_PADDING = 12;
-        public const string CAPTION_FONT_NAME = "Inter";
-
+        private const string CAPTION_FONT_NAME = "Inter";
         private const int MIN_OFFSET = 64;
+        private const int ANIMATION_DURATION = 200;
 
         public bool opened { get; private set; default = false; }
 
@@ -317,7 +317,7 @@ namespace Gala {
             }
 
             save_easing_state ();
-            set_easing_duration (200);
+            set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
             opacity = show ? 255 : 0;
             restore_easing_state ();
 
