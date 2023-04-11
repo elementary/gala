@@ -24,7 +24,8 @@ namespace Gala {
     public class WindowIconActor : Clutter.Actor {
         public Meta.Window window { get; construct; }
 
-        private int icon_scale;
+        private float cur_icon_scale = 1.0f;
+        private float desired_icon_scale = 1.0f;
 
         private int _icon_size;
         /**
@@ -35,17 +36,16 @@ namespace Gala {
             get {
                 return _icon_size;
             }
-            set {
-                var scale = InternalUtils.get_ui_scaling_factor ();
-
-                if (value == _icon_size && scale == icon_scale) {
+            private set {
+                if (value == _icon_size && cur_icon_scale == desired_icon_scale) {
                     return;
                 }
 
                 _icon_size = value;
-                icon_scale = scale;
+                cur_icon_scale = desired_icon_scale;
 
-                set_size (_icon_size * scale, _icon_size * scale);
+                var scaled_size = InternalUtils.scale_to_int (_icon_size, cur_icon_scale);
+                set_size (scaled_size, scaled_size);
 
                 fade_new_icon ();
             }
@@ -113,7 +113,6 @@ namespace Gala {
             set_easing_duration (800);
 
             window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
-            icon_scale = InternalUtils.get_ui_scaling_factor ();
         }
 
         ~WindowIconActor () {
@@ -133,12 +132,13 @@ namespace Gala {
          * @param y    The y coordinate to which to animate to
          * @param size The size to which to animate to and display the icon in
          */
-        public void place (float x, float y, int size) {
+        public void place (float x, float y, int size, float scale) {
             if (initial) {
                 save_easing_state ();
                 set_easing_duration (10);
             }
 
+            desired_icon_scale = scale;
             set_position (x, y);
             icon_size = size;
 
@@ -152,8 +152,7 @@ namespace Gala {
          * Fades out the old icon and fades in the new icon
          */
         private void fade_new_icon () {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var new_icon = new WindowIcon (window, icon_size, scale);
+            var new_icon = new WindowIcon (window, icon_size, (int)Math.round (cur_icon_scale));
             new_icon.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
             new_icon.opacity = 0;
 
