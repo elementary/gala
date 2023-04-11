@@ -835,6 +835,8 @@ namespace Gala {
                 case "switch-to-workspace-last":
                 case "zoom-in":
                 case "zoom-out":
+                case "screenshot":
+                case "screenshot-clip":
                     return false;
                 default:
                     break;
