@@ -222,7 +222,8 @@ namespace Gala {
                 return;
             }
 
-            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
 
             float dest = nudge_gap;
             if (direction == Meta.MotionDirection.RIGHT) {
@@ -287,7 +288,8 @@ namespace Gala {
             float initial_x = workspaces.x;
             float target_x = 0;
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
-            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
 
             if (is_nudge_animation) {
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
@@ -398,12 +400,12 @@ namespace Gala {
                 icon_groups.set_easing_duration (200);
             }
 
-            var scale = InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
             // make sure the active workspace's icongroup is always visible
             var icon_groups_width = icon_groups.calculate_total_width ();
             if (icon_groups_width > primary_monitor_container.width) {
-                icon_groups.x = (-active_index * (IconGroupContainer.SPACING * scale + IconGroup.SIZE * scale) + primary_monitor_container.width / 2)
-                    .clamp (primary_monitor_container.width - icon_groups_width - 64 * scale, 64 * scale);
+                icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
+                    .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
             } else
                 icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
 
@@ -613,9 +615,9 @@ namespace Gala {
                 show ();
                 grab_key_focus ();
 
-                var scale = InternalUtils.get_ui_scaling_factor ();
+                var scale = display.get_monitor_scale (display.get_primary_monitor ());
                 icon_groups.force_reposition ();
-                icon_groups.y = primary_monitor_container.height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
+                icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
