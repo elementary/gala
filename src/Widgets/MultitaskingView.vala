@@ -42,6 +42,7 @@ namespace Gala {
         private IconGroupContainer icon_groups;
         private Clutter.Actor workspaces;
         private Clutter.Actor dock_clones;
+        private Clutter.Actor primary_monitor_container;
 
         private GLib.Settings gala_behavior_settings;
 
@@ -75,9 +76,14 @@ namespace Gala {
 
             dock_clones = new Clutter.Actor ();
 
-            add_child (icon_groups);
-            add_child (workspaces);
+            // Create a child container that will be sized to fit the primary monitor, to contain the "main"
+            // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
+            // stage as it contains MonitorClones for each monitor.
+            primary_monitor_container = new Clutter.Actor ();
+            primary_monitor_container.add_child (icon_groups);
+            primary_monitor_container.add_child (workspaces);
             add_child (dock_clones);
+            add_child (primary_monitor_container);
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
@@ -160,8 +166,8 @@ namespace Gala {
             var scale = display.get_monitor_scale (primary);
             icon_groups.scale_factor = scale;
 
-            set_position (primary_geometry.x, primary_geometry.y);
-            set_size (primary_geometry.width, primary_geometry.height);
+            primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
+            primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
@@ -395,11 +401,11 @@ namespace Gala {
             var scale = InternalUtils.get_ui_scaling_factor ();
             // make sure the active workspace's icongroup is always visible
             var icon_groups_width = icon_groups.calculate_total_width ();
-            if (icon_groups_width > width) {
-                icon_groups.x = (-active_index * (IconGroupContainer.SPACING * scale + IconGroup.SIZE * scale) + width / 2)
-                    .clamp (width - icon_groups_width - 64 * scale, 64 * scale);
+            if (icon_groups_width > primary_monitor_container.width) {
+                icon_groups.x = (-active_index * (IconGroupContainer.SPACING * scale + IconGroup.SIZE * scale) + primary_monitor_container.width / 2)
+                    .clamp (primary_monitor_container.width - icon_groups_width - 64 * scale, 64 * scale);
             } else
-                icon_groups.x = width / 2 - icon_groups_width / 2;
+                icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
 
             if (animate)
                 icon_groups.restore_easing_state ();
@@ -609,7 +615,7 @@ namespace Gala {
 
                 var scale = InternalUtils.get_ui_scaling_factor ();
                 icon_groups.force_reposition ();
-                icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
+                icon_groups.y = primary_monitor_container.height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
