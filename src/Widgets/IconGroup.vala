@@ -48,13 +48,20 @@ namespace Gala {
                 return _active;
             }
             set {
-                if (_active == value)
+                if (_active == value) {
                     return;
-
-                if (get_transition ("backdrop-opacity") != null)
-                    remove_transition ("backdrop-opacity");
+                }
 
                 _active = value;
+
+                if (get_stage () == null) {
+                    backdrop_opacity = 40;
+                    return;
+                }
+
+                if (get_transition ("backdrop-opacity") != null) {
+                    remove_transition ("backdrop-opacity");
+                }
 
                 var transition = new Clutter.PropertyTransition ("backdrop-opacity") {
                     duration = 300,
