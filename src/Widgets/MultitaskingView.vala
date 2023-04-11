@@ -82,8 +82,8 @@ namespace Gala {
             primary_monitor_container = new Clutter.Actor ();
             primary_monitor_container.add_child (icon_groups);
             primary_monitor_container.add_child (workspaces);
-            add_child (dock_clones);
             add_child (primary_monitor_container);
+            add_child (dock_clones);
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
