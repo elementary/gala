@@ -9,12 +9,10 @@
 namespace Gala {
     public class WindowSwitcher : Clutter.Actor {
         public const int ICON_SIZE = 64;
-        public const int WRAPPER_BORDER_RADIUS = 3;
         public const int WRAPPER_PADDING = 12;
-        public const string CAPTION_FONT_NAME = "Inter";
-
+        private const string CAPTION_FONT_NAME = "Inter";
         private const int MIN_OFFSET = 64;
-        private const int FIX_TIMEOUT_INTERVAL = 100;
+        private const int ANIMATION_DURATION = 200;
 
         public bool opened { get; private set; default = false; }
 
@@ -24,19 +22,28 @@ namespace Gala {
         private Granite.Settings granite_settings;
         private Clutter.Canvas canvas;
         private Clutter.Actor container;
-        private Clutter.Actor indicator;
         private Clutter.Text caption;
 
         private int modifier_mask;
 
-        private WindowIcon? cur_icon = null;
+        private WindowSwitcherIcon? _current_icon = null;
+        private WindowSwitcherIcon? current_icon {
+            get {
+                return _current_icon;
+            }
+            set {
+                if (_current_icon != null) {
+                    _current_icon.selected = false;
+                }
+
+                _current_icon = value;
+                _current_icon.selected = true;
+
+                update_caption_text ();
+            }
+        }
 
         private float scaling_factor = 1.0f;
-
-        // For some reason, on Odin, the height of the caption loses
-        // its padding after the first time the switcher displays. As a
-        // workaround, I store the initial value here once we have it.
-        private float caption_height = -1.0f;
 
         public WindowSwitcher (Gala.WindowManager wm) {
             Object (wm: wm);
@@ -53,13 +60,14 @@ namespace Gala {
             canvas.scale_factor = scaling_factor;
             set_content (canvas);
 
+            opacity = 0;
+
             // Carry out the initial draw
             create_components ();
 
-            // FIXME: Kind of abusing the style class here for a smaller shadow
-            var effect = new ShadowEffect (30) {
+            var effect = new ShadowEffect (40) {
                 shadow_opacity = 200,
-                css_class = "workspace"
+                css_class = "window-switcher"
             };
 
             add_effect (effect);
@@ -91,6 +99,10 @@ namespace Gala {
 
         private bool draw (Cairo.Context ctx, int width, int height) {
             ctx.save ();
+            ctx.set_operator (Cairo.Operator.CLEAR);
+            ctx.paint ();
+            ctx.clip ();
+            ctx.reset_clip ();
 
             var widget_path = new Gtk.WidgetPath ();
             widget_path.append_type (typeof (Gtk.Window));
@@ -109,6 +121,7 @@ namespace Gala {
                 style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             }
 
+            ctx.set_operator (Cairo.Operator.OVER);
             style_context.render_background (ctx, 0, 0, width, height);
             style_context.render_frame (ctx, 0, 0, width, height);
             ctx.restore ();
@@ -119,50 +132,22 @@ namespace Gala {
         private void create_components () {
             // We've already been constructed once, start again
             if (container != null) {
-                caption_height = -1.0f;
                 destroy_all_children ();
             }
 
+            var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
             var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
-            container = new Clutter.Actor ();
-            container.layout_manager = layout;
-            container.reactive = true;
+            container = new Clutter.Actor () {
+                reactive = true,
+                layout_manager = layout,
+                margin_left = margin,
+                margin_top = margin,
+                margin_right = margin,
+                margin_bottom = margin
+            };
+
             container.button_release_event.connect (container_mouse_release);
             container.motion_event.connect (container_motion_event);
-
-            var rgba = InternalUtils.get_theme_accent_color ();
-            var accent_color = Clutter.Color ();
-            accent_color.init (
-                (uint8) (rgba.red * 255),
-                (uint8) (rgba.green * 255),
-                (uint8) (rgba.blue * 255),
-                (uint8) (rgba.alpha * 255)
-            );
-
-            var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scaling_factor);
-            indicator = new Clutter.Actor ();
-            indicator.margin_left = indicator.margin_top =
-                indicator.margin_right = indicator.margin_bottom = 0;
-            indicator.set_pivot_point (0.5f, 0.5f);
-            var indicator_canvas = new Clutter.Canvas ();
-            indicator.set_content (indicator_canvas);
-            indicator_canvas.scale_factor = scaling_factor;
-            indicator_canvas.draw.connect ((ctx, width, height) => {
-                ctx.save ();
-                ctx.set_operator (Cairo.Operator.CLEAR);
-                ctx.paint ();
-                ctx.clip ();
-                ctx.reset_clip ();
-
-                // draw rect
-                Clutter.cairo_set_source_color (ctx, accent_color);
-                Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
-                ctx.set_operator (Cairo.Operator.SOURCE);
-                ctx.fill ();
-
-                ctx.restore ();
-                return true;
-            });
 
             var caption_color = "#2e2e31";
 
@@ -175,7 +160,6 @@ namespace Gala {
             caption.set_ellipsize (Pango.EllipsizeMode.END);
             caption.set_line_alignment (Pango.Alignment.CENTER);
 
-            add_child (indicator);
             add_child (container);
             add_child (caption);
         }
@@ -212,7 +196,6 @@ namespace Gala {
                 }
 
                 open_switcher ();
-                update_indicator_position (true);
             }
 
             var binding_name = binding.get_name ();
@@ -233,9 +216,9 @@ namespace Gala {
             container.destroy_all_children ();
 
             foreach (unowned var window in windows) {
-                var icon = new WindowIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
                 if (window == current_window) {
-                    cur_icon = icon;
+                    current_icon = icon;
                 }
 
                 container.add_child (icon);
@@ -262,9 +245,9 @@ namespace Gala {
             var app = window_tracker.get_app_for_window (current_window);
             foreach (unowned var window in windows) {
                 if (window_tracker.get_app_for_window (window) == app) {
-                    var icon = new WindowIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                    var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
                     if (window == current_window) {
-                        cur_icon = icon;
+                        current_icon = icon;
                     }
 
                     container.add_child (icon);
@@ -284,20 +267,9 @@ namespace Gala {
                 return;
             }
 
-            container.margin_left = container.margin_top =
-                container.margin_right = container.margin_bottom = InternalUtils.scale_to_int (WRAPPER_PADDING * 2, scaling_factor);
+            opacity = 0;
 
-            var l = container.layout_manager as Clutter.FlowLayout;
-            l.column_spacing = l.row_spacing = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-
-            indicator.visible = false;
-            var indicator_size = InternalUtils.scale_to_int ((ICON_SIZE + WRAPPER_PADDING * 2), scaling_factor);
-            indicator.set_size (indicator_size, indicator_size);
-            ((Clutter.Canvas) indicator.content).set_size (indicator_size, indicator_size);
-            caption.visible = false;
-            caption.margin_bottom = caption.margin_top = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-
-            var display = wm.get_display ();
+            unowned var display = wm.get_display ();
             var monitor = display.get_current_monitor ();
             var geom = display.get_monitor_geometry (monitor);
 
@@ -312,23 +284,9 @@ namespace Gala {
             }
 
             float nat_width, nat_height;
-            container.get_preferred_size (null, null, out nat_width, null);
+            container.get_preferred_size (null, null, out nat_width, out nat_height);
 
-            nat_width -= InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) / container.get_n_children ();
-
-            container.get_preferred_size (null, null, null, out nat_height);
-
-            // For some reason, on Odin, the height of the caption loses
-            // its padding after the first time the switcher displays. As a
-            // workaround, I store the initial value here once we have it
-            // and use that correct value on subsequent attempts.
-            if (caption_height == -1.0f) {
-                caption_height = caption.height;
-            }
-
-            opacity = 0;
-
-            var switcher_height = (int) (nat_height + caption_height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
+            var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
             set_size ((int) nat_width, switcher_height);
             canvas.set_size ((int) nat_width, switcher_height);
             canvas.invalidate ();
@@ -359,7 +317,7 @@ namespace Gala {
             }
 
             save_easing_state ();
-            set_easing_duration (200);
+            set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
             opacity = show ? 255 : 0;
             restore_easing_state ();
 
@@ -395,7 +353,7 @@ namespace Gala {
                 return;
             }
 
-            var window = cur_icon.window;
+            var window = current_icon.window;
             if (window == null) {
                 return;
             }
@@ -414,7 +372,7 @@ namespace Gala {
 
         private void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
             Clutter.Actor actor;
-            var current = cur_icon;
+            var current = current_icon;
 
             if (container.get_n_children () == 1) {
                 Clutter.get_default_backend ().get_default_seat ().bell_notify ();
@@ -433,52 +391,20 @@ namespace Gala {
                 }
             }
 
-            cur_icon = (WindowIcon) actor;
-            update_indicator_position ();
+            current_icon = (WindowSwitcherIcon) actor;
         }
 
         private void update_caption_text () {
-            var current_window = cur_icon.window;
-            var current_caption = "n/a";
-            if (current_window != null) {
-                current_caption = current_window.get_title ();
-            }
+            var current_window = current_icon.window;
+            var current_caption = current_window != null ? current_window.title : "n/a";
             caption.set_text (current_caption);
-            caption.visible = true;
 
             // Make caption smaller than the wrapper, so it doesn't overflow.
             caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
             caption.set_position (
                 InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
-                (int) (height - caption_height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
+                (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
             );
-        }
-
-        private void update_indicator_position (bool initial = false) {
-            // FIXME there are some troubles with layouting, in some cases we
-            //       are here too early, in which case all the children are at
-            //       (0|0), so we can easily check for that and come back later
-            if (container.get_n_children () > 1
-                && container.get_child_at_index (1).x < 1) {
-
-                GLib.Timeout.add (FIX_TIMEOUT_INTERVAL, () => {
-                    update_indicator_position (initial);
-                    return false;
-                }, GLib.Priority.DEFAULT);
-                return;
-            }
-
-            float x = cur_icon.x;
-            float y = cur_icon.y;
-
-            if (initial) {
-                indicator.visible = true;
-            }
-
-            // Move the indicator without animating it.
-            indicator.x = container.margin_left + (container.get_n_children () > 1 ? x : 0) - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-            indicator.y = container.margin_top + y - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-            update_caption_text ();
         }
 
         public override void key_focus_out () {
@@ -491,14 +417,13 @@ namespace Gala {
                 return true;
             }
 
-            var selected = actor as WindowIcon;
+            var selected = actor as WindowSwitcherIcon;
             if (selected == null) {
                 return true;
             }
 
-            if (cur_icon != selected) {
-                cur_icon = selected;
-                update_indicator_position ();
+            if (current_icon != selected) {
+                current_icon = selected;
             }
 
             return true;

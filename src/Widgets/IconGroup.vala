@@ -356,7 +356,7 @@ namespace Gala {
             // single icon => big icon
             if (n_windows == 1) {
                 var icon = (WindowIconActor) icon_container.get_child_at_index (0);
-                icon.place (0, 0, 64);
+                icon.place (0, 0, 64, scale_factor);
 
                 return false;
             }
@@ -501,7 +501,7 @@ namespace Gala {
                     continue;
                 }
 
-                window.place (x, y, size);
+                window.place (x, y, size, scale_factor);
 
                 x += InternalUtils.scale_to_int (size, scale_factor) + spacing;
                 if (x + InternalUtils.scale_to_int (size, scale_factor) >= scaled_size) {
