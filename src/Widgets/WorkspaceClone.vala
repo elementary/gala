@@ -142,21 +142,6 @@ namespace Gala {
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
-        private bool _active = false;
-        /**
-         * If this WorkspaceClone is currently the active one. Also sets the active
-         * state on its IconGroup.
-         */
-        public bool active {
-            get {
-                return _active;
-            }
-            set {
-                _active = value;
-                icon_group.active = value;
-            }
-        }
-
         private float _scale_factor = 1.0f;
         public float scale_factor {
             get {
@@ -198,6 +183,9 @@ namespace Gala {
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
             icon_group = new IconGroup (wm, workspace, scale_factor);
+            if (workspace == wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
+                icon_group.backdrop_opacity = 1.0f;
+            }
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
