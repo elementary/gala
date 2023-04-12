@@ -245,6 +245,7 @@ namespace Gala {
 
         private void reallocate () {
             icon_group.scale_factor = scale_factor;
+            window_container.monitor_scale = scale_factor;
         }
 
         /**

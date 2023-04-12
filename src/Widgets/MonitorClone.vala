@@ -85,6 +85,9 @@ namespace Gala {
             set_position (monitor_geometry.x, monitor_geometry.y);
             set_size (monitor_geometry.width, monitor_geometry.height);
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+
+            var scale = display.get_monitor_scale (monitor);
+            window_container.monitor_scale = scale;
         }
 
         /**
