@@ -52,6 +52,18 @@ public class Gala.WindowClone : Clutter.Actor {
 
     public bool overview_mode { get; construct; }
     public GestureTracker? gesture_tracker { get; construct; }
+    private float _monitor_scale_factor = 1.0f;
+    public float monitor_scale_factor {
+        get {
+            return _monitor_scale_factor;
+        }
+        set {
+            if (value != _monitor_scale_factor) {
+                _monitor_scale_factor = value;
+                reallocate ();
+            }
+        }
+    }
 
     [CCode (notify = false)]
     public uint8 shadow_opacity {
@@ -80,8 +92,14 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, bool overview_mode = false) {
-        Object (wm: wm, window: window, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
+    public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+        Object (
+            wm: wm,
+            window: window,
+            gesture_tracker: gesture_tracker,
+            monitor_scale_factor: scale,
+            overview_mode: overview_mode
+        );
     }
 
     construct {
@@ -111,26 +129,6 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        var window_frame_rect = window.get_frame_rect ();
-
-        unowned var display = wm.get_display ();
-        var scale_factor = display.get_monitor_scale (display.get_monitor_index_for_rect (window_frame_rect));
-
-        var close_button_action = new Clutter.ClickAction ();
-        close_button_action.clicked.connect (() => {
-            close_window ();
-        });
-        close_button = Utils.create_close_button (scale_factor);
-        close_button.opacity = 0;
-        // block propagation of button release event to window clone
-        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
-        close_button.add_action (close_button_action);
-
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (scale_factor));
-        window_icon.opacity = 0;
-        window_icon.set_pivot_point (0.5f, 0.5f);
-        set_window_icon_position (window_frame_rect.width, window_frame_rect.height, scale_factor);
-
         window_title = new Tooltip ();
         window_title.opacity = 0;
 
@@ -138,11 +136,11 @@ public class Gala.WindowClone : Clutter.Actor {
         active_shape.opacity = 0;
 
         add_child (active_shape);
-        add_child (window_icon);
         add_child (window_title);
-        add_child (close_button);
 
         load_clone ();
+
+        reallocate ();
     }
 
     ~WindowClone () {
@@ -151,6 +149,31 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
+    }
+
+    private void reallocate () {
+        var window_frame_rect = window.get_frame_rect ();
+
+        var close_button_action = new Clutter.ClickAction ();
+        close_button_action.clicked.connect (() => {
+            close_window ();
+        });
+        close_button = Utils.create_close_button (monitor_scale_factor);
+        close_button.opacity = 0;
+        // block propagation of button release event to window clone
+        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
+        close_button.add_action (close_button_action);
+
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
+        window_icon.opacity = 0;
+        window_icon.set_pivot_point (0.5f, 0.5f);
+        set_window_icon_position (window_frame_rect.width, window_frame_rect.height, monitor_scale_factor);
+
+        add_child (close_button);
+        add_child (window_icon);
+
+        set_child_below_sibling (window_icon, window_title);
+        set_child_above_sibling (close_button, clone);
     }
 
     /**
@@ -253,7 +276,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         unowned var display = window.get_display ();
         var monitor_geom = display.get_monitor_geometry (window.get_monitor ());
-        var scale = display.get_monitor_scale (window.get_monitor ());
+        var initial_scale = monitor_scale_factor;
+        var target_scale = display.get_monitor_scale (window.get_monitor ());
         var offset_x = monitor_geom.x;
         var offset_y = monitor_geom.y;
 
@@ -267,13 +291,14 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active = false;
         in_slot_animation = true;
-        place_widgets (outer_rect.width, outer_rect.height, scale);
+        place_widgets (outer_rect.width, outer_rect.height, initial_scale);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var x = GestureTracker.animation_value (initial_x, target_x, percentage);
             var y = GestureTracker.animation_value (initial_y, target_y, percentage);
             var width = GestureTracker.animation_value (initial_width, outer_rect.width, percentage);
             var height = GestureTracker.animation_value (initial_height, outer_rect.height, percentage);
+            var scale = GestureTracker.animation_value (initial_scale, target_scale, percentage);
             var opacity = GestureTracker.animation_value (255f, 0f, percentage);
 
             set_size (width, height);
@@ -281,6 +306,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
+            place_widgets ((int)width, (int)height, scale);
 
             shadow_opacity = (uint8) opacity;
         };
@@ -313,18 +339,18 @@ public class Gala.WindowClone : Clutter.Actor {
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             window_icon.set_easing_duration (duration);
             window_icon.opacity = 0;
-            set_window_icon_position (outer_rect.width, outer_rect.height, scale);
+            set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
             window_icon.restore_easing_state ();
 
             var transition = window_icon.get_transition ("opacity");
             if (transition != null) {
                 transition.completed.connect (() => {
                     in_slot_animation = false;
-                    place_widgets (outer_rect.width, outer_rect.height, scale);
+                    place_widgets (outer_rect.width, outer_rect.height, target_scale);
                 });
             } else {
                 in_slot_animation = false;
-                place_widgets (outer_rect.width, outer_rect.height, scale);
+                place_widgets (outer_rect.width, outer_rect.height, target_scale);
             }
         };
 
@@ -779,9 +805,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
-        unowned var display = wm.get_display ();
-        var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (slot));
-        set_window_icon_position (slot.width, slot.height, scale);
+        set_window_icon_position (slot.width, slot.height, monitor_scale_factor);
         window_icon.restore_easing_state ();
     }
 
@@ -801,7 +825,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
     private void set_window_title_position (float window_width, float window_height, float scale_factor) {
         var x = (int)Math.round ((window_width - window_title.width) / 2);
-        var y = (int)Math.round (window_height - (WINDOW_ICON_SIZE * scale_factor) * 0.75f - (window_title.height / 2) - (18 * scale_factor));
+        var y = (int)Math.round (window_height - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, scale_factor) * 0.75f - (window_title.height / 2) - InternalUtils.scale_to_int (18, scale_factor));
         window_title.set_position (x, y);
     }
 
