@@ -402,13 +402,16 @@ namespace Gala {
             var active_index = manager.get_active_workspace ().index ();
             var active_x = 0.0f;
 
-            foreach (var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+            foreach (unowned var child in workspaces.get_children ()) {
+                unowned var workspace_clone = (WorkspaceClone) child;
                 var index = workspace_clone.workspace.index ();
                 var dest_x = workspace_clone.multitasking_view_x ();
 
                 if (index == active_index) {
                     active_x = dest_x;
+                    workspace_clone.icon_group.backdrop_opacity = 1.0f;
+                } else {
+                    workspace_clone.icon_group.backdrop_opacity = 0.0f;
                 }
 
                 workspace_clone.save_easing_state ();
