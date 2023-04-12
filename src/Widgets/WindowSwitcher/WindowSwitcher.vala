@@ -291,6 +291,9 @@ namespace Gala {
             canvas.set_size ((int) nat_width, switcher_height);
             canvas.invalidate ();
 
+            // container width might have changed, so we must update caption width too
+            update_caption_text ();
+
             set_position (
                 (int) (geom.x + (geom.width - width) / 2),
                 (int) (geom.y + (geom.height - height) / 2)
