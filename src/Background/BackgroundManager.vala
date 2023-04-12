@@ -226,6 +226,8 @@ namespace Gala {
 
                 background_actor.remove_child (dim_actor);
                 dim_actor.destroy ();
+
+                changed ();
             });
 
             dim_actor.add_transition ("wallpaper-dim", transition);
