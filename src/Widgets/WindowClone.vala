@@ -286,9 +286,11 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
+            var duration = (animate && wm.enable_animations) ? MultitaskingView.ANIMATION_DURATION : 0;
+
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (animate ? MultitaskingView.ANIMATION_DURATION : 0);
+            set_easing_duration (duration);
 
             set_position (target_x, target_y);
             set_size (outer_rect.width, outer_rect.height);
@@ -305,7 +307,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             window_icon.save_easing_state ();
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_duration (duration);
             window_icon.opacity = 0;
             set_window_icon_position (outer_rect.width, outer_rect.height);
             window_icon.restore_easing_state ();
@@ -364,31 +366,25 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
+            var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+
             save_easing_state ();
-            set_easing_duration (MultitaskingView.ANIMATION_DURATION);
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+            set_easing_duration (duration);
 
             set_size (rect.width, rect.height);
             set_position (rect.x, rect.y);
+            opacity = 255;
             restore_easing_state ();
 
             window_icon.save_easing_state ();
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_duration (duration);
             window_icon.opacity = 255;
             set_window_icon_position (rect.width, rect.height);
             window_icon.restore_easing_state ();
 
             toggle_shadow (true);
-
-            if (opacity < 255) {
-                save_easing_state ();
-                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (300);
-
-                opacity = 255;
-                restore_easing_state ();
-            }
 
             window_icon.get_transition ("opacity").completed.connect (() => {
                 in_slot_animation = false;
