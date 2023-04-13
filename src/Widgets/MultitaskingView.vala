@@ -292,7 +292,7 @@ namespace Gala {
             var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
 
             unowned IconGroup active_icon_group = null;
-            unowned IconGroup target_icon_group = null;
+            unowned IconGroup? target_icon_group = null;
 
             if (is_nudge_animation) {
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
@@ -311,10 +311,10 @@ namespace Gala {
                 }
             }
 
-            if (active_icon_group.get_transition ("backdrop-opacity") != null) {
+            if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
                 active_icon_group.remove_transition ("backdrop-opacity");
             }
-            if (target_icon_group.get_transition ("backdrop-opacity") != null) {
+            if (!is_nudge_animation && target_icon_group.get_transition ("backdrop-opacity") != null) {
                 target_icon_group.remove_transition ("backdrop-opacity");
             }
 
@@ -361,7 +361,7 @@ namespace Gala {
                             remove_on_complete = true
                         };
                         active_transition.set_from_value (active_icon_group.backdrop_opacity);
-                        active_transition.set_to_value (0.0f);
+                        active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
                         active_icon_group.add_transition ("backdrop-opacity", active_transition);
     
                         var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
@@ -369,7 +369,7 @@ namespace Gala {
                             remove_on_complete = true
                         };
                         target_transition.set_from_value (target_icon_group.backdrop_opacity);
-                        target_transition.set_to_value (1.0f);
+                        target_transition.set_to_value (cancel_action ? 0.0f : 1.0f);
                         target_icon_group.add_transition ("backdrop-opacity", target_transition);
                     } else {
                         active_icon_group.backdrop_opacity = cancel_action ? 1.0f : 0.0f;
