@@ -602,12 +602,12 @@ public class Gala.WindowClone : Clutter.Actor {
         var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
 
         clone.get_transformed_position (out abs_x, out abs_y);
+        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
         clone.save_easing_state ();
         clone.set_easing_duration (duration);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
         clone.set_scale (scale, scale);
         clone.opacity = 0;
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
         clone.restore_easing_state ();
 
         request_reposition ();
@@ -760,8 +760,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
 
-        clone.save_easing_state ();
         clone.set_pivot_point (0.0f, 0.0f);
+        clone.save_easing_state ();
         clone.set_easing_duration (duration);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_scale (1, 1);
