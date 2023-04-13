@@ -514,7 +514,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
                 interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
             };
-    
+
             add_transition ("shadow-opacity", shadow_transition);
         } else {
             shadow_opacity = show ? 255 : 0;

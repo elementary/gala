@@ -363,7 +363,7 @@ namespace Gala {
                         active_transition.set_from_value (active_icon_group.backdrop_opacity);
                         active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
                         active_icon_group.add_transition ("backdrop-opacity", active_transition);
-    
+
                         var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
                             duration = duration,
                             remove_on_complete = true
@@ -382,7 +382,7 @@ namespace Gala {
                 if (transition != null) {
                     transition.completed.connect (() => {
                         workspace_gesture_tracker.enabled = true;
-    
+
                         if (!is_nudge_animation && !cancel_action) {
                             manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
                             update_positions (false);
@@ -390,7 +390,7 @@ namespace Gala {
                     });
                 } else {
                     workspace_gesture_tracker.enabled = true;
-    
+
                     if (!is_nudge_animation && !cancel_action) {
                         manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
                         update_positions (false);
