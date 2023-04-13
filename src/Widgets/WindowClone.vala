@@ -602,10 +602,10 @@ public class Gala.WindowClone : Clutter.Actor {
         var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
 
         clone.get_transformed_position (out abs_x, out abs_y);
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
         clone.save_easing_state ();
         clone.set_easing_duration (duration);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
         clone.set_scale (scale, scale);
         clone.opacity = 0;
         clone.restore_easing_state ();
