@@ -43,7 +43,7 @@ public class Gala.WindowClone : Clutter.Actor {
     public bool active {
         set {
             active_shape.save_easing_state ();
-            active_shape.set_easing_duration (FADE_ANIMATION_DURATION);
+            active_shape.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
 
@@ -324,7 +324,7 @@ public class Gala.WindowClone : Clutter.Actor {
             }
         };
 
-        if (!animate || gesture_tracker == null || !with_gesture) {
+        if (!animate || gesture_tracker == null || !with_gesture || !wm.enable_animations) {
             on_animation_end (1, false, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -386,13 +386,19 @@ public class Gala.WindowClone : Clutter.Actor {
 
             toggle_shadow (true);
 
-            window_icon.get_transition ("opacity").completed.connect (() => {
+            var transition = window_icon.get_transition ("opacity");
+            if (transition != null) {
+                transition.completed.connect (() => {
+                    in_slot_animation = false;
+                    place_widgets (rect.width, rect.height);
+                });
+            } else {
                 in_slot_animation = false;
                 place_widgets (rect.width, rect.height);
-            });
+            }
         };
 
-        if (gesture_tracker == null || !with_gesture) {
+        if (gesture_tracker == null || !with_gesture || !wm.enable_animations) {
             on_animation_end (1, false, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -437,15 +443,17 @@ public class Gala.WindowClone : Clutter.Actor {
             return Gdk.EVENT_PROPAGATE;
         }
 
+        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
+        close_button.set_easing_duration (duration);
         close_button.opacity = in_slot_animation ? 0 : 255;
         close_button.restore_easing_state ();
 
         window_title.save_easing_state ();
         window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_title.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
+        window_title.set_easing_duration (duration);
         window_title.opacity = in_slot_animation ? 0 : 255;
         window_title.restore_easing_state ();
 
@@ -453,15 +461,17 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override bool leave_event (Clutter.CrossingEvent event) {
+        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
+        close_button.set_easing_duration (duration);
         close_button.opacity = 0;
         close_button.restore_easing_state ();
 
         window_title.save_easing_state ();
         window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_title.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
+        window_title.set_easing_duration (duration);
         window_title.opacity = 0;
         window_title.restore_easing_state ();
 
@@ -497,14 +507,18 @@ public class Gala.WindowClone : Clutter.Actor {
             remove_transition ("shadow-opacity");
         }
 
-        var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
-            duration = MultitaskingView.ANIMATION_DURATION,
-            remove_on_complete = true,
-            progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-            interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
-        };
-
-        add_transition ("shadow-opacity", shadow_transition);
+        if (wm.enable_animations) {
+            var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
+                duration = MultitaskingView.ANIMATION_DURATION,
+                remove_on_complete = true,
+                progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
+                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
+            };
+    
+            add_transition ("shadow-opacity", shadow_transition);
+        } else {
+            shadow_opacity = 255;
+        }
     }
 
     /**

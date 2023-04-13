@@ -355,21 +355,26 @@ namespace Gala {
                 workspaces.restore_easing_state ();
 
                 if (!is_nudge_animation) {
-                    var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                        duration = calculated_duration,
-                        remove_on_complete = true
-                    };
-                    active_transition.set_from_value (active_icon_group.backdrop_opacity);
-                    active_transition.set_to_value (0.0f);
-                    active_icon_group.add_transition ("backdrop-opacity", active_transition);
-
-                    var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                        duration = calculated_duration,
-                        remove_on_complete = true
-                    };
-                    target_transition.set_from_value (target_icon_group.backdrop_opacity);
-                    target_transition.set_to_value (1.0f);
-                    target_icon_group.add_transition ("backdrop-opacity", target_transition);
+                    if (wm.enable_animations) {
+                        var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                            duration = duration,
+                            remove_on_complete = true
+                        };
+                        active_transition.set_from_value (active_icon_group.backdrop_opacity);
+                        active_transition.set_to_value (0.0f);
+                        active_icon_group.add_transition ("backdrop-opacity", active_transition);
+    
+                        var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                            duration = duration,
+                            remove_on_complete = true
+                        };
+                        target_transition.set_from_value (target_icon_group.backdrop_opacity);
+                        target_transition.set_to_value (1.0f);
+                        target_icon_group.add_transition ("backdrop-opacity", target_transition);
+                    } else {
+                        active_icon_group.backdrop_opacity = cancel_action ? 1.0f : 0.0f;
+                        target_icon_group.backdrop_opacity = cancel_action ? 0.0f : 1.0f;
+                    }
                 }
 
 
