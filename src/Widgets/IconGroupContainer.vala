@@ -25,6 +25,8 @@ namespace Gala {
         public const int SPACING = 48;
         public const int GROUP_WIDTH = 64;
 
+        public WindowManager wm { get; construct; }
+
         public signal void request_reposition (bool animate);
 
         private float _scale_factor = 1.0f;
@@ -40,8 +42,8 @@ namespace Gala {
             }
         }
 
-        public IconGroupContainer (float scale) {
-            Object (scale_factor: scale);
+        public IconGroupContainer (WindowManager wm, float scale) {
+            Object (wm: wm, scale_factor: scale);
 
             layout_manager = new Clutter.BoxLayout ();
         }
@@ -60,7 +62,7 @@ namespace Gala {
 
             insert_child_at_index (group, index * 2);
 
-            var thumb = new WorkspaceInsertThumb (index, scale_factor);
+            var thumb = new WorkspaceInsertThumb (wm, index, scale_factor);
             thumb.notify["expanded"].connect_after (expanded_changed);
             insert_child_at_index (thumb, index * 2);
 

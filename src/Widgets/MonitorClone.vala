@@ -42,7 +42,6 @@ namespace Gala {
             reactive = true;
 
             background = new BackgroundManager (display, monitor, false);
-            background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
 
             window_container = new WindowCloneContainer (wm, gesture_tracker);
             window_container.window_selected.connect ((w) => { window_selected (w); });

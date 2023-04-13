@@ -7,6 +7,8 @@
 public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public const int EXPAND_DELAY = 300;
 
+    public WindowManager wm { get; construct; }
+
     public int workspace_index { get; construct set; }
     public bool expanded { get; set; default = false; }
     public int delay { get; set; default = EXPAND_DELAY; }
@@ -25,8 +27,8 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
 
     private uint expand_timeout = 0;
 
-    public WorkspaceInsertThumb (int workspace_index, float scale) {
-        Object (workspace_index: workspace_index, scale_factor: scale);
+    public WorkspaceInsertThumb (WindowManager wm, int workspace_index, float scale) {
+        Object (wm: wm, workspace_index: workspace_index, scale_factor: scale);
 
         reallocate ();
         opacity = 0;
@@ -82,7 +84,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     private new void transform (bool expand) {
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        set_easing_duration (200);
+        set_easing_duration (wm.enable_animations ? 200 : 0);
 
         if (!expand) {
             remove_transition ("pulse");
@@ -100,6 +102,10 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     }
 
     private void add_pulse_animation () {
+        if (!wm.enable_animations) {
+            return;
+        }
+
         var transition = new Clutter.TransitionGroup () {
             duration = 800,
             auto_reverse = true,

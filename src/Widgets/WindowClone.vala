@@ -517,7 +517,7 @@ public class Gala.WindowClone : Clutter.Actor {
     
             add_transition ("shadow-opacity", shadow_transition);
         } else {
-            shadow_opacity = 255;
+            shadow_opacity = show ? 255 : 0;
         }
     }
 
@@ -599,10 +599,11 @@ public class Gala.WindowClone : Clutter.Actor {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
+        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
 
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
-        clone.set_easing_duration (FADE_ANIMATION_DURATION);
+        clone.set_easing_duration (duration);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
         clone.set_scale (scale, scale);
         clone.opacity = 0;
@@ -613,12 +614,10 @@ public class Gala.WindowClone : Clutter.Actor {
 
         get_transformed_position (out abs_x, out abs_y);
 
-        save_easing_state ();
-        set_easing_duration (0);
         set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
         window_icon.save_easing_state ();
-        window_icon.set_easing_duration (FADE_ANIMATION_DURATION);
+        window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
         window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
             click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
@@ -655,6 +654,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
+        duration = wm.enable_animations ? duration : 0;
 
         window_icon.save_easing_state ();
 
@@ -758,9 +758,11 @@ public class Gala.WindowClone : Clutter.Actor {
         get_parent ().remove_child (this);
         prev_parent.insert_child_at_index (this, prev_index);
 
+        var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+
         clone.save_easing_state ();
         clone.set_pivot_point (0.0f, 0.0f);
-        clone.set_easing_duration (250);
+        clone.set_easing_duration (duration);
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_scale (1, 1);
         clone.opacity = 255;
@@ -768,11 +770,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         request_reposition ();
 
-        // pop 0 animation duration from drag_begin()
-        restore_easing_state ();
-
         window_icon.save_easing_state ();
-        window_icon.set_easing_duration (250);
+        window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         set_window_icon_position (slot.width, slot.height);
         window_icon.restore_easing_state ();
