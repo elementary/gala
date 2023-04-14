@@ -246,7 +246,7 @@ namespace Gala {
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
-            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE ||
+            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
                 (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
                 (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
             ) {
@@ -265,13 +265,13 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
                 (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
 
             var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
                 (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
 
-            if (gesture.type == Gdk.EventType.SCROLL || (can_handle_swipe && fingers)) {
+            if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }

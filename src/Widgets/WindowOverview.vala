@@ -30,10 +30,10 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (event.keyval == Clutter.Key.Escape) {
             close ();
 
-            return Gdk.EVENT_STOP;
+            return Clutter.EVENT_STOP;
         }
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
     public override void key_focus_out () {
@@ -43,11 +43,11 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
-        if (event.button == Gdk.BUTTON_PRIMARY) {
+        if (event.button == Clutter.Button.PRIMARY) {
             close ();
         }
 
-        return Gdk.EVENT_STOP;
+        return Clutter.EVENT_STOP;
     }
 
     /**

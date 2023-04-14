@@ -23,7 +23,7 @@ public class Gala.Zoom : Object {
     public Zoom (WindowManager wm) {
         Object (wm: wm);
 
-        var display = wm.get_display ();
+        unowned var display = wm.get_display ();
         var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
 
         display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
@@ -39,7 +39,7 @@ public class Gala.Zoom : Object {
             return;
         }
 
-        var display = wm.get_display ();
+        unowned var display = wm.get_display ();
         display.remove_keybinding ("zoom-in");
         display.remove_keybinding ("zoom-out");
 
@@ -62,7 +62,7 @@ public class Gala.Zoom : Object {
     }
 
     private void on_gesture_detected (Gesture gesture) {
-        if (gesture.type != Gdk.EventType.TOUCHPAD_PINCH ||
+        if (gesture.type != Clutter.EventType.TOUCHPAD_PINCH ||
             (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
         ) {
             return;
@@ -99,6 +99,18 @@ public class Gala.Zoom : Object {
         gesture_tracker.connect_handlers (null, (owned) on_animation_update, null);
     }
 
+    private inline Graphene.Point compute_new_pivot_point () {
+        unowned var wins = wm.ui_group;
+        Graphene.Point coords;
+        wm.get_display ().get_cursor_tracker ().get_pointer (out coords, null);
+        var new_pivot = Graphene.Point () {
+            x = coords.x / wins.width,
+            y = coords.y / wins.height
+        };
+
+        return new_pivot;
+    }
+
     private void zoom (float delta, bool play_sound, bool animate) {
         // Nothing to do if zooming out of our bounds is requested
         if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
@@ -108,21 +120,14 @@ public class Gala.Zoom : Object {
             return;
         }
 
-        var wins = wm.ui_group;
-
+        unowned var wins = wm.ui_group;
         // Add timer to poll current mouse position to reposition window-group
         // to show requested zoomed area
         if (mouse_poll_timer == 0) {
-            float mx, my;
-            var client_pointer = Gdk.Display.get_default ().get_default_seat ().get_pointer ();
-            client_pointer.get_position (null, out mx, out my);
-            wins.set_pivot_point (mx / wins.width, my / wins.height);
+            wins.pivot_point = compute_new_pivot_point ();
 
             mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
-                client_pointer.get_position (null, out mx, out my);
-                var new_pivot = Graphene.Point ();
-
-                new_pivot.init (mx / wins.width, my / wins.height);
+                var new_pivot = compute_new_pivot_point ();
                 if (wins.pivot_point.equal (new_pivot)) {
                     return true;
                 }

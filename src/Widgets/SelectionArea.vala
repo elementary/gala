@@ -24,8 +24,8 @@ namespace Gala {
         public bool cancelled { get; private set; }
 
         private ModalProxy? modal_proxy;
-        private Gdk.Point start_point;
-        private Gdk.Point end_point;
+        private Graphene.Point start_point;
+        private Graphene.Point end_point;
         private bool dragging = false;
         private bool clicked = false;
 
@@ -34,8 +34,8 @@ namespace Gala {
         }
 
         construct {
-            start_point = { 0, 0 };
-            end_point = { 0, 0 };
+            start_point.init (0, 0);
+            end_point.init (0, 0);
             visible = true;
             reactive = true;
 
@@ -70,8 +70,7 @@ namespace Gala {
 
             clicked = true;
 
-            start_point.x = (int) e.x;
-            start_point.y = (int) e.y;
+            start_point.init (e.x, e.y);
 
             return true;
         }
@@ -104,8 +103,7 @@ namespace Gala {
                 return true;
             }
 
-            end_point.x = (int) e.x;
-            end_point.y = (int) e.y;
+            end_point.init (e.x, e.y);
             content.invalidate ();
 
             if (!dragging) {
@@ -130,11 +128,11 @@ namespace Gala {
             modal_proxy = wm.push_modal (this);
         }
 
-        public void get_selection_rectangle (out int x, out int y, out int width, out int height) {
-            x = int.min (start_point.x, end_point.x);
-            y = int.min (start_point.y, end_point.y);
-            width = (start_point.x - end_point.x).abs ();
-            height = (start_point.y - end_point.y).abs ();
+        public Graphene.Rect get_selection_rectangle () {
+            return Graphene.Rect () {
+                origin = start_point,
+                size = Graphene.Size.zero ()
+            }.expand (end_point);
         }
 
         private bool draw_area (Cairo.Context ctx) {
@@ -146,14 +144,12 @@ namespace Gala {
 
             ctx.translate (0.5, 0.5);
 
-            int x, y, w, h;
-            get_selection_rectangle (out x, out y, out w, out h);
-
-            ctx.rectangle (x, y, w, h);
+            var rect = get_selection_rectangle ();
+            ctx.rectangle (rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
             ctx.set_source_rgba (0.1, 0.1, 0.1, 0.2);
             ctx.fill ();
 
-            ctx.rectangle (x, y, w, h);
+            ctx.rectangle (rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
             ctx.set_source_rgb (0.7, 0.7, 0.7);
             ctx.set_line_width (1.0);
             ctx.stroke ();
