@@ -103,7 +103,7 @@ public class Gala.Zoom : Object {
         unowned var wins = wm.ui_group;
         Graphene.Point coords;
         wm.get_display ().get_cursor_tracker ().get_pointer (out coords, null);
-        var new_pivot = new Graphene.Point () {
+        var new_pivot = Graphene.Point () {
             x = coords.x / wins.width,
             y = coords.y / wins.height
         };
