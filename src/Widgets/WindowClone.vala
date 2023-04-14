@@ -839,7 +839,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         private bool draw_background (Cairo.Context cr, int width, int height) {
             if (!visible || opacity == 0) {
-                return Gdk.EVENT_PROPAGATE;
+                return Clutter.EVENT_PROPAGATE;
             }
 
             var color = InternalUtils.get_theme_accent_color ();
