@@ -225,25 +225,25 @@ public class Gala.ToucheggBackend : Object {
     }
 
     private static Gesture? make_gesture (GestureType type, GestureDirection direction, int fingers, DeviceType performed_on_device_type) {
-        Gdk.EventType event_type;
+        Clutter.EventType event_type;
         switch (type) {
             case GestureType.SWIPE:
-                event_type = Gdk.EventType.TOUCHPAD_SWIPE;
+                event_type = Clutter.EventType.TOUCHPAD_SWIPE;
                 break;
             case GestureType.PINCH:
-                event_type = Gdk.EventType.TOUCHPAD_PINCH;
+                event_type = Clutter.EventType.TOUCHPAD_PINCH;
                 break;
             default:
                 return null;
         }
 
-        Gdk.InputSource input_source;
+        Clutter.InputDeviceType input_source;
         switch (performed_on_device_type) {
             case DeviceType.TOUCHPAD:
-                input_source = Gdk.InputSource.TOUCHPAD;
+                input_source = Clutter.InputDeviceType.TOUCHPAD_DEVICE;
                 break;
             case DeviceType.TOUCHSCREEN:
-                input_source = Gdk.InputSource.TOUCHSCREEN;
+                input_source = Clutter.InputDeviceType.TOUCHSCREEN_DEVICE;
                 break;
             default:
                 return null;

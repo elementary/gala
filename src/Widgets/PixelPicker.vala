@@ -20,18 +20,17 @@ namespace Gala {
         public signal void closed ();
 
         public WindowManager wm { get; construct; }
-
         public bool cancelled { get; private set; }
+        public Graphene.Point point { get; private set; }
 
         private ModalProxy? modal_proxy;
-        private Gdk.Point point;
 
         public PixelPicker (WindowManager wm) {
             Object (wm: wm);
         }
 
         construct {
-            point = { 0, 0 };
+            point.init (0, 0);
             visible = true;
             reactive = true;
 
@@ -61,8 +60,7 @@ namespace Gala {
                 return true;
             }
 
-            point.x = (int) e.x;
-            point.y = (int) e.y;
+            point = Graphene.Point () { x = e.x, y = e.y };
 
             close ();
             this.hide ();
@@ -84,11 +82,6 @@ namespace Gala {
             grab_key_focus ();
 
             modal_proxy = wm.push_modal (this);
-        }
-
-        public void get_point (out int x, out int y) {
-            x = point.x;
-            y = point.y;
         }
     }
 }
