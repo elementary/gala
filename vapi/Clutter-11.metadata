@@ -189,3 +189,6 @@ BinLayout.new.*_align default=Clutter.BinAlignment.START
 
 // Possibly keep
 KEY_* skip=false name="KEY_(.+)" type="uint" parent="Clutter.Key"
+BUTTON_* skip=false name="BUTTON_(.+)" type="uint32" parent="Clutter.Button"
+EVENT_STOP skip=false type="bool"
+EVENT_PROPAGATE skip=false type="bool"

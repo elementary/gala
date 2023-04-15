@@ -521,7 +521,7 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
                 (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
 
             var fingers = (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
@@ -806,11 +806,6 @@ namespace Gala {
          */
         public bool modal_proxy_valid (ModalProxy proxy) {
             return (proxy in modal_stack);
-        }
-
-        public void get_current_cursor_position (out int x, out int y) {
-            Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null,
-                out x, out y);
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {

@@ -15,7 +15,7 @@ namespace Gala {
 
         private const int PLUS_SIZE = 8;
         private const int PLUS_WIDTH = 24;
-
+        private const int BACKDROP_ABSOLUTE_OPACITY = 40;
         private const int CLOSE_BUTTON_SIZE = 36;
         private const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
@@ -25,45 +25,17 @@ namespace Gala {
          */
         public signal void selected ();
 
-        private uint8 _backdrop_opacity = 0;
+        private float _backdrop_opacity = 0.0f;
         /**
-         * The opacity of the backdrop/highlight. Set by the active property setter.
+         * The opacity of the backdrop/highlight.
          */
-        protected uint8 backdrop_opacity {
+        public float backdrop_opacity {
             get {
                 return _backdrop_opacity;
             }
             set {
                 _backdrop_opacity = value;
                 queue_redraw ();
-            }
-        }
-
-        private bool _active = false;
-        /**
-         * Fades in/out the backdrop/highlight
-         */
-        public bool active {
-            get {
-                return _active;
-            }
-            set {
-                if (_active == value)
-                    return;
-
-                if (get_transition ("backdrop-opacity") != null)
-                    remove_transition ("backdrop-opacity");
-
-                _active = value;
-
-                var transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                    duration = 300,
-                    remove_on_complete = true
-                };
-                transition.set_from_value (_active ? 0 : 40);
-                transition.set_to_value (_active ? 40 : 0);
-
-                add_transition ("backdrop-opacity", transition);
             }
         }
 
@@ -128,7 +100,7 @@ namespace Gala {
 
             // block propagation of button presses on the close button, otherwise
             // the click action on the icon group will act weirdly
-            close_button.button_release_event.connect (() => { return Gdk.EVENT_STOP; });
+            close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
 
             add_child (close_button);
 
@@ -144,7 +116,7 @@ namespace Gala {
         public override bool enter_event (Clutter.CrossingEvent event) {
             toggle_close_button (true);
 
-            return Gdk.EVENT_PROPAGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         public override bool leave_event (Clutter.CrossingEvent event) {
@@ -152,7 +124,7 @@ namespace Gala {
                 toggle_close_button (false);
             }
 
-            return Gdk.EVENT_PROPAGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         /**
@@ -219,7 +191,7 @@ namespace Gala {
          * Override the paint handler to draw our backdrop if necessary
          */
         public override void paint (Clutter.PaintContext context) {
-            if (backdrop_opacity < 1 || drag_action.dragging) {
+            if (backdrop_opacity == 0.0 || drag_action.dragging) {
                 base.paint (context);
                 return;
             }
@@ -228,11 +200,12 @@ namespace Gala {
             var x = (InternalUtils.scale_to_int (SIZE, scale_factor) - width) / 2;
             var y = -10;
             var height = InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
+            var backdrop_opacity_int = (uint8) (BACKDROP_ABSOLUTE_OPACITY * backdrop_opacity);
 
             Cogl.VertexP2T2C4 vertices[4];
-            vertices[0] = { x, y + height, 0, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[0] = { x, y + height, 0, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
-            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[3] = { x + width, y, 1, 0, 0, 0, 0, 0 };
 
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
@@ -349,7 +322,7 @@ namespace Gala {
             // single icon => big icon
             if (n_windows == 1) {
                 var icon = (WindowIconActor) icon_container.get_child_at_index (0);
-                icon.place (0, 0, 64);
+                icon.place (0, 0, 64, scale_factor);
 
                 return false;
             }
@@ -494,7 +467,7 @@ namespace Gala {
                     continue;
                 }
 
-                window.place (x, y, size);
+                window.place (x, y, size, scale_factor);
 
                 x += InternalUtils.scale_to_int (size, scale_factor) + spacing;
                 if (x + InternalUtils.scale_to_int (size, scale_factor) >= scaled_size) {

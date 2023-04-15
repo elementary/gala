@@ -2,6 +2,14 @@
 
 [CCode (cprefix = "Clutter", gir_namespace = "Clutter", gir_version = "1.0", lower_case_cprefix = "clutter_")]
 namespace Clutter {
+	namespace Button {
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_BUTTON_MIDDLE")]
+		public const uint32 MIDDLE;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_BUTTON_PRIMARY")]
+		public const uint32 PRIMARY;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_BUTTON_SECONDARY")]
+		public const uint32 SECONDARY;
+	}
 	namespace Key {
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_0")]
 		public const uint @0;
@@ -8334,6 +8342,12 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_CURRENT_TIME")]
 	[Version (since = "0.4")]
 	public const int CURRENT_TIME;
+	[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_EVENT_PROPAGATE")]
+	[Version (since = "1.10")]
+	public const bool EVENT_PROPAGATE;
+	[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_EVENT_STOP")]
+	[Version (since = "1.10")]
+	public const bool EVENT_STOP;
 	[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_FLAVOUR")]
 	[Version (deprecated = true, deprecated_since = "1.10", since = "0.4")]
 	public const string FLAVOUR;
