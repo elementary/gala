@@ -142,21 +142,6 @@ namespace Gala {
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
-        private bool _active = false;
-        /**
-         * If this WorkspaceClone is currently the active one. Also sets the active
-         * state on its IconGroup.
-         */
-        public bool active {
-            get {
-                return _active;
-            }
-            set {
-                _active = value;
-                icon_group.active = value;
-            }
-        }
-
         private float _scale_factor = 1.0f;
         public float scale_factor {
             get {

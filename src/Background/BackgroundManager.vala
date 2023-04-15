@@ -20,7 +20,7 @@ namespace Gala {
         private const string GNOME_BACKGROUND_SCHEMA = "org.gnome.desktop.background";
         private const string GALA_BACKGROUND_SCHEMA = "io.elementary.desktop.background";
         private const string DIM_WALLPAPER_KEY = "dim-wallpaper-in-dark-style";
-        private const double DIM_OPACITY = 0.85;
+        private const double DIM_OPACITY = 0.55;
         private const int FADE_ANIMATION_TIME = 1000;
 
         public signal void changed ();
@@ -226,6 +226,8 @@ namespace Gala {
 
                 background_actor.remove_child (dim_actor);
                 dim_actor.destroy ();
+
+                changed ();
             });
 
             dim_actor.add_transition ("wallpaper-dim", transition);

@@ -42,6 +42,7 @@ namespace Gala {
         private IconGroupContainer icon_groups;
         private Clutter.Actor workspaces;
         private Clutter.Actor dock_clones;
+        private Clutter.Actor primary_monitor_container;
 
         private GLib.Settings gala_behavior_settings;
 
@@ -75,8 +76,13 @@ namespace Gala {
 
             dock_clones = new Clutter.Actor ();
 
-            add_child (icon_groups);
-            add_child (workspaces);
+            // Create a child container that will be sized to fit the primary monitor, to contain the "main"
+            // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
+            // stage as it contains MonitorClones for each monitor.
+            primary_monitor_container = new Clutter.Actor ();
+            primary_monitor_container.add_child (icon_groups);
+            primary_monitor_container.add_child (workspaces);
+            add_child (primary_monitor_container);
             add_child (dock_clones);
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -160,8 +166,8 @@ namespace Gala {
             var scale = display.get_monitor_scale (primary);
             icon_groups.scale_factor = scale;
 
-            set_position (primary_geometry.x, primary_geometry.y);
-            set_size (primary_geometry.width, primary_geometry.height);
+            primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
+            primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
 
             foreach (var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
@@ -216,7 +222,8 @@ namespace Gala {
                 return;
             }
 
-            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
 
             float dest = nudge_gap;
             if (direction == Meta.MotionDirection.RIGHT) {
@@ -239,7 +246,7 @@ namespace Gala {
         }
 
         private void on_multitasking_gesture_detected (Gesture gesture) {
-            if (gesture.type != Gdk.EventType.TOUCHPAD_SWIPE ||
+            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
                 (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
                 (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
             ) {
@@ -258,13 +265,13 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = gesture.type == Gdk.EventType.TOUCHPAD_SWIPE &&
+            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
                 (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
 
             var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
                 (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
 
-            if (gesture.type == Gdk.EventType.SCROLL || (can_handle_swipe && fingers)) {
+            if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
             }
@@ -281,20 +288,34 @@ namespace Gala {
             float initial_x = workspaces.x;
             float target_x = 0;
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
-            var nudge_gap = WindowManagerGala.NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
+
+            unowned IconGroup active_icon_group = null;
+            unowned IconGroup? target_icon_group = null;
 
             if (is_nudge_animation) {
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
                 target_x = initial_x + (workspaces_geometry.width * -relative_dir);
             } else {
-                foreach (var child in workspaces.get_children ()) {
-                    unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                foreach (unowned var child in workspaces.get_children ()) {
+                    unowned var workspace_clone = (WorkspaceClone) child;
                     var index = workspace_clone.workspace.index ();
+
                     if (index == target_workspace_index) {
+                        target_icon_group = workspace_clone.icon_group;
                         target_x = -workspace_clone.multitasking_view_x ();
-                        break;
+                    } else if (index == active_workspace_index) {
+                        active_icon_group = workspace_clone.icon_group;
                     }
                 }
+            }
+
+            if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
+                active_icon_group.remove_transition ("backdrop-opacity");
+            }
+            if (!is_nudge_animation && target_icon_group.get_transition ("backdrop-opacity") != null) {
+                target_icon_group.remove_transition ("backdrop-opacity");
             }
 
             debug ("Starting MultitaskingView switch workspace animation:");
@@ -307,12 +328,18 @@ namespace Gala {
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
+                var icon_group_opacity = GestureTracker.animation_value (0.0f, 1.0f, percentage, false);
 
                 if (is_nudge_animation) {
                     x = x.clamp (initial_x - nudge_gap, initial_x + nudge_gap);
                 }
 
                 workspaces.x = x;
+
+                if (!is_nudge_animation) {
+                    active_icon_group.backdrop_opacity = 1.0f - icon_group_opacity;
+                    target_icon_group.backdrop_opacity = icon_group_opacity;
+                }
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
@@ -326,6 +353,25 @@ namespace Gala {
                 workspaces.set_easing_duration (duration);
                 workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
                 workspaces.restore_easing_state ();
+
+                if (!is_nudge_animation) {
+                    var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                        duration = calculated_duration,
+                        remove_on_complete = true
+                    };
+                    active_transition.set_from_value (active_icon_group.backdrop_opacity);
+                    active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
+                    active_icon_group.add_transition ("backdrop-opacity", active_transition);
+
+                    var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                        duration = calculated_duration,
+                        remove_on_complete = true
+                    };
+                    target_transition.set_from_value (target_icon_group.backdrop_opacity);
+                    target_transition.set_to_value (cancel_action ? 0.0f : 1.0f);
+                    target_icon_group.add_transition ("backdrop-opacity", target_transition);
+                }
+
 
                 workspaces.get_transition ("x").completed.connect (() => {
                     workspace_gesture_tracker.enabled = true;
@@ -356,16 +402,16 @@ namespace Gala {
             var active_index = manager.get_active_workspace ().index ();
             var active_x = 0.0f;
 
-            foreach (var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+            foreach (unowned var child in workspaces.get_children ()) {
+                unowned var workspace_clone = (WorkspaceClone) child;
                 var index = workspace_clone.workspace.index ();
                 var dest_x = workspace_clone.multitasking_view_x ();
 
                 if (index == active_index) {
                     active_x = dest_x;
-                    workspace_clone.active = true;
+                    workspace_clone.icon_group.backdrop_opacity = 1.0f;
                 } else {
-                    workspace_clone.active = false;
+                    workspace_clone.icon_group.backdrop_opacity = 0.0f;
                 }
 
                 workspace_clone.save_easing_state ();
@@ -392,14 +438,14 @@ namespace Gala {
                 icon_groups.set_easing_duration (200);
             }
 
-            var scale = InternalUtils.get_ui_scaling_factor ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
             // make sure the active workspace's icongroup is always visible
             var icon_groups_width = icon_groups.calculate_total_width ();
-            if (icon_groups_width > width) {
-                icon_groups.x = (-active_index * (IconGroupContainer.SPACING * scale + IconGroup.SIZE * scale) + width / 2)
-                    .clamp (width - icon_groups_width - 64 * scale, 64 * scale);
+            if (icon_groups_width > primary_monitor_container.width) {
+                icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
+                    .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
             } else
-                icon_groups.x = width / 2 - icon_groups_width / 2;
+                icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
 
             if (animate)
                 icon_groups.restore_easing_state ();
@@ -607,9 +653,9 @@ namespace Gala {
                 show ();
                 grab_key_focus ();
 
-                var scale = InternalUtils.get_ui_scaling_factor ();
+                var scale = display.get_monitor_scale (display.get_primary_monitor ());
                 icon_groups.force_reposition ();
-                icon_groups.y = height - WorkspaceClone.BOTTOM_OFFSET * scale + 20 * scale;
+                icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
@@ -827,6 +873,8 @@ namespace Gala {
                 case "switch-to-workspace-last":
                 case "zoom-in":
                 case "zoom-out":
+                case "screenshot":
+                case "screenshot-clip":
                     return false;
                 default:
                     break;
