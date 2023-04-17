@@ -23,6 +23,7 @@ namespace Gala {
      */
     public class WindowIconActor : Clutter.Actor {
         public Meta.Window window { get; construct; }
+        public WindowManager wm { get; construct; }
 
         private float cur_icon_scale = 1.0f;
         private float desired_icon_scale = 1.0f;
@@ -64,7 +65,7 @@ namespace Gala {
             set {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
-                } else if (!_temporary && value) {
+                } else if (!_temporary && value && wm.enable_animations) {
                     var transition = new Clutter.TransitionGroup () {
                         duration = 800,
                         auto_reverse = true,
@@ -98,19 +99,15 @@ namespace Gala {
             }
         }
 
-        private bool initial = true;
-
         private WindowIcon? icon = null;
         private WindowIcon? old_icon = null;
 
-        public WindowIconActor (Meta.Window window) {
-            Object (window: window);
+        public WindowIconActor (WindowManager wm, Meta.Window window) {
+            Object (wm: wm, window: window);
         }
 
         construct {
             set_pivot_point (0.5f, 0.5f);
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_ELASTIC);
-            set_easing_duration (800);
 
             window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
         }
@@ -133,19 +130,9 @@ namespace Gala {
          * @param size The size to which to animate to and display the icon in
          */
         public void place (float x, float y, int size, float scale) {
-            if (initial) {
-                save_easing_state ();
-                set_easing_duration (10);
-            }
-
             desired_icon_scale = scale;
             set_position (x, y);
             icon_size = size;
-
-            if (initial) {
-                restore_easing_state ();
-                initial = false;
-            }
         }
 
         /**
@@ -158,8 +145,10 @@ namespace Gala {
 
             add_child (new_icon);
 
+            new_icon.save_easing_state ();
             new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            new_icon.set_easing_duration (500);
+            new_icon.set_easing_duration (wm.enable_animations ? 500 : 0);
+            new_icon.restore_easing_state ();
 
             if (icon == null) {
                 icon = new_icon;
