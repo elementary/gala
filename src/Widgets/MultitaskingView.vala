@@ -72,7 +72,7 @@ namespace Gala {
             workspaces = new Clutter.Actor ();
             workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
 
-            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
+            icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
 
             dock_clones = new Clutter.Actor ();
 
@@ -355,39 +355,54 @@ namespace Gala {
                 workspaces.restore_easing_state ();
 
                 if (!is_nudge_animation) {
-                    var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                        duration = calculated_duration,
-                        remove_on_complete = true
-                    };
-                    active_transition.set_from_value (active_icon_group.backdrop_opacity);
-                    active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
-                    active_icon_group.add_transition ("backdrop-opacity", active_transition);
+                    if (wm.enable_animations) {
+                        var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                            duration = duration,
+                            remove_on_complete = true
+                        };
+                        active_transition.set_from_value (active_icon_group.backdrop_opacity);
+                        active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
+                        active_icon_group.add_transition ("backdrop-opacity", active_transition);
 
-                    var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                        duration = calculated_duration,
-                        remove_on_complete = true
-                    };
-                    target_transition.set_from_value (target_icon_group.backdrop_opacity);
-                    target_transition.set_to_value (cancel_action ? 0.0f : 1.0f);
-                    target_icon_group.add_transition ("backdrop-opacity", target_transition);
+                        var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
+                            duration = duration,
+                            remove_on_complete = true
+                        };
+                        target_transition.set_from_value (target_icon_group.backdrop_opacity);
+                        target_transition.set_to_value (cancel_action ? 0.0f : 1.0f);
+                        target_icon_group.add_transition ("backdrop-opacity", target_transition);
+                    } else {
+                        active_icon_group.backdrop_opacity = cancel_action ? 1.0f : 0.0f;
+                        target_icon_group.backdrop_opacity = cancel_action ? 0.0f : 1.0f;
+                    }
                 }
 
 
-                workspaces.get_transition ("x").completed.connect (() => {
+                var transition = workspaces.get_transition ("x");
+                if (transition != null) {
+                    transition.completed.connect (() => {
+                        workspace_gesture_tracker.enabled = true;
+
+                        if (!is_nudge_animation && !cancel_action) {
+                            manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
+                            update_positions (false);
+                        }
+                    });
+                } else {
                     workspace_gesture_tracker.enabled = true;
 
                     if (!is_nudge_animation && !cancel_action) {
                         manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
                         update_positions (false);
-                    } else {
-                        // Reset easing parameters either way.
-                        // This stops the animation from causing touch events to "lag" behind.
-                        workspaces.set_easing_duration (0);
                     }
-                });
+                }
             };
 
-            workspace_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            if (!wm.enable_animations) {
+                on_animation_end (1, false, 0);
+            } else {
+                workspace_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+            }
         }
 
         /**
@@ -415,13 +430,13 @@ namespace Gala {
                 }
 
                 workspace_clone.save_easing_state ();
-                workspace_clone.set_easing_duration (animate ? 200 : 0);
+                workspace_clone.set_easing_duration ((animate && wm.enable_animations) ? 200 : 0);
                 workspace_clone.x = dest_x;
                 workspace_clone.restore_easing_state ();
             }
 
             workspaces.save_easing_state ();
-            workspaces.set_easing_duration (animate ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
+            workspaces.set_easing_duration ((animate && wm.enable_animations) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
             workspaces.x = -active_x;
             workspaces.restore_easing_state ();
 
@@ -629,6 +644,11 @@ namespace Gala {
                 return;
             }
 
+            // we don't want to handle cancel animation when animation are off
+            if (is_cancel_animation && !wm.enable_animations) {
+                return;
+            }
+
             animating = true;
 
             opened = !opened;
@@ -769,9 +789,7 @@ namespace Gala {
                 var clone = new SafeWindowClone (window, true);
                 dock_clones.add_child (clone);
 
-                GestureTracker.OnBegin on_animation_begin = () => {
-                    clone.set_position (initial_x, initial_y);
-                };
+                clone.set_position (initial_x, initial_y);
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
@@ -785,16 +803,15 @@ namespace Gala {
 
                     clone.save_easing_state ();
                     clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    clone.set_easing_duration (is_cancel_animation ? 0 : ANIMATION_DURATION);
+                    clone.set_easing_duration ((!is_cancel_animation && wm.enable_animations) ? ANIMATION_DURATION : 0);
                     clone.y = target_y;
                     clone.restore_easing_state ();
                 };
 
-                if (!with_gesture) {
-                    on_animation_begin (0);
+                if (!with_gesture || !wm.enable_animations) {
                     on_animation_end (1, false, 0);
                 } else {
-                    multitasking_gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                    multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }
@@ -804,10 +821,6 @@ namespace Gala {
                 var dock = (Clutter.Clone) child;
                 var initial_y = dock.y;
                 var target_y = dock.source.y;
-
-                GestureTracker.OnBegin on_animation_begin = () => {
-                    dock.set_easing_duration (0);
-                };
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
@@ -820,16 +833,16 @@ namespace Gala {
                     }
 
                     dock.save_easing_state ();
-                    dock.set_easing_duration (ANIMATION_DURATION);
                     dock.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                    dock.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
                     dock.y = target_y;
                     dock.restore_easing_state ();
                 };
 
-                if (!with_gesture) {
+                if (!with_gesture || !wm.enable_animations) {
                     on_animation_end (1, false, 0);
                 } else {
-                    multitasking_gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned) on_animation_end);
+                    multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
             }
         }

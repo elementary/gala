@@ -340,7 +340,7 @@ namespace Gala {
 
             window_container.restack_windows ();
 
-            var display = workspace.get_display ();
+            unowned var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
             var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
@@ -360,7 +360,7 @@ namespace Gala {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage);
                 set_x (x);
 
-                double update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
+                var update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
@@ -370,19 +370,19 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
-                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture) {
+            if (!with_gesture || !wm.enable_animations) {
                 on_animation_begin (0);
                 on_animation_end (1, false, 0);
             } else {
@@ -442,19 +442,19 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
-                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture) {
+            if (!with_gesture || !wm.enable_animations) {
                 on_animation_end (1, false, 0);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);

@@ -231,12 +231,8 @@ namespace Gala {
          *                  the group.
          */
         public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
-            var new_window = new WindowIconActor (window);
-
-            new_window.save_easing_state ();
-            new_window.set_easing_duration (0);
+            var new_window = new WindowIconActor (wm, window);
             new_window.set_position (32, 32);
-            new_window.restore_easing_state ();
             new_window.temporary = temporary;
 
             icon_container.add_child (new_window);
@@ -251,25 +247,28 @@ namespace Gala {
          * @param animate Whether to fade the icon out before removing it
          */
         public void remove_window (Meta.Window window, bool animate = true) {
-            foreach (var child in icon_container.get_children ()) {
-                unowned WindowIconActor w = (WindowIconActor) child;
-                if (w.window == window) {
+            foreach (unowned var child in icon_container.get_children ()) {
+                unowned var icon = (WindowIconActor) child;
+                if (icon.window == window) {
                     if (animate) {
-                        w.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                        w.set_easing_duration (200);
-                        w.opacity = 0;
+                        icon.save_easing_state ();
+                        icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
+                        icon.set_easing_duration (wm.enable_animations ? 200 : 0);
+                        icon.opacity = 0;
+                        icon.restore_easing_state ();
 
-                        var transition = w.get_transition ("opacity");
+                        var transition = icon.get_transition ("opacity");
                         if (transition != null) {
                             transition.completed.connect (() => {
-                                w.destroy ();
+                                icon.destroy ();
                             });
                         } else {
-                            w.destroy ();
+                            icon.destroy ();
                         }
 
-                    } else
-                        w.destroy ();
+                    } else {
+                        icon.destroy ();
+                    }
 
                     // don't break here! If people spam hover events and we animate
                     // removal, we can actually multiple instances of the same window icon
