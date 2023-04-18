@@ -807,7 +807,7 @@ namespace Gala {
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {
-            unowned var ancestor = window.find_root_ancestor ();
+            unowned var ancestor = window.get_transient_for ();
             if (ancestor != null && ancestor != window) {
                 unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
                 // Can't rely on win.has_effects since other effects could be applied
