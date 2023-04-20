@@ -562,7 +562,8 @@ namespace Gala {
             }
 
             animating_nudge = true;
-            var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = get_display ().get_monitor_scale (get_display ().get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)NUDGE_GAP, scale);
 
             float dest = 0;
             if (!switch_workspace_with_gesture) {
@@ -1167,11 +1168,11 @@ namespace Gala {
             Meta.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
-                int ui_scale = InternalUtils.get_ui_scaling_factor ();
-                icon.x *= ui_scale;
-                icon.y *= ui_scale;
-                icon.width *= ui_scale;
-                icon.height *= ui_scale;
+                float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
+                icon.x = InternalUtils.scale_to_int (icon.x, ui_scale);
+                icon.y = InternalUtils.scale_to_int (icon.y, ui_scale);
+                icon.width = InternalUtils.scale_to_int (icon.width, ui_scale);
+                icon.height = InternalUtils.scale_to_int (icon.height, ui_scale);
 
                 float scale_x = (float)icon.width / actor.width;
                 float scale_y = (float)icon.height / actor.height;
@@ -1930,8 +1931,9 @@ namespace Gala {
             main_container.width = move_primary_only ? monitor_geom.width : screen_width;
             main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
+            var monitor_scale = display.get_monitor_scale (primary);
             var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            x2 += WORKSPACE_GAP * InternalUtils.get_ui_scaling_factor ();
+            x2 += WORKSPACE_GAP * monitor_scale;
             if (direction == Meta.MotionDirection.RIGHT)
                 x2 = -x2;
 
