@@ -310,8 +310,18 @@ namespace Gala {
             return container;
         }
 
+        /**
+         * DEPRECATED: When used with Mutter 44, this will always return 1.
+         * Get the scaling factor for the monitor you are drawing to with
+         * `Meta.Display.get_monitor_scale` instead
+         */
+        [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
         public static int get_ui_scaling_factor () {
+#if HAS_MUTTER44
+            return 1;
+#else
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#endif
         }
 
         /**
