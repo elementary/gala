@@ -2134,7 +2134,12 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
+#if HAS_MUTTER44
+            unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
+            var timeout = monitor_manager.get_display_configuration_timeout ();
+#else
             var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
+#endif
             var summary = ngettext (
                 "Changes will automatically revert after %i second.",
                 "Changes will automatically revert after %i seconds.",
