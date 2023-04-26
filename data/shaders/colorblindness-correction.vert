@@ -84,7 +84,7 @@ void main() {
 
     // Add compensation to original values
     correction = c + correction;
-    correction.a = 1.0;
+    correction.a = c.a;
 
     cogl_color_out = correction;
 }
