@@ -117,10 +117,13 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
 
-        for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
-            var geometry = wm.get_display ().get_monitor_geometry (i);
+        unowned var display = wm.get_display ();
 
-            var container = new WindowCloneContainer (wm, null, true) {
+        for (var i = 0; i < display.get_n_monitors (); i++) {
+            var geometry = display.get_monitor_geometry (i);
+            var scale = display.get_monitor_scale (i);
+
+            var container = new WindowCloneContainer (wm, null, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,

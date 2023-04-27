@@ -43,7 +43,9 @@ namespace Gala {
 
             background = new BackgroundManager (display, monitor, false);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker);
+            var scale = display.get_monitor_scale (monitor);
+
+            window_container = new WindowCloneContainer (wm, gesture_tracker, scale);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 
             display.window_entered_monitor.connect (window_entered);
@@ -83,6 +85,9 @@ namespace Gala {
             set_position (monitor_geometry.x, monitor_geometry.y);
             set_size (monitor_geometry.width, monitor_geometry.height);
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+
+            var scale = display.get_monitor_scale (monitor);
+            window_container.monitor_scale = scale;
         }
 
         /**

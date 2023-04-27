@@ -562,7 +562,8 @@ namespace Gala {
             }
 
             animating_nudge = true;
-            var nudge_gap = NUDGE_GAP * InternalUtils.get_ui_scaling_factor ();
+            var scale = get_display ().get_monitor_scale (get_display ().get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int ((int)NUDGE_GAP, scale);
 
             float dest = 0;
             if (!switch_workspace_with_gesture) {
@@ -807,7 +808,7 @@ namespace Gala {
         }
 
         private void dim_parent_window (Meta.Window window, bool dim) {
-            unowned var ancestor = window.find_root_ancestor ();
+            unowned var ancestor = window.get_transient_for ();
             if (ancestor != null && ancestor != window) {
                 unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
                 // Can't rely on win.has_effects since other effects could be applied
@@ -857,11 +858,19 @@ namespace Gala {
                     break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
+#if HAS_MUTTER44
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
+#else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
+#endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
+#if HAS_MUTTER44
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
+#else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
+#endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
                     if (current == null)
@@ -1167,11 +1176,11 @@ namespace Gala {
             Meta.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
-                int ui_scale = InternalUtils.get_ui_scaling_factor ();
-                icon.x *= ui_scale;
-                icon.y *= ui_scale;
-                icon.width *= ui_scale;
-                icon.height *= ui_scale;
+                float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
+                icon.x = InternalUtils.scale_to_int (icon.x, ui_scale);
+                icon.y = InternalUtils.scale_to_int (icon.y, ui_scale);
+                icon.width = InternalUtils.scale_to_int (icon.width, ui_scale);
+                icon.height = InternalUtils.scale_to_int (icon.height, ui_scale);
 
                 float scale_x = (float)icon.width / actor.width;
                 float scale_y = (float)icon.height / actor.height;
@@ -1930,8 +1939,9 @@ namespace Gala {
             main_container.width = move_primary_only ? monitor_geom.width : screen_width;
             main_container.height = move_primary_only ? monitor_geom.height : screen_height;
 
+            var monitor_scale = display.get_monitor_scale (primary);
             var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            x2 += WORKSPACE_GAP * InternalUtils.get_ui_scaling_factor ();
+            x2 += WORKSPACE_GAP * monitor_scale;
             if (direction == Meta.MotionDirection.RIGHT)
                 x2 = -x2;
 
@@ -2124,7 +2134,12 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
+#if HAS_MUTTER44
+            unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
+            var timeout = monitor_manager.get_display_configuration_timeout ();
+#else
             var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
+#endif
             var summary = ngettext (
                 "Changes will automatically revert after %i second.",
                 "Changes will automatically revert after %i seconds.",

@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-04-05 14:57+0000\n"
-"PO-Revision-Date: 2023-03-25 14:59+0000\n"
+"PO-Revision-Date: 2023-04-25 08:59+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
-">\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -172,18 +172,14 @@ msgid "Performance improvements"
 msgstr "Améliorations des performances"
 
 #: data/gala.appdata.xml.in:32
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Vue multitâche"
+msgstr "Retirer la texture de la vue multitâche"
 
 #: data/gala.appdata.xml.in:33
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
-"Correction de la sélection des fenêtres en arrière-plan du sélecteur de "
-"fenêtre"
+"Prévention de la sélection accidentelle de fenêtres dans le sélecteur de "
+"fenêtres"
 
 #: data/gala.appdata.xml.in:84
 msgid "Reload animated wallpapers when timezone changes"
