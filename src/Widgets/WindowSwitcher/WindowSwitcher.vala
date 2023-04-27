@@ -37,7 +37,9 @@ namespace Gala {
                 }
 
                 _current_icon = value;
-                _current_icon.selected = true;
+                if (_current_icon != null) {
+                    _current_icon.selected = true;
+                }
 
                 update_caption_text ();
             }
@@ -211,6 +213,9 @@ namespace Gala {
             }
 
             unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            if (current_window == null) {
+                current_icon = null;
+            }
 
             container.width = -1;
             container.destroy_all_children ();
@@ -235,6 +240,7 @@ namespace Gala {
 
             unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
             if (current_window == null) {
+                current_icon = null;
                 return false;
             }
 
@@ -375,20 +381,21 @@ namespace Gala {
 
         private void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
             Clutter.Actor actor;
-            var current = current_icon;
 
-            if (container.get_n_children () == 1) {
+            if (container.get_n_children () == 1 && current_icon != null) {
                 Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
-            if (!backward) {
-                actor = current.get_next_sibling ();
+            if (current_icon == null) {
+                actor = container.get_first_child ();
+            } else if (!backward) {
+                actor = current_icon.get_next_sibling ();
                 if (actor == null) {
                     actor = container.get_first_child ();
                 }
             } else {
-                actor = current.get_previous_sibling ();
+                actor = current_icon.get_previous_sibling ();
                 if (actor == null) {
                     actor = container.get_last_child ();
                 }
@@ -398,7 +405,7 @@ namespace Gala {
         }
 
         private void update_caption_text () {
-            var current_window = current_icon.window;
+            var current_window = current_icon != null ? current_icon.window : null;
             var current_caption = current_window != null ? current_window.title : "n/a";
             caption.set_text (current_caption);
 
