@@ -1843,7 +1843,7 @@ namespace Gala {
             // collect all windows and put them in the appropriate containers
 
             var from_windows = new SList<Meta.Window> ();
-            foreach (unowned var window in display.list_all_windows ()) {
+            foreach (unowned var window in workspace_from.list_windows ()) {
                 if (window.window_type == Meta.WindowType.NOTIFICATION) {
                     continue;
                 }
@@ -1853,12 +1853,9 @@ namespace Gala {
                     continue;
                 }
 
-                if (window.located_on_workspace (workspace_from)) {
-                    from_windows.append (window);
-                }
+                from_windows.append (window);
             }
             var from_windows_sorted = display.sort_windows_by_stacking (from_windows);
-            //  from_windows_sorted.reverse ();
 
             var to_windows = new SList<Meta.Window> ();
             foreach (unowned var window in workspace_to.list_windows ()) {
@@ -1874,10 +1871,8 @@ namespace Gala {
                 to_windows.append (window);
             }
             var to_windows_sorted = display.sort_windows_by_stacking (to_windows);
-            //  to_windows_sorted.reverse ();
 
             foreach (unowned var window in from_windows_sorted) {
-                warning (window.title);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
                 if (actor.is_destroyed ()) {
@@ -1890,10 +1885,7 @@ namespace Gala {
                 clutter_actor_reparent (actor, out_group);
             }
 
-            warning ("---");
-
             foreach (unowned var window in to_windows_sorted) {
-                warning (window.title);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
                 if (actor.is_destroyed ()) {
