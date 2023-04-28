@@ -1842,54 +1842,77 @@ namespace Gala {
 
             // collect all windows and put them in the appropriate containers
 
-            var all_windows = new SList<Meta.Window> ();
+            var from_windows = new SList<Meta.Window> ();
             foreach (unowned var window in display.list_all_windows ()) {
-                all_windows.append (window);
-            }
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    continue;
+                }
+                if (!window.showing_on_its_workspace () ||
+                    (move_primary_only && window.get_monitor () != primary) ||
+                    (moving != null && window == moving)) {
+                    continue;
+                }
 
-            foreach (unowned var window in display.sort_windows_by_stacking (all_windows)) {
+                if (window.located_on_workspace (workspace_from)) {
+                    from_windows.append (window);
+                }
+            }
+            var from_windows_sorted = display.sort_windows_by_stacking (from_windows);
+            //  from_windows_sorted.reverse ();
+
+            var to_windows = new SList<Meta.Window> ();
+            foreach (unowned var window in workspace_to.list_windows ()) {
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    continue;
+                }
+                if (!window.showing_on_its_workspace () ||
+                    (move_primary_only && window.get_monitor () != primary) ||
+                    (moving != null && window == moving)) {
+                    continue;
+                }
+
+                to_windows.append (window);
+            }
+            var to_windows_sorted = display.sort_windows_by_stacking (to_windows);
+            //  to_windows_sorted.reverse ();
+
+            foreach (unowned var window in from_windows_sorted) {
+                warning (window.title);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
                 if (actor.is_destroyed ()) {
                     continue;
                 }
 
-                if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && window.get_monitor () != primary) ||
-                    (moving != null && window == moving))
-                    continue;
+                windows.append (actor);
+                parents.append (actor.get_parent ());
+                actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                clutter_actor_reparent (actor, out_group);
+            }
 
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                    // notifications use their own group and are always on top
+            warning ("---");
+
+            foreach (unowned var window in to_windows_sorted) {
+                warning (window.title);
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+
+                if (actor.is_destroyed ()) {
                     continue;
                 }
 
-                // FIXME: Window has to be reparented, otherwise it produces glitches
-                var window_reparented = false;
-                if (window.located_on_workspace (workspace_from)) {
+                if (windows.index (actor) != -1) {
+                    var clone = new SafeWindowClone (window) {
+                        x = actor.x - clone_offset_x,
+                        y = actor.y - clone_offset_y
+                    };
+
+                    in_group.add_child (clone);
+                    tmp_actors.prepend (clone);
+                } else {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, out_group);
-
-                    window_reparented = true;
-                }
-
-                if (window.located_on_workspace (workspace_to)) {
-                    if (window_reparented) {
-                        var clone = new SafeWindowClone (window) {
-                            x = actor.x - clone_offset_x,
-                            y = actor.y - clone_offset_y
-                        };
-    
-                        in_group.add_child (clone);
-                        tmp_actors.prepend (clone);
-                    } else {
-                        windows.append (actor);
-                        parents.append (actor.get_parent ());
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                        clutter_actor_reparent (actor, in_group);
-                    }
+                    clutter_actor_reparent (actor, in_group);
                 }
             }
 
