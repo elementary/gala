@@ -87,8 +87,7 @@ namespace Gala {
 
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (() => {
-                unowned var disp = wm.get_display ();
-                var cur_scale = disp.get_monitor_scale (disp.get_current_monitor ());
+                var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
@@ -221,7 +220,7 @@ namespace Gala {
             container.destroy_all_children ();
 
             foreach (unowned var window in windows) {
-                var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
                 if (window == current_window) {
                     current_icon = icon;
                 }
@@ -251,7 +250,7 @@ namespace Gala {
             var app = window_tracker.get_app_for_window (current_window);
             foreach (unowned var window in windows) {
                 if (window_tracker.get_app_for_window (window) == app) {
-                    var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                    var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
                     if (window == current_window) {
                         current_icon = icon;
                     }
