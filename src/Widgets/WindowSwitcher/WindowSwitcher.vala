@@ -202,7 +202,7 @@ namespace Gala {
             var binding_name = binding.get_name ();
             var backward = binding_name.has_suffix ("-backward");
 
-            next_window (display, workspace, backward);
+            next_window (backward);
         }
 
         private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
@@ -378,7 +378,7 @@ namespace Gala {
             toggle_display (false);
         }
 
-        private void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
+        private void next_window (bool backward) {
             Clutter.Actor actor;
 
             if (container.get_n_children () == 1 && current_icon != null) {
@@ -449,16 +449,28 @@ namespace Gala {
         public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0) {
                 close_switcher (event.time);
-                return true;
             }
 
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        public override bool key_press_event (Clutter.KeyEvent event) {
             switch (event.keyval) {
+                case Clutter.Key.Right:
+                    next_window (false);
+                    return Clutter.EVENT_STOP;
+                case Clutter.Key.Left:
+                    next_window (true);
+                    return Clutter.EVENT_STOP;
                 case Clutter.Key.Escape:
                     close_switcher (event.time, true);
-                    return true;
+                    return Clutter.EVENT_PROPAGATE;
+                case Clutter.Key.Return:
+                    close_switcher (event.time, false);
+                    return Clutter.EVENT_PROPAGATE;
             }
 
-            return false;
+            return Clutter.EVENT_PROPAGATE;
         }
 
 
