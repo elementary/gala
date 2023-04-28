@@ -306,10 +306,14 @@ namespace Cogl {
 		public Cogl.PipelineCullFaceMode get_cull_face_mode ();
 		[Version (since = "2.0")]
 		public Cogl.Winding get_front_face_winding ();
+#if HAS_MUTTER44
+		public void get_layer_filters (int layer_index, out Cogl.PipelineFilter min_filter, out Cogl.PipelineFilter mag_filter);
+#else
 		[Version (since = "1.10")]
 		public Cogl.PipelineFilter get_layer_mag_filter (int layer_index);
 		[Version (since = "1.10")]
 		public Cogl.PipelineFilter get_layer_min_filter (int layer_index);
+#endif
 		[Version (since = "2.0")]
 		public bool get_layer_point_sprite_coords_enabled (int layer_index);
 		[Version (since = "1.10")]
@@ -1115,9 +1119,11 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "1.0")]
 	public static void flush ();
+#if !HAS_MUTTER44
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (deprecated = true, deprecated_since = "1.16", since = "1.0")]
 	public static GLib.OptionGroup get_option_group ();
+#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_disabled_on_thread (GLib.MainContext main_context);
 	[CCode (cheader_filename = "cogl/cogl.h")]
