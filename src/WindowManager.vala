@@ -1840,87 +1840,56 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
-            var to_has_fullscreened = false;
-            var from_has_fullscreened = false;
-            var docks = new List<Meta.WindowActor> ();
-
             // collect all windows and put them in the appropriate containers
-            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
-                    continue;
 
-                unowned Meta.Window window = actor.get_meta_window ();
+            var all_windows = new SList<Meta.Window> ();
+            foreach (unowned var window in display.list_all_windows ()) {
+                all_windows.append (window);
+            }
+
+            foreach (unowned var window in display.sort_windows_by_stacking (all_windows)) {
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+
+                if (actor.is_destroyed ()) {
+                    continue;
+                }
 
                 if (!window.showing_on_its_workspace () ||
                     (move_primary_only && window.get_monitor () != primary) ||
                     (moving != null && window == moving))
                     continue;
 
-                if (window.on_all_workspaces) {
-                    // only collect docks here that need to be displayed on both workspaces
-                    // all other windows will be collected below
-                    if (window.window_type == Meta.WindowType.DOCK) {
-                        docks.prepend (actor);
-                    } else if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                        // notifications use their own group and are always on top
-                    } else {
-                        // windows that are on all workspaces will be faded out and back in
-                        windows.prepend (actor);
-                        parents.prepend (actor.get_parent ());
-
-                        clutter_actor_reparent (actor, static_windows);
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                        actor.save_easing_state ();
-                        actor.set_easing_duration (300);
-                        actor.opacity = 0;
-                        actor.restore_easing_state ();
-                    }
-
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    // notifications use their own group and are always on top
                     continue;
                 }
 
-                if (window.get_workspace () == workspace_from) {
+                // FIXME: Window has to be reparented, otherwise it produces glitches
+                var window_reparented = false;
+                if (window.located_on_workspace (workspace_from)) {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
                     clutter_actor_reparent (actor, out_group);
 
-                    if (window.fullscreen)
-                        from_has_fullscreened = true;
-
-                } else if (window.get_workspace () == workspace_to) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, in_group);
-
-                    if (window.fullscreen)
-                        to_has_fullscreened = true;
-
-                }
-            }
-
-            // make sure we don't add docks when there are fullscreened
-            // windows on one of the groups. Simply raising seems not to
-            // work, mutter probably reverts the order internally to match
-            // the display stack
-            foreach (var window in docks) {
-                if (!to_has_fullscreened) {
-                    var clone = new SafeWindowClone (window.get_meta_window ()) {
-                        x = window.x - clone_offset_x,
-                        y = window.y - clone_offset_y
-                    };
-
-                    in_group.add_child (clone);
-                    tmp_actors.prepend (clone);
+                    window_reparented = true;
                 }
 
-                if (!from_has_fullscreened) {
-                    windows.prepend (window);
-                    parents.prepend (window.get_parent ());
-                    window.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
-
-                    clutter_actor_reparent (window, out_group);
+                if (window.located_on_workspace (workspace_to)) {
+                    if (window_reparented) {
+                        var clone = new SafeWindowClone (window) {
+                            x = actor.x - clone_offset_x,
+                            y = actor.y - clone_offset_y
+                        };
+    
+                        in_group.add_child (clone);
+                        tmp_actors.prepend (clone);
+                    } else {
+                        windows.append (actor);
+                        parents.append (actor.get_parent ());
+                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                        clutter_actor_reparent (actor, in_group);
+                    }
                 }
             }
 
