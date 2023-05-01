@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-01 18:45+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-05-02 00:44+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16.4\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -167,42 +167,43 @@ msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Правильно налаштуйте розкладку клавіатури під час запуску, щоб індикатор "
+"відповідав обраній розкладці"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
+"Виправлено комбінації клавіш під час створення знімків екрана у "
+"багатозадачному режимі"
 
 #: data/gala.appdata.xml.in:21
 msgid ""
 "Correctly set the active workspace highlight when enterting Multitasking "
 "View and animate 1:1 with multitouch gestures"
 msgstr ""
+"Правильне налаштування підсвічування активної робочої області під час входу "
+"в багатозадачний режим і анімація 1:1 за допомогою жестів мультидотику"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
 msgid "Prevent window titles from being wider than the window switcher"
-msgstr "Уникнення випадкового вибору вікон у перемикачі вікон"
+msgstr "Запобігання появі заголовків вікон ширших за перемикач вікон"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
 msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "Правильне оновлення основного кольору у перемикачі вікна"
+msgstr ""
+"Правильне налаштування масштабу піктограм застосунків у перемикачі вікон"
 
 #: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Оновлення кольору панелі після затемнення шпалер"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "Використовувати шаблон заокруглених кутів"
+msgstr "Масштабування закруглених кутів на дисплей"
 
 #: data/gala.appdata.xml.in:26
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "Підтримка роздільного масштабування"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
 #: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
