@@ -69,7 +69,8 @@ namespace Gala {
 
             var effect = new ShadowEffect (40) {
                 shadow_opacity = 200,
-                css_class = "window-switcher"
+                css_class = "window-switcher",
+                scale_factor = scaling_factor
             };
 
             add_effect (effect);
@@ -91,6 +92,7 @@ namespace Gala {
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
+                    effect.scale_factor = scaling_factor;
                     create_components ();
                 }
             });
