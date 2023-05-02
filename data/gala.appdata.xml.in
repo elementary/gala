@@ -18,9 +18,7 @@
         <ul>
           <li>Set the keyboard layout correctly at startup so that the indicator matches the selected layout</li>
           <li>Fix screenshot keyboard shortcuts while in Multitasking View</li>
-          <li>Correctly set the active workspace highlight when enterting Multitasking View and animate 1:1 with multitouch gestures</li>
-          <li>Prevent window titles from being wider than the window switcher</li>
-          <li>Correctly set the scale of app icons in the window switcher</li>
+          <li>Correctly set the active workspace highlight when entering Multitasking View and animate 1:1 with multitouch gestures</li>
           <li>Update panel color after dimming the wallpaper</li>
           <li>Scale rounded corners per-display</li>
           <li>Support fractional scaling</li>

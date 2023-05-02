@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-05 14:57+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
 "PO-Revision-Date: 2015-02-07 21:35+0000\n"
 "Last-Translator: Yvo Marques <macghivo@gmail.com>\n"
 "Language-Team: Luxembourgish <lb@li.org>\n"
@@ -41,35 +41,35 @@ msgstr ""
 msgid "Wait"
 msgstr ""
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:273
 msgid "Screenshots"
 msgstr ""
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:352
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2128
+#: src/WindowManager.vala:2144
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2135
+#: src/WindowManager.vala:2151
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2139
+#: src/WindowManager.vala:2155
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2140
+#: src/WindowManager.vala:2156
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2182
+#: src/WindowManager.vala:2198
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -148,57 +148,85 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
-#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
-#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
+#: data/gala.appdata.xml.in:19
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr ""
+
+#: data/gala.appdata.xml.in:21
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+
+#: data/gala.appdata.xml.in:22
+msgid "Update panel color after dimming the wallpaper"
+msgstr ""
+
+#: data/gala.appdata.xml.in:23
+msgid "Scale rounded corners per-display"
+msgstr ""
+
+#: data/gala.appdata.xml.in:24
+msgid "Support fractional scaling"
+msgstr ""
+
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:45
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "Multitasking Perspektive"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 
-#: data/gala.appdata.xml.in:84
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:113
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:115
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:119
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:131
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr ""
 

@@ -85,8 +85,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
             style_context.add_class (css_class);
         }
 
-        style_context.set_scale ((int)scale_factor);
-        style_context.render_background (cr, shadow_size, shadow_size, width - shadow_size * 2, height - shadow_size * 2);
+        style_context.set_scale ((int) Math.round (scale_factor));
+        var size = shadow_size * scale_factor;
+        style_context.render_background (cr, shadow_size, shadow_size, (width - size * 2) / scale_factor, (height - size * 2) / scale_factor);
         style_context.restore ();
         cr.restore ();
 
