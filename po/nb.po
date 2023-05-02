@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -168,20 +168,24 @@ msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren samsvarer "
+"med valgt oppsett."
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
 
 #: data/gala.appdata.xml.in:21
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
+"Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning og "
+"animert 1:1 med flerpekingshåndvendinger"
 
 #: data/gala.appdata.xml.in:22
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
 
 #: data/gala.appdata.xml.in:23
 #, fuzzy
@@ -191,7 +195,7 @@ msgstr "Bruk maske for avrundede hjørner"
 
 #: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "Støtte for brøkbasert skalering"
 
 #: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
 #: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
