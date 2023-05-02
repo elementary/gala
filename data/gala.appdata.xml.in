@@ -12,7 +12,7 @@
   </description>
 
   <releases>
-    <release version="7.0.3" date="2023-04-03" urgency="medium">
+    <release version="7.0.3" date="2023-05-01" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
