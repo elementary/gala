@@ -16,12 +16,26 @@
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Set the keyboard layout correctly at startup so that the indicator matches the selected layout</li>
+          <li>Fix screenshot keyboard shortcuts while in Multitasking View</li>
+          <li>Correctly set the active workspace highlight when enterting Multitasking View and animate 1:1 with multitouch gestures</li>
+          <li>Prevent window titles from being wider than the window switcher</li>
+          <li>Correctly set the scale of app icons in the window switcher</li>
+          <li>Update panel color after dimming the wallpaper</li>
+          <li>Scale rounded corners per-display</li>
+          <li>Support fractional scaling</li>
           <li>Updated translations</li>
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/124">Navigate with arrow keys while holding ALT+TAB</issue>
+        <issue url="https://github.com/elementary/gala/issues/508">Multitasking View open/close doesn't respect animations key</issue>
         <issue url="https://github.com/elementary/gala/issues/536">Enable "Alt + ~" to switch between windows of the same application</issue>
+        <issue url="https://github.com/elementary/gala/issues/1343">Minimizing a single open application and then immediately doing alt+tab breaks the switcher and the session</issue>
         <issue url="https://github.com/elementary/gala/issues/1355">Issue with rounded corners of window switcher</issue>
+        <issue url="https://github.com/elementary/gala/issues/1547">Window switcher doesn't respect animations key</issue>
+        <issue url="https://github.com/elementary/gala/issues/1641">Docks are placed under workspaces when animating</issue>
+        <issue url="https://github.com/elementary/gala/issues/1658">Topmost window is dimmed instead of modal's parent window</issue>
       </issues>
     </release>
 
