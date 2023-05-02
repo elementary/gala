@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-01 18:45+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-05-02 00:44+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -161,43 +161,40 @@ msgstr "改善点:"
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
-msgstr ""
+msgstr "起動時にキーボードレイアウトを適切に設定することで、インジケーターの表示が実"
+"際に有効なレイアウトと一致するように修正"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "“マルチタスク画面”でスクリーンショット取得のキーボードショートカットが効かな"
+"い不具合を修正"
 
 #: data/gala.appdata.xml.in:21
 msgid ""
 "Correctly set the active workspace highlight when enterting Multitasking "
 "View and animate 1:1 with multitouch gestures"
-msgstr ""
+msgstr "“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライトし、"
+"手の動きに合わせてアニメーション表示されるように修正"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
 msgid "Prevent window titles from being wider than the window switcher"
-msgstr "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
+msgstr "ウィンドウタイトルがウィンドウスイッチャーの幅より大きくならないように修正"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
 msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "ウィンドウスイッチャーのアクセントカラーを正しく更新するように修正"
+msgstr "ウィンドウスイッチャーにおけるアプリアイコンを適切なサイズに設定するよう修正"
 
 #: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "壁紙を暗くした場合にパネルの色を更新するように修正"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "円形のコーナーマスクを有効にする"
+msgstr "画面四隅を丸く表示する比率を画面ごとに計算するように修正"
 
 #: data/gala.appdata.xml.in:26
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "分数スケーリングに対応"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
 #: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
