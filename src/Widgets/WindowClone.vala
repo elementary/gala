@@ -704,7 +704,7 @@ public class Gala.WindowClone : Clutter.Actor {
             if (hovered) {
                 icon_group.add_window (window, false, true);
             } else {
-                icon_group.remove_window (window);
+                icon_group.remove_window (window, false);
             }
         }
     }
