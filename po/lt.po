@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-05-01 18:45+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
 "PO-Revision-Date: 2020-01-19 13:08+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Lithuanian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -153,9 +153,9 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:44
-#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:132
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr ""
 
@@ -171,83 +171,71 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:21
 msgid ""
-"Correctly set the active workspace highlight when enterting Multitasking "
-"View and animate 1:1 with multitouch gestures"
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 msgstr ""
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
-msgid "Prevent window titles from being wider than the window switcher"
-msgstr "Foninių langų nepermatomumas langų perjungiklyje."
-
-#: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
-msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "Foninių langų nepermatomumas langų perjungiklyje."
-
-#: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:23
 #, fuzzy
 #| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
 msgstr "Įjungti apvalinto kampo kaukę"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
-#: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
-#: data/gala.appdata.xml.in:117 data/gala.appdata.xml.in:135
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:45
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "Daugiaprogramio apdorojimo rodinys"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:46
 #, fuzzy
 #| msgid "The opacity of windows behind the window switcher."
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Foninių langų nepermatomumas langų perjungiklyje."
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
-#: data/gala.appdata.xml.in:128
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr ""
 
-#: data/gala.appdata.xml.in:130
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr ""
 
-#: data/gala.appdata.xml.in:134
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr ""
 
-#: data/gala.appdata.xml.in:146
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -268,6 +256,16 @@ msgstr "Kita"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Atsarginis darbalaukio failas, skirtas pranešimams iš pasenusių programų."
+
+#, fuzzy
+#~| msgid "The opacity of windows behind the window switcher."
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr "Foninių langų nepermatomumas langų perjungiklyje."
+
+#, fuzzy
+#~| msgid "The opacity of windows behind the window switcher."
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr "Foninių langų nepermatomumas langų perjungiklyje."
 
 #, fuzzy
 #~| msgid "Dims parent windows when spawning modal dialogs"

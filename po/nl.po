@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-05-01 18:45+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
 "PO-Revision-Date: 2023-04-10 12:59+0000\n"
 "Last-Translator: Dennis ten Hoove <dennistenhoove@protonmail.com>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
@@ -153,9 +153,9 @@ msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:44
-#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:132
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
@@ -171,81 +171,68 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:21
 msgid ""
-"Correctly set the active workspace highlight when enterting Multitasking "
-"View and animate 1:1 with multitouch gestures"
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 msgstr ""
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
-msgid "Prevent window titles from being wider than the window switcher"
-msgstr ""
-"Vermijd het per ongeluk selecteren van vensters in de vensterschakelaar"
-
-#: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
-msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "Accentkleuren correct updaten in de vensterschakelaar"
-
-#: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:23
 #, fuzzy
 #| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
 msgstr "Zet afgeronde vensterhoeken aan"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
-#: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
-#: data/gala.appdata.xml.in:117 data/gala.appdata.xml.in:135
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "Prestatieverbeteringen"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "Verwijder de textuur uit de multitasking weergave"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 "Vermijd het per ongeluk selecteren van vensters in de vensterschakelaar"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Geanimeerde achtergronden herladen wanneer de tijdzone verandert"
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Los onhandig twee-vinger scrollen op in multitask-weergave"
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "Prestaties van multitask-weergave animatie verbeterd"
 
-#: data/gala.appdata.xml.in:128
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "Fixes:"
 
-#: data/gala.appdata.xml.in:130
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "Regressies opgelost voor OS 7"
 
-#: data/gala.appdata.xml.in:134
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "Gebruik het toegangsportaal om afsluiten te forceren"
 
-#: data/gala.appdata.xml.in:146
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -266,6 +253,17 @@ msgstr "Andere"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Een reserve desktopbestand voor notificaties van verouderde applicaties."
+
+#, fuzzy
+#~| msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr ""
+#~ "Vermijd het per ongeluk selecteren van vensters in de vensterschakelaar"
+
+#, fuzzy
+#~| msgid "Properly update accent color in the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr "Accentkleuren correct updaten in de vensterschakelaar"
 
 #~ msgid "Prevent potential crashes"
 #~ msgstr "Potentiële crashes opgelost"

@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-05-01 18:45+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
 "PO-Revision-Date: 2023-05-02 08:55+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
-"\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
+">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
@@ -155,9 +155,9 @@ msgstr ""
 "Оконный менеджер и композитор на основе libmutter, разработанный elementary "
 "для использования в Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:44
-#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:132
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "Улучшения:"
 
@@ -173,79 +173,67 @@ msgstr "Исправлены сочетания клавиш в режиме м�
 
 #: data/gala.appdata.xml.in:21
 msgid ""
-"Correctly set the active workspace highlight when enterting Multitasking "
-"View and animate 1:1 with multitouch gestures"
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 msgstr ""
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
-msgid "Prevent window titles from being wider than the window switcher"
-msgstr "Исправлен случайный выбор окон в переключателе окон"
-
-#: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
-msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "Корректное обновление акцентного цвета в переключателе окон"
-
-#: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.appdata.xml.in:25
+#: data/gala.appdata.xml.in:23
 #, fuzzy
 #| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
 msgstr "Включить закруглённые углы"
 
-#: data/gala.appdata.xml.in:26
+#: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
-#: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
-#: data/gala.appdata.xml.in:117 data/gala.appdata.xml.in:135
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "Обновлены переводы"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "Улучшения производительности"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "Удалена текстура из многозадачного вида"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Исправлен случайный выбор окон в переключателе окон"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Перезагрузка анимированных обоев при смене часовых поясов"
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Исправлена неудобная прокрутка двумя пальцами в многозадачном виде"
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "Улучшена производительность анимации многозадачного вида"
 
-#: data/gala.appdata.xml.in:128
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "Исправления:"
 
-#: data/gala.appdata.xml.in:130
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "Исправлены ошибки на OS 7"
 
-#: data/gala.appdata.xml.in:134
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "Теперь для принудительного выхода используется портал доступа"
 
-#: data/gala.appdata.xml.in:146
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -265,6 +253,16 @@ msgstr "Другие"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Устаревший файл desktop для уведомлений от устаревших приложений."
+
+#, fuzzy
+#~| msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr "Исправлен случайный выбор окон в переключателе окон"
+
+#, fuzzy
+#~| msgid "Properly update accent color in the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr "Корректное обновление акцентного цвета в переключателе окон"
 
 #~ msgid "Prevent potential crashes"
 #~ msgstr "Предотвращены возможные сбои"
