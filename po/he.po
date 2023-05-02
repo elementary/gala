@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-05-01 18:45+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
+"PO-Revision-Date: 2023-05-02 08:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
 ">\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -149,9 +149,9 @@ msgstr ""
 "מנהל הרכבת חלונות שמבוסס על libmutter ותוכנן על ידי elementary לעבוד עם "
 "Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:44
-#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:97
-#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:132
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "שיפורים:"
 
@@ -159,87 +159,79 @@ msgstr "שיפורים:"
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
-msgstr ""
+msgstr "פריסת המקלדת מוגדרת כראוי בהתחלה כדי שהמחוון יהיה תואם לפריסה הנבחרת"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "תוקנו קיצורי המקלדת לצילום המסך תוך כדי מצב תצוגת ריבוי משימות"
 
 #: data/gala.appdata.xml.in:21
+#, fuzzy
+#| msgid ""
+#| "Correctly set the active workspace highlight when enterting Multitasking "
+#| "View and animate 1:1 with multitouch gestures"
 msgid ""
-"Correctly set the active workspace highlight when enterting Multitasking "
-"View and animate 1:1 with multitouch gestures"
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 msgstr ""
+"הדגשת סביבת העבודה הפעילה מוגדרת נכון בעת כניסה למצב תצוגת ריבוי משימות "
+"והנפשה של 1:1 עם מחוות ריבוי נקודות מגע"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
-msgid "Prevent window titles from being wider than the window switcher"
-msgstr "מניעת בחירה מקרית של חלונות במחליף החלונות"
+msgid "Update panel color after dimming the wallpaper"
+msgstr "צבע הלוח מתעדכן לאחר עמעום תמונת הרקע"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
-msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "עדכון של צבע משני במחליף החלונות"
+msgid "Scale rounded corners per-display"
+msgstr "שינוי קנה מידה של הפינות המעוגלות לפי תצוגה"
 
 #: data/gala.appdata.xml.in:24
-msgid "Update panel color after dimming the wallpaper"
-msgstr ""
-
-#: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Enable rounded corner mask"
-msgid "Scale rounded corners per-display"
-msgstr "הפעלת מסיכת פינות מעוגלות"
-
-#: data/gala.appdata.xml.in:26
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "תמיכה בשינוי קנה מידה מקוטע"
 
-#: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
-#: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
-#: data/gala.appdata.xml.in:117 data/gala.appdata.xml.in:135
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "התרגומים עודכנו"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "שיפורי ביצועים"
 
-#: data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "הוסר המרקם מתצוגת ריבוי משימות"
 
-#: data/gala.appdata.xml.in:48
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "מניעת בחירה מקרית של חלונות במחליף החלונות"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "לרענן את הטפטים כשאזור הזמן מתחלף"
 
-#: data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "תוקנה גלילת שתי אצבעות משונה בתצוגת ריבוי משימות"
 
-#: data/gala.appdata.xml.in:101
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "שופרו ביצועי הנפשות תצוגת ריבוי משימות"
 
-#: data/gala.appdata.xml.in:128
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "תיקונים:"
 
-#: data/gala.appdata.xml.in:130
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "תוקנו תקלות שצצו מחדש ב־OS 7"
 
-#: data/gala.appdata.xml.in:134
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "להשתמש בשער הנגישות לאילוץ היציאה"
 
-#: data/gala.appdata.xml.in:146
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary בע״מ."
 
@@ -259,6 +251,12 @@ msgstr "אחר"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "קובץ שולחן עבודה כמנגנון גיבוי להודעות מיישומים מיושנים."
+
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr "מניעת מצב בו כותרות החלונות רחבות יותר ממחליף החלונות"
+
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr "קנה המידה של סמלי היישומים במחליף החלונות מוגדר נכון"
 
 #~ msgid "Prevent potential crashes"
 #~ msgstr "נמנעו קריסות אפשריות"
