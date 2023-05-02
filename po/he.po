@@ -3,16 +3,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-01 18:45+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-05-02 08:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -159,43 +159,39 @@ msgstr "שיפורים:"
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
-msgstr ""
+msgstr "פריסת המקלדת מוגדרת כראוי בהתחלה כדי שהמחוון יהיה תואם לפריסה הנבחרת"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "תוקנו קיצורי המקלדת לצילום המסך תוך כדי מצב תצוגת ריבוי משימות"
 
 #: data/gala.appdata.xml.in:21
 msgid ""
 "Correctly set the active workspace highlight when enterting Multitasking "
 "View and animate 1:1 with multitouch gestures"
 msgstr ""
+"הדגשת סביבת העבודה הפעילה מוגדרת נכון בעת כניסה למצב תצוגת ריבוי משימות "
+"והנפשה של 1:1 עם מחוות ריבוי נקודות מגע"
 
 #: data/gala.appdata.xml.in:22
-#, fuzzy
-#| msgid "Avoid accidentally selecting windows in the window switcher"
 msgid "Prevent window titles from being wider than the window switcher"
-msgstr "מניעת בחירה מקרית של חלונות במחליף החלונות"
+msgstr "מניעת מצב בו כותרות החלונות רחבות יותר ממחליף החלונות"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Properly update accent color in the window switcher"
 msgid "Correctly set the scale of app icons in the window switcher"
-msgstr "עדכון של צבע משני במחליף החלונות"
+msgstr "קנה המידה של סמלי היישומים במחליף החלונות מוגדר נכון"
 
 #: data/gala.appdata.xml.in:24
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "צבע הלוח מתעדכן לאחר עמעום תמונת הרקע"
 
 #: data/gala.appdata.xml.in:25
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "הפעלת מסיכת פינות מעוגלות"
+msgstr "שינוי קנה מידה של הפינות המעוגלות לפי תצוגה"
 
 #: data/gala.appdata.xml.in:26
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "תמיכה בשינוי קנה מידה מקוטע"
 
 #: data/gala.appdata.xml.in:27 data/gala.appdata.xml.in:49
 #: data/gala.appdata.xml.in:72 data/gala.appdata.xml.in:102
