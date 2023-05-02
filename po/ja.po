@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2023-05-02 00:44+0000\n"
+"PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -172,15 +172,10 @@ msgstr ""
 "い不具合を修正"
 
 #: data/gala.appdata.xml.in:21
-#, fuzzy
-#| msgid ""
-#| "Correctly set the active workspace highlight when enterting Multitasking "
-#| "View and animate 1:1 with multitouch gestures"
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
-msgstr ""
-"“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライトし、"
+msgstr "“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライトし、"
 "手の動きに合わせてアニメーション表示されるように修正"
 
 #: data/gala.appdata.xml.in:22
