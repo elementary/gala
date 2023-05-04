@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"PO-Revision-Date: 2023-05-05 21:06+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
 #: src/Dialogs.vala:152
@@ -165,30 +165,32 @@ msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "Fix screenshot keyboard shortcuts while in Multitasking View"
 
 #: data/gala.appdata.xml.in:21
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 
 #: data/gala.appdata.xml.in:22
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Update panel color after dimming the wallpaper"
 
 #: data/gala.appdata.xml.in:23
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "Enable rounded corner mask"
+msgstr "Scale rounded corners per-display"
 
 #: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "Support fractional scaling"
 
 #: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
 #: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
