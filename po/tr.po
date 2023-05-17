@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2022-08-15 23:39+0000\n"
+"PO-Revision-Date: 2023-05-18 20:06+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
-"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
-">\n"
+"Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/>"
+"\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -30,16 +30,12 @@ msgid "Application is not responding"
 msgstr "Uygulama yanıt vermiyor"
 
 #: src/Dialogs.vala:157
-#, fuzzy
-#| msgid ""
-#| "You may choose to wait a short while for it to continue or force the "
-#| "application quit entirely."
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
-"Devam etmesi için kısa bir süre beklemeyi seçebilir veya uygulamadan zorla "
-"çıkabilirsiniz."
+"Uygulamanın devam etmesi için kısa bir süre beklemeyi veya tamamen kapanmaya "
+"zorlamayı seçebilirsiniz."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -58,12 +54,11 @@ msgid "Screenshot taken"
 msgstr "Ekran görüntüsüsü alındı"
 
 #: src/WindowManager.vala:2144
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Değişiklikler 30 saniye sonra otomatik olarak geri alınır."
-msgstr[1] "Değişiklikler 30 saniye sonra otomatik olarak geri alınır."
+msgstr[0] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
+msgstr[1] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
 
 #: src/WindowManager.vala:2151
 msgid "Keep new display settings?"
@@ -170,6 +165,8 @@ msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Göstergenin seçilen düzen ile eşleşmesi için klavye düzenini başlangıçta "
+"doğru şekilde ayarlayın"
 
 #: data/gala.appdata.xml.in:20
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
