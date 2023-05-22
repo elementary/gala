@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
 "PO-Revision-Date: 2023-05-22 08:06+0000\n"
-"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
+"Last-Translator: Alexandre ELIOT <alexandre.eliot@outlook.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
 "\n"
 "Language: fr\n"
@@ -185,7 +185,7 @@ msgstr ""
 
 #: data/gala.appdata.xml.in:22
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Actualise la couleur du panneau après l'obscurcissement du fond d'écran"
 
 #: data/gala.appdata.xml.in:23
 #, fuzzy
