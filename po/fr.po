@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2023-05-22 08:07+0000\n"
-"Last-Translator: Alexandre ELIOT <alexandre.eliot@outlook.com>\n"
+"PO-Revision-Date: 2023-05-23 09:06+0000\n"
+"Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
 "\n"
 "Language: fr\n"
@@ -193,7 +193,7 @@ msgstr "Adapte les coins arrondis pour chaque écran"
 
 #: data/gala.appdata.xml.in:24
 msgid "Support fractional scaling"
-msgstr "Supporte la mise à l'échelle fractionnée"
+msgstr "Prise en charge de la mise à l'échelle fractionnée"
 
 #: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
 #: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
