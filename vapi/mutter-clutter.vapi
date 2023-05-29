@@ -4639,6 +4639,10 @@ namespace Clutter {
 		public Clutter.EventPhase get_phase ();
 		[NoWrapper]
 		public virtual bool handle_event (Clutter.Event event);
+#if HAS_MUTTER44
+		[NoWrapper]
+		public virtual void sequence_cancelled (Clutter.InputDevice device, Clutter.EventSequence sequence);
+#endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_actor_get_type ()")]
 	public class Actor : GLib.InitiallyUnowned, Atk.Implementor, Clutter.Animatable, Clutter.Container, Clutter.Scriptable {
@@ -4739,8 +4743,10 @@ namespace Clutter {
 		public Clutter.ContentRepeat get_content_repeat ();
 		[Version (since = "1.10")]
 		public void get_content_scaling_filters (out Clutter.ScalingFilter min_filter, out Clutter.ScalingFilter mag_filter);
+#if !HAS_MUTTER44
 		[Version (since = "1.10")]
 		public unowned Clutter.PaintVolume? get_default_paint_volume ();
+#endif
 		[Version (since = "1.10")]
 		public uint get_easing_delay ();
 		[Version (since = "1.10")]
@@ -5815,11 +5821,25 @@ namespace Clutter {
 		[Version (since = "1.16")]
 		public bool snap_to_grid { get; set; }
 	}
+#if HAS_MUTTER44
+	[CCode (cheader_filename = "clutter/clutter.h", ref_function = "clutter_frame_ref", type_id = "clutter_frame_get_type ()", unref_function = "clutter_frame_unref")]
+#else
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+#endif
 	[Compact]
 	public class Frame {
+#if HAS_MUTTER44
+		public int64 get_count ();
+		public bool get_target_presentation_time (int64 target_presentation_time_us);
+#endif
 		public bool has_result ();
+#if HAS_MUTTER44
+		public unowned Clutter.Frame @ref ();
+#endif
 		public void set_result (Clutter.FrameResult result);
+#if HAS_MUTTER44
+		public void unref ();
+#endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_frame_clock_get_type ()")]
 	public sealed class FrameClock : GLib.Object {
@@ -5929,6 +5949,9 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	[Compact]
 	public class IMEvent : Clutter.Event {
+#if HAS_MUTTER44
+		public int32 anchor;
+#endif
 		public Clutter.EventFlags flags;
 		public uint32 len;
 		public Clutter.PreeditResetMode mode;
@@ -5966,6 +5989,9 @@ namespace Clutter {
 		public unowned string get_device_node ();
 		[Version (since = "1.0")]
 		public Clutter.InputDeviceType get_device_type ();
+#if HAS_MUTTER44
+		public virtual bool get_dimensions (out uint width, out uint height);
+#endif
 		public virtual int get_group_n_modes (int group);
 		[Version (since = "1.6")]
 		public bool get_has_cursor ();
@@ -5981,13 +6007,17 @@ namespace Clutter {
 		public unowned Clutter.Seat get_seat ();
 		[Version (since = "1.22")]
 		public unowned string get_vendor_id ();
+#if !HAS_MUTTER44
 		[Version (since = "1.10")]
 		public void grab (Clutter.Actor actor);
+#endif
 		public virtual bool is_grouped (Clutter.InputDevice other_device);
 		public virtual bool is_mode_switch_button (uint group, uint button);
+#if !HAS_MUTTER44
 		[NoAccessorMethod]
 		[Version (since = "1.6")]
 		public Clutter.Backend backend { owned get; construct; }
+#endif
 #if HAS_MUTTER43
 		public Clutter.InputCapabilities capabilities { get; construct; }
 #endif
@@ -6049,7 +6079,11 @@ namespace Clutter {
 		public void set_cursor_location (Graphene.Rect rect);
 		public void set_input_panel_state (Clutter.InputPanelState state);
 		[NoWrapper]
+#if HAS_MUTTER44
+		public virtual void set_preedit_text (string preedit, uint cursor, uint anchor);
+#else
 		public virtual void set_preedit_text (string preedit, uint cursor);
+#endif
 		public void set_surrounding (string text, uint cursor, uint anchor);
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_input_method_get_type ()")]
@@ -6067,7 +6101,11 @@ namespace Clutter {
 		[NoWrapper]
 		public virtual void set_cursor_location (Graphene.Rect rect);
 		public void set_input_panel_state (Clutter.InputPanelState state);
+#if HAS_MUTTER44
+		public void set_preedit_text (string? preedit, uint cursor, uint anchor, Clutter.PreeditResetMode mode);
+#else
 		public void set_preedit_text (string? preedit, uint cursor, Clutter.PreeditResetMode mode);
+#endif
 		[NoWrapper]
 		public virtual void set_surrounding (string text, uint cursor, uint anchor);
 		[NoWrapper]
@@ -6281,7 +6319,9 @@ namespace Clutter {
 		public Clutter.EventFlags flags;
 		public uint32 group;
 		public uint32 mode;
+#if !HAS_MUTTER44
 		public weak Clutter.Actor source;
+#endif
 		public weak Clutter.Stage stage;
 		public uint32 strip_number;
 		public Clutter.InputDevicePadSource strip_source;
@@ -6670,17 +6710,19 @@ namespace Clutter {
 		public void ensure_viewport ();
 		public unowned Clutter.Actor get_actor_at_pos (Clutter.PickMode pick_mode, float x, float y);
 		public bool get_capture_final_size (Cairo.RectangleInt rect, out int out_width, out int out_height, out float out_scale);
-		public unowned Clutter.Actor get_device_actor (Clutter.InputDevice device, Clutter.EventSequence? sequence);
+		public unowned Clutter.Actor? get_device_actor (Clutter.InputDevice device, Clutter.EventSequence? sequence);
 #if HAS_MUTTER43
-		public unowned Clutter.Actor get_event_actor (Clutter.Event event);
+		public unowned Clutter.Actor? get_event_actor (Clutter.Event event);
 #endif
 		public int64 get_frame_counter ();
-		public unowned Clutter.Actor get_grab_actor ();
+		public unowned Clutter.Actor? get_grab_actor ();
 		[Version (since = "0.6")]
 		public unowned Clutter.Actor get_key_focus ();
 		public Clutter.Perspective get_perspective ();
+#if !HAS_MUTTER44
 		[Version (since = "1.0")]
 		public bool get_throttle_motion_events ();
+#endif
 		[Version (since = "0.4")]
 		public unowned string get_title ();
 		public Clutter.Grab grab (Clutter.Actor actor);
@@ -6695,11 +6737,17 @@ namespace Clutter {
 		public void set_key_focus (Clutter.Actor? actor);
 		[Version (since = "1.2")]
 		public void set_minimum_size (uint width, uint height);
+#if !HAS_MUTTER44
 		[Version (since = "1.0")]
 		public void set_throttle_motion_events (bool throttle);
+#endif
 		[Version (since = "0.4")]
 		public void set_title (string title);
+#if HAS_MUTTER44
+		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Clutter.InputDevice source_device, Graphene.Point point, uint32 time, Clutter.Actor new_actor, Cairo.Region region, bool emit_crossing);
+#else
 		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Graphene.Point point, uint32 time, Clutter.Actor new_actor, Cairo.Region region, bool emit_crossing);
+#endif
 		[Version (since = "1.2")]
 		public Clutter.Actor key_focus { get; set; }
 		[Version (since = "0.8")]
@@ -6708,16 +6756,28 @@ namespace Clutter {
 		public string title { get; set; }
 		[Version (since = "0.6")]
 		public virtual signal void activate ();
+#if HAS_MUTTER44
+		public signal void after_paint (Clutter.StageView view, Clutter.Frame frame);
+		public signal void after_update (Clutter.StageView view, Clutter.Frame frame);
+		public virtual signal void before_paint (Clutter.StageView view, Clutter.Frame frame);
+		public signal void before_update (Clutter.StageView view, Clutter.Frame frame);
+#else
 		[Version (since = "1.20")]
 		public signal void after_paint (Clutter.StageView view);
 		public signal void after_update (Clutter.StageView view);
 		public virtual signal void before_paint (Clutter.StageView view);
 		public signal void before_update (Clutter.StageView view);
+#endif
+#if HAS_MUTTER44
+		public virtual signal void paint_view (Clutter.StageView view, Cairo.Region redraw_clip, Clutter.Frame frame);
+		public signal void prepare_frame (Clutter.StageView view, Clutter.Frame frame);
+#else
 		[Version (since = "0.6")]
 		public virtual signal void deactivate ();
 		public virtual signal void paint_view (Clutter.StageView view, Cairo.Region redraw_clip);
 #if HAS_MUTTER43
 		public signal void prepare_frame (Clutter.StageView view);
+#endif
 #endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_stage_manager_get_type ()")]
@@ -6751,6 +6811,9 @@ namespace Clutter {
 		public unowned Cogl.Framebuffer get_onscreen ();
 		public float get_refresh_rate ();
 		public float get_scale ();
+#if HAS_MUTTER44
+		public bool has_shadowfb ();
+#endif
 		public void invalidate_offscreen_blit_pipeline ();
 		[NoWrapper]
 		public virtual void setup_offscreen_blit_pipeline (Cogl.Pipeline pipeline);
@@ -7859,6 +7922,10 @@ namespace Clutter {
 		TOUCHPAD,
 		TOUCH,
 		TABLET_TOOL,
+#if HAS_MUTTER44
+		TRACKBALL,
+		TRACKPOINT,
+#endif
 		TABLET_PAD
 	}
 #endif
@@ -8396,8 +8463,18 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "0.6")]
 	public static unowned string get_script_id (GLib.Object gobject);
+#if HAS_MUTTER44
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static Clutter.TextDirection get_text_direction ();
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static uint32 keysym_to_unicode (uint keyval);
+#if HAS_MUTTER44
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static void keyval_convert_case (uint symbol, out uint lower, out uint upper);
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static string? keyval_name (uint keyval);
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	[Version (since = "1.10")]
 	public static uint unicode_to_keysym (uint32 wc);

@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '7.0.2',
+    version: '7.0.3',
     meson_version: '>= 0.58.0',
     license: 'GPL3',
 )
@@ -126,6 +126,17 @@ if mutter43_dep.found()
 		dependency('mutter-clutter-11')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER43']
+endif
+
+mutter44_dep = dependency('libmutter-12', version: ['>= 44', '< 45'], required: false)
+if mutter44_dep.found()
+	libmutter_dep = dependency('libmutter-12', version: '>= 44')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-cogl-12'), dependency('mutter-cogl-pango-12'),
+		dependency('mutter-clutter-12')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44']
 endif
 
 if mutter_dep.length() == 0

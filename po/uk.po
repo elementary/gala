@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-05 14:57+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
+"PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16.4\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -46,15 +46,15 @@ msgstr "Примусово вийти"
 msgid "Wait"
 msgstr "Зачекати"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:273
 msgid "Screenshots"
 msgstr "Знімки екрана"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:352
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
-#: src/WindowManager.vala:2128
+#: src/WindowManager.vala:2144
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -62,20 +62,20 @@ msgstr[0] "Зміни буде автоматично відхилено за %i
 msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
 msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
 
-#: src/WindowManager.vala:2135
+#: src/WindowManager.vala:2151
 msgid "Keep new display settings?"
 msgstr "Зберегти нові налаштування дисплея?"
 
-#: src/WindowManager.vala:2139
+#: src/WindowManager.vala:2155
 msgid "Keep Settings"
 msgstr "Зберегти налаштування"
 
-#: src/WindowManager.vala:2140
+#: src/WindowManager.vala:2156
 msgid "Use Previous Settings"
 msgstr "Використовувати попередні налаштування"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2182
+#: src/WindowManager.vala:2198
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
@@ -156,55 +156,89 @@ msgstr ""
 "Віконний менеджер та композитор створений на libmutter та розроблений "
 "elementary для роботи з Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
-#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "Удосконалення:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
-#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
+#: data/gala.appdata.xml.in:19
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+"Правильно налаштуйте розкладку клавіатури під час запуску, щоб індикатор "
+"відповідав обраній розкладці"
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr ""
+"Виправлено комбінації клавіш під час створення знімків екрана у "
+"багатозадачному режимі"
+
+#: data/gala.appdata.xml.in:21
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+"Правильне налаштування підсвічування активної робочої області під час входу "
+"в багатозадачний режим і анімація 1:1 за допомогою жестів мультидотику"
+
+#: data/gala.appdata.xml.in:22
+msgid "Update panel color after dimming the wallpaper"
+msgstr "Оновлення кольору панелі після затемнення шпалер"
+
+#: data/gala.appdata.xml.in:23
+msgid "Scale rounded corners per-display"
+msgstr "Масштабування закруглених кутів на дисплей"
+
+#: data/gala.appdata.xml.in:24
+msgid "Support fractional scaling"
+msgstr "Підтримка роздільного масштабування"
+
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "Оновлені переклади"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "Поліпшення швидкодії"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "Вилучено текстури з Багатозадачного вигляду"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Уникнення випадкового вибору вікон у перемикачі вікон"
 
-#: data/gala.appdata.xml.in:84
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Перезавантаження анімованих шпалер за зміни часового поясу"
 
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Виправлено незручне гортання двома пальцями в багатозадачному режимі"
 
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "Прискорено швидкість анімації в багатозадачному режимі"
 
-#: data/gala.appdata.xml.in:113
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "Виправлення:"
 
-#: data/gala.appdata.xml.in:115
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "Виправлено регресії для OS 7"
 
-#: data/gala.appdata.xml.in:119
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "Використовувати портал доступу для швидкого виходу"
 
-#: data/gala.appdata.xml.in:131
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -225,8 +259,12 @@ msgstr "Інше"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Резервний робочий файл для сповіщень від застарілих програм."
 
-#~ msgid "Properly update accent color in the window switcher"
-#~ msgstr "Правильне оновлення основного кольору у перемикачі вікна"
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr "Запобігання появі заголовків вікон ширших за перемикач вікон"
+
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr ""
+#~ "Правильне налаштування масштабу піктограм застосунків у перемикачі вікон"
 
 #~ msgid "Prevent potential crashes"
 #~ msgstr "Усунено ймовірність збоїв"
@@ -606,9 +644,6 @@ msgstr "Резервний робочий файл для сповіщень в�
 
 #~ msgid "Show missed notifications in notification center"
 #~ msgstr "Показувати пропущені сповіщення у центрі сповіщень"
-
-#~ msgid "Enable rounded corner mask"
-#~ msgstr "Використовувати шаблон заокруглених кутів"
 
 #~ msgid "Corner radius"
 #~ msgstr "Радіус заокруглення кутів"
