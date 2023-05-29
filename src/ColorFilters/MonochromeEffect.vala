@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- public class Gala.MonochromeEffect : Clutter.ShaderEffect {
+public class Gala.MonochromeEffect : Clutter.ShaderEffect {
     public const string EFFECT_NAME = "monochrome-filter";
 
     private double _strength;

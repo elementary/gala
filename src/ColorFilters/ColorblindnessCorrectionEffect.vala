@@ -6,8 +6,13 @@
 public class Gala.ColorblindnessCorrectionEffect : Clutter.ShaderEffect {
     public const string EFFECT_NAME = "colorblindness-correction-filter";
 
+    private int _mode;
     public int mode {
-        construct set { set_uniform_value ("COLORBLIND_MODE", value); }
+        get { return _mode; }
+        construct set {
+            _mode = value;
+            set_uniform_value ("COLORBLIND_MODE", _mode);
+        }
     }
     private double _strength;
     public double strength {
