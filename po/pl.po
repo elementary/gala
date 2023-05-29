@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-05 14:57+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
+"PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
-">\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
+"\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
 
 #: src/Dialogs.vala:152
@@ -46,15 +46,15 @@ msgstr "Wymuś zamknięcie"
 msgid "Wait"
 msgstr "Czekaj"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:273
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:352
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/WindowManager.vala:2128
+#: src/WindowManager.vala:2144
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -62,20 +62,20 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2135
+#: src/WindowManager.vala:2151
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2139
+#: src/WindowManager.vala:2155
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2140
+#: src/WindowManager.vala:2156
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2182
+#: src/WindowManager.vala:2198
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
@@ -156,56 +156,91 @@ msgstr ""
 "Menedżer okien i kompozytor oparty na libmutter i zaprojektowany przez "
 "elementary do użytku z Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
-#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "Ulepszenia:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
-#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
+#: data/gala.appdata.xml.in:19
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+"Ustawienie poprawnego układu klawiatury na początku by indykator wskazywał "
+"wybrany układ"
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr ""
+"Naprawiono działanie skrótu klawiszowego zrzutu ekranu w widoku "
+"wielozadaniowym"
+
+#: data/gala.appdata.xml.in:21
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+"Poprawne ustawienie podświetlenia aktywnego obszaru roboczego przy "
+"wchodzeniu w Widok wielozadaniowy i dokładne odwzorowaniu gestów "
+"wielodotykowych"
+
+#: data/gala.appdata.xml.in:22
+msgid "Update panel color after dimming the wallpaper"
+msgstr "Aktualizacja koloru panelu po przyciemnieniu tapety"
+
+#: data/gala.appdata.xml.in:23
+msgid "Scale rounded corners per-display"
+msgstr "Skalowanie zaokrąglonych narożników per monitor"
+
+#: data/gala.appdata.xml.in:24
+msgid "Support fractional scaling"
+msgstr "Wsparcie dla skalowania ułamkowego"
+
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "Zaktualizowano tłumaczenia"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "Poprawa wydajności"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "Usuń teksturę z widoku wielozadaniowego"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:46
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Zapobieganie przypadkowego wybierania okien w przełączniku okien"
 
-#: data/gala.appdata.xml.in:84
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Przeładuj animowane tapety przy zmianie strefy czasowej"
 
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 "Naprawiono nieintuicyjne przesuwanie dwoma palcami w widoku wielu zadań"
 
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "Poprawiono wydajność animacji w widoku wielu zadań"
 
-#: data/gala.appdata.xml.in:113
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "Poprawki:"
 
-#: data/gala.appdata.xml.in:115
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "Naprawiono regresję w OS 7"
 
-#: data/gala.appdata.xml.in:119
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "Użyj portalu dostępu dla wymuszonego zamknięcia"
 
-#: data/gala.appdata.xml.in:131
+#: data/gala.appdata.xml.in:144
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -226,7 +261,14 @@ msgstr "Inne"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
 
-#~ msgid "Properly update accent color in the window switcher"
+#, fuzzy
+#~| msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr "Zapobieganie przypadkowego wybierania okien w przełączniku okien"
+
+#, fuzzy
+#~| msgid "Properly update accent color in the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
 #~ msgstr ""
 #~ "Kolor akcentu w przełączniku okien jest teraz poprawnie aktualizowany"
 
@@ -611,9 +653,6 @@ msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
 
 #~ msgid "Show missed notifications in notification center"
 #~ msgstr "Pokaż pominięte powiadomienia w centrum powiadomień"
-
-#~ msgid "Enable rounded corner mask"
-#~ msgstr "Włącz maskę zaokrąglonego narożnika"
 
 #~ msgid "Corner radius"
 #~ msgstr "Promień narożnika"

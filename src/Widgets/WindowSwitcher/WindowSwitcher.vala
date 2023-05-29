@@ -37,7 +37,9 @@ namespace Gala {
                 }
 
                 _current_icon = value;
-                _current_icon.selected = true;
+                if (_current_icon != null) {
+                    _current_icon.selected = true;
+                }
 
                 update_caption_text ();
             }
@@ -67,7 +69,8 @@ namespace Gala {
 
             var effect = new ShadowEffect (40) {
                 shadow_opacity = 200,
-                css_class = "window-switcher"
+                css_class = "window-switcher",
+                scale_factor = scaling_factor
             };
 
             add_effect (effect);
@@ -85,11 +88,11 @@ namespace Gala {
 
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (() => {
-                unowned var disp = wm.get_display ();
-                var cur_scale = disp.get_monitor_scale (disp.get_current_monitor ());
+                var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
+                    effect.scale_factor = scaling_factor;
                     create_components ();
                 }
             });
@@ -201,7 +204,7 @@ namespace Gala {
             var binding_name = binding.get_name ();
             var backward = binding_name.has_suffix ("-backward");
 
-            next_window (display, workspace, backward);
+            next_window (backward);
         }
 
         private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
@@ -211,12 +214,15 @@ namespace Gala {
             }
 
             unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+            if (current_window == null) {
+                current_icon = null;
+            }
 
             container.width = -1;
             container.destroy_all_children ();
 
             foreach (unowned var window in windows) {
-                var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
                 if (window == current_window) {
                     current_icon = icon;
                 }
@@ -235,6 +241,7 @@ namespace Gala {
 
             unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
             if (current_window == null) {
+                current_icon = null;
                 return false;
             }
 
@@ -245,7 +252,7 @@ namespace Gala {
             var app = window_tracker.get_app_for_window (current_window);
             foreach (unowned var window in windows) {
                 if (window_tracker.get_app_for_window (window) == app) {
-                    var icon = new WindowSwitcherIcon (window, InternalUtils.scale_to_int (ICON_SIZE, scaling_factor));
+                    var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
                     if (window == current_window) {
                         current_icon = icon;
                     }
@@ -373,22 +380,23 @@ namespace Gala {
             toggle_display (false);
         }
 
-        private void next_window (Meta.Display display, Meta.Workspace? workspace, bool backward) {
+        private void next_window (bool backward) {
             Clutter.Actor actor;
-            var current = current_icon;
 
-            if (container.get_n_children () == 1) {
+            if (container.get_n_children () == 1 && current_icon != null) {
                 Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
             }
 
-            if (!backward) {
-                actor = current.get_next_sibling ();
+            if (current_icon == null) {
+                actor = container.get_first_child ();
+            } else if (!backward) {
+                actor = current_icon.get_next_sibling ();
                 if (actor == null) {
                     actor = container.get_first_child ();
                 }
             } else {
-                actor = current.get_previous_sibling ();
+                actor = current_icon.get_previous_sibling ();
                 if (actor == null) {
                     actor = container.get_last_child ();
                 }
@@ -398,7 +406,7 @@ namespace Gala {
         }
 
         private void update_caption_text () {
-            var current_window = current_icon.window;
+            var current_window = current_icon != null ? current_icon.window : null;
             var current_caption = current_window != null ? current_window.title : "n/a";
             caption.set_text (current_caption);
 
@@ -443,16 +451,28 @@ namespace Gala {
         public override bool key_release_event (Clutter.KeyEvent event) {
             if ((get_current_modifiers () & modifier_mask) == 0) {
                 close_switcher (event.time);
-                return true;
             }
 
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        public override bool key_press_event (Clutter.KeyEvent event) {
             switch (event.keyval) {
+                case Clutter.Key.Right:
+                    next_window (false);
+                    return Clutter.EVENT_STOP;
+                case Clutter.Key.Left:
+                    next_window (true);
+                    return Clutter.EVENT_STOP;
                 case Clutter.Key.Escape:
                     close_switcher (event.time, true);
-                    return true;
+                    return Clutter.EVENT_PROPAGATE;
+                case Clutter.Key.Return:
+                    close_switcher (event.time, false);
+                    return Clutter.EVENT_PROPAGATE;
             }
 
-            return false;
+            return Clutter.EVENT_PROPAGATE;
         }
 
 

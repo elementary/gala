@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-04-05 14:57+0000\n"
-"PO-Revision-Date: 2023-04-05 14:57+0000\n"
+"POT-Creation-Date: 2023-05-02 08:55+0000\n"
+"PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -45,35 +45,35 @@ msgstr "Tving avslutning"
 msgid "Wait"
 msgstr "Vent"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:273
 msgid "Screenshots"
 msgstr "Skjermavbildninger"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:352
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2128
+#: src/WindowManager.vala:2144
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringer vil endes tilbake automatisk etter %i sekund."
 msgstr[1] "Endringer vil endes tilbake automatisk etter %i sekunder."
 
-#: src/WindowManager.vala:2135
+#: src/WindowManager.vala:2151
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2139
+#: src/WindowManager.vala:2155
 msgid "Keep Settings"
 msgstr "Behold innstillinger"
 
-#: src/WindowManager.vala:2140
+#: src/WindowManager.vala:2156
 msgid "Use Previous Settings"
 msgstr "Bruk tidligere oppsett"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2182
+#: src/WindowManager.vala:2198
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
@@ -157,58 +157,92 @@ msgstr ""
 "En vindu- og komposisjonsbehandler basert på libmutter og designet av "
 "elementary for bruk med Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:29
-#: data/gala.appdata.xml.in:55 data/gala.appdata.xml.in:82
-#: data/gala.appdata.xml.in:100 data/gala.appdata.xml.in:117
+#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
+#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
+#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:34
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:87
-#: data/gala.appdata.xml.in:102 data/gala.appdata.xml.in:120
+#: data/gala.appdata.xml.in:19
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+"Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren samsvarer "
+"med valgt oppsett."
+
+#: data/gala.appdata.xml.in:20
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
+
+#: data/gala.appdata.xml.in:21
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+"Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning og "
+"animert 1:1 med flerpekingshåndvendinger"
+
+#: data/gala.appdata.xml.in:22
+msgid "Update panel color after dimming the wallpaper"
+msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
+
+#: data/gala.appdata.xml.in:23
+#, fuzzy
+#| msgid "Enable rounded corner mask"
+msgid "Scale rounded corners per-display"
+msgstr "Bruk maske for avrundede hjørner"
+
+#: data/gala.appdata.xml.in:24
+msgid "Support fractional scaling"
+msgstr "Støtte for brøkbasert skalering"
+
+#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
+#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
+#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
 msgid "Updated translations"
 msgstr "Oppdaterte oversettelser"
 
-#: data/gala.appdata.xml.in:31
+#: data/gala.appdata.xml.in:44
 msgid "Performance improvements"
 msgstr "Ytelsesforbedringer"
 
-#: data/gala.appdata.xml.in:32
+#: data/gala.appdata.xml.in:45
 msgid "Remove texture from Multitasking View"
 msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
 
-#: data/gala.appdata.xml.in:33
+#: data/gala.appdata.xml.in:46
 #, fuzzy
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
 "bytteren."
 
-#: data/gala.appdata.xml.in:84
+#: data/gala.appdata.xml.in:97
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
 
-#: data/gala.appdata.xml.in:85
+#: data/gala.appdata.xml.in:98
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Fikset rar to-fungerrulling i fleroppgaveløsnings-visning"
 
-#: data/gala.appdata.xml.in:86
+#: data/gala.appdata.xml.in:99
 msgid "Improve multitasking view animation performance"
 msgstr "Forbedret fleroppgaveløsningsvisning av animasjonsytelse"
 
-#: data/gala.appdata.xml.in:113
+#: data/gala.appdata.xml.in:126
 msgid "Fixes:"
 msgstr "Fikser:"
 
-#: data/gala.appdata.xml.in:115
+#: data/gala.appdata.xml.in:128
 msgid "Fix regressions for OS 7"
 msgstr "Fikset tilbakegang for OS 7"
 
-#: data/gala.appdata.xml.in:119
+#: data/gala.appdata.xml.in:132
 msgid "Use access portal for force quit"
 msgstr "Bruk av tilgangsportal for å framprovosere avslutting"
 
-#: data/gala.appdata.xml.in:131
+#: data/gala.appdata.xml.in:144
 #, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
@@ -231,7 +265,13 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 
 #, fuzzy
-#~ msgid "Properly update accent color in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
+#~ msgstr ""
+#~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+#~ "bytteren."
+
+#, fuzzy
+#~ msgid "Correctly set the scale of app icons in the window switcher"
 #~ msgstr ""
 #~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
 #~ "bytteren."
@@ -619,9 +659,6 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 
 #~ msgid "Show missed notifications in notification center"
 #~ msgstr "Vis uleste meldinger i meldingssenteret"
-
-#~ msgid "Enable rounded corner mask"
-#~ msgstr "Bruk maske for avrundede hjørner"
 
 #~ msgid "Corner radius"
 #~ msgstr "Hjørneradius"

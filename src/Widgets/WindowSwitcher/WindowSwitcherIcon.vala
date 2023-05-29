@@ -36,10 +36,10 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         }
     }
 
-    public WindowSwitcherIcon (Meta.Window window, int icon_size) {
+    public WindowSwitcherIcon (Meta.Window window, int icon_size, float scale_factor) {
         Object (window: window);
 
-        icon = new WindowIcon (window, icon_size);
+        icon = new WindowIcon (window, InternalUtils.scale_to_int (icon_size, scale_factor));
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
@@ -47,7 +47,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         canvas.draw.connect (draw_background);
         set_content (canvas);
 
-        update_size ();
+        this.scale_factor = scale_factor;
     }
 
     private void update_size () {

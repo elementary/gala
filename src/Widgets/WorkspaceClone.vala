@@ -178,7 +178,7 @@ namespace Gala {
             background = new FramedBackground (display);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
@@ -245,6 +245,7 @@ namespace Gala {
 
         private void reallocate () {
             icon_group.scale_factor = scale_factor;
+            window_container.monitor_scale = scale_factor;
         }
 
         /**
