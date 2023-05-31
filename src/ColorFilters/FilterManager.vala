@@ -60,7 +60,7 @@ public class Gala.FilterManager : Object {
         // Fade out applied effects
         foreach (unowned var _effect in wm.stage.get_effects ()) {
             if (_effect is ColorblindnessCorrectionEffect) {
-                var effect = (ColorblindnessCorrectionEffect) _effect;
+                unowned var effect = (ColorblindnessCorrectionEffect) _effect;
 
                 if (effect.mode == filter_variant) {
                     continue;
@@ -135,7 +135,7 @@ public class Gala.FilterManager : Object {
 
         foreach (unowned var _effect in wm.stage.get_effects ()) {
             if (_effect is ColorblindnessCorrectionEffect) {
-                var effect = (ColorblindnessCorrectionEffect) _effect;
+                unowned var effect = (ColorblindnessCorrectionEffect) _effect;
 
                 if (effect.mode != filter_variant) {
                     continue;
@@ -188,7 +188,7 @@ public class Gala.FilterManager : Object {
     private void update_monochrome_filter () {
         var enabled = settings.get_boolean ("enable-monochrome-filter");
         var strength = settings.get_double ("monochrome-filter-strength");
-        var effect = (MonochromeEffect) wm.stage.get_effect (MonochromeEffect.EFFECT_NAME);
+        unowned var effect = (MonochromeEffect) wm.stage.get_effect (MonochromeEffect.EFFECT_NAME);
 
         if ((effect != null) == enabled) {
             return;
@@ -261,7 +261,7 @@ public class Gala.FilterManager : Object {
     private void update_monochrome_strength () {
         var strength = settings.get_double ("monochrome-filter-strength");
 
-        var effect = (MonochromeEffect) wm.stage.get_effect (MonochromeEffect.EFFECT_NAME);
+        unowned var effect = (MonochromeEffect) wm.stage.get_effect (MonochromeEffect.EFFECT_NAME);
 
         // stop transition (if there is one in progress)
         if (effect.transition_actor != null) {
