@@ -59,42 +59,44 @@ public class Gala.FilterManager : Object {
 
         // Fade out applied effects
         foreach (unowned var _effect in wm.stage.get_effects ()) {
-            var effect = (ColorblindnessCorrectionEffect) _effect;
-
-            if (effect.mode == filter_variant) {
-                continue;
+            if (_effect is ColorblindnessCorrectionEffect) {
+                var effect = (ColorblindnessCorrectionEffect) _effect;
+                
+                if (effect.mode == filter_variant) {
+                    continue;
+                }
+            
+                // Since you can't add a transition to an effect
+                // add it to a transition actor and bind one of its properties to the effect
+                
+                // stop transition (if there is one in progress)
+                if (effect.transition_actor != null) {
+                    effect.transition_actor.destroy ();
+                }
+                
+                // create a new transition
+                var transition = new Clutter.PropertyTransition ("scale_x") {
+                    duration = TRANSITION_DURATION,
+                    progress_mode = Clutter.AnimationMode.LINEAR,
+                    remove_on_complete = true
+                };
+                transition.set_from_value (effect.strength);
+                transition.set_to_value (0.0);
+                
+                // create a transition actor and bind its `scale_x` to effect's `strength`
+                effect.transition_actor = new Clutter.Actor () {
+                    visible = false
+                };
+                wm.ui_group.add_child (effect.transition_actor);
+                effect.transition_actor.bind_property ("scale_x", effect, "strength");
+                
+                transition.completed.connect (() => {
+                    effect.transition_actor.destroy ();
+                    wm.stage.remove_effect (effect);
+                });
+                
+                effect.transition_actor.add_transition (TRANSITION_NAME, transition);
             }
-
-            // Since you can't add a transition to an effect
-            // add it to a transition actor and bind one of its properties to the effect
-
-            // stop transition (if there is one in progress)
-            if (effect.transition_actor != null) {
-                effect.transition_actor.destroy ();
-            }
-
-            // create a new transition
-            var transition = new Clutter.PropertyTransition ("scale_x") {
-                duration = TRANSITION_DURATION,
-                progress_mode = Clutter.AnimationMode.LINEAR,
-                remove_on_complete = true
-            };
-            transition.set_from_value (effect.strength);
-            transition.set_to_value (0.0);
-
-            // create a transition actor and bind its `scale_x` to effect's `strength`
-            effect.transition_actor = new Clutter.Actor () {
-                visible = false
-            };
-            wm.ui_group.add_child (effect.transition_actor);
-            effect.transition_actor.bind_property ("scale_x", effect, "strength");
-
-            transition.completed.connect (() => {
-                effect.transition_actor.destroy ();
-                wm.stage.remove_effect (effect);
-            });
-
-            effect.transition_actor.add_transition (TRANSITION_NAME, transition);
         }
 
         // Apply a new filter
