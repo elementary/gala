@@ -24,16 +24,16 @@ public class Gala.AccentColorManager : Object {
     private const string STYLESHEET_KEY = "gtk-theme";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
 
-    public const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
-    public const string THEME_MINT = "io.elementary.stylesheet.mint";
-    public const string THEME_GREEN = "io.elementary.stylesheet.lime";
-    public const string THEME_YELLOW = "io.elementary.stylesheet.banana";
-    public const string THEME_ORANGE = "io.elementary.stylesheet.orange";
-    public const string THEME_RED = "io.elementary.stylesheet.strawberry";
-    public const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
-    public const string THEME_PURPLE = "io.elementary.stylesheet.grape";
-    public const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
-    public const string THEME_GRAY = "io.elementary.stylesheet.slate";
+    private const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
+    private const string THEME_MINT = "io.elementary.stylesheet.mint";
+    private const string THEME_GREEN = "io.elementary.stylesheet.lime";
+    private const string THEME_YELLOW = "io.elementary.stylesheet.banana";
+    private const string THEME_ORANGE = "io.elementary.stylesheet.orange";
+    private const string THEME_RED = "io.elementary.stylesheet.strawberry";
+    private const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
+    private const string THEME_PURPLE = "io.elementary.stylesheet.grape";
+    private const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
+    private const string THEME_GRAY = "io.elementary.stylesheet.slate";
 
     private Gala.AccountsService? gala_accounts_service = null;
 
