@@ -850,18 +850,19 @@ public class Gala.WindowClone : Clutter.Actor {
         private Clutter.Canvas background_canvas;
 
         static construct {
-            var label_widget_path = new Gtk.WidgetPath ();
-            label_widget_path.append_type (typeof (Gtk.Label));
+            //  var label_widget_path = new Gtk.WidgetPath ();
+            //  label_widget_path.append_type (typeof (Gtk.Label));
 
-            var style_context = new Gtk.StyleContext ();
-            style_context.add_class (Granite.STYLE_CLASS_CARD);
-            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
-            style_context.set_path (label_widget_path);
+            //  var style_context = new Gtk.StyleContext ();
+            //  style_context.add_class (Granite.STYLE_CLASS_CARD);
+            //  style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
+            //  style_context.set_path (label_widget_path);
 
-            border_radius = style_context.get_property (
-                Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-                Gtk.StateFlags.NORMAL
-            ).get_int () * 4;
+            //  border_radius = style_context.get_property (
+            //      Gtk.STYLE_PROPERTY_BORDER_RADIUS,
+            //      Gtk.StateFlags.NORMAL
+            //  ).get_int () * 4;
+            border_radius = 16;
         }
 
         construct {

@@ -107,27 +107,27 @@ namespace Gala {
             ctx.clip ();
             ctx.reset_clip ();
 
-            var widget_path = new Gtk.WidgetPath ();
-            widget_path.append_type (typeof (Gtk.Window));
-            widget_path.iter_set_object_name (-1, "window");
+            //  var widget_path = new Gtk.WidgetPath ();
+            //  widget_path.append_type (typeof (Gtk.Window));
+            //  widget_path.iter_set_object_name (-1, "window");
 
-            var style_context = new Gtk.StyleContext ();
-            style_context.set_scale ((int)Math.round (scaling_factor));
-            style_context.set_path (widget_path);
-            style_context.add_class ("background");
-            style_context.add_class ("csd");
-            style_context.add_class ("unified");
+            //  var style_context = new Gtk.StyleContext ();
+            //  style_context.set_scale ((int)Math.round (scaling_factor));
+            //  style_context.set_path (widget_path);
+            //  style_context.add_class ("background");
+            //  style_context.add_class ("csd");
+            //  style_context.add_class ("unified");
 
-            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-                var gtksettings = Gtk.Settings.get_default ();
-                var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
-                style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-            }
+            //  if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+            //      var gtksettings = Gtk.Settings.get_default ();
+            //      var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
+            //      style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+            //  }
 
-            ctx.set_operator (Cairo.Operator.OVER);
-            style_context.render_background (ctx, 0, 0, width, height);
-            style_context.render_frame (ctx, 0, 0, width, height);
-            ctx.restore ();
+            //  ctx.set_operator (Cairo.Operator.OVER);
+            //  style_context.render_background (ctx, 0, 0, width, height);
+            //  style_context.render_frame (ctx, 0, 0, width, height);
+            //  ctx.restore ();
 
             return true;
         }
