@@ -1,19 +1,8 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 namespace Gala {
     /**
@@ -26,6 +15,7 @@ namespace Gala {
         private Cogl.Texture2D cached_texture;
         private int last_width;
         private int last_height;
+        private ShadowEffect shadow_effect;
 
         public FramedBackground (Meta.Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
@@ -45,6 +35,13 @@ namespace Gala {
         }
 
         public override void paint (Clutter.PaintContext context) {
+            if (shadow_effect == null) {
+                shadow_effect = new ShadowEffect (40) {
+                    css_class = "workspace"
+                };
+                add_effect (shadow_effect);
+            }
+
             base.paint (context);
 
             if (cached_surface == null || last_width != (int) width || last_height != (int) height) {
