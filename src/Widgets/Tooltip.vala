@@ -12,8 +12,6 @@ public class Gala.Tooltip : Clutter.Actor {
     private static Gtk.Border padding;
     private static Gtk.StyleContext style_context;
 
-    private static bool created_gtk_objects = false;
-
     /**
      * Canvas to draw the Tooltip background.
      */
@@ -129,9 +127,8 @@ public class Gala.Tooltip : Clutter.Actor {
     }
 
     private static bool draw_background (Cairo.Context ctx, int width, int height) {
-        if (!created_gtk_objects) {
+        if (style_context == null) {
             create_gtk_objects ();
-            created_gtk_objects = true;
         }
 
         ctx.save ();
