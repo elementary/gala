@@ -278,7 +278,7 @@ namespace Gala {
         private void open_switcher () {
             if (!created_gtk_objects) {
                 create_gtk_objects ();
-                created_gtk_objects  = true;
+                created_gtk_objects = true;
             }
 
             if (container.get_n_children () == 0) {
