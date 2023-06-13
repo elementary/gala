@@ -3,6 +3,7 @@
  * Copyright 2020 Mark Story <mark@mark-story.com>
  * Copyright 2017 Popye <sailor3101@gmail.com>
  * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
