@@ -24,6 +24,11 @@ namespace Gala {
         private Clutter.Actor container;
         private Clutter.Text caption;
 
+        private bool created_gtk_objects = false;
+        private ShadowEffect shadow_effect;
+        private Gtk.WidgetPath widget_path;
+        private Gtk.StyleContext style_context;
+
         private int modifier_mask;
 
         private WindowSwitcherIcon? _current_icon = null;
@@ -67,13 +72,6 @@ namespace Gala {
             // Carry out the initial draw
             create_components ();
 
-            var effect = new ShadowEffect (40) {
-                shadow_opacity = 200,
-                css_class = "window-switcher",
-                scale_factor = scaling_factor
-            };
-
-            add_effect (effect);
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
@@ -92,7 +90,7 @@ namespace Gala {
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
-                    effect.scale_factor = scaling_factor;
+                    shadow_effect.scale_factor = scaling_factor;
                     create_components ();
                 }
             });
@@ -101,33 +99,26 @@ namespace Gala {
         }
 
         private bool draw (Cairo.Context ctx, int width, int height) {
+            if (style_context == null) { // gtk is not initialized yet
+                return true;
+            }
+
             ctx.save ();
             ctx.set_operator (Cairo.Operator.CLEAR);
             ctx.paint ();
             ctx.clip ();
             ctx.reset_clip ();
 
-            //  var widget_path = new Gtk.WidgetPath ();
-            //  widget_path.append_type (typeof (Gtk.Window));
-            //  widget_path.iter_set_object_name (-1, "window");
+            if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+                unowned var gtksettings = Gtk.Settings.get_default ();
+                unowned var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
+                style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+            }
 
-            //  var style_context = new Gtk.StyleContext ();
-            //  style_context.set_scale ((int)Math.round (scaling_factor));
-            //  style_context.set_path (widget_path);
-            //  style_context.add_class ("background");
-            //  style_context.add_class ("csd");
-            //  style_context.add_class ("unified");
-
-            //  if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            //      var gtksettings = Gtk.Settings.get_default ();
-            //      var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
-            //      style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-            //  }
-
-            //  ctx.set_operator (Cairo.Operator.OVER);
-            //  style_context.render_background (ctx, 0, 0, width, height);
-            //  style_context.render_frame (ctx, 0, 0, width, height);
-            //  ctx.restore ();
+            ctx.set_operator (Cairo.Operator.OVER);
+            style_context.render_background (ctx, 0, 0, width, height);
+            style_context.render_frame (ctx, 0, 0, width, height);
+            ctx.restore ();
 
             return true;
         }
@@ -165,6 +156,26 @@ namespace Gala {
 
             add_child (container);
             add_child (caption);
+        }
+
+        private void create_gtk_objects () {
+            shadow_effect = new ShadowEffect (40) {
+                shadow_opacity = 200,
+                css_class = "window-switcher",
+                scale_factor = scaling_factor
+            };
+            add_effect (shadow_effect);
+
+            widget_path = new Gtk.WidgetPath ();
+            widget_path.append_type (typeof (Gtk.Window));
+            widget_path.iter_set_object_name (-1, "window");
+
+            style_context = new Gtk.StyleContext ();
+            style_context.set_scale ((int)Math.round (scaling_factor));
+            style_context.set_path (widget_path);
+            style_context.add_class ("background");
+            style_context.add_class ("csd");
+            style_context.add_class ("unified");
         }
 
         [CCode (instance_pos = -1)]
@@ -265,6 +276,11 @@ namespace Gala {
         }
 
         private void open_switcher () {
+            if (!created_gtk_objects) {
+                create_gtk_objects ();
+                created_gtk_objects  = true;
+            }
+
             if (container.get_n_children () == 0) {
                 Clutter.get_default_backend ().get_default_seat ().bell_notify ();
                 return;
