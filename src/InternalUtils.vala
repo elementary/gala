@@ -28,6 +28,17 @@ namespace Gala {
                 && Meta.Prefs.get_workspaces_only_on_primary ();
         }
 
+        public const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
+        public const string THEME_MINT = "io.elementary.stylesheet.mint";
+        public const string THEME_GREEN = "io.elementary.stylesheet.lime";
+        public const string THEME_YELLOW = "io.elementary.stylesheet.banana";
+        public const string THEME_ORANGE = "io.elementary.stylesheet.orange";
+        public const string THEME_RED = "io.elementary.stylesheet.strawberry";
+        public const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
+        public const string THEME_PURPLE = "io.elementary.stylesheet.grape";
+        public const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
+        public const string THEME_GRAY = "io.elementary.stylesheet.slate";
+
         /**
          * set the area where clutter can receive events
          **/
@@ -324,23 +335,39 @@ namespace Gala {
         }
 
         public static Drawing.Color get_accent_color_by_theme_name (string theme_name) {
-            //  var label_widget_path = new Gtk.WidgetPath ();
-            //  label_widget_path.append_type (GLib.Type.from_name ("label"));
-            //  label_widget_path.iter_set_object_name (-1, "selection");
-
-            //  var selection_style_context = new Gtk.StyleContext ();
-            //  unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
-            //  selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-            //  selection_style_context.set_path (label_widget_path);
-
-            //  var rgba = (Gdk.RGBA) selection_style_context.get_property (
-            //      Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-            //      Gtk.StateFlags.NORMAL
-            //  );
-
-            //  return new Drawing.Color.from_rgba (rgba);
-
-            return new Drawing.Color (0.0, 0.0, 1.0, 1.0);
+            switch (theme_name) {
+                case THEME_RED:
+                    return new Drawing.Color.from_int (0xed5353);
+    
+                case THEME_ORANGE:
+                    return new Drawing.Color.from_int (0xffa154);
+    
+                case THEME_YELLOW:
+                    return new Drawing.Color.from_int (0xf9c440);
+    
+                case THEME_GREEN:
+                    return new Drawing.Color.from_int (0x68b723);
+    
+                case THEME_MINT:
+                    return new Drawing.Color.from_int (0x28bca3);
+    
+                case THEME_BLUE:
+                    return new Drawing.Color.from_int (0x3689e6);
+    
+                case THEME_PURPLE:
+                    return new Drawing.Color.from_int (0xa56de2);
+    
+                case THEME_PINK:
+                    return new Drawing.Color.from_int (0xde3e80);
+    
+                case THEME_BROWN:
+                    return new Drawing.Color.from_int (0x8a715e);
+    
+                case THEME_GRAY:
+                    return new Drawing.Color.from_int (0x667885);
+            }
+    
+            return new Drawing.Color.from_int (0x3689e6);
         }
 
         /**

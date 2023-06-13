@@ -24,33 +24,22 @@ public class Gala.AccentColorManager : Object {
     private const string STYLESHEET_KEY = "gtk-theme";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
 
-    private const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
-    private const string THEME_MINT = "io.elementary.stylesheet.mint";
-    private const string THEME_GREEN = "io.elementary.stylesheet.lime";
-    private const string THEME_YELLOW = "io.elementary.stylesheet.banana";
-    private const string THEME_ORANGE = "io.elementary.stylesheet.orange";
-    private const string THEME_RED = "io.elementary.stylesheet.strawberry";
-    private const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
-    private const string THEME_PURPLE = "io.elementary.stylesheet.grape";
-    private const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
-    private const string THEME_GRAY = "io.elementary.stylesheet.slate";
-
     private Gala.AccountsService? gala_accounts_service = null;
 
     private Settings background_settings;
     private Settings interface_settings;
 
     private NamedColor[] theme_colors = {
-        new NamedColor ("Blue", THEME_BLUE),
-        new NamedColor ("Mint", THEME_MINT),
-        new NamedColor ("Green", THEME_GREEN),
-        new NamedColor ("Yellow", THEME_YELLOW),
-        new NamedColor ("Orange", THEME_ORANGE),
-        new NamedColor ("Red", THEME_RED),
-        new NamedColor ("Pink", THEME_PINK),
-        new NamedColor ("Purple", THEME_PURPLE),
-        new NamedColor ("Brown", THEME_BROWN),
-        new NamedColor ("Gray", THEME_GRAY)
+        new NamedColor ("Blue", InternalUtils.THEME_BLUE),
+        new NamedColor ("Mint", InternalUtils.THEME_MINT),
+        new NamedColor ("Green", InternalUtils.THEME_GREEN),
+        new NamedColor ("Yellow", InternalUtils.THEME_YELLOW),
+        new NamedColor ("Orange", InternalUtils.THEME_ORANGE),
+        new NamedColor ("Red", InternalUtils.THEME_RED),
+        new NamedColor ("Pink", InternalUtils.THEME_PINK),
+        new NamedColor ("Purple", InternalUtils.THEME_PURPLE),
+        new NamedColor ("Brown", InternalUtils.THEME_BROWN),
+        new NamedColor ("Gray", InternalUtils.THEME_GRAY)
     };
 
     construct {
