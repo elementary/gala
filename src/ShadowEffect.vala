@@ -28,7 +28,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
     private static Gtk.StyleContext create_style_context () {
         var style_path = new Gtk.WidgetPath ();
-        var id = style_path.append_type (typeof (Gtk.Window));
+        style_path.append_type (typeof (Gtk.Window));
 
         var style_context = new Gtk.StyleContext ();
         style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
