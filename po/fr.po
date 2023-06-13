@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-05-02 08:55+0000\n"
-"PO-Revision-Date: 2023-05-23 09:06+0000\n"
+"PO-Revision-Date: 2023-06-13 10:07+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
 "\n"
@@ -159,7 +159,7 @@ msgstr ""
 #: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
 #: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
 msgid "Improvements:"
-msgstr "Améliorations :"
+msgstr "Améliorations :"
 
 #: data/gala.appdata.xml.in:19
 msgid ""
