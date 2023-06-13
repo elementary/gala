@@ -24,11 +24,11 @@ public class Gala.NamedColor : Object {
     public string theme { get; construct set; }
     public Drawing.Color color { get; construct set; }
 
-    public NamedColor (string name, string theme) {
+    public NamedColor (string name, string theme, Drawing.Color color) {
         Object (
             name: name,
             theme: theme,
-            color: InternalUtils.get_accent_color_by_theme_name (theme)
+            color: color
         );
     }
 }

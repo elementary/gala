@@ -29,17 +29,28 @@ public class Gala.AccentColorManager : Object {
     private Settings background_settings;
     private Settings interface_settings;
 
+    public const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
+    public const string THEME_MINT = "io.elementary.stylesheet.mint";
+    public const string THEME_GREEN = "io.elementary.stylesheet.lime";
+    public const string THEME_YELLOW = "io.elementary.stylesheet.banana";
+    public const string THEME_ORANGE = "io.elementary.stylesheet.orange";
+    public const string THEME_RED = "io.elementary.stylesheet.strawberry";
+    public const string THEME_PINK = "io.elementary.stylesheet.bubblegum";
+    public const string THEME_PURPLE = "io.elementary.stylesheet.grape";
+    public const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
+    public const string THEME_GRAY = "io.elementary.stylesheet.slate";
+
     private NamedColor[] theme_colors = {
-        new NamedColor ("Blue", InternalUtils.THEME_BLUE),
-        new NamedColor ("Mint", InternalUtils.THEME_MINT),
-        new NamedColor ("Green", InternalUtils.THEME_GREEN),
-        new NamedColor ("Yellow", InternalUtils.THEME_YELLOW),
-        new NamedColor ("Orange", InternalUtils.THEME_ORANGE),
-        new NamedColor ("Red", InternalUtils.THEME_RED),
-        new NamedColor ("Pink", InternalUtils.THEME_PINK),
-        new NamedColor ("Purple", InternalUtils.THEME_PURPLE),
-        new NamedColor ("Brown", InternalUtils.THEME_BROWN),
-        new NamedColor ("Gray", InternalUtils.THEME_GRAY)
+        new NamedColor ("Blue", THEME_BLUE, new Drawing.Color.from_int (0x3689e6)),
+        new NamedColor ("Mint", THEME_MINT, new Drawing.Color.from_int (0x28bca3)),
+        new NamedColor ("Green", THEME_GREEN, new Drawing.Color.from_int (0x68b723)),
+        new NamedColor ("Yellow", THEME_YELLOW, new Drawing.Color.from_int (0xf9c440)),
+        new NamedColor ("Orange", THEME_ORANGE, new Drawing.Color.from_int (0xffa154)),
+        new NamedColor ("Red", THEME_RED, new Drawing.Color.from_int (0xed5353)),
+        new NamedColor ("Pink", THEME_PINK, new Drawing.Color.from_int (0xde3e80)),
+        new NamedColor ("Purple", THEME_PURPLE, new Drawing.Color.from_int (0xa56de2)),
+        new NamedColor ("Brown", THEME_BROWN, new Drawing.Color.from_int (0x8a715e)),
+        new NamedColor ("Gray", THEME_GRAY, new Drawing.Color.from_int (0x667885))
     };
 
     construct {
