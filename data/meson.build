@@ -50,15 +50,24 @@ if get_option('systemd')
     unit_conf.set('bindir', bindir)
 
     configure_file(
-        input: 'gala-x11.service.in',
-        output: 'gala-x11.service',
+        input: 'gala@x11.service.in',
+        output: 'io.elementary.gala@x11.service',
+        install: true,
+        install_dir: systemd_userunitdir,
+        configuration: unit_conf
+    )
+
+    configure_file(
+        input: 'gala@wayland.service.in',
+        output: 'io.elementary.gala@wayland.service',
         install: true,
         install_dir: systemd_userunitdir,
         configuration: unit_conf
     )
 
     install_data(
-        'gala-x11.target',
+        'gala.target',
+        rename: 'io.elementary.gala.target',
         install_dir: systemd_userunitdir
     )
 endif
