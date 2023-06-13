@@ -27,8 +27,6 @@ namespace Gala {
         private int last_width;
         private int last_height;
 
-        private bool created_shadow_effect = false;
-
         public FramedBackground (Meta.Display display) {
             Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
         }
@@ -38,19 +36,15 @@ namespace Gala {
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
 
+            var effect = new ShadowEffect (40) {
+                css_class = "workspace"
+            };
+            add_effect (effect);
+
             reactive = true;
         }
 
         public override void paint (Clutter.PaintContext context) {
-            if (!created_shadow_effect) {
-                var effect = new ShadowEffect (40) {
-                    css_class = "workspace"
-                };
-                add_effect (effect);
-
-                created_shadow_effect = true;
-            }
-
             base.paint (context);
 
             if (cached_surface == null || last_width != (int) width || last_height != (int) height) {

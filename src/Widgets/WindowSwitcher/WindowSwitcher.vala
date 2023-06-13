@@ -24,7 +24,6 @@ namespace Gala {
         private Clutter.Actor container;
         private Clutter.Text caption;
 
-        private ShadowEffect shadow_effect;
         private Gtk.WidgetPath widget_path;
         private Gtk.StyleContext style_context;
 
@@ -71,6 +70,11 @@ namespace Gala {
             // Carry out the initial draw
             create_components ();
 
+            var effect = new ShadowEffect (40) {
+                css_class = "workspace"
+            };
+            add_effect (effect);
+
 
             // Redraw the components if the colour scheme changes.
             granite_settings.notify["prefers-color-scheme"].connect (() => {
@@ -89,7 +93,7 @@ namespace Gala {
                 if (cur_scale != scaling_factor) {
                     scaling_factor = cur_scale;
                     canvas.scale_factor = scaling_factor;
-                    shadow_effect.scale_factor = scaling_factor;
+                    effect.scale_factor = scaling_factor;
                     create_components ();
                 }
             });
@@ -158,13 +162,6 @@ namespace Gala {
         }
 
         private void create_gtk_objects () {
-            shadow_effect = new ShadowEffect (40) {
-                shadow_opacity = 200,
-                css_class = "window-switcher",
-                scale_factor = scaling_factor
-            };
-            add_effect (shadow_effect);
-
             widget_path = new Gtk.WidgetPath ();
             widget_path.append_type (typeof (Gtk.Window));
             widget_path.iter_set_object_name (-1, "window");
