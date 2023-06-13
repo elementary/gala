@@ -24,11 +24,6 @@ public class Gala.AccentColorManager : Object {
     private const string STYLESHEET_KEY = "gtk-theme";
     private const string TAG_ACCENT_COLOR = "Xmp.xmp.io.elementary.AccentColor";
 
-    private Gala.AccountsService? gala_accounts_service = null;
-
-    private Settings background_settings;
-    private Settings interface_settings;
-
     public const string THEME_BLUE = "io.elementary.stylesheet.blueberry";
     public const string THEME_MINT = "io.elementary.stylesheet.mint";
     public const string THEME_GREEN = "io.elementary.stylesheet.lime";
@@ -39,6 +34,11 @@ public class Gala.AccentColorManager : Object {
     public const string THEME_PURPLE = "io.elementary.stylesheet.grape";
     public const string THEME_BROWN = "io.elementary.stylesheet.cocoa";
     public const string THEME_GRAY = "io.elementary.stylesheet.slate";
+
+    private Gala.AccountsService? gala_accounts_service = null;
+
+    private Settings background_settings;
+    private Settings interface_settings;
 
     private NamedColor[] theme_colors = {
         new NamedColor ("Blue", THEME_BLUE, new Drawing.Color.from_int (0x3689e6)),
