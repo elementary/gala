@@ -849,7 +849,17 @@ public class Gala.WindowClone : Clutter.Actor {
 
         private Clutter.Canvas background_canvas;
 
-        static construct {
+        private bool created_gtk_objects = false;
+
+        construct {
+            background_canvas = new Clutter.Canvas ();
+            background_canvas.draw.connect (draw_background);
+            content = background_canvas;
+
+            notify["opacity"].connect (invalidate);
+        }
+
+        private void create_gtk_objects () {
             var label_widget_path = new Gtk.WidgetPath ();
             label_widget_path.append_type (typeof (Gtk.Label));
 
@@ -864,19 +874,16 @@ public class Gala.WindowClone : Clutter.Actor {
             ).get_int () * 4;
         }
 
-        construct {
-            background_canvas = new Clutter.Canvas ();
-            background_canvas.draw.connect (draw_background);
-            content = background_canvas;
-
-            notify["opacity"].connect (invalidate);
-        }
-
         public void invalidate () {
             background_canvas.invalidate ();
         }
 
         private bool draw_background (Cairo.Context cr, int width, int height) {
+            if (!created_gtk_objects) {
+                create_gtk_objects ();
+                created_gtk_objects = true;
+            }
+
             if (!visible || opacity == 0) {
                 return Clutter.EVENT_PROPAGATE;
             }
