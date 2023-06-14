@@ -844,12 +844,20 @@ public class Gala.WindowClone : Clutter.Actor {
      * Border to show around the selected window when using keyboard navigation.
      */
     private class ActiveShape : Clutter.Actor {
-        private static int border_radius;
+        private static int border_radius = -1;
         private const double COLOR_OPACITY = 0.8;
 
         private Clutter.Canvas background_canvas;
 
-        static construct {
+        construct {
+            background_canvas = new Clutter.Canvas ();
+            background_canvas.draw.connect (draw_background);
+            content = background_canvas;
+
+            notify["opacity"].connect (invalidate);
+        }
+
+        private void create_gtk_objects () {
             var label_widget_path = new Gtk.WidgetPath ();
             label_widget_path.append_type (typeof (Gtk.Label));
 
@@ -864,19 +872,15 @@ public class Gala.WindowClone : Clutter.Actor {
             ).get_int () * 4;
         }
 
-        construct {
-            background_canvas = new Clutter.Canvas ();
-            background_canvas.draw.connect (draw_background);
-            content = background_canvas;
-
-            notify["opacity"].connect (invalidate);
-        }
-
         public void invalidate () {
             background_canvas.invalidate ();
         }
 
         private bool draw_background (Cairo.Context cr, int width, int height) {
+            if (border_radius == -1) {
+                create_gtk_objects ();
+            }
+
             if (!visible || opacity == 0) {
                 return Clutter.EVENT_PROPAGATE;
             }
