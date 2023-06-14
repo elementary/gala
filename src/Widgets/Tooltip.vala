@@ -1,19 +1,7 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
- *           2021 José Expósito <jose.exposito89@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2021 José Expósito <jose.exposito89@gmail.com>
+ * Copyright 2021-2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 /**
@@ -46,7 +34,18 @@ public class Gala.Tooltip : Clutter.Actor {
      */
     public float max_width;
 
-    static construct {
+    construct {
+        text = "";
+        max_width = 200;
+
+        background_canvas = new Clutter.Canvas ();
+        background_canvas.draw.connect (draw_background);
+        content = background_canvas;
+
+        draw ();
+    }
+
+    private static void create_gtk_objects () {
         var tooltip_widget_path = new Gtk.WidgetPath ();
         var pos = tooltip_widget_path.append_type (typeof (Gtk.Window));
         tooltip_widget_path.iter_set_object_name (pos, "tooltip");
@@ -74,17 +73,6 @@ public class Gala.Tooltip : Clutter.Actor {
             blue = (uint8) text_rgba.blue * uint8.MAX,
             alpha = (uint8) text_rgba.alpha * uint8.MAX,
         };
-    }
-
-    construct {
-        text = "";
-        max_width = 200;
-
-        background_canvas = new Clutter.Canvas ();
-        background_canvas.draw.connect (draw_background);
-        content = background_canvas;
-
-        draw ();
     }
 
     public void set_text (string new_text, bool redraw = true) {
@@ -139,6 +127,10 @@ public class Gala.Tooltip : Clutter.Actor {
     }
 
     private static bool draw_background (Cairo.Context ctx, int width, int height) {
+        if (style_context == null) {
+            create_gtk_objects ();
+        }
+
         ctx.save ();
 
         style_context.render_background (ctx, 0, 0, width, height);

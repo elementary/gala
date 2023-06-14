@@ -3,6 +3,7 @@
  * Copyright 2020 Mark Story <mark@mark-story.com>
  * Copyright 2017 Popye <sailor3101@gmail.com>
  * Copyright 2014 Tom Beckmann
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -23,6 +24,9 @@ namespace Gala {
         private Clutter.Canvas canvas;
         private Clutter.Actor container;
         private Clutter.Text caption;
+
+        private Gtk.WidgetPath widget_path;
+        private Gtk.StyleContext style_context;
 
         private int modifier_mask;
 
@@ -72,7 +76,6 @@ namespace Gala {
                 css_class = "window-switcher",
                 scale_factor = scaling_factor
             };
-
             add_effect (effect);
 
             // Redraw the components if the colour scheme changes.
@@ -101,26 +104,19 @@ namespace Gala {
         }
 
         private bool draw (Cairo.Context ctx, int width, int height) {
+            if (style_context == null) { // gtk is not initialized yet
+                create_gtk_objects ();
+            }
+
             ctx.save ();
             ctx.set_operator (Cairo.Operator.CLEAR);
             ctx.paint ();
             ctx.clip ();
             ctx.reset_clip ();
 
-            var widget_path = new Gtk.WidgetPath ();
-            widget_path.append_type (typeof (Gtk.Window));
-            widget_path.iter_set_object_name (-1, "window");
-
-            var style_context = new Gtk.StyleContext ();
-            style_context.set_scale ((int)Math.round (scaling_factor));
-            style_context.set_path (widget_path);
-            style_context.add_class ("background");
-            style_context.add_class ("csd");
-            style_context.add_class ("unified");
-
             if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-                var gtksettings = Gtk.Settings.get_default ();
-                var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
+                unowned var gtksettings = Gtk.Settings.get_default ();
+                unowned var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
                 style_context.add_provider (css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             }
 
@@ -165,6 +161,19 @@ namespace Gala {
 
             add_child (container);
             add_child (caption);
+        }
+
+        private void create_gtk_objects () {
+            widget_path = new Gtk.WidgetPath ();
+            widget_path.append_type (typeof (Gtk.Window));
+            widget_path.iter_set_object_name (-1, "window");
+
+            style_context = new Gtk.StyleContext ();
+            style_context.set_scale ((int)Math.round (scaling_factor));
+            style_context.set_path (widget_path);
+            style_context.add_class ("background");
+            style_context.add_class ("csd");
+            style_context.add_class ("unified");
         }
 
         [CCode (instance_pos = -1)]
