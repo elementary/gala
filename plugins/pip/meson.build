@@ -1,8 +1,7 @@
 gala_pip_sources = [
     'Main.vala',
     'PopupWindow.vala',
-    'SelectionArea.vala',
-    'ShadowEffect.vala',
+    'SelectionArea.vala'
 ]
 
 gala_pip_lib = shared_library(

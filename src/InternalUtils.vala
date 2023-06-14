@@ -1,19 +1,9 @@
-//
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2012 Tom Beckmann
+ * Copyright 2012 Rico Tzschichholz
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 namespace Gala {
     public enum InputArea {
@@ -321,24 +311,6 @@ namespace Gala {
                 Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
                 Gtk.StateFlags.NORMAL
             );
-        }
-
-        public static Drawing.Color get_accent_color_by_theme_name (string theme_name) {
-            var label_widget_path = new Gtk.WidgetPath ();
-            label_widget_path.append_type (GLib.Type.from_name ("label"));
-            label_widget_path.iter_set_object_name (-1, "selection");
-
-            var selection_style_context = new Gtk.StyleContext ();
-            unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
-            selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-            selection_style_context.set_path (label_widget_path);
-
-            var rgba = (Gdk.RGBA) selection_style_context.get_property (
-                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-                Gtk.StateFlags.NORMAL
-            );
-
-            return new Drawing.Color.from_rgba (rgba);
         }
 
         /**
