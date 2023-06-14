@@ -114,17 +114,6 @@ namespace Gala {
             ctx.clip ();
             ctx.reset_clip ();
 
-            var widget_path = new Gtk.WidgetPath ();
-            widget_path.append_type (typeof (Gtk.Window));
-            widget_path.iter_set_object_name (-1, "window");
-
-            var style_context = new Gtk.StyleContext ();
-            style_context.set_scale ((int)Math.round (scaling_factor));
-            style_context.set_path (widget_path);
-            style_context.add_class ("background");
-            style_context.add_class ("csd");
-            style_context.add_class ("unified");
-
             if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
                 unowned var gtksettings = Gtk.Settings.get_default ();
                 unowned var css_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
