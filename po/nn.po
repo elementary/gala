@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-06-21 18:53+0000\n"
+"POT-Creation-Date: 2023-06-21 19:04+0000\n"
 "PO-Revision-Date: 2023-02-07 16:25+0000\n"
 "Last-Translator: Martin Myrvold <myrvold.martin@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <https://l10n.elementary.io/projects/"
@@ -161,73 +161,73 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:42
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:138
 msgid "Improvements:"
 msgstr "Forbetringar:"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:72 data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:125 data/gala.metainfo.xml.in:140
+msgid "Updated translations"
+msgstr "Oppdatert oversetning"
+
+#: data/gala.metainfo.xml.in:44
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:45
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:46
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:47
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:48
 #, fuzzy
 #| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
 msgstr "Bruk maske for avrunda hjørne"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:49
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:83 data/gala.metainfo.xml.in:113
-#: data/gala.metainfo.xml.in:128
-msgid "Updated translations"
-msgstr "Oppdatert oversetning"
-
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:69
 msgid "Performance improvements"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:70
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "Multitasking visning"
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:71
 #, fuzzy
 #| msgid "The opacity of windows behind the window switcher."
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Gjennomsiktigheita til vindauge bak vindaugeveljaren."
 
-#: data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:122
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:123
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:112
+#: data/gala.metainfo.xml.in:124
 msgid "Improve multitasking view animation performance"
 msgstr ""
 
