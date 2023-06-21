@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-05-02 08:55+0000\n"
+"POT-Creation-Date: 2023-06-21 18:53+0000\n"
 "PO-Revision-Date: 2023-06-13 10:07+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
-"\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
+">\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,7 +53,7 @@ msgstr "Captures d'écran"
 msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
-#: src/WindowManager.vala:2144
+#: src/WindowManager.vala:2132
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -61,20 +61,20 @@ msgstr[0] "Les modifications seront automatiquement annulées après %i seconde.
 msgstr[1] ""
 "Les modifications seront automatiquement annulées après %i secondes."
 
-#: src/WindowManager.vala:2151
+#: src/WindowManager.vala:2139
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2155
+#: src/WindowManager.vala:2143
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:2156
+#: src/WindowManager.vala:2144
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2198
+#: src/WindowManager.vala:2186
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
@@ -139,15 +139,15 @@ msgstr "Paramètres d'affichage…"
 msgid "System Settings…"
 msgstr "Paramètres du système…"
 
-#: data/gala.appdata.xml.in:7
+#: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
 msgstr "Multitâche et gestion des fenêtres"
 
-#: data/gala.appdata.xml.in:8
+#: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
 msgstr "Un gestionnaire de fenêtres et de positionnement pour Panthéon"
 
-#: data/gala.appdata.xml.in:11
+#: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
@@ -155,13 +155,17 @@ msgstr ""
 "Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
 "par elementary pour être utilisé avec Panthéon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:42
-#: data/gala.appdata.xml.in:68 data/gala.appdata.xml.in:95
-#: data/gala.appdata.xml.in:113 data/gala.appdata.xml.in:130
+#: data/gala.metainfo.xml.in:23
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:126
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.appdata.xml.in:19
+#: data/gala.metainfo.xml.in:32
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -169,13 +173,13 @@ msgstr ""
 "Définit la disposition du clavier au démarrage de sorte que l'indicateur "
 "corresponde avec la disposition sélectionnée"
 
-#: data/gala.appdata.xml.in:20
+#: data/gala.metainfo.xml.in:33
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 "Corrige les raccourcis claviers pour la capture d'écran depuis la vue "
 "multitâche"
 
-#: data/gala.appdata.xml.in:21
+#: data/gala.metainfo.xml.in:34
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -183,67 +187,51 @@ msgstr ""
 "Définit l'accentuation de l'espace de travail actif lors de l'entrée dans la "
 "vue multitâche et animation en 1:1 avec les gestes multipoints"
 
-#: data/gala.appdata.xml.in:22
+#: data/gala.metainfo.xml.in:35
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Met à jour la couleur du panneau après l'atténuation du fond d'écran"
 
-#: data/gala.appdata.xml.in:23
+#: data/gala.metainfo.xml.in:36
 msgid "Scale rounded corners per-display"
 msgstr "Adapte les coins arrondis pour chaque écran"
 
-#: data/gala.appdata.xml.in:24
+#: data/gala.metainfo.xml.in:37
 msgid "Support fractional scaling"
 msgstr "Prise en charge de la mise à l'échelle fractionnée"
 
-#: data/gala.appdata.xml.in:25 data/gala.appdata.xml.in:47
-#: data/gala.appdata.xml.in:70 data/gala.appdata.xml.in:100
-#: data/gala.appdata.xml.in:115 data/gala.appdata.xml.in:133
+#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:83 data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:128
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.appdata.xml.in:44
+#: data/gala.metainfo.xml.in:57
 msgid "Performance improvements"
 msgstr "Améliorations des performances"
 
-#: data/gala.appdata.xml.in:45
+#: data/gala.metainfo.xml.in:58
 msgid "Remove texture from Multitasking View"
 msgstr "Retirer la texture de la vue multitâche"
 
-#: data/gala.appdata.xml.in:46
+#: data/gala.metainfo.xml.in:59
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 "Prévention de la sélection accidentelle de fenêtres dans le sélecteur de "
 "fenêtres"
 
-#: data/gala.appdata.xml.in:97
+#: data/gala.metainfo.xml.in:110
 msgid "Reload animated wallpapers when timezone changes"
 msgstr ""
 "Rechargement des fonds d'écran animés lors du changement de fuseau horaire"
 
-#: data/gala.appdata.xml.in:98
+#: data/gala.metainfo.xml.in:111
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr ""
 "Correction d'un défilement maladroit à deux doigts dans la vue multitâche"
 
-#: data/gala.appdata.xml.in:99
+#: data/gala.metainfo.xml.in:112
 msgid "Improve multitasking view animation performance"
 msgstr "Amélioration des performances de l'animation de la vue multitâche"
-
-#: data/gala.appdata.xml.in:126
-msgid "Fixes:"
-msgstr "Corrections :"
-
-#: data/gala.appdata.xml.in:128
-msgid "Fix regressions for OS 7"
-msgstr "Correction de régressions pour OS 7"
-
-#: data/gala.appdata.xml.in:132
-msgid "Use access portal for force quit"
-msgstr "Utiliser le portail d'accès pour forcer à quitter"
-
-#: data/gala.appdata.xml.in:144
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -263,6 +251,15 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Fichier desktop de secours pour les notifications provenant des vieilles "
 "applications."
+
+#~ msgid "Fixes:"
+#~ msgstr "Corrections :"
+
+#~ msgid "Fix regressions for OS 7"
+#~ msgstr "Correction de régressions pour OS 7"
+
+#~ msgid "Use access portal for force quit"
+#~ msgstr "Utiliser le portail d'accès pour forcer à quitter"
 
 #, fuzzy
 #~| msgid "Avoid accidentally selecting windows in the window switcher"
