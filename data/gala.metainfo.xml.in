@@ -4,12 +4,25 @@
   <id>io.elementary.gala</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
+  <compulsory_for_desktop>Pantheon</compulsory_for_desktop>
+  <translation type="gettext">gala</translation>
+
+  <icon type="stock">preferences-desktop-workspaces</icon>
   <name>Multitasking &amp; Window Management</name>
   <summary>A window &amp; compositing manager for Pantheon</summary>
-  <icon type="stock">preferences-desktop-workspaces</icon>
   <description>
     <p>A window &amp; compositing manager based on libmutter and designed by elementary for use with Pantheon.</p>
   </description>
+
+  <url type="homepage">https://elementary.io/</url>
+  <url type="bugtracker">https://github.com/elementary/gala/issues</url>
+  <url type="donation">https://elementary.io/get-involved#funding</url>
+  <url type="help">https://github.com/elementary/gala/discussions/categories/q-a</url>
+  <url type="translate">https://l10n.elementary.io/engage/desktop/</url>
+
+  <developer_name>elementary, Inc.</developer_name>
+  <project_group>elementary</project_group>
+  <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
     <release version="7.0.3" date="2023-05-01" urgency="medium">
@@ -121,27 +134,6 @@
       </issues>
     </release>
 
-    <release version="6.3.2" date="2022-10-12" urgency="medium">
-      <description>
-        <p>Fixes:</p>
-        <ul>
-          <li>Fix regressions for OS 7</li>
-        </ul>
-        <p>Improvements:</p>
-        <ul>
-          <li>Use access portal for force quit</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
-      <issues>
-        <issue url="https://github.com/elementary/gala/issues/1334">Make sure not to re-trigger hot corner actions too quickly</issue>
-        <issue url="https://github.com/elementary/gala/issues/966">Add a function to dim the wallpaper when dark style is active</issue>
-      </issues>
-    </release>
+    <release version="6.3.2" date="2022-10-12" urgency="medium"/>
   </releases>
-
-  <compulsory_for_desktop>Pantheon</compulsory_for_desktop>
-  <developer_name>elementary, Inc.</developer_name>
-  <url type="homepage">https://elementary.io</url>
-  <url type="bugtracker">https://github.com/elementary/gala/issues</url>
 </component>
