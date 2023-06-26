@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-06-21 18:53+0000\n"
+"POT-Creation-Date: 2023-06-21 19:04+0000\n"
 "PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
@@ -153,23 +153,29 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary בע״מ."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:42
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:138
 msgid "Improvements:"
 msgstr "שיפורים:"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:72 data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:125 data/gala.metainfo.xml.in:140
+msgid "Updated translations"
+msgstr "התרגומים עודכנו"
+
+#: data/gala.metainfo.xml.in:44
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr "פריסת המקלדת מוגדרת כראוי בהתחלה כדי שהמחוון יהיה תואם לפריסה הנבחרת"
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:45
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr "תוקנו קיצורי המקלדת לצילום המסך תוך כדי מצב תצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:46
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -177,45 +183,39 @@ msgstr ""
 "הדגשת סביבת העבודה הפעילה מוגדרת נכון בעת כניסה למצב תצוגת ריבוי משימות "
 "והנפשה של 1:1 עם מחוות ריבוי נקודות מגע"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:47
 msgid "Update panel color after dimming the wallpaper"
 msgstr "צבע הלוח מתעדכן לאחר עמעום תמונת הרקע"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:48
 msgid "Scale rounded corners per-display"
 msgstr "שינוי קנה מידה של הפינות המעוגלות לפי תצוגה"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:49
 msgid "Support fractional scaling"
 msgstr "תמיכה בשינוי קנה מידה מקוטע"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:83 data/gala.metainfo.xml.in:113
-#: data/gala.metainfo.xml.in:128
-msgid "Updated translations"
-msgstr "התרגומים עודכנו"
-
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:69
 msgid "Performance improvements"
 msgstr "שיפורי ביצועים"
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:70
 msgid "Remove texture from Multitasking View"
 msgstr "הוסר המרקם מתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:71
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "מניעת בחירה מקרית של חלונות במחליף החלונות"
 
-#: data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:122
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "לרענן את הטפטים כשאזור הזמן מתחלף"
 
-#: data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:123
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "תוקנה גלילת שתי אצבעות משונה בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:112
+#: data/gala.metainfo.xml.in:124
 msgid "Improve multitasking view animation performance"
 msgstr "שופרו ביצועי הנפשות תצוגת ריבוי משימות"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-06-21 18:53+0000\n"
+"POT-Creation-Date: 2023-06-21 19:04+0000\n"
 "PO-Revision-Date: 2023-05-03 17:06+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
@@ -159,13 +159,19 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:42
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:138
 msgid "Improvements:"
 msgstr "Улучшения:"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:72 data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:125 data/gala.metainfo.xml.in:140
+msgid "Updated translations"
+msgstr "Обновлены переводы"
+
+#: data/gala.metainfo.xml.in:44
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -173,11 +179,11 @@ msgstr ""
 "Исправлен выбор раскладки клавиатуры при запуске, чтобы индикатор "
 "соответствовал выбранной раскладке"
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:45
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr "Исправлены сочетания клавиш в режиме многозадачности"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:46
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -185,45 +191,39 @@ msgstr ""
 "Исправлена подсветка активного рабочего стола при открытии режима "
 "многозадачности, и добавлены мулититач жесты для анимации подсветки"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:47
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Обновление цвета панели после затемнения обоев"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:48
 msgid "Scale rounded corners per-display"
 msgstr "Масштабирование закруглённых углов для каждого экрана"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:49
 msgid "Support fractional scaling"
 msgstr "Поддержка дробного масштабирования"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:83 data/gala.metainfo.xml.in:113
-#: data/gala.metainfo.xml.in:128
-msgid "Updated translations"
-msgstr "Обновлены переводы"
-
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:69
 msgid "Performance improvements"
 msgstr "Улучшения производительности"
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:70
 msgid "Remove texture from Multitasking View"
 msgstr "Удалена текстура из многозадачного вида"
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:71
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Исправлен случайный выбор окон в переключателе окон"
 
-#: data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:122
 msgid "Reload animated wallpapers when timezone changes"
 msgstr "Перезагрузка анимированных обоев при смене часовых поясов"
 
-#: data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:123
 msgid "Fix awkward two-finger scroll in multitasking view"
 msgstr "Исправлена неудобная прокрутка двумя пальцами в многозадачном виде"
 
-#: data/gala.metainfo.xml.in:112
+#: data/gala.metainfo.xml.in:124
 msgid "Improve multitasking view animation performance"
 msgstr "Улучшена производительность анимации многозадачного вида"
 
