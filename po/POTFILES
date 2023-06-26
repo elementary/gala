@@ -1,4 +1,5 @@
 src/Dialogs.vala
+src/PantheonShell.vala
 src/ScreenshotManager.vala
 src/WindowManager.vala
 daemon/MenuDaemon.vala
