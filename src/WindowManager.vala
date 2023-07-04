@@ -817,6 +817,16 @@ namespace Gala {
                     }
                 } else if (transient_actor.get_effect ("dim-parent") != null) {
                     transient_actor.remove_effect_by_name ("dim-parent");
+
+                    DimData? data_to_remove = null;
+                    foreach (var data in dim_data) {
+                        if (data.child == window) {
+                            data_to_remove = data;
+                        }
+                    }
+                    if (data_to_remove != null) {
+                        dim_data.remove (data_to_remove);
+                    }
                 }
 
                 return;
