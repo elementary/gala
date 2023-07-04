@@ -23,6 +23,7 @@ namespace Gala {
             "picture-opacity",
             "picture-options",
             "picture-uri",
+            "picture-uri-dark",
             "primary-color",
             "secondary-color"
         };
@@ -67,6 +68,9 @@ namespace Gala {
                     }
                 }
             });
+
+            unowned var granite_settings = Granite.Settings.get_default ();
+            granite_settings.notify["prefers-color-scheme"].connect (() => changed ());
         }
 
         private void monitors_changed () {
@@ -91,7 +95,10 @@ namespace Gala {
 
             var style = settings.get_enum ("picture-options");
             if (style != GDesktop.BackgroundStyle.NONE) {
-                var uri = settings.get_string ("picture-uri");
+                var uri = settings.get_string (
+                    Granite.Settings.get_default ().prefers_color_scheme == DARK ?
+                    "picture-uri-dark" : "picture-uri"
+                );
                 if (Uri.parse_scheme (uri) != null)
                     filename = File.new_for_uri (uri).get_path ();
                 else
