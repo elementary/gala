@@ -822,6 +822,7 @@ namespace Gala {
                     foreach (var data in dim_data) {
                         if (data.child == window) {
                             data_to_remove = data;
+                            break;
                         }
                     }
                     if (data_to_remove != null) {
