@@ -87,26 +87,26 @@ namespace Gala {
         }
 
         public Background get_background (int monitor_index) {
-            string? filename = null;
+            GLib.File? file = null;
 
             var style = settings.get_enum ("picture-options");
             if (style != GDesktop.BackgroundStyle.NONE) {
                 var uri = settings.get_string ("picture-uri");
                 if (Uri.parse_scheme (uri) != null)
-                    filename = File.new_for_uri (uri).get_path ();
+                    file = File.new_for_uri (uri);
                 else
-                    filename = uri;
+                    file = File.new_for_path (uri);
             }
 
             // Animated backgrounds are (potentially) per-monitor, since
             // they can have variants that depend on the aspect ratio and
             // size of the monitor; for other backgrounds we can use the
             // same background object for all monitors.
-            if (filename == null || !filename.has_suffix (".xml"))
+            if (file == null || !file.get_basename ().has_suffix (".xml"))
                 monitor_index = 0;
 
             if (!backgrounds.has_key (monitor_index)) {
-                var background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
+                var background = new Background (display, monitor_index, file, this, (GDesktop.BackgroundStyle) style);
                 background.changed.connect (background_changed);
                 backgrounds[monitor_index] = background;
             }
