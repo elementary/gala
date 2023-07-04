@@ -38,6 +38,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private bool off_screen = false;
     private Clutter.Grab? grab = null;
 
+    private static unowned Meta.Window? previous_focus = null;
+
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
     private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
         out float width, out float height) {
@@ -48,6 +50,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor) {
         Object (wm: wm, window_actor: window_actor);
+    }
+
+    private static bool get_window_is_normal (Meta.Window window) {
+        var window_type = window.get_window_type ();
+        return window_type == Meta.WindowType.NORMAL
+            || window_type == Meta.WindowType.DIALOG
+            || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
     construct {
@@ -300,6 +309,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_window_focus () {
+        unowned Meta.Window focus_window = wm.get_display ().get_focus_window ();
+        if ((focus_window != null && !get_window_is_normal (focus_window))
+            || (previous_focus != null && !get_window_is_normal (previous_focus))) {
+            previous_focus = focus_window;
+            return;
+        }
+
         unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
         unowned var active_workspace = workspace_manager.get_active_workspace ();
         unowned var window = window_actor.get_meta_window ();
@@ -309,6 +325,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         } else if (!window_actor.is_destroyed ()) {
             show ();
         }
+
+
+        previous_focus = focus_window;
     }
 
     private void update_size () {
