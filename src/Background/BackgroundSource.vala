@@ -95,14 +95,7 @@ namespace Gala {
 
             var style = settings.get_enum ("picture-options");
             if (style != GDesktop.BackgroundStyle.NONE) {
-                var uri = settings.get_string (
-                    Granite.Settings.get_default ().prefers_color_scheme == DARK ?
-                    "picture-uri-dark" : "picture-uri"
-                );
-                if (Uri.parse_scheme (uri) != null)
-                    filename = File.new_for_uri (uri).get_path ();
-                else
-                    filename = uri;
+                filename = get_background_path ();
             }
 
             // Animated backgrounds are (potentially) per-monitor, since
@@ -119,6 +112,24 @@ namespace Gala {
             }
 
             return backgrounds[monitor_index];
+        }
+
+        private string get_background_path () {
+            if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+                var uri = settings.get_string ("picture-uri-dark");
+                var path = File.new_for_uri (uri).get_path ();
+                if (FileUtils.test (path, EXISTS)) {
+                    return path;
+                }
+            }
+
+            var uri = settings.get_string ("picture-uri");
+            var path = File.new_for_uri (uri).get_path ();
+            if (FileUtils.test (path, EXISTS)) {
+                return path;
+            }
+
+            return uri;
         }
 
         private void background_changed (Background background) {
