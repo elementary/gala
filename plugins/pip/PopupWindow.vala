@@ -326,7 +326,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             show ();
         }
 
-
         previous_focus = focus_window;
     }
 
