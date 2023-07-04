@@ -795,12 +795,9 @@ namespace Gala {
             return (proxy in modal_stack);
         }
 
-        struct DimData {
-            Meta.Window child;
-            unowned Meta.WindowActor parent_actor;
-        }
+        private HashTable<Meta.Window, unowned Meta.WindowActor> dim_table =
+            new HashTable<Meta.Window, unowned Meta.WindowActor> (GLib.direct_hash, GLib.direct_equal);
 
-        private List<DimData?> dim_data = new List<DimData?> ();
         private void dim_parent_window (Meta.Window window, bool dim) {
             unowned var transient = window.get_transient_for ();
             if (transient != null && transient != window) {
@@ -810,45 +807,23 @@ namespace Gala {
                     if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
-
                         transient_actor.add_effect_with_name ("dim-parent", dark_effect);
 
-                        dim_data.append ({ window, transient_actor });
+                        dim_table[window] = transient_actor;
                     }
                 } else if (transient_actor.get_effect ("dim-parent") != null) {
                     transient_actor.remove_effect_by_name ("dim-parent");
-
-                    DimData? data_to_remove = null;
-                    foreach (var data in dim_data) {
-                        if (data.child == window) {
-                            data_to_remove = data;
-                            break;
-                        }
-                    }
-                    if (data_to_remove != null) {
-                        dim_data.remove (data_to_remove);
-                    }
+                    dim_table.remove (window);
                 }
 
                 return;
             }
 
             // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
-            DimData? data_to_remove = null;
-            foreach (var data in dim_data) {
-                if (window == data.child) {
-                    if (data.parent_actor.get_effect ("dim-parent") != null) {
-                        data.parent_actor.remove_effect_by_name ("dim-parent");
-                    }
-
-                    data_to_remove = data;
-                    debug ("Removed dim using dim_data");
-
-                    break;
-                }
-            }
-            if (data_to_remove != null) {
-                dim_data.remove (data_to_remove);
+            if (window in dim_table && dim_table[window].get_effect ("dim-parent") != null) {
+                dim_table[window].remove_effect_by_name ("dim-parent");
+                dim_table.remove (window);
+                debug ("Removed dim using dim_data");
             }
         }
 
