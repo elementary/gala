@@ -48,15 +48,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         height = src_height * ratio;
     }
 
-    public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor) {
-        Object (wm: wm, window_actor: window_actor);
-    }
-
     private static bool get_window_is_normal (Meta.Window window) {
         var window_type = window.get_window_type ();
         return window_type == Meta.WindowType.NORMAL
             || window_type == Meta.WindowType.DIALOG
             || window_type == Meta.WindowType.MODAL_DIALOG;
+    }
+
+    public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor) {
+        Object (wm: wm, window_actor: window_actor);
     }
 
     construct {
