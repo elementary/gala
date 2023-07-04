@@ -800,7 +800,7 @@ namespace Gala {
             unowned Meta.WindowActor parent_actor;
         }
 
-        private List<DimData?> dim_data = new List<DimData?>();
+        private List<DimData?> dim_data = new List<DimData?> ();
         private void dim_parent_window (Meta.Window window, bool dim) {
             unowned var transient = window.get_transient_for ();
             if (transient != null && transient != window) {
