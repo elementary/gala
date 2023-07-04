@@ -38,21 +38,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private bool off_screen = false;
     private Clutter.Grab? grab = null;
 
-    private static unowned Meta.Window? previous_focus = null;
-
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
     private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
         out float width, out float height) {
         float ratio = float.min (max_width / src_width, max_height / src_height);
         width = src_width * ratio;
         height = src_height * ratio;
-    }
-
-    private static bool get_window_is_normal (Meta.Window window) {
-        var window_type = window.get_window_type ();
-        return window_type == Meta.WindowType.NORMAL
-            || window_type == Meta.WindowType.DIALOG
-            || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
     public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor) {
@@ -71,14 +62,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_pivot_point (0.5f, 0.5f);
         set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 
-        var window = window_actor.get_meta_window ();
+        unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
-        window.notify["appears-focused"].connect (() => {
-            Idle.add (() => {
-                update_window_focus ();
-                return Source.REMOVE;
-            });
-        });
+        window.notify["appears-focused"].connect (update_window_focus);
+
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (update_window_focus);
 
         clone = new Clutter.Clone (window_actor);
 
@@ -311,21 +300,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_window_focus () {
-        unowned Meta.Window focus_window = wm.get_display ().get_focus_window ();
-        if ((focus_window != null && !get_window_is_normal (focus_window))
-            || (previous_focus != null && !get_window_is_normal (previous_focus))) {
-            previous_focus = focus_window;
-            return;
-        }
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var active_workspace = workspace_manager.get_active_workspace ();
+        unowned var window = window_actor.get_meta_window ();
 
-        var window = window_actor.get_meta_window ();
-        if (window.appears_focused) {
+        if (window.appears_focused && window.located_on_workspace (active_workspace)) {
             hide ();
         } else if (!window_actor.is_destroyed ()) {
             show ();
         }
-
-        previous_focus = focus_window;
     }
 
     private void update_size () {
