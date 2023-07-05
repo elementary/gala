@@ -162,5 +162,5 @@ namespace Gala {
 
             MediaFeedback.send (icon, level);
         }
-    } 
+    }
 }
