@@ -154,7 +154,7 @@ namespace Gala {
             string label = "";
             if (parameters.contains ("label"))
                 label = parameters["label"].get_string ();
-            int32 level = 0;
+            int32 level = -1;
             if (parameters.contains ("level")) {
                 var double_level = parameters["level"].get_double ();
                 level = (int)(double_level * 100);
@@ -162,5 +162,5 @@ namespace Gala {
 
             MediaFeedback.send (icon, level);
         }
-    }
+    } 
 }

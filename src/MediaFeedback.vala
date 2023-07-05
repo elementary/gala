@@ -89,7 +89,8 @@ namespace Gala {
         }
 
         private void send_feedback (owned Feedback feedback) {
-            if (notifications == null) {
+            // gsd uses level = -1 to show osd for touchpad, airplane mode, bluetooth etc.
+            if (notifications == null || feedback.level == -1) {
                 return;
             }
 
