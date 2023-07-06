@@ -820,9 +820,9 @@ namespace Gala {
             }
 
             // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
-            if (window in dim_table && dim_table[window].get_effect ("dim-parent") != null) {
-                dim_table[window].remove_effect_by_name ("dim-parent");
-                dim_table.remove (window);
+            var transient_actor = dim_table.take (window);
+            if (transient_actor != null) {
+                transient_actor.remove_effect_by_name ("dim-parent");
                 debug ("Removed dim using dim_data");
             }
         }
