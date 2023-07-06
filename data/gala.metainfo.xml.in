@@ -35,6 +35,7 @@
       <issues>
         <issue url="https://github.com/elementary/gala/issues/1331">Dialog dim won't go off on gtk app</issue>
         <issue url="https://github.com/elementary/gala/issues/1700">PiP doesn't become visible by changing workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/1706">Alt+Tab switcher's background is always dark</issue>
         <issue url="https://github.com/elementary/gala/issues/1712">gala 7.1.0-1 crashes on Arch</issue>
       </issues>
     </release>
