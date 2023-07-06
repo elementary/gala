@@ -33,6 +33,7 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/1700">PiP doesn't become visible by changing workspaces</issue>
         <issue url="https://github.com/elementary/gala/issues/1706">Alt+Tab switcher's background is always dark</issue>
       </issues>
     </release>
