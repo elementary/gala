@@ -71,14 +71,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_pivot_point (0.5f, 0.5f);
         set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 
-        var window = window_actor.get_meta_window ();
+        unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
-        window.notify["appears-focused"].connect (() => {
-            Idle.add (() => {
-                update_window_focus ();
-                return Source.REMOVE;
-            });
-        });
+        window.notify["appears-focused"].connect (update_window_focus);
+
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (update_window_focus);
 
         clone = new Clutter.Clone (window_actor);
 
@@ -318,8 +316,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             return;
         }
 
-        var window = window_actor.get_meta_window ();
-        if (window.appears_focused) {
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var active_workspace = workspace_manager.get_active_workspace ();
+        unowned var window = window_actor.get_meta_window ();
+
+        if (window.appears_focused && window.located_on_workspace (active_workspace)) {
             hide ();
         } else if (!window_actor.is_destroyed ()) {
             show ();
