@@ -809,21 +809,35 @@ namespace Gala {
             return (proxy in modal_stack);
         }
 
+        private HashTable<Meta.Window, unowned Meta.WindowActor> dim_table =
+            new HashTable<Meta.Window, unowned Meta.WindowActor> (GLib.direct_hash, GLib.direct_equal);
+
         private void dim_parent_window (Meta.Window window, bool dim) {
-            unowned var ancestor = window.get_transient_for ();
-            if (ancestor != null && ancestor != window) {
-                unowned var win = (Meta.WindowActor) ancestor.get_compositor_private ();
+            unowned var transient = window.get_transient_for ();
+            if (transient != null && transient != window) {
+                unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
                 // Can't rely on win.has_effects since other effects could be applied
                 if (dim) {
                     if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
                         var dark_effect = new Clutter.BrightnessContrastEffect ();
                         dark_effect.set_brightness (-0.4f);
+                        transient_actor.add_effect_with_name ("dim-parent", dark_effect);
 
-                        win.add_effect_with_name ("dim-parent", dark_effect);
+                        dim_table[window] = transient_actor;
                     }
-                } else if (win.get_effect ("dim-parent") != null) {
-                    win.remove_effect_by_name ("dim-parent");
+                } else if (transient_actor.get_effect ("dim-parent") != null) {
+                    transient_actor.remove_effect_by_name ("dim-parent");
+                    dim_table.remove (window);
                 }
+
+                return;
+            }
+
+            // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
+            var transient_actor = dim_table.take (window);
+            if (transient_actor != null) {
+                transient_actor.remove_effect_by_name ("dim-parent");
+                debug ("Removed dim using dim_data");
             }
         }
 
