@@ -120,6 +120,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
         } else if (dark_style_provider != null) {
             style_context.remove_provider (dark_style_provider);
+            dark_style_provider = null;
         }
 
         ctx.set_operator (Cairo.Operator.OVER);
