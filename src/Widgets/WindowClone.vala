@@ -97,10 +97,9 @@ public class Gala.WindowClone : Clutter.Actor {
             wm: wm,
             window: window,
             gesture_tracker: gesture_tracker,
+            monitor_scale_factor: scale,
             overview_mode: overview_mode
         );
-
-        _monitor_scale_factor = scale;  // avoid calling reallocate () before widgets are created
     }
 
     construct {
