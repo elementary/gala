@@ -97,9 +97,10 @@ public class Gala.WindowClone : Clutter.Actor {
             wm: wm,
             window: window,
             gesture_tracker: gesture_tracker,
-            monitor_scale_factor: scale,
             overview_mode: overview_mode
         );
+
+        _monitor_scale_factor = scale;  // avoid calling reallocate () before widgets are created
     }
 
     construct {
@@ -138,9 +139,9 @@ public class Gala.WindowClone : Clutter.Actor {
         add_child (active_shape);
         add_child (window_title);
 
-        load_clone ();
-
         reallocate ();
+
+        load_clone ();
     }
 
     ~WindowClone () {
@@ -173,7 +174,6 @@ public class Gala.WindowClone : Clutter.Actor {
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
-        set_child_above_sibling (close_button, clone);
     }
 
     /**
