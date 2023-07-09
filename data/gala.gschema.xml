@@ -208,6 +208,21 @@
       <summary>The shortcut to enable picture-in-picture window</summary>
       <description>The shortcut to show the selection area to choose a window.</description>
     </key>
+    <key type="as" name="volume-up">
+      <default><![CDATA[['XF86AudioRaiseVolume', '<Ctrl>XF86AudioRaiseVolume']]]></default>
+      <summary>Shortcut to raise the volume.</summary>
+      <description></description>
+    </key>
+    <key type="as" name="volume-down">
+      <default><![CDATA[['XF86AudioLowerVolume', '<Ctrl>XF86AudioLowerVolume']]]></default>
+      <summary>Shortcut to raise the volume.</summary>
+      <description></description>
+    </key>
+    <key type="as" name="volume-mute">
+      <default><![CDATA[['XF86AudioMute']]]></default>
+      <summary>Shortcut to raise the volume.</summary>
+      <description></description>
+    </key>
   </schema>
 
   <schema path="/org/pantheon/desktop/gala/appearance/" id="org.pantheon.desktop.gala.appearance">
