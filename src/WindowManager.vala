@@ -452,13 +452,12 @@ namespace Gala {
                 return;
             }
 
-
             unowned var name = binding.get_name () ;
             unowned var workspace_manager = display.get_workspace_manager ();
             unowned var active_workspace  = workspace_manager.get_active_workspace ();
             unowned Meta.Workspace? target_workspace = null;
 
-            if (name== "move-to-workspace-left" || name == "move-to-workspace-right") {
+            if (name == "move-to-workspace-left" || name == "move-to-workspace-right") {
                 var direction = (name == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
                 target_workspace = active_workspace.get_neighbor (direction);
             } else {
@@ -935,13 +934,13 @@ namespace Gala {
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
-                    unowned var active_workspace  = workspace_manager.get_active_workspace ();
+                    unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.LEFT);
                     move_window (current, target_workspace);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
-                    unowned var active_workspace  = workspace_manager.get_active_workspace ();
+                    unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.RIGHT);
                     move_window (current, target_workspace);
                     break;
