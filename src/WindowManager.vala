@@ -1250,7 +1250,7 @@ namespace Gala {
 
             kill_window_effects (actor);
 
-            var window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
             if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_next_ws (window);
             }
@@ -1374,6 +1374,11 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             var window = actor.get_meta_window ();
+
+            if ((window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) ||
+                (window.is_on_primary_monitor () && behavior_settings.get_boolean ("move-fullscreened-workspace"))) {
+                move_window_to_next_ws (window);
+            }
 
             // Notifications are a special case and have to be always be handled
             // regardless of the animation setting
@@ -1694,7 +1699,7 @@ namespace Gala {
         }
 
         private void move_window_to_next_ws (Meta.Window window) {
-            unowned Meta.Workspace win_ws = window.get_workspace ();
+            unowned var win_ws = window.get_workspace ();
 
             // Do nothing if the current workspace would be empty
             if (Utils.get_n_windows (win_ws) <= 1) {
@@ -1710,17 +1715,17 @@ namespace Gala {
             var new_ws_index = old_ws_index + 1;
             InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
-            unowned Meta.Display display = get_display ();
+            unowned var display = get_display ();
             var time = display.get_current_time ();
-            var new_ws_obj = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
-            window.change_workspace (new_ws_obj);
-            new_ws_obj.activate_with_focus (window, time);
+            unowned var new_ws = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
+            window.change_workspace (new_ws);
+            new_ws.activate_with_focus (window, time);
 
-            ws_assoc.insert (window, old_ws_index);
+            ws_assoc[window] = old_ws_index;
         }
 
         private void move_window_to_old_ws (Meta.Window window) {
-            unowned Meta.Workspace win_ws = window.get_workspace ();
+            unowned var win_ws = window.get_workspace ();
 
             // Do nothing if the current workspace is populated with other windows
             if (Utils.get_n_windows (win_ws) > 1) {
@@ -1734,13 +1739,13 @@ namespace Gala {
             var old_ws_index = ws_assoc.get (window);
             var new_ws_index = win_ws.index ();
 
-            unowned Meta.Display display = get_display ();
-            unowned Meta.WorkspaceManager workspace_manager = display.get_workspace_manager ();
+            unowned var display = get_display ();
+            unowned var workspace_manager = display.get_workspace_manager ();
             if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
                 uint time = display.get_current_time ();
-                var old_ws_obj = workspace_manager.get_workspace_by_index (old_ws_index);
-                window.change_workspace (old_ws_obj);
-                old_ws_obj.activate_with_focus (window, time);
+                unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
+                window.change_workspace (old_ws);
+                old_ws.activate_with_focus (window, time);
             }
 
             ws_assoc.remove (window);
