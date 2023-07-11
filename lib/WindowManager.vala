@@ -168,13 +168,12 @@ namespace Gala {
         public abstract void perform_action (ActionType type);
 
         /**
-         * Moves the window to the workspace next to its current workspace in the given direction.
-         * Gala currently only supports LEFT and RIGHT.
+         * Moves the window to the given workspace.
          *
          * @param window    The window to be moved
-         * @param direction The direction in which to move the window
+         * @param workspace The workspace the window should be moved to
          */
-        public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);
+        public abstract void move_window (Meta.Window? window, Meta.Workspace workspace);
 
         /**
          * Switches to the next workspace in the given direction.
