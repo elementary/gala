@@ -461,8 +461,7 @@ namespace Gala {
                 var direction = (name == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
                 target_workspace = active_workspace.get_neighbor (direction);
             } else {
-                var name_parts = name.split ("-", 4);
-                var workspace_number = int.parse (name_parts[3]);
+                var workspace_number = int.parse (name.offset ("move-to-workspace-".length));
                 var workspace_index = workspace_number - 1;
                 target_workspace = workspace_manager.get_workspace_by_index (workspace_index);
             }
