@@ -113,13 +113,14 @@ namespace Gala {
 
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
-        private bool animating_nudge = false;
         private bool switch_workspace_with_gesture = false;
+
+        private signal void window_created (Meta.Window window);
 
         /**
          * Amount of pixels to move on the nudge animation.
          */
-        public const float NUDGE_GAP = 32;
+        public const int NUDGE_GAP = 32;
 
         /**
          * Gap to show between workspaces while switching between them.
@@ -305,7 +306,7 @@ namespace Gala {
                 accent_color_manager = new AccentColorManager ();
 
                 // initialize plugins and add default components if no plugin overrides them
-                var plugin_manager = PluginManager.get_default ();
+                unowned var plugin_manager = PluginManager.get_default ();
                 plugin_manager.initialize (this);
                 plugin_manager.regions_changed.connect (update_input_area);
 
@@ -373,19 +374,8 @@ namespace Gala {
 
             update_input_area ();
 
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            display.window_created.connect ((window) => {
-                if (!animating_switch_workspace) {
-                    return;
-                }
 
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                }
-            });
+            display.window_created.connect ((window) => window_created (window));
 
             stage.show ();
 
@@ -479,7 +469,7 @@ namespace Gala {
 
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "move-to-workspace-first" ? 0 : manager.get_n_workspaces () - 1);
-            var workspace = manager.get_workspace_by_index (index);
+            unowned var workspace = manager.get_workspace_by_index (index);
             window.change_workspace (workspace);
             workspace.activate_with_focus (window, display.get_current_time ());
         }
@@ -558,13 +548,13 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
-            if (animating_switch_workspace || animating_nudge) {
+            if (animating_switch_workspace) {
                 return;
             }
 
-            unowned Meta.Display display = get_display ();
-            var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-            var neighbor = active_workspace.get_neighbor (direction);
+            unowned var display = get_display ();
+            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+            unowned var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
                 neighbor.activate (display.get_current_time ());
@@ -583,15 +573,14 @@ namespace Gala {
                 return;
             }
 
-            animating_nudge = true;
-            var scale = get_display ().get_monitor_scale (get_display ().get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int ((int)NUDGE_GAP, scale);
+            unowned var display = get_display ();
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var nudge_gap = InternalUtils.scale_to_int (NUDGE_GAP, scale);
 
             float dest = 0;
             if (!switch_workspace_with_gesture) {
                 dest = nudge_gap;
             } else {
-                unowned Meta.Display display = get_display ();
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
                 dest = workspaces_geometry.width;
             }
@@ -616,7 +605,6 @@ namespace Gala {
                 ui_group.add_transition ("nudge", nudge_gesture);
 
                 switch_workspace_with_gesture = false;
-                animating_nudge = false;
             };
 
             if (!switch_workspace_with_gesture) {
@@ -632,9 +620,6 @@ namespace Gala {
                 nudge.set_to_value (0.0f);
                 nudge.set_key_frames (keyframes);
                 nudge.set_values (x);
-                nudge.completed.connect (() => {
-                    animating_nudge = false;
-                });
 
                 ui_group.add_transition ("nudge", nudge);
             } else {
@@ -666,12 +651,12 @@ namespace Gala {
         }
 
         private void show_bottom_stack_window (Meta.Window bottom_window) {
-            unowned Meta.Workspace workspace = bottom_window.get_workspace ();
+            unowned var workspace = bottom_window.get_workspace ();
             if (Utils.get_n_windows (workspace) == 0) {
                 return;
             }
 
-            var bottom_actor = bottom_window.get_compositor_private () as Meta.WindowActor;
+            unowned var bottom_actor = (Meta.WindowActor) bottom_window.get_compositor_private ();
             if (enable_animations) {
                 animate_bottom_window_scale (bottom_actor);
             }
@@ -687,7 +672,7 @@ namespace Gala {
                     return;
                 }
 
-                var actor = window.get_compositor_private () as Clutter.Actor;
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                 if (enable_animations) {
                     var op_trans = new Clutter.KeyframeTransition ("opacity") {
                         duration = fade_out_duration,
@@ -703,12 +688,12 @@ namespace Gala {
                 } else {
                     Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
                         actor.opacity = (uint)opacity[0];
-                        return false;
+                        return GLib.Source.REMOVE;
                     });
 
                     Timeout.add ((uint)(fade_out_duration * op_keyframes[1]), () => {
                         actor.opacity = 255U;
-                        return false;
+                        return GLib.Source.REMOVE;
                     });
                 }
             });
@@ -852,11 +837,13 @@ namespace Gala {
                 return;
             }
 
+            if (!dim) {
             // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
-            var transient_actor = dim_table.take (window);
+            unowned var transient_actor = dim_table.take (window);
             if (transient_actor != null) {
                 transient_actor.remove_effect_by_name ("dim-parent");
                 debug ("Removed dim using dim_data");
+            }
             }
         }
 
@@ -864,8 +851,8 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void perform_action (ActionType type) {
-            unowned Meta.Display display = get_display ();
-            var current = display.get_focus_window ();
+            unowned var display = get_display ();
+            unowned var current = display.get_focus_window ();
 
             switch (type) {
                 case ActionType.SHOW_WORKSPACE_VIEW:
@@ -978,8 +965,8 @@ namespace Gala {
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
-                    unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-                    var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
+                    unowned var manager = display.get_workspace_manager ();
+                    unowned var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
@@ -1132,9 +1119,9 @@ namespace Gala {
                 var new_ws_index = old_ws_index + 1;
                 InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
-                var new_ws_obj = manager.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws_obj);
-                new_ws_obj.activate_with_focus (window, time);
+                unowned var new_ws = manager.get_workspace_by_index (new_ws_index);
+                window.change_workspace (new_ws);
+                new_ws.activate_with_focus (window, time);
 
                 ws_assoc.insert (window, old_ws_index);
             } else if (ws_assoc.contains (window)) {
@@ -1142,9 +1129,9 @@ namespace Gala {
                 var new_ws_index = win_ws.index ();
 
                 if (new_ws_index != old_ws_index && old_ws_index < manager.get_n_workspaces ()) {
-                    var old_ws_obj = manager.get_workspace_by_index (old_ws_index);
-                    window.change_workspace (old_ws_obj);
-                    old_ws_obj.activate_with_focus (window, time);
+                    unowned var old_ws = manager.get_workspace_by_index (old_ws_index);
+                    window.change_workspace (old_ws);
+                    old_ws.activate_with_focus (window, time);
                 }
 
                 ws_assoc.remove (window);
@@ -1169,7 +1156,7 @@ namespace Gala {
             Meta.SizeChange? which_change_local = which_change;
             which_change = null;
 
-            unowned Meta.Window window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
             var new_rect = window.get_frame_rect ();
 
             switch (which_change_local) {
@@ -1363,7 +1350,7 @@ namespace Gala {
                 return;
             }
 
-            var window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
 
             actor.remove_all_transitions ();
             actor.show ();
@@ -1398,7 +1385,7 @@ namespace Gala {
         }
 
         public override void map (Meta.WindowActor actor) {
-            var window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
 
             if ((window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) ||
                 (window.fullscreen && window.is_on_primary_monitor () && behavior_settings.get_boolean ("move-fullscreened-workspace"))) {
@@ -1531,7 +1518,7 @@ namespace Gala {
         }
 
         public override void destroy (Meta.WindowActor actor) {
-            var window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
 
             ws_assoc.remove (window);
 
@@ -1654,7 +1641,7 @@ namespace Gala {
             }
 
             kill_window_effects (actor);
-            var window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
 
             if (behavior_settings.get_boolean ("move-maximized-workspace")) {
                 move_window_to_old_ws (window);
@@ -1814,13 +1801,13 @@ namespace Gala {
         private List<Clutter.Actor>? windows;
         private List<Clutter.Actor>? parents;
         private List<Clutter.Actor>? tmp_actors;
+        private ulong switch_workspace_window_created_id = 0;
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
             if (!enable_animations
                 || AnimationDuration.WORKSPACE_SWITCH == 0
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
                 || animating_switch_workspace
-                || animating_nudge
                 || workspace_view.is_opened ()
                 || window_overview.is_opened ()) {
                 animating_switch_workspace = false;
@@ -1886,7 +1873,7 @@ namespace Gala {
 
             // if we have a move action, pack that window to the static ones
             if (moving != null) {
-                var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
+                unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
 
                 windows.prepend (moving_actor);
                 parents.prepend (moving_actor.get_parent ());
@@ -1954,6 +1941,16 @@ namespace Gala {
 
                 }
             }
+
+            // while a workspace is being switched mutter doesn't map windows
+            // TODO: currently only notifications are handled here, other windows should be too
+            switch_workspace_window_created_id = window_created.connect ((window) => {
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+                    clutter_actor_reparent (actor, notification_group);
+                    notification_stack.show_notification (actor, enable_animations);
+                }
+            });
 
             // make sure we don't add docks when there are fullscreened
             // windows on one of the groups. Simply raising seems not to
@@ -2077,6 +2074,10 @@ namespace Gala {
 
         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
                 bool cancel_action) {
+            if (switch_workspace_window_created_id > 0) {
+                disconnect (switch_workspace_window_created_id);
+                switch_workspace_window_created_id = 0;
+            }
             end_switch_workspace ();
             switch_workspace_with_gesture = false;
             animating_switch_workspace = cancel_action;
@@ -2086,8 +2087,8 @@ namespace Gala {
                     ? Meta.MotionDirection.RIGHT
                     : Meta.MotionDirection.LEFT;
                 unowned Meta.Display display = get_display ();
-                var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-                var neighbor = active_workspace.get_neighbor (cancel_direction);
+                unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+                unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
                 neighbor.activate (display.get_current_time ());
             }
         }
@@ -2096,8 +2097,8 @@ namespace Gala {
             if (windows == null || parents == null)
                 return;
 
-            unowned Meta.Display display = get_display ();
-            var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+            unowned var display = get_display ();
+            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
             // Show the real wallpaper again
             var primary = display.get_primary_monitor ();
@@ -2110,7 +2111,7 @@ namespace Gala {
             }
 
             for (var i = 0; i < windows.length (); i++) {
-                var actor = windows.nth_data (i);
+                unowned var actor = windows.nth_data (i);
                 actor.set_translation (0.0f, 0.0f, 0.0f);
 
                 unowned Meta.WindowActor? window = actor as Meta.WindowActor;
