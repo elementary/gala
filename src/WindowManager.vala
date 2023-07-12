@@ -758,6 +758,10 @@ namespace Gala {
 
             modal_stack.offer_head (proxy);
 
+            // modal already active
+            if (modal_stack.size >= 2)
+                return proxy;
+
             unowned Meta.Display display = get_display ();
 
             update_input_area ();
@@ -781,14 +785,10 @@ namespace Gala {
 
             proxy.grab.dismiss ();
 
-            if (is_modal ()) {
-                warning ("In modal mode");
+            if (is_modal ())
                 return;
-            }
 
             update_input_area ();
-
-            modal_stack.peek_head ();
 
             unowned Meta.Display display = get_display ();
 
