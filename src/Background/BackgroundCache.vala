@@ -26,9 +26,9 @@ namespace Gala {
             return instance;
         }
 
-        public signal void file_changed (string filename);
+        public signal void file_changed (GLib.File file);
 
-        private Gee.HashMap<string,FileMonitor> file_monitors;
+        private Gee.HashMap<GLib.File,FileMonitor> file_monitors;
         private Gee.HashMap<string,BackgroundSource> background_sources;
 
         private Animation animation;
@@ -38,29 +38,28 @@ namespace Gala {
         }
 
         construct {
-            file_monitors = new Gee.HashMap<string,FileMonitor> ();
+            file_monitors = new Gee.HashMap<GLib.File, FileMonitor> ((Gee.HashDataFunc) GLib.File.hash, (Gee.EqualDataFunc) GLib.File.equal);
             background_sources = new Gee.HashMap<string,BackgroundSource> ();
         }
 
-        public void monitor_file (string filename) {
-            if (file_monitors.has_key (filename))
+        public void monitor_file (GLib.File file) {
+            if (file_monitors.has_key (file))
                 return;
 
-            var file = File.new_for_path (filename);
             try {
                 var monitor = file.monitor (FileMonitorFlags.NONE, null);
                 monitor.changed.connect (() => {
-                    file_changed (filename);
+                    file_changed (file);
                 });
 
-                file_monitors[filename] = monitor;
+                file_monitors[file] = monitor;
             } catch (Error e) {
-                warning ("Failed to monitor %s: %s", filename, e.message);
+                warning ("Failed to monitor %s: %s", file.get_path (), e.message);
             }
         }
 
-        public async Animation get_animation (string filename) {
-            if (animation != null && animation.filename == filename) {
+        public async Animation get_animation (GLib.File file) {
+            if (animation != null && animation.file == file) {
                 Idle.add (() => {
                     get_animation.callback ();
                     return false;
@@ -70,7 +69,7 @@ namespace Gala {
                 return animation;
             }
 
-            var animation = new Animation (filename);
+            var animation = new Animation (file);
 
             yield animation.load ();
 

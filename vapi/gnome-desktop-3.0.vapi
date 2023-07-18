@@ -98,7 +98,7 @@ namespace Gnome {
 	public class BGSlideShow : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public BGSlideShow (string filename);
-		public void get_current_slide (int width, int height, out double progress, out double duration, out bool is_fixed, out unowned string file1, out unowned string file2);
+		public void get_current_slide (int width, int height, out double progress, out double duration, out bool is_fixed, out unowned string? file1, out unowned string? file2);
 		public bool get_has_multiple_sizes ();
 		public int get_num_slides ();
 		public bool get_slide (int frame_number, int width, int height, out double progress, out double duration, out bool is_fixed, out unowned string file1, out unowned string file2);

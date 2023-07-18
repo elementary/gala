@@ -28,31 +28,31 @@ namespace Gala {
         public BackgroundSource background_source { get; construct; }
         public bool is_loaded { get; private set; default = false; }
         public GDesktop.BackgroundStyle style { get; construct; }
-        public string? filename { get; construct; }
+        public GLib.File? file { get; construct; }
         public Meta.Background background { get; private set; }
 
         private Animation? animation = null;
-        private Gee.HashMap<string,ulong> file_watches;
+        private Gee.HashMap<GLib.File, ulong> file_watches;
         private Cancellable cancellable;
         private uint update_animation_timeout_id = 0;
 
         private Gnome.WallClock clock;
         private ulong clock_timezone_handler = 0;
 
-        public Background (Meta.Display display, int monitor_index, string? filename,
+        public Background (Meta.Display display, int monitor_index, GLib.File? file,
                 BackgroundSource background_source, GDesktop.BackgroundStyle style) {
             Object (display: display,
                     monitor_index: monitor_index,
                     background_source: background_source,
                     style: style,
-                    filename: filename);
+                    file: file);
         }
 
         construct {
             background = new Meta.Background (display);
             background.set_data<unowned Background> ("delegate", this);
 
-            file_watches = new Gee.HashMap<string,ulong> ();
+            file_watches = new Gee.HashMap<GLib.File, ulong> ();
             cancellable = new Cancellable ();
 
             background_source.changed.connect (settings_changed);
@@ -60,7 +60,7 @@ namespace Gala {
             clock = new Gnome.WallClock ();
             clock_timezone_handler = clock.notify["timezone"].connect (() => {
                 if (animation != null) {
-                    load_animation.begin (animation.filename);
+                    load_animation.begin (animation.file);
                 }
             });
 
@@ -121,18 +121,18 @@ namespace Gala {
             }
         }
 
-        private void watch_file (string filename) {
-            if (file_watches.has_key (filename))
+        private void watch_file (GLib.File file) {
+            if (file_watches.has_key (file))
                 return;
 
             var cache = BackgroundCache.get_default ();
 
-            cache.monitor_file (filename);
+            cache.monitor_file (file);
 
-            file_watches[filename] = cache.file_changed.connect ((changed_file) => {
-                if (changed_file == filename) {
+            file_watches[file] = cache.file_changed.connect ((changed_file) => {
+                if (changed_file == file) {
                     var image_cache = Meta.BackgroundImageCache.get_default ();
-                    image_cache.purge (File.new_for_path (changed_file));
+                    image_cache.purge (changed_file);
                     changed ();
                 }
             });
@@ -145,13 +145,13 @@ namespace Gala {
             }
         }
 
-        private void finish_animation (string[] files) {
+        private void finish_animation (GLib.GenericArray<GLib.File> files) {
             set_loaded ();
 
             if (files.length > 1)
-                background.set_blend (File.new_for_path (files[0]), File.new_for_path (files[1]), animation.transition_progress, style);
+                background.set_blend (files[0], files[1], animation.transition_progress, style);
             else if (files.length > 0)
-                background.set_file (File.new_for_path (files[0]), style);
+                background.set_file (files[0], style);
             else
                 background.set_file (null, style);
 
@@ -164,12 +164,12 @@ namespace Gala {
             animation.update (display.get_monitor_geometry (monitor_index));
             var files = animation.key_frame_files;
 
-            var cache = Meta.BackgroundImageCache.get_default ();
+            unowned var cache = Meta.BackgroundImageCache.get_default ();
             var num_pending_images = files.length;
-            for (var i = 0; i < files.length; i++) {
-                watch_file (files[i]);
+            foreach (unowned var file in files) {
+                watch_file (file);
 
-                var image = cache.load (File.new_for_path (files[i]));
+                var image = cache.load (file);
 
                 if (image.is_loaded ()) {
                     num_pending_images--;
@@ -213,8 +213,8 @@ namespace Gala {
             });
         }
 
-        private async void load_animation (string filename) {
-            animation = yield BackgroundCache.get_default ().get_animation (filename);
+        private async void load_animation (GLib.File file) {
+            animation = yield BackgroundCache.get_default ().get_animation (file);
 
             if (animation == null || cancellable.is_cancelled ()) {
                 set_loaded ();
@@ -222,15 +222,15 @@ namespace Gala {
             }
 
             update_animation ();
-            watch_file (filename);
+            watch_file (file);
         }
 
-        private void load_image (string filename) {
-            background.set_file (File.new_for_path (filename), style);
-            watch_file (filename);
+        private void load_image (GLib.File file) {
+            background.set_file (file, style);
+            watch_file (file);
 
             var cache = Meta.BackgroundImageCache.get_default ();
-            var image = cache.load (File.new_for_path (filename));
+            var image = cache.load (file);
             if (image.is_loaded ())
                 set_loaded ();
             else {
@@ -242,20 +242,22 @@ namespace Gala {
             }
         }
 
-        private void load_file (string filename) {
-            if (filename.has_suffix (".xml"))
-                load_animation.begin (filename);
-            else
-                load_image (filename);
+        private inline void load_file (GLib.File file) {
+            if (file.get_basename ().has_suffix (".xml")) {
+                load_animation.begin (file);
+            } else {
+                load_image (file);
+            }
         }
 
         private void load () {
             load_pattern ();
 
-            if (filename == null)
+            if (file == null) {
                 set_loaded ();
-            else
-                load_file (filename);
+            } else {
+                load_file (file);
+            }
         }
 
         private void settings_changed () {

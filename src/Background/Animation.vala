@@ -17,20 +17,20 @@
 
 namespace Gala {
     public class Animation : Object {
-        public string filename { get; construct; }
-        public string[] key_frame_files { get; private set; default = {}; }
+        public GLib.File file { get; construct; }
+        public GLib.GenericArray<GLib.File> key_frame_files { get; private set; default = new GLib.GenericArray<GLib.File> (); }
         public double transition_progress { get; private set; default = 0.0; }
         public double transition_duration { get; private set; default = 0.0; }
         public bool loaded { get; private set; default = false; }
 
         private Gnome.BGSlideShow? show = null;
 
-        public Animation (string filename) {
-            Object (filename: filename);
+        public Animation (GLib.File file) {
+            Object (file: file);
         }
 
         public async void load () {
-            show = new Gnome.BGSlideShow (filename);
+            show = new Gnome.BGSlideShow (file.get_path ());
 
             show.load_async (null, (obj, res) => {
                 loaded = true;
@@ -42,7 +42,7 @@ namespace Gala {
         }
 
         public void update (Meta.Rectangle monitor) {
-            string[] key_frame_files = {};
+            var new_key_frame_files = new GLib.GenericArray<GLib.File> ();
 
             if (show == null)
                 return;
@@ -52,19 +52,21 @@ namespace Gala {
 
             double progress, duration;
             bool is_fixed;
-            string file1, file2;
+            unowned string? file1, file2;
             show.get_current_slide (monitor.width, monitor.height, out progress, out duration, out is_fixed, out file1, out file2);
 
             transition_duration = duration;
             transition_progress = progress;
 
-            if (file1 != null)
-                key_frame_files += file1;
+            if (file1 != null) {
+                new_key_frame_files.add (GLib.File.new_for_path (file1));
+            }
 
-            if (file2 != null)
-                key_frame_files += file2;
+            if (file2 != null) {
+                new_key_frame_files.add (GLib.File.new_for_path (file2));
+            }
 
-            this.key_frame_files = key_frame_files;
+            this.key_frame_files = new_key_frame_files;
         }
     }
 }
