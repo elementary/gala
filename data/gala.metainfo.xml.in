@@ -25,6 +25,34 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="7.1.2" date="2023-07-06" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/573">Windows that start maximized or fullscreened should respect “Move windows to a new workspace”</issue>
+        <issue url="https://github.com/elementary/gala/issues/1004">Wallpaper in workspace clone and wallpaper clone should have the same style</issue>
+      </issues>
+    </release>
+
+    <release version="7.1.1" date="2023-07-06" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1331">Dialog dim won't go off on gtk app</issue>
+        <issue url="https://github.com/elementary/gala/issues/1700">PiP doesn't become visible by changing workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/1706">Alt+Tab switcher's background is always dark</issue>
+        <issue url="https://github.com/elementary/gala/issues/1712">gala 7.1.0-1 crashes on Arch</issue>
+      </issues>
+    </release>
+
     <release version="7.1.0" date="2023-06-26" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -89,12 +117,6 @@
     </release>
 
     <release version="7.0.1" date="2023-02-27" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Updated translations</li>
-        </ul>
-      </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/24">Workspace switching shortcuts don't work in Multitasking View</issue>
         <issue url="https://github.com/elementary/gala/issues/410">Multimedia keys are not working within multitasking view</issue>
@@ -116,15 +138,6 @@
     </release>
 
     <release version="7.0.0" date="2023-01-05" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Reload animated wallpapers when timezone changes</li>
-          <li>Fix awkward two-finger scroll in multitasking view</li>
-          <li>Improve multitasking view animation performance</li>
-          <li>Updated translations</li>
-        </ul>
-      </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/1456">Crash when receiving notifications</issue>
         <issue url="https://github.com/elementary/gala/issues/1443">Window switcher shadow persists until overdrawn</issue>
@@ -134,12 +147,6 @@
     </release>
 
     <release version="6.3.3" date="2022-10-16" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Updated translations</li>
-        </ul>
-      </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/1474">Can not resize Picture-in-Picture window</issue>
         <issue url="https://github.com/elementary/gala/issues/1473">Clicking wallpaper does not quit Multitasking view</issue>
