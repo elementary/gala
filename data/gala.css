@@ -46,7 +46,6 @@
 }
 
 .workspace.decoration {
-    border-radius: 4px;
     box-shadow:
         0 0 0 1px alpha(#000, 0.2),
         0 8px 10px 1px alpha(#000, 0.14),

@@ -1871,9 +1871,11 @@ namespace Gala {
                 background_group.hide ();
                 wallpaper = new Clutter.Clone (background_group);
             }
+            wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
             tmp_actors.prepend (wallpaper);
 
             var wallpaper_clone = new Clutter.Clone (wallpaper);
+            wallpaper_clone.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
             tmp_actors.prepend (wallpaper_clone);
 
             // pack all containers
