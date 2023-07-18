@@ -35,6 +35,7 @@
       <issues>
         <issue url="https://github.com/elementary/gala/issues/573">Windows that start maximized or fullscreened should respect “Move windows to a new workspace”</issue>
         <issue url="https://github.com/elementary/gala/issues/1004">Wallpaper in workspace clone and wallpaper clone should have the same style</issue>
+        <issue url="https://github.com/elementary/gala/issues/1704">https://github.com/elementary/gala/issues/1704</issue>
       </issues>
     </release>
 
