@@ -17,57 +17,36 @@
 
 namespace Gala {
     public class BackgroundSource : Object {
-        // list of keys that are actually relevant for us
-        private const string[] OPTIONS = {
-            "color-shading-type",
-            "picture-opacity",
-            "picture-options",
-            "picture-uri",
-            "picture-uri-dark",
-            "primary-color",
-            "secondary-color"
-        };
-
         public signal void changed ();
 
         public Meta.Display display { get; construct; }
-        public Settings settings { get; construct; }
+        public GLib.Settings gnome_background_settings;
 
         internal int use_count { get; set; default = 0; }
 
         private Gee.HashMap<int,Background> backgrounds;
-        private uint[] hash_cache;
+        private GLib.Settings gala_background_settings;
 
-        public BackgroundSource (Meta.Display display, string settings_schema) {
-            Object (display: display, settings: new Settings (settings_schema));
+        public BackgroundSource (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
             backgrounds = new Gee.HashMap<int,Background> ();
-            hash_cache = new uint[OPTIONS.length];
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (monitors_changed);
 
-            // unfortunately the settings sometimes tend to fire random changes even though
-            // nothing actually happened. The code below is used to prevent us from spamming
-            // new actors all the time, which lead to some problems in other areas of the code
-            for (int i = 0; i < OPTIONS.length; i++) {
-                hash_cache[i] = settings.get_value (OPTIONS[i]).hash ();
-            }
+            gnome_background_settings = new GLib.Settings ("org.gnome.desktop.background");
+            gnome_background_settings.changed["color-shading-type"].connect (() => changed ());
+            gnome_background_settings.changed["picture-options"].connect (() => changed ());
+            gnome_background_settings.changed["picture-uri"].connect (() => changed ());
+            gnome_background_settings.changed["picture-uri-dark"].connect (() => changed ());
+            gnome_background_settings.changed["primary-color"].connect (() => changed ());
+            gnome_background_settings.changed["secondary-color"].connect (() => changed ());
 
-            settings.changed.connect ((key) => {
-                for (int i = 0; i < OPTIONS.length; i++) {
-                    if (key == OPTIONS[i]) {
-                        uint new_hash = settings.get_value (key).hash ();
-                        if (hash_cache[i] != new_hash) {
-                            hash_cache[i] = new_hash;
-                            changed ();
-                            break;
-                        }
-                    }
-                }
-            });
+            gala_background_settings = new Settings ("io.elementary.desktop.background");
+            gala_background_settings.changed["dim-wallpaper-in-dark-style"].connect (() => changed ());
 
             unowned var granite_settings = Granite.Settings.get_default ();
             granite_settings.notify["prefers-color-scheme"].connect (() => changed ());
@@ -93,7 +72,7 @@ namespace Gala {
         public Background get_background (int monitor_index) {
             string? filename = null;
 
-            var style = settings.get_enum ("picture-options");
+            var style = gnome_background_settings.get_enum ("picture-options");
             if (style != GDesktop.BackgroundStyle.NONE) {
                 filename = get_background_path ();
             }
@@ -116,14 +95,14 @@ namespace Gala {
 
         private string get_background_path () {
             if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
-                var uri = settings.get_string ("picture-uri-dark");
+                var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
                 if (FileUtils.test (path, EXISTS)) {
                     return path;
                 }
             }
 
-            var uri = settings.get_string ("picture-uri");
+            var uri = gnome_background_settings.get_string ("picture-uri");
             var path = File.new_for_uri (uri).get_path ();
             if (FileUtils.test (path, EXISTS)) {
                 return path;
@@ -146,6 +125,13 @@ namespace Gala {
                 background.changed.disconnect (background_changed);
                 background.destroy ();
             }
+        }
+
+        public bool should_dim () {
+            return (
+                Granite.Settings.get_default ().prefers_color_scheme == Granite.Settings.ColorScheme.DARK &&
+                gala_background_settings.get_boolean ("dim-wallpaper-in-dark-style")
+            );
         }
     }
 }

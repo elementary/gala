@@ -105,7 +105,7 @@ namespace Gala {
 
         private void load_pattern () {
             string color_string;
-            var settings = background_source.settings;
+            var settings = background_source.gnome_background_settings;
 
             color_string = settings.get_string ("primary-color");
             var color = Clutter.Color.from_string (color_string);
