@@ -28,8 +28,6 @@ namespace Gala {
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
 
-        private const int SMOOTH_SCROLL_DELAY = 500;
-
         public WindowManager wm { get; construct; }
 
         private Meta.Display display;
@@ -223,7 +221,7 @@ namespace Gala {
             }
 
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
+            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
             float dest = nudge_gap;
             if (direction == Meta.MotionDirection.RIGHT) {
@@ -289,7 +287,7 @@ namespace Gala {
             float target_x = 0;
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
+            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
             unowned IconGroup active_icon_group = null;
             unowned IconGroup? target_icon_group = null;
