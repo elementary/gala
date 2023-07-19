@@ -20,7 +20,7 @@ namespace Gala {
         public signal void changed ();
 
         public Meta.Display display { get; construct; }
-        public GLib.Settings gnome_background_settings;
+        public GLib.Settings gnome_background_settings { private set; get; }
 
         internal int use_count { get; set; default = 0; }
 
