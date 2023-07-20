@@ -677,7 +677,7 @@ public class Gala.WindowClone : Clutter.Actor {
         // for an icon group, we only do animations if there is an actual movement possible
         if (icon_group != null
             && icon_group.workspace == window.get_workspace ()
-            && window.get_monitor () == window.get_display ().get_primary_monitor ()) {
+            && window.is_on_primary_monitor ()) {
                 return;
         }
 
@@ -733,7 +733,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             var will_move = window.get_workspace ().index () != inserter.workspace_index;
 
-            if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+            if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
                 window.move_to_monitor (primary);
                 will_move = true;
             }
@@ -763,7 +763,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         bool did_move = false;
 
-        if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+        if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
             window.move_to_monitor (primary);
             did_move = true;
         }
