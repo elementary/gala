@@ -219,7 +219,7 @@ namespace Gala {
             foreach (var window in windows) {
                 if (window.window_type == Meta.WindowType.NORMAL
                     && !window.on_all_workspaces
-                    && window.get_monitor () == display.get_primary_monitor ()) {
+                    && window.is_on_primary_monitor ()) {
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
@@ -256,7 +256,7 @@ namespace Gala {
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
-                || window.get_monitor () != window.get_display ().get_primary_monitor ())
+                || !window.is_on_primary_monitor ())
                 return;
 
             foreach (var child in window_container.get_children ())

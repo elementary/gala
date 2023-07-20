@@ -1896,7 +1896,7 @@ namespace Gala {
                 unowned Meta.Window window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && window.get_monitor () != primary) ||
+                    (move_primary_only && !window.is_on_primary_monitor ()) ||
                     (moving != null && window == moving))
                     continue;
 
