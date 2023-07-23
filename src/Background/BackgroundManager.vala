@@ -140,6 +140,7 @@ namespace Gala {
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
             ((Meta.BackgroundContent)background_actor.content).background = background.background;
+            ((Meta.BackgroundContent)background_actor.content).rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
             ((Meta.BackgroundContent)background_actor.content).vignette = true;
 
             // Don't play dim animation when launching gala or switching wallpaper
