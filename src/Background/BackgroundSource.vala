@@ -31,15 +31,15 @@ namespace Gala {
         public signal void changed ();
 
         public Meta.Display display { get; construct; }
-        public Settings settings { get; construct; }
+        public GLib.Settings gnome_background_settings { get; private set; }
 
         internal int use_count { get; set; default = 0; }
 
         private Gee.HashMap<int,Background> backgrounds;
         private uint[] hash_cache;
 
-        public BackgroundSource (Meta.Display display, string settings_schema) {
-            Object (display: display, settings: new Settings (settings_schema));
+        public BackgroundSource (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
@@ -49,17 +49,19 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (monitors_changed);
 
+            gnome_background_settings = new GLib.Settings ("org.gnome.desktop.background");
+
             // unfortunately the settings sometimes tend to fire random changes even though
             // nothing actually happened. The code below is used to prevent us from spamming
             // new actors all the time, which lead to some problems in other areas of the code
             for (int i = 0; i < OPTIONS.length; i++) {
-                hash_cache[i] = settings.get_value (OPTIONS[i]).hash ();
+                hash_cache[i] = gnome_background_settings.get_value (OPTIONS[i]).hash ();
             }
 
-            settings.changed.connect ((key) => {
+            gnome_background_settings.changed.connect ((key) => {
                 for (int i = 0; i < OPTIONS.length; i++) {
                     if (key == OPTIONS[i]) {
-                        uint new_hash = settings.get_value (key).hash ();
+                        uint new_hash = gnome_background_settings.get_value (key).hash ();
                         if (hash_cache[i] != new_hash) {
                             hash_cache[i] = new_hash;
                             changed ();
@@ -93,7 +95,7 @@ namespace Gala {
         public Background get_background (int monitor_index) {
             string? filename = null;
 
-            var style = settings.get_enum ("picture-options");
+            var style = gnome_background_settings.get_enum ("picture-options");
             if (style != GDesktop.BackgroundStyle.NONE) {
                 filename = get_background_path ();
             }
@@ -116,14 +118,14 @@ namespace Gala {
 
         private string get_background_path () {
             if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
-                var uri = settings.get_string ("picture-uri-dark");
+                var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
                 if (FileUtils.test (path, EXISTS)) {
                     return path;
                 }
             }
 
-            var uri = settings.get_string ("picture-uri");
+            var uri = gnome_background_settings.get_string ("picture-uri");
             var path = File.new_for_uri (uri).get_path ();
             if (FileUtils.test (path, EXISTS)) {
                 return path;

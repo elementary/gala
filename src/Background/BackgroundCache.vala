@@ -20,8 +20,9 @@ namespace Gala {
         private static BackgroundCache? instance = null;
 
         public static unowned BackgroundCache get_default () {
-            if (instance == null)
+            if (instance == null) {
                 instance = new BackgroundCache ();
+            }
 
             return instance;
         }
@@ -29,17 +30,11 @@ namespace Gala {
         public signal void file_changed (string filename);
 
         private Gee.HashMap<string,FileMonitor> file_monitors;
-        private Gee.HashMap<string,BackgroundSource> background_sources;
-
+        private BackgroundSource? background_source;
         private Animation animation;
-
-        public BackgroundCache () {
-            Object ();
-        }
 
         construct {
             file_monitors = new Gee.HashMap<string,FileMonitor> ();
-            background_sources = new Gee.HashMap<string,BackgroundSource> ();
         }
 
         public void monitor_file (string filename) {
@@ -63,45 +58,39 @@ namespace Gala {
             if (animation != null && animation.filename == filename) {
                 Idle.add (() => {
                     get_animation.callback ();
-                    return false;
+                    return Source.REMOVE;
                 });
                 yield;
 
                 return animation;
             }
 
-            var animation = new Animation (filename);
+            animation = new Animation (filename);
 
             yield animation.load ();
 
             Idle.add (() => {
                 get_animation.callback ();
-                return false;
+                return Source.REMOVE;
             });
             yield;
 
             return animation;
         }
 
-        public BackgroundSource get_background_source (Meta.Display display, string settings_schema) {
-            var background_source = background_sources[settings_schema];
+        public unowned BackgroundSource get_background_source (Meta.Display display) {
             if (background_source == null) {
-                background_source = new BackgroundSource (display, settings_schema);
+                background_source = new BackgroundSource (display);
                 background_source.use_count = 1;
-                background_sources[settings_schema] = background_source;
             } else
                 background_source.use_count++;
 
             return background_source;
         }
 
-        public void release_background_source (string settings_schema) {
-            if (background_sources.has_key (settings_schema)) {
-                var source = background_sources[settings_schema];
-                if (--source.use_count == 0) {
-                    background_sources.unset (settings_schema);
-                    source.destroy ();
-                }
+        public void release_background_source () {
+            if (--background_source.use_count == 0) {
+                background_source.destroy ();
             }
         }
     }
