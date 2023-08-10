@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-07-18 20:02+0000\n"
-"PO-Revision-Date: 2023-02-04 12:25+0000\n"
+"PO-Revision-Date: 2023-08-08 11:08+0000\n"
 "Last-Translator: imgradeone Yan <imgradeone@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
 #: src/Dialogs.vala:152
@@ -30,14 +30,10 @@ msgid "Application is not responding"
 msgstr "应用无响应"
 
 #: src/Dialogs.vala:157
-#, fuzzy
-#| msgid ""
-#| "You may choose to wait a short while for it to continue or force the "
-#| "application quit entirely."
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
-msgstr "您可以选择继续等待或强制关闭应用。"
+msgstr "您可以选择继续等待应用响应，或强制关闭应用。"
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -174,11 +170,11 @@ msgstr "翻译更新"
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
-msgstr ""
+msgstr "在启动时正确设置键盘布局，以确保托盘图标显示与实际有效布局相匹配"
 
 #: data/gala.metainfo.xml.in:73
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "修复多任务视图中截图快捷键失效的问题"
 
 #: data/gala.metainfo.xml.in:74
 msgid ""
@@ -191,10 +187,8 @@ msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:76
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "启用圆角模框"
+msgstr "多屏幕圆角边框缩放比例修正"
 
 #: data/gala.metainfo.xml.in:77
 msgid "Support fractional scaling"
