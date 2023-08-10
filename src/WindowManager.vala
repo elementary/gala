@@ -2081,7 +2081,6 @@ namespace Gala {
                 switch_workspace_window_created_id = 0;
             }
             end_switch_workspace ();
-            switch_workspace_with_gesture = false;
             animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
@@ -2153,6 +2152,9 @@ namespace Gala {
             windows = null;
             parents = null;
             moving = null;
+
+            switch_workspace_with_gesture = false;
+            animating_switch_workspace = false;
 
             switch_workspace_completed ();
         }

@@ -652,6 +652,11 @@ namespace Gala {
             opened = !opened;
             var opening = opened;
 
+            // https://github.com/elementary/gala/issues/1728
+            if (opening) {
+                wm.kill_switch_workspace ();
+            }
+
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
