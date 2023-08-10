@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-07-18 20:02+0000\n"
-"PO-Revision-Date: 2023-07-18 20:02+0000\n"
+"PO-Revision-Date: 2023-08-10 12:23+0000\n"
 "Last-Translator: Jakub Kyzr <jakubkyzr@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -33,6 +33,8 @@ msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Můžete chvíli počkat jestli aplikace nezačne reagovat, nebo ji vynuceně "
+"ukončit."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
@@ -40,7 +42,7 @@ msgstr ""
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Počkat"
 
 #: src/ScreenshotManager.vala:273
 msgid "Screenshots"
