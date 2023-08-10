@@ -29,6 +29,7 @@
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Improve handling of move-to-workspace shortcut</li>
           <li>Updated translations</li>
         </ul>
       </description>
@@ -36,6 +37,7 @@
         <issue url="https://github.com/elementary/gala/issues/573">Windows that start maximized or fullscreened should respect “Move windows to a new workspace”</issue>
         <issue url="https://github.com/elementary/gala/issues/1004">Wallpaper in workspace clone and wallpaper clone should have the same style</issue>
         <issue url="https://github.com/elementary/gala/issues/1704">Use dark wallpaper in dark mode when available</issue>
+        <issue url="https://github.com/elementary/gala/issues/1728">invisible windows in multitasking view after workspace switch, if done quickly</issue>
       </issues>
     </release>
 
