@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-07-18 20:02+0000\n"
-"PO-Revision-Date: 2023-08-10 12:23+0000\n"
-"Last-Translator: Jan <sebek_jan@yahoo.com>\n"
+"PO-Revision-Date: 2023-08-10 17:20+0000\n"
+"Last-Translator: Jakub Kyzr <jakubkyzr@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr ""
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr "Vynucené ukončení"
+msgstr "Vynuceně ukončit"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
@@ -175,46 +175,44 @@ msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Správně nastavit rozložení klávesnice při startu, aby indikátor odpovídal "
+"vybranému rozložení"
 
 #: data/gala.metainfo.xml.in:73
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
+msgstr "Opraveny klávesové zkratky snímků obrazovky ve Víceúlohovém zobrazení"
 
 #: data/gala.metainfo.xml.in:74
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
+"Správně nastavit zvýraznění aktivní plochy při vstupu do Víceúlohové "
+"zobrazení, a spustit animace 1:1 pomocí více-dotykových gest"
 
 #: data/gala.metainfo.xml.in:75
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Aktualizovat barvu panelu po ztmavení tapety"
 
 #: data/gala.metainfo.xml.in:76
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "Povolit masku se zaoblenými rohy"
+msgstr "Škálovat zakulacené rohy pro každý displej zvlášť"
 
 #: data/gala.metainfo.xml.in:77
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "Podpora frakčního škálování"
 
 #: data/gala.metainfo.xml.in:97
 msgid "Performance improvements"
 msgstr "Zlepšení výkonu"
 
 #: data/gala.metainfo.xml.in:98
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Víceúlohové zobrazení"
+msgstr "Odstranění textury z Víceúlohového zobrazení"
 
 #: data/gala.metainfo.xml.in:99
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Průhlednost oken umístěných v pozadí přepínače aplikací."
+msgstr "Zamezení nechtěnému výběru oken v přepínači oken"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
