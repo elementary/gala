@@ -17,13 +17,13 @@
  */
 
 public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
-    private const int DEFAULT_CORNER_RADIUS = 6;
-
     private Gala.WindowManager? wm = null;
     private GLib.Settings settings;
     private int[] corner_radii;
     private List<Clutter.Actor>[] cornermasks;
     private Meta.Display display;
+
+    private static int border_radius = -1;
 
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
@@ -49,8 +49,12 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
         corner_radii = new int[n_monitors];
         cornermasks = new List<Clutter.Actor>[n_monitors];
 
+        if (border_radius == -1) {
+            create_gtk_objects ();
+        }
+
         for (int m = 0; m < n_monitors; m++) {
-            corner_radii[m] = Utils.scale_to_int (DEFAULT_CORNER_RADIUS, display.get_monitor_scale (m));
+            corner_radii[m] = Utils.scale_to_int (border_radius, display.get_monitor_scale (m));
         }
 
         if (settings.get_boolean ("only-on-primary")) {
@@ -68,6 +72,23 @@ public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
         monitor_manager.monitors_changed.connect (resetup_cornermasks);
 
         display.gl_video_memory_purged.connect (resetup_cornermasks);
+    }
+
+    private void create_gtk_objects () {
+        var widget_path = new Gtk.WidgetPath ();
+        var pos = widget_path.append_type (typeof (Gtk.Window));
+        widget_path.iter_set_object_name (pos, "window");
+        widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
+        widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
+        widget_path.iter_add_class (pos, "unified"); // Gtk3-specific
+
+        var style_context = new Gtk.StyleContext ();
+        style_context.set_path (widget_path);
+
+        border_radius = style_context.get_property (
+            Gtk.STYLE_PROPERTY_BORDER_RADIUS,
+            Gtk.StateFlags.NORMAL
+        ).get_int ();
     }
 
     private void destroy_cornermasks () {
