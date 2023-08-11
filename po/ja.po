@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-08-10 17:20+0000\n"
-"PO-Revision-Date: 2023-05-03 17:06+0000\n"
+"PO-Revision-Date: 2023-08-12 05:08+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -163,7 +163,7 @@ msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:32
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "“move-to-workspace” ショートカットの処理を改善"
 
 #: data/gala.metainfo.xml.in:33 data/gala.metainfo.xml.in:48
 #: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:81
