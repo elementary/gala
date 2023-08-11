@@ -17,13 +17,13 @@
  */
 
 public class Gala.Plugins.MaskCorners.Main : Gala.Plugin {
+    private static int border_radius = -1;
+
     private Gala.WindowManager? wm = null;
     private GLib.Settings settings;
     private int[] corner_radii;
     private List<Clutter.Actor>[] cornermasks;
     private Meta.Display display;
-
-    private static int border_radius = -1;
 
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
