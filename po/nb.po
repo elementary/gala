@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-08-10 17:20+0000\n"
-"PO-Revision-Date: 2023-07-08 01:10+0000\n"
+"PO-Revision-Date: 2023-08-25 20:08+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -170,7 +170,7 @@ msgstr "Forbedringer:"
 
 #: data/gala.metainfo.xml.in:32
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Forbedret håndtering av snarveien for flytting til arbeidsområde"
 
 #: data/gala.metainfo.xml.in:33 data/gala.metainfo.xml.in:48
 #: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:81
