@@ -76,7 +76,6 @@ namespace Gala {
         private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
         public signal void active_changed ();
-        public signal void wake_up_screen ();
 
         // Screensaver active but not necessarily locked
         public bool active { get; private set; default = false; }
@@ -211,7 +210,6 @@ namespace Gala {
             } else {
                 debug ("resumed from suspend, waking screen");
                 on_user_became_active ();
-                wake_up_screen ();
                 expand_to_screen_size ();
             }
         }
@@ -396,8 +394,6 @@ namespace Gala {
 
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
             visible = false;
-
-            wake_up_screen ();
 
             activation_time = 0;
             _set_active (false);
