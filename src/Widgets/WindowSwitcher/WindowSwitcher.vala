@@ -434,8 +434,14 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         close_switcher (wm.get_display ().get_current_time ());
     }
 
+#if HAS_MUTTER45
+    private bool container_motion_event (Clutter.Event event) {
+#else
     private bool container_motion_event (Clutter.MotionEvent event) {
-        var actor = event.stage.get_actor_at_pos (Clutter.PickMode.ALL, (int)event.x, (int)event.y);
+#endif
+        float x, y;
+        event.get_coords (out x, out y);
+        var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
         if (actor == null) {
             return true;
         }
@@ -452,24 +458,36 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         return true;
     }
 
+#if HAS_MUTTER45
+    private bool container_mouse_release (Clutter.Event event) {
+#else
     private bool container_mouse_release (Clutter.ButtonEvent event) {
-        if (opened && event.button == Clutter.Button.PRIMARY) {
-            close_switcher (event.time);
+#endif
+        if (opened && event.get_button () == Clutter.Button.PRIMARY) {
+            close_switcher (event.get_time ());
         }
 
         return true;
     }
 
+#if HAS_MUTTER45
+    public override bool key_release_event (Clutter.Event event) {
+#else
     public override bool key_release_event (Clutter.KeyEvent event) {
+#endif
         if ((get_current_modifiers () & modifier_mask) == 0) {
-            close_switcher (event.time);
+            close_switcher (event.get_time ());
         }
 
         return Clutter.EVENT_PROPAGATE;
     }
 
+#if HAS_MUTTER45
+    public override bool key_press_event (Clutter.Event event) {
+#else
     public override bool key_press_event (Clutter.KeyEvent event) {
-        switch (event.keyval) {
+#endif
+        switch (event.get_key_symbol ()) {
             case Clutter.Key.Right:
                 next_window (false);
                 return Clutter.EVENT_STOP;
@@ -477,10 +495,10 @@ public class Gala.WindowSwitcher : Clutter.Actor {
                 next_window (true);
                 return Clutter.EVENT_STOP;
             case Clutter.Key.Escape:
-                close_switcher (event.time, true);
+                close_switcher (event.get_time (), true);
                 return Clutter.EVENT_PROPAGATE;
             case Clutter.Key.Return:
-                close_switcher (event.time, false);
+                close_switcher (event.get_time (), false);
                 return Clutter.EVENT_PROPAGATE;
         }
 
