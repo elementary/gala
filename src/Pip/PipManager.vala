@@ -15,38 +15,32 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
+public class Gala.Pip.PipManager : GLib.Object {
     private const int MIN_SELECTION_SIZE = 30;
 
+    public WindowManager wm {get; construct; }
+
+    private static PipManager instance;
+
     private Gee.ArrayList<PopupWindow> windows;
-    private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
-    private static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
-        return x >= rect.x && x < rect.x + rect.width
-            && y >= rect.y && y < rect.y + rect.height;
+    public static void init (WindowManager wm) {
+        if (instance == null) {
+            instance = new PipManager (wm);
+        }
+    }
+
+    private PipManager (WindowManager wm) {
+        Object (wm: wm);
     }
 
     construct {
         windows = new Gee.ArrayList<PopupWindow> ();
-    }
 
-    public override void initialize (Gala.WindowManager wm) {
-        this.wm = wm;
-        var display = wm.get_display ();
+        unowned var display = wm.get_display ();
         var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
-
         display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) on_initiate);
-    }
-
-    public override void destroy () {
-        clear_selection_area ();
-
-        foreach (var popup_window in windows) {
-            untrack_window (popup_window);
-        }
-
-        windows.clear ();
     }
 
     [CCode (instance_pos = -1)]
@@ -57,7 +51,6 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         selection_area.captured.connect (on_selection_actor_captured);
         selection_area.closed.connect (clear_selection_area);
 
-        track_actor (selection_area);
         wm.ui_group.add_child (selection_area);
 
         selection_area.start_selection ();
@@ -90,38 +83,21 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
                 var popup_window = new PopupWindow (wm, active);
                 popup_window.set_container_clip (rect);
-                popup_window.show.connect (on_popup_window_show);
-                popup_window.hide.connect (on_popup_window_hide);
                 add_window (popup_window);
             }
         }
-    }
-
-    private void on_popup_window_show (Clutter.Actor popup_window) {
-        track_actor (popup_window);
-        update_region ();
-    }
-
-    private void on_popup_window_hide (Clutter.Actor popup_window) {
-        untrack_actor (popup_window);
-        update_region ();
     }
 
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
             var popup_window = new PopupWindow (wm, selected);
-            popup_window.show.connect (on_popup_window_show);
-            popup_window.hide.connect (on_popup_window_hide);
             add_window (popup_window);
         }
     }
 
     private void clear_selection_area () {
         if (selection_area != null) {
-            untrack_actor (selection_area);
-            update_region ();
-
             selection_area.destroy ();
             selection_area = null;
         }
@@ -181,22 +157,11 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
     private void remove_window (PopupWindow popup_window) {
         windows.remove (popup_window);
-        untrack_window (popup_window);
-    }
-
-    private void untrack_window (PopupWindow popup_window) {
-        untrack_actor (popup_window);
-        update_region ();
         popup_window.destroy ();
     }
-}
 
-public Gala.PluginInfo register_plugin () {
-    return Gala.PluginInfo () {
-        name = "Popup Window",
-        author = "Adam Bieńkowski <donadigos159@gmail.com>",
-        plugin_type = typeof (Gala.Plugins.PIP.Plugin),
-        provides = Gala.PluginFunction.ADDITION,
-        load_priority = Gala.LoadPriority.IMMEDIATE
-    };
+    private static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
+        return x >= rect.x && x < rect.x + rect.width
+            && y >= rect.y && y < rect.y + rect.height;
+    }
 }

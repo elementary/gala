@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
+public class Gala.Pip.SelectionArea : Clutter.Actor {
     public signal void captured (int x, int y, int width, int height);
     public signal void selected (int x, int y);
     public signal void closed ();

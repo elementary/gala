@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
+public class Gala.Pip.PopupWindow : Clutter.Actor {
     private int button_size;
     private int container_margin;
     private const int SHADOW_SIZE = 100;

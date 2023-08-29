@@ -182,6 +182,7 @@ namespace Gala {
 
             WindowListener.init (display);
             KeyboardManager.init (display);
+            Pip.PipManager.init (this);
             window_tracker = new WindowTracker ();
             window_tracker.init (display);
 
