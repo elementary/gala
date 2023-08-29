@@ -19,7 +19,6 @@ namespace Gala {
     public enum PluginFunction {
         ADDITION,
         WINDOW_SWITCHER,
-        DESKTOP,
         WORKSPACE_VIEW,
         WINDOW_OVERVIEW
     }
