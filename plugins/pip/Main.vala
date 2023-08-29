@@ -22,7 +22,11 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
+#if HAS_MUTTER45
+    private static inline bool meta_rectangle_contains (Mtk.Rectangle rect, int x, int y) {
+#else
     private static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
+#endif
         return x >= rect.x && x < rect.x + rect.width
             && y >= rect.y && y < rect.y + rect.height;
     }

@@ -34,7 +34,11 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
+#if HAS_MUTTER45
+    public Mtk.Rectangle? slot { get; private set; default = null; }
+#else
     public Meta.Rectangle? slot { get; private set; default = null; }
+#endif
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -363,7 +367,11 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Animate the window to the given slot
      */
+#if HAS_MUTTER45
+    public void take_slot (Mtk.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+#else
     public void take_slot (Meta.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+#endif
         slot = rect;
         var initial_x = x;
         var initial_y = y;
@@ -466,11 +474,19 @@ public class Gala.WindowClone : Clutter.Actor {
                             (input_rect.y - outer_rect.y) * scale_factor);
     }
 
+#if HAS_MUTTER45
+    public override bool button_press_event (Clutter.Event event) {
+#else
     public override bool button_press_event (Clutter.ButtonEvent event) {
+#endif
         return Clutter.EVENT_STOP;
     }
 
+#if HAS_MUTTER45
+    public override bool enter_event (Clutter.Event event) {
+#else
     public override bool enter_event (Clutter.CrossingEvent event) {
+#endif
         if (drag_action != null && drag_action.dragging) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -492,7 +508,11 @@ public class Gala.WindowClone : Clutter.Actor {
         return Clutter.EVENT_PROPAGATE;
     }
 
+#if HAS_MUTTER45
+    public override bool leave_event (Clutter.Event event) {
+#else
     public override bool leave_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
 
         close_button.save_easing_state ();
