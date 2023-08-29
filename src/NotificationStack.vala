@@ -48,11 +48,7 @@ public class Gala.NotificationStack : Object {
         update_stack_allocation ();
     }
 
-    public void show_notification (Meta.WindowActor notification, bool animate) {
-        if (notifications.contains (notification)) {
-            return;
-        }
-
+    public void show_notification (Meta.WindowActor notification, bool animate) requires (!notifications.contains (notification)) {
         notification.set_pivot_point (0.5f, 0.5f);
 
         unowned Meta.Window window = notification.get_meta_window ();
