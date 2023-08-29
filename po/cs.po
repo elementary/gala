@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-08-10 17:20+0000\n"
-"PO-Revision-Date: 2023-08-10 17:20+0000\n"
+"PO-Revision-Date: 2023-08-30 11:08+0000\n"
 "Last-Translator: Jakub Kyzr <jakubkyzr@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
@@ -172,7 +172,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:81
 #: data/gala.metainfo.xml.in:103
 msgid "Updated translations"
-msgstr "Aktualizovány překlady"
+msgstr "Aktualizované překlady"
 
 #: data/gala.metainfo.xml.in:75
 msgid ""
