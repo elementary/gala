@@ -181,6 +181,7 @@ namespace Gala {
             MediaFeedback.init ();
 
             WindowListener.init (display);
+            WindowStateSaver.init (this);
             KeyboardManager.init (display);
             window_tracker = new WindowTracker ();
             window_tracker.init (display);
