@@ -97,17 +97,22 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void track_window (Meta.Window window, string app_id) {
+        window.position_changed.connect (on_window_position_changed);
+
         opened_app_ids.add (app_id);
-        window.unmanaging.connect (on_unmanaging);
+        window.unmanaged.connect (() => {
+            opened_app_ids.remove (app_id);
+        });
     }
 
-    private static void on_unmanaging (Meta.Window window) {
+
+    private static void on_window_position_changed (Meta.Window window) {
+        // TODO: throttle writing to db
+
         var app_id = window_tracker.get_app_for_window (window).id;
-        opened_app_ids.remove (app_id);
-        
+
         unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-        
-        warning ("On unmanaging %s %d %d", app_id, (int) actor.x, (int) actor.y);
+
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
             "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf ((int) actor.x, (int) actor.y, app_id),
