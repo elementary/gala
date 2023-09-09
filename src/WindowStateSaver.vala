@@ -4,16 +4,15 @@
  */
 
 public class Gala.WindowStateSaver : GLib.Object {
-    private static WindowManager wm;
+    private static unowned WindowTracker window_tracker;
     private static GLib.GenericSet<string> opened_app_ids;
     private static Sqlite.Database db;
 
-    public static void init (WindowManager wm) {
-        WindowStateSaver.wm = wm;
+    public static void init (WindowTracker window_tracker) {
+        WindowStateSaver.window_tracker = window_tracker;
         opened_app_ids = new GLib.GenericSet<string> (GLib.str_hash, GLib.str_equal);
 
         var path = Path.build_filename (Environment.get_home_dir (), ".local", "share", "io.elementary.gala-windowstate.db");
-
         var rc = Sqlite.Database.open_v2 (path, out db);
 
         if (rc != Sqlite.OK) {
@@ -50,8 +49,12 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     public static void on_map (Meta.Window window) {
-        unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app_id = window_tracker.get_app_for_window (window).id;
+
+        if (app_id.has_prefix ("window:")) {
+            // if window failed to be identified, don't remember it
+            return;
+        }
 
         if (window.window_type != Meta.WindowType.NORMAL) {
             return;
@@ -106,7 +109,6 @@ public class Gala.WindowStateSaver : GLib.Object {
     private static void on_window_position_changed (Meta.Window window) {
         // TODO: throttle writing to db
 
-        unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app_id = window_tracker.get_app_for_window (window).id;
 
         unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
