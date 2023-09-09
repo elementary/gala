@@ -1,6 +1,5 @@
 /*
- * Copyright 2021 elementary, Inc. <https://elementary.io>
- * Copyright 2021 Corentin Noël <tintou@noel.tf>
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -50,43 +49,30 @@ public class Gala.WindowStateSaver : GLib.Object {
         if (rc != Sqlite.OK) {
             warning ("Unable to disable synchronous mode %d, %s\n", rc, db.errmsg ());
         }
-
-        wm.get_display ().window_created.connect (on_window_created);
-
-        warning ("Initialized WindowStateSaver");
     }
 
-    private static void on_window_created (Meta.Window window) {
+    public static void on_map (Meta.Window window) {
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
-        var app = window_tracker.get_app_for_window (window);
-        var app_id = app.id;
-
-        warning ("on_window_created");
+        var app_id = window_tracker.get_app_for_window (window).id;
 
         if (window.window_type != Meta.WindowType.NORMAL) {
-            warning ("Window of incorrect type");
             return;
         }
 
         if (app_id in opened_app_ids) {
-            warning ("App already has opened window");
             // If an app has two windows, listen only to the primary window
             return;
         }
 
         if (window.find_root_ancestor () != window) {
-            warning ("Window has ancestor");
             // If window has ancestor, don't listen to its' changes
             return;
         }
 
         db.exec ("SELECT last_x, last_y FROM apps WHERE id = '%s';".printf (app_id), (n_columns, values, column_names) => {
-            if (values.length != 0) {
-                window.move_frame (false, int.parse (values[0]), int.parse (values[1]));
-            }
-
-
+            window.move_frame (false, int.parse (values[0]), int.parse (values[1]));
             track_window (window, app_id);
+
             return 0;
         });
 
@@ -94,8 +80,6 @@ public class Gala.WindowStateSaver : GLib.Object {
             // App was added in callback
             return;
         }
-
-        warning ("Values length is 0, window was not saved to db... I guess?");
 
         unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         
@@ -120,8 +104,6 @@ public class Gala.WindowStateSaver : GLib.Object {
             critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
             return;
         }
-
-        warning ("Added app to db %s %f %f", app_id, app_last_x, app_last_y);
 
         track_window (window, app_id);
     }
@@ -163,7 +145,5 @@ public class Gala.WindowStateSaver : GLib.Object {
             critical ("Cannot update app position in databasee: %d, %s", rc, db.errmsg ());
             return;
         }
-
-        warning ("Updated app in db %s %f %f", app_id, app_last_x, app_last_y);
     }
 }
