@@ -25,9 +25,9 @@ public class Gala.WindowStateSaver : GLib.Object {
         Sqlite.Statement stmt;
         rc = db.prepare_v2 (
             "CREATE TABLE IF NOT EXISTS apps ("
-            + "id TEXT   PRIMARY KEY, "
-            + "last_x REAL, "
-            + "last_y REAL)",
+            + "id TEXT PRIMARY KEY, "
+            + "last_x INTEGER, "
+            + "last_y INTEGER)",
             -1,
             out stmt
         );
@@ -63,6 +63,11 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         warning ("on_window_created");
 
+        if (window.window_type != Meta.WindowType.NORMAL) {
+            warning ("Window of incorrect type");
+            return;
+        }
+
         if (app_id in opened_app_ids) {
             warning ("App already has opened window");
             // If an app has two windows, listen only to the primary window
@@ -75,10 +80,27 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
+        db.exec ("SELECT last_x, last_y FROM apps WHERE id = '%s';".printf (app_id), (n_columns, values, column_names) => {
+            if (values.length != 0) {
+                window.move_frame (false, int.parse (values[0]), int.parse (values[1]));
+            }
+
+
+            track_window (window, app_id);
+            return 0;
+        });
+
+        if (app_id in opened_app_ids) {
+            // App was added in callback
+            return;
+        }
+
+        warning ("Values length is 0, window was not saved to db... I guess?");
+
         unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         
-        var app_last_x = actor.x;
-        var app_last_y = actor.y;
+        var app_last_x = (int) actor.x;
+        var app_last_y = (int) actor.y;
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
@@ -101,6 +123,10 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         warning ("Added app to db %s %f %f", app_id, app_last_x, app_last_y);
 
+        track_window (window, app_id);
+    }
+
+    private static void track_window (Meta.Window window, string app_id) {
         window.position_changed.connect (on_window_position_changed);
 
         opened_app_ids.add (app_id);
@@ -116,12 +142,12 @@ public class Gala.WindowStateSaver : GLib.Object {
         unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         
         var app_id = app.id;
-        var app_last_x = actor.x;
-        var app_last_y = actor.y;
+        var app_last_x = (int) actor.x;
+        var app_last_y = (int) actor.y;
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%f', last_y = '%f' WHERE id = '%s';".printf (app_last_x, app_last_y, app_id),
+            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (app_last_x, app_last_y, app_id),
             -1,
             out stmt
         );
