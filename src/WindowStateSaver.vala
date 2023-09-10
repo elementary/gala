@@ -75,7 +75,6 @@ public class Gala.WindowStateSaver : GLib.Object {
         db.exec (
             "SELECT last_x, last_y, last_width, last_height FROM apps WHERE app_id = '%s' AND window_index = '%d';".printf (app_id, window_index),
             (n_columns, values, column_names) => {
-                warning ("Restoring window %s %d", app_id, window_index);
                 window.move_resize_frame (false, int.parse (values[0]), int.parse (values[1]), int.parse (values[2]), int.parse (values[3]));
                 track_window (window, app_id);
                 tracking_window = true;
@@ -89,7 +88,6 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
-        warning ("Tracking window %s %d", app_id, window_index);
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
@@ -124,7 +122,6 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         var frame_rect = window.get_frame_rect ();
 
-        warning ("Updating window %s %d", app_id, window_index);
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
@@ -149,7 +146,6 @@ public class Gala.WindowStateSaver : GLib.Object {
         for (int i = 0; i < windows_list.length; i++) {
             var w = windows_list.data[i];
             if (w == window) {
-                warning ("Returning %d", i);
                 return i;
             }
 
@@ -159,11 +155,9 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         if (first_null != -1) {
-            warning ("Returning first null %d", first_null);
             return first_null;
         }
 
-        warning ("Returning last element %d", (int) windows_list.length);
         return (int) windows_list.length;
     }
 }
