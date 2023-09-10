@@ -104,7 +104,7 @@ public class Gala.WindowStateSaver : GLib.Object {
     private static void on_window_unmanaging (Meta.Window window) {
         var app_id = window_tracker.get_app_for_window (window).id;
         opened_app_ids.remove (app_id);
-        
+
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
