@@ -102,14 +102,28 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void on_window_unmanaging (Meta.Window window) {
-        var app_id = window_tracker.get_app_for_window (window).id;
-        opened_app_ids.remove (app_id);
+        var app = window_tracker.get_app_for_window (window);
+
+        opened_app_ids.remove (app.id);
+
+        foreach (var opened_window in app.get_windows ()) {
+            if (opened_window == window) {
+                continue;
+            }
+
+            if (opened_window.window_type != Meta.WindowType.NORMAL) {
+                continue;
+            }
+
+            track_window (opened_window, app.id);
+            break;
+        }
 
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, app_id),
+            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, app.id),
             -1, out stmt
         );
 
