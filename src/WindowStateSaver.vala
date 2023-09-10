@@ -5,12 +5,12 @@
 
 public class Gala.WindowStateSaver : GLib.Object {
     private static unowned WindowTracker window_tracker;
-    private static GLib.GenericSet<string> opened_app_ids;
+    private static GLib.HashTable<string, GLib.Array<Meta.Window?>> app_windows;
     private static Sqlite.Database db;
 
     public static void init (WindowTracker window_tracker) {
         WindowStateSaver.window_tracker = window_tracker;
-        opened_app_ids = new GLib.GenericSet<string> (GLib.str_hash, GLib.str_equal);
+        app_windows = new GLib.HashTable<string, GLib.Array<Meta.Window?>> (GLib.str_hash, GLib.str_equal);
 
         var path = Path.build_filename (Environment.get_home_dir (), ".local", "share", "io.elementary.gala-windowstate.db");
         var rc = Sqlite.Database.open_v2 (path, out db);
@@ -24,9 +24,13 @@ public class Gala.WindowStateSaver : GLib.Object {
         rc = db.prepare_v2 (
             """
             CREATE TABLE IF NOT EXISTS apps (
-                id TEXT PRIMARY KEY,
-                last_x INTEGER,
-                last_y INTEGER
+                id           INTEGER PRIMARY KEY,
+                app_id       TEXT,
+                window_index INTEGER,
+                last_x       INTEGER,
+                last_y       INTEGER,
+                last_width   INTEGER,
+                last_height  INTEGER
             );
             """,
             -1, out stmt
@@ -60,28 +64,38 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
-        if (app_id in opened_app_ids) {
-            // If an app has two windows track only the primary window
-            return;
+        if (!(app_id in app_windows)) {
+            app_windows[app_id] = new GLib.Array<Meta.Window?> ();
         }
 
-        db.exec ("SELECT last_x, last_y FROM apps WHERE id = '%s';".printf (app_id), (n_columns, values, column_names) => {
-            window.move_frame (false, int.parse (values[0]), int.parse (values[1]));
-            track_window (window, app_id);
+        var window_index = find_window_index (window, app_id);
+        app_windows[app_id].insert_val (window_index, window);
 
-            return 0;
-        });
+        var tracking_window = false;
+        db.exec (
+            "SELECT last_x, last_y, last_width, last_height FROM apps WHERE app_id = '%s' AND window_index = '%d';".printf (app_id, window_index),
+            (n_columns, values, column_names) => {
+                warning ("Restoring window %s %d", app_id, window_index);
+                window.move_resize_frame (false, int.parse (values[0]), int.parse (values[1]), int.parse (values[2]), int.parse (values[3]));
+                track_window (window, app_id);
+                tracking_window = true;
 
-        if (app_id in opened_app_ids) {
+                return 0;
+            }
+        );
+
+        if (tracking_window) {
             // App was added in callback
             return;
         }
 
+        warning ("Tracking window %s %d", app_id, window_index);
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "INSERT INTO apps (id, last_x, last_y) VALUES ('%s', '%d', '%d');".printf (app_id, frame_rect.x, frame_rect.y),
+            "INSERT INTO apps (app_id, window_index, last_x, last_y, last_width, last_height) VALUES ('%s', '%d', '%d', '%d', '%d', '%d');"
+            .printf (app_id, window_index, frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height),
             -1, out stmt
         );
 
@@ -97,33 +111,25 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void track_window (Meta.Window window, string app_id) {
-        opened_app_ids.add (app_id);
         window.unmanaging.connect (on_window_unmanaging);
     }
 
     private static void on_window_unmanaging (Meta.Window window) {
-        var app = window_tracker.get_app_for_window (window);
+        var app_id = window_tracker.get_app_for_window (window).id;
 
-        opened_app_ids.remove (app.id);
-
-        foreach (var opened_window in app.get_windows ()) {
-            if (opened_window == window) {
-                continue;
-            }
-
-            if (opened_window.window_type != Meta.WindowType.NORMAL) {
-                continue;
-            }
-
-            track_window (opened_window, app.id);
-            break;
-        }
+        var window_index = find_window_index (window, app_id);
+        app_windows[app_id].remove_index (window_index);
+        var value = null;
+        app_windows[app_id].insert_val (window_index, value);
 
         var frame_rect = window.get_frame_rect ();
 
+        warning ("Updating window %s %d", app_id, window_index);
+
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, app.id),
+            "UPDATE apps SET last_x = '%d', last_y = '%d', last_width = '%d', last_height = '%d' WHERE app_id = '%s' AND window_index = '%d';"
+            .printf (frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height, app_id, window_index),
             -1, out stmt
         );
 
@@ -135,5 +141,29 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+    }
+
+    private static int find_window_index (Meta.Window window, string app_id) requires (app_id in app_windows) {
+        unowned var windows_list = app_windows[app_id];
+        var first_null = -1;
+        for (int i = 0; i < windows_list.length; i++) {
+            var w = windows_list.data[i];
+            if (w == window) {
+                warning ("Returning %d", i);
+                return i;
+            }
+
+            if (w == null && first_null == -1) {
+                first_null = i;
+            }
+        }
+
+        if (first_null != -1) {
+            warning ("Returning first null %d", first_null);
+            return first_null;
+        }
+
+        warning ("Returning last element %d", (int) windows_list.length);
+        return (int) windows_list.length;
     }
 }
