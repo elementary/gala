@@ -5,12 +5,10 @@
 
 public class Gala.WindowStateSaver : GLib.Object {
     private static unowned WindowTracker window_tracker;
-    private static GLib.GenericSet<string> opened_app_ids;
     private static Sqlite.Database db;
 
     public static void init (WindowTracker window_tracker) {
         WindowStateSaver.window_tracker = window_tracker;
-        opened_app_ids = new GLib.GenericSet<string> (GLib.str_hash, GLib.str_equal);
 
         var path = Path.build_filename (Environment.get_home_dir (), ".local", "share", "io.elementary.gala-windowstate.db");
         var rc = Sqlite.Database.open_v2 (path, out db);
@@ -60,28 +58,18 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
-        if (app_id in opened_app_ids) {
-            // If an app has two windows track only the primary window
-            return;
-        }
-
-        db.exec ("SELECT last_x, last_y FROM apps WHERE id = '%s';".printf (app_id), (n_columns, values, column_names) => {
+        db.exec ("SELECT last_x, last_y FROM apps WHERE id = '%s';".printf (window.get_id ().to_string ()), (n_columns, values, column_names) => {
             window.move_frame (false, int.parse (values[0]), int.parse (values[1]));
             track_window (window, app_id);
 
             return 0;
         });
 
-        if (app_id in opened_app_ids) {
-            // App was added in callback
-            return;
-        }
-
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "INSERT INTO apps (id, last_x, last_y) VALUES ('%s', '%d', '%d');".printf (app_id, frame_rect.x, frame_rect.y),
+            "INSERT INTO apps (id, last_x, last_y) VALUES ('%s', '%d', '%d');".printf (window.get_id ().to_string (), frame_rect.x, frame_rect.y),
             -1, out stmt
         );
 
@@ -97,14 +85,12 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void track_window (Meta.Window window, string app_id) {
-        opened_app_ids.add (app_id);
         window.unmanaging.connect (on_window_unmanaging);
     }
 
     private static void on_window_unmanaging (Meta.Window window) {
         var app = window_tracker.get_app_for_window (window);
 
-        opened_app_ids.remove (app.id);
 
         foreach (var opened_window in app.get_windows ()) {
             if (opened_window == window) {
@@ -123,7 +109,7 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, app.id),
+            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, window.get_id ().to_string ()),
             -1, out stmt
         );
 
