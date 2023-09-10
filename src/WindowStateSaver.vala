@@ -38,7 +38,7 @@ public class Gala.WindowStateSaver : GLib.Object {
                 // disable synchronized commits for performance reasons
                 rc = db.exec ("PRAGMA synchronous=OFF");
                 if (rc != Sqlite.OK) {
-                    warning ("Unable to disable synchronous mode %d, %s\n", rc, db.errmsg ());
+                    warning ("Unable to disable synchronous mode %d, %s", rc, db.errmsg ());
                 }
 
                 return;
@@ -77,11 +77,11 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
-        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+        var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "INSERT INTO apps (id, last_x, last_y) VALUES ('%s', '%f', '%f');".printf (app_id, (int) actor.x, (int) actor.y),
+            "INSERT INTO apps (id, last_x, last_y) VALUES ('%s', '%d', '%d');".printf (app_id, frame_rect.x, frame_rect.y),
             -1, out stmt
         );
 
@@ -111,11 +111,11 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         var app_id = window_tracker.get_app_for_window (window).id;
 
-        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+        var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf ((int) actor.x, (int) actor.y, app_id),
+            "UPDATE apps SET last_x = '%d', last_y = '%d' WHERE id = '%s';".printf (frame_rect.x, frame_rect.y, app_id),
             -1, out stmt
         );
 
