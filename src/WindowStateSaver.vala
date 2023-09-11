@@ -117,11 +117,10 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         var window_index = find_window_index (window, app_id);
         app_windows[app_id].remove_index (window_index);
-        var value = null;
+        var value = null; // insert_val requires lvalue
         app_windows[app_id].insert_val (window_index, value);
 
         var frame_rect = window.get_frame_rect ();
-
 
         Sqlite.Statement stmt;
         var rc = db.prepare_v2 (
