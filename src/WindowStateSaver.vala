@@ -53,7 +53,7 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     public static void on_map (Meta.Window window) {
-        var app_id = window_tracker.get_app_for_window (window).id;
+        var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
 
         if (app_id.has_prefix ("window:")) {
             // if window failed to be identified, don't remember it
@@ -113,7 +113,7 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void on_window_unmanaging (Meta.Window window) {
-        var app_id = window_tracker.get_app_for_window (window).id;
+        var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
 
         var window_index = find_window_index (window, app_id);
         app_windows[app_id].remove_index (window_index);
