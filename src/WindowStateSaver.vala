@@ -24,13 +24,13 @@ public class Gala.WindowStateSaver : GLib.Object {
         rc = db.prepare_v2 (
             """
             CREATE TABLE IF NOT EXISTS apps (
-                id           INTEGER PRIMARY KEY,
                 app_id       TEXT,
                 window_index INTEGER,
                 last_x       INTEGER,
                 last_y       INTEGER,
                 last_width   INTEGER,
-                last_height  INTEGER
+                last_height  INTEGER,
+                PRIMARY KEY (app_id, window_index)
             );
             """,
             -1, out stmt
