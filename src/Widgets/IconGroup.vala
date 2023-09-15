@@ -113,14 +113,22 @@ namespace Gala {
             icon_container.actor_removed.disconnect (redraw);
         }
 
+#if HAS_MUTTER45
+        public override bool enter_event (Clutter.Event event) {
+#else
         public override bool enter_event (Clutter.CrossingEvent event) {
+#endif
             toggle_close_button (true);
 
             return Clutter.EVENT_PROPAGATE;
         }
 
+#if HAS_MUTTER45
+        public override bool leave_event (Clutter.Event event) {
+#else
         public override bool leave_event (Clutter.CrossingEvent event) {
-            if (!contains (event.related)) {
+#endif
+            if (!contains (event.get_related ())) {
                 toggle_close_button (false);
             }
 

@@ -287,7 +287,11 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
+#if HAS_MUTTER45
+            Mtk.Rectangle inner_rect
+#else
             Meta.Rectangle inner_rect
+#endif
         ) {
             Clutter.Content content;
 

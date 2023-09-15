@@ -41,7 +41,11 @@ namespace Gala {
             yield;
         }
 
+#if HAS_MUTTER45
+        public void update (Mtk.Rectangle monitor) {
+#else
         public void update (Meta.Rectangle monitor) {
+#endif
             string[] key_frame_files = {};
 
             if (show == null)

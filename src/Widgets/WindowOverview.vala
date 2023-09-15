@@ -26,8 +26,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         reactive = true;
     }
 
+#if HAS_MUTTER45
+    public override bool key_press_event (Clutter.Event event) {
+#else
     public override bool key_press_event (Clutter.KeyEvent event) {
-        if (event.keyval == Clutter.Key.Escape) {
+#endif
+        if (event.get_key_symbol () == Clutter.Key.Escape) {
             close ();
 
             return Clutter.EVENT_STOP;
@@ -42,8 +46,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         }
     }
 
+#if HAS_MUTTER45
+    public override bool button_release_event (Clutter.Event event) {
+#else
     public override bool button_release_event (Clutter.ButtonEvent event) {
-        if (event.button == Clutter.Button.PRIMARY) {
+#endif
+        if (event.get_button () == Clutter.Button.PRIMARY) {
             close ();
         }
 

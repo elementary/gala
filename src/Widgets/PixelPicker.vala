@@ -44,8 +44,12 @@ namespace Gala {
             set_content (canvas);
         }
 
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event e) {
+#else
         public override bool key_press_event (Clutter.KeyEvent e) {
-            if (e.keyval == Clutter.Key.Escape) {
+#endif
+            if (e.get_key_symbol () == Clutter.Key.Escape) {
                 close ();
                 cancelled = true;
                 closed ();
@@ -55,12 +59,18 @@ namespace Gala {
             return false;
         }
 
+#if HAS_MUTTER45
+        public override bool button_release_event (Clutter.Event e) {
+#else
         public override bool button_release_event (Clutter.ButtonEvent e) {
-            if (e.button != 1) {
+#endif
+            if (e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
-            point = Graphene.Point () { x = e.x, y = e.y };
+            float x, y;
+            e.get_coords (out x, out y);
+            point = Graphene.Point () { x = x, y = y };
 
             close ();
             this.hide ();
