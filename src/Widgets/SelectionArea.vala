@@ -52,8 +52,12 @@ namespace Gala {
             canvas.invalidate ();
         }
 
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event e) {
+#else
         public override bool key_press_event (Clutter.KeyEvent e) {
-            if (e.keyval == Clutter.Key.Escape) {
+#endif
+            if (e.get_key_symbol () == Clutter.Key.Escape) {
                 close ();
                 cancelled = true;
                 closed ();
@@ -63,20 +67,30 @@ namespace Gala {
             return false;
         }
 
+#if HAS_MUTTER45
+        public override bool button_press_event (Clutter.Event e) {
+#else
         public override bool button_press_event (Clutter.ButtonEvent e) {
-            if (dragging || e.button != 1) {
+#endif
+            if (dragging || e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
             clicked = true;
 
-            start_point.init (e.x, e.y);
+            float x, y;
+            e.get_coords (out x, out y);
+            start_point.init (x, y);
 
             return true;
         }
 
+#if HAS_MUTTER45
+        public override bool button_release_event (Clutter.Event e) {
+#else
         public override bool button_release_event (Clutter.ButtonEvent e) {
-            if (e.button != 1) {
+#endif
+            if (e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
@@ -98,12 +112,18 @@ namespace Gala {
             return true;
         }
 
+#if HAS_MUTTER45
+        public override bool motion_event (Clutter.Event e) {
+#else
         public override bool motion_event (Clutter.MotionEvent e) {
+#endif
             if (!clicked) {
                 return true;
             }
 
-            end_point.init (e.x, e.y);
+            float x, y;
+            e.get_coords (out x, out y);
+            end_point.init (x, y);
             content.invalidate ();
 
             if (!dragging) {
