@@ -106,7 +106,7 @@ public class Gala.KeyboardManager : Object {
                 foreach (unowned var option in settings.get_strv ("xkb-options")) {
                     if (!(option in BLOCKED_OPTIONS)) {
                         xkb_options += option;
-                    } 
+                    }
                 }
             } else {
                 xkb_options = settings.get_strv ("xkb-options");
