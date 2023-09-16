@@ -284,7 +284,11 @@ namespace Gala {
                 remove_window (window);
         }
 
+#if HAS_MUTTER45
+        public void update_size (Mtk.Rectangle monitor_geometry) {
+#else
         public void update_size (Meta.Rectangle monitor_geometry) {
+#endif
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
@@ -319,7 +323,11 @@ namespace Gala {
          *
          * @param amount The amount in px to shrink.
          */
+#if HAS_MUTTER45
+        private static inline void shrink_rectangle (ref Mtk.Rectangle rect, int amount) {
+#else
         private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
+#endif
             rect.x += amount;
             rect.y += amount;
             rect.width -= amount * 2;
@@ -390,7 +398,11 @@ namespace Gala {
                 gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
 
+#if HAS_MUTTER45
+            Mtk.Rectangle area = {
+#else
             Meta.Rectangle area = {
+#endif
                 (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
                 (int)Math.floorf (monitor.y + InternalUtils.scale_to_int (TOP_OFFSET, scale_factor)),
                 (int)Math.floorf (monitor.width * scale),

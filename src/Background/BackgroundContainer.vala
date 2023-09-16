@@ -32,8 +32,10 @@ namespace Gala {
 
             reactive = true;
             button_release_event.connect ((event) => {
-                if (event.button == Clutter.Button.SECONDARY) {
-                    show_background_menu ((int)event.x, (int)event.y);
+                float x, y;
+                event.get_coords (out x, out y);
+                if (event.get_button () == Clutter.Button.SECONDARY) {
+                    show_background_menu ((int)x, (int)y);
                 }
             });
 
