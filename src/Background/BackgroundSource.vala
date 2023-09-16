@@ -38,8 +38,8 @@ namespace Gala {
         private Gee.HashMap<int,Background> backgrounds;
         private uint[] hash_cache;
 
-        public BackgroundSource (Meta.Display display, string settings_schema) {
-            Object (display: display, settings: new Settings (settings_schema));
+        public BackgroundSource (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
@@ -48,6 +48,8 @@ namespace Gala {
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (monitors_changed);
+
+            settings = new Settings ("org.gnome.desktop.background");
 
             // unfortunately the settings sometimes tend to fire random changes even though
             // nothing actually happened. The code below is used to prevent us from spamming
