@@ -99,7 +99,7 @@ namespace Gala {
 
             Idle.add (() => {
                 loaded ();
-                return false;
+                return Source.REMOVE;
             });
         }
 
@@ -209,7 +209,7 @@ namespace Gala {
             update_animation_timeout_id = Timeout.add (interval, () => {
                 update_animation_timeout_id = 0;
                 update_animation ();
-                return false;
+                return Source.REMOVE;
             });
         }
 
