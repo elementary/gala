@@ -63,7 +63,7 @@ namespace Gala {
             if (animation != null && animation.filename == filename) {
                 Idle.add (() => {
                     get_animation.callback ();
-                    return false;
+                    return Source.REMOVE;
                 });
                 yield;
 
@@ -76,7 +76,7 @@ namespace Gala {
 
             Idle.add (() => {
                 get_animation.callback ();
-                return false;
+                return Source.REMOVE;
             });
             yield;
 
