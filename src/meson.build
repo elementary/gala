@@ -9,6 +9,7 @@ gala_bin_sources = files(
     'Main.vala',
     'MediaFeedback.vala',
     'NotificationStack.vala',
+    'PantheonShell.vala',
     'PluginManager.vala',
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',

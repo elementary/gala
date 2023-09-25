@@ -364,6 +364,8 @@ namespace Gala {
 
                 plugin_manager.load_waiting_plugins ();
 
+                PantheonShell.init (display);
+
                 return false;
             });
 
