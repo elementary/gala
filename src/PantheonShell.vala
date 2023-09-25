@@ -1,20 +1,19 @@
 public class Gala.PantheonShell : Object {
-    private Meta.Display display;
+    public static void init (Meta.Display display) requires (instance == null) {
+        instance = new PantheonShell (display);
+    }
+
+    private static PantheonShell? instance = null;
+
+    public Meta.Display display { get; construct; }
+
     private Meta.WaylandClient dock_client;
 
-    private static PantheonShell instance;
-
-    public static PantheonShell get_default () requires (instance != null) {
-        return instance;
+    private PantheonShell (Meta.Display display) {
+        Object (display: display);
     }
 
-    public static void init (Meta.Display display) {
-        instance = new PantheonShell ();
-        instance.initialize (display);
-    }
-
-    public void initialize (Meta.Display display) {
-        this.display = display;
+    construct {
         display.window_created.connect ((window) => {
             if (dock_client != null && dock_client.owns_window (window)) {
                 setup_dock_window (window);
