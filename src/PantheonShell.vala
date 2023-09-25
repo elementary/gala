@@ -24,14 +24,18 @@ public class Gala.PantheonShell : Object {
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
             dock_client = new Meta.WaylandClient (subprocess_launcher);
-            dock_client.spawn (display, null, "io.elementary.dock");
+            string[] args = {"io.elementary.dock"};
+            dock_client.spawnv (display, args);
         } catch (Error e) {
             warning ("Failed to create dock client: %s", e.message);
         }
     }
 
     private void setup_dock_window (Meta.Window window) {
-        window.stick ();
-        window.move_frame (false, 0, 0);
+        // window.stick ();
+        window.shown.connect (() => {
+            window.move_frame (false, 0, 0);
+            window.move_to_monitor (display.get_primary_monitor ());
+        });
     }
 }
