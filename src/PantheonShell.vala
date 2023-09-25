@@ -32,10 +32,16 @@ public class Gala.PantheonShell : Object {
     }
 
     private void setup_dock_window (Meta.Window window) {
-        // window.stick ();
+        window.notify["above"].connect (() => {
+            if (!window.above) {
+                window.make_above ();
+            }
+        });
+
         window.shown.connect (() => {
             window.move_frame (false, 0, 0);
             window.move_to_monitor (display.get_primary_monitor ());
+            window.make_above ();
         });
     }
 }
