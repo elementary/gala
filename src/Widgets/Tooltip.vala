@@ -10,7 +10,7 @@
 public class Gala.Tooltip : Clutter.Actor {
     private static Clutter.Color text_color;
     private static Gtk.Border padding;
-    private static Gtk.StyleContext style_context;
+    //  private static Gtk.StyleContext style_context;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -52,20 +52,23 @@ public class Gala.Tooltip : Clutter.Actor {
         tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
         tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
 
-        style_context = new Gtk.StyleContext ();
-        style_context.set_path (tooltip_widget_path);
+        //  style_context = new Gtk.StyleContext ();
+        //  style_context.set_path (tooltip_widget_path);
 
-        padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
+        //  padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
 
-        tooltip_widget_path.append_type (typeof (Gtk.Label));
+        //  tooltip_widget_path.append_type (typeof (Gtk.Label));
 
-        var label_style_context = new Gtk.StyleContext ();
-        label_style_context.set_path (tooltip_widget_path);
+        //  Gtk.StyleContext label_style_context = null;
+        //  var label_style_context = new Gtk.StyleContext ();
+        //  label_style_context.set_path (tooltip_widget_path);
 
-        var text_rgba = (Gdk.RGBA) label_style_context.get_property (
-             Gtk.STYLE_PROPERTY_COLOR,
-             Gtk.StateFlags.NORMAL
-         );
+        //  var text_rgba = (Gdk.RGBA) label_style_context.get_property (
+        //       Gtk.STYLE_PROPERTY_COLOR,
+        //       Gtk.StateFlags.NORMAL
+        //   );
+
+        Gdk.RGBA text_rgba = { 0, 0, 0, 0};
 
         text_color = Clutter.Color () {
             red = (uint8) text_rgba.red * uint8.MAX,
@@ -133,8 +136,8 @@ public class Gala.Tooltip : Clutter.Actor {
 
         ctx.save ();
 
-        style_context.render_background (ctx, 0, 0, width, height);
-        style_context.render_frame (ctx, 0, 0, width, height);
+        //  style_context.render_background (ctx, 0, 0, width, height);
+        //  style_context.render_frame (ctx, 0, 0, width, height);
 
         ctx.restore ();
 
