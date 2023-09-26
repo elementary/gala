@@ -1,6 +1,6 @@
 [Unit]
 Description=Gala on X11
-# On X11, try to show the fail whale screen
+# On X11, try to show the GNOME Session Failed screen
 OnFailure=gnome-session-failed.target
 OnFailureJobMode=replace
 CollectMode=inactive-or-failed
@@ -13,16 +13,28 @@ Requisite=gnome-session-initialized.target
 PartOf=gnome-session-initialized.target
 Before=gnome-session-initialized.target
 
+#NOTE: ConditionEnvironment works with systemd >= 246
+ConditionEnvironment=XDG_SESSION_TYPE=%I
+
 # Limit startup frequency more than the default
 StartLimitIntervalSec=15s
 StartLimitBurst=3
 
 [Service]
+Slice=session.slice
 Type=notify
 ExecStart=@bindir@/gala
+
+# On X11 we do not need to unset any variables
+
+# On X11 we want to restart on-success (Alt+F2 + r) and on-failure.
 Restart=always
-# Do not wait before restarting
+# Do not wait before restarting the shell
 RestartSec=0ms
 # Kill any stubborn child processes after this long
 TimeoutStopSec=5
+
+# Lower down gnome-shell's OOM score to avoid being killed by OOM-killer too early
+OOMScoreAdjust=-1000
+
 

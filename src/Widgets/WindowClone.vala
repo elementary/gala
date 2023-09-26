@@ -34,7 +34,11 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
+#if HAS_MUTTER45
+    public Mtk.Rectangle? slot { get; private set; default = null; }
+#else
     public Meta.Rectangle? slot { get; private set; default = null; }
+#endif
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -138,9 +142,9 @@ public class Gala.WindowClone : Clutter.Actor {
         add_child (active_shape);
         add_child (window_title);
 
-        load_clone ();
-
         reallocate ();
+
+        load_clone ();
     }
 
     ~WindowClone () {
@@ -173,7 +177,6 @@ public class Gala.WindowClone : Clutter.Actor {
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
-        set_child_above_sibling (close_button, clone);
     }
 
     /**
@@ -364,7 +367,11 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Animate the window to the given slot
      */
+#if HAS_MUTTER45
+    public void take_slot (Mtk.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+#else
     public void take_slot (Meta.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+#endif
         slot = rect;
         var initial_x = x;
         var initial_y = y;
@@ -467,11 +474,19 @@ public class Gala.WindowClone : Clutter.Actor {
                             (input_rect.y - outer_rect.y) * scale_factor);
     }
 
+#if HAS_MUTTER45
+    public override bool button_press_event (Clutter.Event event) {
+#else
     public override bool button_press_event (Clutter.ButtonEvent event) {
+#endif
         return Clutter.EVENT_STOP;
     }
 
+#if HAS_MUTTER45
+    public override bool enter_event (Clutter.Event event) {
+#else
     public override bool enter_event (Clutter.CrossingEvent event) {
+#endif
         if (drag_action != null && drag_action.dragging) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -493,7 +508,11 @@ public class Gala.WindowClone : Clutter.Actor {
         return Clutter.EVENT_PROPAGATE;
     }
 
+#if HAS_MUTTER45
+    public override bool leave_event (Clutter.Event event) {
+#else
     public override bool leave_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
 
         close_button.save_easing_state ();
@@ -678,7 +697,7 @@ public class Gala.WindowClone : Clutter.Actor {
         // for an icon group, we only do animations if there is an actual movement possible
         if (icon_group != null
             && icon_group.workspace == window.get_workspace ()
-            && window.get_monitor () == window.get_display ().get_primary_monitor ()) {
+            && window.is_on_primary_monitor ()) {
                 return;
         }
 
@@ -734,7 +753,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             var will_move = window.get_workspace ().index () != inserter.workspace_index;
 
-            if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+            if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
                 window.move_to_monitor (primary);
                 will_move = true;
             }
@@ -764,7 +783,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         bool did_move = false;
 
-        if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+        if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
             window.move_to_monitor (primary);
             did_move = true;
         }
@@ -844,26 +863,10 @@ public class Gala.WindowClone : Clutter.Actor {
      * Border to show around the selected window when using keyboard navigation.
      */
     private class ActiveShape : Clutter.Actor {
-        private static int border_radius;
+        private static int border_radius = -1;
         private const double COLOR_OPACITY = 0.8;
 
         private Clutter.Canvas background_canvas;
-
-        static construct {
-            //  var label_widget_path = new Gtk.WidgetPath ();
-            //  label_widget_path.append_type (typeof (Gtk.Label));
-
-            //  var style_context = new Gtk.StyleContext ();
-            //  style_context.add_class (Granite.STYLE_CLASS_CARD);
-            //  style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
-            //  style_context.set_path (label_widget_path);
-
-            //  border_radius = style_context.get_property (
-            //      Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-            //      Gtk.StateFlags.NORMAL
-            //  ).get_int () * 4;
-            border_radius = 16;
-        }
 
         construct {
             background_canvas = new Clutter.Canvas ();
@@ -873,11 +876,30 @@ public class Gala.WindowClone : Clutter.Actor {
             notify["opacity"].connect (invalidate);
         }
 
+        private void create_gtk_objects () {
+            var label_widget_path = new Gtk.WidgetPath ();
+            label_widget_path.append_type (typeof (Gtk.Label));
+
+            var style_context = new Gtk.StyleContext ();
+            style_context.add_class (Granite.STYLE_CLASS_CARD);
+            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
+            style_context.set_path (label_widget_path);
+
+            border_radius = style_context.get_property (
+                Gtk.STYLE_PROPERTY_BORDER_RADIUS,
+                Gtk.StateFlags.NORMAL
+            ).get_int () * 4;
+        }
+
         public void invalidate () {
             background_canvas.invalidate ();
         }
 
         private bool draw_background (Cairo.Context cr, int width, int height) {
+            if (border_radius == -1) {
+                create_gtk_objects ();
+            }
+
             if (!visible || opacity == 0) {
                 return Clutter.EVENT_PROPAGATE;
             }

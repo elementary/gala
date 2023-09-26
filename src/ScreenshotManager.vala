@@ -115,7 +115,11 @@ namespace Gala {
                 flash_area (x, y, width, height);
             }
 
+#if HAS_MUTTER45
+            Mtk.Rectangle rect = { x, y, width, height };
+#else
             Meta.Rectangle rect = { x, y, width, height };
+#endif
             unowned var display = wm.get_display ();
             var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
 
@@ -149,7 +153,11 @@ namespace Gala {
                 rect = window.frame_rect_to_client_rect (rect);
             }
 
+#if HAS_MUTTER45
+            Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+#else
             Cairo.RectangleInt clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+#endif
             var image = (Cairo.ImageSurface) window_texture.get_image (clip);
             if (include_cursor) {
                 image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });

@@ -1,19 +1,7 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
- *           2021 José Expósito <jose.exposito89@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2021 José Expósito <jose.exposito89@gmail.com>
+ * Copyright 2021-2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 /**
@@ -22,7 +10,7 @@
 public class Gala.Tooltip : Clutter.Actor {
     private static Clutter.Color text_color;
     private static Gtk.Border padding;
-    //  private static Gtk.StyleContext style_context;
+    private static Gtk.StyleContext style_context;
 
     /**
      * Canvas to draw the Tooltip background.
@@ -46,39 +34,6 @@ public class Gala.Tooltip : Clutter.Actor {
      */
     public float max_width;
 
-    static construct {
-        //  var tooltip_widget_path = new Gtk.WidgetPath ();
-        //  var pos = tooltip_widget_path.append_type (typeof (Gtk.Window));
-        //  tooltip_widget_path.iter_set_object_name (pos, "tooltip");
-        //  tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
-        //  tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
-
-        //  style_context = new Gtk.StyleContext ();
-        //  style_context.set_path (tooltip_widget_path);
-
-        //  padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
-
-        //  tooltip_widget_path.append_type (typeof (Gtk.Label));
-
-        //  Gtk.StyleContext label_style_context = null;
-        //  var label_style_context = new Gtk.StyleContext ();
-        //  label_style_context.set_path (tooltip_widget_path);
-
-        //  var text_rgba = (Gdk.RGBA) label_style_context.get_property (
-        //       Gtk.STYLE_PROPERTY_COLOR,
-        //       Gtk.StateFlags.NORMAL
-        //   );
-
-        Gdk.RGBA text_rgba = { 0, 0, 0, 0};
-
-        text_color = Clutter.Color () {
-            red = (uint8) text_rgba.red * uint8.MAX,
-            green = (uint8) text_rgba.green * uint8.MAX,
-            blue = (uint8) text_rgba.blue * uint8.MAX,
-            alpha = (uint8) text_rgba.alpha * uint8.MAX,
-        };
-    }
-
     construct {
         text = "";
         max_width = 200;
@@ -88,6 +43,36 @@ public class Gala.Tooltip : Clutter.Actor {
         content = background_canvas;
 
         draw ();
+    }
+
+    private static void create_gtk_objects () {
+        var tooltip_widget_path = new Gtk.WidgetPath ();
+        var pos = tooltip_widget_path.append_type (typeof (Gtk.Window));
+        tooltip_widget_path.iter_set_object_name (pos, "tooltip");
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_CSD);
+        tooltip_widget_path.iter_add_class (pos, Gtk.STYLE_CLASS_BACKGROUND);
+
+        style_context = new Gtk.StyleContext ();
+        style_context.set_path (tooltip_widget_path);
+
+        padding = style_context.get_padding (Gtk.StateFlags.NORMAL);
+
+        tooltip_widget_path.append_type (typeof (Gtk.Label));
+
+        var label_style_context = new Gtk.StyleContext ();
+        label_style_context.set_path (tooltip_widget_path);
+
+        var text_rgba = (Gdk.RGBA) label_style_context.get_property (
+             Gtk.STYLE_PROPERTY_COLOR,
+             Gtk.StateFlags.NORMAL
+         );
+
+        text_color = Clutter.Color () {
+            red = (uint8) text_rgba.red * uint8.MAX,
+            green = (uint8) text_rgba.green * uint8.MAX,
+            blue = (uint8) text_rgba.blue * uint8.MAX,
+            alpha = (uint8) text_rgba.alpha * uint8.MAX,
+        };
     }
 
     public void set_text (string new_text, bool redraw = true) {
@@ -142,10 +127,14 @@ public class Gala.Tooltip : Clutter.Actor {
     }
 
     private static bool draw_background (Cairo.Context ctx, int width, int height) {
+        if (style_context == null) {
+            create_gtk_objects ();
+        }
+
         ctx.save ();
 
-        //  style_context.render_background (ctx, 0, 0, width, height);
-        //  style_context.render_frame (ctx, 0, 0, width, height);
+        style_context.render_background (ctx, 0, 0, width, height);
+        style_context.render_frame (ctx, 0, 0, width, height);
 
         ctx.restore ();
 

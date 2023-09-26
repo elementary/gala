@@ -1,19 +1,9 @@
-//
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2012 Tom Beckmann
+ * Copyright 2012 Rico Tzschichholz
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 namespace Gala {
     public enum InputArea {
@@ -129,20 +119,36 @@ namespace Gala {
             return k1 * k1 + k2 * k2;
         }
 
+#if HAS_MUTTER45
+        private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+#else
         private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+#endif
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
+#if HAS_MUTTER45
+        private static Gdk.Point rect_center (Mtk.Rectangle rect) {
+#else
         private static Gdk.Point rect_center (Meta.Rectangle rect) {
+#endif
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
         public struct TilableWindow {
+#if HAS_MUTTER45
+            Mtk.Rectangle rect;
+#else
             Meta.Rectangle rect;
+#endif
             unowned WindowClone id;
         }
 
+#if HAS_MUTTER45
+        public static List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, List<TilableWindow?> windows) {
+#else
         public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area, List<TilableWindow?> windows) {
+#endif
             uint window_count = windows.length ();
             int columns = (int)Math.ceil (Math.sqrt (window_count));
             int rows = (int)Math.ceil (window_count / (double)columns);
@@ -222,10 +228,16 @@ namespace Gala {
                 var rect = window.rect;
 
                 // Work out where the slot is
-                Meta.Rectangle target = {area.x + (slot % columns) * slot_width,
-                                         area.y + (slot / columns) * slot_height,
-                                         slot_width,
-                                         slot_height};
+#if HAS_MUTTER45
+                Mtk.Rectangle target = {
+#else
+                Meta.Rectangle target = {
+#endif
+                    area.x + (slot % columns) * slot_width,
+                    area.y + (slot / columns) * slot_height,
+                    slot_width,
+                    slot_height
+                };
                 target = rect_adjusted (target, 10, 10, -10, -10);
 
                 float scale;
@@ -306,48 +318,31 @@ namespace Gala {
             return (int) (Math.round ((float)value * scale_factor));
         }
 
-        //  private static Gtk.StyleContext selection_style_context = null;
+        private static Gtk.StyleContext selection_style_context = null;
         public static Gdk.RGBA get_theme_accent_color () {
-        //      if (selection_style_context == null) {
-        //          var label_widget_path = new Gtk.WidgetPath ();
-        //          label_widget_path.append_type (GLib.Type.from_name ("label"));
-        //          label_widget_path.iter_set_object_name (-1, "selection");
+            if (selection_style_context == null) {
+                var label_widget_path = new Gtk.WidgetPath ();
+                label_widget_path.append_type (GLib.Type.from_name ("label"));
+                label_widget_path.iter_set_object_name (-1, "selection");
 
-        //          //  selection_style_context = new Gtk.StyleContext ();
-        //          //  selection_style_context.set_path (label_widget_path);
-        //      }
+                selection_style_context = new Gtk.StyleContext ();
+                selection_style_context.set_path (label_widget_path);
+            }
 
-        //      return (Gdk.RGBA) selection_style_context.get_property (
-        //          Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-        //          Gtk.StateFlags.NORMAL
-        //      );
-            return { 0, 0, 255 };
-        }
-
-        public static Drawing.Color get_accent_color_by_theme_name (string theme_name) {
-            //  var label_widget_path = new Gtk.WidgetPath ();
-            //  label_widget_path.append_type (GLib.Type.from_name ("label"));
-            //  label_widget_path.iter_set_object_name (-1, "selection");
-
-            //  var selection_style_context = new Gtk.StyleContext ();
-            //  unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
-            //  selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-            //  selection_style_context.set_path (label_widget_path);
-
-            //  var rgba = (Gdk.RGBA) selection_style_context.get_property (
-            //      Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-            //      Gtk.StateFlags.NORMAL
-            //  );
-
-            //  return new Drawing.Color.from_rgba (rgba);
-
-            return new Drawing.Color (0.0, 0.0, 1.0, 1.0);
+            return (Gdk.RGBA) selection_style_context.get_property (
+                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
+                Gtk.StateFlags.NORMAL
+            );
         }
 
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
+#if HAS_MUTTER45
+        public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
+#else
         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+#endif
             if (InternalUtils.workspaces_only_on_primary ()) {
                 var primary = display.get_primary_monitor ();
                 return display.get_monitor_geometry (primary);

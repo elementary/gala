@@ -28,8 +28,6 @@ namespace Gala {
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
 
-        private const int SMOOTH_SCROLL_DELAY = 500;
-
         public WindowManager wm { get; construct; }
 
         private Meta.Display display;
@@ -180,19 +178,24 @@ namespace Gala {
          * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
          * GestureTracker.
          */
+#if HAS_MUTTER45
+        public override bool scroll_event (Clutter.Event scroll_event) {
+#else
         public override bool scroll_event (Clutter.ScrollEvent scroll_event) {
+#endif
             if (!opened) {
                 return true;
             }
 
-            if (scroll_event.direction == Clutter.ScrollDirection.SMOOTH ||
-                scroll_event.scroll_source == Clutter.ScrollSource.FINGER ||
+            Clutter.ScrollDirection scroll_direction = scroll_event.get_scroll_direction ();
+            if (scroll_direction == Clutter.ScrollDirection.SMOOTH ||
+                scroll_event.get_scroll_source () == Clutter.ScrollSource.FINGER ||
                 scroll_event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE) {
                 return false;
             }
 
             Meta.MotionDirection direction;
-            switch (scroll_event.direction) {
+            switch (scroll_direction) {
                 case Clutter.ScrollDirection.UP:
                 case Clutter.ScrollDirection.LEFT:
                     direction = Meta.MotionDirection.LEFT;
@@ -223,7 +226,7 @@ namespace Gala {
             }
 
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
+            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
             float dest = nudge_gap;
             if (direction == Meta.MotionDirection.RIGHT) {
@@ -289,7 +292,7 @@ namespace Gala {
             float target_x = 0;
             bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int ((int)WindowManagerGala.NUDGE_GAP, scale);
+            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
             unowned IconGroup active_icon_group = null;
             unowned IconGroup? target_icon_group = null;
@@ -537,11 +540,15 @@ namespace Gala {
          * Collect key events, mainly for redirecting them to the WindowCloneContainers to
          * select the active window.
          */
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event event) {
+#else
         public override bool key_press_event (Clutter.KeyEvent event) {
+#endif
             if (!opened)
                 return true;
 
-            switch (event.keyval) {
+            switch (event.get_key_symbol ()) {
                 case Clutter.Key.Escape:
                     toggle ();
                     break;
@@ -653,6 +660,11 @@ namespace Gala {
 
             opened = !opened;
             var opening = opened;
+
+            // https://github.com/elementary/gala/issues/1728
+            if (opening) {
+                wm.kill_switch_workspace ();
+            }
 
             foreach (var container in window_containers_monitors) {
                 if (opening) {

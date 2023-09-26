@@ -51,8 +51,12 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         canvas.invalidate ();
     }
 
+#if HAS_MUTTER45
+    public override bool key_press_event (Clutter.Event e) {
+#else
     public override bool key_press_event (Clutter.KeyEvent e) {
-        if (e.keyval == Clutter.Key.Escape) {
+#endif
+        if (e.get_key_symbol () == Clutter.Key.Escape) {
             close ();
             closed ();
             return true;
@@ -61,26 +65,37 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         return false;
     }
 
+#if HAS_MUTTER45
+    public override bool button_press_event (Clutter.Event e) {
+#else
     public override bool button_press_event (Clutter.ButtonEvent e) {
-        if (dragging || e.button != 1) {
+#endif
+        if (dragging || e.get_button () != Clutter.Button.PRIMARY) {
             return true;
         }
 
         clicked = true;
 
-        start_point.x = (int) e.x;
-        start_point.y = (int) e.y;
+        float press_x, press_y;
+        e.get_coords (out press_x, out press_y);
+        start_point = { (int) press_x, (int) press_y};
 
         return true;
     }
 
+#if HAS_MUTTER45
+    public override bool button_release_event (Clutter.Event e) {
+#else
     public override bool button_release_event (Clutter.ButtonEvent e) {
-        if (e.button != 1) {
+#endif
+        if (e.get_button () != Clutter.Button.PRIMARY) {
             return true;
         }
 
         if (!dragging) {
-            selected ((int) e.x, (int) e.y);
+            float event_x, event_y;
+            e.get_coords (out event_x, out event_y);
+            selected ((int) event_x, (int) event_y);
             close ();
             return true;
         }
@@ -101,13 +116,18 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         return true;
     }
 
+#if HAS_MUTTER45
+    public override bool motion_event (Clutter.Event e) {
+#else
     public override bool motion_event (Clutter.MotionEvent e) {
+#endif
         if (!clicked) {
             return true;
         }
 
-        end_point.x = (int) e.x;
-        end_point.y = (int) e.y;
+        float press_x, press_y;
+        e.get_coords (out press_x, out press_y);
+        end_point = { (int) press_x, (int) press_y};
         content.invalidate ();
 
         if (!dragging) {
