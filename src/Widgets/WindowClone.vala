@@ -880,10 +880,10 @@ public class Gala.WindowClone : Clutter.Actor {
             var label_widget_path = new Gtk.WidgetPath ();
             label_widget_path.append_type (typeof (Gtk.Label));
 
-            //  var style_context = new Gtk.StyleContext ();
-            //  style_context.add_class (Granite.STYLE_CLASS_CARD);
-            //  style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
-            //  style_context.set_path (label_widget_path);
+            var style_context = new Gtk.StyleContext ();
+            style_context.add_class (Granite.STYLE_CLASS_CARD);
+            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
+            style_context.set_path (label_widget_path);
 
             border_radius = style_context.get_property (
                 Gtk.STYLE_PROPERTY_BORDER_RADIUS,
