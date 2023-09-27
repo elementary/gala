@@ -992,7 +992,8 @@ namespace Gala {
                     var window_menu = new WindowMenu (this);
                     ui_group.add_child (window_menu);
                     window_menu.set_position (x, y);
-                    window_menu.handle_switch_windows (get_display () );
+                    window_menu.add_child (new MenuItem ("wow", get_display ().get_monitor_scale (get_display ().get_current_monitor ())));
+                    window_menu.open_menu ();
                     // if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                     //     return;
                     // }
