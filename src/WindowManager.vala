@@ -73,6 +73,7 @@ namespace Gala {
 
         private WindowSwitcher? winswitcher = null;
         private ActivatableComponent? window_overview = null;
+        private WindowMenu window_menu;
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -344,6 +345,8 @@ namespace Gala {
                     window_overview = new WindowOverview (this);
                     ui_group.add_child ((Clutter.Actor) window_overview);
                 }
+
+                window_menu = new WindowMenu (this);
 
                 notification_group = new Clutter.Actor ();
                 ui_group.add_child (notification_group);
@@ -985,48 +988,53 @@ namespace Gala {
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
-                    if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
-                        return;
-                    }
+                    warning ("CREATE MENU");
+                    var window_menu = new WindowMenu (this);
+                    ui_group.add_child (window_menu);
+                    window_menu.set_position (x, y);
+                    window_menu.handle_switch_windows (get_display () );
+                    // if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    //     return;
+                    // }
 
-                    WindowFlags flags = WindowFlags.NONE;
-                    if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_HIDE;
+                    // WindowFlags flags = WindowFlags.NONE;
+                    // if (window.can_minimize ())
+                    //     flags |= WindowFlags.CAN_HIDE;
 
-                    if (window.can_maximize ())
-                        flags |= WindowFlags.CAN_MAXIMIZE;
+                    // if (window.can_maximize ())
+                    //     flags |= WindowFlags.CAN_MAXIMIZE;
 
-                    var maximize_flags = window.get_maximized ();
-                    if (maximize_flags > 0) {
-                        flags |= WindowFlags.IS_MAXIMIZED;
+                    // var maximize_flags = window.get_maximized ();
+                    // if (maximize_flags > 0) {
+                    //     flags |= WindowFlags.IS_MAXIMIZED;
 
-                        if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                            flags |= WindowFlags.IS_TILED;
-                        }
-                    }
+                    //     if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
+                    //         flags |= WindowFlags.IS_TILED;
+                    //     }
+                    // }
 
-                    if (window.allows_move ())
-                        flags |= WindowFlags.ALLOWS_MOVE;
+                    // if (window.allows_move ())
+                    //     flags |= WindowFlags.ALLOWS_MOVE;
 
-                    if (window.allows_resize ())
-                        flags |= WindowFlags.ALLOWS_RESIZE;
+                    // if (window.allows_resize ())
+                    //     flags |= WindowFlags.ALLOWS_RESIZE;
 
-                    if (window.is_above ())
-                        flags |= WindowFlags.ALWAYS_ON_TOP;
+                    // if (window.is_above ())
+                    //     flags |= WindowFlags.ALWAYS_ON_TOP;
 
-                    if (window.on_all_workspaces)
-                        flags |= WindowFlags.ON_ALL_WORKSPACES;
+                    // if (window.on_all_workspaces)
+                    //     flags |= WindowFlags.ON_ALL_WORKSPACES;
 
-                    if (window.can_close ())
-                        flags |= WindowFlags.CAN_CLOSE;
+                    // if (window.can_close ())
+                    //     flags |= WindowFlags.CAN_CLOSE;
 
-                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
-                        try {
-                            ((Daemon) obj).show_window_menu.end (res);
-                        } catch (Error e) {
-                            message ("Error invoking MenuManager: %s", e.message);
-                        }
-                    });
+                    // daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
+                    //     try {
+                    //         ((Daemon) obj).show_window_menu.end (res);
+                    //     } catch (Error e) {
+                    //         message ("Error invoking MenuManager: %s", e.message);
+                    //     }
+                    // });
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
