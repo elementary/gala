@@ -84,11 +84,11 @@ public class Gala.WindowMenu : Clutter.Actor {
             }
         });
 
+        notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
+
         canvas.draw.connect (draw);
 
         motion_event.connect (on_motion_event);
-
-        actor_added.connect (update_size);
     }
 
     private bool draw (Cairo.Context ctx, int width, int height) {
@@ -138,25 +138,6 @@ public class Gala.WindowMenu : Clutter.Actor {
         style_context.add_class ("unified");
     }
 
-    private void update_size () {
-        float greatest_child_width = 10, greatest_child_height = 10;
-
-        foreach (var child in get_children ()) {
-            float preferred_width, preferred_height;
-            child.get_preferred_size (null, null, out preferred_width, out preferred_height);
-            if (preferred_width > greatest_child_width) {
-                greatest_child_width = preferred_width;
-            }
-
-            if (preferred_height > greatest_child_height) {
-                greatest_child_height = preferred_height;
-            }
-        }
-
-        set_size (greatest_child_width, greatest_child_height);
-        canvas.set_size ((int) greatest_child_width, (int) greatest_child_height);
-    }
-
     public void open_menu () {
         if (opened) {
             return;
@@ -164,28 +145,7 @@ public class Gala.WindowMenu : Clutter.Actor {
 
         opacity = 0;
 
-        unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
-
-        // float container_width;
-        // container.get_preferred_width (
-        //     InternalUtils.scale_to_int (ICON_SIZE, scaling_factor) + container.margin_left + container.margin_right,
-        //     null,
-        //     out container_width
-        // );
-        // if (container_width + InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2 > geom.width) {
-        //     container.width = geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2;
-        // }
-
-        // float nat_width, nat_height;
-        // container.get_preferred_size (null, null, out nat_width, out nat_height);
-
-        // var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
         canvas.invalidate ();
-
-        // container width might have changed, so we must update caption width too
-        // update_caption_text ();
 
         toggle_display (true);
     }
