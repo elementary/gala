@@ -20,7 +20,6 @@ namespace Gala {
         // list of keys that are actually relevant for us
         private const string[] OPTIONS = {
             "color-shading-type",
-            "picture-opacity",
             "picture-options",
             "picture-uri",
             "picture-uri-dark",
@@ -32,8 +31,6 @@ namespace Gala {
 
         public Meta.Display display { get; construct; }
         public GLib.Settings gnome_background_settings { get; construct; }
-
-        internal int use_count { get; set; default = 0; }
 
         private GLib.HashTable<int, Background> backgrounds;
         private uint[] hash_cache;

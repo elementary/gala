@@ -29,13 +29,7 @@ namespace Gala {
         public signal void file_changed (string filename);
 
         private Gee.HashMap<string,FileMonitor> file_monitors;
-        private BackgroundSource background_source;
-
         private Animation animation;
-
-        public BackgroundCache () {
-            Object ();
-        }
 
         construct {
             file_monitors = new Gee.HashMap<string,FileMonitor> ();
@@ -80,22 +74,6 @@ namespace Gala {
             yield;
 
             return animation;
-        }
-
-        public BackgroundSource get_background_source (Meta.Display display) {
-            if (background_source == null) {
-                background_source = new BackgroundSource (display);
-                background_source.use_count = 1;
-            } else
-                background_source.use_count++;
-
-            return background_source;
-        }
-
-        public void release_background_source () {
-            if (--background_source.use_count == 0) {
-                background_source.destroy ();
-            }
         }
     }
 }

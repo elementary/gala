@@ -45,14 +45,14 @@ namespace Gala {
         }
 
         construct {
-            background_source = BackgroundCache.get_default ().get_background_source (display);
+            background_source = new BackgroundSource (display);
             background_actor = create_background_actor ();
 
             destroy.connect (on_destroy);
         }
 
         private void on_destroy () {
-            BackgroundCache.get_default ().release_background_source ();
+            background_source.destroy ();
             background_source = null;
 
             if (new_background_actor != null) {
