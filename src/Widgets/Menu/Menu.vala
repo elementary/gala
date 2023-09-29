@@ -31,6 +31,8 @@ public class Gala.WindowMenu : Clutter.Actor {
 
     private float scaling_factor = 1.0f;
 
+    private Clutter.Actor separator;
+
     public WindowMenu (Gala.WindowManager wm) {
         Object (wm: wm);
     }
@@ -101,6 +103,8 @@ public class Gala.WindowMenu : Clutter.Actor {
 
         var menuitem = new MenuItem ("wow", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
         container.add_child (menuitem);
+        container.add_child (new SeparatorMenuItem (scaling_factor));
+        container.add_child (new MenuItem ("Another", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
     }
 
     public void add_menuitem (MenuItem menuitem) {

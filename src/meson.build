@@ -54,6 +54,7 @@ gala_bin_sources = files(
     'Widgets/WindowIconActor.vala',
     'Widgets/Menu/Menu.vala',
     'Widgets/Menu/MenuItem.vala',
+    'Widgets/Menu/SeparatorMenuItem.vala',
     # 'Widgets/WindowMenu.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',

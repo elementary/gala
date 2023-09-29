@@ -51,7 +51,11 @@ public class Gala.MenuItem : Clutter.Actor {
 
         text = new Clutter.Text.with_text (null, "Hello World!") {
             color = Clutter.Color.from_string (text_color),
-            font_description = font_desc
+            font_description = font_desc,
+            margin_left = 12,
+            margin_right = 12,
+            margin_top = 6,
+            margin_bottom = 6
         };
         text.set_pivot_point (0.5f, 0.5f);
         text.set_ellipsize (Pango.EllipsizeMode.END);
