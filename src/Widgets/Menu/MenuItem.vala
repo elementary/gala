@@ -44,7 +44,15 @@ public class Gala.MenuItem : Clutter.Actor {
             text_color = "#fafafa";
         }
 
-        text = new Clutter.Text.full (CAPTION_FONT_NAME, "Hello World!", Clutter.Color.from_string (text_color));
+        var widget = new Gtk.Grid ();
+
+        var pango_context = widget.create_pango_context ();
+        var font_desc = pango_context.get_font_description ();
+
+        text = new Clutter.Text.with_text (null, "Hello World!") {
+            color = Clutter.Color.from_string (text_color),
+            font_description = font_desc
+        };
         text.set_pivot_point (0.5f, 0.5f);
         text.set_ellipsize (Pango.EllipsizeMode.END);
         text.set_line_alignment (Pango.Alignment.CENTER);
