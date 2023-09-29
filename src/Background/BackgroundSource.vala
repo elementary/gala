@@ -35,7 +35,7 @@ namespace Gala {
 
         internal int use_count { get; set; default = 0; }
 
-        private Gee.HashMap<int,Background> backgrounds;
+        private GLib.HashTable<int, Background> backgrounds;
         private uint[] hash_cache;
 
         public BackgroundSource (Meta.Display display, string settings_schema) {
@@ -43,7 +43,7 @@ namespace Gala {
         }
 
         construct {
-            backgrounds = new Gee.HashMap<int,Background> ();
+            backgrounds = new GLib.HashTable<int, Background> (GLib.direct_hash, GLib.direct_equal);
             hash_cache = new uint[OPTIONS.length];
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
@@ -77,17 +77,16 @@ namespace Gala {
             var n = display.get_n_monitors ();
             var i = 0;
 
-            foreach (var background in backgrounds.values) {
+            backgrounds.foreach_remove ((hash, background) => {
                 if (i++ < n) {
                     background.update_resolution ();
-                    continue;
+                    return false;
+                } else {
+                    background.changed.disconnect (background_changed);
+                    background.destroy ();
+                    return true;
                 }
-
-                background.changed.disconnect (background_changed);
-                background.destroy ();
-                // TODO can we remove from a list while iterating?
-                backgrounds.unset (i);
-            }
+            });
         }
 
         public Background get_background (int monitor_index) {
@@ -105,13 +104,14 @@ namespace Gala {
             if (filename == null || !filename.has_suffix (".xml"))
                 monitor_index = 0;
 
-            if (!backgrounds.has_key (monitor_index)) {
-                var background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
+            var background = backgrounds.lookup (monitor_index);
+            if (background == null) {
+                background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
                 background.changed.connect (background_changed);
-                backgrounds[monitor_index] = background;
+                backgrounds.insert (monitor_index, background);
             }
 
-            return backgrounds[monitor_index];
+            return background;
         }
 
         private string get_background_path () {
@@ -135,17 +135,18 @@ namespace Gala {
         private void background_changed (Background background) {
             background.changed.disconnect (background_changed);
             background.destroy ();
-            backgrounds.unset (background.monitor_index);
+            backgrounds.remove (background.monitor_index);
         }
 
         public void destroy () {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.disconnect (monitors_changed);
 
-            foreach (var background in backgrounds.values) {
+            backgrounds.foreach_remove ((hash, background) => {
                 background.changed.disconnect (background_changed);
                 background.destroy ();
-            }
+                return true;
+            });
         }
     }
 }
