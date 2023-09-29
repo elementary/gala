@@ -139,7 +139,8 @@ namespace Gala {
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             bool is_active_workspace = workspace == manager.get_active_workspace ();
-            unowned var last_workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
+            var last_workspace_index = manager.get_n_workspaces () - 1;
+            unowned var last_workspace = manager.get_workspace_by_index (last_workspace_index);
 
             if (window.window_type != Meta.WindowType.NORMAL
                 && window.window_type != Meta.WindowType.DIALOG
@@ -158,7 +159,7 @@ namespace Gala {
             if (is_active_workspace
                 && remove_freeze_count < 1
                 && Utils.get_n_windows (workspace) == 0
-                && workspace != last_workspace) {
+                && workspace.index () == last_workspace_index - 1) {
                 remove_workspace (last_workspace);
             }
         }
