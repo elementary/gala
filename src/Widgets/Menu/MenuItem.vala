@@ -11,9 +11,6 @@ public class Gala.MenuItem : Clutter.Actor {
 
     private Clutter.Text text;
     private Clutter.Canvas canvas;
-    private Gtk.StyleContext style_context;
-
-    private Granite.Settings granite_settings;
 
     private bool _selected = false;
     public bool selected {
@@ -51,12 +48,6 @@ public class Gala.MenuItem : Clutter.Actor {
         text.set_pivot_point (0.5f, 0.5f);
         text.set_ellipsize (Pango.EllipsizeMode.END);
         text.set_line_alignment (Pango.Alignment.CENTER);
-
-        var window = new Gtk.Window ();
-        style_context = window.get_style_context ();
-        style_context.add_class ("csd");
-        style_context.add_class ("unified");
-        style_context.add_class (Gtk.STYLE_CLASS_MENUITEM);
 
         canvas = new Clutter.Canvas ();
         canvas.draw.connect (draw_background);

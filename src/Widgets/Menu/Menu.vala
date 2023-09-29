@@ -23,8 +23,6 @@ public class Gala.WindowMenu : Clutter.Actor {
     private Clutter.Canvas canvas;
     private Clutter.Actor container;
 
-    // private MenuItem selected;
-
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
@@ -32,8 +30,6 @@ public class Gala.WindowMenu : Clutter.Actor {
     private bool drawn = false;
 
     private float scaling_factor = 1.0f;
-
-    private MenuItem menuitem;
 
     public WindowMenu (Gala.WindowManager wm) {
         Object (wm: wm);
@@ -103,7 +99,11 @@ public class Gala.WindowMenu : Clutter.Actor {
         container.margin_top = margin;
         container.margin_bottom = margin;
 
-        menuitem = new MenuItem ("wow", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        var menuitem = new MenuItem ("wow", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        container.add_child (menuitem);
+    }
+
+    public void add_menuitem (MenuItem menuitem) {
         container.add_child (menuitem);
     }
 
@@ -158,7 +158,6 @@ public class Gala.WindowMenu : Clutter.Actor {
         }
 
         opacity = 0;
-
         canvas.invalidate ();
 
         toggle_display (true);
@@ -211,81 +210,15 @@ public class Gala.WindowMenu : Clutter.Actor {
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
-            menuitem.selected = !menuitem.selected;
         if (first_release) {
             first_release = false;
             return true;
         }
 
-        // toggle_display (false);
+        toggle_display (false);
         first_release = true;
         return true;
     }
-
-    public override bool enter_event (Clutter.CrossingEvent event) {
-        return false;
-    }
-
-    public override bool leave_event (Clutter.CrossingEvent event) {
-        // menuitem.selected = false;
-        return false;
-    }
-
-#if HAS_MUTTER45
-    public override bool motion_event (Clutter.Event event) {
-#else
-    public override bool motion_event (Clutter.MotionEvent event) {
-#endif
-        // warning ("MOTION");
-        // float x, y;
-        // event.get_coords (out x, out y);
-        // var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
-        // if (actor == null) {
-        //     return true;
-        // }
-
-        // var hovered = (MenuItem) actor;
-        // if (hovered == null) {
-        //     return true;
-        // }
-
-        // if (hovered != selected) {
-        //     selected.selected = false;
-        //     hovered.selected = true;
-        //     selected = hovered;
-        // }
-
-        return true;
-    }
-
-// #if HAS_MUTTER45
-//     private bool on_motion_event (Clutter.Event event) {
-// #else
-//     private bool on_motion_event (Clutter.MotionEvent event) {
-// #endif
-//         // menuitem.selected = true;
-//         // Timeout.add (1000, () => {
-//         //     menuitem.selected = false;
-//         //     return Source.REMOVE;
-//         // });
-//         // float x, y;
-//         // event.get_coords (out x, out y);
-//         // var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
-//         // if (actor == null) {
-//         //     return true;
-//         // }
-
-//         // var selected = actor as WindowSwitcherIcon;
-//         // if (selected == null) {
-//         //     return true;
-//         // }
-
-//         // if (current_icon != selected) {
-//         //     current_icon = selected;
-//         // }
-
-//         return true;
-//     }
 
 #if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
@@ -293,12 +226,6 @@ public class Gala.WindowMenu : Clutter.Actor {
     public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
         switch (event.get_key_symbol ()) {
-            case Clutter.Key.Right:
-                // next_window (false);
-                return Clutter.EVENT_STOP;
-            case Clutter.Key.Left:
-                // next_window (true);
-                return Clutter.EVENT_STOP;
             case Clutter.Key.Escape:
                 toggle_display (false);
                 return Clutter.EVENT_PROPAGATE;
