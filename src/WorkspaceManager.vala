@@ -147,6 +147,11 @@ namespace Gala {
                 && window.window_type != Meta.WindowType.MODAL_DIALOG)
                 return;
 
+            // has already been removed
+            if (workspace.index () < 0) {
+                return;
+            }
+
             // remove it right away if it was the active workspace and it's not the very last
             // or we are in modal-mode
             if ((!is_active_workspace || wm.is_modal ())
@@ -156,6 +161,7 @@ namespace Gala {
                 remove_workspace (workspace);
             }
 
+            // if window is the second last and empty, make it the last workspace
             if (is_active_workspace
                 && remove_freeze_count < 1
                 && Utils.get_n_windows (workspace) == 0
