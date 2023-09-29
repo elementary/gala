@@ -23,7 +23,8 @@ public class Gala.WindowMenu : Clutter.Actor {
     private Clutter.Canvas canvas;
     private Clutter.Actor container;
 
-    private Gtk.WidgetPath widget_path;
+    // private MenuItem selected;
+
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
@@ -88,8 +89,6 @@ public class Gala.WindowMenu : Clutter.Actor {
         notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
 
         canvas.draw.connect (draw);
-
-        motion_event.connect (on_motion_event);
 
         var box_layout = new Clutter.BoxLayout () {
             orientation = VERTICAL
@@ -233,15 +232,11 @@ public class Gala.WindowMenu : Clutter.Actor {
     }
 
 #if HAS_MUTTER45
-    private bool on_motion_event (Clutter.Event event) {
+    public override bool motion_event (Clutter.Event event) {
 #else
-    private bool on_motion_event (Clutter.MotionEvent event) {
+    public override bool motion_event (Clutter.MotionEvent event) {
 #endif
-        // menuitem.selected = true;
-        // Timeout.add (1000, () => {
-        //     menuitem.selected = false;
-        //     return Source.REMOVE;
-        // });
+        // warning ("MOTION");
         // float x, y;
         // event.get_coords (out x, out y);
         // var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
@@ -249,17 +244,48 @@ public class Gala.WindowMenu : Clutter.Actor {
         //     return true;
         // }
 
-        // var selected = actor as WindowSwitcherIcon;
-        // if (selected == null) {
+        // var hovered = (MenuItem) actor;
+        // if (hovered == null) {
         //     return true;
         // }
 
-        // if (current_icon != selected) {
-        //     current_icon = selected;
+        // if (hovered != selected) {
+        //     selected.selected = false;
+        //     hovered.selected = true;
+        //     selected = hovered;
         // }
 
         return true;
     }
+
+// #if HAS_MUTTER45
+//     private bool on_motion_event (Clutter.Event event) {
+// #else
+//     private bool on_motion_event (Clutter.MotionEvent event) {
+// #endif
+//         // menuitem.selected = true;
+//         // Timeout.add (1000, () => {
+//         //     menuitem.selected = false;
+//         //     return Source.REMOVE;
+//         // });
+//         // float x, y;
+//         // event.get_coords (out x, out y);
+//         // var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
+//         // if (actor == null) {
+//         //     return true;
+//         // }
+
+//         // var selected = actor as WindowSwitcherIcon;
+//         // if (selected == null) {
+//         //     return true;
+//         // }
+
+//         // if (current_icon != selected) {
+//         //     current_icon = selected;
+//         // }
+
+//         return true;
+//     }
 
 #if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
