@@ -37,6 +37,7 @@ namespace Gala {
 
         private GLib.HashTable<int, Background> backgrounds;
         private uint[] hash_cache;
+        private Meta.MonitorManager? monitor_manager;
 
         public BackgroundSource (Meta.Display display, string settings_schema) {
             Object (display: display, settings: new Settings (settings_schema));
@@ -46,7 +47,7 @@ namespace Gala {
             backgrounds = new GLib.HashTable<int, Background> (GLib.direct_hash, GLib.direct_equal);
             hash_cache = new uint[OPTIONS.length];
 
-            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (monitors_changed);
 
             // unfortunately the settings sometimes tend to fire random changes even though
@@ -139,8 +140,8 @@ namespace Gala {
         }
 
         public void destroy () {
-            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.disconnect (monitors_changed);
+            monitor_manager = null;
 
             backgrounds.foreach_remove ((hash, background) => {
                 background.changed.disconnect (background_changed);
