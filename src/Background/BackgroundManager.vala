@@ -17,7 +17,6 @@
 
 namespace Gala {
     public class BackgroundManager : Meta.BackgroundGroup {
-        private const string GNOME_BACKGROUND_SCHEMA = "org.gnome.desktop.background";
         private const string GALA_BACKGROUND_SCHEMA = "io.elementary.desktop.background";
         private const string DIM_WALLPAPER_KEY = "dim-wallpaper-in-dark-style";
         private const double DIM_OPACITY = 0.55;
@@ -25,7 +24,7 @@ namespace Gala {
 
         public signal void changed ();
 
-        public Meta.Display display { get; construct; }
+        public WindowManager wm { get; construct; }
         public int monitor_index { get; construct; }
         public bool control_position { get; construct; }
 
@@ -37,8 +36,8 @@ namespace Gala {
 
         private static Settings gala_background_settings;
 
-        public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true) {
-            Object (display: display, monitor_index: monitor_index, control_position: control_position);
+        public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
+            Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
         }
 
         static construct {
@@ -46,14 +45,14 @@ namespace Gala {
         }
 
         construct {
-            background_source = BackgroundCache.get_default ().get_background_source (display, GNOME_BACKGROUND_SCHEMA);
+            background_source = new BackgroundSource (wm);
             background_actor = create_background_actor ();
 
             destroy.connect (on_destroy);
         }
 
         private void on_destroy () {
-            BackgroundCache.get_default ().release_background_source (GNOME_BACKGROUND_SCHEMA);
+            background_source.destroy ();
             background_source = null;
 
             if (new_background_actor != null) {
@@ -137,7 +136,7 @@ namespace Gala {
 
         private Meta.BackgroundActor create_background_actor () {
             var background = background_source.get_background (monitor_index);
-            var background_actor = new Meta.BackgroundActor (display, monitor_index);
+            var background_actor = new Meta.BackgroundActor (wm.get_display (), monitor_index);
 
             ((Meta.BackgroundContent)background_actor.content).background = background.background;
             ((Meta.BackgroundContent)background_actor.content).vignette = true;
@@ -152,7 +151,7 @@ namespace Gala {
 
             insert_child_below (background_actor, null);
 
-            var monitor = display.get_monitor_geometry (monitor_index);
+            var monitor = wm.get_display ().get_monitor_geometry (monitor_index);
             background_actor.set_size (monitor.width, monitor.height);
 
             if (control_position) {

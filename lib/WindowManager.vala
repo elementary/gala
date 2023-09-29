@@ -181,5 +181,10 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction);
+
+        /*
+         * Same as Meta.MonitorManager.monitors_changed signal
+         */
+        public abstract signal void monitors_changed ();
     }
 }

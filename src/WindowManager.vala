@@ -80,8 +80,6 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
-        public static WindowManagerGala instance { get; private set; }
-
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -121,7 +119,6 @@ namespace Gala {
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
 
-        public signal void monitors_changed ();
         private signal void window_created (Meta.Window window);
 
         /**
@@ -149,8 +146,6 @@ namespace Gala {
         }
 
         public override void start () {
-            instance = this;
-
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
@@ -243,7 +238,7 @@ namespace Gala {
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-            background_group = new BackgroundContainer (display);
+            background_group = new BackgroundContainer (this);
             ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);

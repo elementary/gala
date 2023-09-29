@@ -82,27 +82,5 @@ namespace Gala {
 
             return animation;
         }
-
-        public BackgroundSource get_background_source (Meta.Display display, string settings_schema) {
-            var background_source = background_sources[settings_schema];
-            if (background_source == null) {
-                background_source = new BackgroundSource (display, settings_schema);
-                background_source.use_count = 1;
-                background_sources[settings_schema] = background_source;
-            } else
-                background_source.use_count++;
-
-            return background_source;
-        }
-
-        public void release_background_source (string settings_schema) {
-            if (background_sources.has_key (settings_schema)) {
-                var source = background_sources[settings_schema];
-                if (--source.use_count == 0) {
-                    background_sources.unset (settings_schema);
-                    source.destroy ();
-                }
-            }
-        }
     }
 }

@@ -30,23 +30,23 @@ namespace Gala {
 
         public signal void changed ();
 
-        public Meta.Display display { get; construct; }
+        public WindowManager wm { get; construct; }
         public Settings settings { get; construct; }
-
-        internal int use_count { get; set; default = 0; }
 
         private Gee.HashMap<int,Background> backgrounds;
         private uint[] hash_cache;
 
-        public BackgroundSource (Meta.Display display, string settings_schema) {
-            Object (display: display, settings: new Settings (settings_schema));
+        public BackgroundSource (WindowManager wm) {
+            Object (wm: wm);
         }
 
         construct {
             backgrounds = new Gee.HashMap<int,Background> ();
             hash_cache = new uint[OPTIONS.length];
 
-            WindowManagerGala.instance.monitors_changed.connect (monitors_changed);
+            wm.monitors_changed.connect (monitors_changed);
+
+            settings = new Settings ("org.gnome.desktop.background");
 
             // unfortunately the settings sometimes tend to fire random changes even though
             // nothing actually happened. The code below is used to prevent us from spamming
@@ -73,7 +73,7 @@ namespace Gala {
         }
 
         private void monitors_changed () {
-            var n = display.get_n_monitors ();
+            var n = wm.get_display ().get_n_monitors ();
             var i = 0;
 
             foreach (var background in backgrounds.values) {
@@ -105,7 +105,7 @@ namespace Gala {
                 monitor_index = 0;
 
             if (!backgrounds.has_key (monitor_index)) {
-                var background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
+                var background = new Background (wm.get_display (), monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
                 background.changed.connect (background_changed);
                 backgrounds[monitor_index] = background;
             }
@@ -138,7 +138,7 @@ namespace Gala {
         }
 
         public void destroy () {
-            WindowManagerGala.instance.monitors_changed.disconnect (monitors_changed);
+            wm.monitors_changed.disconnect (monitors_changed);
 
             foreach (var background in backgrounds.values) {
                 background.changed.disconnect (background_changed);
