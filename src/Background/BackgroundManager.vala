@@ -17,7 +17,6 @@
 
 namespace Gala {
     public class BackgroundManager : Meta.BackgroundGroup {
-        private const string GNOME_BACKGROUND_SCHEMA = "org.gnome.desktop.background";
         private const string GALA_BACKGROUND_SCHEMA = "io.elementary.desktop.background";
         private const string DIM_WALLPAPER_KEY = "dim-wallpaper-in-dark-style";
         private const double DIM_OPACITY = 0.55;
@@ -46,14 +45,14 @@ namespace Gala {
         }
 
         construct {
-            background_source = BackgroundCache.get_default ().get_background_source (display, GNOME_BACKGROUND_SCHEMA);
+            background_source = BackgroundCache.get_default ().get_background_source (display);
             background_actor = create_background_actor ();
 
             destroy.connect (on_destroy);
         }
 
         private void on_destroy () {
-            BackgroundCache.get_default ().release_background_source (GNOME_BACKGROUND_SCHEMA);
+            BackgroundCache.get_default ().release_background_source ();
             background_source = null;
 
             if (new_background_actor != null) {

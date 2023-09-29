@@ -99,13 +99,13 @@ namespace Gala {
 
             Idle.add (() => {
                 loaded ();
-                return false;
+                return Source.REMOVE;
             });
         }
 
         private void load_pattern () {
             string color_string;
-            var settings = background_source.settings;
+            var settings = background_source.gnome_background_settings;
 
             color_string = settings.get_string ("primary-color");
             var color = Clutter.Color.from_string (color_string);
@@ -209,7 +209,7 @@ namespace Gala {
             update_animation_timeout_id = Timeout.add (interval, () => {
                 update_animation_timeout_id = 0;
                 update_animation ();
-                return false;
+                return Source.REMOVE;
             });
         }
 
