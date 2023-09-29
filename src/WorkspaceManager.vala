@@ -117,8 +117,8 @@ namespace Gala {
             }
         }
 
-        private void window_added (Meta.Workspace workspace, Meta.Window window) {
-            if (!Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
+        private void window_added (Meta.Workspace? workspace, Meta.Window window) {
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
                 return;
             }
 
@@ -132,8 +132,8 @@ namespace Gala {
                 append_workspace ();
         }
 
-        private void window_removed (Meta.Workspace workspace, Meta.Window window) {
-            if (!Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
+        private void window_removed (Meta.Workspace? workspace, Meta.Window window) {
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
                 return;
             }
 
