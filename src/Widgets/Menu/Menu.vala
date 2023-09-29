@@ -9,7 +9,7 @@
 
 public class Gala.WindowMenu : Clutter.Actor {
     public const int ICON_SIZE = 64;
-    public const int WRAPPER_PADDING = 12;
+    public const int WRAPPER_PADDING = 3;
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
@@ -21,6 +21,7 @@ public class Gala.WindowMenu : Clutter.Actor {
 
     private Granite.Settings granite_settings;
     private Clutter.Canvas canvas;
+    private Clutter.Actor container;
 
     private Gtk.WidgetPath widget_path;
     private Gtk.StyleContext style_context;
@@ -30,6 +31,8 @@ public class Gala.WindowMenu : Clutter.Actor {
     private bool drawn = false;
 
     private float scaling_factor = 1.0f;
+
+    private MenuItem menuitem;
 
     public WindowMenu (Gala.WindowManager wm) {
         Object (wm: wm);
@@ -48,9 +51,7 @@ public class Gala.WindowMenu : Clutter.Actor {
 
         opacity = 0;
 
-        layout_manager = new Clutter.BoxLayout () {
-            orientation = VERTICAL
-        };
+        layout_manager = new Clutter.BinLayout ();
 
         // Carry out the initial draw
         create_components ();
@@ -89,6 +90,22 @@ public class Gala.WindowMenu : Clutter.Actor {
         canvas.draw.connect (draw);
 
         motion_event.connect (on_motion_event);
+
+        var box_layout = new Clutter.BoxLayout () {
+            orientation = VERTICAL
+        };
+
+        container = new Clutter.Actor () {
+            layout_manager = box_layout
+        };
+        add_child (container);
+
+        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        container.margin_top = margin;
+        container.margin_bottom = margin;
+
+        menuitem = new MenuItem ("wow", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        container.add_child (menuitem);
     }
 
     private bool draw (Cairo.Context ctx, int width, int height) {
@@ -126,8 +143,6 @@ public class Gala.WindowMenu : Clutter.Actor {
         }
 
         drawn = true;
-
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
     }
 
     private void create_gtk_objects () {
@@ -197,14 +212,24 @@ public class Gala.WindowMenu : Clutter.Actor {
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
+            menuitem.selected = !menuitem.selected;
         if (first_release) {
             first_release = false;
             return true;
         }
 
-        toggle_display (false);
+        // toggle_display (false);
         first_release = true;
         return true;
+    }
+
+    public override bool enter_event (Clutter.CrossingEvent event) {
+        return false;
+    }
+
+    public override bool leave_event (Clutter.CrossingEvent event) {
+        // menuitem.selected = false;
+        return false;
     }
 
 #if HAS_MUTTER45
@@ -212,6 +237,11 @@ public class Gala.WindowMenu : Clutter.Actor {
 #else
     private bool on_motion_event (Clutter.MotionEvent event) {
 #endif
+        // menuitem.selected = true;
+        // Timeout.add (1000, () => {
+        //     menuitem.selected = false;
+        //     return Source.REMOVE;
+        // });
         // float x, y;
         // event.get_coords (out x, out y);
         // var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);

@@ -9,6 +9,7 @@ public class Gala.MenuItem : Clutter.Actor {
 
     private Clutter.Text text;
     private Clutter.Canvas canvas;
+    private Gtk.StyleContext style_context;
 
     private Granite.Settings granite_settings;
 
@@ -19,6 +20,13 @@ public class Gala.MenuItem : Clutter.Actor {
         }
         set {
             _selected = value;
+            if (value) {
+                // style_context.set_state (Gtk.StateFlags.FOCUSED);
+                warning ("SELECTED");
+            } else {
+                // style_context.set_state (Gtk.StateFlags.NORMAL);
+                warning ("NOT ANYMORE");
+            }
             canvas.invalidate ();
         }
     }
@@ -49,6 +57,12 @@ public class Gala.MenuItem : Clutter.Actor {
         text.set_ellipsize (Pango.EllipsizeMode.END);
         text.set_line_alignment (Pango.Alignment.CENTER);
         add_child (text);
+        var window = new Gtk.Window ();
+
+        style_context = window.get_style_context ();
+        style_context.add_class ("csd");
+        style_context.add_class ("unified");
+        style_context.add_class (Gtk.STYLE_CLASS_MENUITEM);
 
         canvas = new Clutter.Canvas ();
         canvas.draw.connect (draw_background);
@@ -57,9 +71,22 @@ public class Gala.MenuItem : Clutter.Actor {
         this.scale_factor = scale_factor;
     }
 
+    // public override bool enter_event (Clutter.CrossingEvent event) {
+    //     selected = true;
+    //     warning ("SELECTED");
+    //     return base.enter_event (event);
+    // }
+
+    // public override bool leave_event (Clutter.CrossingEvent event) {
+    //     selected = false;
+    //     warning ("NOT SELECTED");
+    //     return base.leave_event (event);
+    // }
+
     private void update_size () {
         set_size (text.width, text.height);
-        canvas.set_size ((int) text.width, (int) text.height);
+        // canvas.set_size ((int) text.width, (int) text.height);
+        canvas.set_size ((int) 50, (int) 50);
     }
 
     private bool draw_background (Cairo.Context ctx, int width, int height) {
@@ -69,25 +96,50 @@ public class Gala.MenuItem : Clutter.Actor {
         ctx.clip ();
         ctx.reset_clip ();
 
+        // if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+        // unowned var gtksettings = Gtk.Settings.get_default ();
+        // var dark_style_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
+        // style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        // } else if (dark_style_provider != null) {
+        //     style_context.remove_provider (dark_style_provider);
+        //     dark_style_provider = null;
+        // }
+
+        // ctx.set_operator (Cairo.Operator.OVER);
+        // style_context.render_background (ctx, 0, 0, width, height);
+        // warning ("RENDER BACKGROUND");
+
         if (selected) {
-            var rgba = InternalUtils.get_theme_accent_color ();
-            Clutter.Color accent_color = {
-                (uint8) (rgba.red * 255),
-                (uint8) (rgba.green * 255),
-                (uint8) (rgba.blue * 255),
-                (uint8) (rgba.alpha * 255)
-            };
-
-            var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
-
-            // draw rect
-            Clutter.cairo_set_source_color (ctx, accent_color);
-            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+            var rgba = InternalUtils.get_foreground_color ();
+            ctx.set_source_rgba (rgba.red, rgba.green, rgba.blue, 0.15);
+            ctx.rectangle (0, 0, width, height);
             ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.fill ();
 
             ctx.restore ();
         }
+        // style_context.render_frame (ctx, 0, 0, width, height);
+        // ctx.restore ();
+
+        // if (selected) {
+        //     var rgba = InternalUtils.get_theme_accent_color ();
+        //     Clutter.Color accent_color = {
+        //         (uint8) (rgba.red * 255),
+        //         (uint8) (rgba.green * 255),
+        //         (uint8) (rgba.blue * 255),
+        //         (uint8) (rgba.alpha * 255)
+        //     };
+
+        //     var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
+
+        //     // draw rect
+        //     Clutter.cairo_set_source_color (ctx, accent_color);
+        //     Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+        //     ctx.set_operator (Cairo.Operator.SOURCE);
+        //     ctx.fill ();
+
+        //     ctx.restore ();
+        // }
 
         return true;
     }
