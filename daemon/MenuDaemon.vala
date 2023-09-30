@@ -51,9 +51,6 @@ namespace Gala {
         private Gtk.MenuItem close;
         private Gtk.MenuItem screenshot;
 
-        // Desktop Menu
-        private Gtk.Menu? desktop_menu = null;
-
         private WMDBus? wm_proxy = null;
 
         private ulong always_on_top_sid = 0U;
@@ -291,77 +288,6 @@ namespace Gala {
 
                 return opened ? Source.REMOVE : Source.CONTINUE;
             });
-        }
-
-        public void show_desktop_menu (int x, int y) throws DBusError, IOError {
-            if (desktop_menu == null) {
-                var change_wallpaper = new Gtk.MenuItem.with_label (_("Change Wallpaper…"));
-                change_wallpaper.activate.connect (() => {
-                    try {
-                        AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
-                    } catch (Error e) {
-                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                            "Failed to Open Wallpaper Settings",
-                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                            "dialog-error",
-                            Gtk.ButtonsType.CLOSE
-                        );
-                        message_dialog.show_error_details (e.message);
-                        message_dialog.run ();
-                        message_dialog.destroy ();
-                    }
-                });
-
-                var display_settings = new Gtk.MenuItem.with_label (_("Display Settings…"));
-                display_settings.activate.connect (() => {
-                    try {
-                        AppInfo.launch_default_for_uri ("settings://display", null);
-                    } catch (Error e) {
-                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                            "Failed to Open Display Settings",
-                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                            "dialog-warning",
-                            Gtk.ButtonsType.CLOSE
-                        );
-                        message_dialog.show_error_details (e.message);
-                        message_dialog.run ();
-                        message_dialog.destroy ();
-                    }
-                });
-
-                var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
-                system_settings.activate.connect (() => {
-                    try {
-                        AppInfo.launch_default_for_uri ("settings://", null);
-                    } catch (Error e) {
-                        var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                            "Failed to Open System Settings",
-                            "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                            "dialog-warning",
-                            Gtk.ButtonsType.CLOSE
-                        );
-                        message_dialog.show_error_details (e.message);
-                        message_dialog.run ();
-                        message_dialog.destroy ();
-                    }
-                });
-
-                desktop_menu = new Gtk.Menu ();
-                desktop_menu.append (change_wallpaper);
-                desktop_menu.append (display_settings);
-                desktop_menu.append (new Gtk.SeparatorMenuItem ());
-                desktop_menu.append (system_settings);
-                desktop_menu.show_all ();
-            }
-
-            desktop_menu.popup (null, null, (m, ref px, ref py, out push_in) => {
-                var scale = m.scale_factor;
-                px = x / scale;
-                // Move the menu 1 pixel outside of the pointer or else it closes instantly
-                // on the mouse up event
-                py = (y / scale) + 1;
-                push_in = false;
-            }, Gdk.BUTTON_SECONDARY, Gdk.CURRENT_TIME);
         }
     }
 }

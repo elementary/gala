@@ -92,7 +92,7 @@ public class Gala.Menu : Clutter.Actor {
 
         container.margin_top = container.margin_bottom = InternalUtils.scale_to_int (6, scale_factor);
 
-        foreach (var child in get_children ()) {
+        foreach (var child in container.get_children ()) {
             if (child is MenuItem) {
                 ((MenuItem) child).scale (scale_factor);
                 continue;
