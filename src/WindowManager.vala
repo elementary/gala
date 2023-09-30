@@ -73,7 +73,8 @@ namespace Gala {
 
         private WindowSwitcher? winswitcher = null;
         private ActivatableComponent? window_overview = null;
-        private WindowMenu window_menu;
+
+        private BackgroundMenu background_menu;
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -231,6 +232,7 @@ namespace Gala {
                 Clutter.BindCoordinate.ALL, 0));
             stage.insert_child_below (system_background.background_actor, null);
 
+
             ui_group = new Clutter.Actor ();
             ui_group.reactive = true;
             stage.add_child (ui_group);
@@ -247,6 +249,9 @@ namespace Gala {
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
+
+            background_menu = new BackgroundMenu (this);
+            ui_group.add_child (background_menu);
 
             FilterManager.init (this);
 
@@ -346,8 +351,6 @@ namespace Gala {
                     ui_group.add_child ((Clutter.Actor) window_overview);
                 }
 
-                window_menu = new WindowMenu (this);
-
                 notification_group = new Clutter.Actor ();
                 ui_group.add_child (notification_group);
 
@@ -408,17 +411,8 @@ namespace Gala {
         }
 
         private void on_show_background_menu (int x, int y) {
-            if (daemon_proxy == null) {
-                return;
-            }
-
-                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
-                    try {
-                        ((Daemon) obj).show_desktop_menu.end (res);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
-                });
+            background_menu.set_position (x, y);
+            background_menu.open_menu ();
         }
 
         private void on_monitors_changed () {
@@ -989,7 +983,7 @@ namespace Gala {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
                     warning ("CREATE MENU");
-                    var window_menu = new WindowMenu (this);
+                    var window_menu = new BackgroundMenu (this);
                     ui_group.add_child (window_menu);
                     window_menu.set_position (x, y);
                     window_menu.open_menu ();

@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowMenu : Clutter.Actor {
+public class Gala.Menu : Clutter.Actor {
     private const int ANIMATION_DURATION = 200;
 
     public bool opened { get; private set; default = false; }
@@ -23,9 +23,7 @@ public class Gala.WindowMenu : Clutter.Actor {
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
-    private bool first_release = true;
-
-    public WindowMenu (Gala.WindowManager wm) {
+    public Menu (Gala.WindowManager wm) {
         Object (wm: wm);
     }
 
@@ -74,16 +72,12 @@ public class Gala.WindowMenu : Clutter.Actor {
         notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
 
         canvas.draw.connect (draw);
-
-        add_menuitem (new MenuItem ("Change Wallpaper..."));
-        add_menuitem (new MenuItem ("Display Settings..."));
-        add_separator ();
-        add_menuitem (new MenuItem ("System Settings..."));
     }
 
     public void add_menuitem (MenuItem menuitem) {
         container.add_child (menuitem);
         menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        menuitem.activated.connect (() => toggle_display (false));
     }
 
     public void add_separator () {
@@ -185,13 +179,7 @@ public class Gala.WindowMenu : Clutter.Actor {
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
-        if (first_release) {
-            first_release = false;
-            return true;
-        }
-
         toggle_display (false);
-        first_release = true;
         return true;
     }
 
