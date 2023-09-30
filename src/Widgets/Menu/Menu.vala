@@ -9,7 +9,7 @@
 
 public class Gala.WindowMenu : Clutter.Actor {
     public const int ICON_SIZE = 64;
-    public const int WRAPPER_PADDING = 3;
+    public const int WRAPPER_PADDING = 5;
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
@@ -22,16 +22,12 @@ public class Gala.WindowMenu : Clutter.Actor {
     private Granite.Settings granite_settings;
     private Clutter.Canvas canvas;
     private Clutter.Actor container;
+    private ShadowEffect shadow_effect;
 
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
     private bool first_release = true;
-    private bool drawn = false;
-
-    private float scaling_factor = 1.0f;
-
-    private Clutter.Actor separator;
 
     public WindowMenu (Gala.WindowManager wm) {
         Object (wm: wm);
@@ -41,52 +37,13 @@ public class Gala.WindowMenu : Clutter.Actor {
         unowned var gtk_settings = Gtk.Settings.get_default ();
         granite_settings = Granite.Settings.get_default ();
 
-        unowned var display = wm.get_display ();
-        scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
-
         canvas = new Clutter.Canvas ();
-        canvas.scale_factor = scaling_factor;
-        set_content (canvas);
 
-        opacity = 0;
-
-        layout_manager = new Clutter.BinLayout ();
-
-        // Carry out the initial draw
-        create_components ();
-
-        var effect = new ShadowEffect (40) {
+        shadow_effect = new ShadowEffect (40) {
             shadow_opacity = 200,
-            css_class = "window-switcher",
-            scale_factor = scaling_factor
+            css_class = "window-switcher"
         };
-        add_effect (effect);
-
-        // Redraw the components if the colour scheme changes.
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            canvas.invalidate ();
-            create_components ();
-        });
-
-        gtk_settings.notify["gtk-theme-name"].connect (() => {
-            canvas.invalidate ();
-            create_components ();
-        });
-
-        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => {
-            var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
-            if (cur_scale != scaling_factor) {
-                scaling_factor = cur_scale;
-                canvas.scale_factor = scaling_factor;
-                effect.scale_factor = scaling_factor;
-                create_components ();
-            }
-        });
-
-        notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
-
-        canvas.draw.connect (draw);
+        add_effect (shadow_effect);
 
         var box_layout = new Clutter.BoxLayout () {
             orientation = VERTICAL
@@ -95,20 +52,63 @@ public class Gala.WindowMenu : Clutter.Actor {
         container = new Clutter.Actor () {
             layout_manager = box_layout
         };
+
+        layout_manager = new Clutter.BinLayout ();
+        opacity = 0;
         add_child (container);
+        set_content (canvas);
 
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-        container.margin_top = margin;
-        container.margin_bottom = margin;
+        // Redraw the components if the colour scheme changes.
+        granite_settings.notify["prefers-color-scheme"].connect (() => {
+            canvas.invalidate ();
+        });
 
-        container.add_child (new MenuItem ("Change Wallpaper...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
-        container.add_child (new MenuItem ("Display Settings...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
-        container.add_child (new SeparatorMenuItem (scaling_factor));
-        container.add_child (new MenuItem ("System Settings...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
+        gtk_settings.notify["gtk-theme-name"].connect (() => {
+            canvas.invalidate ();
+        });
+
+        unowned var display = wm.get_display ();
+        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => {
+            var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
+            scale (cur_scale);
+        });
+        scale (display.get_monitor_scale (display.get_current_monitor ()));
+
+        notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
+
+        canvas.draw.connect (draw);
+
+        add_menuitem (new MenuItem ("Change Wallpaper..."));
+        add_menuitem (new MenuItem ("Display Settings..."));
+        var sep = new SeparatorMenuItem ();
+        container.add_child (sep);
+        sep.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        add_menuitem (new MenuItem ("System Settings..."));
     }
 
     public void add_menuitem (MenuItem menuitem) {
         container.add_child (menuitem);
+        menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+    }
+
+    public void scale (float scale_factor) {
+        canvas.scale_factor = scale_factor;
+        shadow_effect.scale_factor = scale_factor;
+
+        container.margin_top = container.margin_bottom = InternalUtils.scale_to_int (6, scale_factor);
+
+        foreach (var child in get_children ()) {
+            if (child is MenuItem) {
+                ((MenuItem) child).scale (scale_factor);
+                continue;
+            }
+
+            if (child is SeparatorMenuItem) {
+                ((SeparatorMenuItem) child).scale (scale_factor);
+                continue;
+            }
+        }
     }
 
     private bool draw (Cairo.Context ctx, int width, int height) {
@@ -137,15 +137,6 @@ public class Gala.WindowMenu : Clutter.Actor {
         ctx.restore ();
 
         return true;
-    }
-
-    private void create_components () {
-        // We've already been constructed once, start again
-        if (drawn) {
-            destroy_all_children ();
-        }
-
-        drawn = true;
     }
 
     private void create_gtk_objects () {

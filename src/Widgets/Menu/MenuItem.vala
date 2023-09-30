@@ -6,9 +6,6 @@
 public class Gala.MenuItem : Clutter.Actor {
     public signal void activated ();
 
-    private const int WRAPPER_BORDER_RADIUS = 3;
-    private const string CAPTION_FONT_NAME = "Inter";
-
     private Clutter.Text text;
     private Clutter.Canvas canvas;
 
@@ -23,21 +20,7 @@ public class Gala.MenuItem : Clutter.Actor {
         }
     }
 
-    private float _scale_factor = 1.0f;
-    public float scale_factor {
-        get {
-            return _scale_factor;
-        }
-        set {
-            _scale_factor = value;
-            canvas.scale_factor = _scale_factor;
-
-            update_size ();
-            canvas.invalidate ();
-        }
-    }
-
-    public MenuItem (string label, float scale_factor) {
+    public MenuItem (string label) {
         var text_color = "#2e2e31";
 
         if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
@@ -55,10 +38,10 @@ public class Gala.MenuItem : Clutter.Actor {
             margin_left = 24,
             margin_right = 24,
             margin_top = 6,
-            margin_bottom = 6
+            margin_bottom = 6,
+            ellipsize = END
         };
         text.set_pivot_point (0.5f, 0.5f);
-        text.set_ellipsize (Pango.EllipsizeMode.END);
         text.set_line_alignment (Pango.Alignment.CENTER);
 
         canvas = new Clutter.Canvas ();
@@ -68,7 +51,14 @@ public class Gala.MenuItem : Clutter.Actor {
         add_child (text);
         set_content (canvas);
 
-        this.scale_factor = scale_factor;
+        notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
+    }
+
+    public void scale (float scale_factor) {
+        canvas.scale_factor = scale_factor;
+        text.margin_left = text.margin_right = InternalUtils.scale_to_int (24, scale_factor);
+        text.margin_top = text.margin_bottom = InternalUtils.scale_to_int (6, scale_factor);
+        canvas.set_size ((int) width, (int) height);
     }
 
     public override bool enter_event (Clutter.CrossingEvent event) {
@@ -88,11 +78,6 @@ public class Gala.MenuItem : Clutter.Actor {
         }
 
         return false;
-    }
-
-    private void update_size () {
-        set_size (text.width > 150 ? text.width : 150, text.height);
-        canvas.set_size ((int) (text.width > 150 ? text.width : 150), (int) text.height);
     }
 
     private bool draw_background (Cairo.Context ctx, int width, int height) {
