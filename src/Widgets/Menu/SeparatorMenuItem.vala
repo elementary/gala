@@ -6,7 +6,7 @@
 public class Gala.SeparatorMenuItem : Clutter.Actor {
     private Clutter.Canvas canvas;
 
-    public SeparatorMenuItem () {
+    construct {
         canvas = new Clutter.Canvas ();
         canvas.draw.connect (draw_background);
 
@@ -18,6 +18,7 @@ public class Gala.SeparatorMenuItem : Clutter.Actor {
     public void scale (float scale_factor) {
         height = InternalUtils.scale_to_int (2, scale_factor);
         margin_top = margin_bottom = InternalUtils.scale_to_int (3, scale_factor);
+        canvas.scale_factor = scale_factor;
     }
 
     private bool draw_background (Cairo.Context ctx, int width, int height) {
