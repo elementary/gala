@@ -40,7 +40,7 @@ public class Gala.MenuItem : Clutter.Actor {
     public MenuItem (string label, float scale_factor) {
         var text_color = "#2e2e31";
 
-        if (Granite.Settings.get_default ().prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+        if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
             text_color = "#fafafa";
         }
 
@@ -49,11 +49,11 @@ public class Gala.MenuItem : Clutter.Actor {
         var pango_context = widget.create_pango_context ();
         var font_desc = pango_context.get_font_description ();
 
-        text = new Clutter.Text.with_text (null, "Hello World!") {
+        text = new Clutter.Text.with_text (null, label) {
             color = Clutter.Color.from_string (text_color),
             font_description = font_desc,
-            margin_left = 12,
-            margin_right = 12,
+            margin_left = 24,
+            margin_right = 24,
             margin_top = 6,
             margin_bottom = 6
         };
@@ -91,8 +91,8 @@ public class Gala.MenuItem : Clutter.Actor {
     }
 
     private void update_size () {
-        set_size (text.width, text.height);
-        canvas.set_size ((int) text.width, (int) text.height);
+        set_size (text.width > 150 ? text.width : 150, text.height);
+        canvas.set_size ((int) (text.width > 150 ? text.width : 150), (int) text.height);
     }
 
     private bool draw_background (Cairo.Context ctx, int width, int height) {

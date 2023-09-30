@@ -101,10 +101,10 @@ public class Gala.WindowMenu : Clutter.Actor {
         container.margin_top = margin;
         container.margin_bottom = margin;
 
-        var menuitem = new MenuItem ("wow", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
-        container.add_child (menuitem);
+        container.add_child (new MenuItem ("Change Wallpaper...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
+        container.add_child (new MenuItem ("Display Settings...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
         container.add_child (new SeparatorMenuItem (scaling_factor));
-        container.add_child (new MenuItem ("Another", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
+        container.add_child (new MenuItem ("System Settings...", wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ())));
     }
 
     public void add_menuitem (MenuItem menuitem) {

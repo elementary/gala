@@ -25,30 +25,42 @@ public class Gala.SeparatorMenuItem : Clutter.Actor {
 
         set_content (canvas);
 
-        set_size (1, 1);
-        canvas.set_size (1, 1);
+        set_size (1, 2);
+        canvas.set_size (1, 2);
+
+        margin_top = 3;
+        margin_bottom = 3;
 
         this.scale_factor = scale_factor;
     }
 
     private bool draw_background (Cairo.Context ctx, int width, int height) {
         ctx.save ();
-        ctx.set_operator (Cairo.Operator.OVER);
+        ctx.set_operator (Cairo.Operator.CLEAR);
         ctx.paint ();
         ctx.clip ();
         ctx.reset_clip ();
 
-        var separator = new Gtk.Separator (HORIZONTAL) {
-            visible = true
-        };
-        Gtk.Allocation alloc = {
-            0,
-            0,
-            width,
-            height
-        };
-        separator.size_allocate (alloc);
-        separator.draw (ctx);
+        ctx.set_operator (Cairo.Operator.SOURCE);
+
+        double top_alpha, bottom_alpha;
+
+        if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+            top_alpha = 0.35;
+            bottom_alpha = 0.05;
+        } else {
+            top_alpha = 0.15;
+            bottom_alpha = 0.8;
+        }
+
+        ctx.set_source_rgba (0, 0, 0, top_alpha);
+        ctx.rectangle (0, 0, width, 1);
+        ctx.fill ();
+
+        ctx.set_source_rgba (255, 255, 255, bottom_alpha);
+        ctx.rectangle (0, 1, width, 1);
+        ctx.fill ();
+
         ctx.restore ();
 
         return true;
