@@ -8,10 +8,6 @@
  */
 
 public class Gala.WindowMenu : Clutter.Actor {
-    public const int ICON_SIZE = 64;
-    public const int WRAPPER_PADDING = 5;
-    private const string CAPTION_FONT_NAME = "Inter";
-    private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
 
     public bool opened { get; private set; default = false; }
@@ -81,9 +77,7 @@ public class Gala.WindowMenu : Clutter.Actor {
 
         add_menuitem (new MenuItem ("Change Wallpaper..."));
         add_menuitem (new MenuItem ("Display Settings..."));
-        var sep = new SeparatorMenuItem ();
-        container.add_child (sep);
-        sep.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+        add_separator ();
         add_menuitem (new MenuItem ("System Settings..."));
     }
 
@@ -92,7 +86,13 @@ public class Gala.WindowMenu : Clutter.Actor {
         menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
     }
 
-    public void scale (float scale_factor) {
+    public void add_separator () {
+        var separator = new SeparatorMenuItem ();
+        container.add_child (separator);
+        separator.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+    }
+
+    private void scale (float scale_factor) {
         canvas.scale_factor = scale_factor;
         shadow_effect.scale_factor = scale_factor;
 
