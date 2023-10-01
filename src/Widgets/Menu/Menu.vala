@@ -162,6 +162,20 @@ public class Gala.Menu : Clutter.Actor {
         opened = show;
         if (show) {
             modal_proxy = wm.push_modal (this);
+
+#if HAS_MUTTER45
+            Mtk.Rectangle rect; //TODO: I think that's correct but didn't test it
+            wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor (), out rect);
+#else
+            var rect = wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor ());
+#endif
+            if (width + x > rect.x + rect.width) {
+                x = rect.x + rect.width - width;
+            }
+
+            if (height + y > rect.y + rect.height) {
+                y = rect.y + rect.height - height;
+            }
         } else {
             selected = null;
             wm.pop_modal (modal_proxy);
