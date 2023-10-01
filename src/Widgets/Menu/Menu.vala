@@ -247,7 +247,7 @@ public class Gala.Menu : Clutter.Actor {
 
         while (child != null) {
             if (child is MenuItem) {
-                selected = (MenuItem) child;;
+                selected = (MenuItem) child;
                 break;
             }
 
