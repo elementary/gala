@@ -4,16 +4,13 @@
  */
 
 public class Gala.Menu : Clutter.Actor {
-    private const int ANIMATION_DURATION = 200;
-
-    public bool opened { get; private set; default = false; }
-
     public Gala.WindowManager? wm { get; construct; }
+
     private Gala.ModalProxy modal_proxy = null;
 
-    private Clutter.Canvas canvas;
     private Clutter.Actor container;
     private ShadowEffect shadow_effect;
+    private Clutter.Canvas canvas;
 
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
@@ -40,14 +37,6 @@ public class Gala.Menu : Clutter.Actor {
     }
 
     construct {
-        canvas = new Clutter.Canvas ();
-
-        shadow_effect = new ShadowEffect (40) {
-            shadow_opacity = 200,
-            css_class = "window-switcher"
-        };
-        add_effect (shadow_effect);
-
         var box_layout = new Clutter.BoxLayout () {
             orientation = VERTICAL
         };
@@ -56,9 +45,16 @@ public class Gala.Menu : Clutter.Actor {
             layout_manager = box_layout
         };
 
+        shadow_effect = new ShadowEffect (40) {
+            shadow_opacity = 200,
+            css_class = "window-switcher"
+        };
+
+        canvas = new Clutter.Canvas ();
+
         layout_manager = new Clutter.BinLayout ();
-        opacity = 0;
         add_child (container);
+        add_effect (shadow_effect);
         set_content (canvas);
 
         Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => canvas.invalidate ());
@@ -67,8 +63,7 @@ public class Gala.Menu : Clutter.Actor {
         unowned var display = wm.get_display ();
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => {
-            var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
-            scale (cur_scale);
+            scale (display.get_monitor_scale (display.get_current_monitor ()));
         });
         scale (display.get_monitor_scale (display.get_current_monitor ()));
 
@@ -80,7 +75,7 @@ public class Gala.Menu : Clutter.Actor {
     public void add_menuitem (MenuItem menuitem) {
         container.add_child (menuitem);
         menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
-        menuitem.activated.connect (() => toggle_display (false));
+        menuitem.activated.connect (() => close_menu ());
 
         menuitem.enter_event.connect (() => {
             selected = menuitem;
@@ -97,6 +92,35 @@ public class Gala.Menu : Clutter.Actor {
         var separator = new SeparatorMenuItem ();
         container.add_child (separator);
         separator.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
+    }
+
+    public void open_menu () {
+        base.show ();
+
+#if HAS_MUTTER45
+        //TODO: I think that's correct but didn't test it
+        Mtk.Rectangle rect;
+        wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor (), out rect);
+#else
+        var rect = wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor ());
+#endif
+
+        if (width + x > rect.x + rect.width) {
+            x = rect.x + rect.width - width;
+        }
+
+        if (height + y > rect.y + rect.height) {
+            y = rect.y + rect.height - height;
+        }
+
+        modal_proxy = wm.push_modal (this);
+    }
+
+    public void close_menu () {
+        selected = null;
+        wm.pop_modal (modal_proxy);
+
+        base.hide ();
     }
 
     private void scale (float scale_factor) {
@@ -154,41 +178,8 @@ public class Gala.Menu : Clutter.Actor {
         style_context.add_class ("unified");
     }
 
-    public void toggle_display (bool show) {
-        if (opened == show) {
-            return;
-        }
-
-        opened = show;
-        if (show) {
-            modal_proxy = wm.push_modal (this);
-
-#if HAS_MUTTER45
-            Mtk.Rectangle rect; //TODO: I think that's correct but didn't test it
-            wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor (), out rect);
-#else
-            var rect = wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor ());
-#endif
-            if (width + x > rect.x + rect.width) {
-                x = rect.x + rect.width - width;
-            }
-
-            if (height + y > rect.y + rect.height) {
-                y = rect.y + rect.height - height;
-            }
-        } else {
-            selected = null;
-            wm.pop_modal (modal_proxy);
-        }
-
-        save_easing_state ();
-        set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
-        opacity = show ? 255 : 0;
-        restore_easing_state ();
-    }
-
     public override bool button_release_event (Clutter.ButtonEvent event) {
-        toggle_display (false);
+        close_menu ();
         return true;
     }
 
@@ -205,13 +196,13 @@ public class Gala.Menu : Clutter.Actor {
                 cycle_menuitems (false);
                 return Clutter.EVENT_STOP;
             case Clutter.Key.Escape:
-                toggle_display (false);
+                close_menu ();
                 return Clutter.EVENT_PROPAGATE;
             case Clutter.Key.Return:
                 if (selected != null) {
                     selected.activated ();
                 }
-                toggle_display (false);
+                close_menu ();
                 return Clutter.EVENT_PROPAGATE;
         }
 

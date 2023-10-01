@@ -409,7 +409,7 @@ namespace Gala {
             }
 
             background_menu.set_position (x, y);
-            background_menu.toggle_display (true);
+            background_menu.open_menu ();
         }
 
         private void on_monitors_changed () {
