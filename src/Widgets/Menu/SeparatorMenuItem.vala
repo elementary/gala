@@ -30,21 +30,14 @@ public class Gala.SeparatorMenuItem : Clutter.Actor {
 
         ctx.set_operator (Cairo.Operator.SOURCE);
 
-        double top_alpha, bottom_alpha;
+        var rgba = InternalUtils.lookup_color ("menu_separator");
+        var shadow_rgba = InternalUtils.lookup_color ("menu_separator_shadow");
 
-        if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
-            top_alpha = 0.35;
-            bottom_alpha = 0.05;
-        } else {
-            top_alpha = 0.15;
-            bottom_alpha = 0.8;
-        }
-
-        ctx.set_source_rgba (0, 0, 0, top_alpha);
+        ctx.set_source_rgba (rgba.red, rgba.green, rgba.blue, rgba.alpha);
         ctx.rectangle (0, 0, width, height / 2);
         ctx.fill ();
 
-        ctx.set_source_rgba (255, 255, 255, bottom_alpha);
+        ctx.set_source_rgba (shadow_rgba.red, shadow_rgba.green, shadow_rgba.blue, shadow_rgba.alpha);
         ctx.rectangle (0, height / 2, width, height / 2);
         ctx.fill ();
 

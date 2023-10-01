@@ -16,7 +16,7 @@ public class Gala.MenuItem : Clutter.Actor {
         set {
             _selected = value;
             if (_selected) {
-                var rgba = InternalUtils.get_foreground_color ();
+                var rgba = InternalUtils.lookup_color ("theme_fg_color");
                 Clutter.Color foreground_color = {
                     (uint8) (rgba.red * 255),
                     (uint8) (rgba.green * 255),

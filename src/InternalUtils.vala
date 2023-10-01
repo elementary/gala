@@ -335,24 +335,26 @@ namespace Gala {
             );
         }
 
-        private static Gtk.StyleContext foreground_style_context = null;
+        private static Gtk.StyleContext color_style_context = null;
         private static Gtk.CssProvider dark_style_provider = null;
-        public static Gdk.RGBA get_foreground_color () {
-            if (foreground_style_context == null) {
-                var window = new Gtk.Window ();
-                foreground_style_context = window.get_style_context ();
+        public static Gdk.RGBA lookup_color (string color_name) {
+            if (color_style_context == null) {
+                color_style_context = new Gtk.StyleContext ();
             }
 
-            if (Granite.Settings.get_default ().prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+            if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
                 unowned var gtksettings = Gtk.Settings.get_default ();
                 dark_style_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
-                foreground_style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+                color_style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             } else if (dark_style_provider != null) {
-                foreground_style_context.remove_provider (dark_style_provider);
+                color_style_context.remove_provider (dark_style_provider);
                 dark_style_provider = null;
             }
 
-            return (Gdk.RGBA) foreground_style_context.get_color (NORMAL);
+            Gdk.RGBA rgba;
+            color_style_context.lookup_color (color_name, out rgba);
+
+            return rgba;
         }
 
         /**
