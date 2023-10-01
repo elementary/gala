@@ -36,7 +36,7 @@ public class Gala.MenuItem : Clutter.Actor {
     }
 
     public MenuItem.with_label (string label) {
-        var text_color = Granite.Settings.get_default ().prefers_color_scheme == DARK ? "#fafafa" : "#2e2e31";
+        var text_color = InternalUtils.lookup_color ("theme_fg_color").to_string ();
 
         var widget = new Gtk.Grid ();
 
@@ -57,7 +57,7 @@ public class Gala.MenuItem : Clutter.Actor {
         add_child (text);
 
         Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => {
-            var new_text_color = Granite.Settings.get_default ().prefers_color_scheme == DARK ? "#fafafa" : "#2e2e31";
+            var new_text_color = InternalUtils.lookup_color ("theme_fg_color").to_string ();
             text.color = Clutter.Color.from_string (new_text_color);
         });
     }
