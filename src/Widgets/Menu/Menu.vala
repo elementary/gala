@@ -188,8 +188,8 @@ public class Gala.Menu : Clutter.Actor {
         if (show) {
             push_modal ();
         } else {
+            selected = null;
             wm.pop_modal (modal_proxy);
-            selected = null
         }
 
         save_easing_state ();

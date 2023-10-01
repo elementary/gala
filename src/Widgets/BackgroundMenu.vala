@@ -9,7 +9,7 @@ public class Gala.BackgroundMenu : Menu {
     }
 
     construct {
-        var change_wallpaper = new MenuItem (_("Change Wallpaper…"));
+        var change_wallpaper = new MenuItem.with_label (_("Change Wallpaper…"));
         change_wallpaper.activated.connect (() => {
             try {
                 AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
@@ -26,7 +26,7 @@ public class Gala.BackgroundMenu : Menu {
             }
         });
 
-        var display_settings = new MenuItem (_("Display Settings…"));
+        var display_settings = new MenuItem.with_label (_("Display Settings…"));
         display_settings.activated.connect (() => {
             try {
                 AppInfo.launch_default_for_uri ("settings://display", null);
@@ -43,7 +43,7 @@ public class Gala.BackgroundMenu : Menu {
             }
         });
 
-        var system_settings = new MenuItem (_("System Settings…"));
+        var system_settings = new MenuItem.with_label (_("System Settings…"));
         system_settings.activated.connect (() => {
             try {
                 AppInfo.launch_default_for_uri ("settings://", null);

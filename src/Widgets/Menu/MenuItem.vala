@@ -30,7 +30,12 @@ public class Gala.MenuItem : Clutter.Actor {
         }
     }
 
-    public MenuItem (string label) {
+    construct {
+        min_width = 150;
+        reactive = true;
+    }
+
+    public MenuItem.with_label (string label) {
         var text_color = "#2e2e31";
 
         if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
@@ -53,9 +58,6 @@ public class Gala.MenuItem : Clutter.Actor {
         };
         text.set_pivot_point (0.5f, 0.5f);
         text.set_line_alignment (Pango.Alignment.CENTER);
-
-        min_width = 150;
-        reactive = true;
         add_child (text);
     }
 
