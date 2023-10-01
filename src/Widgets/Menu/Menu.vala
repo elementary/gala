@@ -23,6 +23,8 @@ public class Gala.Menu : Clutter.Actor {
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
+    private MenuItem? selected = null;
+
     public Menu (Gala.WindowManager wm) {
         Object (wm: wm);
     }
@@ -78,6 +80,21 @@ public class Gala.Menu : Clutter.Actor {
         container.add_child (menuitem);
         menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
         menuitem.activated.connect (() => toggle_display (false));
+        menuitem.notify["selected"].connect (() => {
+            if (selected != null) {
+                if (!menuitem.selected && selected == menuitem) {
+                    selected = null;
+                } else {
+                    selected.selected = false;
+                    selected = menuitem;
+                }
+                return;
+            }
+
+            if (menuitem.selected) {
+                selected = menuitem;
+            }
+        });
     }
 
     public void add_separator () {
@@ -189,14 +206,47 @@ public class Gala.Menu : Clutter.Actor {
     public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
         switch (event.get_key_symbol ()) {
+            case Clutter.Key.Up:
+                cycle_menuitems (true);
+                return Clutter.EVENT_STOP;
+            case Clutter.Key.Down:
+                cycle_menuitems (false);
+                return Clutter.EVENT_STOP;
             case Clutter.Key.Escape:
                 toggle_display (false);
                 return Clutter.EVENT_PROPAGATE;
             case Clutter.Key.Return:
+                if (selected != null) {
+                    selected.activated ();
+                }
                 toggle_display (false);
                 return Clutter.EVENT_PROPAGATE;
         }
 
         return Clutter.EVENT_PROPAGATE;
+    }
+
+    private void cycle_menuitems (bool backwards) {
+        Clutter.Actor child;
+        if (selected != null) {
+            if (backwards) {
+                child = selected.get_previous_sibling () != null ? selected.get_previous_sibling () : container.last_child;
+            } else {
+                child = selected.get_next_sibling () != null ? selected.get_next_sibling () : container.first_child;
+            }
+        } else {
+            child = backwards ? container.last_child : container.first_child;
+        }
+
+        while (child != null) {
+            if (child is MenuItem) {
+                var menuitem = (MenuItem) child;
+                menuitem.selected = true;
+                selected = menuitem;
+                break;
+            }
+
+            child = backwards ? child.get_previous_sibling () : child.get_next_sibling ();
+        }
     }
 }

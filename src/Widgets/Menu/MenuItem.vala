@@ -82,4 +82,19 @@ public class Gala.MenuItem : Clutter.Actor {
 
         return false;
     }
+
+#if HAS_MUTTER45
+    public override bool key_press_event (Clutter.Event event) {
+#else
+    public override bool key_press_event (Clutter.KeyEvent event) {
+#endif
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Return:
+                print ("RETURN PRESSED");
+                // toggle_display (false);
+                return Clutter.EVENT_PROPAGATE;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    }
 }
