@@ -23,7 +23,22 @@ public class Gala.Menu : Clutter.Actor {
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
 
-    private MenuItem? selected = null;
+    private MenuItem? _selected = null;
+    private MenuItem? selected {
+        get {
+            return _selected;
+        }
+        set {
+            if (_selected != null) {
+                _selected.selected = false;
+            }
+
+            _selected = value;
+            if (_selected != null) {
+                _selected.selected = true;
+            }
+        }
+    }
 
     public Menu (Gala.WindowManager wm) {
         Object (wm: wm);
@@ -80,20 +95,15 @@ public class Gala.Menu : Clutter.Actor {
         container.add_child (menuitem);
         menuitem.scale (wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ()));
         menuitem.activated.connect (() => toggle_display (false));
-        menuitem.notify["selected"].connect (() => {
-            if (selected != null) {
-                if (!menuitem.selected && selected == menuitem) {
-                    selected = null;
-                } else {
-                    selected.selected = false;
-                    selected = menuitem;
-                }
-                return;
-            }
 
-            if (menuitem.selected) {
-                selected = menuitem;
-            }
+        menuitem.enter_event.connect (() => {
+            selected = menuitem;
+            return false;
+        });
+
+        menuitem.leave_event.connect (() => {
+            selected = null;
+            return false;
         });
     }
 
@@ -240,9 +250,7 @@ public class Gala.Menu : Clutter.Actor {
 
         while (child != null) {
             if (child is MenuItem) {
-                var menuitem = (MenuItem) child;
-                menuitem.selected = true;
-                selected = menuitem;
+                selected = (MenuItem) child;;
                 break;
             }
 

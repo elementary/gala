@@ -64,16 +64,6 @@ public class Gala.MenuItem : Clutter.Actor {
         text.margin_top = text.margin_bottom = InternalUtils.scale_to_int (6, scale_factor);
     }
 
-    public override bool enter_event (Clutter.CrossingEvent event) {
-        selected = true;
-        return false;
-    }
-
-    public override bool leave_event (Clutter.CrossingEvent event) {
-        selected = false;
-        return false;
-    }
-
     public override bool button_release_event (Clutter.ButtonEvent event) {
         if (event.button == Clutter.Button.PRIMARY) {
             activated ();
@@ -81,20 +71,5 @@ public class Gala.MenuItem : Clutter.Actor {
         }
 
         return false;
-    }
-
-#if HAS_MUTTER45
-    public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
-        switch (event.get_key_symbol ()) {
-            case Clutter.Key.Return:
-                print ("RETURN PRESSED");
-                // toggle_display (false);
-                return Clutter.EVENT_PROPAGATE;
-        }
-
-        return Clutter.EVENT_PROPAGATE;
     }
 }
