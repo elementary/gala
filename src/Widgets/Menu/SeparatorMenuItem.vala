@@ -13,6 +13,8 @@ public class Gala.SeparatorMenuItem : Clutter.Actor {
         set_content (canvas);
 
         notify["allocation"].connect (() => canvas.set_size ((int) width, (int) height));
+
+        Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => canvas.invalidate ());
     }
 
     public void scale (float scale_factor) {

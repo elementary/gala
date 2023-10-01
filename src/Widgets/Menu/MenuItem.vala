@@ -36,11 +36,7 @@ public class Gala.MenuItem : Clutter.Actor {
     }
 
     public MenuItem.with_label (string label) {
-        var text_color = "#2e2e31";
-
-        if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
-            text_color = "#fafafa";
-        }
+        var text_color = Granite.Settings.get_default ().prefers_color_scheme == DARK ? "#fafafa" : "#2e2e31";
 
         var widget = new Gtk.Grid ();
 
@@ -59,6 +55,11 @@ public class Gala.MenuItem : Clutter.Actor {
         text.set_pivot_point (0.5f, 0.5f);
         text.set_line_alignment (Pango.Alignment.CENTER);
         add_child (text);
+
+        Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => {
+            var new_text_color = Granite.Settings.get_default ().prefers_color_scheme == DARK ? "#fafafa" : "#2e2e31";
+            text.color = Clutter.Color.from_string (new_text_color);
+        });
     }
 
     public void scale (float scale_factor) {
