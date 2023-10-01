@@ -73,7 +73,7 @@ namespace Gala {
         private WindowSwitcher? winswitcher = null;
         private ActivatableComponent? window_overview = null;
 
-        private BackgroundMenu background_menu;
+        private BackgroundMenu? background_menu = null;
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -249,9 +249,6 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-            background_menu = new BackgroundMenu (this);
-            ui_group.add_child (background_menu);
-
             FilterManager.init (this);
 
             /*keybindings*/
@@ -406,6 +403,11 @@ namespace Gala {
         }
 
         private void on_show_background_menu (int x, int y) {
+            if (background_menu == null) {
+                background_menu = new BackgroundMenu (this);
+                ui_group.add_child (background_menu);
+            }
+
             background_menu.set_position (x, y);
             background_menu.open_menu ();
         }
