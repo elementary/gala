@@ -308,10 +308,6 @@ namespace Gala {
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                string[] args = {};
-                unowned string[] _args = args;
-                Gtk.init (ref _args);
-
                 accent_color_manager = new AccentColorManager ();
 
                 // initialize plugins and add default components if no plugin overrides them
