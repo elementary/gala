@@ -14,15 +14,7 @@ public class Gala.BackgroundMenu : Menu {
             try {
                 AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
             } catch (Error e) {
-                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                    "Failed to Open Wallpaper Settings",
-                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                    "dialog-error",
-                    Gtk.ButtonsType.CLOSE
-                );
-                message_dialog.show_error_details (e.message);
-                message_dialog.run ();
-                message_dialog.destroy ();
+                warning ("Failed to open Wallpaper Settings: %s", e.message);
             }
         });
 
@@ -31,15 +23,7 @@ public class Gala.BackgroundMenu : Menu {
             try {
                 AppInfo.launch_default_for_uri ("settings://display", null);
             } catch (Error e) {
-                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                    "Failed to Open Display Settings",
-                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                    "dialog-warning",
-                    Gtk.ButtonsType.CLOSE
-                );
-                message_dialog.show_error_details (e.message);
-                message_dialog.run ();
-                message_dialog.destroy ();
+                warning ("Failed to open Display Settings: %s", e.message);
             }
         });
 
@@ -48,15 +32,7 @@ public class Gala.BackgroundMenu : Menu {
             try {
                 AppInfo.launch_default_for_uri ("settings://", null);
             } catch (Error e) {
-                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
-                    "Failed to Open System Settings",
-                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
-                    "dialog-warning",
-                    Gtk.ButtonsType.CLOSE
-                );
-                message_dialog.show_error_details (e.message);
-                message_dialog.run ();
-                message_dialog.destroy ();
+                warning ("Failed to open System Settings: %s", e.message);
             }
         });
 
