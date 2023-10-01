@@ -161,7 +161,7 @@ public class Gala.Menu : Clutter.Actor {
 
         opened = show;
         if (show) {
-            push_modal ();
+            modal_proxy = wm.push_modal (this);
         } else {
             selected = null;
             wm.pop_modal (modal_proxy);
@@ -171,14 +171,6 @@ public class Gala.Menu : Clutter.Actor {
         set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
         opacity = show ? 255 : 0;
         restore_easing_state ();
-    }
-
-    private void push_modal () {
-        modal_proxy = wm.push_modal (this);
-    }
-
-    public override void key_focus_out () {
-        toggle_display (false);
     }
 
     public override bool button_release_event (Clutter.ButtonEvent event) {
