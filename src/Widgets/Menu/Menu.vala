@@ -11,7 +11,6 @@ public class Gala.Menu : Clutter.Actor {
     public Gala.WindowManager? wm { get; construct; }
     private Gala.ModalProxy modal_proxy = null;
 
-    private Granite.Settings granite_settings;
     private Clutter.Canvas canvas;
     private Clutter.Actor container;
     private ShadowEffect shadow_effect;
@@ -41,9 +40,6 @@ public class Gala.Menu : Clutter.Actor {
     }
 
     construct {
-        unowned var gtk_settings = Gtk.Settings.get_default ();
-        granite_settings = Granite.Settings.get_default ();
-
         canvas = new Clutter.Canvas ();
 
         shadow_effect = new ShadowEffect (40) {
@@ -65,14 +61,8 @@ public class Gala.Menu : Clutter.Actor {
         add_child (container);
         set_content (canvas);
 
-        // Redraw the components if the colour scheme changes.
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            canvas.invalidate ();
-        });
-
-        gtk_settings.notify["gtk-theme-name"].connect (() => {
-            canvas.invalidate ();
-        });
+        Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => canvas.invalidate ());
+        Gtk.Settings.get_default ().notify["gtk-theme-name"].connect (() => canvas.invalidate ());
 
         unowned var display = wm.get_display ();
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
@@ -139,7 +129,7 @@ public class Gala.Menu : Clutter.Actor {
         ctx.clip ();
         ctx.reset_clip ();
 
-        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+        if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
             unowned var gtksettings = Gtk.Settings.get_default ();
             dark_style_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
             style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
@@ -162,17 +152,6 @@ public class Gala.Menu : Clutter.Actor {
         style_context = window.get_style_context ();
         style_context.add_class ("csd");
         style_context.add_class ("unified");
-    }
-
-    public void open_menu () {
-        if (opened) {
-            return;
-        }
-
-        opacity = 0;
-        canvas.invalidate ();
-
-        toggle_display (true);
     }
 
     public void toggle_display (bool show) {
