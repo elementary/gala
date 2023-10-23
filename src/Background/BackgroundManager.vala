@@ -130,7 +130,7 @@ namespace Gala {
 
             unowned var content = (Meta.BackgroundContent) background_actor.content;
             content.background = background.background;
-            
+
             if (background_source.should_dim) {
                 // It doesn't work without Idle :( 
                 Idle.add (() => {
