@@ -198,7 +198,11 @@ namespace Gala {
                 return (int) (seq_b - seq_a);
             });
 
+#if HAS_MUTTER45
+            Mtk.Rectangle area = {
+#else
             Meta.Rectangle area = {
+#endif
                 padding_left,
                 padding_top,
                 (int)width - padding_left - padding_right,

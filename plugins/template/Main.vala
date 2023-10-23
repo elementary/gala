@@ -69,7 +69,11 @@ namespace Gala.Plugins.Template {
             wm.ui_group.add_child (red_box);
         }
 
+#if HAS_MUTTER45
+        private bool turn_green (Clutter.Event event) {
+#else
         private bool turn_green (Clutter.ButtonEvent event) {
+#endif
             red_box.background_color = { 0, 255, 0, 255 };
             return true;
         }

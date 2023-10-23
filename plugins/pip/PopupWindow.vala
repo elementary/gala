@@ -95,7 +95,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         update_size ();
         update_container_position ();
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         float x_position, y_position;
@@ -166,7 +170,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
     }
 
+#if HAS_MUTTER45
+    public override bool enter_event (Clutter.Event event) {
+#else
     public override bool enter_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? 300 : 0;
 
         close_button.save_easing_state ();
@@ -182,7 +190,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return Clutter.EVENT_PROPAGATE;
     }
 
+#if HAS_MUTTER45
+    public override bool leave_event (Clutter.Event event) {
+#else
     public override bool leave_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? 300 : 0;
 
         close_button.save_easing_state ();
@@ -214,15 +226,18 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         update_screen_position ();
     }
 
+#if HAS_MUTTER45
+    private bool on_resize_button_press (Clutter.Event event) {
+#else
     private bool on_resize_button_press (Clutter.ButtonEvent event) {
-        if (resizing || event.button != 1) {
+#endif
+        if (resizing || event.get_button () != Clutter.Button.PRIMARY) {
             return Clutter.EVENT_STOP;
         }
 
         resizing = true;
 
-        resize_start_x = event.x;
-        resize_start_y = event.y;
+        event.get_coords (out resize_start_x, out resize_start_y);
 
         begin_resize_width = width;
         begin_resize_height = height;
@@ -240,15 +255,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         switch (event.get_type ()) {
             case Clutter.EventType.MOTION:
-                unowned var motion_event = (Clutter.MotionEvent) event;
                 var mods = event.get_state ();
                 if (!(Clutter.ModifierType.BUTTON1_MASK in mods)) {
                     stop_resizing ();
                     break;
                 }
 
-                float diff_x = motion_event.x - resize_start_x;
-                float diff_y = motion_event.y - resize_start_y;
+                float event_x, event_y;
+                event.get_coords (out event_x, out event_y);
+                float diff_x = event_x - resize_start_x;
+                float diff_y = event_y - resize_start_y;
 
                 width = begin_resize_width + diff_x;
                 height = begin_resize_height + diff_y;
@@ -258,7 +274,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
                 break;
             case Clutter.EventType.BUTTON_RELEASE:
-                if (event.get_button () == 1) {
+                if (event.get_button () == Clutter.Button.PRIMARY) {
                     stop_resizing ();
                 }
 
@@ -401,7 +417,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void place_window_in_screen () {
         off_screen = false;
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         int monitor_x = monitor_rect.x;
@@ -433,7 +453,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         int monitor_x = monitor_rect.x;
@@ -509,7 +533,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return false;
     }
 
+#if HAS_MUTTER45
+    private void get_current_monitor_rect (out Mtk.Rectangle rect) {
+#else
     private void get_current_monitor_rect (out Meta.Rectangle rect) {
+#endif
         var display = wm.get_display ();
         rect = display.get_monitor_geometry (display.get_current_monitor ());
     }
