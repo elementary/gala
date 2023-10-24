@@ -20,7 +20,6 @@ namespace Gala {
         // list of keys that are actually relevant for us
         private const string[] OPTIONS = {
             "color-shading-type",
-            "picture-opacity",
             "picture-options",
             "picture-uri",
             "picture-uri-dark",
@@ -31,13 +30,23 @@ namespace Gala {
         public signal void changed ();
 
         public Meta.Display display { get; construct; }
-        public GLib.Settings gnome_background_settings { get; construct; }
+        public GLib.Settings gnome_background_settings { get; private set; }
 
         internal int use_count { get; set; default = 0; }
 
         private GLib.HashTable<int, Background> backgrounds;
         private uint[] hash_cache;
         private Meta.MonitorManager? monitor_manager;
+        private GLib.Settings gala_background_settings;
+
+        public bool should_dim {
+            get {
+                return (
+                    Granite.Settings.get_default ().prefers_color_scheme == DARK &&
+                    gala_background_settings.get_boolean ("dim-wallpaper-in-dark-style")
+                );
+            }
+        }
 
         public BackgroundSource (Meta.Display display) {
             Object (display: display);
@@ -50,7 +59,12 @@ namespace Gala {
             monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (monitors_changed);
 
-            gnome_background_settings = new Settings ("org.gnome.desktop.background");
+            gala_background_settings = new GLib.Settings ("io.elementary.desktop.background");
+            gala_background_settings.changed["dim-wallpaper-in-dark-style"].connect (() => changed ());
+
+            Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => changed ());
+
+            gnome_background_settings = new GLib.Settings ("org.gnome.desktop.background");
 
             // unfortunately the settings sometimes tend to fire random changes even though
             // nothing actually happened. The code below is used to prevent us from spamming
@@ -71,9 +85,6 @@ namespace Gala {
                     }
                 }
             });
-
-            unowned var granite_settings = Granite.Settings.get_default ();
-            granite_settings.notify["prefers-color-scheme"].connect (() => changed ());
         }
 
         private void monitors_changed () {
