@@ -126,7 +126,7 @@ namespace Gala {
 
         private Meta.BackgroundActor create_background_actor () {
             unowned var display = wm.get_display ();
-        
+
             var background = background_source.get_background (monitor_index);
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
