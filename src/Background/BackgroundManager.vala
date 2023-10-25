@@ -22,7 +22,7 @@ namespace Gala {
 
         public signal void changed ();
 
-        public Meta.Display display { get; construct; }
+        public WindowManager wm { get; construct; }
         public int monitor_index { get; construct; }
         public bool control_position { get; construct; }
 
@@ -30,12 +30,12 @@ namespace Gala {
         private Meta.BackgroundActor background_actor;
         private Meta.BackgroundActor? new_background_actor = null;
 
-        public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true) {
-            Object (display: display, monitor_index: monitor_index, control_position: control_position);
+        public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
+            Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
         }
 
         construct {
-            background_source = BackgroundCache.get_default ().get_background_source (display);
+            background_source = BackgroundCache.get_default ().get_background_source (wm.get_display ());
             background_actor = create_background_actor ();
 
             destroy.connect (on_destroy);
@@ -66,7 +66,7 @@ namespace Gala {
             if (old_background_actor == null)
                 return;
 
-            if (animate) {
+            if (animate && wm.enable_animations) {
                 var transition = new Clutter.PropertyTransition ("opacity");
                 transition.set_from_value (255);
                 transition.set_to_value (0);
@@ -125,6 +125,8 @@ namespace Gala {
         }
 
         private Meta.BackgroundActor create_background_actor () {
+            unowned var display = wm.get_display ();
+        
             var background = background_source.get_background (monitor_index);
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
