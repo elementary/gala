@@ -238,7 +238,7 @@ namespace Gala {
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-            background_group = new BackgroundContainer (display);
+            background_group = new BackgroundContainer (this);
             ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
