@@ -531,16 +531,45 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
+            var can_handle_swipe = (
+                gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
+                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
+            );
 
-            var fingers = (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
-                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
+            if (!can_handle_swipe) {
+                return;
+            }
 
-            switch_workspace_with_gesture = can_handle_swipe && fingers;
+            var fingers = gesture.fingers;
+
+            var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
+            var four_finger_swipe_horizontal = GestureSettings.get_string ("four-finger-swipe-horizontal");
+
+            var three_fingers_switch_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace";
+            var four_fingers_switch_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace";
+
+            var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
+            var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+
+            switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_to_next_workspace (direction);
+                return;
+            }
+
+            switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
+            if (switch_workspace_with_gesture) {
+                unowned var display = get_display ();
+                unowned var manager = display.get_workspace_manager ();
+
+                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+
+                moving = display.focus_window;
+                moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+
+                switch_to_next_workspace (direction);
+                return;
             }
         }
 
