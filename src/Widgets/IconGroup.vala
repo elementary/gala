@@ -519,6 +519,8 @@ namespace Gala {
             // disable reactivity so that workspace thumbs can get events
             reactive = false;
 
+            wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
             return this;
         }
 
@@ -534,11 +536,15 @@ namespace Gala {
             } else {
                 drag_canceled ();
             }
+
+            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void drag_canceled () {
             get_parent ().remove_child (this);
             restore_group ();
+
+            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void restore_group () {
