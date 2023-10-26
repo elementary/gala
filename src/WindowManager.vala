@@ -1154,7 +1154,9 @@ namespace Gala {
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
-            latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            if (enable_animations) {
+                latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            }
         }
 
         // size_changed gets called after frame_rect has updated
