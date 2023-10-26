@@ -571,7 +571,6 @@ namespace Gala {
                 switch_to_next_workspace (direction);
                 return;
             }
-
         }
 
         /**
