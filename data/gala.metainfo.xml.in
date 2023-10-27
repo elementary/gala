@@ -37,7 +37,7 @@
       <issues>
         <issue url="https://github.com/elementary/gala/issues/506">After login there is always 2 unpopulated workspaces open.</issue>
         <issue url="https://github.com/elementary/gala/issues/695">Wrong workspaces behavior</issue>
-        <issur url="https://github.com/elementary/gala/issues/1109">Use gestures for "move to workspace"</issue>
+        <issue url="https://github.com/elementary/gala/issues/1109">Use gestures for "move to workspace"</issue>
         <issue url="https://github.com/elementary/gala/issues/1261">Alt + Shift unnecessarily blocked when there is only one keyboard layout</issue>
         <issue url="https://github.com/elementary/gala/discussions/1764">Counter Strike 2 causes segfault in libmutter on exit</issue>
         <issue url="https://github.com/elementary/gala/issues/1774">Scheduled switch to dark style does not dim the wallpaper after cold reboot on elementary OS 7.1</issue>
