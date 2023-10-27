@@ -566,7 +566,9 @@ namespace Gala {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
                 moving = display.focus_window;
-                moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+                if (moving != null) {
+                    moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+                }
 
                 switch_to_next_workspace (direction);
                 return;
