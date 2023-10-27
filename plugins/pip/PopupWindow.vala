@@ -7,7 +7,6 @@
 public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private int button_size;
     private int container_margin;
-    private const int SHADOW_SIZE = 100;
     private const uint FADE_OUT_TIMEOUT = 200;
     private const float MINIMUM_SCALE = 0.1f;
     private const float MAXIMUM_SCALE = 1.0f;
@@ -88,7 +87,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         container = new Clutter.Actor ();
         container.reactive = true;
         container.set_scale (0.35f, 0.35f);
-        container.add_effect (new ShadowEffect (SHADOW_SIZE) { css_class = "window-clone" });
+        container.add_effect (new ShadowEffect (55) { css_class = "window-clone" });
         container.add_child (clone);
         container.add_action (move_action);
 
