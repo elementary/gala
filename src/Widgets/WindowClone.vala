@@ -676,6 +676,8 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button.opacity = 0;
         window_title.opacity = 0;
 
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
         return this;
     }
 
@@ -726,6 +728,8 @@ public class Gala.WindowClone : Clutter.Actor {
                 icon_group.remove_window (window, false);
             }
         }
+
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
     }
 
     /**
@@ -799,6 +803,8 @@ public class Gala.WindowClone : Clutter.Actor {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
         }
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     /**
@@ -826,6 +832,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         set_window_icon_position (slot.width, slot.height, monitor_scale_factor);
         window_icon.restore_easing_state ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void set_window_icon_position (float window_width, float window_height, float scale_factor, bool aligned = true) {

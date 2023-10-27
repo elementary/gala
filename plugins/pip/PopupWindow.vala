@@ -217,12 +217,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
         return this;
     }
 
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
 #if HAS_MUTTER45
@@ -243,6 +246,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
+
+        wm.get_display ().set_cursor (Meta.Cursor.SE_RESIZE);
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -302,6 +307,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resizing = false;
 
         update_screen_position ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void on_allocation_changed () {
