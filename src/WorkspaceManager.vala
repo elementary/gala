@@ -118,9 +118,9 @@ namespace Gala {
         }
 
         private void window_added (Meta.Workspace? workspace, Meta.Window window) {
-            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces ()
-                || window.on_all_workspaces)
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
                 return;
+            }
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             int last_workspace = manager.get_n_workspaces () - 1;
@@ -133,13 +133,14 @@ namespace Gala {
         }
 
         private void window_removed (Meta.Workspace? workspace, Meta.Window window) {
-            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces)
+            if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
                 return;
+            }
 
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
-            var index = workspace.index ();
             bool is_active_workspace = workspace == manager.get_active_workspace ();
-            int last_workspace = manager.get_n_workspaces () - 1;
+            var last_workspace_index = manager.get_n_workspaces () - 1;
+            unowned var last_workspace = manager.get_workspace_by_index (last_workspace_index);
 
             if (window.window_type != Meta.WindowType.NORMAL
                 && window.window_type != Meta.WindowType.DIALOG
@@ -147,16 +148,25 @@ namespace Gala {
                 return;
 
             // has already been removed
-            if (index < 0)
+            if (workspace.index () < 0) {
                 return;
+            }
 
             // remove it right away if it was the active workspace and it's not the very last
             // or we are in modal-mode
             if ((!is_active_workspace || wm.is_modal ())
                 && remove_freeze_count < 1
-                && Utils.get_n_windows (workspace) < 1
-                && index != last_workspace) {
+                && Utils.get_n_windows (workspace) == 0
+                && workspace != last_workspace) {
                 remove_workspace (workspace);
+            }
+
+            // if window is the second last and empty, make it the last workspace
+            if (is_active_workspace
+                && remove_freeze_count < 1
+                && Utils.get_n_windows (workspace) == 0
+                && workspace.index () == last_workspace_index - 1) {
+                remove_workspace (last_workspace);
             }
         }
 
@@ -247,19 +257,15 @@ namespace Gala {
          * cleanup after an operation that required stable workspace/window indices
          */
         public void cleanup () {
-            if (!Meta.Prefs.get_dynamic_workspaces ())
+            if (!Meta.Prefs.get_dynamic_workspaces ()) {
                 return;
-
-            unowned Meta.Display display = wm.get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            List<Meta.Workspace> workspaces = null;
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                workspaces.append (manager.get_workspace_by_index (i));
             }
 
-            foreach (var workspace in workspaces) {
+            unowned Meta.WorkspaceManager manager = wm.get_display ().get_workspace_manager ();
+
+            foreach (var workspace in manager.get_workspaces ()) {
                 var last_index = manager.get_n_workspaces () - 1;
-                if (Utils.get_n_windows (workspace) < 1
+                if (Utils.get_n_windows (workspace) == 0
                     && workspace.index () != last_index) {
                     remove_workspace (workspace);
                 }
