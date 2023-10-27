@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-09-29 22:16+0000\n"
+"POT-Creation-Date: 2023-10-27 00:55+0000\n"
 "PO-Revision-Date: 2023-06-13 10:07+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
 "Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/"
@@ -53,27 +53,27 @@ msgstr "Bildschirmfotos"
 msgid "Screenshot taken"
 msgstr "Bildschirmfoto erstellt"
 
-#: src/WindowManager.vala:2211
+#: src/WindowManager.vala:2242
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Änderungen werden nach %i Sekunde automatisch zurückgesetzt."
 msgstr[1] "Änderungen werden nach %i Sekunden automatisch zurückgesetzt."
 
-#: src/WindowManager.vala:2218
+#: src/WindowManager.vala:2249
 msgid "Keep new display settings?"
 msgstr "Neue Bildschirmeinstellungen beibehalten?"
 
-#: src/WindowManager.vala:2222
+#: src/WindowManager.vala:2253
 msgid "Keep Settings"
 msgstr "Einstellungen beibehalten"
 
-#: src/WindowManager.vala:2223
+#: src/WindowManager.vala:2254
 msgid "Use Previous Settings"
 msgstr "Vorherige Einstellungen verwenden"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:2296
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Bildschirmfoto von %s"
@@ -158,63 +158,73 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:42
-#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:85 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
+#: data/gala.metainfo.xml.in:93 data/gala.metainfo.xml.in:118
 msgid "Improvements:"
 msgstr "Verbesserungen:"
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:60 data/gala.metainfo.xml.in:75
-#: data/gala.metainfo.xml.in:93 data/gala.metainfo.xml.in:115
+#: data/gala.metainfo.xml.in:32
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:53
+#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
+#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:123
 msgid "Updated translations"
 msgstr "Aktualisierte Übersetzungen"
 
-#: data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:52
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:87
+#: data/gala.metainfo.xml.in:95
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:96
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:97
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:98
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:99
 #, fuzzy
 #| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
 msgstr "Abgerundete Eckmaske aktivieren"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:100
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:112
+#: data/gala.metainfo.xml.in:120
 msgid "Performance improvements"
 msgstr "Leistungsverbesserungen"
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:121
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "Übersicht der Arbeitsflächen"
 
-#: data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:122
 #, fuzzy
 #| msgid "Names that are recognized as dock windows for the window switcher"
 msgid "Avoid accidentally selecting windows in the window switcher"
