@@ -294,15 +294,17 @@ namespace Gala {
 
             unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
+            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
 
             unowned var active_workspace = manager.get_active_workspace ();
 
-            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
-            unowned var target_workspace = manager.get_workspace_by_index (active_workspace.index () + relative_dir);
+            var target_workspace_index = active_workspace.index () + relative_dir;
+            var target_workspace_exists = target_workspace_index >= 0 && target_workspace_index < num_workspaces;
+            unowned var target_workspace = manager.get_workspace_by_index (target_workspace_index);
 
             float initial_x = workspaces.x;
             float target_x = 0;
-            bool is_nudge_animation = (target_workspace.index () < 0 || target_workspace.index () >= num_workspaces);
+            bool is_nudge_animation = !target_workspace_exists;
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
             var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
@@ -335,14 +337,16 @@ namespace Gala {
 
             debug ("Starting MultitaskingView switch workspace animation:");
             debug ("Active workspace index: %d", active_workspace.index ());
-            debug ("Target workspace index: %d", target_workspace.index ());
+            debug ("Target workspace index: %d", target_workspace_index);
             debug ("Total number of workspaces: %d", num_workspaces);
             debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
             debug ("Initial X: %f", initial_x);
             debug ("Target X: %f", target_x);
 
             switching_workspace_with_gesture = true;
-            target_workspace.activate (display.get_current_time ());
+            if (target_workspace != null) {
+                target_workspace.activate (display.get_current_time ());
+            }
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
