@@ -44,6 +44,13 @@ namespace Gala {
 
         private GLib.Settings gala_behavior_settings;
 
+        private bool switching_workspace_with_gesture = false;
+        private bool switching_workspace_in_progress {
+            get {
+                return switching_workspace_with_gesture || workspaces.get_transition ("x") != null;
+            }
+        }
+
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
@@ -131,7 +138,7 @@ namespace Gala {
                     update_monitors ();
                     update_positions (false);
 
-                    return false;
+                    return Source.REMOVE;
                 });
             });
         }
@@ -281,16 +288,21 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
-            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
+            if (switching_workspace_in_progress) {
+                return;
+            }
 
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
-            var active_workspace_index = manager.get_active_workspace ().index ();
-            var target_workspace_index = active_workspace_index + relative_dir;
+
+            unowned var active_workspace = manager.get_active_workspace ();
+
+            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
+            unowned var target_workspace = manager.get_workspace_by_index (active_workspace.index () + relative_dir);
 
             float initial_x = workspaces.x;
             float target_x = 0;
-            bool is_nudge_animation = (target_workspace_index < 0 || target_workspace_index >= num_workspaces);
+            bool is_nudge_animation = (target_workspace.index () < 0 || target_workspace.index () >= num_workspaces);
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
             var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
 
@@ -303,12 +315,12 @@ namespace Gala {
             } else {
                 foreach (unowned var child in workspaces.get_children ()) {
                     unowned var workspace_clone = (WorkspaceClone) child;
-                    var index = workspace_clone.workspace.index ();
+                    var workspace = workspace_clone.workspace;
 
-                    if (index == target_workspace_index) {
+                    if (workspace == target_workspace) {
                         target_icon_group = workspace_clone.icon_group;
                         target_x = -workspace_clone.multitasking_view_x ();
-                    } else if (index == active_workspace_index) {
+                    } else if (workspace == active_workspace) {
                         active_icon_group = workspace_clone.icon_group;
                     }
                 }
@@ -322,12 +334,15 @@ namespace Gala {
             }
 
             debug ("Starting MultitaskingView switch workspace animation:");
-            debug ("Active workspace index: %d", active_workspace_index);
-            debug ("Target workspace index: %d", target_workspace_index);
+            debug ("Active workspace index: %d", active_workspace.index ());
+            debug ("Target workspace index: %d", target_workspace.index ());
             debug ("Total number of workspaces: %d", num_workspaces);
             debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
             debug ("Initial X: %f", initial_x);
             debug ("Target X: %f", target_x);
+
+            switching_workspace_with_gesture = true;
+            target_workspace.activate (display.get_current_time ());
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
@@ -346,7 +361,7 @@ namespace Gala {
             };
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-                workspace_gesture_tracker.enabled = false;
+                switching_workspace_with_gesture = false;
 
                 var duration = is_nudge_animation ?
                                (uint) (AnimationDuration.NUDGE / 2) :
@@ -380,24 +395,8 @@ namespace Gala {
                     }
                 }
 
-
-                var transition = workspaces.get_transition ("x");
-                if (transition != null) {
-                    transition.completed.connect (() => {
-                        workspace_gesture_tracker.enabled = true;
-
-                        if (!is_nudge_animation && !cancel_action) {
-                            manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
-                            update_positions (false);
-                        }
-                    });
-                } else {
-                    workspace_gesture_tracker.enabled = true;
-
-                    if (!is_nudge_animation && !cancel_action) {
-                        manager.get_workspace_by_index (target_workspace_index).activate (display.get_current_time ());
-                        update_positions (false);
-                    }
+                if (is_nudge_animation || cancel_action) {
+                    active_workspace.activate (display.get_current_time ());
                 }
             };
 
@@ -416,16 +415,20 @@ namespace Gala {
          *                positions immediately.
          */
         private void update_positions (bool animate) {
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_index = manager.get_active_workspace ().index ();
+            if (switching_workspace_with_gesture) {
+                return;
+            }
+
+            unowned var manager = display.get_workspace_manager ();
+            var active_workspace = manager.get_active_workspace ();
             var active_x = 0.0f;
 
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
-                var index = workspace_clone.workspace.index ();
+                var workspace = workspace_clone.workspace;
                 var dest_x = workspace_clone.multitasking_view_x ();
 
-                if (index == active_index) {
+                if (workspace == active_workspace) {
                     active_x = dest_x;
                     workspace_clone.icon_group.backdrop_opacity = 1.0f;
                 } else {
@@ -755,7 +758,7 @@ namespace Gala {
                         toggle (false, true);
                     }
 
-                    return false;
+                    return Source.REMOVE;
                 });
             };
 
