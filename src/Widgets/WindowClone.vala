@@ -743,6 +743,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active_shape.show ();
 
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+
         if (destination is IconGroup) {
             workspace = ((IconGroup) destination).workspace;
         } else if (destination is FramedBackground) {
@@ -803,8 +805,6 @@ public class Gala.WindowClone : Clutter.Actor {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
         }
-
-        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     /**
