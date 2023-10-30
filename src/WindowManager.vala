@@ -303,8 +303,8 @@ namespace Gala {
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                unowned string XDG_SESSION_TYPE = Environment.get_variable ("XDG_SESSION_TYPE");
-                if (XDG_SESSION_TYPE == "x11") {
+                unowned string xdg_session_type = Environment.get_variable ("XDG_SESSION_TYPE");
+                if (xdg_session_type == "x11") {
                     string[] args = {};
                     unowned string[] _args = args;
                     Gtk.init (ref _args);
