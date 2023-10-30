@@ -28,16 +28,16 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
 
 #if HAS_MUTTER45
-        public override bool key_press_event (Clutter.Event event) {
+    public override bool key_press_event (Clutter.Event event) {
 #else
-        public override bool key_press_event (Clutter.KeyEvent event) {
+    public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
-            if (!is_opened ()) {
-                return Clutter.EVENT_PROPAGATE;
-            }
-
-            return window_clone_container.key_press_event (event);
+        if (!is_opened ()) {
+            return Clutter.EVENT_PROPAGATE;
         }
+
+        return window_clone_container.key_press_event (event);
+    }
 
 #if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event event) {
