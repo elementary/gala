@@ -261,16 +261,20 @@ namespace Gala {
          *
          * @param workspace The workspace on which to count the windows
          */
-        public static uint get_n_windows (Meta.Workspace workspace) {
+        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false) {
             var n = 0;
-            foreach (weak Meta.Window window in workspace.list_windows ()) {
-                if (window.on_all_workspaces)
+            foreach (unowned var window in workspace.list_windows ()) {
+                if (window.on_all_workspaces) {
                     continue;
+                }
+
                 if (
-                    window.window_type == Meta.WindowType.NORMAL ||
-                    window.window_type == Meta.WindowType.DIALOG ||
-                    window.window_type == Meta.WindowType.MODAL_DIALOG)
+                    (window.window_type == Meta.WindowType.NORMAL
+                    || window.window_type == Meta.WindowType.DIALOG
+                    || window.window_type == Meta.WindowType.MODAL_DIALOG)
+                    && (!on_primary || (on_primary && window.is_on_primary_monitor ()))) {
                     n ++;
+                }
             }
 
             return n;

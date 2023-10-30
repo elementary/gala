@@ -31,6 +31,7 @@
         <ul>
           <li>Changing the wallpaper or going to sleep respects the "Reduce Motion" option</li>
           <li>Use appropriate drag-and-drop pointers when moving windows</li>
+          <li>Improve dynamic workspaces behaviour with multiple monitors</li>
           <li>Updated translations</li>
         </ul>
       </description>
