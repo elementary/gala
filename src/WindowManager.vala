@@ -976,7 +976,7 @@ namespace Gala {
                     if (window_overview == null) {
                         break;
                     }
-                
+
                     if (window_overview.is_opened ()) {
                         window_overview.close ();
                     } else {
