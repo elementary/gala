@@ -357,20 +357,11 @@ namespace Gala {
 
                 ui_group.add_child (screen_shield);
 
-                display.add_keybinding ("expose-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
-                    if (window_overview.is_opened ()) {
-                        window_overview.close ();
-                    } else {
-                        window_overview.open ();
-                    }
-                });
                 display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                     if (window_overview.is_opened ()) {
                         window_overview.close ();
                     } else {
-                        var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                        hints.@set ("all-windows", true);
-                        window_overview.open (hints);
+                        window_overview.open ();
                     }
                 });
 
@@ -982,24 +973,26 @@ namespace Gala {
                     }
                     break;
                 case ActionType.WINDOW_OVERVIEW:
-                    if (window_overview == null)
+                    if (window_overview == null) {
                         break;
-
-                    if (window_overview.is_opened ())
+                    }
+                
+                    if (window_overview.is_opened ()) {
                         window_overview.close ();
-                    else
+                    } else {
                         window_overview.open ();
+                    }
+                    critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
-                    if (window_overview == null)
+                    if (window_overview == null) {
                         break;
+                    }
 
-                    if (window_overview.is_opened ())
+                    if (window_overview.is_opened ()) {
                         window_overview.close ();
-                    else {
-                        var hints = new HashTable<string,Variant> (str_hash, str_equal);
-                        hints.@set ("all-windows", true);
-                        window_overview.open (hints);
+                    } else {
+                        window_overview.open ();
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
