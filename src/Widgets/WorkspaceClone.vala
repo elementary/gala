@@ -182,9 +182,12 @@ namespace Gala {
             background = new FramedBackground (wm);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor);
+            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
+                width = monitor_geometry.width,
+                height = monitor_geometry.height,
+            };
             window_container.window_selected.connect ((w) => { window_selected (w); });
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+            window_container.requested_close.connect (() => selected (true));
 
             icon_group = new IconGroup (wm, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));

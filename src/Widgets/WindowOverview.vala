@@ -13,9 +13,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     public WindowManager wm { get; construct; }
 
     private ModalProxy modal_proxy;
-
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
+    private WindowCloneContainer window_clone_container;
 
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
@@ -26,25 +26,18 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         reactive = true;
     }
 
+
 #if HAS_MUTTER45
-    public override bool key_press_event (Clutter.Event event) {
+        public override bool key_press_event (Clutter.Event event) {
 #else
-    public override bool key_press_event (Clutter.KeyEvent event) {
+        public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
-        if (event.get_key_symbol () == Clutter.Key.Escape) {
-            close ();
+            if (!is_opened ()) {
+                return Clutter.EVENT_PROPAGATE;
+            }
 
-            return Clutter.EVENT_STOP;
+            return window_clone_container.key_press_event (event);
         }
-
-        return Clutter.EVENT_PROPAGATE;
-    }
-
-    public override void key_focus_out () {
-        if (!contains (get_stage ().key_focus)) {
-            close ();
-        }
-    }
 
 #if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event event) {
@@ -131,17 +124,20 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            var container = new WindowCloneContainer (wm, null, scale, true) {
+            window_clone_container = new WindowCloneContainer (wm, null, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
-                padding_bottom = BOTTOM_GAP
+                padding_bottom = BOTTOM_GAP,
+                width = geometry.width,
+                height = geometry.height,
+                x = geometry.x,
+                y = geometry.y,
             };
-            container.set_position (geometry.x, geometry.y);
-            container.set_size (geometry.width, geometry.height);
-            container.window_selected.connect (thumb_selected);
+            window_clone_container.window_selected.connect (thumb_selected);
+            window_clone_container.requested_close.connect (() => close ());
 
-            add_child (container);
+            add_child (window_clone_container);
         }
 
         visible = true;

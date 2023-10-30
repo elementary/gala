@@ -21,6 +21,7 @@ namespace Gala {
      */
     public class WindowCloneContainer : Clutter.Actor {
         public signal void window_selected (Meta.Window window);
+        public signal void requested_close ();
 
         public int padding_top { get; set; default = 12; }
         public int padding_left { get; set; default = 12; }
@@ -82,9 +83,9 @@ namespace Gala {
 
             var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
 
-            new_window.selected.connect (window_selected_cb);
-            new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (window_request_reposition);
+            new_window.selected.connect ((clone) => window_selected (clone.window));
+            new_window.destroy.connect (() => reflow ());
+            new_window.request_reposition.connect (() => reflow ());
 
             unowned Meta.Window? target = null;
             foreach (unowned var w in windows_ordered) {
@@ -122,24 +123,6 @@ namespace Gala {
                     break;
                 }
             }
-        }
-
-        private void window_selected_cb (WindowClone clone) {
-            window_selected (clone.window);
-        }
-
-        private void window_destroyed (Clutter.Actor actor) {
-            unowned var clone = (WindowClone) actor;
-
-            clone.destroy.disconnect (window_destroyed);
-            clone.selected.disconnect (window_selected_cb);
-            clone.request_reposition.disconnect (window_request_reposition);
-
-            reflow ();
-        }
-
-        private void window_request_reposition () {
-            reflow ();
         }
 
         /**
@@ -215,6 +198,47 @@ namespace Gala {
                 unowned var clone = (WindowClone) tilable.id;
                 clone.take_slot (tilable.rect, with_gesture, is_cancel_animation);
             }
+        }
+
+        /**
+         * Collect key events, mainly for redirecting them to the WindowCloneContainers to
+         * select the active window.
+         */
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event event) {
+#else
+        public override bool key_press_event (Clutter.KeyEvent event) {
+#endif
+            if (!opened) {
+                return Clutter.EVENT_PROPAGATE;
+            }
+
+
+            switch (event.get_key_symbol ()) {
+                case Clutter.Key.Escape:
+                    requested_close ();
+                    break;
+                case Clutter.Key.Down:
+                    select_next_window (Meta.MotionDirection.DOWN);
+                    break;
+                case Clutter.Key.Up:
+                    select_next_window (Meta.MotionDirection.UP);
+                    break;
+                case Clutter.Key.Left:
+                    select_next_window (Meta.MotionDirection.LEFT);
+                    break;
+                case Clutter.Key.Right:
+                    select_next_window (Meta.MotionDirection.RIGHT);
+                    break;
+                case Clutter.Key.Return:
+                case Clutter.Key.KP_Enter:
+                    if (!activate_selected_window ()) {
+                        requested_close ();
+                    }
+                    break;
+            }
+
+            return Clutter.EVENT_STOP;
         }
 
         /**
@@ -330,7 +354,7 @@ namespace Gala {
          */
         public bool activate_selected_window () {
             if (current_window != null) {
-                current_window.selected ();
+                window_selected (current_window.window);
                 return true;
             }
 
