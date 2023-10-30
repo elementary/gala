@@ -156,7 +156,7 @@ namespace Gala {
             // or we are in modal-mode
             if ((!is_active_workspace || wm.is_modal ())
                 && remove_freeze_count < 1
-                && Utils.get_n_windows (workspace) == 0
+                && Utils.get_n_windows (workspace, true) == 0
                 && workspace != last_workspace) {
                 remove_workspace (workspace);
             }
@@ -164,7 +164,7 @@ namespace Gala {
             // if window is the second last and empty, make it the last workspace
             if (is_active_workspace
                 && remove_freeze_count < 1
-                && Utils.get_n_windows (workspace) == 0
+                && Utils.get_n_windows (workspace, true) == 0
                 && workspace.index () == last_workspace_index - 1) {
                 remove_workspace (last_workspace);
             }
