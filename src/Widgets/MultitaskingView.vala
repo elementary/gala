@@ -116,8 +116,8 @@ namespace Gala {
                         existing_workspaces.append (manager.get_workspace_by_index (i));
                     }
 
-                    foreach (var child in workspaces.get_children ()) {
-                        unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
+                    foreach (unowned var child in workspaces.get_children ()) {
+                        unowned var workspace_clone = (WorkspaceClone) child;
                         if (existing_workspaces.index (workspace_clone.workspace) < 0) {
                             workspace_clone.window_selected.disconnect (window_selected);
                             workspace_clone.selected.disconnect (activate_workspace);
@@ -141,8 +141,9 @@ namespace Gala {
          * MonitorClones at the right positions
          */
         private void update_monitors () {
-            foreach (var monitor_clone in window_containers_monitors)
+            foreach (var monitor_clone in window_containers_monitors) {
                 monitor_clone.destroy ();
+            }
 
             var primary = display.get_primary_monitor ();
 
@@ -501,8 +502,8 @@ namespace Gala {
                 existing_workspaces.append (manager.get_workspace_by_index (i));
             }
 
-            foreach (var child in workspaces.get_children ()) {
-                unowned WorkspaceClone clone = (WorkspaceClone) child;
+            foreach (unowned var child in workspaces.get_children ()) {
+                unowned var clone = (WorkspaceClone) child;
                 if (existing_workspaces.index (clone.workspace) < 0) {
                     workspace = clone;
                     break;
@@ -602,7 +603,7 @@ namespace Gala {
          */
         private WorkspaceClone get_active_workspace_clone () {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            foreach (var child in workspaces.get_children ()) {
+            foreach (unowned var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
                 if (workspace_clone.workspace == manager.get_active_workspace ()) {
                     return workspace_clone;
@@ -705,7 +706,7 @@ namespace Gala {
             WorkspaceClone? active_workspace = null;
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active = manager.get_active_workspace ();
-            foreach (var child in workspaces.get_children ()) {
+            foreach (unowned var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (workspace.workspace == active) {
                     active_workspace = workspace;
@@ -717,7 +718,7 @@ namespace Gala {
             }
 
             workspaces.remove_all_transitions ();
-            foreach (var child in workspaces.get_children ()) {
+            foreach (unowned var child in workspaces.get_children ()) {
                 child.remove_all_transitions ();
             }
 
@@ -725,7 +726,7 @@ namespace Gala {
                 update_positions (false);
             }
 
-            foreach (var child in workspaces.get_children ()) {
+            foreach (unowned var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening) {
                     workspace.open (with_gesture, is_cancel_animation);
@@ -843,7 +844,7 @@ namespace Gala {
         }
 
         private void hide_docks (bool with_gesture, bool is_cancel_animation) {
-            foreach (var child in dock_clones.get_children ()) {
+            foreach (unowned var child in dock_clones.get_children ()) {
                 var dock = (Clutter.Clone) child;
                 var initial_y = dock.y;
                 var target_y = dock.source.y;
