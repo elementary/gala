@@ -291,7 +291,7 @@ namespace Gala {
                     if (!dragging && clicked) {
                         var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
                         if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-                            handle = drag_begin (x, y);
+                            handle = drag_begin (last_x, last_y);
                             if (handle == null) {
                                 ungrab_actor ();
                                 critical ("No handle has been returned by the started signal, aborting drag.");
