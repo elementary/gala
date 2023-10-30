@@ -138,7 +138,7 @@ namespace Gala {
                     update_monitors ();
                     update_positions (false);
 
-                    return Source.REMOVE;
+                    return false;
                 });
             });
         }
@@ -762,7 +762,7 @@ namespace Gala {
                         toggle (false, true);
                     }
 
-                    return Source.REMOVE;
+                    return false;
                 });
             };
 
