@@ -32,6 +32,7 @@
           <li>Changing the wallpaper or going to sleep respects the "Reduce Motion" option</li>
           <li>Use appropriate drag-and-drop pointers when moving windows</li>
           <li>Fix the issue when gestures in the multitasking view might stop working</li>
+          <li>Improve dynamic workspaces behaviour with multiple monitors</li>
           <li>Updated translations</li>
         </ul>
       </description>
