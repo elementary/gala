@@ -8,7 +8,7 @@ public class Gala.SystemBackground : GLib.Object {
     private const Clutter.Color DEFAULT_BACKGROUND_COLOR = { 0x2e, 0x34, 0x36, 0xff };
 
     public Meta.BackgroundActor background_actor { get; construct; }
-    
+
     private static Meta.Background? system_background = null;
 
     public SystemBackground (Meta.Display display) {
