@@ -97,7 +97,6 @@ namespace Gala {
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
             new_background_actor.visible = background_actor.visible;
 
-
             var background = new_content.background.get_data<unowned Background> ("delegate");
 
             if (background.is_loaded) {
