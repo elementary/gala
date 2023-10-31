@@ -97,7 +97,6 @@ namespace Gala {
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
             new_background_actor.visible = background_actor.visible;
 
-
             var background = new_content.background.get_data<unowned Background> ("delegate");
 
             if (background.is_loaded) {
@@ -136,20 +135,20 @@ namespace Gala {
             var workarea = workspace.get_work_area_for_monitor (monitor_index);
             var monitor = display.get_monitor_geometry (monitor_index);
 
-            var rect = Graphene.Rect();
+            var rect = Graphene.Rect ();
             rect.origin.x = workarea.x - monitor.x;
             rect.origin.y = workarea.y - monitor.y;
             rect.size.width = workarea.width;
             rect.size.height = workarea.height;
-    
-            content.set_rounded_clip_bounds(rect);
+
+            content.set_rounded_clip_bounds (rect);
 
             content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
             if (background_source.should_dim) {
                 content.vignette = true;
                 content.brightness = DIM_OPACITY;
             }
-                
+
             insert_child_below (background_actor, null);
 
             background_actor.set_size (monitor.width, monitor.height);
