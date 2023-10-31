@@ -74,7 +74,7 @@ namespace Gala {
             var cache = BackgroundCache.get_default ();
 
             foreach (var watch in file_watches.values) {
-                SignalHandler.disconnect (cache, watch);
+                cache.disconnect (watch);
             }
 
             background_source.changed.disconnect (settings_changed);
@@ -179,7 +179,7 @@ namespace Gala {
                 } else {
                     ulong handler = 0;
                     handler = image.loaded.connect (() => {
-                        SignalHandler.disconnect (image, handler);
+                        image.disconnect (handler);
                         if (--num_pending_images == 0) {
                             finish_animation (files);
                         }
@@ -237,7 +237,7 @@ namespace Gala {
                 ulong handler = 0;
                 handler = image.loaded.connect (() => {
                     set_loaded ();
-                    SignalHandler.disconnect (image, handler);
+                    image.disconnect (handler);
                 });
             }
         }

@@ -7,7 +7,6 @@
 public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private int button_size;
     private int container_margin;
-    private const int SHADOW_SIZE = 100;
     private const uint FADE_OUT_TIMEOUT = 200;
     private const float MINIMUM_SCALE = 0.1f;
     private const float MAXIMUM_SCALE = 1.0f;
@@ -88,7 +87,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         container = new Clutter.Actor ();
         container.reactive = true;
         container.set_scale (0.35f, 0.35f);
-        container.add_effect (new ShadowEffect (SHADOW_SIZE) { css_class = "window-clone" });
+        container.add_effect (new ShadowEffect (55) { css_class = "window-clone" });
         container.add_child (clone);
         container.add_action (move_action);
 
@@ -218,12 +217,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
         return this;
     }
 
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
 #if HAS_MUTTER45
@@ -244,6 +246,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
+
+        wm.get_display ().set_cursor (Meta.Cursor.SE_RESIZE);
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -303,6 +307,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resizing = false;
 
         update_screen_position ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void on_allocation_changed () {
