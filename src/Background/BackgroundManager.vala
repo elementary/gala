@@ -95,9 +95,6 @@ namespace Gala {
 
             new_background_actor = create_background_actor ();
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
-            var old_content = (Meta.BackgroundContent)background_actor.content;
-            new_content.vignette_sharpness = old_content.vignette_sharpness;
-            new_content.brightness = old_content.brightness;
             new_background_actor.visible = background_actor.visible;
 
 
@@ -133,19 +130,28 @@ namespace Gala {
             unowned var content = (Meta.BackgroundContent) background_actor.content;
             content.background = background.background;
 
-            if (background_source.should_dim) {
-                // It doesn't work without Idle :( 
-                Idle.add (() => {
-                    content.vignette = true;
-                    content.brightness = DIM_OPACITY;
-                    content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
-                    return Source.REMOVE;
-                });
-            }
+            unowned var manager = display.get_workspace_manager ();
+            unowned var workspace = manager.get_workspace_by_index (0);
 
+            var workarea = workspace.get_work_area_for_monitor (monitor_index);
+            var monitor = display.get_monitor_geometry (monitor_index);
+
+            var rect = Graphene.Rect();
+            rect.origin.x = workarea.x - monitor.x;
+            rect.origin.y = workarea.y - monitor.y;
+            rect.size.width = workarea.width;
+            rect.size.height = workarea.height;
+    
+            content.set_rounded_clip_bounds(rect);
+
+            content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+            if (background_source.should_dim) {
+                content.vignette = true;
+                content.brightness = DIM_OPACITY;
+            }
+                
             insert_child_below (background_actor, null);
 
-            var monitor = display.get_monitor_geometry (monitor_index);
             background_actor.set_size (monitor.width, monitor.height);
 
             if (control_position) {
