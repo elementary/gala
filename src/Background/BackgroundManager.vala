@@ -95,9 +95,6 @@ namespace Gala {
 
             new_background_actor = create_background_actor ();
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
-            var old_content = (Meta.BackgroundContent)background_actor.content;
-            new_content.vignette_sharpness = old_content.vignette_sharpness;
-            new_content.brightness = old_content.brightness;
             new_background_actor.visible = background_actor.visible;
 
 
@@ -134,12 +131,8 @@ namespace Gala {
             content.background = background.background;
 
             if (background_source.should_dim) {
-                // It doesn't work without Idle :( 
-                Idle.add (() => {
-                    content.vignette = true;
-                    content.brightness = DIM_OPACITY;
-                    return Source.REMOVE;
-                });
+                content.vignette = true;
+                content.brightness = DIM_OPACITY;
             }
 
             insert_child_below (background_actor, null);
