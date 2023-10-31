@@ -95,7 +95,11 @@ namespace Gala {
 
             new_background_actor = create_background_actor ();
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
+            var old_content = (Meta.BackgroundContent)background_actor.content;
+            new_content.vignette_sharpness = old_content.vignette_sharpness;
+            new_content.brightness = old_content.brightness;
             new_background_actor.visible = background_actor.visible;
+
 
             var background = new_content.background.get_data<unowned Background> ("delegate");
 
@@ -139,8 +143,12 @@ namespace Gala {
 
             content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
             if (background_source.should_dim) {
-                content.vignette = true;
-                content.brightness = DIM_OPACITY;
+                // It doesn't work without Idle :( 
+                Idle.add (() => {
+                    content.vignette = true;
+                    content.brightness = DIM_OPACITY;
+                    return Source.REMOVE;
+                });
             }
 
             insert_child_below (background_actor, null);
