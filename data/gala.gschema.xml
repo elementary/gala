@@ -148,7 +148,7 @@
     </key>
     <key type="as" name="expose-windows">
       <default><![CDATA[['']]]></default>
-      <summary>Shortcut to open the window overview</summary>
+      <summary>DEPRECATED: This key is deprecated and ignored</summary>
       <description></description>
     </key>
     <key type="as" name="expose-all-windows">
