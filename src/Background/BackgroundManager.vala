@@ -129,17 +129,11 @@ namespace Gala {
             unowned var content = (Meta.BackgroundContent) background_actor.content;
             content.background = background.background;
 
-            unowned var manager = display.get_workspace_manager ();
-            unowned var workspace = manager.get_workspace_by_index (0);
-
-            var workarea = workspace.get_work_area_for_monitor (monitor_index);
             var monitor = display.get_monitor_geometry (monitor_index);
-
-            var rect = Graphene.Rect ();
-            rect.origin.x = workarea.x - monitor.x;
-            rect.origin.y = workarea.y - monitor.y;
-            rect.size.width = workarea.width;
-            rect.size.height = workarea.height;
+            var rect = Graphene.Rect () {
+                origin = {monitor.x, monitor.y},
+                size = {monitor.width, monitor.height},
+            };
 
             content.set_rounded_clip_bounds (rect);
 
