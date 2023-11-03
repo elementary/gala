@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-10-30 08:48+0000\n"
-"PO-Revision-Date: 2023-11-02 18:10+0000\n"
+"PO-Revision-Date: 2023-11-04 23:10+0000\n"
 "Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -176,10 +176,12 @@ msgstr ""
 #: data/gala.metainfo.xml.in:33
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
+"Użycie poprawnych wskaźników przeciągnij-i-upuść przy przenoszeniu okien"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
+"Poprawa dynamicznego zachowania obszarów roboczych przy kilku monitorach"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:54
 #: data/gala.metainfo.xml.in:69 data/gala.metainfo.xml.in:84
