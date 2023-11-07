@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-10-30 08:48+0000\n"
-"PO-Revision-Date: 2023-10-27 12:25+0000\n"
+"PO-Revision-Date: 2023-11-02 18:10+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,7 +171,7 @@ msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "שיפור התנהגות מרחבי עבודה דינמיים עם ריבוי צגים"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:54
 #: data/gala.metainfo.xml.in:69 data/gala.metainfo.xml.in:84
