@@ -89,11 +89,7 @@ namespace Gala {
             add_child (primary_monitor_container);
             add_child (dock_clones);
 
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                add_workspace (i);
-            }
-
+            unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
             manager.workspace_removed.connect (remove_workspace);
             manager.workspaces_reordered.connect (() => update_positions (false));
@@ -148,6 +144,8 @@ namespace Gala {
          * MonitorClones at the right positions
          */
         private void update_monitors () {
+            update_workspaces ();
+
             foreach (var monitor_clone in window_containers_monitors) {
                 monitor_clone.destroy ();
             }
@@ -180,6 +178,19 @@ namespace Gala {
                 unowned var workspace_clone = (WorkspaceClone) child;
                 workspace_clone.scale_factor = scale;
                 workspace_clone.update_size (primary_geometry);
+            }
+        }
+
+        private void update_workspaces () {
+            foreach (unowned var child in workspaces.get_children ()) {
+                unowned var workspace_clone = (WorkspaceClone) child;
+                icon_groups.remove_group (workspace_clone.icon_group);
+                workspace_clone.destroy ();
+            }
+
+            unowned var manager = display.get_workspace_manager ();
+            for (int i = 0; i < manager.get_n_workspaces (); i++) {
+                add_workspace (i);
             }
         }
 
