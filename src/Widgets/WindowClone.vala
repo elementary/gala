@@ -669,8 +669,10 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon.save_easing_state ();
         window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
-        window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
-            click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
+        window_icon.set_position (
+            click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
+            click_y - (abs_y + prev_parent_y) - window_icon.height / 2
+        );
         window_icon.restore_easing_state ();
 
         close_button.opacity = 0;
