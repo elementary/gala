@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-11-02 18:10+0000\n"
+"PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,7 +171,7 @@ msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fix the issue when gestures in the multitasking view might stop working"
-msgstr ""
+msgstr "תוקנה תקלה שמחוות בתצוגת ריבוי משימות מפסיקות לעבוד"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
