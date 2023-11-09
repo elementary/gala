@@ -20,14 +20,14 @@ namespace Gala {
         public signal void changed ();
         public signal void show_background_menu (int x, int y);
 
-        public Meta.Display display { get; construct; }
+        public WindowManager wm { get; construct; }
 
-        public BackgroundContainer (Meta.Display display) {
-            Object (display: display);
+        public BackgroundContainer (WindowManager wm) {
+            Object (wm: wm);
         }
 
         construct {
-            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update);
 
             reactive = true;
@@ -43,7 +43,7 @@ namespace Gala {
         }
 
         ~BackgroundContainer () {
-            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.disconnect (update);
         }
 
@@ -54,8 +54,8 @@ namespace Gala {
 
             destroy_all_children ();
 
-            for (var i = 0; i < display.get_n_monitors (); i++) {
-                var background = new BackgroundManager (display, i);
+            for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
+                var background = new BackgroundManager (wm, i);
 
                 add_child (background);
 

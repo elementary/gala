@@ -239,7 +239,7 @@ namespace Gala {
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-            background_group = new BackgroundContainer (display);
+            background_group = new BackgroundContainer (this);
             ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -304,9 +304,12 @@ namespace Gala {
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                string[] args = {};
-                unowned string[] _args = args;
-                Gtk.init (ref _args);
+                unowned string xdg_session_type = Environment.get_variable ("XDG_SESSION_TYPE");
+                if (xdg_session_type == "x11") {
+                    string[] args = {};
+                    unowned string[] _args = args;
+                    Gtk.init (ref _args);
+                }
 
                 accent_color_manager = new AccentColorManager ();
 
@@ -536,16 +539,47 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
+            var can_handle_swipe = (
+                gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
+                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
+            );
 
-            var fingers = (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
-                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
+            if (!can_handle_swipe) {
+                return;
+            }
 
-            switch_workspace_with_gesture = can_handle_swipe && fingers;
+            var fingers = gesture.fingers;
+
+            var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
+            var four_finger_swipe_horizontal = GestureSettings.get_string ("four-finger-swipe-horizontal");
+
+            var three_fingers_switch_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace";
+            var four_fingers_switch_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace";
+
+            var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
+            var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+
+            switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_to_next_workspace (direction);
+                return;
+            }
+
+            switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
+            if (switch_workspace_with_gesture) {
+                unowned var display = get_display ();
+                unowned var manager = display.get_workspace_manager ();
+
+                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+
+                moving = display.focus_window;
+                if (moving != null) {
+                    moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+                }
+
+                switch_to_next_workspace (direction);
+                return;
             }
         }
 
@@ -1161,7 +1195,9 @@ namespace Gala {
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
-            latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            if (enable_animations) {
+                latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            }
         }
 
         // size_changed gets called after frame_rect has updated
