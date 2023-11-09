@@ -229,7 +229,7 @@
     </key>
     <key type="s" name="workspace-switcher-background">
       <default>''</default>
-      <summary>Background-image used in the workspace-switcher</summary>
+      <summary>DEPRECATED: This key is deprecated and ignored.</summary>
     </key>
   </schema>
 
