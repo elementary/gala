@@ -16,8 +16,6 @@ namespace Gala {
         private const int PLUS_SIZE = 8;
         private const int PLUS_WIDTH = 24;
         private const int BACKDROP_ABSOLUTE_OPACITY = 40;
-        private const int CLOSE_BUTTON_SIZE = 36;
-        private const int SHOW_CLOSE_BUTTON_DELAY = 200;
 
         /**
          * The group has been clicked. The MultitaskingView should consider activating
@@ -50,13 +48,11 @@ namespace Gala {
                 if (value != _scale_factor) {
                     _scale_factor = value;
                     resize_canvas ();
-                    create_close_button ();
                 }
             }
         }
 
         private Clutter.Actor? prev_parent = null;
-        private Clutter.Actor close_button;
         private Clutter.Actor icon_container;
 
         public IconGroup (WindowManager wm, Meta.Workspace workspace, float scale) {
@@ -86,96 +82,11 @@ namespace Gala {
 
             resize_canvas ();
 
-            create_close_button ();
-
             icon_container.actor_removed.connect_after (redraw);
-        }
-
-        private void create_close_button () {
-            close_button = Utils.create_close_button (scale_factor);
-            place_close_button ();
-            close_button.opacity = 0;
-            close_button.reactive = true;
-            close_button.visible = false;
-
-            // block propagation of button presses on the close button, otherwise
-            // the click action on the icon group will act weirdly
-            close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
-
-            add_child (close_button);
-
-            var close_click = new Clutter.ClickAction ();
-            close_click.clicked.connect (close);
-            close_button.add_action (close_click);
         }
 
         ~IconGroup () {
             icon_container.actor_removed.disconnect (redraw);
-        }
-
-#if HAS_MUTTER45
-        public override bool enter_event (Clutter.Event event) {
-#else
-        public override bool enter_event (Clutter.CrossingEvent event) {
-#endif
-            toggle_close_button (true);
-
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-#if HAS_MUTTER45
-        public override bool leave_event (Clutter.Event event) {
-#else
-        public override bool leave_event (Clutter.CrossingEvent event) {
-#endif
-            if (!contains (event.get_related ())) {
-                toggle_close_button (false);
-            }
-
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        /**
-         * Requests toggling the close button. If show is true, a timeout will be set after which
-         * the close button is shown, if false, the close button is hidden and the timeout is removed,
-         * if it exists. The close button may not be shown even though requested if the workspace has
-         * no windows or workspaces aren't set to be dynamic.
-         *
-         * @param show Whether to show the close button
-         */
-        private void toggle_close_button (bool show) {
-            // don't display the close button when we don't have dynamic workspaces
-            // or when there are no windows on us. For one, our method for closing
-            // wouldn't work anyway without windows and it's also the last workspace
-            // which we don't want to have closed if everything went correct
-            if (!Meta.Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
-                return;
-            }
-
-            var old_transition = close_button.get_transition ("opacity");
-            if (old_transition != null) {
-                old_transition.stop ();
-                close_button.remove_transition ("opacity");
-            }
-
-            close_button.visible = true;
-            close_button.save_easing_state ();
-            close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-            close_button.set_easing_duration (wm.enable_animations ? 200 : 0);
-            close_button.set_easing_delay (show ? SHOW_CLOSE_BUTTON_DELAY : 0);
-            close_button.opacity = show ? 255 : 0;
-            close_button.restore_easing_state ();
-
-            if (!show) {
-                var transition = close_button.get_transition ("opacity");
-                if (transition != null) {
-                    transition.completed.connect (() => {
-                        close_button.visible = false;
-                    });
-                } else {
-                    close_button.visible = false;
-                }
-            }
         }
 
         private bool resize_canvas () {
@@ -185,14 +96,6 @@ namespace Gala {
             height = size;
 
             return ((Clutter.Canvas) content).set_size (size, size);
-        }
-
-        private void place_close_button () {
-            var size = InternalUtils.scale_to_int (CLOSE_BUTTON_SIZE, scale_factor);
-            close_button.set_size (size, size);
-
-            close_button.x = -Math.floorf (close_button.width * 0.4f);
-            close_button.y = -Math.floorf (close_button.height * 0.4f);
         }
 
         /**
@@ -297,21 +200,6 @@ namespace Gala {
         public void redraw () {
             if (!resize_canvas ()) {
                 content.invalidate ();
-            }
-        }
-
-        /**
-         * Close handler. We close the workspace by deleting all the windows on it.
-         * That way the workspace won't be deleted if windows decide to ignore the
-         * delete signal
-         */
-        private void close () {
-            var time = workspace.get_display ().get_current_time ();
-            foreach (var window in workspace.list_windows ()) {
-                var type = window.window_type;
-                if (!window.is_on_all_workspaces () && (type == Meta.WindowType.NORMAL
-                    || type == Meta.WindowType.DIALOG || type == Meta.WindowType.MODAL_DIALOG))
-                    window.@delete (time);
             }
         }
 
@@ -513,8 +401,6 @@ namespace Gala {
 
             get_transformed_position (out abs_x, out abs_y);
             set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
-
-            toggle_close_button (false);
 
             // disable reactivity so that workspace thumbs can get events
             reactive = false;
