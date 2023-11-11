@@ -25,16 +25,28 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-    <release version="7.1.3" date="2023-09-13" urgency="medium">
+    <release version="7.1.3" date="2023-11-09" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Changing the wallpaper or going to sleep respects the "Reduce Motion" option</li>
+          <li>Use appropriate drag-and-drop pointers when moving windows</li>
+          <li>Fix the issue when gestures in the multitasking view might stop working</li>
+          <li>Improve dynamic workspaces behaviour with multiple monitors</li>
           <li>Updated translations</li>
         </ul>
       </description>
       <issues>
-        <issue url="https://github.com/elementary/gala/issues/1774">Scheduled switch to dark style does not dim the wallpaper after cold reboot on elementary OS 7.1</issue>
+        <issue url="https://github.com/elementary/gala/issues/506">After login there is always 2 unpopulated workspaces open.</issue>
+        <issue url="https://github.com/elementary/gala/issues/695">Wrong workspaces behavior</issue>
+        <issue url="https://github.com/elementary/gala/issues/1109">Use gestures for "move to workspace"</issue>
         <issue url="https://github.com/elementary/gala/issues/1261">Alt + Shift unnecessarily blocked when there is only one keyboard layout</issue>
+        <issue url="https://github.com/elementary/gala/issues/1518">Multitasking view breaks when switching displays &amp; strange Wingpanel position</issue>
+        <issue url="https://github.com/elementary/gala/issues/1750">Disconnecting external monitor breaks the multi-tasking view</issue>
+        <issue url="https://github.com/elementary/gala/issues/1753">Workspace wallpaper's aspect ratio with different monitors</issue>
+        <issue url="https://github.com/elementary/gala/discussions/1764">Counter Strike 2 causes segfault in libmutter on exit</issue>
+        <issue url="https://github.com/elementary/gala/issues/1774">Scheduled switch to dark style does not dim the wallpaper after cold reboot on elementary OS 7.1</issue>
+        <issue url="https://github.com/elementary/gala/issues/1783">Notifications appear in the middle of the screen</issue>
       </issues>
     </release>
 

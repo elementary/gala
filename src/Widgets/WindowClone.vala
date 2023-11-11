@@ -241,7 +241,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect (40) { css_class = "window-clone" };
+                shadow_effect = new ShadowEffect (55) { css_class = "window-clone" };
                 shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
@@ -669,12 +669,16 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon.save_easing_state ();
         window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
-        window_icon.set_position (click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
-            click_y - (abs_y + prev_parent_y) - window_icon.height / 2);
+        window_icon.set_position (
+            click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
+            click_y - (abs_y + prev_parent_y) - window_icon.height / 2
+        );
         window_icon.restore_easing_state ();
 
         close_button.opacity = 0;
         window_title.opacity = 0;
+
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
         return this;
     }
@@ -726,6 +730,8 @@ public class Gala.WindowClone : Clutter.Actor {
                 icon_group.remove_window (window, false);
             }
         }
+
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
     }
 
     /**
@@ -738,6 +744,8 @@ public class Gala.WindowClone : Clutter.Actor {
         var primary = window.get_display ().get_primary_monitor ();
 
         active_shape.show ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         if (destination is IconGroup) {
             workspace = ((IconGroup) destination).workspace;
@@ -826,6 +834,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         set_window_icon_position (slot.width, slot.height, monitor_scale_factor);
         window_icon.restore_easing_state ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void set_window_icon_position (float window_width, float window_height, float scale_factor, bool aligned = true) {

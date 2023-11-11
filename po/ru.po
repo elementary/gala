@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-09-29 22:16+0000\n"
-"PO-Revision-Date: 2023-08-12 05:08+0000\n"
+"POT-Creation-Date: 2023-11-07 19:57+0000\n"
+"PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
-">\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
+"\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.17\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -53,7 +53,7 @@ msgstr "Снимки экрана"
 msgid "Screenshot taken"
 msgstr "Снимок экрана сделан"
 
-#: src/WindowManager.vala:2211
+#: src/WindowManager.vala:2251
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -61,20 +61,20 @@ msgstr[0] "Изменения будут отменены через %i секу
 msgstr[1] "Изменения будут отменены через %i секунды."
 msgstr[2] "Изменения будут отменены через %i секунд."
 
-#: src/WindowManager.vala:2218
+#: src/WindowManager.vala:2258
 msgid "Keep new display settings?"
 msgstr "Сохранить новые настройки экрана?"
 
-#: src/WindowManager.vala:2222
+#: src/WindowManager.vala:2262
 msgid "Keep Settings"
 msgstr "Сохранить настройки"
 
-#: src/WindowManager.vala:2223
+#: src/WindowManager.vala:2263
 msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:2305
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"
@@ -159,23 +159,46 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:42
-#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:85 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Улучшения:"
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:60 data/gala.metainfo.xml.in:75
-#: data/gala.metainfo.xml.in:93 data/gala.metainfo.xml.in:115
+#: data/gala.metainfo.xml.in:32
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
+msgstr ""
+"Смена обоев и переход в спящий режим теперь учитывают опцию «Уменьшить "
+"анимации»"
+
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr "Соответствующие указатели перетаскивания при перемещении окон"
+
+#: data/gala.metainfo.xml.in:34
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+"Исправлена ошибка из-за которой жесты в режиме многозадачности могли "
+"перестать работать"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+"Улучшено поведение динамических рабочих столов с несколькими мониторами"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
 msgid "Updated translations"
 msgstr "Обновлены переводы"
 
-#: data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:57
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Улучшено сочетание клавиш «Переместить на рабочий стол»"
 
-#: data/gala.metainfo.xml.in:87
+#: data/gala.metainfo.xml.in:100
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -183,11 +206,11 @@ msgstr ""
 "Исправлен выбор раскладки клавиатуры при запуске, чтобы индикатор "
 "соответствовал выбранной раскладке"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:101
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr "Исправлены сочетания клавиш в режиме многозадачности"
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:102
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -195,27 +218,27 @@ msgstr ""
 "Исправлена подсветка активного рабочего стола при открытии режима "
 "многозадачности, и добавлены мулититач жесты для анимации подсветки"
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:103
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Обновление цвета панели после затемнения обоев"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:104
 msgid "Scale rounded corners per-display"
 msgstr "Масштабирование закруглённых углов для каждого экрана"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:105
 msgid "Support fractional scaling"
 msgstr "Поддержка дробного масштабирования"
 
-#: data/gala.metainfo.xml.in:112
+#: data/gala.metainfo.xml.in:125
 msgid "Performance improvements"
 msgstr "Улучшения производительности"
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:126
 msgid "Remove texture from Multitasking View"
 msgstr "Удалена текстура из многозадачного вида"
 
-#: data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:127
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Исправлен случайный выбор окон в переключателе окон"
 

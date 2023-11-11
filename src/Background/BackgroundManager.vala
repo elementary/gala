@@ -22,7 +22,7 @@ namespace Gala {
 
         public signal void changed ();
 
-        public Meta.Display display { get; construct; }
+        public WindowManager wm { get; construct; }
         public int monitor_index { get; construct; }
         public bool control_position { get; construct; }
 
@@ -30,12 +30,12 @@ namespace Gala {
         private Meta.BackgroundActor background_actor;
         private Meta.BackgroundActor? new_background_actor = null;
 
-        public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true) {
-            Object (display: display, monitor_index: monitor_index, control_position: control_position);
+        public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
+            Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
         }
 
         construct {
-            background_source = BackgroundCache.get_default ().get_background_source (display);
+            background_source = BackgroundCache.get_default ().get_background_source (wm.get_display ());
             background_actor = create_background_actor ();
 
             destroy.connect (on_destroy);
@@ -66,7 +66,7 @@ namespace Gala {
             if (old_background_actor == null)
                 return;
 
-            if (animate) {
+            if (animate && wm.enable_animations) {
                 var transition = new Clutter.PropertyTransition ("opacity");
                 transition.set_from_value (255);
                 transition.set_to_value (0);
@@ -95,11 +95,7 @@ namespace Gala {
 
             new_background_actor = create_background_actor ();
             var new_content = (Meta.BackgroundContent)new_background_actor.content;
-            var old_content = (Meta.BackgroundContent)background_actor.content;
-            new_content.vignette_sharpness = old_content.vignette_sharpness;
-            new_content.brightness = old_content.brightness;
             new_background_actor.visible = background_actor.visible;
-
 
             var background = new_content.background.get_data<unowned Background> ("delegate");
 
@@ -125,6 +121,8 @@ namespace Gala {
         }
 
         private Meta.BackgroundActor create_background_actor () {
+            unowned var display = wm.get_display ();
+
             var background = background_source.get_background (monitor_index);
             var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
@@ -132,12 +130,8 @@ namespace Gala {
             content.background = background.background;
 
             if (background_source.should_dim) {
-                // It doesn't work without Idle :( 
-                Idle.add (() => {
-                    content.vignette = true;
-                    content.brightness = DIM_OPACITY;
-                    return Source.REMOVE;
-                });
+                content.vignette = true;
+                content.brightness = DIM_OPACITY;
             }
 
             insert_child_below (background_actor, null);
