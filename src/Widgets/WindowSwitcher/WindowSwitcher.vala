@@ -19,8 +19,8 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
     public Gala.WindowManager? wm { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
+    public bool opened { get; private set; default = false; }
 
-    private bool opened = false;
     private bool handling_gesture = false;
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
@@ -265,10 +265,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
             handling_gesture = false;
-            // if we did not have the grab before the key was released, close immediately
-            if ((get_current_modifiers () & modifier_mask) == 0) {
-                close_switcher (wm.get_display ().get_current_time ());
-            }
+            close_switcher (wm.get_display ().get_current_time ());
         };
 
         gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
