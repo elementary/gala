@@ -16,10 +16,10 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private const int ANIMATION_DURATION = 200;
     // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
     private const int GESTURE_RANGE_LIMIT = 10;
-    
+
     public Gala.WindowManager? wm { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
-    
+
     private bool opened = false;
     private bool handling_gesture = false;
     private int modifier_mask;
@@ -252,12 +252,12 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
             if (window_index > last_window_index) {
                 while (last_window_index < window_index) {
-                    next_window(false);
+                    next_window (false);
                     last_window_index += 1;
                 }
             } else if (window_index < last_window_index) {
                 while (last_window_index > window_index) {
-                    next_window(true);
+                    next_window (true);
                     last_window_index -= 1;
                 }
             }
