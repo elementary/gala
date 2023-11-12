@@ -572,8 +572,8 @@ namespace Gala {
             }
 
             var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
-            if (switch_windows) {
-                window_switcher.handle_gesture (gesture.direction);
+            if (switch_windows && gesture.direction == GestureDirection.RIGHT) {
+                window_switcher.handle_gesture ();
             }
         }
 

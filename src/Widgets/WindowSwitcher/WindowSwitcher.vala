@@ -229,42 +229,35 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         next_window (backward);
     }
 
-    public void handle_gesture (GestureDirection direction) {
+    public void handle_gesture () {
         handling_gesture = true;
+
+        unowned var display = wm.get_display ();
+        unowned var workspace_manager = display.get_workspace_manager ();
+        unowned var active_workspace = workspace_manager.get_active_workspace ();
+
+        var windows_exist = collect_all_windows (display, active_workspace);
+        if (!windows_exist) {
+            return;
+        }
+        open_switcher ();
 
         var last_window_index = 0;
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var window_index = GestureTracker.animation_value (0, GESTURE_RANGE_LIMIT, percentage, true);
 
-            // Open window switcher only when user have swiped enough to switch the window
-            if (!opened && window_index > 0) {
-                unowned var display = wm.get_display ();
-                unowned var workspace_manager = display.get_workspace_manager ();
-                unowned var active_workspace = workspace_manager.get_active_workspace ();
-        
-                var windows_exist = collect_all_windows (display, active_workspace);
-                if (!windows_exist) {
-                    return;
-                }
-                open_switcher ();
-            }
-
-            if (direction == RIGHT && window_index >= container.get_n_children ()) {
-                return;
-            }
-
-            if (direction == LEFT && window_index >= container.get_n_children () + 1) {
+            if (window_index >= container.get_n_children ()) {
                 return;
             }
 
             if (window_index > last_window_index) {
                 while (last_window_index < window_index) {
-                    next_window(direction == GestureDirection.LEFT);
+                    next_window(false);
                     last_window_index += 1;
                 }
             } else if (window_index < last_window_index) {
                 while (last_window_index > window_index) {
-                    next_window(direction == GestureDirection.RIGHT);
+                    next_window(true);
                     last_window_index -= 1;
                 }
             }
