@@ -190,6 +190,10 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding
     ) {
+        if (handling_gesture) {
+            return;
+        }
+
         var workspace = display.get_workspace_manager ().get_active_workspace ();
 
         // copied from gnome-shell, finds the primary modifier in the mask
@@ -245,7 +249,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
                 open_switcher ();
             }
 
-            // Don't allow .............................................................................................................................................
             if (direction == RIGHT && window_index >= container.get_n_children ()) {
                 return;
             }
@@ -495,16 +498,20 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 #else
     private bool container_motion_event (Clutter.MotionEvent event) {
 #endif
+        if (handling_gesture) {
+            return Clutter.EVENT_STOP;
+        }
+
         float x, y;
         event.get_coords (out x, out y);
         var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
         if (actor == null) {
-            return true;
+            return Clutter.EVENT_STOP;
         }
 
         var selected = actor as WindowSwitcherIcon;
         if (selected == null) {
-            return true;
+            return Clutter.EVENT_STOP;
         }
 
         if (current_icon != selected) {
@@ -519,7 +526,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 #else
     private bool container_mouse_release (Clutter.ButtonEvent event) {
 #endif
-        if (opened && event.get_button () == Clutter.Button.PRIMARY) {
+        if (opened && event.get_button () == Clutter.Button.PRIMARY && !handling_gesture) {
             close_switcher (event.get_time ());
         }
 
@@ -545,10 +552,14 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 #endif
         switch (event.get_key_symbol ()) {
             case Clutter.Key.Right:
-                next_window (false);
+                if (!handling_gesture) {
+                    next_window (false);
+                }
                 return Clutter.EVENT_STOP;
             case Clutter.Key.Left:
-                next_window (true);
+                if (!handling_gesture) {
+                    next_window (true);
+                }
                 return Clutter.EVENT_STOP;
             case Clutter.Key.Escape:
                 close_switcher (event.get_time (), true);
