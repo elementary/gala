@@ -253,12 +253,12 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             if (window_index > last_window_index) {
                 while (last_window_index < window_index) {
                     next_window (false);
-                    last_window_index += 1;
+                    last_window_index++;
                 }
             } else if (window_index < last_window_index) {
                 while (last_window_index > window_index) {
                     next_window (true);
-                    last_window_index -= 1;
+                    last_window_index--;
                 }
             }
         };
