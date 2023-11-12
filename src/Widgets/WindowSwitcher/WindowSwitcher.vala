@@ -10,15 +10,20 @@
 public class Gala.WindowSwitcher : Clutter.Actor {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
+
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
-
-    public bool opened { get; private set; default = false; }
-
+    // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
+    private const int GESTURE_RANGE_LIMIT = 10;
+    
     public Gala.WindowManager? wm { get; construct; }
+    public GestureTracker gesture_tracker { get; construct; }
+    
+    private bool opened = false;
+    private bool handling_gesture = false;
+    private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
-
     private Granite.Settings granite_settings;
     private Clutter.Canvas canvas;
     private Clutter.Actor container;
@@ -27,8 +32,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private Gtk.WidgetPath widget_path;
     private Gtk.StyleContext style_context;
     private unowned Gtk.CssProvider? dark_style_provider = null;
-
-    private int modifier_mask;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -51,8 +54,11 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
     private float scaling_factor = 1.0f;
 
-    public WindowSwitcher (Gala.WindowManager wm) {
-        Object (wm: wm);
+    public WindowSwitcher (Gala.WindowManager wm, GestureTracker gesture_tracker) {
+        Object (
+            wm: wm,
+            gesture_tracker: gesture_tracker
+        );
     }
 
     construct {
@@ -219,6 +225,59 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         next_window (backward);
     }
 
+    public void handle_gesture (GestureDirection direction) {
+        handling_gesture = true;
+
+        var last_window_index = 0;
+        GestureTracker.OnUpdate on_animation_update = (percentage) => {
+            var window_index = GestureTracker.animation_value (0, GESTURE_RANGE_LIMIT, percentage, true);
+
+            // Open window switcher only when user have swiped enough to switch the window
+            if (!opened && window_index > 0) {
+                unowned var display = wm.get_display ();
+                unowned var workspace_manager = display.get_workspace_manager ();
+                unowned var active_workspace = workspace_manager.get_active_workspace ();
+        
+                var windows_exist = collect_all_windows (display, active_workspace);
+                if (!windows_exist) {
+                    return;
+                }
+                open_switcher ();
+            }
+
+            // Don't allow .............................................................................................................................................
+            if (direction == RIGHT && window_index >= container.get_n_children ()) {
+                return;
+            }
+
+            if (direction == LEFT && window_index >= container.get_n_children () + 1) {
+                return;
+            }
+
+            if (window_index > last_window_index) {
+                while (last_window_index < window_index) {
+                    next_window(direction == GestureDirection.LEFT);
+                    last_window_index += 1;
+                }
+            } else if (window_index < last_window_index) {
+                while (last_window_index > window_index) {
+                    next_window(direction == GestureDirection.RIGHT);
+                    last_window_index -= 1;
+                }
+            }
+        };
+
+        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+            handling_gesture = false;
+            // if we did not have the grab before the key was released, close immediately
+            if ((get_current_modifiers () & modifier_mask) == 0) {
+                close_switcher (wm.get_display ().get_current_time ());
+            }
+        };
+
+        gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+    }
+
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
@@ -319,11 +378,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         );
 
         toggle_display (true);
-
-        // if we did not have the grab before the key was released, close immediately
-        if ((get_current_modifiers () & modifier_mask) == 0) {
-            close_switcher (wm.get_display ().get_current_time ());
-        }
     }
 
     private void toggle_display (bool show) {
@@ -381,7 +435,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         }
 
         if (!cancel) {
-            var workspace = window.get_workspace ();
+            unowned var workspace = window.get_workspace ();
             if (workspace != wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
                 workspace.activate_with_focus (window, time);
             } else {
@@ -431,7 +485,9 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     }
 
     public override void key_focus_out () {
-        close_switcher (wm.get_display ().get_current_time ());
+        if (!handling_gesture) {
+            close_switcher (wm.get_display ().get_current_time ());
+        }
     }
 
 #if HAS_MUTTER45
@@ -475,7 +531,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 #else
     public override bool key_release_event (Clutter.KeyEvent event) {
 #endif
-        if ((get_current_modifiers () & modifier_mask) == 0) {
+        if ((get_current_modifiers () & modifier_mask) == 0 && !handling_gesture) {
             close_switcher (event.get_time ());
         }
 

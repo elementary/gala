@@ -71,7 +71,7 @@ namespace Gala {
 
         private Meta.PluginInfo info;
 
-        private WindowSwitcher? winswitcher = null;
+        private WindowSwitcher? window_switcher = null;
         private ActivatableComponent? window_overview = null;
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -331,15 +331,15 @@ namespace Gala {
                 });
 
                 if (plugin_manager.window_switcher_provider == null) {
-                    winswitcher = new WindowSwitcher (this);
-                    ui_group.add_child (winswitcher);
+                    window_switcher = new WindowSwitcher (this, gesture_tracker);
+                    ui_group.add_child (window_switcher);
 
-                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
                 }
 
                 if (plugin_manager.window_overview_provider == null
@@ -529,12 +529,8 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = (
-                gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
-            );
-
-            if (!can_handle_swipe) {
+            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
+                (gesture.direction != GestureDirection.LEFT && gesture.direction != GestureDirection.RIGHT)) {
                 return;
             }
 
@@ -548,6 +544,9 @@ namespace Gala {
 
             var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
             var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+
+            var three_fingers_switch_windows = fingers == 3 && three_finger_swipe_horizontal == "switch-windows";
+            var four_fingers_switch_windows = fingers == 4 && four_finger_swipe_horizontal == "switch-windows";
 
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
@@ -570,6 +569,11 @@ namespace Gala {
 
                 switch_to_next_workspace (direction);
                 return;
+            }
+
+            var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
+            if (switch_windows) {
+                window_switcher.handle_gesture (gesture.direction);
             }
         }
 
