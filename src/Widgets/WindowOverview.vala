@@ -67,19 +67,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
     /**
      * {@inheritDoc}
-     * You may specify 'all-windows' in hints to expose all windows
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        var all_windows = hints != null && "all-windows" in hints;
-
         workspaces = new List<Meta.Workspace> ();
         unowned var manager = wm.get_display ().get_workspace_manager ();
-        if (all_windows) {
-            foreach (unowned var workspace in manager.get_workspaces ()) {
-                workspaces.append (workspace);
-            }
-        } else {
-            workspaces.append (manager.get_active_workspace ());
+        foreach (unowned var workspace in manager.get_workspaces ()) {
+            workspaces.append (workspace);
         }
 
         var windows = new List<Meta.Window> ();
@@ -172,7 +165,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         }
 
         switch (binding.get_name ()) {
-            case "expose-windows":
             case "expose-all-windows":
             case "zoom-in":
             case "zoom-out":

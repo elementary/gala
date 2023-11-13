@@ -27,8 +27,7 @@ namespace Gala {
          * The component was requested to be opened.
          *
          * @param hints The hashmap may contain special parameters that are useful
-         *              to the component. Currently, the only one implemented is the
-         *              'all-windows' hint to the windowoverview.
+         *              to the component.
          */
         public abstract void open (HashTable<string,Variant>? hints = null);
 

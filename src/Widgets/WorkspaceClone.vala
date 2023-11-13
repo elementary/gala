@@ -245,6 +245,8 @@ namespace Gala {
             listener.window_no_longer_on_all_workspaces.disconnect (add_window);
 
             background.destroy ();
+            window_container.destroy ();
+            icon_group.destroy ();
         }
 
         private void reallocate () {
