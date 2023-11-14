@@ -12,7 +12,9 @@ public class Gala.WindowStateSaver : GLib.Object {
         WindowStateSaver.window_tracker = window_tracker;
         app_windows = new GLib.HashTable<string, GLib.Array<Meta.Window?>> (GLib.str_hash, GLib.str_equal);
 
-        var path = Path.build_filename (Environment.get_home_dir (), ".local", "share", "io.elementary.gala-windowstate.db");
+        var dir = Path.build_filename (GLib.Environment.get_user_data_dir (), "io.elementary.gala");
+        Posix.mkdir (dir, 0775);
+        var path = Path.build_filename (dir, "windowstate.db");
         var rc = Sqlite.Database.open_v2 (path, out db);
 
         if (rc != Sqlite.OK) {
