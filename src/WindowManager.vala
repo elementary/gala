@@ -187,6 +187,7 @@ namespace Gala {
             WindowListener.init (display);
             KeyboardManager.init (display);
             window_tracker = new WindowTracker ();
+            WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
 
             notification_stack = new NotificationStack (display);
@@ -1435,6 +1436,8 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
+
+            WindowStateSaver.on_map (window);
 
             if ((window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) ||
                 (window.fullscreen && window.is_on_primary_monitor () && behavior_settings.get_boolean ("move-fullscreened-workspace"))) {
