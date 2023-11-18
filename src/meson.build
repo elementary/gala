@@ -16,6 +16,7 @@ gala_bin_sources = files(
     'SessionManager.vala',
     'WindowListener.vala',
     'WindowManager.vala',
+    'WindowStateSaver.vala',
     'WindowTracker.vala',
     'WorkspaceManager.vala',
     'Zoom.vala',

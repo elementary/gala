@@ -7,18 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-08-10 17:20+0000\n"
-"PO-Revision-Date: 2021-09-04 17:03+0000\n"
-"Last-Translator: Muhammad Al-Jayyousi <m7md.j99@protonmail.com>\n"
-"Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
-">\n"
+"POT-Creation-Date: 2023-11-07 19:57+0000\n"
+"PO-Revision-Date: 2023-11-09 19:10+0000\n"
+"Last-Translator: aalhaif <aalhaif@hotmail.com>\n"
+"Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/>"
+"\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -44,43 +44,43 @@ msgstr ""
 msgid "Wait"
 msgstr ""
 
-#: src/ScreenshotManager.vala:273
+#: src/ScreenshotManager.vala:281
 msgid "Screenshots"
 msgstr "لقطات الشاشة"
 
-#: src/ScreenshotManager.vala:352
+#: src/ScreenshotManager.vala:360
 msgid "Screenshot taken"
 msgstr "لقطات الشاشة الملتقطة"
 
-#: src/WindowManager.vala:2195
+#: src/WindowManager.vala:2251
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "التغييرات ستظهر اللآن."
+msgstr[1] "التغييرات ستظهر بعد ثانية واحدة."
+msgstr[2] "التغييرات ستظهر بعد ثانيتين."
+msgstr[3] "التغييرات ستظهر بعد %i ثواني."
+msgstr[4] "التغييرات ستظهر بعد %i ثانية."
+msgstr[5] "التغييرات ستظهر قريباً."
 
-#: src/WindowManager.vala:2202
+#: src/WindowManager.vala:2258
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "إعدادات شاشة العرض…"
 
-#: src/WindowManager.vala:2206
+#: src/WindowManager.vala:2262
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "إعدادات النظام…"
 
-#: src/WindowManager.vala:2207
+#: src/WindowManager.vala:2263
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2249
+#: src/WindowManager.vala:2305
 #, c-format
 msgid "Screenshot from %s"
 msgstr "لقطات شاشة من %s"
@@ -164,61 +164,79 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:46
-#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:98
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "التحسينات:"
 
 #: data/gala.metainfo.xml.in:32
-msgid "Improve handling of move-to-workspace shortcut"
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:33 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:81
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:35
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
 msgid "Updated translations"
 msgstr "تحديثات على الترجمة"
 
-#: data/gala.metainfo.xml.in:75
+#: data/gala.metainfo.xml.in:57
+msgid "Improve handling of move-to-workspace shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:100
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:101
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:77
+#: data/gala.metainfo.xml.in:102
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:103
 msgid "Update panel color after dimming the wallpaper"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:104
 msgid "Scale rounded corners per-display"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:105
 msgid "Support fractional scaling"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:125
 msgid "Performance improvements"
 msgstr "تحسينات على الأداء"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:126
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
 msgstr "منظور تعدد المهام"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:127
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 

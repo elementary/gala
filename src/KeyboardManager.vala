@@ -5,6 +5,12 @@
  */
 
 public class Gala.KeyboardManager : Object {
+    private const string[] BLOCKED_OPTIONS = {
+        "grp:alt_caps_toggle", "grp:alt_shift_toggle", "grp:alt_space_toggle",
+        "grp:shifts_toggle", "grp:caps_toggle", "grp:ctrl_alt_toggle",
+        "grp:ctrl_shift_toggle", "grp:shift_caps_toggle"
+    };
+
     private static KeyboardManager? instance;
     private static VariantType sources_variant_type;
     private static GLib.Settings settings;
@@ -90,7 +96,21 @@ public class Gala.KeyboardManager : Object {
                 }
             }
 
-            var xkb_options = settings.get_strv ("xkb-options");
+            if (layouts.length == 0) {
+                layouts = { "us" };
+                variants = { "" };
+            }
+
+            string[] xkb_options = {};
+            if (layouts.length == 1) {
+                foreach (unowned var option in settings.get_strv ("xkb-options")) {
+                    if (!(option in BLOCKED_OPTIONS)) {
+                        xkb_options += option;
+                    }
+                }
+            } else {
+                xkb_options = settings.get_strv ("xkb-options");
+            }
 
             var layout = string.joinv (",", layouts);
             var variant = string.joinv (",", variants);
