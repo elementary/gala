@@ -529,7 +529,6 @@ namespace Gala {
             }
         }
 
-
         private void on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
                 return;
