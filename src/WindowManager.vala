@@ -603,6 +603,8 @@ namespace Gala {
                 return;
             }
 
+            animating_switch_workspace = true;
+
             float screen_width, screen_height;
             unowned var display = get_display ();
             var primary = display.get_primary_monitor ();
@@ -766,6 +768,11 @@ namespace Gala {
                 wallpaper.y = -monitor_geom.y;
             }
 
+            out_group.clip_to_allocation = true;
+            out_group.width = move_primary_only ? monitor_geom.width : screen_width;
+            out_group.height = move_primary_only ? monitor_geom.height : screen_height;
+
+
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -777,11 +784,11 @@ namespace Gala {
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
                 out_group.save_easing_state ();
                 out_group.set_easing_mode (animation_mode);
-                out_group.set_easing_duration (duration);
+                out_group.set_easing_duration (AnimationDuration.NUDGE / 2);
 
                 wallpaper.save_easing_state ();
                 wallpaper.set_easing_mode (animation_mode);
-                wallpaper.set_easing_duration (duration);
+                wallpaper.set_easing_duration (AnimationDuration.NUDGE / 2);
 
                 out_group.x = 0.0f;
                 out_group.restore_easing_state ();
@@ -791,7 +798,8 @@ namespace Gala {
 
                 unowned var transition = out_group.get_transition ("x");
                 transition.completed.connect (() => {
-                    switch_workspace_animation_finished (direction, false);
+                    switch_workspace_animation_finished (direction, false, true);
+                    animating_switch_workspace = false;
                 });
             };
 
@@ -820,6 +828,11 @@ namespace Gala {
                 wallpaper_nudge.set_key_frames (keyframes);
                 wallpaper_nudge.set_values (x);
                 wallpaper.add_transition ("nudge", wallpaper_nudge);
+
+                wallpaper_nudge.completed.connect (() => {
+                    switch_workspace_animation_finished (direction, false, true);
+                    animating_switch_workspace = false;
+                });
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
@@ -2147,7 +2160,6 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    warning ("Reparented");
                     clutter_actor_reparent (actor, out_group);
 
                     if (window.fullscreen)
@@ -2227,7 +2239,6 @@ namespace Gala {
                 wallpaper_clone.y = -monitor_geom.y;
             }
 
-            out_group.visible = true;
             in_group.clip_to_allocation = out_group.clip_to_allocation = true;
             in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
             in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
@@ -2297,12 +2308,15 @@ namespace Gala {
         }
 
         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
-                bool cancel_action) {
+                bool cancel_action, bool is_nudge_animation = false) {
             if (switch_workspace_window_created_id > 0) {
                 disconnect (switch_workspace_window_created_id);
                 switch_workspace_window_created_id = 0;
             }
             end_switch_workspace ();
+            if (!is_nudge_animation) {
+                switch_workspace_completed ();
+            }
             animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
@@ -2381,7 +2395,6 @@ namespace Gala {
 
         public override void kill_switch_workspace () {
             end_switch_workspace ();
-            switch_workspace_completed ();
         }
 
         public override void locate_pointer () {
