@@ -2081,7 +2081,7 @@ namespace Gala {
             wallpaper.x = 0.0f;
             wallpaper.y += clone_offset_y;
             wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
-            
+
             if (in_group != null && wallpaper_clone != null) {
                 in_group.x = -x2;
                 wallpaper_clone.x = -x2;
