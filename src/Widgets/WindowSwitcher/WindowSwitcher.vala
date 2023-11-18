@@ -229,7 +229,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         next_window (backward);
     }
 
-    public void handle_gesture () {
+    public void handle_gesture (GestureDirection direction) {
         handling_gesture = true;
 
         unowned var display = wm.get_display ();
@@ -242,7 +242,8 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         }
         open_switcher ();
 
-        var last_window_index = 0;
+        // if direction == LEFT we need to move to the end of the list first, thats why last_window_index is set to -1
+        var last_window_index = direction == RIGHT ? 0 : -1;
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var window_index = GestureTracker.animation_value (0, GESTURE_RANGE_LIMIT, percentage, true);
 
@@ -252,12 +253,12 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
             if (window_index > last_window_index) {
                 while (last_window_index < window_index) {
-                    next_window (false);
+                    next_window (direction == LEFT);
                     last_window_index++;
                 }
             } else if (window_index < last_window_index) {
                 while (last_window_index > window_index) {
-                    next_window (true);
+                    next_window (direction == RIGHT);
                     last_window_index--;
                 }
             }
