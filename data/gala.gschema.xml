@@ -350,6 +350,12 @@
   <enum id="GesturePinch">
     <value nick="none" value="0" />
     <value nick="zoom" value="1" />
+    <value nick="screenshot" value="2" />
+    <value nick="window-screenshot" value="3" />
+    <value nick="area-screenshot" value="4" />
+    <value nick="screenshot-clip" value="5" />
+    <value nick="window-screenshot-clip" value="6" />
+    <value nick="area-screenshot-clip" value="7" />
   </enum>
   <enum id="GestureSwipeHorizontal">
     <value nick="none" value="0" />
@@ -359,7 +365,6 @@
   <enum id="GestureSwipeUp">
     <value nick="none" value="0" />
     <value nick="multitasking-view" value="1" />
-    <value nick="toggle-maximized" value="2" />
   </enum>
 
   <schema path="/io/elementary/desktop/wm/gestures/" id="io.elementary.desktop.wm.gestures">

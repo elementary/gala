@@ -263,12 +263,12 @@ namespace Gala {
             display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
-            display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
+            display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
+            display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
+            display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
+            display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
+            display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot_keybinding);
 
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
@@ -501,9 +501,13 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        private void handle_screenshot (Meta.Display display, Meta.Window? window,
+        private void handle_screenshot_keybinding (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            switch (binding.get_name ()) {
+            handle_screenshot (binding.get_name ());
+        }
+
+        private void handle_screenshot (string binding_name) {
+            switch (binding_name) {
                 case "screenshot":
                     screenshot_screen.begin ();
                     break;
@@ -525,52 +529,64 @@ namespace Gala {
             }
         }
 
+
         private void on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
                 return;
             }
 
-            var can_handle_swipe = (
-                gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
-            );
-
-            if (!can_handle_swipe) {
-                return;
-            }
-
             var fingers = gesture.fingers;
+            var direction = gesture.direction;
+
+            var is_horizontal_direction = direction == GestureDirection.LEFT || direction == GestureDirection.RIGHT;
+            var is_pinch_direction = direction == GestureDirection.IN || direction == GestureDirection.OUT;
 
             var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
             var four_finger_swipe_horizontal = GestureSettings.get_string ("four-finger-swipe-horizontal");
+            var three_finger_pinch = GestureSettings.get_string ("three-finger-pinch");
+            var four_finger_pinch = GestureSettings.get_string ("four-finger-pinch");
 
             var three_fingers_switch_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace";
             var four_fingers_switch_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace";
 
-            var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
-            var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
-
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
-            if (switch_workspace_with_gesture) {
-                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction);
+            if (switch_workspace_with_gesture && is_horizontal_direction) {
+                var natural_scroll_direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                switch_to_next_workspace (natural_scroll_direction);
                 return;
             }
 
+            var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
+            var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+
             switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
-            if (switch_workspace_with_gesture) {
+            if (switch_workspace_with_gesture && is_horizontal_direction) {
                 unowned var display = get_display ();
                 unowned var manager = display.get_workspace_manager ();
 
-                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                var natural_scroll_direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
                 moving = display.focus_window;
                 if (moving != null) {
-                    moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+                    moving.change_workspace (manager.get_active_workspace ().get_neighbor (natural_scroll_direction));
                 }
 
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (natural_scroll_direction);
                 return;
+            }
+
+            var three_finger_screenshot = fingers == 3 && three_finger_pinch.contains ("screenshot");
+            var four_finger_screenshot = fingers == 4 && four_finger_pinch.contains ("screenshot");
+
+            var pinch_to_screenshot = three_finger_screenshot || four_finger_screenshot;
+            if (gesture.type == Clutter.EventType.TOUCHPAD_PINCH && is_pinch_direction && pinch_to_screenshot) {
+                if (three_finger_screenshot) {
+                    handle_screenshot (three_finger_pinch);
+                } else if (four_finger_screenshot) {
+                    handle_screenshot (four_finger_pinch);
+                } else {
+                    assert_not_reached ();
+                }
             }
         }
 
