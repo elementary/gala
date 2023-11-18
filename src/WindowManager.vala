@@ -2272,6 +2272,11 @@ namespace Gala {
             parents = null;
             moving = null;
 
+            out_group = null;
+            in_group = null;
+            wallpaper = null;
+            wallpaper_clone = null;
+
             switch_workspace_with_gesture = false;
             animating_switch_workspace = false;
         }
