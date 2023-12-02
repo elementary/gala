@@ -48,10 +48,17 @@ public class Gala.NotificationStack : Object {
         update_stack_allocation ();
     }
 
-    public void show_notification (Meta.WindowActor notification, bool animate) requires (!notifications.contains (notification)) {
+    public void show_notification (Meta.WindowActor notification, bool animate)
+        requires (notification != null && !notification.is_destroyed () && !notifications.contains (notification)) {
+
         notification.set_pivot_point (0.5f, 0.5f);
 
-        unowned Meta.Window window = notification.get_meta_window ();
+        unowned var window = notification.get_meta_window ();
+        if (window == null) {
+            warning ("NotificationStack: Unable to show notification, window is null");
+            return;
+        }
+
         var window_rect = window.get_frame_rect ();
         window.stick ();
 
@@ -110,7 +117,12 @@ public class Gala.NotificationStack : Object {
         var iterator = 0;
         // Need to iterate like this since we might be removing entries
         while (notifications.size > iterator) {
-            var actor = notifications.get (iterator);
+            unowned var actor = notifications.get (iterator);
+            if (actor == null || actor.is_destroyed ()) {
+                warning ("NotificationStack: Notification actor was null or destroyed");
+                continue;
+            }
+
             if (animate) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
@@ -124,11 +136,7 @@ public class Gala.NotificationStack : Object {
                 actor.restore_easing_state ();
             }
 
-            // For some reason get_transition doesn't work later when we need to restore it
-            unowned Clutter.Transition? transition = actor.get_transition ("position");
-            actor.set_data<Clutter.Transition?> (TRANSITION_MOVE_STACK_ID, transition);
-
-            unowned Meta.Window window = actor.get_meta_window ();
+            unowned var window = actor.get_meta_window ();
             if (window == null) {
                 // Mutter doesn't let us know when a window is closed if a workspace
                 // transition is in progress. I'm not really sure why, but what this
@@ -174,13 +182,10 @@ public class Gala.NotificationStack : Object {
      * in the compositor and then calculate & apply the coordinates for the window
      * actor.
      */
-    private static void move_window (Meta.WindowActor actor, int x, int y) {
-        if (actor.is_destroyed ()) {
-            return;
-        }
-
-        unowned Meta.Window window = actor.get_meta_window ();
+    private static void move_window (Meta.WindowActor actor, int x, int y) requires (actor != null && !actor.is_destroyed ()) {
+        unowned var window = actor.get_meta_window ();
         if (window == null) {
+            warning ("NotificationStack: Unable to move the window, window is null");
             return;
         }
 
