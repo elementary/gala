@@ -117,9 +117,8 @@ public class Gala.NotificationStack : Object {
         var iterator = 0;
         // Need to iterate like this since we might be removing entries
         while (notifications.size > iterator) {
-            iterator++;
-
             unowned var actor = notifications.get (iterator);
+            iterator++;
             if (actor == null || actor.is_destroyed ()) {
                 warning ("NotificationStack: Notification actor was null or destroyed");
                 continue;
