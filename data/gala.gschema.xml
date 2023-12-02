@@ -7,10 +7,11 @@
     <value nick="minimize-current" value="3" />
     <value nick="open-launcher" value="4" />
     <value nick="custom-command" value="5" />
-    <value nick="window-overview-all" value="6" />
-    <value nick="switch-to-workspace-previous" value="7" />
-    <value nick="switch-to-workspace-next" value="8" />
-    <value nick="switch-to-workspace-last" value="9" />
+    <value nick="window-overview" value="6" />
+    <value nick="window-overview-all" value="7" />
+    <value nick="switch-to-workspace-previous" value="8" />
+    <value nick="switch-to-workspace-next" value="9" />
+    <value nick="switch-to-workspace-last" value="10" />
   </enum>
   <enum id="GalaWindowOverviewType">
     <value nick='grid' value='0'/>
@@ -68,6 +69,11 @@
         per hotcorner. Possible identifiers are 'hotcorner-[topleft; topright; bottomleft; bottomright]'
         followed by a ':' and then the command. ';;' is used as delimiter between command definitions.
       </description>
+    </key>
+    <key type="b" name="disable-hotcorners-in-fullscreen">
+      <default>false</default>
+      <summary>Whether hotcorners should be disabled when fullscreen window is opened</summary>
+      <description></description>
     </key>
     <key type="b" name="edge-tiling">
       <default>true</default>

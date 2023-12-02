@@ -71,6 +71,13 @@ public class Gala.HotCornerManager : Object {
         var hot_corner = new HotCorner (display, (int) x, (int) y, scale, hot_corner_position);
 
         hot_corner.trigger.connect (() => {
+            if (
+                display.get_monitor_in_fullscreen (display.get_primary_monitor ()) &&
+                behavior_settings.get_boolean ("disable-hotcorners-in-fullscreen")
+            ) {
+                return;
+            }
+
             if (action_type == ActionType.CUSTOM_COMMAND) {
                 run_custom_action (hot_corner_position);
             } else {
