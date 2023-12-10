@@ -70,9 +70,9 @@
         followed by a ':' and then the command. ';;' is used as delimiter between command definitions.
       </description>
     </key>
-    <key type="b" name="disable-hotcorners-in-fullscreen">
+    <key type="b" name="enable-hotcorners-in-fullscreen">
       <default>false</default>
-      <summary>Whether hotcorners should be disabled when fullscreen window is opened</summary>
+      <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
       <description></description>
     </key>
     <key type="b" name="edge-tiling">
