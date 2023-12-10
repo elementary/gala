@@ -71,7 +71,7 @@ namespace Gala {
 
         private Meta.PluginInfo info;
 
-        private WindowSwitcher? winswitcher = null;
+        private WindowSwitcher? window_switcher = null;
         private ActivatableComponent? window_overview = null;
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -332,15 +332,15 @@ namespace Gala {
                 });
 
                 if (plugin_manager.window_switcher_provider == null) {
-                    winswitcher = new WindowSwitcher (this);
-                    ui_group.add_child (winswitcher);
+                    window_switcher = new WindowSwitcher (this, gesture_tracker);
+                    ui_group.add_child (window_switcher);
 
-                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
                 }
 
                 if (plugin_manager.window_overview_provider == null
@@ -574,6 +574,15 @@ namespace Gala {
                 return;
             }
 
+            var three_fingers_switch_windows = fingers == 3 && three_finger_swipe_horizontal == "switch-windows";
+            var four_fingers_switch_windows = fingers == 4 && four_finger_swipe_horizontal == "switch-windows";
+
+            var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
+            if (switch_windows && !window_switcher.opened) {
+                window_switcher.handle_gesture (gesture.direction);
+                return;
+            }
+
             var three_finger_screenshot = fingers == 3 && three_finger_pinch.contains ("screenshot");
             var four_finger_screenshot = fingers == 4 && four_finger_pinch.contains ("screenshot");
 
@@ -586,6 +595,8 @@ namespace Gala {
                 } else {
                     assert_not_reached ();
                 }
+
+                return;
             }
         }
 
