@@ -73,7 +73,7 @@ public class Gala.HotCornerManager : Object {
         hot_corner.trigger.connect (() => {
             if (
                 display.get_monitor_in_fullscreen (display.get_primary_monitor ()) &&
-                !behavior_settings.get_boolean ("enaable-hotcorners-in-fullscreen")
+                !behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
             ) {
                 return;
             }
