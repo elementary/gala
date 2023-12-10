@@ -2032,16 +2032,6 @@ namespace Gala {
                 }
             }
 
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                }
-            });
-
             // make sure we don't add docks when there are fullscreened
             // windows on one of the groups. Simply raising seems not to
             // work, mutter probably reverts the order internally to match
@@ -2128,6 +2118,16 @@ namespace Gala {
             animating_switch_workspace = true;
 
             prepare_workspace_switch (from, to, direction);
+
+            // while a workspace is being switched mutter doesn't map windows
+            // TODO: currently only notifications are handled here, other windows should be too
+            switch_workspace_window_created_id = window_created.connect ((window) => {
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+                    clutter_actor_reparent (actor, notification_group);
+                    notification_stack.show_notification (actor, enable_animations);
+                }
+            });
 
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
