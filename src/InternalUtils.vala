@@ -111,14 +111,6 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-#if HAS_MUTTER45
-        private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-#else
-        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-#endif
-            return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
-        }
-
         public struct TilableWindow {
 #if HAS_MUTTER45
             Mtk.Rectangle rect;
@@ -153,39 +145,42 @@ namespace Gala {
                 var rect = window.rect;
 
                 // Work out where the slot is
+                const int SLOT_PADDING = 10;
 #if HAS_MUTTER45
                 Mtk.Rectangle target = {
 #else
                 Meta.Rectangle target = {
 #endif
-                    area.x + (i % columns) * slot_width,
-                    area.y + (i / columns) * slot_height,
-                    slot_width,
-                    slot_height
+                    area.x + (i % columns) * slot_width + SLOT_PADDING,
+                    area.y + (i / columns) * slot_height + SLOT_PADDING,
+                    slot_width - SLOT_PADDING * 2,
+                    slot_height - SLOT_PADDING * 2
                 };
-                target = rect_adjusted (target, 10, 10, -10, -10);
 
-                float scale;
-                if (target.width / (double)rect.width < target.height / (double)rect.height) {
+                float width_ratio = target.width / (float)rect.width;
+                float height_ratio = target.height / (float)rect.height;
+                bool should_center_vertically = width_ratio < height_ratio;
+
+                float scale = should_center_vertically ? width_ratio : height_ratio;
+                scale = scale.clamp (0.0f, 1.0f);
+                if (should_center_vertically) {
                     // Center vertically
-                    scale = target.width / (float)rect.width;
                     target.y += (target.height - (int)(rect.height * scale)) / 2;
                     target.height = (int)Math.floorf (rect.height * scale);
                 } else {
                     // Center horizontally
-                    scale = target.height / (float)rect.height;
                     target.x += (target.width - (int)(rect.width * scale)) / 2;
                     target.width = (int)Math.floorf (rect.width * scale);
                 }
 
                 // Don't scale the windows too much
-                if (scale > 1.0) {
-                    scale = 1.0f;
-                    target = {target.x + target.width / 2 - (int)Math.floorf (rect.width * scale) / 2,
-                              target.y + target.width / 2 - (int)Math.floorf (rect.height * scale) / 2,
-                              (int)Math.floorf (rect.width * scale),
-                              (int)Math.floorf (rect.height * scale)};
-                }
+                //  if (scale > 1.0) {
+                //      scale = 1.0f;
+                //      target = {target.x + target.width / 2 - (int)Math.floorf (rect.width * scale) / 2,
+                //                target.y + target.height / 2 - (int)Math.floorf (rect.height * scale) / 2,
+                //                (int)Math.floorf (rect.width * scale),
+                //                (int)Math.floorf (rect.height * scale)};
+                //  }
 
                 // put the last row in the center, if necessary
                 if (left_over != columns && i >= without_over) {
