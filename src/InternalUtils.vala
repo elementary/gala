@@ -111,14 +111,6 @@ namespace Gala {
         // Code ported from KWin present windows effect
         // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
-        // some math utilities
-        private static int squared_distance (Gdk.Point a, Gdk.Point b) {
-            var k1 = b.x - a.x;
-            var k2 = b.y - a.y;
-
-            return k1 * k1 + k2 * k2;
-        }
-
 #if HAS_MUTTER45
         private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
 #else
@@ -157,74 +149,13 @@ namespace Gala {
             int slot_width = area.width / columns;
             int slot_height = area.height / rows;
 
-            TilableWindow?[] taken_slots = {};
-            taken_slots.resize (rows * columns);
-
-            // precalculate all slot centers
-            Gdk.Point[] slot_centers = {};
-            slot_centers.resize (rows * columns);
-            for (int x = 0; x < columns; x++) {
-                for (int y = 0; y < rows; y++) {
-                    slot_centers[x + y * columns] = {
-                        area.x + slot_width * x + slot_width / 2,
-                        area.y + slot_height * y + slot_height / 2
-                    };
-                }
-            }
-
-            // Assign each window to the closest available slot
-            var tmplist = windows.copy ();
-            while (tmplist.length () > 0) {
-                unowned List<unowned TilableWindow?> link = tmplist.nth (0);
-                var window = link.data;
-                var rect = window.rect;
-
-                var slot_candidate = -1;
-                var slot_candidate_distance = int.MAX;
-                var pos = rect_center (rect);
-
-                // all slots
-                for (int i = 0; i < columns * rows; i++) {
-                    if (i > window_count - 1)
-                        break;
-
-                    var dist = squared_distance (pos, slot_centers[i]);
-
-                    if (dist < slot_candidate_distance) {
-                        // window is interested in this slot
-                        var occupier = taken_slots[i];
-                        if (occupier == window)
-                            continue;
-
-                        if (occupier == null || dist < squared_distance (rect_center (occupier.rect), slot_centers[i])) {
-                            // either nobody lives here, or we're better - takeover the slot if it's our best
-                            slot_candidate = i;
-                            slot_candidate_distance = dist;
-                        }
-                    }
-                }
-
-                if (slot_candidate == -1)
-                    continue;
-
-                if (taken_slots[slot_candidate] != null)
-                    tmplist.prepend (taken_slots[slot_candidate]);
-
-                tmplist.remove_link (link);
-                taken_slots[slot_candidate] = window;
-            }
-
             var result = new List<TilableWindow?> ();
 
             // see how many windows we have on the last row
             int left_over = (int)window_count - columns * (rows - 1);
 
-            for (int slot = 0; slot < columns * rows; slot++) {
-                var window = taken_slots[slot];
-                // some slots might be empty
-                if (window == null)
-                    continue;
-
+            for (int i = 0; i < windows.length (); i++) {
+                var window = windows.nth (i).data;
                 var rect = window.rect;
 
                 // Work out where the slot is
@@ -233,8 +164,8 @@ namespace Gala {
 #else
                 Meta.Rectangle target = {
 #endif
-                    area.x + (slot % columns) * slot_width,
-                    area.y + (slot / columns) * slot_height,
+                    area.x + (i % columns) * slot_width,
+                    area.y + (i / columns) * slot_height,
                     slot_width,
                     slot_height
                 };
@@ -263,7 +194,7 @@ namespace Gala {
                 }
 
                 // put the last row in the center, if necessary
-                if (left_over != columns && slot >= columns * (rows - 1))
+                if (left_over != columns && i >= columns * (rows - 1))
                     target.x += (columns - left_over) * slot_width / 2;
 
                 result.prepend ({ target, window.id });
