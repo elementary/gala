@@ -71,7 +71,7 @@
       </description>
     </key>
     <key type="b" name="enable-hotcorners-in-fullscreen">
-      <default>false</default>
+      <default>true</default>
       <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
       <description></description>
     </key>
