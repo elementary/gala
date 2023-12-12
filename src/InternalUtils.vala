@@ -162,7 +162,6 @@ namespace Gala {
                 bool should_center_vertically = width_ratio < height_ratio;
 
                 float scale = should_center_vertically ? width_ratio : height_ratio;
-                scale = scale.clamp (0.0f, 1.0f);
                 if (should_center_vertically) {
                     // Center vertically
                     target.y += (target.height - (int)(rect.height * scale)) / 2;
@@ -174,13 +173,14 @@ namespace Gala {
                 }
 
                 // Don't scale the windows too much
-                //  if (scale > 1.0) {
-                //      scale = 1.0f;
-                //      target = {target.x + target.width / 2 - (int)Math.floorf (rect.width * scale) / 2,
-                //                target.y + target.height / 2 - (int)Math.floorf (rect.height * scale) / 2,
-                //                (int)Math.floorf (rect.width * scale),
-                //                (int)Math.floorf (rect.height * scale)};
-                //  }
+                if (scale > 1.0) {
+                    target = {
+                        target.x + target.width / 2 - rect.width / 2,
+                        target.y + target.height / 2 - rect.height / 2,
+                        rect.width,
+                        rect.height
+                    };
+                }
 
                 // put the last row in the center, if necessary
                 if (left_over != columns && i >= without_over) {
@@ -190,7 +190,6 @@ namespace Gala {
                 result.prepend ({ target, window.id });
             }
 
-            result.reverse ();
             return result;
         }
 
