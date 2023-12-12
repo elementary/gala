@@ -119,14 +119,6 @@ namespace Gala {
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-#if HAS_MUTTER45
-        private static Gdk.Point rect_center (Mtk.Rectangle rect) {
-#else
-        private static Gdk.Point rect_center (Meta.Rectangle rect) {
-#endif
-            return {rect.x + rect.width / 2, rect.y + rect.height / 2};
-        }
-
         public struct TilableWindow {
 #if HAS_MUTTER45
             Mtk.Rectangle rect;
@@ -152,9 +144,11 @@ namespace Gala {
             var result = new List<TilableWindow?> ();
 
             // see how many windows we have on the last row
-            int left_over = (int)window_count - columns * (rows - 1);
+            int without_over = columns * (rows - 1);
+            int left_over = (int)window_count - without_over;
+            int x_over_compensation = (columns - left_over) * slot_width / 2;
 
-            for (int i = 0; i < windows.length (); i++) {
+            for (int i = 0; i < window_count; i++) {
                 var window = windows.nth (i).data;
                 var rect = window.rect;
 
@@ -187,15 +181,16 @@ namespace Gala {
                 // Don't scale the windows too much
                 if (scale > 1.0) {
                     scale = 1.0f;
-                    target = {rect_center (target).x - (int)Math.floorf (rect.width * scale) / 2,
-                              rect_center (target).y - (int)Math.floorf (rect.height * scale) / 2,
-                              (int)Math.floorf (scale * rect.width),
-                              (int)Math.floorf (scale * rect.height)};
+                    target = {target.x + target.width / 2 - (int)Math.floorf (rect.width * scale) / 2,
+                              target.y + target.width / 2 - (int)Math.floorf (rect.height * scale) / 2,
+                              (int)Math.floorf (rect.width * scale),
+                              (int)Math.floorf (rect.height * scale)};
                 }
 
                 // put the last row in the center, if necessary
-                if (left_over != columns && i >= columns * (rows - 1))
-                    target.x += (columns - left_over) * slot_width / 2;
+                if (left_over != columns && i >= without_over) {
+                    target.x += x_over_compensation;
+                }
 
                 result.prepend ({ target, window.id });
             }
