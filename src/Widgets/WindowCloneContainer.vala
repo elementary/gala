@@ -175,7 +175,7 @@ namespace Gala {
          * the resulting spots.
          */
         public void reflow (bool with_gesture = false, bool is_cancel_animation = false) {
-            if (!opened) {
+            if (!opened || get_n_children () == 0) {
                 return;
             }
 
@@ -184,19 +184,6 @@ namespace Gala {
                 unowned var clone = (WindowClone) child;
                 windows.prepend ({ clone.window.get_frame_rect (), clone });
             }
-
-            if (windows.is_empty ()) {
-                return;
-            }
-
-            // make sure the windows are always in the same order so the algorithm
-            // doesn't give us different slots based on stacking order, which can lead
-            // to windows flying around weirdly
-            windows.sort ((a, b) => {
-                var seq_a = ((WindowClone) a.id).window.get_stable_sequence ();
-                var seq_b = ((WindowClone) b.id).window.get_stable_sequence ();
-                return (int) (seq_b - seq_a);
-            });
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
