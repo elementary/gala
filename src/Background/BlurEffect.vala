@@ -194,8 +194,8 @@ public class Gala.BlurEffect : Clutter.Effect {
         );
         general_node.add_child (blur_node);
         blur_node.add_rectangle ({
-            0.0f, 
-            0.0f, 
+            0.0f,
+            0.0f,
             texture.get_width (),
             texture.get_height ()
         });
