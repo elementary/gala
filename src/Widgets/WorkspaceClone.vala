@@ -27,14 +27,18 @@ namespace Gala {
         private int last_width;
         private int last_height;
 
-        public FramedBackground (Meta.Display display) {
-            Object (display: display, monitor_index: display.get_primary_monitor (), control_position: false);
+        public FramedBackground (WindowManager wm) {
+            Object (
+                wm: wm,
+                monitor_index: wm.get_display ().get_primary_monitor (),
+                control_position: false
+            );
         }
 
         construct {
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-            var primary = display.get_primary_monitor ();
-            var monitor_geom = display.get_monitor_geometry (primary);
+            var primary = wm.get_display ().get_primary_monitor ();
+            var monitor_geom = wm.get_display ().get_monitor_geometry (primary);
 
             var effect = new ShadowEffect (40) {
                 css_class = "workspace"
@@ -142,18 +146,16 @@ namespace Gala {
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
-        private bool _active = false;
-        /**
-         * If this WorkspaceClone is currently the active one. Also sets the active
-         * state on its IconGroup.
-         */
-        public bool active {
+        private float _scale_factor = 1.0f;
+        public float scale_factor {
             get {
-                return _active;
+                return _scale_factor;
             }
             set {
-                _active = value;
-                icon_group.active = value;
+                if (value != _scale_factor) {
+                    _scale_factor = value;
+                    reallocate ();
+                }
             }
         }
 
@@ -162,28 +164,29 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker) {
-            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker);
+        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
+            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
 
         construct {
             opened = false;
 
             unowned Meta.Display display = workspace.get_display ();
-            var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
+            var primary_monitor = display.get_primary_monitor ();
+            var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
             var background_click_action = new Clutter.ClickAction ();
             background_click_action.clicked.connect (() => {
                 selected (true);
             });
-            background = new FramedBackground (display);
+            background = new FramedBackground (wm);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker);
+            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor);
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
-            icon_group = new IconGroup (wm, workspace);
+            icon_group = new IconGroup (wm, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
@@ -220,7 +223,7 @@ namespace Gala {
             foreach (var window in windows) {
                 if (window.window_type == Meta.WindowType.NORMAL
                     && !window.on_all_workspaces
-                    && window.get_monitor () == display.get_primary_monitor ()) {
+                    && window.is_on_primary_monitor ()) {
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
@@ -242,6 +245,13 @@ namespace Gala {
             listener.window_no_longer_on_all_workspaces.disconnect (add_window);
 
             background.destroy ();
+            window_container.destroy ();
+            icon_group.destroy ();
+        }
+
+        private void reallocate () {
+            icon_group.scale_factor = scale_factor;
+            window_container.monitor_scale = scale_factor;
         }
 
         /**
@@ -252,7 +262,7 @@ namespace Gala {
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
-                || window.get_monitor () != window.get_display ().get_primary_monitor ())
+                || !window.is_on_primary_monitor ())
                 return;
 
             foreach (var child in window_container.get_children ())
@@ -280,7 +290,11 @@ namespace Gala {
                 remove_window (window);
         }
 
+#if HAS_MUTTER45
+        public void update_size (Mtk.Rectangle monitor_geometry) {
+#else
         public void update_size (Meta.Rectangle monitor_geometry) {
+#endif
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
@@ -291,22 +305,20 @@ namespace Gala {
          * @return The position on the X axis of this workspace.
          */
         public float multitasking_view_x () {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return workspace.index () * (width - (X_OFFSET * scale_factor));
+            return workspace.index () * (width - InternalUtils.scale_to_int (X_OFFSET, scale_factor));
         }
 
         /**
          * @return The amount of pixels the workspace is overlapped in the X axis.
          */
         private float current_x_overlap () {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
             var display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var active_index = manager.get_active_workspace ().index ();
             if (workspace.index () == active_index) {
                 return 0;
             } else {
-                var x_offset = X_OFFSET * scale_factor + WindowManagerGala.WORKSPACE_GAP;
+                var x_offset = InternalUtils.scale_to_int (X_OFFSET, scale_factor) + WindowManagerGala.WORKSPACE_GAP;
                 return (workspace.index () < active_index) ? -x_offset : x_offset;
             }
         }
@@ -317,7 +329,11 @@ namespace Gala {
          *
          * @param amount The amount in px to shrink.
          */
+#if HAS_MUTTER45
+        private static inline void shrink_rectangle (ref Mtk.Rectangle rect, int amount) {
+#else
         private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
+#endif
             rect.x += amount;
             rect.y += amount;
             rect.width -= amount * 2;
@@ -339,15 +355,14 @@ namespace Gala {
 
             window_container.restack_windows ();
 
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            var display = workspace.get_display ();
+            unowned var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
             var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
             var target_x = multitasking_view_x ();
 
-            var scale = (float)(monitor.height - TOP_OFFSET * scale_factor - BOTTOM_OFFSET * scale_factor) / monitor.height;
-            var pivot_y = TOP_OFFSET * scale_factor / (monitor.height - monitor.height * scale);
+            var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
+            var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
 
             update_size (monitor);
 
@@ -360,7 +375,7 @@ namespace Gala {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage);
                 set_x (x);
 
-                double update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
+                var update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
 
@@ -370,37 +385,41 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
-                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture) {
+            if (!with_gesture || !wm.enable_animations) {
                 on_animation_begin (0);
                 on_animation_end (1, false, 0);
             } else {
                 gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
 
+#if HAS_MUTTER45
+            Mtk.Rectangle area = {
+#else
             Meta.Rectangle area = {
+#endif
                 (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
-                (int)Math.floorf (monitor.y + TOP_OFFSET * scale_factor),
+                (int)Math.floorf (monitor.y + InternalUtils.scale_to_int (TOP_OFFSET, scale_factor)),
                 (int)Math.floorf (monitor.width * scale),
                 (int)Math.floorf (monitor.height * scale)
             };
             shrink_rectangle (ref area, 32);
 
-            window_container.padding_top = TOP_OFFSET * scale_factor;
+            window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
             window_container.padding_left =
                 window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-            window_container.padding_bottom = BOTTOM_OFFSET * scale_factor;
+            window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
 
             icon_group.redraw ();
 
@@ -442,19 +461,19 @@ namespace Gala {
                 }
 
                 save_easing_state ();
-                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
-                background.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture) {
+            if (!with_gesture || !wm.enable_animations) {
                 on_animation_end (1, false, 0);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);

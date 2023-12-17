@@ -7,7 +7,6 @@
 public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private int button_size;
     private int container_margin;
-    private const int SHADOW_SIZE = 100;
     private const uint FADE_OUT_TIMEOUT = 200;
     private const float MINIMUM_SCALE = 0.1f;
     private const float MAXIMUM_SCALE = 1.0f;
@@ -55,17 +54,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             || window_type == Meta.WindowType.MODAL_DIALOG;
     }
 
-    private static void get_current_cursor_position (out int x, out int y) {
-        Gdk.Display.get_default ().get_default_seat ().get_pointer ().get_position (null, out x, out y);
-    }
-
     public PopupWindow (Gala.WindowManager wm, Meta.WindowActor window_actor) {
         Object (wm: wm, window_actor: window_actor);
     }
 
     construct {
-        var scale = Utils.get_ui_scaling_factor ();
-        button_size = 36 * scale;
+        unowned var display = wm.get_display ();
+        var scale = display.get_monitor_scale (display.get_current_monitor ());
+
+        button_size = Gala.Utils.scale_to_int (36, scale);
         container_margin = button_size / 2;
 
         reactive = true;
@@ -73,14 +70,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_pivot_point (0.5f, 0.5f);
         set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
 
-        var window = window_actor.get_meta_window ();
+        unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
-        window.notify["appears-focused"].connect (() => {
-            Idle.add (() => {
-                update_window_focus ();
-                return Source.REMOVE;
-            });
-        });
+        window.notify["appears-focused"].connect (update_window_focus);
+
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (update_window_focus);
 
         clone = new Clutter.Clone (window_actor);
 
@@ -92,14 +87,18 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         container = new Clutter.Actor ();
         container.reactive = true;
         container.set_scale (0.35f, 0.35f);
-        container.add_effect (new ShadowEffect (SHADOW_SIZE) { css_class = "window-clone" });
+        container.add_effect (new ShadowEffect (55) { css_class = "window-clone" });
         container.add_child (clone);
         container.add_action (move_action);
 
         update_size ();
         update_container_position ();
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         float x_position, y_position;
@@ -115,17 +114,20 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_action = new Clutter.ClickAction ();
         close_action.clicked.connect (on_close_click_clicked);
 
-        close_button = Gala.Utils.create_close_button ();
+        close_button = Gala.Utils.create_close_button (scale);
         close_button.opacity = 0;
         close_button.reactive = true;
+        // TODO: Check if close button should be on the right
+        close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 0.0f));
+        close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 0.0f));
         close_button.add_action (close_action);
 
-        resize_button = Utils.create_resize_button ();
-        resize_button.set_pivot_point (0.5f, 0.5f);
-        resize_button.set_position (width - button_size, height - button_size);
+        resize_button = Utils.create_resize_button (scale);
         resize_button.opacity = 0;
-        resize_button.button_press_event.connect (on_resize_button_press);
         resize_button.reactive = true;
+        resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 1.0f));
+        resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 1.0f));
+        resize_button.button_press_event.connect (on_resize_button_press);
 
         add_child (container);
         add_child (close_button);
@@ -167,7 +169,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
     }
 
+#if HAS_MUTTER45
+    public override bool enter_event (Clutter.Event event) {
+#else
     public override bool enter_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? 300 : 0;
 
         close_button.save_easing_state ();
@@ -180,10 +186,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resize_button.opacity = 255;
         resize_button.restore_easing_state ();
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
+#if HAS_MUTTER45
+    public override bool leave_event (Clutter.Event event) {
+#else
     public override bool leave_event (Clutter.CrossingEvent event) {
+#endif
         var duration = wm.enable_animations ? 300 : 0;
 
         close_button.save_easing_state ();
@@ -196,7 +206,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resize_button.opacity = 0;
         resize_button.restore_easing_state ();
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
     public void set_container_clip (Graphene.Rect? container_clip) {
@@ -207,22 +217,29 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
         return this;
     }
 
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
+#if HAS_MUTTER45
+    private bool on_resize_button_press (Clutter.Event event) {
+#else
     private bool on_resize_button_press (Clutter.ButtonEvent event) {
-        if (resizing || event.button != 1) {
-            return Gdk.EVENT_STOP;
+#endif
+        if (resizing || event.get_button () != Clutter.Button.PRIMARY) {
+            return Clutter.EVENT_STOP;
         }
 
         resizing = true;
 
-        get_current_cursor_position (out resize_start_x, out resize_start_y);
+        event.get_coords (out resize_start_x, out resize_start_y);
 
         begin_resize_width = width;
         begin_resize_height = height;
@@ -230,12 +247,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
 
-        return Gdk.EVENT_PROPAGATE;
+        wm.get_display ().set_cursor (Meta.Cursor.SE_RESIZE);
+
+        return Clutter.EVENT_PROPAGATE;
     }
 
     private bool on_resize_event (Clutter.Event event) {
         if (!resizing) {
-            return Gdk.EVENT_STOP;
+            return Clutter.EVENT_STOP;
         }
 
         switch (event.get_type ()) {
@@ -246,34 +265,32 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
                     break;
                 }
 
-                int motion_x, motion_y;
-                get_current_cursor_position (out motion_x, out motion_y);
-
-                float diff_x = motion_x - resize_start_x;
-                float diff_y = motion_y - resize_start_y;
+                float event_x, event_y;
+                event.get_coords (out event_x, out event_y);
+                float diff_x = event_x - resize_start_x;
+                float diff_y = event_y - resize_start_y;
 
                 width = begin_resize_width + diff_x;
                 height = begin_resize_height + diff_y;
 
                 update_container_scale ();
                 update_size ();
-                reposition_resize_button ();
 
                 break;
             case Clutter.EventType.BUTTON_RELEASE:
-                if (event.get_button () == 1) {
+                if (event.get_button () == Clutter.Button.PRIMARY) {
                     stop_resizing ();
                 }
 
                 break;
             case Clutter.EventType.LEAVE:
             case Clutter.EventType.ENTER:
-                return Gdk.EVENT_PROPAGATE;
+                return Clutter.EVENT_PROPAGATE;
             default:
                 break;
         }
 
-        return Gdk.EVENT_STOP;
+        return Clutter.EVENT_STOP;
     }
 
     private void stop_resizing () {
@@ -290,12 +307,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         resizing = false;
 
         update_screen_position ();
+
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void on_allocation_changed () {
         update_clone_clip ();
         update_size ();
-        reposition_resize_button ();
     }
 
     private void on_close_click_clicked () {
@@ -320,8 +338,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             return;
         }
 
-        var window = window_actor.get_meta_window ();
-        if (window.appears_focused) {
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var active_workspace = workspace_manager.get_active_workspace ();
+        unowned var window = window_actor.get_meta_window ();
+
+        if (window.appears_focused && window.located_on_workspace (active_workspace)) {
             hide ();
         } else if (!window_actor.is_destroyed ()) {
             show ();
@@ -402,7 +423,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void place_window_in_screen () {
         off_screen = false;
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         int monitor_x = monitor_rect.x;
@@ -434,7 +459,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
 
+#if HAS_MUTTER45
+        Mtk.Rectangle monitor_rect;
+#else
         Meta.Rectangle monitor_rect;
+#endif
         get_current_monitor_rect (out monitor_rect);
 
         int monitor_x = monitor_rect.x;
@@ -510,11 +539,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return false;
     }
 
-    private void reposition_resize_button () {
-        resize_button.set_position (width - button_size, height - button_size);
-    }
-
+#if HAS_MUTTER45
+    private void get_current_monitor_rect (out Mtk.Rectangle rect) {
+#else
     private void get_current_monitor_rect (out Meta.Rectangle rect) {
+#endif
         var display = wm.get_display ();
         rect = display.get_monitor_geometry (display.get_current_monitor ());
     }

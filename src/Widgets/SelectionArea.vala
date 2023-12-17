@@ -24,8 +24,8 @@ namespace Gala {
         public bool cancelled { get; private set; }
 
         private ModalProxy? modal_proxy;
-        private Gdk.Point start_point;
-        private Gdk.Point end_point;
+        private Graphene.Point start_point;
+        private Graphene.Point end_point;
         private bool dragging = false;
         private bool clicked = false;
 
@@ -34,8 +34,8 @@ namespace Gala {
         }
 
         construct {
-            start_point = { 0, 0 };
-            end_point = { 0, 0 };
+            start_point.init (0, 0);
+            end_point.init (0, 0);
             visible = true;
             reactive = true;
 
@@ -52,8 +52,12 @@ namespace Gala {
             canvas.invalidate ();
         }
 
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event e) {
+#else
         public override bool key_press_event (Clutter.KeyEvent e) {
-            if (e.keyval == Clutter.Key.Escape) {
+#endif
+            if (e.get_key_symbol () == Clutter.Key.Escape) {
                 close ();
                 cancelled = true;
                 closed ();
@@ -63,21 +67,30 @@ namespace Gala {
             return false;
         }
 
+#if HAS_MUTTER45
+        public override bool button_press_event (Clutter.Event e) {
+#else
         public override bool button_press_event (Clutter.ButtonEvent e) {
-            if (dragging || e.button != 1) {
+#endif
+            if (dragging || e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
             clicked = true;
 
-            start_point.x = (int) e.x;
-            start_point.y = (int) e.y;
+            float x, y;
+            e.get_coords (out x, out y);
+            start_point.init (x, y);
 
             return true;
         }
 
+#if HAS_MUTTER45
+        public override bool button_release_event (Clutter.Event e) {
+#else
         public override bool button_release_event (Clutter.ButtonEvent e) {
-            if (e.button != 1) {
+#endif
+            if (e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
@@ -99,13 +112,18 @@ namespace Gala {
             return true;
         }
 
+#if HAS_MUTTER45
+        public override bool motion_event (Clutter.Event e) {
+#else
         public override bool motion_event (Clutter.MotionEvent e) {
+#endif
             if (!clicked) {
                 return true;
             }
 
-            end_point.x = (int) e.x;
-            end_point.y = (int) e.y;
+            float x, y;
+            e.get_coords (out x, out y);
+            end_point.init (x, y);
             content.invalidate ();
 
             if (!dragging) {
@@ -130,11 +148,11 @@ namespace Gala {
             modal_proxy = wm.push_modal (this);
         }
 
-        public void get_selection_rectangle (out int x, out int y, out int width, out int height) {
-            x = int.min (start_point.x, end_point.x);
-            y = int.min (start_point.y, end_point.y);
-            width = (start_point.x - end_point.x).abs ();
-            height = (start_point.y - end_point.y).abs ();
+        public Graphene.Rect get_selection_rectangle () {
+            return Graphene.Rect () {
+                origin = start_point,
+                size = Graphene.Size.zero ()
+            }.expand (end_point);
         }
 
         private bool draw_area (Cairo.Context ctx) {
@@ -146,14 +164,12 @@ namespace Gala {
 
             ctx.translate (0.5, 0.5);
 
-            int x, y, w, h;
-            get_selection_rectangle (out x, out y, out w, out h);
-
-            ctx.rectangle (x, y, w, h);
+            var rect = get_selection_rectangle ();
+            ctx.rectangle (rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
             ctx.set_source_rgba (0.1, 0.1, 0.1, 0.2);
             ctx.fill ();
 
-            ctx.rectangle (x, y, w, h);
+            ctx.rectangle (rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
             ctx.set_source_rgb (0.7, 0.7, 0.7);
             ctx.set_line_width (1.0);
             ctx.stroke ();

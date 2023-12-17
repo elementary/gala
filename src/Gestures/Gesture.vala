@@ -35,9 +35,9 @@ namespace Gala {
     }
 
     public class Gesture {
-        public Gdk.EventType type;
+        public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;
-        public Gdk.InputSource performed_on_device_type;
+        public Clutter.InputDeviceType performed_on_device_type;
     }
 }

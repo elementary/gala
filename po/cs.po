@@ -7,72 +7,73 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-03-22 18:54+0000\n"
-"PO-Revision-Date: 2022-01-11 03:35+0000\n"
-"Last-Translator: p-bo <pavel.borecki@gmail.com>\n"
+"POT-Creation-Date: 2023-11-07 19:57+0000\n"
+"PO-Revision-Date: 2023-08-30 11:08+0000\n"
+"Last-Translator: Jakub Kyzr <jakubkyzr@gmail.com>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” neodpovídá"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Aplikace neodpovídá"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Můžete chvíli počkat jestli aplikace nezačne reagovat, nebo ji vynuceně "
+"ukončit."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Vynuceně ukončit"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Počkat"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:281
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:360
 msgid "Screenshot taken"
 msgstr "Snímky obrazovky pořízen"
 
-#: src/WindowManager.vala:2114
-#, fuzzy, c-format
-#| msgid "Changes will automatically revert after 30 seconds."
+#: src/WindowManager.vala:2251
+#, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Změny budou za 30 sekund automaticky vzaty zpět."
-msgstr[1] "Změny budou za 30 sekund automaticky vzaty zpět."
-msgstr[2] "Změny budou za 30 sekund automaticky vzaty zpět."
+msgstr[0] "Změny budou za %i sekundu automaticky vzaty zpět."
+msgstr[1] "Změny budou za %i sekundy automaticky vzaty zpět."
+msgstr[2] "Změny budou za %i sekund automaticky vzaty zpět."
 
-#: src/WindowManager.vala:2121
+#: src/WindowManager.vala:2258
 msgid "Keep new display settings?"
 msgstr "Ponechat nová nastavení zobrazení?"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2262
 msgid "Keep Settings"
 msgstr "Ponechat nastavení"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2263
 msgid "Use Previous Settings"
 msgstr "Použít předchozí nastavení"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2305
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Snímky obrazovky pořízený %s"
@@ -125,27 +126,27 @@ msgstr "Zrušit maximalizaci"
 msgid "Maximize"
 msgstr "Maximalizovat"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "Změnit tapetu plochy…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "Nastavení zobrazení…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "Nastavení systému…"
 
-#: data/gala.appdata.xml.in:7
+#: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
 msgstr "Víceúlohové zobrazení a správa oken"
 
-#: data/gala.appdata.xml.in:8
+#: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
 msgstr "Správce kompozice a oken pro Pantheon"
 
-#: data/gala.appdata.xml.in:11
+#: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
@@ -153,49 +154,87 @@ msgstr ""
 "Správce oken a kompozice založený na libmutter a navržený elementary pro "
 "použití s Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:92
+#: data/gala.metainfo.xml.in:23
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Vylepšení:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
-#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:95
+#: data/gala.metainfo.xml.in:32
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:35
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
 msgid "Updated translations"
-msgstr "Aktualizovány překlady"
+msgstr "Aktualizované překlady"
 
-#: data/gala.appdata.xml.in:59
-msgid "Reload animated wallpapers when timezone changes"
+#: data/gala.metainfo.xml.in:57
+msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
-#, fuzzy
-#| msgid "Show window titles in multitasking view"
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
-
-#: data/gala.appdata.xml.in:61
-msgid "Improve multitasking view animation performance"
+#: data/gala.metainfo.xml.in:100
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
 msgstr ""
+"Správně nastavit rozložení klávesnice při startu, aby indikátor odpovídal "
+"vybranému rozložení"
 
-#: data/gala.appdata.xml.in:88
-msgid "Fixes:"
-msgstr "Opravy:"
+#: data/gala.metainfo.xml.in:101
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr "Opraveny klávesové zkratky snímků obrazovky ve Víceúlohovém zobrazení"
 
-#: data/gala.appdata.xml.in:90
-msgid "Fix regressions for OS 7"
+#: data/gala.metainfo.xml.in:102
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
 msgstr ""
+"Správně nastavit zvýraznění aktivní plochy při vstupu do Víceúlohové "
+"zobrazení, a spustit animace 1:1 pomocí více-dotykových gest"
 
-#: data/gala.appdata.xml.in:94
-#, fuzzy
-#| msgid "Use access portal for display settings confirmation dialog"
-msgid "Use access portal for force quit"
-msgstr "Použit přístup portálu pro zobrazení dialogu potvrzení nastavení"
+#: data/gala.metainfo.xml.in:103
+msgid "Update panel color after dimming the wallpaper"
+msgstr "Aktualizovat barvu panelu po ztmavení tapety"
 
-#: data/gala.appdata.xml.in:106
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
+#: data/gala.metainfo.xml.in:104
+msgid "Scale rounded corners per-display"
+msgstr "Škálovat zakulacené rohy pro každý displej zvlášť"
+
+#: data/gala.metainfo.xml.in:105
+msgid "Support fractional scaling"
+msgstr "Podpora frakčního škálování"
+
+#: data/gala.metainfo.xml.in:125
+msgid "Performance improvements"
+msgstr "Zlepšení výkonu"
+
+#: data/gala.metainfo.xml.in:126
+msgid "Remove texture from Multitasking View"
+msgstr "Odstranění textury z Víceúlohového zobrazení"
+
+#: data/gala.metainfo.xml.in:127
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "Zamezení nechtěnému výběru oken v přepínači oken"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -215,13 +254,26 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Náhradní spouštěč pro upozorňování ze zastaralých aplikací."
 
 #, fuzzy
+#~| msgid "Show window titles in multitasking view"
+#~ msgid "Fix awkward two-finger scroll in multitasking view"
+#~ msgstr "Ve víceúlohové zobrazení jsou zobrazovány titulky oken"
+
+#~ msgid "Fixes:"
+#~ msgstr "Opravy:"
+
+#, fuzzy
+#~| msgid "Use access portal for display settings confirmation dialog"
+#~ msgid "Use access portal for force quit"
+#~ msgstr "Použit přístup portálu pro zobrazení dialogu potvrzení nastavení"
+
+#, fuzzy
 #~| msgid "The opacity of windows behind the window switcher."
-#~ msgid "Properly update accent color in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
 #~ msgstr "Průhlednost oken umístěných v pozadí přepínače aplikací."
 
 #, fuzzy
 #~| msgid "The opacity of windows behind the window switcher."
-#~ msgid "Fix selecting windows underneath the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
 #~ msgstr "Průhlednost oken umístěných v pozadí přepínače aplikací."
 
 #, fuzzy
@@ -301,9 +353,6 @@ msgstr "Náhradní spouštěč pro upozorňování ze zastaralých aplikací."
 
 #~ msgid "HiDPI fixes"
 #~ msgstr "Opravy ohledně ultra vysokých rozlišení (HiDPI)"
-
-#~ msgid "Performance improvements"
-#~ msgstr "Zlepšení výkonu"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "
@@ -601,9 +650,6 @@ msgstr "Náhradní spouštěč pro upozorňování ze zastaralých aplikací."
 
 #~ msgid "Show missed notifications in notification center"
 #~ msgstr "Zobrazit promeškaná oznámení v oznamovacím centru"
-
-#~ msgid "Enable rounded corner mask"
-#~ msgstr "Povolit masku se zaoblenými rohy"
 
 #~ msgid "Corner radius"
 #~ msgstr "Poloměr rohu"

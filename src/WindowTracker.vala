@@ -28,8 +28,7 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void init_window_tracking (Meta.Display display) {
-        display.notify["focus-window"].connect (() => {});
-        display.window_created.connect ((window) => track_window (window));
+        display.window_created.connect (track_window);
     }
 
     private void on_startup_sequence_changed (Meta.StartupSequence sequence) {
@@ -191,7 +190,7 @@ public class Gala.WindowTracker : GLib.Object {
         return null;
     }
 
-    private Gala.App get_app_for_window (Meta.Window window) {
+    public Gala.App get_app_for_window (Meta.Window window) {
         unowned Meta.Window? transient_for = window.get_transient_for ();
         if (transient_for != null) {
             return get_app_for_window (transient_for);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-03-22 18:54+0000\n"
+"POT-Creation-Date: 2023-11-07 19:57+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -49,15 +49,15 @@ msgstr "وەستاندنی بەزۆر"
 msgid "Wait"
 msgstr "چاوەڕێکردن"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:281
 msgid "Screenshots"
 msgstr "سکرینشوتەکان"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:360
 msgid "Screenshot taken"
 msgstr "سکرینشوت کرا"
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2251
 #, fuzzy, c-format
 #| msgid "Changes will automatically revert after 30 seconds."
 msgid "Changes will automatically revert after %i second."
@@ -65,20 +65,20 @@ msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 msgstr[1] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 
-#: src/WindowManager.vala:2121
+#: src/WindowManager.vala:2258
 msgid "Keep new display settings?"
 msgstr "هێشتنەوەی ڕێکخستنە تازەکانی ڕونما؟"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2262
 msgid "Keep Settings"
 msgstr "هێشتنەوەی ڕێکخستنەکان"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2263
 msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2305
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"
@@ -131,27 +131,27 @@ msgstr "بچوککردنەوە"
 msgid "Maximize"
 msgstr "گەورەکردن"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
 msgstr "گۆڕینی پاشبنەما…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
 msgstr "ڕێکخستنەکانی ڕونما…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
 msgstr "ڕێکخستنەکانی سیستەم…"
 
-#: data/gala.appdata.xml.in:7
+#: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
 msgstr "مەڵتیتاسکینگ &amp; بەڕێوەبردنی پەنجەرە"
 
-#: data/gala.appdata.xml.in:8
+#: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
 msgstr "پەنجەرەیەک &amp; بەڕێوەبەری کەمپەزیشن بۆ پانسیۆن"
 
-#: data/gala.appdata.xml.in:11
+#: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
@@ -159,47 +159,87 @@ msgstr ""
 "پەنجەرەیەکی &amp; بەڕێوەبەری کەمپەزشن لەسەر لیبمەتەر و نەخشێندراوە بۆ "
 "ئێلەمێنتەری بۆ بەکارهێنانی لەگەڵ پانسیۆن."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:92
+#: data/gala.metainfo.xml.in:23
+msgid "elementary, Inc."
+msgstr "کۆمپانیای ئێلەمێنتەری هاوپشک."
+
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
-#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:95
+#: data/gala.metainfo.xml.in:32
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:35
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
 msgid "Updated translations"
 msgstr "وەرگێڕانەکان نوێکراونەوە"
 
-#: data/gala.appdata.xml.in:59
-msgid "Reload animated wallpapers when timezone changes"
+#: data/gala.metainfo.xml.in:57
+msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala.appdata.xml.in:60
+#: data/gala.metainfo.xml.in:100
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:101
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:102
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:103
+msgid "Update panel color after dimming the wallpaper"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:104
+msgid "Scale rounded corners per-display"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:105
+msgid "Support fractional scaling"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:125
+msgid "Performance improvements"
+msgstr "باشترکراوەکانی ئەدا"
+
+#: data/gala.metainfo.xml.in:126
 #, fuzzy
-#| msgid "Show window titles in multitasking view"
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr "پشاندنی تایتڵی پەنجەرەکان لە دیمەنی مەڵتی-تاسکینگدا"
+#| msgid "Multitasking View"
+msgid "Remove texture from Multitasking View"
+msgstr "دیمەنی مەڵتی-تاسکینگ"
 
-#: data/gala.appdata.xml.in:61
-msgid "Improve multitasking view animation performance"
-msgstr ""
-
-#: data/gala.appdata.xml.in:88
-msgid "Fixes:"
-msgstr "چاککردنەکان:"
-
-#: data/gala.appdata.xml.in:90
-msgid "Fix regressions for OS 7"
-msgstr "چارەسەرکردنی ڕیگرێشن بۆ وەشانی ٧"
-
-#: data/gala.appdata.xml.in:94
-msgid "Use access portal for force quit"
-msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ داخستنی ناچاریانە"
-
-#: data/gala.appdata.xml.in:106
-msgid "elementary, Inc."
-msgstr "کۆمپانیای ئێلەمێنتەری هاوپشک."
+#: data/gala.metainfo.xml.in:127
+#, fuzzy
+#| msgid "Fix selecting windows underneath the window switcher"
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -219,11 +259,29 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "فایلێکی سەر مێزەکە بکەوە بۆ ئاگادارکردنەوە لە بەرنامە بەسەرچووەکانەوە (د)."
 
-#~ msgid "Properly update accent color in the window switcher"
-#~ msgstr "نوێکردنەوەی ڕەنگی ئەکسێنت لە بەشێوەیەکی گونجاو"
+#, fuzzy
+#~| msgid "Show window titles in multitasking view"
+#~ msgid "Fix awkward two-finger scroll in multitasking view"
+#~ msgstr "پشاندنی تایتڵی پەنجەرەکان لە دیمەنی مەڵتی-تاسکینگدا"
 
-#~ msgid "Fix selecting windows underneath the window switcher"
+#~ msgid "Fixes:"
+#~ msgstr "چاککردنەکان:"
+
+#~ msgid "Fix regressions for OS 7"
+#~ msgstr "چارەسەرکردنی ڕیگرێشن بۆ وەشانی ٧"
+
+#~ msgid "Use access portal for force quit"
+#~ msgstr "بەکارهێنانی ئەکسێسی پۆڕتاڵ بۆ داخستنی ناچاریانە"
+
+#, fuzzy
+#~| msgid "Fix selecting windows underneath the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
 #~ msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
+
+#, fuzzy
+#~| msgid "Properly update accent color in the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
+#~ msgstr "نوێکردنەوەی ڕەنگی ئەکسێنت لە بەشێوەیەکی گونجاو"
 
 #~ msgid "Prevent potential crashes"
 #~ msgstr "ڕێگریکردن لە چەند کێشەیەک کە دەکرا لە داهاتوودا ڕووبدەن"
@@ -301,9 +359,6 @@ msgstr ""
 
 #~ msgid "HiDPI fixes"
 #~ msgstr "چاککردنی HiDPI"
-
-#~ msgid "Performance improvements"
-#~ msgstr "باشترکراوەکانی ئەدا"
 
 #~ msgid ""
 #~ "Fix “Always on Visible Workspace” windows disappearing when changing "

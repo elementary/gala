@@ -20,18 +20,17 @@ namespace Gala {
         public signal void closed ();
 
         public WindowManager wm { get; construct; }
-
         public bool cancelled { get; private set; }
+        public Graphene.Point point { get; private set; }
 
         private ModalProxy? modal_proxy;
-        private Gdk.Point point;
 
         public PixelPicker (WindowManager wm) {
             Object (wm: wm);
         }
 
         construct {
-            point = { 0, 0 };
+            point.init (0, 0);
             visible = true;
             reactive = true;
 
@@ -45,8 +44,12 @@ namespace Gala {
             set_content (canvas);
         }
 
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event e) {
+#else
         public override bool key_press_event (Clutter.KeyEvent e) {
-            if (e.keyval == Clutter.Key.Escape) {
+#endif
+            if (e.get_key_symbol () == Clutter.Key.Escape) {
                 close ();
                 cancelled = true;
                 closed ();
@@ -56,13 +59,18 @@ namespace Gala {
             return false;
         }
 
+#if HAS_MUTTER45
+        public override bool button_release_event (Clutter.Event e) {
+#else
         public override bool button_release_event (Clutter.ButtonEvent e) {
-            if (e.button != 1) {
+#endif
+            if (e.get_button () != Clutter.Button.PRIMARY) {
                 return true;
             }
 
-            point.x = (int) e.x;
-            point.y = (int) e.y;
+            float x, y;
+            e.get_coords (out x, out y);
+            point = Graphene.Point () { x = x, y = y };
 
             close ();
             this.hide ();
@@ -84,11 +92,6 @@ namespace Gala {
             grab_key_focus ();
 
             modal_proxy = wm.push_modal (this);
-        }
-
-        public void get_point (out int x, out int y) {
-            x = point.x;
-            y = point.y;
         }
     }
 }

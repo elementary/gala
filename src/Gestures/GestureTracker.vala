@@ -192,10 +192,14 @@ public class Gala.GestureTracker : Object {
      * @returns The linear animation value at the specified percentage.
      */
     public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
-        float value = ((target_value - initial_value) * (float) percentage) + initial_value;
+        float value = initial_value;
+
+        if (initial_value != target_value) {
+            value = ((target_value - initial_value) * (float) percentage) + initial_value;
+        }
 
         if (rounded) {
-            value = (float) InternalUtils.pixel_align (value);
+            value = Math.roundf (value);
         }
 
         return value;

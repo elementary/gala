@@ -1,19 +1,9 @@
-//
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2012 Tom Beckmann
+ * Copyright 2012 Rico Tzschichholz
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 namespace Gala {
     public enum InputArea {
@@ -26,64 +16,6 @@ namespace Gala {
         public static bool workspaces_only_on_primary () {
             return Meta.Prefs.get_dynamic_workspaces ()
                 && Meta.Prefs.get_workspaces_only_on_primary ();
-        }
-
-        private static GLib.Settings? shadow_settings = null;
-        /*
-         * Reload shadow settings
-         */
-        public static void reload_shadow () {
-            if (shadow_settings == null) {
-                shadow_settings = new GLib.Settings (Config.SCHEMA + ".shadows");
-            }
-            var factory = Meta.ShadowFactory.get_default ();
-            Meta.ShadowParams shadow;
-
-            //normal focused
-            shadow = get_shadowparams ("normal-focused");
-            factory.set_params ("normal", true, shadow);
-
-            //normal unfocused
-            shadow = get_shadowparams ("normal-unfocused");
-            factory.set_params ("normal", false, shadow);
-
-            //menus
-            shadow = get_shadowparams ("menu");
-            factory.set_params ("menu", false, shadow);
-            factory.set_params ("dropdown-menu", false, shadow);
-            factory.set_params ("popup-menu", false, shadow);
-
-            //dialog focused
-            shadow = get_shadowparams ("dialog-focused");
-            factory.set_params ("dialog", true, shadow);
-            factory.set_params ("modal_dialog", false, shadow);
-
-            //dialog unfocused
-            shadow = get_shadowparams ("dialog-unfocused");
-            factory.set_params ("dialog", false, shadow);
-            factory.set_params ("modal_dialog", false, shadow);
-        }
-
-        private static Meta.ShadowParams get_shadowparams (string class_name) {
-            var val = shadow_settings.get_strv (class_name);
-            if (val == null || val.length != 5 || int.parse (val[0]) < 1) {
-                warning ("Invalid shadow settings");
-                return Meta.ShadowParams () {
-                    radius = 1,
-                    top_fade = 0,
-                    x_offset = 0,
-                    y_offset = 0,
-                    opacity = 0
-                };
-            }
-
-            return Meta.ShadowParams () {
-                radius = int.parse (val[0]),
-                top_fade = int.parse (val[1]),
-                x_offset = int.parse (val[2]),
-                y_offset = int.parse (val[3]),
-                opacity = (uint8)int.parse (val[4])
-            };
         }
 
         /**
@@ -128,9 +60,14 @@ namespace Gala {
                     break;
                 case InputArea.NONE:
                 default:
+#if !HAS_MUTTER44
                     unowned Meta.X11Display x11display = display.get_x11_display ();
                     x11display.clear_stage_input_region ();
                     return;
+#else
+                    rects = {};
+                    break;
+#endif
             }
 
             unowned Meta.X11Display x11display = display.get_x11_display ();
@@ -182,20 +119,36 @@ namespace Gala {
             return k1 * k1 + k2 * k2;
         }
 
+#if HAS_MUTTER45
+        private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+#else
         private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
+#endif
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
+#if HAS_MUTTER45
+        private static Gdk.Point rect_center (Mtk.Rectangle rect) {
+#else
         private static Gdk.Point rect_center (Meta.Rectangle rect) {
+#endif
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
         public struct TilableWindow {
+#if HAS_MUTTER45
+            Mtk.Rectangle rect;
+#else
             Meta.Rectangle rect;
-            void *id;
+#endif
+            unowned WindowClone id;
         }
 
+#if HAS_MUTTER45
+        public static List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, List<TilableWindow?> windows) {
+#else
         public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area, List<TilableWindow?> windows) {
+#endif
             uint window_count = windows.length ();
             int columns = (int)Math.ceil (Math.sqrt (window_count));
             int rows = (int)Math.ceil (window_count / (double)columns);
@@ -275,10 +228,16 @@ namespace Gala {
                 var rect = window.rect;
 
                 // Work out where the slot is
-                Meta.Rectangle target = {area.x + (slot % columns) * slot_width,
-                                         area.y + (slot / columns) * slot_height,
-                                         slot_width,
-                                         slot_height};
+#if HAS_MUTTER45
+                Mtk.Rectangle target = {
+#else
+                Meta.Rectangle target = {
+#endif
+                    area.x + (slot % columns) * slot_width,
+                    area.y + (slot / columns) * slot_height,
+                    slot_width,
+                    slot_height
+                };
                 target = rect_adjusted (target, 10, 10, -10, -10);
 
                 float scale;
@@ -351,16 +310,12 @@ namespace Gala {
             }
         }
 
-        public static int get_ui_scaling_factor () {
-            return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-        }
-
         /**
-         * Round the value to match physical pixels.
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
          */
-        public static int pixel_align (float value) {
-            var scale_factor = InternalUtils.get_ui_scaling_factor ();
-            return (int) Math.round (value * scale_factor) / scale_factor;
+        public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
         }
 
         private static Gtk.StyleContext selection_style_context = null;
@@ -380,28 +335,14 @@ namespace Gala {
             );
         }
 
-        public static Drawing.Color get_accent_color_by_theme_name (string theme_name) {
-            var label_widget_path = new Gtk.WidgetPath ();
-            label_widget_path.append_type (GLib.Type.from_name ("label"));
-            label_widget_path.iter_set_object_name (-1, "selection");
-
-            var selection_style_context = new Gtk.StyleContext ();
-            unowned Gtk.CssProvider theme_provider = Gtk.CssProvider.get_named (theme_name, null);
-            selection_style_context.add_provider (theme_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-            selection_style_context.set_path (label_widget_path);
-
-            var rgba = (Gdk.RGBA) selection_style_context.get_property (
-                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-                Gtk.StateFlags.NORMAL
-            );
-
-            return new Drawing.Color.from_rgba (rgba);
-        }
-
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
+#if HAS_MUTTER45
+        public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
+#else
         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
+#endif
             if (InternalUtils.workspaces_only_on_primary ()) {
                 var primary = display.get_primary_monitor ();
                 return display.get_monitor_geometry (primary);

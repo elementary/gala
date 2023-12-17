@@ -31,6 +31,19 @@ namespace Gala {
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
+        private float _monitor_scale = 1.0f;
+        public float monitor_scale {
+            get {
+                return _monitor_scale;
+            }
+            set {
+                if (value != _monitor_scale) {
+                    _monitor_scale = value;
+                    reallocate ();
+                }
+            }
+        }
+
         private bool opened = false;
 
         /**
@@ -39,8 +52,15 @@ namespace Gala {
          */
         private WindowClone? current_window = null;
 
-        public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, bool overview_mode = false) {
-            Object (wm: wm, gesture_tracker: gesture_tracker, overview_mode: overview_mode);
+        public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+            Object (wm: wm, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
+        }
+
+        private void reallocate () {
+            foreach (unowned var child in get_children ()) {
+                unowned var clone = (WindowClone) child;
+                clone.monitor_scale_factor = monitor_scale;
+            }
         }
 
         /**
@@ -60,7 +80,7 @@ namespace Gala {
 
             var windows_ordered = InternalUtils.sort_windows (display, windows);
 
-            var new_window = new WindowClone (wm, window, gesture_tracker, overview_mode);
+            var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
 
             new_window.selected.connect (window_selected_cb);
             new_window.destroy.connect (window_destroyed);
@@ -178,7 +198,11 @@ namespace Gala {
                 return (int) (seq_b - seq_a);
             });
 
+#if HAS_MUTTER45
+            Mtk.Rectangle area = {
+#else
             Meta.Rectangle area = {
+#endif
                 padding_left,
                 padding_top,
                 (int)width - padding_left - padding_right,
@@ -190,7 +214,6 @@ namespace Gala {
             foreach (var tilable in window_positions) {
                 unowned var clone = (WindowClone) tilable.id;
                 clone.take_slot (tilable.rect, with_gesture, is_cancel_animation);
-                clone.place_widgets (tilable.rect.width, tilable.rect.height);
             }
         }
 

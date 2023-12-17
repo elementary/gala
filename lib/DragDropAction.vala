@@ -187,13 +187,13 @@ namespace Gala {
 
         public override bool handle_event (Event event) {
             if (!(DragDropActionType.SOURCE in drag_type)) {
-                return Gdk.EVENT_PROPAGATE;
+                return Clutter.EVENT_PROPAGATE;
             }
 
             switch (event.get_type ()) {
                 case EventType.BUTTON_PRESS:
                     if (grabbed_actor != null) {
-                        return Gdk.EVENT_PROPAGATE;
+                        return Clutter.EVENT_PROPAGATE;
                     }
 
                     grab_actor (actor, event.get_device ());
@@ -205,7 +205,7 @@ namespace Gala {
                     last_x = x;
                     last_y = y;
 
-                    return Gdk.EVENT_STOP;
+                    return Clutter.EVENT_STOP;
 
                 case EventType.BUTTON_RELEASE:
                     if (!dragging) {
@@ -214,14 +214,16 @@ namespace Gala {
                         actor.get_transformed_position (out x, out y);
 
                         // release has happened within bounds of actor
-                        if (x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                        if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
                             actor_clicked (event.get_button ());
                         }
 
-                        ungrab_actor ();
-                        clicked = false;
-                        dragging = false;
-                        return Gdk.EVENT_STOP;
+                        if (clicked) {
+                            ungrab_actor ();
+                            clicked = false;
+                        }
+
+                        return Clutter.EVENT_STOP;
                     } else if (dragging) {
                         if (hovered != null) {
                             finish ();
@@ -229,7 +231,7 @@ namespace Gala {
                             cancel ();
                         }
 
-                        return Gdk.EVENT_STOP;
+                        return Clutter.EVENT_STOP;
                     }
                     break;
 
@@ -273,7 +275,7 @@ namespace Gala {
             if (grabbed_device != null &&
                 device != grabbed_device &&
                 device.get_device_type () != InputDeviceType.KEYBOARD_DEVICE) {
-                    return Gdk.EVENT_PROPAGATE;
+                    return Clutter.EVENT_PROPAGATE;
                 }
 
             switch (event.get_type ()) {
@@ -289,11 +291,11 @@ namespace Gala {
                     if (!dragging && clicked) {
                         var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
                         if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-                            handle = drag_begin (x, y);
+                            handle = drag_begin (last_x, last_y);
                             if (handle == null) {
                                 ungrab_actor ();
                                 critical ("No handle has been returned by the started signal, aborting drag.");
-                                return Gdk.EVENT_PROPAGATE;
+                                return Clutter.EVENT_PROPAGATE;
                             }
 
                             clicked = false;
@@ -301,8 +303,6 @@ namespace Gala {
 
                             ungrab_actor ();
                             grab_actor (handle, event.get_device ());
-
-                            handle.reactive = false;
 
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {
@@ -317,7 +317,7 @@ namespace Gala {
                                 }
                             }
                         }
-                        return Gdk.EVENT_STOP;
+                        return Clutter.EVENT_STOP;
                     } else if (dragging) {
                         handle.x -= last_x - x;
                         handle.y -= last_y - y;
@@ -337,7 +337,7 @@ namespace Gala {
 
                         // didn't change, no need to do anything
                         if (actor == hovered)
-                            return Gdk.EVENT_STOP;
+                            return Clutter.EVENT_STOP;
 
                         if (action == null) {
                             // apparently we left ours if we had one before
@@ -346,7 +346,7 @@ namespace Gala {
                                 hovered = null;
                             }
 
-                            return Gdk.EVENT_STOP;
+                            return Clutter.EVENT_STOP;
                         }
 
                         // signal the previous one that we left it
@@ -358,7 +358,7 @@ namespace Gala {
                         hovered = actor;
                         emit_crossed (hovered, true);
 
-                        return Gdk.EVENT_STOP;
+                        return Clutter.EVENT_STOP;
                     }
 
                     break;
@@ -366,7 +366,7 @@ namespace Gala {
                     break;
             }
 
-            return Gdk.EVENT_PROPAGATE;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         /**

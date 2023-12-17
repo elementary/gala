@@ -68,19 +68,21 @@ namespace Gala {
             flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
             flash_actor.set_opacity (0);
             flash_actor.transitions_completed.connect ((actor) => {
-                wm.top_window_group.remove_child (actor);
+                wm.ui_group.remove_child (actor);
                 actor.destroy ();
             });
 
-            wm.top_window_group.add_child (flash_actor);
+            wm.ui_group.add_child (flash_actor);
             flash_actor.add_transition ("flash", transition);
         }
 
         public async void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
             debug ("Taking screenshot");
 
+            unowned var display = wm.get_display ();
+
             int width, height;
-            wm.get_display ().get_size (out width, out height);
+            display.get_size (out width, out height);
 
             var image = take_screenshot (0, 0, width, height, include_cursor);
             unconceal_text ();
@@ -89,7 +91,8 @@ namespace Gala {
                 flash_area (0, 0, width, height);
             }
 
-            success = yield save_image (image, filename, out filename_used);
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            success = yield save_image (image, filename, scale, out filename_used);
 
             if (success) {
                 play_shutter_sound ();
@@ -112,7 +115,15 @@ namespace Gala {
                 flash_area (x, y, width, height);
             }
 
-            success = yield save_image (image, filename, out filename_used);
+#if HAS_MUTTER45
+            Mtk.Rectangle rect = { x, y, width, height };
+#else
+            Meta.Rectangle rect = { x, y, width, height };
+#endif
+            unowned var display = wm.get_display ();
+            var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
+
+            success = yield save_image (image, filename, scale, out filename_used);
 
             if (success) {
                 play_shutter_sound ();
@@ -142,7 +153,11 @@ namespace Gala {
                 rect = window.frame_rect_to_client_rect (rect);
             }
 
+#if HAS_MUTTER45
+            Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+#else
             Cairo.RectangleInt clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+#endif
             var image = (Cairo.ImageSurface) window_texture.get_image (clip);
             if (include_cursor) {
                 image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
@@ -154,7 +169,10 @@ namespace Gala {
                 flash_area (rect.x, rect.y, rect.width, rect.height);
             }
 
-            success = yield save_image (image, filename, out filename_used);
+            unowned var display = wm.get_display ();
+            var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
+
+            success = yield save_image (image, filename, scale, out filename_used);
 
             if (success) {
                 play_shutter_sound ();
@@ -175,7 +193,11 @@ namespace Gala {
             }
 
             yield wait_stage_repaint ();
-            selection_area.get_selection_rectangle (out x, out y, out width, out height);
+            var rect = selection_area.get_selection_rectangle ();
+            x = (int) GLib.Math.roundf (rect.origin.x);
+            y = (int) GLib.Math.roundf (rect.origin.y);
+            width = (int) GLib.Math.roundf (rect.size.width);
+            height = (int) GLib.Math.roundf (rect.size.height);
         }
 
         private void unconceal_text () {
@@ -223,10 +245,13 @@ namespace Gala {
                 throw new GLib.IOError.CANCELLED ("Operation was cancelled");
             }
 
-            int x = 0, y = 0;
-            pixel_picker.get_point (out x, out y);
-
-            var image = take_screenshot (x, y, 1, 1, false);
+            var picker_point = pixel_picker.point;
+            var image = take_screenshot (
+                (int) GLib.Math.roundf (picker_point.x),
+                (int) GLib.Math.roundf (picker_point.y),
+                1, 1,
+                false
+            );
 
             assert (image.get_format () == Cairo.Format.ARGB32);
 
@@ -266,13 +291,13 @@ namespace Gala {
             return Environment.get_home_dir ();
         }
 
-        private static async bool save_image (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private static async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
             return (filename != "")
-                ? yield save_image_to_file (image, filename, out used_filename)
+                ? yield save_image_to_file (image, filename, scale, out used_filename)
                 : save_image_to_clipboard (image, filename, out used_filename);
         }
 
-        private static async bool save_image_to_file (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private static async bool save_image_to_file (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
             used_filename = filename;
 
             // We only alter non absolute filename because absolute
@@ -282,10 +307,9 @@ namespace Gala {
                     used_filename = used_filename.concat (EXTENSION);
                 }
 
-                var scale_factor = InternalUtils.get_ui_scaling_factor ();
-                if (scale_factor > 1) {
+                if (scale > 1) {
                     var scale_pos = -EXTENSION.length;
-                    used_filename = used_filename.splice (scale_pos, scale_pos, "@%ix".printf (scale_factor));
+                    used_filename = used_filename.splice (scale_pos, scale_pos, "@%.1gx".printf (scale));
                 }
 
                 var path = find_target_path ();

@@ -7,9 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-03-22 18:54+0000\n"
-"PO-Revision-Date: 2021-07-05 11:21+0000\n"
-"Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
+"POT-Creation-Date: 2023-11-07 19:57+0000\n"
+"PO-Revision-Date: 2023-05-20 17:07+0000\n"
+"Last-Translator: Faisal Rachmadin <frachmadin@users.noreply.l10n.elementary."
+"io>\n"
 "Language-Team: Indonesian <https://l10n.elementary.io/projects/desktop/gala/"
 "id/>\n"
 "Language: id\n"
@@ -17,67 +18,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” tidak merespon"
 
 #: src/Dialogs.vala:154
 msgid "Application is not responding"
-msgstr ""
+msgstr "Aplikasi tidak merespon"
 
 #: src/Dialogs.vala:157
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Anda dapat memilih untuk menunggu beberapa saat agar aplikasi dilanjutkan, "
+"atau memaksanya untuk berhenti sepenuhnya."
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr ""
+msgstr "Hentikan Paksa"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
-msgstr ""
+msgstr "Tunggu"
 
-#: src/ScreenshotManager.vala:256
+#: src/ScreenshotManager.vala:281
 msgid "Screenshots"
-msgstr ""
+msgstr "Tangkapan Layar"
 
-#: src/ScreenshotManager.vala:336
+#: src/ScreenshotManager.vala:360
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Tangkapan Layar diambil"
 
-#: src/WindowManager.vala:2114
+#: src/WindowManager.vala:2251
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
+msgstr[0] "Perubahan akan kembali secara otomatis setelah %i detik."
 
-#: src/WindowManager.vala:2121
+#: src/WindowManager.vala:2258
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Pertahankan pengaturan tampilan baru?"
 
-#: src/WindowManager.vala:2125
+#: src/WindowManager.vala:2262
 msgid "Keep Settings"
-msgstr ""
+msgstr "Pertahankan Pengaturan"
 
-#: src/WindowManager.vala:2126
+#: src/WindowManager.vala:2263
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Gunakan Pengaturan Sebelumnya"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2168
+#: src/WindowManager.vala:2305
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Tangkapan layar dari %s"
 
 #: daemon/MenuDaemon.vala:115
 msgid "Hide"
-msgstr ""
+msgstr "Sembunyikan"
 
 #: daemon/MenuDaemon.vala:128
 msgid "Move"
@@ -93,7 +96,7 @@ msgstr "Selalu di atas"
 
 #: daemon/MenuDaemon.vala:152
 msgid "Always on Visible Workspace"
-msgstr "Selalu Pada Ruang Kerja Terlihat"
+msgstr "Ruang Kerja Selalu Aktif Terlihat"
 
 #: daemon/MenuDaemon.vala:160
 msgid "Move to Workspace Left"
@@ -105,7 +108,7 @@ msgstr "Pindahkan ke Ruang Kerja Sebelah Kanan"
 
 #: daemon/MenuDaemon.vala:176
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Ambil Tangkapan Layar"
 
 #: daemon/MenuDaemon.vala:184
 msgid "Close"
@@ -113,86 +116,131 @@ msgstr "Tutup"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Untile"
-msgstr ""
+msgstr "Lepas Rekatan"
 
 #: daemon/MenuDaemon.vala:223
 msgid "Unmaximize"
-msgstr "Batalkan perbesaran"
+msgstr "Batal Maksimalkan"
 
 #: daemon/MenuDaemon.vala:225
 msgid "Maximize"
-msgstr "Besarkan"
+msgstr "Maksimalkan"
 
-#: daemon/MenuDaemon.vala:291
+#: daemon/MenuDaemon.vala:298
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Ubah Latar Belakang…"
 
-#: daemon/MenuDaemon.vala:308
+#: daemon/MenuDaemon.vala:315
 msgid "Display Settings…"
-msgstr ""
+msgstr "Pengaturan Tampilan…"
 
-#: daemon/MenuDaemon.vala:325
+#: daemon/MenuDaemon.vala:332
 msgid "System Settings…"
-msgstr ""
+msgstr "Pengaturan Sistem…"
 
-#: data/gala.appdata.xml.in:7
+#: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multi Tugas &amp; Manajemen Jendela"
 
-#: data/gala.appdata.xml.in:8
+#: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Manajer jendela &amp; pengomposisian untuk Pantheon"
 
-#: data/gala.appdata.xml.in:11
+#: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"Manajer jendela &amp; pengomposisian berdasarkan libmutter dan dirancang "
+"oleh elementary untuk digunakan dengan Pantheon."
 
-#: data/gala.appdata.xml.in:17 data/gala.appdata.xml.in:30
-#: data/gala.appdata.xml.in:57 data/gala.appdata.xml.in:75
-#: data/gala.appdata.xml.in:92
-msgid "Improvements:"
-msgstr ""
-
-#: data/gala.appdata.xml.in:19 data/gala.appdata.xml.in:32
-#: data/gala.appdata.xml.in:62 data/gala.appdata.xml.in:77
-#: data/gala.appdata.xml.in:95
-msgid "Updated translations"
-msgstr ""
-
-#: data/gala.appdata.xml.in:59
-msgid "Reload animated wallpapers when timezone changes"
-msgstr ""
-
-#: data/gala.appdata.xml.in:60
-msgid "Fix awkward two-finger scroll in multitasking view"
-msgstr ""
-
-#: data/gala.appdata.xml.in:61
-msgid "Improve multitasking view animation performance"
-msgstr ""
-
-#: data/gala.appdata.xml.in:88
-msgid "Fixes:"
-msgstr ""
-
-#: data/gala.appdata.xml.in:90
-msgid "Fix regressions for OS 7"
-msgstr ""
-
-#: data/gala.appdata.xml.in:94
-msgid "Use access portal for force quit"
-msgstr ""
-
-#: data/gala.appdata.xml.in:106
+#: data/gala.metainfo.xml.in:23
 msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
+#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
+msgid "Improvements:"
+msgstr "Peningkatan:"
+
+#: data/gala.metainfo.xml.in:32
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
 msgstr ""
+
+#: data/gala.metainfo.xml.in:33
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:35
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
+msgid "Updated translations"
+msgstr "Terjemahan yang diperbarui"
+
+#: data/gala.metainfo.xml.in:57
+msgid "Improve handling of move-to-workspace shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:100
+msgid ""
+"Set the keyboard layout correctly at startup so that the indicator matches "
+"the selected layout"
+msgstr ""
+"Atur tata letak papan ketik dengan benar saat startup sehingga indikator "
+"cocok dengan tata letak yang dipilih"
+
+#: data/gala.metainfo.xml.in:101
+msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgstr ""
+"Perbaiki pintasan papan ketik tangkapan layar saat dalam Tampilan Multi Tugas"
+
+#: data/gala.metainfo.xml.in:102
+msgid ""
+"Correctly set the active workspace highlight when entering Multitasking View "
+"and animate 1:1 with multitouch gestures"
+msgstr ""
+"Atur sorotan ruang kerja aktif dengan benar saat memasuki Tampilan Multi "
+"Tugas dan animasikan 1:1 dengan gerakan multi sentuh"
+
+#: data/gala.metainfo.xml.in:103
+msgid "Update panel color after dimming the wallpaper"
+msgstr "Perbarui warna panel setelah meredupkan latar belakang"
+
+#: data/gala.metainfo.xml.in:104
+msgid "Scale rounded corners per-display"
+msgstr "Menskalakan sudut membulat per tampilan"
+
+#: data/gala.metainfo.xml.in:105
+msgid "Support fractional scaling"
+msgstr "Mendukung penskalaan fraksional"
+
+#: data/gala.metainfo.xml.in:125
+msgid "Performance improvements"
+msgstr "Peningkatan performa"
+
+#: data/gala.metainfo.xml.in:126
+msgid "Remove texture from Multitasking View"
+msgstr "Hapus tekstur dari Tampilan Multi Tugas"
+
+#: data/gala.metainfo.xml.in:127
+msgid "Avoid accidentally selecting windows in the window switcher"
+msgstr "Hindari memilih jendela secara tidak sengaja di pengalih jendela"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "Tampilan Pancatugas"
+msgstr "Tampilan Multi Tugas"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
@@ -206,13 +254,31 @@ msgstr "Lainnya"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Sandaran berkas desktop untuk pemberitahuan dari aplikasi kadaluarsa."
 
+#~ msgid "Reload animated wallpapers when timezone changes"
+#~ msgstr "Muat ulang wallpaper animasi saat zona waktu berubah"
+
+#~ msgid "Fix awkward two-finger scroll in multitasking view"
+#~ msgstr "Memperbaiki gulir dua jari yang aneh dalam tampilan multi tugas"
+
+#~ msgid "Improve multitasking view animation performance"
+#~ msgstr "Meningkatkan performa animasi tampilan multi tugas"
+
+#~ msgid "Fixes:"
+#~ msgstr "Perbaikan:"
+
+#~ msgid "Fix regressions for OS 7"
+#~ msgstr "Memperbaiki regresi untuk OS 7"
+
+#~ msgid "Use access portal for force quit"
+#~ msgstr "Menggunakan portal akses untuk memaksa berhenti"
+
 #, fuzzy
-#~ msgid "Properly update accent color in the window switcher"
+#~ msgid "Prevent window titles from being wider than the window switcher"
 #~ msgstr ""
 #~ "Kejernihan jendela yang terletak di belakang layar pada alt-tab-switcher."
 
 #, fuzzy
-#~ msgid "Fix selecting windows underneath the window switcher"
+#~ msgid "Correctly set the scale of app icons in the window switcher"
 #~ msgstr ""
 #~ "Kejernihan jendela yang terletak di belakang layar pada alt-tab-switcher."
 
@@ -485,9 +551,6 @@ msgstr "Sandaran berkas desktop untuk pemberitahuan dari aplikasi kadaluarsa."
 
 #~ msgid "Show missed notifications in notification center"
 #~ msgstr "Tampilkan pemberitahuan yang terlewat pada pusat pemberitahuan"
-
-#~ msgid "Enable rounded corner mask"
-#~ msgstr "Nyalakan penutup pojok bulat"
 
 #~ msgid "Corner radius"
 #~ msgstr "Radius pojok"

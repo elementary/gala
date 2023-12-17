@@ -15,9 +15,7 @@ namespace Gala {
 
         private const int PLUS_SIZE = 8;
         private const int PLUS_WIDTH = 24;
-
-        private const int CLOSE_BUTTON_SIZE = 36;
-        private const int SHOW_CLOSE_BUTTON_DELAY = 200;
+        private const int BACKDROP_ABSOLUTE_OPACITY = 40;
 
         /**
          * The group has been clicked. The MultitaskingView should consider activating
@@ -25,11 +23,11 @@ namespace Gala {
          */
         public signal void selected ();
 
-        private uint8 _backdrop_opacity = 0;
+        private float _backdrop_opacity = 0.0f;
         /**
-         * The opacity of the backdrop/highlight. Set by the active property setter.
+         * The opacity of the backdrop/highlight.
          */
-        protected uint8 backdrop_opacity {
+        public float backdrop_opacity {
             get {
                 return _backdrop_opacity;
             }
@@ -39,45 +37,26 @@ namespace Gala {
             }
         }
 
-        private bool _active = false;
-        /**
-         * Fades in/out the backdrop/highlight
-         */
-        public bool active {
-            get {
-                return _active;
-            }
-            set {
-                if (_active == value)
-                    return;
-
-                if (get_transition ("backdrop-opacity") != null)
-                    remove_transition ("backdrop-opacity");
-
-                _active = value;
-
-                var transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                    duration = 300,
-                    remove_on_complete = true
-                };
-                transition.set_from_value (_active ? 0 : 40);
-                transition.set_to_value (_active ? 40 : 0);
-
-                add_transition ("backdrop-opacity", transition);
-            }
-        }
-
         private DragDropAction drag_action;
 
         public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
+        private float _scale_factor = 1.0f;
+        public float scale_factor {
+            get { return _scale_factor; }
+            set {
+                if (value != _scale_factor) {
+                    _scale_factor = value;
+                    resize_canvas ();
+                }
+            }
+        }
 
         private Clutter.Actor? prev_parent = null;
-        private Clutter.Actor close_button;
         private Clutter.Actor icon_container;
 
-        public IconGroup (WindowManager wm, Meta.Workspace workspace) {
-            Object (wm: wm, workspace: workspace);
+        public IconGroup (WindowManager wm, Meta.Workspace workspace, float scale) {
+            Object (wm: wm, workspace: workspace, scale_factor: scale);
         }
 
         construct {
@@ -103,22 +82,6 @@ namespace Gala {
 
             resize_canvas ();
 
-            close_button = Utils.create_close_button ();
-            place_close_button ();
-            close_button.opacity = 0;
-            close_button.reactive = true;
-            close_button.visible = false;
-
-            // block propagation of button presses on the close button, otherwise
-            // the click action on the icon group will act weirdly
-            close_button.button_release_event.connect (() => { return Gdk.EVENT_STOP; });
-
-            add_child (close_button);
-
-            var close_click = new Clutter.ClickAction ();
-            close_click.clicked.connect (close);
-            close_button.add_action (close_click);
-
             icon_container.actor_removed.connect_after (redraw);
         }
 
@@ -126,66 +89,8 @@ namespace Gala {
             icon_container.actor_removed.disconnect (redraw);
         }
 
-        public override bool enter_event (Clutter.CrossingEvent event) {
-            toggle_close_button (true);
-
-            return Gdk.EVENT_PROPAGATE;
-        }
-
-        public override bool leave_event (Clutter.CrossingEvent event) {
-            if (!contains (event.related)) {
-                toggle_close_button (false);
-            }
-
-            return Gdk.EVENT_PROPAGATE;
-        }
-
-        /**
-         * Requests toggling the close button. If show is true, a timeout will be set after which
-         * the close button is shown, if false, the close button is hidden and the timeout is removed,
-         * if it exists. The close button may not be shown even though requested if the workspace has
-         * no windows or workspaces aren't set to be dynamic.
-         *
-         * @param show Whether to show the close button
-         */
-        private void toggle_close_button (bool show) {
-            // don't display the close button when we don't have dynamic workspaces
-            // or when there are no windows on us. For one, our method for closing
-            // wouldn't work anyway without windows and it's also the last workspace
-            // which we don't want to have closed if everything went correct
-            if (!Meta.Prefs.get_dynamic_workspaces () || icon_container.get_n_children () < 1 || drag_action.dragging) {
-                return;
-            }
-
-            var old_transition = close_button.get_transition ("opacity");
-            if (old_transition != null) {
-                old_transition.stop ();
-                close_button.remove_transition ("opacity");
-            }
-
-            close_button.visible = true;
-            close_button.save_easing_state ();
-            close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-            close_button.set_easing_duration (wm.enable_animations ? 200 : 0);
-            close_button.set_easing_delay (show ? SHOW_CLOSE_BUTTON_DELAY : 0);
-            close_button.opacity = show ? 255 : 0;
-            close_button.restore_easing_state ();
-
-            if (!show) {
-                var transition = close_button.get_transition ("opacity");
-                if (transition != null) {
-                    transition.completed.connect (() => {
-                        close_button.visible = false;
-                    });
-                } else {
-                    close_button.visible = false;
-                }
-            }
-        }
-
         private bool resize_canvas () {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var size = SIZE * scale;
+            var size = InternalUtils.scale_to_int (SIZE, scale_factor);
 
             width = size;
             height = size;
@@ -193,33 +98,25 @@ namespace Gala {
             return ((Clutter.Canvas) content).set_size (size, size);
         }
 
-        private void place_close_button () {
-            var size = CLOSE_BUTTON_SIZE * InternalUtils.get_ui_scaling_factor ();
-            close_button.set_size (size, size);
-
-            close_button.x = -Math.floorf (close_button.width * 0.4f);
-            close_button.y = -Math.floorf (close_button.height * 0.4f);
-        }
-
         /**
          * Override the paint handler to draw our backdrop if necessary
          */
         public override void paint (Clutter.PaintContext context) {
-            if (backdrop_opacity < 1 || drag_action.dragging) {
+            if (backdrop_opacity == 0.0 || drag_action.dragging) {
                 base.paint (context);
                 return;
             }
 
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var width = 100 * scale;
-            var x = ((SIZE * scale) - width) / 2;
+            var width = InternalUtils.scale_to_int (100, scale_factor);
+            var x = (InternalUtils.scale_to_int (SIZE, scale_factor) - width) / 2;
             var y = -10;
-            var height = WorkspaceClone.BOTTOM_OFFSET * scale;
+            var height = InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
+            var backdrop_opacity_int = (uint8) (BACKDROP_ABSOLUTE_OPACITY * backdrop_opacity);
 
             Cogl.VertexP2T2C4 vertices[4];
-            vertices[0] = { x, y + height, 0, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[0] = { x, y + height, 0, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
-            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity, backdrop_opacity, backdrop_opacity, backdrop_opacity };
+            vertices[2] = { x + width, y + height, 1, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[3] = { x + width, y, 1, 0, 0, 0, 0, 0 };
 
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
@@ -245,12 +142,8 @@ namespace Gala {
          *                  the group.
          */
         public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
-            var new_window = new WindowIconActor (window);
-
-            new_window.save_easing_state ();
-            new_window.set_easing_duration (0);
+            var new_window = new WindowIconActor (wm, window);
             new_window.set_position (32, 32);
-            new_window.restore_easing_state ();
             new_window.temporary = temporary;
 
             icon_container.add_child (new_window);
@@ -265,25 +158,28 @@ namespace Gala {
          * @param animate Whether to fade the icon out before removing it
          */
         public void remove_window (Meta.Window window, bool animate = true) {
-            foreach (var child in icon_container.get_children ()) {
-                unowned WindowIconActor w = (WindowIconActor) child;
-                if (w.window == window) {
+            foreach (unowned var child in icon_container.get_children ()) {
+                unowned var icon = (WindowIconActor) child;
+                if (icon.window == window) {
                     if (animate) {
-                        w.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                        w.set_easing_duration (200);
-                        w.opacity = 0;
+                        icon.save_easing_state ();
+                        icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
+                        icon.set_easing_duration (wm.enable_animations ? 200 : 0);
+                        icon.opacity = 0;
+                        icon.restore_easing_state ();
 
-                        var transition = w.get_transition ("opacity");
+                        var transition = icon.get_transition ("opacity");
                         if (transition != null) {
                             transition.completed.connect (() => {
-                                w.destroy ();
+                                icon.destroy ();
                             });
                         } else {
-                            w.destroy ();
+                            icon.destroy ();
                         }
 
-                    } else
-                        w.destroy ();
+                    } else {
+                        icon.destroy ();
+                    }
 
                     // don't break here! If people spam hover events and we animate
                     // removal, we can actually multiple instances of the same window icon
@@ -308,27 +204,10 @@ namespace Gala {
         }
 
         /**
-         * Close handler. We close the workspace by deleting all the windows on it.
-         * That way the workspace won't be deleted if windows decide to ignore the
-         * delete signal
-         */
-        private void close () {
-            var time = workspace.get_display ().get_current_time ();
-            foreach (var window in workspace.list_windows ()) {
-                var type = window.window_type;
-                if (!window.is_on_all_workspaces () && (type == Meta.WindowType.NORMAL
-                    || type == Meta.WindowType.DIALOG || type == Meta.WindowType.MODAL_DIALOG))
-                    window.@delete (time);
-            }
-        }
-
-        /**
          * Draw the background or plus sign and do layouting. We won't lose performance here
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
         private bool draw (Cairo.Context cr) {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
             cr.set_operator (Cairo.Operator.OVER);
@@ -338,7 +217,7 @@ namespace Gala {
             // single icon => big icon
             if (n_windows == 1) {
                 var icon = (WindowIconActor) icon_container.get_child_at_index (0);
-                icon.place (0, 0, 64);
+                icon.place (0, 0, 64, scale_factor);
 
                 return false;
             }
@@ -346,11 +225,11 @@ namespace Gala {
             // more than one => we need a folder
             Drawing.Utilities.cairo_rounded_rectangle (
                 cr,
-                0.5 * scale,
-                0.5 * scale,
-                (int) width - (1 * scale),
-                (int) height - (1 * scale),
-                5 * scale
+                0.5 * scale_factor,
+                0.5 * scale_factor,
+                (int) width - InternalUtils.scale_to_int (1, scale_factor),
+                (int) height - InternalUtils.scale_to_int (1, scale_factor),
+                InternalUtils.scale_to_int (5, scale_factor)
             );
 
             if (drag_action.dragging) {
@@ -362,7 +241,7 @@ namespace Gala {
 
             cr.fill_preserve ();
 
-            cr.set_line_width (1 * scale);
+            cr.set_line_width (InternalUtils.scale_to_int (1, scale_factor));
 
             var grad = new Cairo.Pattern.linear (0, 0, 0, height);
             grad.add_color_stop_rgba (0.8, 0, 0, 0, 0);
@@ -373,11 +252,11 @@ namespace Gala {
 
             Drawing.Utilities.cairo_rounded_rectangle (
                 cr,
-                1.5 * scale,
-                1.5 * scale,
-                (int) width - (3 * scale),
-                (int) height - (3 * scale),
-                5 * scale
+                1.5 * scale_factor,
+                1.5 * scale_factor,
+                (int) width - InternalUtils.scale_to_int (3, scale_factor),
+                (int) height - InternalUtils.scale_to_int (3, scale_factor),
+                InternalUtils.scale_to_int (5, scale_factor)
             );
 
             cr.set_source_rgba (0, 0, 0, 0.3);
@@ -394,23 +273,28 @@ namespace Gala {
                 }
             }
 
+            var scaled_size = InternalUtils.scale_to_int (SIZE, scale_factor);
+
             if (n_windows < 1) {
                 if (!Meta.Prefs.get_dynamic_workspaces ()
                     || workspace_index != manager.get_n_workspaces () - 1)
                     return false;
 
-                var buffer = new Drawing.BufferSurface (SIZE * scale, SIZE * scale);
-                var offset = (SIZE * scale) / 2 - (PLUS_WIDTH * scale) / 2;
+                var buffer = new Drawing.BufferSurface (scaled_size, scaled_size);
+                var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
 
-                buffer.context.rectangle (PLUS_WIDTH / 2 * scale - PLUS_SIZE / 2 * scale + 0.5 + offset,
+                buffer.context.rectangle (
+                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + 0.5 + offset,
                     0.5 + offset,
-                    PLUS_SIZE * scale - 1,
-                    PLUS_WIDTH * scale - 1);
+                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor) - 1,
+                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) - 1
+                );
 
                 buffer.context.rectangle (0.5 + offset,
-                    PLUS_WIDTH / 2 * scale - PLUS_SIZE / 2 * scale + 0.5 + offset,
-                    PLUS_WIDTH * scale - 1,
-                    PLUS_SIZE * scale - 1);
+                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + 0.5 + offset,
+                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) - 1,
+                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor) - 1
+                );
 
                 buffer.context.set_source_rgb (0, 0, 0);
                 buffer.context.fill_preserve ();
@@ -439,12 +323,12 @@ namespace Gala {
             var columns = (int) Math.ceil (Math.sqrt (n_tiled_windows));
             var rows = (int) Math.ceil (n_tiled_windows / (double) columns);
 
-            int spacing = 6 * scale;
+            int spacing = InternalUtils.scale_to_int (6, scale_factor);
 
-            var width = columns * (size * scale) + (columns - 1) * spacing;
-            var height = rows * (size * scale) + (rows - 1) * spacing;
-            var x_offset = SIZE * scale / 2 - width / 2;
-            var y_offset = SIZE * scale / 2 - height / 2;
+            var width = columns * InternalUtils.scale_to_int (size, scale_factor) + (columns - 1) * spacing;
+            var height = rows * InternalUtils.scale_to_int (size, scale_factor) + (rows - 1) * spacing;
+            var x_offset = scaled_size / 2 - width / 2;
+            var y_offset = scaled_size / 2 - height / 2;
 
             var show_ellipsis = false;
             var n_shown_windows = n_windows;
@@ -461,10 +345,10 @@ namespace Gala {
 
                 // draw an ellipsis at the 9th position if we need one
                 if (show_ellipsis && i == 8) {
-                    int top_offset = 10 * scale;
-                    int left_offset = 2 * scale;
-                    int radius = 2 * scale;
-                    int dot_spacing = 3 * scale;
+                    int top_offset = InternalUtils.scale_to_int (10, scale_factor);
+                    int left_offset = InternalUtils.scale_to_int (2, scale_factor);
+                    int radius = InternalUtils.scale_to_int (2, scale_factor);
+                    int dot_spacing = InternalUtils.scale_to_int (3, scale_factor);
                     cr.arc (left_offset + x, y + top_offset, radius, 0, 2 * Math.PI);
                     cr.arc (left_offset + x + radius + dot_spacing, y + top_offset, radius, 0, 2 * Math.PI);
                     cr.arc (left_offset + x + radius * 2 + dot_spacing * 2, y + top_offset, radius, 0, 2 * Math.PI);
@@ -478,12 +362,12 @@ namespace Gala {
                     continue;
                 }
 
-                window.place (x, y, size);
+                window.place (x, y, size, scale_factor);
 
-                x += (size * scale) + spacing;
-                if (x + (size * scale) >= SIZE * scale) {
+                x += InternalUtils.scale_to_int (size, scale_factor) + spacing;
+                if (x + InternalUtils.scale_to_int (size, scale_factor) >= scaled_size) {
                     x = x_offset;
-                    y += (size * scale) + spacing;
+                    y += InternalUtils.scale_to_int (size, scale_factor) + spacing;
                 }
             }
 
@@ -518,7 +402,10 @@ namespace Gala {
             get_transformed_position (out abs_x, out abs_y);
             set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
-            toggle_close_button (false);
+            // disable reactivity so that workspace thumbs can get events
+            reactive = false;
+
+            wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
             return this;
         }
@@ -535,11 +422,15 @@ namespace Gala {
             } else {
                 drag_canceled ();
             }
+
+            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void drag_canceled () {
             get_parent ().remove_child (this);
             restore_group ();
+
+            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void restore_group () {

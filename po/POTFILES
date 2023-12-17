@@ -2,6 +2,6 @@ src/Dialogs.vala
 src/ScreenshotManager.vala
 src/WindowManager.vala
 daemon/MenuDaemon.vala
-data/gala.appdata.xml.in
+data/gala.metainfo.xml.in
 data/gala-multitaskingview.desktop.in
 data/gala-other.desktop.in

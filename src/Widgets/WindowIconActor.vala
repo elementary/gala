@@ -23,8 +23,10 @@ namespace Gala {
      */
     public class WindowIconActor : Clutter.Actor {
         public Meta.Window window { get; construct; }
+        public WindowManager wm { get; construct; }
 
-        private int icon_scale;
+        private float cur_icon_scale = 1.0f;
+        private float desired_icon_scale = 1.0f;
 
         private int _icon_size;
         /**
@@ -35,17 +37,16 @@ namespace Gala {
             get {
                 return _icon_size;
             }
-            set {
-                var scale = InternalUtils.get_ui_scaling_factor ();
-
-                if (value == _icon_size && scale == icon_scale) {
+            private set {
+                if (value == _icon_size && cur_icon_scale == desired_icon_scale) {
                     return;
                 }
 
                 _icon_size = value;
-                icon_scale = scale;
+                cur_icon_scale = desired_icon_scale;
 
-                set_size (_icon_size * scale, _icon_size * scale);
+                var scaled_size = InternalUtils.scale_to_int (_icon_size, cur_icon_scale);
+                set_size (scaled_size, scaled_size);
 
                 fade_new_icon ();
             }
@@ -64,7 +65,7 @@ namespace Gala {
             set {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
-                } else if (!_temporary && value) {
+                } else if (!_temporary && value && wm.enable_animations) {
                     var transition = new Clutter.TransitionGroup () {
                         duration = 800,
                         auto_reverse = true,
@@ -98,22 +99,17 @@ namespace Gala {
             }
         }
 
-        private bool initial = true;
-
         private WindowIcon? icon = null;
         private WindowIcon? old_icon = null;
 
-        public WindowIconActor (Meta.Window window) {
-            Object (window: window);
+        public WindowIconActor (WindowManager wm, Meta.Window window) {
+            Object (wm: wm, window: window);
         }
 
         construct {
             set_pivot_point (0.5f, 0.5f);
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_ELASTIC);
-            set_easing_duration (800);
 
             window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
-            icon_scale = InternalUtils.get_ui_scaling_factor ();
         }
 
         ~WindowIconActor () {
@@ -133,34 +129,26 @@ namespace Gala {
          * @param y    The y coordinate to which to animate to
          * @param size The size to which to animate to and display the icon in
          */
-        public void place (float x, float y, int size) {
-            if (initial) {
-                save_easing_state ();
-                set_easing_duration (10);
-            }
-
+        public void place (float x, float y, int size, float scale) {
+            desired_icon_scale = scale;
             set_position (x, y);
             icon_size = size;
-
-            if (initial) {
-                restore_easing_state ();
-                initial = false;
-            }
         }
 
         /**
          * Fades out the old icon and fades in the new icon
          */
         private void fade_new_icon () {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var new_icon = new WindowIcon (window, icon_size, scale);
+            var new_icon = new WindowIcon (window, icon_size, (int)Math.round (cur_icon_scale));
             new_icon.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
             new_icon.opacity = 0;
 
             add_child (new_icon);
 
+            new_icon.save_easing_state ();
             new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            new_icon.set_easing_duration (500);
+            new_icon.set_easing_duration (wm.enable_animations ? 500 : 0);
+            new_icon.restore_easing_state ();
 
             if (icon == null) {
                 icon = new_icon;

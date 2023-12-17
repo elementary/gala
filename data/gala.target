@@ -1,10 +1,10 @@
 [Unit]
-Description=Gala on X11
+Description=Gala
 DefaultDependencies=no
 
 Requisite=gnome-session-initialized.target
 PartOf=gnome-session-initialized.target
 Before=gnome-session-initialized.target
 
-Requires=gala-x11.service
-After=gala-x11.service
+Wants=io.elementary.gala@wayland.service
+Wants=io.elementary.gala@x11.service

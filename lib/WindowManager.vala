@@ -25,6 +25,8 @@ namespace Gala {
         CUSTOM_COMMAND,
         WINDOW_OVERVIEW,
         WINDOW_OVERVIEW_ALL,
+        SWITCH_TO_WORKSPACE_PREVIOUS,
+        SWITCH_TO_WORKSPACE_NEXT,
         SWITCH_TO_WORKSPACE_LAST,
         START_MOVE_CURRENT,
         START_RESIZE_CURRENT,
@@ -174,13 +176,12 @@ namespace Gala {
         public abstract void offset_notifications (int32 offset);
 
         /**
-         * Moves the window to the workspace next to its current workspace in the given direction.
-         * Gala currently only supports LEFT and RIGHT.
+         * Moves the window to the given workspace.
          *
          * @param window    The window to be moved
-         * @param direction The direction in which to move the window
+         * @param workspace The workspace the window should be moved to
          */
-        public abstract void move_window (Meta.Window? window, Meta.MotionDirection direction);
+        public abstract void move_window (Meta.Window? window, Meta.Workspace workspace);
 
         /**
          * Switches to the next workspace in the given direction.

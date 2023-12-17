@@ -25,14 +25,36 @@ namespace Gala {
         public const int SPACING = 48;
         public const int GROUP_WIDTH = 64;
 
+        public WindowManager wm { get; construct; }
+
         public signal void request_reposition (bool animate);
 
-        public Meta.Display display { get; construct; }
+        private float _scale_factor = 1.0f;
+        public float scale_factor {
+            get {
+                return _scale_factor;
+            }
+            set {
+                if (value != _scale_factor) {
+                    _scale_factor = value;
+                    reallocate ();
+                }
+            }
+        }
 
-        public IconGroupContainer (Meta.Display display) {
-            Object (display: display);
+        public IconGroupContainer (WindowManager wm, float scale) {
+            Object (wm: wm, scale_factor: scale);
 
             layout_manager = new Clutter.BoxLayout ();
+        }
+
+        private void reallocate () {
+            foreach (var child in get_children ()) {
+                unowned WorkspaceInsertThumb thumb = child as WorkspaceInsertThumb;
+                if (thumb != null) {
+                    thumb.scale_factor = scale_factor;
+                }
+            }
         }
 
         public void add_group (IconGroup group) {
@@ -40,7 +62,7 @@ namespace Gala {
 
             insert_child_at_index (group, index * 2);
 
-            var thumb = new WorkspaceInsertThumb (index);
+            var thumb = new WorkspaceInsertThumb (wm, index, scale_factor);
             thumb.notify["expanded"].connect_after (expanded_changed);
             insert_child_at_index (thumb, index * 2);
 
@@ -63,8 +85,8 @@ namespace Gala {
          * it and it's previous WorkspaceInsertThumb. This would make
          * the container immediately reallocate and fill the empty space
          * with right-most IconGroups.
-         * 
-         * We don't want that until the IconGroup 
+         *
+         * We don't want that until the IconGroup
          * leaves the expanded WorkspaceInsertThumb.
          */
         public void remove_group_in_place (IconGroup group) {
@@ -107,9 +129,8 @@ namespace Gala {
          * end states into account
          */
         public float calculate_total_width () {
-            var scale = InternalUtils.get_ui_scaling_factor ();
-            var spacing = SPACING * scale;
-            var group_width = GROUP_WIDTH * scale;
+            var spacing = InternalUtils.scale_to_int (SPACING, scale_factor);
+            var group_width = InternalUtils.scale_to_int (GROUP_WIDTH, scale_factor);
 
             var width = 0.0f;
             foreach (var child in get_children ()) {

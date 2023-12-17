@@ -23,8 +23,8 @@ namespace Gala {
             public int scale;
         }
 
-        private static Gdk.Pixbuf? resize_pixbuf = null;
-        private static Gdk.Pixbuf? close_pixbuf = null;
+        private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
+        private static Gee.HashMap<int, Gdk.Pixbuf?>? close_pixbufs = null;
 
         private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
@@ -248,21 +248,33 @@ namespace Gala {
         }
 
         /**
+         * Multiplies an integer by a floating scaling factor, and then
+         * returns the result rounded to the nearest integer
+         */
+         public static int scale_to_int (int value, float scale_factor) {
+            return (int) (Math.round ((float)value * scale_factor));
+        }
+
+        /**
          * Get the number of toplevel windows on a workspace excluding those that are
          * on all workspaces
          *
          * @param workspace The workspace on which to count the windows
          */
-        public static uint get_n_windows (Meta.Workspace workspace) {
+        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false) {
             var n = 0;
-            foreach (weak Meta.Window window in workspace.list_windows ()) {
-                if (window.on_all_workspaces)
+            foreach (unowned var window in workspace.list_windows ()) {
+                if (window.on_all_workspaces) {
                     continue;
+                }
+
                 if (
-                    window.window_type == Meta.WindowType.NORMAL ||
-                    window.window_type == Meta.WindowType.DIALOG ||
-                    window.window_type == Meta.WindowType.MODAL_DIALOG)
+                    (window.window_type == Meta.WindowType.NORMAL
+                    || window.window_type == Meta.WindowType.DIALOG
+                    || window.window_type == Meta.WindowType.MODAL_DIALOG)
+                    && (!on_primary || (on_primary && window.is_on_primary_monitor ()))) {
                     n ++;
+                }
             }
 
             return n;
@@ -279,7 +291,11 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
+#if HAS_MUTTER45
+            Mtk.Rectangle inner_rect
+#else
             Meta.Rectangle inner_rect
+#endif
         ) {
             Clutter.Content content;
 
@@ -303,20 +319,17 @@ namespace Gala {
         }
 
         /**
-        * Ring the system bell, will most likely emit a <beep> error sound or, if the
-        * audible bell is disabled, flash the display
-        *
-        * @param display The display to flash, if necessary
-        */
-        public static void bell (Meta.Display display) {
-            if (Meta.Prefs.bell_is_audible ())
-                Gdk.beep ();
-            else
-                display.get_compositor ().flash_display (display);
-        }
-
+         * DEPRECATED: When used with Mutter 44, this will always return 1.
+         * Get the scaling factor for the monitor you are drawing to with
+         * `Meta.Display.get_monitor_scale` instead
+         */
+        [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
         public static int get_ui_scaling_factor () {
+#if HAS_MUTTER44
+            return 1;
+#else
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
+#endif
         }
 
         /**
@@ -325,11 +338,16 @@ namespace Gala {
          *
          * @return the close button pixbuf or null if it failed to load
          */
-        public static Gdk.Pixbuf? get_close_button_pixbuf () {
-            var height = 36 * Utils.get_ui_scaling_factor ();
-            if (close_pixbuf == null || close_pixbuf.height != height) {
+        public static Gdk.Pixbuf? get_close_button_pixbuf (float scale) {
+            var height = scale_to_int (36, scale);
+
+            if (close_pixbufs == null) {
+                close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
+            }
+
+            if (close_pixbufs[height] == null) {
                 try {
-                    close_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
+                    close_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
                         Config.RESOURCEPATH + "/buttons/close.svg",
                         -1,
                         height,
@@ -341,7 +359,7 @@ namespace Gala {
                 }
             }
 
-            return close_pixbuf;
+            return close_pixbufs[height];
         }
 
         /**
@@ -349,9 +367,9 @@ namespace Gala {
          *
          * @return The close button actor
          */
-        public static Clutter.Actor create_close_button () {
+        public static Clutter.Actor create_close_button (float scale) {
             var texture = new Clutter.Actor ();
-            var pixbuf = get_close_button_pixbuf ();
+            var pixbuf = get_close_button_pixbuf (scale);
 
             texture.reactive = true;
 
@@ -367,8 +385,7 @@ namespace Gala {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this
                 // works as good as some weird fallback-image-failed-to-load pixbuf
-                var scale = Utils.get_ui_scaling_factor ();
-                texture.set_size (36 * scale, 36 * scale);
+                texture.set_size (scale_to_int (36, scale), scale_to_int (36, scale));
                 texture.background_color = { 255, 0, 0, 255 };
             }
 
@@ -380,11 +397,16 @@ namespace Gala {
          *
          * @return the close button pixbuf or null if it failed to load
          */
-        public static Gdk.Pixbuf? get_resize_button_pixbuf () {
-            var height = 36 * Utils.get_ui_scaling_factor ();
-            if (resize_pixbuf == null || resize_pixbuf.height != height) {
+        public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
+            var height = scale_to_int (36, scale);
+
+            if (resize_pixbufs == null) {
+                resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
+            }
+
+            if (resize_pixbufs[height] == null) {
                 try {
-                    resize_pixbuf = new Gdk.Pixbuf.from_resource_at_scale (
+                    resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
                         Config.RESOURCEPATH + "/buttons/resize.svg",
                         -1,
                         height,
@@ -396,7 +418,7 @@ namespace Gala {
                 }
             }
 
-            return resize_pixbuf;
+            return resize_pixbufs[height];
         }
 
         /**
@@ -404,9 +426,9 @@ namespace Gala {
          *
          * @return The resize button actor
          */
-        public static Clutter.Actor create_resize_button () {
+        public static Clutter.Actor create_resize_button (float scale) {
             var texture = new Clutter.Actor ();
-            var pixbuf = get_resize_button_pixbuf ();
+            var pixbuf = get_resize_button_pixbuf (scale);
 
             texture.reactive = true;
 
@@ -422,8 +444,8 @@ namespace Gala {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this
                 // works as good as some weird fallback-image-failed-to-load pixbuf
-                var scale = Utils.get_ui_scaling_factor ();
-                texture.set_size (36 * scale, 36 * scale);
+                var size = scale_to_int (36, scale);
+                texture.set_size (size, size);
                 texture.background_color = { 255, 0, 0, 255 };
             }
 

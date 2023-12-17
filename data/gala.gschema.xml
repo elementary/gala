@@ -7,9 +7,10 @@
     <value nick="minimize-current" value="3" />
     <value nick="open-launcher" value="4" />
     <value nick="custom-command" value="5" />
-    <value nick="window-overview" value="6" />
-    <value nick="window-overview-all" value="7" />
-    <value nick="switch-to-workspace-last" value="8" />
+    <value nick="window-overview-all" value="6" />
+    <value nick="switch-to-workspace-previous" value="7" />
+    <value nick="switch-to-workspace-next" value="8" />
+    <value nick="switch-to-workspace-last" value="9" />
   </enum>
   <enum id="GalaWindowOverviewType">
     <value nick='grid' value='0'/>
@@ -146,8 +147,8 @@
       <summary>Zoom out</summary>
     </key>
     <key type="as" name="expose-windows">
-      <default><![CDATA[['<Super>w']]]></default>
-      <summary>Shortcut to open the window overview</summary>
+      <default><![CDATA[['']]]></default>
+      <summary>DEPRECATED: This key is deprecated and ignored</summary>
       <description></description>
     </key>
     <key type="as" name="expose-all-windows">
@@ -192,14 +193,14 @@
       <summary>Copy a screenshot of an area to clipboard</summary>
     </key>
     <key type="as" name="switch-input-source">
-      <default><![CDATA[['<Alt>space']]]></default>
+      <default><![CDATA[['']]]></default>
       <summary>Cycle to next keyboard layout</summary>
-      <description>DEPRECATED: This key is deprecated and ignored.</description>
+      <description></description>
     </key>
     <key type="as" name="switch-input-source-backward">
       <default><![CDATA[['']]]></default>
       <summary>Cycle to previous keyboard layout</summary>
-      <description>DEPRECATED: This key is deprecated and ignored.</description>
+      <description></description>
     </key>
     <key type="as" name="pip">
       <default><![CDATA[['<Super>f']]]></default>
@@ -227,7 +228,7 @@
     </key>
     <key type="s" name="workspace-switcher-background">
       <default>''</default>
-      <summary>Background-image used in the workspace-switcher</summary>
+      <summary>DEPRECATED: This key is deprecated and ignored.</summary>
     </key>
   </schema>
 
@@ -273,27 +274,27 @@
     <key type="as" name="normal-focused">
       <default>['20', '-1', '0', '15', '100']</default>
       <summary>Defines the shadow of normal focused windows</summary>
-      <description>The first value is the radius of the blur of the shadow, the second one the top fade (which is usually just -1), the third and fourth the x- and y-offset and the last the opacity. So [blur-radius, top-fade, x-offset, y-offset, opacity].</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="normal-unfocused">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of a normal unfocused window</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="menu">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of a menu</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="dialog-focused">
       <default>['12', '-1', '0', '4', '100']</default>
       <summary>Defines the shadow of a focused dialog</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
     <key type="as" name="dialog-unfocused">
       <default>['6', '-1', '0', '4', '80']</default>
       <summary>Defines the shadow of an unfocused dialog</summary>
-      <description>See normal-focused.</description>
+      <description>DEPRECATED: This key is deprecated and ignored.</description>
     </key>
   </schema>
 
@@ -353,6 +354,8 @@
   <enum id="GestureSwipeHorizontal">
     <value nick="none" value="0" />
     <value nick="switch-to-workspace" value="1" />
+    <value nick="move-to-workspace" value="2" />
+    <value nick="switch-windows" value="3" />
   </enum>
   <enum id="GestureSwipeUp">
     <value nick="none" value="0" />
@@ -390,6 +393,40 @@
       <default>"none"</default>
       <summary>Four-finger horizontal swipe gesture</summary>
       <description>The action that corresponds to performing a horizontal swipe gesture with four fingers</description>
+    </key>
+  </schema>
+
+  <enum id="GalaColorblindnessFilterType">
+    <value nick="none" value="0"/>
+    <value nick="protanopia" value="1"/>
+    <value nick="protanopia-high-contrast" value="2"/>
+    <value nick="deuteranopia" value="3"/>
+    <value nick="deuteranopia-high-contrast" value="4"/>
+    <value nick="tritanopia" value="5"/>
+  </enum>
+
+  <schema path="/io/elementary/desktop/wm/accessibility/" id="io.elementary.desktop.wm.accessibility">
+    <key enum="GalaColorblindnessFilterType" name="colorblindness-correction-filter">
+      <default>"none"</default>
+      <summary>Colorblind correction filter.</summary>
+      <description></description>
+    </key>
+    <key type="d" name="colorblindness-correction-filter-strength">
+      <range min="0.0" max="1.0"/>
+      <default>1.0</default>
+      <summary>The strength of colorblindness correction filter.</summary>
+      <description></description>
+    </key>
+    <key type="b" name="enable-monochrome-filter">
+      <default>false</default>
+      <summary>Enable monochrome filter.</summary>
+      <description></description>
+    </key>
+    <key type="d" name="monochrome-filter-strength">
+      <range min="0.0" max="1.0"/>
+      <default>1.0</default>
+      <summary>The strength of monochrome filter.</summary>
+      <description></description>
     </key>
   </schema>
 </schemalist>

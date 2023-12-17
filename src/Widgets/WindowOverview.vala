@@ -26,14 +26,18 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         reactive = true;
     }
 
+#if HAS_MUTTER45
+    public override bool key_press_event (Clutter.Event event) {
+#else
     public override bool key_press_event (Clutter.KeyEvent event) {
-        if (event.keyval == Clutter.Key.Escape) {
+#endif
+        if (event.get_key_symbol () == Clutter.Key.Escape) {
             close ();
 
-            return Gdk.EVENT_STOP;
+            return Clutter.EVENT_STOP;
         }
 
-        return Gdk.EVENT_PROPAGATE;
+        return Clutter.EVENT_PROPAGATE;
     }
 
     public override void key_focus_out () {
@@ -42,12 +46,16 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         }
     }
 
-    public override bool button_press_event (Clutter.ButtonEvent event) {
-        if (event.button == Gdk.BUTTON_PRIMARY) {
+#if HAS_MUTTER45
+    public override bool button_release_event (Clutter.Event event) {
+#else
+    public override bool button_release_event (Clutter.ButtonEvent event) {
+#endif
+        if (event.get_button () == Clutter.Button.PRIMARY) {
             close ();
         }
 
-        return Gdk.EVENT_STOP;
+        return Clutter.EVENT_STOP;
     }
 
     /**
@@ -59,25 +67,19 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
     /**
      * {@inheritDoc}
-     * You may specify 'all-windows' in hints to expose all windows
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        var all_windows = hints != null && "all-windows" in hints;
-
         workspaces = new List<Meta.Workspace> ();
         unowned var manager = wm.get_display ().get_workspace_manager ();
-        if (all_windows) {
-            foreach (unowned var workspace in manager.get_workspaces ()) {
-                workspaces.append (workspace);
-            }
-        } else {
-            workspaces.append (manager.get_active_workspace ());
+        foreach (unowned var workspace in manager.get_workspaces ()) {
+            workspaces.append (workspace);
         }
 
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK) {
+                if (window.window_type == Meta.WindowType.DOCK
+                    || window.window_type == Meta.WindowType.NOTIFICATION) {
                     continue;
                 }
 
@@ -116,10 +118,13 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
 
-        for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
-            var geometry = wm.get_display ().get_monitor_geometry (i);
+        unowned var display = wm.get_display ();
 
-            var container = new WindowCloneContainer (wm, null, true) {
+        for (var i = 0; i < display.get_n_monitors (); i++) {
+            var geometry = display.get_monitor_geometry (i);
+            var scale = display.get_monitor_scale (i);
+
+            var container = new WindowCloneContainer (wm, null, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -149,8 +154,17 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     }
 
     private bool keybinding_filter (Meta.KeyBinding binding) {
+        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+        switch (action) {
+            case Meta.KeyBindingAction.NONE:
+            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                return false;
+            default:
+                break;
+        }
+
         switch (binding.get_name ()) {
-            case "expose-windows":
             case "expose-all-windows":
             case "zoom-in":
             case "zoom-out":
@@ -187,7 +201,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (!visible) {
             return;
         }
-        if (window.window_type == Meta.WindowType.DOCK) {
+        if (window.window_type == Meta.WindowType.DOCK
+            || window.window_type == Meta.WindowType.NOTIFICATION) {
             return;
         }
         if (window.window_type != Meta.WindowType.NORMAL &&

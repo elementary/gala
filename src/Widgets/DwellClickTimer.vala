@@ -18,7 +18,7 @@
 namespace Gala {
     public class DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         private const double BACKGROUND_OPACITY = 0.7;
-        private const uint BORDER_WIDTH_PX = 1;
+        private const int BORDER_WIDTH_PX = 1;
 
         private const double START_ANGLE = 3 * Math.PI / 2;
 
@@ -29,7 +29,7 @@ namespace Gala {
          */
         private const double DELAY_TIMEOUT = 185;
 
-        private int scaling_factor = 1;
+        private float scaling_factor = 1.0f;
         private int cursor_size = 24;
 
         private Cogl.Pipeline pipeline;
@@ -64,15 +64,16 @@ namespace Gala {
             });
 
             interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
-            scaling_factor = InternalUtils.get_ui_scaling_factor ();
-
-            update_cursor_size ();
 
             var seat = Clutter.get_default_backend ().get_default_seat ();
             seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
 
             seat.ptr_a11y_timeout_started.connect ((device, type, timeout) => {
-                var tracker = wm.get_display ().get_cursor_tracker ();
+                unowned var display = wm.get_display ();
+                var scale = display.get_monitor_scale (display.get_current_monitor ());
+                update_cursor_size (scale);
+
+                unowned var tracker = display.get_cursor_tracker ();
                 Graphene.Point coords = {};
                 tracker.get_pointer (out coords, null);
 
@@ -88,15 +89,17 @@ namespace Gala {
                 transition.stop ();
                 visible = false;
             });
-
-            interface_settings.changed["cursor-size"].connect (() => {
-                update_cursor_size ();
-            });
         }
 
-        private void update_cursor_size () {
+        private void update_cursor_size (float scale) {
+            scaling_factor = scale;
+
             cursor_size = (int) (interface_settings.get_int ("cursor-size") * scaling_factor * 1.25);
-            surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, cursor_size, cursor_size);
+
+            if (surface == null || surface.get_width () != cursor_size || surface.get_height () != cursor_size) {
+                surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, cursor_size, cursor_size);
+            }
+
             set_size (cursor_size, cursor_size);
         }
 
@@ -113,6 +116,7 @@ namespace Gala {
 
             var radius = int.min (cursor_size / 2, cursor_size / 2);
             var end_angle = START_ANGLE + angle;
+            var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
             var cr = new Cairo.Context (surface);
 
@@ -128,7 +132,7 @@ namespace Gala {
             cr.translate (cursor_size / 2, cursor_size / 2);
 
             cr.move_to (0, 0);
-            cr.arc (0, 0, radius - BORDER_WIDTH_PX * scaling_factor, START_ANGLE, end_angle);
+            cr.arc (0, 0, radius - border_width, START_ANGLE, end_angle);
             cr.line_to (0, 0);
             cr.close_path ();
 
@@ -136,7 +140,7 @@ namespace Gala {
             cr.set_source (fill_color);
             cr.fill_preserve ();
 
-            cr.set_line_width (BORDER_WIDTH_PX * scaling_factor);
+            cr.set_line_width (border_width);
             cr.set_source (stroke_color);
             cr.stroke ();
 

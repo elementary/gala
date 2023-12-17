@@ -10,12 +10,12 @@ install_data(
 )
 
 i18n.merge_file(
-    input: 'gala.appdata.xml.in',
-    output: meson.project_name() + '.appdata.xml',
-    po_dir: join_paths(meson.global_source_root(), 'po'),
+    input: 'gala.metainfo.xml.in',
+    output: meson.project_name() + '.metainfo.xml',
+    po_dir: meson.global_source_root() / 'po',
     type: 'xml',
     install: true,
-    install_dir: join_paths(get_option('datadir'), 'metainfo'),
+    install_dir: get_option('datadir') / 'metainfo',
 )
 
 i18n.merge_file(
@@ -50,15 +50,24 @@ if get_option('systemd')
     unit_conf.set('bindir', bindir)
 
     configure_file(
-        input: 'gala-x11.service.in',
-        output: 'gala-x11.service',
+        input: 'gala@x11.service.in',
+        output: 'io.elementary.gala@x11.service',
+        install: true,
+        install_dir: systemd_userunitdir,
+        configuration: unit_conf
+    )
+
+    configure_file(
+        input: 'gala@wayland.service.in',
+        output: 'io.elementary.gala@wayland.service',
         install: true,
         install_dir: systemd_userunitdir,
         configuration: unit_conf
     )
 
     install_data(
-        'gala-x11.target',
+        'gala.target',
+        rename: 'io.elementary.gala.target',
         install_dir: systemd_userunitdir
     )
 endif

@@ -7,19 +7,30 @@
 public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public const int EXPAND_DELAY = 300;
 
+    public WindowManager wm { get; construct; }
+
     public int workspace_index { get; construct set; }
     public bool expanded { get; set; default = false; }
     public int delay { get; set; default = EXPAND_DELAY; }
+    private float _scale_factor = 1.0f;
+    public float scale_factor {
+        get {
+            return _scale_factor;
+        }
+        set {
+            if (value != _scale_factor) {
+                _scale_factor = value;
+                reallocate ();
+            }
+        }
+    }
 
     private uint expand_timeout = 0;
 
-    public WorkspaceInsertThumb (int workspace_index) {
-        Object (workspace_index: workspace_index);
+    public WorkspaceInsertThumb (WindowManager wm, int workspace_index, float scale) {
+        Object (wm: wm, workspace_index: workspace_index, scale_factor: scale);
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        width = IconGroupContainer.SPACING * scale;
-        height = IconGroupContainer.GROUP_WIDTH * scale;
-        y = (IconGroupContainer.GROUP_WIDTH * scale - IconGroupContainer.SPACING * scale) / 2;
+        reallocate ();
         opacity = 0;
         set_pivot_point (0.5f, 0.5f);
         reactive = true;
@@ -46,11 +57,16 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
         add_action (drop);
     }
 
+    private void reallocate () {
+        width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
+        height = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH, scale_factor);
+        y = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING, scale_factor) / 2;
+    }
+
     public void set_window_thumb (Meta.Window window) {
         destroy_all_children ();
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
-        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale) {
+        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, (int)Math.round (scale_factor)) {
             x = IconGroupContainer.SPACING,
             x_align = Clutter.ActorAlign.CENTER
         };
@@ -68,18 +84,17 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     private new void transform (bool expand) {
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        set_easing_duration (200);
+        set_easing_duration (wm.enable_animations ? 200 : 0);
 
-        var scale = InternalUtils.get_ui_scaling_factor ();
         if (!expand) {
             remove_transition ("pulse");
             opacity = 0;
-            width = IconGroupContainer.SPACING * scale;
+            width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
             expanded = false;
         } else {
             add_pulse_animation ();
             opacity = 200;
-            width = IconGroupContainer.GROUP_WIDTH * scale + IconGroupContainer.SPACING * 2;
+            width = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2, scale_factor);
             expanded = true;
         }
 
@@ -87,6 +102,10 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     }
 
     private void add_pulse_animation () {
+        if (!wm.enable_animations) {
+            return;
+        }
+
         var transition = new Clutter.TransitionGroup () {
             duration = 800,
             auto_reverse = true,

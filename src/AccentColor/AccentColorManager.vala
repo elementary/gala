@@ -1,21 +1,6 @@
 /*
- * Copyright 2021 elementary, Inc. (https://elementary.io)
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301 USA
- *
+ * Copyright 2021-2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  * Authored by: Marius Meisenzahl <mariusmeisenzahl@gmail.com>
  */
 
@@ -41,16 +26,16 @@ public class Gala.AccentColorManager : Object {
     private Settings interface_settings;
 
     private NamedColor[] theme_colors = {
-        new NamedColor ("Blue", THEME_BLUE),
-        new NamedColor ("Mint", THEME_MINT),
-        new NamedColor ("Green", THEME_GREEN),
-        new NamedColor ("Yellow", THEME_YELLOW),
-        new NamedColor ("Orange", THEME_ORANGE),
-        new NamedColor ("Red", THEME_RED),
-        new NamedColor ("Pink", THEME_PINK),
-        new NamedColor ("Purple", THEME_PURPLE),
-        new NamedColor ("Brown", THEME_BROWN),
-        new NamedColor ("Gray", THEME_GRAY)
+        new NamedColor ("Blue", THEME_BLUE, new Drawing.Color.from_int (0x3689e6)),
+        new NamedColor ("Mint", THEME_MINT, new Drawing.Color.from_int (0x28bca3)),
+        new NamedColor ("Green", THEME_GREEN, new Drawing.Color.from_int (0x68b723)),
+        new NamedColor ("Yellow", THEME_YELLOW, new Drawing.Color.from_int (0xf9c440)),
+        new NamedColor ("Orange", THEME_ORANGE, new Drawing.Color.from_int (0xffa154)),
+        new NamedColor ("Red", THEME_RED, new Drawing.Color.from_int (0xed5353)),
+        new NamedColor ("Pink", THEME_PINK, new Drawing.Color.from_int (0xde3e80)),
+        new NamedColor ("Purple", THEME_PURPLE, new Drawing.Color.from_int (0xa56de2)),
+        new NamedColor ("Brown", THEME_BROWN, new Drawing.Color.from_int (0x8a715e)),
+        new NamedColor ("Gray", THEME_GRAY, new Drawing.Color.from_int (0x667885))
     };
 
     construct {

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Plugins.PIP.ShadowEffect : Clutter.Effect {
+public class Gala.ShadowEffect : Clutter.Effect {
     private class Shadow {
         public int users;
         public Cogl.Texture texture;
@@ -18,18 +18,23 @@ public class Gala.Plugins.PIP.ShadowEffect : Clutter.Effect {
     // the sizes of the textures often repeat, especially for the background actor
     // so we keep a cache to avoid creating the same texture all over again.
     private static Gee.HashMap<string,Shadow> shadow_cache;
-    private static Gtk.StyleContext style_context;
+    // Delay the style context creation at render stage as Gtk need to access
+    // the current display.
+    private static GLib.Once<Gtk.StyleContext> _style_context;
 
-    class construct {
+    static construct {
         shadow_cache = new Gee.HashMap<string,Shadow> ();
+    }
 
+    private static Gtk.StyleContext create_style_context () {
         var style_path = new Gtk.WidgetPath ();
-        var id = style_path.append_type (typeof (Gtk.Window));
+        style_path.append_type (typeof (Gtk.Window));
 
-        style_context = new Gtk.StyleContext ();
+        var style_context = new Gtk.StyleContext ();
         style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
         style_context.add_class ("decoration");
         style_context.set_path (style_path);
+        return style_context;
     }
 
     public int shadow_size { get; construct; }
@@ -80,13 +85,15 @@ public class Gala.Plugins.PIP.ShadowEffect : Clutter.Effect {
         cr.set_operator (Cairo.Operator.OVER);
         cr.save ();
         cr.scale (scale_factor, scale_factor);
+        unowned var style_context = _style_context.once (create_style_context);
         style_context.save ();
         if (css_class != null) {
             style_context.add_class (css_class);
         }
 
-        style_context.set_scale ((int)scale_factor);
-        style_context.render_background (cr, shadow_size, shadow_size, width - shadow_size * 2, height - shadow_size * 2);
+        style_context.set_scale ((int) Math.round (scale_factor));
+        var size = shadow_size * scale_factor;
+        style_context.render_background (cr, shadow_size, shadow_size, (width - size * 2) / scale_factor, (height - size * 2) / scale_factor);
         style_context.restore ();
         cr.restore ();
 
