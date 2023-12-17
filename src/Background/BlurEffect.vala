@@ -108,7 +108,6 @@ public class Gala.BlurEffect : Clutter.Effect {
 
         var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
 
-        warning ("GENERAL %d %d", new_width, new_height);
         try {
             texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
         } catch (GLib.Error e) {
@@ -145,7 +144,6 @@ public class Gala.BlurEffect : Clutter.Effect {
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
 
-        warning ("ACTOR %d %d", new_width, new_height);
         var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
 
         try {
