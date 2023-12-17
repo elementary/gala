@@ -80,6 +80,10 @@ namespace Gala {
 
             dock_clones = new Clutter.Actor ();
 
+            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor ());
+            blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+            add_child (blurred_bg);
+
             // Create a child container that will be sized to fit the primary monitor, to contain the "main"
             // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
             // stage as it contains MonitorClones for each monitor.
