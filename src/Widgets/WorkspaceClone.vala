@@ -63,7 +63,7 @@ namespace Gala {
             var ctx = cached_context;
 
             ctx.set_source_rgba (255, 255, 255, 255);
-            ctx.rectangle (0, 0, (int) width, (int) height);
+            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 9);
             ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.stroke ();
             ctx.restore ();
