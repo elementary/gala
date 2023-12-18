@@ -240,11 +240,11 @@ namespace Gala {
             var granite_settings = Granite.Settings.get_default ();
 
             if (granite_settings.prefers_color_scheme == DARK) {
+                const double BG_COLOR = 35.0 / 255.0;
                 if (drag_action.dragging) {
-                    const double BG_COLOR = 35.0 / 255.0;
                     cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
                 } else {
-                    cr.set_source_rgba (0, 0, 0, 0.4);
+                    cr.set_source_rgba (BG_COLOR , BG_COLOR , BG_COLOR , 0.5);
                     shadow_effect.shadow_opacity = 200;
                 }
             } else {
