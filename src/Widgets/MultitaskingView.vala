@@ -155,9 +155,9 @@ namespace Gala {
 
         private void update_brightness_effect () {
             if (granite_settings.prefers_color_scheme == DARK) {
-                brightness_effect.set_brightness (-0.5f);
+                brightness_effect.set_brightness (-0.4f);
             } else {
-                brightness_effect.set_brightness (0.3f);
+                brightness_effect.set_brightness (0.4f);
             }
         }
 
