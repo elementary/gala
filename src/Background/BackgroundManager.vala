@@ -117,6 +117,15 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
         unowned var content = (Meta.BackgroundContent) background_actor.content;
         content.background = background.background;
 
+        var monitor = display.get_monitor_geometry (monitor_index);
+        var rect = Graphene.Rect () {
+            origin = {monitor.x, monitor.y},
+            size = {monitor.width, monitor.height},
+        };
+
+        content.set_rounded_clip_bounds (rect);
+        content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+
         if (background_source.should_dim) {
             content.vignette = true;
             content.brightness = DIM_OPACITY;
@@ -124,7 +133,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
 
         insert_child_below (background_actor, null);
 
-        var monitor = display.get_monitor_geometry (monitor_index);
         background_actor.set_size (monitor.width, monitor.height);
 
         ulong changed_handler = 0;
