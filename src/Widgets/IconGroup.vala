@@ -237,12 +237,28 @@ namespace Gala {
                 scale_factor = scale_factor
             };
 
+            var granite_settings = Granite.Settings.get_default ();
+
+            if (granite_settings.prefers_color_scheme == DARK) {
+                if (drag_action.dragging) {
+                    const double BG_COLOR = 35.0 / 255.0;
+                    cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
+                } else {
+                    cr.set_source_rgba (0, 0, 0, 0.4);
+                    shadow_effect.shadow_opacity = 200;
+                }
+            } else {
+                if (drag_action.dragging) {
+                    cr.set_source_rgba (255, 255, 255, 0.8);
+                } else {
+                    cr.set_source_rgba (255, 255, 255, 0.3);
+                    shadow_effect.shadow_opacity = 100;
+                }
+            }
+
             if (drag_action.dragging) {
-                const double BG_COLOR = 35.0 / 255.0;
-                cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
                 shadow_effect.css_class = "workspace-switcher-dnd";
             } else {
-                cr.set_source_rgba (0, 0, 0, 0.3);
                 shadow_effect.css_class = "workspace-switcher";
             }
 
@@ -283,11 +299,24 @@ namespace Gala {
                     InternalUtils.scale_to_int (PLUS_SIZE, scale_factor)
                 );
 
-                buffer.context.set_source_rgb (0, 0, 0);
-                buffer.context.fill_preserve ();
-                buffer.exponential_blur (5);
+                if (granite_settings.prefers_color_scheme == DARK) {
+                    buffer.context.move_to (0, 1 * scale_factor);
+                    buffer.context.set_source_rgb (0, 0, 0);
+                    buffer.context.fill_preserve ();
+                    buffer.exponential_blur (2);
 
-                buffer.context.set_source_rgba (1, 1, 1, 0.95);
+                    buffer.context.move_to (0, 0);
+                    buffer.context.set_source_rgba (1, 1, 1, 0.95);
+                } else {
+                    buffer.context.move_to (0, 1 * scale_factor);
+                    buffer.context.set_source_rgba (1, 1, 1, 0.4);
+                    buffer.context.fill_preserve ();
+                    buffer.exponential_blur (1);
+
+                    buffer.context.move_to (0, 0);
+                    buffer.context.set_source_rgba (0, 0, 0, 0.7);
+                }
+
                 buffer.context.fill ();
 
                 cr.set_source_surface (buffer.surface, 0, 0);
