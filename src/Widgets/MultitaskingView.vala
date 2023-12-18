@@ -41,8 +41,10 @@ namespace Gala {
         private Clutter.Actor workspaces;
         private Clutter.Actor dock_clones;
         private Clutter.Actor primary_monitor_container;
+        private Clutter.BrightnessContrastEffect brightness_effect;
 
         private GLib.Settings gala_behavior_settings;
+        private Granite.Settings granite_settings;
 
         private bool switching_workspace_with_gesture = false;
         private bool switching_workspace_in_progress {
@@ -57,6 +59,7 @@ namespace Gala {
 
         construct {
             gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            granite_settings = Granite.Settings.get_default ();
 
             visible = false;
             reactive = true;
@@ -80,8 +83,13 @@ namespace Gala {
 
             dock_clones = new Clutter.Actor ();
 
+            brightness_effect = new Clutter.BrightnessContrastEffect ();
+            update_brightness_effect ();
+
             var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor ());
             blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+            blurred_bg.add_effect (brightness_effect);
+
             add_child (blurred_bg);
 
             // Create a child container that will be sized to fit the primary monitor, to contain the "main"
@@ -141,6 +149,16 @@ namespace Gala {
                     return Source.REMOVE;
                 });
             });
+
+            granite_settings.notify["prefers-color-scheme"].connect (update_brightness_effect);
+        }
+
+        private void update_brightness_effect () {
+            if (granite_settings.prefers_color_scheme == DARK) {
+                brightness_effect.set_brightness (-0.5f);
+            } else {
+                brightness_effect.set_brightness (0.3f);
+            }
         }
 
         /**
