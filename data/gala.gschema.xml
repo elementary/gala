@@ -355,6 +355,7 @@
     <value nick="none" value="0" />
     <value nick="switch-to-workspace" value="1" />
     <value nick="move-to-workspace" value="2" />
+    <value nick="switch-windows" value="3" />
   </enum>
   <enum id="GestureSwipeUp">
     <value nick="none" value="0" />

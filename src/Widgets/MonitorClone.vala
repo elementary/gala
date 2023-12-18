@@ -41,7 +41,7 @@ namespace Gala {
         construct {
             reactive = true;
 
-            background = new BackgroundManager (wm, monitor, false);
+            background = new BackgroundManager (wm, monitor);
 
             var scale = display.get_monitor_scale (monitor);
 

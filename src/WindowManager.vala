@@ -71,7 +71,7 @@ namespace Gala {
 
         private Meta.PluginInfo info;
 
-        private WindowSwitcher? winswitcher = null;
+        private WindowSwitcher? window_switcher = null;
         private ActivatableComponent? window_overview = null;
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -187,6 +187,7 @@ namespace Gala {
             WindowListener.init (display);
             KeyboardManager.init (display);
             window_tracker = new WindowTracker ();
+            WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
 
             notification_stack = new NotificationStack (display);
@@ -331,15 +332,15 @@ namespace Gala {
                 });
 
                 if (plugin_manager.window_switcher_provider == null) {
-                    winswitcher = new WindowSwitcher (this);
-                    ui_group.add_child (winswitcher);
+                    window_switcher = new WindowSwitcher (this, gesture_tracker);
+                    ui_group.add_child (window_switcher);
 
-                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) winswitcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
                 }
 
                 if (plugin_manager.window_overview_provider == null
@@ -529,12 +530,8 @@ namespace Gala {
                 return;
             }
 
-            var can_handle_swipe = (
-                gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT)
-            );
-
-            if (!can_handle_swipe) {
+            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
+                (gesture.direction != GestureDirection.LEFT && gesture.direction != GestureDirection.RIGHT)) {
                 return;
             }
 
@@ -548,6 +545,9 @@ namespace Gala {
 
             var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
             var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+
+            var three_fingers_switch_windows = fingers == 3 && three_finger_swipe_horizontal == "switch-windows";
+            var four_fingers_switch_windows = fingers == 4 && four_finger_swipe_horizontal == "switch-windows";
 
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
@@ -570,6 +570,11 @@ namespace Gala {
 
                 switch_to_next_workspace (direction);
                 return;
+            }
+
+            var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
+            if (switch_windows && !window_switcher.opened) {
+                window_switcher.handle_gesture (gesture.direction);
             }
         }
 
@@ -602,10 +607,15 @@ namespace Gala {
                 return;
             }
 
-            unowned var display = get_display ();
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int (NUDGE_GAP, scale);
+            animating_switch_workspace = true;
 
+            unowned var display = get_display ();
+            unowned var active_index = display.get_workspace_manager ().get_active_workspace_index ();
+            prepare_workspace_switch (active_index, active_index, direction);
+
+            var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
+
+            var nudge_gap = InternalUtils.scale_to_int (NUDGE_GAP, monitor_scale);
             float dest = 0;
             if (!switch_workspace_with_gesture) {
                 dest = nudge_gap;
@@ -618,39 +628,66 @@ namespace Gala {
                 dest *= -1;
             }
 
+            var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
+
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (0.0f, dest, percentage, true);
-                ui_group.translation_x = x.clamp (-nudge_gap, nudge_gap);
+                var x_out = GestureTracker.animation_value (0.0f, dest, percentage, true).clamp (-nudge_gap, nudge_gap);
+                out_group.x = x_out;
+                wallpaper.x = x_out;
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                var nudge_gesture = new Clutter.PropertyTransition ("translation-x") {
-                    duration = (AnimationDuration.NUDGE / 2),
-                    remove_on_complete = true,
-                    progress_mode = Clutter.AnimationMode.LINEAR
-                };
-                nudge_gesture.set_from_value (ui_group.translation_x);
-                nudge_gesture.set_to_value (0.0f);
-                ui_group.add_transition ("nudge", nudge_gesture);
+            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
+                out_group.save_easing_state ();
+                out_group.set_easing_mode (animation_mode);
+                out_group.set_easing_duration (AnimationDuration.NUDGE / 2);
 
-                switch_workspace_with_gesture = false;
+                wallpaper.save_easing_state ();
+                wallpaper.set_easing_mode (animation_mode);
+                wallpaper.set_easing_duration (AnimationDuration.NUDGE / 2);
+
+                out_group.x = 0.0f;
+                out_group.restore_easing_state ();
+
+                wallpaper.x = 0.0f;
+                wallpaper.restore_easing_state ();
+
+                unowned var transition = out_group.get_transition ("x");
+                transition.completed.connect (() => {
+                    switch_workspace_animation_finished (direction, false, true);
+                    animating_switch_workspace = false;
+                });
             };
 
             if (!switch_workspace_with_gesture) {
                 double[] keyframes = { 0.5 };
                 GLib.Value[] x = { dest };
 
-                var nudge = new Clutter.KeyframeTransition ("translation-x") {
+                var out_group_nudge = new Clutter.KeyframeTransition ("translation-x") {
                     duration = AnimationDuration.NUDGE,
                     remove_on_complete = true,
                     progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
                 };
-                nudge.set_from_value (0.0f);
-                nudge.set_to_value (0.0f);
-                nudge.set_key_frames (keyframes);
-                nudge.set_values (x);
+                out_group_nudge.set_from_value (0.0f);
+                out_group_nudge.set_to_value (0.0f);
+                out_group_nudge.set_key_frames (keyframes);
+                out_group_nudge.set_values (x);
+                out_group.add_transition ("nudge", out_group_nudge);
 
-                ui_group.add_transition ("nudge", nudge);
+                var wallpaper_nudge = new Clutter.KeyframeTransition ("translation-x") {
+                    duration = AnimationDuration.NUDGE,
+                    remove_on_complete = true,
+                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
+                };
+                wallpaper_nudge.set_from_value (0.0f);
+                wallpaper_nudge.set_to_value (0.0f);
+                wallpaper_nudge.set_key_frames (keyframes);
+                wallpaper_nudge.set_values (x);
+                wallpaper.add_transition ("nudge", wallpaper_nudge);
+
+                wallpaper_nudge.completed.connect (() => {
+                    switch_workspace_animation_finished (direction, false, true);
+                    animating_switch_workspace = false;
+                });
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
@@ -1436,6 +1473,8 @@ namespace Gala {
         public override void map (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
+            WindowStateSaver.on_map (window);
+
             if ((window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) ||
                 (window.fullscreen && window.is_on_primary_monitor () && behavior_settings.get_boolean ("move-fullscreened-workspace"))) {
                 move_window_to_next_ws (window);
@@ -1851,23 +1890,14 @@ namespace Gala {
         private List<Clutter.Actor>? parents;
         private List<Clutter.Actor>? tmp_actors;
         private ulong switch_workspace_window_created_id = 0;
+        private Clutter.Actor? out_group;
+        private Clutter.Actor? in_group;
+        private Clutter.Actor? wallpaper;
+        private Clutter.Actor? wallpaper_clone;
 
-        public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            if (!enable_animations
-                || AnimationDuration.WORKSPACE_SWITCH == 0
-                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || animating_switch_workspace
-                || workspace_view.is_opened ()
-                || window_overview.is_opened ()) {
-                animating_switch_workspace = false;
-                switch_workspace_completed ();
-                return;
-            }
-
-            animating_switch_workspace = true;
-
+        private void prepare_workspace_switch (int from, int to, Meta.MotionDirection direction) {
             float screen_width, screen_height;
-            unowned Meta.Display display = get_display ();
+            unowned var display = get_display ();
             var primary = display.get_primary_monitor ();
             var move_primary_only = InternalUtils.workspaces_only_on_primary ();
             var monitor_geom = display.get_monitor_geometry (primary);
@@ -1876,29 +1906,32 @@ namespace Gala {
 
             display.get_size (out screen_width, out screen_height);
 
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            unowned Meta.Workspace workspace_from = manager.get_workspace_by_index (from);
-            unowned Meta.Workspace workspace_to = manager.get_workspace_by_index (to);
+            unowned var manager = display.get_workspace_manager ();
+            unowned var workspace_from = manager.get_workspace_by_index (from);
+            unowned var workspace_to = from != to ? manager.get_workspace_by_index (to) : null;
 
             var main_container = new Clutter.Actor ();
             var background_actor = new Clutter.Clone (system_background.background_actor);
             var static_windows = new Clutter.Actor ();
-            var in_group = new Clutter.Actor ();
-            var out_group = new Clutter.Actor ();
+            if (workspace_to != null) {
+                in_group = new Clutter.Actor ();
+            }
+            out_group = new Clutter.Actor ();
             windows = new List<Meta.WindowActor> ();
             parents = new List<Clutter.Actor> ();
             tmp_actors = new List<Clutter.Clone> ();
 
             tmp_actors.prepend (main_container);
             tmp_actors.prepend (background_actor);
-            tmp_actors.prepend (in_group);
+            if (in_group != null) {
+                tmp_actors.prepend (in_group);
+            }
             tmp_actors.prepend (out_group);
             tmp_actors.prepend (static_windows);
 
             window_group.add_child (main_container);
 
             // prepare wallpaper
-            Clutter.Actor wallpaper;
             if (move_primary_only) {
                 unowned var background = background_group.get_child_at_index (primary);
                 background.hide ();
@@ -1910,16 +1943,22 @@ namespace Gala {
             wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
             tmp_actors.prepend (wallpaper);
 
-            var wallpaper_clone = new Clutter.Clone (wallpaper);
-            wallpaper_clone.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
-            tmp_actors.prepend (wallpaper_clone);
+            if (workspace_to != null) {
+                wallpaper_clone = new Clutter.Clone (wallpaper);
+                wallpaper_clone.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
+                tmp_actors.prepend (wallpaper_clone);
+            }
 
             // pack all containers
             main_container.add_child (background_actor);
             main_container.add_child (wallpaper);
-            main_container.add_child (wallpaper_clone);
+            if (wallpaper_clone != null) {
+                main_container.add_child (wallpaper_clone);
+            }
             main_container.add_child (out_group);
-            main_container.add_child (in_group);
+            if (in_group != null) {
+                main_container.add_child (in_group);
+            }
             main_container.add_child (static_windows);
 
             // if we have a move action, pack that window to the static ones
@@ -1981,7 +2020,7 @@ namespace Gala {
                     if (window.fullscreen)
                         from_has_fullscreened = true;
 
-                } else if (window.get_workspace () == workspace_to) {
+                } else if (workspace_to != null && window.get_workspace () == workspace_to) {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
@@ -1993,22 +2032,12 @@ namespace Gala {
                 }
             }
 
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                }
-            });
-
             // make sure we don't add docks when there are fullscreened
             // windows on one of the groups. Simply raising seems not to
             // work, mutter probably reverts the order internally to match
             // the display stack
             foreach (var window in docks) {
-                if (!to_has_fullscreened) {
+                if (workspace_to != null && !to_has_fullscreened) {
                     var clone = new SafeWindowClone (window.get_meta_window ()) {
                         x = window.x - clone_offset_x,
                         y = window.y - clone_offset_y
@@ -2035,32 +2064,74 @@ namespace Gala {
 
             var monitor_scale = display.get_monitor_scale (primary);
             var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            x2 += WORKSPACE_GAP * monitor_scale;
-            if (direction == Meta.MotionDirection.RIGHT)
+            if (workspace_to != null) {
+                x2 += WORKSPACE_GAP * monitor_scale;
+            }
+            if (direction == Meta.MotionDirection.RIGHT) {
                 x2 = -x2;
+            }
 
             out_group.x = 0.0f;
             wallpaper.x = 0.0f;
             wallpaper.y += clone_offset_y;
-            in_group.x = -x2;
-            wallpaper_clone.x = -x2;
-            wallpaper_clone.y += clone_offset_y;
             wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
-            wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
+
+            if (in_group != null && wallpaper_clone != null) {
+                in_group.x = -x2;
+                wallpaper_clone.x = -x2;
+                wallpaper_clone.y += clone_offset_y;
+                wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
+            }
 
             // The wallpapers need to move upwards inside the container to match their
             // original position before/after the transition.
             if (move_primary_only) {
                 wallpaper.y = -monitor_geom.y;
-                wallpaper_clone.y = -monitor_geom.y;
+                if (wallpaper_clone != null) {
+                    wallpaper_clone.y = -monitor_geom.y;
+                }
             }
 
-            in_group.clip_to_allocation = out_group.clip_to_allocation = true;
-            in_group.width = out_group.width = move_primary_only ? monitor_geom.width : screen_width;
-            in_group.height = out_group.height = move_primary_only ? monitor_geom.height : screen_height;
+            out_group.clip_to_allocation = true;
+            out_group.width = move_primary_only ? monitor_geom.width : screen_width;
+            out_group.height = move_primary_only ? monitor_geom.height : screen_height;
+
+            if (in_group != null) {
+                in_group.clip_to_allocation = out_group.clip_to_allocation;
+                in_group.width = out_group.width;
+                in_group.height = out_group.height;
+            }
+        }
+
+        public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
+            if (!enable_animations
+                || AnimationDuration.WORKSPACE_SWITCH == 0
+                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
+                || animating_switch_workspace
+                || workspace_view.is_opened ()
+                || window_overview.is_opened ()) {
+                animating_switch_workspace = false;
+                switch_workspace_completed ();
+                return;
+            }
+
+            animating_switch_workspace = true;
+
+            prepare_workspace_switch (from, to, direction);
+
+            // while a workspace is being switched mutter doesn't map windows
+            // TODO: currently only notifications are handled here, other windows should be too
+            switch_workspace_window_created_id = window_created.connect ((window) => {
+                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+                    clutter_actor_reparent (actor, notification_group);
+                    notification_stack.show_notification (actor, enable_animations);
+                }
+            });
 
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
+            var x2 = -in_group.x;
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x_out = GestureTracker.animation_value (0.0f, x2, percentage, true);
                 var x_in = GestureTracker.animation_value (-x2, 0.0f, percentage, true);
@@ -2124,12 +2195,15 @@ namespace Gala {
         }
 
         private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
-                bool cancel_action) {
+                bool cancel_action, bool is_nudge_animation = false) {
             if (switch_workspace_window_created_id > 0) {
                 disconnect (switch_workspace_window_created_id);
                 switch_workspace_window_created_id = 0;
             }
             end_switch_workspace ();
+            if (!is_nudge_animation) {
+                switch_workspace_completed ();
+            }
             animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
@@ -2202,10 +2276,13 @@ namespace Gala {
             parents = null;
             moving = null;
 
+            out_group = null;
+            in_group = null;
+            wallpaper = null;
+            wallpaper_clone = null;
+
             switch_workspace_with_gesture = false;
             animating_switch_workspace = false;
-
-            switch_workspace_completed ();
         }
 
         public override void kill_switch_workspace () {
