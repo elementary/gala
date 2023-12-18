@@ -13,8 +13,8 @@ namespace Gala {
     public class IconGroup : Clutter.Actor {
         public const int SIZE = 64;
 
-        private const int PLUS_SIZE = 8;
-        private const int PLUS_WIDTH = 24;
+        private const int PLUS_SIZE = 6;
+        private const int PLUS_WIDTH = 26;
         private const int BACKDROP_ABSOLUTE_OPACITY = 40;
 
         /**
@@ -208,6 +208,7 @@ namespace Gala {
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
         private bool draw (Cairo.Context cr) {
+            clear_effects ();
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
             cr.set_operator (Cairo.Operator.OVER);
@@ -225,42 +226,28 @@ namespace Gala {
             // more than one => we need a folder
             Drawing.Utilities.cairo_rounded_rectangle (
                 cr,
-                0.5 * scale_factor,
-                0.5 * scale_factor,
-                (int) width - InternalUtils.scale_to_int (1, scale_factor),
-                (int) height - InternalUtils.scale_to_int (1, scale_factor),
+                0,
+                0,
+                (int) width,
+                (int) height,
                 InternalUtils.scale_to_int (5, scale_factor)
             );
+
+            var shadow_effect = new ShadowEffect (40) {
+                scale_factor = scale_factor
+            };
 
             if (drag_action.dragging) {
-                const double BG_COLOR = 53.0 / 255.0;
-                cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.7);
+                const double BG_COLOR = 35.0 / 255.0;
+                cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
+                shadow_effect.css_class = "workspace-switcher-dnd";
             } else {
-                cr.set_source_rgba (0, 0, 0, 0.1);
+                cr.set_source_rgba (0, 0, 0, 0.3);
+                shadow_effect.css_class = "workspace-switcher";
             }
 
+            add_effect (shadow_effect);
             cr.fill_preserve ();
-
-            cr.set_line_width (InternalUtils.scale_to_int (1, scale_factor));
-
-            var grad = new Cairo.Pattern.linear (0, 0, 0, height);
-            grad.add_color_stop_rgba (0.8, 0, 0, 0, 0);
-            grad.add_color_stop_rgba (1.0, 1, 1, 1, 0.1);
-
-            cr.set_source (grad);
-            cr.stroke ();
-
-            Drawing.Utilities.cairo_rounded_rectangle (
-                cr,
-                1.5 * scale_factor,
-                1.5 * scale_factor,
-                (int) width - InternalUtils.scale_to_int (3, scale_factor),
-                (int) height - InternalUtils.scale_to_int (3, scale_factor),
-                InternalUtils.scale_to_int (5, scale_factor)
-            );
-
-            cr.set_source_rgba (0, 0, 0, 0.3);
-            cr.stroke ();
 
             // it's not safe to to call meta_workspace_index() here, we may be still animating something
             // while the workspace is already gone, which would result in a crash.
@@ -284,27 +271,23 @@ namespace Gala {
                 var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
 
                 buffer.context.rectangle (
-                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + 0.5 + offset,
-                    0.5 + offset,
-                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor) - 1,
-                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) - 1
+                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
+                    offset,
+                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor),
+                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor)
                 );
 
-                buffer.context.rectangle (0.5 + offset,
-                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + 0.5 + offset,
-                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) - 1,
-                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor) - 1
+                buffer.context.rectangle (offset,
+                    InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
+                    InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor),
+                    InternalUtils.scale_to_int (PLUS_SIZE, scale_factor)
                 );
 
                 buffer.context.set_source_rgb (0, 0, 0);
                 buffer.context.fill_preserve ();
                 buffer.exponential_blur (5);
 
-                buffer.context.set_source_rgb (1, 1, 1);
-                buffer.context.set_line_width (1);
-                buffer.context.stroke_preserve ();
-
-                buffer.context.set_source_rgb (0.8, 0.8, 0.8);
+                buffer.context.set_source_rgba (1, 1, 1, 0.95);
                 buffer.context.fill ();
 
                 cr.set_source_surface (buffer.surface, 0, 0);
