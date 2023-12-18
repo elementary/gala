@@ -30,8 +30,7 @@ namespace Gala {
         public FramedBackground (WindowManager wm) {
             Object (
                 wm: wm,
-                monitor_index: wm.get_display ().get_primary_monitor (),
-                control_position: false
+                monitor_index: wm.get_display ().get_primary_monitor ()
             );
         }
 
