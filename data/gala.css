@@ -62,3 +62,18 @@
         0 3px 14px 2px alpha(#000, 0.12),
         0 5px 5px -3px alpha(#000, 0.4);
 }
+
+.workspace-switcher.decoration {
+    border-radius: 6px;
+    box-shadow:
+        0 3px 4px alpha(#000, 0.25),
+        0 3px 3px -3px alpha(#000, 0.45);
+}
+
+.workspace-switcher-dnd.decoration {
+    border-radius: 6px;
+    box-shadow:
+        0 8px 10px 1px alpha(#000, 0.14),
+        0 3px 14px 2px alpha(#000, 0.12),
+        0 5px 5px -3px alpha(#000, 0.4);
+}
