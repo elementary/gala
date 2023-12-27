@@ -12,13 +12,14 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
 
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
+    public bool control_position { get; construct; }
 
     private BackgroundSource background_source;
     private Meta.BackgroundActor background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
 
-    public BackgroundManager (WindowManager wm, int monitor_index) {
-        Object (wm: wm, monitor_index: monitor_index);
+    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
+        Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
     }
 
     construct {
@@ -134,6 +135,10 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
         insert_child_below (background_actor, null);
 
         background_actor.set_size (monitor.width, monitor.height);
+
+        if (control_position) {
+            background_actor.set_position (monitor.x, monitor.y);
+        }
 
         ulong changed_handler = 0;
         changed_handler = background.changed.connect (() => {
