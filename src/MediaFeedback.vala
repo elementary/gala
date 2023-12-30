@@ -16,8 +16,13 @@
 //
 
 namespace Gala {
+    [DBus (name = "io.elementary.wingpanel.sound")]
+    public interface WingpanelSound : GLib.Object {
+        public abstract void handle_osd () throws DBusError, IOError;
+    }
+
     [DBus (name = "org.freedesktop.Notifications")]
-    interface DBusNotifications : GLib.Object {
+    public interface DBusNotifications : GLib.Object {
         public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
     }
@@ -36,6 +41,7 @@ namespace Gala {
 
         private static MediaFeedback? instance = null;
         private static ThreadPool<Feedback>? pool = null;
+        private static WingpanelSound wingpanel_sound = null;
 
         public static void init () {
             if (instance == null)
@@ -66,13 +72,14 @@ namespace Gala {
             }
 
             try {
-                Bus.watch_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameWatcherFlags.NONE, on_watch, on_unwatch);
+                Bus.watch_name (SESSION, "org.freedesktop.Notifications", NONE, on_notifications_watch, on_notifications_unwatch);
+                Bus.watch_name (SESSION, "io.elementary.wingpanel.sound", NONE, on_wingpanel_sound_watch, on_wingpanel_sound_unwatch);
             } catch (IOError e) {
                 debug (e.message);
             }
         }
 
-        private void on_watch (DBusConnection conn) {
+        private void on_notifications_watch (DBusConnection conn) {
             conn.get_proxy.begin<DBusNotifications> ("org.freedesktop.Notifications",
                 "/org/freedesktop/Notifications", DBusProxyFlags.NONE, null, (obj, res) => {
                 try {
@@ -84,11 +91,37 @@ namespace Gala {
             });
         }
 
-        private void on_unwatch (DBusConnection conn) {
+        private void on_wingpanel_sound_watch (DBusConnection conn) {
+            conn.get_proxy.begin<WingpanelSound> ("io.elementary.wingpanel.sound",
+                "/io/elementary/wingpanel/sound", DBusProxyFlags.NONE, null, (obj, res) => {
+                    try {
+                        wingpanel_sound = ((DBusConnection) obj).get_proxy.end<WingpanelSound> (res);
+                    } catch (Error e) {
+                        warning (e.message);
+                        wingpanel_sound = null;
+                    }
+            });
+        }
+
+        private void on_notifications_unwatch (DBusConnection conn) {
             notifications = null;
         }
 
+        private void on_wingpanel_sound_unwatch (DBusConnection conn) {
+            wingpanel_sound = null;
+        }
+
         private void send_feedback (owned Feedback feedback) {
+            if (feedback.icon.contains ("audio") && wingpanel_sound != null) {
+                try {
+                    wingpanel_sound.handle_osd ();
+                } catch (Error e) {
+                    warning (e.message);
+                }
+
+                return;
+            }
+
             if (notifications == null) {
                 return;
             }
