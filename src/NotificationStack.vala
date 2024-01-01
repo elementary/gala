@@ -95,6 +95,9 @@ public class Gala.NotificationStack : Object {
         update_positions (animate, scale, window_rect.height);
 
         int notification_x_pos = area.x + area.width - window_rect.width;
+        if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
+            notification_x_pos = 0;
+        }
 
         move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
         notifications.insert (0, notification);
