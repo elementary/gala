@@ -70,11 +70,6 @@
         followed by a ':' and then the command. ';;' is used as delimiter between command definitions.
       </description>
     </key>
-    <key type="b" name="enable-hotcorners-in-fullscreen">
-      <default>true</default>
-      <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
-      <description></description>
-    </key>
     <key type="b" name="edge-tiling">
       <default>true</default>
       <summary>Enable edge tiling when dropping windows on screen edges</summary>
@@ -120,6 +115,14 @@
 			<summary>Automatically move fullscreened windows to a new workspace</summary>
 			<description></description>
 		</key>
+  </schema>
+
+  <schema path="/io/elementary/desktop/wm/behavior/" id="io.elementary.desktop.wm.behavior">
+    <key type="b" name="enable-hotcorners-in-fullscreen">
+      <default>true</default>
+      <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
+      <description></description>
+    </key>
   </schema>
 
   <schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">

@@ -114,6 +114,7 @@ namespace Gala {
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
+        private GLib.Settings new_behavior_settings;
 
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
@@ -142,6 +143,7 @@ namespace Gala {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
@@ -295,7 +297,7 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (on_monitors_changed);
 
-            hot_corner_manager = new HotCornerManager (this, behavior_settings);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 
