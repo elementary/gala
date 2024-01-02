@@ -119,7 +119,7 @@
 
   <schema path="/io/elementary/desktop/wm/behavior/" id="io.elementary.desktop.wm.behavior">
     <key type="b" name="enable-hotcorners-in-fullscreen">
-      <default>true</default>
+      <default>false</default>
       <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
       <description></description>
     </key>
