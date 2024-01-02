@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-08-16 21:08+0000\n"
+"PO-Revision-Date: 2023-12-17 00:10+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -169,18 +169,22 @@ msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"A háttérkép cseréje vagy az alvó módba váltás tiszteletben tartja a "
+"\"Kevesebb mozgás\" beállítást"
 
 #: data/gala.metainfo.xml.in:33
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "A megfelelő mutatók használata ablakok mozgatásakor"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Egy hiba javítása, aminek következtében a többfeladatos nézetben nem "
+"működtek a gesztusok"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "A dinamikus munkaterületek viselkedésének javítása több monitorral"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
