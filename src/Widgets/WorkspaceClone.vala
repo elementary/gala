@@ -64,7 +64,7 @@ namespace Gala {
             var ctx = cached_context;
 
             ctx.set_source_rgba (255, 255, 255, 255);
-            ctx.rectangle (0, 0, (int) width, (int) height);
+            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 9);
             ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.stroke ();
             ctx.restore ();
@@ -248,6 +248,8 @@ namespace Gala {
             listener.window_no_longer_on_all_workspaces.disconnect (add_window);
 
             background.destroy ();
+            window_container.destroy ();
+            icon_group.destroy ();
         }
 
         private void reallocate () {
