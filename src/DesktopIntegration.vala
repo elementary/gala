@@ -102,4 +102,15 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         return (owned) returned_windows;
     }
+
+    public void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError {
+        var apps = Gala.AppSystem.get_default ().get_running_apps ();
+        foreach (unowned var app in apps) {
+            foreach (weak Meta.Window window in app.get_windows ()) {
+                if (window.get_id () == uid) {
+                    window.activate (wm.get_display ().get_current_time ());
+                }
+            }
+        }
+    }
 }
