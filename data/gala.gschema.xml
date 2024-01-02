@@ -7,10 +7,11 @@
     <value nick="minimize-current" value="3" />
     <value nick="open-launcher" value="4" />
     <value nick="custom-command" value="5" />
-    <value nick="window-overview-all" value="6" />
-    <value nick="switch-to-workspace-previous" value="7" />
-    <value nick="switch-to-workspace-next" value="8" />
-    <value nick="switch-to-workspace-last" value="9" />
+    <value nick="window-overview" value="6" />
+    <value nick="window-overview-all" value="7" />
+    <value nick="switch-to-workspace-previous" value="8" />
+    <value nick="switch-to-workspace-next" value="9" />
+    <value nick="switch-to-workspace-last" value="10" />
   </enum>
   <enum id="GalaWindowOverviewType">
     <value nick='grid' value='0'/>
@@ -114,6 +115,14 @@
 			<summary>Automatically move fullscreened windows to a new workspace</summary>
 			<description></description>
 		</key>
+  </schema>
+
+  <schema path="/io/elementary/desktop/wm/behavior/" id="io.elementary.desktop.wm.behavior">
+    <key type="b" name="enable-hotcorners-in-fullscreen">
+      <default>false</default>
+      <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
+      <description></description>
+    </key>
   </schema>
 
   <schema path="/org/pantheon/desktop/gala/keybindings/" id="org.pantheon.desktop.gala.keybindings">
