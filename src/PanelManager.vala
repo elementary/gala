@@ -1,4 +1,8 @@
-[SingleInstance]
+/*
+ * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 public class Gala.PanelManager : Object {
     private static GLib.Once<PanelManager> instance;
     public static PanelManager get_default () {
