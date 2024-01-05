@@ -1,16 +1,21 @@
+[SingleInstance]
 public class Gala.PanelManager : Object {
-    public Meta.Display display { get; construct; }
+    private static GLib.Once<PanelManager> instance;
+    public static PanelManager get_default () {
+        return instance.once (() => {return new PanelManager ();});
+    }
 
     private GLib.HashTable<Meta.Window, Meta.Side> window_anchors;
     private GLib.HashTable<Meta.Window, Meta.Strut?> window_struts;
-
-    public PanelManager (Meta.Display display) {
-        Object (display: display);
-    }
+    private Meta.Display display;
 
     construct {
         window_anchors = new GLib.HashTable<Meta.Window, Meta.Side> (null, null);
         window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
+    }
+
+    public void init (Meta.Display display) {
+        this.display = display;
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
@@ -22,23 +27,22 @@ public class Gala.PanelManager : Object {
 
     public void make_exclusive (Meta.Window window) {
         if (!(window in window_anchors)) {
-            warning ("Set an anchor before making a window area exclusive");
+            warning ("Set an anchor before making a window area exclusive.");
             return;
         }
 
         if (window in window_struts) {
-            warning ("Window is already exclusive");
+            warning ("Window is already exclusive.");
             return;
         }
 
         window.size_changed.connect (update_strut);
         update_strut (window);
-        warning ("made exclusive");
     }
 
     private void update_strut (Meta.Window window) {
 #if HAS_MUTTER45
-        Mtk.Rectangle rect = Mtk.Rectangle ();
+        var rect = Mtk.Rectangle ();
         window.get_frame_rect (rect);
 #else
         Meta.Rectangle rect = window.get_frame_rect ();
