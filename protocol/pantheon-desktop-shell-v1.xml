@@ -62,7 +62,7 @@
 
     <request name="make_exclusive">
       <description summary="make panel area exclusive to the panel">
-        Tell the shell that windows mustn't go under the panel (except for fullscreen windows).
+        Tell the shell that windows mustn't overlap the panel (except for fullscreen windows).
       </description>
     </request>
 
