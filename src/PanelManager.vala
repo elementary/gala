@@ -45,12 +45,7 @@ public class Gala.PanelManager : Object {
     }
 
     private void update_strut (Meta.Window window) {
-#if HAS_MUTTER45
-        var rect = Mtk.Rectangle ();
-        window.get_frame_rect (rect);
-#else
-        Meta.Rectangle rect = window.get_frame_rect ();
-#endif
+        var rect = window.get_frame_rect ();
 
         Meta.Strut strut = {
             rect,
