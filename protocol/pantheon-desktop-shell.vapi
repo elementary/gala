@@ -56,7 +56,7 @@ namespace Pantheon.Desktop {
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetAnchor (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Anchor anchor);
     [CCode (has_target = false, has_typedef = false)]
-    public delegate void MakeExclusive (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Anchor anchor);
+    public delegate void MakeExclusive (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void UnakeExclusive (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]

@@ -61,20 +61,14 @@
     </request>
 
     <request name="make_exclusive">
-      <description summary="set panel edge anchor">
-        Tell the shell which side of the screen the panel is
-        located. This is so that new windows do not overlap the panel
-        and maximized windows maximize properly.
+      <description summary="make panel area exclusive to the panel">
+        Tell the shell that windows mustn't go under the panel (except for fullscreen windows).
       </description>
-
-      <arg name="anchor" type="uint" enum="anchor" summary="anchor"/>
     </request>
 
     <request name="unmake_exclusive">
-      <description summary="set panel edge anchor">
-        Tell the shell which side of the screen the panel is
-        located. This is so that new windows do not overlap the panel
-        and maximized windows maximize properly.
+      <description summary="let windows go under the panel">
+        Tell the shell that windows may go under the panel.
       </description>
     </request>
   </interface>
