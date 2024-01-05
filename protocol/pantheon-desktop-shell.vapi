@@ -28,6 +28,8 @@ namespace Pantheon.Desktop {
         public static Wl.Interface iface;
         public Destroy destroy;
         public SetAnchor set_anchor;
+        public MakeExclusive make_exclusive;
+        public UnakeExclusive unmake_exclusive;
     }
 
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_widget_v1_interface")]
@@ -53,6 +55,10 @@ namespace Pantheon.Desktop {
     public delegate void GetExtendedBehavior (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetAnchor (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Anchor anchor);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeExclusive (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Anchor anchor);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void UnakeExclusive (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]

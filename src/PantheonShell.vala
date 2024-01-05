@@ -55,6 +55,8 @@ namespace Gala {
         wayland_pantheon_panel_interface = {
             destroy_panel_surface,
             set_anchor,
+            make_exclusive,
+            unmake_exclusive
         };
 
         wayland_pantheon_widget_interface = {
@@ -232,6 +234,36 @@ namespace Gala {
     }
 
     internal static void set_anchor (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Pantheon.Desktop.Anchor anchor) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        // TODO
+    }
+
+    internal static void make_exclusive (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Pantheon.Desktop.Anchor anchor) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+    }
+
+
+
+    internal static void unmake_exclusive (Wl.Client client, Wl.Resource resource) {
         unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
         if (panel_surface.wayland_surface == null) {
             return;

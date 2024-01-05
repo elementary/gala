@@ -6,6 +6,7 @@
 
 public class Gala.WindowTracker : GLib.Object {
     private GLib.HashTable<unowned Meta.Window, Gala.App> window_to_app;
+    private PanelManager panel_manager;
 
     public signal void windows_changed ();
 
@@ -14,6 +15,7 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     public void init (Meta.Display display) {
+        panel_manager = new PanelManager (display);
         unowned Meta.StartupNotification sn = display.get_startup_notification ();
         sn.changed.connect (on_startup_sequence_changed);
         load_initial_windows (display);
@@ -290,6 +292,12 @@ public class Gala.WindowTracker : GLib.Object {
         if (app == null) {
             return;
         }
+
+        if (window.gtk_application_id == "org.elementary.wingpanel") {
+            panel_manager.set_anchor (window, TOP);
+            panel_manager.make_exclusive (window);
+        }
+        warning (window.gtk_application_id);
 
         window_to_app.insert (window, app);
 
