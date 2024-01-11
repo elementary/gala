@@ -160,7 +160,12 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
     }
 
     private bool draw_area (Cairo.Context ctx) {
-        Clutter.cairo_clear (ctx);
+        ctx.save ();
+
+        ctx.set_operator (Cairo.Operator.CLEAR);
+        ctx.paint ();
+
+        ctx.restore ();
 
         if (!dragging) {
             return true;
