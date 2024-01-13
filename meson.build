@@ -151,6 +151,17 @@ if mutter45_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45']
 endif
 
+mutter46_dep = dependency('libmutter-14', version: ['>= 46', '< 47'], required: false)
+if mutter46_dep.found()
+	libmutter_dep = dependency('libmutter-14', version: '>= 46')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-14'), dependency('mutter-cogl-14'),
+		dependency('mutter-cogl-pango-14'), dependency('mutter-clutter-14')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
