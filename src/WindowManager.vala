@@ -433,7 +433,7 @@ namespace Gala {
             else if (index > manager.get_n_workspaces () - 1 - dynamic_offset)
                 index = 0;
 
-            manager.get_workspace_by_index (index).activate (event.time);
+            manager.get_workspace_by_index (index).activate (event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -472,7 +472,7 @@ namespace Gala {
             var index = (binding.get_name () == "move-to-workspace-first" ? 0 : manager.get_n_workspaces () - 1);
             unowned var workspace = manager.get_workspace_by_index (index);
             window.change_workspace (workspace);
-            workspace.activate_with_focus (window, event.time);
+            workspace.activate_with_focus (window, event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -487,7 +487,7 @@ namespace Gala {
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
-            manager.get_workspace_by_index (index).activate (event.time);
+            manager.get_workspace_by_index (index).activate (event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
