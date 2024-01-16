@@ -1,5 +1,6 @@
 //
-//  Copyright (C) 2012 - 2014 Tom Beckmann, Jacob Parker
+//  Copyright 2012-2014 Tom Beckmann, Jacob Parker
+//  Copyright 2024 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,10 +17,19 @@
 //
 
 namespace Gala {
+    public struct MonitorLabelInfo {
+        public int monitor;
+        public string label;
+        public string background_color;
+        public string text_color;
+    }
+
     [DBus (name="org.pantheon.gala")]
     public class DBus {
         private static DBus? instance;
         private static WindowManager wm;
+
+        private MonitorLabel[] monitor_labels = {};
 
         [DBus (visible = false)]
         public static void init (WindowManager _wm) {
@@ -81,10 +91,11 @@ namespace Gala {
         }
 
         private DBus () {
-            if (wm.background_group != null)
+            if (wm.background_group != null) {
                 ((BackgroundContainer) wm.background_group).changed.connect (() => background_changed ());
-            else
+            } else {
                 assert_not_reached ();
+            }
         }
 
         public void perform_action (ActionType type) throws DBusError, IOError {
@@ -255,6 +266,25 @@ namespace Gala {
             yield;
 
             return { r_total, g_total, b_total, mean, variance };
+        }
+
+        public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
+            hide_monitor_labels ();
+
+            unowned var display = wm.get_display ();
+            foreach (var label_info in label_infos) {
+                var label_actor = new MonitorLabel (display, label_info);
+                wm.ui_group.add_child (label_actor);
+                monitor_labels += label_actor;
+            }
+        }
+
+        public void hide_monitor_labels () throws GLib.DBusError, GLib.IOError {
+            foreach (var label in monitor_labels) {
+                wm.ui_group.remove_child (label);
+                label.destroy ();
+            }
+            monitor_labels = {};
         }
     }
 }

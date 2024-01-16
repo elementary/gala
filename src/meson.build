@@ -43,6 +43,7 @@ gala_bin_sources = files(
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
+    'Widgets/MonitorLabel.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
