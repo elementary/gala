@@ -232,7 +232,7 @@ namespace Gala {
             var new_workspace = active_workspace.get_neighbor (direction);
 
             if (active_workspace != new_workspace) {
-                new_workspace.activate (display.get_current_time ());
+                new_workspace.activate (scroll_event.time);
             } else {
                 play_nudge_animation (direction);
             }
