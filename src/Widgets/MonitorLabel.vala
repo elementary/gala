@@ -4,7 +4,7 @@
  */
 
 public class Gala.MonitorLabel : Clutter.Actor {
-    private const string provider_template = """
+    private const string PROVIDER_TEMPLATE = """
     @define-color BG_COLOR %s;
     """;
     private const string CAPTION_FONT_NAME = "Inter";
@@ -94,7 +94,7 @@ public class Gala.MonitorLabel : Clutter.Actor {
 
         var provider = new Gtk.CssProvider ();
         try {
-            provider.load_from_data (provider_template.printf (label_info.background_color));
+            provider.load_from_data (PROVIDER_TEMPLATE.printf (label_info.background_color));
         } catch (Error e) {
             critical (e.message);
         }
