@@ -119,12 +119,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
         content.background = background.background;
 
         var monitor = display.get_monitor_geometry (monitor_index);
-        var rect = Graphene.Rect () {
-            origin = {monitor.x, monitor.y},
-            size = {monitor.width, monitor.height},
-        };
 
-        content.set_rounded_clip_bounds (rect);
         content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
 
         if (background_source.should_dim) {
