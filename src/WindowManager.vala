@@ -458,7 +458,7 @@ namespace Gala {
             }
 
             if (target_workspace != null) {
-                move_window (window, target_workspace);
+                move_window (window, target_workspace, event.get_time ());
             }
         }
 
@@ -791,7 +791,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void move_window (Meta.Window? window, Meta.Workspace workspace) {
+        public void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp) {
             if (window == null) {
                 return;
             }
@@ -819,7 +819,7 @@ namespace Gala {
                 window.change_workspace (workspace);
             }
 
-            workspace.activate_with_focus (window, display.get_current_time ());
+            workspace.activate_with_focus (window, timestamp);
         }
 
         /**
@@ -990,13 +990,13 @@ namespace Gala {
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.LEFT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.RIGHT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
