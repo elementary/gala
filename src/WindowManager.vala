@@ -479,7 +479,7 @@ namespace Gala {
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction);
+            switch_to_next_workspace (direction, event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -554,7 +554,7 @@ namespace Gala {
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
@@ -570,7 +570,7 @@ namespace Gala {
                     moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
                 }
 
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
@@ -583,7 +583,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+        public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
             if (animating_switch_workspace) {
                 return;
             }
@@ -981,10 +981,10 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
-                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT, display.get_current_time ());
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
-                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, display.get_current_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
