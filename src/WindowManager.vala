@@ -537,6 +537,8 @@ namespace Gala {
                 return;
             }
 
+            unowned var display = get_display ();
+
             var fingers = gesture.fingers;
 
             var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
@@ -560,7 +562,6 @@ namespace Gala {
 
             switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
             if (switch_workspace_with_gesture) {
-                unowned var display = get_display ();
                 unowned var manager = display.get_workspace_manager ();
 
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
