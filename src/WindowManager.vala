@@ -594,7 +594,7 @@ namespace Gala {
             unowned var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
-                neighbor.activate (display.get_current_time ());
+                neighbor.activate (timestamp);
             } else {
                 // if we didn't switch, show a nudge-over animation if one is not already in progress
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
