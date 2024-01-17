@@ -982,10 +982,10 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
-                    switch_to_next_workspace (Meta.MotionDirection.LEFT, display.get_current_time ());
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
-                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, display.get_current_time ());
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
