@@ -173,7 +173,7 @@ namespace Gala {
          * @param window    The window to be moved
          * @param workspace The workspace the window should be moved to
          */
-        public abstract void move_window (Meta.Window? window, Meta.Workspace workspace);
+        public abstract void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp);
 
         /**
          * Switches to the next workspace in the given direction.
