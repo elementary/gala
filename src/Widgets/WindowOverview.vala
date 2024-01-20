@@ -80,7 +80,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             window_ids = (uint64[]) hints["windows"];
         }
 
-        minimized_windows = new List<Meta.Window> ();
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
