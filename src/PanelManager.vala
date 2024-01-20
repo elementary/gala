@@ -26,7 +26,13 @@ public class Gala.PanelManager : Object {
         //TODO
 
         window_anchors[window] = side;
-        warning ("Anchor set");
+
+        window.unmanaged.connect (() => {
+            window_anchors.remove (window);
+            if (window_struts.remove (window)) {
+                update_struts ();
+            }
+        });
     }
 
     public void make_exclusive (Meta.Window window) {
@@ -54,6 +60,10 @@ public class Gala.PanelManager : Object {
 
         window_struts[window] = strut;
 
+        update_struts ();
+    }
+
+    private void update_struts () {
         var list = new SList<Meta.Strut?> ();
 
         foreach (var window_strut in window_struts.get_values ()) {
