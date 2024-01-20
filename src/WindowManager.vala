@@ -135,7 +135,7 @@ namespace Gala {
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
-            enable_animations = animations_settings.get_boolean ("enable-animations");         
+            enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
         public override void start () {
@@ -346,7 +346,7 @@ namespace Gala {
 
                 plugin_manager.load_waiting_plugins ();
 
-                daemon_manager.init ();
+                daemon_manager.init_wayland ();
 
                 return false;
             });

@@ -12,8 +12,6 @@ public class Gala.DaemonManager : Object {
 
     private Daemon? daemon_proxy = null;
 
-    private Meta.WaylandClient daemon_client;
-
     private int x_position = 0;
     private int y_position = 0;
 
@@ -22,16 +20,12 @@ public class Gala.DaemonManager : Object {
     }
 
     construct {
-        display.window_created.connect ((window) => {
-            if (daemon_client != null && daemon_client.owns_window (window)) {
-                setup_daemon_window (window);
-            }
-        });
-
         Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
     }
 
-    public void init () {
+    public void init_wayland () {
+        Meta.WaylandClient daemon_client;
+
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
             daemon_client = new Meta.WaylandClient (subprocess_launcher);
@@ -39,7 +33,21 @@ public class Gala.DaemonManager : Object {
             daemon_client.spawnv (display, args);
         } catch (Error e) {
             warning ("Failed to create dock client: %s", e.message);
+            return;
         }
+
+        display.window_created.connect ((window) => {
+            if (daemon_client.owns_window (window)) {
+                setup_daemon_window (window);
+            }
+        });
+    }
+
+    private void setup_daemon_window (Meta.Window window) {
+        window.shown.connect (() => {
+            window.move_frame (false, x_position, y_position);
+            window.make_above ();
+        });
     }
 
     private void lost_daemon () {
@@ -56,13 +64,6 @@ public class Gala.DaemonManager : Object {
                 }
             });
         }
-    }
-
-    private void setup_daemon_window (Meta.Window window) {
-        window.shown.connect (() => {
-            window.move_frame (false, x_position, y_position);
-            window.make_above ();
-        });
     }
 
     public void show_background_menu (int x, int y) {
