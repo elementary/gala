@@ -16,6 +16,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
+    private List<Meta.Window> minimized_windows;
 
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
@@ -75,6 +76,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             workspaces.append (workspace);
         }
 
+        uint64[]? window_ids = null;
+        if (hints != null && "windows" in hints) {
+            window_ids = (uint64[]) hints["windows"];
+        }
+
+        minimized_windows = new List<Meta.Window> ();
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
@@ -85,10 +92,19 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
                 if (window.window_type != Meta.WindowType.NORMAL &&
                     window.window_type != Meta.WindowType.DIALOG ||
-                    window.is_attached_dialog ()) {
+                    window.is_attached_dialog ()
+                ) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     actor.hide ();
 
+                    continue;
+                }
+
+                if (window_ids != null && !(window.get_id () in window_ids)) {
+                    if (!window.minimized) {
+                        window.minimize ();
+                        minimized_windows.append (window);
+                    }
                     continue;
                 }
 
@@ -270,6 +286,10 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
         foreach (unowned var child in get_children ()) {
             ((WindowCloneContainer) child).close ();
+        }
+
+        foreach (var window in minimized_windows) {
+            window.unminimize ();
         }
 
         Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {

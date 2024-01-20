@@ -16,17 +16,14 @@ public class Gala.DesktopIntegration : GLib.Object {
         GLib.HashTable<unowned string, Variant> properties;
     }
 
-    private unowned WindowManager wm;
+    private unowned WindowManagerGala wm;
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
 
-    public DesktopIntegration (WindowManager wm) {
+    public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
-        unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
-        if (gala_wm != null) {
-            gala_wm.window_tracker.windows_changed.connect (() => windows_changed ());
-        }
+        wm.window_tracker.windows_changed.connect (() => windows_changed ());
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
@@ -101,5 +98,22 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
 
         return (owned) returned_windows;
+    }
+
+    public void show_windows_for (string app_id) throws IOError, DBusError {
+        App app;
+        if ((app = AppSystem.get_default ().lookup_app (app_id)) == null) {
+            throw new IOError.NOT_FOUND ("App not found");
+        }
+
+        uint64[] window_ids = {};
+        foreach (var window in app.get_windows ()) {
+            window_ids += window.get_id ();
+        }
+
+        var hash_table = new HashTable<string, Variant> (str_hash, str_equal);
+        hash_table["windows"] = window_ids;
+
+        wm.show_window_spread (hash_table);
     }
 }
