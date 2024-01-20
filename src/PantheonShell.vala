@@ -55,6 +55,8 @@ namespace Gala {
         wayland_pantheon_panel_interface = {
             destroy_panel_surface,
             set_anchor,
+            make_exclusive,
+            unmake_exclusive
         };
 
         wayland_pantheon_widget_interface = {
@@ -72,6 +74,8 @@ namespace Gala {
             var resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
             resource.set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
         });
+
+        PanelManager.get_default ().init (context.get_display ());
     }
 
     public class PanelSurface : GLib.Object {
@@ -243,7 +247,55 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        Meta.Side anchor_side = TOP;
+        switch (anchor) {
+            case TOP:
+                anchor_side = TOP;
+                break;
+            case BOTTOM:
+                anchor_side = BOTTOM;
+                break;
+            case RIGHT:
+                anchor_side = RIGHT;
+                break;
+            case LEFT:
+                anchor_side = LEFT;
+                break;
+        }
+
+        PanelManager.get_default ().set_anchor (window, anchor_side);
+    }
+
+    internal static void make_exclusive (Wl.Client client, Wl.Resource resource) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        PanelManager.get_default ().make_exclusive (window);
+    }
+
+
+
+    internal static void unmake_exclusive (Wl.Client client, Wl.Resource resource) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        PanelManager.get_default ().unmake_exclusive (window);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

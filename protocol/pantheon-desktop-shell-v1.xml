@@ -59,6 +59,18 @@
 
       <arg name="anchor" type="uint" enum="anchor" summary="anchor"/>
     </request>
+
+    <request name="make_exclusive">
+      <description summary="make panel area exclusive to the panel">
+        Tell the shell that windows mustn't overlap the panel (except for fullscreen windows).
+      </description>
+    </request>
+
+    <request name="unmake_exclusive">
+      <description summary="let windows go under the panel">
+        Tell the shell that windows may go under the panel.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
