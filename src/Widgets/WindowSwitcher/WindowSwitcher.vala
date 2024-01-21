@@ -331,8 +331,11 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private void add_icon (WindowSwitcherIcon icon) {
         container.add_child (icon);
 
-        icon.enter_event.connect (() => {
-            current_icon = icon;
+        icon.motion_event.connect (() => {
+            if (current_icon != icon) {
+                current_icon = icon;
+            }
+
             return Clutter.EVENT_PROPAGATE;
         });
     }
