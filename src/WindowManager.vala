@@ -72,7 +72,8 @@ namespace Gala {
         private Meta.PluginInfo info;
 
         private WindowSwitcher? window_switcher = null;
-        private ActivatableComponent? window_overview = null;
+
+        public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
