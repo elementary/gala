@@ -346,7 +346,9 @@ namespace Gala {
 
                 plugin_manager.load_waiting_plugins ();
 
-                daemon_manager.init_wayland ();
+                if (Meta.Util.is_wayland_compositor ()) {
+                    daemon_manager.init_wayland ();
+                }
 
                 return false;
             });
