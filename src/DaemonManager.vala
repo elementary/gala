@@ -31,6 +31,9 @@ public class Gala.DaemonManager : Object {
             daemon_client = new Meta.WaylandClient (subprocess_launcher);
             string[] args = {"gala-daemon"};
             daemon_client.spawnv (display, args);
+        } catch (IOError.NOT_SUPPORTED e) {
+            //Not running under wayland, the daemon is autostarted
+            return;
         } catch (Error e) {
             warning ("Failed to create dock client: %s", e.message);
             return;
