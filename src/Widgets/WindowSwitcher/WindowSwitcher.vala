@@ -399,7 +399,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         opacity = show ? 255 : 0;
         restore_easing_state ();
 
-        //  container.reactive = show;
+        container.reactive = show;
     }
 
     private void push_modal () {
