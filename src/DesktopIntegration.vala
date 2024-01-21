@@ -101,6 +101,10 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
+        if (wm.window_overview == null) {
+            throw new IOError.FAILED ("Window overview not provided by window manager");
+        }
+
         App app;
         if ((app = AppSystem.get_default ().lookup_app (app_id)) == null) {
             throw new IOError.NOT_FOUND ("App not found");
@@ -111,9 +115,13 @@ public class Gala.DesktopIntegration : GLib.Object {
             window_ids += window.get_id ();
         }
 
-        var hash_table = new HashTable<string, Variant> (str_hash, str_equal);
-        hash_table["windows"] = window_ids;
+        var hints = new HashTable<string, Variant> (str_hash, str_equal);
+        hints["windows"] = window_ids;
 
-        wm.show_window_spread (hash_table);
+        if (wm.window_overview.is_opened ()) {
+            wm.window_overview.close ();
+        }
+
+        wm.window_overview.open (hints);
     }
 }

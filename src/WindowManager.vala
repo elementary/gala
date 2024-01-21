@@ -72,7 +72,8 @@ namespace Gala {
         private Meta.PluginInfo info;
 
         private WindowSwitcher? window_switcher = null;
-        private ActivatableComponent? window_overview = null;
+
+        public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -2426,14 +2427,6 @@ namespace Gala {
             actor.get_parent ().remove_child (actor);
             new_parent.add_child (actor);
             actor.unref ();
-        }
-
-        public void show_window_spread (HashTable<string,Variant>? hints = null) {
-            if (window_overview.is_opened ()) {
-                window_overview.close ();
-            }
-
-            window_overview.open (hints);
         }
     }
 
