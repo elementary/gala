@@ -75,6 +75,11 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             workspaces.append (workspace);
         }
 
+        uint64[]? window_ids = null;
+        if (hints != null && "windows" in hints) {
+            window_ids = (uint64[]) hints["windows"];
+        }
+
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
@@ -85,7 +90,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
                 if (window.window_type != Meta.WindowType.NORMAL &&
                     window.window_type != Meta.WindowType.DIALOG ||
-                    window.is_attached_dialog ()) {
+                    window.is_attached_dialog () ||
+                    (window_ids != null && !(window.get_id () in window_ids))
+                ) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     actor.hide ();
 
