@@ -130,7 +130,7 @@ public class Gala.DaemonManager : Object {
         try {
             yield daemon_proxy.show_desktop_menu (x, y);
         } catch (Error e) {
-            message ("Error invoking MenuManager: %s", e.message);
+            warning ("Error invoking MenuManager: %s", e.message);
         }
     }
 
@@ -145,7 +145,7 @@ public class Gala.DaemonManager : Object {
         try {
             yield daemon_proxy.show_window_menu (flags, x, y);
         } catch (Error e) {
-            message ("Error invoking MenuManager: %s", e.message);
+            warning ("Error invoking MenuManager: %s", e.message);
         }
     }
 }
