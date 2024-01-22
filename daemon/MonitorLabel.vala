@@ -1,27 +1,9 @@
-/*-
- * Copyright 2014-2021 elementary, Inc.
- *
- * This software is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this software; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- *
- * Authored by: Corentin Noël <corentin@elementary.io>
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
  public class Gala.MonitorLabel : Hdy.Window {
-    public MonitorLabelInfo info { get; construct; }
-
     private const int SPACING = 12;
     private const string COLORED_STYLE_CSS = """
         @define-color BG_COLOR %s;
@@ -38,17 +20,17 @@
         }
     """;
 
+    public MonitorLabelInfo info { get; construct; }
 
     public MonitorLabel (MonitorLabelInfo info) {
         Object (info: info);
     }
 
     construct {
-        var label = new Gtk.Label (info.label) {
+        child = new Gtk.Label (info.label) {
             margin = 12
         };
 
-        child = label;
         title = "LABEL-%i".printf (info.monitor);
 
         input_shape_combine_region (null);

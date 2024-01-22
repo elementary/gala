@@ -78,11 +78,7 @@ namespace Gala {
             gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
         }
 
-        [DBus (visible = false)]
-        public void setup_dbus () {
-            var flags = BusNameOwnerFlags.ALLOW_REPLACEMENT | BusNameOwnerFlags.REPLACE;
-            Bus.own_name (BusType.SESSION, DAEMON_DBUS_NAME, flags, on_bus_acquired, () => {}, null);
-
+        construct {
             Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
         }
 
@@ -101,14 +97,6 @@ namespace Gala {
         private void gala_appeared () {
             if (wm_proxy == null) {
                 Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
-            }
-        }
-
-        private void on_bus_acquired (DBusConnection conn) {
-            try {
-                conn.register_object (DAEMON_DBUS_OBJECT_PATH, this);
-            } catch (Error e) {
-                stderr.printf ("Error registering MenuDaemon: %s\n", e.message);
             }
         }
 

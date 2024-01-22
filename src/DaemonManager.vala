@@ -24,7 +24,15 @@ public class Gala.DaemonManager : Object {
         Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
     }
 
-    public void init_wayland () {
+    public void start () {
+        if (Meta.Util.is_wayland_compositor ()) {
+            start_wayland ();
+        } else {
+            start_x.begin ();
+        }
+    }
+
+    private void start_wayland () {
         Meta.WaylandClient daemon_client;
 
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
@@ -44,6 +52,21 @@ public class Gala.DaemonManager : Object {
         });
     }
 
+    private async void start_x () {
+        try {
+            var subprocess = new Subprocess (NONE, "gala-daemon");
+            yield subprocess.wait_async ();
+
+            //Restart the daemon if it crashes
+            Timeout.add_seconds (1, () => {
+                start_x.begin ();
+                return Source.REMOVE;
+            });
+        } catch (Error e) {
+            warning ("Failed to create daemon subprocess.");
+        }
+    }
+
     private void handle_daemon_window (Meta.Window window) {
         var info = window.title.split ("-");
 
@@ -53,11 +76,6 @@ public class Gala.DaemonManager : Object {
         }
 
         switch (info[0]) {
-            case "MENU":
-                window.move_frame (false, x_position, y_position);
-                window.make_above ();
-                break;
-
             case "LABEL":
                 if (info.length < 2) {
                     return;
@@ -71,6 +89,9 @@ public class Gala.DaemonManager : Object {
                 break;
 
             default:
+                //Assume it's a menu since we can't set titles there
+                window.move_frame (false, x_position, y_position);
+                window.make_above ();
                 break;
         }
     }
@@ -91,75 +112,33 @@ public class Gala.DaemonManager : Object {
         }
     }
 
-    public void show_background_menu (int x, int y) {
+    public async void show_background_menu (int x, int y) {
         if (daemon_proxy == null) {
             return;
         }
 
         x_position = x;
         y_position = y;
-
-        daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
-            try {
-                ((Daemon) obj).show_desktop_menu.end (res);
-            } catch (Error e) {
-                message ("Error invoking MenuManager: %s", e.message);
-            }
-        });
+        
+        try {
+            yield daemon_proxy.show_desktop_menu (x, y);
+        } catch (Error e) {
+            message ("Error invoking MenuManager: %s", e.message);
+        }
     }
 
-    public void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
+    public async void show_window_menu (WindowFlags flags, int x, int y) {
+        if (daemon_proxy == null) {
+            return;
+        }
+
         x_position = x;
         y_position = y;
-
-        switch (menu) {
-            case Meta.WindowMenuType.WM:
-                if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
-                    return;
-                }
-
-                WindowFlags flags = WindowFlags.NONE;
-                if (window.can_minimize ())
-                    flags |= WindowFlags.CAN_HIDE;
-
-                if (window.can_maximize ())
-                    flags |= WindowFlags.CAN_MAXIMIZE;
-
-                var maximize_flags = window.get_maximized ();
-                if (maximize_flags > 0) {
-                    flags |= WindowFlags.IS_MAXIMIZED;
-
-                    if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                        flags |= WindowFlags.IS_TILED;
-                    }
-                }
-
-                if (window.allows_move ())
-                    flags |= WindowFlags.ALLOWS_MOVE;
-
-                if (window.allows_resize ())
-                    flags |= WindowFlags.ALLOWS_RESIZE;
-
-                if (window.is_above ())
-                    flags |= WindowFlags.ALWAYS_ON_TOP;
-
-                if (window.on_all_workspaces)
-                    flags |= WindowFlags.ON_ALL_WORKSPACES;
-
-                if (window.can_close ())
-                    flags |= WindowFlags.CAN_CLOSE;
-
-                daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
-                    try {
-                        ((Daemon) obj).show_window_menu.end (res);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
-                });
-                break;
-            case Meta.WindowMenuType.APP:
-                // FIXME we don't have any sort of app menus
-                break;
+        
+        try {
+            yield daemon_proxy.show_window_menu (flags, x, y);
+        } catch (Error e) {
+            message ("Error invoking MenuManager: %s", e.message);
         }
     }
 }
