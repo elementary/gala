@@ -44,7 +44,11 @@ public class Gala.DaemonManager : Object {
 
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
+#if HAS_MUTTER43
+            daemon_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
+#else
             daemon_client = new Meta.WaylandClient (subprocess_launcher);
+#endif
             string[] args = {"gala-daemon"};
             daemon_client.spawnv (display, args);
         } catch (Error e) {
@@ -89,7 +93,7 @@ public class Gala.DaemonManager : Object {
                 }
 
                 var index = int.parse (info[1]);
-                
+
                 var monitor_geometry = display.get_monitor_geometry (index);
                 window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
                 window.make_above ();
@@ -126,7 +130,7 @@ public class Gala.DaemonManager : Object {
 
         x_position = x;
         y_position = y;
-        
+
         try {
             yield daemon_proxy.show_desktop_menu (x, y);
         } catch (Error e) {
@@ -141,7 +145,7 @@ public class Gala.DaemonManager : Object {
 
         x_position = x;
         y_position = y;
-        
+
         try {
             yield daemon_proxy.show_window_menu (flags, x, y);
         } catch (Error e) {
