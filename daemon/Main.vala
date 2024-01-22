@@ -19,7 +19,6 @@ namespace Gala {
     public class Daemon.Application : Gtk.Application {
         public Application () {
             Object (application_id: "org.pantheon.gala.daemon");
-            set_inactivity_timeout (10000);
         }
 
         public override void startup () {

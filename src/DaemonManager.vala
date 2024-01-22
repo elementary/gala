@@ -1,3 +1,10 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
 public class Gala.DaemonManager : Object {
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
