@@ -63,7 +63,8 @@ namespace Gala {
         private Meta.PluginInfo info;
 
         private WindowSwitcher? window_switcher = null;
-        private ActivatableComponent? window_overview = null;
+
+        public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -422,7 +423,7 @@ namespace Gala {
             }
 
             if (target_workspace != null) {
-                move_window (window, target_workspace);
+                move_window (window, target_workspace, event.get_time ());
             }
         }
 
@@ -443,7 +444,7 @@ namespace Gala {
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction);
+            switch_to_next_workspace (direction, event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -501,6 +502,8 @@ namespace Gala {
                 return;
             }
 
+            unowned var display = get_display ();
+
             var fingers = gesture.fingers;
 
             var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
@@ -518,13 +521,12 @@ namespace Gala {
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
             switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
             if (switch_workspace_with_gesture) {
-                unowned var display = get_display ();
                 unowned var manager = display.get_workspace_manager ();
 
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
@@ -534,7 +536,7 @@ namespace Gala {
                     moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
                 }
 
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
@@ -547,7 +549,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+        public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
             if (animating_switch_workspace) {
                 return;
             }
@@ -557,7 +559,7 @@ namespace Gala {
             unowned var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
-                neighbor.activate (display.get_current_time ());
+                neighbor.activate (timestamp);
             } else {
                 // if we didn't switch, show a nudge-over animation if one is not already in progress
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
@@ -755,7 +757,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void move_window (Meta.Window? window, Meta.Workspace workspace) {
+        public void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp) {
             if (window == null) {
                 return;
             }
@@ -783,7 +785,7 @@ namespace Gala {
                 window.change_workspace (workspace);
             }
 
-            workspace.activate_with_focus (window, display.get_current_time ());
+            workspace.activate_with_focus (window, timestamp);
         }
 
         /**
@@ -945,22 +947,22 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
-                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
-                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.LEFT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.RIGHT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
