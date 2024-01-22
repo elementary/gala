@@ -24,7 +24,7 @@ namespace Gala {
         public int x;
         public int y;
     }
-    
+
     private const string DBUS_NAME = "org.pantheon.gala";
     private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
