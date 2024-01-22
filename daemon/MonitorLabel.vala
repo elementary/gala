@@ -53,13 +53,15 @@
         );
 
         var provider = new Gtk.CssProvider ();
-        var colored_css = COLORED_STYLE_CSS.printf (info.background_color, info.text_color);
-        provider.load_from_data (colored_css, colored_css.length);
+        try {
+            provider.load_from_data (COLORED_STYLE_CSS.printf (info.background_color, info.text_color));
 
-        var context = get_style_context ();
-        context.add_provider (provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-        context.add_class ("colored");
-        
+            get_style_context ().add_provider (provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+            get_style_context ().add_class ("colored");
+        } catch (Error e) {
+            warning ("Failed to load CSS: %s", e.message);
+        }
+
         show_all ();
     }
 }
