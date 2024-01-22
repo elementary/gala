@@ -49,6 +49,7 @@
         };
 
         child = label;
+        title = "LABEL-%i".printf (info.monitor);
 
         input_shape_combine_region (null);
         accept_focus = false;

@@ -39,28 +39,38 @@ public class Gala.DaemonManager : Object {
 
         display.window_created.connect ((window) => {
             if (daemon_client.owns_window (window)) {
-                setup_daemon_window (window);
+                window.shown.connect (handle_daemon_window);
             }
         });
     }
 
-    private void setup_daemon_window (Meta.Window window) {
-        var info = window.get_title ().split_set ("-");
+    private void handle_daemon_window (Meta.Window window) {
+        var info = window.title.split ("-");
+
+        if (info.length == 0) {
+            critical ("Couldn't handle daemon window: No title provided");
+            return;
+        }
+
         switch (info[0]) {
             case "MENU":
-                window.shown.connect (() => {
-                    window.move_frame (false, x_position, y_position);
-                    window.make_above ();
-                });
+                window.move_frame (false, x_position, y_position);
+                window.make_above ();
                 break;
 
             case "LABEL":
+                if (info.length < 2) {
+                    return;
+                }
+
                 var index = int.parse (info[1]);
+                
                 var monitor_geometry = display.get_monitor_geometry (index);
-                window.shown.connect (() => {
-                    window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
-                    window.make_above ();
-                });
+                window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
+                window.make_above ();
+                break;
+
+            default:
                 break;
         }
     }
