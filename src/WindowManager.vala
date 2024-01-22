@@ -1020,38 +1020,38 @@ namespace Gala {
                     if (window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         return;
                     }
-    
+
                     WindowFlags flags = WindowFlags.NONE;
                     if (window.can_minimize ())
                         flags |= WindowFlags.CAN_HIDE;
-    
+
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
-    
+
                     var maximize_flags = window.get_maximized ();
                     if (maximize_flags > 0) {
                         flags |= WindowFlags.IS_MAXIMIZED;
-    
+
                         if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
                             flags |= WindowFlags.IS_TILED;
                         }
                     }
-    
+
                     if (window.allows_move ())
                         flags |= WindowFlags.ALLOWS_MOVE;
-    
+
                     if (window.allows_resize ())
                         flags |= WindowFlags.ALLOWS_RESIZE;
-    
+
                     if (window.is_above ())
                         flags |= WindowFlags.ALWAYS_ON_TOP;
-    
+
                     if (window.on_all_workspaces)
                         flags |= WindowFlags.ON_ALL_WORKSPACES;
-    
+
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
-    
+
                     daemon_manager.show_window_menu.begin (flags, x, y);
                     break;
                 case Meta.WindowMenuType.APP:
