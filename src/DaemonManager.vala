@@ -1,6 +1,7 @@
 public class Gala.DaemonManager : Object {
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    private const int SPACING = 12;
 
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
@@ -44,10 +45,24 @@ public class Gala.DaemonManager : Object {
     }
 
     private void setup_daemon_window (Meta.Window window) {
-        window.shown.connect (() => {
-            window.move_frame (false, x_position, y_position);
-            window.make_above ();
-        });
+        var info = window.get_title ().split_set ("-");
+        switch (info[0]) {
+            case "MENU":
+                window.shown.connect (() => {
+                    window.move_frame (false, x_position, y_position);
+                    window.make_above ();
+                });
+                break;
+
+            case "LABEL":
+                var index = int.parse (info[1]);
+                var monitor_geometry = display.get_monitor_geometry (index);
+                window.shown.connect (() => {
+                    window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
+                    window.make_above ();
+                });
+                break;
+        }
     }
 
     private void lost_daemon () {

@@ -16,6 +16,15 @@
 //
 
 namespace Gala {
+    public struct MonitorLabelInfo {
+        public int monitor;
+        public string label;
+        public string background_color;
+        public string text_color;
+        public int x;
+        public int y;
+    }
+    
     private const string DBUS_NAME = "org.pantheon.gala";
     private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
@@ -58,6 +67,8 @@ namespace Gala {
 
         private ulong always_on_top_sid = 0U;
         private ulong on_visible_workspace_sid = 0U;
+
+        private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
         private static GLib.Settings keybind_settings;
         private static GLib.Settings gala_keybind_settings;
@@ -362,6 +373,23 @@ namespace Gala {
                 py = (y / scale) + 1;
                 push_in = false;
             }, Gdk.BUTTON_SECONDARY, Gdk.CURRENT_TIME);
+        }
+
+        public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
+            hide_monitor_labels ();
+
+            monitor_labels = new List<MonitorLabel> ();
+            foreach (var info in label_infos) {
+                var label = new MonitorLabel (info);
+                monitor_labels.append (label);
+                label.present ();
+            }
+        }
+
+        public void hide_monitor_labels () throws GLib.DBusError, GLib.IOError {
+            foreach (var monitor_label in monitor_labels) {
+                monitor_label.close ();
+            }
         }
     }
 }
