@@ -3,7 +3,6 @@ gala_bin_sources = files(
     'DBusAccelerator.vala',
     'DesktopIntegration.vala',
     'Dialogs.vala',
-    'GalaAccountsServicePlugin.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
     'Main.vala',
