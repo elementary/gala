@@ -14,17 +14,17 @@ public class Gala.KeyboardManager : Object {
     private static KeyboardManager? instance;
     private static VariantType sources_variant_type;
     private static GLib.Settings settings;
+    private static unowned WindowManager wm;
 
-    public unowned Meta.Display display { construct; private get; }
-
-    public static void init (Meta.Display display) {
+    public static void init (WindowManager _wm) {
         if (instance != null) {
             return;
         }
 
-        instance = new KeyboardManager (display);
+        wm = _wm;
+        instance = new KeyboardManager ();
 
-        display.modifiers_accelerator_activated.connect ((display) => KeyboardManager.handle_modifiers_accelerator_activated (display, false));
+        wm.get_display ().modifiers_accelerator_activated.connect (() => KeyboardManager.handle_modifiers_accelerator_activated (false));
     }
 
     static construct {
@@ -44,14 +44,11 @@ public class Gala.KeyboardManager : Object {
         set_keyboard_layout (settings, "sources"); // Update the list of layouts
         set_keyboard_layout (settings, "current"); // Set current layout
     }
-
-    private KeyboardManager (Meta.Display display) {
-        Object (display: display);
-    }
-
     [CCode (instance_pos = -1)]
-    public static bool handle_modifiers_accelerator_activated (Meta.Display display, bool backward) {
-        display.ungrab_keyboard (display.get_current_time ());
+    public static bool handle_modifiers_accelerator_activated (bool backward) {
+        unowned var display = wm.get_display ();
+
+        display.ungrab_keyboard (wm.get_current_time ());
 
         var sources = settings.get_value ("sources");
         if (!sources.is_of_type (sources_variant_type)) {
@@ -76,6 +73,8 @@ public class Gala.KeyboardManager : Object {
 
     [CCode (instance_pos = -1)]
     private void set_keyboard_layout (GLib.Settings settings, string key) {
+        unowned var display = wm.get_display ();
+
         if (key == "sources" || key == "xkb-options") {
             string[] layouts = {}, variants = {};
 

@@ -196,7 +196,7 @@ namespace Gala {
             unowned Meta.Display display = wm.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
-            manager.append_new_workspace (false, display.get_current_time ());
+            manager.append_new_workspace (false, wm.get_current_time ());
         }
 
         /**
@@ -207,7 +207,7 @@ namespace Gala {
         private void remove_workspace (Meta.Workspace workspace) {
             unowned Meta.Display display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var time = display.get_current_time ();
+            var time = wm.get_current_time ();
             unowned Meta.Workspace active_workspace = manager.get_active_workspace ();
 
             if (workspace == active_workspace) {

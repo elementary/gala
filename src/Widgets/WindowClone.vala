@@ -581,7 +581,7 @@ public class Gala.WindowClone : Clutter.Actor {
         unowned Meta.Display display = window.get_display ();
         check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
 
-        window.@delete (display.get_current_time ());
+        window.@delete (wm.get_current_time ());
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {

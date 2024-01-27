@@ -266,7 +266,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
             handling_gesture = false;
-            close_switcher (wm.get_display ().get_current_time ());
+            close_switcher (wm.get_current_time ());
         };
 
         gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -480,7 +480,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
     public override void key_focus_out () {
         if (!handling_gesture) {
-            close_switcher (wm.get_display ().get_current_time ());
+            close_switcher (wm.get_current_time ());
         }
     }
 

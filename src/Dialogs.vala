@@ -39,10 +39,13 @@ namespace Gala {
         private const string FDO_PORTAL_PATH = "/org/freedesktop/portal/desktop";
         private const string GALA_DIALOG_PATH = "/io/elementary/gala/dialog";
 
+        protected static WindowManager wm;
         protected static AccessPortal? portal = null;
         protected ObjectPath? path = null;
 
-        public static void watch_portal () {
+        public static void watch_portal (WindowManager _wm) {
+            wm = _wm;
+
             Bus.watch_name (BusType.SESSION, PANTHEON_PORTAL_NAME, BusNameWatcherFlags.NONE,
                 () => {
                     try {
@@ -178,7 +181,7 @@ namespace Gala {
         public void focus () {
             window.foreach_transient ((w) => {
                 if (w.get_role () == "AccessDialog") {
-                    w.activate (w.get_display ().get_current_time ());
+                    w.activate (wm.get_current_time ());
                     return false;
                 }
 

@@ -358,7 +358,7 @@ namespace Gala {
 
             switching_workspace_with_gesture = true;
             if (target_workspace != null) {
-                target_workspace.activate (display.get_current_time ());
+                target_workspace.activate (wm.get_current_time ());
             }
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -414,7 +414,7 @@ namespace Gala {
                 }
 
                 if (is_nudge_animation || cancel_action) {
-                    active_workspace.activate (display.get_current_time ());
+                    active_workspace.activate (wm.get_current_time ());
                 }
             };
 
@@ -556,7 +556,7 @@ namespace Gala {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             close_view = close_view && manager.get_active_workspace () == clone.workspace;
 
-            clone.workspace.activate (display.get_current_time ());
+            clone.workspace.activate (wm.get_current_time ());
 
             if (close_view) {
                 toggle ();
@@ -632,7 +632,7 @@ namespace Gala {
         }
 
         private void window_selected (Meta.Window window) {
-            var time = display.get_current_time ();
+            var time = wm.get_current_time ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var workspace = window.get_workspace ();
 

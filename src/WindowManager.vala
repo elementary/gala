@@ -151,7 +151,7 @@ namespace Gala {
             show_stage ();
 
             Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
-            AccessDialog.watch_portal ();
+            AccessDialog.watch_portal (this);
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
@@ -187,7 +187,7 @@ namespace Gala {
             MediaFeedback.init ();
 
             WindowListener.init (display);
-            KeyboardManager.init (display);
+            KeyboardManager.init (this);
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
@@ -499,7 +499,7 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
+            KeyboardManager.handle_modifiers_accelerator_activated (binding.get_name ().has_suffix ("-backward"));
         }
 
         [CCode (instance_pos = -1)]
@@ -556,7 +556,7 @@ namespace Gala {
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction, display.get_current_time ());
+                switch_to_next_workspace (direction, get_current_time ());
                 return;
             }
 
@@ -571,7 +571,7 @@ namespace Gala {
                     moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
                 }
 
-                switch_to_next_workspace (direction, display.get_current_time ());
+                switch_to_next_workspace (direction, get_current_time ());
                 return;
             }
 
@@ -916,6 +916,30 @@ namespace Gala {
             }
         }
 
+        public uint32 get_current_time () {
+            /*
+             * meta_display_get_current_time() will return the correct time
+             * when handling an X or Gdk event, but will return CurrentTime
+             * from some Clutter event callbacks.
+             *
+             * clutter_get_current_event_time() will return the correct time
+             * from a Clutter event callback, but may return CLUTTER_CURRENT_TIME
+             * timestamp if called at other times.
+             *
+             * So we try meta_display_get_current_time() first, since we
+             * can recognize a "wrong" answer from that, and then fall back
+             * to clutter_get_current_event_time().
+             */
+
+            warning ("Display: %u\tClutter: %u", get_display ().get_current_time (), Clutter.get_current_event_time ());
+            var time = get_display ().get_current_time ();
+            if (time != Clutter.CURRENT_TIME) {
+                return time;
+            }
+
+            return Clutter.get_current_event_time ();
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -1038,7 +1062,7 @@ namespace Gala {
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
                     unowned var manager = display.get_workspace_manager ();
                     unowned var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
-                    workspace.activate (display.get_current_time ());
+                    workspace.activate (get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
                     screenshot_current_window.begin ();
@@ -1185,7 +1209,7 @@ namespace Gala {
                 return;
 
             unowned Meta.Display display = get_display ();
-            var time = display.get_current_time ();
+            var time = get_current_time ();
             unowned Meta.Workspace win_ws = window.get_workspace ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
@@ -1819,7 +1843,7 @@ namespace Gala {
             InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
             unowned var display = get_display ();
-            var time = display.get_current_time ();
+            var time = get_current_time ();
             unowned var new_ws = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
             window.change_workspace (new_ws);
             new_ws.activate_with_focus (window, time);
@@ -1845,7 +1869,7 @@ namespace Gala {
             unowned var display = get_display ();
             unowned var workspace_manager = display.get_workspace_manager ();
             if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
-                uint time = display.get_current_time ();
+                uint time = get_current_time ();
                 unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
                 window.change_workspace (old_ws);
                 old_ws.activate_with_focus (window, time);
@@ -2216,7 +2240,7 @@ namespace Gala {
                 unowned Meta.Display display = get_display ();
                 unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
                 unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
-                neighbor.activate (display.get_current_time ());
+                neighbor.activate (get_current_time ());
             }
         }
 

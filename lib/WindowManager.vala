@@ -181,5 +181,13 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        /**
+         * Returns the current X server time from the current Clutter, Gdk, or X
+         * event. If called from outside an event handler, this may return
+         * Clutter.CURRENT_TIME (aka 0), or it may return a slightly
+         * out-of-date timestamp.
+         */
+        public abstract uint32 get_current_time ();
     }
 }
