@@ -155,7 +155,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         };
 
         container.button_release_event.connect (container_mouse_release);
-        container.motion_event.connect (container_motion_event);
 
         var caption_color = "#2e2e31";
 
@@ -292,7 +291,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
                 current_icon = icon;
             }
 
-            container.add_child (icon);
+            add_icon (icon);
         }
 
         return true;
@@ -322,11 +321,23 @@ public class Gala.WindowSwitcher : Clutter.Actor {
                     current_icon = icon;
                 }
 
-                container.add_child (icon);
+                add_icon (icon);
             }
         }
 
         return true;
+    }
+
+    private void add_icon (WindowSwitcherIcon icon) {
+        container.add_child (icon);
+
+        icon.motion_event.connect (() => {
+            if (current_icon != icon && !handling_gesture) {
+                current_icon = icon;
+            }
+
+            return Clutter.EVENT_PROPAGATE;
+        });
     }
 
     private void open_switcher () {
@@ -482,34 +493,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         if (!handling_gesture) {
             close_switcher (wm.get_display ().get_current_time ());
         }
-    }
-
-#if HAS_MUTTER45
-    private bool container_motion_event (Clutter.Event event) {
-#else
-    private bool container_motion_event (Clutter.MotionEvent event) {
-#endif
-        if (handling_gesture) {
-            return Clutter.EVENT_STOP;
-        }
-
-        float x, y;
-        event.get_coords (out x, out y);
-        var actor = container.get_stage ().get_actor_at_pos (Clutter.PickMode.ALL, (int)x, (int)y);
-        if (actor == null) {
-            return Clutter.EVENT_STOP;
-        }
-
-        var selected = actor as WindowSwitcherIcon;
-        if (selected == null) {
-            return Clutter.EVENT_STOP;
-        }
-
-        if (current_icon != selected) {
-            current_icon = selected;
-        }
-
-        return true;
     }
 
 #if HAS_MUTTER45
