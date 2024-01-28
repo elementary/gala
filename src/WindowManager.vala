@@ -86,8 +86,6 @@ namespace Gala {
          */
         private Zoom? zoom = null;
 
-        private AccentColorManager accent_color_manager;
-
         private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -313,8 +311,6 @@ namespace Gala {
                     unowned string[] _args = args;
                     Gtk.init (ref _args);
                 }
-
-                accent_color_manager = new AccentColorManager ();
 
                 // initialize plugins and add default components if no plugin overrides them
                 unowned var plugin_manager = PluginManager.get_default ();
