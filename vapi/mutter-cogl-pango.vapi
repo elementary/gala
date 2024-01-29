@@ -23,7 +23,7 @@ namespace CoglPango {
 		[CCode (has_construct_function = false)]
 		protected Renderer ();
 		[NoAccessorMethod]
-		public void* context { construct; }
+		public Cogl.Context context { construct; }
 	}
 	[CCode (cheader_filename = "cogl-pango.h")]
 	[Version (since = "1.0")]

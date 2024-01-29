@@ -304,3 +304,91 @@ if mutter45_dep.found()
 		output: 'libmutter-13.vapi'
 	)
 endif
+if mutter46_dep.found()
+	mtk_target = custom_target('mutter-mtk-14',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Mtk-14.gir',
+			'--library=mutter-mtk-14',
+			'--pkg=gobject-2.0',
+			'--pkg=gio-2.0',
+			'--pkg=cairo',
+			'--pkg=graphene-gobject-1.0',
+			vapigen_args
+		],
+		output: 'mutter-mtk-14.vapi'
+	)
+	cogl_target = custom_target('mutter-cogl-14',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Cogl-14.gir',
+			'--library=mutter-cogl-14',
+			'--pkg=mutter-mtk-14',
+			'--pkg=gobject-2.0',
+			'--pkg=gio-2.0',
+			'--pkg=cairo',
+			'--pkg=graphene-gobject-1.0',
+			vapigen_args,
+			files('Cogl-14-custom.vala')
+		],
+		depends: mtk_target,
+		output: 'mutter-cogl-14.vapi'
+	)
+
+	cogl_pango_target = custom_target('mutter-cogl-pango-14',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'CoglPango-14.gir',
+			'--library=mutter-cogl-pango-14',
+			'--pkg=mutter-mtk-14',
+			'--pkg=mutter-cogl-14',
+			'--pkg=pangocairo',
+			'--pkg=gio-2.0',
+			'--pkg=glib-2.0',
+			vapigen_args
+		],
+		depends: [mtk_target, cogl_target],
+		output: 'mutter-cogl-pango-14.vapi'
+	)
+
+	clutter_target = custom_target('mutter-clutter-14',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Clutter-14.gir',
+			'--library=mutter-clutter-14',
+			'--pkg=graphene-gobject-1.0',
+			'--pkg=mutter-mtk-14',
+			'--pkg=mutter-cogl-14',
+			'--pkg=mutter-cogl-pango-14',
+			'--pkg=atk',
+			'--pkg=gio-2.0',
+			'--pkg=json-glib-1.0',
+			'--pkg=pangocairo',
+			vapigen_args,
+			files('Clutter-14-custom.vala')
+		],
+		depends: [ cogl_target, cogl_pango_target, mtk_target ],
+		output: 'mutter-clutter-14.vapi'
+	)
+
+	libmutter_target = custom_target('libmutter-14',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Meta-14.gir',
+			'--library=libmutter-14',
+			'--pkg=graphene-gobject-1.0',
+			'--pkg=mutter-cogl-14',
+			'--pkg=mutter-cogl-pango-14',
+			'--pkg=mutter-clutter-14',
+			'--pkg=atk',
+			'--pkg=gio-2.0',
+			'--pkg=json-glib-1.0',
+			'--pkg=pangocairo',
+			'--pkg=x11',
+			'--pkg=xfixes-4.0',
+			vapigen_args
+		],
+		depends: [ cogl_target, cogl_pango_target, clutter_target ],
+		output: 'libmutter-14.vapi'
+	)
+endif

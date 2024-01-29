@@ -2,6 +2,32 @@
 
 [CCode (cprefix = "Mtk", gir_namespace = "Mtk", gir_version = "13", lower_case_cprefix = "mtk_")]
 namespace Mtk {
+#if HAS_MUTTER46
+	[CCode (cheader_filename = "mtk/mtk.h", ref_function = "mtk_region_ref", type_id = "mtk_region_get_type ()", unref_function = "mtk_region_unref")]
+	[Compact]
+	public class Region {
+		public bool contains_point (int x, int y);
+		public Mtk.RegionOverlap contains_rectangle (Mtk.Rectangle rect);
+		public Mtk.Region copy ();
+		public static Mtk.Region create ();
+		public static Mtk.Region create_rectangle (Mtk.Rectangle rect);
+		public static Mtk.Region create_rectangles (Mtk.Rectangle rects, int n_rects);
+		public bool equal (Mtk.Region other);
+		public Mtk.Rectangle? get_extents ();
+		public Mtk.Rectangle? get_rectangle (int nth);
+		public void intersect (Mtk.Region other);
+		public void intersect_rectangle (Mtk.Rectangle rect);
+		public bool is_empty ();
+		public int num_rectangles ();
+		public unowned Mtk.Region @ref ();
+		public void subtract (Mtk.Region other);
+		public void subtract_rectangle (Mtk.Rectangle rect);
+		public void translate (int dx, int dy);
+		public void union (Mtk.Region other);
+		public void union_rectangle (Mtk.Rectangle rect);
+		public void unref ();
+	}
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "mtk_rectangle_get_type ()")]
 	public struct Rectangle {
 		public int x;
@@ -24,6 +50,14 @@ namespace Mtk {
 		public Mtk.Rectangle union (Mtk.Rectangle rect2);
 		public bool vert_overlap (Mtk.Rectangle rect2);
 	}
+#if HAS_MUTTER46
+	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_REGION_OVERLAP_", has_type_id = false)]
+	public enum RegionOverlap {
+		OUT,
+		IN,
+		PART
+	}
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_ROUNDING_STRATEGY_", has_type_id = false)]
 	public enum RoundingStrategy {
 		SHRINK,
@@ -33,6 +67,17 @@ namespace Mtk {
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]
 	public static Mtk.Rectangle rectangle_from_graphene_rect (Graphene.Rect rect, Mtk.RoundingStrategy rounding_strategy);
+#if HAS_MUTTER46
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	[Version (replacement = "Region.create")]
+	public static Mtk.Region region_create ();
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	[Version (replacement = "Region.create_rectangle")]
+	public static Mtk.Region region_create_rectangle (Mtk.Rectangle rect);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	[Version (replacement = "Region.create_rectangles")]
+	public static Mtk.Region region_create_rectangles (Mtk.Rectangle rects, int n_rects);
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	public static void x11_errors_deinit ();
 }
