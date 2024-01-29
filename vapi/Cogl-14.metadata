@@ -1,0 +1,52 @@
+* cheader_filename="cogl/cogl.h"
+
+Color struct
+
+Color.equal.v1 type="Cogl.Color"
+Color.equal.v2 type="Cogl.Color"
+color_equal skip
+
+Context.free_timestamp_query.query owned
+
+Texture
+  .get_data.data type="uint8[]"
+  .set_data.data type="uint8[]"
+  .set_region.data type="uint8[]"
+
+Texture2D
+  .new_from_data skip=false
+  .new_from_data.data array=true
+
+Pipeline.get_layer_filters
+  .min_filter out
+  .mag_filter out
+
+create_program type="Cogl.Program" name="create" parent="Cogl.Program"
+create_shader type="Cogl.Shader" name="create" parent="Cogl.Shader"
+
+foreach_feature parent="Cogl.Context" symbol_type="method" instance_idx=0
+get_graphics_reset_status parent="Cogl.Context" symbol_type="method" instance_idx=0
+has_feature parent="Cogl.Context" symbol_type="method" instance_idx=0
+
+Bitmap.error_quark parent="Cogl.BitmapError" name="quark"
+Texture.error_quark parent="Cogl.TextureError" name="quark"
+Scanout.error_quark parent="Cogl.ScanoutError" name="quark"
+scanout_error_quark skip
+
+BitmapError errordomain
+BlendStringError errordomain
+RendererError errordomain
+SystemError errordomain
+TextureError errordomain
+FramebufferError errordomain
+ScanoutError errordomain
+
+is_framebuffer skip
+blit_framebuffer parent="Cogl.Framebuffer" symbol_type="method" instance_idx=0 name="blit"
+
+Onscreen
+  .add_dirty_callback unowned
+  .add_frame_callback unowned
+  .queue_damage_region.rectangles array array_length_idx=1
+  .swap_buffers_with_damage.rectangles array array_length_idx=1
+  .swap_region.rectangles array array_length_idx=1

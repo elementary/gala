@@ -82,11 +82,19 @@ namespace Gala {
 
             resize_canvas ();
 
+#if HAS_MUTTER46
+            icon_container.child_removed.connect_after (redraw);
+#else
             icon_container.actor_removed.connect_after (redraw);
+#endif
         }
 
         ~IconGroup () {
+#if HAS_MUTTER46
+            icon_container.child_removed.disconnect (redraw);
+#else
             icon_container.actor_removed.disconnect (redraw);
+#endif
         }
 
         private bool resize_canvas () {
