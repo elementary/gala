@@ -147,7 +147,7 @@ public class Gala.BlurEffect : Clutter.Effect {
         var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
 
         try {
-            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_width, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
+            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
         } catch (GLib.Error e) {
             warning (e.message);
             return false;
