@@ -47,6 +47,8 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         canvas.draw.connect (draw_background);
         set_content (canvas);
 
+        reactive = true;
+
         this.scale_factor = scale_factor;
     }
 
