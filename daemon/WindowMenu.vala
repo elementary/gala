@@ -15,6 +15,7 @@ public class WindowMenu : Gtk.Popover {
         screenshot = new Gtk.Button () {
             child = screenshot_accellabel
         };
+        screenshot.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
         screenshot.get_style_context ().add_class (Gtk.STYLE_CLASS_MENUITEM);
         screenshot.clicked.connect (() => {
             perform_action (Gala.ActionType.SCREENSHOT_CURRENT);
@@ -25,6 +26,7 @@ public class WindowMenu : Gtk.Popover {
         close = new Gtk.Button () {
             child = close_accellabel
         };
+        close.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
         close.get_style_context ().add_class (Gtk.STYLE_CLASS_MENUITEM);
         close.clicked.connect (() => {
             perform_action (Gala.ActionType.CLOSE_CURRENT);
@@ -36,6 +38,7 @@ public class WindowMenu : Gtk.Popover {
         content.add (close);
 
         child = content;
+        content.get_style_context ().add_class (Gtk.STYLE_CLASS_MENU);
     }
 
     public void update (Gala.WindowFlags flags) {
