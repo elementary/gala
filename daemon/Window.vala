@@ -23,12 +23,17 @@ public class Gala.Window : Gtk.Window {
         //      return Gdk.EVENT_STOP;
         //  });
 
-        child = content = new Gtk.Box (HORIZONTAL, 0);
+        child = content = new Gtk.Box (HORIZONTAL, 0) {
+            hexpand = true,
+            vexpand = true
+        };
+
+        show_all ();
 
         Timeout.add_seconds (5, () => {
             close ();
             return Source.REMOVE;
         });
-        //  move (-1000, 0);
+        move (0, 0);
     }
 }

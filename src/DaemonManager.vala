@@ -130,6 +130,7 @@ public class Gala.DaemonManager : Object {
 
         x_position = x;
         y_position = y;
+        warning (y.to_string ());
 
         try {
             yield daemon_proxy.show_desktop_menu (x, y);

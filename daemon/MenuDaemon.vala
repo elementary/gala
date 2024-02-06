@@ -95,16 +95,14 @@ namespace Gala {
             Gdk.Rectangle rect = {
                 x,
                 y,
-                display_width,
-                display_height
+                0,
+                0
             };
 
             window_menu.pointing_to = rect;
 
-            window_menu.popup ();
             window_menu.show_all ();
-
-            warning ("SHOW");
+            window_menu.popup ();
         }
 
         public void show_desktop_menu (int x, int y) throws DBusError, IOError {
