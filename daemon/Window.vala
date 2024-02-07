@@ -30,11 +30,6 @@ public class Gala.Window : Gtk.Window {
         type_hint = Gdk.WindowTypeHint.TOOLTIP;
         set_keep_above (true);
 
-        button_press_event.connect (() => {
-            close ();
-            return Gdk.EVENT_STOP;
-        });
-
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true
@@ -44,5 +39,10 @@ public class Gala.Window : Gtk.Window {
 
         show_all ();
         move (0, 0);
+
+        button_press_event.connect (() => {
+            close ();
+            return Gdk.EVENT_STOP;
+        });
     }
 }

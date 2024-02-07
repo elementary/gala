@@ -77,12 +77,10 @@ namespace Gala {
             }
         }
 
-        private void init_window_menu () {
-        }
-
         public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
             if (window_menu == null) {
                 window_menu = new WindowMenu ();
+                window_menu.perform_action.connect (perform_action);
             }
 
             window_menu.update (flags);
