@@ -103,6 +103,8 @@ namespace Gala {
 
             window_menu.show_all ();
             window_menu.popup ();
+
+            window_menu.closed.connect (window.close);
         }
 
         public void show_desktop_menu (int x, int y) throws DBusError, IOError {

@@ -1,5 +1,12 @@
 public class Gala.Window : Gtk.Window {
-    public Gtk.Box content;
+    static construct {
+        var app_provider = new Gtk.CssProvider ();
+        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
+
+    public Gtk.Box content { get; construct; }
+
     public Window (int width, int height) {
         Object (
             default_width: width,
@@ -7,33 +14,35 @@ public class Gala.Window : Gtk.Window {
         );
     }
 
+    class construct {
+        set_css_name ("daemon-window");
+    }
+
     construct {
         decorated = false;
         resizable = false;
         deletable = false;
         can_focus = false;
+        input_shape_combine_region (null);
+        accept_focus = false;
+        skip_taskbar_hint = true;
+        skip_pager_hint = true;
+        type_hint = Gdk.WindowTypeHint.TOOLTIP;
+        set_keep_above (true);
 
-        bool first = true;
-        //  button_press_event.connect (() => {
-        //      if (first) {
-        //          first = false;
-        //          return Gdk.EVENT_PROPAGATE;
-        //      }
-        //      close ();
-        //      return Gdk.EVENT_STOP;
-        //  });
+        button_press_event.connect (() => {
+            close ();
+            return Gdk.EVENT_STOP;
+        });
 
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true
         };
 
-        show_all ();
+        set_visual (get_screen ().get_rgba_visual());
 
-        Timeout.add_seconds (5, () => {
-            close ();
-            return Source.REMOVE;
-        });
+        show_all ();
         move (0, 0);
     }
 }
