@@ -42,7 +42,7 @@ public class Gala.Daemon.Window : Gtk.Window {
             vexpand = true
         };
 
-        set_visual (get_screen ().get_rgba_visual());
+        set_visual (get_screen ().get_rgba_visual ());
 
         show_all ();
         move (0, 0);
