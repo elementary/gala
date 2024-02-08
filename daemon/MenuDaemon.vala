@@ -33,9 +33,6 @@ public class Gala.Daemon.MenuDaemon : Object {
     private WindowMenu? window_menu;
     private BackgroundMenu? background_menu;
 
-    private ulong always_on_top_sid = 0U;
-    private ulong on_visible_workspace_sid = 0U;
-
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
     }

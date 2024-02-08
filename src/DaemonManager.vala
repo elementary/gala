@@ -20,9 +20,6 @@ public class Gala.DaemonManager : Object {
 
     private Daemon? daemon_proxy = null;
 
-    private int x_position = 0;
-    private int y_position = 0;
-
     public DaemonManager (Meta.Display display) {
         Object (display: display);
     }
@@ -79,32 +76,8 @@ public class Gala.DaemonManager : Object {
     }
 
     private void handle_daemon_window (Meta.Window window) {
-        var info = window.title.split ("-");
-
-        if (info.length == 0) {
-            critical ("Couldn't handle daemon window: No title provided");
-            return;
-        }
-
-        switch (info[0]) {
-            case "LABEL":
-                if (info.length < 2) {
-                    return;
-                }
-
-                var index = int.parse (info[1]);
-
-                var monitor_geometry = display.get_monitor_geometry (index);
-                window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
-                window.make_above ();
-                break;
-
-            default:
-                //Assume it's a menu since we can't set titles there
-                window.move_frame (false, 0, 0);
-                window.make_above ();
-                break;
-        }
+        window.move_frame (false, 0, 0);
+        window.make_above ();
     }
 
     private void lost_daemon () {
@@ -128,9 +101,6 @@ public class Gala.DaemonManager : Object {
             return;
         }
 
-        x_position = x;
-        y_position = y;
-
         int width, height;
         display.get_size (out width, out height);
 
@@ -145,9 +115,6 @@ public class Gala.DaemonManager : Object {
         if (daemon_proxy == null) {
             return;
         }
-
-        x_position = x;
-        y_position = y;
 
         int width, height;
         display.get_size (out width, out height);
