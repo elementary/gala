@@ -73,7 +73,7 @@ public class Gala.Daemon.MenuDaemon : Object {
 
         window_menu.update (flags);
 
-        show_menu (window_menu, display_height, display_width, x, y, true);
+        show_menu (window_menu, display_width, display_height, x, y, true);
     }
 
     public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
@@ -84,7 +84,7 @@ public class Gala.Daemon.MenuDaemon : Object {
         show_menu (background_menu, display_width, display_height, x, y, false);
     }
 
-    private void show_menu (Gtk.Menu menu, int display_height, int display_width, int x, int y, bool ignore_first_release) {
+    private void show_menu (Gtk.Menu menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
         var window = new Window (display_width, display_height);
         window.present ();
 
