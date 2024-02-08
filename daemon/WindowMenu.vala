@@ -1,4 +1,9 @@
-public class WindowMenu : Gtk.Menu {
+/*
+ * Copyright 2023 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+public class Gala.Daemon.WindowMenu : Gtk.Menu {
     private static GLib.Settings gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
 

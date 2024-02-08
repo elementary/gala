@@ -1,4 +1,9 @@
-public class BackgroundMenu : Gtk.Menu {
+/*
+ * Copyright 2023 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+public class Gala.Daemon.BackgroundMenu : Gtk.Menu {
     construct {
         var change_wallpaper = new Gtk.MenuItem.with_label (_("Change Wallpaper…"));
         change_wallpaper.activate.connect (() => {

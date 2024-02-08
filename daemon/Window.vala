@@ -1,4 +1,11 @@
-public class Gala.Window : Gtk.Window {
+/*
+ * Copyright 2023 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
+public class Gala.Daemon.Window : Gtk.Window {
     static construct {
         var app_provider = new Gtk.CssProvider ();
         app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
