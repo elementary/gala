@@ -18,6 +18,8 @@ public class Gala.DaemonManager : Object {
 
     public Meta.Display display { get; construct; }
 
+    private Meta.WaylandClient daemon_client;
+
     private Daemon? daemon_proxy = null;
 
     public DaemonManager (Meta.Display display) {
@@ -30,15 +32,19 @@ public class Gala.DaemonManager : Object {
 
     public void start () {
         if (Meta.Util.is_wayland_compositor ()) {
-            start_wayland ();
+            start_wayland.begin ();
+
+            display.window_created.connect ((window) => {
+                if (daemon_client.owns_window (window)) {
+                    window.shown.connect (handle_daemon_window);
+                }
+            });
         } else {
             start_x.begin ();
         }
     }
 
-    private void start_wayland () {
-        Meta.WaylandClient daemon_client;
-
+    private async void start_wayland () {
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
 #if HAS_MUTTER43
@@ -47,17 +53,19 @@ public class Gala.DaemonManager : Object {
             daemon_client = new Meta.WaylandClient (subprocess_launcher);
 #endif
             string[] args = {"gala-daemon"};
-            daemon_client.spawnv (display, args);
+            var subprocess = daemon_client.spawnv (display, args);
+
+            yield subprocess.wait_async ();
+
+            //Restart the daemon if it crashes
+            Timeout.add_seconds (1, () => {
+                start_wayland.begin ();
+                return Source.REMOVE;
+            });
         } catch (Error e) {
             warning ("Failed to create dock client: %s", e.message);
             return;
         }
-
-        display.window_created.connect ((window) => {
-            if (daemon_client.owns_window (window)) {
-                window.shown.connect (handle_daemon_window);
-            }
-        });
     }
 
     private async void start_x () {
@@ -71,11 +79,12 @@ public class Gala.DaemonManager : Object {
                 return Source.REMOVE;
             });
         } catch (Error e) {
-            warning ("Failed to create daemon subprocess.");
+            warning ("Failed to create daemon subprocess with x: %s", e.message);
         }
     }
 
     private void handle_daemon_window (Meta.Window window) {
+        warning ("HAndle daemon window");
         window.move_frame (false, 0, 0);
         window.make_above ();
     }
