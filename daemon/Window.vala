@@ -27,7 +27,7 @@ public class Gala.Window : Gtk.Window {
         accept_focus = false;
         skip_taskbar_hint = true;
         skip_pager_hint = true;
-        type_hint = Gdk.WindowTypeHint.TOOLTIP;
+        type_hint = Gdk.WindowTypeHint.DOCK;
         set_keep_above (true);
 
         child = content = new Gtk.Box (HORIZONTAL, 0) {

@@ -88,7 +88,7 @@ namespace Gala {
             var window = new Window (display_width, display_height);
             window.present ();
 
-            window_menu.set_relative_to (window.content);
+            window_menu.attach_to_widget (window.content, null);
 
             Gdk.Rectangle rect = {
                 x,
@@ -97,12 +97,20 @@ namespace Gala {
                 0
             };
 
-            window_menu.pointing_to = rect;
-
             window_menu.show_all ();
-            window_menu.popup ();
+            window_menu.popup_at_rect (window.get_window (), rect, NORTH, NORTH_WEST);
 
-            window_menu.closed.connect (window.close);
+            window_menu.deactivate.connect (window.close);
+
+            bool first = true;
+            window_menu.button_release_event.connect (() => {
+                if (first) {
+                    first = false;
+                    return Gdk.EVENT_STOP;
+                }
+
+                return Gdk.EVENT_PROPAGATE;
+            });
         }
 
         public void show_desktop_menu (int x, int y) throws DBusError, IOError {
