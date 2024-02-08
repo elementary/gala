@@ -13,7 +13,7 @@ public class Gala.DaemonManager : Object {
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
-        public abstract async void show_desktop_menu (int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
     }
 
     public Meta.Display display { get; construct; }
@@ -130,10 +130,12 @@ public class Gala.DaemonManager : Object {
 
         x_position = x;
         y_position = y;
-        warning (y.to_string ());
+
+        int width, height;
+        display.get_size (out width, out height);
 
         try {
-            yield daemon_proxy.show_desktop_menu (x, y);
+            yield daemon_proxy.show_desktop_menu (width, height, x, y);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }
@@ -150,7 +152,6 @@ public class Gala.DaemonManager : Object {
         int width, height;
         display.get_size (out width, out height);
 
-        warning ("Show menu");
         try {
             yield daemon_proxy.show_window_menu (flags, width, height, x, y);
         } catch (Error e) {

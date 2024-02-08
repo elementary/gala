@@ -41,6 +41,7 @@ namespace Gala {
         private WMDBus? wm_proxy = null;
 
         private WindowMenu? window_menu;
+        private BackgroundMenu? background_menu;
 
         private ulong always_on_top_sid = 0U;
         private ulong on_visible_workspace_sid = 0U;
@@ -85,10 +86,22 @@ namespace Gala {
 
             window_menu.update (flags);
 
+            show_menu (window_menu, display_height, display_width, x, y, true);
+        }
+
+        public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
+            if (background_menu == null) {
+                background_menu = new BackgroundMenu ();
+            }
+
+            show_menu (background_menu, display_width, display_height, x, y, false);
+        }
+
+        private void show_menu (Gtk.Menu menu, int display_height, int display_width, int x, int y, bool ignore_first_release) {
             var window = new Window (display_width, display_height);
             window.present ();
 
-            window_menu.attach_to_widget (window.content, null);
+            menu.attach_to_widget (window.content, null);
 
             Gdk.Rectangle rect = {
                 x,
@@ -97,23 +110,22 @@ namespace Gala {
                 0
             };
 
-            window_menu.show_all ();
-            window_menu.popup_at_rect (window.get_window (), rect, NORTH, NORTH_WEST);
+            menu.show_all ();
+            menu.popup_at_rect (window.get_window (), rect, NORTH, NORTH_WEST);
 
-            window_menu.deactivate.connect (window.close);
+            menu.deactivate.connect (window.close);
 
-            bool first = true;
-            window_menu.button_release_event.connect (() => {
-                if (first) {
-                    first = false;
-                    return Gdk.EVENT_STOP;
-                }
+            if (ignore_first_release) {
+                bool first = true;
+                menu.button_release_event.connect (() => {
+                    if (first) {
+                        first = false;
+                        return Gdk.EVENT_STOP;
+                    }
 
-                return Gdk.EVENT_PROPAGATE;
-            });
-        }
-
-        public void show_desktop_menu (int x, int y) throws DBusError, IOError {
+                    return Gdk.EVENT_PROPAGATE;
+                });
+            }
         }
 
         public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {

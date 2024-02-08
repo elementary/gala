@@ -1,51 +1,60 @@
 public class BackgroundMenu : Gtk.Menu {
-    private static GLib.Settings gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
-    private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
-
-    public signal void perform_action (Gala.ActionType type);
-
-    private Granite.AccelLabel screenshot_accellabel;
-    private Granite.AccelLabel close_accellabel;
-    private Gtk.Button close;
-    private Gtk.Button screenshot;
-
     construct {
-        screenshot_accellabel = new Granite.AccelLabel (_("Take Screenshot"));
-
-        screenshot = new Gtk.Button () {
-            child = screenshot_accellabel
-        };
-        screenshot.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-        screenshot.get_style_context ().add_class (Gtk.STYLE_CLASS_MENUITEM);
-        screenshot.clicked.connect (() => {
-            perform_action (Gala.ActionType.SCREENSHOT_CURRENT);
+        var change_wallpaper = new Gtk.MenuItem.with_label (_("Change Wallpaper…"));
+        change_wallpaper.activate.connect (() => {
+            try {
+                AppInfo.launch_default_for_uri ("settings://desktop/appearance/wallpaper", null);
+            } catch (Error e) {
+                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                    "Failed to Open Wallpaper Settings",
+                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
+                    "dialog-error",
+                    Gtk.ButtonsType.CLOSE
+                );
+                message_dialog.show_error_details (e.message);
+                message_dialog.run ();
+                message_dialog.destroy ();
+            }
         });
 
-        close_accellabel = new Granite.AccelLabel (_("Close"));
-
-        var close = new Gtk.MenuItem () {
-            child = close_accellabel
-        };
-        close.activate.connect (() => {
-            perform_action (Gala.ActionType.CLOSE_CURRENT);
+        var display_settings = new Gtk.MenuItem.with_label (_("Display Settings…"));
+        display_settings.activate.connect (() => {
+            try {
+                AppInfo.launch_default_for_uri ("settings://display", null);
+            } catch (Error e) {
+                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                    "Failed to Open Display Settings",
+                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
+                    "dialog-warning",
+                    Gtk.ButtonsType.CLOSE
+                );
+                message_dialog.show_error_details (e.message);
+                message_dialog.run ();
+                message_dialog.destroy ();
+            }
         });
 
-        //  var content = new Gtk.Box (VERTICAL, 0);
-        //  content.add (screenshot);
-        //  content.add (new Gtk.Separator (HORIZONTAL));
-        //  content.add (close);
-        append (close);
+        var system_settings = new Gtk.MenuItem.with_label (_("System Settings…"));
+        system_settings.activate.connect (() => {
+            try {
+                AppInfo.launch_default_for_uri ("settings://", null);
+            } catch (Error e) {
+                var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                    "Failed to Open System Settings",
+                    "Unable to open System Settings. A handler for the `settings://` URI scheme must be installed.",
+                    "dialog-warning",
+                    Gtk.ButtonsType.CLOSE
+                );
+                message_dialog.show_error_details (e.message);
+                message_dialog.run ();
+                message_dialog.destroy ();
+            }
+        });
 
-        //  child = content;
-        //  content.get_style_context ().add_class (Gtk.STYLE_CLASS_MENU);
-    }
-
-    public void update (Gala.WindowFlags flags) {
-        screenshot_accellabel.accel_string = gala_keybind_settings.get_strv ("window-screenshot")[0];
-
-        close.visible = Gala.WindowFlags.CAN_CLOSE in flags;
-        if (close.visible) {
-            close_accellabel.accel_string = keybind_settings.get_strv ("close")[0];
-        }
+        append (change_wallpaper);
+        append (display_settings);
+        append (new Gtk.SeparatorMenuItem ());
+        append (system_settings);
+        show_all ();
     }
 }
