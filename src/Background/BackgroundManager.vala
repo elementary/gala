@@ -24,7 +24,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
 
     construct {
         background_source = BackgroundCache.get_default ().get_background_source (wm.get_display ());
-        background_actor = create_background_actor ();
+        update_background_actor (false);
 
         destroy.connect (on_destroy);
     }
@@ -89,6 +89,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
+            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
             swap_background_actor (animate);
             return;
         }
@@ -99,6 +100,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
             background.set_data<ulong> ("background-loaded-handler", 0);
 
             swap_background_actor (animate);
+            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
         });
         background.set_data<ulong> ("background-loaded-handler", handler);
     }
@@ -119,8 +121,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
         content.background = background.background;
 
         var monitor = display.get_monitor_geometry (monitor_index);
-
-        content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
 
         if (background_source.should_dim) {
             content.vignette = true;
