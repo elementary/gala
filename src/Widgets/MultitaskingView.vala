@@ -606,7 +606,7 @@ namespace Gala {
          *
          * @return The active WorkspaceClone
          */
-         private WindowCloneContainer get_active_window_clone_container () {
+        private WindowCloneContainer get_active_window_clone_container () {
             unowned var manager = display.get_workspace_manager ();
             unowned var active_workspace = manager.get_active_workspace ();
             foreach (unowned var child in workspaces.get_children ()) {

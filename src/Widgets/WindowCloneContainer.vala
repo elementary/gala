@@ -252,23 +252,21 @@ namespace Gala {
                 return;
             }
 
-            if (current_window == null) {
-                current_window = (WindowClone) get_child_at_index (0);
-                return;
-            }
-
-            var current_rect = current_window.slot;
-
             WindowClone? closest = null;
-            foreach (unowned var child in get_children ()) {
-                if (child == current_window) {
-                    continue;
-                }
 
-                var window_rect = ((WindowClone) child).slot;
+            if (current_window == null) {
+                closest = (WindowClone) get_child_at_index (0);
+            } else {
+                var current_rect = current_window.slot;
 
-                switch (direction) {
-                    case Meta.MotionDirection.LEFT:
+                foreach (unowned var child in get_children ()) {
+                    if (child == current_window) {
+                        continue;
+                    }
+    
+                    var window_rect = ((WindowClone) child).slot;
+    
+                    if (direction == LEFT) {
                         if (window_rect.x > current_rect.x) {
                             continue;
                         }
@@ -277,14 +275,11 @@ namespace Gala {
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
-                            if (closest == null
-                                || closest.slot.x < window_rect.x) {
-
+                            if (closest == null || closest.slot.x < window_rect.x) {
                                 closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.RIGHT:
+                    } else if (direction == RIGHT) {
                         if (window_rect.x < current_rect.x) {
                             continue;
                         }
@@ -293,14 +288,11 @@ namespace Gala {
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
-                            if (closest == null
-                                || closest.slot.x > window_rect.x) {
-
+                            if (closest == null || closest.slot.x > window_rect.x) {
                                 closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.UP:
+                    } else if (direction == UP) {
                         if (window_rect.y > current_rect.y) {
                             continue;
                         }
@@ -309,14 +301,11 @@ namespace Gala {
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
-                            if (closest == null
-                                || closest.slot.y < window_rect.y) {
-
-                                    closest = (WindowClone) child;
+                            if (closest == null || closest.slot.y < window_rect.y) {
+                                closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.DOWN:
+                    } else if (direction == DOWN) {
                         if (window_rect.y < current_rect.y) {
                             continue;
                         }
@@ -325,15 +314,14 @@ namespace Gala {
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
-                            if (closest == null
-                                || closest.slot.y > window_rect.y) {
-
+                            if (closest == null || closest.slot.y > window_rect.y) {
                                 closest = (WindowClone) child;
                             }
                         }
+                    } else {
+                        warning ("Invalid direction");
                         break;
-                    default:
-                        break;
+                    }
                 }
             }
 
@@ -364,7 +352,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Meta.Window? selected_window = null, bool with_gesture = false, bool is_cancel_animation = false) {
+        public void open (Meta.Window? selected_window, bool with_gesture, bool is_cancel_animation) {
             if (opened) {
                 return;
             }
