@@ -96,7 +96,6 @@ gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
-gexiv2_dep = dependency('gexiv2')
 sqlite3_dep = dependency('sqlite3')
 if get_option('systemd')
     systemd_dep = dependency('libsystemd')
@@ -175,7 +174,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, sqlite3_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
