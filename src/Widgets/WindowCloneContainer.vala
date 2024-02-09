@@ -263,9 +263,9 @@ namespace Gala {
                     if (child == current_window) {
                         continue;
                     }
-    
+
                     var window_rect = ((WindowClone) child).slot;
-    
+
                     if (direction == LEFT) {
                         if (window_rect.x > current_rect.x) {
                             continue;
