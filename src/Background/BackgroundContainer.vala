@@ -30,7 +30,6 @@ namespace Gala {
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update);
 
-            background_color = Clutter.Color.from_string ("Black");
             reactive = true;
             button_release_event.connect ((event) => {
                 float x, y;
@@ -40,12 +39,17 @@ namespace Gala {
                 }
             });
 
+            black_background (true);
             update ();
         }
 
         ~BackgroundContainer () {
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.disconnect (update);
+        }
+
+        public void black_background (bool black) {
+            background_color = black ? Clutter.Color.from_string ("Black") : null;
         }
 
         private void update () {
