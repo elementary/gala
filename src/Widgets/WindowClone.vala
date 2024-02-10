@@ -162,11 +162,11 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button_action.clicked.connect (() => {
             close_window ();
         });
-        close_button = Utils.create_close_button (monitor_scale_factor);
-        close_button.opacity = 0;
-        // block propagation of button release event to window clone
-        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
-        close_button.add_action (close_button_action);
+
+        close_button = new Gala.CloseButton (monitor_scale_factor) {
+            opacity = 0
+        };
+        //  close_button.add_action (close_button_action);
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
         window_icon.opacity = 0;

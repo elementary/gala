@@ -333,65 +333,6 @@ namespace Gala {
         }
 
         /**
-         * Returns the pixbuf that is used for close buttons throughout gala at a
-         * size of 36px
-         *
-         * @return the close button pixbuf or null if it failed to load
-         */
-        public static Gdk.Pixbuf? get_close_button_pixbuf (float scale) {
-            var height = scale_to_int (36, scale);
-
-            if (close_pixbufs == null) {
-                close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-            }
-
-            if (close_pixbufs[height] == null) {
-                try {
-                    close_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        Config.RESOURCEPATH + "/buttons/close.svg",
-                        -1,
-                        height,
-                        true
-                    );
-                } catch (Error e) {
-                    warning (e.message);
-                    return null;
-                }
-            }
-
-            return close_pixbufs[height];
-        }
-
-        /**
-         * Creates a new reactive ClutterActor at 36px with the close pixbuf
-         *
-         * @return The close button actor
-         */
-        public static Clutter.Actor create_close_button (float scale) {
-            var texture = new Clutter.Actor ();
-            var pixbuf = get_close_button_pixbuf (scale);
-
-            texture.reactive = true;
-
-            if (pixbuf != null) {
-                try {
-                    var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
-                    texture.set_content (image);
-                    texture.set_size (pixbuf.width, pixbuf.height);
-                } catch (Error e) {}
-            } else {
-                // we'll just make this red so there's at least something as an
-                // indicator that loading failed. Should never happen and this
-                // works as good as some weird fallback-image-failed-to-load pixbuf
-                texture.set_size (scale_to_int (36, scale), scale_to_int (36, scale));
-                texture.background_color = { 255, 0, 0, 255 };
-            }
-
-            return texture;
-        }
-        /**
          * Returns the pixbuf that is used for resize buttons throughout gala at a
          * size of 36px
          *
