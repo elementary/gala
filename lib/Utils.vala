@@ -24,7 +24,6 @@ namespace Gala {
         }
 
         private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
-        private static Gee.HashMap<int, Gdk.Pixbuf?>? close_pixbufs = null;
 
         private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
@@ -336,7 +335,7 @@ namespace Gala {
          * Returns the pixbuf that is used for resize buttons throughout gala at a
          * size of 36px
          *
-         * @return the close button pixbuf or null if it failed to load
+         * @return the resize button pixbuf or null if it failed to load
          */
         public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
             var height = scale_to_int (36, scale);

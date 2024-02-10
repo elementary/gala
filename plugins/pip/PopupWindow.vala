@@ -23,9 +23,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private Clutter.Actor clone;
     private Clutter.Actor container;
-    private Clutter.Actor close_button;
+    private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
-    private Clutter.ClickAction close_action;
     private DragDropAction move_action;
 
     private float begin_resize_width = 0.0f;
@@ -111,16 +110,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         set_position (x_position, y_position);
 
-        close_action = new Clutter.ClickAction ();
-        close_action.clicked.connect (on_close_click_clicked);
-
         close_button = new Gala.CloseButton (scale) {
             opacity = 0
         };
         // TODO: Check if close button should be on the right
         close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 0.0f));
         close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 0.0f));
-        close_button.add_action (close_action);
+        close_button.triggered.connect (on_close_click_clicked);
 
         resize_button = Utils.create_resize_button (scale);
         resize_button.opacity = 0;
