@@ -161,9 +161,7 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button = new Gala.CloseButton (monitor_scale_factor) {
             opacity = 0
         };
-        close_button.triggered.connect (() => {
-            close_window ();
-        });
+        close_button.triggered.connect (close_window);
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
         window_icon.opacity = 0;
@@ -574,11 +572,11 @@ public class Gala.WindowClone : Clutter.Actor {
      * dialog of the window we were going to delete. If that's the case, we request
      * to select our window.
      */
-    private void close_window () {
-        unowned Meta.Display display = window.get_display ();
+    private void close_window (uint32 timestamp) {
+        unowned var display = window.get_display ();
         check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
 
-        window.@delete (display.get_current_time ());
+        window.@delete (timestamp);
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
@@ -621,7 +619,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window ();
+                close_window (wm.get_display ().get_current_time ());
                 break;
         }
     }
