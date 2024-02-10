@@ -30,6 +30,7 @@ namespace Gala {
             unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update);
 
+            background_color = Clutter.Color.from_string ("Black");
             reactive = true;
             button_release_event.connect ((event) => {
                 float x, y;
