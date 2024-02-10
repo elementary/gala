@@ -213,7 +213,6 @@ namespace Gala {
                 return Clutter.EVENT_PROPAGATE;
             }
 
-
             switch (event.get_key_symbol ()) {
                 case Clutter.Key.Escape:
                     requested_close ();
@@ -254,8 +253,30 @@ namespace Gala {
 
             WindowClone? closest = null;
 
-            if (current_window == null) {
-                closest = (WindowClone) get_child_at_index (0);
+            // If current_window is not active it doesn't have the visible keyboard focus border
+            // so in order to not confuse the user we start from the beginning
+            if (!current_window.active || current_window == null) {
+                bool top_left = direction == UP || direction == LEFT;
+                int current_x = top_left ? int.MAX : 0;
+                int current_y = top_left ? int.MAX : 0;
+
+                foreach (unowned var child in get_children ()) {
+                    var window_rect = ((WindowClone) child).slot;
+
+                    if (top_left) {
+                        if (window_rect.x <= current_x && window_rect.y <= current_y) {
+                            current_x = window_rect.x;
+                            current_y = window_rect.y;
+                            closest = (WindowClone) child;
+                        }
+                    } else {
+                        if (window_rect.x >= current_x && window_rect.y >= current_y) {
+                            current_x = window_rect.x;
+                            current_y = window_rect.y;
+                            closest = (WindowClone) child;
+                        }
+                    }
+                }
             } else {
                 var current_rect = current_window.slot;
 
