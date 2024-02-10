@@ -1938,7 +1938,7 @@ namespace Gala {
                 wallpaper = new Clutter.Clone (background);
             } else {
                 background_group.hide ();
-                ((BackgroundContainer) background_group).black_background (false);
+                ((BackgroundContainer) background_group).set_black_background (false);
                 wallpaper = new Clutter.Clone (background_group);
             }
             wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
@@ -2232,7 +2232,7 @@ namespace Gala {
                 unowned var background = background_group.get_child_at_index (primary);
                 background.show ();
             } else {
-                ((BackgroundContainer) background_group).black_background (true);
+                ((BackgroundContainer) background_group).set_black_background (true);
                 background_group.show ();
             }
 

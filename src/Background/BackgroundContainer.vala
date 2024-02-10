@@ -39,7 +39,7 @@ namespace Gala {
                 }
             });
 
-            black_background (true);
+            set_black_background (true);
             update ();
         }
 
@@ -48,7 +48,7 @@ namespace Gala {
             monitor_manager.monitors_changed.disconnect (update);
         }
 
-        public void black_background (bool black) {
+        public void set_black_background (bool black) {
             set_background_color (black ? Clutter.Color.from_string ("Black") : null);
         }
 
