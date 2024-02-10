@@ -49,7 +49,7 @@ namespace Gala {
         }
 
         public void black_background (bool black) {
-            background_color = black ? Clutter.Color.from_string ("Black") : null;
+            set_background_color (black ? Clutter.Color.from_string ("Black") : null);
         }
 
         private void update () {
