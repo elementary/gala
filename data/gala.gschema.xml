@@ -338,6 +338,7 @@
     <key type="b" name="enable">
       <default>true</default>
       <summary>Enable rounded corner mask</summary>
+      <description>DEPRECATED: This setting is no longer used</description>
     </key>
     <key type="i" name="corner-radius">
       <default>4</default>
@@ -348,11 +349,11 @@
     <key type="b" name="disable-on-fullscreen">
       <default>true</default>
       <summary>Disable corner mask on fullscreen</summary>
-      <description>If enabled, when an application is fullscreen (fills the monitor), the corner masks will be disabled on that monitor.</description>
-    </key>
+      <description>DEPRECATED: This setting is no longer used</description></key>
     <key type="b" name="only-on-primary">
       <default>false</default>
       <summary>Only show corner masks on primary monitor</summary>
+      <description>DEPRECATED: This setting is no longer used</description>
     </key>
   </schema>
 
