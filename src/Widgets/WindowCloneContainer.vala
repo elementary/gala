@@ -21,6 +21,7 @@ namespace Gala {
      */
     public class WindowCloneContainer : Clutter.Actor {
         public signal void window_selected (Meta.Window window);
+        public signal void requested_close ();
 
         public int padding_top { get; set; default = 12; }
         public int padding_left { get; set; default = 12; }
@@ -82,9 +83,9 @@ namespace Gala {
 
             var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
 
-            new_window.selected.connect (window_selected_cb);
-            new_window.destroy.connect (window_destroyed);
-            new_window.request_reposition.connect (window_request_reposition);
+            new_window.selected.connect ((clone) => window_selected (clone.window));
+            new_window.destroy.connect (() => reflow ());
+            new_window.request_reposition.connect (() => reflow ());
 
             unowned Meta.Window? target = null;
             foreach (unowned var w in windows_ordered) {
@@ -122,24 +123,6 @@ namespace Gala {
                     break;
                 }
             }
-        }
-
-        private void window_selected_cb (WindowClone clone) {
-            window_selected (clone.window);
-        }
-
-        private void window_destroyed (Clutter.Actor actor) {
-            unowned var clone = (WindowClone) actor;
-
-            clone.destroy.disconnect (window_destroyed);
-            clone.selected.disconnect (window_selected_cb);
-            clone.request_reposition.disconnect (window_request_reposition);
-
-            reflow ();
-        }
-
-        private void window_request_reposition () {
-            reflow ();
         }
 
         /**
@@ -218,6 +201,47 @@ namespace Gala {
         }
 
         /**
+         * Collect key events, mainly for redirecting them to the WindowCloneContainers to
+         * select the active window.
+         */
+#if HAS_MUTTER45
+        public override bool key_press_event (Clutter.Event event) {
+#else
+        public override bool key_press_event (Clutter.KeyEvent event) {
+#endif
+            if (!opened) {
+                return Clutter.EVENT_PROPAGATE;
+            }
+
+
+            switch (event.get_key_symbol ()) {
+                case Clutter.Key.Escape:
+                    requested_close ();
+                    break;
+                case Clutter.Key.Down:
+                    select_next_window (Meta.MotionDirection.DOWN);
+                    break;
+                case Clutter.Key.Up:
+                    select_next_window (Meta.MotionDirection.UP);
+                    break;
+                case Clutter.Key.Left:
+                    select_next_window (Meta.MotionDirection.LEFT);
+                    break;
+                case Clutter.Key.Right:
+                    select_next_window (Meta.MotionDirection.RIGHT);
+                    break;
+                case Clutter.Key.Return:
+                case Clutter.Key.KP_Enter:
+                    if (!activate_selected_window ()) {
+                        requested_close ();
+                    }
+                    break;
+            }
+
+            return Clutter.EVENT_STOP;
+        }
+
+        /**
          * Look for the next window in a direction and make this window the
          * new current_window. Used for keyboard navigation.
          *
@@ -228,23 +252,21 @@ namespace Gala {
                 return;
             }
 
-            if (current_window == null) {
-                current_window = (WindowClone) get_child_at_index (0);
-                return;
-            }
-
-            var current_rect = current_window.slot;
-
             WindowClone? closest = null;
-            foreach (unowned var child in get_children ()) {
-                if (child == current_window) {
-                    continue;
-                }
 
-                var window_rect = ((WindowClone) child).slot;
+            if (current_window == null) {
+                closest = (WindowClone) get_child_at_index (0);
+            } else {
+                var current_rect = current_window.slot;
 
-                switch (direction) {
-                    case Meta.MotionDirection.LEFT:
+                foreach (unowned var child in get_children ()) {
+                    if (child == current_window) {
+                        continue;
+                    }
+
+                    var window_rect = ((WindowClone) child).slot;
+
+                    if (direction == LEFT) {
                         if (window_rect.x > current_rect.x) {
                             continue;
                         }
@@ -253,14 +275,11 @@ namespace Gala {
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
-                            if (closest == null
-                                || closest.slot.x < window_rect.x) {
-
+                            if (closest == null || closest.slot.x < window_rect.x) {
                                 closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.RIGHT:
+                    } else if (direction == RIGHT) {
                         if (window_rect.x < current_rect.x) {
                             continue;
                         }
@@ -269,14 +288,11 @@ namespace Gala {
                         if (window_rect.y + window_rect.height > current_rect.y
                             && window_rect.y < current_rect.y + current_rect.height) {
 
-                            if (closest == null
-                                || closest.slot.x > window_rect.x) {
-
+                            if (closest == null || closest.slot.x > window_rect.x) {
                                 closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.UP:
+                    } else if (direction == UP) {
                         if (window_rect.y > current_rect.y) {
                             continue;
                         }
@@ -285,14 +301,11 @@ namespace Gala {
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
-                            if (closest == null
-                                || closest.slot.y < window_rect.y) {
-
-                                    closest = (WindowClone) child;
+                            if (closest == null || closest.slot.y < window_rect.y) {
+                                closest = (WindowClone) child;
                             }
                         }
-                        break;
-                    case Meta.MotionDirection.DOWN:
+                    } else if (direction == DOWN) {
                         if (window_rect.y < current_rect.y) {
                             continue;
                         }
@@ -301,15 +314,14 @@ namespace Gala {
                         if (window_rect.x + window_rect.width > current_rect.x
                             && window_rect.x < current_rect.x + current_rect.width) {
 
-                            if (closest == null
-                                || closest.slot.y > window_rect.y) {
-
+                            if (closest == null || closest.slot.y > window_rect.y) {
                                 closest = (WindowClone) child;
                             }
                         }
+                    } else {
+                        warning ("Invalid direction");
                         break;
-                    default:
-                        break;
+                    }
                 }
             }
 
@@ -330,7 +342,7 @@ namespace Gala {
          */
         public bool activate_selected_window () {
             if (current_window != null) {
-                current_window.selected ();
+                window_selected (current_window.window);
                 return true;
             }
 
@@ -340,7 +352,7 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Meta.Window? selected_window = null, bool with_gesture = false, bool is_cancel_animation = false) {
+        public void open (Meta.Window? selected_window, bool with_gesture, bool is_cancel_animation) {
             if (opened) {
                 return;
             }

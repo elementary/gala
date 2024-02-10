@@ -595,45 +595,10 @@ namespace Gala {
         public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
             if (!opened) {
-                return true;
+                return Clutter.EVENT_PROPAGATE;
             }
 
-            switch (event.get_key_symbol ()) {
-                case Clutter.Key.Escape:
-                    toggle ();
-                    break;
-                case Clutter.Key.Down:
-                    select_window (Meta.MotionDirection.DOWN);
-                    break;
-                case Clutter.Key.Up:
-                    select_window (Meta.MotionDirection.UP);
-                    break;
-                case Clutter.Key.Left:
-                    select_window (Meta.MotionDirection.LEFT);
-                    break;
-                case Clutter.Key.Right:
-                    select_window (Meta.MotionDirection.RIGHT);
-                    break;
-                case Clutter.Key.Return:
-                case Clutter.Key.KP_Enter:
-                    if (!get_active_workspace_clone ().window_container.activate_selected_window ()) {
-                        toggle ();
-                    }
-
-                    break;
-            }
-
-            return false;
-        }
-
-        /**
-         * Inform the current WindowCloneContainer that we want to move the focus in
-         * a specific direction.
-         *
-         * @param direction The direction in which to move the focus to
-         */
-        private void select_window (Meta.MotionDirection direction) {
-            get_active_workspace_clone ().window_container.select_next_window (direction);
+            return get_active_window_clone_container ().key_press_event (event);
         }
 
         /**
@@ -641,12 +606,13 @@ namespace Gala {
          *
          * @return The active WorkspaceClone
          */
-        private WorkspaceClone get_active_workspace_clone () {
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+        private WindowCloneContainer get_active_window_clone_container () {
+            unowned var manager = display.get_workspace_manager ();
+            unowned var active_workspace = manager.get_active_workspace ();
             foreach (unowned var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
-                if (workspace_clone.workspace == manager.get_active_workspace ()) {
-                    return workspace_clone;
+                unowned var workspace_clone = (WorkspaceClone) child;
+                if (workspace_clone.workspace == active_workspace) {
+                    return workspace_clone.window_container;
                 }
             }
 
@@ -655,8 +621,8 @@ namespace Gala {
 
         private void window_selected (Meta.Window window) {
             var time = display.get_current_time ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = window.get_workspace ();
+            unowned var manager = display.get_workspace_manager ();
+            unowned var workspace = window.get_workspace ();
 
             if (workspace != manager.get_active_workspace ()) {
                 workspace.activate (time);
