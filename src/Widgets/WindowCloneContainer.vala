@@ -213,7 +213,6 @@ namespace Gala {
                 return Clutter.EVENT_PROPAGATE;
             }
 
-
             switch (event.get_key_symbol ()) {
                 case Clutter.Key.Escape:
                     requested_close ();
@@ -255,6 +254,7 @@ namespace Gala {
             WindowClone? closest = null;
 
             if (current_window == null) {
+                warning ("Here");
                 closest = (WindowClone) get_child_at_index (0);
             } else {
                 var current_rect = current_window.slot;
@@ -267,7 +267,7 @@ namespace Gala {
                     var window_rect = ((WindowClone) child).slot;
 
                     if (direction == LEFT) {
-                        if (window_rect.x > current_rect.x) {
+                        if (window_rect.x > current_rect.x + current_rect.width) {
                             continue;
                         }
 
@@ -280,7 +280,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == RIGHT) {
-                        if (window_rect.x < current_rect.x) {
+                        if (window_rect.x + window_rect.width < current_rect.x) {
                             continue;
                         }
 
@@ -293,7 +293,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == UP) {
-                        if (window_rect.y > current_rect.y) {
+                        if (window_rect.y > current_rect.y + current_rect.height) {
                             continue;
                         }
 
@@ -306,7 +306,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == DOWN) {
-                        if (window_rect.y < current_rect.y) {
+                        if (window_rect.y + window_rect.height < current_rect.y) {
                             continue;
                         }
 
@@ -352,29 +352,29 @@ namespace Gala {
         /**
          * When opened the WindowClones are animated to a tiled layout
          */
-        public void open (Meta.Window? selected_window, bool with_gesture, bool is_cancel_animation) {
+        public void open (bool with_gesture, bool is_cancel_animation) {
             if (opened) {
                 return;
             }
 
             opened = true;
 
-            // hide the highlight when opened
-            if (selected_window != null) {
-                foreach (var child in get_children ()) {
-                    unowned var clone = (WindowClone) child;
-                    if (clone.window == selected_window) {
-                        current_window = clone;
-                        break;
-                    }
-                }
+            //  // hide the highlight when opened
+            //  if (selected_window != null) {
+            //      foreach (var child in get_children ()) {
+            //          unowned var clone = (WindowClone) child;
+            //          if (clone.window == selected_window) {
+            //              current_window = clone;
+            //              break;
+            //          }
+            //      }
 
-                if (current_window != null) {
-                    current_window.active = false;
-                }
-            } else {
-                current_window = null;
-            }
+            //      if (current_window != null) {
+            //          current_window.active = false;
+            //      }
+            //  } else {
+            //      current_window = null;
+            //  }
 
             // make sure our windows are where they belong in case they were moved
             // while were closed.

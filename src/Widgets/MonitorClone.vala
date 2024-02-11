@@ -95,7 +95,7 @@ namespace Gala {
          */
         public void open (bool with_gesture = false, bool is_cancel_animation = false) {
             window_container.restack_windows ();
-            window_container.open (null, with_gesture, is_cancel_animation);
+            window_container.open (with_gesture, is_cancel_animation);
         }
 
         /**

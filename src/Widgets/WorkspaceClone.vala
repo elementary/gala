@@ -426,8 +426,7 @@ namespace Gala {
 
             icon_group.redraw ();
 
-            Meta.Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
-            window_container.open (selected_window, with_gesture, is_cancel_animation);
+            window_container.open (with_gesture, is_cancel_animation);
         }
 
         /**
