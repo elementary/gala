@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Tom Beckmann
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2024 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
