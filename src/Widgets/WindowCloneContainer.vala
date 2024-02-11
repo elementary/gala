@@ -254,7 +254,6 @@ namespace Gala {
             WindowClone? closest = null;
 
             if (current_window == null) {
-                warning ("Here");
                 closest = (WindowClone) get_child_at_index (0);
             } else {
                 var current_rect = current_window.slot;
@@ -358,23 +357,6 @@ namespace Gala {
             }
 
             opened = true;
-
-            //  // hide the highlight when opened
-            //  if (selected_window != null) {
-            //      foreach (var child in get_children ()) {
-            //          unowned var clone = (WindowClone) child;
-            //          if (clone.window == selected_window) {
-            //              current_window = clone;
-            //              break;
-            //          }
-            //      }
-
-            //      if (current_window != null) {
-            //          current_window.active = false;
-            //      }
-            //  } else {
-            //      current_window = null;
-            //  }
 
             // make sure our windows are where they belong in case they were moved
             // while were closed.
