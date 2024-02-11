@@ -35,9 +35,9 @@ namespace Gala {
         private static SessionManager? instance;
 
         [DBus (visible = false)]
-        public static unowned SessionManager init () {
+        public static unowned SessionManager init (WindowManagerGala wm) {
             if (instance == null) {
-                instance = new SessionManager ();
+                instance = new SessionManager (wm);
             }
 
             return instance;
@@ -50,10 +50,10 @@ namespace Gala {
         public signal void closed ();
 
         private WingpanelEndSessionDialog? proxy = null;
+        private WindowManagerGala wm;
 
-        private SessionManager () {
-            Bus.watch_name (BusType.SESSION, "io.elementary.wingpanel.session.EndSessionDialog",
-                BusNameWatcherFlags.NONE, proxy_appeared, proxy_vanished);
+        private SessionManager (WindowManagerGala wm) {
+            this.wm = wm;
         }
 
         private void get_proxy_cb (Object? o, AsyncResult? res) {

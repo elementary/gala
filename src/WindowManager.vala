@@ -877,6 +877,16 @@ namespace Gala {
             }
         }
 
+        private void dim_desktop (bool dim) {
+            if (dim) {
+                var dark_effect = new Clutter.BrightnessContrastEffect ();
+                dark_effect.set_brightness (-0.4f);
+                window_group.add_effect_with_name ("dim-desktop", dark_effect);
+            } else if (window_group.get_effect ("dim-desktop") != null) {
+                window_group.remove_effect_by_name ("dim-desktop");
+            }
+        }
+
         /**
          * {@inheritDoc}
          */

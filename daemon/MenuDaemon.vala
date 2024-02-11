@@ -85,7 +85,7 @@ public class Gala.Daemon.MenuDaemon : Object {
     }
 
     private void show_menu (Gtk.Menu menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
-        var window = new Window (display_width, display_height);
+        var window = new Window (display_width, display_height, true);
         window.present ();
 
         menu.attach_to_widget (window.content, null);

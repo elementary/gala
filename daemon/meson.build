@@ -3,7 +3,9 @@ gala_daemon_sources = files(
     'MenuDaemon.vala',
     'Window.vala',
     'WindowMenu.vala',
-    'BackgroundMenu.vala'
+    'BackgroundMenu.vala',
+    'EndSessionDialog.vala',
+    'SessionManager.vala'
 )
 
 gala_daemon_bin = executable(

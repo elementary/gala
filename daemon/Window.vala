@@ -12,17 +12,15 @@ public class Gala.Daemon.Window : Gtk.Window {
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
+    public bool close_on_click { get; construct; }
     public Gtk.Box content { get; construct; }
 
-    public Window (int width, int height) {
+    public Window (int width, int height, bool close_on_click) {
         Object (
             default_width: width,
-            default_height: height
+            default_height: height,
+            close_on_click: close_on_click
         );
-    }
-
-    class construct {
-        set_css_name ("daemon-window");
     }
 
     construct {
@@ -37,6 +35,8 @@ public class Gala.Daemon.Window : Gtk.Window {
         type_hint = Gdk.WindowTypeHint.DOCK;
         set_keep_above (true);
 
+        opacity = 0;
+
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true
@@ -47,9 +47,11 @@ public class Gala.Daemon.Window : Gtk.Window {
         show_all ();
         move (0, 0);
 
-        button_press_event.connect (() => {
-            close ();
-            return Gdk.EVENT_STOP;
-        });
+        if (close_on_click) {
+            button_press_event.connect (() => {
+                close ();
+                return Gdk.EVENT_STOP;
+            });
+        }
     }
 }
