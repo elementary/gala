@@ -8,8 +8,6 @@ public class Gala.Daemon.SessionManager : Object {
     public signal void canceled ();
     public signal void closed ();
 
-    private EndSessionDialog? dialog;
-
     public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
         var window = new Window (10000, 10000, false);
         window.get_style_context ().add_class ("black-background");

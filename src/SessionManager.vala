@@ -49,7 +49,6 @@ namespace Gala {
         public signal void canceled ();
         public signal void closed ();
 
-        private WingpanelEndSessionDialog? proxy = null;
         private WindowManagerGala wm;
 
         private SessionManager (WindowManagerGala wm) {
