@@ -34,6 +34,7 @@ gala_bin_sources = files(
     'Gestures/GestureTracker.vala',
     'Gestures/ScrollBackend.vala',
     'Gestures/ToucheggBackend.vala',
+    'HotCorners/Barrier.vala',
     'HotCorners/HotCorner.vala',
     'HotCorners/HotCornerManager.vala',
     'Widgets/DwellClickTimer.vala',
