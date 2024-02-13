@@ -23,14 +23,14 @@
  * - Use the enable_* methods to enable different backends
  * - Connect the on_gesture_detected to your code
  * - When on_gesture_detected is emitted, if you want to handle the gesture, call connect_handlers
- *   to start receiving events
+ * to start receiving events
  * - on_begin will be emitted once right after on_gesture_detected
  * - on_update will be emitted 0 or more times
  * - on_end will be emitted once when the gesture end
  * - When on_end is emitted, the handler connected with connect_handlers will be automatically
- *   disconnected and you will only receive on_gesture_detected signals
+ * disconnected and you will only receive on_gesture_detected signals
  * - The enabled flag is usually disabled on_end and re-enabled once the end animation finish. In
- *   this way, new gestures are not received while animating
+ * this way, new gestures are not received while animating
  */
 public class Gala.GestureTracker : Object {
     /**
@@ -90,8 +90,6 @@ public class Gala.GestureTracker : Object {
 
     /**
      * @param percentage Value between 0 and 1.
-     * @param cancel_action
-     * @param calculated_duration
      */
     public signal void on_end (double percentage, bool cancel_action, int calculated_duration);
 
@@ -189,7 +187,7 @@ public class Gala.GestureTracker : Object {
      * @param rounded If the returned value should be rounded to match physical pixels.
      * Default to false because some animations, like for example scaling an actor, use intermediate
      * values not divisible by physical pixels.
-     * @returns The linear animation value at the specified percentage.
+     * @return The linear animation value at the specified percentage.
      */
     public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
         float value = initial_value;
