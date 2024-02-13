@@ -1,33 +1,54 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+ /**
+  * A pointer barrier supporting pressured activation.
+  */
 public class Gala.Barrier : Meta.Barrier {
-    /**
-     * In order to avoid accidental triggers, don't trigger the hot corner until
-     * this threshold is reached.
-     */
-    private const int TRIGGER_PRESSURE_THRESHOLD = 50;
-
-    /**
-     * When the mouse pointer pressures the barrier without activating the hot corner,
-     * release it when this threshold is reached.
-     */
-    private const int RELEASE_PRESSURE_THRESHOLD = 100;
-
-    /**
-     * When the mouse pointer pressures the hot corner after activation, trigger the
-     * action again when this threshold is reached.
-     * Only retrigger after a minimum delay (milliseconds) since original trigger.
-     */
-    private const int RETRIGGER_PRESSURE_THRESHOLD = 500;
-    private const int RETRIGGER_DELAY = 1000;
-
     public signal void trigger ();
 
     public bool triggered { get; set; default = false; }
-    public uint32 triggered_time { get; set; default = 0; }
 
+    public int trigger_pressure_threshold { get; construct; }
+    public int release_pressure_threshold { get; construct; }
+    public int retrigger_pressure_threshold { get; construct; }
+    public int retrigger_delay { get; construct; }
+
+    private uint32 triggered_time;
     private double pressure;
 
-    public Barrier (Meta.Display display, int x1, int y1, int x2, int y2, Meta.BarrierDirection directions) {
-        Object (display: display, x1: x1, y1: y1, x2: x2, y2: y2, directions: directions);
+    /**
+     * @param trigger_pressure_threshold The amount of pixels to travel additionally for
+     * the barrier to trigger. Set to 0 to immediately activate.
+     * @param retrigger_pressure_threshold The amount of pixels to travel additionally for
+     * the barrier to trigger again. Set to int.MAX to disallow retrigger.
+     */
+    public Barrier (
+        Meta.Display display,
+        int x1,
+        int y1,
+        int x2,
+        int y2,
+        Meta.BarrierDirection directions,
+        int trigger_pressure_threshold,
+        int release_pressure_threshold,
+        int retrigger_pressure_threshold,
+        int retrigger_delay
+    ) {
+        Object (
+            display: display,
+            x1: x1,
+            y1: y1,
+            x2: x2,
+            y2: y2,
+            directions: directions,
+            trigger_pressure_threshold: trigger_pressure_threshold,
+            release_pressure_threshold: release_pressure_threshold,
+            retrigger_pressure_threshold: retrigger_pressure_threshold,
+            retrigger_delay: retrigger_delay
+        );
     }
 
     construct {
@@ -42,29 +63,29 @@ public class Gala.Barrier : Meta.Barrier {
             pressure += event.dy.abs ();
         }
 
-        if (!triggered && pressure > TRIGGER_PRESSURE_THRESHOLD) {
-            emit_trigger ();
+        if (!triggered && pressure > trigger_pressure_threshold) {
+            emit_trigger (event.time);
         }
 
-        if (!triggered && pressure > RELEASE_PRESSURE_THRESHOLD) {
+        if (!triggered && pressure > release_pressure_threshold) {
             release (event);
         }
 
-        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD && event.time > RETRIGGER_DELAY + triggered_time) {
-            emit_trigger ();
+        if (triggered && pressure.abs () > retrigger_pressure_threshold && event.time > retrigger_delay + triggered_time) {
+            emit_trigger (event.time);
         }
     }
 
-    private void emit_trigger () {
+    private void emit_trigger (uint32 time) {
         triggered = true;
         pressure = 0;
+        triggered_time = time;
 
         trigger ();
     }
 
-    private void on_left (Meta.BarrierEvent event) {
+    private void on_left () {
         pressure = 0;
-
         triggered = false;
     }
 }
