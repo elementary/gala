@@ -19,18 +19,16 @@
 /**
  * Allow to use multi-touch gestures from different sources (backends).
  * Usage:
- * - Create a new instance of the class
- * - Use the enable_* methods to enable different backends
- * - Connect the on_gesture_detected to your code
- * - When on_gesture_detected is emitted, if you want to handle the gesture, call connect_handlers
- * to start receiving events
- * - on_begin will be emitted once right after on_gesture_detected
- * - on_update will be emitted 0 or more times
- * - on_end will be emitted once when the gesture end
- * - When on_end is emitted, the handler connected with connect_handlers will be automatically
- * disconnected and you will only receive on_gesture_detected signals
- * - The enabled flag is usually disabled on_end and re-enabled once the end animation finish. In
- * this way, new gestures are not received while animating
+ *
+ *  * Create a new instance of the class
+ *  * Use the enable_* methods to enable different backends\
+ *  * Connect the on_gesture_detected to your code
+ *  * When on_gesture_detected is emitted, if you want to handle the gesture, call connect_handlers to start receiving events
+ *  * on_begin will be emitted once right after on_gesture_detected
+ *  * on_update will be emitted 0 or more times
+ *  * on_end will be emitted once when the gesture end
+ *  * When on_end is emitted, the handler connected with connect_handlers will be automatically disconnected and you will only receive on_gesture_detected signals
+ *  * The enabled flag is usually disabled on_end and re-enabled once the end animation finish. In this way, new gestures are not received while animating
  */
 public class Gala.GestureTracker : Object {
     /**
