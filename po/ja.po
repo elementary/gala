@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-11-12 10:26+0000\n"
+"PO-Revision-Date: 2024-02-12 08:11+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -59,7 +59,7 @@ msgstr[0] "変更は%i秒後に自動的に元に戻ります。"
 
 #: src/WindowManager.vala:2258
 msgid "Keep new display settings?"
-msgstr "新しいディスプレイの設定を維持しますか？"
+msgstr "新しいディスプレイの設定を維持しますか?"
 
 #: src/WindowManager.vala:2262
 msgid "Keep Settings"
