@@ -45,9 +45,6 @@ public class Gala.WindowClone : Clutter.Actor {
      * indicating the WindowCloneContainer's current_window.
      */
     public bool active {
-        get {
-            return active_shape.opacity != 0;
-        }
         set {
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
