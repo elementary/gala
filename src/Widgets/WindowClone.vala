@@ -91,7 +91,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
-    private Clutter.Actor close_button;
+    private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
@@ -158,15 +158,10 @@ public class Gala.WindowClone : Clutter.Actor {
     private void reallocate () {
         var window_frame_rect = window.get_frame_rect ();
 
-        var close_button_action = new Clutter.ClickAction ();
-        close_button_action.clicked.connect (() => {
-            close_window ();
-        });
-        close_button = Utils.create_close_button (monitor_scale_factor);
-        close_button.opacity = 0;
-        // block propagation of button release event to window clone
-        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
-        close_button.add_action (close_button_action);
+        close_button = new Gala.CloseButton (monitor_scale_factor) {
+            opacity = 0
+        };
+        close_button.triggered.connect (close_window);
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
         window_icon.opacity = 0;
@@ -577,11 +572,11 @@ public class Gala.WindowClone : Clutter.Actor {
      * dialog of the window we were going to delete. If that's the case, we request
      * to select our window.
      */
-    private void close_window () {
-        unowned Meta.Display display = window.get_display ();
+    private void close_window (uint32 timestamp) {
+        unowned var display = window.get_display ();
         check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
 
-        window.@delete (display.get_current_time ());
+        window.@delete (timestamp);
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
@@ -624,7 +619,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window ();
+                close_window (wm.get_display ().get_current_time ());
                 break;
         }
     }
