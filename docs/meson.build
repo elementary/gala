@@ -51,6 +51,7 @@ all_doc_target = custom_target(
         '--pkg', 'granite',
         '--pkg', 'gnome-desktop-3.0',
         '--pkg', 'gmodule-2.0',
+        '--pkg', 'wayland-server',
         '-o', '@OUTPUT@',
         '@INPUT@'
     ],
