@@ -98,7 +98,7 @@ namespace Wl {
 	[CCode (cname = "struct wl_global", free_function = "wl_global_destroy")]
 	public class Global {
 		[CCode (cname = "wl_global_create")]
-		public static Wl.Global? create (Wl.Display display, ref Wl.Interface interface, int version, [CCode (delegate_target_pos = 0.9) ] Wl.GlobalBindFunc bind);
+		public static Wl.Global? create (Wl.Display display, ref Wl.Interface interface, int version, [CCode (delegate_target_pos = 3.9) ] Wl.GlobalBindFunc bind);
 	}
 
 	[CCode (cheader_filename = "wayland-server-protocol.h", cname = "enum wl_display_error", cprefix="WL_DISPLAY_ERROR_", has_type_id = false)]
