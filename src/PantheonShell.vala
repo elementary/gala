@@ -69,7 +69,7 @@ namespace Gala {
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
-            var resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
+            unowned var resource = client.create_resource (ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
             resource.set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
         });
     }
@@ -77,7 +77,7 @@ namespace Gala {
     public class PanelSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
+        public unowned Wl.Resource resource;
 
         public PanelSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
@@ -97,7 +97,7 @@ namespace Gala {
     public class WidgetSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
+        public unowned Wl.Resource resource;
 
         public WidgetSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
@@ -117,7 +117,7 @@ namespace Gala {
     public class ExtendedBehaviorSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
+        public unowned Wl.Resource resource;
 
         public ExtendedBehaviorSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
@@ -150,8 +150,7 @@ namespace Gala {
         }
 
         panel_surface = new PanelSurface (wayland_surface);
-        var panel_resource = new Wl.Resource (
-            client,
+        unowned var panel_resource = client.create_resource (
             ref Pantheon.Desktop.PanelInterface.iface,
             resource.get_version (),
             output
@@ -161,7 +160,7 @@ namespace Gala {
             panel_surface.ref (),
             unref_obj_on_destroy
         );
-        panel_surface.resource = (owned) panel_resource;
+        panel_surface.resource = panel_resource;
         wayland_surface.set_qdata_full (
             PanelSurface.quark,
             panel_surface,
@@ -181,8 +180,7 @@ namespace Gala {
         }
 
         widget_surface = new WidgetSurface (wayland_surface);
-        var widget_resource = new Wl.Resource (
-            client,
+        unowned var widget_resource = client.create_resource (
             ref Pantheon.Desktop.WidgetInterface.iface,
             resource.get_version (),
             output
@@ -192,7 +190,7 @@ namespace Gala {
             widget_surface.ref (),
             unref_obj_on_destroy
         );
-        widget_surface.resource = (owned) widget_resource;
+        widget_surface.resource = widget_resource;
         wayland_surface.set_qdata_full (
             WidgetSurface.quark,
             widget_surface,
@@ -212,8 +210,7 @@ namespace Gala {
         }
 
         eb_surface = new ExtendedBehaviorSurface (wayland_surface);
-        var eb_resource = new Wl.Resource (
-            client,
+        unowned var eb_resource = client.create_resource (
             ref Pantheon.Desktop.ExtendedBehaviorInterface.iface,
             resource.get_version (),
             output
@@ -223,7 +220,7 @@ namespace Gala {
             eb_surface.ref (),
             unref_obj_on_destroy
         );
-        eb_surface.resource = (owned) eb_resource;
+        eb_surface.resource = eb_resource;
         wayland_surface.set_qdata_full (
             ExtendedBehaviorSurface.quark,
             eb_surface,
