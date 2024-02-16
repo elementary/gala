@@ -9,7 +9,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
     public Meta.Window window { get; construct; }
 
     private WindowIcon icon;
-    private Clutter.Canvas canvas;
+    private Gala.Drawing.Canvas canvas;
 
     private bool _selected = false;
     public bool selected {
@@ -29,10 +29,9 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         }
         set {
             _scale_factor = value;
-            canvas.scale_factor = _scale_factor;
+            canvas.set_scale_factor (_scale_factor);
 
             update_size ();
-            canvas.invalidate ();
         }
     }
 
@@ -43,8 +42,12 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
-        canvas = new Clutter.Canvas ();
+        canvas = new Gala.Drawing.Canvas ();
         canvas.draw.connect (draw_background);
+        canvas.set_size (
+            WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2,
+            WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2
+        );
         set_content (canvas);
 
         reactive = true;
@@ -58,10 +61,9 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
             scale_factor
         );
         set_size (indicator_size, indicator_size);
-        canvas.set_size (indicator_size, indicator_size);
     }
 
-    private bool draw_background (Cairo.Context ctx, int width, int height) {
+    private void draw_background (Cairo.Context ctx, int width, int height, float scale_factor) {
         ctx.save ();
         ctx.set_operator (Cairo.Operator.CLEAR);
         ctx.paint ();
@@ -84,7 +86,5 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
 
             ctx.restore ();
         }
-
-        return true;
     }
 }

@@ -25,7 +25,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
     private Granite.Settings granite_settings;
-    private Clutter.Canvas canvas;
+    private Gala.Drawing.Canvas canvas;
     private Clutter.Actor container;
     private Clutter.Text caption;
 
@@ -68,8 +68,8 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        canvas = new Clutter.Canvas ();
-        canvas.scale_factor = scaling_factor;
+        canvas = new Gala.Drawing.Canvas ();
+        canvas.set_scale_factor (scaling_factor);
         set_content (canvas);
 
         opacity = 0;
@@ -100,7 +100,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
             if (cur_scale != scaling_factor) {
                 scaling_factor = cur_scale;
-                canvas.scale_factor = scaling_factor;
+                canvas.set_scale_factor (scaling_factor);
                 effect.scale_factor = scaling_factor;
                 create_components ();
             }
@@ -109,7 +109,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         canvas.draw.connect (draw);
     }
 
-    private bool draw (Cairo.Context ctx, int width, int height) {
+    private void draw (Cairo.Context ctx, int width, int height, float scale_factor) {
         if (style_context == null) { // gtk is not initialized yet
             create_gtk_objects ();
         }
@@ -133,8 +133,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         style_context.render_background (ctx, 0, 0, width, height);
         style_context.render_frame (ctx, 0, 0, width, height);
         ctx.restore ();
-
-        return true;
     }
 
     private void create_components () {
@@ -144,7 +142,11 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         }
 
         var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+#if HAS_MUTTER46
+        var layout = new Clutter.FlowLayout (Clutter.Orientation.HORIZONTAL);
+#else
         var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
+#endif
         container = new Clutter.Actor () {
             reactive = true,
             layout_manager = layout,
@@ -372,7 +374,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
         set_size ((int) nat_width, switcher_height);
         canvas.set_size ((int) nat_width, switcher_height);
-        canvas.invalidate ();
 
         // container width might have changed, so we must update caption width too
         update_caption_text ();

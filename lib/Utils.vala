@@ -117,7 +117,11 @@ namespace Gala {
                 }
             }
 
+#if HAS_MUTTER46
+            unowned Meta.Group group = window.x11_get_group ();
+#else
             unowned Meta.Group group = window.get_group ();
+#endif
             if (group != null) {
                 var group_windows = group.list_windows ();
                 group_windows.foreach ((window) => {

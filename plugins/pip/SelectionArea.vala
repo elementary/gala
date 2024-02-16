@@ -43,12 +43,10 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         width = screen_width;
         height = screen_height;
 
-        var canvas = new Clutter.Canvas ();
+        var canvas = new Gala.Drawing.Canvas ();
         canvas.set_size (screen_width, screen_height);
         canvas.draw.connect (draw_area);
         set_content (canvas);
-
-        canvas.invalidate ();
     }
 
 #if HAS_MUTTER45
@@ -159,7 +157,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         height = (start_point.y - end_point.y).abs ();
     }
 
-    private bool draw_area (Cairo.Context ctx) {
+    private void draw_area (Cairo.Context ctx, int width, int height, float scale_factor) {
         ctx.save ();
 
         ctx.set_operator (Cairo.Operator.CLEAR);
@@ -168,7 +166,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         ctx.restore ();
 
         if (!dragging) {
-            return true;
+            return;
         }
 
         int x, y, w, h;
@@ -182,7 +180,5 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         ctx.set_source_rgb (0.7, 0.7, 0.7);
         ctx.set_line_width (1.0);
         ctx.stroke ();
-
-        return true;
     }
 }

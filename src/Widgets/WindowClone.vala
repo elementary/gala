@@ -870,10 +870,10 @@ public class Gala.WindowClone : Clutter.Actor {
         private static int border_radius = -1;
         private const double COLOR_OPACITY = 0.8;
 
-        private Clutter.Canvas background_canvas;
+        private Gala.Drawing.Canvas background_canvas;
 
         construct {
-            background_canvas = new Clutter.Canvas ();
+            background_canvas = new Gala.Drawing.Canvas ();
             background_canvas.draw.connect (draw_background);
             content = background_canvas;
 
@@ -899,13 +899,13 @@ public class Gala.WindowClone : Clutter.Actor {
             background_canvas.invalidate ();
         }
 
-        private bool draw_background (Cairo.Context cr, int width, int height) {
+        private void draw_background (Cairo.Context cr, int width, int height, float scale_factor) {
             if (border_radius == -1) {
                 create_gtk_objects ();
             }
 
             if (!visible || opacity == 0) {
-                return Clutter.EVENT_PROPAGATE;
+                return;
             }
 
             var color = InternalUtils.get_theme_accent_color ();
@@ -918,8 +918,6 @@ public class Gala.WindowClone : Clutter.Actor {
             Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
-
-            return Clutter.EVENT_PROPAGATE;
         }
 
         public override void allocate (Clutter.ActorBox box) {

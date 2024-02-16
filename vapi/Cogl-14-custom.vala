@@ -131,4 +131,8 @@ namespace Cogl {
 		public uint8 b;
 		public uint8 a;
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_PIXEL_FORMAT_", type_id = "cogl_pixel_format_get_type ()")]
+	public enum PixelFormat {
+		CAIRO_ARGB32_COMPAT;
+	}
 }

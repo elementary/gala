@@ -8,6 +8,10 @@ color_equal skip
 
 Context.free_timestamp_query.query owned
 
+Bitmap.* skip=false
+Bitmap.new_for_data.data type="owned uint8[]"
+Bitmap.get_buffer type="unowned Cogl.Buffer?"
+
 Texture
   .get_data.data type="uint8[]"
   .set_data.data type="uint8[]"
@@ -47,6 +51,3 @@ blit_framebuffer parent="Cogl.Framebuffer" symbol_type="method" instance_idx=0 n
 Onscreen
   .add_dirty_callback unowned
   .add_frame_callback unowned
-  .queue_damage_region.rectangles array array_length_idx=1
-  .swap_buffers_with_damage.rectangles array array_length_idx=1
-  .swap_region.rectangles array array_length_idx=1
