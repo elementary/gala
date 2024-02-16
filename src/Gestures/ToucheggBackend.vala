@@ -17,9 +17,9 @@
  */
 
 /**
-* Singleton class to manage the connection with Touchégg daemon and receive touch events.
-* See: https://github.com/JoseExposito/touchegg
-*/
+ * Singleton class to manage the connection with Touchégg daemon and receive touch events.
+ * See: [[https://github.com/JoseExposito/touchegg]]
+ */
 public class Gala.ToucheggBackend : Object {
     public signal void on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
@@ -104,7 +104,7 @@ public class Gala.ToucheggBackend : Object {
     private Variant? last_params_received = null;
 
     /**
-     * @returns Single instance of the class.
+     * @return Single instance of the class.
      */
     public static unowned ToucheggBackend get_default () {
         if (instance == null) {
