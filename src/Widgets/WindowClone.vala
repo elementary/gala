@@ -50,7 +50,6 @@ public class Gala.WindowClone : Clutter.Actor {
             active_shape.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
-
         }
     }
 
