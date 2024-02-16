@@ -694,9 +694,21 @@ namespace Gala {
             uint fade_out_duration = 900U;
             double[] op_keyframes = { 0.1, 0.9 };
             GLib.Value[] opacity = { 20U, 20U };
+#if HAS_MUTTER46
+            unowned Meta.Display display = get_display ();
+            unowned Meta.X11Display x11display = display.get_x11_display ();
+            var bottom_xwin = x11display.lookup_xwindow (bottom_window);
+#else
+            var bottom_xwin = bottom_window.get_xwindow ();
+#endif
 
             workspace.list_windows ().@foreach ((window) => {
-                if (window.get_xwindow () == bottom_window.get_xwindow ()
+#if HAS_MUTTER46
+                var xwin = x11display.lookup_xwindow (window);
+#else
+                var xwin = window.get_xwindow ();
+#endif
+                if (xwin == bottom_xwin
                     || !InternalUtils.get_window_is_normal (window)
                     || window.minimized) {
                     return;
@@ -899,7 +911,9 @@ namespace Gala {
                     break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
@@ -907,7 +921,9 @@ namespace Gala {
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());

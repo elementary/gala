@@ -24,7 +24,11 @@ private class Gala.Barrier : Meta.Barrier {
     public double pressure_y { get; set; default = 0; }
 
     public Barrier (Meta.Display display, int x1, int y1, int x2, int y2, Meta.BarrierDirection directions) {
+#if HAS_MUTTER46
+        Object (x1: x1, y1: y1, x2: x2, y2: y2, directions: directions);
+#else
         Object (display: display, x1: x1, y1: y1, x2: x2, y2: y2, directions: directions);
+#endif
     }
 }
 

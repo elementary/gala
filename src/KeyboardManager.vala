@@ -51,7 +51,11 @@ public class Gala.KeyboardManager : Object {
 
     [CCode (instance_pos = -1)]
     public static bool handle_modifiers_accelerator_activated (Meta.Display display, bool backward) {
+#if HAS_MUTTER46
+        display.get_compositor ().backend.ungrab_keyboard (display.get_current_time ());
+#else
         display.ungrab_keyboard (display.get_current_time ());
+#endif
 
         var sources = settings.get_value ("sources");
         if (!sources.is_of_type (sources_variant_type)) {
@@ -116,7 +120,12 @@ public class Gala.KeyboardManager : Object {
             var variant = string.joinv (",", variants);
             var options = string.joinv (",", xkb_options);
 
+#if HAS_MUTTER46
+            //TODO: add model support
+            display.get_context ().get_backend ().set_keymap (layout, variant, options, "");
+#else
             display.get_context ().get_backend ().set_keymap (layout, variant, options);
+#endif
         } else if (key == "current") {
             display.get_context ().get_backend ().lock_layout_group (settings.get_uint ("current"));
         }
