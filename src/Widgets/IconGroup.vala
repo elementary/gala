@@ -77,7 +77,6 @@ namespace Gala {
             add_child (icon_container);
 
             resize ();
-
 #if HAS_MUTTER46
             icon_container.child_removed.connect_after (redraw);
 #else
@@ -228,8 +227,8 @@ namespace Gala {
                 cr,
                 0,
                 0,
-                (int) width,
-                (int) height,
+                width,
+                height,
                 InternalUtils.scale_to_int (5, scale_factor)
             );
 
@@ -382,8 +381,6 @@ namespace Gala {
                     y += InternalUtils.scale_to_int (size, scale_factor) + spacing;
                 }
             }
-
-            return;
         }
 
         private Clutter.Actor? drag_begin (float click_x, float click_y) {

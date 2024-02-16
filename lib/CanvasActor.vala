@@ -4,14 +4,13 @@
  */
 
 public class Gala.CanvasActor : Clutter.Actor {
-    private Clutter.Canvas canvas;
+    private Gala.Drawing.Canvas canvas;
 
     construct {
-        canvas = new Clutter.Canvas ();
+        canvas = new Gala.Drawing.Canvas ();
         content = canvas;
         canvas.draw.connect ((ctx, width, height) => {
             draw (ctx, width, height);
-            return true;
         });
     }
 

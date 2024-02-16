@@ -1168,3 +1168,4 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void trace_end (Cogl.TraceHead head);
 }
+
