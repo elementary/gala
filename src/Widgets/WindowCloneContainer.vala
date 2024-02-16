@@ -266,7 +266,7 @@ namespace Gala {
                     var window_rect = ((WindowClone) child).slot;
 
                     if (direction == LEFT) {
-                        if (window_rect.x > current_rect.x) {
+                        if (window_rect.x > current_rect.x + current_rect.width) {
                             continue;
                         }
 
@@ -279,7 +279,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == RIGHT) {
-                        if (window_rect.x < current_rect.x) {
+                        if (window_rect.x + window_rect.width < current_rect.x) {
                             continue;
                         }
 
@@ -292,7 +292,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == UP) {
-                        if (window_rect.y > current_rect.y) {
+                        if (window_rect.y > current_rect.y + current_rect.height) {
                             continue;
                         }
 
@@ -305,7 +305,7 @@ namespace Gala {
                             }
                         }
                     } else if (direction == DOWN) {
-                        if (window_rect.y < current_rect.y) {
+                        if (window_rect.y + window_rect.height < current_rect.y) {
                             continue;
                         }
 
