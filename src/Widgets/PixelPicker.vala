@@ -38,10 +38,6 @@ namespace Gala {
             wm.get_display ().get_size (out screen_width, out screen_height);
             width = screen_width;
             height = screen_height;
-
-            var canvas = new Clutter.Canvas ();
-            canvas.set_size (screen_width, screen_height);
-            set_content (canvas);
         }
 
 #if HAS_MUTTER45
@@ -74,7 +70,6 @@ namespace Gala {
 
             close ();
             this.hide ();
-            content.invalidate ();
 
             closed ();
             return true;

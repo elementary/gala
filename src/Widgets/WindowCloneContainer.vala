@@ -213,7 +213,6 @@ namespace Gala {
                 return Clutter.EVENT_PROPAGATE;
             }
 
-
             switch (event.get_key_symbol ()) {
                 case Clutter.Key.Escape:
                     requested_close ();
@@ -326,6 +325,10 @@ namespace Gala {
             }
 
             if (closest == null) {
+                if (current_window != null) {
+                    Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                    current_window.active = true;
+                }
                 return;
             }
 

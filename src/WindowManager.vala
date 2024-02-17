@@ -147,7 +147,6 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
-                SystemBackground.refresh ();
             });
         }
 
