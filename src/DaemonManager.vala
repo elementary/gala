@@ -27,9 +27,7 @@ public class Gala.DaemonManager : GLib.Object {
 
     construct {
         Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
-    }
 
-    public void start () {
         if (Meta.Util.is_wayland_compositor ()) {
             start_wayland.begin ();
 

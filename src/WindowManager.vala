@@ -343,8 +343,6 @@ namespace Gala {
 
                 plugin_manager.load_waiting_plugins ();
 
-                daemon_manager.start ();
-
                 return false;
             });
 
