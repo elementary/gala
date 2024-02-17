@@ -70,7 +70,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
 
         if (selected) {
             // draw rect
-            var rgba = InternalUtils.get_theme_accent_color ();
+            var rgba = Drawing.ColorManager.get_instance ().theme_accent_color;
             ctx.set_source_rgba (
                 rgba.red,
                 rgba.green,

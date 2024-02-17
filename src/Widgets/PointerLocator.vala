@@ -138,7 +138,7 @@ namespace Gala {
             transition.started.connect (() => { visible = true; });
             add_transition ("circle", transition);
 
-            var rgba = InternalUtils.get_theme_accent_color ();
+            var rgba = Drawing.ColorManager.get_instance ().theme_accent_color;
 
             /* Don't use alpha from the stylesheet to ensure contrast */
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);

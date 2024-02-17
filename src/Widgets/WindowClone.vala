@@ -908,7 +908,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 return Clutter.EVENT_PROPAGATE;
             }
 
-            var color = InternalUtils.get_theme_accent_color ();
+            var color = Drawing.ColorManager.get_instance ().theme_accent_color;
 
             cr.save ();
             cr.set_operator (Cairo.Operator.CLEAR);
