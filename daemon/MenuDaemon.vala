@@ -1,19 +1,7 @@
-//
-//  Copyright 2018-2020 elementary, Inc. (https://elementary.io)
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
 [DBus (name = "org.pantheon.gala")]
 public interface Gala.WMDBus : GLib.Object {
@@ -21,7 +9,7 @@ public interface Gala.WMDBus : GLib.Object {
 }
 
 [DBus (name = "org.pantheon.gala.daemon")]
-public class Gala.Daemon.MenuDaemon : Object {
+public class Gala.Daemon.MenuDaemon : GLib.Object {
     private const string DBUS_NAME = "org.pantheon.gala";
     private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
 
@@ -37,7 +25,7 @@ public class Gala.Daemon.MenuDaemon : Object {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
     }
 
-    private void on_gala_get (GLib.Object? o, GLib.AsyncResult? res) {
+    private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
         try {
             wm_proxy = Bus.get_proxy.end (res);
         } catch (Error e) {

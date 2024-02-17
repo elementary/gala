@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.DaemonManager : Object {
+public class Gala.DaemonManager : GLib.Object {
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
     private const int SPACING = 12;
@@ -19,7 +19,6 @@ public class Gala.DaemonManager : Object {
     public Meta.Display display { get; construct; }
 
     private Meta.WaylandClient daemon_client;
-
     private Daemon? daemon_proxy = null;
 
     public DaemonManager (Meta.Display display) {
@@ -84,7 +83,6 @@ public class Gala.DaemonManager : Object {
     }
 
     private void handle_daemon_window (Meta.Window window) {
-        warning ("HAndle daemon window");
         window.move_frame (false, 0, 0);
         window.make_above ();
     }
