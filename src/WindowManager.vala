@@ -138,7 +138,7 @@ namespace Gala {
         }
 
         public override void start () {
-            daemon_manager = new DaemonManager (get_display ());
+            daemon_manager = new DaemonManager (this);
 
             show_stage ();
 
@@ -784,7 +784,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal (Clutter.Actor actor) {
+        public ModalProxy push_modal (Clutter.Actor? actor) {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
@@ -796,7 +796,10 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
 
             update_input_area ();
-            proxy.grab = stage.grab (actor);
+
+            if (actor != null) {
+                proxy.grab = stage.grab (actor);
+            }
 
             if (modal_stack.size == 1) {
                 display.disable_unredirect ();
@@ -814,7 +817,9 @@ namespace Gala {
                 return;
             }
 
-            proxy.grab.dismiss ();
+            if (proxy.grab != null) {
+                proxy.grab.dismiss ();
+            }
 
             if (is_modal ())
                 return;

@@ -16,6 +16,8 @@ public class Gala.Daemon.MenuDaemon : GLib.Object {
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
+    public signal void pop_modal ();
+
     private WMDBus? wm_proxy = null;
 
     private WindowMenu? window_menu;
@@ -101,5 +103,7 @@ public class Gala.Daemon.MenuDaemon : GLib.Object {
                 return Gdk.EVENT_PROPAGATE;
             });
         }
+
+        window.destroy.connect (() => pop_modal ());
     }
 }

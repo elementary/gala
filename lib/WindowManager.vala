@@ -135,7 +135,7 @@ namespace Gala {
          * @return a {@link ModalProxy} which is needed to end the modal mode again and provides some
          *         some basic control on the behavior of the window manager while it is in modal mode.
          */
-        public abstract ModalProxy push_modal (Clutter.Actor actor);
+        public abstract ModalProxy push_modal (Clutter.Actor? actor);
 
         /**
          * May exit the modal mode again, unless another component has called {@link push_modal}
