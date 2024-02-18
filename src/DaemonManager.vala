@@ -81,8 +81,31 @@ public class Gala.DaemonManager : GLib.Object {
     }
 
     private void handle_daemon_window (Meta.Window window) {
-        window.move_frame (false, 0, 0);
-        window.make_above ();
+        var info = window.title.split ("-");
+
+        if (info.length == 0) {
+            critical ("Couldn't handle daemon window: No title provided");
+            return;
+        }
+
+        switch (info[0]) {
+            case "LABEL":
+                if (info.length < 2) {
+                    return;
+                }
+
+                var index = int.parse (info[1]);
+
+                var monitor_geometry = display.get_monitor_geometry (index);
+                window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
+                window.make_above ();
+                break;
+
+            case "MODAL":
+                window.move_frame (false, 0, 0);
+                window.make_above ();
+                break;
+        }
     }
 
     private void lost_daemon () {

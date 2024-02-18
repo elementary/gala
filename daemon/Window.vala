@@ -37,6 +37,7 @@ public class Gala.Daemon.Window : Gtk.Window {
         type_hint = Gdk.WindowTypeHint.DOCK;
         set_keep_above (true);
 
+        title = "MODAL";
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true

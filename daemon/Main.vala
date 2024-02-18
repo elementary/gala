@@ -28,7 +28,7 @@ public class Gala.Daemon.Application : Gtk.Application {
     public override bool dbus_register (DBusConnection connection, string object_path) throws Error {
         base.dbus_register (connection, object_path);
 
-        connection.register_object (object_path, new MenuDaemon ());
+        connection.register_object (object_path, new DBus ());
 
         return true;
     }
