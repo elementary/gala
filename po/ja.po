@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
-"PO-Revision-Date: 2024-02-12 08:11+0000\n"
+"PO-Revision-Date: 2024-02-22 04:12+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -88,14 +88,12 @@ msgid "System Settings…"
 msgstr "システム設定…"
 
 #: daemon/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "システム設定…"
+msgstr "システム設定を開けませんでした"
 
 #: daemon/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "“settings://” URI スキーム用のハンドラーをインストールする必要があります。"
 
 #: daemon/WindowMenu.vala:36
 msgid "Hide"
