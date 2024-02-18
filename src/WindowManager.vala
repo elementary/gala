@@ -16,15 +16,6 @@
 //
 
 namespace Gala {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
-
-    [DBus (name = "org.pantheon.gala.daemon")]
-    public interface Daemon: GLib.Object {
-        public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
-        public abstract async void show_desktop_menu (int x, int y) throws Error;
-    }
-
     public class WindowManagerGala : Meta.Plugin, WindowManager {
         /**
          * {@inheritDoc}
@@ -90,7 +81,7 @@ namespace Gala {
 
         private Meta.Window? moving; //place for the window that is being moved over
 
-        private Daemon? daemon_proxy = null;
+        private DaemonManager daemon_manager;
 
         private NotificationStack notification_stack;
 
@@ -150,31 +141,16 @@ namespace Gala {
         }
 
         public override void start () {
+            daemon_manager = new DaemonManager (get_display ());
+
             show_stage ();
 
-            Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
             AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
-        }
-
-        private void lost_daemon () {
-            daemon_proxy = null;
-        }
-
-        private void daemon_appeared () {
-            if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
-                    try {
-                        daemon_proxy = Bus.get_proxy.end (res);
-                    } catch (Error e) {
-                        warning ("Failed to get Menu proxy: %s", e.message);
-                    }
-                });
-            }
         }
 
         private bool show_stage () {
@@ -243,7 +219,7 @@ namespace Gala {
             ui_group.add_child (window_group);
 
             background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
+            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
@@ -398,20 +374,6 @@ namespace Gala {
                     Process.spawn_command_line_async (action);
                 }
             } catch (Error e) { warning (e.message); }
-        }
-
-        private void on_show_background_menu (int x, int y) {
-            if (daemon_proxy == null) {
-                return;
-            }
-
-                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
-                    try {
-                        ((Daemon) obj).show_desktop_menu.end (res);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
-                });
         }
 
         private void on_monitors_changed () {
@@ -1051,7 +1013,7 @@ namespace Gala {
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
-                    if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         return;
                     }
 
@@ -1086,13 +1048,7 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
-                        try {
-                            ((Daemon) obj).show_window_menu.end (res);
-                        } catch (Error e) {
-                            message ("Error invoking MenuManager: %s", e.message);
-                        }
-                    });
+                    daemon_manager.show_window_menu.begin (flags, x, y);
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
