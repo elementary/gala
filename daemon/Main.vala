@@ -19,6 +19,10 @@ public class Gala.Daemon.Application : Gtk.Application {
         granite_settings.notify["prefers-color-scheme"].connect (() => {
             gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
         });
+
+        var app_provider = new Gtk.CssProvider ();
+        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void activate () {

@@ -8,14 +8,6 @@
     private const string COLORED_STYLE_CSS = """
         @define-color BG_COLOR %s;
         @define-color TEXT_COLOR %s;
-        @define-color BG_COLOR_ALPHA alpha(@BG_COLOR, 0.75);
-        .colored {
-            background-color: @BG_COLOR_ALPHA;
-            color: @TEXT_COLOR;
-            text-shadow: 0 1px 1px alpha(white, 0.1);
-            -gtk-icon-shadow: 0 1px 1px alpha(white, 0.1);
-            -gtk-icon-palette: warning white;
-        }
     """;
 
     public MonitorLabelInfo info { get; construct; }
