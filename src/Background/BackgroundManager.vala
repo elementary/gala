@@ -13,9 +13,14 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
     public bool control_position { get; construct; }
-    public Meta.BackgroundActor background_actor { get; private set; }
-    public Meta.BackgroundActor? new_background_actor { get; private set; default = null; }
+    public Meta.BackgroundActor newest_background_actor {
+        get {
+            return (new_background_actor != null) ? new_background_actor : background_actor;
+        }
+    }
 
+    private Meta.BackgroundActor background_actor;
+    private Meta.BackgroundActor? new_background_actor = null;
     private BackgroundSource background_source;
 
     public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {

@@ -4,6 +4,5 @@
  */
 
 public interface Gala.BackgroundManagerInterface : Meta.BackgroundGroup {
-    public abstract Meta.BackgroundActor background_actor { get; protected set; }
-    public abstract Meta.BackgroundActor? new_background_actor { get; protected set; }
+    public abstract Meta.BackgroundActor newest_background_actor { get; }
 }
