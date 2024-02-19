@@ -6,3 +6,18 @@
 daemon-window {
     background-color: transparent;
 }
+
+/* For better dark style support */
+@define-color BG_COLOR_ALPHA alpha(@BG_COLOR, 0.75);
+
+.colored {
+    background-color: @BG_COLOR_ALPHA;
+    color: @TEXT_COLOR;
+    text-shadow: 0 1px 1px alpha(white, 0.1);
+    -gtk-icon-shadow: 0 1px 1px alpha(white, 0.1);
+    -gtk-icon-palette: warning white;
+}
+
+window.colored {
+    background-color: alpha (@BG_COLOR, 0.8);
+}
