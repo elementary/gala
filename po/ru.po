@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
-"PO-Revision-Date: 2024-02-18 10:49+0000\n"
-"Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
+"PO-Revision-Date: 2024-02-22 04:12+0000\n"
+"Last-Translator: lenemter <lenemter@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
 "\n"
 "Language: ru\n"
@@ -39,7 +39,7 @@ msgstr ""
 
 #: src/Dialogs.vala:158
 msgid "Force Quit"
-msgstr "Закрыть"
+msgstr "Принудительно закрыть"
 
 #: src/Dialogs.vala:159
 msgid "Wait"
@@ -81,7 +81,7 @@ msgstr "Снимок экрана от %s"
 
 #: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr "Изменить обои…"
+msgstr "Сменить обои…"
 
 #: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
@@ -188,7 +188,7 @@ msgstr "Соответствующие указатели перетаскива
 #: data/gala.metainfo.xml.in:34
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
-"Исправлена ошибка из-за которой жесты в режиме многозадачности могли "
+"Исправлена ошибка, из-за которой жесты в режиме многозадачности могли "
 "перестать работать"
 
 #: data/gala.metainfo.xml.in:35
