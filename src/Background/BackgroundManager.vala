@@ -19,9 +19,9 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         }
     }
 
+    private BackgroundSource background_source;
     private Meta.BackgroundActor background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
-    private BackgroundSource background_source;
 
     public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
         Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
