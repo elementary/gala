@@ -4,11 +4,6 @@ install_data(
     rename: 'org.pantheon.desktop.gala.gschema.xml'
 )
 
-install_data(
-    'gala-daemon.desktop',
-    install_dir: join_paths(get_option('sysconfdir'), 'xdg', 'autostart')
-)
-
 i18n.merge_file(
     input: 'gala.metainfo.xml.in',
     output: meson.project_name() + '.metainfo.xml',
