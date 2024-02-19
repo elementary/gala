@@ -6,12 +6,6 @@
  */
 
 public class Gala.Daemon.Window : Gtk.Window {
-    static construct {
-        var app_provider = new Gtk.CssProvider ();
-        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-    }
-
     public Gtk.Box content { get; construct; }
 
     public Window (int width, int height) {
@@ -37,6 +31,7 @@ public class Gala.Daemon.Window : Gtk.Window {
         type_hint = Gdk.WindowTypeHint.DOCK;
         set_keep_above (true);
 
+        title = "MODAL";
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true
