@@ -4,7 +4,7 @@
  *                         2014 Tom Beckmann
  */
 
-public class Gala.BackgroundManager : Meta.BackgroundGroup {
+public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManagerInterface {
     private const double DIM_OPACITY = 0.55;
     private const int FADE_ANIMATION_TIME = 1000;
 
@@ -13,6 +13,11 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
     public bool control_position { get; construct; }
+    public Meta.BackgroundActor newest_background_actor {
+        get {
+            return (new_background_actor != null) ? new_background_actor : background_actor;
+        }
+    }
 
     private BackgroundSource background_source;
     private Meta.BackgroundActor background_actor;
@@ -64,15 +69,14 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup {
             transition.remove_on_complete = true;
             transition.completed.connect (() => {
                 old_background_actor.destroy ();
-
-                changed ();
             });
 
             old_background_actor.add_transition ("fade-out", transition);
         } else {
             old_background_actor.destroy ();
-            changed ();
         }
+
+        changed ();
     }
 
     private void update_background_actor (bool animate = true) {
