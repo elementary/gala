@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
-"PO-Revision-Date: 2023-11-13 02:10+0000\n"
+"PO-Revision-Date: 2024-02-22 04:12+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -91,14 +91,12 @@ msgid "System Settings…"
 msgstr "System Settings…"
 
 #: daemon/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "System Settings…"
+msgstr "Failed to open System Settings"
 
 #: daemon/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "A handler for the “settings://” URI scheme must be installed."
 
 #: daemon/WindowMenu.vala:36
 msgid "Hide"
