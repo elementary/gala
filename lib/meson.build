@@ -8,6 +8,7 @@ gala_lib_sources = files(
     'DragDropAction.vala',
     'Drawing/BufferSurface.vala',
     'Drawing/Color.vala',
+    'Drawing/RoundedCornerEffect.vala',
     'Drawing/Utilities.vala',
     'Plugin.vala',
     'ShadowEffect.vala',

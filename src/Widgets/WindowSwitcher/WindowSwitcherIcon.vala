@@ -43,11 +43,17 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
-        canvas = new Clutter.Canvas ();
-        canvas.draw.connect (draw_background);
-        set_content (canvas);
+        var rgba = InternalUtils.get_theme_accent_color ();
+        background_color = {
+            (uint8) (rgba.red * 255),
+            (uint8) (rgba.green * 255),
+            (uint8) (rgba.blue * 255),
+            (uint8) (rgba.alpha * 255)
+        };
 
         reactive = true;
+
+        add_effect (new RoundedCornerEffect ());
 
         this.scale_factor = scale_factor;
     }
@@ -61,30 +67,30 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         canvas.set_size (indicator_size, indicator_size);
     }
 
-    private bool draw_background (Cairo.Context ctx, int width, int height) {
-        ctx.save ();
-        ctx.set_operator (Cairo.Operator.CLEAR);
-        ctx.paint ();
-        ctx.clip ();
-        ctx.reset_clip ();
+    //  private bool draw_background (Cairo.Context ctx, int width, int height) {
+    //      ctx.save ();
+    //      ctx.set_operator (Cairo.Operator.CLEAR);
+    //      ctx.paint ();
+    //      ctx.clip ();
+    //      ctx.reset_clip ();
 
-        if (selected) {
-            // draw rect
-            var rgba = InternalUtils.get_theme_accent_color ();
-            ctx.set_source_rgba (
-                rgba.red,
-                rgba.green,
-                rgba.blue,
-                rgba.alpha
-            );
-            var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
-            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
-            ctx.set_operator (Cairo.Operator.SOURCE);
-            ctx.fill ();
+    //      if (selected) {
+    //          // draw rect
+    //          var rgba = InternalUtils.get_theme_accent_color ();
+    //          ctx.set_source_rgba (
+    //              rgba.red,
+    //              rgba.green,
+    //              rgba.blue,
+    //              rgba.alpha
+    //          );
+    //          var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
+    //          Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
+    //          ctx.set_operator (Cairo.Operator.SOURCE);
+    //          ctx.fill ();
 
-            ctx.restore ();
-        }
+    //          ctx.restore ();
+    //      }
 
-        return true;
-    }
+    //      return true;
+    //  }
 }
