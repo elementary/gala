@@ -16,15 +16,6 @@
 //
 
 namespace Gala {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
-
-    [DBus (name = "org.pantheon.gala.daemon")]
-    public interface Daemon: GLib.Object {
-        public abstract async void show_window_menu (WindowFlags flags, int x, int y) throws Error;
-        public abstract async void show_desktop_menu (int x, int y) throws Error;
-    }
-
     public class WindowManagerGala : Meta.Plugin, WindowManager {
         /**
          * {@inheritDoc}
@@ -72,7 +63,8 @@ namespace Gala {
         private Meta.PluginInfo info;
 
         private WindowSwitcher? window_switcher = null;
-        private ActivatableComponent? window_overview = null;
+
+        public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -85,13 +77,11 @@ namespace Gala {
          */
         private Zoom? zoom = null;
 
-        private AccentColorManager accent_color_manager;
-
         private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
 
-        private Daemon? daemon_proxy = null;
+        private DaemonManager daemon_manager;
 
         private NotificationStack notification_stack;
 
@@ -114,6 +104,7 @@ namespace Gala {
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
+        private GLib.Settings new_behavior_settings;
 
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
@@ -142,36 +133,21 @@ namespace Gala {
             animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
         }
 
         public override void start () {
+            daemon_manager = new DaemonManager (get_display ());
+
             show_stage ();
 
-            Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
             AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
-                SystemBackground.refresh ();
             });
-        }
-
-        private void lost_daemon () {
-            daemon_proxy = null;
-        }
-
-        private void daemon_appeared () {
-            if (daemon_proxy == null) {
-                Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
-                    try {
-                        daemon_proxy = Bus.get_proxy.end (res);
-                    } catch (Error e) {
-                        warning ("Failed to get Menu proxy: %s", e.message);
-                    }
-                });
-            }
         }
 
         private bool show_stage () {
@@ -240,7 +216,7 @@ namespace Gala {
             ui_group.add_child (window_group);
 
             background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (on_show_background_menu);
+            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
@@ -295,7 +271,7 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (on_monitors_changed);
 
-            hot_corner_manager = new HotCornerManager (this, behavior_settings);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 
@@ -310,8 +286,6 @@ namespace Gala {
                     unowned string[] _args = args;
                     Gtk.init (ref _args);
                 }
-
-                accent_color_manager = new AccentColorManager ();
 
                 // initialize plugins and add default components if no plugin overrides them
                 unowned var plugin_manager = PluginManager.get_default ();
@@ -399,20 +373,6 @@ namespace Gala {
             } catch (Error e) { warning (e.message); }
         }
 
-        private void on_show_background_menu (int x, int y) {
-            if (daemon_proxy == null) {
-                return;
-            }
-
-                daemon_proxy.show_desktop_menu.begin (x, y, (obj, res) => {
-                    try {
-                        ((Daemon) obj).show_desktop_menu.end (res);
-                    } catch (Error e) {
-                        message ("Error invoking MenuManager: %s", e.message);
-                    }
-                });
-        }
-
         private void on_monitors_changed () {
             screen_shield.expand_to_screen_size ();
         }
@@ -431,7 +391,7 @@ namespace Gala {
             else if (index > manager.get_n_workspaces () - 1 - dynamic_offset)
                 index = 0;
 
-            manager.get_workspace_by_index (index).activate (display.get_current_time ());
+            manager.get_workspace_by_index (index).activate (event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -456,7 +416,7 @@ namespace Gala {
             }
 
             if (target_workspace != null) {
-                move_window (window, target_workspace);
+                move_window (window, target_workspace, event.get_time ());
             }
         }
 
@@ -470,14 +430,14 @@ namespace Gala {
             var index = (binding.get_name () == "move-to-workspace-first" ? 0 : manager.get_n_workspaces () - 1);
             unowned var workspace = manager.get_workspace_by_index (index);
             window.change_workspace (workspace);
-            workspace.activate_with_focus (window, display.get_current_time ());
+            workspace.activate_with_focus (window, event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction);
+            switch_to_next_workspace (direction, event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -485,7 +445,7 @@ namespace Gala {
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
-            manager.get_workspace_by_index (index).activate (display.get_current_time ());
+            manager.get_workspace_by_index (index).activate (event.get_time ());
         }
 
         [CCode (instance_pos = -1)]
@@ -535,6 +495,8 @@ namespace Gala {
                 return;
             }
 
+            unowned var display = get_display ();
+
             var fingers = gesture.fingers;
 
             var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
@@ -552,13 +514,12 @@ namespace Gala {
             switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
             switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
             if (switch_workspace_with_gesture) {
-                unowned var display = get_display ();
                 unowned var manager = display.get_workspace_manager ();
 
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
@@ -568,7 +529,7 @@ namespace Gala {
                     moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
                 }
 
-                switch_to_next_workspace (direction);
+                switch_to_next_workspace (direction, display.get_current_time ());
                 return;
             }
 
@@ -581,7 +542,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+        public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
             if (animating_switch_workspace) {
                 return;
             }
@@ -591,7 +552,7 @@ namespace Gala {
             unowned var neighbor = active_workspace.get_neighbor (direction);
 
             if (neighbor != active_workspace) {
-                neighbor.activate (display.get_current_time ());
+                neighbor.activate (timestamp);
             } else {
                 // if we didn't switch, show a nudge-over animation if one is not already in progress
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
@@ -789,7 +750,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public void move_window (Meta.Window? window, Meta.Workspace workspace) {
+        public void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp) {
             if (window == null) {
                 return;
             }
@@ -817,7 +778,7 @@ namespace Gala {
                 window.change_workspace (workspace);
             }
 
-            workspace.activate_with_focus (window, display.get_current_time ());
+            workspace.activate_with_focus (window, timestamp);
         }
 
         /**
@@ -979,22 +940,22 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
-                    switch_to_next_workspace (Meta.MotionDirection.LEFT);
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
-                    switch_to_next_workspace (Meta.MotionDirection.RIGHT);
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.LEFT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.RIGHT);
-                    move_window (current, target_workspace);
+                    move_window (current, target_workspace, Gtk.get_current_event_time ());
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
@@ -1053,7 +1014,7 @@ namespace Gala {
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
-                    if (daemon_proxy == null || window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (window.get_window_type () == Meta.WindowType.NOTIFICATION) {
                         return;
                     }
 
@@ -1088,13 +1049,7 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    daemon_proxy.show_window_menu.begin (flags, x, y, (obj, res) => {
-                        try {
-                            ((Daemon) obj).show_window_menu.end (res);
-                        } catch (Error e) {
-                            message ("Error invoking MenuManager: %s", e.message);
-                        }
-                    });
+                    daemon_manager.show_window_menu.begin (flags, x, y);
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
@@ -1942,6 +1897,7 @@ namespace Gala {
                 wallpaper = new Clutter.Clone (background);
             } else {
                 background_group.hide ();
+                ((BackgroundContainer) background_group).set_black_background (false);
                 wallpaper = new Clutter.Clone (background_group);
             }
             wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
@@ -2235,6 +2191,7 @@ namespace Gala {
                 unowned var background = background_group.get_child_at_index (primary);
                 background.show ();
             } else {
+                ((BackgroundContainer) background_group).set_black_background (true);
                 background_group.show ();
             }
 

@@ -3,6 +3,8 @@ gala_lib_sources = files(
     'App.vala',
     'AppCache.vala',
     'AppSystem.vala',
+    'BackgroundManager.vala',
+    'CloseButton.vala',
     'Constants.vala',
     'DragDropAction.vala',
     'Drawing/BufferSurface.vala',

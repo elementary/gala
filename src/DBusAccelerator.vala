@@ -16,28 +16,43 @@
 //
 
 namespace Gala {
-    /**
-     * ActionMode:
-     * @NONE: block action
-     * @NORMAL: allow action when in window mode, e.g. when the focus is in an application window
-     * @OVERVIEW: allow action while the overview is active
-     * @LOCK_SCREEN: allow action when the screen is locked, e.g. when the screen shield is shown
-     * @UNLOCK_SCREEN: allow action in the unlock dialog
-     * @LOGIN_SCREEN: allow action in the login screen
-     * @SYSTEM_MODAL: allow action when a system modal dialog (e.g. authentification or session dialogs) is open
-     * @LOOKING_GLASS: allow action in looking glass
-     * @POPUP: allow action while a shell menu is open
-     */
     [Flags]
     public enum ActionMode {
+        /**
+         * Block action
+         */
         NONE = 0,
+        /**
+         * allow action when in window mode, e.g. when the focus is in an application window
+         */
         NORMAL = 1 << 0,
+        /**
+         * allow action while the overview is active
+         */
         OVERVIEW = 1 << 1,
+        /**
+         * allow action when the screen is locked, e.g. when the screen shield is shown
+         */
         LOCK_SCREEN = 1 << 2,
+        /**
+         * allow action in the unlock dialog
+         */
         UNLOCK_SCREEN = 1 << 3,
+        /**
+         * allow action in the login screen
+         */
         LOGIN_SCREEN = 1 << 4,
+        /**
+         * allow action when a system modal dialog (e.g. authentification or session dialogs) is open
+         */
         SYSTEM_MODAL = 1 << 5,
+        /**
+         * allow action in looking glass
+         */
         LOOKING_GLASS = 1 << 6,
+        /**
+         * allow action while a shell menu is open
+         */
         POPUP = 1 << 7,
     }
 

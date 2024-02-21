@@ -41,8 +41,10 @@ namespace Gala {
         private Clutter.Actor workspaces;
         private Clutter.Actor dock_clones;
         private Clutter.Actor primary_monitor_container;
+        private Clutter.BrightnessContrastEffect brightness_effect;
 
         private GLib.Settings gala_behavior_settings;
+        private Granite.Settings granite_settings;
 
         private bool switching_workspace_with_gesture = false;
         private bool switching_workspace_in_progress {
@@ -57,6 +59,7 @@ namespace Gala {
 
         construct {
             gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            granite_settings = Granite.Settings.get_default ();
 
             visible = false;
             reactive = true;
@@ -79,6 +82,15 @@ namespace Gala {
             icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
 
             dock_clones = new Clutter.Actor ();
+
+            brightness_effect = new Clutter.BrightnessContrastEffect ();
+            update_brightness_effect ();
+
+            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor ());
+            blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+            blurred_bg.add_effect (brightness_effect);
+
+            add_child (blurred_bg);
 
             // Create a child container that will be sized to fit the primary monitor, to contain the "main"
             // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
@@ -137,6 +149,16 @@ namespace Gala {
                     return Source.REMOVE;
                 });
             });
+
+            granite_settings.notify["prefers-color-scheme"].connect (update_brightness_effect);
+        }
+
+        private void update_brightness_effect () {
+            if (granite_settings.prefers_color_scheme == DARK) {
+                brightness_effect.set_brightness (-0.4f);
+            } else {
+                brightness_effect.set_brightness (0.4f);
+            }
         }
 
         /**
@@ -232,7 +254,7 @@ namespace Gala {
             var new_workspace = active_workspace.get_neighbor (direction);
 
             if (active_workspace != new_workspace) {
-                new_workspace.activate (display.get_current_time ());
+                new_workspace.activate (scroll_event.get_time ());
             } else {
                 play_nudge_animation (direction);
             }
@@ -573,45 +595,10 @@ namespace Gala {
         public override bool key_press_event (Clutter.KeyEvent event) {
 #endif
             if (!opened) {
-                return true;
+                return Clutter.EVENT_PROPAGATE;
             }
 
-            switch (event.get_key_symbol ()) {
-                case Clutter.Key.Escape:
-                    toggle ();
-                    break;
-                case Clutter.Key.Down:
-                    select_window (Meta.MotionDirection.DOWN);
-                    break;
-                case Clutter.Key.Up:
-                    select_window (Meta.MotionDirection.UP);
-                    break;
-                case Clutter.Key.Left:
-                    select_window (Meta.MotionDirection.LEFT);
-                    break;
-                case Clutter.Key.Right:
-                    select_window (Meta.MotionDirection.RIGHT);
-                    break;
-                case Clutter.Key.Return:
-                case Clutter.Key.KP_Enter:
-                    if (!get_active_workspace_clone ().window_container.activate_selected_window ()) {
-                        toggle ();
-                    }
-
-                    break;
-            }
-
-            return false;
-        }
-
-        /**
-         * Inform the current WindowCloneContainer that we want to move the focus in
-         * a specific direction.
-         *
-         * @param direction The direction in which to move the focus to
-         */
-        private void select_window (Meta.MotionDirection direction) {
-            get_active_workspace_clone ().window_container.select_next_window (direction);
+            return get_active_window_clone_container ().key_press_event (event);
         }
 
         /**
@@ -619,12 +606,13 @@ namespace Gala {
          *
          * @return The active WorkspaceClone
          */
-        private WorkspaceClone get_active_workspace_clone () {
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+        private WindowCloneContainer get_active_window_clone_container () {
+            unowned var manager = display.get_workspace_manager ();
+            unowned var active_workspace = manager.get_active_workspace ();
             foreach (unowned var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace_clone = (WorkspaceClone) child;
-                if (workspace_clone.workspace == manager.get_active_workspace ()) {
-                    return workspace_clone;
+                unowned var workspace_clone = (WorkspaceClone) child;
+                if (workspace_clone.workspace == active_workspace) {
+                    return workspace_clone.window_container;
                 }
             }
 
@@ -633,8 +621,8 @@ namespace Gala {
 
         private void window_selected (Meta.Window window) {
             var time = display.get_current_time ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var workspace = window.get_workspace ();
+            unowned var manager = display.get_workspace_manager ();
+            unowned var workspace = window.get_workspace ();
 
             if (workspace != manager.get_active_workspace ()) {
                 workspace.activate (time);

@@ -19,10 +19,10 @@ namespace Gala {
     [DBus (name="org.pantheon.gala")]
     public class DBus {
         private static DBus? instance;
-        private static WindowManager wm;
+        private static WindowManagerGala wm;
 
         [DBus (visible = false)]
-        public static void init (WindowManager _wm) {
+        public static void init (WindowManagerGala _wm) {
             wm = _wm;
 
             Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -65,19 +65,14 @@ namespace Gala {
                 () => {},
                 () => critical ("Could not acquire name") );
 
-            unowned WindowManagerGala? gala_wm = wm as WindowManagerGala;
-            if (gala_wm != null) {
-                var screensaver_manager = gala_wm.screensaver;
-
-                Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
-                    (connection) => {
-                        try {
-                            connection.register_object ("/org/gnome/ScreenSaver", screensaver_manager);
-                        } catch (Error e) { warning (e.message); }
-                    },
-                    () => {},
-                    () => critical ("Could not acquire ScreenSaver bus") );
-            }
+            Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
+                (connection) => {
+                    try {
+                        connection.register_object ("/org/gnome/ScreenSaver", wm.screensaver);
+                    } catch (Error e) { warning (e.message); }
+                },
+                () => {},
+                () => critical ("Could not acquire ScreenSaver bus") );
         }
 
         private DBus () {

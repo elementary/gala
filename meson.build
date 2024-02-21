@@ -94,9 +94,9 @@ gee_dep = dependency('gee-0.8')
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
+hdy_dep = dependency('libhandy-1')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
-gexiv2_dep = dependency('gexiv2')
 sqlite3_dep = dependency('sqlite3')
 if get_option('systemd')
     systemd_dep = dependency('libsystemd')
@@ -151,6 +151,17 @@ if mutter45_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45']
 endif
 
+mutter46_dep = dependency('libmutter-14', version: ['>= 46', '< 47'], required: false)
+if mutter46_dep.found()
+	libmutter_dep = dependency('libmutter-14', version: '>= 46')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-14'), dependency('mutter-cogl-14'),
+		dependency('mutter-cogl-pango-14'), dependency('mutter-clutter-14')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
@@ -164,7 +175,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, gexiv2_dep, sqlite3_dep, config_dep]
+gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, granite_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
@@ -174,7 +185,6 @@ subdir('data')
 subdir('lib')
 subdir('src')
 subdir('daemon')
-subdir('plugins/maskcorners')
 subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')

@@ -182,7 +182,7 @@ namespace Gala {
         public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError {
             var selection_area = new SelectionArea (wm);
             selection_area.closed.connect (() => Idle.add (select_area.callback));
-            wm.ui_group.add (selection_area);
+            wm.ui_group.add_child (selection_area);
             selection_area.start_selection ();
 
             yield;
@@ -235,7 +235,7 @@ namespace Gala {
         public async GLib.HashTable<string, Variant> pick_color () throws DBusError, IOError {
             var pixel_picker = new PixelPicker (wm);
             pixel_picker.closed.connect (() => Idle.add (pick_color.callback));
-            wm.ui_group.add (pixel_picker);
+            wm.ui_group.add_child (pixel_picker);
             pixel_picker.start_selection ();
 
             yield;
@@ -400,27 +400,6 @@ namespace Gala {
             } catch (Error e) {
                 warning (e.message);
             }
-            return image;
-        }
-
-        private Cairo.ImageSurface composite_capture_images (Clutter.Capture[] captures, int x, int y, int width, int height) {
-            var image = new Cairo.ImageSurface (captures[0].image.get_format (), width, height);
-            var cr = new Cairo.Context (image);
-
-            foreach (unowned Clutter.Capture capture in captures) {
-                // Ignore capture regions with scale other than 1 for now; mutter can't
-                // produce them yet, so there is no way to test them.
-                double capture_scale = 1.0;
-                capture.image.get_device_scale (out capture_scale, null);
-                if (capture_scale != 1.0)
-                    continue;
-
-                cr.save ();
-                cr.translate (capture.rect.x - x, capture.rect.y - y);
-                cr.set_source_surface (capture.image, 0, 0);
-                cr.restore ();
-            }
-
             return image;
         }
 

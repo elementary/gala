@@ -64,7 +64,7 @@ namespace Gala {
             var ctx = cached_context;
 
             ctx.set_source_rgba (255, 255, 255, 255);
-            ctx.rectangle (0, 0, (int) width, (int) height);
+            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 9);
             ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.stroke ();
             ctx.restore ();
@@ -182,9 +182,12 @@ namespace Gala {
             background = new FramedBackground (wm);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor);
+            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
+                width = monitor_geometry.width,
+                height = monitor_geometry.height,
+            };
             window_container.window_selected.connect ((w) => { window_selected (w); });
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+            window_container.requested_close.connect (() => selected (true));
 
             icon_group = new IconGroup (wm, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));
