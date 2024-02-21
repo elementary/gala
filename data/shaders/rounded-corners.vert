@@ -12,6 +12,7 @@ uniform vec2  pixel_step;
 uniform float border_width;
 uniform vec4  border_color;
 uniform float exponent;
+uniform sampler2D tex;
 
 
 float circle_bounds(vec2 p, vec2 center, float clip_radius) {
@@ -80,6 +81,15 @@ float rounded_rect_coverage(vec2 p, vec4 bounds, float clip_radius, float expone
 
 void main() {
   vec2 texture_coord = cogl_tex_coord0_in.xy / pixel_step;
+  vec2 uv = cogl_tex_coord0_in.xy;
+
+  vec4 sample = texture2D (tex, uv);
+  cogl_color_out = vec4 (
+    sample.r,
+    sample.b,
+    sample.g,
+    sample.a
+  );
 
   float outer_alpha = rounded_rect_coverage(texture_coord, bounds, clip_radius, exponent);
 
@@ -98,6 +108,6 @@ void main() {
       cogl_color_out = mix(border_rect, cogl_color_out, outer_alpha);
     }
   } else {
-    cogl_color_out *= outer_alpha;
+    cogl_color_out = cogl_color_out * outer_alpha;
   }
 }
