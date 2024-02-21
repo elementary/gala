@@ -6,8 +6,10 @@
  public class Gala.Daemon.MonitorLabel : Hdy.Window {
     private const int SPACING = 12;
     private const string COLORED_STYLE_CSS = """
-        @define-color BG_COLOR %s;
-        @define-color TEXT_COLOR %s;
+    .%s {
+        background-color: alpha(%s, 0.8);
+        color: %s;
+    }
     """;
 
     public MonitorLabelInfo info { get; construct; }
@@ -17,9 +19,7 @@
     }
 
     construct {
-        child = new Gtk.Label (info.label) {
-            margin = 12
-        };
+        child = new Gtk.Label (info.label);
 
         title = "LABEL-%i".printf (info.monitor);
 
@@ -44,10 +44,15 @@
 
         var provider = new Gtk.CssProvider ();
         try {
-            provider.load_from_data (COLORED_STYLE_CSS.printf (info.background_color, info.text_color));
+            provider.load_from_data (COLORED_STYLE_CSS.printf (title, info.background_color, info.text_color));
+            get_style_context ().add_class (title);
+            get_style_context ().add_class ("monitor-label");
 
-            get_style_context ().add_provider (provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-            get_style_context ().add_class ("colored");
+            Gtk.StyleContext.add_provider_for_screen (
+                Gdk.Screen.get_default (),
+                provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            );
         } catch (Error e) {
             warning ("Failed to load CSS: %s", e.message);
         }
