@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private ManagedClient notifications_server;
+
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -139,6 +141,13 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
+
+            notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
+            notifications_server.window_created.connect ((window) => {
+                var actor = (Meta.WindowActor) window.get_compositor_private ();
+                clutter_actor_reparent (actor, notification_group);
+                notification_stack.show_notification (actor, enable_animations);
+            });
 
             show_stage ();
 
