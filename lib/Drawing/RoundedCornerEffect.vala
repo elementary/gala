@@ -7,7 +7,7 @@ public class RoundedCornerEffect : Clutter.ShaderEffect {
 
     construct {
         try {
-            var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/rounded-corners.vert", GLib.ResourceLookupFlags.NONE);
+            var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/rounded-corners.frag", GLib.ResourceLookupFlags.NONE);
             set_shader_source ((string) bytes.get_data ());
         } catch (Error e) {
             critical ("Unable to load rounded-corner.vert: %s", e.message);
@@ -18,7 +18,7 @@ public class RoundedCornerEffect : Clutter.ShaderEffect {
         base.set_actor (actor);
         warning ("SET ACTOR");
 
-        float border_width = 2;
+        float border_width = 0;
         float radius = 10;
 
         float[] bounds = {actor.x, actor.y, actor.width, actor.height};
@@ -26,7 +26,7 @@ public class RoundedCornerEffect : Clutter.ShaderEffect {
         float[] pixel_step = {1.0f / actor.width, 1.0f / actor.height};
 
         float[] border_color = {0x2e, 0x34, 0x36, 0xff};
-        float inner_radius = radius - 2;
+        float inner_radius = radius - border_width;
 
         var bounds_val = new Value (typeof (Clutter.ShaderFloat));
         Clutter.Value.set_shader_float (bounds_val, bounds);
@@ -57,7 +57,7 @@ public class RoundedCornerEffect : Clutter.ShaderEffect {
         set_uniform_value ("border_width", border_width_val);
 
         var exponent_val = new Value (Type.FLOAT);
-        exponent_val.set_float (3);
+        exponent_val.set_float (1);
         set_uniform_value ("exponent", exponent_val);
 
         queue_repaint ();
