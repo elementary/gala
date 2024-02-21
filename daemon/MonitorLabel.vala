@@ -42,13 +42,11 @@
             (int) (info.y / scale_factor) + SPACING
         );
 
-
-        get_style_context ().add_class ("monitor-label");
-
         var provider = new Gtk.CssProvider ();
         try {
             provider.load_from_data (COLORED_STYLE_CSS.printf (title, info.background_color, info.text_color));
             get_style_context ().add_class (title);
+            get_style_context ().add_class ("monitor-label");
 
             Gtk.StyleContext.add_provider_for_screen (
                 Gdk.Screen.get_default (),
