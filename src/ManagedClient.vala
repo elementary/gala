@@ -9,7 +9,7 @@ public class Gala.ManagedClient : Object {
     public Meta.Display display { get; construct; }
     public string[] args { get; construct; }
 
-    private Meta.WaylandClient? daemon_client;
+    public Meta.WaylandClient? wayland_client { get; private set; }
 
     public ManagedClient (Meta.Display display, string[] args) {
         Object (display: display, args: args);
@@ -20,7 +20,7 @@ public class Gala.ManagedClient : Object {
             start_wayland.begin ();
 
             display.window_created.connect ((window) => {
-                if (daemon_client != null && daemon_client.owns_window (window)) {
+                if (wayland_client != null && wayland_client.owns_window (window)) {
                     window_created (window);
                 }
             });
@@ -30,15 +30,14 @@ public class Gala.ManagedClient : Object {
     }
 
     private async void start_wayland () {
-        warning ("START WAYL:AND");
         var subprocess_launcher = new GLib.SubprocessLauncher (STDERR_PIPE | STDOUT_PIPE);
         try {
 #if HAS_MUTTER44
-            daemon_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
+            wayland_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
 #else
-            daemon_client = new Meta.WaylandClient (subprocess_launcher);
+            wayland_client = new Meta.WaylandClient (subprocess_launcher);
 #endif
-            var subprocess = daemon_client.spawnv (display, args);
+            var subprocess = wayland_client.spawnv (display, args);
 
             yield subprocess.wait_async ();
 

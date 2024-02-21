@@ -143,11 +143,6 @@ namespace Gala {
             daemon_manager = new DaemonManager (get_display ());
 
             notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
-            notifications_server.window_created.connect ((window) => {
-                var actor = (Meta.WindowActor) window.get_compositor_private ();
-                clutter_actor_reparent (actor, notification_group);
-                notification_stack.show_notification (actor, enable_animations);
-            });
 
             show_stage ();
 
@@ -1460,6 +1455,16 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
+            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
+                window.window_type == NOTIFICATION
+            ) {
+                clutter_actor_reparent (actor, notification_group);
+                notification_stack.show_notification (actor, enable_animations);
+
+                map_completed (actor);
+                return;
+            }
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
                     var duration = AnimationDuration.HIDE;
@@ -1557,12 +1562,6 @@ namespace Gala {
                     dim_parent_window (window, true);
 
                     break;
-                case Meta.WindowType.NOTIFICATION:
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                    map_completed (actor);
-
-                    break;
                 default:
                     map_completed (actor);
                     break;
@@ -1585,6 +1584,29 @@ namespace Gala {
             }
 
             actor.remove_all_transitions ();
+
+            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
+                window.window_type == NOTIFICATION
+            ) {
+                if (enable_animations) {
+                    destroying.add (actor);
+                }
+
+                notification_stack.destroy_notification (actor, enable_animations);
+
+                if (enable_animations) {
+                    ulong destroy_handler_id = 0UL;
+                    destroy_handler_id = actor.transitions_completed.connect (() => {
+                        actor.disconnect (destroy_handler_id);
+                        destroying.remove (actor);
+                        destroy_completed (actor);
+                    });
+                } else {
+                    destroy_completed (actor);
+                }
+
+                return;
+            }
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
@@ -1659,25 +1681,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-                    break;
-                case Meta.WindowType.NOTIFICATION:
-                    if (enable_animations) {
-                        destroying.add (actor);
-                    }
-
-                    notification_stack.destroy_notification (actor, enable_animations);
-
-                    if (enable_animations) {
-                        ulong destroy_handler_id = 0UL;
-                        destroy_handler_id = actor.transitions_completed.connect (() => {
-                            actor.disconnect (destroy_handler_id);
-                            destroying.remove (actor);
-                            destroy_completed (actor);
-                        });
-                    } else {
-                        destroy_completed (actor);
-                    }
-
                     break;
                 default:
                     destroy_completed (actor);
