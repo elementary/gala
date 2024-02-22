@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcherIcon : Clutter.Actor {
+public class Gala.WindowSwitcherIcon : RoundedCornerActor {
     private const int WRAPPER_BORDER_RADIUS = 3;
 
     public Meta.Window window { get; construct; }
 
     private WindowIcon icon;
-    private Clutter.Canvas canvas;
 
     private bool _selected = false;
     public bool selected {
@@ -18,7 +17,19 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         }
         set {
             _selected = value;
-            canvas.invalidate ();
+            if (value) {
+                var rgba = InternalUtils.get_theme_accent_color ();
+                background_color = {
+                    (uint8) (rgba.red * 255),
+                    (uint8) (rgba.green * 255),
+                    (uint8) (rgba.blue * 255),
+                    (uint8) (rgba.alpha * 255)
+                };
+            } else {
+                background_color = null;
+            }
+
+            queue_redraw ();
         }
     }
 
@@ -29,10 +40,8 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         }
         set {
             _scale_factor = value;
-            canvas.scale_factor = _scale_factor;
 
             update_size ();
-            canvas.invalidate ();
         }
     }
 
@@ -43,17 +52,8 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
-        var rgba = InternalUtils.get_theme_accent_color ();
-        background_color = {
-            (uint8) (rgba.red * 255),
-            (uint8) (rgba.green * 255),
-            (uint8) (rgba.blue * 255),
-            (uint8) (rgba.alpha * 255)
-        };
-
+        border_radius = WRAPPER_BORDER_RADIUS;
         reactive = true;
-
-        add_effect (new RoundedCornerEffect ());
 
         this.scale_factor = scale_factor;
     }
@@ -64,33 +64,5 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
             scale_factor
         );
         set_size (indicator_size, indicator_size);
-        canvas.set_size (indicator_size, indicator_size);
     }
-
-    //  private bool draw_background (Cairo.Context ctx, int width, int height) {
-    //      ctx.save ();
-    //      ctx.set_operator (Cairo.Operator.CLEAR);
-    //      ctx.paint ();
-    //      ctx.clip ();
-    //      ctx.reset_clip ();
-
-    //      if (selected) {
-    //          // draw rect
-    //          var rgba = InternalUtils.get_theme_accent_color ();
-    //          ctx.set_source_rgba (
-    //              rgba.red,
-    //              rgba.green,
-    //              rgba.blue,
-    //              rgba.alpha
-    //          );
-    //          var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
-    //          Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
-    //          ctx.set_operator (Cairo.Operator.SOURCE);
-    //          ctx.fill ();
-
-    //          ctx.restore ();
-    //      }
-
-    //      return true;
-    //  }
 }

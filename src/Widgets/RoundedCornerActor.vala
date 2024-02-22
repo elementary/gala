@@ -1,4 +1,7 @@
 public class Gala.RoundedCornerActor : Clutter.Actor {
+    public int border_radius { get; set; }
+    public new Clutter.Color? background_color { get; set; }
+
     private Cogl.Pipeline pipeline;
     private Cairo.ImageSurface cached_surface;
     private Cairo.Context cached_context;
@@ -8,12 +11,13 @@ public class Gala.RoundedCornerActor : Clutter.Actor {
 
     construct {
         pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-
-        reactive = true;
     }
 
     public override void paint (Clutter.PaintContext context) {
-        base.paint (context);
+        if (background_color == null) {
+            base.paint (context);
+            return;
+        }
 
         if (cached_surface == null || last_width != (int) width || last_height != (int) height) {
             cached_texture = null;
@@ -27,8 +31,8 @@ public class Gala.RoundedCornerActor : Clutter.Actor {
         var surface = cached_surface;
         var ctx = cached_context;
 
-        ctx.set_source_rgba (255, 255, 255, get_paint_opacity ());
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 9);
+        ctx.set_source_rgba (background_color.red, background_color.green, background_color.blue, background_color.alpha);
+        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, border_radius);
         ctx.set_operator (Cairo.Operator.SOURCE);
         ctx.fill ();
         ctx.restore ();
@@ -50,16 +54,16 @@ public class Gala.RoundedCornerActor : Clutter.Actor {
             debug (e.message);
         }
 
-        var color = Cogl.Color.from_4ub (255, 255, 255, get_paint_opacity ());
+        var actual_opacity = get_paint_opacity () > background_color.alpha ? background_color.alpha : get_paint_opacity ();
+
+        var color = Cogl.Color.from_4ub (background_color.red, background_color.green, background_color.blue, actual_opacity);
         color.premultiply ();
 
         pipeline.set_color (color);
 
-        //  var radius = 5;
-        //  var width_without_radius = width - 2 * radius;
-        //  float[] rects = {radius, radius, }
-
         unowned var fb = context.get_framebuffer ();
         fb.draw_rectangle (pipeline, 0, 0, width, height);
+
+        base.paint (context);
     }
 }

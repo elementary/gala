@@ -13,7 +13,7 @@ public class Gala.WindowSwitcher : RoundedCornerActor {
 
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
-    private const int ANIMATION_DURATION = 600;
+    private const int ANIMATION_DURATION = 200;
     // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
     private const int GESTURE_RANGE_LIMIT = 10;
 
@@ -82,9 +82,10 @@ public class Gala.WindowSwitcher : RoundedCornerActor {
             css_class = "window-switcher",
             scale_factor = scaling_factor
         };
-        //  add_effect (effect);
+        add_effect (effect);
 
-        //  background_color = { 0x2e, 0x34, 0x36, 0xff };
+        border_radius = 9;
+        background_color = { 0x2e, 0x34, 0x36, 0xff };
         //  add_effect (new RoundedCornerEffect ());
 
         // Redraw the components if the colour scheme changes.
