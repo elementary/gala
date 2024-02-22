@@ -12,6 +12,7 @@ uniform vec2  pixel_step;
 uniform float border_width;
 uniform vec4  border_color;
 uniform float exponent;
+uniform float opacity;
 uniform sampler2D tex;
 
 
@@ -89,7 +90,8 @@ void main() {
     sample.g,
     sample.b,
     sample.a
-  );
+  ) * opacity;
+  // cogl_color_out = cogl_color_in;
 
   float outer_alpha = rounded_rect_coverage(texture_coord, bounds, clip_radius, exponent);
 

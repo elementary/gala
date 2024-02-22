@@ -62,4 +62,17 @@ public class RoundedCornerEffect : Clutter.ShaderEffect {
 
         queue_repaint ();
     }
+
+    public override void paint_target (Clutter.PaintNode node, Clutter.PaintContext context) {
+        base.paint_target (node, context);
+
+        var pipeline = get_pipeline ();
+        pipeline.set_blend ("RGBA = ADD (SRC_COLOR, DST_COLOR*(1-SRC_COLOR[A]))");
+
+        var opacity_val = new Value (Type.FLOAT);
+        opacity_val.set_float (actor.get_paint_opacity () / 255);
+        set_uniform_value ("opacity", opacity_val);
+
+        warning ("PAINT TARGET: %i", actor.get_paint_opacity ());
+    }
 }

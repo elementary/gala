@@ -7,13 +7,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : Clutter.Actor {
+public class Gala.WindowSwitcher : RoundedCornerActor {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
-    private const int ANIMATION_DURATION = 200;
+    private const int ANIMATION_DURATION = 600;
     // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
     private const int GESTURE_RANGE_LIMIT = 10;
 
@@ -68,9 +68,9 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        canvas = new Clutter.Canvas ();
-        canvas.scale_factor = scaling_factor;
-        set_content (canvas);
+        //  canvas = new Clutter.Canvas ();
+        //  canvas.scale_factor = scaling_factor;
+        //  set_content (canvas);
 
         opacity = 0;
 
@@ -82,7 +82,10 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             css_class = "window-switcher",
             scale_factor = scaling_factor
         };
-        add_effect (effect);
+        //  add_effect (effect);
+
+        //  background_color = { 0x2e, 0x34, 0x36, 0xff };
+        //  add_effect (new RoundedCornerEffect ());
 
         // Redraw the components if the colour scheme changes.
         granite_settings.notify["prefers-color-scheme"].connect (() => {
