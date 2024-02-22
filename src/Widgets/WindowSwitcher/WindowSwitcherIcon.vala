@@ -51,8 +51,6 @@ public class Gala.WindowSwitcherIcon : RoundedCornerActor {
         icon = new WindowIcon (window, InternalUtils.scale_to_int (icon_size, scale_factor));
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
-
-        border_radius = WRAPPER_BORDER_RADIUS;
         reactive = true;
 
         this.scale_factor = scale_factor;
@@ -64,5 +62,6 @@ public class Gala.WindowSwitcherIcon : RoundedCornerActor {
             scale_factor
         );
         set_size (indicator_size, indicator_size);
+        border_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
     }
 }
