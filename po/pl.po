@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
 "PO-Revision-Date: 2024-02-23 10:12+0000\n"
-"Last-Translator: Marcin Serwin <marcin.serwin0@protonmail.com>\n"
+"Last-Translator: Sebastian Bernat <srakap330@gmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
 "Language: pl\n"
@@ -98,7 +98,7 @@ msgstr "Nie udało się otworzyć Ustawień Systemowych"
 
 #: daemon/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Odnośnik dla schematu URI \"settings://\" musi zostać zainstalowany."
 
 #: daemon/WindowMenu.vala:36
 msgid "Hide"
