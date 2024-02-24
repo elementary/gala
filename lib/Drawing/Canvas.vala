@@ -10,7 +10,7 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     private float scale_factor = 1.0f;
 
     private Cogl.Texture? texture = null;
-    private Cogl.Bitmap? bitmap = null;
+    private Cairo.ImageSurface? surface = null;
 
     private bool dirty = false;
 
@@ -18,39 +18,12 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
         dirty = true;
         int real_width = (int) Math.ceilf (width * scale_factor);
         int real_height = (int) Math.ceilf (height * scale_factor);
-        if (bitmap == null) {
-            unowned Cogl.Context ctx = Clutter.get_default_backend ().get_cogl_context ();
-            bitmap = new Cogl.Bitmap.with_size (ctx, real_width, real_height, Cogl.PixelFormat.CAIRO_ARGB32_COMPAT);
-        }
 
-        unowned Cogl.Buffer? buffer = bitmap.get_buffer ();
-        if (buffer == null) {
-            return;
-        }
-
-        buffer.set_update_hint (Cogl.BufferUpdateHint.DYNAMIC);
-        void* data = buffer.map (Cogl.BufferAccess.READ_WRITE, Cogl.BufferMapHint.DISCARD);
-        Cairo.ImageSurface surface;
-        bool mapped_buffer;
-        if (data != null) {
-            var bitmap_stride = bitmap.get_rowstride ();
-            surface = new Cairo.ImageSurface.for_data ((uchar[]) data, Cairo.Format.ARGB32, real_width, real_height, bitmap_stride);
-            mapped_buffer = true;
-        } else {
-            surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, real_width, real_height);
-            mapped_buffer = false;
-        }
-
+        surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, real_width, real_height);
         surface.set_device_scale (scale_factor, scale_factor);
         var cr = new Cairo.Context (surface);
-        draw ((owned) cr, width, height, scale_factor);
 
-        if (mapped_buffer) {
-            buffer.unmap ();
-        } else {
-            int size = surface.get_stride () * height;
-            buffer.set_data (0, surface.get_data (), size);
-        }
+        draw ((owned) cr, width, height, scale_factor);
     }
 
     public bool get_preferred_size (out float out_width, out float out_height) {
@@ -77,7 +50,7 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     public void invalidate_size () { }
 
     public void paint_content (Clutter.Actor actor, Clutter.PaintNode root, Clutter.PaintContext paint_context) {
-        if (bitmap == null) {
+        if (surface == null) {
             return;
         }
 
@@ -86,15 +59,26 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
         }
 
         if (texture == null) {
-            texture = new Cogl.Texture2D.from_bitmap (bitmap);
+            try {
+                texture = new Cogl.Texture2D.from_data (
+                    context.get_framebuffer ().get_context (),
+                    width,
+                    height,
+                    Cogl.PixelFormat.BGRA_8888_PRE,
+                    surface.get_stride (),
+                    surface.get_data ()
+                );
+            } catch (Error e) {
+                critical ("Failed to create texture: %s", e.message);
+            }
         }
 
         if (texture == null) {
             return;
         }
 
-        var node = actor.create_texture_paint_node (texture);
-        root.add_child (node);
+        //  var node = actor.create_texture_paint_node (texture);
+        //  root.add_child (node);
 
         dirty = false;
     }
