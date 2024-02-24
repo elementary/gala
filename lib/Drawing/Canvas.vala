@@ -77,8 +77,8 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
             return;
         }
 
-        //  var node = actor.create_texture_paint_node (texture);
-        //  root.add_child (node);
+        var node = actor.create_texture_paint_node (texture);
+        root.add_child (node);
 
         dirty = false;
     }
