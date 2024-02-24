@@ -1,3 +1,8 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: LGPL-2.0-or-later
+ */
+
 public class Gala.CanvasActor : Clutter.Actor {
     private Clutter.Canvas canvas;
 
