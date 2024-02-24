@@ -20,21 +20,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
     private static Gee.HashMap<string,Shadow> shadow_cache;
     // Delay the style context creation at render stage as Gtk need to access
     // the current display.
-    private static GLib.Once<Gtk.StyleContext> _style_context;
 
     static construct {
         shadow_cache = new Gee.HashMap<string,Shadow> ();
-    }
-
-    private static Gtk.StyleContext create_style_context () {
-        var style_path = new Gtk.WidgetPath ();
-        style_path.append_type (typeof (Gtk.Window));
-
-        var style_context = new Gtk.StyleContext ();
-        style_context.add_provider (Gala.Utils.get_gala_css (), Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK);
-        style_context.add_class ("decoration");
-        style_context.set_path (style_path);
-        return style_context;
     }
 
     public int shadow_size { get; construct; }
@@ -60,7 +48,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread = 2) {
         var old_key = current_key;
         current_key = "%ix%i:%i".printf (width, height, shadow_size);
         if (old_key == current_key) {
@@ -77,26 +65,22 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return shadow.texture;
         }
 
+        // fill a new texture for this size
+        var buffer = new Granite.Drawing.BufferSurface (width, height);
+        buffer.context.rectangle (
+            shadow_size - shadow_spread,
+            shadow_size - shadow_spread,
+            width - shadow_size * 2 + shadow_spread * 2,
+            height - shadow_size * 2 + shadow_spread * 2
+        );
+        buffer.context.set_source_rgba (0, 0, 0, 0.7);
+        buffer.context.fill ();
+
+        buffer.exponential_blur (shadow_size / 2);
+
         var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
         var cr = new Cairo.Context (surface);
-        cr.set_source_rgba (0, 0, 0, 0);
-        cr.fill ();
-
-        cr.set_operator (Cairo.Operator.OVER);
-        cr.save ();
-        cr.scale (scale_factor, scale_factor);
-        unowned var style_context = _style_context.once (create_style_context);
-        style_context.save ();
-        if (css_class != null) {
-            style_context.add_class (css_class);
-        }
-
-        style_context.set_scale ((int) Math.round (scale_factor));
-        var size = shadow_size * scale_factor;
-        style_context.render_background (cr, shadow_size, shadow_size, (width - size * 2) / scale_factor, (height - size * 2) / scale_factor);
-        style_context.restore ();
-        cr.restore ();
-
+        cr.set_source_surface (buffer.surface, 0, 0);
         cr.paint ();
 
         try {
