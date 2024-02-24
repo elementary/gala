@@ -867,26 +867,11 @@ public class Gala.WindowClone : Clutter.Actor {
      * Border to show around the selected window when using keyboard navigation.
      */
     private class ActiveShape : CanvasActor {
-        private static int border_radius = -1;
+        private const int BORDER_RADIUS = 16;
         private const double COLOR_OPACITY = 0.8;
 
         construct {
             notify["opacity"].connect (invalidate);
-        }
-
-        private void create_gtk_objects () {
-            var label_widget_path = new Gtk.WidgetPath ();
-            label_widget_path.append_type (typeof (Gtk.Label));
-
-            var style_context = new Gtk.StyleContext ();
-            style_context.add_class (Granite.STYLE_CLASS_CARD);
-            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
-            style_context.set_path (label_widget_path);
-
-            border_radius = style_context.get_property (
-                Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-                Gtk.StateFlags.NORMAL
-            ).get_int () * 4;
         }
 
         public void invalidate () {
@@ -894,10 +879,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         protected override void draw (Cairo.Context cr, int width, int height) {
-            if (border_radius == -1) {
-                create_gtk_objects ();
-            }
-
             if (!visible || opacity == 0) {
                 return;
             }
@@ -909,7 +890,7 @@ public class Gala.WindowClone : Clutter.Actor {
             cr.paint ();
             cr.restore ();
 
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, BORDER_RADIUS);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
         }
