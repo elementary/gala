@@ -866,17 +866,11 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Border to show around the selected window when using keyboard navigation.
      */
-    private class ActiveShape : Clutter.Actor {
+    private class ActiveShape : CanvasActor {
         private static int border_radius = -1;
         private const double COLOR_OPACITY = 0.8;
 
-        private Clutter.Canvas background_canvas;
-
         construct {
-            background_canvas = new Clutter.Canvas ();
-            background_canvas.draw.connect (draw_background);
-            content = background_canvas;
-
             notify["opacity"].connect (invalidate);
         }
 
@@ -896,16 +890,16 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         public void invalidate () {
-            background_canvas.invalidate ();
+            content.invalidate ();
         }
 
-        private bool draw_background (Cairo.Context cr, int width, int height) {
+        protected override void draw (Cairo.Context cr, int width, int height) {
             if (border_radius == -1) {
                 create_gtk_objects ();
             }
 
             if (!visible || opacity == 0) {
-                return Clutter.EVENT_PROPAGATE;
+                return;
             }
 
             var color = InternalUtils.get_theme_accent_color ();
@@ -918,15 +912,6 @@ public class Gala.WindowClone : Clutter.Actor {
             Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
-
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        public override void allocate (Clutter.ActorBox box) {
-            base.allocate (box);
-
-            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
-            invalidate ();
         }
     }
 }
