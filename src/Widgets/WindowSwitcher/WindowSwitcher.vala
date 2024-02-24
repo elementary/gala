@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : Clutter.Actor {
+public class Gala.WindowSwitcher : CanvasActor {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
@@ -25,7 +25,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
     private Granite.Settings granite_settings;
-    private Clutter.Canvas canvas;
     private Clutter.Actor container;
     private Clutter.Text caption;
 
@@ -68,10 +67,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        canvas = new Clutter.Canvas ();
-        canvas.scale_factor = scaling_factor;
-        set_content (canvas);
-
         opacity = 0;
 
         // Carry out the initial draw
@@ -86,12 +81,12 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
         // Redraw the components if the colour scheme changes.
         granite_settings.notify["prefers-color-scheme"].connect (() => {
-            canvas.invalidate ();
+            content.invalidate ();
             create_components ();
         });
 
         gtk_settings.notify["gtk-theme-name"].connect (() => {
-            canvas.invalidate ();
+            content.invalidate ();
             create_components ();
         });
 
@@ -100,16 +95,13 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
             if (cur_scale != scaling_factor) {
                 scaling_factor = cur_scale;
-                canvas.scale_factor = scaling_factor;
                 effect.scale_factor = scaling_factor;
                 create_components ();
             }
         });
-
-        canvas.draw.connect (draw);
     }
 
-    private bool draw (Cairo.Context ctx, int width, int height) {
+    protected override void draw (Cairo.Context ctx, int width, int height) {
         if (style_context == null) { // gtk is not initialized yet
             create_gtk_objects ();
         }
@@ -133,8 +125,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         style_context.render_background (ctx, 0, 0, width, height);
         style_context.render_frame (ctx, 0, 0, width, height);
         ctx.restore ();
-
-        return true;
     }
 
     private void create_components () {
@@ -371,8 +361,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
 
         var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
         set_size ((int) nat_width, switcher_height);
-        canvas.set_size ((int) nat_width, switcher_height);
-        canvas.invalidate ();
+        content.invalidate ();
 
         // container width might have changed, so we must update caption width too
         update_caption_text ();

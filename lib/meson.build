@@ -8,6 +8,7 @@ gala_lib_sources = files(
     'Constants.vala',
     'DragDropAction.vala',
     'Drawing/BufferSurface.vala',
+    'Drawing/CanvasActor.vala',
     'Drawing/Color.vala',
     'Drawing/Utilities.vala',
     'Plugin.vala',
