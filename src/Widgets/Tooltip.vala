@@ -7,15 +7,10 @@
 /**
  * Clutter actor to display text in a tooltip-like component.
  */
-public class Gala.Tooltip : Clutter.Actor {
+public class Gala.Tooltip : CanvasActor {
     private static Clutter.Color text_color;
     private static Gtk.Border padding;
     private static Gtk.StyleContext style_context;
-
-    /**
-     * Canvas to draw the Tooltip background.
-     */
-    private Clutter.Canvas background_canvas;
 
     /**
      * Actor to display the Tooltip text.
@@ -38,11 +33,7 @@ public class Gala.Tooltip : Clutter.Actor {
         text = "";
         max_width = 200;
 
-        background_canvas = new Clutter.Canvas ();
-        background_canvas.draw.connect (draw_background);
-        content = background_canvas;
-
-        draw ();
+        resize ();
     }
 
     private static void create_gtk_objects () {
@@ -79,7 +70,7 @@ public class Gala.Tooltip : Clutter.Actor {
         text = new_text;
 
         if (redraw) {
-            draw ();
+            resize ();
         }
     }
 
@@ -87,11 +78,11 @@ public class Gala.Tooltip : Clutter.Actor {
         max_width = new_max_width;
 
         if (redraw) {
-            draw ();
+            resize ();
         }
     }
 
-    private void draw () {
+    private void resize () {
         visible = (text.length != 0);
 
         if (!visible) {
@@ -120,13 +111,12 @@ public class Gala.Tooltip : Clutter.Actor {
         // Adjust the size of the tooltip to the text
         width = text_actor.width + padding.left + padding.right;
         height = text_actor.height + padding.top + padding.bottom;
-        background_canvas.set_size ((int) width, (int) height);
 
-        // And paint the background
-        background_canvas.invalidate ();
+        //Failsafe that if by accident the size doesn't change we still redraw
+        content.invalidate ();
     }
 
-    private static bool draw_background (Cairo.Context ctx, int width, int height) {
+    protected override void draw (Cairo.Context ctx, int width, int height) {
         if (style_context == null) {
             create_gtk_objects ();
         }
@@ -141,7 +131,5 @@ public class Gala.Tooltip : Clutter.Actor {
         style_context.render_background (ctx, 0, 0, width, height);
 
         ctx.restore ();
-
-        return false;
     }
 }
