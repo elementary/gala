@@ -541,7 +541,7 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button.opacity = show ? 255 : 0;
         window_title.opacity = close_button.opacity;
 
-        window_title.set_text (window.get_title () ?? "", false);
+        window_title.set_text (window.get_title () ?? "");
         window_title.set_max_width (dest_width - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, scale_factor));
         set_window_title_position (dest_width, dest_height, scale_factor);
     }
