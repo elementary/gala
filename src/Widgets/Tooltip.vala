@@ -8,7 +8,6 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : CanvasActor {
-    private const int MARGIN = 6;
     /**
      * Actor to display the Tooltip text.
      */
@@ -79,7 +78,7 @@ public class Gala.Tooltip : CanvasActor {
             background_color.alpha
         );
 
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 5);
+        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, 4);
         ctx.fill ();
 
         ctx.restore ();

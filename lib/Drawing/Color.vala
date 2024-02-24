@@ -13,13 +13,9 @@ namespace Gala.Drawing {
     * A class containing an RGBA color and methods for more powerful color manipulation.
     */
     public class Color : GLib.Object, SettingsSerializable {
-        public const Gdk.RGBA LIGHT_BACKGROUND = { (250f / 255f), (250f / 255f), (250f / 255f), 1f};
-        public const Gdk.RGBA DARK_BACKGROUND = { (51f / 255f), (51f / 255f), (51f / 255f), 1f};
-        public const Gdk.RGBA TOOLTIP_BACKGROUND = { 0f, 0f, 0f, 1f};
-        public const Gdk.RGBA TOOLTIP_TEXT_COLOR = { 1f, 1f, 1f, 1f};
-        //  public const Gdk.RGBA tooltip_background;
-        //  public const Gdk.RGBA light_text;
-        //  public const Gdk.RGBA dark_text;
+        public const Gdk.RGBA TOOLTIP_BACKGROUND = { 0, 0, 0, 1};
+        public const Gdk.RGBA TOOLTIP_TEXT_COLOR = { 1, 1, 1, 1};
+
         /**
         * The value of the red channel, with 0 being the lowest value and 1.0 being the greatest value.
         */
