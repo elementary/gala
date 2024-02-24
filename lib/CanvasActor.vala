@@ -20,6 +20,5 @@ public class Gala.CanvasActor : Clutter.Actor {
         canvas.set_scale_factor (get_resource_scale ());
     }
 
-    protected virtual void draw (Cairo.Context canvas, int width, int height) {
-    }
+    protected virtual void draw (Cairo.Context canvas, int width, int height) { }
 }
