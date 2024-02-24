@@ -15,7 +15,7 @@ public class Gala.Tooltip : Clutter.Actor {
     /**
      * Canvas to draw the Tooltip background.
      */
-    private Clutter.Canvas background_canvas;
+    private Gala.Drawing.Canvas background_canvas;
 
     /**
      * Actor to display the Tooltip text.
@@ -38,7 +38,7 @@ public class Gala.Tooltip : Clutter.Actor {
         text = "";
         max_width = 200;
 
-        background_canvas = new Clutter.Canvas ();
+        background_canvas = new Gala.Drawing.Canvas ();
         background_canvas.draw.connect (draw_background);
         content = background_canvas;
 
@@ -126,7 +126,7 @@ public class Gala.Tooltip : Clutter.Actor {
         background_canvas.invalidate ();
     }
 
-    private static bool draw_background (Cairo.Context ctx, int width, int height) {
+    private static void draw_background (Cairo.Context ctx, int width, int height) {
         if (style_context == null) {
             create_gtk_objects ();
         }
@@ -141,7 +141,5 @@ public class Gala.Tooltip : Clutter.Actor {
         style_context.render_background (ctx, 0, 0, width, height);
 
         ctx.restore ();
-
-        return false;
     }
 }

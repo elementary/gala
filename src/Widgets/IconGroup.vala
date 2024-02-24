@@ -62,7 +62,7 @@ namespace Gala {
         construct {
             reactive = true;
 
-            var canvas = new Clutter.Canvas ();
+            var canvas = new Gala.Drawing.Canvas ();
             canvas.draw.connect (draw);
             content = canvas;
 
@@ -97,13 +97,13 @@ namespace Gala {
 #endif
         }
 
-        private bool resize_canvas () {
+        private void resize_canvas () {
             var size = InternalUtils.scale_to_int (SIZE, scale_factor);
 
             width = size;
             height = size;
 
-            return ((Clutter.Canvas) content).set_size (size, size);
+            ((Gala.Drawing.Canvas) content).set_size (size, size);
         }
 
         /**
@@ -206,16 +206,14 @@ namespace Gala {
          * Trigger a redraw
          */
         public void redraw () {
-            if (!resize_canvas ()) {
-                content.invalidate ();
-            }
+            content.invalidate ();
         }
 
         /**
          * Draw the background or plus sign and do layouting. We won't lose performance here
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
-        private bool draw (Cairo.Context cr) {
+        private void draw (Cairo.Context cr) {
             clear_effects ();
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
@@ -228,7 +226,7 @@ namespace Gala {
                 var icon = (WindowIconActor) icon_container.get_child_at_index (0);
                 icon.place (0, 0, 64, scale_factor);
 
-                return false;
+                return;
             }
 
             // more than one => we need a folder
@@ -289,7 +287,7 @@ namespace Gala {
             if (n_windows < 1) {
                 if (!Meta.Prefs.get_dynamic_workspaces ()
                     || workspace_index != manager.get_n_workspaces () - 1)
-                    return false;
+                    return;
 
                 var buffer = new Drawing.BufferSurface (scaled_size, scaled_size);
                 var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
@@ -330,7 +328,7 @@ namespace Gala {
                 cr.set_source_surface (buffer.surface, 0, 0);
                 cr.paint ();
 
-                return false;
+                return;
             }
 
             int size;
@@ -391,7 +389,7 @@ namespace Gala {
                 }
             }
 
-            return false;
+            return;
         }
 
         private Clutter.Actor? drag_begin (float click_x, float click_y) {

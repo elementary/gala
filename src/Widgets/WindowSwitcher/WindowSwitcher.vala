@@ -25,7 +25,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
     private Granite.Settings granite_settings;
-    private Clutter.Canvas canvas;
+    private Drawing.Canvas canvas;
     private Clutter.Actor container;
     private Clutter.Text caption;
 
@@ -68,7 +68,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        canvas = new Clutter.Canvas ();
+        canvas = new Drawing.Canvas ();
         canvas.scale_factor = scaling_factor;
         set_content (canvas);
 
@@ -109,7 +109,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         canvas.draw.connect (draw);
     }
 
-    private bool draw (Cairo.Context ctx, int width, int height) {
+    private void draw (Cairo.Context ctx, int width, int height) {
         if (style_context == null) { // gtk is not initialized yet
             create_gtk_objects ();
         }
@@ -133,8 +133,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         style_context.render_background (ctx, 0, 0, width, height);
         style_context.render_frame (ctx, 0, 0, width, height);
         ctx.restore ();
-
-        return true;
     }
 
     private void create_components () {
