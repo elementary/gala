@@ -144,11 +144,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             container_nat_width //Ellipsize the label if it's longer than the icons
         );
 
-        if (preferred_nat_width > max_width) {
-            natural_width = max_width;
-        } else {
-            natural_width = preferred_nat_width;
-        }
+        natural_width = float.min (max_width, preferred_nat_width);
     }
 
     protected override void allocate (Clutter.ActorBox box) {
