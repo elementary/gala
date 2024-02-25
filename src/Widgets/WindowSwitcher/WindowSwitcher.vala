@@ -28,10 +28,6 @@ public class Gala.WindowSwitcher : CanvasActor {
     private Clutter.Actor container;
     private Clutter.Text caption;
 
-    private Gtk.WidgetPath widget_path;
-    private Gtk.StyleContext style_context;
-    private unowned Gtk.CssProvider? dark_style_provider = null;
-
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
         get {
@@ -67,23 +63,15 @@ public class Gala.WindowSwitcher : CanvasActor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-        var container_layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
         container = new Clutter.Actor () {
             reactive = true,
-            layout_manager = container_layout,
-            margin_left = margin,
-            margin_top = margin,
-            margin_right = margin
+            layout_manager = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL)
         };
 
         caption = new Clutter.Text () {
             font_name = CAPTION_FONT_NAME,
             ellipsize = END,
-            line_alignment = CENTER,
-            margin_left = margin,
-            margin_right = margin,
-            margin_bottom = margin
+            line_alignment = CENTER
         };
         caption.set_pivot_point (0.5f, 0.5f);
 
@@ -91,9 +79,10 @@ public class Gala.WindowSwitcher : CanvasActor {
         add_child (caption);
         opacity = 0;
         layout_manager = new Clutter.BoxLayout () {
-            orientation = VERTICAL,
-            spacing = margin
+            orientation = VERTICAL
         };
+
+        scale ();
 
         var effect = new ShadowEffect (40) {
             shadow_opacity = 200,
@@ -119,15 +108,63 @@ public class Gala.WindowSwitcher : CanvasActor {
             if (cur_scale != scaling_factor) {
                 scaling_factor = cur_scale;
                 effect.scale_factor = scaling_factor;
+                scale ();
             }
         });
     }
 
-    protected override void draw (Cairo.Context ctx, int width, int height) {
-        if (style_context == null) { // gtk is not initialized yet
-            create_gtk_objects ();
-        }
+    private void scale () {
+        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
+        caption.margin_left = margin;
+        caption.margin_right = margin;
+        caption.margin_bottom = margin;
+
+        container.margin_left = margin;
+        container.margin_right = margin;
+        container.margin_bottom = margin;
+        container.margin_top = margin;
+    }
+
+    protected override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
+        min_width = 0;
+
+        float preferred_nat_width;
+        base.get_preferred_width (for_height, null, out preferred_nat_width);
+
+        unowned var display = wm.get_display ();
+        var monitor = display.get_current_monitor ();
+        var geom = display.get_monitor_geometry (monitor);
+
+        float container_nat_width;
+        container.get_preferred_size (null, null, out container_nat_width, null);
+
+        var max_width = float.min (
+            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            container_nat_width //Ellipsize the label if it's longer than the icons
+        );
+
+        if (preferred_nat_width > max_width) {
+            natural_width = max_width;
+        } else {
+            natural_width = preferred_nat_width;
+        }
+    }
+
+    protected override void allocate (Clutter.ActorBox box) {
+        unowned var display = wm.get_display ();
+        var monitor = display.get_current_monitor ();
+        var geom = display.get_monitor_geometry (monitor);
+
+        set_position (
+            (int) (geom.x + (geom.width - box.get_width ()) / 2),
+            (int) (geom.y + (geom.height - box.get_height ()) / 2)
+        );
+
+        base.allocate (box);
+    }
+
+    protected override void draw (Cairo.Context ctx, int width, int height) {
         var caption_color = "#2e2e31";
 
         if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
@@ -142,32 +179,21 @@ public class Gala.WindowSwitcher : CanvasActor {
         ctx.clip ();
         ctx.reset_clip ();
 
+        var background_color = Drawing.Color.LIGHT_BACKGROUND;
         if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            unowned var gtksettings = Gtk.Settings.get_default ();
-            dark_style_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
-            style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-        } else if (dark_style_provider != null) {
-            style_context.remove_provider (dark_style_provider);
-            dark_style_provider = null;
+            background_color = Drawing.Color.DARK_BACKGROUND;
         }
 
-        ctx.set_operator (Cairo.Operator.OVER);
-        style_context.render_background (ctx, 0, 0, width, height);
-        style_context.render_frame (ctx, 0, 0, width, height);
+        ctx.set_operator (Cairo.Operator.SOURCE);
+        ctx.set_source_rgba (
+            background_color.red,
+            background_color.green,
+            background_color.blue,
+            background_color.alpha
+        );
+        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, InternalUtils.scale_to_int (4, scaling_factor));
+        ctx.fill ();
         ctx.restore ();
-    }
-
-    private void create_gtk_objects () {
-        widget_path = new Gtk.WidgetPath ();
-        widget_path.append_type (typeof (Gtk.Window));
-        widget_path.iter_set_object_name (-1, "window");
-
-        style_context = new Gtk.StyleContext ();
-        style_context.set_scale ((int)Math.round (scaling_factor));
-        style_context.set_path (widget_path);
-        style_context.add_class ("background");
-        style_context.add_class ("csd");
-        style_context.add_class ("unified");
     }
 
     [CCode (instance_pos = -1)]
@@ -324,31 +350,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         });
     }
 
-    protected override void allocate (Clutter.ActorBox box) {
-        unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
-
-        float nat_width;
-        container.get_preferred_size (null, null, out nat_width, null);
-
-        var max_width = float.min (
-            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
-            nat_width //Ellipsize the label if it's longer than the icons
-        );
-
-        if (box.get_width () > max_width) {
-            box.set_size (max_width, box.get_height ());
-        }
-
-        set_position (
-            (int) (geom.x + (geom.width - box.get_width ()) / 2),
-            (int) (geom.y + (geom.height - box.get_height ()) / 2)
-        );
-
-        base.allocate (box);
-    }
-
     private void open_switcher () {
         if (container.get_n_children () == 0) {
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
@@ -458,13 +459,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         var current_window = current_icon != null ? current_icon.window : null;
         var current_caption = current_window != null ? current_window.title : "n/a";
         caption.set_text (current_caption);
-
-        // Make caption smaller than the wrapper, so it doesn't overflow.
-        //  caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
-        //  caption.set_position (
-        //      InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
-        //      (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
-        //  );
     }
 
     public override void key_focus_out () {
