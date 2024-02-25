@@ -137,19 +137,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         natural_width = float.min (max_width, preferred_nat_width);
     }
 
-    protected override void allocate (Clutter.ActorBox box) {
-        unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
-
-        set_position (
-            (int) (geom.x + (geom.width - box.get_width ()) / 2),
-            (int) (geom.y + (geom.height - box.get_height ()) / 2)
-        );
-
-        base.allocate (box);
-    }
-
     protected override void draw (Cairo.Context ctx, int width, int height) {
         var caption_color = "#2e2e31";
 
@@ -345,6 +332,18 @@ public class Gala.WindowSwitcher : CanvasActor {
         if (opened) {
             return;
         }
+
+        float width, height;
+        get_preferred_size (null, null, out width, out height);
+
+        unowned var display = wm.get_display ();
+        var monitor = display.get_current_monitor ();
+        var geom = display.get_monitor_geometry (monitor);
+
+        set_position (
+            (int) (geom.x + (geom.width - width) / 2),
+            (int) (geom.y + (geom.height - height) / 2)
+        );
 
         opacity = 0;
         toggle_display (true);
