@@ -23,8 +23,6 @@ namespace Gala {
             public int scale;
         }
 
-        private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
-
         private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
         private static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
@@ -329,67 +327,6 @@ namespace Gala {
 #else
             return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
 #endif
-        }
-
-        /**
-         * Returns the pixbuf that is used for resize buttons throughout gala at a
-         * size of 36px
-         *
-         * @return the resize button pixbuf or null if it failed to load
-         */
-        public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
-            var height = scale_to_int (36, scale);
-
-            if (resize_pixbufs == null) {
-                resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-            }
-
-            if (resize_pixbufs[height] == null) {
-                try {
-                    resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        Config.RESOURCEPATH + "/buttons/resize.svg",
-                        -1,
-                        height,
-                        true
-                    );
-                } catch (Error e) {
-                    warning (e.message);
-                    return null;
-                }
-            }
-
-            return resize_pixbufs[height];
-        }
-
-        /**
-         * Creates a new reactive ClutterActor at 36px with the resize pixbuf
-         *
-         * @return The resize button actor
-         */
-        public static Clutter.Actor create_resize_button (float scale) {
-            var texture = new Clutter.Actor ();
-            var pixbuf = get_resize_button_pixbuf (scale);
-
-            texture.reactive = true;
-
-            if (pixbuf != null) {
-                try {
-                    var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
-                    texture.set_content (image);
-                    texture.set_size (pixbuf.width, pixbuf.height);
-                } catch (Error e) {}
-            } else {
-                // we'll just make this red so there's at least something as an
-                // indicator that loading failed. Should never happen and this
-                // works as good as some weird fallback-image-failed-to-load pixbuf
-                var size = scale_to_int (36, scale);
-                texture.set_size (size, size);
-                texture.background_color = { 255, 0, 0, 255 };
-            }
-
-            return texture;
         }
 
         private static Gtk.CssProvider gala_css = null;

@@ -20,23 +20,24 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     public Meta.WindowActor window_actor { get; construct; }
 
     private bool dynamic_container = false;
-
+    
     private Clutter.Actor clone;
     private Clutter.Actor container;
     private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
     private DragDropAction move_action;
-
+    
     private float begin_resize_width = 0.0f;
     private float begin_resize_height = 0.0f;
     private float resize_start_x = 0.0f;
     private float resize_start_y = 0.0f;
-
+    
     private bool resizing = false;
     private bool off_screen = false;
     private Clutter.Grab? grab = null;
-
+    
     private static unowned Meta.Window? previous_focus = null;
+    private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
     private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
@@ -118,7 +119,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         close_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.Y_AXIS, 0.0f));
         close_button.triggered.connect (on_close_click_clicked);
 
-        resize_button = Utils.create_resize_button (scale);
+        resize_button = create_resize_button (scale);
         resize_button.opacity = 0;
         resize_button.reactive = true;
         resize_button.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.X_AXIS, 1.0f));
@@ -562,5 +563,66 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             var window = window_actor.get_meta_window ();
             window.activate (Clutter.get_current_event_time ());
         }
+    }
+
+    /**
+     * Returns the pixbuf that is used for resize buttons throughout gala at a
+     * size of 36px
+     *
+     * @return the resize button pixbuf or null if it failed to load
+     */
+    private static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
+        var height = Utils.scale_to_int (36, scale);
+
+        if (resize_pixbufs == null) {
+            resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
+        }
+
+        if (resize_pixbufs[height] == null) {
+            try {
+                resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
+                    Config.RESOURCEPATH + "/buttons/resize.svg",
+                    -1,
+                    height,
+                    true
+                );
+            } catch (Error e) {
+                warning (e.message);
+                return null;
+            }
+        }
+
+        return resize_pixbufs[height];
+    }
+
+    /**
+     * Creates a new reactive ClutterActor at 36px with the resize pixbuf
+     *
+     * @return The resize button actor
+     */
+    private static Clutter.Actor create_resize_button (float scale) {
+        var texture = new Clutter.Actor ();
+        var pixbuf = get_resize_button_pixbuf (scale);
+
+        texture.reactive = true;
+
+        if (pixbuf != null) {
+            try {
+                var image = new Clutter.Image ();
+                Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+                image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+                texture.set_content (image);
+                texture.set_size (pixbuf.width, pixbuf.height);
+            } catch (Error e) {}
+        } else {
+            // we'll just make this red so there's at least something as an
+            // indicator that loading failed. Should never happen and this
+            // works as good as some weird fallback-image-failed-to-load pixbuf
+            var size = Utils.scale_to_int (36, scale);
+            texture.set_size (size, size);
+            texture.background_color = { 255, 0, 0, 255 };
+        }
+
+        return texture;
     }
 }
