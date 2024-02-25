@@ -11,7 +11,7 @@ public class Gala.Tooltip : CanvasActor {
     /**
      * Actor to display the Tooltip text.
      */
-    private Clutter.Text text_actor;
+    private Gala.Text text_actor;
 
     /**
      * Maximum width of the Tooltip.
@@ -29,7 +29,7 @@ public class Gala.Tooltip : CanvasActor {
             (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.alpha * uint8.MAX,
         };
 
-        text_actor = new Clutter.Text () {
+        text_actor = new Gala.Text () {
             margin_left = 6,
             margin_top = 6,
             margin_bottom = 6,
