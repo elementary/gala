@@ -27,6 +27,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     private Granite.Settings granite_settings;
     private Clutter.Actor container;
     private Clutter.Text caption;
+    private ShadowEffect shadow_effect;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -60,9 +61,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         unowned var gtk_settings = Gtk.Settings.get_default ();
         granite_settings = Granite.Settings.get_default ();
 
-        unowned var display = wm.get_display ();
-        scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
-
         container = new Clutter.Actor () {
             reactive = true,
             layout_manager = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL)
@@ -84,46 +82,38 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         scale ();
 
-        var effect = new ShadowEffect (40) {
+        shadow_effect = new ShadowEffect (40) {
             shadow_opacity = 200,
-            css_class = "window-switcher",
-            scale_factor = scaling_factor
+            css_class = "window-switcher"
         };
-        add_effect (effect);
+        add_effect (shadow_effect);
 
         container.button_release_event.connect (container_mouse_release);
 
         // Redraw the components if the colour scheme changes.
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            content.invalidate ();
-        });
+        granite_settings.notify["prefers-color-scheme"].connect (content.invalidate);
 
-        gtk_settings.notify["gtk-theme-name"].connect (() => {
-            content.invalidate ();
-        });
+        gtk_settings.notify["gtk-theme-name"].connect (content.invalidate);
 
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => {
-            var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
-            if (cur_scale != scaling_factor) {
-                scaling_factor = cur_scale;
-                effect.scale_factor = scaling_factor;
-                scale ();
-            }
-        });
+        monitor_manager.monitors_changed.connect (scale);
     }
 
     private void scale () {
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
 
-        caption.margin_left = margin;
-        caption.margin_right = margin;
-        caption.margin_bottom = margin;
+        shadow_effect.scale_factor = scaling_factor;
+
+        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
         container.margin_left = margin;
         container.margin_right = margin;
         container.margin_bottom = margin;
         container.margin_top = margin;
+
+        caption.margin_left = margin;
+        caption.margin_right = margin;
+        caption.margin_bottom = margin;
     }
 
     protected override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
