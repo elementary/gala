@@ -67,10 +67,33 @@ public class Gala.WindowSwitcher : CanvasActor {
         unowned var display = wm.get_display ();
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
-        opacity = 0;
+        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        var container_layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
+        container = new Clutter.Actor () {
+            reactive = true,
+            layout_manager = container_layout,
+            margin_left = margin,
+            margin_top = margin,
+            margin_right = margin
+        };
 
-        // Carry out the initial draw
-        create_components ();
+        caption = new Clutter.Text () {
+            font_name = CAPTION_FONT_NAME,
+            ellipsize = END,
+            line_alignment = CENTER,
+            margin_left = margin,
+            margin_right = margin,
+            margin_bottom = margin
+        };
+        caption.set_pivot_point (0.5f, 0.5f);
+
+        add_child (container);
+        add_child (caption);
+        opacity = 0;
+        layout_manager = new Clutter.BoxLayout () {
+            orientation = VERTICAL,
+            spacing = margin
+        };
 
         var effect = new ShadowEffect (40) {
             shadow_opacity = 200,
@@ -79,15 +102,15 @@ public class Gala.WindowSwitcher : CanvasActor {
         };
         add_effect (effect);
 
+        container.button_release_event.connect (container_mouse_release);
+
         // Redraw the components if the colour scheme changes.
         granite_settings.notify["prefers-color-scheme"].connect (() => {
             content.invalidate ();
-            create_components ();
         });
 
         gtk_settings.notify["gtk-theme-name"].connect (() => {
             content.invalidate ();
-            create_components ();
         });
 
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
@@ -96,7 +119,6 @@ public class Gala.WindowSwitcher : CanvasActor {
             if (cur_scale != scaling_factor) {
                 scaling_factor = cur_scale;
                 effect.scale_factor = scaling_factor;
-                create_components ();
             }
         });
     }
@@ -105,6 +127,14 @@ public class Gala.WindowSwitcher : CanvasActor {
         if (style_context == null) { // gtk is not initialized yet
             create_gtk_objects ();
         }
+
+        var caption_color = "#2e2e31";
+
+        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+            caption_color = "#fafafa";
+        }
+
+        caption.color = Clutter.Color.from_string (caption_color);
 
         ctx.save ();
         ctx.set_operator (Cairo.Operator.CLEAR);
@@ -125,40 +155,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         style_context.render_background (ctx, 0, 0, width, height);
         style_context.render_frame (ctx, 0, 0, width, height);
         ctx.restore ();
-    }
-
-    private void create_components () {
-        // We've already been constructed once, start again
-        if (container != null) {
-            destroy_all_children ();
-        }
-
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-        var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
-        container = new Clutter.Actor () {
-            reactive = true,
-            layout_manager = layout,
-            margin_left = margin,
-            margin_top = margin,
-            margin_right = margin,
-            margin_bottom = margin
-        };
-
-        container.button_release_event.connect (container_mouse_release);
-
-        var caption_color = "#2e2e31";
-
-        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            caption_color = "#fafafa";
-        }
-
-        caption = new Clutter.Text.full (CAPTION_FONT_NAME, "", Clutter.Color.from_string (caption_color));
-        caption.set_pivot_point (0.5f, 0.5f);
-        caption.set_ellipsize (Pango.EllipsizeMode.END);
-        caption.set_line_alignment (Pango.Alignment.CENTER);
-
-        add_child (container);
-        add_child (caption);
     }
 
     private void create_gtk_objects () {
@@ -272,8 +268,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             current_icon = null;
         }
 
-        container.width = -1;
-        container.destroy_all_children ();
+        container.remove_all_children ();
 
         foreach (unowned var window in windows) {
             var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
@@ -299,8 +294,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             return false;
         }
 
-        container.width = -1;
-        container.destroy_all_children ();
+        container.remove_all_children ();
 
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app = window_tracker.get_app_for_window (current_window);
@@ -330,6 +324,31 @@ public class Gala.WindowSwitcher : CanvasActor {
         });
     }
 
+    protected override void allocate (Clutter.ActorBox box) {
+        unowned var display = wm.get_display ();
+        var monitor = display.get_current_monitor ();
+        var geom = display.get_monitor_geometry (monitor);
+
+        float nat_width;
+        container.get_preferred_size (null, null, out nat_width, null);
+
+        var max_width = float.min (
+            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            nat_width //Ellipsize the label if it's longer than the icons
+        );
+
+        if (box.get_width () > max_width) {
+            box.set_size (max_width, box.get_height ());
+        }
+
+        set_position (
+            (int) (geom.x + (geom.width - box.get_width ()) / 2),
+            (int) (geom.y + (geom.height - box.get_height ()) / 2)
+        );
+
+        base.allocate (box);
+    }
+
     private void open_switcher () {
         if (container.get_n_children () == 0) {
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
@@ -341,36 +360,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         }
 
         opacity = 0;
-
-        unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
-
-        float container_width;
-        container.get_preferred_width (
-            InternalUtils.scale_to_int (ICON_SIZE, scaling_factor) + container.margin_left + container.margin_right,
-            null,
-            out container_width
-        );
-        if (container_width + InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2 > geom.width) {
-            container.width = geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2;
-        }
-
-        float nat_width, nat_height;
-        container.get_preferred_size (null, null, out nat_width, out nat_height);
-
-        var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
-        set_size ((int) nat_width, switcher_height);
-        content.invalidate ();
-
-        // container width might have changed, so we must update caption width too
-        update_caption_text ();
-
-        set_position (
-            (int) (geom.x + (geom.width - width) / 2),
-            (int) (geom.y + (geom.height - height) / 2)
-        );
-
         toggle_display (true);
     }
 
@@ -471,11 +460,11 @@ public class Gala.WindowSwitcher : CanvasActor {
         caption.set_text (current_caption);
 
         // Make caption smaller than the wrapper, so it doesn't overflow.
-        caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
-        caption.set_position (
-            InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
-            (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
-        );
+        //  caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
+        //  caption.set_position (
+        //      InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
+        //      (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
+        //  );
     }
 
     public override void key_focus_out () {
