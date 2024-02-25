@@ -187,7 +187,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             background_color.blue,
             background_color.alpha
         );
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, InternalUtils.scale_to_int (4, scaling_factor));
+        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, InternalUtils.scale_to_int (6, scaling_factor));
         ctx.fill ();
         ctx.restore ();
     }
