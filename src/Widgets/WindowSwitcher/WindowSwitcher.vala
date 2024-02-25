@@ -11,7 +11,6 @@ public class Gala.WindowSwitcher : CanvasActor {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
-    private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
     // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
@@ -26,7 +25,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     private Gala.ModalProxy modal_proxy = null;
     private Granite.Settings granite_settings;
     private Clutter.Actor container;
-    private Clutter.Text caption;
+    private Gala.Text caption;
 
     private Gtk.WidgetPath widget_path;
     private Gtk.StyleContext style_context;
@@ -146,13 +145,9 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         container.button_release_event.connect (container_mouse_release);
 
-        var caption_color = "#2e2e31";
-
-        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            caption_color = "#fafafa";
-        }
-
-        caption = new Clutter.Text.full (CAPTION_FONT_NAME, "", Clutter.Color.from_string (caption_color));
+        caption = new Gala.Text () {
+            color = Clutter.Color.from_string (granite_settings.prefers_color_scheme == DARK ? "#fafafa" : "#2e2e31")
+        };
         caption.set_pivot_point (0.5f, 0.5f);
         caption.set_ellipsize (Pango.EllipsizeMode.END);
         caption.set_line_alignment (Pango.Alignment.CENTER);
