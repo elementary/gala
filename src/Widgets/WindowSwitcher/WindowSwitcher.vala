@@ -80,13 +80,13 @@ public class Gala.WindowSwitcher : CanvasActor {
             orientation = VERTICAL
         };
 
-        scale ();
-
         shadow_effect = new ShadowEffect (40) {
             shadow_opacity = 200,
             css_class = "window-switcher"
         };
         add_effect (shadow_effect);
+
+        scale ();
 
         container.button_release_event.connect (container_mouse_release);
 
