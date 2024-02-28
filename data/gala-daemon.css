@@ -6,3 +6,13 @@
 daemon-window {
     background-color: transparent;
 }
+
+.monitor-label {
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.monitor-label label {
+    margin: 1em;
+    text-shadow: 0 1px 1px alpha(white, 0.1);
+}

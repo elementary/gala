@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : Clutter.Actor {
+public class Gala.WindowSwitcher : CanvasActor {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
@@ -25,13 +25,9 @@ public class Gala.WindowSwitcher : Clutter.Actor {
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
     private Granite.Settings granite_settings;
-    private Clutter.Canvas canvas;
     private Clutter.Actor container;
     private Clutter.Text caption;
-
-    private Gtk.WidgetPath widget_path;
-    private Gtk.StyleContext style_context;
-    private unowned Gtk.CssProvider? dark_style_provider = null;
+    private ShadowEffect shadow_effect;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -65,54 +61,89 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         unowned var gtk_settings = Gtk.Settings.get_default ();
         granite_settings = Granite.Settings.get_default ();
 
-        unowned var display = wm.get_display ();
-        scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
-
-        canvas = new Clutter.Canvas ();
-        canvas.scale_factor = scaling_factor;
-        set_content (canvas);
-
-        opacity = 0;
-
-        // Carry out the initial draw
-        create_components ();
-
-        var effect = new ShadowEffect (40) {
-            shadow_opacity = 200,
-            css_class = "window-switcher",
-            scale_factor = scaling_factor
+        container = new Clutter.Actor () {
+            reactive = true,
+            layout_manager = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL)
         };
-        add_effect (effect);
+
+        caption = new Clutter.Text () {
+            font_name = CAPTION_FONT_NAME,
+            ellipsize = END,
+            line_alignment = CENTER
+        };
+
+        add_child (container);
+        add_child (caption);
+        opacity = 0;
+        layout_manager = new Clutter.BoxLayout () {
+            orientation = VERTICAL
+        };
+
+        shadow_effect = new ShadowEffect (40) {
+            shadow_opacity = 200,
+            css_class = "window-switcher"
+        };
+        add_effect (shadow_effect);
+
+        scale ();
+
+        container.button_release_event.connect (container_mouse_release);
 
         // Redraw the components if the colour scheme changes.
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            canvas.invalidate ();
-            create_components ();
-        });
+        granite_settings.notify["prefers-color-scheme"].connect (content.invalidate);
 
-        gtk_settings.notify["gtk-theme-name"].connect (() => {
-            canvas.invalidate ();
-            create_components ();
-        });
+        gtk_settings.notify["gtk-theme-name"].connect (content.invalidate);
 
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => {
-            var cur_scale = display.get_monitor_scale (display.get_current_monitor ());
-            if (cur_scale != scaling_factor) {
-                scaling_factor = cur_scale;
-                canvas.scale_factor = scaling_factor;
-                effect.scale_factor = scaling_factor;
-                create_components ();
-            }
-        });
-
-        canvas.draw.connect (draw);
+        monitor_manager.monitors_changed.connect (scale);
     }
 
-    private bool draw (Cairo.Context ctx, int width, int height) {
-        if (style_context == null) { // gtk is not initialized yet
-            create_gtk_objects ();
+    private void scale () {
+        scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
+
+        shadow_effect.scale_factor = scaling_factor;
+
+        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+
+        container.margin_left = margin;
+        container.margin_right = margin;
+        container.margin_bottom = margin;
+        container.margin_top = margin;
+
+        caption.margin_left = margin;
+        caption.margin_right = margin;
+        caption.margin_bottom = margin;
+    }
+
+    protected override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
+        min_width = 0;
+
+        float preferred_nat_width;
+        base.get_preferred_width (for_height, null, out preferred_nat_width);
+
+        unowned var display = wm.get_display ();
+        var monitor = display.get_current_monitor ();
+        var geom = display.get_monitor_geometry (monitor);
+
+        float container_nat_width;
+        container.get_preferred_size (null, null, out container_nat_width, null);
+
+        var max_width = float.min (
+            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            container_nat_width //Ellipsize the label if it's longer than the icons
+        );
+
+        natural_width = float.min (max_width, preferred_nat_width);
+    }
+
+    protected override void draw (Cairo.Context ctx, int width, int height) {
+        var caption_color = "#2e2e31";
+
+        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
+            caption_color = "#fafafa";
         }
+
+        caption.color = Clutter.Color.from_string (caption_color);
 
         ctx.save ();
         ctx.set_operator (Cairo.Operator.CLEAR);
@@ -120,68 +151,21 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         ctx.clip ();
         ctx.reset_clip ();
 
+        var background_color = Drawing.Color.LIGHT_BACKGROUND;
         if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            unowned var gtksettings = Gtk.Settings.get_default ();
-            dark_style_provider = Gtk.CssProvider.get_named (gtksettings.gtk_theme_name, "dark");
-            style_context.add_provider (dark_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-        } else if (dark_style_provider != null) {
-            style_context.remove_provider (dark_style_provider);
-            dark_style_provider = null;
+            background_color = Drawing.Color.DARK_BACKGROUND;
         }
 
-        ctx.set_operator (Cairo.Operator.OVER);
-        style_context.render_background (ctx, 0, 0, width, height);
-        style_context.render_frame (ctx, 0, 0, width, height);
+        ctx.set_operator (Cairo.Operator.SOURCE);
+        ctx.set_source_rgba (
+            background_color.red,
+            background_color.green,
+            background_color.blue,
+            background_color.alpha
+        );
+        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, InternalUtils.scale_to_int (6, scaling_factor));
+        ctx.fill ();
         ctx.restore ();
-
-        return true;
-    }
-
-    private void create_components () {
-        // We've already been constructed once, start again
-        if (container != null) {
-            destroy_all_children ();
-        }
-
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
-        var layout = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL);
-        container = new Clutter.Actor () {
-            reactive = true,
-            layout_manager = layout,
-            margin_left = margin,
-            margin_top = margin,
-            margin_right = margin,
-            margin_bottom = margin
-        };
-
-        container.button_release_event.connect (container_mouse_release);
-
-        var caption_color = "#2e2e31";
-
-        if (granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK) {
-            caption_color = "#fafafa";
-        }
-
-        caption = new Clutter.Text.full (CAPTION_FONT_NAME, "", Clutter.Color.from_string (caption_color));
-        caption.set_pivot_point (0.5f, 0.5f);
-        caption.set_ellipsize (Pango.EllipsizeMode.END);
-        caption.set_line_alignment (Pango.Alignment.CENTER);
-
-        add_child (container);
-        add_child (caption);
-    }
-
-    private void create_gtk_objects () {
-        widget_path = new Gtk.WidgetPath ();
-        widget_path.append_type (typeof (Gtk.Window));
-        widget_path.iter_set_object_name (-1, "window");
-
-        style_context = new Gtk.StyleContext ();
-        style_context.set_scale ((int)Math.round (scaling_factor));
-        style_context.set_path (widget_path);
-        style_context.add_class ("background");
-        style_context.add_class ("csd");
-        style_context.add_class ("unified");
     }
 
     [CCode (instance_pos = -1)]
@@ -282,8 +266,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             current_icon = null;
         }
 
-        container.width = -1;
-        container.destroy_all_children ();
+        container.remove_all_children ();
 
         foreach (unowned var window in windows) {
             var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
@@ -309,8 +292,7 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             return false;
         }
 
-        container.width = -1;
-        container.destroy_all_children ();
+        container.remove_all_children ();
 
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app = window_tracker.get_app_for_window (current_window);
@@ -350,38 +332,19 @@ public class Gala.WindowSwitcher : Clutter.Actor {
             return;
         }
 
-        opacity = 0;
+        float width, height;
+        get_preferred_size (null, null, out width, out height);
 
         unowned var display = wm.get_display ();
         var monitor = display.get_current_monitor ();
         var geom = display.get_monitor_geometry (monitor);
-
-        float container_width;
-        container.get_preferred_width (
-            InternalUtils.scale_to_int (ICON_SIZE, scaling_factor) + container.margin_left + container.margin_right,
-            null,
-            out container_width
-        );
-        if (container_width + InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2 > geom.width) {
-            container.width = geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2;
-        }
-
-        float nat_width, nat_height;
-        container.get_preferred_size (null, null, out nat_width, out nat_height);
-
-        var switcher_height = (int) (nat_height + caption.height / 2 - container.margin_bottom + WRAPPER_PADDING * 3 * scaling_factor);
-        set_size ((int) nat_width, switcher_height);
-        canvas.set_size ((int) nat_width, switcher_height);
-        canvas.invalidate ();
-
-        // container width might have changed, so we must update caption width too
-        update_caption_text ();
 
         set_position (
             (int) (geom.x + (geom.width - width) / 2),
             (int) (geom.y + (geom.height - height) / 2)
         );
 
+        opacity = 0;
         toggle_display (true);
     }
 
@@ -480,13 +443,6 @@ public class Gala.WindowSwitcher : Clutter.Actor {
         var current_window = current_icon != null ? current_icon.window : null;
         var current_caption = current_window != null ? current_window.title : "n/a";
         caption.set_text (current_caption);
-
-        // Make caption smaller than the wrapper, so it doesn't overflow.
-        caption.width = width - WRAPPER_PADDING * 2 * scaling_factor;
-        caption.set_position (
-            InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor),
-            (int) (height - caption.height / 2 - InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor) * 2)
-        );
     }
 
     public override void key_focus_out () {

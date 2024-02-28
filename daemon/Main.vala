@@ -19,6 +19,10 @@ public class Gala.Daemon.Application : Gtk.Application {
         granite_settings.notify["prefers-color-scheme"].connect (() => {
             gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
         });
+
+        var app_provider = new Gtk.CssProvider ();
+        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
+        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void activate () {
@@ -28,7 +32,7 @@ public class Gala.Daemon.Application : Gtk.Application {
     public override bool dbus_register (DBusConnection connection, string object_path) throws Error {
         base.dbus_register (connection, object_path);
 
-        connection.register_object (object_path, new MenuDaemon ());
+        connection.register_object (object_path, new DBus ());
 
         return true;
     }
