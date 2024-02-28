@@ -71,7 +71,6 @@ public class Gala.WindowSwitcher : CanvasActor {
             ellipsize = END,
             line_alignment = CENTER
         };
-        caption.set_pivot_point (0.5f, 0.5f);
 
         add_child (container);
         add_child (caption);
