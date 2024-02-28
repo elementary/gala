@@ -98,7 +98,7 @@ namespace Wl {
 	[CCode (cname = "struct wl_global", free_function = "wl_global_destroy")]
 	public class Global {
 		[CCode (cname = "wl_global_create")]
-		public static Wl.Global? create (Wl.Display display, ref Wl.Interface interface, int version, [CCode (delegate_target_pos = 0.9) ] Wl.GlobalBindFunc bind);
+		public static Wl.Global? create (Wl.Display display, ref Wl.Interface interface, int version, void *data, Wl.GlobalBindFunc bind);
 	}
 
 	[CCode (cheader_filename = "wayland-server-protocol.h", cname = "enum wl_display_error", cprefix="WL_DISPLAY_ERROR_", has_type_id = false)]
@@ -109,8 +109,8 @@ namespace Wl {
 		IMPLEMENTATION,
 	}
 
-	[CCode (cname = "wl_global_bind_func_t", instance_pos = 1.9)]
-	public delegate void GlobalBindFunc (Wl.Client client, uint32 version, uint32 id);
+	[CCode (cname = "wl_global_bind_func_t", has_target = false)]
+	public delegate void GlobalBindFunc (Wl.Client client, void* data, uint32 version, uint32 id);
 	[CCode (cname = "wl_resource_destroy_func_t", has_target = false)]
 	public delegate void ResourceDestroyFunc (Wl.Resource resource);
 	[CCode (cname = "WAYLAND_VERSION_MAJOR")]

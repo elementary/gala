@@ -68,7 +68,7 @@ namespace Gala {
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
 
-        shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
+        shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, null, (client, data, version, id) => {
             var resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
             resource.set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
         });
