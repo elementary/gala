@@ -1658,7 +1658,6 @@ namespace Gala {
 
                     break;
                 default:
-                    warning ("DESTROY DEFAULT");
                     destroy_completed (actor);
                     break;
             }
