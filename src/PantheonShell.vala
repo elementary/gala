@@ -38,6 +38,7 @@ namespace Gala {
     private static Pantheon.Desktop.WidgetInterface wayland_pantheon_widget_interface;
     private static Pantheon.Desktop.ExtendedBehaviorInterface wayland_pantheon_extended_behavior_interface;
     private static Wl.Global shell_global;
+    private static ShellComponentManager component_manager;
 
     public void init_pantheon_shell (Meta.Context context) {
         unowned Wl.Display? wl_disp = get_display_from_context (context);
@@ -72,6 +73,9 @@ namespace Gala {
             var resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
             resource.set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
         });
+
+        component_manager = new ShellComponentManager ();
+        component_manager.init (context.get_display ());
     }
 
     public class PanelSurface : GLib.Object {
@@ -243,7 +247,7 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        component_manager.set_anchor (window, TOP);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {
