@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private WindowGrabTracker window_grab_tracker;
+
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -139,6 +141,7 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
+            window_grab_tracker = new WindowGrabTracker (get_display());
 
             show_stage ();
 
@@ -1907,6 +1910,16 @@ namespace Gala {
             // if we have a move action, pack that window to the static ones
             if (moving != null) {
                 unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
+
+                windows.prepend (moving_actor);
+                parents.prepend (moving_actor.get_parent ());
+
+                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                clutter_actor_reparent (moving_actor, static_windows);
+            }
+
+            if (window_grab_tracker.current_window != null) {
+                unowned var moving_actor = (Meta.WindowActor) window_grab_tracker.current_window.get_compositor_private ();
 
                 windows.prepend (moving_actor);
                 parents.prepend (moving_actor.get_parent ());
