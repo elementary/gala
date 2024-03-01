@@ -840,38 +840,27 @@ namespace Gala {
             return (proxy in modal_stack);
         }
 
-        private HashTable<Meta.Window, unowned Meta.WindowActor> dim_table =
-            new HashTable<Meta.Window, unowned Meta.WindowActor> (GLib.direct_hash, GLib.direct_equal);
-
-        private void dim_parent_window (Meta.Window window, bool dim) {
-            unowned var transient = window.get_transient_for ();
-            if (transient != null && transient != window) {
-                unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
-                // Can't rely on win.has_effects since other effects could be applied
-                if (dim) {
-                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
-                        var dark_effect = new Clutter.BrightnessContrastEffect ();
-                        dark_effect.set_brightness (-0.4f);
-                        transient_actor.add_effect_with_name ("dim-parent", dark_effect);
-
-                        dim_table[window] = transient_actor;
-                    }
-                } else if (transient_actor.get_effect ("dim-parent") != null) {
-                    transient_actor.remove_effect_by_name ("dim-parent");
-                    dim_table.remove (window);
-                }
-
+        private void dim_parent_window (Meta.Window window) {
+            if (window.window_type != MODAL_DIALOG) {
                 return;
             }
 
-            if (!dim) {
-            // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
-            unowned var transient_actor = dim_table.take (window);
-            if (transient_actor != null) {
-                transient_actor.remove_effect_by_name ("dim-parent");
-                debug ("Removed dim using dim_data");
+            unowned var transient = window.get_transient_for ();
+            if (transient == null || transient == window) {
+                warning ("No transient found");
+                return;
             }
-            }
+
+            unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
+            var dark_effect = new Clutter.BrightnessContrastEffect ();
+            dark_effect.set_brightness (-0.4f);
+            transient_actor.add_effect_with_name ("dim-parent", dark_effect);
+
+            window.unmanaged.connect (() => {
+                if (transient_actor != null && transient_actor.get_effect ("dim-parent") != null) {
+                    transient_actor.remove_effect_by_name ("dim-parent");
+                }
+            });
         }
 
         /**
@@ -1545,7 +1534,7 @@ namespace Gala {
                         }
                     });
 
-                    dim_parent_window (window, true);
+                    dim_parent_window (window);
 
                     break;
                 case Meta.WindowType.NOTIFICATION:
@@ -1623,8 +1612,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-
-                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
