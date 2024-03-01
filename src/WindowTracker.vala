@@ -295,6 +295,7 @@ public class Gala.WindowTracker : GLib.Object {
 
         window.notify["wm-class"].connect (tracked_window_notified);
         window.notify["gtk-application-id"].connect (tracked_window_notified);
+        window.workspace_changed.connect (tracked_window_changed);
         window.unmanaged.connect (disassociate_window);
 
         app.add_window (window);

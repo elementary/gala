@@ -76,6 +76,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
+                properties.insert ("workspace", new GLib.Variant.uint32 (window.get_workspace ().workspace_index));
 
                 // These properties may not be available for all windows:
                 if (title != null) {
