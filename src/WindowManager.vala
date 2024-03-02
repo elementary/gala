@@ -1918,8 +1918,10 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
-            if (window_grab_tracker.current_window != null) {
-                unowned var moving_actor = (Meta.WindowActor) window_grab_tracker.current_window.get_compositor_private ();
+            unowned var grabbed_window = window_grab_tracker.current_window;
+
+            if (grabbed_window != null) {
+                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
 
                 windows.prepend (moving_actor);
                 parents.prepend (moving_actor.get_parent ());
@@ -1934,8 +1936,13 @@ namespace Gala {
 
             // collect all windows and put them in the appropriate containers
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
+                if (actor.is_destroyed ()) {
                     continue;
+                }
+
+                if (actor == grabbed_window.get_compositor_private ()) {
+                    continue;
+                }
 
                 unowned Meta.Window window = actor.get_meta_window ();
 
