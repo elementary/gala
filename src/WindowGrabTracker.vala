@@ -1,11 +1,14 @@
-// TODO: Copyright
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
+ */
 
 public class Gala.WindowGrabTracker : GLib.Object {
     public Meta.Display display { get; construct; }
     public Meta.Window? current_window { get; private set; }
 
     public WindowGrabTracker (Meta.Display display) {
-        Object(display: display);
+        Object (display: display);
     }
 
     construct {
