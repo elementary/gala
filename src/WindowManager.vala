@@ -1940,16 +1940,15 @@ namespace Gala {
                     continue;
                 }
 
-                if (actor == grabbed_window.get_compositor_private ()) {
-                    continue;
-                }
-
-                unowned Meta.Window window = actor.get_meta_window ();
+                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && !window.is_on_primary_monitor ()) ||
-                    (moving != null && window == moving))
+                    move_primary_only && !window.is_on_primary_monitor () ||
+                    window == moving ||
+                    window == grabbed_window) {
+
                     continue;
+                }
 
                 if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces
