@@ -141,7 +141,7 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
-            window_grab_tracker = new WindowGrabTracker (get_display());
+            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
