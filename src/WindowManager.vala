@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private WindowGrabTracker window_grab_tracker;
+
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -139,6 +141,7 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
+            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
@@ -1915,21 +1918,37 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
+            unowned var grabbed_window = window_grab_tracker.current_window;
+
+            if (grabbed_window != null) {
+                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
+
+                windows.prepend (moving_actor);
+                parents.prepend (moving_actor.get_parent ());
+
+                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                clutter_actor_reparent (moving_actor, static_windows);
+            }
+
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
             var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
+                if (actor.is_destroyed ()) {
                     continue;
+                }
 
-                unowned Meta.Window window = actor.get_meta_window ();
+                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && !window.is_on_primary_monitor ()) ||
-                    (moving != null && window == moving))
+                    move_primary_only && !window.is_on_primary_monitor () ||
+                    window == moving ||
+                    window == grabbed_window) {
+
                     continue;
+                }
 
                 if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces
