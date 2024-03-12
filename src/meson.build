@@ -1,6 +1,7 @@
 gala_bin_sources = files(
     'DBus.vala',
     'DBusAccelerator.vala',
+    'DaemonManager.vala',
     'DesktopIntegration.vala',
     'Dialogs.vala',
     'InternalUtils.vala',
@@ -12,6 +13,7 @@ gala_bin_sources = files(
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
+    'WindowGrabTracker.vala',
     'WindowListener.vala',
     'WindowManager.vala',
     'WindowStateSaver.vala',

@@ -50,7 +50,6 @@ public class Gala.WindowClone : Clutter.Actor {
             active_shape.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
-
         }
     }
 
@@ -91,7 +90,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
-    private Clutter.Actor close_button;
+    private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
@@ -158,15 +157,10 @@ public class Gala.WindowClone : Clutter.Actor {
     private void reallocate () {
         var window_frame_rect = window.get_frame_rect ();
 
-        var close_button_action = new Clutter.ClickAction ();
-        close_button_action.clicked.connect (() => {
-            close_window ();
-        });
-        close_button = Utils.create_close_button (monitor_scale_factor);
-        close_button.opacity = 0;
-        // block propagation of button release event to window clone
-        close_button.button_release_event.connect (() => { return Clutter.EVENT_STOP; });
-        close_button.add_action (close_button_action);
+        close_button = new Gala.CloseButton (monitor_scale_factor) {
+            opacity = 0
+        };
+        close_button.triggered.connect (close_window);
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
         window_icon.opacity = 0;
@@ -547,7 +541,7 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button.opacity = show ? 255 : 0;
         window_title.opacity = close_button.opacity;
 
-        window_title.set_text (window.get_title () ?? "", false);
+        window_title.set_text (window.get_title () ?? "");
         window_title.set_max_width (dest_width - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, scale_factor));
         set_window_title_position (dest_width, dest_height, scale_factor);
     }
@@ -577,11 +571,11 @@ public class Gala.WindowClone : Clutter.Actor {
      * dialog of the window we were going to delete. If that's the case, we request
      * to select our window.
      */
-    private void close_window () {
-        unowned Meta.Display display = window.get_display ();
+    private void close_window (uint32 timestamp) {
+        unowned var display = window.get_display ();
         check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
 
-        window.@delete (display.get_current_time ());
+        window.@delete (timestamp);
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
@@ -624,7 +618,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window ();
+                close_window (wm.get_display ().get_current_time ());
                 break;
         }
     }
@@ -872,46 +866,21 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Border to show around the selected window when using keyboard navigation.
      */
-    private class ActiveShape : Clutter.Actor {
-        private static int border_radius = -1;
+    private class ActiveShape : CanvasActor {
+        private const int BORDER_RADIUS = 16;
         private const double COLOR_OPACITY = 0.8;
 
-        private Clutter.Canvas background_canvas;
-
         construct {
-            background_canvas = new Clutter.Canvas ();
-            background_canvas.draw.connect (draw_background);
-            content = background_canvas;
-
             notify["opacity"].connect (invalidate);
         }
 
-        private void create_gtk_objects () {
-            var label_widget_path = new Gtk.WidgetPath ();
-            label_widget_path.append_type (typeof (Gtk.Label));
-
-            var style_context = new Gtk.StyleContext ();
-            style_context.add_class (Granite.STYLE_CLASS_CARD);
-            style_context.add_class (Granite.STYLE_CLASS_ROUNDED);
-            style_context.set_path (label_widget_path);
-
-            border_radius = style_context.get_property (
-                Gtk.STYLE_PROPERTY_BORDER_RADIUS,
-                Gtk.StateFlags.NORMAL
-            ).get_int () * 4;
-        }
-
         public void invalidate () {
-            background_canvas.invalidate ();
+            content.invalidate ();
         }
 
-        private bool draw_background (Cairo.Context cr, int width, int height) {
-            if (border_radius == -1) {
-                create_gtk_objects ();
-            }
-
+        protected override void draw (Cairo.Context cr, int width, int height) {
             if (!visible || opacity == 0) {
-                return Clutter.EVENT_PROPAGATE;
+                return;
             }
 
             var color = InternalUtils.get_theme_accent_color ();
@@ -921,18 +890,9 @@ public class Gala.WindowClone : Clutter.Actor {
             cr.paint ();
             cr.restore ();
 
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, BORDER_RADIUS);
             cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
             cr.fill ();
-
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        public override void allocate (Clutter.ActorBox box) {
-            base.allocate (box);
-
-            background_canvas.set_size ((int) box.get_width (), (int) box.get_height ());
-            invalidate ();
         }
     }
 }

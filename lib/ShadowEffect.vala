@@ -133,8 +133,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
             pipeline.set_layer_texture (0, shadow);
         }
 
-        var opacity = actor.get_paint_opacity () * shadow_opacity / 255;
-        var alpha = Cogl.Color.from_4ub (255, 255, 255, opacity);
+        var opacity = actor.get_paint_opacity () * shadow_opacity / 255.0f;
+        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
         alpha.premultiply ();
 
         pipeline.set_color (alpha);

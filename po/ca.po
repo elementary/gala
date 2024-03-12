@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-11-09 19:10+0000\n"
+"POT-Creation-Date: 2024-02-18 02:05+0000\n"
+"PO-Revision-Date: 2024-02-18 10:49+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -53,90 +53,98 @@ msgstr "Captures de pantalla"
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
-#: src/WindowManager.vala:2251
+#: src/WindowManager.vala:2278
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:2258
+#: src/WindowManager.vala:2285
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:2262
+#: src/WindowManager.vala:2289
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:2263
+#: src/WindowManager.vala:2290
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2305
+#: src/WindowManager.vala:2332
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"
 
-#: daemon/MenuDaemon.vala:115
-msgid "Hide"
-msgstr "Amaga"
-
-#: daemon/MenuDaemon.vala:128
-msgid "Move"
-msgstr "Mou"
-
-#: daemon/MenuDaemon.vala:136
-msgid "Resize"
-msgstr "Canvia'n la mida"
-
-#: daemon/MenuDaemon.vala:144
-msgid "Always on Top"
-msgstr "Sempre al davant"
-
-#: daemon/MenuDaemon.vala:152
-msgid "Always on Visible Workspace"
-msgstr "Sempre a l'espai de treball visible"
-
-#: daemon/MenuDaemon.vala:160
-msgid "Move to Workspace Left"
-msgstr "Mou a l'espai de treball de l'esquerra"
-
-#: daemon/MenuDaemon.vala:168
-msgid "Move to Workspace Right"
-msgstr "Mou a l'espai de treball de la dreta"
-
-#: daemon/MenuDaemon.vala:176
-msgid "Take Screenshot"
-msgstr "Fes una captura"
-
-#: daemon/MenuDaemon.vala:184
-msgid "Close"
-msgstr "Tanca"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Untile"
-msgstr "No en mosaic"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Unmaximize"
-msgstr "Desmaximitza"
-
-#: daemon/MenuDaemon.vala:225
-msgid "Maximize"
-msgstr "Maximitza"
-
-#: daemon/MenuDaemon.vala:298
+#: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Canvia el fons de pantalla…"
 
-#: daemon/MenuDaemon.vala:315
+#: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Paràmetres de la pantalla…"
 
-#: daemon/MenuDaemon.vala:332
+#: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Paràmetres del sistema…"
+
+#: daemon/BackgroundMenu.vala:47
+msgid "Failed to open System Settings"
+msgstr "Ha fallat obrir els paràmetres del sistema."
+
+#: daemon/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr "Cal instal·lar un gestor per a l'esquema d'URI \"settings://\"."
+
+#: daemon/WindowMenu.vala:36
+msgid "Hide"
+msgstr "Amaga"
+
+#: daemon/WindowMenu.vala:49
+msgid "Move"
+msgstr "Mou"
+
+#: daemon/WindowMenu.vala:57
+msgid "Resize"
+msgstr "Canvia'n la mida"
+
+#: daemon/WindowMenu.vala:65
+msgid "Always on Top"
+msgstr "Sempre al davant"
+
+#: daemon/WindowMenu.vala:73
+msgid "Always on Visible Workspace"
+msgstr "Sempre a l'espai de treball visible"
+
+#: daemon/WindowMenu.vala:81
+msgid "Move to Workspace Left"
+msgstr "Mou a l'espai de treball de l'esquerra"
+
+#: daemon/WindowMenu.vala:89
+msgid "Move to Workspace Right"
+msgstr "Mou a l'espai de treball de la dreta"
+
+#: daemon/WindowMenu.vala:97
+msgid "Take Screenshot"
+msgstr "Fes una captura"
+
+#: daemon/WindowMenu.vala:105
+msgid "Close"
+msgstr "Tanca"
+
+#: daemon/WindowMenu.vala:138
+msgid "Untile"
+msgstr "No en mosaic"
+
+#: daemon/WindowMenu.vala:138
+msgid "Unmaximize"
+msgstr "Desmaximitza"
+
+#: daemon/WindowMenu.vala:140
+msgid "Maximize"
+msgstr "Maximitza"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"

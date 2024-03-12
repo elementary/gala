@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-06-13 10:07+0000\n"
+"POT-Creation-Date: 2024-02-18 02:05+0000\n"
+"PO-Revision-Date: 2024-02-24 16:12+0000\n"
 "Last-Translator: Uwe S <saabisto@gmx.de>\n"
-"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/"
-">\n"
+"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -53,90 +53,98 @@ msgstr "Bildschirmfotos"
 msgid "Screenshot taken"
 msgstr "Bildschirmfoto erstellt"
 
-#: src/WindowManager.vala:2251
+#: src/WindowManager.vala:2278
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Änderungen werden nach %i Sekunde automatisch zurückgesetzt."
 msgstr[1] "Änderungen werden nach %i Sekunden automatisch zurückgesetzt."
 
-#: src/WindowManager.vala:2258
+#: src/WindowManager.vala:2285
 msgid "Keep new display settings?"
 msgstr "Neue Bildschirmeinstellungen beibehalten?"
 
-#: src/WindowManager.vala:2262
+#: src/WindowManager.vala:2289
 msgid "Keep Settings"
 msgstr "Einstellungen beibehalten"
 
-#: src/WindowManager.vala:2263
+#: src/WindowManager.vala:2290
 msgid "Use Previous Settings"
 msgstr "Vorherige Einstellungen verwenden"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2305
+#: src/WindowManager.vala:2332
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Bildschirmfoto von %s"
 
-#: daemon/MenuDaemon.vala:115
-msgid "Hide"
-msgstr "Ausblenden"
-
-#: daemon/MenuDaemon.vala:128
-msgid "Move"
-msgstr "Verschieben"
-
-#: daemon/MenuDaemon.vala:136
-msgid "Resize"
-msgstr "Größe ändern"
-
-#: daemon/MenuDaemon.vala:144
-msgid "Always on Top"
-msgstr "Immer im Vordergrund"
-
-#: daemon/MenuDaemon.vala:152
-msgid "Always on Visible Workspace"
-msgstr "Immer auf der sichtbaren Arbeitsfläche"
-
-#: daemon/MenuDaemon.vala:160
-msgid "Move to Workspace Left"
-msgstr "Auf die linke Arbeitsfläche verschieben"
-
-#: daemon/MenuDaemon.vala:168
-msgid "Move to Workspace Right"
-msgstr "Auf die rechte Arbeitsfläche verschieben"
-
-#: daemon/MenuDaemon.vala:176
-msgid "Take Screenshot"
-msgstr "Bildschirmfoto erstellen"
-
-#: daemon/MenuDaemon.vala:184
-msgid "Close"
-msgstr "Schließen"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Untile"
-msgstr "Kachelung aufheben"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Unmaximize"
-msgstr "Maximierung aufheben"
-
-#: daemon/MenuDaemon.vala:225
-msgid "Maximize"
-msgstr "Maximieren"
-
-#: daemon/MenuDaemon.vala:298
+#: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Hintergrundbild ändern …"
 
-#: daemon/MenuDaemon.vala:315
+#: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Bildschirmeinstellungen …"
 
-#: daemon/MenuDaemon.vala:332
+#: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Systemeinstellungen …"
+
+#: daemon/BackgroundMenu.vala:47
+msgid "Failed to open System Settings"
+msgstr "Öffnen der Systemeinstellungen fehlgeschlagen"
+
+#: daemon/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr "Ein Handler für das URI-Scheme »settings://« muss installiert werden."
+
+#: daemon/WindowMenu.vala:36
+msgid "Hide"
+msgstr "Ausblenden"
+
+#: daemon/WindowMenu.vala:49
+msgid "Move"
+msgstr "Verschieben"
+
+#: daemon/WindowMenu.vala:57
+msgid "Resize"
+msgstr "Größe ändern"
+
+#: daemon/WindowMenu.vala:65
+msgid "Always on Top"
+msgstr "Immer im Vordergrund"
+
+#: daemon/WindowMenu.vala:73
+msgid "Always on Visible Workspace"
+msgstr "Immer auf der sichtbaren Arbeitsfläche"
+
+#: daemon/WindowMenu.vala:81
+msgid "Move to Workspace Left"
+msgstr "Auf die linke Arbeitsfläche verschieben"
+
+#: daemon/WindowMenu.vala:89
+msgid "Move to Workspace Right"
+msgstr "Auf die rechte Arbeitsfläche verschieben"
+
+#: daemon/WindowMenu.vala:97
+msgid "Take Screenshot"
+msgstr "Bildschirmfoto erstellen"
+
+#: daemon/WindowMenu.vala:105
+msgid "Close"
+msgstr "Schließen"
+
+#: daemon/WindowMenu.vala:138
+msgid "Untile"
+msgstr "Kachelung aufheben"
+
+#: daemon/WindowMenu.vala:138
+msgid "Unmaximize"
+msgstr "Maximierung aufheben"
+
+#: daemon/WindowMenu.vala:140
+msgid "Maximize"
+msgstr "Maximieren"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
