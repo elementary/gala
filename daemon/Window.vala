@@ -6,17 +6,18 @@
  */
 
 public class Gala.Daemon.Window : Gtk.Window {
-    public Gtk.Box content { get; construct; }
+    public static int width = 0;
+    public static int height = 0;
 
-    public Window (int width, int height) {
+    public Gtk.Box content { get; construct; }
+    public bool close_on_click { get; construct; }
+
+    public Window (bool close_on_click) {
         Object (
             default_width: width,
-            default_height: height
+            default_height: height,
+            close_on_click: close_on_click
         );
-    }
-
-    class construct {
-        set_css_name ("daemon-window");
     }
 
     construct {
@@ -31,6 +32,7 @@ public class Gala.Daemon.Window : Gtk.Window {
         type_hint = Gdk.WindowTypeHint.DOCK;
         set_keep_above (true);
 
+        opacity = 0;
         title = "MODAL";
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
@@ -42,9 +44,11 @@ public class Gala.Daemon.Window : Gtk.Window {
         show_all ();
         move (0, 0);
 
-        button_press_event.connect (() => {
-            close ();
-            return Gdk.EVENT_STOP;
-        });
+        if (close_on_click) {
+            button_press_event.connect (() => {
+                close ();
+                return Gdk.EVENT_STOP;
+            });
+        }
     }
 }

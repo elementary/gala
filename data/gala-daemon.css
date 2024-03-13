@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-daemon-window {
-    background-color: transparent;
+.black-background {
+    background-color: black;
 }
 
 .monitor-label {
