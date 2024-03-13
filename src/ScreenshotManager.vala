@@ -65,7 +65,11 @@ namespace Gala {
             var flash_actor = new Clutter.Actor ();
             flash_actor.set_size (width, height);
             flash_actor.set_position (x, y);
+#if HAS_MUTTER46
+            flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
+#else
             flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
+#endif
             flash_actor.set_opacity (0);
             flash_actor.transitions_completed.connect ((actor) => {
                 wm.ui_group.remove_child (actor);
