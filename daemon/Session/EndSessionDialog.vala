@@ -24,6 +24,7 @@
  */
 
 public class Gala.Daemon.Session.EndSessionDialog : Hdy.Window {
+    [CCode (type_signature = "u")]
     public enum Type {
         LOGOUT = 0,
         SHUTDOWN = 1,
