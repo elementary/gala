@@ -1,12 +1,11 @@
 
 
-[DBus (name = "org.gnome.SessionManager.EndSessionDialog")]
+[DBus (name = "io.elementary.wm.daemon.EndSessionDialog")]
 public class Gala.Daemon.Session.Manager : Object {
     public signal void confirmed_logout ();
     public signal void confirmed_reboot ();
     public signal void confirmed_shutdown ();
-    public signal void canceled ();
-    public signal void closed ();
+    public signal void cancelled ();
 
     public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
         var window = new Window (false);
@@ -24,6 +23,6 @@ public class Gala.Daemon.Session.Manager : Object {
         dialog.logout.connect (() => confirmed_logout ());
         dialog.reboot.connect (() => confirmed_reboot ());
         dialog.shutdown.connect (() => confirmed_shutdown ());
-        dialog.cancelled.connect (() => canceled ());
+        dialog.cancelled.connect (() => cancelled ());
     }
 }

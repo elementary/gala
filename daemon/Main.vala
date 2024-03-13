@@ -33,15 +33,7 @@ public class Gala.Daemon.Application : Gtk.Application {
         base.dbus_register (connection, object_path);
 
         connection.register_object (object_path, new DBus ());
-
-        Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
-        (connection) => {
-            try {
-                connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", new Session.Manager ());
-            } catch (Error e) { warning (e.message); }
-        },
-        () => {},
-        () => critical ("Could not acquire name") );
+        connection.register_object (object_path, new Session.Manager ());
 
         return true;
     }
