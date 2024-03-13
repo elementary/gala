@@ -57,13 +57,13 @@ namespace Gala {
                 () => critical ("Could not acquire name") );
 
             Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
-            (connection) => {
-                try {
-                    connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", new SessionManager ());
-                } catch (Error e) { warning (e.message); }
-            },
-            () => {},
-            () => critical ("Could not acquire name") );
+                (connection) => {
+                    try {
+                        connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", new SessionManager ());
+                    } catch (Error e) { warning (e.message); }
+                },
+                () => {},
+                () => critical ("Could not acquire name") );
 
             Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
                 (connection) => {
