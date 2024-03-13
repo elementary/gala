@@ -24,12 +24,12 @@ public class Gala.SessionManager : Object {
     private EndSessionDialog? proxy = null;
 
     construct {
-        Bus.watch_name (SESSION, "org.pantheon.gala.daemon", NONE, () => on_proxy_appeared.begin (), () => proxy = null);
+        Bus.watch_name (SESSION, DaemonManager.DAEMON_DBUS_NAME, NONE, () => on_proxy_appeared.begin (), () => proxy = null);
     }
 
     private async void on_proxy_appeared () {
         try {
-            proxy = yield Bus.get_proxy (BusType.SESSION, "org.pantheon.gala.daemon", "/org/pantheon/gala/daemon", 0, null);
+            proxy = yield Bus.get_proxy (BusType.SESSION, DaemonManager.DAEMON_DBUS_NAME, DaemonManager.DAEMON_DBUS_OBJECT_PATH, 0, null);
         } catch (Error e) {
             warning ("Could not connect to io.elementary.wm.daemon.EndSessionDialog proxy: %s", e.message);
             return;

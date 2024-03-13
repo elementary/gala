@@ -6,8 +6,9 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    public const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    public const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+
     private const int SPACING = 12;
 
     [DBus (name = "org.pantheon.gala.daemon")]
