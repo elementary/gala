@@ -88,7 +88,7 @@ public class Gala.DaemonManager : GLib.Object {
             critical ("Couldn't handle daemon window: No title provided");
             return;
         }
-
+        warning ("NAME: %s", info[0]);
         switch (info[0]) {
             case "LABEL":
                 if (info.length < 2) {
@@ -107,8 +107,9 @@ public class Gala.DaemonManager : GLib.Object {
                 window.make_above ();
                 break;
 
-            case "END-SESSION":
+            case "END_SESSION":
                 wm.modal_window_actor.make_modal (window);
+                warning ("MADE MODAL: %s", info[0]);
                 break;
         }
     }

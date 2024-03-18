@@ -332,6 +332,7 @@ namespace Gala {
                 ui_group.add_child (notification_group);
 
                 modal_window_actor = new ModalWindowActor (display);
+                ui_group.add_child (modal_window_actor);
 
                 pointer_locator = new PointerLocator (this);
                 ui_group.add_child (pointer_locator);

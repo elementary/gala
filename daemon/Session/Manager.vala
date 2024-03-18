@@ -12,7 +12,7 @@
 
      public void open (EndSessionDialog.Type type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
          var dialog = new EndSessionDialog (type) {
-             title = "END-SESSION"
+             title = "END_SESSION"
          };
          dialog.show_all ();
          dialog.present_with_time (timestamp);

@@ -20,8 +20,14 @@ public class Gala.ModalWindowActor : Clutter.Actor {
     public void make_modal (Meta.Window window) {
         modal_dialogs++;
         window.unmanaged.connect (unmake_modal);
+        visible = true;
 
         var actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (actor == null) {
+            warning ("IS NULL");
+        } else {
+            warning ("NOT NULL!");
+        }
         InternalUtils.clutter_actor_reparent (actor, this);
 
         check_visible ();
