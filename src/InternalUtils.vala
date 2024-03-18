@@ -352,5 +352,15 @@ namespace Gala {
                 return { 0, 0, (int) screen_width, (int) screen_height };
             }
         }
+
+        public static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
+            if (actor == new_parent)
+                return;
+
+            actor.ref ();
+            actor.get_parent ().remove_child (actor);
+            new_parent.add_child (actor);
+            actor.unref ();
+        }
     }
 }

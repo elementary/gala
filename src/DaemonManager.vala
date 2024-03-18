@@ -6,8 +6,9 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    public const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    public const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+
     private const int SPACING = 12;
 
     [DBus (name = "org.pantheon.gala.daemon")]
@@ -16,13 +17,13 @@ public class Gala.DaemonManager : GLib.Object {
         public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
     }
 
-    public Meta.Display display { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private Meta.WaylandClient daemon_client;
     private Daemon? daemon_proxy = null;
 
-    public DaemonManager (Meta.Display display) {
-        Object (display: display);
+    public DaemonManager (WindowManagerGala wm) {
+        Object (wm: wm);
     }
 
     construct {
@@ -31,7 +32,7 @@ public class Gala.DaemonManager : GLib.Object {
         if (Meta.Util.is_wayland_compositor ()) {
             start_wayland.begin ();
 
-            display.window_created.connect ((window) => {
+            wm.get_display ().window_created.connect ((window) => {
                 if (daemon_client.owns_window (window)) {
                     window.shown.connect (handle_daemon_window);
                 }
@@ -45,12 +46,12 @@ public class Gala.DaemonManager : GLib.Object {
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
 #if HAS_MUTTER44
-            daemon_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
+            daemon_client = new Meta.WaylandClient (wm.get_display ().get_context (), subprocess_launcher);
 #else
             daemon_client = new Meta.WaylandClient (subprocess_launcher);
 #endif
             string[] args = {"gala-daemon"};
-            var subprocess = daemon_client.spawnv (display, args);
+            var subprocess = daemon_client.spawnv (wm.get_display (), args);
 
             yield subprocess.wait_async ();
 
@@ -96,7 +97,7 @@ public class Gala.DaemonManager : GLib.Object {
 
                 var index = int.parse (info[1]);
 
-                var monitor_geometry = display.get_monitor_geometry (index);
+                var monitor_geometry = wm.get_display ().get_monitor_geometry (index);
                 window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
                 window.make_above ();
                 break;
@@ -104,6 +105,10 @@ public class Gala.DaemonManager : GLib.Object {
             case "MODAL":
                 window.move_frame (false, 0, 0);
                 window.make_above ();
+                break;
+
+            case "END-SESSION":
+                wm.modal_window_actor.make_modal (window);
                 break;
         }
     }
@@ -130,7 +135,7 @@ public class Gala.DaemonManager : GLib.Object {
         }
 
         int width, height;
-        display.get_size (out width, out height);
+        wm.get_display ().get_size (out width, out height);
 
         try {
             yield daemon_proxy.show_desktop_menu (width, height, x, y);
@@ -145,7 +150,7 @@ public class Gala.DaemonManager : GLib.Object {
         }
 
         int width, height;
-        display.get_size (out width, out height);
+        wm.get_display ().get_size (out width, out height);
 
         try {
             yield daemon_proxy.show_window_menu (flags, width, height, x, y);

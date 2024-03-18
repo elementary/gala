@@ -59,7 +59,7 @@ namespace Gala {
             Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
                 (connection) => {
                     try {
-                        connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
+                        connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", new SessionManager ());
                     } catch (Error e) { warning (e.message); }
                 },
                 () => {},

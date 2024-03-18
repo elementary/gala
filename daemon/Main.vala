@@ -33,6 +33,7 @@ public class Gala.Daemon.Application : Gtk.Application {
         base.dbus_register (connection, object_path);
 
         connection.register_object (object_path, new DBus ());
+        connection.register_object (object_path, new Session.Manager ());
 
         return true;
     }
