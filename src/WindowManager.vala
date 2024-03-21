@@ -85,6 +85,8 @@ namespace Gala {
 
         private ManagedClient notifications_server;
 
+        private WindowGrabTracker window_grab_tracker;
+
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -141,6 +143,7 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
+            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
 
@@ -695,9 +698,21 @@ namespace Gala {
             uint fade_out_duration = 900U;
             double[] op_keyframes = { 0.1, 0.9 };
             GLib.Value[] opacity = { 20U, 20U };
+#if HAS_MUTTER46
+            unowned Meta.Display display = get_display ();
+            unowned Meta.X11Display x11display = display.get_x11_display ();
+            var bottom_xwin = x11display.lookup_xwindow (bottom_window);
+#else
+            var bottom_xwin = bottom_window.get_xwindow ();
+#endif
 
             workspace.list_windows ().@foreach ((window) => {
-                if (window.get_xwindow () == bottom_window.get_xwindow ()
+#if HAS_MUTTER46
+                var xwin = x11display.lookup_xwindow (window);
+#else
+                var xwin = window.get_xwindow ();
+#endif
+                if (xwin == bottom_xwin
                     || !InternalUtils.get_window_is_normal (window)
                     || window.minimized) {
                     return;
@@ -844,38 +859,27 @@ namespace Gala {
             return (proxy in modal_stack);
         }
 
-        private HashTable<Meta.Window, unowned Meta.WindowActor> dim_table =
-            new HashTable<Meta.Window, unowned Meta.WindowActor> (GLib.direct_hash, GLib.direct_equal);
-
-        private void dim_parent_window (Meta.Window window, bool dim) {
-            unowned var transient = window.get_transient_for ();
-            if (transient != null && transient != window) {
-                unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
-                // Can't rely on win.has_effects since other effects could be applied
-                if (dim) {
-                    if (window.window_type == Meta.WindowType.MODAL_DIALOG) {
-                        var dark_effect = new Clutter.BrightnessContrastEffect ();
-                        dark_effect.set_brightness (-0.4f);
-                        transient_actor.add_effect_with_name ("dim-parent", dark_effect);
-
-                        dim_table[window] = transient_actor;
-                    }
-                } else if (transient_actor.get_effect ("dim-parent") != null) {
-                    transient_actor.remove_effect_by_name ("dim-parent");
-                    dim_table.remove (window);
-                }
-
+        private void dim_parent_window (Meta.Window window) {
+            if (window.window_type != MODAL_DIALOG) {
                 return;
             }
 
-            if (!dim) {
-            // fall back to dim_data (see https://github.com/elementary/gala/issues/1331)
-            unowned var transient_actor = dim_table.take (window);
-            if (transient_actor != null) {
-                transient_actor.remove_effect_by_name ("dim-parent");
-                debug ("Removed dim using dim_data");
+            unowned var transient = window.get_transient_for ();
+            if (transient == null || transient == window) {
+                warning ("No transient found");
+                return;
             }
-            }
+
+            unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
+            var dark_effect = new Clutter.BrightnessContrastEffect ();
+            dark_effect.set_brightness (-0.4f);
+            transient_actor.add_effect_with_name ("dim-parent", dark_effect);
+
+            window.unmanaged.connect (() => {
+                if (transient_actor != null && transient_actor.get_effect ("dim-parent") != null) {
+                    transient_actor.remove_effect_by_name ("dim-parent");
+                }
+            });
         }
 
         /**
@@ -911,7 +915,9 @@ namespace Gala {
                     break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
@@ -919,7 +925,9 @@ namespace Gala {
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
@@ -1559,7 +1567,7 @@ namespace Gala {
                         }
                     });
 
-                    dim_parent_window (window, true);
+                    dim_parent_window (window);
 
                     break;
                 default:
@@ -1654,8 +1662,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-
-                    dim_parent_window (window, false);
 
                     break;
                 case Meta.WindowType.MENU:
@@ -1940,21 +1946,37 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
+            unowned var grabbed_window = window_grab_tracker.current_window;
+
+            if (grabbed_window != null) {
+                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
+
+                windows.prepend (moving_actor);
+                parents.prepend (moving_actor.get_parent ());
+
+                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                clutter_actor_reparent (moving_actor, static_windows);
+            }
+
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
             var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
+                if (actor.is_destroyed ()) {
                     continue;
+                }
 
-                unowned Meta.Window window = actor.get_meta_window ();
+                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && !window.is_on_primary_monitor ()) ||
-                    (moving != null && window == moving))
+                    move_primary_only && !window.is_on_primary_monitor () ||
+                    window == moving ||
+                    window == grabbed_window) {
+
                     continue;
+                }
 
                 if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces

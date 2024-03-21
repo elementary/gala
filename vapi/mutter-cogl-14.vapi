@@ -2,14 +2,68 @@
 
 [CCode (cprefix = "Cogl", gir_namespace = "Cogl", gir_version = "14", lower_case_cprefix = "cogl_")]
 namespace Cogl {
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_atlas_texture_get_type ()")]
+	public sealed class AtlasTexture : Cogl.Texture {
+		[CCode (has_construct_function = false)]
+		protected AtlasTexture ();
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public AtlasTexture.from_bitmap (Cogl.Bitmap bmp);
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public AtlasTexture.from_data (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format, int rowstride, uint8 data) throws GLib.Error;
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public AtlasTexture.with_size (Cogl.Context ctx, int width, int height);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_attribute_get_type ()")]
+	public class Attribute : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Attribute (Cogl.AttributeBuffer attribute_buffer, string name, size_t stride, size_t offset, int components, Cogl.AttributeType type);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_1f (Cogl.Context context, string name, float value);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_2f (Cogl.Context context, string name, float component0, float component1);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_2fv (Cogl.Context context, string name, float value);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_2x2fv (Cogl.Context context, string name, float matrix2x2, bool transpose);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_3f (Cogl.Context context, string name, float component0, float component1, float component2);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_3fv (Cogl.Context context, string name, float value);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_3x3fv (Cogl.Context context, string name, float matrix3x3, bool transpose);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_4f (Cogl.Context context, string name, float component0, float component1, float component2, float component3);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_4fv (Cogl.Context context, string name, float value);
+		[CCode (has_construct_function = false)]
+		public Attribute.const_4x4fv (Cogl.Context context, string name, float matrix4x4, bool transpose);
+		public unowned Cogl.AttributeBuffer get_buffer ();
+		public bool get_normalized ();
+		public void set_buffer (Cogl.AttributeBuffer attribute_buffer);
+		public void set_normalized (bool normalized);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_attribute_buffer_get_type ()")]
+	public sealed class AttributeBuffer : Cogl.Buffer {
+		[CCode (has_construct_function = false)]
+		public AttributeBuffer (Cogl.Context context, [CCode (array_length_cname = "bytes", array_length_pos = 1.5, array_length_type = "gsize")] uint8[] data);
+		[CCode (has_construct_function = false)]
+		public AttributeBuffer.with_size (Cogl.Context context, size_t bytes);
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_bitmap_get_type ()")]
 	public class Bitmap : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Bitmap ();
+		[CCode (has_construct_function = false)]
+		public Bitmap.for_data (Cogl.Context context, int width, int height, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] owned uint8[] data);
+		[CCode (has_construct_function = false)]
+		public Bitmap.from_buffer (Cogl.Buffer buffer, Cogl.PixelFormat format, int width, int height, int rowstride, int offset);
+		public unowned Cogl.Buffer? get_buffer ();
 		public Cogl.PixelFormat get_format ();
 		public int get_height ();
 		public int get_rowstride ();
 		public int get_width ();
+		[CCode (has_construct_function = false)]
+		public Bitmap.with_size (Cogl.Context context, uint width, uint height, Cogl.PixelFormat format);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_buffer_get_type ()")]
 	public abstract class Buffer : GLib.Object {
@@ -19,7 +73,7 @@ namespace Cogl {
 		public Cogl.BufferUpdateHint get_update_hint ();
 		public void* map (Cogl.BufferAccess access, Cogl.BufferMapHint hints);
 		public void* map_range (size_t offset, size_t size, Cogl.BufferAccess access, Cogl.BufferMapHint hints) throws GLib.Error;
-		public bool set_data (size_t offset, void* data, size_t size);
+		public bool set_data (size_t offset, [CCode (array_length = false)] uint8[] data, size_t size);
 		public void set_update_hint (Cogl.BufferUpdateHint hint);
 		public void unmap ();
 		[NoAccessorMethod]
@@ -33,19 +87,55 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_context_get_type ()")]
 	public class Context : GLib.Object {
 		[CCode (has_construct_function = false)]
-		protected Context ();
+		public Context (Cogl.Display? display) throws GLib.Error;
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_foreach_feature")]
 		public void foreach_feature (Cogl.FeatureCallback callback);
 		public void free_timestamp_query (owned Cogl.TimestampQuery query);
+		public unowned Cogl.Display get_display ();
 		public int64 get_gpu_time_ns ();
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_get_graphics_reset_status")]
 		public Cogl.GraphicsResetStatus get_graphics_reset_status ();
 		public unowned Cogl.Pipeline get_named_pipeline (Cogl.PipelineKey key);
+		public unowned Cogl.Renderer get_renderer ();
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_has_feature")]
 		public bool has_feature (Cogl.FeatureID feature);
 		public bool is_hardware_accelerated ();
 		public void set_named_pipeline (Cogl.PipelineKey key, Cogl.Pipeline? pipeline);
 		public int64 timestamp_query_get_time_ns (Cogl.TimestampQuery query);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_display_get_type ()")]
+	public class Display : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Display (Cogl.Renderer renderer, Cogl.OnscreenTemplate onscreen_template);
+		public unowned Cogl.Renderer get_renderer ();
+		public void set_onscreen_template (Cogl.OnscreenTemplate onscreen_template);
+		public bool setup () throws GLib.Error;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", free_function = "cogl_dma_buf_handle_free", has_type_id = false)]
+	[Compact]
+	public class DmaBufHandle {
+		[DestroysInstance]
+		public void free ();
+		public int get_bpp ();
+		public int get_fd ();
+		public unowned Cogl.Framebuffer get_framebuffer ();
+		public int get_height ();
+		public int get_offset ();
+		public int get_stride ();
+		public int get_width ();
+		public void* mmap () throws GLib.Error;
+		public bool munmap (void* data) throws GLib.Error;
+		public bool sync_read_end () throws GLib.Error;
+		public bool sync_read_start () throws GLib.Error;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Compact]
+	public class Fence {
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	[Compact]
+	public class FenceClosure {
+		public void* get_user_data ();
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_frame_closure_get_type ()")]
 	[Compact]
@@ -56,6 +146,7 @@ namespace Cogl {
 		[CCode (has_construct_function = false)]
 		protected FrameInfo ();
 		public int64 get_frame_counter ();
+		public int64 get_global_frame_counter ();
 		public bool get_is_symbolic ();
 		public int64 get_presentation_time_us ();
 		public float get_refresh_rate ();
@@ -70,9 +161,11 @@ namespace Cogl {
 	public abstract class Framebuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Framebuffer ();
+		public unowned Cogl.FenceClosure? add_fence_callback ([CCode (scope = "async")] Cogl.FenceCallback callback);
 		public virtual bool allocate () throws GLib.Error;
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_blit_framebuffer")]
 		public bool blit (Cogl.Framebuffer dst, int src_x, int src_y, int dst_x, int dst_y, int width, int height) throws GLib.Error;
+		public void cancel_fence_callback (Cogl.FenceClosure closure);
 		public void clear (ulong buffers, Cogl.Color color);
 		public void clear4f (ulong buffers, float red, float green, float blue, float alpha);
 		public void discard_buffers (ulong buffers);
@@ -113,6 +206,7 @@ namespace Cogl {
 		public void pop_clip ();
 		public void pop_matrix ();
 		public void push_matrix ();
+		public void push_primitive_clip (Cogl.Primitive primitive, float bounds_x1, float bounds_y1, float bounds_x2, float bounds_y2);
 		public void push_rectangle_clip (float x_1, float y_1, float x_2, float y_2);
 		public void push_region_clip (Mtk.Region region);
 		public bool read_pixels (int x, int y, int width, int height, Cogl.PixelFormat format, uint8 pixels);
@@ -144,10 +238,57 @@ namespace Cogl {
 	[Compact]
 	public class FramebufferDriverConfig {
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_index_buffer_get_type ()")]
+	public sealed class IndexBuffer : Cogl.Buffer {
+		[CCode (has_construct_function = false)]
+		public IndexBuffer (Cogl.Context context, size_t bytes);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_indices_get_type ()")]
+	public class Indices : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Indices (Cogl.Context context, Cogl.IndicesType type, void* indices_data, int n_indices);
+		[CCode (has_construct_function = false)]
+		public Indices.for_buffer (Cogl.IndicesType type, Cogl.IndexBuffer buffer, size_t offset);
+		public unowned Cogl.IndexBuffer get_buffer ();
+		public Cogl.IndicesType get_indices_type ();
+		public size_t get_offset ();
+		public void set_offset (size_t offset);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", ref_function = "cogl_matrix_entry_ref", type_id = "cogl_matrix_entry_get_type ()", unref_function = "cogl_matrix_entry_unref")]
+	[Compact]
+	public class MatrixEntry {
+		public bool calculate_translation (Cogl.MatrixEntry entry1, out float x, out float y, out float z);
+		public bool equal (Cogl.MatrixEntry entry1);
+		public Graphene.Matrix? @get (out Graphene.Matrix matrix);
+		public bool is_identity ();
+		public Cogl.MatrixEntry @ref ();
+		public void unref ();
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_matrix_stack_get_type ()")]
+	public class MatrixStack : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public MatrixStack (Cogl.Context ctx);
+		public void frustum (float left, float right, float bottom, float top, float z_near, float z_far);
+		public Graphene.Matrix? @get (out Graphene.Matrix matrix);
+		public unowned Cogl.MatrixEntry get_entry ();
+		public bool get_inverse (out Graphene.Matrix inverse);
+		public void load_identity ();
+		public void multiply (Graphene.Matrix matrix);
+		public void orthographic (float x_1, float y_1, float x_2, float y_2, float near, float far);
+		public void perspective (float fov_y, float aspect, float z_near, float z_far);
+		public void pop ();
+		public void push ();
+		public void rotate (float angle, float x, float y, float z);
+		public void rotate_euler (Graphene.Euler euler);
+		public void scale (float x, float y, float z);
+		public void @set (Graphene.Matrix matrix);
+		public void translate (float x, float y, float z);
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_offscreen_get_type ()")]
 	public class Offscreen : Cogl.Framebuffer {
 		[CCode (has_construct_function = false)]
 		protected Offscreen ();
+		public unowned Cogl.Texture get_texture ();
 		[CCode (has_construct_function = false)]
 		public Offscreen.with_texture (Cogl.Texture texture);
 	}
@@ -157,22 +298,44 @@ namespace Cogl {
 		protected Onscreen ();
 		public unowned Cogl.OnscreenDirtyClosure add_dirty_callback (owned Cogl.OnscreenDirtyCallback callback);
 		public unowned Cogl.FrameClosure add_frame_callback (owned Cogl.FrameCallback callback);
+		public void add_frame_info (owned Cogl.FrameInfo info);
 		[NoWrapper]
 		public virtual void bind ();
+		public virtual bool direct_scanout (Cogl.Scanout scanout, Cogl.FrameInfo info) throws GLib.Error;
 		public virtual int get_buffer_age ();
 		public int64 get_frame_counter ();
 		public void hide ();
-		public virtual void queue_damage_region ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.1, type = "const int*")] int[] rectangles);
+		public virtual void queue_damage_region ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.1)] int[] rectangles);
 		public void remove_dirty_callback (Cogl.OnscreenDirtyClosure closure);
 		public void remove_frame_callback (Cogl.FrameClosure closure);
 		public void show ();
 		public void swap_buffers (Cogl.FrameInfo frame_info, void* user_data);
-		public virtual void swap_buffers_with_damage ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.5, type = "const int*")] int[] rectangles, Cogl.FrameInfo info);
-		public virtual void swap_region ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.5, type = "const int*")] int[] rectangles, Cogl.FrameInfo info);
+		public virtual void swap_buffers_with_damage ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.5)] int[] rectangles, Cogl.FrameInfo info);
+		public virtual void swap_region ([CCode (array_length_cname = "n_rectangles", array_length_pos = 1.5)] int[] rectangles, Cogl.FrameInfo info);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_onscreen_dirty_closure_get_type ()")]
 	[Compact]
 	public class OnscreenDirtyClosure {
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_onscreen_template_get_type ()")]
+	public class OnscreenTemplate : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public OnscreenTemplate (Cogl.SwapChain swap_chain);
+		public void set_samples_per_pixel (int n);
+		public void set_stereo_enabled (bool enabled);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_output_get_type ()")]
+	public class Output : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected Output ();
+		public int get_height ();
+		public int get_mm_height ();
+		public int get_mm_width ();
+		public float get_refresh_rate ();
+		public Cogl.SubpixelOrder get_subpixel_order ();
+		public int get_width ();
+		public int get_x ();
+		public int get_y ();
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_pipeline_get_type ()")]
 	public sealed class Pipeline : GLib.Object {
@@ -186,6 +349,7 @@ namespace Cogl {
 		public float get_alpha_test_reference ();
 		public Cogl.Color get_color ();
 		public Cogl.PipelineCullFaceMode get_cull_face_mode ();
+		public Cogl.DepthState get_depth_state ();
 		public Cogl.Winding get_front_face_winding ();
 		public void get_layer_filters (int layer_index, out Cogl.PipelineFilter min_filter, out Cogl.PipelineFilter mag_filter);
 		public bool get_layer_point_sprite_coords_enabled (int layer_index);
@@ -202,9 +366,8 @@ namespace Cogl {
 		public bool set_blend (string blend_string) throws GLib.Error;
 		public void set_blend_constant (Cogl.Color constant_color);
 		public void set_color (Cogl.Color color);
-		public void set_color4f (float red, float green, float blue, float alpha);
-		public void set_color4ub (uint8 red, uint8 green, uint8 blue, uint8 alpha);
 		public void set_cull_face_mode (Cogl.PipelineCullFaceMode cull_face_mode);
+		public bool set_depth_state (Cogl.DepthState state) throws GLib.Error;
 		public void set_front_face_winding (Cogl.Winding front_winding);
 		public bool set_layer_combine (int layer_index, string blend_string) throws GLib.Error;
 		public void set_layer_combine_constant (int layer_index, Cogl.Color constant);
@@ -226,50 +389,46 @@ namespace Cogl {
 		public void set_uniform_matrix (int uniform_location, int dimensions, int count, bool transpose, float value);
 		public void set_user_program (Cogl.Program program);
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", type_id = "G_TYPE_STRING")]
-	[Compact]
-	public class PipelineKey : string {
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_pixel_buffer_get_type ()")]
+	public sealed class PixelBuffer : Cogl.Buffer {
+		[CCode (has_construct_function = false)]
+		public PixelBuffer (Cogl.Context context, [CCode (array_length_cname = "size", array_length_pos = 1.5, array_length_type = "gsize")] uint8[] data);
 	}
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public sealed class Primitive : GLib.Object {
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_primitive_get_type ()")]
+	public class Primitive : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public Primitive (Cogl.VerticesMode mode, int n_vertices, ...);
-		[Version (since = "1.10")]
 		public Cogl.Primitive copy ();
-		[Version (since = "1.16")]
 		public void draw (Cogl.Framebuffer framebuffer, Cogl.Pipeline pipeline);
+		public void foreach_attribute (Cogl.PrimitiveAttributeCallback callback);
 		public int get_first_vertex ();
+		[CCode (array_length = false)]
+		public unowned Cogl.Indices[]? get_indices ();
 		public Cogl.VerticesMode get_mode ();
-		[Version (since = "1.8")]
 		public int get_n_vertices ();
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2C4[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p2t2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2T2[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p2t2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP2T2C4[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p3 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p3c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3C4[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p3t2 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3T2[] data);
 		[CCode (has_construct_function = false)]
-		[Version (since = "1.6")]
 		public Primitive.p3t2c4 (Cogl.Context context, Cogl.VerticesMode mode, [CCode (array_length_cname = "n_vertices", array_length_pos = 2.5)] Cogl.VertexP3T2C4[] data);
 		public void set_first_vertex (int first_vertex);
+		public void set_indices ([CCode (array_length_cname = "n_indices", array_length_pos = 1.1)] Cogl.Indices[] indices);
 		public void set_mode (Cogl.VerticesMode mode);
-		[Version (since = "1.8")]
 		public void set_n_vertices (int n_vertices);
+		public static void texture_set_auto_mipmap (Cogl.Texture primitive_texture, bool value);
+		[CCode (has_construct_function = false)]
+		public Primitive.with_attributes (Cogl.VerticesMode mode, int n_vertices, [CCode (array_length_cname = "n_attributes", array_length_pos = 3.1)] Cogl.Attribute[] attributes);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_program_get_type ()")]
 	public class Program : GLib.Object {
@@ -295,9 +454,35 @@ namespace Cogl {
 		[Version (deprecated = true, deprecated_since = "1.16")]
 		public void set_uniform_matrix (int uniform_location, int dimensions, bool transpose, [CCode (array_length_cname = "count", array_length_pos = 2.5)] float[] value);
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
-	[Compact]
-	public class Scanout {
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_renderer_get_type ()")]
+	public class Renderer : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Renderer ();
+		public void add_constraint (Cogl.RendererConstraint constraint);
+		public void bind_api ();
+		public bool check_onscreen_template (Cogl.OnscreenTemplate onscreen_template) throws GLib.Error;
+		public bool connect () throws GLib.Error;
+		public static uint32 error_quark ();
+		public void foreach_output (Cogl.OutputCallback callback);
+		public Cogl.Driver get_driver ();
+		public Cogl.WinsysID get_winsys_id ();
+		public bool is_dma_buf_supported ();
+		public void remove_constraint (Cogl.RendererConstraint constraint);
+		public void set_driver (Cogl.Driver driver);
+		public void set_winsys_id (Cogl.WinsysID winsys_id);
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_scanout_get_type ()")]
+	public sealed class Scanout : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public Scanout (Cogl.ScanoutBuffer scanout_buffer);
+		public bool blit_to_framebuffer (Cogl.Framebuffer framebuffer, int x, int y) throws GLib.Error;
+		public unowned Cogl.ScanoutBuffer get_buffer ();
+		public void get_dst_rect (Mtk.Rectangle rect);
+		public void get_src_rect (Graphene.Rect rect);
+		public void notify_failed (Cogl.Onscreen onscreen);
+		public void set_dst_rect (Mtk.Rectangle rect);
+		public void set_src_rect (Graphene.Rect rect);
+		public signal void scanout_failed (Cogl.Onscreen object);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_shader_get_type ()")]
 	public class Shader : GLib.Object {
@@ -325,6 +510,19 @@ namespace Cogl {
 		public void set_pre (string pre);
 		public void set_replace (string replace);
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_sub_texture_get_type ()")]
+	public sealed class SubTexture : Cogl.Texture {
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public SubTexture (Cogl.Context ctx, Cogl.Texture parent_texture, int sub_x, int sub_y, int sub_width, int sub_height);
+		public unowned Cogl.Texture get_parent ();
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_swap_chain_get_type ()")]
+	public class SwapChain : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public SwapChain ();
+		public void set_has_alpha (bool has_alpha);
+		public void set_length (int length);
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_texture_get_type ()")]
 	public abstract class Texture : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -337,6 +535,7 @@ namespace Cogl {
 		public int get_max_waste ();
 		public bool get_premultiplied ();
 		public uint get_width ();
+		public bool is_get_data_supported ();
 		public bool is_sliced ();
 		public void set_components (Cogl.TextureComponents components);
 		public bool set_data (Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] uint8[] data, int level) throws GLib.Error;
@@ -358,12 +557,15 @@ namespace Cogl {
 	public sealed class Texture2D : Cogl.Texture {
 		[CCode (has_construct_function = false)]
 		protected Texture2D ();
-		public void egl_image_external_alloc_finish (void* user_data, GLib.DestroyNotify destroy);
-		public void egl_image_external_bind ();
 		[CCode (has_construct_function = false, type = "CoglTexture*")]
 		public Texture2D.from_bitmap (Cogl.Bitmap bitmap);
 		[CCode (has_construct_function = false, type = "CoglTexture*")]
-		public Texture2D.from_data (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false, type = "const uint8_t*")] uint8[] data) throws GLib.Error;
+		public Texture2D.from_data (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] uint8[] data) throws GLib.Error;
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		[Version (since = "2.0")]
+		public Texture2D.with_format (Cogl.Context ctx, int width, int height, Cogl.PixelFormat format);
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public Texture2D.with_size (Cogl.Context ctx, int width, int height);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", lower_case_csuffix = "texture_2d_sliced", type_id = "cogl_texture_2d_sliced_get_type ()")]
 	public sealed class Texture2DSliced : Cogl.Texture {
@@ -371,19 +573,22 @@ namespace Cogl {
 		protected Texture2DSliced ();
 		[CCode (has_construct_function = false, type = "CoglTexture*")]
 		public Texture2DSliced.from_bitmap (Cogl.Bitmap bmp, int max_waste);
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public Texture2DSliced.from_data (Cogl.Context ctx, int width, int height, int max_waste, Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] uint8[] data) throws GLib.Error;
+		[CCode (has_construct_function = false, type = "CoglTexture*")]
+		public Texture2DSliced.with_size (Cogl.Context ctx, int width, int height, int max_waste);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	[Compact]
 	public class TimestampQuery {
 	}
-	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
-	[Compact]
-	public class TraceContext {
+	[CCode (cheader_filename = "cogl/cogl.h", type_cname = "CoglScanoutBufferInterface", type_id = "cogl_scanout_buffer_get_type ()")]
+	public interface ScanoutBuffer : GLib.Object {
+		public abstract int get_height ();
+		public abstract int get_width ();
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "cogl_color_get_type ()")]
 	public struct Color {
-		[CCode (has_construct_function = false, type = "CoglColor*")]
-		public Color ();
 		public Cogl.Color? copy ();
 		public bool equal ([CCode (type = "void*")] Cogl.Color v2);
 		public void free ();
@@ -393,43 +598,29 @@ namespace Cogl {
 		[CCode (cname = "cogl_color_init_from_4fv")]
 		[Version (since = "1.4")]
 		public Color.from_4fv (float color_array);
-		[CCode (cname = "cogl_color_init_from_4ub")]
-		[Version (since = "1.4")]
-		public Color.from_4ub (uint8 red, uint8 green, uint8 blue, uint8 alpha);
 		[CCode (cname = "cogl_color_init_from_hsl")]
 		[Version (since = "1.16")]
 		public Color.from_hsl (float hue, float saturation, float luminance);
 		public float get_alpha ();
-		public uint8 get_alpha_byte ();
-		public float get_alpha_float ();
 		public float get_blue ();
-		public uint8 get_blue_byte ();
-		public float get_blue_float ();
 		public float get_green ();
-		public uint8 get_green_byte ();
-		public float get_green_float ();
 		public float get_red ();
-		public uint8 get_red_byte ();
-		public float get_red_float ();
 		public void init_from_4f (float red, float green, float blue, float alpha);
-		public void init_from_4fv (float color_array);
-		public void init_from_4ub (uint8 red, uint8 green, uint8 blue, uint8 alpha);
 		public void init_from_hsl (float hue, float saturation, float luminance);
 		public void premultiply ();
-		public void set_alpha (float alpha);
-		public void set_alpha_byte (uint8 alpha);
-		public void set_alpha_float (float alpha);
-		public void set_blue (float blue);
-		public void set_blue_byte (uint8 blue);
-		public void set_blue_float (float blue);
-		public void set_green (float green);
-		public void set_green_byte (uint8 green);
-		public void set_green_float (float green);
-		public void set_red (float red);
-		public void set_red_byte (uint8 red);
-		public void set_red_float (float red);
 		public void to_hsl (out float hue, out float saturation, out float luminance);
-		public void unpremultiply ();
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	public struct DepthState {
+		public void get_range (float near_val, float far_val);
+		public bool get_test_enabled ();
+		public Cogl.DepthTestFunction get_test_function ();
+		public bool get_write_enabled ();
+		public void init ();
+		public void set_range (float near_val, float far_val);
+		public void set_test_enabled (bool enable);
+		public void set_test_function (Cogl.DepthTestFunction function);
+		public void set_write_enabled (bool enable);
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	public struct OnscreenDirtyInfo {
@@ -437,6 +628,14 @@ namespace Cogl {
 		public int y;
 		public int width;
 		public int height;
+	}
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	[SimpleType]
+	public struct PipelineKey : char {
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
+	public struct PollFD {
+		public int fd;
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	public struct TextureVertex {
@@ -446,12 +645,6 @@ namespace Cogl {
 		public float tx;
 		public float ty;
 		public Cogl.Color color;
-	}
-	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
-	public struct TraceHead {
-		public uint64 begin_time;
-		public weak string name;
-		public weak string description;
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]
 	[Version (since = "1.6")]
@@ -592,6 +785,13 @@ namespace Cogl {
 		GEQUAL,
 		ALWAYS
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_DRIVER_", has_type_id = false)]
+	public enum Driver {
+		ANY,
+		NOP,
+		GL3,
+		GLES2
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_EGL_IMAGE_FLAG_", has_type_id = false)]
 	[Flags]
 	public enum EglImageFlags {
@@ -685,6 +885,7 @@ namespace Cogl {
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_PIXEL_FORMAT_", type_id = "cogl_pixel_format_get_type ()")]
 	public enum PixelFormat {
+		CAIRO_ARGB32_COMPAT,
 		ANY,
 		A_8,
 		RGB_565,
@@ -743,11 +944,27 @@ namespace Cogl {
 		public int get_n_planes ();
 		public unowned string to_string ();
 	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_POLL_FD_EVENT_", has_type_id = false)]
+	public enum PollFDEvent {
+		IN,
+		PRI,
+		OUT,
+		ERR,
+		HUP,
+		NVAL
+	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_READ_PIXELS_COLOR_", has_type_id = false)]
 	[Flags]
 	public enum ReadPixelsFlags {
 		[CCode (cname = "COGL_READ_PIXELS_COLOR_BUFFER")]
 		READ_PIXELS_COLOR_BUFFER
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_RENDERER_CONSTRAINT_USES_", has_type_id = false)]
+	[Flags]
+	public enum RendererConstraint {
+		X11,
+		XLIB,
+		EGL
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SHADER_TYPE_", has_type_id = false)]
 	public enum ShaderType {
@@ -771,6 +988,15 @@ namespace Cogl {
 		BOTH,
 		LEFT,
 		RIGHT
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SUBPIXEL_ORDER_", has_type_id = false)]
+	public enum SubpixelOrder {
+		UNKNOWN,
+		NONE,
+		HORIZONTAL_RGB,
+		HORIZONTAL_BGR,
+		VERTICAL_RGB,
+		VERTICAL_BGR
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_COMPONENTS_", has_type_id = false)]
 	public enum TextureComponents {
@@ -807,6 +1033,14 @@ namespace Cogl {
 		BUFFER_AGE,
 		SYNC_AND_COMPLETE_EVENT,
 		N_FEATURES
+	}
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_WINSYS_ID_", has_type_id = false)]
+	public enum WinsysID {
+		ANY,
+		STUB,
+		GLX,
+		EGL_XLIB,
+		CUSTOM
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_BITMAP_ERROR_", has_type_id = false)]
 	public errordomain BitmapError {
@@ -855,14 +1089,20 @@ namespace Cogl {
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 1.9)]
 	public delegate void FeatureCallback (Cogl.FeatureID feature);
+	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 1.9)]
+	public delegate void FenceCallback (Cogl.Fence fence);
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 3.9)]
 	public delegate void FrameCallback (Cogl.Onscreen onscreen, Cogl.FrameEvent event, Cogl.FrameInfo info);
+	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 3.9)]
+	public delegate void MetaTextureCallback (Cogl.Texture sub_texture, float sub_texture_coords, float meta_coords);
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 2.9)]
 	public delegate void OnscreenDirtyCallback (Cogl.Onscreen onscreen, Cogl.OnscreenDirtyInfo info);
+	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 1.9)]
+	public delegate void OutputCallback (Cogl.Output output);
 	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 2.9)]
 	public delegate bool PipelineLayerCallback (Cogl.Pipeline pipeline, int layer_index);
-	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 1.9)]
-	public delegate bool Texture2DEGLImageExternalAlloc (Cogl.Texture2D tex_2d) throws GLib.Error;
+	[CCode (cheader_filename = "cogl/cogl.h", instance_pos = 2.9)]
+	public delegate bool PrimitiveAttributeCallback (Cogl.Primitive primitive, Cogl.Attribute attribute);
 	[CCode (cheader_filename = "cogl/cogl.h", cname = "COGL_AFIRST_BIT")]
 	public const int AFIRST_BIT;
 	[CCode (cheader_filename = "cogl/cogl.h", cname = "COGL_A_BIT")]
@@ -885,7 +1125,23 @@ namespace Cogl {
 	[Version (replacement = "Color.init_from_hsl")]
 	public static void color_init_from_hsl (out Cogl.Color color, float hue, float saturation, float luminance);
 	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void debug_matrix_entry_print (Cogl.MatrixEntry entry);
+	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void flush ();
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static unowned Cogl.Indices get_rectangle_indices (Cogl.Context context, int n_rectangles);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static GLib.Source glib_renderer_source_new (Cogl.Renderer renderer, int priority);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static GLib.Source glib_source_new (Cogl.Context context, int priority);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void graphene_matrix_project_point (Graphene.Matrix matrix, ref float x, ref float y, ref float z, ref float w);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void graphene_matrix_project_points (Graphene.Matrix matrix, int n_components, size_t stride_in, void* points_in, size_t stride_out, void* points_out, int n_points);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void graphene_matrix_transform_points (Graphene.Matrix matrix, int n_components, size_t stride_in, void* points_in, size_t stride_out, void* points_out, int n_points);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void meta_texture_foreach_in_region (Cogl.Texture texture, float tx_1, float ty_1, float tx_2, float ty_2, Cogl.PipelineWrapMode wrap_s, Cogl.PipelineWrapMode wrap_t, Cogl.MetaTextureCallback callback);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (replacement = "PixelFormat.get_bytes_per_pixel")]
 	public static int pixel_format_get_bytes_per_pixel (Cogl.PixelFormat format, int plane);
@@ -896,19 +1152,17 @@ namespace Cogl {
 	[Version (replacement = "PixelFormat.to_string")]
 	public static unowned string pixel_format_to_string (Cogl.PixelFormat format);
 	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void set_tracing_disabled_on_thread (GLib.MainContext main_context);
+	public static void poll_renderer_dispatch (Cogl.Renderer renderer, Cogl.PollFD poll_fds, int n_poll_fds);
 	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void set_tracing_enabled_on_thread (GLib.MainContext main_context, string group);
+	public static int poll_renderer_get_info (Cogl.Renderer renderer, Cogl.PollFD poll_fds, int n_poll_fds, int64 timeout);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void set_tracing_disabled_on_thread (void* data);
+	[CCode (cheader_filename = "cogl/cogl.h")]
+	public static void set_tracing_enabled_on_thread (void* data, string group);
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static bool start_tracing_with_fd (int fd) throws GLib.Error;
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static bool start_tracing_with_path (string filename) throws GLib.Error;
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void stop_tracing ();
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void trace_describe (Cogl.TraceHead head, string description);
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void trace_end (Cogl.TraceHead head);
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void trace_mark (string name, string description);
 }

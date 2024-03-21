@@ -174,7 +174,7 @@
       <summary>Cycle to the next workspace to the right or to back to the first</summary>
     </key>
     <key type="as" name="panel-main-menu">
-      <default><![CDATA[['<Super>space','<Alt>F2']]]></default>
+      <default><![CDATA[['<Alt>F2']]]></default>
       <summary>Open the applications menu</summary>
     </key>
     <key name="screenshot" type="as">
@@ -202,12 +202,12 @@
       <summary>Copy a screenshot of an area to clipboard</summary>
     </key>
     <key type="as" name="switch-input-source">
-      <default><![CDATA[['']]]></default>
+      <default><![CDATA[['<Super>Space']]]></default>
       <summary>Cycle to next keyboard layout</summary>
       <description></description>
     </key>
     <key type="as" name="switch-input-source-backward">
-      <default><![CDATA[['']]]></default>
+      <default><![CDATA[['<Super><Shift>Space']]]></default>
       <summary>Cycle to previous keyboard layout</summary>
       <description></description>
     </key>
