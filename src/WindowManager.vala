@@ -144,6 +144,13 @@ namespace Gala {
 
             notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
 
+            notifications_server.window_created.connect ((window) => {
+                window.make_above ();
+#if HAS_MUTTER_46
+                notifications_server.wayland_client.make_dock (window);
+#endif
+            });
+
             show_stage ();
 
             AccessDialog.watch_portal ();
