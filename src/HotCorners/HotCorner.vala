@@ -16,18 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
-private class Gala.Barrier : Meta.Barrier {
-    public bool is_hit { get; set; default = false; }
-    public double pressure_x { get; set; default = 0; }
-    public double pressure_y { get; set; default = 0; }
-
-    public Barrier (Meta.Display display, int x1, int y1, int x2, int y2, Meta.BarrierDirection directions) {
-        Object (display: display, x1: x1, y1: y1, x2: x2, y2: y2, directions: directions);
-    }
-}
-
 public class Gala.HotCorner : Object {
     public const string POSITION_TOP_LEFT = "hotcorner-topleft";
     public const string POSITION_TOP_RIGHT = "hotcorner-topright";
@@ -59,8 +47,6 @@ public class Gala.HotCorner : Object {
 
     private Gala.Barrier? vertical_barrier = null;
     private Gala.Barrier? horizontal_barrier = null;
-    private bool triggered = false;
-    private uint32 triggered_time;
 
     public HotCorner (Meta.Display display, float x, float y, float scale, string hot_corner_position) {
         add_barriers (display, x, y, scale, hot_corner_position);
@@ -82,14 +68,24 @@ public class Gala.HotCorner : Object {
         var vdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.VERTICAL);
         var hdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.HORIZONTAL);
 
-        vertical_barrier = new Gala.Barrier (display, vrect.x, vrect.y, vrect.x + vrect.width, vrect.y + vrect.height, vdir);
-        horizontal_barrier = new Gala.Barrier (display, hrect.x, hrect.y, hrect.x + hrect.width, hrect.y + hrect.height, hdir);
+        vertical_barrier = new Gala.Barrier (
+            display, vrect.x, vrect.y, vrect.x + vrect.width, vrect.y + vrect.height, vdir,
+            TRIGGER_PRESSURE_THRESHOLD,
+            RELEASE_PRESSURE_THRESHOLD,
+            RETRIGGER_PRESSURE_THRESHOLD,
+            RETRIGGER_DELAY
+        );
 
-        vertical_barrier.hit.connect ((event) => on_barrier_hit (vertical_barrier, event));
-        horizontal_barrier.hit.connect ((event) => on_barrier_hit (horizontal_barrier, event));
+        horizontal_barrier = new Gala.Barrier (
+            display, hrect.x, hrect.y, hrect.x + hrect.width, hrect.y + hrect.height, hdir,
+            TRIGGER_PRESSURE_THRESHOLD,
+            RELEASE_PRESSURE_THRESHOLD,
+            RETRIGGER_PRESSURE_THRESHOLD,
+            RETRIGGER_DELAY
+        );
 
-        vertical_barrier.left.connect ((event) => on_barrier_left (vertical_barrier, event));
-        horizontal_barrier.left.connect ((event) => on_barrier_left (horizontal_barrier, event));
+        vertical_barrier.trigger.connect (on_barrier_trigger);
+        horizontal_barrier.trigger.connect (on_barrier_trigger);
     }
 
     private static Meta.BarrierDirection get_barrier_direction (string hot_corner_position, Clutter.Orientation orientation) {
@@ -143,48 +139,9 @@ public class Gala.HotCorner : Object {
         return { x1, y1, x2 - x1, y2 - y1 };
     }
 
-    private void on_barrier_hit (Gala.Barrier barrier, Meta.BarrierEvent event) {
-        barrier.is_hit = true;
-        barrier.pressure_x += event.dx;
-        barrier.pressure_y += event.dy;
-
-        var pressure = (barrier == vertical_barrier) ?
-            barrier.pressure_x.abs () :
-            barrier.pressure_y.abs ();
-
-        if (!triggered && vertical_barrier.is_hit && horizontal_barrier.is_hit) {
-            if (pressure.abs () > TRIGGER_PRESSURE_THRESHOLD) {
-                trigger_hot_corner ();
-                pressure = 0;
-                triggered_time = event.time;
-            }
+    private void on_barrier_trigger () {
+        if (vertical_barrier.triggered && horizontal_barrier.triggered) {
+            trigger ();
         }
-
-        if (!triggered && pressure.abs () > RELEASE_PRESSURE_THRESHOLD) {
-            barrier.release (event);
-        }
-
-        if (triggered && pressure.abs () > RETRIGGER_PRESSURE_THRESHOLD && event.time > RETRIGGER_DELAY + triggered_time) {
-            trigger_hot_corner ();
-        }
-    }
-
-    private void on_barrier_left (Gala.Barrier barrier, Meta.BarrierEvent event) {
-        barrier.is_hit = false;
-        barrier.pressure_x = 0;
-        barrier.pressure_y = 0;
-
-        if (!vertical_barrier.is_hit && !horizontal_barrier.is_hit) {
-            triggered = false;
-        }
-    }
-
-    private void trigger_hot_corner () {
-        triggered = true;
-        vertical_barrier.pressure_x = 0;
-        vertical_barrier.pressure_y = 0;
-        horizontal_barrier.pressure_x = 0;
-        horizontal_barrier.pressure_y = 0;
-        trigger ();
     }
 }

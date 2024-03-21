@@ -170,7 +170,16 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private unowned Gala.App? get_app_from_window_group (Meta.Window window) {
+        if (window.get_client_type () != Meta.WindowClientType.X11) {
+            //TODO: Implement it for wayland
+            return null;
+        }
+
+#if HAS_MUTTER46
+        unowned Meta.Group? group = window.x11_get_group ();
+#else
         unowned Meta.Group? group = window.get_group ();
+#endif
         if (group == null) {
             return null;
         }

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
-"PO-Revision-Date: 2023-04-14 00:59+0000\n"
+"PO-Revision-Date: 2024-02-22 04:12+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.4\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:152
@@ -89,10 +89,8 @@ msgid "System Settings…"
 msgstr "სისტემის მორგება…"
 
 #: daemon/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "სისტემის მორგება…"
+msgstr "სისტემის მორგების ფანჯრის გახსნა ჩავარდა"
 
 #: daemon/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."

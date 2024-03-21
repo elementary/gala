@@ -16,7 +16,7 @@
 //
 
 namespace Gala {
-    public class SelectionArea : Clutter.Actor {
+    public class SelectionArea : CanvasActor {
         public signal void closed ();
 
         public WindowManager wm { get; construct; }
@@ -43,13 +43,6 @@ namespace Gala {
             wm.get_display ().get_size (out screen_width, out screen_height);
             width = screen_width;
             height = screen_height;
-
-            var canvas = new Clutter.Canvas ();
-            canvas.set_size (screen_width, screen_height);
-            canvas.draw.connect (draw_area);
-            set_content (canvas);
-
-            canvas.invalidate ();
         }
 
 #if HAS_MUTTER45
@@ -155,7 +148,7 @@ namespace Gala {
             }.expand (end_point);
         }
 
-        private bool draw_area (Cairo.Context ctx) {
+        protected override void draw (Cairo.Context ctx, int width, int height) {
             ctx.save ();
 
             ctx.set_operator (Cairo.Operator.CLEAR);
@@ -164,7 +157,7 @@ namespace Gala {
             ctx.restore ();
 
             if (!dragging) {
-                return true;
+                return;
             }
 
             ctx.translate (0.5, 0.5);
@@ -178,8 +171,6 @@ namespace Gala {
             ctx.set_source_rgb (0.7, 0.7, 0.7);
             ctx.set_line_width (1.0);
             ctx.stroke ();
-
-            return true;
         }
     }
 }
