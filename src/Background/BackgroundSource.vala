@@ -42,7 +42,7 @@ namespace Gala {
         public bool should_dim {
             get {
                 return (
-                    Granite.Settings.get_default ().prefers_color_scheme == DARK &&
+                    Drawing.ColorManager.get_instance ().prefers_color_scheme == DARK &&
                     gala_background_settings.get_boolean ("dim-wallpaper-in-dark-style")
                 );
             }
@@ -62,7 +62,7 @@ namespace Gala {
             gala_background_settings = new GLib.Settings ("io.elementary.desktop.background");
             gala_background_settings.changed["dim-wallpaper-in-dark-style"].connect (() => changed ());
 
-            Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => changed ());
+            Drawing.ColorManager.get_instance ().notify["prefers-color-scheme"].connect (() => changed ());
 
             gnome_background_settings = new GLib.Settings ("org.gnome.desktop.background");
 
@@ -110,6 +110,7 @@ namespace Gala {
             if (style != GDesktop.BackgroundStyle.NONE) {
                 filename = get_background_path ();
             }
+            warning ("Got path");
 
             // Animated backgrounds are (potentially) per-monitor, since
             // they can have variants that depend on the aspect ratio and
@@ -129,13 +130,15 @@ namespace Gala {
         }
 
         private string get_background_path () {
-            if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+            warning ("CHECK THEME");
+            if (Drawing.ColorManager.get_instance ().prefers_color_scheme == DARK) {
                 var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
                 if (FileUtils.test (path, EXISTS)) {
                     return path;
                 }
             }
+            warning ("THEME CHECKED");
 
             var uri = gnome_background_settings.get_string ("picture-uri");
             var path = File.new_for_uri (uri).get_path ();
@@ -143,6 +146,7 @@ namespace Gala {
                 return path;
             }
 
+            warning ("Got path");
             return uri;
         }
 

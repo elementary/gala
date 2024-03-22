@@ -44,7 +44,7 @@ namespace Gala {
         private Clutter.BrightnessContrastEffect brightness_effect;
 
         private GLib.Settings gala_behavior_settings;
-        private Granite.Settings granite_settings;
+        private Drawing.ColorManager granite_settings;
 
         private bool switching_workspace_with_gesture = false;
         private bool switching_workspace_in_progress {
@@ -59,7 +59,7 @@ namespace Gala {
 
         construct {
             gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
-            granite_settings = Granite.Settings.get_default ();
+            granite_settings = Drawing.ColorManager.get_instance ();
 
             visible = false;
             reactive = true;

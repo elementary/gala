@@ -6,9 +6,10 @@
  */
 
 public class Gala.Drawing.ColorManager : Object {
-    private static GLib.Once<ColorManager> instance;
-    public static ColorManager get_instance () {
-        return instance.once (() => {return new ColorManager ();});
+    public enum ColorScheme {
+        NO_PREFERENCE,
+        DARK,
+        LIGHT
     }
 
     [DBus (name="org.freedesktop.Accounts")]
@@ -18,6 +19,7 @@ public class Gala.Drawing.ColorManager : Object {
 
     [DBus (name="io.elementary.pantheon.AccountsService")]
     private interface AccountsService : DBusProxy {
+        public abstract int prefers_color_scheme { get; set; }
         public abstract int prefers_accent_color { get; set; }
     }
 
@@ -27,6 +29,12 @@ public class Gala.Drawing.ColorManager : Object {
     private const double ACCENT_COLOR_ALPHA = 0.25;
     private const Gdk.RGBA DEFAULT_ACCENT_COLOR = { 0, 0, 0, ACCENT_COLOR_ALPHA };
 
+    private static GLib.Once<ColorManager> instance;
+    public static ColorManager get_instance () {
+        return instance.once (() => {return new ColorManager ();});
+    }
+
+    public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
     public Gdk.RGBA theme_accent_color { get; private set; default = DEFAULT_ACCENT_COLOR; }
 
     private AccountsService? accounts_service_proxy;
@@ -42,18 +50,29 @@ public class Gala.Drawing.ColorManager : Object {
             var path = yield accounts.find_user_by_name (Environment.get_user_name ());
 
             accounts_service_proxy = yield Bus.get_proxy<AccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
-
-            update_color (accounts_service_proxy.prefers_accent_color);
-            accounts_service_proxy.g_properties_changed.connect ((changed, invalid) => {
-                var value = changed.lookup_value ("PrefersAccentColor", new VariantType ("i"));
-                if (value != null) {
-                    update_color (value.get_int32 ());
-                }
-            });
         } catch {
             warning ("Could not connect to AccountsService. Default accent color will be used");
             return;
         }
+
+        update_color_scheme (accounts_service_proxy.prefers_color_scheme);
+        update_color (accounts_service_proxy.prefers_accent_color);
+
+        accounts_service_proxy.g_properties_changed.connect ((changed, invalid) => {
+            var value = changed.lookup_value ("PrefersAccentColor", new VariantType ("i"));
+            if (value != null) {
+                update_color (value.get_int32 ());
+            }
+
+            value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
+            if (value != null) {
+                update_color_scheme (value.get_int32 ());
+            }
+        });
+    }
+
+    private void update_color_scheme (int color_scheme) {
+        prefers_color_scheme = (ColorScheme) color_scheme;
     }
 
     private void update_color (int color) {
