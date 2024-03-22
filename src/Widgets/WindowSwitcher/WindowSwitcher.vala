@@ -24,7 +24,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     private bool handling_gesture = false;
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
-    private Drawing.StyleManager granite_settings;
+    private Drawing.StyleManager style_manager;
     private Clutter.Actor container;
     private Clutter.Text caption;
     private ShadowEffect shadow_effect;
@@ -59,7 +59,7 @@ public class Gala.WindowSwitcher : CanvasActor {
 
     construct {
         unowned var gtk_settings = Gtk.Settings.get_default ();
-        granite_settings = Drawing.StyleManager.get_instance ();
+        style_manager = Drawing.StyleManager.get_instance ();
 
         container = new Clutter.Actor () {
             reactive = true,
@@ -90,7 +90,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         container.button_release_event.connect (container_mouse_release);
 
         // Redraw the components if the colour scheme changes.
-        granite_settings.notify["prefers-color-scheme"].connect (content.invalidate);
+        style_manager.notify["prefers-color-scheme"].connect (content.invalidate);
 
         gtk_settings.notify["gtk-theme-name"].connect (content.invalidate);
 
@@ -139,7 +139,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     protected override void draw (Cairo.Context ctx, int width, int height) {
         var caption_color = "#2e2e31";
 
-        if (granite_settings.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
+        if (style_manager.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
             caption_color = "#fafafa";
         }
 
@@ -152,7 +152,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         ctx.reset_clip ();
 
         var background_color = Drawing.Color.LIGHT_BACKGROUND;
-        if (granite_settings.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
+        if (style_manager.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
             background_color = Drawing.Color.DARK_BACKGROUND;
         }
 
