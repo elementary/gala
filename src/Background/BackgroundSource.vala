@@ -110,7 +110,6 @@ namespace Gala {
             if (style != GDesktop.BackgroundStyle.NONE) {
                 filename = get_background_path ();
             }
-            warning ("Got path");
 
             // Animated backgrounds are (potentially) per-monitor, since
             // they can have variants that depend on the aspect ratio and
@@ -130,7 +129,6 @@ namespace Gala {
         }
 
         private string get_background_path () {
-            warning ("CHECK THEME");
             if (Drawing.StyleManager.get_instance ().prefers_color_scheme == DARK) {
                 var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
@@ -138,7 +136,6 @@ namespace Gala {
                     return path;
                 }
             }
-            warning ("THEME CHECKED");
 
             var uri = gnome_background_settings.get_string ("picture-uri");
             var path = File.new_for_uri (uri).get_path ();
@@ -146,7 +143,6 @@ namespace Gala {
                 return path;
             }
 
-            warning ("Got path");
             return uri;
         }
 
