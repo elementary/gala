@@ -61,7 +61,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         style_manager = Drawing.StyleManager.get_instance ();
 
         container = new Clutter.Actor () {
-            reactive = true,
 #if HAS_MUTTER46
             layout_manager = new Clutter.FlowLayout (Clutter.Orientation.HORIZONTAL)
 #else
@@ -77,6 +76,8 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         add_child (container);
         add_child (caption);
+
+        visible = false;
         opacity = 0;
         layout_manager = new Clutter.BoxLayout () {
             orientation = VERTICAL
@@ -97,6 +98,8 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (scale);
+
+        notify["opacity"].connect (() => visible = opacity != 0);
     }
 
     private void scale () {
@@ -333,6 +336,10 @@ public class Gala.WindowSwitcher : CanvasActor {
             return;
         }
 
+        //Although we are setting visible via the opacity notify handler anyway
+        //we have to set it here manually otherwise the size gotten via get_preferred_size is wrong
+        visible = true;
+
         float width, height;
         get_preferred_size (null, null, out width, out height);
 
@@ -345,7 +352,6 @@ public class Gala.WindowSwitcher : CanvasActor {
             (int) (geom.y + (geom.height - height) / 2)
         );
 
-        opacity = 0;
         toggle_display (true);
     }
 
@@ -365,8 +371,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
         opacity = show ? 255 : 0;
         restore_easing_state ();
-
-        container.reactive = show;
     }
 
     private void push_modal () {
