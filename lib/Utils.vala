@@ -117,24 +117,30 @@ namespace Gala {
                 }
             }
 
-            unowned Meta.Group group = window.get_group ();
-            if (group != null) {
-                var group_windows = group.list_windows ();
-                group_windows.foreach ((window) => {
-                    if (window.get_window_type () != Meta.WindowType.NORMAL) {
-                        return;
-                    }
+            if (window.get_client_type () == Meta.WindowClientType.X11) {
+#if HAS_MUTTER46
+                unowned Meta.Group group = window.x11_get_group ();
+#else
+                unowned Meta.Group group = window.get_group ();
+#endif
+                if (group != null) {
+                    var group_windows = group.list_windows ();
+                    group_windows.foreach ((window) => {
+                        if (window.get_window_type () != Meta.WindowType.NORMAL) {
+                            return;
+                        }
 
-                    if (window_to_desktop_cache[window] != null) {
-                        desktop_app = window_to_desktop_cache[window];
-                    }
-                });
+                        if (window_to_desktop_cache[window] != null) {
+                            desktop_app = window_to_desktop_cache[window];
+                        }
+                    });
 
-                if (desktop_app != null) {
-                    var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
-                    if (icon != null) {
-                        window_to_desktop_cache[window] = desktop_app;
-                        return icon;
+                    if (desktop_app != null) {
+                        var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                        if (icon != null) {
+                            window_to_desktop_cache[window] = desktop_app;
+                            return icon;
+                        }
                     }
                 }
             }

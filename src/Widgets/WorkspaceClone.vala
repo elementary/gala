@@ -86,7 +86,7 @@ namespace Gala {
                 debug (e.message);
             }
 
-            var color = Cogl.Color.from_4ub (255, 255, 255, 25);
+            var color = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, 25.0f / 255.0f);
             color.premultiply ();
 
             pipeline.set_color (color);

@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private WindowGrabTracker window_grab_tracker;
+
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -142,6 +144,7 @@ namespace Gala {
 
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
+            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
@@ -694,9 +697,21 @@ namespace Gala {
             uint fade_out_duration = 900U;
             double[] op_keyframes = { 0.1, 0.9 };
             GLib.Value[] opacity = { 20U, 20U };
+#if HAS_MUTTER46
+            unowned Meta.Display display = get_display ();
+            unowned Meta.X11Display x11display = display.get_x11_display ();
+            var bottom_xwin = x11display.lookup_xwindow (bottom_window);
+#else
+            var bottom_xwin = bottom_window.get_xwindow ();
+#endif
 
             workspace.list_windows ().@foreach ((window) => {
-                if (window.get_xwindow () == bottom_window.get_xwindow ()
+#if HAS_MUTTER46
+                var xwin = x11display.lookup_xwindow (window);
+#else
+                var xwin = window.get_xwindow ();
+#endif
+                if (xwin == bottom_xwin
                     || !InternalUtils.get_window_is_normal (window)
                     || window.minimized) {
                     return;
@@ -899,7 +914,9 @@ namespace Gala {
                     break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
@@ -907,7 +924,9 @@ namespace Gala {
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
-#if HAS_MUTTER44
+#if HAS_MUTTER46
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+#elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
@@ -1918,21 +1937,37 @@ namespace Gala {
                 clutter_actor_reparent (moving_actor, static_windows);
             }
 
+            unowned var grabbed_window = window_grab_tracker.current_window;
+
+            if (grabbed_window != null) {
+                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
+
+                windows.prepend (moving_actor);
+                parents.prepend (moving_actor.get_parent ());
+
+                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                clutter_actor_reparent (moving_actor, static_windows);
+            }
+
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
             var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
-                if (actor.is_destroyed ())
+                if (actor.is_destroyed ()) {
                     continue;
+                }
 
-                unowned Meta.Window window = actor.get_meta_window ();
+                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
-                    (move_primary_only && !window.is_on_primary_monitor ()) ||
-                    (moving != null && window == moving))
+                    move_primary_only && !window.is_on_primary_monitor () ||
+                    window == moving ||
+                    window == grabbed_window) {
+
                     continue;
+                }
 
                 if (window.on_all_workspaces) {
                     // only collect docks here that need to be displayed on both workspaces
