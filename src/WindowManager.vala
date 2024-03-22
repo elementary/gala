@@ -137,7 +137,7 @@ namespace Gala {
             enable_animations = animations_settings.get_boolean ("enable-animations");
 
             //Make it start watching the settings daemon bus
-            Drawing.ColorManager.get_instance ();
+            Drawing.StyleManager.get_instance ();
         }
 
         public override void start () {
@@ -1052,7 +1052,7 @@ namespace Gala {
 #endif
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
-                var rgba = Drawing.ColorManager.get_instance ().theme_accent_color;
+                var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
                 tile_preview.background_color = {
                     (uint8)(255.0 * rgba.red),
                     (uint8)(255.0 * rgba.green),

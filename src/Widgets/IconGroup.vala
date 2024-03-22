@@ -237,7 +237,7 @@ namespace Gala {
                 scale_factor = scale_factor
             };
 
-            var granite_settings = Drawing.ColorManager.get_instance ();
+            var granite_settings = Drawing.StyleManager.get_instance ();
 
             if (granite_settings.prefers_color_scheme == DARK) {
                 const double BG_COLOR = 35.0 / 255.0;

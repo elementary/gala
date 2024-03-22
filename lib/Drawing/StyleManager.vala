@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.Drawing.ColorManager : Object {
+public class Gala.Drawing.StyleManager : Object {
     public enum ColorScheme {
         NO_PREFERENCE,
         DARK,
@@ -29,9 +29,9 @@ public class Gala.Drawing.ColorManager : Object {
     private const double ACCENT_COLOR_ALPHA = 0.25;
     private const Gdk.RGBA DEFAULT_ACCENT_COLOR = { 0, 0, 0, ACCENT_COLOR_ALPHA };
 
-    private static GLib.Once<ColorManager> instance;
-    public static ColorManager get_instance () {
-        return instance.once (() => {return new ColorManager ();});
+    private static GLib.Once<StyleManager> instance;
+    public static StyleManager get_instance () {
+        return instance.once (() => {return new StyleManager ();});
     }
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }

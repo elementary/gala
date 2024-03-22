@@ -883,7 +883,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var color = Drawing.ColorManager.get_instance ().theme_accent_color;
+            var color = Drawing.StyleManager.get_instance ().theme_accent_color;
 
             cr.save ();
             cr.set_operator (Cairo.Operator.CLEAR);
