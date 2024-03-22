@@ -24,10 +24,20 @@ public class Gala.ModalWindowActor : Clutter.Actor {
         background_color = { 0, 0, 0, 200 };
         x = 0;
         y = 0;
-        width = 10000;
-        height = 10000;
         visible = false;
         reactive = true;
+
+        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (update_size);
+
+        update_size ();
+    }
+
+    private void update_size () {
+        int width, height;
+        display.get_size (out width, out height);
+
+        set_size (width, height);
     }
 
     public void make_modal (Meta.Window window) {
