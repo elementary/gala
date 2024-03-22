@@ -1462,7 +1462,7 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            if (window.get_data (NOTIFICATION_DATA_KEY) ||  window.window_type == NOTIFICATION) {
+            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
                 clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor, enable_animations);
 
@@ -1590,7 +1590,7 @@ namespace Gala {
 
             actor.remove_all_transitions ();
 
-            if (window.get_data (NOTIFICATION_DATA_KEY) ||  window.window_type == NOTIFICATION) {
+            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
                 if (enable_animations) {
                     destroying.add (actor);
                 }
