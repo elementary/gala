@@ -83,7 +83,7 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
-        private ManagedClient notifications_server;
+        private ShellClientsManager shell_clients_manager;
 
         private WindowGrabTracker window_grab_tracker;
 
@@ -142,17 +142,9 @@ namespace Gala {
         }
 
         public override void start () {
+            shell_clients_manager = new ShellClientsManager (get_display ());
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
-
-            notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
-
-            notifications_server.window_created.connect ((window) => {
-                window.make_above ();
-#if HAS_MUTTER_46
-                notifications_server.wayland_client.make_dock (window);
-#endif
-            });
 
             show_stage ();
 
@@ -1470,9 +1462,7 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
-                window.window_type == NOTIFICATION
-            ) {
+            if (window.get_data (NOTIFICATION_DATA_KEY) ||  window.window_type == NOTIFICATION) {
                 clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor, enable_animations);
 
@@ -1600,9 +1590,7 @@ namespace Gala {
 
             actor.remove_all_transitions ();
 
-            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
-                window.window_type == NOTIFICATION
-            ) {
+            if (window.get_data (NOTIFICATION_DATA_KEY) ||  window.window_type == NOTIFICATION) {
                 if (enable_animations) {
                     destroying.add (actor);
                 }

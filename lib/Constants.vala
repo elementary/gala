@@ -34,4 +34,6 @@ namespace Gala {
         // Duration of the nudge animation when trying to switch to at the end of the workspace list
         NUDGE = 360,
     }
+
+    public const string NOTIFICATION_DATA_KEY = "elementary-notification";
 }
