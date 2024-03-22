@@ -87,7 +87,7 @@ namespace Gala {
 
         private NotificationStack notification_stack;
 
-        public ModalWindowActor modal_window_actor;
+        private ModalWindowActor modal_window_actor;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
@@ -1463,6 +1463,10 @@ namespace Gala {
 
             actor.remove_all_transitions ();
             actor.show ();
+
+            if (window.get_data (MODAL_DATA_KEY)) {
+                modal_window_actor.make_modal (window);
+            }
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:

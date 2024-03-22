@@ -34,6 +34,7 @@ public class Gala.DaemonManager : GLib.Object {
 
             wm.get_display ().window_created.connect ((window) => {
                 if (daemon_client.owns_window (window)) {
+                    window.notify["title"].connect (() => handle_daemon_window_before_shown (window));
                     window.shown.connect (handle_daemon_window);
                 }
             });
@@ -81,6 +82,12 @@ public class Gala.DaemonManager : GLib.Object {
         }
     }
 
+    private void handle_daemon_window_before_shown (Meta.Window window) {
+        if (window.title == "END_SESSION") {
+            window.set_data (MODAL_DATA_KEY, true);
+        }
+    }
+
     private void handle_daemon_window (Meta.Window window) {
         var info = window.title.split ("-");
 
@@ -88,7 +95,7 @@ public class Gala.DaemonManager : GLib.Object {
             critical ("Couldn't handle daemon window: No title provided");
             return;
         }
-        warning ("NAME: %s", info[0]);
+
         switch (info[0]) {
             case "LABEL":
                 if (info.length < 2) {
@@ -105,11 +112,6 @@ public class Gala.DaemonManager : GLib.Object {
             case "MODAL":
                 window.move_frame (false, 0, 0);
                 window.make_above ();
-                break;
-
-            case "END_SESSION":
-                wm.modal_window_actor.make_modal (window);
-                warning ("MADE MODAL: %s", info[0]);
                 break;
         }
     }
