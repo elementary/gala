@@ -35,5 +35,9 @@ namespace Gala {
         NUDGE = 360,
     }
 
+    /**
+     * Used as a key for Object.set_data<bool> on Meta.Windows that should be
+     * system modal. Has to be set before the window is mapped.
+     */
     public const string MODAL_DATA_KEY = "elementary-system-modal";
 }

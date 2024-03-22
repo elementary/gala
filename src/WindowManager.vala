@@ -2282,6 +2282,10 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
+            if (modal_window_actor.is_modal ()) {
+                return true;
+            }
+
             if (!is_modal ())
                 return false;
 

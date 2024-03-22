@@ -1,3 +1,10 @@
+
+/**
+ * This class allows to make windows system modal i.e. dim
+ * the desktop behind them and only allow interaction with them.
+ * Not to be confused with WindowManager.push_modal which only
+ * works for our own Clutter.Actors.
+ */
 public class Gala.ModalWindowActor : Clutter.Actor {
     public Meta.Display display { get; construct; }
 
@@ -8,13 +15,13 @@ public class Gala.ModalWindowActor : Clutter.Actor {
     }
 
     construct {
-        background_color = Clutter.Color.from_string ("black");
-        opacity = 200;
+        background_color = { 0, 0, 0, 200 };
         x = 0;
         y = 0;
         width = 10000;
         height = 10000;
         visible = false;
+        reactive = true;
     }
 
     public void make_modal (Meta.Window window) {
@@ -36,5 +43,9 @@ public class Gala.ModalWindowActor : Clutter.Actor {
 
     private void check_visible () {
         visible = modal_dialogs > 0;
+    }
+
+    public bool is_modal () {
+        return modal_dialogs > 0;
     }
 }
