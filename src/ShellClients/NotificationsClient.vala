@@ -1,3 +1,10 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
 public class Gala.NotificationsClient : Object {
     public Meta.Display display { get; construct; }
 
@@ -8,7 +15,7 @@ public class Gala.NotificationsClient : Object {
     }
 
     construct {
-        client = new ManagedClient (display, {"io.elementary.notifications"});
+        client = new ManagedClient (display, { "io.elementary.notifications" });
 
         client.window_created.connect ((window) => {
             window.set_data (NOTIFICATION_DATA_KEY, true);

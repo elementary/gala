@@ -1,7 +1,14 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
 /**
  * Utility class that takes care of launching and restarting a subprocess.
- * On wayland this uses a WaylandClient and emits window_shown if a window for the client was shown
- * On X this just launches a normal subprocess
+ * On wayland this uses a WaylandClient and emits window_created if a window for the client was created.
+ * On X this just launches a normal subprocess and never emits window_created.
  */
 public class Gala.ManagedClient : Object {
     public signal void window_created (Meta.Window window);
