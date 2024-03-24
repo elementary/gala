@@ -1446,19 +1446,6 @@ namespace Gala {
                 move_window_to_next_ws (window);
             }
 
-            // Notifications are a special case and have to be always be handled
-            // regardless of the animation setting
-            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
-                actor.show ();
-                map_completed (actor);
-
-                if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
-                    show_bottom_stack_window (window);
-                }
-
-                return;
-            }
-
             actor.remove_all_transitions ();
             actor.show ();
 
@@ -1467,6 +1454,16 @@ namespace Gala {
                 notification_stack.show_notification (actor, enable_animations);
 
                 map_completed (actor);
+                return;
+            }
+
+            if (!enable_animations) {
+                map_completed (actor);
+
+                if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
+                    show_bottom_stack_window (window);
+                }
+
                 return;
             }
 
@@ -1578,16 +1575,6 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
-                destroy_completed (actor);
-
-                if (window.window_type == Meta.WindowType.NORMAL) {
-                    Utils.clear_window_cache (window);
-                }
-
-                return;
-            }
-
             actor.remove_all_transitions ();
 
             if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
@@ -1606,6 +1593,16 @@ namespace Gala {
                     });
                 } else {
                     destroy_completed (actor);
+                }
+
+                return;
+            }
+
+            if (!enable_animations) {
+                destroy_completed (actor);
+
+                if (window.window_type == Meta.WindowType.NORMAL) {
+                    Utils.clear_window_cache (window);
                 }
 
                 return;
