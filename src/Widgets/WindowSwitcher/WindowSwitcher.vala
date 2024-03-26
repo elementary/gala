@@ -58,7 +58,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     construct {
-        granite_settings = Granite.Settings.get_default ();
+        style_manager = Drawing.StyleManager.get_instance ();
 
         container = new Clutter.Actor () {
             reactive = true,
