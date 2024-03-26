@@ -58,7 +58,6 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     construct {
-        unowned var gtk_settings = Gtk.Settings.get_default ();
         granite_settings = Granite.Settings.get_default ();
 
         container = new Clutter.Actor () {
@@ -95,8 +94,6 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         // Redraw the components if the colour scheme changes.
         granite_settings.notify["prefers-color-scheme"].connect (content.invalidate);
-
-        gtk_settings.notify["gtk-theme-name"].connect (content.invalidate);
 
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (scale);
