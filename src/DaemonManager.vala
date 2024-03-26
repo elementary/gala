@@ -6,8 +6,9 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    public const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    public const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+
     private const int SPACING = 12;
 
     [DBus (name = "org.pantheon.gala.daemon")]
@@ -33,6 +34,7 @@ public class Gala.DaemonManager : GLib.Object {
 
             display.window_created.connect ((window) => {
                 if (daemon_client.owns_window (window)) {
+                    window.notify["title"].connect (() => handle_daemon_window_before_shown (window));
                     window.shown.connect (handle_daemon_window);
                 }
             });
@@ -77,6 +79,12 @@ public class Gala.DaemonManager : GLib.Object {
             });
         } catch (Error e) {
             warning ("Failed to create daemon subprocess with x: %s", e.message);
+        }
+    }
+
+    private void handle_daemon_window_before_shown (Meta.Window window) {
+        if (window.title == "END_SESSION") {
+            window.set_data (MODAL_DATA_KEY, true);
         }
     }
 
