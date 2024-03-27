@@ -7,6 +7,7 @@ gala_bin_sources = files(
     'InternalUtils.vala',
     'KeyboardManager.vala',
     'Main.vala',
+    'ManagedClient.vala',
     'MediaFeedback.vala',
     'NotificationStack.vala',
     'PluginManager.vala',

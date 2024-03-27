@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private ManagedClient notifications_server;
+
         private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
@@ -145,6 +147,15 @@ namespace Gala {
         public override void start () {
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
+
+            notifications_server = new ManagedClient (get_display (), {"io.elementary.notifications"});
+
+            notifications_server.window_created.connect ((window) => {
+                window.make_above ();
+#if HAS_MUTTER_46
+                notifications_server.wayland_client.make_dock (window);
+#endif
+            });
 
             show_stage ();
 
@@ -1462,6 +1473,16 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
+            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
+                window.window_type == NOTIFICATION
+            ) {
+                clutter_actor_reparent (actor, notification_group);
+                notification_stack.show_notification (actor, enable_animations);
+
+                map_completed (actor);
+                return;
+            }
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
                     var duration = AnimationDuration.HIDE;
@@ -1559,12 +1580,6 @@ namespace Gala {
                     dim_parent_window (window);
 
                     break;
-                case Meta.WindowType.NOTIFICATION:
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                    map_completed (actor);
-
-                    break;
                 default:
                     map_completed (actor);
                     break;
@@ -1587,6 +1602,29 @@ namespace Gala {
             }
 
             actor.remove_all_transitions ();
+
+            if ((notifications_server.wayland_client != null && notifications_server.wayland_client.owns_window (window)) ||
+                window.window_type == NOTIFICATION
+            ) {
+                if (enable_animations) {
+                    destroying.add (actor);
+                }
+
+                notification_stack.destroy_notification (actor, enable_animations);
+
+                if (enable_animations) {
+                    ulong destroy_handler_id = 0UL;
+                    destroy_handler_id = actor.transitions_completed.connect (() => {
+                        actor.disconnect (destroy_handler_id);
+                        destroying.remove (actor);
+                        destroy_completed (actor);
+                    });
+                } else {
+                    destroy_completed (actor);
+                }
+
+                return;
+            }
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
@@ -1659,25 +1697,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-                    break;
-                case Meta.WindowType.NOTIFICATION:
-                    if (enable_animations) {
-                        destroying.add (actor);
-                    }
-
-                    notification_stack.destroy_notification (actor, enable_animations);
-
-                    if (enable_animations) {
-                        ulong destroy_handler_id = 0UL;
-                        destroy_handler_id = actor.transitions_completed.connect (() => {
-                            actor.disconnect (destroy_handler_id);
-                            destroying.remove (actor);
-                            destroy_completed (actor);
-                        });
-                    } else {
-                        destroy_completed (actor);
-                    }
-
                     break;
                 default:
                     destroy_completed (actor);
