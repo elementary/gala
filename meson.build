@@ -182,6 +182,7 @@ if get_option('systemd')
 endif
 
 subdir('data')
+subdir('protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')

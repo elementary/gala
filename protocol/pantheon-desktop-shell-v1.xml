@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="pantheon_shell_v1">
+  <copyright><![CDATA[
+    SPDX-FileCopyrightText: 2023 Corentin Noël <tintou@noel.tf>
+
+    SPDX-License-Identifier: LGPL-2.1-or-later
+  ]]></copyright>
+
+  <interface name="io_elementary_pantheon_shell_v1" version="1">
+    <description summary="create panel, widget and get more control">
+      This interface is used by the Pantheon Wayland shell to communicate with
+      the compositor.
+    </description>
+
+    <request name="get_panel">
+      <description summary="create a panel surface from a surface">
+        Create a panel surface from an existing surface.
+      </description>
+      <arg name="output" type="new_id" interface="io_elementary_pantheon_panel_v1"/>
+      <arg name="surface" type="object" interface="wl_surface"/>
+    </request>
+
+    <request name="get_widget">
+      <description summary="create a widget surface from a surface">
+        Create a desktop widget surface from an existing surface.
+      </description>
+      <arg name="output" type="new_id" interface="io_elementary_pantheon_widget_v1"/>
+      <arg name="surface" type="object" interface="wl_surface"/>
+    </request>
+
+    <request name="get_extended_behavior">
+      <description summary="create a desktop-specific surface from a surface">
+        Create a desktop-specific surface from an existing surface.
+      </description>
+      <arg name="output" type="new_id" interface="io_elementary_pantheon_extended_behavior_v1"/>
+      <arg name="surface" type="object" interface="wl_surface"/>
+    </request>
+  </interface>
+
+  <interface name="io_elementary_pantheon_panel_v1" version="1">
+    <request name="destroy" type="destructor"/>
+
+    <enum name="anchor">
+      <description summary="anchor">
+        The anchor is a placement hint to the compositor.
+      </description>
+      <entry name="top" value="0" summary="the top edge of the screen"/>
+      <entry name="bottom" value="1" summary="the bottom edge of the screen"/>
+      <entry name="left" value="2" summary="the left edge of the screen"/>
+      <entry name="right" value="3" summary="the right edge of the screen"/>
+    </enum>
+
+    <request name="set_anchor">
+      <description summary="set panel edge anchor">
+        Tell the shell which side of the screen the panel is
+        located. This is so that new windows do not overlap the panel
+        and maximized windows maximize properly.
+      </description>
+
+      <arg name="anchor" type="uint" enum="anchor" summary="anchor"/>
+    </request>
+  </interface>
+
+  <interface name="io_elementary_pantheon_widget_v1" version="1">
+    <request name="destroy" type="destructor"/>
+  </interface>
+
+  <interface name="io_elementary_pantheon_extended_behavior_v1" version="1">
+    <request name="destroy" type="destructor"/>
+    <request name="set_keep_above">
+      <description summary="set keep above">
+        Tell the shell to keep the surface above on all workspaces
+      </description>
+    </request>
+  </interface>
+</protocol>
