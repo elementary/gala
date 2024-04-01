@@ -59,7 +59,9 @@ public class Gala.DesktopIntegration : GLib.Object {
         Window[] returned_windows = {};
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned var app in apps) {
-            foreach (weak Meta.Window window in app.get_windows ()) {
+            var windows = wm.get_display ().sort_windows_by_stacking (app.get_windows ());
+            windows.reverse ();
+            foreach (weak Meta.Window window in windows) {
                 if (!is_eligible_window (window)) {
                     continue;
                 }
