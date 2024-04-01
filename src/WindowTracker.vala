@@ -9,6 +9,8 @@ public class Gala.WindowTracker : GLib.Object {
 
     public signal void windows_changed ();
 
+    private uint changed_idle_id = 0;
+
     construct {
         window_to_app = new GLib.HashTable<unowned Meta.Window, Gala.App> (direct_hash, direct_equal);
     }
@@ -18,6 +20,10 @@ public class Gala.WindowTracker : GLib.Object {
         sn.changed.connect (on_startup_sequence_changed);
         load_initial_windows (display);
         init_window_tracking (display);
+    }
+
+    private void emit_changed () {
+        windows_changed ();
     }
 
     private void load_initial_windows (Meta.Display display) {
@@ -306,9 +312,11 @@ public class Gala.WindowTracker : GLib.Object {
         window.notify["gtk-application-id"].connect (tracked_window_notified);
         window.unmanaged.connect (disassociate_window);
 
+        window.raised.connect (emit_changed);
+
         app.add_window (window);
 
-        windows_changed ();
+        emit_changed ();
     }
 
     private void disassociate_window (Meta.Window window) {
@@ -320,9 +328,12 @@ public class Gala.WindowTracker : GLib.Object {
         window.unmanaged.disconnect (disassociate_window);
         window.notify["wm-class"].disconnect (tracked_window_notified);
         window.notify["gtk-application-id"].disconnect (tracked_window_notified);
+
+        window.raised.disconnect (emit_changed);
+
         app.remove_window (window);
         window_to_app.remove (window);
 
-        windows_changed ();
+        emit_changed ();
     }
 }
