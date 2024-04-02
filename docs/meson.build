@@ -13,8 +13,6 @@ basic_command = [
     '--package-version', '0.0.0',
     '--driver', vala.version(),
     mutter_packages_command,
-    '--pkg', 'libbamf3',
-    '--pkg', 'plank',
     '--pkg', 'gnome-desktop-3.0',
     '--pkg', 'gtk+-3.0',
     '--pkg', 'gee-0.8',
