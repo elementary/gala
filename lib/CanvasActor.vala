@@ -4,10 +4,18 @@
  */
 
 public class Gala.CanvasActor : Clutter.Actor {
+#if HAS_MUTTER46
     private Gala.Drawing.Canvas canvas;
+#else
+    private Clutter.Canvas canvas;
+#endif
 
     construct {
+#if HAS_MUTTER46
         canvas = new Gala.Drawing.Canvas ();
+#else
+        canvas = new Clutter.Canvas ();
+#endif
         content = canvas;
         canvas.draw.connect ((ctx, width, height) => {
             draw (ctx, width, height);
