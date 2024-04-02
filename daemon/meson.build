@@ -1,4 +1,6 @@
 gala_daemon_sources = files(
+    'Session' / 'EndSessionDialog.vala',
+    'Session' / 'Manager.vala',
     'Main.vala',
     'DBus.vala',
     'MonitorLabel.vala',
