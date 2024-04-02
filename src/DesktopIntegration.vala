@@ -19,12 +19,11 @@ public class Gala.DesktopIntegration : GLib.Object {
     private unowned WindowManagerGala wm;
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
-    public signal void windows_changed ();
+    public signal void windows_changed (); // Only emitted if the number of windows changes, not if window properties change
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
-        wm.get_display ().restacked.connect (() => windows_changed ());
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
