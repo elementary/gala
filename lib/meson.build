@@ -11,6 +11,7 @@ gala_lib_sources = files(
     'Drawing/BufferSurface.vala',
     'Drawing/Canvas.vala',
     'Drawing/Color.vala',
+    'Drawing/StyleManager.vala',
     'Drawing/Utilities.vala',
     'Plugin.vala',
     'ShadowEffect.vala',

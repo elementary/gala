@@ -318,23 +318,6 @@ namespace Gala {
             return (int) (Math.round ((float)value * scale_factor));
         }
 
-        private static Gtk.StyleContext selection_style_context = null;
-        public static Gdk.RGBA get_theme_accent_color () {
-            if (selection_style_context == null) {
-                var label_widget_path = new Gtk.WidgetPath ();
-                label_widget_path.append_type (GLib.Type.from_name ("label"));
-                label_widget_path.iter_set_object_name (-1, "selection");
-
-                selection_style_context = new Gtk.StyleContext ();
-                selection_style_context.set_path (label_widget_path);
-            }
-
-            return (Gdk.RGBA) selection_style_context.get_property (
-                Gtk.STYLE_PROPERTY_BACKGROUND_COLOR,
-                Gtk.StateFlags.NORMAL
-            );
-        }
-
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
