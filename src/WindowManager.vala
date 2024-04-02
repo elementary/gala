@@ -1460,7 +1460,7 @@ namespace Gala {
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
             if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
-                clutter_actor_reparent (actor, notification_group);
+                InternalUtils.clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor, enable_animations);
 
                 map_completed (actor);
