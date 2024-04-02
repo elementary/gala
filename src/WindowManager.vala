@@ -83,6 +83,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private ShellClientsManager shell_clients_manager;
+
         private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
@@ -139,9 +141,13 @@ namespace Gala {
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
+
+            //Make it start watching the settings daemon bus
+            Drawing.StyleManager.get_instance ();
         }
 
         public override void start () {
+            shell_clients_manager = new ShellClientsManager (get_display ());
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
@@ -1073,7 +1079,7 @@ namespace Gala {
 #endif
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
-                var rgba = InternalUtils.get_theme_accent_color ();
+                var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
                 tile_preview.background_color = {
                     (uint8)(255.0 * rgba.red),
                     (uint8)(255.0 * rgba.green),
@@ -1448,10 +1454,24 @@ namespace Gala {
                 move_window_to_next_ws (window);
             }
 
+            actor.remove_all_transitions ();
+            actor.show ();
+
             // Notifications are a special case and have to be always be handled
-            // regardless of the animation setting
-            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
-                actor.show ();
+            // (also regardless of the animation setting)
+            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
+                clutter_actor_reparent (actor, notification_group);
+                notification_stack.show_notification (actor, enable_animations);
+
+                map_completed (actor);
+                return;
+            }
+
+            if (window.get_data (MODAL_DATA_KEY)) {
+                modal_window_actor.make_modal (window);
+            }
+
+            if (!enable_animations) {
                 map_completed (actor);
 
                 if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
@@ -1459,13 +1479,6 @@ namespace Gala {
                 }
 
                 return;
-            }
-
-            actor.remove_all_transitions ();
-            actor.show ();
-
-            if (window.get_data (MODAL_DATA_KEY)) {
-                modal_window_actor.make_modal (window);
             }
 
             switch (window.window_type) {
@@ -1565,12 +1578,7 @@ namespace Gala {
                     dim_parent_window (window);
 
                     break;
-                case Meta.WindowType.NOTIFICATION:
-                    InternalUtils.clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor, enable_animations);
-                    map_completed (actor);
 
-                    break;
                 default:
                     map_completed (actor);
                     break;
@@ -1582,7 +1590,30 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            if (!enable_animations && window.window_type != Meta.WindowType.NOTIFICATION) {
+            actor.remove_all_transitions ();
+
+            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
+                if (enable_animations) {
+                    destroying.add (actor);
+                }
+
+                notification_stack.destroy_notification (actor, enable_animations);
+
+                if (enable_animations) {
+                    ulong destroy_handler_id = 0UL;
+                    destroy_handler_id = actor.transitions_completed.connect (() => {
+                        actor.disconnect (destroy_handler_id);
+                        destroying.remove (actor);
+                        destroy_completed (actor);
+                    });
+                } else {
+                    destroy_completed (actor);
+                }
+
+                return;
+            }
+
+            if (!enable_animations) {
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {
@@ -1591,8 +1622,6 @@ namespace Gala {
 
                 return;
             }
-
-            actor.remove_all_transitions ();
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
@@ -1665,25 +1694,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-                    break;
-                case Meta.WindowType.NOTIFICATION:
-                    if (enable_animations) {
-                        destroying.add (actor);
-                    }
-
-                    notification_stack.destroy_notification (actor, enable_animations);
-
-                    if (enable_animations) {
-                        ulong destroy_handler_id = 0UL;
-                        destroy_handler_id = actor.transitions_completed.connect (() => {
-                            actor.disconnect (destroy_handler_id);
-                            destroying.remove (actor);
-                            destroy_completed (actor);
-                        });
-                    } else {
-                        destroy_completed (actor);
-                    }
-
                     break;
                 default:
                     destroy_completed (actor);

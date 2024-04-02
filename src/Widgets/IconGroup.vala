@@ -236,9 +236,9 @@ namespace Gala {
                 scale_factor = scale_factor
             };
 
-            var granite_settings = Granite.Settings.get_default ();
+            var style_manager = Drawing.StyleManager.get_instance ();
 
-            if (granite_settings.prefers_color_scheme == DARK) {
+            if (style_manager.prefers_color_scheme == DARK) {
                 const double BG_COLOR = 35.0 / 255.0;
                 if (drag_action.dragging) {
                     cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
@@ -298,7 +298,7 @@ namespace Gala {
                     InternalUtils.scale_to_int (PLUS_SIZE, scale_factor)
                 );
 
-                if (granite_settings.prefers_color_scheme == DARK) {
+                if (style_manager.prefers_color_scheme == DARK) {
                     buffer.context.move_to (0, 1 * scale_factor);
                     buffer.context.set_source_rgb (0, 0, 0);
                     buffer.context.fill_preserve ();

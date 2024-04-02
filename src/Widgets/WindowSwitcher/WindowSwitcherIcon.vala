@@ -62,7 +62,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
 
         if (selected) {
             // draw rect
-            var rgba = InternalUtils.get_theme_accent_color ();
+            var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
             ctx.set_source_rgba (
                 rgba.red,
                 rgba.green,
