@@ -1578,7 +1578,6 @@ namespace Gala {
                     dim_parent_window (window);
 
                     break;
-
                 default:
                     map_completed (actor);
                     break;
