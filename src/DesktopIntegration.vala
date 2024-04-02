@@ -24,6 +24,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
+        wm.get_display ().restacked.connect (() => windows_changed ());
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
