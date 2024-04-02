@@ -42,7 +42,7 @@ namespace Gala {
         public bool should_dim {
             get {
                 return (
-                    Granite.Settings.get_default ().prefers_color_scheme == DARK &&
+                    Drawing.StyleManager.get_instance ().prefers_color_scheme == DARK &&
                     gala_background_settings.get_boolean ("dim-wallpaper-in-dark-style")
                 );
             }
@@ -62,7 +62,7 @@ namespace Gala {
             gala_background_settings = new GLib.Settings ("io.elementary.desktop.background");
             gala_background_settings.changed["dim-wallpaper-in-dark-style"].connect (() => changed ());
 
-            Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (() => changed ());
+            Drawing.StyleManager.get_instance ().notify["prefers-color-scheme"].connect (() => changed ());
 
             gnome_background_settings = new GLib.Settings ("org.gnome.desktop.background");
 
@@ -129,7 +129,7 @@ namespace Gala {
         }
 
         private string get_background_path () {
-            if (Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+            if (Drawing.StyleManager.get_instance ().prefers_color_scheme == DARK) {
                 var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
                 if (FileUtils.test (path, EXISTS)) {
