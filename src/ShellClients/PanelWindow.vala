@@ -9,13 +9,11 @@ public class Gala.PanelWindow : Object {
 
     private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
 
-    //  public signal void hide ();
-    //  public signal void show ();
-
     public Meta.Display display { get; construct; }
     public Meta.Window window { get; construct; }
 
-    private Meta.Side? anchor_side;
+    private Meta.Side? anchor;
+
     private Barrier? barrier;
     private HideTracker? hide_tracker;
 
@@ -24,6 +22,8 @@ public class Gala.PanelWindow : Object {
     }
 
     construct {
+        window.size_changed.connect (position_window);
+
         hide_tracker = new HideTracker (display, window, NEVER);
 
         hide_tracker.notify["should-hide"].connect (() => {
@@ -41,18 +41,22 @@ public class Gala.PanelWindow : Object {
         });
     }
 
-    public void set_anchor (Meta.Side side) {
-        anchor_side = side;
+    public void update_anchor (Meta.Side? anchor) {
+        this.anchor = anchor;
 
         position_window ();
-        window.size_changed.connect (position_window);
+        set_hide_mode (hide_tracker.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
+        if (anchor == null) {
+            return;
+        }
+
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var window_rect = window.get_frame_rect ();
 
-        switch (anchor_side) {
+        switch (anchor) {
             case TOP:
                 position_window_top (monitor_geom, window_rect);
                 break;
@@ -109,7 +113,7 @@ public class Gala.PanelWindow : Object {
 
         Meta.Strut strut = {
             rect,
-            anchor_side
+            anchor
         };
 
         window_struts[window] = strut;
@@ -138,7 +142,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void setup_barrier () {
-        switch (anchor_side) {
+        switch (anchor) {
             case BOTTOM:
                 setup_barrier_bottom ();
                 break;
