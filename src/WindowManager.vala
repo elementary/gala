@@ -236,9 +236,11 @@ namespace Gala {
 
 #if HAS_MUTTER44
             var feedback_group = display.get_compositor ().get_feedback_group ();
+#else
+            var feedback_group = display.get_feedback_group ();
+#endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
-#endif
 
             FilterManager.init (this);
 
