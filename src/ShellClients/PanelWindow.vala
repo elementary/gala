@@ -12,19 +12,24 @@ public class Gala.PanelWindow : Object {
     public Meta.Display display { get; construct; }
     public Meta.Window window { get; construct; }
 
-    private Meta.Side? anchor;
+    public Meta.Rectangle? static_region { get; private set; }
+    public bool hidden { get; private set; default = false; }
+
+    private Meta.Side anchor;
+    private HideTracker hide_tracker;
 
     private Barrier? barrier;
-    private HideTracker? hide_tracker;
 
-    public PanelWindow (Meta.Display display, Meta.Window window) {
+    public PanelWindow (Meta.Display display, Meta.Window window, Meta.Side anchor) {
         Object (display: display, window: window);
+
+        this.anchor = anchor;
     }
 
     construct {
         window.size_changed.connect (position_window);
 
-        hide_tracker = new HideTracker (display, window, NEVER);
+        hide_tracker = new HideTracker (display, this, NEVER);
 
         hide_tracker.notify["should-hide"].connect (() => {
             if (hide_tracker.should_hide) {
@@ -41,7 +46,7 @@ public class Gala.PanelWindow : Object {
         });
     }
 
-    public void update_anchor (Meta.Side? anchor) {
+    public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
@@ -49,10 +54,6 @@ public class Gala.PanelWindow : Object {
     }
 
     private void position_window () {
-        if (anchor == null) {
-            return;
-        }
-
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var window_rect = window.get_frame_rect ();
 
@@ -74,19 +75,22 @@ public class Gala.PanelWindow : Object {
     private void position_window_top (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
 
-        move_window_idle (x, monitor_geom.y);
+        move_window_idle (x, hidden ? monitor_geom.y - window_rect.height : monitor_geom.y);
     }
 
     private void position_window_bottom (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
-        var y = monitor_geom.y + monitor_geom.height - window_rect.height;
+        var y = monitor_geom.y + monitor_geom.height - (hidden ? 0 : window_rect.height);
 
         move_window_idle (x, y);
     }
 
     private void move_window_idle (int x, int y) {
         Idle.add (() => {
-            window.move_frame (false, x, y);
+            window.move_frame (true, x, y);
+            if (!hidden) {
+                static_region = window.get_buffer_rect ();
+            }
             return Source.REMOVE;
         });
     }
@@ -99,7 +103,7 @@ public class Gala.PanelWindow : Object {
             setup_barrier ();
         } else {
             make_exclusive ();
-            barrier = null; //TODO: check whether that actually disable it
+            barrier = null; //TODO: check whether that actually disables it
         }
     }
 
@@ -175,12 +179,12 @@ public class Gala.PanelWindow : Object {
     }
 
     private void hide () {
-        var rect = window.get_frame_rect ();
-        window.move_frame (false, rect.x + 10, rect.y);
+        hidden = true;
+        position_window ();
     }
 
     private void show () {
-        var rect = window.get_frame_rect ();
-        window.move_frame (false, rect.x - 10, rect.y);
+        hidden = false;
+        position_window ();
     }
 }

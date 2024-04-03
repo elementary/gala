@@ -19,16 +19,15 @@
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
-        PanelWindow? panel_window = windows[window];
-        if (panel_window == null) {
-#if HAS_MUTTER_46
-            client.wayland_client.make_dock (window);
-#endif
-            panel_window = new PanelWindow (display, window);
-            windows[window] = panel_window;
+        if (window in windows) {
+            windows[window].update_anchor (side);
+            return;
         }
 
-        panel_window.update_anchor (side);
+#if HAS_MUTTER_46
+        client.wayland_client.make_dock (window);
+#endif
+        windows[window] = new PanelWindow (display, window, side);
     }
 
     public void set_hide_mode (Meta.Window window, PanelWindow.HideMode hide_mode) {

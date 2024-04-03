@@ -4,7 +4,7 @@ public class Gala.HideTracker : Object {
     public bool should_hide { get; private set; default = false; }
 
     public Meta.Display display { get; construct; }
-    public Meta.Window source_window { get; construct; }
+    public PanelWindow panel { get; construct; }
     public PanelWindow.HideMode hide_mode { get; construct set; }
 
     private bool overlap = false;
@@ -13,8 +13,8 @@ public class Gala.HideTracker : Object {
 
     private uint update_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, Meta.Window source_window, PanelWindow.HideMode hide_mode) {
-        Object (display: display, source_window: source_window, hide_mode: hide_mode);
+    public HideTracker (Meta.Display display, PanelWindow panel, PanelWindow.HideMode hide_mode) {
+        Object (display: display, panel: panel, hide_mode: hide_mode);
     }
 
     construct {
@@ -61,7 +61,7 @@ public class Gala.HideTracker : Object {
         focus_maximized_overlap = false;
 
         foreach (var window in display.list_all_windows ()) {
-            if (window == source_window) {
+            if (window == panel.window) {
                 continue;
             }
 
@@ -74,7 +74,7 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
-            if (!source_window.get_frame_rect ().overlap (window.get_frame_rect ())) {
+            if (!panel.static_region.overlap (window.get_frame_rect ())) {
                 continue;
             }
 
