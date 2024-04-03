@@ -9,6 +9,7 @@ public class Gala.ShellClientsManager : Object {
     public Meta.Display display { get; construct; }
 
     private NotificationsClient notifications_client;
+    private PanelClient dock;
 
     public ShellClientsManager (Meta.Display display) {
         Object (display: display);
@@ -16,5 +17,14 @@ public class Gala.ShellClientsManager : Object {
 
     construct {
         notifications_client = new NotificationsClient (display);
+        dock = new PanelClient (display, {"io.elementary.dock"});
+        dock.client.window_created.connect ((window) => {
+            window.shown.connect (() => {
+                dock.set_anchor (window, BOTTOM);
+                //  dock.make_exclusive (window);
+                dock.set_hide_mode (window, OVERLAPPING_WINDOW);
+            });
+            window.make_above ();
+        });
     }
 }
