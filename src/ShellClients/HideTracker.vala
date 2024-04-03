@@ -115,7 +115,7 @@ public class Gala.HideTracker : Object {
                 break;
 
             case ALWAYS:
-                should_hide = overlap;
+                should_hide = true;
                 break;
         }
     }
