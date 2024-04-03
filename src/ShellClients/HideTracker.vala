@@ -56,6 +56,11 @@ public class Gala.HideTracker : Object {
     }
 
     private void update_overlap () {
+        if (panel.static_region == null) {
+            warning ("No static region available, panel visibility might be wrong.");
+            return;
+        }
+
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;

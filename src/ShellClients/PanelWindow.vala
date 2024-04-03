@@ -54,6 +54,10 @@ public class Gala.PanelWindow : Object {
     }
 
     private void position_window () {
+        if (hidden) {
+            return;
+        }
+
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var window_rect = window.get_frame_rect ();
 
@@ -75,12 +79,12 @@ public class Gala.PanelWindow : Object {
     private void position_window_top (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
 
-        move_window_idle (x, hidden ? monitor_geom.y - window_rect.height : monitor_geom.y);
+        move_window_idle (x, monitor_geom.y);
     }
 
     private void position_window_bottom (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
-        var y = monitor_geom.y + monitor_geom.height - (hidden ? 0 : window_rect.height);
+        var y = monitor_geom.y + monitor_geom.height - window_rect.height;
 
         move_window_idle (x, y);
     }
@@ -88,9 +92,7 @@ public class Gala.PanelWindow : Object {
     private void move_window_idle (int x, int y) {
         Idle.add (() => {
             window.move_frame (true, x, y);
-            if (!hidden) {
-                static_region = window.get_buffer_rect ();
-            }
+            static_region = window.get_buffer_rect ();
             return Source.REMOVE;
         });
     }
@@ -180,11 +182,11 @@ public class Gala.PanelWindow : Object {
 
     private void hide () {
         hidden = true;
-        position_window ();
+        ((Meta.WindowActor)window.get_compositor_private ()).hide ();
     }
 
     private void show () {
         hidden = false;
-        position_window ();
+        ((Meta.WindowActor)window.get_compositor_private ()).show ();
     }
 }
