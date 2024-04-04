@@ -10,6 +10,7 @@ public class Gala.ShellClientsManager : Object {
 
     private NotificationsClient notifications_client;
     private PanelClient dock;
+    private PanelClient wingpanel;
 
     public ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -27,6 +28,19 @@ public class Gala.ShellClientsManager : Object {
                 dock.set_anchor (window, BOTTOM);
                 //  dock.make_exclusive (window);
                 dock.set_hide_mode (window, OVERLAPPING_WINDOW);
+            });
+            window.make_above ();
+        });
+        wingpanel = new PanelClient (wm, {"io.elementary.wingpanel"});
+        wingpanel.client.window_created.connect ((window) => {
+            if (window.window_type != NORMAL) {
+                return;
+            }
+            warning ("WINDOW CREATED");
+            window.shown.connect (() => {
+                wingpanel.set_anchor (window, TOP);
+                //  dock.make_exclusive (window);
+                wingpanel.set_hide_mode (window, ALWAYS);
             });
             window.make_above ();
         });

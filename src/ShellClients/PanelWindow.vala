@@ -140,6 +140,10 @@ public class Gala.PanelWindow : Object {
 
     private void setup_barrier () {
         switch (anchor) {
+            case TOP:
+                setup_barrier_top ();
+                break;
+
             case BOTTOM:
                 setup_barrier_bottom ();
                 break;
@@ -148,6 +152,26 @@ public class Gala.PanelWindow : Object {
                 warning ("Barrier side not supported yet");
                 break;
         }
+    }
+
+    private void setup_barrier_top () {
+        var display = wm.get_display ();
+        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+
+        barrier = new Barrier (
+            display,
+            monitor_geom.x,
+            monitor_geom.y,
+            monitor_geom.x + monitor_geom.width,
+            monitor_geom.y,
+            POSITIVE_Y,
+            0,
+            0,
+            int.MAX,
+            int.MAX
+        );
+
+        barrier.trigger.connect (show);
     }
 
     private void setup_barrier_bottom () {
