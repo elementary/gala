@@ -61,6 +61,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         style_manager = Drawing.StyleManager.get_instance ();
 
         container = new Clutter.Actor () {
+            reactive = true,
 #if HAS_MUTTER46
             layout_manager = new Clutter.FlowLayout (Clutter.Orientation.HORIZONTAL)
 #else
