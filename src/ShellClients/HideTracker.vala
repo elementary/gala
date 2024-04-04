@@ -26,8 +26,9 @@ public class Gala.HideTracker : Object {
             track_focus_window (current_focus_window);
         });
 
-        display.window_created.connect (() => {
+        display.window_created.connect ((window) => {
             schedule_update ();
+            window.unmanaged.connect (schedule_update);
         });
 
         var cursor_tracker = display.get_cursor_tracker ();
@@ -107,6 +108,8 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
+            //check workspace
+
             if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
@@ -157,7 +160,18 @@ public class Gala.HideTracker : Object {
     }
 
     private void hide () {
-        if (hovered || panel.hidden) {
+        if (panel.hidden) {
+            return;
+        }
+
+        // Don't hide if we have transients, e.g. an open popover, dialog, etc.
+        var has_transients = false;
+        panel.window.foreach_transient (() => {
+            has_transients = true;
+            return false;
+        });
+
+        if (hovered || has_transients) {
             return;
         }
 

@@ -22,7 +22,7 @@ public class Gala.PanelWindow : Object {
     public PanelWindow (Meta.Display display, Meta.Window window, Meta.Side anchor) {
         Object (display: display, window: window);
 
-        this.anchor = anchor;
+        this.anchor = anchor; // Meta.Side seems to be currently not supported as GLib.Object property ...?
     }
 
     construct {
