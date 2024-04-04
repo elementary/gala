@@ -43,6 +43,8 @@ public class Gala.HideTracker : Object {
                 schedule_update ();
             }
         });
+
+        display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
     }
 
     //Can be removed with mutter > 45
@@ -65,13 +67,21 @@ public class Gala.HideTracker : Object {
         return graphene_window_rect.contains_point (pointer_pos);
     }
 
-    private void track_focus_window (Meta.Window window) {
+    private void track_focus_window (Meta.Window? window) {
+        if (window == null) {
+            return;
+        }
+
         window.position_changed.connect (schedule_update);
         window.size_changed.connect (schedule_update);
         schedule_update ();
     }
 
-    private void untrack_focus_window (Meta.Window window) {
+    private void untrack_focus_window (Meta.Window? window) {
+        if (window == null) {
+            return;
+        }
+
         window.position_changed.disconnect (schedule_update);
         window.size_changed.disconnect (schedule_update);
         schedule_update ();
@@ -94,7 +104,7 @@ public class Gala.HideTracker : Object {
         focus_overlap = false;
         focus_maximized_overlap = false;
 
-        foreach (var window in display.list_all_windows ()) {
+        foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
             if (window == panel.window) {
                 continue;
             }
@@ -107,8 +117,6 @@ public class Gala.HideTracker : Object {
             if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
                 continue;
             }
-
-            //check workspace
 
             if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;

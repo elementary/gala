@@ -8,6 +8,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private const int ANIMATION_DURATION = 250;
+    private const int BARRIER_OFFSET = 30; // Allow hot corner trigger
 
     private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
 
@@ -39,6 +40,11 @@ public class Gala.PanelWindow : Object {
                 update_struts ();
             }
         });
+
+        window.stick ();
+
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        bind_property ("hidden", window_actor, "visible", SYNC_CREATE | INVERT_BOOLEAN);
     }
 
     public void update_anchor (Meta.Side anchor) {
@@ -160,9 +166,9 @@ public class Gala.PanelWindow : Object {
 
         barrier = new Barrier (
             display,
-            monitor_geom.x,
+            monitor_geom.x + BARRIER_OFFSET,
             monitor_geom.y,
-            monitor_geom.x + monitor_geom.width,
+            monitor_geom.x + monitor_geom.width - BARRIER_OFFSET,
             monitor_geom.y,
             POSITIVE_Y,
             0,
@@ -180,9 +186,9 @@ public class Gala.PanelWindow : Object {
 
         barrier = new Barrier (
             display,
-            monitor_geom.x,
+            monitor_geom.x + BARRIER_OFFSET,
             monitor_geom.y + monitor_geom.height,
-            monitor_geom.x + monitor_geom.width,
+            monitor_geom.x + monitor_geom.width - BARRIER_OFFSET,
             monitor_geom.y + monitor_geom.height,
             NEGATIVE_Y,
             0,
@@ -197,13 +203,12 @@ public class Gala.PanelWindow : Object {
     public void hide () {
         hidden = true;
 
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        actor.hide ();
-
         if (anchor != TOP && anchor != BOTTOM) {
             warning ("Animated hide not supported for side yet.");
             return;
         }
+
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
 
         var initial_x = actor.x;
         var initial_y = actor.y;
@@ -231,8 +236,6 @@ public class Gala.PanelWindow : Object {
         clone.restore_easing_state ();
 
         Timeout.add (wm.enable_animations ? ANIMATION_DURATION : 0, () => {
-            var actor = (Meta.WindowActor) window.get_compositor_private ();
-            actor.show ();
             wm.ui_group.remove (clone);
             clone = null;
             hidden = false;
