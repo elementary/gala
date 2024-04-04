@@ -74,13 +74,21 @@ public class Gala.PanelWindow : Object {
         }
     }
 
+#if HAS_MUTTER45
+    private void position_window_top (Mtk.Rectangle monitor_geom, Mtk.Rectangle window_rect) {
+#else
     private void position_window_top (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
+#endif
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
 
         move_window_idle (x, monitor_geom.y);
     }
 
+#if HAS_MUTTER45
+    private void position_window_bottom (Mtk.Rectangle monitor_geom, Mtk.Rectangle window_rect) {
+#else
     private void position_window_bottom (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
+#endif
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
         var y = monitor_geom.y + monitor_geom.height - window_rect.height;
 
