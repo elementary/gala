@@ -208,6 +208,7 @@ namespace Gala {
              * +-- pointer locator
              * +-- dwell click timer
              * +-- screen shield
+             * +-- feedback group (e.g. DND icons)
              */
 
             system_background = new SystemBackground (display);
@@ -232,6 +233,14 @@ namespace Gala {
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
+
+#if HAS_MUTTER44
+            var feedback_group = display.get_compositor ().get_feedback_group ();
+#else
+            var feedback_group = display.get_feedback_group ();
+#endif
+            stage.remove_child (feedback_group);
+            ui_group.add_child (feedback_group);
 
             FilterManager.init (this);
 
