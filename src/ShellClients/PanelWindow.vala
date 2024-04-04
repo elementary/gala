@@ -15,7 +15,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private const int ANIMATION_DURATION = 250;
-    private const int BARRIER_OFFSET = 30; // Allow hot corner trigger
+    private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
 
     private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
 
@@ -160,13 +160,18 @@ public class Gala.PanelWindow : Object {
     }
 
     private void setup_barrier () {
+        var display = wm.get_display ();
+        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
+
         switch (anchor) {
             case TOP:
-                setup_barrier_top ();
+                setup_barrier_top (monitor_geom, offset);
                 break;
 
             case BOTTOM:
-                setup_barrier_bottom ();
+                setup_barrier_bottom (monitor_geom, offset);
                 break;
 
             default:
@@ -175,15 +180,16 @@ public class Gala.PanelWindow : Object {
         }
     }
 
-    private void setup_barrier_top () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-
+#if HAS_MUTTER45
+    private void setup_barrier_top (Mtk.Rectangle monitor_geom, int offset) {
+#else
+    private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
+#endif
         barrier = new Barrier (
-            display,
-            monitor_geom.x + BARRIER_OFFSET,
+            wm.get_display (),
+            monitor_geom.x + offset,
             monitor_geom.y,
-            monitor_geom.x + monitor_geom.width - BARRIER_OFFSET,
+            monitor_geom.x + monitor_geom.width - offset,
             monitor_geom.y,
             POSITIVE_Y,
             0,
@@ -195,15 +201,16 @@ public class Gala.PanelWindow : Object {
         barrier.trigger.connect (show);
     }
 
-    private void setup_barrier_bottom () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-
+#if HAS_MUTTER45
+    private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
+#else
+    private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
+#endif
         barrier = new Barrier (
-            display,
-            monitor_geom.x + BARRIER_OFFSET,
+            wm.get_display (),
+            monitor_geom.x + offset,
             monitor_geom.y + monitor_geom.height,
-            monitor_geom.x + monitor_geom.width - BARRIER_OFFSET,
+            monitor_geom.x + monitor_geom.width - offset,
             monitor_geom.y + monitor_geom.height,
             NEGATIVE_Y,
             0,
