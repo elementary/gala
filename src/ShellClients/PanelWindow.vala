@@ -201,6 +201,10 @@ public class Gala.PanelWindow : Object {
     }
 
     public void hide () {
+        if (hidden) {
+            return;
+        }
+
         hidden = true;
 
         if (anchor != TOP && anchor != BOTTOM) {
@@ -227,6 +231,10 @@ public class Gala.PanelWindow : Object {
     }
 
     public void show () {
+        if (!hidden) {
+            return;
+        }
+
         var target_y = clone.source.y;
 
         clone.save_easing_state ();
