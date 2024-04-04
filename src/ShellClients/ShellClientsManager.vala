@@ -19,6 +19,10 @@ public class Gala.ShellClientsManager : Object {
         notifications_client = new NotificationsClient (display);
         dock = new PanelClient (display, {"io.elementary.dock"});
         dock.client.window_created.connect ((window) => {
+            if (window.window_type != NORMAL) {
+                return;
+            }
+            warning ("WINDOW CREATED");
             window.shown.connect (() => {
                 dock.set_anchor (window, BOTTOM);
                 //  dock.make_exclusive (window);

@@ -1,11 +1,11 @@
 public class Gala.HideTracker : Object {
     private const uint UPDATE_TIMEOUT = 200;
 
-    public bool should_hide { get; private set; default = false; }
-
     public Meta.Display display { get; construct; }
     public PanelWindow panel { get; construct; }
     public PanelWindow.HideMode hide_mode { get; construct set; }
+
+    private bool hovered = false;
 
     private bool overlap = false;
     private bool focus_overlap = false;
@@ -29,6 +29,39 @@ public class Gala.HideTracker : Object {
         display.window_created.connect (() => {
             schedule_update ();
         });
+
+        var cursor_tracker = display.get_cursor_tracker ();
+        cursor_tracker.position_invalidated.connect (() => {
+#if HAS_MUTTER45
+            var has_pointer = panel.window.has_pointer ();
+#else
+            var has_pointer = window_has_pointer ();
+#endif
+            if (hovered != has_pointer) {
+                hovered = has_pointer;
+                schedule_update ();
+            }
+        });
+    }
+
+    //Can be removed with mutter > 45
+    private bool window_has_pointer () {
+        var cursor_tracker = display.get_cursor_tracker ();
+        Graphene.Point pointer_pos;
+        cursor_tracker.get_pointer (out pointer_pos, null);
+
+        var window_rect = panel.window.get_frame_rect ();
+        Graphene.Rect graphene_window_rect = {
+            {
+                window_rect.x,
+                window_rect.y
+            },
+            {
+                window_rect.width,
+                window_rect.height
+            }
+        };
+        return graphene_window_rect.contains_point (pointer_pos);
     }
 
     private void track_focus_window (Meta.Window window) {
@@ -56,11 +89,6 @@ public class Gala.HideTracker : Object {
     }
 
     private void update_overlap () {
-        if (panel.static_region == null) {
-            warning ("No static region available, panel visibility might be wrong.");
-            return;
-        }
-
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
@@ -79,7 +107,7 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
-            if (!panel.static_region.overlap (window.get_frame_rect ())) {
+            if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
 
@@ -99,24 +127,48 @@ public class Gala.HideTracker : Object {
     private void update_hidden () {
         switch (hide_mode) {
             case NEVER:
-                should_hide = false;
+                toggle_display (false);
                 break;
 
             case MAXIMIZED_FOCUS_WINDOW:
-                should_hide = focus_maximized_overlap;
+                toggle_display (focus_maximized_overlap);
                 break;
 
             case OVERLAPPING_FOCUS_WINDOW:
-                should_hide = focus_overlap;
+                toggle_display (focus_overlap);
                 break;
 
             case OVERLAPPING_WINDOW:
-                should_hide = overlap;
+                toggle_display (overlap);
                 break;
 
             case ALWAYS:
-                should_hide = true;
+                toggle_display (true);
                 break;
         }
+    }
+
+    private void toggle_display (bool should_hide) {
+        if (should_hide) {
+            hide ();
+        } else {
+            show ();
+        }
+    }
+
+    private void hide () {
+        if (hovered || panel.hidden) {
+            return;
+        }
+
+        panel.hide ();
+    }
+
+    private void show () {
+        if (!panel.hidden) {
+            return;
+        }
+
+        panel.show ();
     }
 }

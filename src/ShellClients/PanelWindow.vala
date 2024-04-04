@@ -12,7 +12,6 @@ public class Gala.PanelWindow : Object {
     public Meta.Display display { get; construct; }
     public Meta.Window window { get; construct; }
 
-    public Meta.Rectangle? static_region { get; private set; }
     public bool hidden { get; private set; default = false; }
 
     private Meta.Side anchor;
@@ -31,14 +30,6 @@ public class Gala.PanelWindow : Object {
 
         hide_tracker = new HideTracker (display, this, NEVER);
 
-        hide_tracker.notify["should-hide"].connect (() => {
-            if (hide_tracker.should_hide) {
-                hide ();
-            } else {
-                show ();
-            }
-        });
-
         window.unmanaged.connect (() => {
             if (window_struts.remove (window)) {
                 update_struts ();
@@ -54,10 +45,6 @@ public class Gala.PanelWindow : Object {
     }
 
     private void position_window () {
-        if (hidden) {
-            return;
-        }
-
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var window_rect = window.get_frame_rect ();
 
@@ -92,7 +79,6 @@ public class Gala.PanelWindow : Object {
     private void move_window_idle (int x, int y) {
         Idle.add (() => {
             window.move_frame (true, x, y);
-            static_region = window.get_buffer_rect ();
             return Source.REMOVE;
         });
     }
@@ -175,17 +161,15 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (() => {
-            show ();
-        });
+        barrier.trigger.connect (show);
     }
 
-    private void hide () {
+    public void hide () {
         hidden = true;
         ((Meta.WindowActor)window.get_compositor_private ()).hide ();
     }
 
-    private void show () {
+    public void show () {
         hidden = false;
         ((Meta.WindowActor)window.get_compositor_private ()).show ();
     }
