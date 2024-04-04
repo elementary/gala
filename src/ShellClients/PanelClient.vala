@@ -6,15 +6,15 @@
  */
 
  public class Gala.PanelClient : GLib.Object {
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
     public ManagedClient client { get; construct; }
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
 
-    public PanelClient (Meta.Display display, string[] args) {
+    public PanelClient (WindowManager wm, string[] args) {
         Object (
-            display: display,
-            client: new ManagedClient (display, args)
+            wm: wm,
+            client: new ManagedClient (wm.get_display (), args)
         );
     }
 
@@ -27,7 +27,7 @@
 #if HAS_MUTTER_46
         client.wayland_client.make_dock (window);
 #endif
-        windows[window] = new PanelWindow (display, window, side);
+        windows[window] = new PanelWindow (wm, window, side);
     }
 
     public void set_hide_mode (Meta.Window window, PanelWindow.HideMode hide_mode) {

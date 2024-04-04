@@ -77,7 +77,7 @@ public class Gala.HideTracker : Object {
         schedule_update ();
     }
 
-    private void schedule_update () {
+    public void schedule_update () {
         if (update_timeout_id != 0) {
             return;
         }

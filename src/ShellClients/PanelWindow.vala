@@ -7,9 +7,11 @@ public class Gala.PanelWindow : Object {
         ALWAYS
     }
 
+    private const int ANIMATION_DURATION = 250;
+
     private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
     public bool hidden { get; private set; default = false; }
@@ -19,8 +21,10 @@ public class Gala.PanelWindow : Object {
 
     private Barrier? barrier;
 
-    public PanelWindow (Meta.Display display, Meta.Window window, Meta.Side anchor) {
-        Object (display: display, window: window);
+    private SafeWindowClone? clone;
+
+    public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
+        Object (wm: wm, window: window);
 
         this.anchor = anchor; // Meta.Side seems to be currently not supported as GLib.Object property ...?
     }
@@ -28,7 +32,7 @@ public class Gala.PanelWindow : Object {
     construct {
         window.size_changed.connect (position_window);
 
-        hide_tracker = new HideTracker (display, this, NEVER);
+        hide_tracker = new HideTracker (wm.get_display (), this, NEVER);
 
         window.unmanaged.connect (() => {
             if (window_struts.remove (window)) {
@@ -45,6 +49,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void position_window () {
+        var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var window_rect = window.get_frame_rect ();
 
@@ -120,7 +125,7 @@ public class Gala.PanelWindow : Object {
             list.append (window_strut);
         }
 
-        foreach (var workspace in display.get_workspace_manager ().get_workspaces ()) {
+        foreach (var workspace in wm.get_display ().get_workspace_manager ().get_workspaces ()) {
             workspace.set_builtin_struts (list);
         }
     }
@@ -146,6 +151,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void setup_barrier_bottom () {
+        var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
 
         barrier = new Barrier (
@@ -166,11 +172,48 @@ public class Gala.PanelWindow : Object {
 
     public void hide () {
         hidden = true;
-        ((Meta.WindowActor)window.get_compositor_private ()).hide ();
+
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
+        actor.hide ();
+
+        if (anchor != TOP && anchor != BOTTOM) {
+            warning ("Animated hide not supported for side yet.");
+            return;
+        }
+
+        var initial_x = actor.x;
+        var initial_y = actor.y;
+        var target_y = anchor == TOP ? actor.y - actor.height : actor.y + actor.height;
+
+        clone = new SafeWindowClone (window, true);
+        wm.ui_group.add_child (clone);
+
+        clone.set_position (initial_x, initial_y);
+
+        clone.save_easing_state ();
+        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        clone.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
+        clone.y = target_y;
+        clone.restore_easing_state ();
     }
 
     public void show () {
-        hidden = false;
-        ((Meta.WindowActor)window.get_compositor_private ()).show ();
+        var target_y = clone.source.y;
+
+        clone.save_easing_state ();
+        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        clone.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
+        clone.y = target_y;
+        clone.restore_easing_state ();
+
+        Timeout.add (wm.enable_animations ? ANIMATION_DURATION : 0, () => {
+            var actor = (Meta.WindowActor) window.get_compositor_private ();
+            actor.show ();
+            wm.ui_group.remove (clone);
+            clone = null;
+            hidden = false;
+            hide_tracker.schedule_update (); // In case we already stopped hovering
+            return Source.REMOVE;
+        });
     }
 }
