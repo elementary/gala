@@ -2111,6 +2111,8 @@ namespace Gala {
                 return;
             }
 
+            shell_clients_manager.switch_workspace (switch_workspace_with_gesture);
+
             animating_switch_workspace = true;
 
             prepare_workspace_switch (from, to, direction);

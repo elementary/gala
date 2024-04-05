@@ -31,7 +31,6 @@ public class Gala.PanelWindow : Object {
 
     private SafeWindowClone clone;
 
-    private bool animating = false;
     private bool use_gesture = false;
 
     public PanelWindow (WindowManagerGala wm, Meta.Window window, Meta.Side anchor) {
@@ -53,8 +52,12 @@ public class Gala.PanelWindow : Object {
 
         window.stick ();
 
+        clone = new SafeWindowClone (window, true) {
+            visible = false
+        };
+        wm.ui_group.add_child (clone);
+
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-        bind_property ("hidden", window_actor, "visible", SYNC_CREATE | INVERT_BOOLEAN);
 
         window_actor.notify["x"].connect (() => {
             position_clone ();
@@ -64,10 +67,13 @@ public class Gala.PanelWindow : Object {
             position_clone ();
         });
 
-        clone = new SafeWindowClone (window, true) {
-            visible = false
-        };
-        wm.ui_group.add_child (clone);
+        notify["hidden"].connect (update_actor_visibility);
+        clone.notify["visible"].connect (update_actor_visibility);
+    }
+
+    private void update_actor_visibility () {
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        window_actor.visible = !hidden && !clone.visible;
     }
 
     public void update_anchor (Meta.Side anchor) {
@@ -261,12 +267,8 @@ public class Gala.PanelWindow : Object {
     }
 
     public void switch_workspace (bool with_gesture) {
-        hide_tracker.schedule_update ();
-
         use_gesture = with_gesture;
-
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        actor.visible = false;
+        hide_tracker.update_overlap ();
 
         clone.visible = true;
 
@@ -275,13 +277,15 @@ public class Gala.PanelWindow : Object {
                 return;
             }
 
-            actor.visible = hidden;
             clone.visible = false;
             use_gesture = false;
         };
 
         if (!with_gesture || !wm.enable_animations) {
-            on_animation_end (1, false, 0);
+            Timeout.add (AnimationDuration.WORKSPACE_SWITCH_MIN, () => {
+                on_animation_end (1, false, 0);
+                return Source.REMOVE;
+            });
         } else {
             wm.gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
         }

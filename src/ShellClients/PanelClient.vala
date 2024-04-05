@@ -38,4 +38,10 @@
 
         windows[window].set_hide_mode (hide_mode);
     }
+
+    public void switch_workspace (bool with_gesture) {
+        foreach (var panel in windows.get_values ()) {
+            panel.switch_workspace (with_gesture);
+        }
+    }
 }

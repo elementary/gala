@@ -35,8 +35,13 @@ public class Gala.ShellClientsManager : Object {
             }
             warning ("WINDOW CREATED");
             wingpanel.set_anchor (window, TOP);
-            wingpanel.set_hide_mode (window, ALWAYS);
+            wingpanel.set_hide_mode (window, MAXIMIZED_FOCUS_WINDOW);
             window.make_above ();
         });
+    }
+
+    public void switch_workspace (bool with_gesture) {
+        dock.switch_workspace (with_gesture);
+        wingpanel.switch_workspace (with_gesture);
     }
 }
