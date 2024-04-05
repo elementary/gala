@@ -34,6 +34,7 @@ public class Gala.PanelClone : Object {
         // The clone needs the actor position
         actor.notify["x"].connect (update_clone_position);
         actor.notify["y"].connect (update_clone_position);
+        actor.notify["visible"].connect (update_visible);
 
         notify["panel-hidden"].connect (() => {
             update_visible ();
