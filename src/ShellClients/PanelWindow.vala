@@ -52,6 +52,18 @@ public class Gala.PanelWindow : Object {
 
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
         bind_property ("hidden", window_actor, "visible", SYNC_CREATE | INVERT_BOOLEAN);
+
+        window_actor.notify["x"].connect (() => {
+            if (clone != null && (anchor == TOP || anchor == BOTTOM)) {
+                clone.x = window_actor.x;
+            }
+        });
+
+        window_actor.notify["y"].connect (() => {
+            if (clone != null && (anchor == LEFT || anchor == RIGHT)) {
+                clone.y = window_actor.y;
+            }
+        });
     }
 
     public void update_anchor (Meta.Side anchor) {
@@ -107,14 +119,6 @@ public class Gala.PanelWindow : Object {
             window.move_frame (false, x, y);
             return Source.REMOVE;
         });
-
-        if (clone != null) {
-            if (anchor == TOP || anchor == BOTTOM) {
-                clone.x = x;
-            } else {
-                clone.y = y;
-            }
-        }
     }
 
     public void set_hide_mode (HideMode hide_mode) {

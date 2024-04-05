@@ -24,11 +24,8 @@ public class Gala.ShellClientsManager : Object {
                 return;
             }
             warning ("WINDOW CREATED");
-            window.shown.connect (() => {
-                dock.set_anchor (window, BOTTOM);
-                //  dock.make_exclusive (window);
-                dock.set_hide_mode (window, OVERLAPPING_WINDOW);
-            });
+            dock.set_anchor (window, BOTTOM);
+            dock.set_hide_mode (window, OVERLAPPING_WINDOW);
             window.make_above ();
         });
         wingpanel = new PanelClient (wm, {"io.elementary.wingpanel"});
@@ -37,11 +34,8 @@ public class Gala.ShellClientsManager : Object {
                 return;
             }
             warning ("WINDOW CREATED");
-            window.shown.connect (() => {
-                wingpanel.set_anchor (window, TOP);
-                //  dock.make_exclusive (window);
-                wingpanel.set_hide_mode (window, ALWAYS);
-            });
+            wingpanel.set_anchor (window, TOP);
+            wingpanel.set_hide_mode (window, ALWAYS);
             window.make_above ();
         });
     }
