@@ -8,9 +8,12 @@
 public class Gala.HideTracker : Object {
     private const uint UPDATE_TIMEOUT = 200;
 
+    public signal void hide ();
+    public signal void show ();
+
     public Meta.Display display { get; construct; }
-    public PanelWindow panel { get; construct; }
-    public PanelWindow.HideMode hide_mode { get; construct set; }
+    public Meta.Window panel_window { get; construct; }
+    public PanelWindow.HideMode hide_mode { get; set; default = NEVER; }
 
     private bool hovered = false;
 
@@ -20,8 +23,8 @@ public class Gala.HideTracker : Object {
 
     private uint update_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, PanelWindow panel, PanelWindow.HideMode hide_mode) {
-        Object (display: display, panel: panel, hide_mode: hide_mode);
+    public HideTracker (Meta.Display display, Meta.Window panel_window) {
+        Object (display: display, panel_window: panel_window);
     }
 
     construct {
@@ -51,7 +54,7 @@ public class Gala.HideTracker : Object {
             }
         });
 
-        WorkspaceManager.get_default ().switch_workspace_done.connect (schedule_update);
+        display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
     }
 
     //Can be removed with mutter > 45
@@ -60,7 +63,7 @@ public class Gala.HideTracker : Object {
         Graphene.Point pointer_pos;
         cursor_tracker.get_pointer (out pointer_pos, null);
 
-        var window_rect = panel.window.get_frame_rect ();
+        var window_rect = panel_window.get_frame_rect ();
         Graphene.Rect graphene_window_rect = {
             {
                 window_rect.x,
@@ -112,7 +115,7 @@ public class Gala.HideTracker : Object {
         focus_maximized_overlap = false;
 
         foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
-            if (window == panel.window) {
+            if (window == panel_window) {
                 continue;
             }
 
@@ -125,7 +128,7 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
-            if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
+            if (!panel_window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
 
@@ -168,28 +171,20 @@ public class Gala.HideTracker : Object {
 
     private void toggle_display (bool should_hide) {
         if (should_hide) {
+            // Don't hide if we have transients, e.g. an open popover, dialog, etc.
+            var has_transients = false;
+            panel_window.foreach_transient (() => {
+                has_transients = true;
+                return false;
+            });
+
+            if (hovered || has_transients) {
+                return;
+            }
+
             hide ();
         } else {
             show ();
         }
-    }
-
-    private void hide () {
-        // Don't hide if we have transients, e.g. an open popover, dialog, etc.
-        var has_transients = false;
-        panel.window.foreach_transient (() => {
-            has_transients = true;
-            return false;
-        });
-
-        if (hovered || has_transients) {
-            return;
-        }
-
-        panel.hide ();
-    }
-
-    private void show () {
-        panel.show ();
     }
 }

@@ -3,10 +3,22 @@ public class Gala.PanelClone : Object {
 
     public WindowManager wm { get; construct; }
     public PanelWindow panel { get; construct; }
-    public bool panel_hidden { get; set; default = false; }
+
+    public PanelWindow.HideMode hide_mode {
+        get {
+            return hide_tracker.hide_mode;
+        }
+        set {
+            hide_tracker.hide_mode = value;
+        }
+    }
+
+    public bool panel_hidden { get; private set; default = false; }
 
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
+    private HideTracker hide_tracker;
+
     private int visible = 0;
 
     public PanelClone (WindowManager wm, PanelWindow panel) {
@@ -23,12 +35,14 @@ public class Gala.PanelClone : Object {
         actor.notify["x"].connect (update_clone_position);
         actor.notify["y"].connect (update_clone_position);
 
-        //This lets us "float" about the workspace while the switch is ongoing
-        var workspace_manager = WorkspaceManager.get_default ();
-        workspace_manager.switch_workspace.connect (increase_visible);
-        workspace_manager.switch_workspace_done.connect (decrease_visible);
+        notify["panel-hidden"].connect (() => {
+            update_visible ();
+            hide_tracker.schedule_update ();
+        });
 
-        notify["panel-hidden"].connect (update_visible);
+        hide_tracker = new HideTracker (wm.get_display (), panel.window);
+        hide_tracker.hide.connect (hide);
+        hide_tracker.show.connect (show);
 
         update_visible ();
         update_clone_position ();

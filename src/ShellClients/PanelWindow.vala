@@ -24,7 +24,6 @@ public class Gala.PanelWindow : Object {
     public bool hidden { get; private set; default = false; }
 
     public Meta.Side anchor;
-    private HideTracker hide_tracker;
 
     private Barrier? barrier;
 
@@ -39,8 +38,6 @@ public class Gala.PanelWindow : Object {
     construct {
         window.size_changed.connect (position_window);
 
-        hide_tracker = new HideTracker (wm.get_display (), this, NEVER);
-
         window.unmanaged.connect (() => {
             if (window_struts.remove (window)) {
                 update_struts ();
@@ -50,14 +47,13 @@ public class Gala.PanelWindow : Object {
         window.stick ();
 
         clone = new PanelClone (wm, this);
-        clone.notify["panel-hidden"].connect (hide_tracker.schedule_update);
     }
 
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
-        set_hide_mode (hide_tracker.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
@@ -109,7 +105,7 @@ public class Gala.PanelWindow : Object {
     }
 
     public void set_hide_mode (HideMode hide_mode) {
-        hide_tracker.hide_mode = hide_mode;
+        clone.hide_mode = hide_mode;
 
         if (hide_mode != NEVER) {
             unmake_exclusive ();
@@ -197,7 +193,7 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (show);
+        barrier.trigger.connect (clone.show);
     }
 
 #if HAS_MUTTER45
@@ -218,14 +214,6 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (show);
-    }
-
-    public void hide () {
-        clone.hide ();
-    }
-
-    public void show () {
-        clone.show ();
+        barrier.trigger.connect (clone.show);
     }
 }

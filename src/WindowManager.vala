@@ -2198,7 +2198,6 @@ namespace Gala {
             }
             end_switch_workspace ();
             if (!is_nudge_animation) {
-                WorkspaceManager.get_default ().switch_workspace_done ();
                 switch_workspace_completed ();
             }
             animating_switch_workspace = cancel_action;
