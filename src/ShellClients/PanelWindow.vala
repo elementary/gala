@@ -104,9 +104,17 @@ public class Gala.PanelWindow : Object {
 
     private void move_window_idle (int x, int y) {
         Idle.add (() => {
-            window.move_frame (true, x, y);
+            window.move_frame (false, x, y);
             return Source.REMOVE;
         });
+
+        if (clone != null) {
+            if (anchor == TOP || anchor == BOTTOM) {
+                clone.x = x;
+            } else {
+                clone.y = y;
+            }
+        }
     }
 
     public void set_hide_mode (HideMode hide_mode) {
