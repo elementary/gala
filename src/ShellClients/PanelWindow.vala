@@ -259,7 +259,7 @@ public class Gala.PanelWindow : Object {
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
+        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
         clone.y = target_y;
         clone.restore_easing_state ();
     }
@@ -273,12 +273,12 @@ public class Gala.PanelWindow : Object {
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
+        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
         clone.y = target_y;
         clone.restore_easing_state ();
 
-        Timeout.add (wm.enable_animations ? ANIMATION_DURATION : 0, () => {
-            wm.ui_group.remove (clone);
+        Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
+            wm.ui_group.remove_child (clone);
             clone = null;
             hidden = false;
             hide_tracker.schedule_update (); // In case we already stopped hovering
