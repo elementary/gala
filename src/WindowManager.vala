@@ -110,7 +110,7 @@ namespace Gala {
         private GLib.Settings behavior_settings;
         private GLib.Settings new_behavior_settings;
 
-        private GestureTracker gesture_tracker;
+        public GestureTracker gesture_tracker { get; construct; }
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
 

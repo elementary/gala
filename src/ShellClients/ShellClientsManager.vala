@@ -6,13 +6,13 @@
  */
 
 public class Gala.ShellClientsManager : Object {
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private PanelClient dock;
     private PanelClient wingpanel;
 
-    public ShellClientsManager (WindowManager wm) {
+    public ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 

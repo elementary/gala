@@ -6,12 +6,12 @@
  */
 
  public class Gala.PanelClient : GLib.Object {
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
     public ManagedClient client { get; construct; }
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
 
-    public PanelClient (WindowManager wm, string[] args) {
+    public PanelClient (WindowManagerGala wm, string[] args) {
         Object (
             wm: wm,
             client: new ManagedClient (wm.get_display (), args)
