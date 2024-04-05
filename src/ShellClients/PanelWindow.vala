@@ -38,6 +38,9 @@ public class Gala.PanelWindow : Object {
     }
 
     construct {
+        clone = new SafeWindowClone (window, true);
+        wm.ui_group.add_child (clone);
+
         window.size_changed.connect (position_window);
 
         hide_tracker = new HideTracker (wm.get_display (), this, NEVER);
@@ -234,6 +237,31 @@ public class Gala.PanelWindow : Object {
         barrier.trigger.connect (show);
     }
 
+    private float calculate_clone_x (bool hidden) {
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        switch (anchor) {
+            case TOP:
+            case BOTTOM:
+                return actor.x;
+            default:
+                return 0;
+        }
+    }
+
+    private float calculate_clone_y (bool hidden) {
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        switch (anchor) {
+            case TOP:
+                return hidden ? actor.y - actor.height : actor.y;
+            case BOTTOM:
+                return hidden ? actor.y + actor.height : actor.y;
+            default:
+                return 0;
+        }
+    }
+
     public void hide () {
         if (hidden) {
             return;
@@ -246,21 +274,13 @@ public class Gala.PanelWindow : Object {
             return;
         }
 
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-        var initial_x = actor.x;
-        var initial_y = actor.y;
-        var target_y = anchor == TOP ? actor.y - actor.height : actor.y + actor.height;
-
-        clone = new SafeWindowClone (window, true);
-        wm.ui_group.add_child (clone);
-
-        clone.set_position (initial_x, initial_y);
+        clone.visible = true;
+        clone.set_position (calculate_clone_x (false), calculate_clone_y (false));
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
+        clone.y = calculate_clone_y (true);
         clone.restore_easing_state ();
     }
 
@@ -269,17 +289,16 @@ public class Gala.PanelWindow : Object {
             return;
         }
 
-        var target_y = clone.source.y;
-
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
+        clone.y = calculate_clone_y (false);
         clone.restore_easing_state ();
 
         Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
-            wm.ui_group.remove_child (clone);
-            clone = null;
+            //  wm.ui_group.remove_child (clone);
+            //  clone = null;
+            clone.visible = false;
             hidden = false;
             hide_tracker.schedule_update (); // In case we already stopped hovering
             return Source.REMOVE;
