@@ -355,6 +355,13 @@ public class Gala.PanelWindow : Object {
             clone.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
             clone.y = target_y;
             clone.restore_easing_state ();
+
+            Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
+                clone.visible = false;
+                hidden = false;
+                hide_tracker.schedule_update (); // In case we already stopped hovering
+                return Source.REMOVE;
+            });
         };
 
         if (!use_gesture || !wm.enable_animations) {
@@ -362,12 +369,5 @@ public class Gala.PanelWindow : Object {
         } else {
             wm.gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
-
-        Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
-            clone.visible = false;
-            hidden = false;
-            hide_tracker.schedule_update (); // In case we already stopped hovering
-            return Source.REMOVE;
-        });
     }
 }
