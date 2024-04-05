@@ -19,8 +19,6 @@ public class Gala.PanelClone : Object {
     private Meta.WindowActor actor;
     private HideTracker hide_tracker;
 
-    private int visible = 0;
-
     public PanelClone (WindowManager wm, PanelWindow panel) {
         Object (wm: wm, panel: panel);
     }
@@ -50,32 +48,11 @@ public class Gala.PanelClone : Object {
     }
 
     private void update_visible () {
-        clone.visible = visible > 0;
         actor.visible = !clone.visible && !panel_hidden;
     }
 
-    private void increase_visible () {
-        visible++;
-        update_visible ();
-    }
-
-    private void decrease_visible () {
-        visible--;
-        update_visible ();
-    }
-
-    private void increase_visible_timed (uint timeout) {
-        increase_visible ();
-        Timeout.add (timeout, () => {
-            decrease_visible ();
-            return Source.REMOVE;
-        });
-    }
-
     private void update_clone_position () {
-        if (!clone.visible) {
-            clone.set_position (calculate_clone_x (panel_hidden), calculate_clone_y (panel_hidden));
-        }
+        clone.set_position (calculate_clone_x (panel_hidden), calculate_clone_y (panel_hidden));
     }
 
     private float calculate_clone_x (bool hidden) {
@@ -111,13 +88,11 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        var animation_duration = wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0;
-
-        increase_visible_timed (animation_duration);
+        clone.visible = true;
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (animation_duration);
+        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
         clone.y = calculate_clone_y (true);
         clone.restore_easing_state ();
     }
@@ -129,8 +104,6 @@ public class Gala.PanelClone : Object {
 
         var animation_duration = wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0;
 
-        increase_visible_timed (animation_duration);
-
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
         clone.set_easing_duration (animation_duration);
@@ -138,6 +111,7 @@ public class Gala.PanelClone : Object {
         clone.restore_easing_state ();
 
         Timeout.add (animation_duration, () => {
+            clone.visible = false;
             panel_hidden = false;
             return Source.REMOVE;
         });
