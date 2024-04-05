@@ -28,6 +28,8 @@ public class Gala.PanelClone : Object {
         workspace_manager.switch_workspace.connect (increase_visible);
         workspace_manager.switch_workspace_done.connect (decrease_visible);
 
+        notify["panel-hidden"].connect (update_visible);
+
         update_visible ();
         update_clone_position ();
     }
@@ -122,7 +124,6 @@ public class Gala.PanelClone : Object {
 
         Timeout.add (animation_duration, () => {
             panel_hidden = false;
-            //  hide_tracker.schedule_update (); // In case we already stopped hovering
             return Source.REMOVE;
         });
     }
