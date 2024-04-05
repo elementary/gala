@@ -27,6 +27,9 @@ namespace Gala {
 
         private static WorkspaceManager? instance = null;
 
+        public signal void switch_workspace ();
+        public signal void switch_workspace_done ();
+
         public WindowManager wm { get; construct; }
 
         private Gee.LinkedList<Meta.Workspace> workspaces_marked_removed;
@@ -101,6 +104,8 @@ namespace Gala {
         }
 
         private void workspace_switched (Meta.WorkspaceManager manager, int from, int to, Meta.MotionDirection direction) {
+            switch_workspace ();
+
             if (!Meta.Prefs.get_dynamic_workspaces ())
                 return;
 

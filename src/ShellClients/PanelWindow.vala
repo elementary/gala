@@ -14,7 +14,6 @@ public class Gala.PanelWindow : Object {
         ALWAYS
     }
 
-    private const int ANIMATION_DURATION = 250;
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
 
     private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
@@ -24,12 +23,12 @@ public class Gala.PanelWindow : Object {
 
     public bool hidden { get; private set; default = false; }
 
-    private Meta.Side anchor;
+    public Meta.Side anchor;
     private HideTracker hide_tracker;
 
     private Barrier? barrier;
 
-    private SafeWindowClone? clone;
+    private PanelClone clone;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
         Object (wm: wm, window: window);
@@ -50,20 +49,8 @@ public class Gala.PanelWindow : Object {
 
         window.stick ();
 
-        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-        bind_property ("hidden", window_actor, "visible", SYNC_CREATE | INVERT_BOOLEAN);
-
-        window_actor.notify["x"].connect (() => {
-            if (clone != null && (anchor == TOP || anchor == BOTTOM)) {
-                clone.x = window_actor.x;
-            }
-        });
-
-        window_actor.notify["y"].connect (() => {
-            if (clone != null && (anchor == LEFT || anchor == RIGHT)) {
-                clone.y = window_actor.y;
-            }
-        });
+        clone = new PanelClone (wm, this);
+        clone.notify["panel-hidden"].connect (hide_tracker.schedule_update);
     }
 
     public void update_anchor (Meta.Side anchor) {
@@ -235,54 +222,10 @@ public class Gala.PanelWindow : Object {
     }
 
     public void hide () {
-        if (hidden) {
-            return;
-        }
-
-        hidden = true;
-
-        if (anchor != TOP && anchor != BOTTOM) {
-            warning ("Animated hide not supported for side yet.");
-            return;
-        }
-
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-        var initial_x = actor.x;
-        var initial_y = actor.y;
-        var target_y = anchor == TOP ? actor.y - actor.height : actor.y + actor.height;
-
-        clone = new SafeWindowClone (window, true);
-        wm.ui_group.add_child (clone);
-
-        clone.set_position (initial_x, initial_y);
-
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
-        clone.restore_easing_state ();
+        clone.hide ();
     }
 
     public void show () {
-        if (!hidden) {
-            return;
-        }
-
-        var target_y = clone.source.y;
-
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
-        clone.restore_easing_state ();
-
-        Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
-            wm.ui_group.remove_child (clone);
-            clone = null;
-            hidden = false;
-            hide_tracker.schedule_update (); // In case we already stopped hovering
-            return Source.REMOVE;
-        });
+        clone.show ();
     }
 }

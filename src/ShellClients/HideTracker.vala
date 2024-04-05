@@ -51,7 +51,7 @@ public class Gala.HideTracker : Object {
             }
         });
 
-        display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
+        WorkspaceManager.get_default ().switch_workspace_done.connect (schedule_update);
     }
 
     //Can be removed with mutter > 45
@@ -175,10 +175,6 @@ public class Gala.HideTracker : Object {
     }
 
     private void hide () {
-        if (panel.hidden) {
-            return;
-        }
-
         // Don't hide if we have transients, e.g. an open popover, dialog, etc.
         var has_transients = false;
         panel.window.foreach_transient (() => {
@@ -194,10 +190,6 @@ public class Gala.HideTracker : Object {
     }
 
     private void show () {
-        if (!panel.hidden) {
-            return;
-        }
-
         panel.show ();
     }
 }
