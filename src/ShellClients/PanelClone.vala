@@ -1,3 +1,10 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
 public class Gala.PanelClone : Object {
     private const int ANIMATION_DURATION = 250;
 
@@ -32,10 +39,14 @@ public class Gala.PanelClone : Object {
         // The clone needs the actor position
         actor.notify["x"].connect (update_clone_position);
         actor.notify["y"].connect (update_clone_position);
+        // Actor visibility might be changed by something else e.g. workspace switch
+        // but we want to keep it in sync with us
         actor.notify["visible"].connect (update_visible);
 
         notify["panel-hidden"].connect (() => {
             update_visible ();
+            // When hidden changes schedule an update to make sure it's actually
+            // correct since things might have changed during the animation
             hide_tracker.schedule_update ();
         });
 
