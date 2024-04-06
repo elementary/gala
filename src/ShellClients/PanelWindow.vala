@@ -14,35 +14,35 @@ public class Gala.PanelWindow : Object {
         ALWAYS
     }
 
-    private const int ANIMATION_DURATION = 250;
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
 
-    private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
+    private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
     public bool hidden { get; private set; default = false; }
 
-    private Meta.Side anchor;
-    private HideTracker hide_tracker;
+    public Meta.Side anchor;
 
     private Barrier? barrier;
 
-    private SafeWindowClone? clone;
+    private PanelClone clone;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
         Object (wm: wm, window: window);
 
-        this.anchor = anchor; // Meta.Side seems to be currently not supported as GLib.Object property ...?
+        // Meta.Side seems to be currently not supported as GLib.Object property ...?
+        // At least it always crashed for me with some paramspec, g_type_fundamental backtrace
+        this.anchor = anchor;
     }
 
     construct {
         window.size_changed.connect (position_window);
 
-        hide_tracker = new HideTracker (wm.get_display (), this, NEVER);
-
         window.unmanaged.connect (() => {
+            destroy_barrier ();
+
             if (window_struts.remove (window)) {
                 update_struts ();
             }
@@ -50,27 +50,14 @@ public class Gala.PanelWindow : Object {
 
         window.stick ();
 
-        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-        bind_property ("hidden", window_actor, "visible", SYNC_CREATE | INVERT_BOOLEAN);
-
-        window_actor.notify["x"].connect (() => {
-            if (clone != null && (anchor == TOP || anchor == BOTTOM)) {
-                clone.x = window_actor.x;
-            }
-        });
-
-        window_actor.notify["y"].connect (() => {
-            if (clone != null && (anchor == LEFT || anchor == RIGHT)) {
-                clone.y = window_actor.y;
-            }
-        });
+        clone = new PanelClone (wm, this);
     }
 
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
-        set_hide_mode (hide_tracker.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
@@ -122,14 +109,15 @@ public class Gala.PanelWindow : Object {
     }
 
     public void set_hide_mode (HideMode hide_mode) {
-        hide_tracker.hide_mode = hide_mode;
+        clone.hide_mode = hide_mode;
+
+        destroy_barrier ();
 
         if (hide_mode != NEVER) {
             unmake_exclusive ();
             setup_barrier ();
         } else {
             make_exclusive ();
-            barrier = null; //TODO: check whether that actually disables it
         }
     }
 
@@ -168,6 +156,13 @@ public class Gala.PanelWindow : Object {
             window.size_changed.disconnect (update_strut);
             window_struts.remove (window);
             update_struts ();
+        }
+    }
+
+    private void destroy_barrier () {
+        if (barrier != null) {
+            barrier.destroy ();
+            barrier = null;
         }
     }
 
@@ -210,7 +205,7 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (show);
+        barrier.trigger.connect (clone.show);
     }
 
 #if HAS_MUTTER45
@@ -231,58 +226,6 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (show);
-    }
-
-    public void hide () {
-        if (hidden) {
-            return;
-        }
-
-        hidden = true;
-
-        if (anchor != TOP && anchor != BOTTOM) {
-            warning ("Animated hide not supported for side yet.");
-            return;
-        }
-
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-        var initial_x = actor.x;
-        var initial_y = actor.y;
-        var target_y = anchor == TOP ? actor.y - actor.height : actor.y + actor.height;
-
-        clone = new SafeWindowClone (window, true);
-        wm.ui_group.add_child (clone);
-
-        clone.set_position (initial_x, initial_y);
-
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
-        clone.restore_easing_state ();
-    }
-
-    public void show () {
-        if (!hidden) {
-            return;
-        }
-
-        var target_y = clone.source.y;
-
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
-        clone.y = target_y;
-        clone.restore_easing_state ();
-
-        Timeout.add (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0, () => {
-            wm.ui_group.remove_child (clone);
-            clone = null;
-            hidden = false;
-            hide_tracker.schedule_update (); // In case we already stopped hovering
-            return Source.REMOVE;
-        });
+        barrier.trigger.connect (clone.show);
     }
 }

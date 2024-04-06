@@ -28,6 +28,9 @@
         client.wayland_client.make_dock (window);
 #endif
         windows[window] = new PanelWindow (wm, window, side);
+
+        // connect_after so we make sure the PanelWindow can destroy its barriers and struts
+        window.unmanaged.connect_after (() => windows.remove (window));
     }
 
     public void set_hide_mode (Meta.Window window, PanelWindow.HideMode hide_mode) {

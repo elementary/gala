@@ -43,6 +43,7 @@ gala_bin_sources = files(
     'ShellClients/ManagedClient.vala',
     'ShellClients/NotificationsClient.vala',
     'ShellClients/PanelClient.vala',
+    'ShellClients/PanelClone.vala',
     'ShellClients/PanelWindow.vala',
     'ShellClients/ShellClientsManager.vala',
     'Widgets/DwellClickTimer.vala',
