@@ -16,7 +16,7 @@ public class Gala.PanelWindow : Object {
 
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
 
-    private static GLib.HashTable<Meta.Window, Meta.Strut?> window_struts = new GLib.HashTable<Meta.Window, Meta.Strut?> (null, null);
+    private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
