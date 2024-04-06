@@ -61,7 +61,7 @@ public class Gala.PanelClone : Object {
     }
 
     private void update_visible () {
-        actor.visible = !clone.visible && !panel_hidden;
+        actor.visible = !panel_hidden;
     }
 
     private void update_clone_position () {
