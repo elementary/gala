@@ -31,7 +31,9 @@ public class Gala.PanelClone : Object {
     }
 
     construct {
-        clone = new SafeWindowClone (panel.window, true);
+        clone = new SafeWindowClone (panel.window, true) {
+            visible = false
+        };
         wm.ui_group.add_child (clone);
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
