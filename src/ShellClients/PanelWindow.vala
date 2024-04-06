@@ -41,6 +41,8 @@ public class Gala.PanelWindow : Object {
         window.size_changed.connect (position_window);
 
         window.unmanaged.connect (() => {
+            destroy_barrier ();
+
             if (window_struts.remove (window)) {
                 update_struts ();
             }
@@ -109,12 +111,13 @@ public class Gala.PanelWindow : Object {
     public void set_hide_mode (HideMode hide_mode) {
         clone.hide_mode = hide_mode;
 
+        destroy_barrier ();
+
         if (hide_mode != NEVER) {
             unmake_exclusive ();
             setup_barrier ();
         } else {
             make_exclusive ();
-            barrier = null; //TODO: check whether that actually disables it
         }
     }
 
@@ -153,6 +156,13 @@ public class Gala.PanelWindow : Object {
             window.size_changed.disconnect (update_strut);
             window_struts.remove (window);
             update_struts ();
+        }
+    }
+
+    private void destroy_barrier () {
+        if (barrier != null) {
+            barrier.destroy ();
+            barrier = null;
         }
     }
 
