@@ -87,7 +87,7 @@ public class Gala.PanelClone : Object {
         }
     }
 
-    public void hide () {
+    private void hide () {
         if (panel_hidden) {
             return;
         }
