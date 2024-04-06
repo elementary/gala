@@ -44,7 +44,7 @@ public class Gala.HideTracker : Object {
         var cursor_tracker = display.get_cursor_tracker ();
         cursor_tracker.position_invalidated.connect (() => {
 #if HAS_MUTTER45
-            var has_pointer = panel.window.has_pointer ();
+            var has_pointer = panel_window.has_pointer ();
 #else
             var has_pointer = window_has_pointer ();
 #endif
