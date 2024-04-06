@@ -32,7 +32,9 @@ public class Gala.PanelWindow : Object {
     public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
         Object (wm: wm, window: window);
 
-        this.anchor = anchor; // Meta.Side seems to be currently not supported as GLib.Object property ...?
+        // Meta.Side seems to be currently not supported as GLib.Object property ...?
+        // At least it always crashed for me with some paramspec, g_type_fundamental backtrace
+        this.anchor = anchor;
     }
 
     construct {
