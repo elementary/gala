@@ -9,10 +9,6 @@
 public class Gala.Barrier : Meta.Barrier {
     public signal void trigger ();
 
-#if HAS_MUTTER46
-    public Meta.Display display { owned get; construct; }
-#endif
-
     public bool triggered { get; set; default = false; }
 
     public int trigger_pressure_threshold { get; construct; }
@@ -30,7 +26,6 @@ public class Gala.Barrier : Meta.Barrier {
      * the barrier to trigger again. Set to int.MAX to disallow retrigger.
      */
     public Barrier (
-        Meta.Display display,
         int x1,
         int y1,
         int x2,
@@ -42,7 +37,6 @@ public class Gala.Barrier : Meta.Barrier {
         int retrigger_delay
     ) {
         Object (
-            display: display,
             x1: x1,
             y1: y1,
             x2: x2,

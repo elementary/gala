@@ -69,7 +69,7 @@ public class Gala.HotCorner : Object {
         var hdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.HORIZONTAL);
 
         vertical_barrier = new Gala.Barrier (
-            display, vrect.x, vrect.y, vrect.x + vrect.width, vrect.y + vrect.height, vdir,
+            vrect.x, vrect.y, vrect.x + vrect.width, vrect.y + vrect.height, vdir,
             TRIGGER_PRESSURE_THRESHOLD,
             RELEASE_PRESSURE_THRESHOLD,
             RETRIGGER_PRESSURE_THRESHOLD,
@@ -77,7 +77,7 @@ public class Gala.HotCorner : Object {
         );
 
         horizontal_barrier = new Gala.Barrier (
-            display, hrect.x, hrect.y, hrect.x + hrect.width, hrect.y + hrect.height, hdir,
+            hrect.x, hrect.y, hrect.x + hrect.width, hrect.y + hrect.height, hdir,
             TRIGGER_PRESSURE_THRESHOLD,
             RELEASE_PRESSURE_THRESHOLD,
             RETRIGGER_PRESSURE_THRESHOLD,
