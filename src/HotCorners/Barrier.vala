@@ -9,6 +9,10 @@
 public class Gala.Barrier : Meta.Barrier {
     public signal void trigger ();
 
+#if HAS_MUTTER46
+    public Meta.Display display { owned get; construct; }
+#endif
+
     public bool triggered { get; set; default = false; }
 
     public int trigger_pressure_threshold { get; construct; }
