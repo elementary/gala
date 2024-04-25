@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-02-18 02:05+0000\n"
-"PO-Revision-Date: 2024-02-22 04:12+0000\n"
+"PO-Revision-Date: 2024-04-26 18:13+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -130,7 +130,7 @@ msgstr "Перемістити на робочий простір правору
 
 #: daemon/WindowMenu.vala:97
 msgid "Take Screenshot"
-msgstr "Зробити знімок вікна"
+msgstr "Зробити знімок екрана"
 
 #: daemon/WindowMenu.vala:105
 msgid "Close"
