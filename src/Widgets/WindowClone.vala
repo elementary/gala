@@ -114,23 +114,17 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
-        if (overview_mode) {
-            var click_action = new Clutter.ClickAction ();
-            click_action.clicked.connect (() => {
-                actor_clicked (click_action.get_button ());
-            });
+        drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
+        drag_action.actor_clicked.connect (actor_clicked);
 
-            add_action (click_action);
-        } else {
-            drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
+        if (!overview_mode) {
             drag_action.drag_begin.connect (drag_begin);
             drag_action.destination_crossed.connect (drag_destination_crossed);
             drag_action.drag_end.connect (drag_end);
             drag_action.drag_canceled.connect (drag_canceled);
-            drag_action.actor_clicked.connect (actor_clicked);
-
-            add_action (drag_action);
         }
+
+        add_action (drag_action);
 
         window_title = new Tooltip ();
         window_title.opacity = 0;
