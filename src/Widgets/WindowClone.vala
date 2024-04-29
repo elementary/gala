@@ -86,6 +86,8 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
+    public double last_progress_percentage { get; set; default = 0.0; }
+
     private DragDropAction? drag_action = null;
     private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
@@ -247,7 +249,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         foreach (unowned var actor in all_window_actors) {
             unowned var actor_window = actor.meta_window;
-            if (window.is_ancestor_of_transient (actor_window)) {
+            if (window.is_ancestor_of_transient (actor_window) && actor_window.window_type == Meta.WindowType.MODAL_DIALOG) {
                 var actor_clone = new Clutter.Clone (actor);
 
                 var info = ChildCloneInfo () {
@@ -337,12 +339,13 @@ public class Gala.WindowClone : Clutter.Actor {
 
             set_size (width, height);
             set_position (x, y);
-
+            
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
             place_widgets ((int)width, (int)height, scale);
-
+            
             shadow_opacity = (uint8) opacity;
+            last_progress_percentage = (1.0 - percentage); // 1.0 means slot position, so reverse the percentage
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -350,31 +353,48 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = (animate && wm.enable_animations) ? MultitaskingView.ANIMATION_DURATION : 0;
+            if (!animate || !wm.enable_animations) {
+                last_progress_percentage = 0.0; // 1.0 means slot position
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (duration);
+                set_position (target_x, target_y);
+                set_size (outer_rect.width, outer_rect.height);
 
-            set_position (target_x, target_y);
-            set_size (outer_rect.width, outer_rect.height);
+                if (should_fade ()) {
+                    opacity = 0;
+                }
+            } else {
+                var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage");
+                progress_transition.duration = MultitaskingView.ANIMATION_DURATION;
+                progress_transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+                progress_transition.set_from_value (last_progress_percentage);
+                progress_transition.set_to_value (0.0); // 1.0 means slot position
+                progress_transition.remove_on_complete = true;
+                add_transition ("last_progress_percentage", progress_transition);
 
-            if (should_fade ()) {
-                opacity = 0;
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+
+                set_position (target_x, target_y);
+                set_size (outer_rect.width, outer_rect.height);
+
+                if (should_fade ()) {
+                    opacity = 0;
+                }
+
+                restore_easing_state ();
+
+                if (animate) {
+                    toggle_shadow (false);
+                }
+
+                window_icon.save_easing_state ();
+                window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+                window_icon.opacity = 0;
+                set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
+                window_icon.restore_easing_state ();
             }
-
-            restore_easing_state ();
-
-            if (animate) {
-                toggle_shadow (false);
-            }
-
-            window_icon.save_easing_state ();
-            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (duration);
-            window_icon.opacity = 0;
-            set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
-            window_icon.restore_easing_state ();
 
             var transition = window_icon.get_transition ("opacity");
             if (transition != null) {
@@ -430,6 +450,7 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (width, height, scale, false);
 
             shadow_opacity = (uint8) opacity;
+            last_progress_percentage = percentage;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -438,6 +459,14 @@ public class Gala.WindowClone : Clutter.Actor {
             }
 
             var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+
+            var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage");
+            progress_transition.duration = duration;
+            progress_transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
+            progress_transition.set_from_value (last_progress_percentage);
+            progress_transition.set_to_value (1.0);
+            progress_transition.remove_on_complete = true;
+            add_transition ("last_progress_percentage", progress_transition);
 
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
@@ -500,10 +529,34 @@ public class Gala.WindowClone : Clutter.Actor {
             var child_input_rect = child_info.window.get_buffer_rect ();
             var child_outer_rect = child_info.window.get_frame_rect ();
             child_info.clone.set_scale (scale_factor, scale_factor);
-            child_info.clone.set_position (
-                (child_input_rect.x - child_outer_rect.x) * scale_factor + (child_input_rect.x - input_rect.x) * scale_factor,
-                (child_input_rect.y - child_outer_rect.y) * scale_factor + (child_input_rect.y - input_rect.y) * scale_factor
+
+            var target_calculated_x = (
+                (child_input_rect.x - child_outer_rect.x + child_input_rect.x - input_rect.x) * scale_factor
+            ).clamp (
+                (input_rect.x - outer_rect.x) * scale_factor,
+                (input_rect.x - outer_rect.x + input_rect.width - child_input_rect.width) * scale_factor
             );
+            var target_calculated_y = (
+                (child_input_rect.y - child_outer_rect.y + child_input_rect.y - input_rect.y) * scale_factor
+            ).clamp (
+                (input_rect.y - outer_rect.y) * scale_factor,
+                (input_rect.y - outer_rect.y + input_rect.height - child_input_rect.height) * scale_factor
+            );
+
+            var calculated_x = GestureTracker.animation_value (
+                (child_input_rect.x - input_rect.x + child_input_rect.x - child_outer_rect.x) * scale_factor,
+                target_calculated_x,
+                last_progress_percentage,
+                true
+            );
+            var calculated_y = GestureTracker.animation_value (
+                (child_input_rect.y - input_rect.y + child_input_rect.y - child_outer_rect.y) * scale_factor,
+                target_calculated_y,
+                last_progress_percentage,
+                true
+            );
+
+            child_info.clone.set_position (calculated_x, calculated_y);
         }
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
@@ -511,8 +564,10 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone.set_scale (scale_factor, scale_factor);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
-                            (input_rect.y - outer_rect.y) * scale_factor);
+        clone.set_position (
+            (input_rect.x - outer_rect.x) * scale_factor,
+            (input_rect.y - outer_rect.y) * scale_factor
+        );
     }
 
 #if HAS_MUTTER45
