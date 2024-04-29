@@ -736,6 +736,18 @@ public class Gala.WindowClone : Clutter.Actor {
         clone.opacity = 0;
         clone.restore_easing_state ();
 
+        foreach (var child_clone_info in child_clone_infos) {
+            unowned var child_actor = child_clone_info.clone;
+            child_actor.get_transformed_position (out abs_x, out abs_y);
+            child_actor.save_easing_state ();
+            child_actor.set_easing_duration (duration);
+            child_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+            child_actor.set_pivot_point ((click_x - abs_x) / child_actor.width, (click_y - abs_y) / child_actor.height);
+            child_actor.set_scale (scale, scale);
+            child_actor.opacity = 0;
+            child_actor.restore_easing_state ();
+        }
+
         request_reposition ();
 
         get_transformed_position (out abs_x, out abs_y);
@@ -901,6 +913,17 @@ public class Gala.WindowClone : Clutter.Actor {
         clone.set_scale (1, 1);
         clone.opacity = 255;
         clone.restore_easing_state ();
+
+        foreach (var child_clone_info in child_clone_infos) {
+            unowned var child_clone = child_clone_info.clone;
+            child_clone.set_pivot_point (0.0f, 0.0f);
+            child_clone.save_easing_state ();
+            child_clone.set_easing_duration (duration);
+            child_clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+            child_clone.set_scale (1, 1);
+            child_clone.opacity = 255;
+            child_clone.restore_easing_state ();
+        }
 
         request_reposition ();
 
