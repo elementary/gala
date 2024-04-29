@@ -86,6 +86,9 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
+    /**
+     * Current transition progress. 0 - original state. 1 - slot state.
+     */
     public double last_progress_percentage { get; set; default = 0.0; }
 
     private DragDropAction? drag_action = null;
