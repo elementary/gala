@@ -366,11 +366,12 @@ public class Gala.WindowClone : Clutter.Actor {
                     opacity = 0;
                 }
             } else {
+                remove_last_progress_percentage_transition ();
                 var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage");
                 progress_transition.duration = MultitaskingView.ANIMATION_DURATION;
                 progress_transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
                 progress_transition.set_from_value (last_progress_percentage);
-                progress_transition.set_to_value (0.0); // 1.0 means slot position
+                progress_transition.set_to_value (0.0); // 0.0 means original state
                 progress_transition.remove_on_complete = true;
                 add_transition ("last_progress_percentage", progress_transition);
 
@@ -463,6 +464,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
 
+            remove_last_progress_percentage_transition ();
             var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage");
             progress_transition.duration = duration;
             progress_transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
@@ -506,6 +508,10 @@ public class Gala.WindowClone : Clutter.Actor {
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
+    }
+
+    private void remove_last_progress_percentage_transition () {
+        remove_transition ("last_progress_percentage");
     }
 
     /**
