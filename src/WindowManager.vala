@@ -399,17 +399,22 @@ namespace Gala {
         private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
             Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var index = manager.get_active_workspace_index () + direction;
+            unowned var manager = display.get_workspace_manager ();
+            var active_workspace_index = manager.get_active_workspace_index ();
+            var index = active_workspace_index + direction;
+            var dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
 
-            int dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
-
-            if (index < 0)
+            if (index < 0) {
                 index = manager.get_n_workspaces () - 1 - dynamic_offset;
-            else if (index > manager.get_n_workspaces () - 1 - dynamic_offset)
+            } else if (index > manager.get_n_workspaces () - 1 - dynamic_offset) {
                 index = 0;
+            }
 
-            manager.get_workspace_by_index (index).activate (event.get_time ());
+            if (active_workspace_index != index) {
+                manager.get_workspace_by_index (index).activate (event.get_time ());
+            } else {
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            }
         }
 
         [CCode (instance_pos = -1)]
