@@ -257,7 +257,7 @@ public class Gala.WindowClone : Clutter.Actor {
                     window = actor_window
                 };
                 child_clone_infos += info;
-        
+
                 add_child (actor_clone);
                 set_child_above_sibling (actor_clone, clone);
                 set_child_above_sibling (close_button, actor_clone);
@@ -339,11 +339,11 @@ public class Gala.WindowClone : Clutter.Actor {
 
             set_size (width, height);
             set_position (x, y);
-            
+
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
             place_widgets ((int)width, (int)height, scale);
-            
+
             shadow_opacity = (uint8) opacity;
             last_progress_percentage = (1.0 - percentage); // 1.0 means slot position, so reverse the percentage
         };
