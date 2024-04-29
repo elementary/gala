@@ -10,8 +10,8 @@
  */
 public class Gala.WindowClone : Clutter.Actor {
     private struct ChildCloneInfo {
-        Clutter.Clone clone;
-        Meta.Window window;
+        unowned Clutter.Clone clone;
+        unowned Meta.Window window;
     }
 
     private const int CLOSE_WINDOW_ICON_SIZE = 36;
@@ -100,7 +100,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
-    private (unowned ChildCloneInfo)[] child_clone_infos = {};
+    private ChildCloneInfo[] child_clone_infos = {};
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
         Object (
@@ -239,7 +239,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void load_window_children () {
-        foreach (unowned var child_info in child_clone_infos) {
+        foreach (var child_info in child_clone_infos) {
             remove_child (child_info.clone);
         }
         child_clone_infos = {};
@@ -525,7 +525,7 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        foreach (unowned var child_info in child_clone_infos) {
+        foreach (var child_info in child_clone_infos) {
             var child_input_rect = child_info.window.get_buffer_rect ();
             var child_outer_rect = child_info.window.get_frame_rect ();
             child_info.clone.set_scale (scale_factor, scale_factor);
