@@ -529,31 +529,34 @@ public class Gala.WindowClone : Clutter.Actor {
         active_shape.allocate (shape_alloc);
 
         foreach (var child_info in child_clone_infos) {
-            var child_input_rect = child_info.window.get_buffer_rect ();
-            var child_outer_rect = child_info.window.get_frame_rect ();
             child_info.clone.set_scale (scale_factor, scale_factor);
 
-            var target_calculated_x = (
-                (child_input_rect.x - child_outer_rect.x + child_input_rect.x - input_rect.x) * scale_factor
-            ).clamp (
+            var child_input_rect = child_info.window.get_buffer_rect ();
+            var child_outer_rect = child_info.window.get_frame_rect ();
+
+            var child_shadow_offset_x = child_input_rect.x - child_outer_rect.x;
+            var child_shadow_offset_y = child_input_rect.y - child_outer_rect.y;
+
+            var source_x = (child_shadow_offset_x + child_input_rect.x - input_rect.x) * scale_factor;
+            var source_y = (child_shadow_offset_y + child_input_rect.y - input_rect.y) * scale_factor;
+
+            var target_calculated_x = source_x.clamp (
                 (input_rect.x - outer_rect.x) * scale_factor,
                 (input_rect.x - outer_rect.x + input_rect.width - child_input_rect.width) * scale_factor
             );
-            var target_calculated_y = (
-                (child_input_rect.y - child_outer_rect.y + child_input_rect.y - input_rect.y) * scale_factor
-            ).clamp (
+            var target_calculated_y = source_y.clamp (
                 (input_rect.y - outer_rect.y) * scale_factor,
                 (input_rect.y - outer_rect.y + input_rect.height - child_input_rect.height) * scale_factor
             );
 
             var calculated_x = GestureTracker.animation_value (
-                (child_input_rect.x - input_rect.x + child_input_rect.x - child_outer_rect.x) * scale_factor,
+                source_x,
                 target_calculated_x,
                 last_progress_percentage,
                 true
             );
             var calculated_y = GestureTracker.animation_value (
-                (child_input_rect.y - input_rect.y + child_input_rect.y - child_outer_rect.y) * scale_factor,
+                source_y,
                 target_calculated_y,
                 last_progress_percentage,
                 true
