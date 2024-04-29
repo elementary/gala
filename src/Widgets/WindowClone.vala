@@ -9,6 +9,11 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : Clutter.Actor {
+    private struct ChildCloneInfo {
+        Clutter.Clone clone;
+        Meta.Window window;
+    }
+
     private const int CLOSE_WINDOW_ICON_SIZE = 36;
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
@@ -93,6 +98,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
+    private (unowned ChildCloneInfo)[] child_clone_infos = {};
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
         Object (
@@ -112,6 +118,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
+        window.get_display ().window_created.connect (load_window_children);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -224,6 +231,37 @@ public class Gala.WindowClone : Clutter.Actor {
             opacity = 255;
 
             request_reposition ();
+        }
+
+        load_window_children ();
+    }
+
+    private void load_window_children () {
+        foreach (unowned var child_info in child_clone_infos) {
+            remove_child (child_info.clone);
+        }
+        child_clone_infos = {};
+
+        unowned var display = wm.get_display ();
+        unowned var all_window_actors = display.get_window_actors ();
+
+        foreach (unowned var actor in all_window_actors) {
+            unowned var actor_window = actor.meta_window;
+            if (window.is_ancestor_of_transient (actor_window)) {
+                var actor_clone = new Clutter.Clone (actor);
+
+                var info = ChildCloneInfo () {
+                    clone = actor_clone,
+                    window = actor_window
+                };
+                child_clone_infos += info;
+        
+                add_child (actor_clone);
+                set_child_above_sibling (actor_clone, clone);
+                set_child_above_sibling (close_button, actor_clone);
+                set_child_above_sibling (window_icon, actor_clone);
+                set_child_above_sibling (window_title, actor_clone);
+            }
         }
     }
 
@@ -457,6 +495,16 @@ public class Gala.WindowClone : Clutter.Actor {
             outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
         };
         active_shape.allocate (shape_alloc);
+
+        foreach (unowned var child_info in child_clone_infos) {
+            var child_input_rect = child_info.window.get_buffer_rect ();
+            var child_outer_rect = child_info.window.get_frame_rect ();
+            child_info.clone.set_scale (scale_factor, scale_factor);
+            child_info.clone.set_position (
+                (child_input_rect.x - child_outer_rect.x) * scale_factor + (child_input_rect.x - input_rect.x) * scale_factor,
+                (child_input_rect.y - child_outer_rect.y) * scale_factor + (child_input_rect.y - input_rect.y) * scale_factor
+            );
+        }
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
