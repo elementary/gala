@@ -166,7 +166,6 @@ namespace Gala {
         private bool opened = false;
         private uint hover_activate_timeout = 0;
 
-
         public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
             Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
