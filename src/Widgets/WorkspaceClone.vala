@@ -220,8 +220,7 @@ namespace Gala {
 
             display.window_entered_monitor.connect (window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
-            wm.window_created.connect (on_window_created);
-            wm.window_mapped.connect (add_window);
+            wm.window_created.connect (add_window);
             workspace.window_removed.connect (remove_window);
 
             add_child (background);
@@ -251,8 +250,7 @@ namespace Gala {
 
             display.window_entered_monitor.disconnect (window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
-            wm.window_created.disconnect (on_window_created);
-            wm.window_mapped.disconnect (add_window);
+            wm.window_created.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
 
             var listener = WindowListener.get_default ();
@@ -266,14 +264,6 @@ namespace Gala {
         private void reallocate () {
             icon_group.scale_factor = scale_factor;
             window_container.monitor_scale = scale_factor;
-        }
-
-        private void on_window_created (Meta.Window window) {
-            // if modal mode is enabled window_mapped signals are not emitted
-            // so we have to use window_created instead
-            if (wm.is_modal ()) {
-                add_window (window);
-            }
         }
 
         /**

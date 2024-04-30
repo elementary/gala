@@ -184,18 +184,11 @@ namespace Gala {
 
         /**
          * Emitted when a new window is created.
-         * Same as Meta.Display.window_created but allows disconnecting the signal.
+         * If wm is in normal mode it gets emitted after a window has been mapped.
+         * If wm is in modal mode it gets emitted when a window has been created (same as Meta.Display.window_created)
          *
          * @param newly created window
          */
         public signal void window_created (Meta.Window window);
-
-        /**
-         * Emitted when a new window is mapped.
-         * May not be emitted when override redirect is enabled (e.g. Multitasking view is opened) 
-         *
-         * @param newly mapped window
-         */
-        public signal void window_mapped (Meta.Window window);
     }
 }

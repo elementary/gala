@@ -124,8 +124,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
-        wm.window_created.connect (on_window_created);
-        wm.window_mapped.connect (add_new_window_child);
+        wm.window_created.connect (add_new_window_child);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -166,8 +165,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
 
-        wm.window_created.disconnect (on_window_created);
-        wm.window_mapped.disconnect (add_new_window_child);
+        wm.window_created.disconnect (add_new_window_child);
     }
 
     private void reallocate () {
@@ -245,14 +243,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         foreach (unowned var child_window in wm.get_display ().list_all_windows ()) {
             add_new_window_child (child_window);
-        }
-    }
-
-    private void on_window_created (Meta.Window window) {
-        // if modal mode is enabled window_mapped signals are not emitted
-        // so we have to use window_created instead
-        if (wm.is_modal ()) {
-            add_new_window_child (window);
         }
     }
 
