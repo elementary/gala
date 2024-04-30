@@ -249,9 +249,9 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void on_window_created (Meta.Window window) {
-        // if override redirect is enabled window_mapped signals are not emitted
+        // if modal mode is enabled window_mapped signals are not emitted
         // so we have to use window_created instead
-        if (window.is_override_redirect ()) {
+        if (wm.is_modal ()) {
             add_new_window_child (window);
         }
     }
