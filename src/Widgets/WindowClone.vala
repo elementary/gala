@@ -579,12 +579,14 @@ public class Gala.WindowClone : Clutter.Actor {
             var calculated_x = GestureTracker.animation_value (
                 source_x,
                 target_calculated_x,
-                last_progress_percentage
+                last_progress_percentage,
+                last_progress_percentage % 1 == 0
             );
             var calculated_y = GestureTracker.animation_value (
                 source_y,
                 target_calculated_y,
-                last_progress_percentage
+                last_progress_percentage,
+                last_progress_percentage % 1 == 0
             );
 
             child_info.clone.set_position (calculated_x, calculated_y);
