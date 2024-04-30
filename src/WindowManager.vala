@@ -1471,7 +1471,7 @@ namespace Gala {
                 notification_stack.show_notification (actor, enable_animations);
 
                 map_completed (actor);
-                window_mapped(window);
+                window_mapped (window);
                 return;
             }
 
@@ -1531,7 +1531,7 @@ namespace Gala {
                     var duration = AnimationDuration.MENU_MAP;
                     if (duration == 0) {
                         map_completed (actor);
-                        window_mapped(window);
+                        window_mapped (window);
                         return;
                     }
 
@@ -1554,7 +1554,7 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-                        window_mapped(window);
+                        window_mapped (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:
@@ -1578,7 +1578,7 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-                        window_mapped(window);
+                        window_mapped (window);
 
                         if (window.get_layer () == Meta.StackLayer.BOTTOM) {
                             show_bottom_stack_window (window);
@@ -1590,7 +1590,7 @@ namespace Gala {
                     break;
                 default:
                     map_completed (actor);
-                    window_mapped(window);
+                    window_mapped (window);
                     break;
             }
         }
