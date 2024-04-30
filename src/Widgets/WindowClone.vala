@@ -559,8 +559,8 @@ public class Gala.WindowClone : Clutter.Actor {
             var child_shadow_offset_x = child_input_rect.x - child_outer_rect.x;
             var child_shadow_offset_y = child_input_rect.y - child_outer_rect.y;
 
-            // outer rects are used because outer rects doesn't include shadows
-            // so it calculates real overlay diff
+            // outer rects are used because they doesn't include shadows
+            // calculate real overlay diff
             var child_parent_x_diff = child_outer_rect.x - outer_rect.x;
             var child_parent_y_diff = child_outer_rect.y - outer_rect.y;
 
