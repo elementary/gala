@@ -243,39 +243,8 @@ public class Gala.WindowClone : Clutter.Actor {
             request_reposition ();
         }
 
-        load_window_children ();
-    }
-
-    private void load_window_children () {
-        foreach (var child_info in child_clone_infos) {
-            remove_child (child_info.clone);
-        }
-        child_clone_infos = {};
-
-        unowned var display = wm.get_display ();
-        unowned var all_window_actors = display.get_window_actors ();
-
-        foreach (unowned var actor in all_window_actors) {
-            unowned var actor_window = actor.meta_window;
-            if (
-                actor_window != window &&
-                actor_window.window_type == MODAL_DIALOG &&
-                (actor_window.get_transient_for () == window || actor_window.find_root_ancestor () == window)
-            ) {
-                var actor_clone = new Clutter.Clone (actor);
-
-                var info = ChildCloneInfo () {
-                    clone = actor_clone,
-                    window = actor_window
-                };
-                child_clone_infos += info;
-
-                add_child (actor_clone);
-                set_child_above_sibling (actor_clone, clone);
-                set_child_above_sibling (close_button, actor_clone);
-                set_child_above_sibling (window_icon, actor_clone);
-                set_child_above_sibling (window_title, actor_clone);
-            }
+        foreach (unowned var child_window in wm.get_display ().list_all_windows ()) {
+            add_new_window_child (child_window);
         }
     }
 
