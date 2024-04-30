@@ -159,18 +159,23 @@ namespace Gala {
             }
         }
 
-        private BackgroundManager background;
-        private bool opened;
+        // is used to determine whether new window is actually new or was moved from another monitor
+        private static Gee.HashSet<Meta.Window> mapped_window_set;
 
+        private BackgroundManager background;
+        private bool opened = false;
         private uint hover_activate_timeout = 0;
+
 
         public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
             Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
 
-        construct {
-            opened = false;
+        static construct {
+            mapped_window_set = new Gee.HashSet<Meta.Window> ();
+        }
 
+        construct {
             unowned Meta.Display display = workspace.get_display ();
             var primary_monitor = display.get_primary_monitor ();
             var monitor_geometry = display.get_monitor_geometry (primary_monitor);
@@ -215,7 +220,8 @@ namespace Gala {
 
             display.window_entered_monitor.connect (window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
-            workspace.window_added.connect (add_window);
+            wm.window_created.connect (on_window_created);
+            wm.window_mapped.connect (add_window);
             workspace.window_removed.connect (remove_window);
 
             add_child (background);
@@ -223,10 +229,14 @@ namespace Gala {
 
             // add existing windows
             var windows = workspace.list_windows ();
-            foreach (var window in windows) {
-                if (window.window_type == Meta.WindowType.NORMAL
+            foreach (unowned var window in windows) {
+                if (
+                    window.window_type == Meta.WindowType.NORMAL
                     && !window.on_all_workspaces
-                    && window.is_on_primary_monitor ()) {
+                    && window.is_on_primary_monitor ()
+                ) {
+                    mark_window_as_mapped (window);
+
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
@@ -241,7 +251,8 @@ namespace Gala {
 
             display.window_entered_monitor.disconnect (window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
-            workspace.window_added.disconnect (add_window);
+            wm.window_created.disconnect (on_window_created);
+            wm.window_mapped.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
 
             var listener = WindowListener.get_default ();
@@ -257,23 +268,47 @@ namespace Gala {
             window_container.monitor_scale = scale_factor;
         }
 
+        private void on_window_created (Meta.Window window) {
+            // if override redirect is enabled window_mapped signals are not emitted
+            // so we have to use window_created instead
+            if (window.is_override_redirect ()) {
+                add_window (window);
+            }
+        }
+
         /**
          * Add a window to the WindowCloneContainer and the IconGroup if it really
          * belongs to this workspace and this monitor.
          */
         private void add_window (Meta.Window window) {
-            if (window.window_type != Meta.WindowType.NORMAL
+            mark_window_as_mapped (window);
+
+            if (
+                window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
-                || !window.is_on_primary_monitor ())
+                || !window.is_on_primary_monitor ()
+                || (window.find_root_ancestor () != null && window.find_root_ancestor () != window)
+                || (window.get_transient_for () != null && window.get_transient_for () != window)
+            ) {
                 return;
+            }
 
-            foreach (var child in window_container.get_children ())
-                if (((WindowClone) child).window == window)
+            foreach (unowned var child in window_container.get_children ()) {
+                if (((WindowClone) child).window == window) {
                     return;
+                }
+            }
 
             window_container.add_window (window);
             icon_group.add_window (window);
+        }
+
+        private void mark_window_as_mapped (Meta.Window window) {
+            mapped_window_set.add (window);
+            window.unmanaged.connect (() => {
+                mapped_window_set.remove (window);
+            });
         }
 
         /**
@@ -285,7 +320,9 @@ namespace Gala {
         }
 
         private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-            add_window (window);
+            if (window in mapped_window_set) {
+                add_window (window);
+            }
         }
 
         private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {

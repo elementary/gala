@@ -123,7 +123,9 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
-        window.get_display ().window_created.connect (load_window_children);
+
+        wm.window_created.connect (on_window_created);
+        wm.window_mapped.connect (add_new_window_child);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -163,6 +165,9 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
+
+        wm.window_created.disconnect (on_window_created);
+        wm.window_mapped.disconnect (add_new_window_child);
     }
 
     private void reallocate () {
@@ -252,7 +257,11 @@ public class Gala.WindowClone : Clutter.Actor {
 
         foreach (unowned var actor in all_window_actors) {
             unowned var actor_window = actor.meta_window;
-            if (window.is_ancestor_of_transient (actor_window) && actor_window.window_type == Meta.WindowType.MODAL_DIALOG) {
+            if (
+                actor_window != window &&
+                actor_window.window_type == MODAL_DIALOG &&
+                (actor_window.get_transient_for () == window || actor_window.find_root_ancestor () == window)
+            ) {
                 var actor_clone = new Clutter.Clone (actor);
 
                 var info = ChildCloneInfo () {
@@ -268,6 +277,40 @@ public class Gala.WindowClone : Clutter.Actor {
                 set_child_above_sibling (window_title, actor_clone);
             }
         }
+    }
+
+    private void on_window_created (Meta.Window window) {
+        // if override redirect is enabled window_mapped signals are not emitted
+        // so we have to use window_created instead
+        if (window.is_override_redirect ()) {
+            add_new_window_child (window);
+        }
+    }
+
+    private void add_new_window_child (Meta.Window new_window) {
+        if (new_window.window_type != MODAL_DIALOG || !(window.is_ancestor_of_transient (new_window) || new_window.find_root_ancestor () == window)) {
+            return;
+        }
+
+        unowned var new_window_actor = (Meta.WindowActor) new_window.get_compositor_private ();
+        if (new_window_actor == null) {
+            warning ("New window actor is null");
+            return;
+        }
+
+        var actor_clone = new Clutter.Clone (new_window_actor);
+
+        var info = ChildCloneInfo () {
+            clone = actor_clone,
+            window = new_window
+        };
+        child_clone_infos += info;
+
+        add_child (actor_clone);
+        set_child_above_sibling (actor_clone, clone);
+        set_child_above_sibling (close_button, actor_clone);
+        set_child_above_sibling (window_icon, actor_clone);
+        set_child_above_sibling (window_title, actor_clone);
     }
 
     private void check_shadow_requirements () {
