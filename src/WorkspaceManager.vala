@@ -239,14 +239,16 @@ namespace Gala {
          * Temporarily disables removing workspaces when they are empty
          */
         public void freeze_remove () {
-            remove_freeze_count++;
+            GLib.AtomicInt.inc (ref remove_freeze_count);
         }
 
         /**
          * Undo the effect of freeze_remove()
          */
         public void thaw_remove () {
-            remove_freeze_count--;
+            if (GLib.AtomicInt.dec_and_test (ref remove_freeze_count)) {
+                cleanup ();
+            }
 
             assert (remove_freeze_count >= 0);
         }
@@ -256,7 +258,7 @@ namespace Gala {
          * be removed. Particularly useful in conjunction with freeze/thaw_remove to
          * cleanup after an operation that required stable workspace/window indices
          */
-        public void cleanup () {
+        private void cleanup () {
             if (!Meta.Prefs.get_dynamic_workspaces ()) {
                 return;
             }
