@@ -264,7 +264,6 @@ public class Gala.WindowClone : Clutter.Actor {
             window = new_window
         };
         child_clone_infos.insert (new_window, info);
-        warning ("%u", child_clone_infos.length);
 
         add_child (actor_clone);
         set_child_above_sibling (actor_clone, clone);
