@@ -76,13 +76,10 @@ public class Gala.WindowClone : Clutter.Actor {
     [CCode (notify = false)]
     public uint8 shadow_opacity {
         get {
-            return shadow_effect != null ? shadow_effect.shadow_opacity : 255;
+            return shadow_effect.shadow_opacity;
         }
         set {
-            if (shadow_effect != null) {
-                shadow_effect.shadow_opacity = value;
-                queue_redraw ();
-            }
+            shadow_effect.shadow_opacity = value;
         }
     }
 
@@ -92,17 +89,17 @@ public class Gala.WindowClone : Clutter.Actor {
     public double last_progress_percentage { get; set; default = 0.0; }
 
     private DragDropAction? drag_action = null;
-    private Clutter.Clone? clone = null;
-    private ShadowEffect? shadow_effect = null;
-
+    
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
     private bool in_slot_animation = false;
-
-    private Gala.CloseButton close_button;
+    
     private ActiveShape active_shape;
-    private Clutter.Actor window_icon;
+    private Clutter.Clone clone;
     private Tooltip window_title;
+    private Gala.CloseButton close_button;
+    private Clutter.Actor window_icon;
+    private ShadowEffect shadow_effect;
     private HashTable<Meta.Window, ChildCloneInfo?> child_clone_infos = new HashTable<Meta.Window, ChildCloneInfo?> (null, null);
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
@@ -144,10 +141,6 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        window_title = new Tooltip () {
-            opacity = 0
-        };
-
         active_shape = new ActiveShape () {
             opacity = 0
         };
@@ -160,10 +153,16 @@ public class Gala.WindowClone : Clutter.Actor {
 
         clone = new Clutter.Clone (actor);
 
+        window_title = new Tooltip () {
+            opacity = 0
+        };
+
         add_child (active_shape);
         add_child (clone);
         add_child (window_title);
 
+        shadow_effect = new ShadowEffect (55) { css_class = "window-clone" };
+        clone.add_effect_with_name ("shadow", shadow_effect);
         check_shadow_requirements ();
 
         if (should_fade ()) {
@@ -247,22 +246,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void check_shadow_requirements () {
-        if (clone == null) {
-            return;
-        }
-
-        if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
-            if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect (55) { css_class = "window-clone" };
-                shadow_opacity = 0;
-                clone.add_effect_with_name ("shadow", shadow_effect);
-            }
-        } else {
-            if (shadow_effect != null) {
-                clone.remove_effect (shadow_effect);
-                shadow_effect = null;
-            }
-        }
+        shadow_opacity = (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) ? 255 : 0;
     }
 
     /**
@@ -656,21 +640,21 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void toggle_shadow (bool show) {
-        if (get_transition ("shadow-opacity") != null) {
-            remove_transition ("shadow-opacity");
-        }
+        remove_transition ("shadow-opacity");
+
+        var target_value = show ? 255 : 0;
 
         if (wm.enable_animations) {
             var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
                 progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
+                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, target_value)
             };
 
             add_transition ("shadow-opacity", shadow_transition);
         } else {
-            shadow_opacity = show ? 255 : 0;
+            shadow_opacity = target_value;
         }
     }
 
