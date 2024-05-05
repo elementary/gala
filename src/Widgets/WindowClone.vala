@@ -567,7 +567,6 @@ public class Gala.WindowClone : Clutter.Actor {
             var source_x = (child_shadow_offset_x + child_parent_x_diff) * scale_factor;
             var source_y = (child_shadow_offset_y + child_parent_y_diff) * scale_factor;
 
-            warning ("%d %d", child_input_rect.x - child_outer_rect.x, input_rect.width - child_input_rect.width);
             var target_calculated_x = source_x.clamp (
                 (child_input_rect.x - child_outer_rect.x) * scale_factor,
                 (child_input_rect.x - child_outer_rect.x + outer_rect.width - child_outer_rect.width) * scale_factor

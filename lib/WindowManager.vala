@@ -184,8 +184,11 @@ namespace Gala {
 
         /**
          * Emitted when a new window is created.
-         * If wm is in normal mode it gets emitted after a window has been mapped.
-         * If wm is in modal mode it gets emitted when a window has been created (same as Meta.Display.window_created)
+         * If workspace switch is in progress it gets emitted a window has been created (same as Meta.Display.window_created)
+         * Otherwise it gets emitted after a window has been mapped.
+         *
+         * This signal exists because mutter doesn't emit map events when workspace switch is in progress.
+         * (see `meta_window_actor_show` function in mutter source code)
          *
          * @param newly created window
          */
