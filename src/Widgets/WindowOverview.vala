@@ -107,10 +107,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         }
 
         foreach (var workspace in workspaces) {
-            workspace.window_added.connect (add_window);
             workspace.window_removed.connect (remove_window);
         }
-
+        wm.window_created.connect (add_window);
         wm.get_display ().window_left_monitor.connect (window_left_monitor);
 
         grab_key_focus ();
@@ -266,9 +265,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         restack_windows ();
 
         foreach (var workspace in workspaces) {
-            workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
         }
+        wm.window_created.disconnect (add_window);
         wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
         foreach (unowned var child in get_children ()) {

@@ -68,7 +68,7 @@ public class Gala.WindowClone : Clutter.Actor {
         set {
             if (value != _monitor_scale_factor) {
                 _monitor_scale_factor = value;
-                reallocate ();
+                reload_icons ();
             }
         }
     }
@@ -144,18 +144,39 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        window_title = new Tooltip ();
-        window_title.opacity = 0;
+        window_title = new Tooltip () {
+            opacity = 0
+        };
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        active_shape = new ActiveShape () {
+            opacity = 0
+        };
+
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (actor == null) {
+            critical ("Window actor is null!");
+            return;
+        }
+
+        clone = new Clutter.Clone (actor);
 
         add_child (active_shape);
+        add_child (clone);
         add_child (window_title);
 
-        reallocate ();
+        check_shadow_requirements ();
 
-        load_clone ();
+        if (should_fade ()) {
+            opacity = 0;
+        }
+
+        foreach (unowned var child_window in wm.get_display ().list_all_windows ()) {
+            add_new_window_child (child_window);
+        }
+
+        reload_icons ();
+
+        transition_to_original_state (false);
     }
 
     ~WindowClone () {
@@ -168,7 +189,14 @@ public class Gala.WindowClone : Clutter.Actor {
         wm.window_created.disconnect (add_new_window_child);
     }
 
-    private void reallocate () {
+    private void reload_icons () {
+        if (close_button != null) {
+            remove_child (close_button);
+        }
+        if (window_icon != null) {
+            remove_child (window_icon);
+        }
+
         var window_frame_rect = window.get_frame_rect ();
 
         close_button = new Gala.CloseButton (monitor_scale_factor) {
@@ -176,74 +204,16 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         close_button.triggered.connect (close_window);
 
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
-        window_icon.opacity = 0;
-        window_icon.set_pivot_point (0.5f, 0.5f);
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
+            opacity = 0,
+            pivot_point = { 0.5f, 0.5f }
+        };
         set_window_icon_position (window_frame_rect.width, window_frame_rect.height, monitor_scale_factor);
 
         add_child (close_button);
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
-    }
-
-    /**
-     * Waits for the texture of a new Meta.WindowActor to be available
-     * and makes a close of it. If it was already was assigned a slot
-     * at this point it will animate to it. Otherwise it will just place
-     * itself at the location of the original window. Also adds the shadow
-     * effect and makes sure the shadow is updated on size changes.
-     *
-     * @param was_waiting Internal argument used to indicate that we had to
-     *                    wait before the window's texture became available.
-     */
-    private void load_clone (bool was_waiting = false) {
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null)
-                    load_clone (true);
-                return Source.REMOVE;
-            });
-
-            return;
-        }
-
-        if (overview_mode) {
-            actor.hide ();
-        }
-
-        clone = new Clutter.Clone (actor);
-        add_child (clone);
-
-        set_child_below_sibling (active_shape, clone);
-        set_child_above_sibling (close_button, clone);
-        set_child_above_sibling (window_icon, clone);
-        set_child_above_sibling (window_title, clone);
-
-        transition_to_original_state (false);
-
-        check_shadow_requirements ();
-
-        if (should_fade ()) {
-            opacity = 0;
-        }
-
-        // if we were waiting the view was most probably already opened when our window
-        // finally got available. So we fade-in and make sure we took the took place.
-        // If the slot is not available however, the view was probably closed while this
-        // window was opened, so we stay at our old place.
-        if (was_waiting && slot != null) {
-            opacity = 0;
-            take_slot (slot);
-            opacity = 255;
-
-            request_reposition ();
-        }
-
-        foreach (unowned var child_window in wm.get_display ().list_all_windows ()) {
-            add_new_window_child (child_window);
-        }
     }
 
     private void add_new_window_child (Meta.Window new_window) {
