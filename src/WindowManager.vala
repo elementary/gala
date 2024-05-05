@@ -1609,12 +1609,12 @@ namespace Gala {
                         destroy_completed (actor);
                     });
                 } else {
-                    // silence `clutter_animatable_get_actor: assertion 'CLUTTER_IS_ANIMATABLE (animatable)' failed`
                     destroy_completed (actor);
                 }
-
+                
                 return;
             } else {
+                // silence `clutter_animatable_get_actor: assertion 'CLUTTER_IS_ANIMATABLE (animatable)' failed`
                 actor.remove_all_transitions ();
             }
 
