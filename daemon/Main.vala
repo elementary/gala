@@ -23,6 +23,12 @@ public class Gala.Daemon.Application : Gtk.Application {
         var app_provider = new Gtk.CssProvider ();
         app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
         Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+        var open_in_files_action = new SimpleAction ("app.screenshot-open-in-files", GLib.VariantType.STRING);
+        open_in_files_action.activate.connect ((path) => {
+            warning ("Action is triggered %s", path.get_string ());
+        });
+        add_action (open_in_files_action);
     }
 
     public override void activate () {

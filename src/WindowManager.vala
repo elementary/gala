@@ -508,6 +508,10 @@ namespace Gala {
             }
         }
 
+        public void send_screenshot_saved_do_disk_notification (string path) {
+            daemon_manager.send_screenshot_saved_do_disk_notification (path);
+        }
+
         private void on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
                 return;

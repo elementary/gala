@@ -181,5 +181,7 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        public abstract void send_screenshot_saved_do_disk_notification (string path);
     }
 }

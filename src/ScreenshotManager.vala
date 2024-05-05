@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2016 Rico Tzschichholz, Santiago León O.
+//  Copyright elementary, Inc. 2024
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -100,6 +101,7 @@ namespace Gala {
 
             if (success) {
                 play_shutter_sound ();
+                wm.send_screenshot_saved_do_disk_notification (filename);
             }
         }
 

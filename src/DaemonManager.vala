@@ -14,6 +14,7 @@ public class Gala.DaemonManager : GLib.Object {
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
         public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
+        public abstract void send_screenshot_saved_do_disk_notification (string path) throws Error;
     }
 
     public Meta.Display display { get; construct; }
@@ -151,6 +152,14 @@ public class Gala.DaemonManager : GLib.Object {
             yield daemon_proxy.show_window_menu (flags, width, height, x, y);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
+        }
+    }
+
+    public void send_screenshot_saved_do_disk_notification (string path) {
+        try {
+            daemon_proxy.send_screenshot_saved_do_disk_notification (path);
+        } catch (Error e) {
+            warning ("Error sending notification: %s", e.message);
         }
     }
 }

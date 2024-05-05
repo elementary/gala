@@ -130,4 +130,13 @@ public class Gala.Daemon.DBus : GLib.Object {
             monitor_label.close ();
         }
     }
+
+    public void send_screenshot_saved_do_disk_notification (string path) throws GLib.DBusError, GLib.IOError {
+        var notification = new GLib.Notification ("Screenshot taken");
+        notification.set_body ("Screenshot is saved to screenshots folder.");
+        notification.add_button_with_target_value ("Open in Files", "app.screenshot-open-in-files", path);
+        GLib.Application.get_default ().send_notification (null, notification);
+        
+        warning ("Sent notification");
+    }
 }
