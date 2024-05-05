@@ -1458,6 +1458,7 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
+            window_created (window);
 
             WindowStateSaver.on_map (window);
 
@@ -1476,13 +1477,11 @@ namespace Gala {
                 notification_stack.show_notification (actor, enable_animations);
 
                 map_completed (actor);
-                window_created (window);
                 return;
             }
 
             if (!enable_animations) {
                 map_completed (actor);
-                window_created (window);
 
                 if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
                     show_bottom_stack_window (window);
@@ -1496,7 +1495,6 @@ namespace Gala {
                     var duration = AnimationDuration.HIDE;
                     if (duration == 0) {
                         map_completed (actor);
-                        window_created (window);
                         return;
                     }
 
@@ -1523,7 +1521,6 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-                        window_created (window);
 
                         if (window.get_layer () == Meta.StackLayer.BOTTOM) {
                             show_bottom_stack_window (window);
@@ -1536,7 +1533,6 @@ namespace Gala {
                     var duration = AnimationDuration.MENU_MAP;
                     if (duration == 0) {
                         map_completed (actor);
-                        window_created (window);
                         return;
                     }
 
@@ -1559,7 +1555,6 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-                        window_created (window);
                     });
                     break;
                 case Meta.WindowType.MODAL_DIALOG:
@@ -1583,7 +1578,6 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-                        window_created (window);
 
                         if (window.get_layer () == Meta.StackLayer.BOTTOM) {
                             show_bottom_stack_window (window);
@@ -1595,7 +1589,6 @@ namespace Gala {
                     break;
                 default:
                     map_completed (actor);
-                    window_created (window);
                     break;
             }
         }

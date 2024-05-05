@@ -185,7 +185,7 @@ namespace Gala {
         /**
          * Emitted when a new window is created.
          * If workspace switch is in progress it gets emitted a window has been created (same as Meta.Display.window_created)
-         * Otherwise it gets emitted after a window has been mapped.
+         * Otherwise it gets emitted when window is being mapped.
          *
          * This signal exists because mutter doesn't emit map events when workspace switch is in progress.
          * (see `meta_window_actor_show` function in mutter source code)

@@ -103,7 +103,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
-    private ChildCloneInfo[] child_clone_infos = {};
+    private HashTable<Meta.Window, ChildCloneInfo?> child_clone_infos = new HashTable<Meta.Window, ChildCloneInfo?> (null, null);
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
         Object (
@@ -263,13 +263,18 @@ public class Gala.WindowClone : Clutter.Actor {
             clone = actor_clone,
             window = new_window
         };
-        child_clone_infos += info;
+        child_clone_infos.insert (new_window, info);
+        warning ("%u", child_clone_infos.length);
 
         add_child (actor_clone);
         set_child_above_sibling (actor_clone, clone);
         set_child_above_sibling (close_button, actor_clone);
         set_child_above_sibling (window_icon, actor_clone);
         set_child_above_sibling (window_title, actor_clone);
+
+        new_window.unmanaged.connect (() => {
+            child_clone_infos.remove (new_window);
+        });
     }
 
     private void check_shadow_requirements () {
@@ -550,7 +555,7 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        foreach (var child_info in child_clone_infos) {
+        foreach (var child_info in child_clone_infos.get_values ()) {
             child_info.clone.set_scale (scale_factor, scale_factor);
 
             var child_input_rect = child_info.window.get_buffer_rect ();
@@ -763,7 +768,7 @@ public class Gala.WindowClone : Clutter.Actor {
         clone.opacity = 0;
         clone.restore_easing_state ();
 
-        foreach (var child_clone_info in child_clone_infos) {
+        foreach (var child_clone_info in child_clone_infos.get_values ()) {
             unowned var child_actor = child_clone_info.clone;
             child_actor.get_transformed_position (out abs_x, out abs_y);
             child_actor.save_easing_state ();
@@ -941,7 +946,7 @@ public class Gala.WindowClone : Clutter.Actor {
         clone.opacity = 255;
         clone.restore_easing_state ();
 
-        foreach (var child_clone_info in child_clone_infos) {
+        foreach (var child_clone_info in child_clone_infos.get_values ()) {
             unowned var child_clone = child_clone_info.clone;
             child_clone.set_pivot_point (0.0f, 0.0f);
             child_clone.save_easing_state ();
