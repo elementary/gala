@@ -105,7 +105,6 @@ namespace Gala {
             }
 
             workspace_manager.thaw_remove ();
-            workspace_manager.cleanup ();
         }
 
         // Code ported from KWin present windows effect
