@@ -1457,8 +1457,6 @@ namespace Gala {
         }
 
         public override void map (Meta.WindowActor actor) {
-            warning ("Map invoked");
-
             unowned var window = actor.get_meta_window ();
 
             WindowStateSaver.on_map (window);
