@@ -33,17 +33,9 @@ public class Gala.WindowClone : Clutter.Actor {
     public signal void request_reposition ();
 
     public WindowManager wm { get; construct; }
-
     public Meta.Window window { get; construct; }
-
-    /**
-     * The currently assigned slot of the window in the tiling layout. May be null.
-     */
-#if HAS_MUTTER45
-    public Mtk.Rectangle? slot { get; private set; default = null; }
-#else
-    public Meta.Rectangle? slot { get; private set; default = null; }
-#endif
+    public bool overview_mode { get; construct; }
+    public GestureTracker? gesture_tracker { get; construct; }
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -58,8 +50,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    public bool overview_mode { get; construct; }
-    public GestureTracker? gesture_tracker { get; construct; }
     private float _monitor_scale_factor = 1.0f;
     public float monitor_scale_factor {
         get {
@@ -73,7 +63,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    [CCode (notify = false)]
     public uint8 shadow_opacity {
         get {
             return shadow_effect.shadow_opacity;
@@ -84,12 +73,20 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     /**
+     * The currently assigned slot of the window in the tiling layout. May be null.
+     */
+#if HAS_MUTTER45
+    public Mtk.Rectangle? slot { get; private set; default = null; }
+#else
+    public Meta.Rectangle? slot { get; private set; default = null; }
+#endif
+
+    /**
      * Current transition progress. 0 - original state. 1 - slot state.
      */
     public double last_progress_percentage { get; set; default = 0.0; }
 
     private DragDropAction? drag_action = null;
-    
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
     private bool in_slot_animation = false;
