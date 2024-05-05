@@ -90,7 +90,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
     private bool in_slot_animation = false;
-    
+
     private ActiveShape active_shape;
     private Clutter.Clone clone;
     private Tooltip window_title;
