@@ -1611,7 +1611,7 @@ namespace Gala {
                 } else {
                     destroy_completed (actor);
                 }
-                
+
                 return;
             } else {
                 // silence `clutter_animatable_get_actor: assertion 'CLUTTER_IS_ANIMATABLE (animatable)' failed`
