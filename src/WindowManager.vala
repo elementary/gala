@@ -1594,8 +1594,6 @@ namespace Gala {
 
             ws_assoc.remove (window);
 
-            actor.remove_all_transitions ();
-
             if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
                 if (enable_animations) {
                     destroying.add (actor);
@@ -1611,10 +1609,13 @@ namespace Gala {
                         destroy_completed (actor);
                     });
                 } else {
+                    // silence `clutter_animatable_get_actor: assertion 'CLUTTER_IS_ANIMATABLE (animatable)' failed`
                     destroy_completed (actor);
                 }
 
                 return;
+            } else {
+                actor.remove_all_transitions ();
             }
 
             if (!enable_animations) {
