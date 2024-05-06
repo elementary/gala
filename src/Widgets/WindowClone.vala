@@ -65,10 +65,12 @@ public class Gala.WindowClone : Clutter.Actor {
 
     public uint8 shadow_opacity {
         get {
-            return shadow_effect.shadow_opacity;
+            return shadow_effect != null ? shadow_effect.shadow_opacity : 0;
         }
         set {
-            shadow_effect.shadow_opacity = value;
+            if (shadow_effect != null) {
+                shadow_effect.shadow_opacity = value;
+            }
         }
     }
 
@@ -87,16 +89,17 @@ public class Gala.WindowClone : Clutter.Actor {
     public double last_progress_percentage { get; set; default = 0.0; }
 
     private DragDropAction? drag_action = null;
-    private Clutter.Actor prev_parent = null;
+    private unowned Clutter.Actor prev_parent = null;
     private int prev_index = -1;
     private bool in_slot_animation = false;
 
     private ActiveShape active_shape;
+    private Clutter.Actor windows_container;
     private Clutter.Clone clone;
     private Tooltip window_title;
     private Gala.CloseButton close_button;
     private Clutter.Actor window_icon;
-    private ShadowEffect shadow_effect;
+    private ShadowEffect? shadow_effect = null;
     private HashTable<Meta.Window, ChildCloneInfo?> child_clone_infos = new HashTable<Meta.Window, ChildCloneInfo?> (null, null);
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
@@ -142,6 +145,10 @@ public class Gala.WindowClone : Clutter.Actor {
             opacity = 0
         };
 
+        windows_container = new Clutter.Actor () {
+            background_color = Clutter.Color.from_string ("#ff000055")
+        };
+        
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
             critical ("Window actor is null!");
@@ -149,17 +156,17 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone = new Clutter.Clone (actor);
-
+        windows_container.add_child (clone);
+        
         window_title = new Tooltip () {
             opacity = 0
         };
-
+        
         add_child (active_shape);
-        add_child (clone);
+        add_child (windows_container);
         add_child (window_title);
 
-        shadow_effect = new ShadowEffect (55) { css_class = "window-clone" };
-        clone.add_effect_with_name ("shadow", shadow_effect);
+
         check_shadow_requirements ();
 
         if (should_fade ()) {
@@ -224,6 +231,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         var actor_clone = new Clutter.Clone (new_window_actor);
+        windows_container.add_child (actor_clone);
 
         var info = ChildCloneInfo () {
             clone = actor_clone,
@@ -231,19 +239,21 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         child_clone_infos.insert (new_window, info);
 
-        add_child (actor_clone);
-        set_child_above_sibling (actor_clone, clone);
-        set_child_above_sibling (close_button, actor_clone);
-        set_child_above_sibling (window_icon, actor_clone);
-        set_child_above_sibling (window_title, actor_clone);
-
         new_window.unmanaged.connect (() => {
             child_clone_infos.remove (new_window);
         });
     }
 
     private void check_shadow_requirements () {
-        shadow_opacity = (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) ? 255 : 0;
+        if ((window.fullscreen || window.maximized_horizontally && window.maximized_vertically) && shadow_effect == null) {
+            shadow_effect = new ShadowEffect (55) {
+                css_class = "window-clone",
+                shadow_opacity = 0
+            };
+            clone.add_effect_with_name ("shadow", shadow_effect);
+        } else if (shadow_effect == null) {
+            shadow_effect = null;
+        }
     }
 
     /**
@@ -493,6 +503,10 @@ public class Gala.WindowClone : Clutter.Actor {
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
 
+        if (drag_action != null && drag_action.dragging) {
+            return;
+        }
+
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = width / outer_rect.width;
@@ -505,40 +519,36 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        foreach (var child_info in child_clone_infos.get_values ()) {
-            child_info.clone.set_scale (scale_factor, scale_factor);
+        var shadow_offset_x = outer_rect.x - input_rect.x;
+        var shadow_offset_y = outer_rect.y - input_rect.y;
 
+        foreach (var child_info in child_clone_infos.get_values ()) {
             var child_input_rect = child_info.window.get_buffer_rect ();
             var child_outer_rect = child_info.window.get_frame_rect ();
 
-            var child_shadow_offset_x = child_input_rect.x - child_outer_rect.x;
-            var child_shadow_offset_y = child_input_rect.y - child_outer_rect.y;
+            var child_shadow_offset_x = child_outer_rect.x - child_input_rect.x;
+            var child_shadow_offset_y = child_outer_rect.y - child_input_rect.y;
 
-            // outer rects are used because they doesn't include shadows
-            // calculate real overlay diff
-            var child_parent_x_diff = child_outer_rect.x - outer_rect.x;
-            var child_parent_y_diff = child_outer_rect.y - outer_rect.y;
+            var child_parent_x_diff = child_input_rect.x - input_rect.x;
+            var child_parent_y_diff = child_input_rect.y - input_rect.y;
 
-            var source_x = (child_shadow_offset_x + child_parent_x_diff) * scale_factor;
-            var source_y = (child_shadow_offset_y + child_parent_y_diff) * scale_factor;
-
-            var target_calculated_x = source_x.clamp (
-                (child_input_rect.x - child_outer_rect.x) * scale_factor,
-                (child_input_rect.x - child_outer_rect.x + outer_rect.width - child_outer_rect.width) * scale_factor
+            var target_calculated_x = child_parent_x_diff.clamp (
+                shadow_offset_x - child_shadow_offset_x,
+                shadow_offset_x - child_shadow_offset_x + outer_rect.width - child_outer_rect.width
             );
-            var target_calculated_y = source_y.clamp (
-                (child_input_rect.y - child_outer_rect.y) * scale_factor,
-                (child_input_rect.y - child_outer_rect.y + outer_rect.height - child_outer_rect.height) * scale_factor
+            var target_calculated_y = child_parent_y_diff.clamp (
+                shadow_offset_y - child_shadow_offset_y,
+                shadow_offset_y - child_shadow_offset_y + outer_rect.height - child_outer_rect.height
             );
 
             var calculated_x = GestureTracker.animation_value (
-                source_x,
+                child_parent_x_diff,
                 target_calculated_x,
                 last_progress_percentage,
                 last_progress_percentage % 1 == 0
             );
             var calculated_y = GestureTracker.animation_value (
-                source_y,
+                child_parent_y_diff,
                 target_calculated_y,
                 last_progress_percentage,
                 last_progress_percentage % 1 == 0
@@ -547,15 +557,8 @@ public class Gala.WindowClone : Clutter.Actor {
             child_info.clone.set_position (calculated_x, calculated_y);
         }
 
-        if (clone == null || (drag_action != null && drag_action.dragging)) {
-            return;
-        }
-
-        clone.set_scale (scale_factor, scale_factor);
-        clone.set_position (
-            (input_rect.x - outer_rect.x) * scale_factor,
-            (input_rect.y - outer_rect.y) * scale_factor
-        );
+        windows_container.set_scale (scale_factor, scale_factor);
+        windows_container.set_position (-shadow_offset_x * scale_factor, -shadow_offset_y * scale_factor);
     }
 
 #if HAS_MUTTER45
@@ -663,16 +666,12 @@ public class Gala.WindowClone : Clutter.Actor {
      * The window unmanaged by the compositor, so we need to destroy ourselves too.
      */
     private void unmanaged () {
-        remove_all_transitions ();
-
         if (drag_action != null && drag_action.dragging) {
             drag_action.cancel ();
         }
 
-        if (clone != null) {
-            clone.destroy ();
-        }
-
+        remove_all_transitions ();
+        clone.destroy ();
         destroy ();
     }
 
@@ -694,56 +693,55 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     private Clutter.Actor drag_begin (float click_x, float click_y) {
         float abs_x, abs_y;
-        float prev_parent_x, prev_parent_y;
 
         prev_parent = get_parent ();
         prev_index = prev_parent.get_children ().index (this);
+
+        float prev_parent_x, prev_parent_y;
         prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
 
-        var stage = get_stage ();
+        unowned var stage = get_stage ();
         prev_parent.remove_child (this);
         stage.add_child (this);
 
         active_shape.hide ();
 
-        var scale = window_icon.width / clone.width;
-        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+        var scale = window_icon.width / windows_container.width;
 
-        clone.get_transformed_position (out abs_x, out abs_y);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
-        clone.set_scale (scale, scale);
-        clone.opacity = 0;
-        clone.restore_easing_state ();
+        windows_container.get_transformed_position (out abs_x, out abs_y);
+        if (wm.enable_animations) {
+            windows_container.save_easing_state ();
+            windows_container.set_easing_duration (FADE_ANIMATION_DURATION);
+            windows_container.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+        }
 
-        foreach (var child_clone_info in child_clone_infos.get_values ()) {
-            unowned var child_actor = child_clone_info.clone;
-            child_actor.get_transformed_position (out abs_x, out abs_y);
-            child_actor.save_easing_state ();
-            child_actor.set_easing_duration (duration);
-            child_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
-            child_actor.set_pivot_point ((click_x - abs_x) / child_actor.width, (click_y - abs_y) / child_actor.height);
-            child_actor.set_scale (scale, scale);
-            child_actor.opacity = 0;
-            child_actor.restore_easing_state ();
+        windows_container.set_pivot_point ((click_x - abs_x) / windows_container.width, (click_y - abs_y) / windows_container.height);
+        windows_container.set_scale (scale, scale);
+        windows_container.opacity = 0;
+
+        if (wm.enable_animations) {
+            windows_container.restore_easing_state ();
         }
 
         request_reposition ();
 
         get_transformed_position (out abs_x, out abs_y);
-
         set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
-        window_icon.save_easing_state ();
-        window_icon.set_easing_duration (duration);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (FADE_ANIMATION_DURATION);
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        }
+
         window_icon.set_position (
             click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
             click_y - (abs_y + prev_parent_y) - window_icon.height / 2
         );
-        window_icon.restore_easing_state ();
+
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         close_button.opacity = 0;
         window_title.opacity = 0;
@@ -778,16 +776,19 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = wm.enable_animations ? duration : 0;
 
-        window_icon.save_easing_state ();
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
+            window_icon.set_easing_duration (duration);
+        }
 
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
         window_icon.set_scale (scale, scale);
         window_icon.set_opacity (opacity);
 
-        window_icon.restore_easing_state ();
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         if (insert_thumb != null) {
             insert_thumb.set_window_thumb (window);
@@ -886,35 +887,33 @@ public class Gala.WindowClone : Clutter.Actor {
         get_parent ().remove_child (this);
         prev_parent.insert_child_at_index (this, prev_index);
 
-        var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+        if (wm.enable_animations) {
+            windows_container.save_easing_state ();
+            windows_container.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            windows_container.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        }
 
-        clone.set_pivot_point (0.0f, 0.0f);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_scale (1, 1);
-        clone.opacity = 255;
-        clone.restore_easing_state ();
+        windows_container.set_pivot_point (0.0f, 0.0f);
+        windows_container.set_scale (1, 1);
+        windows_container.opacity = 255;
 
-        foreach (var child_clone_info in child_clone_infos.get_values ()) {
-            unowned var child_clone = child_clone_info.clone;
-            child_clone.set_pivot_point (0.0f, 0.0f);
-            child_clone.save_easing_state ();
-            child_clone.set_easing_duration (duration);
-            child_clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            child_clone.set_scale (1, 1);
-            child_clone.opacity = 255;
-            child_clone.restore_easing_state ();
+        if (wm.enable_animations) {
+            windows_container.restore_easing_state ();
         }
 
         request_reposition ();
 
-        window_icon.save_easing_state ();
-        window_icon.set_easing_duration (duration);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        }
 
         set_window_icon_position (slot.width, slot.height, monitor_scale_factor);
-        window_icon.restore_easing_state ();
+
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
