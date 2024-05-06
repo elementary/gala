@@ -323,31 +323,13 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            if (!animate || !wm.enable_animations) {
-                last_progress_percentage = 0.0; // 0.0 means original state
-
-                set_position (target_x, target_y);
-                set_size (outer_rect.width, outer_rect.height);
-
-                if (should_fade ()) {
-                    opacity = 0;
-                }
-
-                window_icon.opacity = 0;
-                set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
-
-                in_slot_animation = false;
-                place_widgets (outer_rect.width, outer_rect.height, target_scale);
-
-                return;
-            }
-
-            remove_last_progress_percentage_transition ();
             add_last_progress_transition (0.0);
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            if (animate && wm.enable_animations) {
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
 
             set_position (target_x, target_y);
             set_size (outer_rect.width, outer_rect.height);
@@ -356,27 +338,38 @@ public class Gala.WindowClone : Clutter.Actor {
                 opacity = 0;
             }
 
-            restore_easing_state ();
+            if (animate && wm.enable_animations) {
+                restore_easing_state ();
+            }
 
             toggle_shadow (false);
 
-            window_icon.save_easing_state ();
-            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            if (animate && wm.enable_animations) {
+                window_icon.save_easing_state ();
+                window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
             window_icon.opacity = 0;
             set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
-            window_icon.restore_easing_state ();
-
-            unowned var transition = window_icon.get_transition ("opacity");
-            if (transition == null) {
-                critical ("Opacity transition not found");
-                return;
+            if (animate && wm.enable_animations) {
+                window_icon.restore_easing_state ();
             }
 
-            transition.completed.connect (() => {
+            if (animate && wm.enable_animations) {
+                unowned var transition = window_icon.get_transition ("opacity");
+                if (transition == null) {
+                    critical ("Opacity transition not found");
+                    return;
+                }
+
+                transition.completed.connect (() => {
+                    in_slot_animation = false;
+                    place_widgets (outer_rect.width, outer_rect.height, target_scale);
+                });
+            } else {
                 in_slot_animation = false;
                 place_widgets (outer_rect.width, outer_rect.height, target_scale);
-            });
+            }
         };
 
         if (!animate || gesture_tracker == null || !with_gesture || !wm.enable_animations) {
@@ -431,46 +424,46 @@ public class Gala.WindowClone : Clutter.Actor {
 
             toggle_shadow (true);
 
-            if (!wm.enable_animations) {
-                last_progress_percentage = 1.0;
-                opacity = 255;
-                window_icon.opacity = 255;
-                set_window_icon_position (rect.width, rect.height, scale);
-
-                in_slot_animation = false;
-                place_widgets (rect.width, rect.height, scale);
-
-                return;
-            }
-
-            remove_last_progress_percentage_transition ();
             add_last_progress_transition (1.0);
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            if (wm.enable_animations) {
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
             set_size (rect.width, rect.height);
             set_position (rect.x, rect.y);
             opacity = 255;
-            restore_easing_state ();
-
-            window_icon.save_easing_state ();
-            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
-            window_icon.opacity = 255;
-            set_window_icon_position (rect.width, rect.height, scale);
-            window_icon.restore_easing_state ();
-
-            unowned var transition = window_icon.get_transition ("opacity");
-            if (transition == null) {
-                critical ("Opacity transition not found");
-                return;
+            if (wm.enable_animations) {
+                restore_easing_state ();
             }
 
-            transition.completed.connect (() => {
+            if (wm.enable_animations) {
+                window_icon.save_easing_state ();
+                window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
+            window_icon.opacity = 255;
+            set_window_icon_position (rect.width, rect.height, scale);
+            if (wm.enable_animations) {
+                window_icon.restore_easing_state ();
+            }
+
+            if (wm.enable_animations) {
+                unowned var transition = window_icon.get_transition ("opacity");
+                if (transition == null) {
+                    critical ("Opacity transition not found");
+                    return;
+                }
+    
+                transition.completed.connect (() => {
+                    in_slot_animation = false;
+                    place_widgets (rect.width, rect.height, scale);
+                });
+            } else {
                 in_slot_animation = false;
                 place_widgets (rect.width, rect.height, scale);
-            });
+            }
         };
 
         if (gesture_tracker == null || !with_gesture || !wm.enable_animations) {
@@ -480,19 +473,20 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    private void remove_last_progress_percentage_transition () {
-        remove_transition ("last_progress_percentage");
-    }
-
     private void add_last_progress_transition (double target_value) {
-        var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage") {
-            duration = MultitaskingView.ANIMATION_DURATION,
-            progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-            remove_on_complete = true
-        };
-        progress_transition.set_from_value (last_progress_percentage);
-        progress_transition.set_to_value (target_value);
-        add_transition ("last_progress_percentage", progress_transition);
+        remove_transition ("last_progress_percentage");
+
+        if (wm.enable_animations) {
+            var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage") {
+                duration = MultitaskingView.ANIMATION_DURATION,
+                progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
+                interval = new Clutter.Interval (typeof (float), last_progress_percentage, target_value),
+                remove_on_complete = true
+            };
+            add_transition ("last_progress_percentage", progress_transition);
+        } else {
+            last_progress_percentage = target_value;
+        }
     }
 
     /**
