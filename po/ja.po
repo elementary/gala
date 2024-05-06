@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-02 03:30+0000\n"
-"PO-Revision-Date: 2024-02-22 04:12+0000\n"
+"PO-Revision-Date: 2024-05-07 04:13+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.0.2\n"
+"X-Generator: Weblate 5.5\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/Dialogs.vala:158
@@ -55,7 +55,7 @@ msgstr "スクリーンショットが取得されました"
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "変更は%i秒後に自動的に元に戻ります。"
+msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
 
 #: src/WindowManager.vala:2308
 msgid "Keep new display settings?"
