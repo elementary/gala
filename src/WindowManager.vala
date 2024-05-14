@@ -208,6 +208,7 @@ namespace Gala {
              * +-- pointer locator
              * +-- dwell click timer
              * +-- screen shield
+             * +-- feedback group (e.g. DND icons)
              */
 
             system_background = new SystemBackground (display);
@@ -232,6 +233,14 @@ namespace Gala {
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
+
+#if HAS_MUTTER44
+            var feedback_group = display.get_compositor ().get_feedback_group ();
+#else
+            var feedback_group = display.get_feedback_group ();
+#endif
+            stage.remove_child (feedback_group);
+            ui_group.add_child (feedback_group);
 
             FilterManager.init (this);
 
@@ -390,17 +399,22 @@ namespace Gala {
         private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
             Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var index = manager.get_active_workspace_index () + direction;
+            unowned var manager = display.get_workspace_manager ();
+            var active_workspace_index = manager.get_active_workspace_index ();
+            var index = active_workspace_index + direction;
+            var dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
 
-            int dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
-
-            if (index < 0)
+            if (index < 0) {
                 index = manager.get_n_workspaces () - 1 - dynamic_offset;
-            else if (index > manager.get_n_workspaces () - 1 - dynamic_offset)
+            } else if (index > manager.get_n_workspaces () - 1 - dynamic_offset) {
                 index = 0;
+            }
 
-            manager.get_workspace_by_index (index).activate (event.get_time ());
+            if (active_workspace_index != index) {
+                manager.get_workspace_by_index (index).activate (event.get_time ());
+            } else {
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            }
         }
 
         [CCode (instance_pos = -1)]
@@ -1957,7 +1971,6 @@ namespace Gala {
 
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
-            var docks = new List<Meta.WindowActor> ();
 
             // collect all windows and put them in the appropriate containers
             foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
@@ -1976,24 +1989,27 @@ namespace Gala {
                 }
 
                 if (window.on_all_workspaces) {
-                    // only collect docks here that need to be displayed on both workspaces
-                    // all other windows will be collected below
-                    if (window.window_type == Meta.WindowType.DOCK) {
-                        docks.prepend (actor);
-                    } else if (window.window_type == Meta.WindowType.NOTIFICATION) {
-                        // notifications use their own group and are always on top
-                    } else {
-                        // windows that are on all workspaces will be faded out and back in
-                        windows.prepend (actor);
-                        parents.prepend (actor.get_parent ());
-
-                        clutter_actor_reparent (actor, static_windows);
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                        actor.save_easing_state ();
-                        actor.set_easing_duration (300);
-                        actor.opacity = 0;
-                        actor.restore_easing_state ();
+                    // notifications use their own group and are always on top
+                    if (window.window_type == NOTIFICATION) {
+                        continue;
                     }
+
+                    windows.prepend (actor);
+                    parents.prepend (actor.get_parent ());
+
+                    clutter_actor_reparent (actor, static_windows);
+                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+
+                    // Don't fade docks they just stay where they are
+                    if (window.window_type == DOCK) {
+                        continue;
+                    }
+
+                    // windows that are on all workspaces will be faded out and back in
+                    actor.save_easing_state ();
+                    actor.set_easing_duration (300);
+                    actor.opacity = 0;
+                    actor.restore_easing_state ();
 
                     continue;
                 }
@@ -2016,30 +2032,6 @@ namespace Gala {
                     if (window.fullscreen)
                         to_has_fullscreened = true;
 
-                }
-            }
-
-            // make sure we don't add docks when there are fullscreened
-            // windows on one of the groups. Simply raising seems not to
-            // work, mutter probably reverts the order internally to match
-            // the display stack
-            foreach (var window in docks) {
-                if (workspace_to != null && !to_has_fullscreened) {
-                    var clone = new SafeWindowClone (window.get_meta_window ()) {
-                        x = window.x - clone_offset_x,
-                        y = window.y - clone_offset_y
-                    };
-
-                    in_group.add_child (clone);
-                    tmp_actors.prepend (clone);
-                }
-
-                if (!from_has_fullscreened) {
-                    windows.prepend (window);
-                    parents.prepend (window.get_parent ());
-                    window.set_translation (-clone_offset_x, -clone_offset_y, 0.0f);
-
-                    clutter_actor_reparent (window, out_group);
                 }
             }
 

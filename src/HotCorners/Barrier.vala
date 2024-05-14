@@ -26,7 +26,6 @@ public class Gala.Barrier : Meta.Barrier {
      * the barrier to trigger again. Set to int.MAX to disallow retrigger.
      */
     public Barrier (
-        Meta.Display display,
         int x1,
         int y1,
         int x2,
@@ -38,7 +37,6 @@ public class Gala.Barrier : Meta.Barrier {
         int retrigger_delay
     ) {
         Object (
-            display: display,
             x1: x1,
             y1: y1,
             x2: x2,

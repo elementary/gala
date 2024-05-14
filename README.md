@@ -11,7 +11,6 @@ You'll need the following dependencies:
 * gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
 * libcanberra-dev
-* libcanberra-gtk3-dev
 * libclutter-1.0-dev (>= 1.12.0)
 * libgee-0.8-dev
 * libglib2.0-dev (>= 2.44)
