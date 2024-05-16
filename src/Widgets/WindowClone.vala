@@ -121,7 +121,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
-        wm.window_created.connect (add_new_window_child);
+        wm.get_display ().window_created.connect (add_new_window_child);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -145,9 +145,7 @@ public class Gala.WindowClone : Clutter.Actor {
             opacity = 0
         };
 
-        windows_container = new Clutter.Actor () {
-            background_color = Clutter.Color.from_string ("#ff000055")
-        };
+        windows_container = new Clutter.Actor ();
         
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
@@ -189,7 +187,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
 
-        wm.window_created.disconnect (add_new_window_child);
+        wm.get_display ().window_created.disconnect (add_new_window_child);
     }
 
     private void reload_icons () {

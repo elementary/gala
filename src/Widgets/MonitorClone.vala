@@ -48,7 +48,7 @@ namespace Gala {
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 
-            wm.window_created.connect (add_window);
+            display.window_created.connect (add_window);
             display.window_entered_monitor.connect (on_window_entered_monitor);
             display.window_left_monitor.connect (window_left);
 
@@ -66,6 +66,7 @@ namespace Gala {
         }
 
         ~MonitorClone () {
+            display.window_created.disconnect (add_window);
             display.window_entered_monitor.disconnect (on_window_entered_monitor);
             display.window_left_monitor.disconnect (window_left);
         }
@@ -108,11 +109,12 @@ namespace Gala {
         }
 
         private void on_window_entered_monitor (int window_monitor, Meta.Window window) {
-            add_window (window);
+            if (window.get_compositor_private () != null) {
+                add_window (window);
+            }
         }
 
         private void add_window (Meta.Window window) {
-            warning ("Window entered");
             if (window.get_monitor () != monitor || window.window_type != Meta.WindowType.NORMAL)
                 return;
 

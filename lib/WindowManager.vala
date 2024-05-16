@@ -181,17 +181,5 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
-
-        /**
-         * Emitted when a new window is created.
-         * If workspace switch is in progress it gets emitted a window has been created (same as Meta.Display.window_created)
-         * Otherwise it gets emitted when window is being mapped.
-         *
-         * This signal exists because mutter doesn't emit map events when workspace switch is in progress.
-         * (see `meta_window_actor_show` function in mutter source code)
-         *
-         * @param newly created window
-         */
-        public signal void window_created (Meta.Window window);
     }
 }

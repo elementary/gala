@@ -152,8 +152,19 @@ namespace Gala {
             AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
+
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
+            });
+
+            unowned var laters = display.get_compositor ().get_laters ();
+            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
+                WorkspaceManager.init (this);
+                window_tracker = new WindowTracker ();
+                window_tracker.init (display);
+                WindowStateSaver.init (window_tracker);
+
+                return false;
             });
         }
 
@@ -166,30 +177,20 @@ namespace Gala {
             DBus.init (this);
             DBusAccelerator.init (this);
             MediaFeedback.init ();
-
             WindowListener.init (display);
             KeyboardManager.init (display);
-            window_tracker = new WindowTracker ();
-            WindowStateSaver.init (window_tracker);
-            window_tracker.init (display);
-
+            
             notification_stack = new NotificationStack (display);
-
+            
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
-
+            
             stage = display.get_stage () as Clutter.Stage;
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
-
-            unowned var laters = display.get_compositor ().get_laters ();
-            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                WorkspaceManager.init (this);
-                return false;
-            });
 
             /* our layer structure:
              * stage
@@ -295,6 +296,7 @@ namespace Gala {
 
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
+            unowned var laters = display.get_compositor ().get_laters ();
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
                 unowned string xdg_session_type = Environment.get_variable ("XDG_SESSION_TYPE");
                 if (xdg_session_type == "x11") {
@@ -362,14 +364,6 @@ namespace Gala {
             });
 
             update_input_area ();
-
-
-            display.window_created.connect ((window) => {
-                // see Gala.WindowManager.window_created comment
-                if (animating_switch_workspace) {
-                    window_created (window);
-                }
-            });
 
             stage.show ();
 
@@ -1458,7 +1452,6 @@ namespace Gala {
 
         public override void map (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
-            window_created (window);
 
             WindowStateSaver.on_map (window);
 
@@ -2104,7 +2097,7 @@ namespace Gala {
 
             // while a workspace is being switched mutter doesn't map windows
             // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
+            switch_workspace_window_created_id = get_display ().window_created.connect ((window) => {
                 if (window.window_type == Meta.WindowType.NOTIFICATION) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     clutter_actor_reparent (actor, notification_group);
