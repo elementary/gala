@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-02 03:30+0000\n"
-"PO-Revision-Date: 2024-05-07 04:13+0000\n"
+"PO-Revision-Date: 2024-05-09 13:13+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -106,7 +106,7 @@ msgstr "移動"
 
 #: daemon/WindowMenu.vala:57
 msgid "Resize"
-msgstr "サイズの変更"
+msgstr "サイズを変更"
 
 #: daemon/WindowMenu.vala:65
 msgid "Always on Top"
@@ -138,7 +138,7 @@ msgstr "タイル表示を解除"
 
 #: daemon/WindowMenu.vala:138
 msgid "Unmaximize"
-msgstr "元のサイズに戻す"
+msgstr "元に戻す"
 
 #: daemon/WindowMenu.vala:140
 msgid "Maximize"
@@ -175,9 +175,8 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
-"ウィンドウ移動時、ドラッグアンドドロップの形をした適切なポインターを使用する"
-"ように修正"
+msgstr "ウィンドウ移動時、ドラッグ & "
+"ドロップの形をした適切なポインターを使用するように修正"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
