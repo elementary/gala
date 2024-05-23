@@ -56,7 +56,7 @@ public class Gala.PanelWindow : Object {
         clone = new PanelClone (wm, this);
     }
 
-#if HAS_MUTTER_45
+#if HAS_MUTTER46
     public Mtk.Rectangle get_custom_window_rect () {
 #else
     public Meta.Rectangle get_custom_window_rect () {

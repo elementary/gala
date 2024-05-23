@@ -42,7 +42,6 @@ gala_bin_sources = files(
     'ShellClients/HideTracker.vala',
     'ShellClients/ManagedClient.vala',
     'ShellClients/NotificationsClient.vala',
-    'ShellClients/PanelClient.vala',
     'ShellClients/PanelClone.vala',
     'ShellClients/PanelWindow.vala',
     'ShellClients/ShellClientsManager.vala',
