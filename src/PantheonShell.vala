@@ -123,7 +123,6 @@ namespace Gala {
         }
 
         ~ExtendedBehaviorSurface () {
-            warning ("EXTENDED GETS DESTROYED");
             if (wayland_surface != null) {
                 wayland_surface.steal_qdata<unowned GLib.Object> (quark);
             }
@@ -135,7 +134,6 @@ namespace Gala {
     }
 
     private static void unref_obj_on_destroy (Wl.Resource resource) {
-        warning ("UNREF");
         resource.get_user_data<GLib.Object> ().unref ();
     }
 
