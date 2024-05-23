@@ -69,15 +69,16 @@ namespace Gala {
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
-            var resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
-            resource.set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
+            // Resources are manually destroyed by the client so we can't keep owned references on them because
+            // then vala ends up destroying them twice. So instead just prevent vala from automatically managing them
+            Wl.Resource* resource = new Wl.Resource (client, ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
+            resource->set_implementation (&wayland_pantheon_shell_interface, null, (res) => {});
         });
     }
 
     public class PanelSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
 
         public PanelSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
@@ -97,7 +98,6 @@ namespace Gala {
     public class WidgetSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
 
         public WidgetSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
@@ -117,13 +117,13 @@ namespace Gala {
     public class ExtendedBehaviorSurface : GLib.Object {
         public static GLib.Quark quark = 0;
         public unowned GLib.Object? wayland_surface;
-        public Wl.Resource resource;
 
         public ExtendedBehaviorSurface (GLib.Object wayland_surface) {
             this.wayland_surface = wayland_surface;
         }
 
         ~ExtendedBehaviorSurface () {
+            warning ("EXTENDED GETS DESTROYED");
             if (wayland_surface != null) {
                 wayland_surface.steal_qdata<unowned GLib.Object> (quark);
             }
@@ -134,7 +134,8 @@ namespace Gala {
         }
     }
 
-    static void unref_obj_on_destroy (Wl.Resource resource) {
+    private static void unref_obj_on_destroy (Wl.Resource resource) {
+        warning ("UNREF");
         resource.get_user_data<GLib.Object> ().unref ();
     }
 
@@ -150,18 +151,17 @@ namespace Gala {
         }
 
         panel_surface = new PanelSurface (wayland_surface);
-        var panel_resource = new Wl.Resource (
+        Wl.Resource* panel_resource = new Wl.Resource (
             client,
             ref Pantheon.Desktop.PanelInterface.iface,
             resource.get_version (),
             output
         );
-        panel_resource.set_implementation (
+        panel_resource->set_implementation (
             &wayland_pantheon_panel_interface,
             panel_surface.ref (),
             unref_obj_on_destroy
         );
-        panel_surface.resource = (owned) panel_resource;
         wayland_surface.set_qdata_full (
             PanelSurface.quark,
             panel_surface,
@@ -181,18 +181,17 @@ namespace Gala {
         }
 
         widget_surface = new WidgetSurface (wayland_surface);
-        var widget_resource = new Wl.Resource (
+        Wl.Resource* widget_resource = new Wl.Resource (
             client,
             ref Pantheon.Desktop.WidgetInterface.iface,
             resource.get_version (),
             output
         );
-        widget_resource.set_implementation (
+        widget_resource->set_implementation (
             &wayland_pantheon_widget_interface,
             widget_surface.ref (),
             unref_obj_on_destroy
         );
-        widget_surface.resource = (owned) widget_resource;
         wayland_surface.set_qdata_full (
             WidgetSurface.quark,
             widget_surface,
@@ -212,18 +211,17 @@ namespace Gala {
         }
 
         eb_surface = new ExtendedBehaviorSurface (wayland_surface);
-        var eb_resource = new Wl.Resource (
+        Wl.Resource* eb_resource = new Wl.Resource (
             client,
             ref Pantheon.Desktop.ExtendedBehaviorInterface.iface,
             resource.get_version (),
             output
         );
-        eb_resource.set_implementation (
+        eb_resource->set_implementation (
             &wayland_pantheon_extended_behavior_interface,
             eb_surface.ref (),
             unref_obj_on_destroy
         );
-        eb_surface.resource = (owned) eb_resource;
         wayland_surface.set_qdata_full (
             ExtendedBehaviorSurface.quark,
             eb_surface,
