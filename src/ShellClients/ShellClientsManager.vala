@@ -35,8 +35,8 @@ public class Gala.ShellClientsManager : Object {
             }
             warning ("WINDOW CREATED");
             wingpanel.set_anchor (window, TOP);
-            wingpanel.set_hide_mode (window, OVERLAPPING_FOCUS_WINDOW);
-            wingpanel.set_hide_mode (window, MAXIMIZED_FOCUS_WINDOW);
+            wingpanel.set_hide_mode (window, NEVER);
+            wingpanel.set_size (window, -1, 50);
             window.make_above ();
         });
     }

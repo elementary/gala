@@ -52,7 +52,7 @@ public class Gala.PanelClone : Object {
             hide_tracker.schedule_update ();
         });
 
-        hide_tracker = new HideTracker (wm.get_display (), panel.window);
+        hide_tracker = new HideTracker (wm.get_display (), panel);
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
 

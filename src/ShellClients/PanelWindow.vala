@@ -29,6 +29,9 @@ public class Gala.PanelWindow : Object {
 
     private PanelClone clone;
 
+    private int width = -1;
+    private int height = -1;
+
     public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
         Object (wm: wm, window: window);
 
@@ -53,6 +56,32 @@ public class Gala.PanelWindow : Object {
         clone = new PanelClone (wm, this);
     }
 
+#if HAS_MUTTER_45
+    public Mtk.Rectangle get_custom_window_rect () {
+#else
+    public Meta.Rectangle get_custom_window_rect () {
+#endif
+        var window_rect = window.get_frame_rect ();
+
+        if (width > 0) {
+            window_rect.width = width;
+        }
+
+        if (height > 0) {
+            window_rect.height = height;
+        }
+
+        return window_rect;
+    }
+
+    public void set_size (int width, int height) {
+        this.width = width;
+        this.height = height;
+
+        position_window ();
+        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
+    }
+
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
@@ -63,7 +92,7 @@ public class Gala.PanelWindow : Object {
     private void position_window () {
         var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var window_rect = window.get_frame_rect ();
+        var window_rect = get_custom_window_rect ();
 
         switch (anchor) {
             case TOP:
@@ -127,7 +156,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void update_strut () {
-        var rect = window.get_frame_rect ();
+        var rect = get_custom_window_rect ();
 
         Meta.Strut strut = {
             rect,
