@@ -57,7 +57,7 @@ namespace Wl {
 	}
 
 	[Compact]
-	[CCode (cname = "struct wl_resource", free_function = "wl_resource_destroy")]
+	[CCode (cname = "struct wl_resource", free_function = "wl_resource_get_version")]
 	public class Resource {
 		[CCode (cname = "wl_resource_create")]
 		public Resource (Wl.Client client, ref Wl.Interface interface, int version, uint32 id);
