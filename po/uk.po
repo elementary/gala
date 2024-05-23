@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-11-09 19:10+0000\n"
+"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"PO-Revision-Date: 2024-04-26 18:13+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -21,16 +21,16 @@ msgstr ""
 "X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:152
+#: src/Dialogs.vala:158
 #, c-format
 msgid "“%s” is not responding"
 msgstr "«%s» не відповідає"
 
-#: src/Dialogs.vala:154
+#: src/Dialogs.vala:160
 msgid "Application is not responding"
 msgstr "Застосунок не відповідає"
 
-#: src/Dialogs.vala:157
+#: src/Dialogs.vala:163
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -38,23 +38,23 @@ msgstr ""
 "Ви можете зачекати, поки застосунок відновить роботу, або примусово повністю "
 "закрити його."
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:164
 msgid "Force Quit"
 msgstr "Примусово вийти"
 
-#: src/Dialogs.vala:159
+#: src/Dialogs.vala:165
 msgid "Wait"
 msgstr "Зачекати"
 
-#: src/ScreenshotManager.vala:281
+#: src/ScreenshotManager.vala:285
 msgid "Screenshots"
 msgstr "Знімки екрана"
 
-#: src/ScreenshotManager.vala:360
+#: src/ScreenshotManager.vala:364
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
-#: src/WindowManager.vala:2251
+#: src/WindowManager.vala:2301
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -62,83 +62,91 @@ msgstr[0] "Зміни буде автоматично відхилено за %i
 msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
 msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
 
-#: src/WindowManager.vala:2258
+#: src/WindowManager.vala:2308
 msgid "Keep new display settings?"
 msgstr "Зберегти нові налаштування дисплея?"
 
-#: src/WindowManager.vala:2262
+#: src/WindowManager.vala:2312
 msgid "Keep Settings"
 msgstr "Зберегти налаштування"
 
-#: src/WindowManager.vala:2263
+#: src/WindowManager.vala:2313
 msgid "Use Previous Settings"
 msgstr "Використовувати попередні налаштування"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2305
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
 
-#: daemon/MenuDaemon.vala:115
-msgid "Hide"
-msgstr "Сховати"
-
-#: daemon/MenuDaemon.vala:128
-msgid "Move"
-msgstr "Перемістити"
-
-#: daemon/MenuDaemon.vala:136
-msgid "Resize"
-msgstr "Змінити розмір"
-
-#: daemon/MenuDaemon.vala:144
-msgid "Always on Top"
-msgstr "Завжди зверху"
-
-#: daemon/MenuDaemon.vala:152
-msgid "Always on Visible Workspace"
-msgstr "Завжди на видимому робочому просторі"
-
-#: daemon/MenuDaemon.vala:160
-msgid "Move to Workspace Left"
-msgstr "Перемістити на робочий простір ліворуч"
-
-#: daemon/MenuDaemon.vala:168
-msgid "Move to Workspace Right"
-msgstr "Перемістити на робочий простір праворуч"
-
-#: daemon/MenuDaemon.vala:176
-msgid "Take Screenshot"
-msgstr "Зробити знімок вікна"
-
-#: daemon/MenuDaemon.vala:184
-msgid "Close"
-msgstr "Закрити"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Untile"
-msgstr "Відкріпити"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Unmaximize"
-msgstr "Відновити розмір"
-
-#: daemon/MenuDaemon.vala:225
-msgid "Maximize"
-msgstr "Розгорнути"
-
-#: daemon/MenuDaemon.vala:298
+#: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Змінити тло…"
 
-#: daemon/MenuDaemon.vala:315
+#: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Налаштування екрана…"
 
-#: daemon/MenuDaemon.vala:332
+#: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Налаштування системи…"
+
+#: daemon/BackgroundMenu.vala:47
+msgid "Failed to open System Settings"
+msgstr "Не вдалося відкрити Налаштування системи"
+
+#: daemon/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr "Має бути встановлений обробник для схеми URI \"settings://\"."
+
+#: daemon/WindowMenu.vala:36
+msgid "Hide"
+msgstr "Сховати"
+
+#: daemon/WindowMenu.vala:49
+msgid "Move"
+msgstr "Перемістити"
+
+#: daemon/WindowMenu.vala:57
+msgid "Resize"
+msgstr "Змінити розмір"
+
+#: daemon/WindowMenu.vala:65
+msgid "Always on Top"
+msgstr "Завжди зверху"
+
+#: daemon/WindowMenu.vala:73
+msgid "Always on Visible Workspace"
+msgstr "Завжди на видимому робочому просторі"
+
+#: daemon/WindowMenu.vala:81
+msgid "Move to Workspace Left"
+msgstr "Перемістити на робочий простір ліворуч"
+
+#: daemon/WindowMenu.vala:89
+msgid "Move to Workspace Right"
+msgstr "Перемістити на робочий простір праворуч"
+
+#: daemon/WindowMenu.vala:97
+msgid "Take Screenshot"
+msgstr "Зробити знімок екрана"
+
+#: daemon/WindowMenu.vala:105
+msgid "Close"
+msgstr "Закрити"
+
+#: daemon/WindowMenu.vala:138
+msgid "Untile"
+msgstr "Відкріпити"
+
+#: daemon/WindowMenu.vala:138
+msgid "Unmaximize"
+msgstr "Відновити розмір"
+
+#: daemon/WindowMenu.vala:140
+msgid "Maximize"
+msgstr "Розгорнути"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
@@ -156,17 +164,13 @@ msgstr ""
 "Віконний менеджер та композитор створений на libmutter та розроблений "
 "elementary для роботи з Pantheon."
 
-#: data/gala.metainfo.xml.in:23
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
-
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
 msgid "Improvements:"
 msgstr "Удосконалення:"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:34
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -174,33 +178,33 @@ msgstr ""
 "Зміна шпалер або перехід у режим сну відбувається з дотриманням опції "
 "\"Скоротити кількість анімацій\""
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Використовувати відповідні покажчики перетягування під час переміщення вікон"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Усунуто проблему, через яку жести в багатозадачному поданні могли перестати "
 "працювати"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:37
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Поліпшувати динамічну поведінку робочого простору з кількома моніторами"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
 msgid "Updated translations"
 msgstr "Оновлені переклади"
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Вдосконалення роботи з ярликом переходу до робочого простору"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:102
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -208,13 +212,13 @@ msgstr ""
 "Правильно налаштуйте розкладку клавіатури під час запуску, щоб індикатор "
 "відповідав обраній розкладці"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:103
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 "Виправлено комбінації клавіш під час створення знімків екрана у "
 "багатозадачному режимі"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:104
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -222,27 +226,27 @@ msgstr ""
 "Правильне налаштування підсвічування активної робочої області під час входу "
 "в багатозадачний режим і анімація 1:1 за допомогою жестів мультидотику"
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:105
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Оновлення кольору панелі після затемнення шпалер"
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:106
 msgid "Scale rounded corners per-display"
 msgstr "Масштабування закруглених кутів на дисплей"
 
-#: data/gala.metainfo.xml.in:105
+#: data/gala.metainfo.xml.in:107
 msgid "Support fractional scaling"
 msgstr "Підтримка роздільного масштабування"
 
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:127
 msgid "Performance improvements"
 msgstr "Поліпшення швидкодії"
 
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:128
 msgid "Remove texture from Multitasking View"
 msgstr "Вилучено текстури з Багатозадачного вигляду"
 
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:129
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Уникнення випадкового вибору вікон у перемикачі вікон"
 
@@ -262,6 +266,9 @@ msgstr "Інше"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Резервний робочий файл для сповіщень від застарілих програм."
+
+#~ msgid "elementary, Inc."
+#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Перезавантаження анімованих шпалер за зміни часового поясу"

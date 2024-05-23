@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-11-07 19:57+0000\n"
+"POT-Creation-Date: 2024-05-02 03:30+0000\n"
 "PO-Revision-Date: 2023-05-20 17:07+0000\n"
 "Last-Translator: Faisal Rachmadin <frachmadin@users.noreply.l10n.elementary."
 "io>\n"
@@ -21,16 +21,16 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:152
+#: src/Dialogs.vala:158
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s” tidak merespon"
 
-#: src/Dialogs.vala:154
+#: src/Dialogs.vala:160
 msgid "Application is not responding"
 msgstr "Aplikasi tidak merespon"
 
-#: src/Dialogs.vala:157
+#: src/Dialogs.vala:163
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -38,105 +38,115 @@ msgstr ""
 "Anda dapat memilih untuk menunggu beberapa saat agar aplikasi dilanjutkan, "
 "atau memaksanya untuk berhenti sepenuhnya."
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:164
 msgid "Force Quit"
 msgstr "Hentikan Paksa"
 
-#: src/Dialogs.vala:159
+#: src/Dialogs.vala:165
 msgid "Wait"
 msgstr "Tunggu"
 
-#: src/ScreenshotManager.vala:281
+#: src/ScreenshotManager.vala:285
 msgid "Screenshots"
 msgstr "Tangkapan Layar"
 
-#: src/ScreenshotManager.vala:360
+#: src/ScreenshotManager.vala:364
 msgid "Screenshot taken"
 msgstr "Tangkapan Layar diambil"
 
-#: src/WindowManager.vala:2251
+#: src/WindowManager.vala:2301
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Perubahan akan kembali secara otomatis setelah %i detik."
 
-#: src/WindowManager.vala:2258
+#: src/WindowManager.vala:2308
 msgid "Keep new display settings?"
 msgstr "Pertahankan pengaturan tampilan baru?"
 
-#: src/WindowManager.vala:2262
+#: src/WindowManager.vala:2312
 msgid "Keep Settings"
 msgstr "Pertahankan Pengaturan"
 
-#: src/WindowManager.vala:2263
+#: src/WindowManager.vala:2313
 msgid "Use Previous Settings"
 msgstr "Gunakan Pengaturan Sebelumnya"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2305
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Tangkapan layar dari %s"
 
-#: daemon/MenuDaemon.vala:115
-msgid "Hide"
-msgstr "Sembunyikan"
-
-#: daemon/MenuDaemon.vala:128
-msgid "Move"
-msgstr "Pindahkan"
-
-#: daemon/MenuDaemon.vala:136
-msgid "Resize"
-msgstr "Ganti ukuran"
-
-#: daemon/MenuDaemon.vala:144
-msgid "Always on Top"
-msgstr "Selalu di atas"
-
-#: daemon/MenuDaemon.vala:152
-msgid "Always on Visible Workspace"
-msgstr "Ruang Kerja Selalu Aktif Terlihat"
-
-#: daemon/MenuDaemon.vala:160
-msgid "Move to Workspace Left"
-msgstr "Pindahkan ke Ruang Kerja Sebelah Kiri"
-
-#: daemon/MenuDaemon.vala:168
-msgid "Move to Workspace Right"
-msgstr "Pindahkan ke Ruang Kerja Sebelah Kanan"
-
-#: daemon/MenuDaemon.vala:176
-msgid "Take Screenshot"
-msgstr "Ambil Tangkapan Layar"
-
-#: daemon/MenuDaemon.vala:184
-msgid "Close"
-msgstr "Tutup"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Untile"
-msgstr "Lepas Rekatan"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Unmaximize"
-msgstr "Batal Maksimalkan"
-
-#: daemon/MenuDaemon.vala:225
-msgid "Maximize"
-msgstr "Maksimalkan"
-
-#: daemon/MenuDaemon.vala:298
+#: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Ubah Latar Belakang…"
 
-#: daemon/MenuDaemon.vala:315
+#: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Pengaturan Tampilan…"
 
-#: daemon/MenuDaemon.vala:332
+#: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Pengaturan Sistem…"
+
+#: daemon/BackgroundMenu.vala:47
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Failed to open System Settings"
+msgstr "Pengaturan Sistem…"
+
+#: daemon/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr ""
+
+#: daemon/WindowMenu.vala:36
+msgid "Hide"
+msgstr "Sembunyikan"
+
+#: daemon/WindowMenu.vala:49
+msgid "Move"
+msgstr "Pindahkan"
+
+#: daemon/WindowMenu.vala:57
+msgid "Resize"
+msgstr "Ganti ukuran"
+
+#: daemon/WindowMenu.vala:65
+msgid "Always on Top"
+msgstr "Selalu di atas"
+
+#: daemon/WindowMenu.vala:73
+msgid "Always on Visible Workspace"
+msgstr "Ruang Kerja Selalu Aktif Terlihat"
+
+#: daemon/WindowMenu.vala:81
+msgid "Move to Workspace Left"
+msgstr "Pindahkan ke Ruang Kerja Sebelah Kiri"
+
+#: daemon/WindowMenu.vala:89
+msgid "Move to Workspace Right"
+msgstr "Pindahkan ke Ruang Kerja Sebelah Kanan"
+
+#: daemon/WindowMenu.vala:97
+msgid "Take Screenshot"
+msgstr "Ambil Tangkapan Layar"
+
+#: daemon/WindowMenu.vala:105
+msgid "Close"
+msgstr "Tutup"
+
+#: daemon/WindowMenu.vala:138
+msgid "Untile"
+msgstr "Lepas Rekatan"
+
+#: daemon/WindowMenu.vala:138
+msgid "Unmaximize"
+msgstr "Batal Maksimalkan"
+
+#: daemon/WindowMenu.vala:140
+msgid "Maximize"
+msgstr "Maksimalkan"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
@@ -154,45 +164,41 @@ msgstr ""
 "Manajer jendela &amp; pengomposisian berdasarkan libmutter dan dirancang "
 "oleh elementary untuk digunakan dengan Pantheon."
 
-#: data/gala.metainfo.xml.in:23
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
-
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
 msgid "Improvements:"
 msgstr "Peningkatan:"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:34
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:37
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
 msgid "Updated translations"
 msgstr "Terjemahan yang diperbarui"
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:102
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -200,12 +206,12 @@ msgstr ""
 "Atur tata letak papan ketik dengan benar saat startup sehingga indikator "
 "cocok dengan tata letak yang dipilih"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:103
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 "Perbaiki pintasan papan ketik tangkapan layar saat dalam Tampilan Multi Tugas"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:104
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -213,27 +219,27 @@ msgstr ""
 "Atur sorotan ruang kerja aktif dengan benar saat memasuki Tampilan Multi "
 "Tugas dan animasikan 1:1 dengan gerakan multi sentuh"
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:105
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Perbarui warna panel setelah meredupkan latar belakang"
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:106
 msgid "Scale rounded corners per-display"
 msgstr "Menskalakan sudut membulat per tampilan"
 
-#: data/gala.metainfo.xml.in:105
+#: data/gala.metainfo.xml.in:107
 msgid "Support fractional scaling"
 msgstr "Mendukung penskalaan fraksional"
 
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:127
 msgid "Performance improvements"
 msgstr "Peningkatan performa"
 
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:128
 msgid "Remove texture from Multitasking View"
 msgstr "Hapus tekstur dari Tampilan Multi Tugas"
 
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:129
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr "Hindari memilih jendela secara tidak sengaja di pengalih jendela"
 
@@ -253,6 +259,9 @@ msgstr "Lainnya"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Sandaran berkas desktop untuk pemberitahuan dari aplikasi kadaluarsa."
+
+#~ msgid "elementary, Inc."
+#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Muat ulang wallpaper animasi saat zona waktu berubah"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2023-11-07 19:57+0000\n"
-"PO-Revision-Date: 2023-10-27 12:25+0000\n"
+"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"PO-Revision-Date: 2024-03-12 11:13+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
 ">\n"
@@ -20,16 +20,16 @@ msgstr ""
 "X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-28 05:04+0000\n"
 
-#: src/Dialogs.vala:152
+#: src/Dialogs.vala:158
 #, c-format
 msgid "“%s” is not responding"
 msgstr "« %s » ne répond pas"
 
-#: src/Dialogs.vala:154
+#: src/Dialogs.vala:160
 msgid "Application is not responding"
 msgstr "L'application ne répond pas"
 
-#: src/Dialogs.vala:157
+#: src/Dialogs.vala:163
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -37,23 +37,23 @@ msgstr ""
 "Vous pouvez patienter un instant pour continuer à utiliser l'application, ou "
 "forcer sa fermeture."
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:164
 msgid "Force Quit"
 msgstr "Quitter"
 
-#: src/Dialogs.vala:159
+#: src/Dialogs.vala:165
 msgid "Wait"
 msgstr "Attendre"
 
-#: src/ScreenshotManager.vala:281
+#: src/ScreenshotManager.vala:285
 msgid "Screenshots"
 msgstr "Captures d'écran"
 
-#: src/ScreenshotManager.vala:360
+#: src/ScreenshotManager.vala:364
 msgid "Screenshot taken"
 msgstr "Captures d'écran effectuée"
 
-#: src/WindowManager.vala:2251
+#: src/WindowManager.vala:2301
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -61,83 +61,92 @@ msgstr[0] "Les modifications seront automatiquement annulées après %i seconde.
 msgstr[1] ""
 "Les modifications seront automatiquement annulées après %i secondes."
 
-#: src/WindowManager.vala:2258
+#: src/WindowManager.vala:2308
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2262
+#: src/WindowManager.vala:2312
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:2263
+#: src/WindowManager.vala:2313
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2305
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
 
-#: daemon/MenuDaemon.vala:115
-msgid "Hide"
-msgstr "Masquer"
-
-#: daemon/MenuDaemon.vala:128
-msgid "Move"
-msgstr "Déplacer"
-
-#: daemon/MenuDaemon.vala:136
-msgid "Resize"
-msgstr "Redimensionner"
-
-#: daemon/MenuDaemon.vala:144
-msgid "Always on Top"
-msgstr "Toujours au premier plan"
-
-#: daemon/MenuDaemon.vala:152
-msgid "Always on Visible Workspace"
-msgstr "Toujours sur l'espace de travail visible"
-
-#: daemon/MenuDaemon.vala:160
-msgid "Move to Workspace Left"
-msgstr "Déplacer vers l'espace de travail de gauche"
-
-#: daemon/MenuDaemon.vala:168
-msgid "Move to Workspace Right"
-msgstr "Déplacer vers l'espace de travail de droite"
-
-#: daemon/MenuDaemon.vala:176
-msgid "Take Screenshot"
-msgstr "Prendre une capture d'écran"
-
-#: daemon/MenuDaemon.vala:184
-msgid "Close"
-msgstr "Fermer"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Untile"
-msgstr "Détuiler"
-
-#: daemon/MenuDaemon.vala:223
-msgid "Unmaximize"
-msgstr "Restaurer"
-
-#: daemon/MenuDaemon.vala:225
-msgid "Maximize"
-msgstr "Maximiser"
-
-#: daemon/MenuDaemon.vala:298
+#: daemon/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Modifier le fond d'écran…"
 
-#: daemon/MenuDaemon.vala:315
+#: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Paramètres d'affichage…"
 
-#: daemon/MenuDaemon.vala:332
+#: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Paramètres du système…"
+
+#: daemon/BackgroundMenu.vala:47
+msgid "Failed to open System Settings"
+msgstr "Échec de l'ouverture de Paramètres du système"
+
+#: daemon/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr ""
+"Un gestionnaire doit être installé pour le schéma d'URI « settings:// »."
+
+#: daemon/WindowMenu.vala:36
+msgid "Hide"
+msgstr "Masquer"
+
+#: daemon/WindowMenu.vala:49
+msgid "Move"
+msgstr "Déplacer"
+
+#: daemon/WindowMenu.vala:57
+msgid "Resize"
+msgstr "Redimensionner"
+
+#: daemon/WindowMenu.vala:65
+msgid "Always on Top"
+msgstr "Toujours au premier plan"
+
+#: daemon/WindowMenu.vala:73
+msgid "Always on Visible Workspace"
+msgstr "Toujours sur l'espace de travail visible"
+
+#: daemon/WindowMenu.vala:81
+msgid "Move to Workspace Left"
+msgstr "Déplacer vers l'espace de travail de gauche"
+
+#: daemon/WindowMenu.vala:89
+msgid "Move to Workspace Right"
+msgstr "Déplacer vers l'espace de travail de droite"
+
+#: daemon/WindowMenu.vala:97
+msgid "Take Screenshot"
+msgstr "Prendre une capture d'écran"
+
+#: daemon/WindowMenu.vala:105
+msgid "Close"
+msgstr "Fermer"
+
+#: daemon/WindowMenu.vala:138
+msgid "Untile"
+msgstr "Détuiler"
+
+#: daemon/WindowMenu.vala:138
+msgid "Unmaximize"
+msgstr "Restaurer"
+
+#: daemon/WindowMenu.vala:140
+msgid "Maximize"
+msgstr "Maximiser"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
@@ -155,47 +164,49 @@ msgstr ""
 "Un gestionnaire de fenêtres et de positionnement basé sur libmutter et conçu "
 "par elementary pour être utilisé avec Panthéon."
 
-#: data/gala.metainfo.xml.in:23
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
-
-#: data/gala.metainfo.xml.in:30 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:71 data/gala.metainfo.xml.in:86
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.metainfo.xml.in:32
+#: data/gala.metainfo.xml.in:34
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Le changement du fond d'écran ou la mise en veille respectent l'option "
+"« Réduire le mouvement »"
 
-#: data/gala.metainfo.xml.in:33
+#: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Utilisation des pointeurs de glisser-déposer lors du déplacement des fenêtres"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Correction d'un problème où les gestes dans la vue multitâche peuvent cesser "
+"de fonctionner"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:37
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
+"Amélioration du comportement des espaces de travail dynamiques sur plusieurs "
+"écrans"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:58
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:106 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Amélioration de la gestion du raccourci « déplacer vers l'espace de travail »"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:102
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
@@ -203,13 +214,13 @@ msgstr ""
 "Définit la disposition du clavier au démarrage de sorte que l'indicateur "
 "corresponde avec la disposition sélectionnée"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:103
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
 "Corrige les raccourcis claviers pour la capture d'écran depuis la vue "
 "multitâche"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:104
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
@@ -217,27 +228,27 @@ msgstr ""
 "Définit l'accentuation de l'espace de travail actif lors de l'entrée dans la "
 "vue multitâche et animation en 1:1 avec les gestes multipoints"
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:105
 msgid "Update panel color after dimming the wallpaper"
 msgstr "Met à jour la couleur du panneau après l'atténuation du fond d'écran"
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:106
 msgid "Scale rounded corners per-display"
 msgstr "Adapte les coins arrondis pour chaque écran"
 
-#: data/gala.metainfo.xml.in:105
+#: data/gala.metainfo.xml.in:107
 msgid "Support fractional scaling"
 msgstr "Prise en charge de la mise à l'échelle fractionnée"
 
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:127
 msgid "Performance improvements"
 msgstr "Améliorations des performances"
 
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:128
 msgid "Remove texture from Multitasking View"
 msgstr "Retirer la texture de la vue multitâche"
 
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:129
 msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 "Prévention de la sélection accidentelle de fenêtres dans le sélecteur de "
@@ -261,6 +272,9 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Fichier desktop de secours pour les notifications provenant des vieilles "
 "applications."
+
+#~ msgid "elementary, Inc."
+#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr ""

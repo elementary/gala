@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
+public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     public signal void captured (int x, int y, int width, int height);
     public signal void selected (int x, int y);
     public signal void closed ();
@@ -42,13 +42,6 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         wm.get_display ().get_size (out screen_width, out screen_height);
         width = screen_width;
         height = screen_height;
-
-        var canvas = new Clutter.Canvas ();
-        canvas.set_size (screen_width, screen_height);
-        canvas.draw.connect (draw_area);
-        set_content (canvas);
-
-        canvas.invalidate ();
     }
 
 #if HAS_MUTTER45
@@ -159,7 +152,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         height = (start_point.y - end_point.y).abs ();
     }
 
-    private bool draw_area (Cairo.Context ctx) {
+    protected override void draw (Cairo.Context ctx, int width, int height) {
         ctx.save ();
 
         ctx.set_operator (Cairo.Operator.CLEAR);
@@ -168,7 +161,7 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         ctx.restore ();
 
         if (!dragging) {
-            return true;
+            return;
         }
 
         int x, y, w, h;
@@ -182,7 +175,5 @@ public class Gala.Plugins.PIP.SelectionArea : Clutter.Actor {
         ctx.set_source_rgb (0.7, 0.7, 0.7);
         ctx.set_line_width (1.0);
         ctx.stroke ();
-
-        return true;
     }
 }

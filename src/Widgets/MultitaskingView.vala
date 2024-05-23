@@ -44,7 +44,7 @@ namespace Gala {
         private Clutter.BrightnessContrastEffect brightness_effect;
 
         private GLib.Settings gala_behavior_settings;
-        private Granite.Settings granite_settings;
+        private Drawing.StyleManager style_manager;
 
         private bool switching_workspace_with_gesture = false;
         private bool switching_workspace_in_progress {
@@ -59,7 +59,7 @@ namespace Gala {
 
         construct {
             gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
-            granite_settings = Granite.Settings.get_default ();
+            style_manager = Drawing.StyleManager.get_instance ();
 
             visible = false;
             reactive = true;
@@ -150,11 +150,11 @@ namespace Gala {
                 });
             });
 
-            granite_settings.notify["prefers-color-scheme"].connect (update_brightness_effect);
+            style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
         }
 
         private void update_brightness_effect () {
-            if (granite_settings.prefers_color_scheme == DARK) {
+            if (style_manager.prefers_color_scheme == DARK) {
                 brightness_effect.set_brightness (-0.4f);
             } else {
                 brightness_effect.set_brightness (0.4f);

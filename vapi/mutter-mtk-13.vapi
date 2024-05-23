@@ -6,12 +6,14 @@ namespace Mtk {
 	[CCode (cheader_filename = "mtk/mtk.h", ref_function = "mtk_region_ref", type_id = "mtk_region_get_type ()", unref_function = "mtk_region_unref")]
 	[Compact]
 	public class Region {
+		public Mtk.Region apply_matrix_transform_expand (Graphene.Matrix transform);
 		public bool contains_point (int x, int y);
 		public Mtk.RegionOverlap contains_rectangle (Mtk.Rectangle rect);
 		public Mtk.Region copy ();
 		public static Mtk.Region create ();
 		public static Mtk.Region create_rectangle (Mtk.Rectangle rect);
 		public static Mtk.Region create_rectangles (Mtk.Rectangle rects, int n_rects);
+		public Mtk.Region crop_and_scale (Graphene.Rect src_rect, int dst_width, int dst_height);
 		public bool equal (Mtk.Region other);
 		public Mtk.Rectangle? get_extents ();
 		public Mtk.Rectangle? get_rectangle (int nth);
@@ -20,6 +22,7 @@ namespace Mtk {
 		public bool is_empty ();
 		public int num_rectangles ();
 		public unowned Mtk.Region @ref ();
+		public Mtk.Region scale (int scale);
 		public void subtract (Mtk.Region other);
 		public void subtract_rectangle (Mtk.Rectangle rect);
 		public void translate (int dx, int dy);
@@ -34,23 +37,58 @@ namespace Mtk {
 		public int y;
 		public int width;
 		public int height;
+#if HAS_MUTTER46
+		[CCode (cname = "MTK_RECTANGLE_MAX_STACK_RECTS")]
+		public const int MAX_STACK_RECTS;
+#endif
 		[CCode (has_construct_function = false, type = "MtkRectangle*")]
 		public Rectangle (int x, int y, int width, int height);
 		public int area ();
 		public bool contains_rect (Mtk.Rectangle inner_rect);
 		public Mtk.Rectangle? copy ();
 		public bool could_fit_rect (Mtk.Rectangle inner_rect);
+#if HAS_MUTTER46
+		public void crop_and_scale (Graphene.Rect src_rect, int dst_width, int dst_height, Mtk.Rectangle dest);
+#endif
 		public bool equal (Mtk.Rectangle src2);
 		public void free ();
 		public static Mtk.Rectangle from_graphene_rect (Graphene.Rect rect, Mtk.RoundingStrategy rounding_strategy);
 		public bool horiz_overlap (Mtk.Rectangle rect2);
 		public bool intersect (Mtk.Rectangle src2, out Mtk.Rectangle dest);
+#if HAS_MUTTER46
+		public bool is_adjacent_to (Mtk.Rectangle other);
+#endif
 		public bool overlap (Mtk.Rectangle rect2);
+#if HAS_MUTTER46
+		public void scale_double (double scale, Mtk.RoundingStrategy rounding_strategy, Mtk.Rectangle dest);
+#endif
 		public Graphene.Rect? to_graphene_rect ();
 		public Mtk.Rectangle union (Mtk.Rectangle rect2);
 		public bool vert_overlap (Mtk.Rectangle rect2);
 	}
 #if HAS_MUTTER46
+	[CCode (cheader_filename = "mtk/mtk.h", has_type_id = false)]
+	public struct RegionBuilder {
+		[CCode (array_length_cname = "n_levels")]
+		public weak Mtk.Region levels[16];
+		public int n_levels;
+		[CCode (cname = "MTK_REGION_BUILDER_MAX_LEVELS")]
+		public const int MAX_LEVELS;
+		public void add_rectangle (int x, int y, int width, int height);
+		public Mtk.Region finish ();
+		public void init ();
+	}
+	[CCode (cheader_filename = "mtk/mtk.h", has_type_id = false)]
+	public struct RegionIterator {
+		public weak Mtk.Region region;
+		public Mtk.Rectangle rectangle;
+		public bool line_start;
+		public bool line_end;
+		public int i;
+		public bool at_end ();
+		public void init (Mtk.Region region);
+		public void next ();
+	}
 	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_REGION_OVERLAP_", has_type_id = false)]
 	public enum RegionOverlap {
 		OUT,

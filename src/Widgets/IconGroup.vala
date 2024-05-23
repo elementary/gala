@@ -10,7 +10,7 @@ namespace Gala {
      * It also decides whether to draw the container shape, a plus sign or an ellipsis.
      * Lastly it also includes the drawing code for the active highlight.
      */
-    public class IconGroup : Clutter.Actor {
+    public class IconGroup : CanvasActor {
         public const int SIZE = 64;
 
         private const int PLUS_SIZE = 6;
@@ -47,7 +47,7 @@ namespace Gala {
             set {
                 if (value != _scale_factor) {
                     _scale_factor = value;
-                    resize_canvas ();
+                    resize ();
                 }
             }
         }
@@ -61,10 +61,6 @@ namespace Gala {
 
         construct {
             reactive = true;
-
-            var canvas = new Clutter.Canvas ();
-            canvas.draw.connect (draw);
-            content = canvas;
 
             drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
             drag_action.actor_clicked.connect (() => selected ());
@@ -80,8 +76,7 @@ namespace Gala {
 
             add_child (icon_container);
 
-            resize_canvas ();
-
+            resize ();
 #if HAS_MUTTER46
             icon_container.child_removed.connect_after (redraw);
 #else
@@ -97,13 +92,11 @@ namespace Gala {
 #endif
         }
 
-        private bool resize_canvas () {
+        private void resize () {
             var size = InternalUtils.scale_to_int (SIZE, scale_factor);
 
             width = size;
             height = size;
-
-            return ((Clutter.Canvas) content).set_size (size, size);
         }
 
         /**
@@ -206,16 +199,14 @@ namespace Gala {
          * Trigger a redraw
          */
         public void redraw () {
-            if (!resize_canvas ()) {
-                content.invalidate ();
-            }
+            content.invalidate ();
         }
 
         /**
          * Draw the background or plus sign and do layouting. We won't lose performance here
          * by relayouting in the same function, as it's only ever called when we invalidate it.
          */
-        private bool draw (Cairo.Context cr) {
+        protected override void draw (Cairo.Context cr, int cr_width, int cr_height) {
             clear_effects ();
             cr.set_operator (Cairo.Operator.CLEAR);
             cr.paint ();
@@ -228,7 +219,7 @@ namespace Gala {
                 var icon = (WindowIconActor) icon_container.get_child_at_index (0);
                 icon.place (0, 0, 64, scale_factor);
 
-                return false;
+                return;
             }
 
             // more than one => we need a folder
@@ -236,8 +227,8 @@ namespace Gala {
                 cr,
                 0,
                 0,
-                (int) width,
-                (int) height,
+                width,
+                height,
                 InternalUtils.scale_to_int (5, scale_factor)
             );
 
@@ -245,9 +236,9 @@ namespace Gala {
                 scale_factor = scale_factor
             };
 
-            var granite_settings = Granite.Settings.get_default ();
+            var style_manager = Drawing.StyleManager.get_instance ();
 
-            if (granite_settings.prefers_color_scheme == DARK) {
+            if (style_manager.prefers_color_scheme == DARK) {
                 const double BG_COLOR = 35.0 / 255.0;
                 if (drag_action.dragging) {
                     cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
@@ -289,7 +280,7 @@ namespace Gala {
             if (n_windows < 1) {
                 if (!Meta.Prefs.get_dynamic_workspaces ()
                     || workspace_index != manager.get_n_workspaces () - 1)
-                    return false;
+                    return;
 
                 var buffer = new Drawing.BufferSurface (scaled_size, scaled_size);
                 var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
@@ -307,7 +298,7 @@ namespace Gala {
                     InternalUtils.scale_to_int (PLUS_SIZE, scale_factor)
                 );
 
-                if (granite_settings.prefers_color_scheme == DARK) {
+                if (style_manager.prefers_color_scheme == DARK) {
                     buffer.context.move_to (0, 1 * scale_factor);
                     buffer.context.set_source_rgb (0, 0, 0);
                     buffer.context.fill_preserve ();
@@ -330,7 +321,7 @@ namespace Gala {
                 cr.set_source_surface (buffer.surface, 0, 0);
                 cr.paint ();
 
-                return false;
+                return;
             }
 
             int size;
@@ -390,8 +381,6 @@ namespace Gala {
                     y += InternalUtils.scale_to_int (size, scale_factor) + spacing;
                 }
             }
-
-            return false;
         }
 
         private Clutter.Actor? drag_begin (float click_x, float click_y) {
