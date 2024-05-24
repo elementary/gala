@@ -6,14 +6,6 @@
  */
 
 public class Gala.PanelWindow : Object {
-    public enum HideMode {
-        NEVER,
-        MAXIMIZED_FOCUS_WINDOW,
-        OVERLAPPING_FOCUS_WINDOW,
-        OVERLAPPING_WINDOW,
-        ALWAYS
-    }
-
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
 
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
@@ -137,7 +129,7 @@ public class Gala.PanelWindow : Object {
         });
     }
 
-    public void set_hide_mode (HideMode hide_mode) {
+    public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
         clone.hide_mode = hide_mode;
 
         destroy_barrier ();
