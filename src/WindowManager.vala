@@ -1995,13 +1995,19 @@ namespace Gala {
                     windows.prepend (actor);
                     parents.prepend (actor.get_parent ());
 
-                        clutter_actor_reparent (actor, static_windows);
-                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                        actor.save_easing_state ();
-                        actor.set_easing_duration (300);
-                        actor.opacity = 0;
-                        actor.restore_easing_state ();
+                    clutter_actor_reparent (actor, static_windows);
+                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+
+                    // Don't fade docks they just stay where they are
+                    if (window.window_type == DOCK) {
+                        continue;
                     }
+
+                    // windows that are on all workspaces will be faded out and back in
+                    actor.save_easing_state ();
+                    actor.set_easing_duration (300);
+                    actor.opacity = 0;
+                    actor.restore_easing_state ();
 
                     continue;
                 }
