@@ -22,6 +22,14 @@ public class Gala.ShellClientsManager : Object {
         notifications_client = new NotificationsClient (wm.get_display ());
 
         // TODO: Launch clients e.g. from gsetting
+        var dock = new ManagedClient (wm.get_display (), { "io.elementary.dock" });
+        dock.window_created.connect ((window) => {
+            window.shown.connect (() => {
+                set_anchor (window, BOTTOM);
+                set_hide_mode (window, OVERLAPPING_FOCUS_WINDOW);
+            });
+        });
+        protocol_clients += dock;
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
