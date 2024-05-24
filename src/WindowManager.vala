@@ -83,8 +83,6 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
-        private ShellClientsManager shell_clients_manager;
-
         private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
@@ -145,7 +143,7 @@ namespace Gala {
         }
 
         public override void start () {
-            shell_clients_manager = new ShellClientsManager (this);
+            ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
