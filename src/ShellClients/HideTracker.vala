@@ -13,7 +13,7 @@ public class Gala.HideTracker : Object {
 
     public Meta.Display display { get; construct; }
     public PanelWindow panel { get; construct; }
-    public PanelWindow.HideMode hide_mode { get; set; default = NEVER; }
+    public Pantheon.Desktop.HideMode hide_mode { get; set; default = NEVER; }
 
     private bool hovered = false;
 

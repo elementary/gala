@@ -11,7 +11,7 @@ public class Gala.PanelClone : Object {
     public WindowManager wm { get; construct; }
     public PanelWindow panel { get; construct; }
 
-    public PanelWindow.HideMode hide_mode {
+    public Pantheon.Desktop.HideMode hide_mode {
         get {
             return hide_tracker.hide_mode;
         }

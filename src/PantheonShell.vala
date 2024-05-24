@@ -237,7 +237,25 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        Meta.Side side = TOP;
+        switch (anchor) {
+            case TOP:
+                break;
+
+            case BOTTOM:
+                side = BOTTOM;
+                break;
+
+            case LEFT:
+                side = LEFT;
+                break;
+
+            case RIGHT:
+                side = RIGHT;
+                break;
+        }
+
+        ShellClientsManager.get_instance ().set_anchor (window, side);
     }
 
     internal static void focus (Wl.Client client, Wl.Resource resource) {
@@ -267,7 +285,7 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        ShellClientsManager.get_instance ().set_size (window, width, height);
     }
 
     internal static void set_hide_mode (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Pantheon.Desktop.HideMode hide_mode) {
@@ -282,7 +300,7 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        ShellClientsManager.get_instance ().set_hide_mode (window, hide_mode);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

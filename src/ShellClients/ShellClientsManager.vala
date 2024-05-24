@@ -79,7 +79,7 @@ public class Gala.ShellClientsManager : Object {
         windows[window].set_size (width, height);
     }
 
-    public void set_hide_mode (Meta.Window window, PanelWindow.HideMode hide_mode) {
+    public void set_hide_mode (Meta.Window window, Pantheon.Desktop.HideMode hide_mode) {
         if (!(window in windows)) {
             warning ("Set anchor for window before hide mode.");
             return;
