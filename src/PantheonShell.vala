@@ -240,7 +240,26 @@ namespace Gala {
             return;
         }
 
-        ShellClientsManager.get_instance ().set_anchor (window, (Meta.Side) anchor);
+        Meta.Side side = TOP;
+        switch (anchor) {
+            case TOP:
+                side = TOP;
+                break;
+
+            case BOTTOM:
+                side = BOTTOM;
+                break;
+
+            case LEFT:
+                side = LEFT;
+                break;
+
+            case RIGHT:
+                side = RIGHT;
+                break;
+        }
+
+        ShellClientsManager.get_instance ().set_anchor (window, side);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

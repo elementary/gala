@@ -2001,7 +2001,6 @@ namespace Gala {
                         actor.set_easing_duration (300);
                         actor.opacity = 0;
                         actor.restore_easing_state ();
-                    }
 
                     continue;
                 }
