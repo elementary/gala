@@ -240,7 +240,7 @@ namespace Gala {
             return;
         }
 
-        // TODO
+        ShellClientsManager.get_instance ().set_anchor (window, (Meta.Side) anchor);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

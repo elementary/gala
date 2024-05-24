@@ -83,8 +83,6 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
-        private ShellClientsManager shell_clients_manager;
-
         private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
@@ -145,7 +143,7 @@ namespace Gala {
         }
 
         public override void start () {
-            shell_clients_manager = new ShellClientsManager (this);
+            ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
@@ -1997,19 +1995,13 @@ namespace Gala {
                     windows.prepend (actor);
                     parents.prepend (actor.get_parent ());
 
-                    clutter_actor_reparent (actor, static_windows);
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-
-                    // Don't fade docks they just stay where they are
-                    if (window.window_type == DOCK) {
-                        continue;
+                        clutter_actor_reparent (actor, static_windows);
+                        actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
+                        actor.save_easing_state ();
+                        actor.set_easing_duration (300);
+                        actor.opacity = 0;
+                        actor.restore_easing_state ();
                     }
-
-                    // windows that are on all workspaces will be faded out and back in
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 0;
-                    actor.restore_easing_state ();
 
                     continue;
                 }
