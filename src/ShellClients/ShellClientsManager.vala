@@ -5,8 +5,21 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-[SingleInstance]
 public class Gala.ShellClientsManager : Object {
+    private static ShellClientsManager instance;
+
+    public static void init (WindowManager wm) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new ShellClientsManager (wm);
+    }
+
+    public static ShellClientsManager? get_instance () {
+        return instance;
+    }
+
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -14,7 +27,7 @@ public class Gala.ShellClientsManager : Object {
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
 
-    public ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
 
