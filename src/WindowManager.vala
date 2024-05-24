@@ -145,7 +145,7 @@ namespace Gala {
         }
 
         public override void start () {
-            shell_clients_manager = new ShellClientsManager (get_display ());
+            shell_clients_manager = new ShellClientsManager (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
