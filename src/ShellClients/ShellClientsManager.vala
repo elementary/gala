@@ -35,6 +35,7 @@ public class Gala.ShellClientsManager : Object {
         notifications_client = new NotificationsClient (wm.get_display ());
 
         // TODO: Launch clients e.g. from gsetting
+        protocol_clients += new ManagedClient (wm.get_display (), { "io.elementary.dock" });
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
