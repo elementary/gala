@@ -51,6 +51,9 @@ all_doc_target = custom_target(
         '--pkg', 'granite',
         '--pkg', 'gnome-desktop-3.0',
         '--pkg', 'gmodule-2.0',
+        '--pkg', 'wayland-server',
+        '--pkg', 'pantheon-desktop-shell',
+        '--vapidir=' + join_paths(meson.global_source_root(), 'protocol'),
         '-o', '@OUTPUT@',
         '@INPUT@'
     ],
