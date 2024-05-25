@@ -48,27 +48,23 @@ public class Gala.HotCorner : Object {
     private Gala.Barrier? vertical_barrier = null;
     private Gala.Barrier? horizontal_barrier = null;
 
-    public HotCorner (Meta.Display display, float x, float y, float scale, string hot_corner_position) {
-        add_barriers (display, x, y, scale, hot_corner_position);
+    public HotCorner (Meta.Backend backend, float x, float y, float scale, string hot_corner_position) {
+        add_barriers (backend, x, y, scale, hot_corner_position);
     }
 
     public void destroy_barriers () {
-        if (vertical_barrier != null) {
-            vertical_barrier.destroy ();
-        }
-
-        if (horizontal_barrier != null) {
-            horizontal_barrier.destroy ();
-        }
+        vertical_barrier = null;
+        horizontal_barrier = null;
     }
 
-    private void add_barriers (Meta.Display display, float x, float y, float scale, string hot_corner_position) {
+    private void add_barriers (Meta.Backend backend, float x, float y, float scale, string hot_corner_position) {
         var vrect = get_barrier_rect (x, y, scale, hot_corner_position, Clutter.Orientation.VERTICAL);
         var hrect = get_barrier_rect (x, y, scale, hot_corner_position, Clutter.Orientation.HORIZONTAL);
         var vdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.VERTICAL);
         var hdir = get_barrier_direction (hot_corner_position, Clutter.Orientation.HORIZONTAL);
 
         vertical_barrier = new Gala.Barrier (
+            backend,
             vrect.x, vrect.y, vrect.x + vrect.width, vrect.y + vrect.height, vdir,
             TRIGGER_PRESSURE_THRESHOLD,
             RELEASE_PRESSURE_THRESHOLD,
@@ -77,6 +73,7 @@ public class Gala.HotCorner : Object {
         );
 
         horizontal_barrier = new Gala.Barrier (
+            backend,
             hrect.x, hrect.y, hrect.x + hrect.width, hrect.y + hrect.height, hdir,
             TRIGGER_PRESSURE_THRESHOLD,
             RELEASE_PRESSURE_THRESHOLD,
