@@ -46,6 +46,9 @@ public class Gala.PanelWindow : Object {
         window.stick ();
 
         clone = new PanelClone (wm, this);
+
+        var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => update_anchor (anchor));
     }
 
 #if HAS_MUTTER46
