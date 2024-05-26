@@ -184,10 +184,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void destroy_barrier () {
-        if (barrier != null) {
-            barrier.destroy ();
-            barrier = null;
-        }
+        barrier = null;
     }
 
     private void setup_barrier () {
@@ -217,6 +214,7 @@ public class Gala.PanelWindow : Object {
     private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
 #endif
         barrier = new Barrier (
+            wm.get_display ().get_context ().get_backend (),
             monitor_geom.x + offset,
             monitor_geom.y,
             monitor_geom.x + monitor_geom.width - offset,
@@ -237,6 +235,7 @@ public class Gala.PanelWindow : Object {
     private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
 #endif
         barrier = new Barrier (
+            wm.get_display ().get_context ().get_backend (),
             monitor_geom.x + offset,
             monitor_geom.y + monitor_geom.height,
             monitor_geom.x + monitor_geom.width - offset,
