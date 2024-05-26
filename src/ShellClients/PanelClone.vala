@@ -11,20 +11,10 @@ public class Gala.PanelClone : Object {
     public WindowManager wm { get; construct; }
     public PanelWindow panel { get; construct; }
 
-    public Pantheon.Desktop.HideMode hide_mode {
-        get {
-            return hide_tracker.hide_mode;
-        }
-        set {
-            hide_tracker.hide_mode = value;
-        }
-    }
-
     public bool panel_hidden { get; private set; default = false; }
 
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
-    private HideTracker hide_tracker;
 
     public PanelClone (WindowManager wm, PanelWindow panel) {
         Object (wm: wm, panel: panel);
@@ -45,16 +35,7 @@ public class Gala.PanelClone : Object {
         // but we want to keep it in sync with us
         actor.notify["visible"].connect (update_visible);
 
-        notify["panel-hidden"].connect (() => {
-            update_visible ();
-            // When hidden changes schedule an update to make sure it's actually
-            // correct since things might have changed during the animation
-            hide_tracker.schedule_update ();
-        });
-
-        hide_tracker = new HideTracker (wm.get_display (), panel);
-        hide_tracker.hide.connect (hide);
-        hide_tracker.show.connect (show);
+        notify["panel-hidden"].connect (update_visible);
 
         update_visible ();
         update_clone_position ();
@@ -89,7 +70,7 @@ public class Gala.PanelClone : Object {
         }
     }
 
-    private void hide () {
+    public void hide () {
         if (panel_hidden) {
             return;
         }

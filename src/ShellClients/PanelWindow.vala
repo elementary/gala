@@ -18,8 +18,9 @@ public class Gala.PanelWindow : Object {
     public Meta.Side anchor;
 
     private Barrier? barrier;
+    private HideTracker? hide_tracker;
 
-    private PanelClone? clone = null;
+    private PanelClone clone;
 
     private int width = -1;
     private int height = -1;
@@ -44,6 +45,15 @@ public class Gala.PanelWindow : Object {
         });
 
         window.stick ();
+
+        clone = new PanelClone (wm, this);
+        clone.notify["panel-hidden"].connect (() => {
+            // When hidden changes schedule an update to make sure it's actually
+            // correct since things might have changed during the animation
+            if (hide_tracker != null) {
+                hide_tracker.schedule_update ();
+            }
+        });
     }
 
 #if HAS_MUTTER46
@@ -69,14 +79,14 @@ public class Gala.PanelWindow : Object {
         this.height = height;
 
         position_window ();
-        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode); // Resetup barriers etc.
     }
 
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
-        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
@@ -131,15 +141,17 @@ public class Gala.PanelWindow : Object {
         destroy_barrier ();
 
         if (hide_mode == NEVER) {
-            clone = null;
+            hide_tracker = null;
             make_exclusive ();
         } else {
             unmake_exclusive ();
 
-            if (clone == null) {
-                clone = new PanelClone (wm, this);
+            if (hide_tracker == null) {
+                hide_tracker = new HideTracker (wm.get_display (), this);
+                hide_tracker.show.connect (clone.show);
+                hide_tracker.hide.connect (clone.hide);
             }
-            clone.hide_mode = hide_mode;
+            hide_tracker.hide_mode = hide_mode;
 
             setup_barrier ();
         }
