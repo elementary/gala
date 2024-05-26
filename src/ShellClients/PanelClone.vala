@@ -18,6 +18,7 @@ public class Gala.PanelClone : Object {
         set {
             if (value == NEVER) {
                 hide_tracker = null;
+                show ();
                 return;
             } else if (hide_tracker == null) {
                 hide_tracker = new HideTracker (wm.get_display (), panel);
