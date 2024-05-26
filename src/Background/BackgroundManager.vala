@@ -20,7 +20,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     private BackgroundSource background_source;
-    private Meta.BackgroundActor background_actor;
+    private Meta.BackgroundActor? background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
 
     public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
@@ -88,7 +88,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         new_background_actor = create_background_actor ();
         var new_content = (Meta.BackgroundContent)new_background_actor.content;
-        new_background_actor.visible = background_actor.visible;
 
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
