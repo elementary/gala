@@ -172,9 +172,8 @@ namespace Gala {
             }
 
             // Assign each window to the closest available slot
-            var tmplist = windows.copy ();
-            while (tmplist.length () > 0) {
-                unowned List<unowned TilableWindow?> link = tmplist.nth (0);
+            while (windows.length () > 0) {
+                unowned List<TilableWindow?> link = windows.nth (0);
                 var window = link.data;
                 var rect = window.rect;
 
@@ -207,9 +206,9 @@ namespace Gala {
                     continue;
 
                 if (taken_slots[slot_candidate] != null)
-                    tmplist.prepend (taken_slots[slot_candidate]);
+                    windows.prepend (taken_slots[slot_candidate]);
 
-                tmplist.remove_link (link);
+                windows.remove_link (link);
                 taken_slots[slot_candidate] = window;
             }
 
