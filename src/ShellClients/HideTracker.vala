@@ -174,7 +174,13 @@ public class Gala.HideTracker : Object {
     }
 
     private void toggle_display (bool should_hide) {
-        if (should_hide) {
+#if HAS_MUTTER45
+        hovered = panel.window.has_pointer ();
+#else
+        hovered = window_has_pointer ();
+#endif
+
+        if (should_hide && !hovered) {
             // Don't hide if we have transients, e.g. an open popover, dialog, etc.
             var has_transients = false;
             panel.window.foreach_transient (() => {
@@ -182,7 +188,7 @@ public class Gala.HideTracker : Object {
                 return false;
             });
 
-            if (hovered || has_transients) {
+            if (has_transients) {
                 return;
             }
 
