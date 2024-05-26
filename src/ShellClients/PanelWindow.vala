@@ -19,7 +19,7 @@ public class Gala.PanelWindow : Object {
 
     private Barrier? barrier;
 
-    private PanelClone? clone = null;
+    private PanelClone clone;
 
     private int width = -1;
     private int height = -1;
@@ -44,6 +44,8 @@ public class Gala.PanelWindow : Object {
         });
 
         window.stick ();
+
+        clone = new PanelClone (wm, this);
     }
 
 #if HAS_MUTTER46
@@ -69,14 +71,14 @@ public class Gala.PanelWindow : Object {
         this.height = height;
 
         position_window ();
-        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
     }
 
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
-        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
@@ -128,19 +130,14 @@ public class Gala.PanelWindow : Object {
     }
 
     public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
+        clone.hide_mode = hide_mode;
+
         destroy_barrier ();
 
         if (hide_mode == NEVER) {
-            clone = null;
             make_exclusive ();
         } else {
             unmake_exclusive ();
-
-            if (clone == null) {
-                clone = new PanelClone (wm, this);
-            }
-            clone.hide_mode = hide_mode;
-
             setup_barrier ();
         }
     }

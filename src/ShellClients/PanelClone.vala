@@ -13,9 +13,18 @@ public class Gala.PanelClone : Object {
 
     public Pantheon.Desktop.HideMode hide_mode {
         get {
-            return hide_tracker.hide_mode;
+            return hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode;
         }
         set {
+            if (value == NEVER) {
+                hide_tracker = null;
+                return;
+            } else if (hide_tracker == null) {
+                hide_tracker = new HideTracker (wm.get_display (), panel);
+                hide_tracker.hide.connect (hide);
+                hide_tracker.show.connect (show);
+            }
+
             hide_tracker.hide_mode = value;
         }
     }
@@ -24,7 +33,8 @@ public class Gala.PanelClone : Object {
 
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
-    private HideTracker hide_tracker;
+
+    private HideTracker? hide_tracker;
 
     public PanelClone (WindowManager wm, PanelWindow panel) {
         Object (wm: wm, panel: panel);
@@ -49,12 +59,10 @@ public class Gala.PanelClone : Object {
             update_visible ();
             // When hidden changes schedule an update to make sure it's actually
             // correct since things might have changed during the animation
-            hide_tracker.schedule_update ();
+            if (hide_tracker != null) {
+                hide_tracker.schedule_update ();
+            }
         });
-
-        hide_tracker = new HideTracker (wm.get_display (), panel);
-        hide_tracker.hide.connect (hide);
-        hide_tracker.show.connect (show);
 
         update_visible ();
         update_clone_position ();
