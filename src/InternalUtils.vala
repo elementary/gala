@@ -143,6 +143,9 @@ namespace Gala {
             unowned WindowClone id;
         }
 
+        /**
+         * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
+         */
 #if HAS_MUTTER45
         public static List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, List<TilableWindow?> windows) {
 #else
