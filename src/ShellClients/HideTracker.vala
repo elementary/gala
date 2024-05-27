@@ -30,7 +30,8 @@ public class Gala.HideTracker : Object {
     }
 
     construct {
-        // Can't be local otherwise we get a reference cycle :(
+        // Can't be local otherwise we get a memory leak :(
+        // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
         current_focus_window = display.focus_window;
         track_focus_window (current_focus_window);
         display.notify["focus-window"].connect (() => {
