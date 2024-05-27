@@ -69,7 +69,7 @@ public class Gala.HotCornerManager : Object {
         }
 
         unowned Meta.Display display = wm.get_display ();
-        var hot_corner = new HotCorner (display, (int) x, (int) y, scale, hot_corner_position);
+        var hot_corner = new HotCorner (display.get_context ().get_backend (), (int) x, (int) y, scale, hot_corner_position);
 
         hot_corner.trigger.connect (() => {
             if (
