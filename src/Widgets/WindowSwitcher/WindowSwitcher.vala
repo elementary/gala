@@ -194,7 +194,7 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         // Offset by 0.5 so cairo draws a stroke on real pixels
         Drawing.Utilities.cairo_rounded_rectangle (
-            ctx, stroke_width  + 0.5, stroke_width + 0.5,
+            ctx, stroke_width + 0.5, stroke_width + 0.5,
             width - stroke_width * 2 - 1,
             height - stroke_width * 2 - 1,
             InternalUtils.scale_to_int (8, scaling_factor)
