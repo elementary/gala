@@ -25,17 +25,38 @@ public class Gala.ShadowEffect : Clutter.Effect {
         shadow_cache = new Gee.HashMap<string,Shadow> ();
     }
 
-    public int shadow_size { get; construct; }
+    private string _css_class;
+    public string css_class {
+        get {
+            return _css_class;
+        }
+
+        construct set {
+            _css_class = value;
+            switch (value) {
+                case "workspace-switcher":
+                    shadow_size = 6;
+                    break;
+                case "window":
+                    shadow_size = 55;
+                    break;
+                default:
+                    shadow_size = 18;
+                    break;
+            }
+        }
+    }
 
     public float scale_factor { get; set; default = 1; }
     public uint8 shadow_opacity { get; set; default = 255; }
-    public string? css_class { get; set; default = null; }
+    public int border_radius { get; set; default = 9;}
 
+    private int shadow_size;
     private Cogl.Pipeline pipeline;
     private string? current_key = null;
 
-    public ShadowEffect (int shadow_size) {
-        Object (shadow_size: shadow_size);
+    public ShadowEffect (string css_class = "") {
+        Object (css_class: css_class);
     }
 
     construct {
@@ -48,7 +69,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread = 2) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread = 0) {
         var old_key = current_key;
         current_key = "%ix%i:%i".printf (width, height, shadow_size);
         if (old_key == current_key) {
@@ -67,12 +88,15 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         // fill a new texture for this size
         var buffer = new Drawing.BufferSurface (width, height);
-        buffer.context.rectangle (
+        Drawing.Utilities.cairo_rounded_rectangle (
+            buffer.context,
             shadow_size - shadow_spread,
             shadow_size - shadow_spread,
             width - shadow_size * 2 + shadow_spread * 2,
-            height - shadow_size * 2 + shadow_spread * 2
+            height - shadow_size * 2 + shadow_spread * 2,
+            border_radius
         );
+
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
@@ -123,7 +147,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         pipeline.set_color (alpha);
 
-        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
+        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1 + shadow_size / 4, bounding_box.x2, bounding_box.y2 + shadow_size / 4);
 
         actor.continue_paint (context);
     }

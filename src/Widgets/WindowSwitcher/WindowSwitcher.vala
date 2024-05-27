@@ -84,9 +84,9 @@ public class Gala.WindowSwitcher : CanvasActor {
             orientation = VERTICAL
         };
 
-        shadow_effect = new ShadowEffect (40) {
-            shadow_opacity = 200,
-            css_class = "window-switcher"
+        shadow_effect = new ShadowEffect ("window-switcher") {
+            border_radius = InternalUtils.scale_to_int (9, scaling_factor),
+            shadow_opacity = 100
         };
         add_effect (shadow_effect);
 
