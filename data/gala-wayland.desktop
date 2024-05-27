@@ -11,5 +11,4 @@ X-GNOME-WMName=Gala
 X-GnomeWMSettingsLibrary=metacity
 X-GNOME-Autostart-Phase=DisplayServer
 X-GNOME-Autostart-Notify=true
-X-GNOME-HiddenUnderSystemd=true
 X-Ubuntu-Gettext-Domain=gala
