@@ -154,6 +154,8 @@ public class Gala.WindowSwitcher : CanvasActor {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
+        var stroke_width = scaling_factor;
+
         caption.color = Clutter.Color.from_string (caption_color);
 
         ctx.save ();
@@ -164,7 +166,13 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         ctx.set_operator (Cairo.Operator.SOURCE);
 
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0.5, 0.5, width - 1, height - 1, InternalUtils.scale_to_int (9, scaling_factor));
+        // Offset by 0.5 so cairo draws a stroke on real pixels
+        Drawing.Utilities.cairo_rounded_rectangle (
+            ctx, 0.5, 0.5,
+            width - stroke_width,
+            height - stroke_width,
+            InternalUtils.scale_to_int (9, scaling_factor)
+        );
 
         ctx.set_source_rgba (
             background_color.red,
@@ -174,7 +182,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         );
         ctx.fill_preserve ();
 
-        ctx.set_line_width (1);
+        ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
             border_color.red,
             border_color.green,
@@ -184,9 +192,15 @@ public class Gala.WindowSwitcher : CanvasActor {
         ctx.stroke ();
         ctx.restore ();
 
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 1.5, 1.5, width - 3, height - 3, InternalUtils.scale_to_int (8, scaling_factor));
+        // Offset by 0.5 so cairo draws a stroke on real pixels
+        Drawing.Utilities.cairo_rounded_rectangle (
+            ctx, stroke_width  + 0.5, stroke_width + 0.5,
+            width - stroke_width * 2 - 1,
+            height - stroke_width * 2 - 1,
+            InternalUtils.scale_to_int (8, scaling_factor)
+        );
 
-        ctx.set_line_width (1);
+        ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
             highlight_color.red,
             highlight_color.green,
