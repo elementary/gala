@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 7.1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -48,27 +48,27 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -153,6 +153,10 @@ msgstr ""
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
+msgstr ""
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
 msgstr ""
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57

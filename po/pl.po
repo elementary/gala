@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2024-02-23 10:12+0000\n"
 "Last-Translator: Sebastian Bernat <srakap330@gmail.com>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
@@ -54,7 +54,7 @@ msgstr "Zrzuty ekranu"
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -62,20 +62,20 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
@@ -163,6 +163,10 @@ msgid ""
 msgstr ""
 "Menedżer okien i kompozytor oparty na libmutter i zaprojektowany przez "
 "elementary do użytku z Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -266,9 +270,6 @@ msgstr "Inne"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Przeładuj animowane tapety przy zmianie strefy czasowej"

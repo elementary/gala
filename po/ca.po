@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2024-02-18 10:49+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
@@ -53,27 +53,27 @@ msgstr "Captures de pantalla"
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"
@@ -161,6 +161,10 @@ msgid ""
 msgstr ""
 "Un gestor de finestres i de composició basat en libmutter i dissenyat per "
 "l'elementary per usar amb el Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -266,9 +270,6 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Fitxer d'escriptori alternatiu per a notificacions d'aplicacions "
 "desactualitzades."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr ""

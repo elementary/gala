@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: aalhaif <aalhaif@hotmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
@@ -52,7 +52,7 @@ msgstr "لقطات الشاشة"
 msgid "Screenshot taken"
 msgstr "لقطات الشاشة الملتقطة"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -63,24 +63,24 @@ msgstr[3] "التغييرات ستظهر بعد %i ثواني."
 msgstr[4] "التغييرات ستظهر بعد %i ثانية."
 msgstr[5] "التغييرات ستظهر قريباً."
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "إعدادات شاشة العرض…"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "إعدادات النظام…"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "لقطات شاشة من %s"
@@ -169,6 +169,10 @@ msgid ""
 "elementary for use with Pantheon."
 msgstr ""
 "مدير نوافذ مبني على libmutter ومصمم من قبل elementary للاستخدام مع Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -262,9 +266,6 @@ msgstr "أخرى"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #, fuzzy
 #~| msgid "Show window titles in multitasking view"
