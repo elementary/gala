@@ -66,7 +66,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         // fill a new texture for this size
-        var buffer = new Granite.Drawing.BufferSurface (width, height);
+        var buffer = new Drawing.BufferSurface (width, height);
         buffer.context.rectangle (
             shadow_size - shadow_spread,
             shadow_size - shadow_spread,
