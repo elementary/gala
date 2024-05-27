@@ -142,11 +142,19 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     protected override void draw (Cairo.Context ctx, int width, int height) {
+        var background_color = Drawing.Color.LIGHT_BACKGROUND;
+        var border_color = Drawing.Color.LIGHT_BORDER;
         var caption_color = "#2e2e31";
+        var highlight_color = Drawing.Color.LIGHT_HIGHLIGHT;
 
         if (style_manager.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
+            background_color = Drawing.Color.DARK_BACKGROUND;
+            border_color = Drawing.Color.DARK_BORDER;
             caption_color = "#fafafa";
+            highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
+
+        var stroke_width = scaling_factor;
 
         caption.color = Clutter.Color.from_string (caption_color);
 
@@ -156,20 +164,50 @@ public class Gala.WindowSwitcher : CanvasActor {
         ctx.clip ();
         ctx.reset_clip ();
 
-        var background_color = Drawing.Color.LIGHT_BACKGROUND;
-        if (style_manager.prefers_color_scheme == Drawing.StyleManager.ColorScheme.DARK) {
-            background_color = Drawing.Color.DARK_BACKGROUND;
-        }
-
         ctx.set_operator (Cairo.Operator.SOURCE);
+
+        // Offset by 0.5 so cairo draws a stroke on real pixels
+        Drawing.Utilities.cairo_rounded_rectangle (
+            ctx, 0.5, 0.5,
+            width - stroke_width,
+            height - stroke_width,
+            InternalUtils.scale_to_int (9, scaling_factor)
+        );
+
         ctx.set_source_rgba (
             background_color.red,
             background_color.green,
             background_color.blue,
             background_color.alpha
         );
-        Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, InternalUtils.scale_to_int (6, scaling_factor));
-        ctx.fill ();
+        ctx.fill_preserve ();
+
+        ctx.set_line_width (stroke_width);
+        ctx.set_source_rgba (
+            border_color.red,
+            border_color.green,
+            border_color.blue,
+            border_color.alpha
+        );
+        ctx.stroke ();
+        ctx.restore ();
+
+        // Offset by 0.5 so cairo draws a stroke on real pixels
+        Drawing.Utilities.cairo_rounded_rectangle (
+            ctx, stroke_width + 0.5, stroke_width + 0.5,
+            width - stroke_width * 2 - 1,
+            height - stroke_width * 2 - 1,
+            InternalUtils.scale_to_int (8, scaling_factor)
+        );
+
+        ctx.set_line_width (stroke_width);
+        ctx.set_source_rgba (
+            highlight_color.red,
+            highlight_color.green,
+            highlight_color.blue,
+            highlight_color.alpha
+        );
+        ctx.stroke ();
         ctx.restore ();
     }
 
