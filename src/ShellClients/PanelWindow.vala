@@ -19,7 +19,7 @@ public class Gala.PanelWindow : Object {
 
     private Barrier? barrier;
 
-    private PanelClone clone;
+    private PanelClone? clone = null;
 
     private int width = -1;
     private int height = -1;
@@ -44,8 +44,6 @@ public class Gala.PanelWindow : Object {
         });
 
         window.stick ();
-
-        clone = new PanelClone (wm, this);
     }
 
 #if HAS_MUTTER46
@@ -71,14 +69,14 @@ public class Gala.PanelWindow : Object {
         this.height = height;
 
         position_window ();
-        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
     }
 
     public void update_anchor (Meta.Side anchor) {
         this.anchor = anchor;
 
         position_window ();
-        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
+        set_hide_mode (clone == null ? Pantheon.Desktop.HideMode.NEVER : clone.hide_mode); // Resetup barriers etc.
     }
 
     private void position_window () {
@@ -130,15 +128,20 @@ public class Gala.PanelWindow : Object {
     }
 
     public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
-        clone.hide_mode = hide_mode;
-
         destroy_barrier ();
 
-        if (hide_mode != NEVER) {
-            unmake_exclusive ();
-            setup_barrier ();
-        } else {
+        if (hide_mode == NEVER) {
+            clone = null;
             make_exclusive ();
+        } else {
+            unmake_exclusive ();
+
+            if (clone == null) {
+                clone = new PanelClone (wm, this);
+            }
+            clone.hide_mode = hide_mode;
+
+            setup_barrier ();
         }
     }
 
@@ -181,10 +184,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void destroy_barrier () {
-        if (barrier != null) {
-            barrier.destroy ();
-            barrier = null;
-        }
+        barrier = null;
     }
 
     private void setup_barrier () {
@@ -214,6 +214,7 @@ public class Gala.PanelWindow : Object {
     private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
 #endif
         barrier = new Barrier (
+            wm.get_display ().get_context ().get_backend (),
             monitor_geom.x + offset,
             monitor_geom.y,
             monitor_geom.x + monitor_geom.width - offset,
@@ -234,6 +235,7 @@ public class Gala.PanelWindow : Object {
     private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
 #endif
         barrier = new Barrier (
+            wm.get_display ().get_context ().get_backend (),
             monitor_geom.x + offset,
             monitor_geom.y + monitor_geom.height,
             monitor_geom.x + monitor_geom.width - offset,
