@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2024-02-22 04:12+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -53,27 +53,27 @@ msgstr "Képernyőképek"
 msgid "Screenshot taken"
 msgstr "Képernyőkép mentve"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "A változások automatikusan visszaállnak %i másodperc múlva."
 msgstr[1] "A változások automatikusan visszaállnak %i másodperc múlva."
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "Új kijelzőbeállítások megtartása?"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr "Beállítások megtartása"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr "Előző beállítások visszaállítása"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Képernyőkép %s"
@@ -163,6 +163,10 @@ msgid ""
 msgstr ""
 "Egy ablak- és megjelenítéskezelő, ami libmutter alapú és az elementary "
 "számára lett tervezve a Pantheonnal való használatra."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -265,9 +269,6 @@ msgstr "Egyéb"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Tartalék asztali fájl az elavult alkalmazásoktól érkező értesítéseknek."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Animált háttérképek újratöltése az időzóna megváltozásakor"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2020-08-25 13:13+0000\n"
 "Last-Translator: Kaj Printz Madsen <kajprintz@gmail.com>\n"
 "Language-Team: Danish <https://l10n.elementary.io/projects/desktop/gala/da/"
@@ -53,31 +53,31 @@ msgstr "Skærmbilleder"
 msgid "Screenshot taken"
 msgstr "Skærmbilleder"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Skærmindstillinger…"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Systemindstillinger…"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
@@ -170,6 +170,10 @@ msgid ""
 msgstr ""
 "En vindues &amp; kompositions administrator baseret på libmutter og designet "
 "af elementary til brug med Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Incorporated."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -267,9 +271,6 @@ msgstr "Andet"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Fallback desktop-fil til notifikationer fra forældede applikationer."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Incorporated."
 
 #, fuzzy
 #~| msgid "The opacity of windows behind the window switcher."

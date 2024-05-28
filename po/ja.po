@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2024-05-09 13:13+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -51,26 +51,26 @@ msgstr "スクリーンショット"
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか?"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
@@ -160,6 +160,10 @@ msgstr ""
 "libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が "
 "Pantheon 向けにデザインしました。"
 
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
 #: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
@@ -175,8 +179,9 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr "ウィンドウ移動時、ドラッグ & "
-"ドロップの形をした適切なポインターを使用するように修正"
+msgstr ""
+"ウィンドウ移動時、ドラッグ & ドロップの形をした適切なポインターを使用するよう"
+"に修正"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
@@ -259,9 +264,6 @@ msgstr "そのほか"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "従来のアプリケーションからの通知用のフォールバックデスクトップファイルです。"
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"

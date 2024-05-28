@@ -1923,12 +1923,12 @@ namespace Gala {
                 ((BackgroundContainer) background_group).set_black_background (false);
                 wallpaper = new Clutter.Clone (background_group);
             }
-            wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
+            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
             tmp_actors.prepend (wallpaper);
 
             if (workspace_to != null) {
                 wallpaper_clone = new Clutter.Clone (wallpaper);
-                wallpaper_clone.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
+                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
                 tmp_actors.prepend (wallpaper_clone);
             }
 
