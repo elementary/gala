@@ -786,9 +786,9 @@ namespace Gala {
         private void show_docks (bool with_gesture, bool is_cancel_animation) {
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
-                const int MAX_OFFSET = 85;
+                const int MAX_OFFSET = 200;
 
-                if (actor.is_destroyed ()) {
+                if (actor.is_destroyed () || !actor.visible) {
                     continue;
                 }
 
@@ -807,7 +807,7 @@ namespace Gala {
 
                 var window_geom = window.get_frame_rect ();
                 var top = monitor_geom.y + MAX_OFFSET > window_geom.y;
-                var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET > window_geom.y;
+                var bottom = monitor_geom.y + monitor_geom.height - MAX_OFFSET < window_geom.y;
 
                 if (!top && !bottom) {
                     continue;
