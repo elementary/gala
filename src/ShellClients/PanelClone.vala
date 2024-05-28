@@ -65,6 +65,14 @@ public class Gala.PanelClone : Object {
 
         update_visible ();
         update_clone_position ();
+
+        Idle.add_once (() => {
+            if (hide_mode == NEVER) {
+                show ();
+            } else {
+                hide_tracker.schedule_update ();
+            }
+        });
     }
 
     private void update_visible () {
