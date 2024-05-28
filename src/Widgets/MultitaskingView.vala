@@ -687,7 +687,9 @@ namespace Gala {
                     container.visible = true;
                     container.open (with_gesture, is_cancel_animation);
                 } else {
+                    warning ("CLOSING CONTAINER");
                     container.close (with_gesture, is_cancel_animation);
+                    warning ("CONTAINER CLOSED");
                 }
             }
 
@@ -720,7 +722,9 @@ namespace Gala {
                 }
             }
             if (active_workspace != null) {
+                warning ("SET WORKSPACE ABOVE");
                 workspaces.set_child_above_sibling (active_workspace, null);
+                warning ("DONE SET WORKSPACE ABOVE");
             }
 
             workspaces.remove_all_transitions ();
@@ -729,7 +733,9 @@ namespace Gala {
             }
 
             if (!is_cancel_animation) {
+                warning ("UPDATE POSITIONS");
                 update_positions (false);
+                warning ("DONE UPDATE POSITIONS");
             }
 
             foreach (unowned var child in workspaces.get_children ()) {
@@ -737,7 +743,9 @@ namespace Gala {
                 if (opening) {
                     workspace.open (with_gesture, is_cancel_animation);
                 } else {
+                    warning ("CLOSING WORKSPACE");
                     workspace.close (with_gesture, is_cancel_animation);
+                    warning ("WORKSPACE CLOSED");
                 }
             }
 
@@ -751,6 +759,7 @@ namespace Gala {
                 var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
                 Timeout.add (animation_duration, () => {
                     if (!opening) {
+                        warning ("END START");
                         foreach (var container in window_containers_monitors) {
                             container.visible = false;
                         }
@@ -772,6 +781,7 @@ namespace Gala {
                         toggle (false, true);
                     }
 
+                    warning ("END END");
                     return Source.REMOVE;
                 });
             };

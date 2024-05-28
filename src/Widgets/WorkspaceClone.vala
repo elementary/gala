@@ -260,18 +260,23 @@ namespace Gala {
          * belongs to this workspace and this monitor.
          */
         private void add_window (Meta.Window window) {
+            warning ("ADD WINDOW: %s", window.title);
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
-                || !window.is_on_primary_monitor ())
+                || !window.is_on_primary_monitor ()) {
+                    warning ("Don't add: %s", window.title);
                 return;
-
+            }
             foreach (var child in window_container.get_children ())
-                if (((WindowClone) child).window == window)
+                if (((WindowClone) child).window == window) {
+                    warning ("Don't add because already here: %s", window.title);
                     return;
+                }
 
             window_container.add_window (window);
             icon_group.add_window (window);
+            warning ("Added: %s", window.title);
         }
 
         /**
