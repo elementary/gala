@@ -175,7 +175,7 @@ namespace Gala {
             try {
                 var our_pid = new Credentials ().get_unix_pid ();
                 if (our_pid == window.get_pid ()) {
-                    critical ("We have an unresponsive window somewhere. Mutter wants to commit suicide. Don't let it.");
+                    critical ("We have an unresponsive window somewhere. Mutter wants to end its own process. Don't let it.");
                     // In all seriousness this sounds bad, but can happen if one of our WaylandClients gets unresponsive.
                     on_response (1);
                     return;
