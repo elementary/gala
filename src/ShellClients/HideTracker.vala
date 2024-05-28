@@ -21,6 +21,8 @@ public class Gala.HideTracker : Object {
     private bool focus_overlap = false;
     private bool focus_maximized_overlap = false;
 
+    private Meta.Window current_focus_window;
+
     private uint update_timeout_id = 0;
 
     public HideTracker (Meta.Display display, PanelWindow panel) {
@@ -28,7 +30,9 @@ public class Gala.HideTracker : Object {
     }
 
     construct {
-        var current_focus_window = display.focus_window;
+        // Can't be local otherwise we get a memory leak :(
+        // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
+        current_focus_window = display.focus_window;
         track_focus_window (current_focus_window);
         display.notify["focus-window"].connect (() => {
             untrack_focus_window (current_focus_window);
