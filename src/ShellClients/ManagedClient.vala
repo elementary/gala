@@ -33,7 +33,7 @@ public class Gala.ManagedClient : Object {
                     window_created (window);
 
                     // We have to manage is alive manually since windows created by WaylandClients have our pid
-                    // and we don't want to commit suicide
+                    // and we don't want to end our own process
                     window.notify["is-alive"].connect (() => {
                         if (!window.is_alive && subprocess != null) {
                             subprocess.force_exit ();
