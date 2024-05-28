@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-05-27 16:27+0000\n"
 "PO-Revision-Date: 2021-09-29 20:42+0000\n"
 "Last-Translator: Alvaro <alvaroaraoz_92@hotmail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
@@ -51,31 +51,31 @@ msgstr "Capturas de pantalla"
 msgid "Screenshot taken"
 msgstr "Captura de pantalla hecha"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Configuración de pantalla…"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Configuración del sistema…"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2353
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
@@ -165,6 +165,10 @@ msgid ""
 msgstr ""
 "Un gestor y compositor de ventanas basado en libmutter y diseñado por "
 "elementary para su uso con Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -265,9 +269,6 @@ msgstr "Otro"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Archivo .desktop auxiliar para notificaciones de aplicaciones anticuadas."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #, fuzzy
 #~| msgid "The opacity of windows behind the window switcher."
