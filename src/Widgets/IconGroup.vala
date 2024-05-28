@@ -232,7 +232,8 @@ namespace Gala {
                 InternalUtils.scale_to_int (5, scale_factor)
             );
 
-            var shadow_effect = new ShadowEffect (40) {
+            var shadow_effect = new ShadowEffect () {
+                border_radius = InternalUtils.scale_to_int (5, scale_factor),
                 scale_factor = scale_factor
             };
 

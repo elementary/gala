@@ -86,7 +86,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         container = new Clutter.Actor ();
         container.reactive = true;
         container.set_scale (0.35f, 0.35f);
-        container.add_effect (new ShadowEffect (55) { css_class = "window-clone" });
+        container.add_effect (new ShadowEffect ("window") { border_radius = 6});
         container.add_child (clone);
         container.add_action (move_action);
 
