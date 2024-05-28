@@ -30,7 +30,7 @@ public class Gala.PanelClone : Object {
         }
     }
 
-    public bool panel_hidden { get; private set; default = false; }
+    public bool panel_hidden { get; private set; default = true; }
 
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
@@ -42,9 +42,7 @@ public class Gala.PanelClone : Object {
     }
 
     construct {
-        clone = new SafeWindowClone (panel.window, true) {
-            visible = false
-        };
+        clone = new SafeWindowClone (panel.window, true);
         wm.ui_group.add_child (clone);
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
@@ -67,6 +65,14 @@ public class Gala.PanelClone : Object {
 
         update_visible ();
         update_clone_position ();
+
+        Idle.add_once (() => {
+            if (hide_mode == NEVER) {
+                show ();
+            } else {
+                hide_tracker.schedule_update ();
+            }
+        });
     }
 
     private void update_visible () {
