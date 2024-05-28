@@ -89,6 +89,12 @@ public class Gala.PanelClone : Object {
         }
     }
 
+    private int get_animation_duration () {
+        var fullscreen = wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ());
+        var should_animate = wm.enable_animations && !wm.workspace_view.is_opened () && !fullscreen;
+        return should_animate ? ANIMATION_DURATION : 0;
+    }
+
     private void hide () {
         if (panel_hidden) {
             return;
@@ -105,7 +111,7 @@ public class Gala.PanelClone : Object {
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0);
+        clone.set_easing_duration (get_animation_duration ());
         clone.y = calculate_clone_y (true);
         clone.restore_easing_state ();
     }
@@ -115,7 +121,7 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        var animation_duration = wm.enable_animations && !wm.workspace_view.is_opened () ? ANIMATION_DURATION : 0;
+        var animation_duration = get_animation_duration ();
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
