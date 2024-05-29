@@ -31,9 +31,11 @@ namespace Gala {
 
         private static AppCache app_cache;
 
-        private static Gtk.IconTheme icon_theme = new Gtk.IconTheme ();
+        private static Gtk.IconTheme icon_theme;
 
         static construct {
+            icon_theme = new Gtk.IconTheme ();
+            icon_theme.set_custom_theme ("elementary");
             icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
             unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
