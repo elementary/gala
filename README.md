@@ -8,7 +8,6 @@ A window & compositing manager based on libmutter and designed by elementary for
 You'll need the following dependencies:
 * meson
 * gettext (>= 0.19.6)
-* gnome-settings-daemon-dev (>= 3.15.2),
 * gsettings-desktop-schemas-dev
 * libcanberra-dev
 * libclutter-1.0-dev (>= 1.12.0)
