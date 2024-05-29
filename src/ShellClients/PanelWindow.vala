@@ -49,6 +49,10 @@ public class Gala.PanelWindow : Object {
 
         var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => update_anchor (anchor));
+
+        var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.workspace_added.connect (update_strut);
+        workspace_manager.workspace_removed.connect (update_strut);
     }
 
 #if HAS_MUTTER46
@@ -102,6 +106,8 @@ public class Gala.PanelWindow : Object {
                 warning ("Side not supported yet");
                 break;
         }
+
+        update_strut ();
     }
 
 #if HAS_MUTTER45
@@ -146,11 +152,14 @@ public class Gala.PanelWindow : Object {
     }
 
     private void make_exclusive () {
-        window.size_changed.connect (update_strut);
         update_strut ();
     }
 
     private void update_strut () {
+        if (clone.hide_mode != NEVER) {
+            return;
+        }
+
         var rect = get_custom_window_rect ();
 
         Meta.Strut strut = {
@@ -177,7 +186,6 @@ public class Gala.PanelWindow : Object {
 
     private void unmake_exclusive () {
         if (window in window_struts) {
-            window.size_changed.disconnect (update_strut);
             window_struts.remove (window);
             update_struts ();
         }
