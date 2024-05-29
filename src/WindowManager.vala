@@ -521,7 +521,6 @@ namespace Gala {
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             var name = binding.get_name ();
             int index = name[name.length - 1] - '0';
-            warning (name + "    " + index.to_string ());
 
             try {
                 Process.spawn_command_line_async ("io.elementary.dock -i %u".printf (index));
