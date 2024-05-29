@@ -262,6 +262,16 @@ namespace Gala {
             display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
 
+            display.add_keybinding ("launch-dock-1", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-2", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-3", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-4", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-5", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-6", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-7", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-8", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+            display.add_keybinding ("launch-dock-9", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_launch_dock);
+
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
             });
@@ -503,6 +513,20 @@ namespace Gala {
                 case "window-screenshot-clip":
                     screenshot_current_window.begin (true);
                     break;
+            }
+        }
+
+        [CCode (instance_pos = -1)]
+        private void handle_launch_dock (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            var name = binding.get_name ();
+            int index = name[name.length - 1] - '0';
+            warning (name + "    " + index.to_string ());
+
+            try {
+                Process.spawn_command_line_async ("io.elementary.dock -i %u".printf (index));
+            } catch (Error e) {
+                warning ("Failed to launch dock item: %s", e.message);
             }
         }
 
