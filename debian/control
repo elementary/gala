@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: elementary OS Team <builds@elementary.io>
 Build-Depends: debhelper (>= 10.5.1),
                gettext (>= 0.19.6),
-               gnome-settings-daemon-dev (>= 3.15.2),
                gsettings-desktop-schemas-dev,
                libcanberra-dev,
                libcanberra-gtk3-dev,
@@ -25,8 +24,7 @@ Homepage: https://github.com/elementary/gala
 
 Package: gala
 Architecture: any
-Depends: gnome-settings-daemon (>= 3.15.2),
-         gsettings-desktop-schemas,
+Depends: gsettings-desktop-schemas,
          io.elementary.portals (>=1.1.0),
          libgala0 (= ${binary:Version}),
          ${misc:Depends},
