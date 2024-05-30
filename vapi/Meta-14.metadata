@@ -168,6 +168,9 @@ unsigned_long_hash.v type="ulong?"
 warning parent="Meta.Util" cheader_filename="meta/util.h"
 create_context parent="Meta.Context" name="new" symbol_type="constructor" cheader_filename="meta/meta-context.h"
 
+Plugin.create_close_dialog unowned=false nullable
+Plugin.create_inhibit_shortcuts_dialog unowned=false
+
 BackgroundActor sealed
 BackgroundContent sealed
 BackgroundImage sealed
