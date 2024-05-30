@@ -22,7 +22,7 @@ public class Gala.WidgetWindow : Object {
 
         position_window ();
 
-        window.focus (wm.get_display ().get_current_time ());
+        window.shown.connect (() => window.focus (wm.get_display ().get_current_time ()));
     }
 
     private void position_window () {
