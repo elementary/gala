@@ -48,6 +48,7 @@ namespace Pantheon.Desktop {
         [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "io_elementary_pantheon_widget_v1_interface")]
         public static Wl.Interface iface;
         public Destroy destroy;
+        public Focus focus;
     }
 
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_extended_behavior_v1_interface")]

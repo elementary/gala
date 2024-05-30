@@ -55,13 +55,14 @@ namespace Gala {
         wayland_pantheon_panel_interface = {
             destroy_panel_surface,
             set_anchor,
-            focus,
+            focus_panel,
             set_size,
             set_hide_mode,
         };
 
         wayland_pantheon_widget_interface = {
             destroy_widget_surface,
+            focus_widget,
         };
 
         wayland_pantheon_extended_behavior_interface = {
@@ -70,6 +71,7 @@ namespace Gala {
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
+        WidgetSurface.quark = GLib.Quark.from_string ("-gala-wayland-widget-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
             unowned var resource = client.create_resource (ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
@@ -194,6 +196,15 @@ namespace Gala {
             widget_surface,
             (GLib.DestroyNotify) WidgetSurface.on_wayland_surface_disposed
         );
+
+        Meta.Window? window;
+        wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Failed to make window a widget as requested because Meta.Window was null.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_widget (window);
     }
 
     internal static void get_extended_behavior (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
@@ -260,15 +271,29 @@ namespace Gala {
         ShellClientsManager.get_instance ().set_anchor (window, side);
     }
 
-    internal static void focus (Wl.Client client, Wl.Resource resource) {
+    internal static void focus_panel (Wl.Client client, Wl.Resource resource) {
         unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
         if (panel_surface.wayland_surface == null) {
             warning ("Window tried to focus but wayland surface is null.");
             return;
         }
 
+        focus (panel_surface.wayland_surface);
+    }
+
+    internal static void focus_widget (Wl.Client client, Wl.Resource resource) {
+        unowned WidgetSurface? widget_surface = resource.get_user_data<WidgetSurface> ();
+        if (widget_surface.wayland_surface == null) {
+            warning ("Window tried to focus but wayland surface is null.");
+            return;
+        }
+
+        focus (widget_surface.wayland_surface);
+    }
+
+    internal static void focus (Object wayland_surface) {
         Meta.Window? window;
-        panel_surface.wayland_surface.get ("window", out window, null);
+        wayland_surface.get ("window", out window, null);
         if (window == null) {
             warning ("Window tried to focus but wayland surface had no associated window.");
             return;

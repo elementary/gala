@@ -102,6 +102,15 @@
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
     <request name="destroy" type="destructor"/>
+
+    <request name="focus">
+      <description summary="request keyboard focus">
+        Request keyboard focus, taking it away from any other window.
+        Keyboard focus must always be manually be requested and is
+        - in contrast to normal windows - never automatically granted
+        by the compositor.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_extended_behavior_v1" version="1">
