@@ -130,8 +130,6 @@ namespace Gala {
             construct { parent = value; }
         }
 
-        public static Gee.Set<CloseDialog> open_dialogs = new Gee.HashSet<CloseDialog> ();
-
         // this function isn't exported in glib.vapi
         [CCode (cname = "g_locale_from_utf8")]
         extern static string locale_from_utf8 (
@@ -144,10 +142,6 @@ namespace Gala {
 
         public CloseDialog (Meta.Window window) {
             Object (window: window);
-        }
-
-        ~CloseDialog () {
-            open_dialogs.remove (this);
         }
 
         construct {
@@ -163,8 +157,6 @@ namespace Gala {
             body = _("You may choose to wait a short while for the application to continue, or force it to quit entirely.");
             accept_label = _("Force Quit");
             deny_label = _("Wait");
-
-            open_dialogs.add (this);
         }
 
         public override void show () {
