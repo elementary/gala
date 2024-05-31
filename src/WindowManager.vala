@@ -2333,7 +2333,7 @@ namespace Gala {
         }
 
         public override Meta.CloseDialog? create_close_dialog (Meta.Window window) {
-            return new CloseDialog (window);
+            return new CloseDialog (window_tracker.get_app_for_window (window), window);
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {

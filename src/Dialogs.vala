@@ -130,24 +130,16 @@ namespace Gala {
             construct { parent = value; }
         }
 
-        // this function isn't exported in glib.vapi
-        [CCode (cname = "g_locale_from_utf8")]
-        extern static string locale_from_utf8 (
-            string str,
-            ssize_t len = -1,
-            out size_t bytes_read = null,
-            out size_t bytes_wrriten = null,
-            out Error err = null
-        );
+        public App app { get; construct; }
 
-        public CloseDialog (Meta.Window window) {
-            Object (window: window);
+        public CloseDialog (Gala.App app, Meta.Window window) {
+            Object (app: app, window: window);
         }
 
         construct {
             icon = "computer-fail";
 
-            var window_title = locale_from_utf8 (window.title) ?? window.get_sandboxed_app_id ();
+            var window_title = app.name;
             if (window_title != null) {
                 title = _("“%s” is not responding").printf (window_title);
             } else {
