@@ -130,30 +130,16 @@ namespace Gala {
             construct { parent = value; }
         }
 
-        public static Gee.Set<CloseDialog> open_dialogs = new Gee.HashSet<CloseDialog> ();
+        public App app { get; construct; }
 
-        // this function isn't exported in glib.vapi
-        [CCode (cname = "g_locale_from_utf8")]
-        extern static string locale_from_utf8 (
-            string str,
-            ssize_t len = -1,
-            out size_t bytes_read = null,
-            out size_t bytes_wrriten = null,
-            out Error err = null
-        );
-
-        public CloseDialog (Meta.Window window) {
-            Object (window: window);
-        }
-
-        ~CloseDialog () {
-            open_dialogs.remove (this);
+        public CloseDialog (Gala.App app, Meta.Window window) {
+            Object (app: app, window: window);
         }
 
         construct {
             icon = "computer-fail";
 
-            var window_title = locale_from_utf8 (window.title) ?? window.get_sandboxed_app_id ();
+            var window_title = app.name;
             if (window_title != null) {
                 title = _("“%s” is not responding").printf (window_title);
             } else {
@@ -163,8 +149,6 @@ namespace Gala {
             body = _("You may choose to wait a short while for the application to continue, or force it to quit entirely.");
             accept_label = _("Force Quit");
             deny_label = _("Wait");
-
-            open_dialogs.add (this);
         }
 
         public override void show () {

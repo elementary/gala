@@ -690,9 +690,9 @@ namespace Meta {
 		[NoWrapper]
 		public virtual void confirm_display_change ();
 		[NoWrapper]
-		public virtual unowned Meta.CloseDialog create_close_dialog (Meta.Window window);
+		public virtual Meta.CloseDialog? create_close_dialog (Meta.Window window);
 		[NoWrapper]
-		public virtual unowned Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window);
+		public virtual Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window);
 		[NoWrapper]
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
