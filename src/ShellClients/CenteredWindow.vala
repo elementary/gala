@@ -5,11 +5,11 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.WidgetWindow : Object {
+public class Gala.CenteredWindow : Object {
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
-    public WidgetWindow (WindowManager wm, Meta.Window window) {
+    public CenteredWindow (WindowManager wm, Meta.Window window) {
         Object (wm: wm, window: window);
     }
 

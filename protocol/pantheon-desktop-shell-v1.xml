@@ -102,15 +102,6 @@
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
     <request name="destroy" type="destructor"/>
-
-    <request name="focus">
-      <description summary="request keyboard focus">
-        Request keyboard focus, taking it away from any other window.
-        Keyboard focus must always be manually be requested and is
-        - in contrast to normal windows - never automatically granted
-        by the compositor.
-      </description>
-    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_extended_behavior_v1" version="1">
@@ -118,6 +109,22 @@
     <request name="set_keep_above">
       <description summary="set keep above">
         Tell the shell to keep the surface above on all workspaces
+      </description>
+    </request>
+
+    <request name="make_centered">
+      <description summary="requests to keep the surface centered">
+        Request to keep the surface centered. This will cause keyboard focus
+        to not be granted automatically but having to be requested via focus.
+      </description>
+    </request>
+
+    <request name="focus">
+      <description summary="request keyboard focus">
+        Request keyboard focus, taking it away from any other window.
+        Keyboard focus must always be manually be requested and is
+        - in contrast to normal windows - never automatically granted
+        by the compositor.
       </description>
     </request>
   </interface>

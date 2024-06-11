@@ -26,7 +26,7 @@ public class Gala.ShellClientsManager : Object {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, WidgetWindow> widget_windows = new GLib.HashTable<Meta.Window, WidgetWindow> (null, null);
+    private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -91,13 +91,13 @@ public class Gala.ShellClientsManager : Object {
         windows[window].set_hide_mode (hide_mode);
     }
 
-    public void make_widget (Meta.Window window) {
-        if (window in widget_windows) {
+    public void make_centered (Meta.Window window) {
+        if (window in centered_windows) {
             return;
         }
 
         make_dock (window);
 
-        widget_windows[window] = new WidgetWindow (wm, window);
+        centered_windows[window] = new CenteredWindow (wm, window);
     }
 }

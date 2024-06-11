@@ -62,12 +62,13 @@ namespace Gala {
 
         wayland_pantheon_widget_interface = {
             destroy_widget_surface,
-            focus_widget,
         };
 
         wayland_pantheon_extended_behavior_interface = {
             destroy_extended_behavior_surface,
             set_keep_above,
+            make_centered,
+            focus_extended_behavior,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
@@ -196,15 +197,6 @@ namespace Gala {
             widget_surface,
             (GLib.DestroyNotify) WidgetSurface.on_wayland_surface_disposed
         );
-
-        Meta.Window? window;
-        wayland_surface.get ("window", out window, null);
-        if (window == null) {
-            warning ("Failed to make window a widget as requested because Meta.Window was null.");
-            return;
-        }
-
-        ShellClientsManager.get_instance ().make_widget (window);
     }
 
     internal static void get_extended_behavior (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
@@ -281,14 +273,14 @@ namespace Gala {
         focus (panel_surface.wayland_surface);
     }
 
-    internal static void focus_widget (Wl.Client client, Wl.Resource resource) {
-        unowned WidgetSurface? widget_surface = resource.get_user_data<WidgetSurface> ();
-        if (widget_surface.wayland_surface == null) {
+    internal static void focus_extended_behavior (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? extended_behavior_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (extended_behavior_surface.wayland_surface == null) {
             warning ("Window tried to focus but wayland surface is null.");
             return;
         }
 
-        focus (widget_surface.wayland_surface);
+        focus (extended_behavior_surface.wayland_surface);
     }
 
     internal static void focus (Object wayland_surface) {
@@ -349,6 +341,21 @@ namespace Gala {
         }
 
         window.make_above ();
+    }
+
+    internal static void make_centered (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_centered (window);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {
