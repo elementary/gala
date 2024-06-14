@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-27 16:27+0000\n"
-"PO-Revision-Date: 2024-06-12 15:29+0000\n"
+"PO-Revision-Date: 2024-06-14 19:41+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
@@ -59,10 +59,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/WindowManager.vala:2306
-#, fuzzy
-#| msgid "Display Settings…"
 msgid "Keep new display settings?"
-msgstr "Configuración de pantalla…"
+msgstr "¿Desea conservar la nueva configuración de pantalla?"
 
 #: src/WindowManager.vala:2310
 #, fuzzy
@@ -86,7 +84,7 @@ msgstr "Cambiar fondo de escritorio…"
 
 #: daemon/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr "Configuración de pantalla…"
+msgstr "Configuración de Pantalla…"
 
 #: daemon/BackgroundMenu.vala:22
 msgid "System Settings…"
