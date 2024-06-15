@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-27 16:27+0000\n"
-"PO-Revision-Date: 2024-06-14 19:41+0000\n"
+"PO-Revision-Date: 2024-06-15 15:44+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
@@ -55,22 +55,20 @@ msgstr "Captura de pantalla hecha"
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Los cambios se revertirán automáticamente después de %i segundo."
+msgstr[1] "Los cambios se revertirán automáticamente después de %i segundos."
 
 #: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "¿Desea conservar la nueva configuración de pantalla?"
 
 #: src/WindowManager.vala:2310
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Keep Settings"
-msgstr "Configuración del sistema…"
+msgstr "Conservar configuración"
 
 #: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Usar configuración previa"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2353
