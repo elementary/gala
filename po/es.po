@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-27 16:27+0000\n"
-"PO-Revision-Date: 2024-06-15 15:44+0000\n"
+"PO-Revision-Date: 2024-06-17 03:16+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
@@ -49,7 +49,7 @@ msgstr "Capturas de pantalla"
 
 #: src/ScreenshotManager.vala:364
 msgid "Screenshot taken"
-msgstr "Captura de pantalla hecha"
+msgstr "Se tomó una captura de pantalla"
 
 #: src/WindowManager.vala:2299
 #, c-format
@@ -128,7 +128,7 @@ msgstr "Mover al área de trabajo derecha"
 
 #: daemon/WindowMenu.vala:97
 msgid "Take Screenshot"
-msgstr "Hacer captura de pantalla"
+msgstr "Tomar captura de pantalla"
 
 #: daemon/WindowMenu.vala:105
 msgid "Close"
