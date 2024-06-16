@@ -210,7 +210,7 @@ namespace Gala {
         }
 
         construct {
-            icon = "keyboard";
+            icon = "preferences-desktop-keyboard";
 
             var window_title = app.name;
             if (window_title != null) {
@@ -242,17 +242,6 @@ namespace Gala {
             if (path != null) {
                 close ();
             }
-        }
-
-        public void focus () {
-            window.foreach_transient ((w) => {
-                if (w.get_role () == "AccessDialog") {
-                    w.activate (w.get_display ().get_current_time ());
-                    return false;
-                }
-
-                return true;
-            });
         }
 
         protected override void on_response (uint response_id) {
