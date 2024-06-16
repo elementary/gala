@@ -231,7 +231,7 @@ namespace Gala {
 
             // Naive check to always allow inhibiting by our settings app. This is needed for setting custom shortcuts
             if (app.id == "io.elementary.settings.desktop") {
-                on_response (1);
+                on_response (0);
                 return;
             }
 
