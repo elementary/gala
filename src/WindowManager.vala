@@ -2336,6 +2336,10 @@ namespace Gala {
             return new CloseDialog (window_tracker.get_app_for_window (window), window);
         }
 
+        public override Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window) {
+            return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
+        }
+
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
