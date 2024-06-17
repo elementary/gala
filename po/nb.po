@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-05-27 16:27+0000\n"
-"PO-Revision-Date: 2023-08-25 20:08+0000\n"
+"PO-Revision-Date: 2024-06-17 03:16+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:158
@@ -57,8 +57,8 @@ msgstr "Skjermavbildning utført"
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Endringer vil endes tilbake automatisk etter %i sekund."
-msgstr[1] "Endringer vil endes tilbake automatisk etter %i sekunder."
+msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
+msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
 
 #: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
@@ -97,8 +97,9 @@ msgid "Failed to open System Settings"
 msgstr "Systeminnstillinger …"
 
 #: daemon/BackgroundMenu.vala:48
+#, fuzzy
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Noe som håndterer «settings://»-adresser må installeres."
 
 #: daemon/WindowMenu.vala:36
 msgid "Hide"
@@ -183,18 +184,21 @@ msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Endring av bakgrunnsbilde eller dvalemodus respekterer «Reduser bevegelse»"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Bruk av riktige dra- og slipp-pekere ved flytting av vinduer"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Fikset problem der håndvendinger i fleroppgaveløsningsvisning sluttet å "
+"fungere"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Forbedret adferd for dynamiske arbeidsområder med flere skjermer"
 
 #: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
 #: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
