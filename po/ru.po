@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-27 16:27+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
 "PO-Revision-Date: 2024-04-26 18:13+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
@@ -21,29 +21,50 @@ msgstr ""
 "X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
 msgstr "«%s» не отвечает"
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr "Приложение не отвечает"
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
 "Вы можете подождать, пока приложение ответит, либо принудительно закрыть его."
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr "Принудительно закрыть"
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
 msgstr "Подождать"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -74,7 +95,7 @@ msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2353
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-27 16:27+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
 "PO-Revision-Date: 2023-08-08 11:08+0000\n"
 "Last-Translator: imgradeone Yan <imgradeone@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -20,28 +20,49 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s” 无响应"
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr "应用无响应"
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr "您可以选择继续等待应用响应，或强制关闭应用。"
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr "强制关闭"
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
 msgstr "等待"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -70,7 +91,7 @@ msgid "Use Previous Settings"
 msgstr "恢复原有设置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2353
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"
