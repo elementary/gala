@@ -219,7 +219,7 @@ namespace Gala {
                 title = _("An application wants to inhibit system shortcuts");
             }
 
-            body = _("This will cause all system shortcuts being redirected to the application.");
+            body = _("All system shortcuts will be redirected to the application.");
             accept_label = _("Allow");
             deny_label = _("Deny");
         }
