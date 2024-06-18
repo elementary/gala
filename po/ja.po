@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-05-09 13:13+0000\n"
+"PO-Revision-Date: 2024-06-18 23:36+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5\n"
+"X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: src/Dialogs.vala:144
@@ -46,23 +46,23 @@ msgstr "待機"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s”がシステムショートカットを横取りしようとしています"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "アプリケーションがシステムショートカットを横取りしようとしています"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "すべてのシステムショートカットはこのアプリケーションに送られます。"
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "許可"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "拒否"
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
