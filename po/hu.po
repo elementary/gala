@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-02-22 04:12+0000\n"
+"PO-Revision-Date: 2024-06-18 23:36+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0.2\n"
+"X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:144
@@ -48,23 +48,23 @@ msgstr "Várakozás"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” meg akar gátolni rendszerszintű gyorsparancsokat"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Egy alkalmazás meg akar gátolni rendszerszintű gyorsparancsokat"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Az összes gyorsparancs át lesz irányítva az alkalmazásba."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Engedélyezés"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Elutasítás"
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
