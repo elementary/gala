@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-06-18 23:36+0000\n"
+"PO-Revision-Date: 2024-06-19 13:09+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
-msgstr "“%s” は応答していません"
+msgstr "“%s”は応答していません"
 
 #: src/Dialogs.vala:146
 msgid "Application is not responding"
@@ -220,7 +220,7 @@ msgstr "翻訳の更新"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr "“move-to-workspace” ショートカットの処理を改善"
+msgstr "“move-to-workspace”ショートカットの処理を改善"
 
 #: data/gala.metainfo.xml.in:102
 msgid ""
