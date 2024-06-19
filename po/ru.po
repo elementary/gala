@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-04-26 18:13+0000\n"
+"PO-Revision-Date: 2024-06-19 20:12+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
-">\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
+"\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.0.2\n"
+"X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: src/Dialogs.vala:144
@@ -48,23 +48,23 @@ msgstr "Подождать"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "«%s» желает перехватывать системные сочетания клавиш"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Приложение желает перехватывать системные сочетания клавиш"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Все системные сочетания клавиш будут перенаправлены этому приложению."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Разрешить"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Запретить"
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
