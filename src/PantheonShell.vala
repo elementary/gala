@@ -73,6 +73,7 @@ namespace Gala {
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
         WidgetSurface.quark = GLib.Quark.from_string ("-gala-wayland-widget-surface-data");
+        ExtendedBehaviorSurface.quark = GLib.Quark.from_string ("-gala-wayland-extended-behavior-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
             unowned var resource = client.create_resource (ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
