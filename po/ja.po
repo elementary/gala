@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-27 16:27+0000\n"
-"PO-Revision-Date: 2024-05-09 13:13+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
+"PO-Revision-Date: 2024-06-19 13:09+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,31 +17,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5\n"
+"X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
-msgstr "“%s” は応答していません"
+msgstr "“%s”は応答していません"
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr "アプリケーションは応答していません"
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr "強制終了"
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
 msgstr "待機"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr "“%s”がシステムショートカットを横取りしようとしています"
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr "アプリケーションがシステムショートカットを横取りしようとしています"
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr "すべてのシステムショートカットはこのアプリケーションに送られます。"
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr "許可"
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr "拒否"
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -70,7 +91,7 @@ msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2353
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
@@ -199,7 +220,7 @@ msgstr "翻訳の更新"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr "“move-to-workspace” ショートカットの処理を改善"
+msgstr "“move-to-workspace”ショートカットの処理を改善"
 
 #: data/gala.metainfo.xml.in:102
 msgid ""

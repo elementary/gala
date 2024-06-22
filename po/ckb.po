@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-27 16:27+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -20,16 +20,16 @@ msgstr ""
 "X-Generator: Weblate 4.4.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:48+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
 msgstr "\"%s\"وەڵام ناداتەوە"
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr "ئەپڵیکەیشنەکە هیچ وەڵامێکی نییە"
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 #, fuzzy
 #| msgid ""
 #| "You may choose to wait a short while for it to continue or force the "
@@ -41,13 +41,34 @@ msgstr ""
 "لەوانەیە بتەوێت بۆ ماوەیەکی کەم چاوەڕێ بکەیت بۆ بەردوام بوون یان "
 "ئەپڵیکەیشنەکە ناچار بکەیت کە بە تەواوی بوەستێت."
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr "وەستاندنی بەزۆر"
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
 msgstr "چاوەڕێکردن"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -78,7 +99,7 @@ msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2353
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"
