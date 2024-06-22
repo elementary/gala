@@ -26,7 +26,7 @@ namespace Gala {
 
     public class DragDropAction : Clutter.Action {
         // DO NOT keep a reference otherwise we get a ref cycle
-        private static Gee.HashMap<string, Gee.LinkedList<unowned Actor>>? sources = null;
+        private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? sources = null;
         private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? destinations = null;
 
         /**
