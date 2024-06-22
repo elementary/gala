@@ -156,6 +156,8 @@ namespace Gala {
                 var dest_list = destinations[drag_id];
                 dest_list.remove (actor);
             }
+
+            actor.destroy.disconnect (release_actor);
         }
 
         private void connect_actor (Actor actor) {
@@ -179,6 +181,8 @@ namespace Gala {
 
                 dest_list.add (actor);
             }
+
+            actor.destroy.connect (release_actor);
         }
 
         private void emit_crossed (Actor destination, bool is_hovered) {
@@ -410,7 +414,9 @@ namespace Gala {
                 return;
 
             foreach (var actor in actors) {
+                warning ("FOREACH ACTOR");
                 foreach (var action in actor.get_actions ()) {
+                    warning ("FOREACH ACTION");
                     var drag_action = action as DragDropAction;
                     if (drag_action != null && drag_action.dragging) {
                         drag_action.cancel ();
