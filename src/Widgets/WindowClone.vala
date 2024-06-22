@@ -87,7 +87,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
-    private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
     private Gala.CloseButton close_button;
@@ -160,7 +159,7 @@ public class Gala.WindowClone : Clutter.Actor {
         close_button = new Gala.CloseButton (monitor_scale_factor) {
             opacity = 0
         };
-        close_button.triggered.connect (close_window);
+        close_button.triggered.connect (window.@delete);
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
         window_icon.opacity = 0;
@@ -566,31 +565,6 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     /**
-     * Send the window the delete signal and listen for new windows to be added
-     * to the window's workspace, in which case we check if the new window is a
-     * dialog of the window we were going to delete. If that's the case, we request
-     * to select our window.
-     */
-    private void close_window (uint32 timestamp) {
-        unowned var display = window.get_display ();
-        check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
-
-        window.@delete (timestamp);
-    }
-
-    private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        if (new_window.get_transient_for () == window) {
-            Idle.add (() => {
-                selected ();
-                return Source.REMOVE;
-            });
-
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
-    }
-
-    /**
      * The window unmanaged by the compositor, so we need to destroy ourselves too.
      */
     private void unmanaged () {
@@ -604,11 +578,6 @@ public class Gala.WindowClone : Clutter.Actor {
             clone.destroy ();
         }
 
-        if (check_confirm_dialog_cb != 0) {
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
-
         destroy ();
     }
 
@@ -618,7 +587,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window (wm.get_display ().get_current_time ());
+                window.@delete (wm.get_display ().get_current_time ());
                 break;
         }
     }
