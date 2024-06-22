@@ -18,6 +18,8 @@ public class Gala.ManagedClient : Object {
 
     public Meta.WaylandClient? wayland_client { get; private set; }
 
+    private Subprocess? subprocess;
+
     public ManagedClient (Meta.Display display, string[] args) {
         Object (display: display, args: args);
     }
@@ -29,6 +31,15 @@ public class Gala.ManagedClient : Object {
             display.window_created.connect ((window) => {
                 if (wayland_client != null && wayland_client.owns_window (window)) {
                     window_created (window);
+
+                    // We have to manage is alive manually since windows created by WaylandClients have our pid
+                    // and we don't want to end our own process
+                    window.notify["is-alive"].connect (() => {
+                        if (!window.is_alive && subprocess != null) {
+                            subprocess.force_exit ();
+                            warning ("WaylandClient window became unresponsive, killing the client.");
+                        }
+                    });
                 }
             });
         } else {
@@ -44,7 +55,7 @@ public class Gala.ManagedClient : Object {
 #else
             wayland_client = new Meta.WaylandClient (subprocess_launcher);
 #endif
-            var subprocess = wayland_client.spawnv (display, args);
+            subprocess = wayland_client.spawnv (display, args);
 
             yield subprocess.wait_async ();
 
@@ -61,7 +72,7 @@ public class Gala.ManagedClient : Object {
 
     private async void start_x () {
         try {
-            var subprocess = new Subprocess.newv (args, NONE);
+            subprocess = new Subprocess.newv (args, NONE);
             yield subprocess.wait_async ();
 
             //Restart the daemon if it crashes

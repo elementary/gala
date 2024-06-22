@@ -130,30 +130,16 @@ namespace Gala {
             construct { parent = value; }
         }
 
-        public static Gee.Set<CloseDialog> open_dialogs = new Gee.HashSet<CloseDialog> ();
+        public App app { get; construct; }
 
-        // this function isn't exported in glib.vapi
-        [CCode (cname = "g_locale_from_utf8")]
-        extern static string locale_from_utf8 (
-            string str,
-            ssize_t len = -1,
-            out size_t bytes_read = null,
-            out size_t bytes_wrriten = null,
-            out Error err = null
-        );
-
-        public CloseDialog (Meta.Window window) {
-            Object (window: window);
-        }
-
-        ~CloseDialog () {
-            open_dialogs.remove (this);
+        public CloseDialog (Gala.App app, Meta.Window window) {
+            Object (app: app, window: window);
         }
 
         construct {
             icon = "computer-fail";
 
-            var window_title = locale_from_utf8 (window.title) ?? window.get_sandboxed_app_id ();
+            var window_title = app.name;
             if (window_title != null) {
                 title = _("“%s” is not responding").printf (window_title);
             } else {
@@ -163,13 +149,23 @@ namespace Gala {
             body = _("You may choose to wait a short while for the application to continue, or force it to quit entirely.");
             accept_label = _("Force Quit");
             deny_label = _("Wait");
-
-            open_dialogs.add (this);
         }
 
         public override void show () {
             if (path != null) {
                 return;
+            }
+
+            try {
+                var our_pid = new Credentials ().get_unix_pid ();
+                if (our_pid == window.get_pid ()) {
+                    critical ("We have an unresponsive window somewhere. Mutter wants to end its own process. Don't let it.");
+                    // In all seriousness this sounds bad, but can happen if one of our WaylandClients gets unresponsive.
+                    on_response (1);
+                    return;
+                }
+            } catch (Error e) {
+                warning ("Failed to safeguard kill pid: %s", e.message);
             }
 
             base.show ();
@@ -197,6 +193,62 @@ namespace Gala {
                 base.response (Meta.CloseDialogResponse.FORCE_CLOSE);
             } else {
                 base.response (Meta.CloseDialogResponse.WAIT);
+            }
+        }
+    }
+
+    public class InhibitShortcutsDialog : AccessDialog, Meta.InhibitShortcutsDialog {
+        public Meta.Window window {
+            owned get { return parent; }
+            construct { parent = value; }
+        }
+
+        public App app { get; construct; }
+
+        public InhibitShortcutsDialog (Gala.App app, Meta.Window window) {
+            Object (app: app, window: window);
+        }
+
+        construct {
+            icon = "preferences-desktop-keyboard";
+
+            var window_title = app.name;
+            if (window_title != null) {
+                title = _("“%s” wants to inhibit system shortcuts").printf (window_title);
+            } else {
+                title = _("An application wants to inhibit system shortcuts");
+            }
+
+            body = _("All system shortcuts will be redirected to the application.");
+            accept_label = _("Allow");
+            deny_label = _("Deny");
+        }
+
+        public override void show () {
+            if (path != null) {
+                return;
+            }
+
+            // Naive check to always allow inhibiting by our settings app. This is needed for setting custom shortcuts
+            if (app.id == "io.elementary.settings.desktop") {
+                on_response (0);
+                return;
+            }
+
+            base.show ();
+        }
+
+        public void hide () {
+            if (path != null) {
+                close ();
+            }
+        }
+
+        protected override void on_response (uint response_id) {
+            if (response_id == 0) {
+                base.response (Meta.InhibitShortcutsDialogResponse.ALLOW);
+            } else {
+                base.response (Meta.InhibitShortcutsDialogResponse.DENY);
             }
         }
     }

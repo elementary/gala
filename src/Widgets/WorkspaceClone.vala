@@ -40,9 +40,7 @@ namespace Gala {
             var primary = wm.get_display ().get_primary_monitor ();
             var monitor_geom = wm.get_display ().get_monitor_geometry (primary);
 
-            var effect = new ShadowEffect (40) {
-                css_class = "workspace"
-            };
+            var effect = new ShadowEffect ("workspace");
             add_effect (effect);
 
             reactive = true;

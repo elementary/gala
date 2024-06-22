@@ -83,8 +83,6 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
-        private ShellClientsManager shell_clients_manager;
-
         private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
@@ -143,7 +141,7 @@ namespace Gala {
         }
 
         public override void start () {
-            shell_clients_manager = new ShellClientsManager (get_display ());
+            ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
@@ -1922,12 +1920,12 @@ namespace Gala {
                 ((BackgroundContainer) background_group).set_black_background (false);
                 wallpaper = new Clutter.Clone (background_group);
             }
-            wallpaper.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
+            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
             tmp_actors.prepend (wallpaper);
 
             if (workspace_to != null) {
                 wallpaper_clone = new Clutter.Clone (wallpaper);
-                wallpaper_clone.add_effect (new Gala.ShadowEffect (40) { css_class = "workspace" });
+                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
                 tmp_actors.prepend (wallpaper_clone);
             }
 
@@ -2331,15 +2329,12 @@ namespace Gala {
             dialog.show ();
         }
 
-        public override unowned Meta.CloseDialog create_close_dialog (Meta.Window window) {
-            var new_dialog = CloseDialog.open_dialogs.first_match ((d) => d.window == window);
+        public override Meta.CloseDialog? create_close_dialog (Meta.Window window) {
+            return new CloseDialog (window_tracker.get_app_for_window (window), window);
+        }
 
-            if (new_dialog == null) {
-                new_dialog = new CloseDialog (window);
-            }
-
-            unowned var dialog = new_dialog;
-            return dialog;
+        public override Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window) {
+            return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
         }
 
         public override unowned Meta.PluginInfo? plugin_info () {

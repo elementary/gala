@@ -243,14 +243,17 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void check_shadow_requirements () {
-        if ((window.fullscreen || window.maximized_horizontally && window.maximized_vertically) && shadow_effect == null) {
-            shadow_effect = new ShadowEffect (55) {
-                css_class = "window-clone",
-                shadow_opacity = 0
-            };
-            clone.add_effect_with_name ("shadow", shadow_effect);
-        } else if (shadow_effect == null) {
-            shadow_effect = null;
+        if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
+            if (shadow_effect == null) {
+                shadow_effect = new ShadowEffect ("window");
+                shadow_opacity = 0;
+                clone.add_effect_with_name ("shadow", shadow_effect);
+            }
+        } else {
+            if (shadow_effect != null) {
+                clone.remove_effect (shadow_effect);
+                shadow_effect = null;
+            }
         }
     }
 

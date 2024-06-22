@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Romanian <https://l10n.elementary.io/projects/desktop/gala/ro/"
@@ -21,27 +21,48 @@ msgstr ""
 "X-Generator: Weblate 3.9.1\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
 msgstr ""
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr ""
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr ""
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
+msgstr ""
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
 msgstr ""
 
 #: src/ScreenshotManager.vala:285
@@ -52,7 +73,7 @@ msgstr ""
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -60,20 +81,20 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
@@ -158,6 +179,10 @@ msgstr ""
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
+msgstr ""
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
 msgstr ""
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57

@@ -328,6 +328,7 @@ if mutter46_dep.found()
 			'--pkg=gio-2.0',
 			'--pkg=cairo',
 			'--pkg=graphene-gobject-1.0',
+			'--pkg=x11',
 			vapigen_args,
 			files('Cogl-14-custom.vala')
 		],
@@ -345,6 +346,7 @@ if mutter46_dep.found()
 			'--pkg=pangocairo',
 			'--pkg=gio-2.0',
 			'--pkg=glib-2.0',
+			'--pkg=x11',
 			vapigen_args
 		],
 		depends: [mtk_target, cogl_target],
@@ -364,6 +366,7 @@ if mutter46_dep.found()
 			'--pkg=gio-2.0',
 			'--pkg=json-glib-1.0',
 			'--pkg=pangocairo',
+			'--pkg=x11',
 			vapigen_args,
 			files('Clutter-14-custom.vala')
 		],

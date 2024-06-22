@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-05-02 03:30+0000\n"
+"POT-Creation-Date: 2024-06-17 17:08+0000\n"
 "PO-Revision-Date: 2023-03-31 15:59+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
@@ -20,16 +20,16 @@ msgstr ""
 "X-Generator: Weblate 4.16.4\n"
 "X-Launchpad-Export-Date: 2017-02-23 06:29+0000\n"
 
-#: src/Dialogs.vala:158
+#: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s” ei vastaa"
 
-#: src/Dialogs.vala:160
+#: src/Dialogs.vala:146
 msgid "Application is not responding"
 msgstr "Sovellus ei vastaa"
 
-#: src/Dialogs.vala:163
+#: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -37,13 +37,34 @@ msgstr ""
 "Voit odottaa hetken sovelluksen jatkumista, tai pakottaa sovelluksen "
 "lopetuksen."
 
-#: src/Dialogs.vala:164
+#: src/Dialogs.vala:150
 msgid "Force Quit"
 msgstr "Pakota lopetus"
 
-#: src/Dialogs.vala:165
+#: src/Dialogs.vala:151
 msgid "Wait"
 msgstr "Odota"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -53,27 +74,27 @@ msgstr "Kuvakaappaukset"
 msgid "Screenshot taken"
 msgstr "Kuvakaappaus otettu"
 
-#: src/WindowManager.vala:2301
+#: src/WindowManager.vala:2299
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Muutokset perutaan automaattisesti %i sekunnin jälkeen."
 msgstr[1] "Muutokset perutaan automaattisesti %i sekunnin jälkeen."
 
-#: src/WindowManager.vala:2308
+#: src/WindowManager.vala:2306
 msgid "Keep new display settings?"
 msgstr "Säilytetäänkö uudet näyttöasetukset?"
 
-#: src/WindowManager.vala:2312
+#: src/WindowManager.vala:2310
 msgid "Keep Settings"
 msgstr "Säilytä asetukset"
 
-#: src/WindowManager.vala:2313
+#: src/WindowManager.vala:2311
 msgid "Use Previous Settings"
 msgstr "Käytä aiempia asetuksia"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2350
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Kuvakaappaus - %s"
@@ -163,6 +184,10 @@ msgid ""
 msgstr ""
 "Ikkuna- ja kompositointihallinta pohjautuen libmutteriin, suunniteltu "
 "Pantheoniin elementaryn toimesta."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
 #: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
@@ -260,9 +285,6 @@ msgstr "Muu"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Varatyöpöytätiedosto vanhanaikaisten sovellusten ilmoituksia varten."
-
-#~ msgid "elementary, Inc."
-#~ msgstr "elementary, Inc."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Lataa animoidut taustakuvat uudelleen, kun aikavyöhyke vaihtuu"

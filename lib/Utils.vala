@@ -31,7 +31,11 @@ namespace Gala {
 
         private static AppCache app_cache;
 
+        private static Gtk.IconTheme icon_theme;
+
         static construct {
+            icon_theme = new Gtk.IconTheme ();
+            icon_theme.set_custom_theme ("elementary");
             icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
             unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
@@ -155,7 +159,7 @@ namespace Gala {
 
             // Construct a new "application-default-icon" and store it in the cache
             try {
-                var icon = Gtk.IconTheme.get_default ().load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
+                var icon = icon_theme.load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
                 unknown_icon_cache.add (CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
                 return icon;
             } catch (Error e) {
@@ -224,7 +228,7 @@ namespace Gala {
 
             if (icon is GLib.ThemedIcon) {
                 var icon_names = ((GLib.ThemedIcon)icon).get_names ();
-                var icon_info = Gtk.IconTheme.get_default ().choose_icon_for_scale (icon_names, icon_size, scale, 0);
+                var icon_info = icon_theme.choose_icon_for_scale (icon_names, icon_size, scale, 0);
 
                 if (icon_info == null) {
                     return null;

@@ -81,7 +81,6 @@ add_project_arguments([
 # Dependencies
 glib_version_required = '2.44.0'
 gtk_version_required = '3.10.0'
-gsd_version_required = '3.15.2'
 
 canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
@@ -93,7 +92,6 @@ gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)
 gee_dep = dependency('gee-0.8')
 granite_dep = dependency('granite', version: '>= 5.4.0')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
-gsd_dep = dependency('gnome-settings-daemon', version: '>= @0@'.format(gsd_version_required))
 hdy_dep = dependency('libhandy-1')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
@@ -182,6 +180,7 @@ if get_option('systemd')
 endif
 
 subdir('data')
+subdir('protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')
