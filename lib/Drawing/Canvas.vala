@@ -69,7 +69,9 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     }
 
     public void invalidate () {
-        if (width <= 0 || height <= 0) {
+    bitmap = null;
+
+    if (width <= 0 || height <= 0) {
             return;
         }
 
