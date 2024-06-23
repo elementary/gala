@@ -25,8 +25,9 @@ namespace Gala {
     }
 
     public class DragDropAction : Clutter.Action {
-        private static Gee.HashMap<string,Gee.LinkedList<Actor>>? sources = null;
-        private static Gee.HashMap<string,Gee.LinkedList<Actor>>? destinations = null;
+        // DO NOT keep a reference otherwise we get a ref cycle
+        private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? sources = null;
+        private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? destinations = null;
 
         /**
          * A drag has been started. You have to connect to this signal and
@@ -120,10 +121,10 @@ namespace Gala {
             Object (drag_type : type, drag_id : id);
 
             if (sources == null)
-                sources = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+                sources = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
 
             if (destinations == null)
-                destinations = new Gee.HashMap<string,Gee.LinkedList<Actor>> ();
+                destinations = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
 
         }
 
@@ -155,6 +156,8 @@ namespace Gala {
                 var dest_list = destinations[drag_id];
                 dest_list.remove (actor);
             }
+
+            actor.destroy.disconnect (release_actor);
         }
 
         private void connect_actor (Actor actor) {
@@ -162,7 +165,7 @@ namespace Gala {
 
                 var source_list = sources.@get (drag_id);
                 if (source_list == null) {
-                    source_list = new Gee.LinkedList<Actor> ();
+                    source_list = new Gee.LinkedList<unowned Actor> ();
                     sources.@set (drag_id, source_list);
                 }
 
@@ -172,12 +175,14 @@ namespace Gala {
             if (DragDropActionType.DESTINATION in drag_type) {
                 var dest_list = destinations[drag_id];
                 if (dest_list == null) {
-                    dest_list = new Gee.LinkedList<Actor> ();
+                    dest_list = new Gee.LinkedList<unowned Actor> ();
                     destinations[drag_id] = dest_list;
                 }
 
                 dest_list.add (actor);
             }
+
+            actor.destroy.connect (release_actor);
         }
 
         private void emit_crossed (Actor destination, bool is_hovered) {
