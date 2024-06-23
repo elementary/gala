@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-06-17 03:16+0000\n"
+"PO-Revision-Date: 2024-06-23 23:28+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
-">\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
+"\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,7 +23,7 @@ msgstr ""
 #: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "«%s» no responde"
 
 #: src/Dialogs.vala:146
 msgid "Application is not responding"
@@ -34,10 +34,12 @@ msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Si lo desea, puede esperar un momento para que la aplicación continúe, o "
+"puede forzarla a cerrar."
 
 #: src/Dialogs.vala:150
 msgid "Force Quit"
-msgstr ""
+msgstr "Forzar cierre"
 
 #: src/Dialogs.vala:151
 msgid "Wait"
@@ -46,23 +48,23 @@ msgstr ""
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "«%s» quiere inhibir los atajos del sistema"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Una aplicación quiere inhibir los atajos del sistema"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Todos los atajos del sistema serán redirigidos a la aplicación."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Permitir"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Denegar"
 
 #: src/ScreenshotManager.vala:285
 msgid "Screenshots"
@@ -110,14 +112,12 @@ msgid "System Settings…"
 msgstr "Configuración del Sistema…"
 
 #: daemon/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "Configuración del sistema…"
+msgstr "No se pudo abrir la Configuración del Sistema"
 
 #: daemon/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Se debe instalar un programa que controle el esquema URI «settings://»."
 
 #: daemon/WindowMenu.vala:36
 msgid "Hide"
@@ -133,7 +133,7 @@ msgstr "Redimensionar"
 
 #: daemon/WindowMenu.vala:65
 msgid "Always on Top"
-msgstr "Siempre encima"
+msgstr "Siempre visible"
 
 #: daemon/WindowMenu.vala:73
 msgid "Always on Visible Workspace"
@@ -161,7 +161,7 @@ msgstr "Deshacer mosaico"
 
 #: daemon/WindowMenu.vala:138
 msgid "Unmaximize"
-msgstr "Desmaximizar"
+msgstr "Deshacer maximizado"
 
 #: daemon/WindowMenu.vala:140
 msgid "Maximize"
@@ -198,18 +198,24 @@ msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Al cambiar el fondo de escritorio o poner en reposo el escritorio, ahora "
+"respeta la opción «Reducir el movimiento»"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
+"Se usan los iconos de puntero apropiados para las acciones de arrastrar y "
+"soltar"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Se corrigió un problema donde los gestos en la Vista Multitarea podrían "
+"dejar de funcionar"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Se mejoraron las áreas de trabajo dinámicas con múltiples monitores"
 
 #: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
 #: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
@@ -219,60 +225,60 @@ msgstr "Traducciones actualizadas"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Se mejoró el funcionamiento del atajo de «mover al área de trabajo»"
 
 #: data/gala.metainfo.xml.in:102
 msgid ""
 "Set the keyboard layout correctly at startup so that the indicator matches "
 "the selected layout"
 msgstr ""
+"Ahora se utiliza la distribución del teclado correcta al iniciar para que el "
+"indicador coincida con la distribución seleccionada"
 
 #: data/gala.metainfo.xml.in:103
 msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgstr ""
+"Se corrigieron los atajos de captura de pantalla cuando se encuentra en "
+"Vista Multitarea"
 
 #: data/gala.metainfo.xml.in:104
 msgid ""
 "Correctly set the active workspace highlight when entering Multitasking View "
 "and animate 1:1 with multitouch gestures"
 msgstr ""
+"Ahora se establece correctamente el área de trabajo activa cuando se entra a "
+"la Vista Multitarea. También las animaciones coinciden con los gestos "
+"multitoque 1:1"
 
 #: data/gala.metainfo.xml.in:105
 msgid "Update panel color after dimming the wallpaper"
-msgstr ""
+msgstr "Ahora se actualiza el color del panel al atenuar el fondo de escritorio"
 
 #: data/gala.metainfo.xml.in:106
-#, fuzzy
-#| msgid "Enable rounded corner mask"
 msgid "Scale rounded corners per-display"
-msgstr "Activar la máscara de bordes redondeados"
+msgstr "Ahora se escalan los bordes redondeados de acuerdo a cada pantalla"
 
 #: data/gala.metainfo.xml.in:107
 msgid "Support fractional scaling"
-msgstr ""
+msgstr "Se agregó compatibilidad para escalado fraccional"
 
 #: data/gala.metainfo.xml.in:127
-#, fuzzy
-#| msgid "Minor visual improvements"
 msgid "Performance improvements"
-msgstr "Mejoras visuales menores"
+msgstr "Mejoras de rendimiento"
 
 #: data/gala.metainfo.xml.in:128
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Remove texture from Multitasking View"
-msgstr "Vista de multitarea"
+msgstr "Se eliminó la textura de la Vista Multitarea"
 
 #: data/gala.metainfo.xml.in:129
-#, fuzzy
-#| msgid "The opacity of windows behind the window switcher."
 msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Opacidad de ventanas ubicadas detrás del alternador de ventanas."
+msgstr ""
+"Ahora se evita seleccionar ventanas accidentalmente en alternador de ventanas"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr "Vista de multitarea"
+msgstr "Vista Multitarea"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
@@ -280,7 +286,7 @@ msgstr "Ver todas las ventanas y áreas de trabajo"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr "Otro"
+msgstr "Otros"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
