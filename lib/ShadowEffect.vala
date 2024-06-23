@@ -97,6 +97,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
             border_radius
         );
 
+        buffer.context.set_operator (Cairo.Operator.SOURCE);
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
@@ -106,6 +107,12 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var cr = new Cairo.Context (surface);
         cr.set_source_surface (buffer.surface, 0, 0);
         cr.paint ();
+
+        cr.save ();
+        cr.set_operator (Cairo.Operator.CLEAR);
+        Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
+        cr.paint ();
+        cr.restore ();
 
         try {
             var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
