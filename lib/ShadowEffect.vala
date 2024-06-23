@@ -97,7 +97,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
             border_radius
         );
 
-        buffer.context.set_operator (Cairo.Operator.SOURCE);
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
