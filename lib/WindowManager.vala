@@ -181,5 +181,7 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        public abstract bool is_window_owned_by_daemon (Meta.Window window);
     }
 }

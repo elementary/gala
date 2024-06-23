@@ -18,7 +18,8 @@ public class Gala.DaemonManager : GLib.Object {
 
     public Meta.Display display { get; construct; }
 
-    private Meta.WaylandClient daemon_client;
+    private Meta.WaylandClient? daemon_client;
+    private Subprocess? subprocess;
     private Daemon? daemon_proxy = null;
 
     public DaemonManager (Meta.Display display) {
@@ -33,12 +34,21 @@ public class Gala.DaemonManager : GLib.Object {
 
             display.window_created.connect ((window) => {
                 if (daemon_client.owns_window (window)) {
+                    daemon_client.make_dock (window);
                     window.shown.connect (handle_daemon_window);
                 }
             });
         } else {
             start_x.begin ();
         }
+    }
+
+    public bool is_window_owned_by_daemon(Meta.Window window) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            return daemon_client.owns_window (window);
+        }
+
+        return subprocess.get_identifier () == window.get_pid ().to_string ();
     }
 
     private async void start_wayland () {
@@ -67,7 +77,7 @@ public class Gala.DaemonManager : GLib.Object {
 
     private async void start_x () {
         try {
-            var subprocess = new Subprocess (NONE, "gala-daemon");
+            subprocess = new Subprocess (NONE, "gala-daemon");
             yield subprocess.wait_async ();
 
             //Restart the daemon if it crashes
@@ -96,8 +106,10 @@ public class Gala.DaemonManager : GLib.Object {
 
                 var index = int.parse (info[1]);
 
-                var monitor_geometry = display.get_monitor_geometry (index);
-                window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
+                var workspace_manager = display.get_workspace_manager ();
+                var work_area = workspace_manager.get_active_workspace ().get_work_area_for_monitor (index);
+
+                window.move_frame (false, work_area.x + SPACING, work_area.y + SPACING);
                 window.make_above ();
                 break;
 

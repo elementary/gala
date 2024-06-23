@@ -40,6 +40,7 @@ namespace Gala {
         private IconGroupContainer icon_groups;
         private Clutter.Actor workspaces;
         private Clutter.Actor dock_clones;
+        private Clutter.Actor daemon_clones;
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
 
@@ -83,6 +84,8 @@ namespace Gala {
 
             dock_clones = new Clutter.Actor ();
 
+            daemon_clones = new Clutter.Actor ();
+
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
@@ -100,6 +103,7 @@ namespace Gala {
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
             add_child (dock_clones);
+            add_child (daemon_clones);
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -820,9 +824,14 @@ namespace Gala {
                     : actor.y + actor.height;
 
                 var clone = new SafeWindowClone (window, true);
+                clone.set_position (initial_x, initial_y);
                 dock_clones.add_child (clone);
 
-                clone.set_position (initial_x, initial_y);
+                if (wm.is_window_owned_by_daemon (window)) {
+                    InternalUtils.clutter_actor_reparent (actor, daemon_clones);
+                    continue;
+                }
+
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
@@ -851,9 +860,14 @@ namespace Gala {
 
         private void hide_docks (bool with_gesture, bool is_cancel_animation) {
             foreach (unowned var child in dock_clones.get_children ()) {
-                var dock = (Clutter.Clone) child;
+                var dock = (SafeWindowClone) child;
                 var initial_y = dock.y;
                 var target_y = dock.source.y;
+
+                if (wm.is_window_owned_by_daemon (dock.window)) {
+                    InternalUtils.clutter_actor_reparent (dock, wm.window_group);
+                    continue;
+                }
 
                 GestureTracker.OnUpdate on_animation_update = (percentage) => {
                     var y = GestureTracker.animation_value (initial_y, target_y, percentage);
