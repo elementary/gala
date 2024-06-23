@@ -69,7 +69,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int shadow_spread = 0) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
         var old_key = current_key;
         current_key = "%ix%i:%i".printf (width, height, shadow_size);
         if (old_key == current_key) {
@@ -90,10 +90,10 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var buffer = new Drawing.BufferSurface (width, height);
         Drawing.Utilities.cairo_rounded_rectangle (
             buffer.context,
-            shadow_size - shadow_spread,
-            shadow_size - shadow_spread,
-            width - shadow_size * 2 + shadow_spread * 2,
-            height - shadow_size * 2 + shadow_spread * 2,
+            shadow_size,
+            shadow_size,
+            width - shadow_size * 2,
+            height - shadow_size * 2,
             border_radius
         );
 
@@ -110,8 +110,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         cr.save ();
         cr.set_operator (Cairo.Operator.CLEAR);
-        Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, border_radius);
-        cr.paint ();
+        var size = shadow_size * scale_factor;
+        Drawing.Utilities.cairo_rounded_rectangle (cr, size, size, actor.width, actor.height, border_radius);
+        cr.fill ();
         cr.restore ();
 
         try {
@@ -154,7 +155,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         pipeline.set_color (alpha);
 
-        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1 + shadow_size / 4, bounding_box.x2, bounding_box.y2 + shadow_size / 4);
+        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
 
         actor.continue_paint (context);
     }
