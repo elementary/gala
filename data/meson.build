@@ -6,7 +6,7 @@ install_data(
 
 install_data(
     'io.elementary.desktop.wm.shell',
-    install_dir: join_paths(get_option('sysconfdir')),
+    install_dir: get_option('sysconfdir'),
 )
 
 i18n.merge_file(

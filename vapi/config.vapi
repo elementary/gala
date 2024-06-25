@@ -26,4 +26,5 @@ namespace Config
 	public const string PLUGINDIR;
 	public const string SCHEMA;
 	public const string RESOURCEPATH;
+	public const string SYSCONFDIR;
 }
