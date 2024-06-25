@@ -38,7 +38,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     private async void start_clients () {
-        var file = File.new_for_path ("/etc/io.elementary.desktop.wm.shell");
+        var file = File.new_build_filename (Config.SYSCONFDIR, "io.elementary.desktop.wm.shell");
 
         if (!file.query_exists ()) {
             warning ("Shell config file doesn't exist at %s", file.get_path ());
