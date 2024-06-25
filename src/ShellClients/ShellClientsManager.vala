@@ -61,11 +61,6 @@ public class Gala.ShellClientsManager : Object {
 
         var file = File.new_for_path (path);
 
-        if (!file.query_exists ()) {
-            warning ("Shell config file doesn't exist at %s", file.get_path ());
-            return;
-        }
-
         Bytes bytes;
         try {
             bytes = yield file.load_bytes_async (null, null);
