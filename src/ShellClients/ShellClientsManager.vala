@@ -38,7 +38,28 @@ public class Gala.ShellClientsManager : Object {
     }
 
     private async void start_clients () {
-        var file = File.new_build_filename (Config.SYSCONFDIR, "io.elementary.desktop.wm.shell");
+        // Prioritize user config over system
+        (unowned string)[] config_dirs = { Environment.get_user_config_dir () };
+        foreach (unowned var dir in Environment.get_system_config_dirs ()) {
+            config_dirs += dir;
+        }
+
+        string? path = null;
+        foreach (unowned var dir in config_dirs) {
+            var file_path = Path.build_filename (dir, "io.elementary.desktop.wm.shell");
+            warning (file_path);
+            if (FileUtils.test (file_path, EXISTS)) {
+                path = file_path;
+                break;
+            }
+        }
+
+        if (path == null) {
+            warning ("No shell config file found.");
+            return;
+        }
+
+        var file = File.new_for_path (path);
 
         if (!file.query_exists ()) {
             warning ("Shell config file doesn't exist at %s", file.get_path ());
