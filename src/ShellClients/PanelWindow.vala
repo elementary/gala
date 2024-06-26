@@ -133,7 +133,9 @@ public class Gala.PanelWindow : Object {
 
     private void move_window_idle (int x, int y) {
         Idle.add (() => {
-            window.move_frame (false, x, y);
+            if (window.mapped) {
+                window.move_frame (false, x, y);
+            }
             return Source.REMOVE;
         });
     }

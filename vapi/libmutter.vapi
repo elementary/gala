@@ -1165,6 +1165,8 @@ namespace Meta {
 		public bool maximized_horizontally { get; }
 		[NoAccessorMethod]
 		public bool maximized_vertically { get; }
+		[NoAccessorMethod]
+		public bool mapped { get; }
 #if !HAS_MUTTER46
 		[NoAccessorMethod]
 		public Cairo.Surface mini_icon { owned get; }
