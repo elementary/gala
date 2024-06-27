@@ -99,7 +99,7 @@ namespace Gala {
                 uint ret;
 
                 try {
-                    portal.access_dialog.end (res, out ret);
+                    ((AccessPortal) obj).access_dialog.end (res, out ret);
                 } catch (Error e) {
                     warning (e.message);
                     ret = 2;
