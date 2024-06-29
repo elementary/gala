@@ -158,8 +158,7 @@ namespace Gala {
         }
 
         private BackgroundManager background;
-        private bool opened;
-
+        private bool opened = false;
         private uint hover_activate_timeout = 0;
 
         public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
@@ -167,8 +166,6 @@ namespace Gala {
         }
 
         construct {
-            opened = false;
-
             unowned Meta.Display display = workspace.get_display ();
             var primary_monitor = display.get_primary_monitor ();
             var monitor_geometry = display.get_monitor_geometry (primary_monitor);
@@ -211,9 +208,9 @@ namespace Gala {
                 }
             });
 
-            display.window_entered_monitor.connect (window_entered_monitor);
+            display.window_entered_monitor.connect (on_window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
-            workspace.window_added.connect (add_window);
+            display.window_created.connect (add_window);
             workspace.window_removed.connect (remove_window);
 
             add_child (background);
@@ -221,10 +218,12 @@ namespace Gala {
 
             // add existing windows
             var windows = workspace.list_windows ();
-            foreach (var window in windows) {
-                if (window.window_type == Meta.WindowType.NORMAL
+            foreach (unowned var window in windows) {
+                if (
+                    window.window_type == Meta.WindowType.NORMAL
                     && !window.on_all_workspaces
-                    && window.is_on_primary_monitor ()) {
+                    && window.is_on_primary_monitor ()
+                ) {
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
@@ -237,9 +236,9 @@ namespace Gala {
         ~WorkspaceClone () {
             unowned Meta.Display display = workspace.get_display ();
 
-            display.window_entered_monitor.disconnect (window_entered_monitor);
+            display.window_entered_monitor.disconnect (on_window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
-            workspace.window_added.disconnect (add_window);
+            display.window_created.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
 
             var listener = WindowListener.get_default ();
@@ -260,15 +259,22 @@ namespace Gala {
          * belongs to this workspace and this monitor.
          */
         private void add_window (Meta.Window window) {
-            if (window.window_type != Meta.WindowType.NORMAL
+            if (
+                window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
                 || window.on_all_workspaces
-                || !window.is_on_primary_monitor ())
+                || !window.is_on_primary_monitor ()
+                || (window.find_root_ancestor () != null && window.find_root_ancestor () != window)
+                || (window.get_transient_for () != null && window.get_transient_for () != window)
+            ) {
                 return;
+            }
 
-            foreach (var child in window_container.get_children ())
-                if (((WindowClone) child).window == window)
+            foreach (unowned var child in window_container.get_children ()) {
+                if (((WindowClone) child).window == window) {
                     return;
+                }
+            }
 
             window_container.add_window (window);
             icon_group.add_window (window);
@@ -282,8 +288,10 @@ namespace Gala {
             icon_group.remove_window (window, opened);
         }
 
-        private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-            add_window (window);
+        private void on_window_entered_monitor (int window_monitor, Meta.Window window) {
+            if (window.get_compositor_private () != null) {
+                add_window (window);
+            }
         }
 
         private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
