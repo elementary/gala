@@ -35,6 +35,8 @@ public class Gala.ScrollBackend : Object {
     public Clutter.Orientation orientation { get; construct; }
     public GestureSettings settings { get; construct; }
 
+    private Clutter.PanAction pan_action;
+
     private bool started;
     private double delta_x;
     private double delta_y;
@@ -45,6 +47,23 @@ public class Gala.ScrollBackend : Object {
         delta_x = 0;
         delta_y = 0;
         direction = GestureDirection.UNKNOWN;
+
+        pan_action = new Clutter.PanAction () {
+            pan_axis = AXIS_AUTO,
+            n_touch_points = 1
+        };
+
+        actor.add_action (pan_action);
+
+        pan_action.pan.connect (on_pan);
+        pan_action.gesture_end.connect (() => {
+            started = false;
+            delta_x = 0;
+            delta_y = 0;
+            direction = GestureDirection.UNKNOWN;
+            on_end (delta_x.abs (), pan_action.get_last_event (0).get_time ());
+            warning ("GESTURE END");
+        });
     }
 
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
@@ -53,11 +72,58 @@ public class Gala.ScrollBackend : Object {
         actor.scroll_event.connect (on_scroll_event);
     }
 
+    private bool on_pan () {
+        uint64 time = pan_action.get_last_event (0).get_time ();
+        double x, y;
+        pan_action.get_motion_delta (0, out x, out y);
+
+        warning (x.to_string ());
+
+        x = x / actor.get_allocation_box ().get_width ();
+        y = y / actor.get_height ();
+
+        warning (x.to_string ());
+        warning (delta_x.to_string ());
+
+        delta_x += x;
+        delta_y += y;
+
+        if (!started) {
+            if (delta_x != 0 || delta_y != 0) {
+                Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+                started = true;
+                direction = gesture.direction;
+                on_gesture_detected (gesture);
+
+                double delta = calculate_delta (delta_x, delta_y, direction);
+                on_begin (delta_x.abs (), time);
+                warning ("BEGIN");
+            }
+        } else {
+            double delta = calculate_delta (delta_x, delta_y, direction);
+            if (x == 0 && y == 0) {
+                //  started = false;
+                //  delta_x = 0;
+                //  delta_y = 0;
+                //  direction = GestureDirection.UNKNOWN;
+                //  on_end (delta, time);
+                //  warning ("END");
+            } else {
+                warning (delta.to_string ());
+                on_update (delta_x.abs (), time);
+                warning ("UPDATE");
+            }
+        }
+
+        return true;
+    }
+
 #if HAS_MUTTER45
     private bool on_scroll_event (Clutter.Event event) {
 #else
     private bool on_scroll_event (Clutter.ScrollEvent event) {
 #endif
+        warning ("SCROLL EVENT");
         if (!can_handle_event (event)) {
             return false;
         }

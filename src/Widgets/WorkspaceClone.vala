@@ -173,12 +173,11 @@ namespace Gala {
             var primary_monitor = display.get_primary_monitor ();
             var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
-            var background_click_action = new Clutter.ClickAction ();
-            background_click_action.clicked.connect (() => {
-                selected (true);
-            });
             background = new FramedBackground (wm);
-            background.add_action (background_click_action);
+            background.button_release_event.connect (() => {
+                selected (true);
+                return Clutter.EVENT_STOP;
+            });
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
                 width = monitor_geometry.width,
@@ -210,6 +209,7 @@ namespace Gala {
                     });
                 }
             });
+            background_drop_action.actor_clicked.connect (() => selected (true));
 
             display.window_entered_monitor.connect (window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
