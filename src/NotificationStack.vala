@@ -63,6 +63,10 @@ public class Gala.NotificationStack : Object {
         window.stick ();
 
         if (animate) {
+            // Don't flicker at the beginning of the animation
+            notification.opacity = 0;
+            notification.rotation_angle_x = 90;
+
             var opacity_transition = new Clutter.PropertyTransition ("opacity");
             opacity_transition.set_from_value (0);
             opacity_transition.set_to_value (255);
