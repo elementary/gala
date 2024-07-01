@@ -146,7 +146,6 @@ namespace Gala {
             }
 
             var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-            unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
             float actor_x, actor_y;
             window_actor.get_position (out actor_x, out actor_y);
@@ -162,8 +161,14 @@ namespace Gala {
 #else
             Cairo.RectangleInt clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
 #endif
-            var image = (Cairo.ImageSurface) window_texture.get_image (clip);
+            var image = (Cairo.ImageSurface) window_actor.get_image (clip);
             if (include_cursor) {
+                if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {
+                    float resource_scale = window_actor.get_resource_scale ();
+
+                    image.set_device_scale (resource_scale, resource_scale);
+                }
+
                 image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
             }
 
