@@ -69,6 +69,9 @@ public class Gala.WindowSwitcher : CanvasActor {
 #endif
         };
 
+        container.get_accessible ().set_name (_("Window switcher"));
+        get_accessible ().accessible_role = LIST;
+
         caption = new Clutter.Text () {
             font_name = CAPTION_FONT_NAME,
             ellipsize = END,
@@ -355,6 +358,7 @@ public class Gala.WindowSwitcher : CanvasActor {
 
     private void add_icon (WindowSwitcherIcon icon) {
         container.add_child (icon);
+        icon.get_accessible ().accessible_parent = container.get_accessible ();
 
         icon.motion_event.connect (() => {
             if (current_icon != icon && !handling_gesture) {
