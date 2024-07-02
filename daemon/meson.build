@@ -4,7 +4,6 @@ gala_daemon_sources = files(
     'MonitorLabel.vala',
     'Window.vala',
     'WindowMenu.vala',
-    # 'BackgroundMenu.vala',
 )
 
 gala_daemon_bin = executable(
