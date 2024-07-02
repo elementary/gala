@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-daemon-window {
-    background-color: transparent;
-}
-
 .monitor-label {
     border-radius: 9px;
     font-weight: 600;
