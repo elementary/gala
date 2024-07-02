@@ -3,6 +3,42 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+public enum Gala.ActionType {
+    NONE = 0,
+    SHOW_WORKSPACE_VIEW,
+    MAXIMIZE_CURRENT,
+    HIDE_CURRENT,
+    OPEN_LAUNCHER,
+    CUSTOM_COMMAND,
+    WINDOW_OVERVIEW,
+    WINDOW_OVERVIEW_ALL,
+    SWITCH_TO_WORKSPACE_PREVIOUS,
+    SWITCH_TO_WORKSPACE_NEXT,
+    SWITCH_TO_WORKSPACE_LAST,
+    START_MOVE_CURRENT,
+    START_RESIZE_CURRENT,
+    TOGGLE_ALWAYS_ON_TOP_CURRENT,
+    TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT,
+    MOVE_CURRENT_WORKSPACE_LEFT,
+    MOVE_CURRENT_WORKSPACE_RIGHT,
+    CLOSE_CURRENT,
+    SCREENSHOT_CURRENT
+}
+
+[Flags]
+public enum Gala.WindowFlags {
+    NONE = 0,
+    CAN_HIDE,
+    CAN_MAXIMIZE,
+    IS_MAXIMIZED,
+    ALLOWS_MOVE,
+    ALLOWS_RESIZE,
+    ALWAYS_ON_TOP,
+    ON_ALL_WORKSPACES,
+    CAN_CLOSE,
+    IS_TILED
+}
+
 [DBus (name = "org.pantheon.gala")]
 public interface Gala.WMDBus : GLib.Object {
     public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
@@ -25,15 +61,54 @@ public class Gala.Daemon.DBus : GLib.Object {
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
+    private const string BG_MENU_ACTION_GROUP_PREFIX = "background-menu";
+    private const string BG_MENU_ACTION_PREFIX = BG_MENU_ACTION_GROUP_PREFIX + ".";
+
     private WMDBus? wm_proxy = null;
 
-    private WindowMenu? window_menu;
-    private BackgroundMenu? background_menu;
+    //  private WindowMenu? window_menu;
+    private Gtk.PopoverMenu background_menu;
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
+
+        var background_menu_top_section = new Menu ();
+        background_menu_top_section.append (
+            _("Change Wallpaper…"),
+            Action.print_detailed_name (BG_MENU_ACTION_PREFIX + "launch-uri", "settings://desktop/appearance/wallpaper")
+        );
+        background_menu_top_section.append (
+            _("Display Settings…"),
+            Action.print_detailed_name (BG_MENU_ACTION_PREFIX + "launch-uri", "settings://display")
+        );
+
+
+        var background_menu_bottom_section = new Menu ();
+        background_menu_bottom_section.append (
+            _("System Settings…"),
+            Action.print_detailed_name (BG_MENU_ACTION_PREFIX + "launch-uri", "settings://")
+        );
+
+        var background_menu_model = new Menu ();
+        background_menu_model.append_section (null, background_menu_top_section);
+        background_menu_model.append_section (null, background_menu_bottom_section);
+
+        background_menu = new Gtk.PopoverMenu.from_model (background_menu_model) {
+            halign = START,
+            position = BOTTOM,
+            autohide = false,
+            has_arrow = false
+        };
+
+        var launch_action = new SimpleAction ("launch-uri", VariantType.STRING);
+        launch_action.activate.connect (action_launch);
+
+        var action_group = new SimpleActionGroup ();
+        action_group.add_action (launch_action);
+
+        background_menu.insert_action_group (BG_MENU_ACTION_GROUP_PREFIX, action_group);
     }
 
     private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
@@ -65,29 +140,23 @@ public class Gala.Daemon.DBus : GLib.Object {
     }
 
     public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        if (window_menu == null) {
-            window_menu = new WindowMenu ();
-            window_menu.perform_action.connect (perform_action);
-        }
+        //  if (window_menu == null) {
+        //      window_menu = new WindowMenu ();
+        //      window_menu.perform_action.connect (perform_action);
+        //  }
 
-        window_menu.update (flags);
+        //  window_menu.update (flags);
 
-        show_menu (window_menu, display_width, display_height, x, y, true);
+        //  show_menu (window_menu, display_width, display_height, x, y, true);
     }
 
     public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        if (background_menu == null) {
-            background_menu = new BackgroundMenu ();
-        }
-
         show_menu (background_menu, display_width, display_height, x, y, false);
     }
 
-    private void show_menu (Gtk.Menu menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
-        var window = new Window (display_width, display_height);
+    private void show_menu (Gtk.Popover menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
+        var window = new Window (display_width, display_height, menu);
         window.present ();
-
-        menu.attach_to_widget (window.content, null);
 
         Gdk.Rectangle rect = {
             x,
@@ -95,23 +164,24 @@ public class Gala.Daemon.DBus : GLib.Object {
             0,
             0
         };
+        menu.pointing_to = rect;
 
-        menu.show_all ();
-        menu.popup_at_rect (window.get_window (), rect, NORTH, NORTH_WEST);
+        Idle.add (() => {
+            menu.popup ();
+            return Source.REMOVE;
+        });
 
-        menu.deactivate.connect (window.close);
+        //  if (ignore_first_release) {
+        //      bool first = true;
+        //      menu.button_release_event.connect (() => {
+        //          if (first) {
+        //              first = false;
+        //              return Gdk.EVENT_STOP;
+        //          }
 
-        if (ignore_first_release) {
-            bool first = true;
-            menu.button_release_event.connect (() => {
-                if (first) {
-                    first = false;
-                    return Gdk.EVENT_STOP;
-                }
-
-                return Gdk.EVENT_PROPAGATE;
-            });
-        }
+        //          return Gdk.EVENT_PROPAGATE;
+        //      });
+        //  }
     }
 
     public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
@@ -128,6 +198,22 @@ public class Gala.Daemon.DBus : GLib.Object {
     public void hide_monitor_labels () throws GLib.DBusError, GLib.IOError {
         foreach (var monitor_label in monitor_labels) {
             monitor_label.close ();
+        }
+    }
+
+    private static void action_launch (SimpleAction action, Variant? variant) {
+        try {
+            AppInfo.launch_default_for_uri (variant.get_string (), null);
+        } catch (Error e) {
+            var message_dialog = new Granite.MessageDialog.with_image_from_icon_name (
+                _("Failed to open System Settings"),
+                _("A handler for the “settings://” URI scheme must be installed."),
+                "dialog-error",
+                Gtk.ButtonsType.CLOSE
+            );
+            message_dialog.show_error_details (e.message);
+            message_dialog.present ();
+            message_dialog.response.connect (message_dialog.destroy);
         }
     }
 }

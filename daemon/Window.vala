@@ -6,12 +6,13 @@
  */
 
 public class Gala.Daemon.Window : Gtk.Window {
-    public Gtk.Box content { get; construct; }
+    public Gtk.Popover menu { get; construct; }
 
-    public Window (int width, int height) {
+    public Window (int width, int height, Gtk.Popover menu) {
         Object (
             default_width: width,
-            default_height: height
+            default_height: height,
+            menu: menu
         );
     }
 
@@ -19,32 +20,35 @@ public class Gala.Daemon.Window : Gtk.Window {
         set_css_name ("daemon-window");
     }
 
+    ~Window () {
+        warning ("DESTROY");
+        menu.unparent ();
+    }
+
     construct {
         decorated = false;
         resizable = false;
         deletable = false;
         can_focus = false;
-        input_shape_combine_region (null);
-        accept_focus = false;
-        skip_taskbar_hint = true;
-        skip_pager_hint = true;
-        type_hint = Gdk.WindowTypeHint.DOCK;
-        set_keep_above (true);
+        opacity = 0.5;
+        //  input_shape_combine_region (null);
+        //  accept_focus = false;
+        //  skip_taskbar_hint = true;
+        //  skip_pager_hint = true;
+        //  type_hint = Gdk.WindowTypeHint.DOCK;
+        //  set_keep_above (true);
 
         title = "MODAL";
-        child = content = new Gtk.Box (HORIZONTAL, 0) {
+        child = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
             vexpand = true
         };
 
-        set_visual (get_screen ().get_rgba_visual ());
+        menu.set_parent (this);
+        menu.closed.connect (destroy);
 
-        show_all ();
-        move (0, 0);
-
-        button_press_event.connect (() => {
-            close ();
-            return Gdk.EVENT_STOP;
-        });
+        var controller = new Gtk.GestureClick ();
+        child.add_controller (controller);
+        controller.released.connect (menu.popdown);
     }
 }

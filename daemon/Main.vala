@@ -22,7 +22,7 @@ public class Gala.Daemon.Application : Gtk.Application {
 
         var app_provider = new Gtk.CssProvider ();
         app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void activate () {
@@ -32,6 +32,8 @@ public class Gala.Daemon.Application : Gtk.Application {
     public override bool dbus_register (DBusConnection connection, string object_path) throws Error {
         base.dbus_register (connection, object_path);
 
+        Gtk.init ();
+
         connection.register_object (object_path, new DBus ());
 
         return true;
@@ -40,9 +42,9 @@ public class Gala.Daemon.Application : Gtk.Application {
 
 public static int main (string[] args) {
     GLib.Intl.setlocale (LocaleCategory.ALL, "");
-    GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
-    GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
-    GLib.Intl.textdomain (Config.GETTEXT_PACKAGE);
+    //  GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
+    //  GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+    //  GLib.Intl.textdomain (Config.GETTEXT_PACKAGE);
 
     var app = new Gala.Daemon.Application ();
     return app.run ();

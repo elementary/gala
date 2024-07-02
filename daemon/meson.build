@@ -3,14 +3,14 @@ gala_daemon_sources = files(
     'DBus.vala',
     'MonitorLabel.vala',
     'Window.vala',
-    'WindowMenu.vala',
-    'BackgroundMenu.vala',
+    # 'WindowMenu.vala',
+    # 'BackgroundMenu.vala',
 )
 
 gala_daemon_bin = executable(
     'gala-daemon',
     gala_daemon_sources,
-    dependencies: [gala_dep, gala_base_dep, granite_dep, hdy_dep],
-    include_directories: config_inc_dir,
+    dependencies: [dependency('gtk4'), dependency('granite-7'), dependency('libadwaita-1')],
+    # include_directories: config_inc_dir,
     install: true,
 )
