@@ -40,11 +40,13 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         minimize = new Gtk.Button () {
             child = minimize_accellabel
         };
+        minimize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         minimize.clicked.connect (() => {
             perform_action (Gala.ActionType.HIDE_CURRENT);
         });
 
         maximize = new Gtk.Button ();
+        maximize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         maximize.clicked.connect (() => {
             perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
         });
@@ -54,6 +56,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         move = new Gtk.Button () {
             child = move_accellabel
         };
+        move.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         move.clicked.connect (() => {
             perform_action (Gala.ActionType.START_MOVE_CURRENT);
         });
@@ -63,6 +66,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         resize = new Gtk.Button () {
             child = resize_accellabel
         };
+        resize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         resize.clicked.connect (() => {
             perform_action (Gala.ActionType.START_RESIZE_CURRENT);
         });
@@ -72,6 +76,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         always_on_top = new Gtk.CheckButton () {
             child = always_on_top_accellabel
         };
+        always_on_top.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         always_on_top_sid = always_on_top.toggled.connect (() => {
             perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
         });
@@ -81,6 +86,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         on_visible_workspace = new Gtk.CheckButton () {
             child = on_visible_workspace_accellabel
         };
+        on_visible_workspace.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         on_visible_workspace_sid = on_visible_workspace.toggled.connect (() => {
             perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
         });
@@ -90,6 +96,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         move_left = new Gtk.Button () {
             child = move_left_accellabel
         };
+        move_left.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         move_left.clicked.connect (() => {
             perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_LEFT);
         });
@@ -99,6 +106,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         move_right = new Gtk.Button () {
             child = move_right_accellabel
         };
+        move_right.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         move_right.clicked.connect (() => {
             perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
         });
@@ -108,6 +116,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         screenshot = new Gtk.Button () {
             child = screenshot_accellabel
         };
+        screenshot.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         screenshot.clicked.connect (() => {
             perform_action (Gala.ActionType.SCREENSHOT_CURRENT);
         });
@@ -117,6 +126,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         close = new Gtk.Button () {
             child = close_accellabel
         };
+        close.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         close.clicked.connect (() => {
             perform_action (Gala.ActionType.CLOSE_CURRENT);
         });
