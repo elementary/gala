@@ -56,6 +56,8 @@ namespace Pantheon.Desktop {
         public static Wl.Interface iface;
         public Destroy destroy;
         public SetKeepAbove set_keep_above;
+        public MakeCentered make_centered;
+        public Focus focus;
     }
 
     [CCode (has_target = false, has_typedef = false)]
@@ -74,6 +76,8 @@ namespace Pantheon.Desktop {
     public delegate void SetHideMode (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] HideMode hide_mode);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeCentered (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }
