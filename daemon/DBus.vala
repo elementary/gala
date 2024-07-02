@@ -66,13 +66,16 @@ public class Gala.Daemon.DBus : GLib.Object {
 
     private WMDBus? wm_proxy = null;
 
-    //  private WindowMenu? window_menu;
+    private Window window;
+    private WindowMenu? window_menu;
     private Gtk.PopoverMenu background_menu;
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
+
+        window = new Window ();
 
         var background_menu_top_section = new Menu ();
         background_menu_top_section.append (
@@ -101,6 +104,8 @@ public class Gala.Daemon.DBus : GLib.Object {
             autohide = false,
             has_arrow = false
         };
+        background_menu.set_parent (window.child);
+        background_menu.closed.connect (window.close);
 
         var launch_action = new SimpleAction ("launch-uri", VariantType.STRING);
         launch_action.activate.connect (action_launch);
@@ -140,22 +145,30 @@ public class Gala.Daemon.DBus : GLib.Object {
     }
 
     public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        //  if (window_menu == null) {
-        //      window_menu = new WindowMenu ();
-        //      window_menu.perform_action.connect (perform_action);
-        //  }
+        if (window_menu == null) {
+            window_menu = new WindowMenu ();
+            window_menu.set_parent (window.child);
+            window_menu.closed.connect (window.close);
+            window_menu.perform_action.connect ((type) => {
+                Idle.add (() => {
+                    perform_action (type);
+                    return Source.REMOVE;
+                });
+            });
+        }
 
-        //  window_menu.update (flags);
+        window_menu.update (flags);
 
-        //  show_menu (window_menu, display_width, display_height, x, y, true);
+        show_menu (window_menu, display_width, display_height, x, y);
     }
 
     public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        show_menu (background_menu, display_width, display_height, x, y, false);
+        show_menu (background_menu, display_width, display_height, x, y);
     }
 
-    private void show_menu (Gtk.Popover menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
-        var window = new Window (display_width, display_height, menu);
+    private void show_menu (Gtk.Popover menu, int display_width, int display_height, int x, int y) {
+        window.default_width = display_width;
+        window.default_height = display_height;
         window.present ();
 
         Gdk.Rectangle rect = {
@@ -170,18 +183,6 @@ public class Gala.Daemon.DBus : GLib.Object {
             menu.popup ();
             return Source.REMOVE;
         });
-
-        //  if (ignore_first_release) {
-        //      bool first = true;
-        //      menu.button_release_event.connect (() => {
-        //          if (first) {
-        //              first = false;
-        //              return Gdk.EVENT_STOP;
-        //          }
-
-        //          return Gdk.EVENT_PROPAGATE;
-        //      });
-        //  }
     }
 
     public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
