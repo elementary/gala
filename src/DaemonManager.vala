@@ -102,6 +102,7 @@ public class Gala.DaemonManager : GLib.Object {
                 break;
 
             case "MODAL":
+                daemon_client.make_dock (window);
                 window.move_frame (false, 0, 0);
                 window.make_above ();
                 break;
