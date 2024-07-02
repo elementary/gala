@@ -32,6 +32,7 @@ public class Gala.Daemon.Application : Gtk.Application {
     public override bool dbus_register (DBusConnection connection, string object_path) throws Error {
         base.dbus_register (connection, object_path);
 
+        // We are using gtk in the DBus () constructor so we need to init it early
         Gtk.init ();
 
         connection.register_object (object_path, new DBus ());

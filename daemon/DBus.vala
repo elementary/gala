@@ -114,6 +114,16 @@ public class Gala.Daemon.DBus : GLib.Object {
         action_group.add_action (launch_action);
 
         background_menu.insert_action_group (BG_MENU_ACTION_GROUP_PREFIX, action_group);
+
+        window_menu = new WindowMenu ();
+        window_menu.set_parent (window.child);
+        window_menu.closed.connect (window.close);
+        window_menu.perform_action.connect ((type) => {
+            Idle.add (() => {
+                perform_action (type);
+                return Source.REMOVE;
+            });
+        });
     }
 
     private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
@@ -145,18 +155,6 @@ public class Gala.Daemon.DBus : GLib.Object {
     }
 
     public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        if (window_menu == null) {
-            window_menu = new WindowMenu ();
-            window_menu.set_parent (window.child);
-            window_menu.closed.connect (window.close);
-            window_menu.perform_action.connect ((type) => {
-                Idle.add (() => {
-                    perform_action (type);
-                    return Source.REMOVE;
-                });
-            });
-        }
-
         window_menu.update (flags);
 
         show_menu (window_menu, display_width, display_height, x, y);

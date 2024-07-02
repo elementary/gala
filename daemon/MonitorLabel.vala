@@ -23,25 +23,11 @@
 
         title = "LABEL-%i".printf (info.monitor);
 
-        //  input_shape_combine_region (null);
-        //  accept_focus = false;
         decorated = false;
         resizable = false;
         deletable = false;
         can_focus = false;
         titlebar = new Gtk.Grid ();
-        //  skip_taskbar_hint = true;
-        //  skip_pager_hint = true;
-        //  type_hint = Gdk.WindowTypeHint.TOOLTIP;
-        //  set_keep_above (true);
-
-        //  stick ();
-
-        var scale_factor = get_style_context ().get_scale ();
-        //  move (
-        //      (int) (info.x / scale_factor) + SPACING,
-        //      (int) (info.y / scale_factor) + SPACING
-        //  );
 
         var provider = new Gtk.CssProvider ();
         try {
