@@ -176,7 +176,6 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
             );
         }
 
-
         move.visible = Gala.WindowFlags.ALLOWS_MOVE in flags;
         if (move.visible) {
             move_accellabel.accel_string = keybind_settings.get_strv ("begin-move")[0];

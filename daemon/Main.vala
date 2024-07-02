@@ -21,7 +21,7 @@ public class Gala.Daemon.Application : Gtk.Application {
         });
 
         var app_provider = new Gtk.CssProvider ();
-        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
+        app_provider.load_from_resource ("/io/elementary/desktop/gala-daemon/gala-daemon.css");
         Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
