@@ -35,10 +35,66 @@ public class Gala.ShellClientsManager : Object {
     construct {
         notifications_client = new NotificationsClient (wm.get_display ());
 
-        var shell_settings = new Settings ("io.elementary.desktop.wm.shell");
-        var clients = shell_settings.get_value ("trusted-clients");
-        foreach (var client in clients) {
-            protocol_clients += new ManagedClient (wm.get_display (), client.get_strv ());
+        start_clients.begin ();
+    }
+
+    private async void start_clients () {
+        // Prioritize user config over system
+        (unowned string)[] config_dirs = { Environment.get_user_config_dir () };
+        foreach (unowned var dir in Environment.get_system_config_dirs ()) {
+            config_dirs += dir;
+        }
+
+        string? path = null;
+        foreach (unowned var dir in config_dirs) {
+            var file_path = Path.build_filename (dir, "io.elementary.desktop.wm.shell");
+            warning (file_path);
+            if (FileUtils.test (file_path, EXISTS)) {
+                path = file_path;
+                break;
+            }
+        }
+
+        if (path == null) {
+            warning ("No shell config file found.");
+            return;
+        }
+
+        var file = File.new_for_path (path);
+
+        Bytes bytes;
+        try {
+            bytes = yield file.load_bytes_async (null, null);
+        } catch (Error e) {
+            warning ("Failed to load shell config file: %s", e.message);
+            return;
+        }
+
+        var key_file = new KeyFile ();
+        try {
+            key_file.load_from_bytes (bytes, NONE);
+        } catch (Error e) {
+            warning ("Failed to parse shell config file: %s", e.message);
+            return;
+        }
+
+        foreach (var group in key_file.get_groups ()) {
+            if (!Meta.Util.is_wayland_compositor ()) {
+                try {
+                    if (!key_file.get_boolean (group, "launch-on-x")) {
+                        continue;
+                    }
+                } catch (Error e) {
+                    warning ("Failed to check whether client should be launched on x, assuming yes: %s", e.message);
+                }
+            }
+
+            try {
+                var args = key_file.get_string_list (group, "args");
+                protocol_clients += new ManagedClient (wm.get_display (), args);
+            } catch (Error e) {
+                warning ("Failed to load launch args for client %s: %s", group, e.message);
+            }
         }
     }
 
