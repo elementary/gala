@@ -71,8 +71,6 @@ add_project_arguments([
 
         '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
         '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_44',
-        # '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_10',
-        # '-DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10',
     ],
     language: 'c',
 )

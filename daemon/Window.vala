@@ -15,7 +15,6 @@ public class Gala.Daemon.Window : Gtk.Window {
         resizable = false;
         deletable = false;
         can_focus = false;
-        opacity = 0.5;
         title = "MODAL";
         hide_on_close = true;
         child = new Gtk.Box (HORIZONTAL, 0) {
@@ -26,5 +25,10 @@ public class Gala.Daemon.Window : Gtk.Window {
         var controller = new Gtk.GestureClick ();
         child.add_controller (controller);
         controller.released.connect (close);
+    }
+
+    public override void snapshot (Gtk.Snapshot snapshot) {
+        base.snapshot (snapshot);
+        snapshot.append_color ({0,0,0,0}, {{0,0,}, {0,0,}});
     }
 }
