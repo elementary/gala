@@ -10,7 +10,7 @@ gala_daemon_bin = executable(
     'gala-daemon',
     gala_daemon_sources,
     gala_resources,
-    dependencies: [dependency('gtk4'), dependency('granite-7'), dependency('libadwaita-1')],
-    # include_directories: config_inc_dir,
+    dependencies: [config_dep, granite_dep, gtk4_dep, adw_dep],
+    include_directories: config_inc_dir,
     install: true,
 )

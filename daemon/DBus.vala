@@ -87,7 +87,6 @@ public class Gala.Daemon.DBus : GLib.Object {
             Action.print_detailed_name (BG_MENU_ACTION_PREFIX + "launch-uri", "settings://display")
         );
 
-
         var background_menu_bottom_section = new Menu ();
         background_menu_bottom_section.append (
             _("System Settings…"),
