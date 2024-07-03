@@ -29,6 +29,8 @@ public class Gala.Daemon.Window : Gtk.Window {
 
     public override void snapshot (Gtk.Snapshot snapshot) {
         base.snapshot (snapshot);
+        // We need to append something here otherwise GTK thinks the snapshot is empty and therefore doesn't
+        // render anything and therefore doesn't present a window which is needed for our popovers
         snapshot.append_color ({0, 0, 0, 0}, {{0, 0}, {0, 0}});
     }
 }
