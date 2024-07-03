@@ -29,6 +29,6 @@ public class Gala.Daemon.Window : Gtk.Window {
 
     public override void snapshot (Gtk.Snapshot snapshot) {
         base.snapshot (snapshot);
-        snapshot.append_color ({0,0,0,0}, {{0,0,}, {0,0,}});
+        snapshot.append_color ({0, 0, 0, 0}, {{0, 0}, {0, 0}});
     }
 }
