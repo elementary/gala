@@ -216,6 +216,7 @@ namespace Gala {
 
             ui_group = new Clutter.Actor ();
             ui_group.reactive = true;
+            update_ui_group_size ();
             stage.add_child (ui_group);
 
             window_group = display.get_window_group ();
@@ -377,6 +378,25 @@ namespace Gala {
             return false;
         }
 
+        private void update_ui_group_size () {
+            unowned var display = get_display ();
+
+            int max_width = 0;
+            int max_height = 0;
+
+            var num_monitors = display.get_n_monitors ();
+            for (int i = 0; i < num_monitors; i++) {
+                var geom = display.get_monitor_geometry (i);
+                var total_width = geom.x + geom.width;
+                var total_height = geom.y + geom.height;
+
+                max_width = (max_width > total_width) ? max_width : total_width;
+                max_height = (max_height > total_height) ? max_height : total_height;
+            }
+
+            ui_group.set_size (max_width, max_height);
+        }
+
         private void launch_action (string action_key) {
             try {
                 var action = behavior_settings.get_string (action_key);
@@ -387,6 +407,7 @@ namespace Gala {
         }
 
         private void on_monitors_changed () {
+            update_ui_group_size ();
             screen_shield.expand_to_screen_size ();
         }
 
