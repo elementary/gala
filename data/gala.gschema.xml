@@ -439,12 +439,4 @@
       <description></description>
     </key>
   </schema>
-
-  <schema path="/io/elementary/desktop/wm/shell/" id="io.elementary.desktop.wm.shell">
-    <key type="aas" name="trusted-clients">
-      <default>[['io.elementary.dock'], ["io.elementary.wingpanel"]]</default>
-      <summary>Clients to be launched by gala as trusted for interacting with the shell wl protcol.</summary>
-      <description>An array of arrays of arguments to be used to launch the client.</description>
-    </key>
-  </schema>
 </schemalist>
