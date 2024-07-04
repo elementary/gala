@@ -105,6 +105,8 @@ public class Gala.GestureTracker : Object {
      */
     private ScrollBackend scroll_backend;
 
+    private PanBackend pan_backend;
+
     private Gee.ArrayList<ulong> handlers;
 
     private double previous_percentage;
@@ -148,6 +150,18 @@ public class Gala.GestureTracker : Object {
         scroll_backend.on_begin.connect (gesture_begin);
         scroll_backend.on_update.connect (gesture_update);
         scroll_backend.on_end.connect (gesture_end);
+    }
+
+    /**
+     * Allow to receive touch pan gestures.
+     * @param actor Clutter actor that will receive the touch events.
+     */
+    public void enable_pan (Clutter.Actor actor) {
+        pan_backend = new PanBackend (actor);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     public void connect_handlers (owned OnBegin? on_begin_handler, owned OnUpdate? on_update_handler, owned OnEnd? on_end_handler) {

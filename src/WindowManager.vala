@@ -181,6 +181,7 @@ namespace Gala {
             screensaver.active_changed.connect (update_input_area);
 
             stage = display.get_stage () as Clutter.Stage;
+            gesture_tracker.enable_pan (stage);
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
@@ -540,6 +541,7 @@ namespace Gala {
             unowned var display = get_display ();
 
             var fingers = gesture.fingers;
+            warning ("FIngers: %s", fingers.to_string ());
 
             var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
             var four_finger_swipe_horizontal = GestureSettings.get_string ("four-finger-swipe-horizontal");
