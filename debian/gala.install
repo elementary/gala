@@ -1,3 +1,4 @@
+etc/xdg/io.elementary.desktop.wm.shell
 usr/bin
 usr/lib/*/gala/plugins/lib*.so
 usr/lib/systemd/user
