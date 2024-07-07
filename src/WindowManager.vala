@@ -157,7 +157,7 @@ namespace Gala {
             });
         }
 
-        private bool show_stage () {
+        private void show_stage () {
             unowned Meta.Display display = get_display ();
 
             screen_shield = new ScreenShield (this);
@@ -377,8 +377,6 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
-
-            return false;
         }
 
         private void update_ui_group_size () {
