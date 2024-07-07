@@ -294,7 +294,6 @@ namespace Gala {
          *
          * @param actor      The actor from which to create a snapshot
          * @param inner_rect The inner (actually visible) rectangle of the window
-         * @param outer_rect The outer (input region) rectangle of the window
          *
          * @return           A copy of the actor at that time or %NULL
          */
