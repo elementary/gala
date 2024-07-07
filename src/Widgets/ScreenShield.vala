@@ -69,33 +69,26 @@ namespace Gala {
         // is about to turn off
         public const uint LONG_ANIMATION_TIME = 3000;
         // Animation length used for manual lock action (i.e. Super+L or GUI action)
-        public const uint SHORT_ANIMATION_TIME = 300;
+        private const uint SHORT_ANIMATION_TIME = 300;
 
         private const string LOCK_ENABLED_KEY = "lock-enabled";
         private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
         private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
         public signal void active_changed ();
-
+        
+        public WindowManager wm { get; construct; }
         // Screensaver active but not necessarily locked
         public bool active { get; private set; default = false; }
-
-        public bool is_locked { get; private set; default = false; }
-        public bool in_greeter { get; private set; default = false; }
         public int64 activation_time { get; private set; default = 0; }
-
-        public WindowManager wm { get; construct; }
-
+        
         private ModalProxy? modal_proxy;
 
         private LoginManager? login_manager;
         private LoginUserManager? login_user_manager;
         private LoginSessionManager? login_session;
         private SessionPresence? session_presence;
-
         private DisplayManagerSeat? display_manager;
-
-        private uint animate_id = 0;
 
         private UnixInputStream? inhibitor;
 
@@ -103,6 +96,9 @@ namespace Gala {
         private GLib.Settings lockdown_settings;
         private GLib.Settings gala_settings;
 
+        private bool is_locked = false;
+        private bool in_greeter = false;
+        private bool deactivation_in_progress = false;
         private bool connected_to_buses = false;
 
         public ScreenShield (WindowManager wm) {
@@ -152,8 +148,11 @@ namespace Gala {
                     // Listen for lock unlock events from logind
                     login_session.lock.connect (() => @lock (false));
                     login_session.unlock.connect (() => {
-                        deactivate (false);
-                        in_greeter = false;
+                        Idle.add_once (() => {
+                            warning ("login_session unlock");
+                            deactivate (false);
+                            in_greeter = false;
+                        });
                     });
 
                     ((DBusProxy)login_session).g_properties_changed.connect (sync_inhibitor);
@@ -208,7 +207,7 @@ namespace Gala {
                     this.@lock (false);
                 }
             } else {
-                debug ("resumed from suspend, waking screen");
+                warning ("resumed from suspend, waking screen");
                 on_user_became_active ();
                 expand_to_screen_size ();
             }
@@ -267,8 +266,10 @@ namespace Gala {
 
             // User became active in some way, switch to the greeter if we're not there already
             if (is_locked && !in_greeter) {
-                debug ("user became active, switching to greeter");
-                cancel_animation ();
+                warning ("user became active, switching to greeter");
+                remove_all_transitions ();
+                warning ("removed all transitions");
+
                 try {
                     display_manager.switch_to_greeter ();
                     in_greeter = true;
@@ -276,8 +277,8 @@ namespace Gala {
                     critical ("Unable to switch to greeter to unlock: %s", e.message);
                 }
             // Otherwise, we're in screensaver mode, just deactivate
-            } else if (!is_locked) {
-                debug ("user became active in unlocked session, closing screensaver");
+            } else if (!is_locked && !deactivation_in_progress) {
+                warning ("user became active in unlocked session, closing screensaver");
                 deactivate (false);
             }
         }
@@ -319,7 +320,7 @@ namespace Gala {
         }
 
         public void activate (bool animate, uint animation_time = LONG_ANIMATION_TIME) {
-            if (visible || !connected_to_buses) {
+            if (active || !connected_to_buses) {
                 return;
             }
 
@@ -348,42 +349,33 @@ namespace Gala {
         }
 
         private void animate_and_lock (uint animation_time) {
+            warning ("Animate and lock");
+
             opacity = 0;
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             set_easing_duration (animation_time);
             opacity = 255;
+            restore_easing_state ();
 
-            animate_id = Timeout.add (animation_time, () => {
-                animate_id = 0;
-
-                restore_easing_state ();
+            get_transition ("opacity").completed.connect (() => {
+                warning ("End animation and lock");
 
                 _set_active (true);
 
                 if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                     @lock (false);
                 }
-
-                return GLib.Source.REMOVE;
             });
         }
 
-        private void cancel_animation () {
-           if (animate_id != 0) {
-                GLib.Source.remove (animate_id);
-                animate_id = 0;
-
-                restore_easing_state ();
-            }
-        }
-
         public void deactivate (bool animate) {
-            if (!connected_to_buses) {
+            if (!connected_to_buses || deactivation_in_progress) {
                 return;
             }
 
-            cancel_animation ();
+            remove_all_transitions ();
+            warning ("removed all transitions");
 
             is_locked = false;
 
@@ -393,7 +385,40 @@ namespace Gala {
             }
 
             wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
-            visible = false;
+
+            // resuming from greeter
+            if (in_greeter) {
+                warning ("Staring animation");
+
+                deactivation_in_progress = true;
+
+                var t = new Timer ();
+                t.reset ();
+                t.start ();
+
+                visible = true;
+                opacity = 255;
+                save_easing_state ();
+                set_easing_duration (SHORT_ANIMATION_TIME);
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                opacity = 0;
+                restore_easing_state ();
+
+                unowned var transition = get_transition ("opacity");
+                ulong handler = 0;
+                handler = transition.completed.connect (() => {
+                    transition.disconnect (handler);
+
+                    t.stop ();
+                    warning ("Yay %f", t.elapsed ());
+                    deactivation_in_progress = false;
+
+                    visible = false;
+                    opacity = 255;
+                });
+            } else {
+                visible = false;
+            }
 
             activation_time = 0;
             _set_active (false);

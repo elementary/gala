@@ -45,6 +45,7 @@ namespace Gala {
             if (active) {
                 screen_shield.activate (true);
             } else {
+                warning ("Set deactive");
                 screen_shield.deactivate (false);
             }
         }

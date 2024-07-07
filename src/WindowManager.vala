@@ -67,15 +67,17 @@ namespace Gala {
         public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
-
+        
         private HotCornerManager? hot_corner_manager = null;
-
+        
         public WindowTracker? window_tracker { get; private set; }
-
+        
         /**
-         * Allow to zoom in/out the entire desktop.
-         */
+        * Allow to zoom in/out the entire desktop.
+        */
         private Zoom? zoom = null;
+        
+        private Clutter.Actor fade_in_screen;
 
         private Clutter.Actor? tile_preview;
 
@@ -146,15 +148,22 @@ namespace Gala {
             ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
-
-            show_stage ();
-
+            
             AccessDialog.watch_portal ();
-
+            
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
+
+            show_stage ();
+
+            fade_in_screen.opacity = 255;
+            fade_in_screen.save_easing_state ();
+            fade_in_screen.set_easing_duration (1000);
+            fade_in_screen.set_easing_mode (Clutter.AnimationMode.EASE);
+            fade_in_screen.opacity = 0;
+            fade_in_screen.restore_easing_state ();
         }
 
         private bool show_stage () {
@@ -240,6 +249,12 @@ namespace Gala {
 #endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
+
+            fade_in_screen = new Clutter.Actor () {
+                background_color = Clutter.Color.from_rgba (0, 0, 0, 255)
+            };
+            fade_in_screen.add_constraint (new Clutter.BindConstraint (ui_group, Clutter.BindCoordinate.SIZE, 0));
+            stage.add_child (fade_in_screen);
 
             FilterManager.init (this);
 
