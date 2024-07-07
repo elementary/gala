@@ -4,6 +4,11 @@ install_data(
     rename: 'org.pantheon.desktop.gala.gschema.xml'
 )
 
+install_data(
+    'io.elementary.desktop.wm.shell',
+    install_dir: get_option('sysconfdir') / 'xdg',
+)
+
 i18n.merge_file(
     input: 'gala.metainfo.xml.in',
     output: meson.project_name() + '.metainfo.xml',

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
- public class Gala.Daemon.MonitorLabel : Gtk.Window {
+ public class Gala.Daemon.MonitorLabel : Hdy.Window {
     private const int SPACING = 12;
     private const string COLORED_STYLE_CSS = """
     .%s {
@@ -23,20 +23,33 @@
 
         title = "LABEL-%i".printf (info.monitor);
 
+        input_shape_combine_region (null);
+        accept_focus = false;
         decorated = false;
         resizable = false;
         deletable = false;
         can_focus = false;
-        titlebar = new Gtk.Grid ();
+        skip_taskbar_hint = true;
+        skip_pager_hint = true;
+        type_hint = Gdk.WindowTypeHint.TOOLTIP;
+        set_keep_above (true);
+
+        stick ();
+
+        var scale_factor = get_style_context ().get_scale ();
+        move (
+            (int) (info.x / scale_factor) + SPACING,
+            (int) (info.y / scale_factor) + SPACING
+        );
 
         var provider = new Gtk.CssProvider ();
         try {
-            provider.load_from_string (COLORED_STYLE_CSS.printf (title, info.background_color, info.text_color));
+            provider.load_from_data (COLORED_STYLE_CSS.printf (title, info.background_color, info.text_color));
             get_style_context ().add_class (title);
             get_style_context ().add_class ("monitor-label");
 
-            Gtk.StyleContext.add_provider_for_display (
-                Gdk.Display.get_default (),
+            Gtk.StyleContext.add_provider_for_screen (
+                Gdk.Screen.get_default (),
                 provider,
                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             );
@@ -44,6 +57,6 @@
             warning ("Failed to load CSS: %s", e.message);
         }
 
-        present ();
+        show_all ();
     }
 }
