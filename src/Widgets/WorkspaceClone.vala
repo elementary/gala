@@ -141,7 +141,6 @@ namespace Gala {
         public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
-        public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
         private float _scale_factor = 1.0f;
@@ -182,16 +181,10 @@ namespace Gala {
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
                 width = monitor_geometry.width,
-                height = monitor_geometry.height,
+                height = monitor_geometry.height
             };
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
-
-            icon_group = new IconGroup (wm, workspace, scale_factor);
-            icon_group.selected.connect (() => selected (true));
-
-            var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            icon_group.add_action (icons_drop_action);
 
             var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
             background.add_action (background_drop_action);
@@ -211,84 +204,17 @@ namespace Gala {
                 }
             });
 
-            display.window_entered_monitor.connect (window_entered_monitor);
-            display.window_left_monitor.connect (window_left_monitor);
-            workspace.window_added.connect (add_window);
-            workspace.window_removed.connect (remove_window);
-
             add_child (background);
             add_child (window_container);
-
-            // add existing windows
-            var windows = workspace.list_windows ();
-            foreach (var window in windows) {
-                if (window.window_type == Meta.WindowType.NORMAL
-                    && !window.on_all_workspaces
-                    && window.is_on_primary_monitor ()) {
-                    window_container.add_window (window);
-                    icon_group.add_window (window, true);
-                }
-            }
-
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.connect (add_window);
         }
 
         ~WorkspaceClone () {
-            unowned Meta.Display display = workspace.get_display ();
-
-            display.window_entered_monitor.disconnect (window_entered_monitor);
-            display.window_left_monitor.disconnect (window_left_monitor);
-            workspace.window_added.disconnect (add_window);
-            workspace.window_removed.disconnect (remove_window);
-
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.disconnect (add_window);
-
             background.destroy ();
             window_container.destroy ();
-            icon_group.destroy ();
         }
 
         private void reallocate () {
-            icon_group.scale_factor = scale_factor;
             window_container.monitor_scale = scale_factor;
-        }
-
-        /**
-         * Add a window to the WindowCloneContainer and the IconGroup if it really
-         * belongs to this workspace and this monitor.
-         */
-        private void add_window (Meta.Window window) {
-            if (window.window_type != Meta.WindowType.NORMAL
-                || window.get_workspace () != workspace
-                || window.on_all_workspaces
-                || !window.is_on_primary_monitor ())
-                return;
-
-            foreach (var child in window_container.get_children ())
-                if (((WindowClone) child).window == window)
-                    return;
-
-            window_container.add_window (window);
-            icon_group.add_window (window);
-        }
-
-        /**
-         * Remove a window from the WindowCloneContainer and the IconGroup
-         */
-        private void remove_window (Meta.Window window) {
-            window_container.remove_window (window);
-            icon_group.remove_window (window, opened);
-        }
-
-        private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-            add_window (window);
-        }
-
-        private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
-            if (monitor == display.get_primary_monitor ())
-                remove_window (window);
         }
 
 #if HAS_MUTTER45
@@ -421,8 +347,6 @@ namespace Gala {
             window_container.padding_left =
                 window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
             window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
-
-            icon_group.redraw ();
 
             Meta.Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
             window_container.open (selected_window, with_gesture, is_cancel_animation);

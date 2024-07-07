@@ -108,8 +108,6 @@ public class Gala.WindowClone : Clutter.Actor {
     construct {
         reactive = true;
 
-        window.unmanaged.connect (unmanaged);
-        window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
@@ -147,8 +145,21 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     ~WindowClone () {
-        window.unmanaged.disconnect (unmanaged);
-        window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
+        remove_all_transitions ();
+
+        if (drag_action != null && drag_action.dragging) {
+            drag_action.cancel ();
+        }
+
+        if (clone != null) {
+            clone.destroy ();
+        }
+
+        if (check_confirm_dialog_cb != 0) {
+            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
+            check_confirm_dialog_cb = 0;
+        }
+
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
@@ -254,13 +265,6 @@ public class Gala.WindowClone : Clutter.Actor {
     private bool should_fade () {
         return (overview_mode
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
-    }
-
-    private void on_all_workspaces_changed () {
-        // we don't display windows that are on all workspaces
-        if (window.on_all_workspaces) {
-            unmanaged ();
-        }
     }
 
     /**
@@ -590,28 +594,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    /**
-     * The window unmanaged by the compositor, so we need to destroy ourselves too.
-     */
-    private void unmanaged () {
-        remove_all_transitions ();
-
-        if (drag_action != null && drag_action.dragging) {
-            drag_action.cancel ();
-        }
-
-        if (clone != null) {
-            clone.destroy ();
-        }
-
-        if (check_confirm_dialog_cb != 0) {
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
-
-        destroy ();
-    }
-
     private void actor_clicked (uint32 button) {
         switch (button) {
             case Clutter.Button.PRIMARY:
@@ -764,9 +746,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
             // if we don't actually change workspaces, the window-added/removed signals won't
             // be emitted so we can just keep our window here
-            if (will_move) {
-                unmanaged ();
-            } else {
+            if (!will_move) {
                 drag_canceled ();
             }
 
@@ -775,7 +755,6 @@ public class Gala.WindowClone : Clutter.Actor {
             var monitor = ((MonitorClone) destination).monitor;
             if (window.get_monitor () != monitor) {
                 window.move_to_monitor (monitor);
-                unmanaged ();
             } else {
                 drag_canceled ();
             }
@@ -795,9 +774,7 @@ public class Gala.WindowClone : Clutter.Actor {
             did_move = true;
         }
 
-        if (did_move) {
-            unmanaged ();
-        } else {
+        if (!did_move) {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
         }

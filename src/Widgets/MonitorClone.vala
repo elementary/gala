@@ -30,8 +30,8 @@ namespace Gala {
         public Meta.Display display { get; construct; }
         public int monitor { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
+        public WindowCloneContainer window_container { get; private set; }
 
-        private WindowCloneContainer window_container;
         private BackgroundManager background;
 
         public MonitorClone (WindowManager wm, Meta.Display display, int monitor, GestureTracker gesture_tracker) {
@@ -48,20 +48,6 @@ namespace Gala {
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 
-            display.window_entered_monitor.connect (window_entered);
-            display.window_left_monitor.connect (window_left);
-
-            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-            foreach (unowned Meta.WindowActor window_actor in window_actors) {
-                if (window_actor.is_destroyed ())
-                    continue;
-
-                unowned Meta.Window window = window_actor.get_meta_window ();
-                if (window.get_monitor () == monitor) {
-                    window_entered (monitor, window);
-                }
-            }
-
             add_child (background);
             add_child (window_container);
 
@@ -69,11 +55,6 @@ namespace Gala {
             add_action (drop);
 
             update_allocation ();
-        }
-
-        ~MonitorClone () {
-            display.window_entered_monitor.disconnect (window_entered);
-            display.window_left_monitor.disconnect (window_left);
         }
 
         /**
@@ -104,20 +85,6 @@ namespace Gala {
         public void close (bool with_gesture = false, bool is_cancel_animation = false) {
             window_container.restack_windows ();
             window_container.close (with_gesture, is_cancel_animation);
-        }
-
-        private void window_left (int window_monitor, Meta.Window window) {
-            if (window_monitor != monitor)
-                return;
-
-            window_container.remove_window (window);
-        }
-
-        private void window_entered (int window_monitor, Meta.Window window) {
-            if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
-                return;
-
-            window_container.add_window (window);
         }
     }
 }

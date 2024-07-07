@@ -22,6 +22,11 @@ namespace Gala {
      * the icon groups, the WorkspaceClones and the MonitorClones.
      */
     public class MultitaskingView : Clutter.Actor, ActivatableComponent {
+        private struct WindowInfo {
+            public int workspace_index;
+            public bool on_all_workspaces;
+        }
+
         public const int ANIMATION_DURATION = 250;
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
@@ -36,6 +41,8 @@ namespace Gala {
         private bool animating = false;
 
         private List<MonitorClone> window_containers_monitors;
+        private GLib.HashTable<unowned WorkspaceClone, IconGroup> workspace_icon_group_table;
+        private GLib.HashTable<unowned Meta.Window, WindowInfo?> created_windows;
 
         private IconGroupContainer icon_groups;
         private Clutter.Actor workspaces;
@@ -81,6 +88,9 @@ namespace Gala {
 
             icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
 
+            workspace_icon_group_table = new GLib.HashTable<unowned WorkspaceClone, IconGroup> (GLib.direct_hash, GLib.direct_equal);
+            created_windows = new GLib.HashTable<unowned Meta.Window, WindowInfo?> (GLib.direct_hash, GLib.direct_equal);
+
             dock_clones = new Clutter.Actor ();
 
             brightness_effect = new Clutter.BrightnessContrastEffect ();
@@ -114,43 +124,165 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_monitors);
 
-            Meta.Prefs.add_listener ((pref) => {
-                if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
-                    update_monitors ();
+            //  Meta.Prefs.add_listener ((pref) => {
+            //      if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
+            //          update_monitors ();
+            //          return;
+            //      }
+
+            //      if (Meta.Prefs.get_dynamic_workspaces () ||
+            //          (pref != Meta.Preference.DYNAMIC_WORKSPACES && pref != Meta.Preference.NUM_WORKSPACES)) {
+            //          return;
+            //      }
+
+            //      Idle.add (() => {
+            //          unowned List<Meta.Workspace> existing_workspaces = null;
+            //          for (int i = 0; i < manager.get_n_workspaces (); i++) {
+            //              existing_workspaces.append (manager.get_workspace_by_index (i));
+            //          }
+
+            //          foreach (unowned var child in workspaces.get_children ()) {
+            //              unowned var workspace_clone = (WorkspaceClone) child;
+            //              if (existing_workspaces.index (workspace_clone.workspace) < 0) {
+            //                  workspace_clone.window_selected.disconnect (window_selected);
+            //                  workspace_clone.selected.disconnect (activate_workspace);
+
+            //                  icon_groups.remove_group (workspace_clone.icon_group);
+
+            //                  workspace_clone.destroy ();
+            //              }
+            //          }
+
+            //          update_monitors ();
+            //          update_positions (false);
+
+            //          return Source.REMOVE;
+            //      });
+            //  });
+
+            display.window_created.connect ((window) => {
+                if (window in created_windows) {
                     return;
                 }
 
-                if (Meta.Prefs.get_dynamic_workspaces () ||
-                    (pref != Meta.Preference.DYNAMIC_WORKSPACES && pref != Meta.Preference.NUM_WORKSPACES)) {
-                    return;
-                }
+                add_window (window);
+                created_windows[window] = WindowInfo () {
+                    workspace_index = window.get_workspace ().index (),
+                    on_all_workspaces = window.on_all_workspaces
+                };
 
-                Idle.add (() => {
-                    unowned List<Meta.Workspace> existing_workspaces = null;
-                    for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                        existing_workspaces.append (manager.get_workspace_by_index (i));
+                window.unmanaged.connect ((window) => {
+                    remove_window (window);
+                    created_windows.remove (window);
+                });
+
+                window.workspace_changed.connect ((window) => {
+                    warning ("Workspace changed %d", window.get_workspace ().index ());
+
+                    remove_window_from_old_workspace (window);
+                    add_window (window);
+                    created_windows[window].workspace_index = window.get_workspace ().index ();
+                });
+
+                window.notify["on-all-workspaces"].connect ((obj, pspec) => {
+                    unowned var _window = (Meta.Window) obj;
+                    var old_val = created_windows[_window].on_all_workspaces;
+                    if (old_val == _window.on_all_workspaces) {
+                        return;
                     }
 
-                    foreach (unowned var child in workspaces.get_children ()) {
-                        unowned var workspace_clone = (WorkspaceClone) child;
-                        if (existing_workspaces.index (workspace_clone.workspace) < 0) {
-                            workspace_clone.window_selected.disconnect (window_selected);
-                            workspace_clone.selected.disconnect (activate_workspace);
+                    created_windows[_window].on_all_workspaces = _window.on_all_workspaces;
 
-                            icon_groups.remove_group (workspace_clone.icon_group);
-
-                            workspace_clone.destroy ();
-                        }
+                    if (_window.on_all_workspaces) {
+                        remove_window (window);
+                    } else {
+                        add_window (window);
                     }
-
-                    update_monitors ();
-                    update_positions (false);
-
-                    return Source.REMOVE;
                 });
             });
+            display.window_entered_monitor.connect ((monitor, window) => {
+                if (window in created_windows) {
+                    add_window (window);
+                }
+            });
+            display.window_left_monitor.connect ((monitor, window) => {
+                if (window in created_windows) {
+                    remove_window (window);
+                }
+            });
+
+            foreach (unowned var window in display.list_all_windows ()) {
+                add_window (window);
+            }
 
             style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
+        }
+
+        private void add_window (Meta.Window window) {
+            warning ("Add window");
+            if (window.window_type != Meta.WindowType.NORMAL) {
+                return;
+            }
+
+            // add window to WorkspaceClone and IconGroup
+            if (!window.on_all_workspaces && window.is_on_primary_monitor ()) {
+                foreach (unowned var actor in workspaces.get_children ()) {
+                    unowned var clone = (WorkspaceClone) actor;
+                    if (clone.workspace == window.get_workspace ()) {
+                        clone.window_container.add_window (window);
+                        workspace_icon_group_table[clone].add_window (window);
+                        return;
+                    }
+                }
+            }
+
+            // add window to MonitorClone
+            foreach (unowned var actor in window_containers_monitors) {
+                unowned var clone = (MonitorClone) actor;
+                if (clone.monitor == window.get_monitor ()) {
+                    clone.window_container.add_window (window);
+                    return;
+                }
+            }
+        }
+
+        private void remove_window (Meta.Window window) {
+            if (window.window_type != Meta.WindowType.NORMAL) {
+                return;
+            }
+
+            // remove window from WorkspaceClone and IconGroup
+            if (!window.on_all_workspaces && window.is_on_primary_monitor ()) {
+                foreach (unowned var actor in workspaces.get_children ()) {
+                    unowned var clone = (WorkspaceClone) actor;
+                    if (clone.workspace == window.get_workspace ()) {
+                        clone.window_container.remove_window (window);
+                        workspace_icon_group_table[clone].remove_window (window);
+                        return;
+                    }
+                }
+            }
+
+            // add window from MonitorClone
+            foreach (unowned var actor in window_containers_monitors) {
+                unowned var clone = (MonitorClone) actor;
+                if (clone.monitor == window.get_monitor ()) {
+                    clone.window_container.remove_window (window);
+                    return;
+                }
+            }
+        }
+
+        private void remove_window_from_old_workspace (Meta.Window window) {
+            var old_workspace = created_windows[window].workspace_index;
+            foreach (unowned var actor in workspaces.get_children ()) {
+                unowned var clone = (WorkspaceClone) actor;
+                if (clone.workspace.index () == old_workspace) {
+                    clone.window_container.remove_window (window);
+                    workspace_icon_group_table[clone].remove_window (window);
+                    return;
+                }
+            }
         }
 
         private void update_brightness_effect () {
@@ -206,7 +338,7 @@ namespace Gala {
         private void update_workspaces () {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
-                icon_groups.remove_group (workspace_clone.icon_group);
+                icon_groups.remove_group (workspace_icon_group_table[workspace_clone]);
                 workspace_clone.destroy ();
             }
 
@@ -355,10 +487,10 @@ namespace Gala {
                     var workspace = workspace_clone.workspace;
 
                     if (workspace == target_workspace) {
-                        target_icon_group = workspace_clone.icon_group;
+                        target_icon_group = workspace_icon_group_table[workspace_clone];
                         target_x = -workspace_clone.multitasking_view_x ();
                     } else if (workspace == active_workspace) {
-                        active_icon_group = workspace_clone.icon_group;
+                        active_icon_group = workspace_icon_group_table[workspace_clone];
                     }
                 }
             }
@@ -470,9 +602,9 @@ namespace Gala {
 
                 if (workspace == active_workspace) {
                     active_x = dest_x;
-                    workspace_clone.icon_group.backdrop_opacity = 1.0f;
+                    workspace_icon_group_table[workspace_clone].backdrop_opacity = 1.0f;
                 } else {
-                    workspace_clone.icon_group.backdrop_opacity = 0.0f;
+                    workspace_icon_group_table[workspace_clone].backdrop_opacity = 0.0f;
                 }
 
                 workspace_clone.save_easing_state ();
@@ -517,18 +649,28 @@ namespace Gala {
         private void add_workspace (int num) {
             unowned var manager = display.get_workspace_manager ();
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            unowned var workspace = manager.get_workspace_by_index (num);
 
-            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
-            workspaces.insert_child_at_index (workspace, num);
-            icon_groups.add_group (workspace.icon_group);
+            var workspace_clone = new WorkspaceClone (wm, workspace, multitasking_gesture_tracker, scale);
+            workspaces.insert_child_at_index (workspace_clone, num);
 
-            workspace.window_selected.connect (window_selected);
-            workspace.selected.connect (activate_workspace);
+            var icon_group = new IconGroup (wm, workspace, scale);
+            icon_group.selected.connect (() => workspace_clone.selected (true));
+
+            var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+            icon_group.add_action (icons_drop_action);
+
+            icon_groups.add_group (icon_group);
+
+            workspace_icon_group_table[workspace_clone] = icon_group;
+
+            workspace_clone.window_selected.connect (window_selected);
+            workspace_clone.selected.connect (activate_workspace);
 
             update_positions (false);
 
             if (opened) {
-                workspace.open ();
+                workspace_clone.open ();
             }
         }
 
@@ -557,9 +699,7 @@ namespace Gala {
             workspace.window_selected.disconnect (window_selected);
             workspace.selected.disconnect (activate_workspace);
 
-            if (icon_groups.contains (workspace.icon_group)) {
-                icon_groups.remove_group (workspace.icon_group);
-            }
+            icon_groups.remove_group (workspace_icon_group_table[workspace]);
 
             workspace.destroy ();
 
