@@ -49,12 +49,12 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         }
     }
 
-    private void swap_background_actor (bool animate) {
-        return_if_fail (new_background_actor != null);
-
+    private void swap_background_actor (bool animate) requires (new_background_actor != null) {
         var old_background_actor = background_actor;
         background_actor = new_background_actor;
         new_background_actor = null;
+
+        changed ();
 
         if (old_background_actor == null) {
             return;
@@ -76,7 +76,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             old_background_actor.destroy ();
         }
 
-        changed ();
     }
 
     private void update_background_actor (bool animate = true) {
