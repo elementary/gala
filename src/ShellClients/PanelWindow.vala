@@ -21,6 +21,8 @@ public class Gala.PanelWindow : Object {
 
     private PanelClone clone;
 
+    private uint idle_move_id = 0;
+
     private int width = -1;
     private int height = -1;
 
@@ -132,8 +134,14 @@ public class Gala.PanelWindow : Object {
     }
 
     private void move_window_idle (int x, int y) {
-        Idle.add (() => {
+        if (idle_move_id != 0) {
+            Source.remove (idle_move_id);
+        }
+
+        idle_move_id = Idle.add (() => {
             window.move_frame (false, x, y);
+
+            idle_move_id = 0;
             return Source.REMOVE;
         });
     }

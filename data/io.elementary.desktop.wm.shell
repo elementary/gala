@@ -1,0 +1,7 @@
+[io.elementary.wingpanel]
+launch-on-x=true
+args=io.elementary.wingpanel
+
+[io.elementary.dock]
+launch-on-x=false
+args=io.elementary.dock
