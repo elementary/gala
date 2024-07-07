@@ -197,7 +197,8 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned var clone = (WindowClone) tilable.id;
-                clone.take_slot (tilable.rect, with_gesture, is_cancel_animation);
+                clone.slot = tilable.rect;
+                clone.take_slot (with_gesture, is_cancel_animation);
             }
         }
 
