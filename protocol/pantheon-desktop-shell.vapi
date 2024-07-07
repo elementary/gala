@@ -76,7 +76,7 @@ namespace Pantheon.Desktop {
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
-    public delegate void MakeModal (Wl.Client client, Wl.Resource resource);
+    public delegate void MakeModal (Wl.Client client, Wl.Resource resource, uint dim);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }

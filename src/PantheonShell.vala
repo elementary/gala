@@ -328,7 +328,7 @@ namespace Gala {
         window.make_above ();
     }
 
-    internal static void make_modal (Wl.Client client, Wl.Resource resource) {
+    internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
         unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
         if (eb_surface.wayland_surface == null) {
             warning ("Window tried to make modal but wayland surface is null.");
@@ -342,7 +342,7 @@ namespace Gala {
             return;
         }
 
-        ShellClientsManager.get_instance ().make_modal (window);
+        ShellClientsManager.get_instance ().make_modal (window, dim == 1);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

@@ -144,7 +144,8 @@ public class Gala.ShellClientsManager : Object {
         windows[window].set_hide_mode (hide_mode);
     }
 
-    public void make_modal (Meta.Window window) {
+    public void make_modal (Meta.Window window, bool dim) {
         wm.modal_actor.make_modal (window);
+        wm.modal_actor.dim = dim;
     }
 }

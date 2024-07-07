@@ -14,6 +14,16 @@
  public class Gala.ModalActor : Clutter.Actor {
     public Meta.Display display { get; construct; }
 
+    public bool dim {
+        set {
+            if (value) {
+                background_color = { 0, 0, 0, 200 };
+            } else {
+                background_color = { 0, 0, 0, 0 };
+            }
+        }
+    }
+
     private int modal_dialogs = 0;
 
     public ModalActor (Meta.Display display) {
@@ -59,6 +69,10 @@
 
     private void check_visible () {
         visible = modal_dialogs > 0;
+
+        if (visible) {
+            get_parent ().set_child_above_sibling (this, null);
+        }
     }
 
     public bool is_modal () {
