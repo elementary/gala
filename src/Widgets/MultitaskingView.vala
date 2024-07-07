@@ -68,8 +68,8 @@ namespace Gala {
             opened = false;
             display = wm.get_display ();
 
-            multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
-            multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker = ((WindowManagerGala)wm).gesture_tracker;
+            //  multitasking_gesture_tracker.enable_touchpad ();
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
@@ -692,8 +692,8 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal (this);
-                modal_proxy.set_keybinding_filter (keybinding_filter);
+                //  modal_proxy = wm.push_modal (this);
+                //  modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 wm.background_group.hide ();
                 wm.window_group.hide ();
@@ -763,7 +763,7 @@ namespace Gala {
 
                         dock_clones.destroy_all_children ();
 
-                        wm.pop_modal (modal_proxy);
+                        //  wm.pop_modal (modal_proxy);
                     }
 
                     animating = false;

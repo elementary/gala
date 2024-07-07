@@ -43,6 +43,7 @@ public class Gala.PanBackend : Object {
     }
 
     private void on_gesture_end () {
+        warning ("PAN GESTURE END");
         started = false;
         direction = GestureDirection.UNKNOWN;
 
@@ -52,9 +53,7 @@ public class Gala.PanBackend : Object {
     }
 
     private bool on_pan (Clutter.PanAction pan_action, Clutter.Actor actor, bool interpolate) {
-        if (pan_action != pan_action) {
-            return false;
-        }
+        warning ("PAN");
 
         uint64 time = pan_action.get_last_event (0).get_time ();
 

@@ -62,7 +62,6 @@ public class Gala.ScrollBackend : Object {
             delta_y = 0;
             direction = GestureDirection.UNKNOWN;
             on_end (delta_x.abs (), pan_action.get_last_event (0).get_time ());
-            warning ("GESTURE END");
         });
     }
 
@@ -77,13 +76,10 @@ public class Gala.ScrollBackend : Object {
         double x, y;
         pan_action.get_motion_delta (0, out x, out y);
 
-        warning (x.to_string ());
 
         x = x / actor.get_allocation_box ().get_width ();
         y = y / actor.get_height ();
 
-        warning (x.to_string ());
-        warning (delta_x.to_string ());
 
         delta_x += x;
         delta_y += y;
@@ -97,7 +93,6 @@ public class Gala.ScrollBackend : Object {
 
                 double delta = calculate_delta (delta_x, delta_y, direction);
                 on_begin (delta_x.abs (), time);
-                warning ("BEGIN");
             }
         } else {
             double delta = calculate_delta (delta_x, delta_y, direction);
@@ -109,9 +104,7 @@ public class Gala.ScrollBackend : Object {
                 //  on_end (delta, time);
                 //  warning ("END");
             } else {
-                warning (delta.to_string ());
                 on_update (delta_x.abs (), time);
-                warning ("UPDATE");
             }
         }
 
@@ -123,7 +116,6 @@ public class Gala.ScrollBackend : Object {
 #else
     private bool on_scroll_event (Clutter.ScrollEvent event) {
 #endif
-        warning ("SCROLL EVENT");
         if (!can_handle_event (event)) {
             return false;
         }
