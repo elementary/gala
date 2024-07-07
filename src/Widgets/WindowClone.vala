@@ -35,9 +35,9 @@ public class Gala.WindowClone : Clutter.Actor {
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
 #if HAS_MUTTER45
-    public Mtk.Rectangle? slot { get; private set; default = null; }
+    public Mtk.Rectangle? slot { get; set; default = null; }
 #else
-    public Meta.Rectangle? slot { get; private set; default = null; }
+    public Meta.Rectangle? slot { get; set; default = null; }
 #endif
 
     /**
@@ -116,8 +116,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
-            click_action.clicked.connect (() => {
-                actor_clicked (click_action.get_button ());
+            click_action.clicked.connect ((_click_action, actor) => {
+                actor_clicked (_click_action.get_button ());
             });
 
             add_action (click_action);
@@ -221,7 +221,7 @@ public class Gala.WindowClone : Clutter.Actor {
         // window was opened, so we stay at our old place.
         if (was_waiting && slot != null) {
             opacity = 0;
-            take_slot (slot);
+            take_slot ();
             opacity = 255;
 
             request_reposition ();
@@ -339,11 +339,14 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
             window_icon.restore_easing_state ();
 
-            var transition = window_icon.get_transition ("opacity");
+            unowned var transition = window_icon.get_transition ("opacity");
             if (transition != null) {
                 transition.completed.connect (() => {
+                    var _outer_rect = window.get_frame_rect ();
+                    var _target_scale = window.get_display ().get_monitor_scale (window.get_monitor ());
+
                     in_slot_animation = false;
-                    place_widgets (outer_rect.width, outer_rect.height, target_scale);
+                    place_widgets (_outer_rect.width, _outer_rect.height, _target_scale);
                 });
             } else {
                 in_slot_animation = false;
@@ -361,12 +364,7 @@ public class Gala.WindowClone : Clutter.Actor {
     /**
      * Animate the window to the given slot
      */
-#if HAS_MUTTER45
-    public void take_slot (Mtk.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
-#else
-    public void take_slot (Meta.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
-#endif
-        slot = rect;
+    public void take_slot (bool with_gesture = false, bool is_cancel_animation = false) requires (slot != null) {
         var initial_x = x;
         var initial_y = y;
         var initial_width = width;
@@ -374,16 +372,16 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active = false;
         unowned var display = wm.get_display ();
-        var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
+        var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (slot));
 
         in_slot_animation = true;
-        place_widgets (rect.width, rect.height, scale);
+        place_widgets (slot.width, slot.height, scale);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var x = GestureTracker.animation_value (initial_x, rect.x, percentage);
-            var y = GestureTracker.animation_value (initial_y, rect.y, percentage);
-            var width = GestureTracker.animation_value (initial_width, rect.width, percentage);
-            var height = GestureTracker.animation_value (initial_height, rect.height, percentage);
+            var x = GestureTracker.animation_value (initial_x, slot.x, percentage);
+            var y = GestureTracker.animation_value (initial_y, slot.y, percentage);
+            var width = GestureTracker.animation_value (initial_width, slot.width, percentage);
+            var height = GestureTracker.animation_value (initial_height, slot.height, percentage);
             var opacity = GestureTracker.animation_value (0f, 255f, percentage);
 
             set_size (width, height);
@@ -406,8 +404,8 @@ public class Gala.WindowClone : Clutter.Actor {
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             set_easing_duration (duration);
 
-            set_size (rect.width, rect.height);
-            set_position (rect.x, rect.y);
+            set_size (slot.width, slot.height);
+            set_position (slot.x, slot.y);
             opacity = 255;
             restore_easing_state ();
 
@@ -415,20 +413,23 @@ public class Gala.WindowClone : Clutter.Actor {
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             window_icon.set_easing_duration (duration);
             window_icon.opacity = 255;
-            set_window_icon_position (rect.width, rect.height, scale);
+            set_window_icon_position (slot.width, slot.height, scale);
             window_icon.restore_easing_state ();
 
             toggle_shadow (true);
 
-            var transition = window_icon.get_transition ("opacity");
+            unowned var transition = window_icon.get_transition ("opacity");
             if (transition != null) {
                 transition.completed.connect (() => {
+                    unowned var _display = wm.get_display ();
+                    var _scale = _display.get_monitor_scale (_display.get_monitor_index_for_rect (slot));
+
                     in_slot_animation = false;
-                    place_widgets (rect.width, rect.height, scale);
+                    place_widgets (slot.width, slot.height, _scale);
                 });
             } else {
                 in_slot_animation = false;
-                place_widgets (rect.width, rect.height, scale);
+                place_widgets (slot.width, slot.height, scale);
             }
         };
 
