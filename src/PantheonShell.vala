@@ -67,9 +67,11 @@ namespace Gala {
         wayland_pantheon_extended_behavior_interface = {
             destroy_extended_behavior_surface,
             set_keep_above,
+            make_modal,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
+        ExtendedBehaviorSurface.quark = GLib.Quark.from_string ("-gala-wayland-extended-behavior-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
             unowned var resource = client.create_resource (ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
@@ -324,6 +326,23 @@ namespace Gala {
         }
 
         window.make_above ();
+    }
+
+    internal static void make_modal (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            warning ("Window tried to make modal but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to make modal but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_modal (window);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

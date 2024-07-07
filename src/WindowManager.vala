@@ -49,6 +49,8 @@ namespace Gala {
          */
          public Gala.ActivatableComponent workspace_view { get; protected set; }
 
+        public ModalActor modal_actor { get; private set; }
+
         /**
          * {@inheritDoc}
          */
@@ -240,6 +242,9 @@ namespace Gala {
 #endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
+
+            modal_actor = new ModalActor (display);
+            ui_group.insert_child_above (modal_actor, null);
 
             FilterManager.init (this);
 
@@ -2293,6 +2298,10 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
+            if (modal_actor.is_modal ()) {
+                return true;
+            }
+
             if (!is_modal ())
                 return false;
 
