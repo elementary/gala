@@ -71,8 +71,6 @@ add_project_arguments([
 
         '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
         '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_44',
-        '-DGDK_VERSION_MIN_REQUIRED=GDK_VERSION_3_10',
-        '-DGDK_VERSION_MAX_ALLOWED=GDK_VERSION_3_10',
     ],
     language: 'c',
 )
@@ -89,10 +87,10 @@ gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
 gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
+gtk4_dep = dependency('gtk4')
 gee_dep = dependency('gee-0.8')
-granite_dep = dependency('granite', version: '>= 5.4.0')
+granite_dep = dependency('granite-7')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
-hdy_dep = dependency('libhandy-1')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 sqlite3_dep = dependency('sqlite3')
@@ -184,6 +182,7 @@ subdir('protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')
+subdir('daemon-gtk3')
 subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')

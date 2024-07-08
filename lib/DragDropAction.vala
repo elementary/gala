@@ -109,6 +109,11 @@ namespace Gala {
         private InputDevice? grabbed_device = null;
         private ulong on_event_id = 0;
 
+        static construct {
+            sources = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
+            destinations = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
+        }
+
         /**
          * Create a new DragDropAction
          *
@@ -119,18 +124,12 @@ namespace Gala {
          */
         public DragDropAction (DragDropActionType type, string id) {
             Object (drag_type : type, drag_id : id);
-
-            if (sources == null)
-                sources = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
-
-            if (destinations == null)
-                destinations = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
-
         }
 
         ~DragDropAction () {
-            if (actor != null)
+            if (actor != null) {
                 release_actor (actor);
+            }
         }
 
         public override void set_actor (Actor? new_actor) {
@@ -197,6 +196,11 @@ namespace Gala {
 
             switch (event.get_type ()) {
                 case EventType.BUTTON_PRESS:
+                case EventType.TOUCH_BEGIN:
+                    if (!is_valid_touch_event (event)) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
                     if (grabbed_actor != null) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -215,6 +219,11 @@ namespace Gala {
                     return Clutter.EVENT_STOP;
 
                 case EventType.BUTTON_RELEASE:
+                case EventType.TOUCH_END:
+                    if (!is_valid_touch_event (event)) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
                     if (!dragging) {
                         float x, y, ex, ey;
                         event.get_coords (out ex, out ey);
@@ -292,6 +301,11 @@ namespace Gala {
                     }
                     break;
                 case EventType.MOTION:
+                case EventType.TOUCH_UPDATE:
+                    if (!is_valid_touch_event (event)) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
                     float x, y;
                     event.get_coords (out x, out y);
 
@@ -450,6 +464,18 @@ namespace Gala {
             }
 
             dragging = false;
+        }
+
+        private bool is_valid_touch_event (Clutter.Event event) {
+            var type = event.get_type ();
+
+            return (
+                type != Clutter.EventType.TOUCH_BEGIN &&
+                type != Clutter.EventType.TOUCH_CANCEL &&
+                type != Clutter.EventType.TOUCH_END &&
+                type != Clutter.EventType.TOUCH_UPDATE ||
+                Meta.Util.is_wayland_compositor ()
+            );
         }
     }
 }

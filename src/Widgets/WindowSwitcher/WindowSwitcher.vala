@@ -356,9 +356,9 @@ public class Gala.WindowSwitcher : CanvasActor {
     private void add_icon (WindowSwitcherIcon icon) {
         container.add_child (icon);
 
-        icon.motion_event.connect (() => {
-            if (current_icon != icon && !handling_gesture) {
-                current_icon = icon;
+        icon.motion_event.connect ((_icon, event) => {
+            if (current_icon != _icon && !handling_gesture) {
+                current_icon = (WindowSwitcherIcon) _icon;
             }
 
             return Clutter.EVENT_PROPAGATE;
