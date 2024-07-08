@@ -36,25 +36,25 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
         reactive = true;
         x_align = Clutter.ActorAlign.CENTER;
 
-        //  var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-        //  drop.crossed.connect ((target, hovered) => {
-        //      if (!Meta.Prefs.get_dynamic_workspaces () && (target != null && target is WindowClone)) {
-        //          return;
-        //      }
+        var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+        drop.crossed.connect ((target, hovered) => {
+            if (!Meta.Prefs.get_dynamic_workspaces () && (target != null && target is WindowClone)) {
+                return;
+            }
 
-        //      if (!hovered) {
-        //          if (expand_timeout != 0) {
-        //              Source.remove (expand_timeout);
-        //              expand_timeout = 0;
-        //          }
+            if (!hovered) {
+                if (expand_timeout != 0) {
+                    Source.remove (expand_timeout);
+                    expand_timeout = 0;
+                }
 
-        //          transform (false);
-        //      } else {
-        //          expand_timeout = Timeout.add (delay, expand);
-        //      }
-        //  });
+                transform (false);
+            } else {
+                expand_timeout = Timeout.add (delay, expand);
+            }
+        });
 
-        //  add_action (drop);
+        add_action (drop);
     }
 
     private void reallocate () {

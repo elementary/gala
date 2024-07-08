@@ -78,10 +78,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         clone = new Clutter.Clone (window_actor);
 
-        //  move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
-        //  move_action.drag_begin.connect (on_move_begin);
-        //  move_action.drag_canceled.connect (on_move_end);
-        //  move_action.actor_clicked.connect (activate);
+        move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
+        move_action.drag_begin.connect (on_move_begin);
+        move_action.drag_canceled.connect (on_move_end);
+        move_action.actor_clicked.connect (activate);
 
         container = new Clutter.Actor ();
         container.reactive = true;
@@ -212,7 +212,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         on_allocation_changed ();
     }
 
-    private Clutter.Actor on_move_begin () {
+    private unowned Clutter.Actor on_move_begin () {
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
         return this;

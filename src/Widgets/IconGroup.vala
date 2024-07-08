@@ -62,13 +62,13 @@ namespace Gala {
         construct {
             reactive = true;
 
-            //  drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
-            //  drag_action.actor_clicked.connect (() => selected ());
-            //  drag_action.drag_begin.connect (drag_begin);
-            //  drag_action.drag_end.connect (drag_end);
-            //  drag_action.drag_canceled.connect (drag_canceled);
-            //  drag_action.notify["dragging"].connect (redraw);
-            //  add_action (drag_action);
+            drag_action = new DragDropAction (DragDropActionType.SOURCE | DragDropActionType.DESTINATION, "multitaskingview-window");
+            drag_action.actor_clicked.connect (() => selected ());
+            drag_action.drag_begin.connect (drag_begin);
+            drag_action.drag_end.connect (drag_end);
+            drag_action.drag_canceled.connect (drag_canceled);
+            drag_action.notify["dragging"].connect (redraw);
+            add_action (drag_action);
 
             icon_container = new Clutter.Actor ();
             icon_container.width = width;
@@ -103,7 +103,7 @@ namespace Gala {
          * Override the paint handler to draw our backdrop if necessary
          */
         public override void paint (Clutter.PaintContext context) {
-            if (backdrop_opacity == 0.0 || (drag_action != null && drag_action.dragging)) {
+            if (backdrop_opacity == 0.0 || drag_action.dragging) {
                 base.paint (context);
                 return;
             }
@@ -241,14 +241,14 @@ namespace Gala {
 
             if (style_manager.prefers_color_scheme == DARK) {
                 const double BG_COLOR = 35.0 / 255.0;
-                if (drag_action != null && drag_action.dragging) {
+                if (drag_action.dragging) {
                     cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
                 } else {
                     cr.set_source_rgba (BG_COLOR , BG_COLOR , BG_COLOR , 0.5);
                     shadow_effect.shadow_opacity = 200;
                 }
             } else {
-                if (drag_action != null && drag_action.dragging) {
+                if (drag_action.dragging) {
                     cr.set_source_rgba (255, 255, 255, 0.8);
                 } else {
                     cr.set_source_rgba (255, 255, 255, 0.3);
@@ -256,7 +256,7 @@ namespace Gala {
                 }
             }
 
-            if (drag_action != null && drag_action.dragging) {
+            if (drag_action.dragging) {
                 shadow_effect.css_class = "workspace-switcher-dnd";
             } else {
                 shadow_effect.css_class = "workspace-switcher";
@@ -384,7 +384,7 @@ namespace Gala {
             }
         }
 
-        private Clutter.Actor? drag_begin (float click_x, float click_y) {
+        private unowned Clutter.Actor? drag_begin (float click_x, float click_y) {
             unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
             if (icon_container.get_n_children () < 1 &&
                 Meta.Prefs.get_dynamic_workspaces () &&
