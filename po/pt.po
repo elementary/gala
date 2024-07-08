@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2022-10-28 10:41+0000\n"
+"PO-Revision-Date: 2024-07-09 14:02+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <https://l10n.elementary.io/projects/desktop/gala/"
 "pt/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -33,10 +33,8 @@ msgid "System Settings…"
 msgstr "Definições do Sistema…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "Definições do Sistema…"
+msgstr "Falha ao abrir as Definições do Sistema"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
@@ -72,7 +70,7 @@ msgstr "Mover para a área de trabalho à direita"
 
 #: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
-msgstr "Capturar ecrã"
+msgstr "Tirar captura de ecrã"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
@@ -258,7 +256,7 @@ msgstr ""
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Permitir"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
