@@ -37,7 +37,7 @@ namespace Gala {
          * @param y The global y coordinate where the action was activated
          * @return  A ClutterActor that serves as handle
          */
-        public signal Actor? drag_begin (float x, float y);
+        public signal unowned Actor? drag_begin (float x, float y);
 
         /**
          * A drag has been canceled. You may want to consider cleaning up
@@ -86,7 +86,7 @@ namespace Gala {
          */
         public string drag_id { get; construct; }
 
-        public Actor handle { get; private set; }
+        public unowned Actor handle { get; private set; }
         /**
          * Indicates whether a drag action is currently active
          */
@@ -98,7 +98,7 @@ namespace Gala {
          */
         public bool allow_bubbling { get; set; default = true; }
 
-        public Actor? hovered { private get; set; default = null; }
+        public unowned Actor? hovered { private get; set; default = null; }
 
         private bool clicked = false;
         private float last_x;
@@ -204,9 +204,7 @@ namespace Gala {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
-                    warning ("Before grabbing %u", actor.ref_count);
                     grab_actor (actor, event.get_device ());
-                    warning ("After  grabbing %u", actor.ref_count);
                     clicked = true;
 
                     float x, y;
@@ -322,9 +320,7 @@ namespace Gala {
                             dragging = true;
 
                             ungrab_actor ();
-                            warning ("Before new grab %u", actor.ref_count);
                             grab_actor (handle, event.get_device ());
-                            warning ("After  new grab %u", actor.ref_count);
 
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {

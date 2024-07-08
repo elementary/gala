@@ -120,11 +120,11 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (click_action);
         } else {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
-            //  drag_action.drag_begin.connect (drag_begin);
-            //  drag_action.destination_crossed.connect (drag_destination_crossed);
-            //  drag_action.drag_end.connect (drag_end);
-            //  drag_action.drag_canceled.connect (drag_canceled);
-            //  drag_action.actor_clicked.connect (actor_clicked);
+            drag_action.drag_begin.connect (drag_begin);
+            drag_action.destination_crossed.connect (drag_destination_crossed);
+            drag_action.drag_end.connect (drag_end);
+            drag_action.drag_canceled.connect (drag_canceled);
+            drag_action.actor_clicked.connect (actor_clicked);
 
             add_action (drag_action);
         }
@@ -315,7 +315,6 @@ public class Gala.WindowClone : Clutter.Actor {
             }
         };
 
-        //  warning ("OwO");
         if (!animate || gesture_tracker == null || !with_gesture || !wm.enable_animations) {
             on_animation_end (1, false, 0);
         } else {
@@ -388,7 +387,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
                     in_slot_animation = false;
                     place_widgets (slot.width, slot.height, _scale);
-                    warning ("ASDASDASD");
                 });
             } else {
                 in_slot_animation = false;
@@ -549,8 +547,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * we can move freely, scale ourselves to a smaller scale and request that the
      * position we just freed is immediately filled by the WindowCloneContainer.
      */
-    private Clutter.Actor drag_begin (float click_x, float click_y) {
-        warning ("START   %s %u", window.title, ref_count);
+    private unowned Clutter.Actor drag_begin (float click_x, float click_y) {
         float abs_x, abs_y;
         float prev_parent_x, prev_parent_y;
 
@@ -595,8 +592,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.opacity = 0;
 
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
-
-        warning ("BEGIN   %s %u", window.title, ref_count);
 
         return this;
     }
@@ -650,8 +645,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
-
-        warning ("CROSS   %s %u", window.title, ref_count);
     }
 
     /**
@@ -691,7 +684,6 @@ public class Gala.WindowClone : Clutter.Actor {
             // if we don't actually change workspaces, the window-added/removed signals won't
             // be emitted so we can just keep our window here
             if (will_move) {
-                warning ("END__   %s %u", window.title, ref_count);
                 destroy ();
             } else {
                 drag_canceled ();
@@ -722,7 +714,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         if (did_move) {
-            warning ("END__   %s %u", window.title, ref_count);
             destroy ();
         } else {
             // if we're dropped at the place where we came from interpret as cancel
@@ -757,8 +748,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon.restore_easing_state ();
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
-
-        warning ("CANCE   %s %u", window.title, ref_count);
     }
 
     private void set_window_icon_position (float window_width, float window_height, float scale_factor, bool aligned = true) {
