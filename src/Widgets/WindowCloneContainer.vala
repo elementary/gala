@@ -118,7 +118,6 @@ namespace Gala {
         public void remove_window (Meta.Window window) {
             foreach (unowned var child in get_children ()) {
                 if (((WindowClone) child).window == window) {
-                    warning ("OwO %u", ((WindowClone) child).ref_count);
                     remove_child (child);
                     reflow ();
                     break;

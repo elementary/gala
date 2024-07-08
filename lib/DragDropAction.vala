@@ -201,7 +201,9 @@ namespace Gala {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
+                    warning ("Before grabbing %u", actor.ref_count);
                     grab_actor (actor, event.get_device ());
+                    warning ("After  grabbing %u", actor.ref_count);
                     clicked = true;
 
                     float x, y;
@@ -307,7 +309,9 @@ namespace Gala {
                             dragging = true;
 
                             ungrab_actor ();
+                            warning ("Before new grab %u", actor.ref_count);
                             grab_actor (handle, event.get_device ());
+                            warning ("After  new grab %u", actor.ref_count);
 
                             var source_list = sources.@get (drag_id);
                             if (source_list != null) {

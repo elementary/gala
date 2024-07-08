@@ -82,14 +82,13 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private DragDropAction? drag_action = null;
-    private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
-
+    
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
-    private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
-
+    
+    private Clutter.Clone clone;
     private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
@@ -120,45 +119,62 @@ public class Gala.WindowClone : Clutter.Actor {
 
             add_action (click_action);
         } else {
-            drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
-            drag_action.drag_begin.connect (drag_begin);
-            drag_action.destination_crossed.connect (drag_destination_crossed);
-            drag_action.drag_end.connect (drag_end);
-            drag_action.drag_canceled.connect (drag_canceled);
-            drag_action.actor_clicked.connect (actor_clicked);
+            //  drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
+            //  drag_action.drag_begin.connect (drag_begin);
+            //  drag_action.destination_crossed.connect (drag_destination_crossed);
+            //  drag_action.drag_end.connect (drag_end);
+            //  drag_action.drag_canceled.connect (drag_canceled);
+            //  drag_action.actor_clicked.connect (actor_clicked);
 
-            add_action (drag_action);
+            //  add_action (drag_action);
         }
 
-        window_title = new Tooltip ();
-        window_title.opacity = 0;
+        window_title = new Tooltip () {
+            opacity = 0
+        };
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        active_shape = new ActiveShape () {
+            opacity = 0
+        };
 
         add_child (active_shape);
         add_child (window_title);
 
         reallocate ();
 
-        load_clone ();
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        if (overview_mode) {
+            actor.hide ();
+        }
+
+        clone = new Clutter.Clone (actor);
+        add_child (clone);
+
+        set_child_below_sibling (active_shape, clone);
+        set_child_above_sibling (close_button, clone);
+        set_child_above_sibling (window_icon, clone);
+        set_child_above_sibling (window_title, clone);
+
+        transition_to_original_state (false);
+
+        check_shadow_requirements ();
+
+        if (should_fade ()) {
+            opacity = 0;
+        }
     }
 
     ~WindowClone () {
+        warning ("WindowClone is destroyed");
+
         remove_all_transitions ();
 
         if (drag_action != null && drag_action.dragging) {
             drag_action.cancel ();
         }
 
-        if (clone != null) {
-            clone.destroy ();
-        }
-
-        if (check_confirm_dialog_cb != 0) {
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
+        clone.destroy ();
 
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
@@ -184,66 +200,7 @@ public class Gala.WindowClone : Clutter.Actor {
         set_child_below_sibling (window_icon, window_title);
     }
 
-    /**
-     * Waits for the texture of a new Meta.WindowActor to be available
-     * and makes a close of it. If it was already was assigned a slot
-     * at this point it will animate to it. Otherwise it will just place
-     * itself at the location of the original window. Also adds the shadow
-     * effect and makes sure the shadow is updated on size changes.
-     *
-     * @param was_waiting Internal argument used to indicate that we had to
-     *                    wait before the window's texture became available.
-     */
-    private void load_clone (bool was_waiting = false) {
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null)
-                    load_clone (true);
-                return Source.REMOVE;
-            });
-
-            return;
-        }
-
-        if (overview_mode) {
-            actor.hide ();
-        }
-
-        clone = new Clutter.Clone (actor);
-        add_child (clone);
-
-        set_child_below_sibling (active_shape, clone);
-        set_child_above_sibling (close_button, clone);
-        set_child_above_sibling (window_icon, clone);
-        set_child_above_sibling (window_title, clone);
-
-        transition_to_original_state (false);
-
-        check_shadow_requirements ();
-
-        if (should_fade ()) {
-            opacity = 0;
-        }
-
-        // if we were waiting the view was most probably already opened when our window
-        // finally got available. So we fade-in and make sure we took the took place.
-        // If the slot is not available however, the view was probably closed while this
-        // window was opened, so we stay at our old place.
-        if (was_waiting && slot != null) {
-            opacity = 0;
-            take_slot ();
-            opacity = 255;
-
-            request_reposition ();
-        }
-    }
-
     private void check_shadow_requirements () {
-        if (clone == null) {
-            return;
-        }
-
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new ShadowEffect ("window");
@@ -464,7 +421,7 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        if (clone == null || (drag_action != null && drag_action.dragging)) {
+        if (drag_action != null && drag_action.dragging) {
             return;
         }
 
@@ -570,29 +527,8 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    /**
-     * Send the window the delete signal and listen for new windows to be added
-     * to the window's workspace, in which case we check if the new window is a
-     * dialog of the window we were going to delete. If that's the case, we request
-     * to select our window.
-     */
     private void close_window (uint32 timestamp) {
-        unowned var display = window.get_display ();
-        check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
-
         window.@delete (timestamp);
-    }
-
-    private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        if (new_window.get_transient_for () == window) {
-            Idle.add (() => {
-                selected ();
-                return Source.REMOVE;
-            });
-
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
     }
 
     private void actor_clicked (uint32 button) {
@@ -612,6 +548,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * position we just freed is immediately filled by the WindowCloneContainer.
      */
     private Clutter.Actor drag_begin (float click_x, float click_y) {
+        warning ("START   %s %u", window.title, ref_count);
         float abs_x, abs_y;
         float prev_parent_x, prev_parent_y;
 
@@ -656,6 +593,8 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.opacity = 0;
 
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+
+        warning ("BEGIN   %s %u", window.title, ref_count);
 
         return this;
     }
@@ -709,6 +648,8 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
+
+        warning ("CROSS   %s %u", window.title, ref_count);
     }
 
     /**
@@ -748,6 +689,7 @@ public class Gala.WindowClone : Clutter.Actor {
             // if we don't actually change workspaces, the window-added/removed signals won't
             // be emitted so we can just keep our window here
             if (will_move) {
+                warning ("END__   %s %u", window.title, ref_count);
                 destroy ();
             } else {
                 drag_canceled ();
@@ -778,6 +720,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         if (did_move) {
+            warning ("END__   %s %u", window.title, ref_count);
             destroy ();
         } else {
             // if we're dropped at the place where we came from interpret as cancel
@@ -812,6 +755,8 @@ public class Gala.WindowClone : Clutter.Actor {
         window_icon.restore_easing_state ();
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+
+        warning ("CANCE   %s %u", window.title, ref_count);
     }
 
     private void set_window_icon_position (float window_width, float window_height, float scale_factor, bool aligned = true) {

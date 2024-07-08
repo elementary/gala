@@ -171,13 +171,15 @@ namespace Gala {
                     on_all_workspaces = window.on_all_workspaces
                 };
 
-                window.unmanaged.connect ((window) => {
+                window.unmanaging.connect ((window) => {
                     remove_window (window);
                     created_windows.remove (window);
                 });
 
                 window.workspace_changed.connect ((window) => {
-                    warning ("Workspace changed %d", window.get_workspace ().index ());
+                    if (!(window in created_windows)) {
+                        return;
+                    }
 
                     remove_window_from_old_workspace (window);
                     add_window (window);
@@ -186,6 +188,10 @@ namespace Gala {
 
                 window.notify["on-all-workspaces"].connect ((obj, pspec) => {
                     unowned var _window = (Meta.Window) obj;
+                    if (!(_window in created_windows)) {
+                        return;
+                    }
+
                     var old_val = created_windows[_window].on_all_workspaces;
                     if (old_val == _window.on_all_workspaces) {
                         return;
@@ -194,9 +200,9 @@ namespace Gala {
                     created_windows[_window].on_all_workspaces = _window.on_all_workspaces;
 
                     if (_window.on_all_workspaces) {
-                        remove_window (window);
+                        remove_window (_window);
                     } else {
-                        add_window (window);
+                        add_window (_window);
                     }
                 });
             });
@@ -219,7 +225,6 @@ namespace Gala {
         }
 
         private void add_window (Meta.Window window) {
-            warning ("Add window");
             if (window.window_type != Meta.WindowType.NORMAL) {
                 return;
             }
@@ -655,7 +660,13 @@ namespace Gala {
             workspaces.insert_child_at_index (workspace_clone, num);
 
             var icon_group = new IconGroup (wm, workspace, scale);
-            icon_group.selected.connect (() => workspace_clone.selected (true));
+            icon_group.selected.connect ((_group) => {
+                workspace_icon_group_table.foreach ((k, v) => {
+                    if (v == _group) {
+                        k.selected (true);
+                    }
+                });
+            });
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
             icon_group.add_action (icons_drop_action);
@@ -700,7 +711,8 @@ namespace Gala {
             workspace.selected.disconnect (activate_workspace);
 
             icon_groups.remove_group (workspace_icon_group_table[workspace]);
-
+            workspace_icon_group_table.remove (workspace);
+            workspaces.remove_child (workspace);
             workspace.destroy ();
 
             update_positions (opened);
