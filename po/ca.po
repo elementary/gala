@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
+"POT-Creation-Date: 2024-07-08 13:44+0000\n"
 "PO-Revision-Date: 2024-06-18 23:36+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
-"\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
+">\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,150 +20,71 @@ msgstr ""
 "X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
-#: src/Dialogs.vala:144
-#, c-format
-msgid "“%s” is not responding"
-msgstr "%s no respon."
-
-#: src/Dialogs.vala:146
-msgid "Application is not responding"
-msgstr "L'aplicació no respon."
-
-#: src/Dialogs.vala:149
-msgid ""
-"You may choose to wait a short while for the application to continue, or "
-"force it to quit entirely."
-msgstr ""
-"Podeu triar esperar una estona perquè l'aplicació continuï o forçar-la "
-"perquè es tanqui completament."
-
-#: src/Dialogs.vala:150
-msgid "Force Quit"
-msgstr "Força'n la sortida"
-
-#: src/Dialogs.vala:151
-msgid "Wait"
-msgstr "Espera"
-
-#: src/Dialogs.vala:217
-#, c-format
-msgid "“%s” wants to inhibit system shortcuts"
-msgstr "%s vol inhibir les dreceres del sistema"
-
-#: src/Dialogs.vala:219
-msgid "An application wants to inhibit system shortcuts"
-msgstr "Una aplicació vol inhibir les dreceres del sistema."
-
-#: src/Dialogs.vala:222
-msgid "All system shortcuts will be redirected to the application."
-msgstr "Totes les dreceres del sistema es redirigiran a l'aplicació."
-
-#: src/Dialogs.vala:223
-msgid "Allow"
-msgstr "Permet-ho"
-
-#: src/Dialogs.vala:224
-msgid "Deny"
-msgstr "Denega-ho"
-
-#: src/ScreenshotManager.vala:285
-msgid "Screenshots"
-msgstr "Captures de pantalla"
-
-#: src/ScreenshotManager.vala:364
-msgid "Screenshot taken"
-msgstr "Captura feta"
-
-#: src/WindowManager.vala:2299
-#, c-format
-msgid "Changes will automatically revert after %i second."
-msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
-msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
-
-#: src/WindowManager.vala:2306
-msgid "Keep new display settings?"
-msgstr "Voleu mantenir la configuració nova de la pantalla?"
-
-#: src/WindowManager.vala:2310
-msgid "Keep Settings"
-msgstr "Mantén la configuració"
-
-#: src/WindowManager.vala:2311
-msgid "Use Previous Settings"
-msgstr "Usa la configuració anterior"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Captura de %s"
-
-#: daemon/BackgroundMenu.vala:11
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Canvia el fons de pantalla…"
 
-#: daemon/BackgroundMenu.vala:16
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Paràmetres de la pantalla…"
 
-#: daemon/BackgroundMenu.vala:22
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Paràmetres del sistema…"
 
-#: daemon/BackgroundMenu.vala:47
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Ha fallat obrir els paràmetres del sistema."
 
-#: daemon/BackgroundMenu.vala:48
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Cal instal·lar un gestor per a l'esquema d'URI \"settings://\"."
 
-#: daemon/WindowMenu.vala:36
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
 msgstr "Amaga"
 
-#: daemon/WindowMenu.vala:49
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
 msgstr "Mou"
 
-#: daemon/WindowMenu.vala:57
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
 msgstr "Canvia'n la mida"
 
-#: daemon/WindowMenu.vala:65
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
 msgstr "Sempre al davant"
 
-#: daemon/WindowMenu.vala:73
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
 msgstr "Sempre a l'espai de treball visible"
 
-#: daemon/WindowMenu.vala:81
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
 msgstr "Mou a l'espai de treball de l'esquerra"
 
-#: daemon/WindowMenu.vala:89
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
 msgstr "Mou a l'espai de treball de la dreta"
 
-#: daemon/WindowMenu.vala:97
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
 msgstr "Fes una captura"
 
-#: daemon/WindowMenu.vala:105
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
 msgstr "Tanca"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
 msgstr "No en mosaic"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
 msgstr "Desmaximitza"
 
-#: daemon/WindowMenu.vala:140
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
 msgstr "Maximitza"
 
@@ -291,6 +212,90 @@ msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Fitxer d'escriptori alternatiu per a notificacions d'aplicacions "
 "desactualitzades."
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr ""
+
+#: src/Dialogs.vala:144
+#, c-format
+msgid "“%s” is not responding"
+msgstr "%s no respon."
+
+#: src/Dialogs.vala:146
+msgid "Application is not responding"
+msgstr "L'aplicació no respon."
+
+#: src/Dialogs.vala:149
+msgid ""
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
+msgstr ""
+"Podeu triar esperar una estona perquè l'aplicació continuï o forçar-la "
+"perquè es tanqui completament."
+
+#: src/Dialogs.vala:150
+msgid "Force Quit"
+msgstr "Força'n la sortida"
+
+#: src/Dialogs.vala:151
+msgid "Wait"
+msgstr "Espera"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr "%s vol inhibir les dreceres del sistema"
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr "Una aplicació vol inhibir les dreceres del sistema."
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr "Totes les dreceres del sistema es redirigiran a l'aplicació."
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr "Permet-ho"
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr "Denega-ho"
+
+#: src/ScreenshotManager.vala:290
+msgid "Screenshots"
+msgstr "Captures de pantalla"
+
+#: src/ScreenshotManager.vala:369
+msgid "Screenshot taken"
+msgstr "Captura feta"
+
+#: src/WindowManager.vala:2318
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
+msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
+
+#: src/WindowManager.vala:2325
+msgid "Keep new display settings?"
+msgstr "Voleu mantenir la configuració nova de la pantalla?"
+
+#: src/WindowManager.vala:2329
+msgid "Keep Settings"
+msgstr "Mantén la configuració"
+
+#: src/WindowManager.vala:2330
+msgid "Use Previous Settings"
+msgstr "Usa la configuració anterior"
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2369
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Captura de %s"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr ""
