@@ -747,7 +747,9 @@ public class Gala.WindowClone : Clutter.Actor {
 
             // if we don't actually change workspaces, the window-added/removed signals won't
             // be emitted so we can just keep our window here
-            if (!will_move) {
+            if (will_move) {
+                destroy ();
+            } else {
                 drag_canceled ();
             }
 
@@ -775,7 +777,9 @@ public class Gala.WindowClone : Clutter.Actor {
             did_move = true;
         }
 
-        if (!did_move) {
+        if (did_move) {
+            destroy ();
+        } else {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
         }
