@@ -119,14 +119,14 @@ public class Gala.WindowClone : Clutter.Actor {
 
             add_action (click_action);
         } else {
-            //  drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
+            drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             //  drag_action.drag_begin.connect (drag_begin);
             //  drag_action.destination_crossed.connect (drag_destination_crossed);
             //  drag_action.drag_end.connect (drag_end);
             //  drag_action.drag_canceled.connect (drag_canceled);
             //  drag_action.actor_clicked.connect (actor_clicked);
 
-            //  add_action (drag_action);
+            add_action (drag_action);
         }
 
         window_title = new Tooltip () {
@@ -315,6 +315,7 @@ public class Gala.WindowClone : Clutter.Actor {
             }
         };
 
+        //  warning ("OwO");
         if (!animate || gesture_tracker == null || !with_gesture || !wm.enable_animations) {
             on_animation_end (1, false, 0);
         } else {
@@ -387,6 +388,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
                     in_slot_animation = false;
                     place_widgets (slot.width, slot.height, _scale);
+                    warning ("ASDASDASD");
                 });
             } else {
                 in_slot_animation = false;

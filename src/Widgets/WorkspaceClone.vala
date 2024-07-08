@@ -186,23 +186,23 @@ namespace Gala {
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
 
-            var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            background.add_action (background_drop_action);
-            background_drop_action.crossed.connect ((target, hovered) => {
-                if (!hovered && hover_activate_timeout != 0) {
-                    Source.remove (hover_activate_timeout);
-                    hover_activate_timeout = 0;
-                    return;
-                }
+            //  var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+            //  background.add_action (background_drop_action);
+            //  background_drop_action.crossed.connect ((target, hovered) => {
+            //      if (!hovered && hover_activate_timeout != 0) {
+            //          Source.remove (hover_activate_timeout);
+            //          hover_activate_timeout = 0;
+            //          return;
+            //      }
 
-                if (hovered && hover_activate_timeout == 0) {
-                    hover_activate_timeout = Timeout.add (HOVER_ACTIVATE_DELAY, () => {
-                        selected (false);
-                        hover_activate_timeout = 0;
-                        return false;
-                    });
-                }
-            });
+            //      if (hovered && hover_activate_timeout == 0) {
+            //          hover_activate_timeout = Timeout.add (HOVER_ACTIVATE_DELAY, () => {
+            //              selected (false);
+            //              hover_activate_timeout = 0;
+            //              return false;
+            //          });
+            //      }
+            //  });
 
             add_child (background);
             add_child (window_container);

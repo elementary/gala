@@ -146,7 +146,6 @@ namespace Gala {
 
         private void release_actor (Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
-
                 var source_list = sources.@get (drag_id);
                 source_list.remove (actor);
             }

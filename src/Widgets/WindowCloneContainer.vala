@@ -51,7 +51,7 @@ namespace Gala {
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-        private WindowClone? current_window = null;
+        private unowned WindowClone? current_window = null;
 
         public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
             Object (wm: wm, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
@@ -194,7 +194,7 @@ namespace Gala {
 
             var window_positions = InternalUtils.calculate_grid_placement (area, windows);
 
-            foreach (var tilable in window_positions) {
+            foreach (unowned var tilable in window_positions) {
                 unowned var clone = (WindowClone) tilable.id;
                 clone.slot = tilable.rect;
                 clone.take_slot (with_gesture, is_cancel_animation);

@@ -51,8 +51,8 @@ namespace Gala {
             add_child (background);
             add_child (window_container);
 
-            var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            add_action (drop);
+            //  var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+            //  add_action (drop);
 
             update_allocation ();
         }

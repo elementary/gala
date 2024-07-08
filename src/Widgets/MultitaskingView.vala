@@ -668,8 +668,8 @@ namespace Gala {
                 });
             });
 
-            var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            icon_group.add_action (icons_drop_action);
+            //  var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+            //  icon_group.add_action (icons_drop_action);
 
             icon_groups.add_group (icon_group);
 
