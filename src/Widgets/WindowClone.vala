@@ -628,7 +628,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * we can move freely, scale ourselves to a smaller scale and request that the
      * position we just freed is immediately filled by the WindowCloneContainer.
      */
-    private Clutter.Actor drag_begin (float click_x, float click_y) {
+    private unowned Clutter.Actor drag_begin (float click_x, float click_y) {
         float abs_x, abs_y;
         float prev_parent_x, prev_parent_y;
 

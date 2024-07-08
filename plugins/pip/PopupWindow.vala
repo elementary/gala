@@ -212,7 +212,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         on_allocation_changed ();
     }
 
-    private Clutter.Actor on_move_begin () {
+    private unowned Clutter.Actor on_move_begin () {
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
         return this;
